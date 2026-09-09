@@ -35,17 +35,24 @@ their role while reading; do not emit a separate segmentation artifact:
 | Identity, purpose, intended use | Summarize accurately with useful query vocabulary |
 | Central capability or transition | Retain enough meaning to select the right evidence |
 | Explicit deprecation, destructive effect, consequential limit | Preserve a short warning when omission risks misuse |
-| Fields, enums, examples, error tables, setup detail | Name the category and give a real raw heading, operation or schema locator |
+| Fields, enums, examples, error tables, setup detail | Default to a category and verified raw locator, not copied field lists or schema analysis |
 | External/API-wide authority | Link when useful; read it if needed for a retained claim or discovered conflict |
 
 Keep the source's facts narrow; a few accurate assertions plus useful raw
-navigation are sufficient. Preserve explicit BETA/preview, version, example,
-time and modal qualifications of retained behavior. Do not turn an example into
+navigation are sufficient. Retain a schema detail only when it is needed to
+select the correct operation, understand its central effect, or avoid material
+misuse; otherwise route to raw. Required-field lists, enum values, pagination
+bounds and response-property inventories are not default source content.
+Keep consequential warnings and discovered conflicts that affect safe use;
+narrowing a claim must not hide those warnings. Preserve explicit BETA/preview,
+version, example, time and modal qualifications of retained behavior. Do not turn an example into
 a guarantee or an available action into a requirement. Distinguish enclosing
 OpenAPI request-body requiredness from required payload properties; infer no
 runtime behavior from absent schema constraints. Omit unnecessary assertions
-instead of enumerating hypothetical unknowns. Verify locators, including
-whether an example sits under the operation or a component schema.
+instead of enumerating hypothetical unknowns. Give the shortest verified
+heading, operation or schema locator sufficient to find the detail. Do not
+describe inline versus referenced placement unless useful; any placement claim
+that is retained must be checked against the raw.
 
 Read related authority only to substantiate a retained cross-source claim or
 investigate a discovered relevant conflict, not every adjacent API. Keep known
@@ -77,10 +84,11 @@ overlap or contradiction. A valid link alone does not prove relevance; indexes
 and concepts are navigation aids, not factual authorities. Read an adjacent
 concept only when needed for a meaningful route or actual conflict.
 
-Propose the main concept's reciprocal source link with a one-line purpose.
+Default to the main concept's reciprocal source link with a one-line purpose;
+do not copy source-level field lists, enum tables or response shapes into it.
 Add supporting routes for retrieval value, not incidental fields. Change
 concept prose only when a definition, principal flow or important existing
-statement changes; do not copy each source's knowledge into every concept.
+statement changes; otherwise propose navigation only.
 A supported fact citation can supply the main reciprocal route without a second
 Sources entry. Review uniqueness within the intended navigation section;
 a separate supported inline citation is not automatically a duplicate.
@@ -96,7 +104,9 @@ company/index/log files or unrelated concept sections.
 
 Block false/misleading retained claims, wrong identity or scope, missing
 material warnings or known conflicts, undiscoverable central topics, and broken
-required evidence/navigation routes. Every omission blocker must name a
+required evidence/navigation routes. Apply the same detail-retention test to
+source and concept proposals; do not demand optional schema expansion merely
+because the raw contains it. Every omission blocker must name a
 concrete query, the misleading answer/wrong selection, and why the raw route
 cannot adequately cover it. Ordinary detail remaining in raw, optional global
 rules, tangential concepts and style preferences are nonblocking.
@@ -154,6 +164,13 @@ questions as one final audit, not an additional three-page full-content audit.
 Start from index → concept → source → exact raw; detail answers read the raw
 fully under `rules/query-and-synthesis.md`, including its existing gap-sweep
 requirements. Record route, evidence, extra searches, verdict and repairs.
+Before answering each question, restate its requested object/action and check
+that the source/raw reached through navigation matches it (for example, commit
+is not credit). Record this beside the route in the existing audit report,
+without a new schema or checklist file. The coordinator checks this identity
+against the assigned question before accepting the verdict. A wrong-object
+audit answer is invalid: correct only affected questions, preserving unrelated
+valid results and distinguishing auditor error from a genuine retrieval failure.
 Disjoint groups may overlap remaining promotions; do not repeat tasks.
 Failed retrieval or wrong answers block successful closure; resolve them or
 record a failed pilot, never expand source detail merely to pre-answer raw

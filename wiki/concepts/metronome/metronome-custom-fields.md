@@ -81,6 +81,8 @@ The overview establishes the purpose, supported object examples, persistence, un
 
 ## Sources
 
+- [[source-metronome-api-reference-custom-fields-set-custom-field-values]] - entity-instance value mutation, matching-key overwrite with other fields preserved, transactional all-or-none behavior, and exact payload and response locators
+
 - [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] - active key-definition discovery, managed-entity filtering, returned uniqueness setting, pagination placement and limit-authority contradiction, unresolved caller-visible scope, applicability tension, and completeness and freshness unknowns
 
 

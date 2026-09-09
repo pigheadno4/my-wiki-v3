@@ -266,6 +266,12 @@ A `low_remaining_contract_credit_and_commit_balance_reached` alert normally eval
 
 ## Sources
 
+- [[source-metronome-api-reference-credits-and-commits-update-the-commit-end-date]] — prepaid-commit access or invoice end-date shortening, prepaid-only and no-extension boundaries, and exact raw schema locators
+
+- [[source-metronome-api-reference-credits-and-commits-edit-a-credit]] — existing credit mutation, access-schedule changes, immediate draft-invoice effects, finalized-invoice preservation, and the void-before-segment-removal guard
+
+- [[source-metronome-api-reference-credit-grants-list-credit-grants]] - deprecated Plans credit-grant listing, voided-grant exclusion, Contracts migration warning, and raw routes for filters and pagination
+
 - [[source-metronome-api-reference-credits-and-commits-archive-a-commit]] — commit archival prerequisites, historical preservation, archived-list retrieval, null ledger and zero balance, and full access-schedule deactivation
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-target-credit-and-commits]] — product and product-family selectors, specifier boolean matching, pricing and presentation dimensions, and missing-group-key exclusions

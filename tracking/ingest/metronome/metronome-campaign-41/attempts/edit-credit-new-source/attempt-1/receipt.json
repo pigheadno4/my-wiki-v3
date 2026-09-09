@@ -1,0 +1,65 @@
+{
+  "job_id": "edit-credit-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Edit a Credit API\"\ntype: source\ndate_ingested: 2026-09-09\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/edit-a-credit\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/edit-a-credit-2026-08-28.md\"\ntags: [metronome, credits-and-commits, credit-editing, api-reference]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v2/contracts/credits/edit`, which edits an existing contract-level or customer-level credit. It supports extending a free credit's duration or amount and changing access schedules, applicable products, priority, and other documented credit fields; it edits a credit, not a commit.\n\n## Central behavior\n\n- The operation selects an existing credit with customer and credit identifiers. Its supported metadata, targeting, rate, priority, hierarchy, and access-schedule properties are inventoried under `components.schemas.EditCreditPayload` in the raw OpenAPI.\n- Draft invoices reflect an edit immediately. Finalized invoices remain unchanged unless they are voided and regenerated.\n- Changing `rate_type` affects current and future invoices; previously finalized invoices must be voided and regenerated for that change to appear.\n\n> [!warning] Finalized-invoice schedule restriction\n> An access-schedule segment that was applied to a finalized invoice cannot be removed. The documented sequence is to void that invoice first and then remove the segment.\n\n> [!warning] Omitted-field ambiguity\n> The applicability field descriptions say that when both product IDs and product tags are not provided, the credit applies to all products, but this edit page gives no general rule for omitted optional fields. Do not assume ordinary patch or clear-to-all behavior beyond the documented field-specific wording.\n\n## Raw detail routes\n\n| Detail | Verified raw locator |\n| --- | --- |\n| Operation, authentication, and request example | OpenAPI fence `post /v2/contracts/credits/edit`, then `paths./v2/contracts/credits/edit.post` |\n| Editable fields and selectors | `components.schemas.EditCreditPayload` |\n| Access-schedule add, update, and removal shapes | `components.schemas.UpdateAccessScheduleInput` |\n| Usage targeting and hierarchy variants | `components.schemas.CommitSpecifierInput` and `components.schemas.CommitHierarchyConfiguration` |\n| Success and error envelopes | `paths./v2/contracts/credits/edit.post.responses`, with `components.schemas.Id` |\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-credits-and-commits]]\n- Supporting concept: [[metronome-invoicing]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/edit-a-credit-2026-08-28|2026-08-28 snapshot - credit-edit purpose, invoice effects, access-schedule restriction, and complete OpenAPI schemas]]\n",
+  "quotes": [
+    {
+      "text": "Edit details for a contract-level or customer-level credit.",
+      "location": "Introduction, immediately below the H1"
+    },
+    {
+      "text": "````yaml /openapi.json post /v2/contracts/credits/edit",
+      "location": "OpenAPI code-fence header"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "OpenAPI root security declaration"
+    },
+    {
+      "text": "As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated.",
+      "location": "Usage guidelines, first bullet"
+    },
+    {
+      "text": "You cannot remove an access schedule segment that was applied to a finalized invoice. You can void the invoice beforehand and then remove the access schedule segment.",
+      "location": "Usage guidelines, second bullet"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c41-edit-credit-credits-commits-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-edit-a-credit]] \u2014 existing credit mutation, access-schedule changes, immediate draft-invoice effects, finalized-invoice preservation, and the void-before-segment-removal guard",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this credit operation distinct from the existing edit-a-commit source.",
+          "The page does not define general omitted-field edit semantics; do not infer ordinary patch behavior."
+        ]
+      },
+      {
+        "update_id": "c41-edit-credit-invoicing-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-edit-a-credit]] \u2014 immediate draft-invoice reflection, finalized-invoice preservation unless voided and regenerated, and void-before-access-segment-removal guidance",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/edit-a-credit-2026-08-28.md",
+  "raw_sha256": "006fa6925bcdfab731c502db101215e2281572c0eeaf41a00c4719eb60222869",
+  "status": "candidate_ready"
+}

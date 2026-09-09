@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 202 |
-| Raw snapshots without source summaries | 90 |
+| Source summaries ingested | 207 |
+| Raw snapshots without source summaries | 85 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-credit-grants-list-credit-grants]] — deprecated Plans grant listing, voided-grant exclusion, filters and pagination routes
+- [[source-metronome-api-reference-credits-and-commits-edit-a-credit]] — credit editing, invoice effects and finalized-invoice access-schedule restrictions
+- [[source-metronome-api-reference-notifications-edit-an-offset-lifecycle-event-notification-configuration]] — offset notification configuration editing, fixed event type and system-only enablement boundary
+- [[source-metronome-api-reference-credits-and-commits-update-the-commit-end-date]] — prepaid-commit end-date shortening, separate access/invoice cutoffs and no-extension boundary
+- [[source-metronome-api-reference-custom-fields-set-custom-field-values]] — entity custom-field value updates, matching-key overwrite, preservation and transactional behavior
 
 - [[source-metronome-api-reference-rate-cards-get-rates]] — rate-card schedule retrieval, timestamp and selector navigation, and customer-contract override boundary
 - [[source-metronome-api-reference-credits-and-commits-archive-a-commit]] — commit archival, finalized usage and commit-payment invoice prerequisites, historical preservation, and full deactivation
@@ -251,7 +257,7 @@ Operational evidence:
 - [[metronome-token-billing]] — private-preview managed LLM token-cost-plus-markup workflow
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
 - [[metronome-integrations]] — external-system integration boundaries, Anrok and Avalara credential configuration, and workflows
-- [[metronome-credits-and-commits]] — commitment discounts, access and invoice schedules, usage targeting, rollover, and lifecycle boundaries
+- [[metronome-credits-and-commits]] — legacy grant listing, credit edits, prepaid-commit shortening, discounts, access and invoice schedules, usage targeting, and rollover
 - [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, design choices, and matching boundary
 - [[metronome-billable-metrics]] — filters, aggregation operations, contextual grouping, and creation-time behavior
 - [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, timestamped rate-card schedule retrieval, and legacy Plan charge configuration
@@ -262,11 +268,11 @@ Operational evidence:
 - [[metronome-security-principles]] — explicit access grants, authenticated communication, and credential lifetime
 - [[metronome-api-idempotency]] — key selection, conflict behavior, retention windows, and cached-error handling
 - [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
-- [[metronome-alerts-and-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusions, offset-notification configuration lookup, and merchant action boundary
+- [[metronome-alerts-and-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusions, offset-notification configuration lookup and editing, and merchant action boundary
 - [[metronome-spend-trackers]] — public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns
 - [[metronome-spend-threshold-billing]] — contract-level incremental collection with optional commit-release payment gating, distinct from product-access enforcement and a customer-wide cross-contract cap
 - [[metronome-currencies-and-custom-pricing-units]] — supported fiat currencies, Metronome-specific API denomination, custom-unit rates, balance drawdown, and invoice conversion
-- [[metronome-custom-fields]] — platform-object metadata, external-system mappings, uniqueness, and persistence
+- [[metronome-custom-fields]] — platform-object metadata, entity value updates and overwrite boundaries, external-system mappings, uniqueness, and persistence
 
 ## Related platforms
 

@@ -274,6 +274,8 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 
 ## Sources
 
+- [[source-metronome-api-reference-credits-and-commits-edit-a-credit]] — immediate draft-invoice reflection, finalized-invoice preservation unless voided and regenerated, and void-before-access-segment-removal guidance
+
 - [[source-metronome-api-reference-settings-upsert-avalara-credentials]] — PLG Invoicing Avalara credential mapping by billing-provider delivery method, with payload and response-schema locators
 
 - [[source-metronome-api-reference-credits-and-commits-archive-a-commit]] — finalized usage and commit-payment invoice voiding prerequisites plus the documented post-archive usage-invoice regeneration route

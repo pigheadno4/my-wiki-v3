@@ -1,0 +1,52 @@
+{
+  "job_id": "update-commit-end-date-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Update the Commit End Date\"\ntype: source\ndate_ingested: 2026-09-09\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/update-the-commit-end-date\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/update-the-commit-end-date-2026-07-13.md\"\ntags: [metronome, credits-and-commits, prepaid-commits, api]\n---\n\n## Overview\n\nThis OpenAPI page documents Metronome's bearer-authenticated `POST /v1/contracts/customerCommits/updateEndDate` operation for shortening an existing prepaid commit. It is the targeted evidence for ending that commit's access or invoicing earlier than originally scheduled, not for extending a commit or changing a credit.\n\n## Key takeaways\n\n- The operation only supports prepaid commits and moves an end boundary earlier; it cannot extend the commit.\n- It can shorten the exclusive access cutoff, after which the commit can no longer be drawn down, and/or the exclusive invoicing cutoff. An omitted cutoff is not updated.\n- Metronome directs extensions and other broader changes to the separate edit-commit endpoint.\n\n## Important boundaries\n\n> [!warning] Shortening only, on a prepaid commit\n> Do not use this operation to extend a commit, mutate a credit, or update the enclosing contract's end date. For an extension or other comprehensive commit edit, follow the separate [[source-metronome-api-reference-credits-and-commits-edit-a-commit|edit-commit authority]].\n\n## Verified raw locators\n\n- Use `paths./v1/contracts/customerCommits/updateEndDate.post` together with the root `security` declaration for the method, path, bearer authentication, purpose, and request-body route.\n- Use `components.schemas.UpdateCommitEndDatePayload` for the customer and commit identifiers and the independent access and invoice cutoff semantics.\n- Use `paths./v1/contracts/customerCommits/updateEndDate.post.responses`, `components.schemas.Id`, `components.schemas.Error`, and `components.responses.NotFound` for the success and error response inventory.\n\n## Related\n\n- Company: [[metronome]]\n- Concept: [[metronome-credits-and-commits]]\n- Related operation: [[source-metronome-api-reference-credits-and-commits-edit-a-commit]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/update-the-commit-end-date-2026-07-13|Update the commit end date]] \u2014 complete collected OpenAPI page for prepaid-commit end-date shortening\n",
+  "quotes": [
+    {
+      "text": "````yaml /openapi.json post /v1/contracts/customerCommits/updateEndDate",
+      "location": "OpenAPI block header, line 21"
+    },
+    {
+      "text": "Shortens the end date of a prepaid commit to terminate it earlier than originally scheduled. Use this endpoint when you need to cancel or reduce the duration of an existing prepaid commit. Only works with prepaid commit types and can only move the end date forward (earlier), not extend it.",
+      "location": "Opening description, line 11"
+    },
+    {
+      "text": "To extend commit end dates or make other comprehensive edits, use the 'edit commit' endpoint instead.",
+      "location": "Usage guidelines, line 14"
+    },
+    {
+      "text": "RFC 3339 timestamp indicating when access to the commit will end and\n            it will no longer be possible to draw it down (exclusive). If not\n            provided, the access will not be updated.",
+      "location": "OpenAPI components.schemas.UpdateCommitEndDatePayload.properties.access_ending_before.description, lines 163-165"
+    },
+    {
+      "text": "RFC 3339 timestamp indicating when the commit will stop being\n            invoiced (exclusive). If not provided, the invoice schedule will not\n            be updated.",
+      "location": "OpenAPI components.schemas.UpdateCommitEndDatePayload.properties.invoices_ending_before.description, lines 170-172"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "update-commit-end-date-main-concept-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-update-the-commit-end-date]] \u2014 prepaid-commit access or invoice end-date shortening, prepaid-only and no-extension boundaries, and exact raw schema locators",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/update-the-commit-end-date-2026-07-13.md",
+  "raw_sha256": "c0554f690660766be6e34d265733c4112c2e933cc09c5caac26656f3bf2f41d7",
+  "status": "candidate_ready"
+}

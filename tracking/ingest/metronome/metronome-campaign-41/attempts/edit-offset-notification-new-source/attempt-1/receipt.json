@@ -1,0 +1,55 @@
+{
+  "job_id": "edit-offset-notification-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Edit an Offset Lifecycle Event Notification Configuration\"\ntype: source\ndate_ingested: 2026-09-09\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/notifications/edit-an-offset-lifecycle-event-notification-configuration\"\nraw_files:\n  - \"metronome/api-reference/notifications/edit-an-offset-lifecycle-event-notification-configuration-2026-07-13.md\"\ntags: [metronome, api, notifications, offset-notifications, lifecycle-events]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v2/notifications/edit` for editing an existing offset lifecycle event notification configuration. It is configuration-mutation authority, not evidence that a lifecycle event occurred or that a notification was generated or delivered.\n\n## Key facts\n\n- An offset configuration edit identifies the stored configuration and supplies an updated policy. The updated `policy.type` must match the configuration's existing lifecycle event type, so this operation does not document changing the configuration to a different lifecycle-event basis.\n- The offset policy retains a lifecycle-event type and a signed ISO 8601 duration: positive offsets schedule after the base event and negative offsets schedule before it. Use `components.schemas.LifecycleEventOffsetPolicy` in the raw snapshot for the exact fields and examples.\n- The shared edit payload also covers system lifecycle event configurations. Its `is_enabled` field is supported only for system lifecycle events, so this page does not establish an enable-or-disable control for offset configurations.\n\n## Material boundaries\n\nThe OpenAPI request-body wrapper is not marked `required: true`; inside a supplied payload, only `policy` appears in the required-property list. The optional `id` description says it is not provided for system-event configuration updates, but the page does not explicitly state offset-edit omitted-ID behavior. Use `components.schemas.EditNotificationConfigPayload` for that requiredness boundary rather than inferring runtime acceptance.\n\nA successful response requires top-level `data` and permits either a system or offset lifecycle-event notification configuration. The full response inventory and documented `400` error codes remain in `paths./v2/notifications/edit.post`. A successful configuration response does not prove that an underlying lifecycle event occurred, that an offset notification was emitted, or that webhook delivery succeeded.\n\n## Raw-detail coverage map\n\nUse `paths./v2/notifications/edit.post` for the operation identity, production server, bearer security declaration, request example, response envelope, and error response. Use `components.schemas.EditNotificationConfigPayload` for configuration identity, policy-update scope, payload requiredness, and the system-only enablement boundary; use `components.schemas.LifecycleEventOffsetPolicy` for lifecycle-event type and signed offset semantics; and use the two notification-configuration schemas for the complete response fields.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-alerts-and-notifications]]\n- Related sources: [[source-metronome-api-reference-notifications-get-an-offset-lifecycle-event-notification-configuration]], [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]], [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/notifications/edit-an-offset-lifecycle-event-notification-configuration-2026-07-13|2026-07-13 snapshot - offset notification configuration edit, fixed lifecycle-event type, signed offset semantics, system-only enablement, and response schema]]\n",
+  "quotes": [
+    {
+      "text": "Edit an existing offset lifecycle event notification configuration.",
+      "location": "line 11, page summary"
+    },
+    {
+      "text": "post /v2/notifications/edit",
+      "location": "line 17, OpenAPI operation header"
+    },
+    {
+      "text": "Updated policy configuration. The policy.type must match the\n            existing lifecycle event type.",
+      "location": "lines 174-176, components.schemas.EditNotificationConfigPayload.properties.policy.description"
+    },
+    {
+      "text": "Set to true to enable webhook messages for the notification\n            indicated in the policy, false to disable.\n\n            Only supported by system lifecycle events.",
+      "location": "lines 165-169, components.schemas.EditNotificationConfigPayload.properties.is_enabled.description"
+    },
+    {
+      "text": "ISO-8601 duration string indicating how much time before or after\n            the base event this notification should be sent. Positive values\n            indicate notifications after the event, negative values indicate\n            notifications before the event. Examples: \"P1D\" (1 day after),\n            \"-PT2H\" (2 hours before)",
+      "location": "lines 248-253, components.schemas.LifecycleEventOffsetPolicy.properties.offset.description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c41-edit-offset-notification-alerts-reciprocal",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-edit-an-offset-lifecycle-event-notification-configuration]] - offset lifecycle event notification configuration editing, the fixed existing lifecycle-event type, signed offset routing, and the system-only enablement boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This operation edits stored notification configuration; it does not establish threshold-alert evaluation, lifecycle-event occurrence, notification emission, or webhook delivery.",
+          "The shared edit schema also supports system lifecycle event configuration updates; is_enabled is documented only for system lifecycle events and must not be presented as an offset-configuration toggle."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/notifications/edit-an-offset-lifecycle-event-notification-configuration-2026-07-13.md",
+  "raw_sha256": "0d267febe28fdeaf1bccd7525a02f004cb7ce582cd3000f221170165f2f809df",
+  "status": "candidate_ready"
+}

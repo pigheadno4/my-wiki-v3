@@ -6,6 +6,15 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-09 — Metronome Campaign 41 narrow-detail confirmation
+
+- Promoted five previously uncovered sources: legacy credit-grant listing, credit editing, offset-notification configuration editing, prepaid-commit end-date shortening, and custom-field value setting.
+- Review: 4/5 first-pass approvals, five initial full reviews and one targeted receipt-location review. The sole correction changed four quote line locators; source text, quote text and shared suggestions were unchanged. No full rereview or coordinator semantic repair.
+- Shared updates: six purposeful reciprocal navigation entries across four existing concepts, with no new concept factual paragraphs. Key warnings and exact raw detail routes remain in the source layer.
+- Coverage: 207 total source summaries, 201 official-document sources, 85 raw snapshots without source summaries, and 25 remaining canonical identities in the frozen never-ingested inventory.
+- Outcome: 10/10 queries passed with correct object/action matching and no query-driven repairs. Runtime close took 1,848 seconds (30m48s), a modest 1m23s improvement over C40; reports distinguish analysis, promotion waiting and final handoff overhead.
+- Final query outcomes and timings: [quality audit](../tracking/ingest/metronome/metronome-campaign-41/quality-audit.md), [retrospective](../tracking/ingest/metronome/metronome-campaign-41/retrospective.md), and [monitor](../tracking/ingest/metronome/metronome-campaign-41/monitor.md).
+
 ## 2026-09-08 — Metronome Campaign 40 compact-instruction confirmation
 
 - Promoted five previously uncovered sources: rate-card rates, commit archival, threshold notifications, legacy Plan customer listing, and Avalara credential configuration.
