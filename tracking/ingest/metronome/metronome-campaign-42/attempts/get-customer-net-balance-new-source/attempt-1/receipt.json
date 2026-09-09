@@ -1,0 +1,55 @@
+{
+  "job_id": "get-customer-net-balance-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Get the Net Balance of a Customer\"\ntype: source\ndate_ingested: 2026-09-09\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/get-the-net-balance-of-a-customer-2026-08-28.md\"\ntags: [metronome, api-reference, credits, commits, customer-balance]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `POST /v1/contracts/customerBalances/getNetBalance` operation. It returns one customer's combined current balance across the matching credits and commits rather than the individual balance and ledger detail exposed by `listBalances`.\n\n## Key takeaways\n\n- Separate filter objects are ORed: a credit or commit is included when it matches any object. Conditions within one filter object are ANDed. Filters can narrow the calculation by balance type, exact credit or commit ID, and custom fields.\n- The response places numeric `balance` and UUID `credit_type_id` inside the required `data` object. The credit type identifies the fiat or custom pricing unit in which the balance is denominated; omitting `credit_type_id` defaults the calculation to USD cents.\n- `invoice_inclusion_mode` defaults to `FINALIZED_AND_DRAFT`, which includes deductions from pending draft invoices; `FINALIZED` excludes those draft deductions.\n- The feature-annotated `access_type` defaults to `SPEND`. Selecting `QUANTITY` forbids supplying `credit_type_id`; use the raw request schema for its accepted values and placement.\n\n> [!warning] Customer-hierarchy scope\n> A child-customer query excludes shared commits from parent contracts. Query the parent customer directly when those shared commit balances are required.\n\n> [!warning] Negative-segment calculation\n> Manual ledger entries can make an individual segment balance negative, but this endpoint treats that segment as zero when calculating the combined net balance. Use `listBalances` for the underlying per-balance ledger detail.\n\n## API and detail locators\n\n- Operation and authentication: `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/v1/contracts/customerBalances/getNetBalance` -> `post`.\n- Request selection: `requestBody` -> `content` -> `application/json` -> `schema` -> `properties` documents `credit_type_id`, `access_type`, `filters`, and `invoice_inclusion_mode`; `components` -> `schemas` -> `BalanceFilter` holds the balance-type, ID, and custom-field detail. The payload schema requires `customer_id`, while the enclosing OpenAPI `requestBody` is not marked required, so omitted-body runtime behavior is not established.\n- Response placement: `responses` -> `200` -> `content` -> `application/json` -> `schema` requires outer `data`, then requires `balance` and `credit_type_id` within that object. The same response section routes the example; `responses` -> `400` routes the generic error schema.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-credits-and-commits]]\n- Detailed balances and ledgers: [[source-metronome-api-reference-credits-and-commits-list-balances]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/get-the-net-balance-of-a-customer-2026-08-28|Get the net balance of a customer]] \u2014 complete collected documentation and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "````yaml /openapi.json post /v1/contracts/customerBalances/getNetBalance",
+      "location": "## OpenAPI, operation fence (line 40)"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "## OpenAPI > global security (lines 48-49)"
+    },
+    {
+      "text": "Retrieve the combined current balance across any grouping of credits and commits for a customer in a single API call.",
+      "location": "# Get the net balance of a customer, opening description (line 11)"
+    },
+    {
+      "text": "Balance filters allow you to scope the calculation to specific subsets of commits and credits. When using multiple filter objects, they are OR'd together \u2014 if a commit or credit matches any filter, it's included in the net balance. Within a single filter object, all specified conditions are AND'd together.",
+      "location": "### Filtering options (line 21)"
+    },
+    {
+      "text": "required:\n                  - data\n                properties:\n                  data:\n                    type: object\n                    required:\n                      - balance\n                      - credit_type_id\n                    properties:\n                      balance:\n                        type: number\n                        description: >-\n                          The combined net balance that the customer has access\n                          to use at this moment across all pertinent commits and\n                          credits.\n                      credit_type_id:\n                        type: string\n                        format: uuid\n                        description: >-\n                          The ID of the credit type (can be fiat or a custom\n                          pricing unit) that the balance is for.",
+      "location": "## OpenAPI > paths > /v1/contracts/customerBalances/getNetBalance > post > responses > 200 > application/json > schema (lines 259-279)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-net-balance-credits-source-route",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-get-the-net-balance-of-a-customer]] \u2014 combined customer credit-and-commit balance retrieval, OR-between-filter and AND-within-filter composition, denomination and draft-invoice modes, hierarchy exclusion, non-negative segment treatment, and exact request and response locators",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the child-customer exclusion for shared parent-contract commits and the zero-floor treatment of negative segment balances.",
+          "Do not treat the combined net balance as individual ledger detail or infer omitted-body behavior from payload-property requiredness."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/get-the-net-balance-of-a-customer-2026-08-28.md",
+  "raw_sha256": "d39d5384211f057c9a94206873e982099ae71a45632bc5fcfbd69680e43cb29d",
+  "status": "candidate_ready"
+}

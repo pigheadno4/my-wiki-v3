@@ -144,6 +144,8 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 - Trial packaging can use `entitled: false` for merchant-enforced feature restriction or a time-bounded multiplier `0` for uncapped free usage, after which list pricing resumes. Overlapping-override precedence, missing-rate behavior, and automatic product gating remain unknown.
 
 ## Sources
+- [[source-metronome-api-reference-rate-cards-create-a-rate-card]] — rate-card creation, single-fiat and custom-unit setup, contract-provisioning aliases, consequential alias reassignment, later rate-addition boundary, and exact payload and response locators
+- [[source-metronome-api-reference-products-update-a-product]] - effective-dated product configuration updates, immutable product type, exact payload navigation, and the pricing-description boundary
 
 - [[source-metronome-api-reference-rate-cards-get-rates]] - bearer-authenticated rate-card schedule retrieval at an inclusive timestamp, OR selector filtering, response-schema navigation, and the customer-contract override boundary
 

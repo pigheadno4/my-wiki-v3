@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-09 — Metronome Campaign 42 locator-and-report confirmation
+
+- Promoted five previously uncovered sources: product updates, combined customer credit/commit net balance, rate-card creation, offset-notification configuration creation, and customer-credit end-date shortening.
+- Review: 5/5 first-pass approvals after five independent full initial reviews; no worker retry, targeted review, full rereview, or coordinator semantic repair. Verified quote locations required no correction.
+- Shared updates: five purposeful reciprocal navigation entries across three existing concepts, no new concept factual paragraphs. Provider concept descriptions include the new retrieval vocabulary.
+- Coverage: 212 total source summaries, 206 official-document sources, 80 raw snapshots without source summaries, and 20 remaining canonical identities in the frozen never-ingested inventory.
+- Execution used two available native child slots after third-agent dispatch failures. Initial interruption and capacity limits remain part of the operational elapsed time; this is not a controlled comparison with prior three-slot campaigns.
+- Outcome: 10/10 retrieval questions passed with no query-driven repair. Operational closure took 2,281 seconds (38m01s), missing the 35-minute observation target despite eliminating retries; source length and query-audit overhead remain optimization opportunities.
+- Final retrieval and closure evidence: [quality audit](../tracking/ingest/metronome/metronome-campaign-42/quality-audit.md), [retrospective](../tracking/ingest/metronome/metronome-campaign-42/retrospective.md), and [monitor](../tracking/ingest/metronome/metronome-campaign-42/monitor.md).
+
 ## 2026-09-09 — Metronome Campaign 41 narrow-detail confirmation
 
 - Promoted five previously uncovered sources: legacy credit-grant listing, credit editing, offset-notification configuration editing, prepaid-commit end-date shortening, and custom-field value setting.

@@ -1,0 +1,54 @@
+{
+  "job_id": "create-offset-notification-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Create an Offset Lifecycle Event Notification Configuration\"\ntype: source\ndate_ingested: 2026-09-09\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/notifications/create-an-offset-lifecycle-event-notification-configuration\"\nraw_files:\n  - \"metronome/api-reference/notifications/create-an-offset-lifecycle-event-notification-configuration-2026-07-13.md\"\ntags: [metronome, api, notifications, offset-notifications, lifecycle-events]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v2/notifications/create` for creating and storing an offset lifecycle event notification configuration. The lifecycle event type is inferred from `policy.type`; successful configuration creation is not evidence that the lifecycle event occurred, an offset notification was emitted, or webhook delivery succeeded.\n\n## Key facts\n\n- The operation creates an offset lifecycle event notification configuration, and the configuration's lifecycle event type comes from `policy.type`.\n- The offset policy uses a signed ISO 8601 duration relative to the selected lifecycle event: positive values indicate a time after the event and negative values indicate a time before it.\n- A successful `200` response places the stored configuration under top-level `data`. Use the raw response schema for its complete property inventory rather than treating the response as an emitted event or delivery record.\n\n## Raw-detail coverage map\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `servers` and `security`, then `paths./v2/notifications/create.post`.\n- **Creation payload:** `components.schemas.CreateNotificationConfigPayload`; use `components.schemas.LifecycleEventOffsetPolicy` for the lifecycle-event type and signed offset semantics.\n- **Stored configuration response:** `paths./v2/notifications/create.post.responses.200.content.application/json`, with the stored configuration schema at `components.schemas.LifecycleEventOffsetNotificationConfig`.\n- **Other schema and failure detail:** keep the complete definitions and documented response details in `## OpenAPI`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-alerts-and-notifications]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/notifications/create-an-offset-lifecycle-event-notification-configuration-2026-07-13|2026-07-13 snapshot - offset lifecycle event notification configuration creation]]\n",
+  "quotes": [
+    {
+      "text": "servers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 23-27, ## OpenAPI document-level servers and security"
+    },
+    {
+      "text": "/v2/notifications/create:\n    post:\n      tags:\n        - Notifications\n      summary: Create an offset lifecycle event notification configuration\n      description: >\n        Create an offset lifecycle event notification configuration. The\n        lifecycle event type is inferred from the policy.type field.",
+      "location": "lines 88-95, paths./v2/notifications/create.post"
+    },
+    {
+      "text": "CreateNotificationConfigPayload:\n      type: object\n      required:\n        - name\n        - policy\n      properties:\n        name:\n          type: string\n          description: |\n            The name for this offset notification configuration.\n        policy:\n          $ref: '#/components/schemas/LifecycleEventOffsetPolicy'\n          description: >\n            The offset lifecycle event policy that defines when and how this\n            notification should be triggered. The lifecycle event type is\n            inferred from the policy.type field.",
+      "location": "lines 152-167, components.schemas.CreateNotificationConfigPayload"
+    },
+    {
+      "text": "'200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: >-\n                      #/components/schemas/LifecycleEventOffsetNotificationConfig",
+      "location": "lines 110-121, paths./v2/notifications/create.post.responses.200.content.application/json.schema"
+    },
+    {
+      "text": "offset:\n          type: string\n          description: >\n            ISO-8601 duration string indicating how much time before or after\n            the base event this notification should be sent. Positive values\n            indicate notifications after the event, negative values indicate\n            notifications before the event. Examples: \"P1D\" (1 day after),\n            \"-PT2H\" (2 hours before)",
+      "location": "lines 226-233, components.schemas.LifecycleEventOffsetPolicy.properties.offset"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-offset-notification-alerts-notifications-source-route",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-create-an-offset-lifecycle-event-notification-configuration]] - offset lifecycle event notification configuration creation, lifecycle-event type inference from `policy.type`, signed offset navigation, stored-configuration response, and event-emission and delivery boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep configuration creation separate from lifecycle-event occurrence, offset-notification emission, and webhook delivery."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/notifications/create-an-offset-lifecycle-event-notification-configuration-2026-07-13.md",
+  "raw_sha256": "fd53e06c4e3f3ac38fafc6627da32e555be6951276609113a3be4a02c725fc20",
+  "status": "candidate_ready"
+}

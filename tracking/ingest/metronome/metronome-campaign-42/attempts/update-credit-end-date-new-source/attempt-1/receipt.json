@@ -1,0 +1,55 @@
+{
+  "job_id": "update-credit-end-date-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Update the Credit End Date\"\ntype: source\ndate_ingested: 2026-09-09\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/update-the-credit-end-date\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/update-the-credit-end-date-2026-07-13.md\"\ntags: [metronome, api-reference, customer-credits, credit-lifecycle]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v1/contracts/customerCredits/updateEndDate` for shortening an existing customer credit's end date so access terminates earlier than originally scheduled. It is a customer-credit operation, not the separate commit end-date operation, and it cannot extend a credit.\n\n## Key facts\n\n- The operation only moves a customer credit's end date earlier. To extend the end date or make broader edits, use the separate edit-credit endpoint.\n- `access_ending_before` is an exclusive RFC 3339 cutoff: at that timestamp, access ends and the credit can no longer be drawn down.\n- A successful `200` response returns an ID-shaped object under top-level `data`; use the raw response section for the exact envelope.\n\n> [!warning] Credit-versus-commit wording conflict\n> The endpoint path, title, operation description, and `customer_id` description identify a customer credit, but the `credit_id` property description says \"ID of the commit to update.\" Treat that sentence as an internal documentation inconsistency, not authority that this endpoint updates a commit, and verify the identifier is the intended customer credit before mutation.\n\n## Raw-detail coverage map\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `servers` and `security`, then `paths./v1/contracts/customerCredits/updateEndDate.post`.\n- **Cutoff input:** `components.schemas.UpdateCreditEndDatePayload.properties.access_ending_before` contains the timestamp format and exclusive drawdown cutoff; the same payload schema contains the customer and credit identifiers.\n- **Success and errors:** `paths./v1/contracts/customerCredits/updateEndDate.post.responses` contains the `200` `data.id` envelope and documented error routes.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-credits-and-commits]]\n- Broader credit edits: [[source-metronome-api-reference-credits-and-commits-edit-a-credit]]\n- Distinct commit operation: [[source-metronome-api-reference-credits-and-commits-update-the-commit-end-date]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/update-the-credit-end-date-2026-07-13|2026-07-13 snapshot - customer-credit end-date shortening operation, cutoff schema, response, and errors]]\n",
+  "quotes": [
+    {
+      "text": "> Shortens the end date of an existing customer credit to terminate it earlier than originally scheduled. Only allows moving end dates forward (earlier), not extending them. \n\nNote: To extend credit end dates or make comprehensive edits, use the 'edit credit' endpoint instead.",
+      "location": "lines 11-13, introduction below # Update the credit end date"
+    },
+    {
+      "text": "servers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 25-29, ## OpenAPI document-level servers and security"
+    },
+    {
+      "text": "/v1/contracts/customerCredits/updateEndDate:\n    post:\n      tags:\n        - Credits and commits\n      summary: Update the credit end date\n      description: >\n        Shortens the end date of an existing customer credit to terminate it\n        earlier than originally scheduled. Only allows moving end dates forward\n        (earlier), not extending them.",
+      "location": "lines 90-98, paths./v1/contracts/customerCredits/updateEndDate.post"
+    },
+    {
+      "text": "'200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'",
+      "location": "lines 115-125, paths./v1/contracts/customerCredits/updateEndDate.post.responses.200.content.application/json.schema"
+    },
+    {
+      "text": "credit_id:\n          type: string\n          format: uuid\n          description: ID of the commit to update\n        access_ending_before:\n          type: string\n          format: date-time\n          description: >-\n            RFC 3339 timestamp indicating when access to the credit will end and\n            it will no longer be possible to draw it down (exclusive).",
+      "location": "lines 150-159, components.schemas.UpdateCreditEndDatePayload.properties.credit_id and access_ending_before"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "update-credit-end-date-credits-commits-source-route",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-update-the-credit-end-date]] \u2014 customer-credit end-date shortening, exclusive drawdown cutoff, no-extension boundary, edit-credit route, and credit-versus-commit wording caution",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this customer-credit shortening operation distinct from the separate commit end-date operation and from credit extension or broader editing.",
+          "Preserve the raw's internal conflict: credit_id is described as a commit ID despite the customer-credit endpoint identity."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/update-the-credit-end-date-2026-07-13.md",
+  "raw_sha256": "eb9fbf915ce163201600187a4d6d6ade0436f474ac8d6f31288b4ba47030db16",
+  "status": "candidate_ready"
+}

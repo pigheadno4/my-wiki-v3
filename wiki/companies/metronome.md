@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 207
+source_count: 212
 ---
 
 ## Overview
@@ -151,10 +151,15 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 201
-- Raw snapshots without source summaries: 85
+- Official documentation source summaries: 206
+- Raw snapshots without source summaries: 80
 
 ## Sources
+- [[source-metronome-api-reference-products-update-a-product]] — effective-dated product updates, immutable type, and pricing-description boundary
+- [[source-metronome-api-reference-credits-and-commits-get-the-net-balance-of-a-customer]] — combined customer credit/commit balance, matching, denomination, and calculation warnings
+- [[source-metronome-api-reference-rate-cards-create-a-rate-card]] — rate-card creation, fiat/custom-unit setup, alias reassignment, and later rate addition
+- [[source-metronome-api-reference-notifications-create-an-offset-lifecycle-event-notification-configuration]] — stored offset notification configuration creation, policy type, and delivery boundary
+- [[source-metronome-api-reference-credits-and-commits-update-the-credit-end-date]] — customer-credit shortening, exclusive cutoff, no-extension boundary, and edit-credit route
 
 - [[source-metronome-api-reference-credit-grants-list-credit-grants]] — deprecated Plans grant listing, voided-grant exclusion, filters and pagination routes
 - [[source-metronome-api-reference-credits-and-commits-edit-a-credit]] — credit editing, invoice effects and finalized-invoice access-schedule restrictions

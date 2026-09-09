@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 207 |
-| Raw snapshots without source summaries | 85 |
+| Source summaries ingested | 212 |
+| Raw snapshots without source summaries | 80 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,11 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+- [[source-metronome-api-reference-products-update-a-product]] — effective-dated product updates, immutable type, and pricing-description boundary
+- [[source-metronome-api-reference-credits-and-commits-get-the-net-balance-of-a-customer]] — combined customer credit/commit balance, matching, denomination, and calculation warnings
+- [[source-metronome-api-reference-rate-cards-create-a-rate-card]] — rate-card creation, fiat/custom-unit setup, alias reassignment, and later rate addition
+- [[source-metronome-api-reference-notifications-create-an-offset-lifecycle-event-notification-configuration]] — stored offset notification configuration creation, policy type, and delivery boundary
+- [[source-metronome-api-reference-credits-and-commits-update-the-credit-end-date]] — customer-credit shortening, exclusive cutoff, no-extension boundary, and edit-credit route
 
 - [[source-metronome-api-reference-credit-grants-list-credit-grants]] — deprecated Plans grant listing, voided-grant exclusion, filters and pagination routes
 - [[source-metronome-api-reference-credits-and-commits-edit-a-credit]] — credit editing, invoice effects and finalized-invoice access-schedule restrictions
@@ -257,10 +262,10 @@ Operational evidence:
 - [[metronome-token-billing]] — private-preview managed LLM token-cost-plus-markup workflow
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
 - [[metronome-integrations]] — external-system integration boundaries, Anrok and Avalara credential configuration, and workflows
-- [[metronome-credits-and-commits]] — legacy grant listing, credit edits, prepaid-commit shortening, discounts, access and invoice schedules, usage targeting, and rollover
+- [[metronome-credits-and-commits]] — legacy grant listing, combined customer net balance, credit edits and credit/commit end-date shortening, discounts, access and invoice schedules, usage targeting, and rollover
 - [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, design choices, and matching boundary
 - [[metronome-billable-metrics]] — filters, aggregation operations, contextual grouping, and creation-time behavior
-- [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, timestamped rate-card schedule retrieval, and legacy Plan charge configuration
+- [[metronome-products-and-rate-cards]] — effective-dated product updates, product presentation, quantity conversion, rate-card creation and alias reassignment, timestamped rate schedules, and legacy Plan charge configuration
 - [[metronome-packages-and-aliases]] — package cohorts, effective-dated alias transitions, and migration boundaries
 - [[metronome-customers-and-contracts]] — ingest aliases, billing-provider configuration lookup, legacy Plan customer listing, commercial terms, draft-invoice activation, and contract lifecycle changes, renewals, and ending
 - [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions
@@ -268,7 +273,7 @@ Operational evidence:
 - [[metronome-security-principles]] — explicit access grants, authenticated communication, and credential lifetime
 - [[metronome-api-idempotency]] — key selection, conflict behavior, retention windows, and cached-error handling
 - [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
-- [[metronome-alerts-and-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusions, offset-notification configuration lookup and editing, and merchant action boundary
+- [[metronome-alerts-and-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusions, offset-notification configuration creation, lookup and editing, and merchant action boundary
 - [[metronome-spend-trackers]] — public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns
 - [[metronome-spend-threshold-billing]] — contract-level incremental collection with optional commit-release payment gating, distinct from product-access enforcement and a customer-wide cross-contract cap
 - [[metronome-currencies-and-custom-pricing-units]] — supported fiat currencies, Metronome-specific API denomination, custom-unit rates, balance drawdown, and invoice conversion

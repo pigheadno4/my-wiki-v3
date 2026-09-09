@@ -1,0 +1,55 @@
+{
+  "job_id": "create-rate-card-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Create a Rate Card\"\ntype: source\ndate_ingested: 2026-09-09\ncanonical_url: \"https://docs.metronome.com/api-reference/rate-cards/create-a-rate-card\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/rate-cards/create-a-rate-card-2026-07-13.md\"\ntags: [metronome, api-reference, rate-cards, pricing, aliases]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `POST /v1/contract-pricing/rate-cards/create` operation for creating a Metronome rate card. A rate card is the central pricing configuration that can carry one fiat currency, conversions to custom pricing units, and aliases used when provisioning customer contracts.\n\n## Key takeaways\n\n- The payload schema requires `name`. The rate card has one underlying fiat currency; when `fiat_credit_type_id` is omitted, the schema says it defaults to USD cents. Custom pricing-unit conversions can be supplied so later product rates can use those units.\n- Aliases are human-readable substitutes for the rate-card ID during contract provisioning. An alias can belong to only one rate card at a time, and the documentation says it resolves to the card to which it was most recently assigned.\n- Creating the card does not add product prices through this operation. The documented next step is to use `addRate` or `addRates` to add products and their prices.\n- HTTP `200` places the created rate-card identifier at `data.id`.\n\n## Material warnings and boundaries\n\n> [!warning] Alias reassignment changes the original schedule\n> Reusing an alias already assigned to another rate card updates the original card's alias schedule, and the alias then references the most recently assigned card. Treat alias reassignment as a consequential routing change when provisioning contracts.\n\n> [!info] Propagation wording is broader than this create operation\n> The page describes rate-card pricing changes as automatically propagating across customer cohorts, but this create endpoint does not itself define the timing or scope of later rate changes. Use the dedicated rate-addition and pricing-change authorities for those behaviors.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/v1/contract-pricing/rate-cards/create` -> `post`.\n- **Payload detail:** `components.schemas.CreateRateCardPayload` contains the required name and routes optional description, fiat currency, conversion, alias, and custom-field detail. `components.schemas.CreditTypeConversionInput` and `components.schemas.RateCardAlias` contain the nested conversion and effective-dated alias shapes.\n- **Response placement:** `paths` -> `/v1/contract-pricing/rate-cards/create` -> `post` -> `responses` -> `200` -> `application/json` -> `schema` requires `data`, which references `components.schemas.Id`; the example places the UUID at `data.id`.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-products-and-rate-cards]]\n- Supporting concept: [[metronome-currencies-and-custom-pricing-units]]\n- Rate-card guide: [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/rate-cards/create-a-rate-card-2026-07-13|Create a rate card]] \u2014 complete collected documentation and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "````yaml /openapi.json post /v1/contract-pricing/rate-cards/create\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 30-39, ## OpenAPI document header"
+    },
+    {
+      "text": "In Metronome, the rate card is the central location for your pricing. Rate cards were built with new product launches and pricing changes in mind - you can update your products and pricing in one place, and that change will be automatically propagated across your customer cohorts. Most clients need only maintain one or a few rate cards within Metronome.",
+      "location": "line 11, opening blockquote under # Create a rate card"
+    },
+    {
+      "text": "- A rate card alias can only be used by one rate card at a time. If you create a contract with a rate card alias that is already in use by another rate card, the original rate card's alias schedule will be updated. The alias will reference the rate card to which it was most recently assigned.",
+      "location": "line 23, ### Usage guidelines"
+    },
+    {
+      "text": "CreateRateCardPayload:\n      type: object\n      required:\n        - name\n      properties:\n        name:\n          type: string\n          description: Used only in UI/API. It is not exposed to end customers.\n        description:\n          type: string\n        fiat_credit_type_id:\n          type: string\n          format: uuid\n          example: 2714e483-4ff1-48e4-9e25-ac732e8f24f2\n          description: >-\n            The Metronome ID of the credit type to associate with the rate card,\n            defaults to USD (cents) if not passed.",
+      "location": "lines 230-246, components.schemas.CreateRateCardPayload"
+    },
+    {
+      "text": "required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+      "location": "lines 214-221, paths./v1/contract-pricing/rate-cards/create.post.responses.200.content.application/json.schema and example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-rate-card-products-rate-cards-source-route",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-rate-cards-create-a-rate-card]] \u2014 rate-card creation, single-fiat and custom-unit setup, contract-provisioning aliases, consequential alias reassignment, later rate-addition boundary, and exact payload and response locators",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the alias reassignment effect: reusing an alias updates the original rate card's alias schedule and makes the alias reference the most recently assigned card.",
+          "Keep the automatic-propagation wording source-scoped; this create operation does not establish the timing or scope of later rate changes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/rate-cards/create-a-rate-card-2026-07-13.md",
+  "raw_sha256": "8b145771749dc97e6c2940b78e2f7b0ff06959554c42d9ffc7e1caa5c9fa23b9",
+  "status": "candidate_ready"
+}

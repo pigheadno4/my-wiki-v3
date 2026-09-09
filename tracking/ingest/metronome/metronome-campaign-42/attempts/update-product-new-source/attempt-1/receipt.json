@@ -1,0 +1,52 @@
+{
+  "job_id": "update-product-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Update a Product\"\ntype: source\ndate_ingested: 2026-09-09\ncanonical_url: \"https://docs.metronome.com/api-reference/products/update-a-product\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/products/update-a-product-2026-08-28.md\"\ntags: [metronome, api, products, product-lifecycle, effective-dating]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/contract-pricing/products/update` schedules configuration changes for an existing Metronome product. The page says the operation maintains billing continuity for active customers, accepts future or retroactive effective times, and returns the updated product ID on success.\n\n## Query-critical facts\n\n- In a supplied JSON payload, `product_id` and `starting_at` are required properties. `product_id` is a UUID, while `starting_at` is a date-time that must fall on an hour boundary. A future timestamp schedules the update; a past timestamp makes it retroactive.\n- Product type is immutable. If the type is wrong, the documented route is to create a replacement product and archive the original.\n- The payload can update product presentation, metric, grouping, conversion, rounding, composite, tag, refundability, SQL-breakdown, and configuration-dependent integration settings. Use the exact `components.schemas.UpdateProductListItemPayload` locator in the raw page for availability, defaults, qualifications, and nested schemas rather than treating this summary as a field inventory.\n- HTTP `200` places the returned identifier at `data.id`. The operation also lists generic HTTP `400` and `404` responses; it does not provide a propagation status, updated Product representation, or endpoint-specific recovery contract.\n\n## Material warnings and boundaries\n\n> [!warning] Product type requires replacement, not mutation\n> This endpoint cannot change product type. Creating a replacement and archiving the original does not by itself establish identity, rate, contract, invoice, or reporting continuity between the two products.\n\n> [!warning] Pricing-description boundary\n> The operation description says it can modify \"pricing rules,\" but `UpdateProductListItemPayload` exposes no price or rate property. Do not use this page as authority that the endpoint edits rate-card prices; follow the dedicated rate-card operations for price changes.\n\n> [!info] Retroactive-effect boundary\n> The page permits a past `starting_at`, but it does not define recalculation of draft or finalized invoices, late usage, credits, commits, exports, or downstream systems. The billing-continuity statement should not be expanded into a guarantee about those historical or propagated outcomes.\n\nThe enclosing OpenAPI `requestBody` is not marked required, and the payload schema does not declare a closed-object policy. Do not infer omitted-body or unknown-field runtime behavior.\n\n## Raw-detail coverage map\n\n- **Operation and result:** the complete raw page contains the production server, bearer security, POST path, operation ID, example request, `data.id` success placement, and generic error schemas.\n- **Payload detail:** `components.schemas.UpdateProductListItemPayload` contains the required-property list and all optional fields, product-type qualifications, defaults, feature/configuration qualifications, group-key rules, and nested conversion and rounding schemas.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-products-and-rate-cards]]\n- Supporting concepts: [[metronome-billable-metrics]], [[metronome-invoicing]]\n- Related sources: [[source-metronome-api-reference-products-create-a-product]], [[source-metronome-api-reference-products-archive-a-product]], [[source-metronome-api-reference-products-get-a-product]], [[source-metronome-api-reference-products-list-products]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/products/update-a-product-2026-08-28|2026-08-28 snapshot - complete product-update operation, payload and nested schemas, response envelope, and errors]]\n",
+  "quotes": [
+    {
+      "text": "````yaml /openapi.json post /v1/contract-pricing/products/update\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 21-30, OpenAPI document header"
+    },
+    {
+      "text": "Updates a product's configuration while maintaining billing continuity for active customers. Use this endpoint to modify product names, metrics, pricing rules, and composite settings without disrupting ongoing billing cycles. Changes are scheduled using the starting_at timestamp, which must be on an hour boundary\u2014set future dates to schedule updates ahead of time, or past dates for retroactive changes. Returns the updated product ID upon success.",
+      "location": "line 11, introductory blockquote under # Update a product"
+    },
+    {
+      "text": "Product type cannot be changed after creation. For incorrect product types, create a new product and archive the original instead.",
+      "location": "line 14, Usage guidance"
+    },
+    {
+      "text": "UpdateProductListItemPayload:\n      type: object\n      required:\n        - product_id\n        - starting_at",
+      "location": "lines 159-163, components.schemas.UpdateProductListItemPayload.required"
+    },
+    {
+      "text": "required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'",
+      "location": "lines 141-145, paths./v1/contract-pricing/products/update.post.responses.200.content.application/json.schema"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "update-product-products-rate-cards-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-products-update-a-product]] - effective-dated product configuration updates, immutable product type, exact payload navigation, and the pricing-description boundary",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the description's pricing-rules wording source-scoped: UpdateProductListItemPayload exposes no price or rate property, so this source does not establish rate-card price mutation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/products/update-a-product-2026-08-28.md",
+  "raw_sha256": "60652130326f80072df1da35ea9cf2e7edee8bdc8c4951f5078e034f69ea9a32",
+  "status": "candidate_ready"
+}

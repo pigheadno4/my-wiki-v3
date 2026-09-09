@@ -70,7 +70,12 @@ approved refresh. Never edit raw to add reverse links: derive reverse lookup
 from `raw_files`.
 
 Return exactly the trusted result-contract keys with nonempty quote text and
-location, source candidate and supported suggestions. Use only
+location, source candidate and supported suggestions. For each quote, verify
+its location against the pinned raw: use an unambiguous heading/schema path
+or line numbers obtained from `rg -n` / `nl -ba` output, never estimated from
+memory or an excerpt's relative position. Confirm the quoted text occurs at
+that location; disambiguate repeated text with its enclosing section. Keep the
+existing location string and result schema. Use only
 `durable_fact` or `reciprocal_source_link` update kinds; represent contradictions
 in proposed text/warnings. Leave company/index/log suggestion arrays empty.
 Workers and reviewers may write their assigned external handoff artifacts but
@@ -171,6 +176,15 @@ without a new schema or checklist file. The coordinator checks this identity
 against the assigned question before accepting the verdict. A wrong-object
 audit answer is invalid: correct only affected questions, preserving unrelated
 valid results and distinguishing auditor error from a genuine retrieval failure.
+Keep the audit report compact: per question, record object/action match, the
+actual route, a direct answer with only requested detail, exact evidence and
+verdict. Reference a preceding route when unchanged. Record shared gap-sweep
+results, extra full reads and reciprocal-link checks once per group; expand
+only concrete failures or material uncertainty. Do not copy unrelated schema
+inventories or repeat conclusions. This shortens reporting, not required
+reading, checks or question coverage. After one completeness check, hand off
+the report without stylistic polishing; distinguish analysis end from final
+handoff time in the existing timing notes.
 Disjoint groups may overlap remaining promotions; do not repeat tasks.
 Failed retrieval or wrong answers block successful closure; resolve them or
 record a failed pilot, never expand source detail merely to pre-answer raw
