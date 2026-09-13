@@ -17,6 +17,8 @@ Standard e-commerce integration that renders PayPal, Venmo, and Debit/Credit Car
 
 ### PayPal JS SDK
 
+The September 10 patches, core `11.0.1` and React `10.4.1`, refine environment validation, optional one-time approval callback types, async-finalization documentation, and scoped v6 ESM packaging. React's release-note claim that the callback is required conflicts with the inherited optional type; this is recorded in [[source-github-paypal-js]], not treated as permission to omit payment finalization.
+
 Client-side SDK injected via `<script>` tag. Renders payment buttons on the page and manages the checkout pop-up lifecycle. Accessed globally via `window.paypal`. Handles:
 
 - Button rendering (PayPal, Venmo, Debit/Credit Card)
@@ -265,8 +267,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render, pre-caching, hidden container pattern
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP domains + nonce vs unsafe-inline, COOP same-origin-allow-popups
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
-- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; v8 baselines through core `11.0.0` and React `10.4.0`
-- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `11.0.0` and React `10.4.0`, with impact, migration action, contradictions, and immutable raw links
+- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; v8 baselines through core `11.0.1` and React `10.4.1`
+- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `11.0.1` and React `10.4.1`, with impact, migration action, contradictions, and immutable raw links
 - [[source-github-paypal-checkout-components]] — cumulative checkout runtime evidence from `@paypal/checkout-components@4.1.47` through `5.0.431`
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.431`
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` component bill of materials and release/deployment workflow

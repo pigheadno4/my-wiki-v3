@@ -1,0 +1,225 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index 3b94a5c..56dd76b 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,21 @@
+ # Changelog
+ 
++## 11.0.1
++
++### Patch Changes
++
++- 39f147e: Guard the `environment` option against prototype pollution in `validateArguments()`.
++
++  `processOptions()` already read `environment` via `Object.prototype.hasOwnProperty.call()`, but `validateArguments()` (v5 `loadScript`) and the v6 `loadCoreSdkScript` validator still destructured it directly, so a polluted `Object.prototype.environment` was picked up before those guards ran. On the v5 path a junk value would throw and break `loadScript()` entirely; on the v6 path a polluted `"sandbox"` value would pass validation and silently load the sandbox SDK. Both validators now use an own-property check so inherited values are ignored.
++
++- 24ccc6a: Make `onApprove` genuinely optional on `PayPalOneTimePaymentSessionOptions` (and its `PayLaterOneTimePaymentSessionOptions` / `PayPalCreditOneTimePaymentSessionOptions` aliases).
++
++  The type intersected `BasePaymentSessionOptions` — where `onApprove` is required — and re-declared `onApprove?` without `Omit`-ing it from the base first. In a TypeScript intersection a property is optional only if it is optional in every constituent, so the `?` had no effect and `onApprove` was required in practice ([#1020](https://github.com/paypal/paypal-js/issues/1020)). Because the presentation mode is only chosen later at `.start()` (a separate call) and redirect flows legitimately have no in-page approval callback, core cannot require `onApprove`. It is now re-added as optional via `Omit<BasePaymentSessionOptions, "onApprove">`, mirroring `SavePaymentSessionOptions`.
++
++- eb54388: Emit a nested `dist/v6/esm/package.json` with `{"type":"module"}` so the v6 ESM bundle is correctly signaled as an ES module.
++
++  The v6 build outputs ESM syntax into `.js` files, but the package has no root `"type":"module"` (it can't — that would relabel the v5 CJS bundles). Under Node's resolution rules those `.js` files therefore default to CommonJS, so a native ESM import of `@paypal/paypal-js/sdk-v6` triggers a `MODULE_TYPELESS_PACKAGE_JSON` warning plus a reparse penalty on modern Node, and fails to load outright on older Node or loaders without ESM syntax detection. The nested marker scopes the ESM declaration to the v6 directory only, leaving the v5 CJS artifacts untouched.
++
+ ## 11.0.0
+ 
+ ### Major Changes
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index 3539dfe..5a39210 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/paypal-js",
+-  "version": "11.0.0",
++  "version": "11.0.1",
+   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+   "main": "index.js",
+   "module": "dist/esm/paypal-js.js",
+diff --git a/packages/paypal-js/rollup.config.js b/packages/paypal-js/rollup.config.js
+index bee53a6..0250c86 100644
+--- a/packages/paypal-js/rollup.config.js
++++ b/packages/paypal-js/rollup.config.js
+@@ -1,3 +1,6 @@
++import { writeFileSync } from "fs";
++import { dirname } from "path";
++
+ import replace from "@rollup/plugin-replace";
+ import { nodeResolve } from "@rollup/plugin-node-resolve";
+ import commonjs from "@rollup/plugin-commonjs";
+@@ -99,6 +102,7 @@ export default [
+         __VERSION__: pkg.version,
+         preventAssignment: true,
+       }),
++      emitEsmModuleMarker(),
+     ],
+     output: [
+       {
+@@ -116,6 +120,28 @@ export default [
+   },
+ ];
+ 
++// Writes a nested `package.json` containing `{"type":"module"}` next to the v6
++// ESM outputs. Without it, Node interprets these `.js` files as CommonJS (the
++// package has no root `"type":"module"`, which would break the v5 CJS bundles),
++// triggering a MODULE_TYPELESS_PACKAGE_JSON warning + reparse on modern Node and
++// a hard load failure on older/stricter loaders.
++const v6EsmPackageMetadata = {
++  type: "module",
++};
++
++function emitEsmModuleMarker() {
++  return {
++    name: "emit-esm-module-marker",
++    writeBundle(options) {
++      const outDir = dirname(options.file);
++      writeFileSync(
++        `${outDir}/package.json`,
++        `${JSON.stringify(v6EsmPackageMetadata, null, 2)}\n`,
++      );
++    },
++  };
++}
++
+ function getBannerText() {
+   return `
+ /*!
+diff --git a/packages/paypal-js/src/load-script.test.ts b/packages/paypal-js/src/load-script.test.ts
+index 1763d27..8cf2f6d 100644
+--- a/packages/paypal-js/src/load-script.test.ts
++++ b/packages/paypal-js/src/load-script.test.ts
+@@ -70,6 +70,23 @@ describe("loadScript()", () => {
+     expect(response).toEqual(window.paypal);
+   });
+ 
++  test("should ignore a prototype-polluted environment and not throw", async () => {
++    expect(window.paypal).toBe(undefined);
++    // Simulate prototype pollution with a value that would otherwise fail
++    // validation and break loadScript() entirely.
++    (Object.prototype as Record<string, unknown>)["environment"] = "invalid";
++    try {
++      const response = await loadScript({ clientId: "test" });
++      expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
++      expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
++        "https://www.paypal.com/sdk/js?client-id=test",
++      );
++      expect(response).toEqual(window.paypal);
++    } finally {
++      delete (Object.prototype as Record<string, unknown>)["environment"];
++    }
++  });
++
+   test("should not insert <script> when an existing script with the same params is already in the DOM", async () => {
+     expect(window.paypal).toBe(undefined);
+ 
+diff --git a/packages/paypal-js/src/load-script.ts b/packages/paypal-js/src/load-script.ts
+index 859c3e6..d8f9c37 100644
+--- a/packages/paypal-js/src/load-script.ts
++++ b/packages/paypal-js/src/load-script.ts
+@@ -104,7 +104,13 @@ function validateArguments(options: unknown, PromisePonyfill?: unknown) {
+   if (typeof options !== "object" || options === null) {
+     throw new Error("Expected an options object.");
+   }
+-  const { environment } = options as PayPalScriptOptions;
++  // Use hasOwnProperty to avoid picking up prototype-polluted values.
++  const environment = Object.prototype.hasOwnProperty.call(
++    options,
++    "environment",
++  )
++    ? (options as PayPalScriptOptions).environment
++    : undefined;
+ 
+   if (
+     environment &&
+diff --git a/packages/paypal-js/src/v6/index.test.ts b/packages/paypal-js/src/v6/index.test.ts
+index 58c164f..74fcf33 100644
+--- a/packages/paypal-js/src/v6/index.test.ts
++++ b/packages/paypal-js/src/v6/index.test.ts
+@@ -166,6 +166,23 @@ describe("loadCoreSdkScript()", () => {
+     );
+   });
+ 
++  test("should ignore a prototype-polluted environment and reject", async () => {
++    // Simulate prototype pollution: without an own-property guard, the polluted
++    // value would pass validation and silently load the sandbox SDK.
++    (Object.prototype as Record<string, unknown>)["environment"] = "sandbox";
++    try {
++      await expect(async () => {
++        // @ts-expect-error invalid arguments
++        await loadCoreSdkScript({});
++      }).rejects.toThrow(
++        'The "environment" option is required and must be either "production" or "sandbox"',
++      );
++      expect(scriptAppendChildSpy).not.toHaveBeenCalled();
++    } finally {
++      delete (Object.prototype as Record<string, unknown>)["environment"];
++    }
++  });
++
+   describe("dataNamespace option", () => {
+     test("should support custom data-namespace attribute", async () => {
+       const customNamespace = "myCustomNamespace";
+diff --git a/packages/paypal-js/src/v6/index.ts b/packages/paypal-js/src/v6/index.ts
+index 1df04b7..f2a2793 100644
+--- a/packages/paypal-js/src/v6/index.ts
++++ b/packages/paypal-js/src/v6/index.ts
+@@ -98,8 +98,15 @@ function validateArguments(options: unknown) {
+   if (typeof options !== "object" || options === null) {
+     throw new Error("Expected an options object");
+   }
+-  const { environment, dataNamespace, dataSdkIntegrationSource } =
++  const { dataNamespace, dataSdkIntegrationSource } =
+     options as LoadCoreSdkScriptOptions;
++  // Use hasOwnProperty to avoid picking up prototype-polluted values.
++  const environment = Object.prototype.hasOwnProperty.call(
++    options,
++    "environment",
++  )
++    ? (options as LoadCoreSdkScriptOptions).environment
++    : undefined;
+ 
+   if (environment !== "production" && environment !== "sandbox") {
+     throw new Error(
+diff --git a/packages/paypal-js/types/v6/components/paypal-payments.d.ts b/packages/paypal-js/types/v6/components/paypal-payments.d.ts
+index f0737d6..b37dda5 100644
+--- a/packages/paypal-js/types/v6/components/paypal-payments.d.ts
++++ b/packages/paypal-js/types/v6/components/paypal-payments.d.ts
+@@ -79,7 +79,10 @@ export type OnCancelDataSavePayments = {
+   vaultSetupToken?: string;
+ };
+ 
+-export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
++export type PayPalOneTimePaymentSessionOptions = Omit<
++  BasePaymentSessionOptions,
++  "onApprove"
++> & {
+   commit?: boolean;
+   orderId?: string;
+   onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
+diff --git a/packages/paypal-js/types/v6/tests/paypal-payments.test.ts b/packages/paypal-js/types/v6/tests/paypal-payments.test.ts
+index 60a8592..631e2eb 100644
+--- a/packages/paypal-js/types/v6/tests/paypal-payments.test.ts
++++ b/packages/paypal-js/types/v6/tests/paypal-payments.test.ts
+@@ -62,6 +62,22 @@ async function main() {
+     commit: true,
+   });
+ 
++  // Regression guard for https://github.com/paypal/paypal-js/issues/1020:
++  // `onApprove` is OPTIONAL for one-time PayPal payment sessions (and its
++  // Pay Later / Credit aliases). The presentation mode is only chosen later at
++  // `.start()`, and redirect flows legitimately omit `onApprove`, so core cannot
++  // require it. It is re-added as optional via `Omit<BasePaymentSessionOptions,
++  // "onApprove">` (mirroring `SavePaymentSessionOptions`), so an empty options
++  // object must type-check.
++  sdkInstance.createPayPalOneTimePaymentSession({});
++  sdkInstance.createPayLaterOneTimePaymentSession({});
++  sdkInstance.createPayPalCreditOneTimePaymentSession({});
++
++  // When supplied, `onApprove` is still type-checked.
++  sdkInstance.createPayPalOneTimePaymentSession({
++    onApprove: onApproveCallback,
++  });
++
+   const createOrder = () => Promise.resolve({ orderId: "ABC123" });
+ 
+   const paypalButton = document.querySelector("paypal-button");

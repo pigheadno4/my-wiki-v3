@@ -180,6 +180,13 @@ The coordinated `@paypal/react-paypal-js@10.0.0` release makes the same value ma
 
 For SSR, await `fetchEligibleMethods()` and pass the resolved value, not a Promise, as `eligibleMethodsResponse`. Call `useEligibleMethods()` without a payload to consume it.
 
+### Core 11.0.1 and React 10.4.1
+
+Core `11.0.1` extends own-property environment checks to loader validation: legacy loading ignores inherited environment values, while v6 still requires an explicit own `production` or `sandbox` value. Its one-time PayPal session type now removes the inherited required `onApprove` member before redeclaring it optional, also affecting the Pay Later and PayPal Credit aliases. A supplied callback still returns `Promise<void>`; return or await server capture/authorization work. Optional typing does not imply automatic payment finalization. Source: [[source-github-paypal-js]].
+
+> [!warning] Contradiction
+> React `10.4.1` release notes describe `onApprove` as required, but its unchanged button/hook type chain inherits the now-optional core member through dependency `^11.0.1`. Treat this as a documentation/type mismatch, not proof that an in-page checkout can omit finalization. See [[source-github-paypal-js]] and [[changelog-github-paypal-js]] for exact evidence. No runtime or compiler integration test was performed.
+
 ## Payment Failure Webhook Events
 
 - `PAYMENT.CAPTURE.COMPLETED` — successful capture

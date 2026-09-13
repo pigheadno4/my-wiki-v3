@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-js"
 type: source
 date_ingested: 2026-04-13
-date_updated: 2026-08-30
+date_updated: 2026-09-13
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json"
@@ -21,6 +22,8 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 ---
 
 ## Overview
+
+Latest ingested patches: `@paypal/paypal-js@11.0.1` and `@paypal/react-paypal-js@10.4.1` (September 10, 2026). These extend the preserved baselines below with loader validation, callback typing/documentation, and v6 ESM packaging corrections.
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
@@ -220,12 +223,30 @@ Repository: <https://github.com/paypal/paypal-js>
 >
 > [React 10.4.0 Google Pay hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/files/packages/react-paypal-js/src/v6/hooks/useGooglePayOneTimePaymentSession.ts)
 
+### September 10 patch grounding
+
+> `// Use hasOwnProperty to avoid picking up prototype-polluted values.`
+>
+> [Core v6 validator, line 103](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/paypal-js/src/v6/index.ts#L103)
+
+> `onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;`
+>
+> [Core session types, line 88](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/paypal-js/types/v6/components/paypal-payments.d.ts#L88)
+
+> `sideEffects: ["./server.js", "./server.min.js"],`
+>
+> [React build configuration, line 170](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/react-paypal-js/rollup.config.js#L170)
+
+> For PayPal, Pay Later, and PayPal Credit one-time payment flows, `onApprove` must return a Promise.
+>
+> [React README, line 336](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/react-paypal-js/README.md#L336)
+
 ## Package status
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `11.0.0` | Approved full major ingest; v8 through 10.1.0 history retained |
-| `@paypal/react-paypal-js` | `10.4.0` | Approved delta ingest; v8 through 10.3.0 history retained |
+| `@paypal/paypal-js` | `11.0.1` | Approved delta ingest; v8 through 11.0.0 history retained |
+| `@paypal/react-paypal-js` | `10.4.1` | Approved delta ingest; v8 through 10.4.0 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -374,6 +395,16 @@ Migration from `10.1.0`:
 - update Google Pay 3DS calls to pass `{ orderId }`, await or otherwise handle the promise after the Google sheet closes, and handle rejection;
 - decide capture using the complete server-side authentication result rather than treating the optional client `liabilityShift` alone as universal authorization; and
 - use the component-qualified LPM instance types while continuing to verify product eligibility and runtime support independently.
+
+#### `@paypal/paypal-js@11.0.1`
+
+Patch release at `b304434a881b58d057558043c8d4d2914d1b1a8f` (released 2026-09-10, collected 2026-09-13), compared with `11.0.0`:
+
+- **Environment validation:** both legacy and v6 validators now read only an own `environment` property. This extends the earlier `10.1.0` option-processing guard: inherited junk no longer makes legacy validation reject before its production default is applied; v6 does not accept an inherited `sandbox` and still requires an explicit own valid value. This is bounded hardening, not evidence of a general prototype-pollution cure. See [legacy loader](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/paypal-js/src/load-script.ts) and [v6 loader](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/paypal-js/src/v6/index.ts).
+- **Optional one-time approval callback:** the [session type](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/paypal-js/types/v6/components/paypal-payments.d.ts) changes from intersecting `BasePaymentSessionOptions` with an optional member (which left it required) to `Omit<BasePaymentSessionOptions, "onApprove">` before redeclaring `onApprove?`. Pay Later and PayPal Credit aliases inherit the correction. Redirect integrations need not supply an in-page callback; supplied callbacks still return `Promise<void>`. This does not implement automatic capture or remove the need for server-side finalization.
+- **V6 ESM packaging:** [Rollup configuration](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/paypal-js/rollup.config.js) writes a scoped `dist/v6/esm/package.json` containing `{"type":"module"}`, addressing module interpretation described in the release notes. Public export mappings and the legacy CommonJS package boundary are unchanged. The evidence is build configuration, not a tested published npm artifact.
+
+Earlier Apple Pay, Google Pay 3DS, and local-method findings remain versioned above; this patch does not establish new payment-method availability.
 
 ## `@paypal/react-paypal-js`
 
@@ -609,6 +640,18 @@ Migration from `10.3.0`:
 - read the complete authentication result from the order server-side when `liabilityShift` alone is insufficient; and
 - install `@types/applepayjs` when merchant TypeScript code references `ApplePaySession`.
 
+#### `@paypal/react-paypal-js@10.4.1`
+
+The same September 10 SHA updates the core dependency from `^11.0.0` to `^11.0.1`; retained React component/hook implementation files are unchanged.
+
+- The [README](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/react-paypal-js/README.md) loading-state example now supplies an async `onApprove`, awaits a server capture request, checks `response.ok`, and throws on HTTP failure. The common prop reference requires `Promise<void>`: return or await capture/authorization work so the SDK can wait for completion. Some older examples still show void-returning logging callbacks, so the examples are not uniformly corrected.
+- The [React build configuration](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/react-paypal-js/rollup.config.js) adds the v6 ESM marker for client/server builds with `type: "module"` and `sideEffects: ["./server.js", "./server.min.js"]`, preserving server entry-point side effects. This does not relabel v5 CommonJS output.
+
+> [!warning] Contradiction
+> The React release note calls `onApprove` required. However, [button props](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/react-paypal-js/src/v6/components/PayPalOneTimePaymentButton.tsx) inherit [hook props](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/react-paypal-js/src/v6/hooks/usePayPalOneTimePaymentSession.ts), which derive from the now-optional core session type; [ButtonProps](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts) does not reintroduce a required member. The declared type chain therefore permits omission with core 11.0.1. This is source-type reasoning, not a compiler test. For in-page checkout, still supply and await the appropriate finalization callback; redirect flows require their own return/server finalization. See also [[changelog-github-paypal-js]] and [[paypal-checkout]].
+
+No runtime checkout, npm build/import, or merchant eligibility test was performed. The patch adds no retained React Apple Pay, Google Pay, or local-method implementation change.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -632,6 +675,14 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 - Sources: [[source-paypal-javascript-sdk-reference]], [[source-paypal-js-sdk-v6-setup]]
 
 ## Raw Sources
+
+- [September 10 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json)
+- [Core 11.0.1 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.1/2026-09-13/manifest.json)
+- [Core 11.0.1 release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.1/2026-09-13/release-notes.md)
+- [Core 11.0.0 to 11.0.1 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.0.0--11.0.1/comparison.json)
+- [React 10.4.1 release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.1/2026-09-13/manifest.json)
+- [React 10.4.1 release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.1/2026-09-13/release-notes.md)
+- [React 10.4.0 to 10.4.1 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.4.0--10.4.1/comparison.json)
 
 - [Core 11.0.0 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json) — exact-SHA source capsule shared with the later React release record
 - [Core 11.0.0 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.0/2026-08-30/manifest.json) — package-qualified core release identity

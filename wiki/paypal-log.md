@@ -6,6 +6,12 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-13] ingest | paypal/paypal-js core 11.0.1 and React 10.4.1
+
+- Serial delta ingest of `github-d21f4ea0c14aed999bce`, shared SHA `b304434a881b58d057558043c8d4d2914d1b1a8f`: core 11.0.0 to 11.0.1 and React 10.4.0 to 10.4.1.
+- Preserved prior history and recorded environment validation, optional approval callback typing, async-finalization documentation, and v6 ESM build markers.
+- Flagged the React release-note/type mismatch in source, changelog, and checkout concept. No runtime/build/compiler test or new payment-method availability claim; source count unchanged.
+
 ## [2026-09-01] ingest | paypal/paypal-checkout-components `@paypal/checkout-components@5.0.431`
 
 - Delta-ingested work item `github-7b5d690482390010d09c` from `5.0.430` to exact SHA `9bb1162373b4dd96d5a3196dbfab41990f606bb7` after serial review of all 12 required paths.

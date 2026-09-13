@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-08-30
+date_updated: 2026-09-13
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json"
@@ -22,6 +23,30 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `b304434` (2026-09-10)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `11.0.0` | `11.0.1` | 2026-09-10 | `b304434a881b58d057558043c8d4d2914d1b1a8f` | Delta |
+| `@paypal/react-paypal-js` | `10.4.0` | `10.4.1` | 2026-09-10 | `b304434a881b58d057558043c8d4d2914d1b1a8f` | Delta |
+
+The package-qualified releases are `@paypal/paypal-js@11.0.1` and `@paypal/react-paypal-js@10.4.1`, collected 2026-09-13 and serially ingested as shared work item `github-d21f4ea0c14aed999bce`.
+
+**Important changes:** core extends own-property environment handling to legacy/v6 validation, fixes optional one-time `onApprove` typing with `Omit`, and emits a scoped v6 ESM package marker. React updates core to `^11.0.1`, adds the corresponding ESM marker with server side-effect declarations, and improves the README's async capture example and callback contract.
+
+**Impact and migration:** retain an explicit own environment for v6; return/await payment-finalization work when supplying `onApprove`. Optional typing supports integrations such as redirect flows; it does not mean the SDK automatically captures. No retained React component/hook implementation changes or new payment-method features were established.
+
+> [!warning] Contradiction
+> React release notes call `onApprove` required, but the unchanged button/hook props inherit the now-optional core member. Older README examples also retain void-returning callbacks despite the updated Promise contract. Follow the exact type chain and the integration's finalization requirements; see [[source-github-paypal-js]] and [[paypal-checkout]] for the mirrored warning and raw code links.
+
+**Updated source sections:** appended core 11.0.1 and React 10.4.1 findings to [[source-github-paypal-js]], preserving all previous versions; updated [[paypal-checkout]].
+
+### Evidence boundary
+
+Each generated comparison reports 3 added retained paths, 7 modified, and 141 unchanged. The added core changelog and two Rollup files were newly retained by collection, not newly created upstream. Build configuration was inspected; no published npm artifact, compiler, runtime checkout, or eligibility test was run. The full upstream repository was not ingested.
 
 ## Repository change set: `1246244` (2026-08-26)
 
@@ -412,6 +437,14 @@ The same SHA contains `@paypal/paypal-js@9.0.0`, matching React 8.9.2's declared
 The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is recorded in this change set because the approved work item contains only `@paypal/paypal-js@8.4.2`. A future React release ingest will add its own package-qualified timeline entry.
 
 ## Raw Sources
+
+- [September 10 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json)
+- [Core 11.0.1 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.1/2026-09-13/manifest.json)
+- [Core 11.0.1 release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.1/2026-09-13/release-notes.md)
+- [Core 11.0.0 to 11.0.1 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.0.0--11.0.1/comparison.json)
+- [React 10.4.1 release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.1/2026-09-13/manifest.json)
+- [React 10.4.1 release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.1/2026-09-13/release-notes.md)
+- [React 10.4.0 to 10.4.1 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.4.0--10.4.1/comparison.json)
 
 - [Core 11.0.0 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json) — exact-SHA source capsule
 - [Core 11.0.0 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.0/2026-08-30/manifest.json) — package-qualified release identity

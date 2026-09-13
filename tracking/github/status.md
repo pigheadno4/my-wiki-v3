@@ -2053,6 +2053,34 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.13.1/2026-07-31/manifest.json)
   Comparison: Not applicable
 
+## `github-d21f4ea0c14aed999bce`
+
+- Repository: `paypal/paypal-js`
+- SHA: `b304434a881b58d057558043c8d4d2914d1b1a8f`
+- Collection date: `2026-09-13`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-d21f4ea0c14aed999bce/packet.md)
+- Review priority: `high`
+- Required reading: `24` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-js@11.0.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.1/2026-09-13/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/11.0.0--11.0.1/comparison.json)
+- `@paypal/react-paypal-js@10.4.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.1/2026-09-13/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.4.0--10.4.1/comparison.json)
+
 ## `github-d36f782cded039bfef90`
 
 - Repository: `braintree/graphql-api`

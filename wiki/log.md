@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-09-13] ingest | PayPal JS September patch releases
+
+- Delta-ingested core `11.0.1` and React `10.4.1` at shared SHA `b304434`, preserving package-qualified history.
+- Recorded validation, callback typing/documentation, and ESM packaging fixes, including the React `onApprove` contradiction. Details: [[paypal-log]] and [[changelog-github-paypal-js]].
+
 ## [2026-09-05] ingest | GitHub stripe/stripe-react-native - `@stripe/stripe-react-native@0.75.0`
 
 - Delta-ingested `github-295368ae3c6235174ae0`, `0.74.0` to exact SHA `e0a845f40749703480146c9d70721b9007d0516d`.
