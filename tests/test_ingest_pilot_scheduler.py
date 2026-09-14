@@ -22,6 +22,42 @@ def make_jobs(count):
 
 
 class SchedulerTests(unittest.TestCase):
+    def test_targeted_workers_precede_normal_queue_without_bypassing_limits(self):
+        jobs = make_jobs(6)
+        jobs[0].update(attempt=1, retry_context={"review_scope": "full"})
+        for job in jobs[2:]:
+            job.update(attempt=1, retry_context={"review_scope": "targeted"})
+        jobs[4]["attempt"] = 3
+        jobs[5]["state"] = "running"
+        before = deepcopy(jobs)
+        orders = worker_orders(list(reversed(jobs)), 5, 3, 5)
+        self.assertEqual([order["job_id"] for order in orders],
+                         ["job-3", "job-4", "job-1", "job-2"])
+        self.assertEqual(jobs, before)
+
+    def test_targeted_reviews_precede_full_reviews_in_both_modes(self):
+        jobs = make_jobs(4)
+        for job in jobs:
+            job.update(state="candidate_ready", attempt=1)
+        for job in jobs[2:]:
+            job["retry_context"] = {"review_scope": "targeted"}
+        self.assertEqual(review_order(list(reversed(jobs)))["job_id"], "job-3")
+        orders = scheduler.shared_slot_orders(list(reversed(jobs)), 3, 3, 3, 3)
+        self.assertEqual([order["job_id"] for order in orders["review_orders"]],
+                         ["job-3", "job-4", "job-1"])
+
+    def test_targeted_priority_preserves_shared_worker_reserve_and_active_slots(self):
+        jobs = make_jobs(5)
+        jobs[0].update(state="candidate_ready", attempt=1)
+        jobs[1].update(state="candidate_ready", attempt=2,
+                       retry_context={"review_scope": "targeted"})
+        jobs[3].update(attempt=1, retry_context={"review_scope": "targeted"})
+        jobs[4].update(state="reviewing", attempt=1)
+        orders = scheduler.shared_slot_orders(jobs, 3, 3, 3, 3)
+        self.assertEqual([order["job_id"] for order in orders["review_orders"]], ["job-2"])
+        self.assertEqual([order["job_id"] for order in orders["worker_orders"]], ["job-4"])
+        self.assertIsNone(review_order(jobs))
+
     def test_worker_orders_fill_five_slots_then_refill_one(self):
         jobs = make_jobs(10)
 

@@ -38,11 +38,16 @@ their role while reading; do not emit a separate segmentation artifact:
 | Fields, enums, examples, error tables, setup detail | Default to a category and verified raw locator, not copied field lists or schema analysis |
 | External/API-wide authority | Link when useful; read it if needed for a retained claim or discovered conflict |
 
-Keep the source's facts narrow; a few accurate assertions plus useful raw
-navigation are sufficient. Retain a schema detail only when it is needed to
-select the correct operation, understand its central effect, or avoid material
-misuse; otherwise route to raw. Required-field lists, enum values, pagination
-bounds and response-property inventories are not default source content.
+For each proposed source assertion, ask whether it helps select the correct
+operation, understand its central effect, or avoid material misuse. If none
+applies, omit the assertion and provide a verified raw-detail locator where
+useful. Apply this test while drafting, not through a separate analysis artifact
+or repeated shortening pass. Required-field lists, enum values, pagination
+bounds, response-property inventories and generic errors are not default source
+content. For example, retain "product type cannot be changed"; do not append
+a catalog of unpromised downstream outcomes or generic response fields.
+There is no hard word limit: preserve every consequential warning needed for
+the retained meaning, and do not rewrite accepted sources just to shorten them.
 Keep consequential warnings and discovered conflicts that affect safe use;
 narrowing a claim must not hide those warnings. Preserve explicit BETA/preview,
 version, example, time and modal qualifications of retained behavior. Do not turn an example into
@@ -140,6 +145,14 @@ No metadata assessment replaces the full raw read.
 Use existing runtime/orders/receipts. Persist each trusted order, immediately
 dispatch its native agent and confirm an agent ID before processing another
 completion. Reconcile interrupted dispatch rather than issuing duplicate work.
+On completion, accept the handoff through existing required validation and
+state transitions, then fill an available slot with eligible work before
+promotion, retrospective prose or routine progress reporting. Persist the next
+trusted order before dispatch; never skip approval gates or dispatch unresolved
+work merely to keep a slot busy. Keep required timing observations at the event,
+but defer their narrative. Prepare short role instructions and approved paths
+ahead of time; the emitted trusted order remains authoritative. Do not create
+another queue, dispatch artifact or monitoring field for this preparation.
 The dynamic pool has no batch barrier:
 
 - Subtract all active workers, reviewers and auditors from actual capacity.
@@ -147,6 +160,11 @@ The dynamic pool has no batch barrier:
   worker is active; otherwise an active worker satisfies that reserve.
 - Fill remaining capacity with queued workers. Never reserve idle reviewers or
   start more reviewers than ready candidates.
+- Within each role's queue, prioritize existing `targeted` corrections/reviews,
+  then use `queue_position` within each priority group. Full retries and first
+  attempts retain ordinary queue priority. This does not change review-first
+  slot allocation, worker reservation, attempt limits, or running assignments;
+  never preempt active work. No new priority field is required.
 
 Only the coordinator writes canonical sources, shared files, tracking and
 commits. Promote only independently approved jobs: serially apply that job's
@@ -169,6 +187,15 @@ questions as one final audit, not an additional three-page full-content audit.
 Start from index → concept → source → exact raw; detail answers read the raw
 fully under `rules/query-and-synthesis.md`, including its existing gap-sweep
 requirements. Record route, evidence, extra searches, verdict and repairs.
+During this campaign audit's gap sweep, discovering an older snapshot of the
+same canonical page does not itself require reading it. Select historical raw
+when the question asks about history/version differences, a discovered relevant
+conflict needs investigation, or answering the question otherwise requires it.
+Record that reason briefly with the existing extra-read notes. Do not infer
+historical equivalence or absence of changes from metadata or unread content.
+Every selected evidence file must still be read completely; this does not
+reduce the worker's or initial reviewer's complete pinned-raw read, or skip
+related/unlinked evidence needed to answer the question.
 Before answering each question, restate its requested object/action and check
 that the source/raw reached through navigation matches it (for example, commit
 is not credit). Record this beside the route in the existing audit report,
@@ -176,12 +203,19 @@ without a new schema or checklist file. The coordinator checks this identity
 against the assigned question before accepting the verdict. A wrong-object
 audit answer is invalid: correct only affected questions, preserving unrelated
 valid results and distinguishing auditor error from a genuine retrieval failure.
-Keep the audit report compact: per question, record object/action match, the
-actual route, a direct answer with only requested detail, exact evidence and
-verdict. Reference a preceding route when unchanged. Record shared gap-sweep
+Write the audit directly into the existing Markdown report: one actual route
+per page, then one concise entry per question containing object/action match,
+direct requested answer, exact raw locator and PASS/FAIL (or unresolved verdict).
+Do not draft a long report and then summarize it. Reuse the route and evidence
+locator when unchanged; record a different route if one was needed.
+For questions asking where fields are documented, give the verified schema
+locator rather than copying its inventory; when a question asks for specific
+field values or semantics, answer those explicitly from the evidence.
+Record shared gap-sweep
 results, extra full reads and reciprocal-link checks once per group; expand
-only concrete failures or material uncertainty. Do not copy unrelated schema
-inventories or repeat conclusions. This shortens reporting, not required
+only concrete failures or material uncertainty. Omit repeated pass rationales,
+conclusions and optional schema inventories. Keep material qualifications in
+the direct answer. This shortens reporting, not required
 reading, checks or question coverage. After one completeness check, hand off
 the report without stylistic polishing; distinguish analysis end from final
 handoff time in the existing timing notes.

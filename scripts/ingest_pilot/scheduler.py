@@ -22,6 +22,14 @@ FULL_REVIEW_PREFLIGHT = [
 ]
 
 
+def _queue_key(job: dict) -> tuple:
+    """Prioritize bounded corrections within a role, then retain queue order."""
+    return (
+        job.get("retry_context", {}).get("review_scope") != "targeted",
+        job["queue_position"],
+    )
+
+
 def _queued_jobs(jobs: List[dict], max_attempts: int) -> List[dict]:
     return sorted(
         (
@@ -29,7 +37,7 @@ def _queued_jobs(jobs: List[dict], max_attempts: int) -> List[dict]:
             for job in jobs
             if job["state"] == "queued" and job["attempt"] < max_attempts
         ),
-        key=lambda job: job["queue_position"],
+        key=_queue_key,
     )
 
 
@@ -97,7 +105,7 @@ def review_order(jobs: List[dict]) -> Optional[Dict[str, object]]:
         return None
     candidates = sorted(
         (job for job in jobs if job["state"] == "candidate_ready"),
-        key=lambda job: job["queue_position"],
+        key=_queue_key,
     )
     if not candidates:
         return None
@@ -117,7 +125,7 @@ def review_order(jobs: List[dict]) -> Optional[Dict[str, object]]:
 def _review_orders(jobs: List[dict], limit: int) -> List[Dict[str, object]]:
     candidates = sorted(
         (job for job in jobs if job["state"] == "candidate_ready"),
-        key=lambda job: job["queue_position"],
+        key=_queue_key,
     )
     return [
         {
