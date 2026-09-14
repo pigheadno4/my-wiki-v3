@@ -1,0 +1,9 @@
+# Campaign 46 dispatch entry
+
+Status: exact five-page selection approved by the user; execution authorized.
+
+Adopt CLAUDE.md, rules/ingest.md, rules/psp/metronome.md and current rules/psp/metronome-ingest.md with this campaign selection and unmodified trusted role orders. Use Sol medium workers, different Sol high initial reviewers, up to three dynamic child slots bounded by actual capacity. Workers/reviewers write only assigned external handoffs; coordinator owns repository changes. Retain full pinned-raw reads, three-to-five exact located quotes, useful narrow source claims, consequential warnings, and reciprocal routes. Use the approved within-role targeted correction/review priority; do not preempt work or change slot allocation. Bounded retries reuse original roles where possible, max three attempts.
+
+Run the ten predetermined questions once as a final audit: one route per page, two separately scored answers with object/action checks and exact raw evidence. Follow query gap-sweep rules without reading historical versions merely because they exist. Every selected evidence file is read fully. Coordinator promotes exact approved candidates and suggestions incrementally, aggregates catalogs once, and performs one scoped mechanical/capsule close check. Record work, review, queue, promotion, audit and closure intervals in existing artifacts, distinguishing overlapping windows. No new schema/framework, collection, commit, push, next campaign or reviewer waiver.
+
+Long schemas do not require long sources. Read them entirely, but retain only operation identity, central meaning, material warnings and precise detail navigation. Treat the v1 and v2 pages independently; no default cross-version field diff. Do not infer fields/defaults/lifecycle guarantees from adjacent versions. No rule/code changes this campaign; use scoped close checks without rerunning the unit suite.

@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 212 |
-| Raw snapshots without source summaries | 80 |
+| Source summaries ingested | 232 |
+| Raw snapshots without source summaries | 60 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,26 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+- [[source-metronome-api-reference-contracts-get-a-contract-v1]] — legacy v1 single-contract retrieval, optional balance/ledger expansion and exact contract schema routes
+- [[source-metronome-api-reference-contracts-create-a-package]] — reusable time-relative package creation, alias reassignment, immutable definitions and provisioning restrictions
+- [[source-metronome-api-reference-list-all-packages]] — package-definition catalog, default archive scope, pagination and returned package schemas
+- [[source-metronome-api-reference-packages-get-a-package]] — single-package retrieval by UUID, alias schedule, duration and reusable-term schema routes
+- [[source-metronome-api-reference-rate-cards-update-the-rate-card-products-order]] — selected-product relative moves to zero-based invoice-presentation positions
+- [[source-metronome-api-reference-contracts-list-customer-contracts-v1]] — legacy v1 customer-contract history, optional ledger/balance controls and contract schema routes
+- [[source-metronome-api-reference-contracts-list-customer-contracts-v2]] — chronological v2 contract listing, active-history selectors and embedded-collection completeness
+- [[source-metronome-api-reference-credits-and-commits-list-commits]] — customer prepaid/postpaid commit listing, archive scope and balance/ledger interpretation
+- [[source-metronome-api-reference-plans-end-a-customer-plan]] — deprecated Plan end-date changes, omission behavior and conditional invoice/Stripe actions
+- [[source-metronome-api-reference-rate-cards-set-the-rate-card-products-order]] — invoice presentation ordering, target schema and omitted-product uncertainty
+- [[source-metronome-api-reference-rate-cards-add-rates]] — bulk rate addition, conditional subscription/minimum warnings, and batch schema routes
+- [[source-metronome-api-reference-rate-cards-get-a-rate-schedule]] — rate-card schedule intervals and selectors, distinct from contract overrides
+- [[source-metronome-api-reference-credit-grants-update-a-credit-grant]] — deprecated grant editing and editable-field description/schema conflict
+- [[source-metronome-api-reference-plans-add-a-plan-to-a-customer]] — deprecated customer-Plan association, midnight-UTC date boundaries, and adjustment locators
+- [[source-metronome-api-reference-packages-archive-a-package]] — irreversible package archival, new-contract restriction and existing-contract continuity
+- [[source-metronome-api-reference-rate-cards-add-a-rate]] — single-rate addition, bulk-operation warning, minimum/override restriction, and schema routes
+- [[source-metronome-api-reference-rate-cards-update-a-rate-card]] — rate-card configuration, alias provisioning effects, and pricing boundary
+- [[source-metronome-api-reference-notifications-archive-an-offset-lifecycle-event-notification-configuration]] — offset-configuration archival, processing effect, and returned-state caveat
+- [[source-metronome-api-reference-plans-get-the-plan-adjustments-for-a-customer]] — deprecated customer-Plan adjustment retrieval and request/response locators
+- [[source-metronome-api-reference-custom-fields-delete-custom-fields]] — selected entity-instance value deletion versus field-key removal
 - [[source-metronome-api-reference-products-update-a-product]] — effective-dated product updates, immutable type, and pricing-description boundary
 - [[source-metronome-api-reference-credits-and-commits-get-the-net-balance-of-a-customer]] — combined customer credit/commit balance, matching, denomination, and calculation warnings
 - [[source-metronome-api-reference-rate-cards-create-a-rate-card]] — rate-card creation, fiat/custom-unit setup, alias reassignment, and later rate addition
@@ -262,22 +282,22 @@ Operational evidence:
 - [[metronome-token-billing]] — private-preview managed LLM token-cost-plus-markup workflow
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
 - [[metronome-integrations]] — external-system integration boundaries, Anrok and Avalara credential configuration, and workflows
-- [[metronome-credits-and-commits]] — legacy grant listing, combined customer net balance, credit edits and credit/commit end-date shortening, discounts, access and invoice schedules, usage targeting, and rollover
+- [[metronome-credits-and-commits]] — prepaid/postpaid commit listing and ledger/balance interpretation, legacy grant listing and editing conflicts, combined customer net balance, credit edits and credit/commit end-date shortening, discounts, access and invoice schedules, usage targeting, and rollover
 - [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, design choices, and matching boundary
 - [[metronome-billable-metrics]] — filters, aggregation operations, contextual grouping, and creation-time behavior
-- [[metronome-products-and-rate-cards]] — effective-dated product updates, product presentation, quantity conversion, rate-card creation and alias reassignment, timestamped rate schedules, and legacy Plan charge configuration
-- [[metronome-packages-and-aliases]] — package cohorts, effective-dated alias transitions, and migration boundaries
-- [[metronome-customers-and-contracts]] — ingest aliases, billing-provider configuration lookup, legacy Plan customer listing, commercial terms, draft-invoice activation, and contract lifecycle changes, renewals, and ending
+- [[metronome-products-and-rate-cards]] — effective-dated product updates, invoice product ordering and relative product moves, quantity conversion, rate-card creation and configuration changes, alias provisioning effects, single/bulk rate addition and minimum restrictions, rate-card versus contract schedules, and legacy Plan adjustments
+- [[metronome-packages-and-aliases]] — reusable time-relative package creation, definition listing and single-package retrieval, aliases and duration, immutable definitions, irreversible archival and existing-contract continuity, effective-dated alias transitions, and migration boundaries
+- [[metronome-customers-and-contracts]] — v1 single-contract and v1/v2 collection retrieval, optional expansions and completeness, ingest aliases, billing-provider configuration lookup, legacy customer-Plan association/end-date changes, listing and adjustment retrieval, commercial terms, draft-invoice activation, and contract lifecycle changes, renewals, and ending
 - [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions
 - [[metronome-webhooks]] — notification delivery, deduplication, API verification, and HMAC authenticity
 - [[metronome-security-principles]] — explicit access grants, authenticated communication, and credential lifetime
 - [[metronome-api-idempotency]] — key selection, conflict behavior, retention windows, and cached-error handling
 - [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
-- [[metronome-alerts-and-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusions, offset-notification configuration creation, lookup and editing, and merchant action boundary
+- [[metronome-alerts-and-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusions, offset-notification configuration creation, lookup, editing and archival, and merchant action boundary
 - [[metronome-spend-trackers]] — public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns
 - [[metronome-spend-threshold-billing]] — contract-level incremental collection with optional commit-release payment gating, distinct from product-access enforcement and a customer-wide cross-contract cap
 - [[metronome-currencies-and-custom-pricing-units]] — supported fiat currencies, Metronome-specific API denomination, custom-unit rates, balance drawdown, and invoice conversion
-- [[metronome-custom-fields]] — platform-object metadata, entity value updates and overwrite boundaries, external-system mappings, uniqueness, and persistence
+- [[metronome-custom-fields]] — platform-object metadata, entity value updates and selected-value deletion versus key removal, overwrite boundaries, external-system mappings, uniqueness, and persistence
 
 ## Related platforms
 

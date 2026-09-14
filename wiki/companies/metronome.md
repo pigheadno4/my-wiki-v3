@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 212
+source_count: 232
 ---
 
 ## Overview
@@ -151,10 +151,30 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 206
-- Raw snapshots without source summaries: 80
+- Official documentation source summaries: 226
+- Raw snapshots without source summaries: 60
 
 ## Sources
+- [[source-metronome-api-reference-contracts-get-a-contract-v1]] — legacy v1 single-contract retrieval, optional balance/ledger expansion and exact contract schema routes
+- [[source-metronome-api-reference-contracts-create-a-package]] — reusable time-relative package creation, alias reassignment, immutable definitions and provisioning restrictions
+- [[source-metronome-api-reference-list-all-packages]] — package-definition catalog, default archive scope, pagination and returned package schemas
+- [[source-metronome-api-reference-packages-get-a-package]] — single-package retrieval by UUID, alias schedule, duration and reusable-term schema routes
+- [[source-metronome-api-reference-rate-cards-update-the-rate-card-products-order]] — selected-product relative moves to zero-based invoice-presentation positions
+- [[source-metronome-api-reference-contracts-list-customer-contracts-v1]] — legacy v1 customer-contract history, optional ledger/balance controls and contract schema routes
+- [[source-metronome-api-reference-contracts-list-customer-contracts-v2]] — chronological v2 contract listing, active-history selectors and embedded-collection completeness
+- [[source-metronome-api-reference-credits-and-commits-list-commits]] — customer prepaid/postpaid commit listing, archive scope and balance/ledger interpretation
+- [[source-metronome-api-reference-plans-end-a-customer-plan]] — deprecated Plan end-date changes, omission behavior and conditional invoice/Stripe actions
+- [[source-metronome-api-reference-rate-cards-set-the-rate-card-products-order]] — invoice presentation ordering, target schema and omitted-product uncertainty
+- [[source-metronome-api-reference-rate-cards-add-rates]] — bulk rate addition, conditional subscription/minimum warnings, and batch schema routes
+- [[source-metronome-api-reference-rate-cards-get-a-rate-schedule]] — rate-card schedule intervals and selectors, distinct from contract overrides
+- [[source-metronome-api-reference-credit-grants-update-a-credit-grant]] — deprecated grant editing and editable-field description/schema conflict
+- [[source-metronome-api-reference-plans-add-a-plan-to-a-customer]] — deprecated customer-Plan association, midnight-UTC date boundaries, and adjustment locators
+- [[source-metronome-api-reference-packages-archive-a-package]] — irreversible package archival, new-contract restriction and existing-contract continuity
+- [[source-metronome-api-reference-rate-cards-add-a-rate]] — single-rate addition, bulk-operation warning, minimum/override restriction, and schema routes
+- [[source-metronome-api-reference-rate-cards-update-a-rate-card]] — rate-card configuration, alias provisioning effects, and pricing boundary
+- [[source-metronome-api-reference-notifications-archive-an-offset-lifecycle-event-notification-configuration]] — offset-configuration archival, processing effect, and returned-state caveat
+- [[source-metronome-api-reference-plans-get-the-plan-adjustments-for-a-customer]] — deprecated customer-Plan adjustment retrieval and request/response locators
+- [[source-metronome-api-reference-custom-fields-delete-custom-fields]] — selected entity-instance value deletion versus field-key removal
 - [[source-metronome-api-reference-products-update-a-product]] — effective-dated product updates, immutable type, and pricing-description boundary
 - [[source-metronome-api-reference-credits-and-commits-get-the-net-balance-of-a-customer]] — combined customer credit/commit balance, matching, denomination, and calculation warnings
 - [[source-metronome-api-reference-rate-cards-create-a-rate-card]] — rate-card creation, fiat/custom-unit setup, alias reassignment, and later rate addition

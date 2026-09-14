@@ -1,0 +1,51 @@
+{
+  "job_id": "delete-custom-fields-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Delete Custom Field Values\"\ntype: source\ndate_ingested: 2026-09-10\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/custom-fields/delete-custom-fields\"\nraw_files:\n  - \"metronome/api-reference/custom-fields/delete-custom-fields-2026-07-13.md\"\ntags: [metronome, api, custom-fields, metadata, deletion]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `POST /v1/customFields/deleteValues` operation for removing selected custom-field values from one Metronome entity instance. The caller selects the entity type, entity ID, and field keys; other custom fields on that entity are preserved.\n\n## Scope and targeting\n\n- This operation deletes values for the specified keys on one selected entity instance. It is not the separate operation that removes a custom-field key definition for every instance of an entity type, and it does not request deletion of all custom-field values on the selected instance.\n- Within the supplied JSON object, `entity`, `entity_id`, and `keys` are required selectors. The exact managed-entity choices, UUID format, array shape, and example remain at the raw locators below.\n\n> [!warning] Keep value deletion distinct from key-definition removal\n> Use `deleteValues` when selected key values must be removed from one entity instance. The separately documented `removeKey` operation changes the key allowlist across an entity type and makes existing values under that key inaccessible; these operations have different targets and effects.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, then `paths` -> `/v1/customFields/deleteValues` -> `post`.\n- **Target selectors:** the operation's `requestBody` -> `application/json` -> `schema` locates the required-property list and the `entity`, `entity_id`, and `keys` property definitions; `components.schemas.ManagedEntity` contains the exact entity choices.\n- **Success boundary:** the operation's `responses` -> `200` documents `Success` without a response content schema.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-custom-fields]]\n- Related operations: [[source-metronome-api-reference-custom-fields-set-custom-field-values]], [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/custom-fields/delete-custom-fields-2026-07-13|Delete custom field values]] \u2014 complete collected documentation and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "Remove specific custom field values from a Metronome entity instance by specifying the field keys to delete. Use this endpoint to clean up unwanted custom field data while preserving other fields on the same entity. Requires the entity type, entity ID, and array of keys to remove.",
+      "location": "line 11, page introduction under `# Delete custom fields`"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/customFields/deleteValues",
+      "location": "line 18, `## OpenAPI` block declaration"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "lines 26-27, OpenAPI document-level `security`"
+    },
+    {
+      "text": "required:\n                - entity\n                - entity_id\n                - keys",
+      "location": "lines 106-109, `paths./v1/customFields/deleteValues.post.requestBody.content.application/json.schema.required`"
+    },
+    {
+      "text": "responses:\n        '200':\n          description: Success",
+      "location": "lines 125-127, `paths./v1/customFields/deleteValues.post.responses.200`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "delete-custom-fields-new-source-metronome-custom-fields-fact",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "After the `POST /v1/customFields/removeKey` paragraph in `## Entity scope and persistence` -> `### Custom-field key creation contract`.",
+        "proposed_markdown": "Bearer-authenticated `POST /v1/customFields/deleteValues` removes the values for specified field keys from one selected entity instance while preserving its other custom fields. The payload targets an entity type, entity ID, and array of keys. This value-level operation is distinct from `removeKey`, which removes a key from the allowlist across an entity type and makes existing values under that key inaccessible. [[source-metronome-api-reference-custom-fields-delete-custom-fields]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/custom-fields/delete-custom-fields-2026-07-13.md",
+  "raw_sha256": "994543f4191b3314347139ee1a83c3f60208bca242219b43850a95143e831a9b",
+  "status": "candidate_ready"
+}

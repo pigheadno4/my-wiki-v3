@@ -1,0 +1,51 @@
+{
+  "job_id": "archive-offset-notification-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Archive an Offset Lifecycle Event Notification Configuration\"\ntype: source\ndate_ingested: 2026-09-10\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/notifications/archive-an-offset-lifecycle-event-notification-configuration\"\nraw_files:\n  - \"metronome/api-reference/notifications/archive-an-offset-lifecycle-event-notification-configuration-2026-07-13.md\"\ntags: [metronome, api, notifications, offset-notifications, lifecycle-events]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v2/notifications/archive` for archiving one offset lifecycle event notification configuration. The page states that archived notifications are not processed; it does not define the timing or treatment of notification work already generated, in flight, or delivered.\n\n## Key facts\n\n- The operation archives the offset notification configuration selected by ID. Within a supplied JSON payload, required property `id` is the configuration UUID; the enclosing OpenAPI `requestBody` is not marked `required: true`, so omitted-body runtime behavior is not established.\n- A successful `200` response requires top-level `data` and routes to the offset-notification configuration schema. This is a configuration response, not a notification-generation, webhook-delivery, or recovery record.\n\n## Material boundary\n\n> [!warning] Processing effect does not establish delivery cancellation or recovery behavior\n> The page says archived notifications are not processed, but does not define when that effect begins or whether it covers notification work already generated, queued, in flight, retried, or delivered. It also documents no restore or unarchive operation. Do not expand configuration archival into a guarantee that prior delivery work is canceled, recalled, or recoverable.\n\n> [!warning] Success example does not demonstrate an archive timestamp\n> The archival operation's `200` example shows `archived_at: null`, and the response schema permits a nullable archive timestamp. Treat this as an unresolved documentation tension rather than proof that a successful response either has or lacks a populated archive timestamp.\n\n## Raw-detail coverage map\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, then `paths./v2/notifications/archive.post`.\n- **Configuration selector:** `components.schemas.ArchiveNotificationConfigPayload` contains the required `id` property and its UUID format.\n- **Success response:** `paths./v2/notifications/archive.post.responses.200.content.application/json` locates the required `data` envelope, example, and `LifecycleEventOffsetNotificationConfig` schema.\n- **Errors and stored-configuration detail:** the operation's `400` and `404` responses and the complete configuration and policy schemas remain in `## OpenAPI`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-alerts-and-notifications]]\n- Related sources: [[source-metronome-api-reference-notifications-create-an-offset-lifecycle-event-notification-configuration]], [[source-metronome-api-reference-notifications-edit-an-offset-lifecycle-event-notification-configuration]], [[source-metronome-api-reference-notifications-get-an-offset-lifecycle-event-notification-configuration]], [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/notifications/archive-an-offset-lifecycle-event-notification-configuration-2026-07-13|2026-07-13 snapshot - offset notification configuration archival operation, processing boundary, response, and errors]]\n",
+  "quotes": [
+    {
+      "text": "Archive an offset lifecycle event notification configuration. Archived notifications are not processed.",
+      "location": "line 11, introductory description immediately below the page title"
+    },
+    {
+      "text": "````yaml /openapi.json post /v2/notifications/archive",
+      "location": "line 18, `## OpenAPI` fence"
+    },
+    {
+      "text": "  - bearerAuth: []",
+      "location": "line 27, OpenAPI document-level `security`"
+    },
+    {
+      "text": "    ArchiveNotificationConfigPayload:\n      type: object\n      required:\n        - id\n      properties:\n        id:\n          type: string\n          format: uuid\n          description: >\n            The ID of the offset lifecycle event notification configuration to\n            archive.",
+      "location": "lines 164-174, `components.schemas.ArchiveNotificationConfigPayload`"
+    },
+    {
+      "text": "                  archived_at: null",
+      "location": "line 129, `paths./v2/notifications/archive.post.responses.200.content.application/json.example.data`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "archive-offset-notification-new-source--metronome-alerts-and-notifications--reciprocal-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-archive-an-offset-lifecycle-event-notification-configuration]] - offset-notification configuration archival, the documented nonprocessing effect, already-generated and delivery boundaries, and exact request and response locators",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/notifications/archive-an-offset-lifecycle-event-notification-configuration-2026-07-13.md",
+  "raw_sha256": "9fa8066960b9db4cc0877abd2ffa8892f8573701272a0add26380be31ce9bf38",
+  "status": "candidate_ready"
+}

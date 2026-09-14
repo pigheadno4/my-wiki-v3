@@ -1,0 +1,48 @@
+{
+  "job_id": "list-customer-contracts-v1",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"List customer contracts (v1)\"\ntype: source\ndate_ingested: 2026-09-13\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/contracts/list-customer-contracts-v1\"\nraw_files:\n  - \"metronome/api-reference/contracts/list-customer-contracts-v1-2026-08-28.md\"\ntags: [metronome, api-reference, contracts, customers]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/contracts/list`, which retrieves all contracts for one customer for contract-history and current-agreement views. The response can include pricing and terms plus credits, commitments, optional ledgers, and optional balances.\n\n> [!warning] Legacy version\n> This is the legacy v1 operation. Metronome directs new integrations to the v2 endpoint for enhanced features; this source does not establish request or response compatibility between the versions.\n\n## Query-critical routes\n\n- Within a supplied JSON object, UUID `customer_id` is the only required property. The enclosing OpenAPI `requestBody` is not marked required.\n- `starting_at` selects contracts whose `effective_at` is on or after an RFC 3339 timestamp, while `covering_date` selects contracts effective on a timestamp; the two filters cannot be supplied together. `include_archived` controls archived-contract inclusion.\n- `include_ledgers` requests commit ledgers and `include_balance` requests credit and commit balances; Metronome warns that either option may make the query slower.\n- HTTP `200` places an array of `Contract` objects at top-level `data`. Each `Contract` requires identity plus `initial`, `current`, and `amendments`; use the referenced component schemas for their exact nested pricing, term, credit, commitment, transition, subscription, threshold, hierarchy, and billing-provider fields.\n\n## Raw-detail locators\n\n- Operation identity, bearer security, version warning, and request selectors: OpenAPI `paths./v1/contracts/list.post`, especially `requestBody.content.application/json.schema` (raw lines 20-145).\n- Success envelope and immediate contract placement: `paths./v1/contracts/list.post.responses.200.content.application/json.schema` (raw lines 147-160).\n- Returned contract structure: `components.schemas.Contract`, `ContractWithoutAmendments`, and `ContractAmendment` (beginning at raw lines 330, 450, and 636).\n- Optional commit and credit expansions: `components.schemas.Commit` and `Credit`; ledger variants are under `CommitLedger` and `CreditLedger`, and calculated balance semantics are under `BalanceForCommitsAndCredits` (raw lines 886-1223 and 2081-2161).\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-customers-and-contracts]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/contracts/list-customer-contracts-v1-2026-08-28|2026-08-28 snapshot - legacy customer-contract listing operation, filters, response contract schemas, ledger variants, and balance semantics]]",
+  "quotes": [
+    {
+      "text": "Retrieves all contracts for a specific customer, including pricing, terms, credits, and commitments. Use this to view a customer's contract history and current agreements for billing management. Returns contract details with optional ledgers and balance information. ",
+      "location": "raw line 11, introductory description"
+    },
+    {
+      "text": "\u26a0\ufe0f Note: This is the legacy v1 endpoint - new integrations should use the v2 endpoint for enhanced features.",
+      "location": "raw line 13, version warning"
+    },
+    {
+      "text": "Include archived contracts in the response",
+      "location": "raw line 129, paths./v1/contracts/list.post request schema include_archived description"
+    },
+    {
+      "text": "Include the balance of credits and commits in the response.",
+      "location": "raw line 125, paths./v1/contracts/list.post request schema include_balance description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-customer-contracts-v1-reciprocal",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-list-customer-contracts-v1]] - legacy customer-contract history and current-agreement listing, customer and time selectors, optional ledger and balance expansion, and exact returned-contract schema routes",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "Keep this v1 route independently scoped; do not infer request or response compatibility with v2."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/list-customer-contracts-v1-2026-08-28.md",
+  "raw_sha256": "3efbed1cf6289593a337eb58637c3b0c170d165e310701a719f76e18f5ca0ef1",
+  "status": "candidate_ready"
+}

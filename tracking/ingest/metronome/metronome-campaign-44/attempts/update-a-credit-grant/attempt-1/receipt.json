@@ -1,0 +1,50 @@
+{
+  "job_id": "update-a-credit-grant",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Update a Credit Grant\"\ntype: source\ndate_ingested: 2026-09-11\ncanonical_url: \"https://docs.metronome.com/api-reference/credit-grants/update-a-credit-grant\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/credit-grants/update-a-credit-grant-2026-07-13.md\"\ntags: [metronome, api-reference, credit-grants, plans, deprecated]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/credits/editGrant` for editing an existing legacy Plans credit grant. The Plans endpoint is deprecated, and the page directs new clients to implement with Contracts.\n\n## Key takeaways\n\n- The request identifies the existing grant by UUID. Its request description says that only the grant's name and expiration timestamp can be updated.\n- The embedded payload schema also lists `credit_grant_type` as an optional property, conflicting with the request description's narrower editable-field statement.\n\n## Material boundary\n\n> [!warning] Deprecated endpoint and editable-field conflict\n> This operation belongs to the deprecated Plans surface; new clients are directed to Contracts. Do not assume `credit_grant_type` is editable without further authority: the request description limits updates to `name` and `expires_at`, while the embedded schema additionally exposes `credit_grant_type`.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/credits/editGrant` -> `post`.\n- **Grant identification and editable fields:** `paths` -> `/credits/editGrant` -> `post` -> `requestBody`; `components.schemas.EditCreditGrantPayload` contains the required grant identifier and candidate editable properties. Read both locations together because they disagree on whether `credit_grant_type` is editable.\n- **Success response:** `paths` -> `/credits/editGrant` -> `post` -> `responses` -> `200` -> `application/json` -> `schema`; the returned `data` references `components.schemas.Id`.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-credits-and-commits]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credit-grants/update-a-credit-grant-2026-07-13|Update a credit grant]] \u2014 complete collected documentation and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "Edit an existing credit grant. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "# Update a credit grant > introductory description, line 11"
+    },
+    {
+      "text": "only the name and expires_at fields can be updated.",
+      "location": "## OpenAPI > paths./credits/editGrant.post.requestBody.description, line 104"
+    },
+    {
+      "text": "description: the ID of the credit grant",
+      "location": "## OpenAPI > components.schemas.EditCreditGrantPayload.properties.id.description, line 144"
+    },
+    {
+      "text": "description: the updated credit grant type",
+      "location": "## OpenAPI > components.schemas.EditCreditGrantPayload.properties.credit_grant_type.description, line 154"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "update-credit-grant-credits-commits-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources; add near the existing deprecated credit-grant source entries",
+        "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-update-a-credit-grant]] \u2014 deprecated Plans credit-grant editing by grant ID, Contracts migration boundary, editable name and expiration fields, and the `credit_grant_type` schema conflict",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve the deprecated Plans versus Contracts boundary.",
+          "Do not present `credit_grant_type` as unambiguously editable because the request description and payload schema conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credit-grants/update-a-credit-grant-2026-07-13.md",
+  "raw_sha256": "d6dfc0573ef1ea94ddbd6b2ceab08b8caffac8a86e71a93902a59bb4aa5ae150",
+  "status": "candidate_ready"
+}

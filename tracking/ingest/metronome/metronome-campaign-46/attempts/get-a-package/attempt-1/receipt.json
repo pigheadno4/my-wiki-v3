@@ -1,0 +1,51 @@
+{
+  "job_id": "get-a-package",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Get a Package\"\ntype: source\ndate_ingested: 2026-09-13\ncanonical_url: \"https://docs.metronome.com/api-reference/packages/get-a-package\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/packages/get-a-package-2026-08-28.md\"\ntags: [metronome, api-reference, packages, aliases, contracts]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/packages/get` (`getPackage-v1`) for retrieving one package by its UUID. It is the direct route for inspecting a package's identifying details, alias schedule, duration, and reusable contract terms rather than enumerating package definitions.\n\n## Retrieval boundary and qualifications\n\n- Within the JSON payload schema, `package_id` is the required UUID selector. The enclosing OpenAPI `requestBody` is not marked `required: true`, so the page does not establish omitted-body runtime behavior.\n- HTTP `200` requires top-level `data`, which references `components.schemas.Package`; the operation also documents a `404` route for a resource that was not found.\n- `Package` is the entry point for returned detail. Alias schedules and duration are optional properties there, and the success example omits both; do not infer that every returned package has either value. Package terms remain discoverable through the referenced commit, credit, override, scheduled-charge, recurring, threshold, spend-tracker, and subscription schemas without copying those inventories here.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths./v1/packages/get.post` for the method, path, purpose, and operation ID.\n- **Package selector:** `paths./v1/packages/get.post.requestBody.content.application/json.schema` documents the required `package_id` UUID property.\n- **Success and not-found responses:** `paths./v1/packages/get.post.responses.200` documents the `data` envelope and example; `responses.404`, `components.responses.NotFound`, and `components.schemas.Error` document the not-found route.\n- **Returned package detail:** `components.schemas.Package` is the response object entry point. Follow `PackageAlias` for alias names and effective timestamps, `RelativeDate` for duration value and unit, and the referenced template/configuration schemas for package terms. `Package.archived_at` is the raw locator for archive-state timestamp data when present.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-packages-and-aliases]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/packages/get-a-package-2026-08-28|2026-08-28 snapshot - single-package retrieval, selector, response envelope, and package-detail schema routes]]\n",
+  "quotes": [
+    {
+      "text": "Gets the details for a specific package, including name, aliases, duration, and terms. Use this endpoint to understand a package\u2019s alias schedule, or display a specific package\u2019s details to end customers.",
+      "location": "line 11, introductory description under # Get a package"
+    },
+    {
+      "text": "  /v1/packages/get:\n    post:",
+      "location": "lines 88-89, ## OpenAPI -> paths./v1/packages/get.post"
+    },
+    {
+      "text": "              required:\n                - package_id\n              properties:\n                package_id:\n                  type: string\n                  format: uuid",
+      "location": "lines 104-109, ## OpenAPI -> paths./v1/packages/get.post.requestBody.content.application/json.schema"
+    },
+    {
+      "text": "                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Package'",
+      "location": "lines 119-123, ## OpenAPI -> paths./v1/packages/get.post.responses.200.content.application/json.schema"
+    },
+    {
+      "text": "        aliases:\n          type: array\n          items:\n            $ref: '#/components/schemas/PackageAlias'\n        duration:\n          $ref: '#/components/schemas/RelativeDate'",
+      "location": "lines 219-224, ## OpenAPI -> components.schemas.Package.properties"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-a-package-packages-aliases-reciprocal",
+        "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-packages-get-a-package]] - targeted package retrieval by UUID, with exact alias-schedule, duration, reusable-term, success-envelope, and archive-state schema routes",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/packages/get-a-package-2026-08-28.md",
+  "raw_sha256": "cbf15e76f166b614f232cef853ecf53a48e54502ffd535e4427a6118ae34aa1e",
+  "status": "candidate_ready"
+}

@@ -55,6 +55,8 @@ In the 2026-08-28 List snapshot, `include_composite_spend` appears on both initi
 
 ## Rate cards and rates
 
+Bearer-authenticated `POST /v1/contract-pricing/rate-cards/getRateSchedule` retrieves rate-card schedule segments from required inclusive `starting_at` through optional exclusive `ending_before`; omitting the end returns all future segments. Optional selector objects match with ANY semantics, while no selectors returns all rates. This is the rate-card catalog route; customer-contract schedules that include contract-level overrides use `getContractRateSchedule`. [[source-metronome-api-reference-rate-cards-get-a-rate-schedule]]
+
 The deprecated customer-plan list returns assignment and legacy Plan metadata—customer-plan and Plan IDs, name, description, start time, optional end time and net payment terms, optional trial spending-cap state, and string-valued customer-plan custom fields. It does not return current Contract products, rate cards, rate schedules, overrides, denomination rules, calculation detail, or invoice results, and the page defines no Plan-to-Contract pricing migration. Use it as a legacy assignment-discovery route rather than current Contract pricing authority. [[source-metronome-api-reference-plans-list-customer-plans]]
 
 In private preview, a managed AI rate card for [[metronome-token-billing]] creates selected-model billable metrics, products, and rates from configured markups and automatically adds newly released models at the default markup. Provider-driven repricing for changed underlying rates is only described as coming soon; update timing, effective dating, removal, fallback, rounding, and reconciliation remain undocumented. [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]]
@@ -68,7 +70,9 @@ The contract rate-schedule read combines rate-card scheduled changes with contra
 - The currency guide enumerates 18 fiat currencies and defines Metronome-specific API scaling: USD uses cents, while every other listed fiat currency uses whole units. One rate card carries one fiat currency; a product rate can use that currency or a custom pricing unit with a conversion from the underlying fiat currency. After a product rate is saved in one pricing unit, that rate's unit cannot be changed. The guide does not define replacement, effective-dating, contract migration, precision, rounding, or invoice-recalculation behavior.
 
 - Card creation accepts a name, optional description and effective-dated aliases, selected products, one fiat currency, and product rates, entitlements, and effective dates. Aliases can stand in for generated IDs during contract provisioning, but uniqueness, overlap, boundary lookup, and reuse are undocumented.
-- Metadata edits cover name, description, aliases, and newly rated products. Price changes instead add a future-effective rate; the guide does not define overlap, automatic ending, backdating, deletion, currency changes, grandfathering, or invoice recalculation.
+Bearer-authenticated `POST /v1/contract-pricing/rate-cards/update` updates a card's name, description, aliases, and adds credit-type conversions without changing underlying pricing rates or schedules. Alias changes leave already-created contracts on their originally assigned cards; new contracts using an alias resolve it when provisioned, so a scheduled alias transition routes newly provisioned contracts after the transition. The page says other changes affect only the Metronome UI, and existing credit-type conversions cannot be modified through this operation. [[source-metronome-api-reference-rate-cards-update-a-rate-card]]
+
+- The guide covers rating new products through the rate-addition flow. Price changes instead add a future-effective rate; the guide does not define overlap, automatic ending, backdating, deletion, currency changes, grandfathering, or invoice recalculation.
 - `entitled` controls whether a rate appears on customer invoices by default; a non-entitled rate requires a contract-level override.
 - The guide lists flat and tiered rates.
 - USD prices are expressed in cents, while the guide says other currencies use whole units and points to its currency-denomination guide for details.
@@ -144,6 +148,11 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 - Trial packaging can use `entitled: false` for merchant-enforced feature restriction or a time-bounded multiplier `0` for uncapped free usage, after which list pricing resumes. Overlapping-override precedence, missing-rate behavior, and automatic product gating remain unknown.
 
 ## Sources
+- [[source-metronome-api-reference-rate-cards-update-the-rate-card-products-order]] - selected-product moves to zero-based positions relative to current rate-card order for customer-invoice presentation, with exact request and response routes
+- [[source-metronome-api-reference-rate-cards-set-the-rate-card-products-order]] - rate-card product sequencing for customer-invoice presentation, with exact request and response routes and an explicit omitted-product behavior gap
+- [[source-metronome-api-reference-rate-cards-add-rates]] — bulk product-rate addition with required array shape, conditional subscription and percentage-minimum warnings, and exact request, rate-configuration, and success-response locators
+- [[source-metronome-api-reference-plans-get-the-plan-adjustments-for-a-customer]] - legacy customer-Plan price-adjustment retrieval, with customer-plan selection and exact adjustment and charge schema locators
+- [[source-metronome-api-reference-rate-cards-add-a-rate]] — single-rate addition, the consequential heavy-rate-limit warning, the recommended bulk `addRates` route, and exact payload and response locators
 - [[source-metronome-api-reference-rate-cards-create-a-rate-card]] — rate-card creation, single-fiat and custom-unit setup, contract-provisioning aliases, consequential alias reassignment, later rate-addition boundary, and exact payload and response locators
 - [[source-metronome-api-reference-products-update-a-product]] - effective-dated product configuration updates, immutable product type, exact payload navigation, and the pricing-description boundary
 

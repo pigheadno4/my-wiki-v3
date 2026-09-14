@@ -1,0 +1,55 @@
+{
+  "job_id": "update-rate-card-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Update a Rate Card\"\ntype: source\ndate_ingested: 2026-09-10\ncanonical_url: \"https://docs.metronome.com/api-reference/rate-cards/update-a-rate-card\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/rate-cards/update-a-rate-card-2026-08-28.md\"\ntags: [metronome, api-reference, rate-cards, pricing, aliases]\n---\n\n## Overview\n\nThis API reference documents `POST /v1/contract-pricing/rate-cards/update`, which updates rate-card configuration without changing underlying pricing rates or schedules. Its alias behavior distinguishes already-created contracts, which retain their originally assigned rate cards, from new alias-based contracts, which resolve the alias when they are provisioned.\n\n## Key takeaways\n\n- The operation updates a rate card's name, description, aliases, and credit-type conversions; it does not update the card's underlying pricing rates or schedules.\n- Already-created contracts continue using their originally assigned rate cards after alias changes. A scheduled alias transition instead changes which card new contracts resolve when provisioned at or after the transition.\n- The page states that other changes made through this endpoint affect only the Metronome UI.\n- Credit-type conversions can be added for custom pricing units, but existing conversions cannot be modified through this operation.\n\n## Material boundary\n\n> [!warning] Configuration update is not a price update\n> Do not use this operation to change existing product prices or rate schedules. Alias reassignment or scheduling changes the card selected for newly provisioned alias-based contracts; it does not move already-created contracts off their originally assigned cards.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/v1/contract-pricing/rate-cards/update` -> `post`.\n- **Payload detail:** `paths` -> `/v1/contract-pricing/rate-cards/update` -> `post` -> `requestBody` states that at least one supported update must be supplied; `components.schemas.UpdateRateCardPayload` contains the rate-card identifier and optional update categories. `components.schemas.RateCardAlias` and `components.schemas.CreditTypeConversionInput` contain the effective-date and conversion details.\n- **Response placement:** `paths` -> `/v1/contract-pricing/rate-cards/update` -> `post` -> `responses` -> `200` -> `application/json` -> `schema` requires `data`, which references `components.schemas.Id`; the example places the UUID at `data.id`.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-products-and-rate-cards]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/rate-cards/update-a-rate-card-2026-08-28|Update a rate card]] \u2014 complete collected documentation and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "Update a rate card's name, description, aliases, and credit type conversion rates. This endpoint does not affect underlying pricing rates or schedules.",
+      "location": "# Update a rate card > introductory description, line 11"
+    },
+    {
+      "text": "Alias changes: Already-created contracts continue using their originally assigned rate cards.",
+      "location": "# Update a rate card > Active contract impact, line 20"
+    },
+    {
+      "text": "Other changes made using this endpoint will only impact the Metronome UI.",
+      "location": "# Update a rate card > Active contract impact, line 21"
+    },
+    {
+      "text": "New contracts referencing the alias automatically resolve to the rate card associated with the alias at the point in time of provisioning",
+      "location": "# Update a rate card > How scheduled aliases work for PLG grandfathering > Initial setup > Automatic resolution, line 30"
+    },
+    {
+      "text": "Existing conversions cannot be modified.",
+      "location": "## OpenAPI > components.schemas.UpdateRateCardPayload.properties.add_credit_type_conversions.description, line 249"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "update-rate-card-products-rate-cards-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Rate cards and rates; replace or narrow the existing metadata-edits bullet that groups aliases with newly rated products",
+        "proposed_markdown": "Bearer-authenticated `POST /v1/contract-pricing/rate-cards/update` updates a card's name, description, aliases, and adds credit-type conversions without changing underlying pricing rates or schedules. Alias changes leave already-created contracts on their originally assigned cards; new contracts using an alias resolve it when provisioned, so a scheduled alias transition routes newly provisioned contracts after the transition. The page says other changes affect only the Metronome UI, and existing credit-type conversions cannot be modified through this operation. [[source-metronome-api-reference-rate-cards-update-a-rate-card]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the endpoint's configuration-versus-underlying-pricing boundary; do not describe this operation as adding or changing product rates.",
+          "Keep alias effects scoped by provisioning time: existing contracts retain their assigned card, while new alias-based contracts resolve the alias when provisioned."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/rate-cards/update-a-rate-card-2026-08-28.md",
+  "raw_sha256": "2519a3497f9ac7d7d9116d9fe42cb1208272fbd5cb22092ac486c4ef280a13bf",
+  "status": "candidate_ready"
+}

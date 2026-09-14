@@ -6,6 +6,38 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-13 — Metronome Campaign 46 final frozen-inventory pages
+
+- Promoted five previously uncovered sources: v1 single-contract retrieval, package creation, package-definition listing, single-package retrieval, and relative invoice product-order movement.
+- Review: 5/5 first-pass approvals, five independent full initial reviews, zero retries and zero coordinator semantic repairs. Shared changes are five approved reciprocal navigation entries across three existing concepts, without new concept factual paragraphs.
+- Coverage: 232 total source summaries, including 226 official-document sources; 60 raw snapshots remain unreferenced. Frozen-inventory canonical coverage reconciliation, latest-snapshot refresh gaps, timing and query outcomes are recorded separately in the [retrospective](../tracking/ingest/metronome/metronome-campaign-46/retrospective.md).
+- Outcome: 10/10 final query answers passed, with no extra full raw reads or repairs. One aggregate mechanical/capsule check passed. Operational closure took 1,278 seconds (21m18s). All 226 current local English canonical documentation identities now have source owners; 36 latest-snapshot refresh gaps are a different measure from the 60 unreferenced raw snapshots. See [quality audit](../tracking/ingest/metronome/metronome-campaign-46/quality-audit.md) and [monitor](../tracking/ingest/metronome/metronome-campaign-46/monitor.md). No code/rule changes, repeated full unit suite, collection, commit or push.
+
+## 2026-09-13 — Metronome Campaign 45 long-schema confirmation
+
+- Promoted five previously uncovered sources: separate v1/v2 customer-contract lists, customer commit listing, legacy Plan end-date mutation, and invoice product ordering.
+- Review: 4/5 first-pass approvals, five full initial reviews and one targeted correction review; no full rereview or coordinator semantic repair. The sole correction removed an unnecessary access-type category that lacked its feature/schema-annotation qualification; raw locator, quotes and suggestions stayed unchanged.
+- Shared updates: five reciprocal navigation entries across three existing concepts; no new concept factual paragraphs. Long raws totaled 8,149 lines; source length and stage timing are recorded in the retrospective, not inferred from raw size.
+- Coverage: 227 total sources, 221 official-document sources, 65 raw snapshots without source summaries, and five remaining canonical identities in the frozen planning inventory.
+- Outcome: 10/10 query answers passed with no repairs; one justified extra 190-line adjacent-operation raw read. Aggregate mechanical/capsule checks passed. Closure took 1,313 seconds (21m53s), 3m52s longer than C44 despite 5.4x raw lines; source words increased only 5.4% to 1,569. These are observational comparisons, not causal throughput proof. See [quality audit](../tracking/ingest/metronome/metronome-campaign-45/quality-audit.md), [monitor](../tracking/ingest/metronome/metronome-campaign-45/monitor.md) and [retrospective](../tracking/ingest/metronome/metronome-campaign-45/retrospective.md). No code/rule changes or repeated full unit suite this campaign; no commit/push.
+
+## 2026-09-11 — Metronome Campaign 44 targeted-priority confirmation
+
+- Promoted five previously uncovered sources: bulk rate addition, rate-card schedule retrieval, legacy credit-grant editing, customer-Plan association, and package archival.
+- Review: 5/5 first-pass approvals, five independent full initial reviews, zero retries or coordinator semantic repairs. No targeted job arose, so this campaign does not measure the new targeted-priority ordering's effect.
+- Shared updates: three reciprocal navigation entries and two approved factual updates across four existing concepts. Preserved grant editable-field conflict, deprecated Plans boundaries, schedule versus contract pricing distinction, and irreversible package archival with existing-contract continuity.
+- Coverage: 222 total sources, 216 official-document sources, 70 raw snapshots without source summaries, and 10 remaining canonical identities in the frozen planning inventory.
+- Three native child slots were successfully used. One full unit run after preceding scheduler/rule changes passed 773 tests in 121.773 seconds, overlapping initial work. Final query audit passed 10/10 with no extra raw reads or repairs; one aggregate mechanical/capsule check passed. Operational closure took 1,081 seconds (18m01s), 21m43s shorter than C43, but different pages, capacity and zero retries confound causal attribution. See [quality audit](../tracking/ingest/metronome/metronome-campaign-44/quality-audit.md), [monitor](../tracking/ingest/metronome/metronome-campaign-44/monitor.md) and [retrospective](../tracking/ingest/metronome/metronome-campaign-44/retrospective.md).
+
+## 2026-09-10 — Metronome Campaign 43 narrow-assertion confirmation
+
+- Promoted five previously uncovered sources: single-rate addition, rate-card configuration updates, offset-notification configuration archival, customer-Plan adjustment retrieval, and selected custom-field value deletion.
+- Review: 3/5 first-pass approvals, five full initial reviews and two targeted reviews; no full rereview or coordinator semantic repair. One correction restored the minimum/commit-override warning; the other removed unsupported response cardinality and field-meaning assertions. One reviewer draft's extra identity keys were removed before intake without semantic rereview.
+- Shared updates: four reciprocal navigation entries and two approved factual updates across four existing concepts. The rate-card correction preserves adjacent guide-backed rate-addition guidance; value deletion is distinguished from field-key removal.
+- Coverage: 217 total sources, 211 official-document sources, 75 raw snapshots without source summaries, and 15 remaining canonical identities in the frozen never-ingested inventory.
+- Execution used two child slots, without a capacity probe or third-agent dispatch attempt. Final evidence: [quality audit](../tracking/ingest/metronome/metronome-campaign-43/quality-audit.md), [retrospective](../tracking/ingest/metronome/metronome-campaign-43/retrospective.md), and [monitor](../tracking/ingest/metronome/metronome-campaign-43/monitor.md).
+- Outcome: 10/10 queries passed, no query repair or extra historical/adjacent full raw read. Closure took 2,384 seconds (39m44s), missing both the 35-minute and 4/5 first-pass observation targets. Sources totaled 1,609 words versus C42's 1,784; shorter sources did not yield a demonstrated end-to-end speedup. The add-rate correction's queue/dispatch/handoff delay is recorded separately from its brief worker and targeted-review work.
+
 ## 2026-09-09 — Metronome Campaign 42 locator-and-report confirmation
 
 - Promoted five previously uncovered sources: product updates, combined customer credit/commit net balance, rate-card creation, offset-notification configuration creation, and customer-credit end-date shortening.

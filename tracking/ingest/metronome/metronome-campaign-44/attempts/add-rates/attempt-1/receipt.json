@@ -1,0 +1,52 @@
+{
+  "job_id": "add-rates",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Add Rates\"\ntype: source\ndate_ingested: 2026-09-11\ncanonical_url: \"https://docs.metronome.com/api-reference/rate-cards/add-rates\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/rate-cards/add-rates-2026-07-13.md\"\ntags: [metronome, api-reference, rate-cards, pricing]\n---\n\n## Overview\n\nThis API reference documents `POST /v1/contract-pricing/rate-cards/addRates`, the Metronome operation for adding an array of new product rates to an identified rate card. Use this bulk operation when selecting a multi-rate mutation; its payload object schema requires both the rate-card identifier and the rates array.\n\n## Material warnings\n\n> [!warning] Conditional subscription configuration\n> `billing_frequency` is optional generally, but the schema says it is required for subscription-type products with a flat rate.\n\n> [!warning] Percentage minimums disable commit-specific overrides\n> `minimum_config` is only for `PERCENTAGE` or `TIERED_PERCENTAGE` rates. When a minimum is set on the rate or applied override, commit-specific overrides do not apply.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/v1/contract-pricing/rate-cards/addRates` -> `post`.\n- **Batch request:** the operation's `requestBody` -> `application/json` -> `schema` defines the payload object. The enclosing `requestBody` is not marked required; inside the object schema, `rate_card_id` and `rates` are required, and each array item routes to `components.schemas.RatePayload`.\n- **Rate configuration:** `components.schemas.RatePayload` contains product targeting, effective dates, entitlement, rate type, pricing, dimensional values, and specialized-rate configuration. Nested detail is under `Tier`, `MinimumConfig`, and `CommitRate`.\n- **Success response:** `paths` -> `/v1/contract-pricing/rate-cards/addRates` -> `post` -> `responses` -> `200`; required `data` routes to `components.schemas.Id` and is described as the ID of the rate card to which the rates were added.\n- **Error routes:** the same operation's `responses` section locates the documented errors without duplicating their schemas here.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-products-and-rate-cards]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/rate-cards/add-rates-2026-07-13|Add rates]] \u2014 complete collected documentation and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "/v1/contract-pricing/rate-cards/addRates:\n    post:\n      tags:\n        - Rate cards\n      summary: Add rates\n      description: |\n        Add new rates\n      operationId: addRates-v1",
+      "location": "lines 88-95, `## OpenAPI` -> `paths` -> `/v1/contract-pricing/rate-cards/addRates` -> `post`"
+    },
+    {
+      "text": "type: object\n              required:\n                - rate_card_id\n                - rates\n              properties:\n                rate_card_id:\n                  type: string\n                  format: uuid\n                rates:\n                  type: array\n                  items:\n                    $ref: '#/components/schemas/RatePayload'",
+      "location": "lines 101-112, `paths` -> `/v1/contract-pricing/rate-cards/addRates` -> `post` -> `requestBody` -> `application/json` -> `schema`"
+    },
+    {
+      "text": "Optional. Frequency to bill subscriptions with. Required for\n            subscription type products with Flat rate.",
+      "location": "lines 188-190, `components.schemas.RatePayload.properties.billing_frequency.description`"
+    },
+    {
+      "text": "Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type. Any\n        commit-specific overrides will not apply if there is a minimum set on\n        the rate/applied override.",
+      "location": "lines 318-321, `components.schemas.MinimumConfig.description`"
+    },
+    {
+      "text": "required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n                    description: The ID of the rate card to which the rates were added.",
+      "location": "lines 139-144, `paths` -> `/v1/contract-pricing/rate-cards/addRates` -> `post` -> `responses` -> `200` -> `application/json` -> `schema`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "add-rates-reciprocal-source",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-rate-cards-add-rates]] \u2014 bulk product-rate addition with required array shape, conditional subscription and percentage-minimum warnings, and exact request, rate-configuration, and success-response locators",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/rate-cards/add-rates-2026-07-13.md",
+  "raw_sha256": "e52c673064639feb5ce458577be5ce38fd892c607ed506b57b443437dae3e1f0",
+  "status": "candidate_ready"
+}

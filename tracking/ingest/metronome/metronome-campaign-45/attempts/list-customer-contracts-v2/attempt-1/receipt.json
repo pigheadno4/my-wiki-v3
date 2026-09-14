@@ -1,0 +1,54 @@
+{
+  "job_id": "list-customer-contracts-v2",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: List Customer Contracts (v2)\"\ntype: source\ndate_ingested: 2026-09-13\ncanonical_url: \"https://docs.metronome.com/api-reference/contracts/list-customer-contracts-v2\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/contracts/list-customer-contracts-v2-2026-08-28.md\"\ntags: [metronome, api-reference, contracts, customers, contract-history]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v2/contracts/list` for listing one customer's contracts in chronological order. Use it to determine whether a customer has a contract, inspect the current agreement, or build a history of the customer's contract tiers; use the distinct contract-get operation when selecting one contract by ID.\n\n## Query-critical facts\n\n- Within the JSON payload, `customer_id` is required. The optional `starting_at`, `covering_date`, and `include_archived` fields select the returned contract history; `starting_at` and `covering_date` cannot be supplied together.\n- Passing `covering_date` equal to the current time is the documented way to list contracts active now. The page describes the overall result order as chronological.\n- Optional `include_ledgers` and `include_balance` controls add commit/credit ledger or balance detail, and the page warns that either expansion may make the response slower.\n- HTTP `200` places the contract array at `data`; each item routes to `components.schemas.ContractV2`.\n\n## Material completeness boundary\n\n> [!warning] Embedded commit and credit collections can be incomplete\n> A returned contract can expose `has_more.commits` or `has_more.credits`. When either flag is true, use the respective dedicated list endpoint for the full collection rather than treating the embedded contract arrays as complete.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/v2/contracts/list` -> `post`.\n- **Customer and history selection:** the operation's `requestBody` -> `application/json` -> `schema` documents required `customer_id` and the optional archive, time, ledger, and balance controls, including the mutually exclusive time filters.\n- **Response placement and contract detail:** the operation's `responses` -> `200` -> `application/json` requires `data`, whose array items reference `components.schemas.ContractV2`; that schema routes the complete contract, pricing, grants, schedules, provider configuration, subscription, threshold, hierarchy, and feature-qualified detail.\n- **Embedded collection completeness:** `components.schemas.HasMore` documents the commit and credit flags and names the dedicated list routes. The operation's `responses` -> `400` contains its documented error shape.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-customers-and-contracts]]\n- Single-contract retrieval: [[source-metronome-api-reference-contracts-get-a-contract-v2]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/contracts/list-customer-contracts-v2-2026-08-28|List customer contracts (v2)]] \u2014 complete collected documentation and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "# List customer contracts (v2)",
+      "location": "line 9, page title"
+    },
+    {
+      "text": "  /v2/contracts/list:\n    post:",
+      "location": "## OpenAPI > paths./v2/contracts/list.post, lines 96-97"
+    },
+    {
+      "text": "For a given customer, lists all of their contracts in chronological order.",
+      "location": "introductory description, line 11"
+    },
+    {
+      "text": "Use the `starting_at`, `covering_date`, and `include_archived` parameters to filter the list of returned contracts. For example, to list only currently active contracts, pass `covering_date` equal to the current time.",
+      "location": "### Usage guidelines, line 19"
+    },
+    {
+      "text": "Use the respective list endpoints to get the full lists.",
+      "location": "## OpenAPI > components.schemas.HasMore.description, lines 840-842"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-customer-contracts-v2-customers-contracts-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources; add with the customer and contract retrieval entries",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-list-customer-contracts-v2]] \u2014 chronological v2 customer-contract listing for current-agreement and tier-history retrieval, with exact selection, response, and embedded-collection completeness routes",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this collection operation distinct from `POST /v2/contracts/get`, which selects one contract by ID.",
+          "Do not infer v1/v2 shape compatibility or compare their field inventories from this source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/list-customer-contracts-v2-2026-08-28.md",
+  "raw_sha256": "f1833e6d09cad9edab115a31360e9c4adbbc0c313b7323cd3efb984a2452689a",
+  "status": "candidate_ready"
+}

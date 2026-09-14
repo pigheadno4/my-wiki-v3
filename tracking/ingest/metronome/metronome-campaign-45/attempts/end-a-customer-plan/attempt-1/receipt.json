@@ -1,0 +1,51 @@
+{
+  "job_id": "end-a-customer-plan",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"End a customer plan\"\ntype: source\ndate_ingested: 2026-09-13\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/plans/end-a-customer-plan\"\nraw_files:\n  - \"metronome/api-reference/plans/end-a-customer-plan-2026-07-13.md\"\ntags: [metronome, api-reference, plans, customers, deprecated]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/customers/{customer_id}/plans/{customer_plan_id}/end`, which changes the end date of one legacy customer-Plan relationship. The Plans endpoint is deprecated; Metronome directs new clients to Contracts without identifying a replacement operation or mapping the legacy relationship to a Contract.\n\n## Material behavior and warnings\n\n- `ending_before` is an exclusive RFC 3339 timestamp that must be midnight UTC. If it is omitted from a supplied payload, the page says the Plan end date is cleared.\n- Setting `void_invoices` to true permits an end date before the last finalized invoice date and voids invoices generated after the Plan end date.\n\n> [!warning] Conditional downstream Stripe action\n> `void_stripe_invoices` applies only when `void_invoices` is true. When both are true, Metronome says it will attempt to void each finalized Stripe invoice, or delete it if it is still a draft. This is an attempted downstream action, not a documented guarantee of Stripe success.\n\n> [!warning] Deprecated Plans surface\n> This operation changes a legacy customer Plan, not a Contract. The page provides no Contracts replacement endpoint, identity mapping, migration procedure, compatibility period, or removal date.\n\n## Raw-detail locators\n\n- Operation identity and bearer authentication: OpenAPI document-level `security` and `paths./customers/{customer_id}/plans/{customer_plan_id}/end.post`; the production server supplies the `/v1` prefix.\n- Customer and customer-Plan targets: `components.parameters.CustomerId` and `components.parameters.CustomerPlanId`; the latter is the ID of the customer-Plan relationship.\n- End-date and invoice controls: `components.schemas.EndCustomerPlanPayload`, including `ending_before`, `void_invoices`, and `void_stripe_invoices`. The enclosing `requestBody` and payload properties are not marked required; use the explicit `ending_before` description for its omission behavior.\n- Success response: `paths./customers/{customer_id}/plans/{customer_plan_id}/end.post.responses.200`, which documents an empty-object schema.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-customers-and-contracts]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/plans/end-a-customer-plan-2026-07-13|2026-07-13 snapshot - deprecated customer-Plan end-date operation, timing rules, invoice controls, and response]]\n",
+  "quotes": [
+    {
+      "text": "Change the end date of a customer's plan. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "line 11 under # End a customer plan"
+    },
+    {
+      "text": "````yaml /openapi.plans.json post /customers/{customer_id}/plans/{customer_plan_id}/end\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com/v1\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 18-27 under ## OpenAPI"
+    },
+    {
+      "text": "RFC 3339 timestamp for when the plan ends (exclusive) for this\n            customer. Must be at 0:00 UTC (midnight). If not provided, the plan\n            end date will be cleared.",
+      "location": "lines 145-147 at components.schemas.EndCustomerPlanPayload.properties.ending_before.description"
+    },
+    {
+      "text": "If true, plan end date can be before the last finalized invoice\n            date. Any invoices generated after the plan end date will be voided.",
+      "location": "lines 152-153 at components.schemas.EndCustomerPlanPayload.properties.void_invoices.description"
+    },
+    {
+      "text": "Only applicable when void_invoices is set to true. If true, for\n            every invoice that is voided we will also attempt to void/delete the\n            stripe invoice (if any). Stripe invoices will be voided if finalized\n            or deleted if still in draft state.",
+      "location": "lines 157-160 at components.schemas.EndCustomerPlanPayload.properties.void_stripe_invoices.description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "end-a-customer-plan-reciprocal-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-plans-end-a-customer-plan]] \u2014 deprecated customer-Plan end-date mutation, exclusive midnight-UTC cutoff, conditional invoice voiding and Stripe void/delete attempt, and exact target and payload locators",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/plans/end-a-customer-plan-2026-07-13.md",
+  "raw_sha256": "940e1e26b6b745487ab64795f243bb60c01c6b3466ba9db36960eabea1d4598f",
+  "status": "candidate_ready"
+}

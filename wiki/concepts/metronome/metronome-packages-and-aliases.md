@@ -22,6 +22,10 @@ In the documented grandfathering workflow, a product is added to the shared rate
 
 Package rates layer on top of rate-card changes and inherit most such changes; an overwrite override is the stated exception. The guide does not enumerate what `most` excludes beyond overwrite overrides or define precedence for other overlapping package, rate-card, and contract changes.
 
+### Package archival
+
+`POST /v1/packages/archive` prevents an archived package from being used for new contract creation without ending its existing associated contracts, which continue to function normally. The package remains retrievable in the UI and API, but it cannot be unarchived. [[source-metronome-api-reference-packages-archive-a-package]]
+
 ## Effective-dated alias transition
 
 Creating a second package under the same alias with a later `starting_at` makes unchanged provisioning calls resolve to the newer package from that date, while the original package receives an alias schedule ending at the transition.
@@ -29,6 +33,9 @@ Creating a second package under the same alias with a later `starting_at` makes 
 This describes future provisioning, not mutation of already-provisioned contracts. Alias uniqueness, overlap handling, exact boundary lookup, timezone semantics, reuse after removal, resolved-package retention, and transition failures are undocumented.
 
 ## Sources
+- [[source-metronome-api-reference-contracts-create-a-package]] — package creation for reusable time-relative contract terms, alias-based provisioning and reassignment, immutable package definitions, billing-provider match restriction, and exact input and success-response locators
+- [[source-metronome-api-reference-packages-get-a-package]] - targeted package retrieval by UUID, with exact alias-schedule, duration, reusable-term, success-envelope, and archive-state schema routes
+- [[source-metronome-api-reference-list-all-packages]] - package-definition catalog discovery, default archive scope, pagination, and exact alias, duration, and package-term schema routes
 
 - [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]] - package-scoped contract and customer association discovery, mutually exclusive time filters, archive visibility, pagination, and migration-authority boundaries
 

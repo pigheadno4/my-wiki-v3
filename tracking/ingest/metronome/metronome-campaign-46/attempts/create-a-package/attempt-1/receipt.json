@@ -1,0 +1,55 @@
+{
+  "job_id": "create-a-package",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Create a Package\"\ntype: source\ndate_ingested: 2026-09-13\ncanonical_url: \"https://docs.metronome.com/api-reference/contracts/create-a-package\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/contracts/create-a-package-2026-08-28.md\"\ntags: [metronome, api-reference, packages, contracts, aliases]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `POST /v1/packages/create` operation (`createPackage-v1`) for creating a reusable, customer-agnostic package of time-relative contract terms on top of a rate card. Packages are intended for consistent cohort pricing; the page directs negotiated custom terms to the more flexible contract-creation operation.\n\n## Key takeaways\n\n- Package dates are expressed relative to a future contract's start: `starting_at_offset` determines a generated start, `duration` determines an exclusive end from that start, and `date_offset` represents a point-in-time date. The documented relative-date units are days, weeks, months, and years.\n- Aliases are human-readable substitutes for package IDs during contract provisioning. Reassigning an alias updates the original package's alias schedule, and the alias references the package to which it was most recently assigned.\n- Packages cannot be edited after creation. Rate-card changes or direct edits to a provisioned contract are the documented alternatives, and an edited contract remains associated with the package used to provision it.\n- If a package specifies billing-provider configuration, successful provisioning requires the customer to have exactly one matching billing-provider configuration.\n- HTTP `200` returns the created package identifier at `data.id`.\n\n## Material warnings and boundaries\n\n> [!warning] Package definitions are immutable\n> The operation creates a package that cannot later be edited. Use a new package/version, rate-card changes, or direct contract edits according to the intended scope; direct contract edits do not remove the original package association.\n\n> [!warning] Alias reassignment changes routing\n> Assigning an alias already in use updates the original package's alias schedule and makes the alias reference the most recently assigned package. Treat this as a consequential provisioning-route change.\n\n> [!warning] Billing-provider matching can block provisioning\n> When the package sets `billing_provider` and `delivery_method`, the customer must have one and only one matching billing-provider configuration for provisioning to succeed.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/v1/packages/create` -> `post` (`operationId: createPackage-v1`).\n- **Package inputs:** `components.schemas.CreatePackagePayload` is the request schema and requires `name`; it routes rate-card selection, aliases, package duration, contract-term templates, billing and invoice settings, thresholds, spend trackers, and subscriptions to their dedicated nested schemas. The enclosing OpenAPI `requestBody` does not declare `required: true`, so this page does not establish omitted-body runtime behavior.\n- **Relative dates and aliases:** `components.schemas.RelativeDate` defines relative values and units; `RelativeScheduleDurationInput`, `RelativeSchedulePointInTimeInput`, and the template schemas show where offsets and durations are applied. `components.schemas.PackageAlias` contains the alias name and its effective start/end timestamps.\n- **Restrictions:** the introductory `### Usage guidelines` section records the consistent-terms use case, billing-provider match condition, alias reassignment effect, supported relative-time granularities, and package immutability. Nested conditional restrictions remain with their referenced component schemas.\n- **Success:** `paths` -> `/v1/packages/create` -> `post` -> `responses` -> `200` requires top-level `data`, which references `components.schemas.Id`; the example places the UUID at `data.id`.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-packages-and-aliases]]\n- Supporting concept: [[metronome-customers-and-contracts]]\n- Package guide: [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/contracts/create-a-package-2026-08-28|Create a package]] \u2014 complete collected documentation and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "> Create a package that defines a set of reusable, time-relative contract terms that can be used across cohorts of customers. Packages provide an abstraction layer on top of rate cards to provide an easy way to provision customers with standard pricing. ",
+      "location": "line 11, opening blockquote under # Create a package"
+    },
+    {
+      "text": "### Key input fields:\n- `starting_at_offset`: Starting date relative to contract start. Generates the `starting_at` date when a contract is provisioned using a package.\n- `duration`: Duration starting from `starting_at_offset`. Generates the `ending_before` date when a contract is provisioned using a package.\n- `date_offset`: Date relative to contract start. Used for point-in-time dates without a duration.\n- `aliases`: Human-readable name to use when provisioning contracts with a package.",
+      "location": "lines 18-22, ### Key input fields"
+    },
+    {
+      "text": "- Use packages for standard self-serve use cases where customers have consistent terms. For customers with negotiated custom contract terms, use the `createContract` endpoint for maximum flexibility.\n- Billing provider configuration can be set when creating a package by using `billing_provider` and `delivery_method`. To provision a customer successfully with a package, the customer must have one and only one billing provider configuration that matches the billing provider configuration set on the package.\n- A package alias can only be used by one package at a time. If you create a new package with an alias that is already in use by another package, the original package\u2019s alias schedule will be updated. The alias will reference the package to which it was most recently assigned.\n- Terms can only be specified using times relative to the contract start date. Supported granularities are: `days`, `weeks`, `months`, `years`\n- Packages cannot be edited once created. Use the rate card to easily add new rates across all of your customers or make direct edits to a contract after provisioning with a package. Edited contracts will still be associated with the package used during provisioning.",
+      "location": "lines 25-29, ### Usage guidelines"
+    },
+    {
+      "text": "## OpenAPI\n\n````yaml /openapi.json post /v1/packages/create\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 34-45, ## OpenAPI document header"
+    },
+    {
+      "text": "        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+      "location": "lines 189-202, paths./v1/packages/create.post.responses.200"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-package-packages-aliases-source-route",
+        "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-create-a-package]] \u2014 package creation for reusable time-relative contract terms, alias-based provisioning and reassignment, immutable package definitions, billing-provider match restriction, and exact input and success-response locators",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the package immutability and continued association of directly edited contracts.",
+          "Preserve the alias-reassignment effect and the one-and-only-one matching billing-provider configuration requirement when those claims are summarized."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/create-a-package-2026-08-28.md",
+  "raw_sha256": "ae5127c2de97bd1f90f1790c0a27cc9f880a5a9a3c6d2d1c8329547f20eb8c8e",
+  "status": "candidate_ready"
+}

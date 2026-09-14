@@ -1,0 +1,54 @@
+{
+  "job_id": "set-the-rate-card-products-order",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Set the rate card products order\"\ntype: source\ndate_ingested: 2026-09-13\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/rate-cards/set-the-rate-card-products-order\"\nraw_files:\n  - \"metronome/api-reference/rate-cards/set-the-rate-card-products-order-2026-07-13.md\"\ntags: [metronome, api-reference, rate-cards, products, invoice-presentation]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/contract-pricing/rate-cards/setRateCardProductsOrder`, which sets a rate card's product sequence for how those products appear on customer invoices. The documented effect is invoice presentation order; this page does not describe changing product prices or rate schedules.\n\n## Query-critical behavior and warning\n\n- Within a supplied JSON payload, `rate_card_id` and `product_order` are required properties. The target is a rate-card UUID, and `product_order` is an ordered array of product UUIDs.\n- HTTP `200` places `data` at the top level and routes its shape to the generic `components.schemas.Id` response schema.\n\n> [!warning] Omitted-product behavior is undocumented\n> The page does not say where rate-card products omitted from `product_order` appear or whether the request must enumerate every product on the card. Do not infer append, preservation, removal, or rejection behavior from this schema.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/v1/contract-pricing/rate-cards/setRateCardProductsOrder` -> `post`.\n- **Request target and order:** `components.schemas.SetRateCardProductsOrderPayload` documents the required `rate_card_id` and `product_order` payload properties and their UUID shapes. The enclosing `requestBody` is not marked required; this page does not establish omitted-body runtime behavior.\n- **Response placement:** `paths./v1/contract-pricing/rate-cards/setRateCardProductsOrder.post.responses.200.content.application/json.schema` requires top-level `data` and references `components.schemas.Id`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-products-and-rate-cards]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/rate-cards/set-the-rate-card-products-order-2026-07-13|2026-07-13 snapshot - rate-card product ordering for invoice presentation, request target, and response schema]]\n",
+  "quotes": [
+    {
+      "text": "The ordering of products on a rate card determines the order in which the products will appear on customers' invoices. Use this endpoint to set the order of products on the rate card.",
+      "location": "line 11 under # Set the rate card products order"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/contract-pricing/rate-cards/setRateCardProductsOrder",
+      "location": "line 18 under ## OpenAPI"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "lines 26-27 at OpenAPI document-level security"
+    },
+    {
+      "text": "    SetRateCardProductsOrderPayload:\n      type: object\n      required:\n        - rate_card_id\n        - product_order\n      properties:\n        rate_card_id:\n          type: string\n          format: uuid\n          description: ID of the rate card to update\n        product_order:\n          type: array\n          items:\n            type: string\n            format: uuid",
+      "location": "lines 134-148 at components.schemas.SetRateCardProductsOrderPayload"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'",
+      "location": "lines 109-120 at paths./v1/contract-pricing/rate-cards/setRateCardProductsOrder.post.responses.200"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "set-rate-card-products-order-reciprocal-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources; add with the rate-card API entries",
+        "proposed_markdown": "- [[source-metronome-api-reference-rate-cards-set-the-rate-card-products-order]] - rate-card product sequencing for customer-invoice presentation, with exact request and response routes and an explicit omitted-product behavior gap",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not characterize this endpoint as a product-pricing or rate-schedule mutation; the page documents invoice presentation order only.",
+          "The page does not establish where products omitted from product_order appear or whether the array must enumerate the complete card."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/rate-cards/set-the-rate-card-products-order-2026-07-13.md",
+  "raw_sha256": "b9d878039d37ce932dac23c5ac7ec1a36b1f2eec113c96d96f92c1b30fa35c45",
+  "status": "candidate_ready"
+}

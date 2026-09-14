@@ -1,0 +1,63 @@
+{
+  "job_id": "get-plan-adjustments-new-source",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API: Get the Plan Adjustments for a Customer\"\ntype: source\ndate_ingested: 2026-09-10\ncanonical_url: \"https://docs.metronome.com/api-reference/plans/get-the-plan-adjustments-for-a-customer\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/plans/get-the-plan-adjustments-for-a-customer-2026-07-13.md\"\ntags: [metronome, api, plans, price-adjustments, customers, contracts]\n---\n\n## Overview\n\nBearer-authenticated `GET /v1/customers/{customer_id}/plans/{customer_plan_id}/priceAdjustments` lists price adjustments for one selected legacy customer-Plan relationship. Metronome marks this Plans endpoint as deprecated and directs new clients to Contracts, without identifying a replacement Contracts operation or mapping the legacy relationship or adjustments to Contract objects.\n\n## Query-critical facts\n\n- The route requires both a UUID `customer_id` and a UUID `customer_plan_id`; the latter is explicitly the ID of a customer-Plan relationship, not the catalog Plan ID. Use a customer-plan assignment identity when selecting this operation.\n- HTTP `200` places the adjustment collection in top-level `data` and the nullable continuation cursor in sibling `next_page`. Optional `limit` and `next_page` query parameters control traversal; exact bounds and cursor schema remain at the raw OpenAPI locators below.\n- Each `data` item is a `PriceAdjustment`; consult the exact schema for its required fields, adjustment and charge categories, values, quantity, and tier detail rather than treating this summary as a complete response contract.\n\n## Material boundaries\n\n- This is a read on the deprecated Plans surface; it does not create, apply, update, or remove an adjustment.\n- \"New clients should implement using Contracts\" is migration direction, not evidence that a particular Contract endpoint is a drop-in replacement. This page provides no Plan-to-Contract or customer-plan-to-contract identity mapping, field mapping, migration procedure, compatibility period, or removal date.\n\n## Raw-detail coverage map\n\n| Raw detail category | Exact raw coverage |\n| --- | --- |\n| Operation and authority | `## OpenAPI` \u2192 `/customers/{customer_id}/plans/{customer_plan_id}/priceAdjustments` \u2192 `get`; production `/v1` server and document-level bearer security |\n| Customer-plan selection | `components.parameters.CustomerId` and `components.parameters.CustomerPlanId`, including UUID formats and the customer-plan relationship description |\n| Response and traversal | Operation `responses.200.content.application/json.schema`; `components.parameters.PageLimit`; `components.parameters.NextPage` |\n| Adjustment detail | `components.schemas.PriceAdjustment` and `components.schemas.ChargeType`, including required properties and category-specific value, quantity, and tier fields |\n| Deprecation boundary | Operation `description` under the GET path and the page introduction |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-customers-and-contracts]]\n- Supporting concept: [[metronome-products-and-rate-cards]]\n- Related source for discovering legacy customer-plan assignment identity: [[source-metronome-api-reference-plans-list-customer-plans]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/plans/get-the-plan-adjustments-for-a-customer-2026-07-13|2026-07-13 snapshot - complete deprecated customer-Plan adjustment GET operation and schema]]\n",
+  "quotes": [
+    {
+      "text": "Lists a customer plans adjustments. See the [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments) for details. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "line 11, page introduction beneath # Get the plan adjustments for a customer"
+    },
+    {
+      "text": "/customers/{customer_id}/plans/{customer_plan_id}/priceAdjustments:\n    get:",
+      "location": "lines 92-93, ## OpenAPI \u2192 paths"
+    },
+    {
+      "text": "description: the ID of a customer-plan relationship\n      required: true\n      schema:\n        type: string\n        format: uuid",
+      "location": "lines 159-163, ## OpenAPI \u2192 components.parameters.CustomerPlanId"
+    },
+    {
+      "text": "required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/PriceAdjustment'\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "lines 115-125, ## OpenAPI \u2192 paths GET \u2192 responses.200 application/json schema"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-plan-adjustments-customers-contracts-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-plans-get-the-plan-adjustments-for-a-customer]] - deprecated customer-Plan price-adjustment lookup by customer and customer-plan relationship identity, with exact response-schema navigation and no documented Contracts replacement mapping",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Keep this under the deprecated Plans boundary; the source directs new clients to Contracts but names no replacement operation or identity mapping."
+        ]
+      },
+      {
+        "update_id": "get-plan-adjustments-products-rate-cards-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-plans-get-the-plan-adjustments-for-a-customer]] - legacy customer-Plan price-adjustment retrieval, with customer-plan selection and exact adjustment and charge schema locators",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not generalize the legacy PriceAdjustment schema into current Contract pricing or infer a migration mapping."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/plans/get-the-plan-adjustments-for-a-customer-2026-07-13.md",
+  "raw_sha256": "2b5252b77e27cf2d1a541fa945fd32927f7c226a488a02ae1d2aff869864ae1c",
+  "status": "candidate_ready"
+}

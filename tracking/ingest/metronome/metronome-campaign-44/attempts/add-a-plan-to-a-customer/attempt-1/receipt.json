@@ -1,0 +1,54 @@
+{
+  "job_id": "add-a-plan-to-a-customer",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Add a Plan to a Customer\"\ntype: source\ndate_ingested: 2026-09-11\ncanonical_url: \"https://docs.metronome.com/api-reference/plans/add-a-plan-to-a-customer\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/plans/add-a-plan-to-a-customer-2026-07-13.md\"\ntags: [metronome, api, plans, customers, contracts, price-adjustments]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/customers/{customer_id}/plans/add` associates an existing customer with an existing Plan for a specified date range. This belongs to the deprecated Plans surface; Metronome directs new clients to Contracts without identifying a drop-in replacement or a Plan-to-Contract migration mapping.\n\n## Query-critical facts\n\n- The required UUID path selector is `customer_id`. In the supplied JSON payload, `plan_id` and `starting_on` are required properties; `starting_on` must be an RFC 3339 timestamp at midnight UTC. Optional `ending_before` is an exclusive RFC 3339 end timestamp and must also be at midnight UTC.\n- The OpenAPI operation does not mark the enclosing `requestBody` as required, even though `AddPlanToCustomerPayload` marks `plan_id` and `starting_on` as required. Do not infer omitted-body runtime behavior from the payload property's requiredness.\n- The payload can apply price adjustments on top of Plan pricing. Use the exact `price_adjustments` schema locator below for its adjustment selectors and configuration rather than treating this summary as a complete request contract; the raw also locates optional trial and overage-adjustment structures.\n- HTTP `200` returns required top-level `data` referencing the `Id` schema. The page does not define what the returned `data.id` identifies, so it should not be treated as the customer ID, Plan ID, customer-Plan relationship ID, or Contract ID without separate authority.\n\n## Material boundaries\n\n- This endpoint adds a legacy Plan assignment; it does not create a Contract. The instruction for new clients to use Contracts supplies no replacement endpoint, identity or field mapping, migration procedure, compatibility period, or removal date.\n- `ending_before` is exclusive, while both date boundaries must be midnight UTC. Preserve those qualifications when constructing or interpreting an assignment interval.\n\n## Raw-detail coverage map\n\n| Raw detail category | Exact raw coverage |\n| --- | --- |\n| Operation and authority | `## OpenAPI` -> `/customers/{customer_id}/plans/add` -> `post`; production `/v1` server and document-level bearer security |\n| Customer and Plan selection | Operation `parameters` -> `CustomerId`; `components.schemas.AddPlanToCustomerPayload` -> `required` and `properties.plan_id` |\n| Date range | `components.schemas.AddPlanToCustomerPayload` -> `properties.starting_on` and `properties.ending_before` |\n| Price adjustments | `components.schemas.AddPlanToCustomerPayload` -> `properties.price_adjustments`, including item requiredness, adjustment categories, values, quantity, tier, and ramp start |\n| Other optional configuration | `components.schemas.AddPlanToCustomerPayload` -> `properties.net_payment_terms_days`, `trial_spec`, and `overage_rate_adjustments` |\n| Success response | Operation `responses.200.content.application/json.schema` and `components.schemas.Id` |\n| Deprecation boundary | Page introduction and operation `description` |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-customers-and-contracts]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/plans/add-a-plan-to-a-customer-2026-07-13|2026-07-13 snapshot - complete deprecated customer-Plan association POST operation and schema]]\n",
+  "quotes": [
+    {
+      "text": "Associate an existing customer with a plan for a specified date range.  See the [price adjustments documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments) for details on the price adjustments. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "line 11, page introduction under # Add a plan to a customer"
+    },
+    {
+      "text": "  /customers/{customer_id}/plans/add:\n    post:",
+      "location": "lines 92-93, ## OpenAPI -> paths"
+    },
+    {
+      "text": "    AddPlanToCustomerPayload:\n      required:\n        - plan_id\n        - starting_on",
+      "location": "lines 142-145, ## OpenAPI -> components.schemas.AddPlanToCustomerPayload.required"
+    },
+    {
+      "text": "            RFC 3339 timestamp for when the plan ends (exclusive) for this\n            customer. Must be at 0:00 UTC (midnight).",
+      "location": "lines 157-162, ## OpenAPI -> components.schemas.AddPlanToCustomerPayload.properties.ending_before"
+    },
+    {
+      "text": "            A list of price adjustments can be applied on top of the pricing in\n            the plans. See the [price adjustments\n            documentation](https://plans-docs.metronome.com/pricing/managing-plans/#price-adjustments)\n            for details.",
+      "location": "lines 168-174, ## OpenAPI -> components.schemas.AddPlanToCustomerPayload.properties.price_adjustments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-add-plan-customer-contracts-route",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-plans-add-a-plan-to-a-customer]] - deprecated customer-to-Plan association for a specified date range, with Contracts migration warning and exact customer, Plan, interval, adjustment, and response locators",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not imply that Contracts are created by this endpoint or that the page supplies a replacement Contract operation or migration mapping."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/plans/add-a-plan-to-a-customer-2026-07-13.md",
+  "raw_sha256": "6b030d2918e8d6b72a5eef7d87eb1c599f0102afc562a05d34a02941a31983fe",
+  "status": "candidate_ready"
+}

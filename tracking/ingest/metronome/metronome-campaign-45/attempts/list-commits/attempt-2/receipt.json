@@ -1,0 +1,51 @@
+{
+  "job_id": "list-commits",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"List commits\"\ntype: source\ndate_ingested: 2026-09-13\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/list-commits\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/list-commits-2026-08-28.md\"\ntags: [metronome, api-reference, credits-and-commits, customer-commits]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/contracts/customerCommits/list`, which retrieves a customer's prepaid and postpaid commit agreements. It is the evidence route for selecting commit records and locating optional ledger and current-balance views; exact request and returned Commit schemas remain in the immutable raw snapshot.\n\n## Query-critical routes\n\n- Within a supplied JSON object, `customer_id` is the only required property. The enclosing OpenAPI `requestBody` is not marked required. Use the raw request schema for the optional commit, date, contract/archive-scope, ledger, balance and pagination controls.\n- `include_contract_commits` expands the result beyond customer-level commits, and `include_archived` includes archived commits and commits from archived contracts. Optional ledger and balance expansion is documented as potentially slower.\n- The success response contains a `data` array of `Commit` objects plus a nullable `next_page` cursor. Use the raw `Commit` component for identity, type, schedules, applicability, ledger, balance and other returned details rather than treating this entry as a schema inventory.\n\n## Interpretation warning\n\n> [!warning] Balance and ledger views are not interchangeable\n> The ledger is an ordered list of events that affect a commit's balance. The calculated balance represents value accessible at the current moment: expired and upcoming segments contribute zero, excessive negative manual entries cannot reduce the calculated balance below zero, and future-dated manual entries on active segments are included. Consult the exact raw components before reconciling ledger arithmetic with the returned balance.\n\n## Raw-detail locators\n\n- Operation identity, bearer security and request controls: OpenAPI `paths./v1/contracts/customerCommits/list.post`, especially `requestBody.content.application/json.schema`.\n- Response envelope and cursor placement: `paths./v1/contracts/customerCommits/list.post.responses.200.content.application/json.schema`.\n- Returned commit details: `components.schemas.Commit`, with schedules under `ScheduleDuration` and `SchedulePointInTime`.\n- Optional ledger and current-balance interpretation: `components.schemas.CommitLedger`, its referenced entry schemas, and `BalanceForCommitsAndCredits`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-credits-and-commits]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/list-commits-2026-08-28|2026-08-28 snapshot - customer commit-list purpose, request controls, response route, ledger events and current-balance semantics]]\n",
+  "quotes": [
+    {
+      "text": "Retrieve all commit agreements for a customer, including both prepaid and postpaid commitments. This endpoint provides comprehensive visibility into contractual spending obligations, enabling you to track commitment utilization and manage customer contracts effectively.",
+      "location": "line 11 under # List commits"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/contracts/customerCommits/list",
+      "location": "line 51 under ## OpenAPI"
+    },
+    {
+      "text": "- `include_contract_commits`: Include contract-level commits (not just customer-level)\n    - `include_archived`: Include archived commits and commits from archived contracts",
+      "location": "lines 39-40 under ### Usage guidelines > Scope options"
+    },
+    {
+      "text": "- include_ledgers: Adds detailed transaction history (slower)\n    - include_balance: Adds current balance calculation (slower)",
+      "location": "lines 42-43 under ### Usage guidelines > Performance considerations"
+    },
+    {
+      "text": "The current balance of the credit or commit. This balance reflects the\n        amount of credit or commit that the customer has access to use at this\n        moment - thus, expired and upcoming credit or commit segments contribute\n        0 to the balance. The balance will match the sum of all ledger entries\n        with the exception of the case where the sum of negative manual ledger\n        entries exceeds the positive amount remaining on the credit or commit -\n        in that case, the balance will be 0. All manual ledger entries\n        associated with active credit or commit segments are included in the\n        balance, including future-dated manual ledger entries.",
+      "location": "lines 685-693 at components.schemas.BalanceForCommitsAndCredits.description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-commits-reciprocal-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-commits]] \u2014 customer prepaid and postpaid commit listing, contract/archive scope, optional ledger and current-balance views, and exact request and response locators",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/list-commits-2026-08-28.md",
+  "raw_sha256": "3b760a1808648eff75b1551225be9a91e4fcc57362a46d7ab28a51cd2a0a1342",
+  "status": "candidate_ready"
+}

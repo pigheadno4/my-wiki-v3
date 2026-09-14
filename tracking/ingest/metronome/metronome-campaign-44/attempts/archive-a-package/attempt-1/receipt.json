@@ -1,0 +1,43 @@
+{
+  "job_id": "archive-a-package",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Archive a Package\"\ntype: source\ndate_ingested: 2026-09-11\ncanonical_url: \"https://docs.metronome.com/api-reference/packages/archive-a-package\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/packages/archive-a-package-2026-07-13.md\"\ntags: [metronome, api, packages, contracts, archival]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/packages/archive` archives a package identified by UUID. It is the package-lifecycle operation for preventing that package from being used for new contracts; it does not end contracts already associated with the package.\n\n## Key takeaways\n\n- An archived package cannot be used to create new contracts, while existing associated contracts continue to function normally.\n- The archived package remains retrievable through the UI and API, but it cannot be unarchived. Treat archival as irreversible.\n- Within the JSON payload schema, `package_id` is the required UUID target and additional properties are disallowed. The enclosing `requestBody` is not itself marked required, so the raw does not establish omitted-body runtime behavior.\n\n## Raw-detail coverage map\n\n| Detail | Exact raw locator |\n| --- | --- |\n| Operation and lifecycle effects | `## OpenAPI` -> `paths./v1/packages/archive.post`, especially `description` |\n| Package target identification | `## OpenAPI` -> `paths./v1/packages/archive.post.requestBody.content.application/json.schema.properties.package_id` |\n| Success response | `## OpenAPI` -> `paths./v1/packages/archive.post.responses.200` and `components.schemas.Id` |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-packages-and-aliases]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/packages/archive-a-package-2026-07-13|2026-07-13 snapshot - complete package archival POST operation and schema]]\n",
+  "quotes": [
+    {
+      "text": "Archive a package. Archived packages cannot be used to create new contracts. However, existing contracts associated with the package will continue to function as normal. Once you archive a package, you can still retrieve it in the UI and API, but you cannot unarchive it.",
+      "location": "line 11, page introduction under # Archive a package"
+    },
+    {
+      "text": "  /v1/packages/archive:\n    post:\n      tags:\n        - Packages\n      summary: Archive a package",
+      "location": "lines 88-92, ## OpenAPI -> paths./v1/packages/archive.post"
+    },
+    {
+      "text": "              required:\n                - package_id\n              additionalProperties: false\n              properties:\n                package_id:\n                  type: string\n                  format: uuid\n                  description: ID of the package to archive",
+      "location": "lines 104-111, ## OpenAPI -> paths./v1/packages/archive.post.requestBody.content.application/json.schema"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-archive-package-lifecycle",
+        "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Cohort pricing",
+        "proposed_markdown": "### Package archival\n\n`POST /v1/packages/archive` prevents an archived package from being used for new contract creation without ending its existing associated contracts, which continue to function normally. The package remains retrievable in the UI and API, but it cannot be unarchived. [[source-metronome-api-reference-packages-archive-a-package]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Archival is irreversible at the package level; do not imply that it ends existing contracts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/packages/archive-a-package-2026-07-13.md",
+  "raw_sha256": "ce29df756ed66814cb647ab2d6fc4fb374e2f532e9a24ba53ed642ff3a96f567",
+  "status": "candidate_ready"
+}

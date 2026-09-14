@@ -1,0 +1,55 @@
+{
+  "job_id": "update-the-rate-card-products-order",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Update the rate card products order\"\ntype: source\ndate_ingested: 2026-09-13\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/rate-cards/update-the-rate-card-products-order\"\nraw_files:\n  - \"metronome/api-reference/rate-cards/update-the-rate-card-products-order-2026-07-13.md\"\ntags: [metronome, api-reference, rate-cards, products, invoice-presentation]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/contract-pricing/rate-cards/moveRateCardProducts`, which changes the invoice-presentation order of selected products on a rate card by moving them relative to their current locations. Each requested destination is a zero-based position.\n\n## Query-critical behavior and qualifications\n\n- Within a supplied JSON payload, `rate_card_id` and `product_moves` are required properties. Each move requires a `product_id` and numeric `position`; the position has a minimum of zero.\n- The enclosing OpenAPI `requestBody` is not marked required, so this page does not establish omitted-body runtime behavior.\n- HTTP `200` requires top-level `data` referencing the generic `components.schemas.Id`. The example repeats the rate-card UUID at `data.id`, but the generic schema does not label the identifier's semantic object.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths./v1/contract-pricing/rate-cards/moveRateCardProducts.post` for the method, path, purpose, and operation ID.\n- **Move request:** `components.schemas.MoveRateCardProductsPayload` documents the required rate-card selector and move array; its item schema documents required `product_id` and zero-based `position`.\n- **Response placement:** `paths./v1/contract-pricing/rate-cards/moveRateCardProducts.post.responses.200.content.application/json.schema` requires top-level `data` and references `components.schemas.Id`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-products-and-rate-cards]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/rate-cards/update-the-rate-card-products-order-2026-07-13|2026-07-13 snapshot - relative rate-card product moves, invoice presentation effect, request schema, and response route]]\n",
+  "quotes": [
+    {
+      "text": "The ordering of products on a rate card determines the order in which the products will appear on customers' invoices. Use this endpoint to set the order of specific products on the rate card by moving them relative to their current location.",
+      "location": "line 11 under # Update the rate card products order"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/contract-pricing/rate-cards/moveRateCardProducts\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 18-27 at ## OpenAPI"
+    },
+    {
+      "text": "  /v1/contract-pricing/rate-cards/moveRateCardProducts:\n    post:\n      tags:\n        - Rate cards\n      summary: Update the rate card products order\n      description: >\n        The ordering of products on a rate card determines the order in which\n        the products will appear on customers' invoices. Use this endpoint to\n        set the order of specific products on the rate card by moving them\n        relative to their current location.\n      operationId: moveRateCardProducts-v1",
+      "location": "lines 88-98 at paths./v1/contract-pricing/rate-cards/moveRateCardProducts.post"
+    },
+    {
+      "text": "    MoveRateCardProductsPayload:\n      type: object\n      required:\n        - rate_card_id\n        - product_moves\n      properties:\n        rate_card_id:\n          type: string\n          format: uuid\n          description: ID of the rate card to update\n        product_moves:\n          type: array\n          items:\n            type: object\n            required:\n              - product_id\n              - position\n            properties:\n              product_id:\n                type: string\n                format: uuid\n                description: ID of the product to move\n              position:\n                type: number\n                description: 0-based index of the new position of the product\n                minimum: 0",
+      "location": "lines 137-162 at components.schemas.MoveRateCardProductsPayload"
+    },
+    {
+      "text": "        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+      "location": "lines 113-126 at paths./v1/contract-pricing/rate-cards/moveRateCardProducts.post.responses.200"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "update-rate-card-products-order-reciprocal-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources; place beside the set-the-rate-card-products-order source",
+        "proposed_markdown": "- [[source-metronome-api-reference-rate-cards-update-the-rate-card-products-order]] - selected-product moves to zero-based positions relative to current rate-card order for customer-invoice presentation, with exact request and response routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this move-relative endpoint distinct from setRateCardProductsOrder, which supplies a complete ordered product-ID array.",
+          "The generic Id response schema does not label data.id; the example alone should not be turned into a guaranteed response-identity claim."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/rate-cards/update-the-rate-card-products-order-2026-07-13.md",
+  "raw_sha256": "b8b0bb4b9e508f33d5ec2fecaa719392e820997030bbe1404e863e7b2725e455",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "list-all-packages",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"List all packages\"\ntype: source\ndate_ingested: 2026-09-13\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/list-all-packages\"\nraw_files:\n  - \"metronome/api-reference/list-all-packages-2026-08-28.md\"\ntags: [metronome, api-reference, packages, aliases, pagination]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/packages/list`, which enumerates reusable package definitions and returns their package details. For contracts associated with one package, the page explicitly routes readers to the separate `listContractsOnPackage` endpoint.\n\n## Query-critical behavior and warning\n\n- Package selection uses the optional JSON `archive_filter`; pagination uses the `limit` and `next_page` query parameters. The operation description says `limit` defaults to 10, while the reusable parameter schemas contain the exact accepted bounds and cursor shape.\n- HTTP `200` requires top-level `data` and `next_page`. `data` is an array of `Package` objects, and `next_page` is a nullable string cursor.\n\n> [!warning] Archived packages are excluded by default\n> Although the operation is titled \"List all packages,\" `archive_filter` defaults to `NOT_ARCHIVED`. Use the raw request schema to select archived packages or both archive states explicitly.\n\n## API and raw-detail locators\n\n- **Operation and authentication:** `## OpenAPI` -> document-level `security` -> `bearerAuth`, and `paths` -> `/v1/packages/list` -> `post`.\n- **Selection and pagination:** `paths./v1/packages/list.post.parameters` references `components.parameters.PageLimit` and `components.parameters.NextPage`; `paths./v1/packages/list.post.requestBody.content.application/json.schema.properties.archive_filter` documents archive selection. The enclosing `requestBody` is not marked required, so this page does not establish omitted-body runtime behavior.\n- **Response envelope:** `paths./v1/packages/list.post.responses.200.content.application/json.schema` documents the required `data` array and nullable sibling `next_page`.\n- **Returned package detail:** `components.schemas.Package` is the package object entry point. Its references route alias schedules to `PackageAlias`, duration to `RelativeDate`, and package terms to the referenced commit, credit, override, scheduled-charge, recurring, threshold, spend-tracker, and subscription schemas.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-packages-and-aliases]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/list-all-packages-2026-08-28|2026-08-28 snapshot - package-definition listing, archive selection, pagination, and returned package schema routes]]\n",
+  "quotes": [
+    {
+      "text": "Lists all packages with details including name, aliases, duration, and terms. To view contracts on a specific package, use the `listContractsOnPackage` endpoint.",
+      "location": "line 11 under # List all packages"
+    },
+    {
+      "text": "## OpenAPI\n\n````yaml /openapi.json post /v1/packages/list\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 16-27 at ## OpenAPI"
+    },
+    {
+      "text": "      parameters:\n        - $ref: '#/components/parameters/PageLimit'\n          description: The maximum number of packages to return. Defaults to 10.\n        - $ref: '#/components/parameters/NextPage'\n      requestBody:\n        content:\n          application/json:\n            schema:\n              type: object\n              additionalProperties: false\n              properties:\n                archive_filter:\n                  type: string\n                  enum:\n                    - ARCHIVED\n                    - NOT_ARCHIVED\n                    - ALL\n                    - archived\n                    - not_archived\n                    - all\n                  description: >-\n                    Filter packages by archived status. Defaults to\n                    NOT_ARCHIVED.",
+      "location": "lines 96-118 at paths./v1/packages/list.post parameters and requestBody"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/Package'\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "lines 120-137 at paths./v1/packages/list.post.responses.200"
+    },
+    {
+      "text": "    Package:\n      type: object\n      required:\n        - id\n        - commits\n        - overrides\n        - scheduled_charges\n        - created_at\n        - created_by\n        - usage_statement_schedule\n      properties:\n        id:\n          type: string\n          format: uuid\n        uniqueness_key:\n          $ref: '#/components/schemas/UniquenessKey'\n        name:\n          type: string\n        rate_card_id:\n          type: string\n          format: uuid\n        aliases:\n          type: array\n          items:\n            $ref: '#/components/schemas/PackageAlias'\n        duration:\n          $ref: '#/components/schemas/RelativeDate'\n        commits:\n          type: array\n          items:\n            $ref: '#/components/schemas/CommitTemplate'\n        credits:\n          type: array\n          items:\n            $ref: '#/components/schemas/CreditTemplate'\n        overrides:\n          type: array\n          items:\n            $ref: '#/components/schemas/OverrideTemplate'\n        scheduled_charges:\n          type: array\n          items:\n            $ref: '#/components/schemas/ScheduledChargeTemplate'",
+      "location": "lines 237-279 at components.schemas.Package"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-all-packages-reciprocal-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources; add with the package API entries",
+        "proposed_markdown": "- [[source-metronome-api-reference-list-all-packages]] - package-definition catalog discovery, default archive scope, pagination, and exact alias, duration, and package-term schema routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not confuse this package-definition list with listContractsOnPackage, which lists contracts associated with one package.",
+          "Despite the operation title, archive_filter defaults to NOT_ARCHIVED; the default response does not include archived packages."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/list-all-packages-2026-08-28.md",
+  "raw_sha256": "192a2aee5c1f2ac2a0b8f6cedbd373125270d188e8de918eaca36e5791c4a057",
+  "status": "candidate_ready"
+}
