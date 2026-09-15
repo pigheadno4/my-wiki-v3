@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-01
+date_updated: 2026-09-15
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/manifest.json"
@@ -16,6 +17,28 @@ tags: [stripe, stripe-js, javascript, typescript, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-js`. Cumulative implementation knowledge belongs in [[source-github-stripe-js]] and the linked immutable snapshots.
+
+## `@stripe/stripe-js@9.16.0` - Change Set `e03ec56` (2026-09-09)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@stripe/stripe-js` | `9.15.0` | `9.16.0` | 2026-09-09 | `e03ec565455178cd2b236f6b495ddc952397c3f0` | Delta |
+
+**Important changes:** beta Link Signup Element creation/lookup in Elements and Checkout Elements SDK, optional email/name/phone defaults, lifecycle/loading event declarations and validation-error discriminant. Checkout line items add graduated/volume pricing breakdowns and quantity-transformation information.
+
+**Developer impact:** Link Signup is distinct from Link Authentication and has no declared change/update/getValue surface. Beta access is explicit; no React export or enrollment behavior is established. Pricing objects support custom summary display but do not implement pricing calculations or configure prices.
+
+**Migration:** typed mocks now need required-but-nullable `pricing` and `transformQuantity`. Handle nullable tier amounts and expanded Element/error unions. No loader, dependency, engine or release-train change; this is a user-approved bounded declaration delta, not broad runtime replacement.
+
+**Updated sections:** cumulative overview/status, additive 9.16.0 detail and grounding; Link, Elements and Checkout concepts; company, provider index and logs. Earlier releases and source count remain unchanged. No cross-company comparison or new contradiction warranted.
+
+**Evidence boundary:** full assigned-file reading; 80 retained files (four modified, one added, 75 unchanged). Two upstream type-test changes are comparison-only policy exclusions, not executed tests. No browser, payment or hosted-runtime verification. Upstream release notes retain empty template headings.
+
+- [Snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json)
+- [Release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.16.0/2026-09-15/manifest.json)
+- [Release notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.16.0/2026-09-15/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.15.0--9.16.0/comparison.json)
+- [[source-github-stripe-js]] - full details and exact-code grounding
 
 ## `@stripe/stripe-js@9.15.0` — Change Set `9c83132` (2026-08-31)
 

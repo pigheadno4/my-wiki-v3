@@ -58,6 +58,14 @@ The approved `@stripe/stripe-js@9.13.0` delta adds `features.promotionCodeCollec
 
 The approved `@stripe/stripe-js@9.14.0` delta adds Payment Element `walletOptions` to the Checkout Elements path, allowing wallet email and phone collection to be required at creation and updated later. It also marks Embedded Checkout `onShippingDetailsChange` deprecated because dynamic shipping updates are deprecated in that surface.
 
+## Stripe.js 9.16.0 Checkout Declaration Delta
+
+Checkout Elements SDK gains beta `createLinkSignupElement` and `getLinkSignupElement`, with optional string defaults for email/name/phone. Validation-error Element discriminants now include `linkSignup`. This does not add a corresponding factory to Checkout Form SDK or prove a React binding; see [[stripe-link]].
+
+`StripeCheckoutLineItem` adds required-but-nullable `pricing` and `transformQuantity`. Pricing discriminates graduated versus volume tiers and includes `tiers` plus nullable `recurringTiers`. Each tier records its upper bound, nullable unit/flat amounts (including decimal variants), quantity and nullable total. Amount fields use `StripeCheckoutAmount` objects, not plain decimal strings. Quantity transformation records `divideBy`, `round: 'up' | 'down'`, and `packageCount`.
+
+These are response/display contracts for merchant-built summaries, not a pricing engine or client-side price-setting API. The earlier "no order summary" description concerns prebuilt UI, not absence of session data. Typed mocks need the new fields (null when inapplicable), and readers must handle nullable pricing/tier values. No server pricing, runtime rollout or eligibility was verified. See [[source-github-stripe-js]] and [[changelog-github-stripe-js]].
+
 ## React Stripe.js v6.8 Binding
 
 `@stripe/react-stripe-js@6.8.0` binds the v9 Checkout contracts into two provider-specific React surfaces:
@@ -215,7 +223,7 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 - [[source-stripe-checkout-sessions-vs-payment-intents]] — Official comparison: 11-row feature matrix, session expiration, webhook lifecycle scope, Adaptive Pricing exclusivity
 - [[source-stripe-checkout-elements-quickstart]] — Checkout Elements quickstart: CheckoutElementsProvider, useCheckout hook, 4 elements, return page, Adaptive Pricing, Stripe Tax
 - [[source-stripe-web-elements-overview]] — Stripe Elements overview: 7 elements, API comparison diagram, features
-- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` through `9.14.0`, including Checkout transition, promotion-code control, wallet collection, and Embedded Checkout deprecation
+- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` through `9.16.0`, including Checkout transition, beta Link Signup and tiered/package pricing response types
 - [[source-github-react-stripe-js]] — React provider, hook, component lifecycle, SSR, and package-compatibility evidence at `@stripe/react-stripe-js@6.8.0`
 - [[changelog-github-react-stripe-js]] — package-qualified React Stripe.js release history
 - [[stripe-elements]] — Stripe Elements concept page (all 7 elements, React integration patterns)

@@ -9,7 +9,9 @@ tags: [stripe, elements, payment-element, express-checkout, link, address-elemen
 
 Stripe's prebuilt UI component library for building custom checkout flows. Built on top of Stripe.js — tokenizes sensitive payment details within each Element without ever hitting your server. Works with both Checkout Sessions API and Payment Intents API.
 
-## The 7 Elements
+## Documentation Overview: Seven Elements
+
+This table preserves the documentation overview, not an exhaustive package export inventory. The version-qualified beta Link Signup addition is recorded below.
 
 | Element | Purpose | API compatibility |
 | --- | --- | --- |
@@ -69,7 +71,7 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 
 ## Stripe.js Loader Boundary
 
-The `@stripe/stripe-js` npm package is a loader and TypeScript declaration package, not a bundled copy of the Stripe.js runtime. The retained history now covers `@stripe/stripe-js@8.11.0`, the full transition to `@stripe/stripe-js@9.12.1`, and approved deltas through `9.15.0`:
+The `@stripe/stripe-js` npm package is a loader and TypeScript declaration package, not a bundled copy of the Stripe.js runtime. The retained history now covers `@stripe/stripe-js@8.11.0`, the full transition to `@stripe/stripe-js@9.12.1`, and approved deltas through `9.16.0`:
 
 - Stripe.js must load from `https://js.stripe.com`; the runtime cannot be bundled or self-hosted.
 - The v8 package targets `clover`; v9 targets `dahlia`. Package versions pin declaration trains but do not prove runtime feature availability.
@@ -80,6 +82,8 @@ The `@stripe/stripe-js` npm package is a loader and TypeScript declaration packa
 - In v9.13.0, `paymentElement.update()` is limited to `defaultValues`, `business`, `paymentMethodOrder`, `fields`, `readOnly`, `terms`, `layout`, and `applePay`. The `wallets` creation option is excluded from the typed update surface, so wallet visibility must be set when creating the Element.
 - In v9.14.0, `walletOptions` can require wallet-provided email and phone values at Payment Element creation and can be changed through `paymentElement.update()`. This is separate from the creation-only `wallets` visibility option.
 - In v9.15.0, the Elements `Appearance.variables` contract adds `buttonBoxShadow?: string`. This establishes a typed styling variable, not independent proof that every Stripe-hosted runtime or account already supports it.
+
+- In v9.16.0, beta `linkSignup` creation and lookup accept default email/name/phone. The Element declares lifecycle/loading events but no `change`, `update`, or `getValue`. It is distinct from Link Authentication; see [[stripe-link]]. `StripeElementType` and `StripeElement` expand, so exhaustive consumer handling may need adjustment. This package does not establish matching React exports or beta eligibility.
 
 See [[source-github-stripe-js]] for package-qualified v8 and v9 implementation evidence.
 
@@ -166,7 +170,7 @@ The v6.8.0 release note adds `TermsElement`. Both the root and `/checkout` imple
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider, useCheckoutElements, Elements provider, useStripe/useElements, ElementsConsumer
 - [[source-github-react-stripe-js]] — cumulative React Stripe.js repository history: legacy v6.3.0 context plus package-qualified `@stripe/react-stripe-js@6.8.0`
 - [[changelog-github-react-stripe-js]] — package-qualified React Stripe.js release ledger
-- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` through `9.15.0` loader, runtime boundary, public type surface, and Elements history
+- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` through `9.16.0` loader, runtime boundary, public type surface, and Elements history
 - [[source-stripe-elements-advanced-payments]] — Checkout Sessions vs Payment Intents feature matrix
 - [[source-stripe-payment-element]] — Payment Element reference: layout, Appearance API, 8 options, combining elements, 17 error codes
 - [[source-stripe-payment-element-best-practices]] — Best practices: LLM instruction, HTML confirm pattern, 7-item checklist, 5-item features checklist

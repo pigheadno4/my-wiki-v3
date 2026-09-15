@@ -145,7 +145,15 @@ Key: `loader: 'auto'` on Elements instance; `onChange` event fires on input and 
 
 **Page order**: Link Authentication Element → Address Element (optional) → Payment Element. Can be on different pages — show only once per checkout flow. Supported PMs for Link signup: credit card, debit card, US bank. Domain registration required.
 
+## Link Signup Element: 9.16.0 beta declaration
+
+The retained `@stripe/stripe-js@9.16.0` adds a distinct `linkSignup` Element, not a rename of Link Authentication. Both standard Elements (`create('linkSignup')`, `getElement('linkSignup')`) and Checkout Elements SDK (`createLinkSignupElement`, `getLinkSignupElement`) explicitly require beta access. Optional defaults are string-valued `email`, `name`, and `phone`.
+
+Its typed events are `ready`, `focus`, `blur`, `escape`, `loaderstart`, and `loaderror`, with `on`/`once`/`off`. It inherits the base Element lifecycle but does not declare `change`, `update`, or `getValue`. Do not transfer Link Authentication's email-change or autofill semantics to it. The declarations do not establish enrollment, consent, saved-data behavior, merchant eligibility, or a React wrapper. See [[source-github-stripe-js]] and [[changelog-github-stripe-js]].
+
 ## Sources
+
+- [[source-github-stripe-js]] - version-qualified Link Signup beta contract at 9.16.0
 
 - [[source-stripe-link]] — two PM type paths (link vs card+wallet), Instant Bank Payments exclusive, Thailand/Brazil Payment Element caveat
 - [[source-stripe-link-payment-methods]] — Link payment methods (US-only): LPMs, zero integration, 5 eligibility criteria, customer flow, disabling rules

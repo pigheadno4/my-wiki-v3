@@ -1,0 +1,438 @@
+diff --git a/package.json b/package.json
+index 811fabb..d4d0964 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-js",
+-  "version": "9.15.0",
++  "version": "9.16.0",
+   "description": "Stripe.js loading utility",
+   "repository": "github:stripe/stripe-js",
+   "main": "lib/index.js",
+diff --git a/tests/types/src/invalid.ts b/tests/types/src/invalid.ts
+index 777cb72..7dc76ce 100644
+--- a/tests/types/src/invalid.ts
++++ b/tests/types/src/invalid.ts
+@@ -7,6 +7,7 @@ import {
+   StripeExpressCheckoutElement,
+   StripeElementsOptions,
+   StripeCurrencySelectorElement,
++  StripeLinkSignupElement,
+   ReleaseTrain,
+ } from '../../../types';
+ import {ApplePayUpdateOption} from '../../../types/stripe-js/elements/apple-pay';
+@@ -18,6 +19,7 @@ declare const ibanElement: StripeIbanElement;
+ declare const paymentElement: StripePaymentElement;
+ declare const expressCheckoutElement: StripeExpressCheckoutElement;
+ declare const currencySelectorElement: StripeCurrencySelectorElement;
++declare const linkSignupElement: StripeLinkSignupElement;
+ 
+ const options: StripeElementsOptions = {
+   clientSecret: '',
+@@ -308,6 +310,30 @@ expressCheckoutElement.on('click', ({resolve}) => {
+ // @ts-expect-error: CurrencySelector cannot be updated
+ currencySelectorElement.update({});
+ 
++// @ts-expect-error: LinkSignupElement options do not accept unknown fields
++elements.create('linkSignup', {unknownOption: true});
++
++// @ts-expect-error: LinkSignupElement default values do not accept unknown fields
++elements.create('linkSignup', {defaultValues: {unknownField: 'value'}});
++
++// @ts-expect-error: LinkSignupElement email must be a string
++elements.create('linkSignup', {defaultValues: {email: 123}});
++
++// @ts-expect-error: LinkSignupElement name must be a string
++elements.create('linkSignup', {defaultValues: {name: 123}});
++
++// @ts-expect-error: LinkSignupElement phone must be a string
++elements.create('linkSignup', {defaultValues: {phone: 123}});
++
++// @ts-expect-error: LinkSignupElement does not emit change events
++linkSignupElement.on('change', () => {});
++
++// @ts-expect-error: LinkSignupElement cannot be updated
++linkSignupElement.update({});
++
++// @ts-expect-error: LinkSignupElement does not expose its value
++linkSignupElement.getValue();
++
+ // @ts-expect-error: AddressElement requires a mode
+ elements.create('address');
+ 
+@@ -641,6 +667,14 @@ stripe
+ const checkoutElementsSdk = stripe.initCheckoutElementsSdk({
+   clientSecret: 'cs_test_foo',
+ });
++// @ts-expect-error: LinkSignupElement options do not accept unknown fields
++checkoutElementsSdk.createLinkSignupElement({unknownOption: true});
++checkoutElementsSdk.createLinkSignupElement({
++  // @ts-expect-error: LinkSignupElement default values do not accept unknown fields
++  defaultValues: {unknownField: 'value'},
++});
++// @ts-expect-error: LinkSignupElement email must be a string
++checkoutElementsSdk.createLinkSignupElement({defaultValues: {email: 123}});
+ // @ts-expect-error Property 'createElement' does not exist on type 'StripeCheckoutElementsSdk'.
+ checkoutElementsSdk.createElement('payment');
+ // @ts-expect-error - doesn't take a number
+diff --git a/tests/types/src/valid.ts b/tests/types/src/valid.ts
+index b7919bb..c7de468 100644
+--- a/tests/types/src/valid.ts
++++ b/tests/types/src/valid.ts
+@@ -32,6 +32,7 @@ import {
+   StripePaymentMethodMessagingElement,
+   StripeLinkAuthenticationElementChangeEvent,
+   StripeLinkAuthenticationElement,
++  StripeLinkSignupElement,
+   StripeContactDetailsElement,
+   StripeContactDetailsElementChangeEvent,
+   StripeTermsElement,
+@@ -739,6 +740,7 @@ assert<
+ const auBankElementType: StripeElementType = 'auBankAccount';
+ const cardElementType: StripeElementType = 'card';
+ const ibanElementType: StripeElementType = 'iban';
++const linkSignupElementType: StripeElementType = 'linkSignup';
+ 
+ cardElement.mount('#bogus-container');
+ ibanElement.mount('#bogus-container');
+@@ -831,6 +833,36 @@ const retrievedLinkAuthenticationElement: StripeLinkAuthenticationElement | null
+   'linkAuthentication'
+ );
+ 
++let linkSignupElementDefaults: StripeLinkSignupElement = elements.create(
++  'linkSignup'
++);
++linkSignupElementDefaults = elements.create('linkSignup', {});
++
++const linkSignupElement = elements.create('linkSignup', {
++  defaultValues: {
++    email: 'foo@bar.com',
++    name: 'Jenny Rosen',
++    phone: '+15555555555',
++  },
++});
++
++linkSignupElement
++  .on('ready', (e: {elementType: 'linkSignup'}) => {})
++  .on('focus', (e: {elementType: 'linkSignup'}) => {})
++  .on('blur', (e: {elementType: 'linkSignup'}) => {})
++  .on('escape', (e: {elementType: 'linkSignup'}) => {})
++  .on('loaderstart', (e: {elementType: 'linkSignup'}) => {})
++  .on('loaderror', (e: {elementType: 'linkSignup'; error: StripeError}) => {});
++
++linkSignupElement
++  .once('ready', (e: {elementType: 'linkSignup'}) => {})
++  .off('ready')
++  .on('ready', (e: {elementType: 'linkSignup'}) => {});
++
++const retrievedLinkSignupElement: StripeLinkSignupElement | null = elements.getElement(
++  'linkSignup'
++);
++
+ let contactDetailsElementDefaults: StripeContactDetailsElement = elements.create(
+   'contactDetails'
+ );
+@@ -1454,6 +1486,9 @@ currencySelectorElement.destroy();
+ ibanElement.destroy();
+ paymentRequestButtonElement.destroy();
+ linkAuthenticationElement.destroy();
++linkSignupElementDefaults.destroy();
++linkSignupElement.destroy();
++retrievedLinkSignupElement?.destroy();
+ shippingAddressElement.destroy();
+ expressCheckoutElementDefault.destroy();
+ expressCheckoutElement.destroy();
+@@ -3726,6 +3761,15 @@ checkoutElementsSdk.createTaxIdElement();
+ checkoutElementsSdk.getTaxIdElement();
+ checkoutElementsSdk.createTermsElement();
+ checkoutElementsSdk.getTermsElement();
++const checkoutLinkSignupElement: StripeLinkSignupElement = checkoutElementsSdk.createLinkSignupElement();
++checkoutElementsSdk.createLinkSignupElement({
++  defaultValues: {
++    email: 'foo@bar.com',
++    name: 'Jenny Rosen',
++    phone: '+15555555555',
++  },
++});
++const retrievedCheckoutLinkSignupElement: StripeLinkSignupElement | null = checkoutElementsSdk.getLinkSignupElement();
+ 
+ checkoutElementsSdk.createShippingAddressElement({
+   fields: {
+diff --git a/types/stripe-js/checkout.d.ts b/types/stripe-js/checkout.d.ts
+index b3d72ce..cea35f4 100644
+--- a/types/stripe-js/checkout.d.ts
++++ b/types/stripe-js/checkout.d.ts
+@@ -17,6 +17,7 @@ import {
+   StripeExpressCheckoutElementOptions,
+   StripeExpressCheckoutElementReadyEvent,
+   StripeCheckoutForm,
++  StripeLinkSignupElement,
+   StripeTaxIdElement,
+   StripeTaxIdElementOptions,
+   PaymentWalletsOption,
+@@ -178,6 +179,36 @@ export type StripeCheckoutLineItem = {
+   images: string[];
+   priceId: string;
+   isRemovable: boolean;
++  pricing: StripeCheckoutGraduatedPricing | StripeCheckoutVolumePricing | null;
++  transformQuantity: StripeCheckoutTransformQuantity | null;
++};
++
++export type StripeCheckoutTransformQuantity = {
++  divideBy: number;
++  round: 'up' | 'down';
++  packageCount: number;
++};
++
++export type StripeCheckoutGraduatedPricing = {
++  tiersMode: 'graduated';
++  tiers: Array<StripeCheckoutTierBreakdown>;
++  recurringTiers: Array<StripeCheckoutTierBreakdown> | null;
++};
++
++export type StripeCheckoutVolumePricing = {
++  tiersMode: 'volume';
++  tiers: Array<StripeCheckoutTierBreakdown>;
++  recurringTiers: Array<StripeCheckoutTierBreakdown> | null;
++};
++
++export type StripeCheckoutTierBreakdown = {
++  upTo: number | null;
++  unitAmount: StripeCheckoutAmount | null;
++  unitAmountDecimal: StripeCheckoutAmount | null;
++  flatAmount: StripeCheckoutAmount | null;
++  flatAmountDecimal: StripeCheckoutAmount | null;
++  quantity: number;
++  total: StripeCheckoutAmount | null;
+ };
+ 
+ export type StripeCheckoutRecurring = {
+@@ -431,6 +462,14 @@ export type StripeCheckoutContactDetailsElementOptions = Record<string, never>;
+ 
+ export type StripeCheckoutTermsElementOptions = Record<string, never>;
+ 
++export type StripeCheckoutLinkSignupElementOptions = {
++  defaultValues?: {
++    email?: string;
++    name?: string;
++    phone?: string;
++  };
++};
++
+ /**
+  * Wallet button theme options for CheckoutForm.
+  */
+@@ -720,6 +759,7 @@ type ValidateElementsValidationError = {
+     | 'billingAddress'
+     | 'taxId'
+     | 'terms'
++    | 'linkSignup'
+     | 'linkAuthentication';
+ };
+ type ValidateElementsError = {
+@@ -821,6 +861,8 @@ export interface StripeCheckoutElementsSdk {
+   getTaxIdElement(): StripeTaxIdElement | null;
+   /* Requires beta access: Contact [Stripe support](https://support.stripe.com/) for more information. */
+   getTermsElement(): StripeTermsElement | null;
++  /* Requires beta access: Contact [Stripe support](https://support.stripe.com/) for more information. */
++  getLinkSignupElement(): StripeLinkSignupElement | null;
+ 
+   createPaymentElement(
+     options?: StripeCheckoutPaymentElementOptions
+@@ -844,6 +886,10 @@ export interface StripeCheckoutElementsSdk {
+   createTermsElement(
+     options?: StripeCheckoutTermsElementOptions
+   ): StripeTermsElement;
++  /* Requires beta access: Contact [Stripe support](https://support.stripe.com/) for more information. */
++  createLinkSignupElement(
++    options?: StripeCheckoutLinkSignupElementOptions
++  ): StripeLinkSignupElement;
+ }
+ 
+ /* Requires beta access: Contact [Stripe support](https://support.stripe.com/) for more information. */
+diff --git a/types/stripe-js/elements-group.d.ts b/types/stripe-js/elements-group.d.ts
+index 7f9aa53..56f7100 100644
+--- a/types/stripe-js/elements-group.d.ts
++++ b/types/stripe-js/elements-group.d.ts
+@@ -11,6 +11,8 @@ import {
+   StripePaymentElementOptions,
+   StripeLinkAuthenticationElement,
+   StripeLinkAuthenticationElementOptions,
++  StripeLinkSignupElement,
++  StripeLinkSignupElementOptions,
+   StripeContactDetailsElement,
+   StripeContactDetailsElementOptions,
+   StripeIbanElement,
+@@ -245,6 +247,29 @@ export interface StripeElements {
+     elementType: 'linkAuthentication'
+   ): StripeLinkAuthenticationElement | null;
+ 
++  /////////////////////////////
++  /// linkSignup
++  /////////////////////////////
++
++  /**
++   * Requires beta access:
++   * Contact [Stripe support](https://support.stripe.com/) for more information.
++   *
++   * Creates a `LinkSignupElement`.
++   */
++  create(
++    elementType: 'linkSignup',
++    options?: StripeLinkSignupElementOptions
++  ): StripeLinkSignupElement;
++
++  /**
++   * Requires beta access:
++   * Contact [Stripe support](https://support.stripe.com/) for more information.
++   *
++   * Looks up a previously created `Element` by its type.
++   */
++  getElement(elementType: 'linkSignup'): StripeLinkSignupElement | null;
++
+   /////////////////////////////
+   /// contactDetails
+   /////////////////////////////
+@@ -488,6 +513,7 @@ export type StripeElementType =
+   | 'paymentMethodMessaging'
+   | 'paymentRequestButton'
+   | 'linkAuthentication'
++  | 'linkSignup'
+   | 'shippingAddress'
+   | 'issuingCardNumberDisplay'
+   | 'issuingCardCvcDisplay'
+@@ -506,6 +532,7 @@ export type StripeElement =
+   | StripeCardExpiryElement
+   | StripeCardCvcElement
+   | StripeIbanElement
++  | StripeLinkSignupElement
+   | StripeContactDetailsElement
+   | StripeCurrencySelectorElement
+   | StripeExpressCheckoutElement
+diff --git a/types/stripe-js/elements/index.d.ts b/types/stripe-js/elements/index.d.ts
+index 1e5dc5f..7679f64 100644
+--- a/types/stripe-js/elements/index.d.ts
++++ b/types/stripe-js/elements/index.d.ts
+@@ -12,6 +12,7 @@ export * from './currency-selector';
+ export * from './express-checkout';
+ export * from './iban';
+ export * from './link-authentication';
++export * from './link-signup';
+ export * from './payment-request-button';
+ export * from './payment';
+ export * from './shipping-address';
+diff --git a/types/stripe-js/elements/link-signup.d.ts b/types/stripe-js/elements/link-signup.d.ts
+new file mode 100644
+index 0000000..204fe02
+--- /dev/null
++++ b/types/stripe-js/elements/link-signup.d.ts
+@@ -0,0 +1,108 @@
++import {StripeElementBase} from './base';
++import {StripeError} from '../stripe';
++
++export type StripeLinkSignupElement = StripeElementBase & {
++  /**
++   * Triggered when the element is fully rendered and can accept `element.focus` calls.
++   */
++  on(
++    eventType: 'ready',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  once(
++    eventType: 'ready',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  off(
++    eventType: 'ready',
++    handler?: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++
++  /**
++   * Triggered when the element gains focus.
++   */
++  on(
++    eventType: 'focus',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  once(
++    eventType: 'focus',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  off(
++    eventType: 'focus',
++    handler?: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++
++  /**
++   * Triggered when the element loses focus.
++   */
++  on(
++    eventType: 'blur',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  once(
++    eventType: 'blur',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  off(
++    eventType: 'blur',
++    handler?: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++
++  /**
++   * Triggered when the escape key is pressed within the element.
++   */
++  on(
++    eventType: 'escape',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  once(
++    eventType: 'escape',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  off(
++    eventType: 'escape',
++    handler?: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++
++  /**
++   * Triggered when the loader UI is mounted to the DOM and ready to be displayed.
++   */
++  on(
++    eventType: 'loaderstart',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  once(
++    eventType: 'loaderstart',
++    handler: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++  off(
++    eventType: 'loaderstart',
++    handler?: (event: {elementType: 'linkSignup'}) => any
++  ): StripeLinkSignupElement;
++
++  /**
++   * Triggered when the element fails to load.
++   */
++  on(
++    eventType: 'loaderror',
++    handler: (event: {elementType: 'linkSignup'; error: StripeError}) => any
++  ): StripeLinkSignupElement;
++  once(
++    eventType: 'loaderror',
++    handler: (event: {elementType: 'linkSignup'; error: StripeError}) => any
++  ): StripeLinkSignupElement;
++  off(
++    eventType: 'loaderror',
++    handler?: (event: {elementType: 'linkSignup'; error: StripeError}) => any
++  ): StripeLinkSignupElement;
++};
++
++export interface StripeLinkSignupElementOptions {
++  defaultValues?: {
++    email?: string;
++    name?: string;
++    phone?: string;
++  };
++}

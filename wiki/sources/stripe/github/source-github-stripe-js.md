@@ -2,9 +2,10 @@
 title: "GitHub: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-01
+date_updated: 2026-09-15
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/manifest.json"
@@ -15,7 +16,7 @@ tags: [stripe, stripe-js, javascript, typescript, elements, checkout, github-rep
 
 ## Overview
 
-`stripe/stripe-js` publishes `@stripe/stripe-js`, the CommonJS and ES module loader plus TypeScript declarations for Stripe.js. This cumulative page preserves the approved `@stripe/stripe-js@8.11.0` baseline, the full major-version transition to `@stripe/stripe-js@9.12.1`, and approved declaration deltas through `9.15.0` at commit `9c83132a5333ffd757be55c75f44524023b5a39e`.
+`stripe/stripe-js` publishes `@stripe/stripe-js`, the CommonJS and ES module loader plus TypeScript declarations for Stripe.js. This cumulative page preserves the approved `@stripe/stripe-js@8.11.0` baseline, the full major-version transition to `@stripe/stripe-js@9.12.1`, and approved declaration deltas through `9.16.0` at commit `e03ec565455178cd2b236f6b495ddc952397c3f0`.
 
 Repository: <https://github.com/stripe/stripe-js>
 
@@ -114,7 +115,7 @@ Repository: <https://github.com/stripe/stripe-js>
 
 | Package | Latest ingested release | Stripe.js train | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/stripe-js` | `9.15.0` | `dahlia` | Approved 9.15 declaration delta; prior v9 and v8 retained |
+| `@stripe/stripe-js` | `9.16.0` | `dahlia` | Approved 9.16 declaration delta; prior v9 and v8 retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -292,6 +293,49 @@ This declaration adds compile-time support; it does not independently establish 
 
 `Appearance.variables` adds `buttonBoxShadow?: string`. This is an additive styling type for Stripe Elements buttons. No other Appearance variable, Element lifecycle, or payment behavior changes in the retained comparison.
 
+### `@stripe/stripe-js@9.16.0`
+
+Released 2026-09-09 and delta-ingested on 2026-09-15 at exact SHA `e03ec565455178cd2b236f6b495ddc952397c3f0`. The capsule has 80 files: four modified, one added, 75 unchanged. All seven upstream changed paths have a disposition; two type-test files remain excluded as standalone raw, with their changes retained in the comparison. The loader, release train, entrypoints, engine and dependency ranges do not change. Upstream notes again retain empty template headings; the exact patch establishes the details.
+
+#### Link Signup Element, beta
+
+Standard Elements adds `create('linkSignup', options?)` and `getElement('linkSignup')`. Checkout Elements SDK adds `createLinkSignupElement(options?)` and `getLinkSignupElement()`. Both factory/lookup pairs explicitly require beta access. Options permit only the declared optional `defaultValues` fields: string email, name and phone. Lookup returns the Element or null. The new declaration is exported through the Elements barrel and included in `StripeElementType` and `StripeElement`.
+
+`StripeLinkSignupElement` inherits `StripeElementBase` and declares `ready`, `focus`, `blur`, `escape`, `loaderstart`, and `loaderror`, each with `on`, `once`, and `off`. Payloads identify `elementType: 'linkSignup'`; load errors also carry `StripeError`. It does not declare a `change` event, `update()` or `getValue()`. The retained test diff explicitly rejects those calls and non-string defaults; it was not executed.
+
+This is a new type distinct from Link Authentication, which remains declared. Do not infer equivalent authentication, autofill, consent or enrollment behavior. Checkout validation errors can now identify `linkSignup`; Checkout Form SDK does not gain the same factory. No React wrapper change is established by this repository. See [[stripe-link]] and [[stripe-elements]].
+
+#### Tiered and package pricing response data
+
+`StripeCheckoutLineItem` gains two required-but-nullable fields:
+
+- `pricing`: graduated or volume pricing, distinguished by `tiersMode`. Both contain `tiers` and nullable `recurringTiers` arrays.
+- `transformQuantity`: `divideBy`, `round` (`up` or `down`), and `packageCount`.
+
+Each `StripeCheckoutTierBreakdown` has nullable `upTo`, `unitAmount`, `unitAmountDecimal`, `flatAmount`, `flatAmountDecimal`, and `total`, plus numeric `quantity`. Amount values use the existing `{minorUnitsAmount: number; amount: string}` type, even the decimal-named fields. These are Checkout session line-item response contracts, not new create-price parameters or a pricing calculator. `StripeCheckoutOptionalItem` does not receive these fields in this delta. See [[stripe-checkout]].
+
+**Migration:** update typed line-item mocks/adapters to include the two fields, using null where appropriate; null-check pricing and tier amounts, and revisit exhaustive Element/validation-error handling. Beta access and Stripe-hosted behavior need independent verification. Existing consumers that only read unchanged fields need no demonstrated runtime migration. No incompatible loader or broad architecture change was found; the user approved delta for this bounded declaration update.
+
+#### 9.16.0 grounding
+
+> `pricing: StripeCheckoutGraduatedPricing | StripeCheckoutVolumePricing | null;`
+>
+> [Checkout types, line 182](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/files/types/stripe-js/checkout.d.ts#L182)
+
+> `transformQuantity: StripeCheckoutTransformQuantity | null;`
+>
+> [Checkout types, line 183](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/files/types/stripe-js/checkout.d.ts#L183)
+
+> `packageCount: number;`
+>
+> [Checkout types, line 189](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/files/types/stripe-js/checkout.d.ts#L189)
+
+> `/* Requires beta access: Contact [Stripe support](https://support.stripe.com/) for more information. */`
+>
+> [Checkout Link Signup factory gate, line 889](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/files/types/stripe-js/checkout.d.ts#L889)
+
+**Evidence limits:** this is declaration evidence, not runtime or merchant-eligibility proof. No payment, browser or upstream type tests were run. No new contradiction with version-qualified prior knowledge was found. The documentation's seven-Element overview is not an exhaustive beta export catalog, and absence of a prebuilt Checkout Elements summary does not mean absence of summary data.
+
 ## Compatibility and Operational Notes
 
 - Stripe.js must be loaded from `js.stripe.com` for the documented PCI boundary.
@@ -309,10 +353,19 @@ This declaration adds compile-time support; it does not independently establish 
 ## Related
 
 - Company: [[stripe]]
-- Concepts: [[stripe-elements]], [[stripe-checkout]], [[stripe-express-checkout-element]], [[stripe-payment-intents]], [[stripe-radar]]
+- Concepts: [[stripe-elements]], [[stripe-checkout]], [[stripe-link]], [[stripe-express-checkout-element]], [[stripe-payment-intents]], [[stripe-radar]]
 - History: [[changelog-github-stripe-js]]
 
 ## Raw Sources
+
+- [9.16.0 snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json)
+- [9.16.0 release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.16.0/2026-09-15/manifest.json)
+- [9.16.0 release notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.16.0/2026-09-15/release-notes.md)
+- [9.15.0 to 9.16.0 comparison](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.15.0--9.16.0/comparison.md)
+- [Exact patch](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.15.0--9.16.0/diff.patch)
+- [Checkout declarations](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/files/types/stripe-js/checkout.d.ts)
+- [Elements group declarations](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/files/types/stripe-js/elements-group.d.ts)
+- [Link Signup declarations](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/files/types/stripe-js/elements/link-signup.d.ts)
 
 - `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json` — exact-SHA v9.15.0 source capsule
 - `raw/github/stripe/stripe-js/releases/stripe-js/9.15.0/2026-09-01/manifest.json` — package-qualified v9.15.0 release record

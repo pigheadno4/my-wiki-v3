@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-15] ingest | stripe/stripe-js `@stripe/stripe-js@9.16.0`
+
+- Delta-ingested approved work item `github-3d250b234dd9acbad2a0`, 9.15.0 to exact SHA `e03ec565455178cd2b236f6b495ddc952397c3f0`, after serial reading of assigned current declarations, prior source/changelog and comparison evidence.
+- Added beta Link Signup lifecycle/API boundaries and Checkout tiered/package pricing response shapes, including required-nullable mock migration and expanded type unions. Loader, dependencies and hosted runtime boundary remain unchanged.
+- Updated existing Link, Elements and Checkout concepts first, then cumulative source/changelog, company and index. Preserved prior versions; no new source count or cross-company comparison. No new contradiction found.
+- Capsule: 80 files, four modified, one added and 75 unchanged. Type tests are comparison-only policy exclusions and were not executed; no browser/payment or beta eligibility verification.
+
 ## [2026-09-05] ingest | stripe/stripe-react-native `@stripe/stripe-react-native@0.75.0`
 
 - Delta-ingested `github-295368ae3c6235174ae0` from `0.74.0` to exact SHA `e0a845f40749703480146c9d70721b9007d0516d` using the 19-path packet.

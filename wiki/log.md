@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-09-15] ingest | Stripe JS 9.16.0
+
+- Delta-ingested 9.15.0 to 9.16.0, preserving earlier versions. Added beta Link Signup and Checkout tiered/package pricing declaration evidence with migration and runtime boundaries.
+- Updated existing concepts, source/changelog, company and provider index. Details: [[stripe-log]] and [[changelog-github-stripe-js]].
+
 ## [2026-09-15] ingest | Adyen Web 6.45.0
 
 - Full-ingested 6.45.0 additively with the approved 26-file supplement, preserving earlier release knowledge.

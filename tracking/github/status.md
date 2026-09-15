@@ -455,6 +455,31 @@
   To SHA: `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
   Comparison: Not applicable
 
+## `github-3d250b234dd9acbad2a0`
+
+- Repository: `stripe/stripe-js`
+- SHA: `e03ec565455178cd2b236f6b495ddc952397c3f0`
+- Collection date: `2026-09-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-js/ingest-packets/github-3d250b234dd9acbad2a0/packet.md)
+- Review priority: `high`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@9.16.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/9.16.0/2026-09-15/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.15.0--9.16.0/comparison.json)
+
 ## `github-3da269c833aa3c1fde17`
 
 - Repository: `adyen/adyen-wechatpay-ios`
