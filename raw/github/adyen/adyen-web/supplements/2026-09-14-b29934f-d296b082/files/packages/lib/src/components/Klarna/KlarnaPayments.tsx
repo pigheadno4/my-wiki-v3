@@ -1,0 +1,97 @@
+import { h } from 'preact';
+import UIElement from '../internal/UIElement/UIElement';
+import PayButton from '../internal/PayButton';
+import { KlarnaContainer } from './components/KlarnaContainer/KlarnaContainer';
+import { TxVariants } from '../tx-variants';
+import type { KlarnaAction, KlarnaAdditionalDetailsData, KlarnaComponentRef, KlarnaConfiguration } from './types';
+import type { ICore } from '../../core/types';
+import { PayButtonProps } from '../internal/PayButton/PayButton';
+
+class KlarnaPayments extends UIElement<KlarnaConfiguration> {
+    public static readonly type = TxVariants.klarna;
+    public static readonly txVariants = [TxVariants.klarna, TxVariants.klarna_account, TxVariants.klarna_paynow, TxVariants.klarna_b2b];
+
+    public componentRef: KlarnaComponentRef;
+
+    protected static readonly defaultProps = {
+        useKlarnaWidget: false
+    };
+
+    constructor(checkout: ICore, props?: KlarnaConfiguration) {
+        super(checkout, props);
+
+        this.onComplete = this.onComplete.bind(this);
+        this.updateWithAction = this.updateWithAction.bind(this);
+        this.submit = this.submit.bind(this);
+        this.onLoaded = this.onLoaded.bind(this);
+    }
+    get isValid() {
+        return true;
+    }
+
+    protected formatData() {
+        return {
+            paymentMethod: {
+                type: this.type,
+                ...(this.props.useKlarnaWidget ? { subtype: 'sdk' } : {})
+            }
+        };
+    }
+
+    public override submit(): void {
+        if (this.props.useKlarnaWidget) {
+            this.executePaymentsCall();
+            return;
+        }
+        super.submit();
+    }
+
+    public payButton = (props: PayButtonProps) => {
+        return <PayButton onClick={this.submit} {...props} showReview={this.props.useKlarnaWidget ? false : !!this.props.onReview} />;
+    };
+
+    public override handleAction(action: KlarnaAction, props = {}): UIElement | null {
+        if (action.type === 'sdk') {
+            this.updateWithAction(action);
+            return;
+        }
+        return super.handleAction(action, props);
+    }
+
+    updateWithAction(action: KlarnaAction): void {
+        if (action.paymentMethodType !== this.type) throw new Error('Invalid Action');
+        this.componentRef.setAction(action);
+    }
+
+    private onLoaded() {
+        // When action/widget is loaded, set the 'drop-in' back to ready
+        this.setElementStatus('ready');
+    }
+
+    public override activate() {
+        this.componentRef.reinitializeWidget();
+    }
+
+    protected onComplete(details: KlarnaAdditionalDetailsData): void {
+        this.handleAdditionalDetails(details);
+    }
+
+    protected override componentToRender(): h.JSX.Element {
+        return (
+            <KlarnaContainer
+                {...this.props}
+                setComponentRef={this.setComponentRef}
+                displayName={this.displayName}
+                onComplete={this.onComplete}
+                onError={this.props.onError}
+                payButton={this.payButton}
+                onLoaded={this.onLoaded}
+                showPayButton={this.props.showPayButton}
+                onActionHandled={this.onActionHandled}
+                type={this.props.type}
+            />
+        );
+    }
+}
+
+export default KlarnaPayments;

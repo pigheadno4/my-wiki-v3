@@ -1,0 +1,336 @@
+import { h } from 'preact';
+import { MetaConfiguration, StoryConfiguration } from '../../../../storybook/types';
+import { CardConfiguration } from '../types';
+import { CardWith3DS2Redirect } from './cardStoryHelpers/CardWith3DS2Redirect';
+import { createStoredCardComponent } from './cardStoryHelpers/createStoredCardComponent';
+import { SplitFundingSourceCards } from './cardStoryHelpers/SplitFundingSourceCards';
+import { createCardComponent } from './cardStoryHelpers/createCardComponent';
+import { getComponentConfigFromUrl } from '../../../../storybook/utils/get-configuration-from-url';
+import { CardWith3DS2CreateFromAction } from './cardStoryHelpers/CardWith3DS2CreateFromAction';
+import { AdditionalDetailsActions, AdditionalDetailsData } from '../../../core/types';
+import { displayResultMessage } from '../../../../storybook/helpers/checkout-handlers';
+import { makeDetailsCall } from '../../../../storybook/helpers/checkout-api-calls';
+
+type CardStory = StoryConfiguration<CardConfiguration>;
+
+const meta: MetaConfiguration<CardConfiguration> = {
+    title: 'Components/Cards',
+    argTypes: {
+        sessionData: {
+            control: 'object',
+            if: { arg: 'useSessions', truthy: true }
+        }
+    }
+};
+
+export const Default: CardStory = {
+    render: createCardComponent,
+    args: {
+        srConfig: { moveFocus: true, showPanel: true },
+        componentConfiguration: getComponentConfigFromUrl() ?? {
+            _disableClickToPay: true,
+            autoFocus: true,
+            // brands: ['mc', 'synchrony_plcc'],
+            // brandsConfiguration: { visa: { icon: 'http://localhost:3000/nocard.svg', name: 'altVisa' } },
+            challengeWindowSize: '02',
+            // configuration: {socialSecurityNumberMode: 'auto'}
+            // data: {
+            //     holderName: 'J. Smith'
+            // },
+            disableIOSArrowKeys: false,
+            // disclaimerMessage,
+            // doBinLookup: false,
+            enableStoreDetails: false,
+            // exposeExpiryDate: true,
+            forceCompat: false,
+            hasHolderName: false,
+            holderNameRequired: false,
+            hideCVC: false,
+            // keypadFix: false,
+            legacyInputMode: false,
+            maskSecurityCode: false,
+            minimumExpiryDate: null, // e.g. '11/24'
+            // name: '', // Affects Dropin only
+            placeholders: {}, // e.g. { holderName: 'B Bob' }
+            positionHolderNameOnTop: false,
+            showBrandIcon: true,
+            showContextualElement: true
+            // showPayButton: false,
+            // styles: { base: { fontWeight: 300 } },
+        }
+    }
+};
+
+export const WithSSN: CardStory = {
+    render: createCardComponent,
+    args: {
+        countryCode: 'BR',
+        componentConfiguration: {
+            _disableClickToPay: true,
+            configuration: {
+                socialSecurityNumberMode: 'show'
+            }
+        }
+    }
+};
+
+export const WithAVS: CardStory = {
+    render: createCardComponent,
+    args: {
+        srConfig: { moveFocus: true, showPanel: true },
+        componentConfiguration: {
+            _disableClickToPay: true,
+            billingAddressRequired: true,
+            billingAddressAllowedCountries: ['US', 'CA', 'GB'],
+            //billingAddressRequiredFields: ['postalCode', 'country'],
+            data: {
+                billingAddress: {
+                    street: 'Virginia Street',
+                    postalCode: '95014',
+                    city: 'Cupertino',
+                    houseNumberOrName: '1',
+                    country: 'US',
+                    stateOrProvince: 'CA'
+                }
+            }
+        }
+    }
+};
+
+export const WithPartialAVS: CardStory = {
+    render: createCardComponent,
+    args: {
+        componentConfiguration: {
+            _disableClickToPay: true,
+            billingAddressRequired: true,
+            billingAddressMode: 'partial',
+            data: {
+                billingAddress: {
+                    country: 'US'
+                }
+            }
+        }
+    }
+};
+
+export const WithAVSAddressLookup: CardStory = {
+    render: createCardComponent,
+    args: {
+        componentConfiguration: {
+            _disableClickToPay: true,
+            billingAddressRequired: true,
+            onAddressLookup: async (value, actions) => {
+                const url = `/api/mock/addressSearch?search=${encodeURIComponent(value)}`;
+
+                const formattedData = await fetch(url)
+                    .then(res => res.json())
+                    // This set is necessary to map the response receive from the external provider to our address field
+                    .then(res =>
+                        res.map(
+                            ({
+                                id,
+                                name,
+                                city,
+                                address,
+                                houseNumber,
+                                postalCode
+                            }: {
+                                id: string;
+                                name: string;
+                                city: string;
+                                address: string;
+                                houseNumber: string;
+                                postalCode: string;
+                            }) => ({
+                                id,
+                                name,
+                                city,
+                                street: address,
+                                houseNumberOrName: houseNumber,
+                                postalCode,
+                                country: 'GB'
+                            })
+                        )
+                    )
+                    .catch(error => {
+                        console.log('ERROR:', error);
+                        actions.reject('Something went wrong, try adding manually.');
+                    });
+                actions.resolve(formattedData);
+            }
+        }
+    }
+};
+
+export const WithInstallments: CardStory = {
+    render: createCardComponent,
+    args: {
+        componentConfiguration: {
+            _disableClickToPay: true,
+            showInstallmentAmounts: true,
+            installmentOptions: {
+                mc: {
+                    values: [1, 2, 3]
+                },
+                visa: {
+                    values: [1, 2, 3, 4],
+                    plans: ['regular', 'revolving', 'bonus']
+                }
+            }
+        }
+    }
+};
+
+export const WithKCP: CardStory = {
+    render: createCardComponent,
+    args: {
+        countryCode: 'KR',
+        componentConfiguration: {
+            ...{ brands: ['mc', 'visa', 'amex', 'bcmc', 'maestro', 'korean_local_card'] },
+            _disableClickToPay: true,
+            // Set koreanAuthenticationRequired AND countryCode so KCP fields show at start
+            // Just set koreanAuthenticationRequired if KCP fields should only show if korean_local_card entered
+            configuration: {
+                koreanAuthenticationRequired: true
+            }
+        }
+    }
+};
+
+export const WithMockedFastlane: CardStory = {
+    render: createCardComponent,
+    args: {
+        componentConfiguration: getComponentConfigFromUrl() ?? {
+            fastlaneConfiguration: {
+                showConsent: true,
+                defaultToggleState: true,
+                termsAndConditionsLink: 'https://adyen.com',
+                privacyPolicyLink: 'https://adyen.com',
+                termsAndConditionsVersion: 'v1',
+                fastlaneSessionId: 'ABC-123'
+            }
+        }
+    }
+};
+
+export const WithClickToPay: CardStory = {
+    render: createCardComponent,
+    tags: ['no-automated-visual-test'],
+    args: {
+        componentConfiguration: {
+            configuration: {
+                visaSrciDpaId: '8e6e347c-254e-863f-0e6a-196bf2d9df02',
+                visaSrcInitiatorId: 'B9SECVKIQX2SOBQ6J9X721dVBBKHhJJl1nxxVbemHGn5oB6S8',
+                mcDpaId: '6d41d4d6-45b1-42c3-a5d0-a28c0e69d4b1_dpa2',
+                mcSrcClientId: '6d41d4d6-45b1-42c3-a5d0-a28c0e69d4b1'
+            },
+            clickToPayConfiguration: {
+                shopperEmail: 'gui.ctp@adyen.com',
+                merchantDisplayName: 'Adyen Merchant Name'
+            }
+        }
+    }
+};
+
+export const CardWith_3DS2_Redirect: CardStory = {
+    render: args => <CardWith3DS2Redirect {...args} />,
+
+    args: {
+        componentConfiguration: {
+            _disableClickToPay: true
+        },
+        useSessions: false
+    }
+};
+
+export const CardWith_3DS2_CreateFromAction: CardStory = {
+    tags: ['no-automated-visual-test'],
+    render: args => <CardWith3DS2CreateFromAction {...args} />,
+    args: {
+        componentConfiguration: {
+            _disableClickToPay: true
+        },
+        useSessions: false
+    }
+};
+
+export const CardWith_3DS2_own_onAdditionalDetails: CardStory = {
+    render: createCardComponent,
+
+    args: {
+        componentConfiguration: {
+            _disableClickToPay: true,
+            onAdditionalDetails(state: AdditionalDetailsData, _component, actions: AdditionalDetailsActions) {
+                // Display in-between screen to demonstrate that *this* callback has been called, rather than the checkout level one
+                displayResultMessage(true, 'success-own-onAdditionalDetails-called');
+
+                setTimeout(async () => {
+                    const container = document.getElementById('component-root');
+                    const resMsg = document.querySelector('[data-testid="result-message"]');
+
+                    // Go on to make the actual /details call in order to complete the flow
+                    try {
+                        const { resultCode, action, order, donationToken } = await makeDetailsCall(state.data);
+
+                        if (!resultCode) actions.reject();
+
+                        if (resMsg && container) container.removeChild(resMsg);
+
+                        actions.resolve({
+                            resultCode,
+                            action,
+                            order,
+                            donationToken
+                        });
+                    } catch (error) {
+                        console.error('## onAdditionalDetails - critical error', error);
+                        actions.reject();
+                    }
+                }, 1000);
+            }
+        },
+        useSessions: false
+    }
+};
+
+export const StandaloneStoredCard: CardStory = {
+    render: createStoredCardComponent
+};
+
+/**
+ * Split funding source test
+ * This story exists to test the split funding source behavior when the merchant has enabled split card funding sources.
+ * It renders 3 different Card components to test the behavior across multiple instances.
+ *
+ * The clickToPayConfiguration, shopperEmail and installmentOptions are intentionally included to verify
+ * side-effect behavior per funding source:
+ * - Credit: Should render CtP and installments
+ * - Debit: Should render CtP, but NOT installments
+ * - Prepaid: Should NOT render CtP or installments
+ */
+export const SplitFundingSourceTest: CardStory = {
+    tags: ['no-automated-visual-test'],
+    render: SplitFundingSourceCards,
+    args: {
+        countryCode: 'BR',
+        componentConfiguration: {
+            _disableClickToPay: true,
+            clickToPayConfiguration: {
+                shopperEmail: 'levelaccess.ctp@adyen.com',
+                merchantDisplayName: 'Adyen Merchant Name'
+            }
+        },
+        sessionData: {
+            splitCardFundingSources: true,
+            shopperEmail: 'levelaccess.ctp@adyen.com',
+            installmentOptions: {
+                card: {
+                    values: [2, 3, 5],
+                    plans: ['regular']
+                }
+            }
+        }
+    }
+};
+
+export default meta;

@@ -37,6 +37,8 @@ Stripe-hosted UIs (Checkout, Payment Links, Elements, Terminal) auto-display net
 
 The retained `@adyen/adyen-web@6.41.0` source includes an accessible dual-brand selector whose options are keyboard-operable buttons with `aria-pressed`. Its Card and Drop-in stories also exercise `splitCardFundingSources`, with separate credit, debit, and prepaid presentation. Credit permits Click to Pay and installments, debit permits Click to Pay without installments, and prepaid permits neither in the retained scenario.
 
+In `@adyen/adyen-web@6.44.0`, the dual-brand selector replaces its bespoke Enter-key selection handler with `onKeyDown={stopPropagationForActionKeys}`, retaining the existing click handler for brand selection. This isolates action keys from the root payment-submission handler and relies on native button activation for selection. This is a source-level keyboard-handling delta, not a change to network eligibility or regulation. See [[source-github-adyen-web]].
+
 This is version-qualified SDK implementation evidence. It does not independently establish regulatory scope, merchant enablement, or the current Adyen integration procedure.
 
 ## Adyen Android implementation evidence
@@ -57,5 +59,5 @@ Tokens: `tok_visa_cartesBancaires`, `tok_mastercard_cartesBancaires`
 ## Sources
 
 - [[source-stripe-co-badged-cards-compliance]] — primary source: regulation scope, integration guides (all Elements, mobile, Terminal), test cards
-- [[source-github-adyen-web]] — Adyen Web `6.41.0` dual-brand selector and split-funding-source implementation evidence
+- [[source-github-adyen-web]] — Adyen Web `6.41.0` dual-brand selector and split-funding-source implementation evidence, plus the `6.44.0` keyboard-handling delta
 - [[source-github-adyen-android]] — Adyen Android `5.20.0` dual-brand selection and submitted-brand evidence

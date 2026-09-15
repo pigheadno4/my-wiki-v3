@@ -1,0 +1,270 @@
+import { h, TargetedKeyboardEvent } from 'preact';
+import UIElement from '../internal/UIElement/UIElement';
+import defaultProps from './defaultProps';
+import DropinComponent from '../../components/Dropin/components/DropinComponent';
+import { createElements, createStoredElements } from './elements';
+import createInstantPaymentElements from './elements/createInstantPaymentElements';
+import { hasOwnProperty } from '../../utils/hasOwnProperty';
+import splitPaymentMethods from './elements/splitPaymentMethods';
+import { TxVariants } from '../tx-variants';
+
+import type { DropinComponentProps, DropinConfiguration, InstantPaymentTypes, PaymentMethodsConfiguration } from './types';
+import type { PaymentAction, PaymentAmount, PaymentResponseData } from '../../types/global-types';
+import type { ICore } from '../../core/types';
+import type { IDropin } from './types';
+
+const SUPPORTED_INSTANT_PAYMENTS = ['paywithgoogle', 'googlepay', 'applepay'];
+
+class DropinElement extends UIElement<DropinConfiguration> implements IDropin {
+    public static readonly type = TxVariants.dropin;
+
+    protected static readonly defaultProps = defaultProps;
+
+    public dropinRef = null;
+
+    private paymentMethodsConfiguration: PaymentMethodsConfiguration;
+    /**
+     * Reference to the component created from `handleAction` (Ex.: ThreeDS2Challenge)
+     */
+    public componentFromAction?: UIElement;
+
+    /**
+     * Reference to all payment method elements being rendered by Drop-in
+     */
+    public paymentMethodElements: UIElement[] = [];
+
+    constructor(checkout: ICore, props?: DropinConfiguration) {
+        super(checkout, props);
+        this.submit = this.submit.bind(this);
+        this.handleAction = this.handleAction.bind(this);
+        this.handleElementsCreated = this.handleElementsCreated.bind(this);
+
+        this.props.paymentMethodComponents.forEach(PaymentMethod => this.core.register(PaymentMethod));
+        this.paymentMethodsConfiguration = this.props.paymentMethodsConfiguration || {};
+    }
+
+    protected override reportIntegrationFlavor(): void {
+        void this.analytics.sendFlavor('dropin');
+    }
+
+    protected override storeElementRefOnCore() {
+        this.core.storeElementReference(this);
+    }
+
+    formatProps(props) {
+        return {
+            ...super.formatProps(props),
+            instantPaymentTypes: Array.from<InstantPaymentTypes>(new Set(props.instantPaymentTypes)).filter(value =>
+                SUPPORTED_INSTANT_PAYMENTS.includes(value)
+            )
+        };
+    }
+
+    get isValid() {
+        return !!this.dropinRef && !!this.dropinRef.state.activePaymentMethod && !!this.dropinRef.state.activePaymentMethod.isValid;
+    }
+
+    showValidation() {
+        if (this.dropinRef.state.activePaymentMethod) {
+            this.dropinRef.state.activePaymentMethod.showValidation();
+        }
+
+        return this;
+    }
+
+    public setStatus(status, props = {}): this {
+        this.dropinRef?.setStatus(status, props);
+        return this;
+    }
+
+    get activePaymentMethod() {
+        if (!this.dropinRef?.state && !this.dropinRef?.state.activePaymentMethod) {
+            return null;
+        }
+
+        return this.dropinRef.state.activePaymentMethod;
+    }
+
+    get data() {
+        if (!this.activePaymentMethod) {
+            return null;
+        }
+
+        return this.dropinRef.state.activePaymentMethod.data;
+    }
+
+    public displayFinalAnimation(type: 'success' | 'error') {
+        if (this.props.disableFinalAnimation) return;
+
+        this.dropinRef?.setStatus(type);
+    }
+
+    /**
+     * Calls the onSubmit event with the state of the activePaymentMethod
+     */
+    public override submit(): void {
+        if (!this.activePaymentMethod) {
+            throw new Error('No active payment method.');
+        }
+
+        if (!this.activePaymentMethod.isValid) {
+            this.activePaymentMethod.showValidation();
+        }
+
+        if (this.activePaymentMethod.isInstantPayment) {
+            this.closeActivePaymentMethod();
+        }
+
+        this.activePaymentMethod.submit();
+    }
+
+    /**
+     * Updates the amount in the props and propagates it to the AmountProvider. That way the children components can use the updated amount.
+     *
+     * This method **overrides** the parent one to specifically propagate the changes to all payment method elements.
+     *
+     * @param amount - Primary payment amount object
+     * @param secondaryAmount - Optional secondary amount for display purposes (e.g., converted currency)
+     * @internal
+     */
+    public override updateAmount(amount: PaymentAmount, secondaryAmount?: PaymentAmount): void {
+        this.props = {
+            ...this.props,
+            ...(amount && { amount }),
+            ...(secondaryAmount && { secondaryAmount })
+        };
+
+        this.amountProviderRef.current?.update(amount, secondaryAmount);
+
+        this.paymentMethodElements.forEach(element => {
+            element.updateAmount(amount, secondaryAmount);
+        });
+    }
+
+    /**
+     * Assign all elements created in the Component to the paymentMethodElements property
+     * @param elements
+     */
+    private handleElementsCreated(elements: UIElement[]) {
+        if (!elements || elements.length === 0) this.paymentMethodElements = [];
+        this.paymentMethodElements = elements;
+    }
+
+    /**
+     * Creates the Drop-in elements
+     */
+    private handleCreate = (): ReturnType<DropinComponentProps['onCreateElements']> => {
+        const { paymentMethodsConfiguration, showStoredPaymentMethods, showPaymentMethods, instantPaymentTypes } = this.props;
+
+        const { paymentMethods, storedPaymentMethods, instantPaymentMethods, fastlanePaymentMethod } = splitPaymentMethods(
+            this.core.paymentMethodsResponse,
+            instantPaymentTypes
+        );
+
+        const dropinProps = {
+            elementRef: this.elementRef,
+            isDropin: true
+        };
+
+        const elements = showPaymentMethods
+            ? createElements(paymentMethods, paymentMethodsConfiguration, dropinProps, this.core)
+            : Promise.resolve([]);
+        const instantPaymentElements = createInstantPaymentElements(instantPaymentMethods, paymentMethodsConfiguration, dropinProps, this.core);
+        const storedElements = showStoredPaymentMethods
+            ? createStoredElements(
+                  this.props.filterStoredPaymentMethods?.(storedPaymentMethods) ?? storedPaymentMethods,
+                  paymentMethodsConfiguration,
+                  dropinProps,
+                  this.core
+              )
+            : Promise.resolve([]);
+        const fastlanePaymentElement: Promise<UIElement[]> | [] = fastlanePaymentMethod
+            ? createElements([fastlanePaymentMethod], paymentMethodsConfiguration, dropinProps, this.core)
+            : [];
+
+        return [storedElements, elements, instantPaymentElements, fastlanePaymentElement];
+    };
+
+    public handleAction(action: PaymentAction, props = {}): this | null {
+        if (!action || !action.type) {
+            if (hasOwnProperty(action, 'action') && hasOwnProperty(action, 'resultCode')) {
+                throw new Error(
+                    'handleAction::Invalid Action - the passed action object itself has an "action" property and ' +
+                        'a "resultCode": have you passed in the whole response object by mistake?'
+                );
+            }
+            throw new Error('handleAction::Invalid Action - the passed action object does not have a "type" property');
+        }
+
+        if (action.type !== 'redirect' && this.activePaymentMethod?.updateWithAction) {
+            return this.activePaymentMethod.updateWithAction(action);
+        }
+
+        if (this.elementRef instanceof DropinElement) {
+            props = {
+                ...this.elementRef.activePaymentMethod?.props,
+                ...props
+            };
+        }
+
+        const paymentAction: UIElement = this.core.createFromAction(action, {
+            ...props,
+            elementRef: this.elementRef, // maintain elementRef for 3DS2 flow
+            isDropin: true
+        });
+
+        if (paymentAction) {
+            this.setStatus(paymentAction.props.statusType, { component: paymentAction });
+            this.componentFromAction = paymentAction;
+            return this;
+        }
+
+        return null;
+    }
+
+    /**
+     * handleOrder is implemented so we don't trigger a callback like in the components
+     * @param response - PaymentResponse
+     */
+    protected handleOrder = ({ order }: PaymentResponseData): void => {
+        void this.updateParent({ order });
+    };
+
+    closeActivePaymentMethod() {
+        this.dropinRef.closeActivePaymentMethod();
+    }
+
+    protected handleKeyDown(e: TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
+        if (e.key === 'Enter' || e.code === 'Enter') {
+            // If the active element has role="radio", we're on a header in the PMList, in which case we don't want to validate the form, or, prevent the default behaviour
+            const isPMHeader = document?.activeElement?.getAttribute('role') === 'radio';
+            if (isPMHeader) {
+                return;
+            }
+            super.handleKeyDown(e);
+        }
+    }
+
+    protected onEnterKeyPressed(activeElement: Element, component: UIElement) {
+        // We want to have a ref to the activePM, if we can; not a ref to the Dropin
+        const pmComponent = this.activePaymentMethod ?? component;
+        this.activePaymentMethod?.onEnterKeyPressed(activeElement, pmComponent);
+    }
+
+    protected override componentToRender(): h.JSX.Element {
+        return (
+            <DropinComponent
+                {...this.props}
+                core={this.core}
+                elementRef={this.elementRef}
+                onCreateElements={this.handleCreate}
+                onElementsCreated={this.handleElementsCreated}
+                ref={dropinRef => {
+                    this.dropinRef = dropinRef;
+                }}
+            />
+        );
+    }
+}
+
+export default DropinElement;

@@ -1,0 +1,364 @@
+import { BrandObject } from '../../../Card/types';
+import SecuredField from './securedField/SecuredField';
+import {
+    ALL_SECURED_FIELDS,
+    BEST_GUESS_MODE,
+    BIN_LOOKUP_MODE,
+    ENCRYPTED_CARD_NUMBER,
+    ENCRYPTED_EXPIRY_DATE,
+    ENCRYPTED_EXPIRY_MONTH,
+    ENCRYPTED_EXPIRY_YEAR,
+    ENCRYPTED_PWD_FIELD,
+    ENCRYPTED_SECURITY_CODE,
+    ENCRYPTED_SECURITY_CODE_3_DIGITS,
+    ENCRYPTED_SECURITY_CODE_4_DIGITS,
+    HIDDEN,
+    OPTIONAL,
+    REQUIRED
+} from './constants';
+import { SF_ErrorCodes } from '../../../../core/Errors/constants';
+import { Placeholders } from '../SFP/types';
+import type { AbstractAnalyticsEvent } from '../../../../core/Analytics/events/AbstractAnalyticsEvent';
+
+declare global {
+    interface Window {
+        _b$dl: boolean;
+        mockBinCount: number;
+    }
+}
+
+export type SFFieldType = (typeof ALL_SECURED_FIELDS)[number];
+
+export type BrandModeType = typeof BIN_LOOKUP_MODE | typeof BEST_GUESS_MODE;
+
+export interface SecuredFields {
+    encryptedCardNumber?: SecuredField;
+    encryptedExpiryDate?: SecuredField;
+    encryptedExpiryMonth?: SecuredField;
+    encryptedExpiryYear?: SecuredField;
+    encryptedSecurityCode?: SecuredField;
+    encryptedPassword?: SecuredField;
+}
+
+export interface BrandStorageObject {
+    brand: string;
+    cvcPolicy: CVCPolicyType;
+    expiryDatePolicy: DatePolicyType;
+    showSocialSecurityNumber?: boolean;
+}
+
+export interface StylesObject {
+    base?: StyleDefinitions;
+    error?: StyleDefinitions;
+    validated?: StyleDefinitions;
+    placeholder?: StyleDefinitions;
+}
+
+interface StyleDefinitions {
+    background?: string;
+    caretColor?: string;
+    color?: string;
+    display?: string;
+    font?: string;
+    fontFamily?: string;
+    fontSize?: string;
+    fontSizeAdjust?: string;
+    fontSmoothing?: string;
+    fontStretch?: string;
+    fontStyle?: string;
+    fontVariant?: string;
+    fontVariantAlternates?: string;
+    fontVariantCaps?: string;
+    fontVariantEastAsian?: string;
+    fontVariantLigatures?: string;
+    fontVariantNumeric?: string;
+    fontWeight?: string;
+    letterSpacing?: string;
+    lineHeight?: string;
+    mozOsxFontSmoothing?: string;
+    mozTransition?: string;
+    outline?: string;
+    opacity?: string;
+    padding?: string;
+    textAlign?: string;
+    textShadow?: string;
+    transition?: string;
+    webkitFontSmoothing?: string;
+    webkitTransition?: string;
+    wordSpacing?: string;
+}
+
+export interface CardObject {
+    cardType: string;
+    permittedLengths?: number[];
+    pattern?: RegExp;
+    securityCode?: string;
+    displayName?: string;
+    cvcPolicy?: CVCPolicyType;
+    expiryDatePolicy?: DatePolicyType;
+}
+
+export interface CardAdditionalSFData {
+    additionalIframeConfigured?: boolean;
+    additionalIframeRemoved?: boolean;
+    fieldType: string;
+    type: string;
+}
+
+export interface CardAllValidData {
+    type: string;
+    allValid: boolean;
+    rootNode: HTMLElement;
+}
+
+export interface CardAutoCompleteData {
+    fieldType: string;
+    name: string;
+    value: string;
+    action: string;
+}
+
+export interface CardBinLookupData {
+    type?: string;
+    detectedBrands?: string[] | null;
+    supportedBrands?: string[] | null;
+    brands?: string[];
+    issuingCountryCode?: string;
+    healthcare?: Record<string, boolean>[];
+    // New for CustomCard
+    supportedBrandsRaw?: BrandObject[];
+    rootNode?: HTMLElement;
+    isReset?: boolean; // Used internally - not propagated to merchant callback
+    dualBrandingType?: string; // Whether dual brands can just be displayed or whether a selection mechanism is mandated under EU law
+    paymentMethodVariants?: (string | undefined)[];
+}
+
+export interface CardBinValueData {
+    type: string;
+    binValue: string;
+    uuid?: string;
+    encryptedBin?: string;
+}
+
+export interface CardBrandData {
+    type: string;
+    rootNode: HTMLElement;
+    brand: string;
+    cvcPolicy: CVCPolicyType;
+    expiryDatePolicy?: DatePolicyType;
+    cvcText: string;
+    showSocialSecurityNumber?: boolean;
+    brandImageUrl?: string; // Added by SFP
+    // maxLength: number;
+    mode?: BrandModeType;
+}
+
+export interface CardConfigSuccessData {
+    iframesConfigured: boolean;
+    type: string;
+    rootNode: HTMLElement;
+}
+
+export interface CardErrorData {
+    fieldType: string;
+    error: string;
+    type: string;
+    rootNode?: HTMLElement;
+    detectedBrands?: string[];
+    errorI18n?: string;
+    errorText?: string;
+}
+
+export interface CardFieldValidData {
+    fieldType: string;
+    encryptedFieldName: string;
+    uid: string;
+    valid: boolean;
+    type: string;
+    rootNode: HTMLElement;
+    blob?: string;
+    endDigits?: string;
+    expiryDate?: string;
+    issuerBin?: number;
+}
+
+export interface CardFocusData {
+    action: string;
+    focus: boolean;
+    numChars: number;
+    fieldType: string;
+    rootNode: HTMLElement;
+    type: string;
+    currentFocusObject: string;
+}
+
+export interface CardLoadData {
+    iframesLoaded: boolean;
+}
+
+export interface SFFeedbackObj {
+    action?: string;
+    fieldType: SFFieldType;
+    numKey?: number;
+    brand?: string;
+    code?: string;
+    cvcText?: string;
+    cvcPolicy?: CVCPolicyType;
+    expiryDatePolicy?: DatePolicyType;
+    showSocialSecurityNumber?: boolean;
+    maxLength?: number;
+    error?: string;
+    endDigits?: string;
+    issuerBin?: string;
+    expiryDate?: string;
+    type?: string;
+    binValue?: string;
+    focus?: boolean;
+    numChars?: number;
+    rootNode?: HTMLElement;
+    currentFocusObject?: string;
+    name?: string;
+    value?: string;
+    encryptedBin?: string;
+    uuid?: string;
+    encryptionSuccess?: boolean;
+    hasGenuineTouchEvents?: boolean;
+    mode?: string;
+}
+
+export interface EncryptionObj {
+    type: string;
+    encryptedFieldName: string;
+    blob: string;
+}
+
+export interface ShiftTabObject {
+    fieldToFocus: string;
+    additionalField: HTMLElement;
+}
+
+export interface SendBrandObject {
+    brand: string;
+    enableLuhnCheck: boolean;
+    panLength?: number;
+}
+
+export interface SendExpiryDateObject {
+    expiryDatePolicy: DatePolicyType;
+}
+
+export type RtnType_noParamVoidFn = () => void;
+export type RtnType_postMessageListener = (event: Event) => void;
+export type RtnType_callbackFn = (feedbackObj: SFFeedbackObj) => void;
+
+export type CVCPolicyType = typeof REQUIRED | typeof OPTIONAL | typeof HIDDEN;
+export type DatePolicyType = typeof REQUIRED | typeof OPTIONAL | typeof HIDDEN;
+
+interface IframeUIConfigObject {
+    sfStyles?: StylesObject;
+    placeholders?: SFPlaceholdersObject;
+    ariaConfig?: AriaConfig;
+}
+
+/**
+ * Object sent via postMessage to a SecuredField iframe in order to configure that iframe
+ *
+ * Properties defined directly in *this* interface are ones that are calculated by SecuredField.ts
+ * instead of just being read directly from the SecuredFieldSetupObject
+ */
+export interface IframeConfigObject extends SecuredFieldCommonProps {
+    numKey: number;
+}
+
+/**
+ * Base interface for SecuredFieldSetupObject & IframeConfigObject
+ *
+ * These are the props that are passed from CSF.createSecuredFields when SecuredField.ts is initialised
+ * but which also end up as props in the IframeConfigObject
+ */
+export interface SecuredFieldCommonProps {
+    // originally extracted in createSecuredFields
+    fieldType: string;
+    extraFieldData: string;
+    uid: string;
+    // originally calculated in createSecuredFields, for single branded cards, based on initial assessment of brand info; else defaults to true
+    cvcPolicy: CVCPolicyType;
+    // originally set in createSecuredFields
+    expiryDatePolicy: DatePolicyType;
+    // originally read from CSF->this.state
+    txVariant: string;
+    // originally from CSF->this.config
+    cardGroupTypes: string[];
+    iframeUIConfig: IframeUIConfigObject;
+    sfLogAtStart: boolean;
+    trimTrailingSeparator: boolean;
+    isCreditCardType: boolean;
+    showWarnings: boolean;
+    legacyInputMode: boolean;
+    minimumExpiryDate: string;
+    // originally from CSF->this.props
+    implementationType: string;
+    maskSecurityCode: boolean;
+    exposeExpiryDate: boolean;
+    disableIOSArrowKeys: boolean;
+}
+
+/**
+ * The object sent when createSecuredFields initialises a new instance of SecuredField.ts
+ *
+ * Properties defined directly in *this* interface c.f. SecuredFieldCommonProps are ones
+ * that are needed by SecuredField.ts but are *not* required in the IframeConfigObject
+ */
+export interface SecuredFieldSetupObject extends SecuredFieldCommonProps {
+    loadingContext: string;
+    holderEl: HTMLElement;
+    iframeSrc: string;
+    showContextualElement?: boolean;
+    placeholders: Placeholders;
+    submitAnalytics?: (event: AbstractAnalyticsEvent) => void;
+    componentType?: string;
+}
+
+interface ContextualTexts {
+    [ENCRYPTED_EXPIRY_DATE]?: string;
+    [ENCRYPTED_SECURITY_CODE_3_DIGITS]?: string;
+    [ENCRYPTED_SECURITY_CODE_4_DIGITS]?: string;
+}
+
+export type AriaConfig = {
+    lang?: string;
+} & {
+    [key: string]: AriaConfigObject; // e.g. encryptedCardNumber: {...}
+};
+
+export interface AriaConfigObject {
+    iframeTitle?: string;
+    label?: string;
+    contextualTexts?: ContextualTexts;
+    error?: Record<SF_ErrorCodes, string>;
+}
+
+export interface SFPlaceholdersObject {
+    [ENCRYPTED_CARD_NUMBER]?: string;
+    [ENCRYPTED_EXPIRY_DATE]?: string;
+    [ENCRYPTED_EXPIRY_MONTH]?: string;
+    [ENCRYPTED_EXPIRY_YEAR]?: string;
+    [ENCRYPTED_SECURITY_CODE]?: string;
+    [ENCRYPTED_SECURITY_CODE_3_DIGITS]?: string;
+    [ENCRYPTED_SECURITY_CODE_4_DIGITS]?: string;
+    [ENCRYPTED_PWD_FIELD]?: string;
+}
+
+export interface SFKeyDownObj {
+    fieldType: string;
+    action: string;
+}
+
+export interface BrandConfiguration {
+    name?: string;
+    icon?: string;
+}
+
+export interface CardBrandsConfiguration {
+    [key: string]: BrandConfiguration;
+}

@@ -1,0 +1,96 @@
+import { Fragment, h } from 'preact';
+import RedirectElement from '../Redirect';
+import RedirectButton from '../internal/RedirectButton';
+import { TxVariants } from '../tx-variants';
+import getIssuerImageUrl from '../../utils/get-issuer-image';
+import PayButton from '../internal/PayButton';
+import { payAmountLabel } from '../internal/PayButton/utils';
+import { PaymentMethodBrand } from '../../types/global-types';
+
+import './PayByBankUS.scss';
+export default class PayByBankUS extends RedirectElement {
+    public static override readonly type: TxVariants = TxVariants.paybybank_AIS_DD;
+
+    protected formatProps(props) {
+        return {
+            // paymentMethodBrands configuration
+            keepBrandsVisible: true,
+            showOtherInsteadOfNumber: true,
+            ...props
+        };
+    }
+
+    public formatData() {
+        return {
+            paymentMethod: {
+                type: this.type,
+                ...(this.props.storedPaymentMethodId && {
+                    storedPaymentMethodId: this.props.storedPaymentMethodId
+                })
+            },
+            browserInfo: this.browserInfo
+        };
+    }
+
+    get displayName() {
+        if (this.props.storedPaymentMethodId && this.props.label) {
+            return this.props.label;
+        }
+        return this.props.name;
+    }
+
+    get additionalInfo() {
+        return this.props.storedPaymentMethodId ? this.props.name : '';
+    }
+
+    /*
+    Hardcode US brands 
+    */
+    get brands(): PaymentMethodBrand[] {
+        const getImage = props => this.resources.getImage(props);
+        // paybybank_AIS_DD / tx_variant not used here since images are kept in paybybank subfolder
+        const getIssuerIcon = getIssuerImageUrl({}, 'paybybank', getImage);
+
+        // hardcoding
+        return [
+            { icon: getIssuerIcon('US-1'), name: 'Wells Fargo' },
+            { icon: getIssuerIcon('US-2'), name: 'Bank of America' },
+            { icon: getIssuerIcon('US-3'), name: 'Chase' },
+            { icon: getIssuerIcon('US-4'), name: 'Citi' }
+        ];
+    }
+
+    protected override componentToRender(): h.JSX.Element {
+        return this.props.storedPaymentMethodId ? (
+            this.props.showPayButton && (
+                <PayButton
+                    {...this.props}
+                    classNameModifiers={['standalone']}
+                    label={payAmountLabel(this.props.i18n, this.props.amount)}
+                    showReview={!!this.props.onReview}
+                    onClick={this.submit}
+                />
+            )
+        ) : (
+            <Fragment>
+                <div className="adyen-checkout-paybybank_AIS_DD">
+                    <p className="adyen-checkout-paybybank_AIS_DD__description-header">{this.props.i18n.get('payByBankAISDD.disclaimer.header')}</p>
+                    <p className="adyen-checkout-paybybank_AIS_DD__description-body">{this.props.i18n.get('payByBankAISDD.disclaimer.body')}</p>
+                </div>
+
+                {this.props.showPayButton && (
+                    <RedirectButton
+                        {...this.props}
+                        showPayButton={this.props.showPayButton}
+                        name={this.displayName}
+                        onSubmit={this.submit}
+                        payButton={this.payButton}
+                        ref={ref => {
+                            this.componentRef = ref;
+                        }}
+                    />
+                )}
+            </Fragment>
+        );
+    }
+}

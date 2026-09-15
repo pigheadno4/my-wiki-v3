@@ -6,6 +6,26 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-15] ingest | adyen/adyen-web `@adyen/adyen-web@6.45.0`
+
+- Full-ingested `github-b1ef47fd1c229bf1ffb7` at exact SHA `b29934f6cf5de6e1912039f669b48ae45b75d3fd`, after user approval and serial reading of the assigned packet, comparison and 26-file supplement. Standard snapshot: 221 files, 13 modified, 208 unchanged.
+- Added review-page lifecycle, payment-method exceptions, action and donation ownership, Google Pay nonce, address/rendering changes, and dependency updates. Recorded three ADR/code discrepancies without modifying raw evidence.
+- Created the review-page concept first, then additively updated cumulative source/changelog, company and index. All older releases remain; source count unchanged. Full mode reflects the new checkout lifecycle, not a vulnerability claim from the CSP keyword.
+- No runtime tests or live merchant eligibility verification. Stories are retained examples with explicit production-safety limitations. Details: [[source-github-adyen-web]], [[changelog-github-adyen-web]], [[adyen-review-page-checkout]].
+
+## [2026-09-14] ingest | adyen/adyen-web `@adyen/adyen-web@6.44.0`
+
+- Delta-ingested `github-92b6b54198b4cd5b55a6`, 6.43.0 to exact SHA `f10995d33491d8107c01a27dec2bc1fc4d6e28b0`, after serial review of the assigned current evidence and approved 40-file supplement.
+- Preserved older knowledge; added keyboard dispatch, Amex CVC mapping, null defaults, country normalization, screen-reader lifecycle, Preact and Secured Fields version changes. PayPal JS remains 10.0.3; 3DS2 changes are formatting-only.
+- User-approved delta overrides the recorded full recommendation after review: the security keyword matched CVC "security code", not vulnerability evidence. No classifier change.
+- Updated source, changelog, co-badged-cards concept, company, index, and logs. No new source or comparison. No runtime tests; translation and external Secured Fields runtime limits remain explicit. 6.45.0 stays awaiting approval.
+
+## [2026-09-14] ingest | adyen/adyen-web `@adyen/adyen-web@6.43.0`
+
+- Delta-ingested `github-9ddbf78a69c5ce3ccc94`, 6.42.0 to exact SHA `b98917359c0b5b701ef99b583aef44f447e73bf6`, with its linked 14-file Select/Tag supplement including three stories.
+- Preserved older knowledge; recorded tags, supporting-text visibility, filterable click handling, source/CSS accessibility boundaries, and PayPal JS 10.0.2 to 10.0.3 dependency.
+- Updated source, changelog, company, and index. No new source count, concept, or comparison page; no contradiction found. No runtime tests. 6.44.0 and 6.45.0 remain awaiting approval.
+
 ## [2026-08-29] ingest | adyen/adyen-3ds2-ios-swift `adyen-3ds2-ios-swift@3.0.1`
 
 - Approved and full-ingested work item `github-a200548203865cde87a4` at exact SHA `1596f558f39d9e706030ab77ebcf8c01492d1ecd` after serial full reading of all 12 required evidence paths.

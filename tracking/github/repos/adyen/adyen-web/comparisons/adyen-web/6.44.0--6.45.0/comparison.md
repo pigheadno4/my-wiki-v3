@@ -1,0 +1,131 @@
+# GitHub package comparison
+
+- Repository: `adyen/adyen-web`
+- Package: `@adyen/adyen-web`
+- From: `6.44.0` (`f10995d33491d8107c01a27dec2bc1fc4d6e28b0`)
+- To: `6.45.0` (`b29934f6cf5de6e1912039f669b48ae45b75d3fd`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `packages/lib/.size-limit.cjs`
+- `packages/lib/.storybook/preview.tsx`
+- `packages/lib/CHANGELOG.md`
+- `packages/lib/docs/adr/ADR-0003-review-page-flow.md`
+- `packages/lib/docs/adr/ADR-0004-review-page-mounting-web.md`
+- `packages/lib/eslint-rules/strict-null-checks.js`
+- `packages/lib/eslint.config.js`
+- `packages/lib/jest.config.ts`
+- `packages/lib/package.json`
+- `packages/lib/src/components/BacsDD/BacsDD.tsx`
+- `packages/lib/src/components/Card/Card.test.tsx`
+- `packages/lib/src/components/Card/Card.tsx`
+- `packages/lib/src/components/Donation/DonationCampaignService.tsx`
+- `packages/lib/src/components/Donation/types.ts`
+- `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodDetails.test.tsx`
+- `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodDetails.tsx`
+- `packages/lib/src/components/Giftcard/Giftcard.test.tsx`
+- `packages/lib/src/components/Giftcard/Giftcard.tsx`
+- `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`
+- `packages/lib/src/components/GooglePay/GooglePay.test.ts`
+- `packages/lib/src/components/GooglePay/GooglePay.tsx`
+- `packages/lib/src/components/GooglePay/GooglePayEnvironment.test.ts`
+- `packages/lib/src/components/GooglePay/GooglePayService.test.ts`
+- `packages/lib/src/components/GooglePay/GooglePayService.ts`
+- `packages/lib/src/components/GooglePay/types.ts`
+- `packages/lib/src/components/Klarna/KlarnaPayments.test.tsx`
+- `packages/lib/src/components/Klarna/KlarnaPayments.tsx`
+- `packages/lib/src/components/PayByBankPix/PayByBankPix.test.ts`
+- `packages/lib/src/components/PayByBankPix/PayByBankPix.tsx`
+- `packages/lib/src/components/PayByBankUS/PayByBankUS.tsx`
+- `packages/lib/src/components/PayTo/PayTo.tsx`
+- `packages/lib/src/components/Twint/Twint.tsx`
+- `packages/lib/src/components/internal/Address/Address.test.tsx`
+- `packages/lib/src/components/internal/Address/validate.formats.test.ts`
+- `packages/lib/src/components/internal/Address/validate.formats.ts`
+- `packages/lib/src/components/internal/Address/validate.ts`
+- `packages/lib/src/components/internal/ClickToPay/services/utils.test.ts`
+- `packages/lib/src/components/internal/FormFields/Select/Select.scss`
+- `packages/lib/src/components/internal/PayButton/PayButton.test.tsx`
+- `packages/lib/src/components/internal/PayButton/PayButton.tsx`
+- `packages/lib/src/components/internal/PayButton/utils.ts`
+- `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`
+- `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `packages/lib/src/components/internal/UIElement/types.ts`
+- `packages/lib/src/core/Analytics/Analytics.test.ts`
+- `packages/lib/src/core/Analytics/constants.ts`
+- `packages/lib/src/core/Analytics/events/AnalyticsLogEvent.ts`
+- `packages/lib/src/core/Errors/constants.ts`
+- `packages/lib/src/core/config.ts`
+- `packages/lib/src/core/core.test.ts`
+- `packages/lib/src/core/core.ts`
+- `packages/lib/src/core/types.ts`
+- `packages/lib/src/core/utils.ts`
+- `packages/lib/src/types/global-types.ts`
+- `packages/lib/src/utils/validator-utils.test.ts`
+- `packages/lib/src/utils/validator-utils.ts`
+- `packages/lib/storybook/stories/demos/ReviewPage/ReviewPage.stories.tsx`
+- `packages/lib/storybook/stories/demos/ReviewPage/ReviewPage.tsx`
+- `packages/lib/storybook/stories/demos/ReviewPage/review-page-renders.tsx`
+
+## Upstream changes
+
+- `modified`: `packages/lib/.size-limit.cjs`
+- `modified`: `packages/lib/.storybook/preview.tsx`
+- `modified`: `packages/lib/CHANGELOG.md`
+- `added`: `packages/lib/docs/adr/ADR-0003-review-page-flow.md`
+- `added`: `packages/lib/docs/adr/ADR-0004-review-page-mounting-web.md`
+- `added`: `packages/lib/eslint-rules/strict-null-checks.js`
+- `modified`: `packages/lib/eslint.config.js`
+- `modified`: `packages/lib/jest.config.ts`
+- `modified`: `packages/lib/package.json`
+- `modified`: `packages/lib/src/components/BacsDD/BacsDD.tsx`
+- `modified`: `packages/lib/src/components/Card/Card.test.tsx`
+- `modified`: `packages/lib/src/components/Card/Card.tsx`
+- `modified`: `packages/lib/src/components/Donation/DonationCampaignService.tsx`
+- `modified`: `packages/lib/src/components/Donation/types.ts`
+- `added`: `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodDetails.test.tsx`
+- `modified`: `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodDetails.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/Giftcard.test.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/Giftcard.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`
+- `modified`: `packages/lib/src/components/GooglePay/GooglePay.test.ts`
+- `modified`: `packages/lib/src/components/GooglePay/GooglePay.tsx`
+- `modified`: `packages/lib/src/components/GooglePay/GooglePayEnvironment.test.ts`
+- `added`: `packages/lib/src/components/GooglePay/GooglePayService.test.ts`
+- `modified`: `packages/lib/src/components/GooglePay/GooglePayService.ts`
+- `modified`: `packages/lib/src/components/GooglePay/types.ts`
+- `modified`: `packages/lib/src/components/Klarna/KlarnaPayments.test.tsx`
+- `modified`: `packages/lib/src/components/Klarna/KlarnaPayments.tsx`
+- `modified`: `packages/lib/src/components/PayByBankPix/PayByBankPix.test.ts`
+- `modified`: `packages/lib/src/components/PayByBankPix/PayByBankPix.tsx`
+- `modified`: `packages/lib/src/components/PayByBankUS/PayByBankUS.tsx`
+- `modified`: `packages/lib/src/components/PayTo/PayTo.tsx`
+- `modified`: `packages/lib/src/components/Twint/Twint.tsx`
+- `modified`: `packages/lib/src/components/internal/Address/Address.test.tsx`
+- `modified`: `packages/lib/src/components/internal/Address/validate.formats.test.ts`
+- `modified`: `packages/lib/src/components/internal/Address/validate.formats.ts`
+- `modified`: `packages/lib/src/components/internal/Address/validate.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/services/utils.test.ts`
+- `modified`: `packages/lib/src/components/internal/FormFields/Select/Select.scss`
+- `modified`: `packages/lib/src/components/internal/PayButton/PayButton.test.tsx`
+- `modified`: `packages/lib/src/components/internal/PayButton/PayButton.tsx`
+- `modified`: `packages/lib/src/components/internal/PayButton/utils.ts`
+- `modified`: `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`
+- `modified`: `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `modified`: `packages/lib/src/components/internal/UIElement/types.ts`
+- `modified`: `packages/lib/src/core/Analytics/Analytics.test.ts`
+- `modified`: `packages/lib/src/core/Analytics/constants.ts`
+- `modified`: `packages/lib/src/core/Analytics/events/AnalyticsLogEvent.ts`
+- `modified`: `packages/lib/src/core/Errors/constants.ts`
+- `modified`: `packages/lib/src/core/config.ts`
+- `modified`: `packages/lib/src/core/core.test.ts`
+- `modified`: `packages/lib/src/core/core.ts`
+- `modified`: `packages/lib/src/core/types.ts`
+- `modified`: `packages/lib/src/core/utils.ts`
+- `modified`: `packages/lib/src/types/global-types.ts`
+- `added`: `packages/lib/src/utils/validator-utils.test.ts`
+- `modified`: `packages/lib/src/utils/validator-utils.ts`
+- `added`: `packages/lib/storybook/stories/demos/ReviewPage/ReviewPage.stories.tsx`
+- `added`: `packages/lib/storybook/stories/demos/ReviewPage/ReviewPage.tsx`
+- `added`: `packages/lib/storybook/stories/demos/ReviewPage/review-page-renders.tsx`

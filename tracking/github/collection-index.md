@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-09-13`
+Generated: `2026-09-15`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -8,7 +8,7 @@ Generated: `2026-09-13`
 | adyen | `adyen/adyen-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
 | adyen | `adyen/adyen-pos-mobile-ios` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-react-native` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
-| adyen | `adyen/adyen-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-09 | ingested | 2026-08-16 | `collect-baseline` |
+| adyen | `adyen/adyen-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-09-14 | ingested | 2026-09-21 | `wait` |
 | adyen | `adyen/adyen-3ds2-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | ingested | 2026-09-17 | `wait` |
 | adyen | `adyen/adyen-3ds2-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | ingested | 2026-09-17 | `wait` |
 | adyen | `adyen/adyen-3ds2-ios-swift` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-29 | ingested | 2026-09-29 | `wait` |
@@ -37,10 +37,10 @@ Generated: `2026-09-13`
 | braintree | `braintree/restricted-input` | tier3 | commit / commit-tree-v1 | monthly | 2026-08-30 | ingested | 2026-09-30 | `wait` |
 | braintree | `braintree/uuid` | tier3 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-31 | ingested | 2026-09-30 | `wait` |
 | braintree | `braintree/web-sdk-github-actions` | tier3 | commit | on-demand | - | - | - | `disabled` |
-| metronome | `metronome-industries/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `wait` |
+| metronome | `metronome-industries/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | metronome | `metronome-industries/metronome-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `collect-baseline` |
 | metronome | `metronome-industries/mintlify-docs` | tier2 | commit | monthly | - | - | - | `disabled` |
-| metronome | `metronome-industries/terraform-provider-metronome` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `wait` |
+| metronome | `metronome-industries/terraform-provider-metronome` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | metronome | `metronome-industries/ai-eval` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | paypal | `paypal-examples/paypal-android-sdk-demo-app` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-16 | ingested | 2026-09-16 | `wait` |
 | paypal | `paypal-examples/paypal-ios-sdk-demo-app` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-16 | ingested | 2026-09-16 | `wait` |
@@ -68,10 +68,10 @@ Generated: `2026-09-13`
 | stripe | `stripe/stripe-terminal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-31 | ingested | 2026-09-07 | `collect-baseline` |
 | stripe | `stripe/stripe-terminal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-31 | ingested | 2026-09-07 | `collect-baseline` |
 | stripe | `stripe/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-13 | ingested | 2026-09-13 | `collect-baseline` |
-| stripe | `stripe/link-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `wait` |
+| stripe | `stripe/link-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | stripe | `stripe/stripe-apps` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-28 | ingested | 2026-09-28 | `wait` |
-| stripe | `stripe/stripe-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-14 | ingested | 2026-09-14 | `wait` |
+| stripe | `stripe/stripe-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-14 | ingested | 2026-09-14 | `collect-baseline` |
 | stripe | `stripe/stripe-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-08 | ingested | 2026-09-08 | `collect-baseline` |
-| stripe | `stripe/stripe-php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `wait` |
+| stripe | `stripe/stripe-php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | stripe | `stripe/sync-engine` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-26 | ingested | 2026-09-26 | `wait` |
 | stripe | `stripe/stripe-ios-spm` | tier3 | commit | on-demand | - | - | - | `disabled` |

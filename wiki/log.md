@@ -1,5 +1,20 @@
 # Wiki Log
 
+## [2026-09-15] ingest | Adyen Web 6.45.0
+
+- Full-ingested 6.45.0 additively with the approved 26-file supplement, preserving earlier release knowledge.
+- Recorded review-page checkout, CSP/address/rendering changes and ADR discrepancies; added [[adyen-review-page-checkout]]. Details: [[adyen-log]] and [[changelog-github-adyen-web]].
+
+## [2026-09-14] ingest | Adyen Web 6.44.0
+
+- Delta-ingested 6.43.0 to 6.44.0 with its approved 40-file supplement; older knowledge remains intact.
+- Recorded keyboard, CVC, null-input, country, accessibility, and dependency changes; updated co-badged-card keyboard evidence. Details: [[adyen-log]] and [[changelog-github-adyen-web]]. 6.45.0 remains queued.
+
+## [2026-09-14] ingest | Adyen Web 6.43.0
+
+- Delta-ingested 6.42.0 to 6.43.0 with the approved Select/Tag supplement, preserving older version history.
+- Recorded presentation and click-handling changes plus the PayPal dependency update. Details: [[adyen-log]] and [[changelog-github-adyen-web]]. 6.44.0/6.45.0 remain queued.
+
 ## [2026-09-13] ingest | PayPal JS September patch releases
 
 - Delta-ingested core `11.0.1` and React `10.4.1` at shared SHA `b304434`, preserving package-qualified history.

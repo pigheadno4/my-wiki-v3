@@ -28,8 +28,8 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-3ds2-android]] — package-qualified Android 3DS2 release ledger beginning at `2.2.27`, including retained evidence gaps (github-repo, 2026-08-19)
 - [[source-github-adyen-postman]] — exact-commit Postman baseline for Checkout v72, Recurring v68, BIN Lookup v54, Test Card v1, and 82 Terminal API examples (github-repo, 2026-08-12)
 - [[changelog-github-adyen-postman]] — commit-qualified Adyen Postman collection history beginning at `default-branch@ecb2907` (github-repo, 2026-08-12)
-- [[source-github-adyen-web]] — cumulative Adyen Web implementation history through `@adyen/adyen-web@6.42.0`: Drop-in, Components, Sessions, cards, 3DS2, payment-list analytics, address validation, accessibility, and Fastlane adapter (github-repo, 2026-08-09)
-- [[changelog-github-adyen-web]] — package-qualified Adyen Web release ledger from `6.41.0` through `6.42.0` (github-repo, 2026-08-09)
+- [[source-github-adyen-web]] — cumulative implementation through `@adyen/adyen-web@6.45.0`: review-page lifecycle, Google Pay nonce, donation fallback, address/rendering fixes, and preserved older checkout history (github-repo, 2026-09-15)
+- [[changelog-github-adyen-web]] — package-qualified Adyen Web release ledger from `6.41.0` through `6.45.0` (github-repo, 2026-09-15)
 - [[source-github-adyen-ios]] — cumulative `adyen-ios@5.25.1` native baseline: Drop-in, Session, Components, cards, actions, encryption, Apple Pay, and app handoffs (github-repo, 2026-08-01)
 - [[changelog-github-adyen-ios]] — package-qualified Adyen iOS release ledger beginning at `5.25.1` (github-repo, 2026-08-01)
 - [[source-github-adyen-android]] — cumulative `adyen-android@5.20.0` native baseline: Drop-in, Sessions, View and Compose Components, cards, actions, encryption, and delegated SDKs (github-repo, 2026-08-01)
@@ -41,6 +41,7 @@ Operations history: [[adyen-log]]
 
 ## Concepts
 
+- [[adyen-review-page-checkout]] - review callback, Sessions confirmation, action ownership, payment-method exceptions and ADR discrepancies from 6.45.0
 - [[adyen-wechatpay-ios-wrapper]] — Tencent SDK packaging, public native handoff, simulator restriction, and checkout query boundary
 - [[adyen-magento2]] — Adobe Commerce plugin architecture, checkout lifecycle, vault, webhooks, POS, and version boundary
 - [[adyen-sdk-automation]] — OpenAPI-to-SDK generation, language-specific configuration, CI provenance, release-note validation, and separate generic release-action mechanics

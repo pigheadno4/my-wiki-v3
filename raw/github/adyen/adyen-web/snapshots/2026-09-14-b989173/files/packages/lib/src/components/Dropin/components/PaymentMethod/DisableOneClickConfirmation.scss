@@ -1,0 +1,85 @@
+@use "sass:color";
+@use 'styles/variable-generator';
+
+$color-alert: variable-generator.token(color-background-critical-strong, false);
+
+.adyen-checkout__payment-method__disable-confirmation {
+    $component-root: &;
+
+    display: grid;
+    grid-template-rows: 0fr;
+    transition:
+        grid-template-rows variable-generator.token(animation-duration-moderate) variable-generator.token(animation-easing-linear),
+        opacity variable-generator.token(animation-duration-moderate) variable-generator.token(animation-easing-standard),
+        margin-bottom variable-generator.token(animation-duration-fast) variable-generator.token(animation-easing-linear);
+    background: variable-generator.token(color-background-critical-strong);
+    font-size: variable-generator.token(text-body-font-size);
+    color: variable-generator.token(color-label-on-color);
+    border-right: 1px solid color.adjust($color-alert, $lightness: -2%);
+    border-left: 1px solid color.adjust($color-alert, $lightness: -2%);
+    overflow: hidden;
+    opacity: 0;
+    margin: 0 -17px;
+
+    &__content {
+        min-height: 0;
+        transition:
+            visibility variable-generator.token(animation-duration-moderate) variable-generator.token(animation-easing-linear),
+            padding variable-generator.token(animation-duration-fast) variable-generator.token(animation-easing-linear);
+        visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &--open {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        margin-bottom: variable-generator.token(spacer-070);
+
+        #{$component-root}__content {
+            visibility: visible;
+            padding: variable-generator.token(spacer-040) variable-generator.token(spacer-070);
+        }
+    }
+}
+
+.adyen-checkout__payment-method__disable-confirmation__buttons {
+    display: flex;
+}
+
+.adyen-checkout__payment-method__disable-confirmation__button {
+    font-size: variable-generator.token(text-body-font-size);
+    background: variable-generator.token(color-background-critical-strong);
+    border: variable-generator.token(border-width-s) solid transparent;
+    border-radius: variable-generator.token(border-radius-m);
+    color: variable-generator.token(color-label-on-color);
+    cursor: pointer;
+    display: block;
+    height: auto;
+    margin: 0 0 0 variable-generator.token(spacer-040);
+    padding: variable-generator.token(spacer-040);
+    width: auto;
+
+    &:hover,
+    &:hover:focus {
+        box-shadow: none;
+        background: color.adjust($color-alert, $lightness: -5%);
+    }
+
+    &:active,
+    &:hover:active {
+        background: color.adjust($color-alert, $lightness: -10%);
+        box-shadow: none;
+    }
+}
+
+.adyen-checkout__payment-method__disable-confirmation__button--remove,
+.adyen-checkout__payment-method__disable-confirmation__button--remove:disabled {
+    border-color: variable-generator.token(color-label-on-color);
+}
+
+.adyen-checkout__payment-method__disable-confirmation__button--cancel,
+.adyen-checkout__payment-method__disable-confirmation__button--cancel:disabled {
+    border-color: transparent;
+}

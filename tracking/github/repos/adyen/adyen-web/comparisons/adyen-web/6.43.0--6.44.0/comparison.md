@@ -1,0 +1,175 @@
+# GitHub package comparison
+
+- Repository: `adyen/adyen-web`
+- Package: `@adyen/adyen-web`
+- From: `6.43.0` (`b98917359c0b5b701ef99b583aef44f447e73bf6`)
+- To: `6.44.0` (`f10995d33491d8107c01a27dec2bc1fc4d6e28b0`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `packages/lib/CHANGELOG.md`
+- `packages/lib/package.json`
+- `packages/lib/src/components/Card/Card.tsx`
+- `packages/lib/src/components/Card/components/CardInput/CardInput.test.tsx`
+- `packages/lib/src/components/Card/components/CardInput/CardInput.tsx`
+- `packages/lib/src/components/Card/components/CardInput/components/CVC.test.tsx`
+- `packages/lib/src/components/Card/components/CardInput/components/CVC.tsx`
+- `packages/lib/src/components/Card/components/CardInput/components/CardFields.test.tsx`
+- `packages/lib/src/components/Card/components/CardInput/components/CardFields.tsx`
+- `packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx`
+- `packages/lib/src/components/Card/components/CardInput/components/StoredCardFields.tsx`
+- `packages/lib/src/components/Card/components/CardInput/components/types.ts`
+- `packages/lib/src/components/Card/components/CardInput/types.ts`
+- `packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts`
+- `packages/lib/src/components/Card/components/CardInput/utils.test.ts`
+- `packages/lib/src/components/Card/components/CardInput/utils.ts`
+- `packages/lib/src/components/ClickToPay/ClickToPay.test.ts`
+- `packages/lib/src/components/CustomCard/CustomCard.tsx`
+- `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`
+- `packages/lib/src/components/Dropin/Dropin.test.ts`
+- `packages/lib/src/components/Dropin/Dropin.tsx`
+- `packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx`
+- `packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx`
+- `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx`
+- `packages/lib/src/components/Giftcard/Giftcard.tsx`
+- `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`
+- `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`
+- `packages/lib/src/components/ThreeDS2/types.ts`
+- `packages/lib/src/components/internal/Address/Address.test.tsx`
+- `packages/lib/src/components/internal/Address/Address.tsx`
+- `packages/lib/src/components/internal/Address/types.ts`
+- `packages/lib/src/components/internal/Address/validate.ts`
+- `packages/lib/src/components/internal/BaseElement/BaseElement.ts`
+- `packages/lib/src/components/internal/Button/Button.tsx`
+- `packages/lib/src/components/internal/Button/CopyButton.tsx`
+- `packages/lib/src/components/internal/Button/CopyIconButton.tsx`
+- `packages/lib/src/components/internal/Button/types.ts`
+- `packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx`
+- `packages/lib/src/components/internal/FormFields/InputBase.tsx`
+- `packages/lib/src/components/internal/FormFields/Select/Select.tsx`
+- `packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.test.tsx`
+- `packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.tsx`
+- `packages/lib/src/components/internal/Modal/Modal.tsx`
+- `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.test.tsx`
+- `packages/lib/src/components/internal/OpenInvoice/types.ts`
+- `packages/lib/src/components/internal/PersonalDetails/types.ts`
+- `packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx`
+- `packages/lib/src/components/internal/QRLoader/QRLoader.tsx`
+- `packages/lib/src/components/internal/QRLoader/components/QRFinalState.tsx`
+- `packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx`
+- `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.test.tsx`
+- `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`
+- `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts`
+- `packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts`
+- `packages/lib/src/components/internal/SecuredFields/SFP/types.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/constants.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/types.ts`
+- `packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx`
+- `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `packages/lib/src/core/Errors/SRMessages.tsx`
+- `packages/lib/src/core/Errors/SRPanel.ownership.test.tsx`
+- `packages/lib/src/core/Errors/SRPanel.tsx`
+- `packages/lib/src/core/Errors/SRPanelProvider.tsx`
+- `packages/lib/src/core/Errors/constants.ts`
+- `packages/lib/src/core/Errors/useA11yReporter.ts`
+- `packages/lib/src/core/Errors/useLoadingA11yReporter.test.tsx`
+- `packages/lib/src/core/Errors/useLoadingA11yReporter.ts`
+- `packages/lib/src/core/Errors/utils.ts`
+- `packages/lib/src/utils/useForm/types.ts`
+- `packages/lib/src/utils/useForm/useForm.test.tsx`
+- `packages/lib/src/utils/useForm/useForm.ts`
+
+## Upstream changes
+
+- `modified`: `packages/lib/CHANGELOG.md`
+- `modified`: `packages/lib/package.json`
+- `modified`: `packages/lib/src/components/Card/Card.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/CardInput.test.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/CardInput.tsx`
+- `added`: `packages/lib/src/components/Card/components/CardInput/components/CVC.test.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/components/CVC.tsx`
+- `added`: `packages/lib/src/components/Card/components/CardInput/components/CardFields.test.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/components/CardFields.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/components/StoredCardFields.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/components/types.ts`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/types.ts`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/utils.test.ts`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/utils.ts`
+- `modified`: `packages/lib/src/components/ClickToPay/ClickToPay.test.ts`
+- `modified`: `packages/lib/src/components/CustomCard/CustomCard.tsx`
+- `modified`: `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`
+- `modified`: `packages/lib/src/components/Dropin/Dropin.test.ts`
+- `modified`: `packages/lib/src/components/Dropin/Dropin.tsx`
+- `modified`: `packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx`
+- `modified`: `packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx`
+- `modified`: `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/Giftcard.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`
+- `modified`: `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`
+- `modified`: `packages/lib/src/components/ThreeDS2/types.ts`
+- `modified`: `packages/lib/src/components/internal/Address/Address.test.tsx`
+- `modified`: `packages/lib/src/components/internal/Address/Address.tsx`
+- `modified`: `packages/lib/src/components/internal/Address/types.ts`
+- `modified`: `packages/lib/src/components/internal/Address/validate.ts`
+- `modified`: `packages/lib/src/components/internal/BaseElement/BaseElement.ts`
+- `modified`: `packages/lib/src/components/internal/Button/Button.tsx`
+- `modified`: `packages/lib/src/components/internal/Button/CopyButton.tsx`
+- `modified`: `packages/lib/src/components/internal/Button/CopyIconButton.tsx`
+- `modified`: `packages/lib/src/components/internal/Button/types.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx`
+- `modified`: `packages/lib/src/components/internal/FormFields/InputBase.tsx`
+- `modified`: `packages/lib/src/components/internal/FormFields/Select/Select.tsx`
+- `added`: `packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.test.tsx`
+- `modified`: `packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.tsx`
+- `modified`: `packages/lib/src/components/internal/Modal/Modal.tsx`
+- `modified`: `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.test.tsx`
+- `modified`: `packages/lib/src/components/internal/OpenInvoice/types.ts`
+- `modified`: `packages/lib/src/components/internal/PersonalDetails/types.ts`
+- `modified`: `packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx`
+- `modified`: `packages/lib/src/components/internal/QRLoader/QRLoader.tsx`
+- `modified`: `packages/lib/src/components/internal/QRLoader/components/QRFinalState.tsx`
+- `added`: `packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.test.tsx`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/types.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/constants.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/types.ts`
+- `modified`: `packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx`
+- `modified`: `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `modified`: `packages/lib/src/core/Errors/SRMessages.tsx`
+- `added`: `packages/lib/src/core/Errors/SRPanel.ownership.test.tsx`
+- `modified`: `packages/lib/src/core/Errors/SRPanel.tsx`
+- `modified`: `packages/lib/src/core/Errors/SRPanelProvider.tsx`
+- `modified`: `packages/lib/src/core/Errors/constants.ts`
+- `modified`: `packages/lib/src/core/Errors/useA11yReporter.ts`
+- `added`: `packages/lib/src/core/Errors/useLoadingA11yReporter.test.tsx`
+- `added`: `packages/lib/src/core/Errors/useLoadingA11yReporter.ts`
+- `modified`: `packages/lib/src/core/Errors/utils.ts`
+- `modified`: `packages/lib/src/utils/useForm/types.ts`
+- `modified`: `packages/lib/src/utils/useForm/useForm.test.tsx`
+- `modified`: `packages/lib/src/utils/useForm/useForm.ts`

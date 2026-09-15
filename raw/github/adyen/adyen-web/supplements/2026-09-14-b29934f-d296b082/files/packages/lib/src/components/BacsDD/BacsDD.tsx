@@ -1,0 +1,61 @@
+import { h } from 'preact';
+import UIElement from '../internal/UIElement/UIElement';
+import BacsInput from './components/BacsInput';
+import BacsResult from './components/BacsResult';
+import PayButton from '../internal/PayButton';
+import { TxVariants } from '../tx-variants';
+import { VoucherConfiguration } from '../internal/Voucher/types';
+import { BacsElementData } from './types';
+import { PayButtonProps } from '../internal/PayButton/PayButton';
+
+class BacsElement extends UIElement<VoucherConfiguration> {
+    public static readonly type = TxVariants.directdebit_GB;
+
+    formatData(): BacsElementData {
+        return {
+            paymentMethod: {
+                type: BacsElement.type,
+                ...(this.state.data?.holderName && { holderName: this.state.data.holderName }),
+                ...(this.state.data?.bankAccountNumber && { bankAccountNumber: this.state.data.bankAccountNumber }),
+                ...(this.state.data?.bankLocationId && { bankLocationId: this.state.data.bankLocationId })
+            },
+            ...(this.state.data?.shopperEmail && { shopperEmail: this.state.data.shopperEmail })
+        };
+    }
+
+    get isValid(): boolean {
+        return !!this.state.isValid;
+    }
+
+    protected override payButton = (props: PayButtonProps) => {
+        return <PayButton onClick={this.submit} {...props} showReview={!!this.props.onReview} />;
+    };
+
+    protected override componentToRender(): h.JSX.Element {
+        return this.props.url ? (
+            <BacsResult
+                ref={ref => {
+                    this.componentRef = ref;
+                }}
+                icon={this.icon}
+                url={this.props.url}
+                paymentMethodType={this.props.paymentMethodType}
+                onActionHandled={this.onActionHandled}
+                // originalAction={this.props.originalAction}
+            />
+        ) : (
+            <BacsInput
+                // @ts-ignore ref is internal from the Component
+                ref={ref => {
+                    this.componentRef = ref;
+                }}
+                {...this.props}
+                onChange={this.setState}
+                payButton={this.payButton}
+                onSubmit={this.submit}
+            />
+        );
+    }
+}
+
+export default BacsElement;

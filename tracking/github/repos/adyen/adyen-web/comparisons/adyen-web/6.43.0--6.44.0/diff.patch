@@ -1,0 +1,2555 @@
+diff --git a/packages/lib/CHANGELOG.md b/packages/lib/CHANGELOG.md
+index f0445d4..62f2d7f 100644
+--- a/packages/lib/CHANGELOG.md
++++ b/packages/lib/CHANGELOG.md
+@@ -1,5 +1,19 @@
+ # @adyen/adyen-web
+ 
++## 6.44.0
++
++### Minor Changes
++
++- Improved: replace deprecated keypress event with keydown event ([#4143](https://github.com/Adyen/adyen-web/pull/4143))
++
++- Fixed: Card expiry date and security code fields no longer lose their format guidance when they enter an error state ([#4091](https://github.com/Adyen/adyen-web/pull/4091))
++
++### Patch Changes
++
++- Fixed: Announce loading to screen readers for QR/redirect payment methods and for Card and stop these announcements being cleared from the shared screen reader panel before they can be read ([#4098](https://github.com/Adyen/adyen-web/pull/4098))
++
++- Fixed: Components crashing when `null` data was passed ([#4134](https://github.com/Adyen/adyen-web/pull/4134))
++
+ ## 6.43.0
+ 
+ ### Minor Changes
+diff --git a/packages/lib/package.json b/packages/lib/package.json
+index 0bc41cf..a057725 100644
+--- a/packages/lib/package.json
++++ b/packages/lib/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@adyen/adyen-web",
+-    "version": "6.43.0",
++    "version": "6.44.0",
+     "license": "MIT",
+     "homepage": "https://docs.adyen.com/checkout",
+     "type": "module",
+@@ -84,7 +84,7 @@
+     "devDependencies": {
+         "@adyen/bento-design-tokens": "1.10.0",
+         "@eslint/js": "10.0.1",
+-        "@preact/preset-vite": "2.10.5",
++        "@preact/preset-vite": "2.10.6",
+         "@rollup/plugin-commonjs": "29.0.3",
+         "@rollup/plugin-eslint": "9.2.0",
+         "@rollup/plugin-json": "6.1.0",
+@@ -101,7 +101,7 @@
+         "@testing-library/preact-hooks": "1.1.0",
+         "@testing-library/user-event": "14.6.1",
+         "@types/jest": "30.0.0",
+-        "autoprefixer": "10.5.2",
++        "autoprefixer": "10.5.4",
+         "cssnano": "8.0.2",
+         "dotenv": "17.4.2",
+         "eslint": "10.7.0",
+@@ -117,7 +117,7 @@
+         "jest-mock-extended": "4.0.1",
+         "msw": "2.15.0",
+         "msw-storybook-addon": "2.0.7",
+-        "postcss": "8.5.18",
++        "postcss": "8.5.23",
+         "rollup": "4.62.2",
+         "rollup-plugin-dts": "6.4.1",
+         "rollup-plugin-postcss": "4.0.2",
+@@ -126,12 +126,12 @@
+         "sass": "1.101.0",
+         "size-limit": "12.1.0",
+         "storybook": "10.4.6",
+-        "stylelint": "17.14.0",
++        "stylelint": "17.14.1",
+         "stylelint-config-standard-scss": "17.0.0",
+-        "ts-jest": "29.4.11",
++        "ts-jest": "29.4.12",
+         "tslib": "2.8.1",
+         "typescript": "6.0.3",
+-        "typescript-eslint": "8.64.0",
++        "typescript-eslint": "8.65.0",
+         "vite": "6.4.3",
+         "vite-plugin-stylelint": "6.3.0",
+         "whatwg-fetch": "3.6.20"
+@@ -141,7 +141,7 @@
+         "@types/applepayjs": "14.0.9",
+         "@types/googlepay": "0.7.11",
+         "classnames": "2.5.1",
+-        "preact": "10.29.2"
++        "preact": "10.29.7"
+     },
+     "msw": {
+         "workerDirectory": [
+diff --git a/packages/lib/src/components/Card/Card.tsx b/packages/lib/src/components/Card/Card.tsx
+index 45fbbbb..baec3f8 100644
+--- a/packages/lib/src/components/Card/Card.tsx
++++ b/packages/lib/src/components/Card/Card.tsx
+@@ -365,7 +365,7 @@ export class CardElement extends UIElement<CardConfiguration> {
+                 onSubmitAnalytics={this.submitAnalytics}
+                 onChange={this.setState}
+                 onSubmit={this.submit}
+-                handleKeyPress={this.handleKeyPress}
++                handleKeyDown={this.handleKeyDown}
+                 payButton={this.payButton}
+                 onBrand={this.onBrand}
+                 onBinValue={this.onBinValue}
+diff --git a/packages/lib/src/components/Card/components/CardInput/CardInput.test.tsx b/packages/lib/src/components/Card/components/CardInput/CardInput.test.tsx
+index bd4ec2f..387040c 100644
+--- a/packages/lib/src/components/Card/components/CardInput/CardInput.test.tsx
++++ b/packages/lib/src/components/Card/components/CardInput/CardInput.test.tsx
+@@ -1,7 +1,7 @@
+ import { createRef, h } from 'preact';
+ import { render, screen, fireEvent, act } from '@testing-library/preact';
+ import CardInput from './CardInput';
+-import { CardInputDataState, CardInputValidState } from './types';
++import { AddressModeOptions, CardInputDataState, CardInputValidState } from './types';
+ import { CoreProvider } from '../../../../core/Context/CoreProvider';
+ import { AmountProvider } from '../../../../core/Context/AmountProvider';
+ 
+@@ -56,6 +56,36 @@ describe('CardInput', () => {
+     });
+ });
+ 
++describe('CardInput - partial billing address', () => {
++    test.each([undefined, null])('should render with an empty postal code field when billingAddress is %s', billingAddress => {
++        renderCardInput(
++            <CardInput
++                {...cardInputRequiredProps}
++                billingAddressMode={AddressModeOptions.partial}
++                billingAddressRequired={true}
++                data={{ billingAddress }}
++            />
++        );
++
++        expect(screen.getByLabelText('Postal code')).toHaveValue('');
++    });
++
++    test('should validate the postal code when the initial country is lowercase', () => {
++        renderCardInput(
++            <CardInput
++                {...cardInputRequiredProps}
++                billingAddressMode={AddressModeOptions.partial}
++                billingAddressRequired={true}
++                data={{ billingAddress: { country: 'us' } }}
++            />
++        );
++
++        fireEvent.blur(screen.getByLabelText('Zip code'), { target: { value: '1' } });
++
++        expect(screen.getByText('Invalid format. Expected format: 99999 or 99999-9999')).toBeInTheDocument();
++    });
++});
++
+ describe('CardInput - Brands beneath Card Number field', () => {
+     test('should render brands under Card number field', () => {
+         const brandsIcons = [
+diff --git a/packages/lib/src/components/Card/components/CardInput/CardInput.tsx b/packages/lib/src/components/Card/components/CardInput/CardInput.tsx
+index 11f207a..222eafc 100644
+--- a/packages/lib/src/components/Card/components/CardInput/CardInput.tsx
++++ b/packages/lib/src/components/Card/components/CardInput/CardInput.tsx
+@@ -94,11 +94,13 @@ const CardInput = (props: Readonly<CardInputProps>) => {
+     const showBillingAddress = props.billingAddressMode !== AddressModeOptions.none && props.billingAddressRequired;
+ 
+     const partialAddressSchema = handlePartialAddressMode(props.billingAddressMode);
++    const initialBillingAddress = props.data?.billingAddress ?? null;
++
+     // Keeps the value of the country set initially by the merchant, before the Address Component mutates it
+-    const partialAddressCountry = useRef<string>(partialAddressSchema && props.data?.billingAddress?.country);
++    const partialAddressCountry = useRef<string | null>(partialAddressSchema ? (initialBillingAddress?.country?.toUpperCase() ?? null) : null);
+ 
+     const [storePaymentMethod, setStorePaymentMethod] = useState(false);
+-    const [billingAddress, setBillingAddress] = useState<AddressData>(showBillingAddress ? (props.data?.billingAddress ?? null) : null);
++    const [billingAddress, setBillingAddress] = useState<AddressData | null>(showBillingAddress ? initialBillingAddress : null);
+     const [showSocialSecurityNumber, setShowSocialSecurityNumber] = useState(false);
+     const [socialSecurityNumber, setSocialSecurityNumber] = useState('');
+     const [installments, setInstallments] = useState<InstallmentsState>({ value: null });
+diff --git a/packages/lib/src/components/Card/components/CardInput/components/CVC.test.tsx b/packages/lib/src/components/Card/components/CardInput/components/CVC.test.tsx
+new file mode 100644
+index 0000000..920afc9
+--- /dev/null
++++ b/packages/lib/src/components/Card/components/CardInput/components/CVC.test.tsx
+@@ -0,0 +1,37 @@
++import { h } from 'preact';
++import { render, screen } from '@testing-library/preact';
++import CVC from './CVC';
++import { CoreProvider } from '../../../../../core/Context/CoreProvider';
++
++const renderCVC = (props = {}) => {
++    return render(
++        <CoreProvider i18n={global.i18n} loadingContext="test" resources={global.resources}>
++            <CVC label="Security code" onFocusField={() => {}} {...props} />
++        </CoreProvider>
++    );
++};
++
++describe('CVC', () => {
++    test('should not render an error message when there is no errorCode', () => {
++        renderCVC();
++        expect(screen.queryByText(/enter/i)).not.toBeInTheDocument();
++    });
++
++    test('should show the "3 digits on back of card" hint for non-Amex brands', () => {
++        renderCVC({ errorCode: 'cc.cvc.920', frontCVC: false });
++
++        expect(screen.getByText('Enter the security code. 3 digits on back of card.')).toBeInTheDocument();
++    });
++
++    test('should show the "4 digits on front of card" hint for Amex', () => {
++        renderCVC({ errorCode: 'cc.cvc.920', frontCVC: true });
++
++        expect(screen.getByText('Enter the security code. 4 digits on front of card.')).toBeInTheDocument();
++    });
++
++    test('should pick the Amex variant per error code (incomplete vs invalid)', () => {
++        renderCVC({ errorCode: 'cc.cvc.921', frontCVC: true });
++
++        expect(screen.getByText('Enter the complete security code. 4 digits on front of card.')).toBeInTheDocument();
++    });
++});
+diff --git a/packages/lib/src/components/Card/components/CardInput/components/CVC.tsx b/packages/lib/src/components/Card/components/CardInput/components/CVC.tsx
+index c5b6d8a..47e78e0 100644
+--- a/packages/lib/src/components/Card/components/CardInput/components/CVC.tsx
++++ b/packages/lib/src/components/Card/components/CardInput/components/CVC.tsx
+@@ -12,13 +12,14 @@ import {
+ } from '../../../../internal/SecuredFields/lib/constants';
+ import DataSfSpan from './DataSfSpan';
+ import { alternativeLabelContent } from './FieldLabelAlternative';
++import { resolveCVCErrorKey } from '../utils';
+ import './CVC.scss';
+ 
+ export default function CVC(props: Readonly<CVCProps>) {
+     const {
+         label,
+         onFocusField = () => {},
+-        error = '',
++        errorCode = '',
+         className = '',
+         classNameModifiers = [],
+         focused,
+@@ -31,6 +32,8 @@ export default function CVC(props: Readonly<CVCProps>) {
+     } = props;
+     const { i18n } = useCoreContext();
+ 
++    const errorMessage = errorCode ? i18n.get(resolveCVCErrorKey(errorCode, frontCVC)) : '';
++
+     const fieldClassnames = classNames(className, {
+         'adyen-checkout__field__cvc': true,
+         'adyen-checkout__card__cvc__input--hidden': cvcPolicy === CVC_POLICY_HIDDEN,
+@@ -41,7 +44,7 @@ export default function CVC(props: Readonly<CVCProps>) {
+         'adyen-checkout__input': true,
+         'adyen-checkout__input--small': true,
+         'adyen-checkout__card__cvc__input': true,
+-        'adyen-checkout__input--error': error,
++        'adyen-checkout__input--error': errorMessage,
+         'adyen-checkout__input--focus': focused,
+         'adyen-checkout__input--valid': isValid
+     });
+@@ -60,7 +63,7 @@ export default function CVC(props: Readonly<CVCProps>) {
+             classNameModifiers={[...classNameModifiers, 'securityCode']}
+             onFocusField={() => onFocusField(ENCRYPTED_SECURITY_CODE)}
+             className={fieldClassnames}
+-            errorMessage={error}
++            errorMessage={errorMessage}
+             isValid={isValid}
+             dir={'ltr'}
+             name={ENCRYPTED_SECURITY_CODE}
+diff --git a/packages/lib/src/components/Card/components/CardInput/components/CardFields.test.tsx b/packages/lib/src/components/Card/components/CardInput/components/CardFields.test.tsx
+new file mode 100644
+index 0000000..5f9092d
+--- /dev/null
++++ b/packages/lib/src/components/Card/components/CardInput/components/CardFields.test.tsx
+@@ -0,0 +1,74 @@
++import { h } from 'preact';
++import { render, screen } from '@testing-library/preact';
++import { mock } from 'jest-mock-extended';
++import CardFields from './CardFields';
++import Language from '../../../../../language';
++import { CoreProvider } from '../../../../../core/Context/CoreProvider';
++import { ILanguageService } from '../../../../../language/LanguageService';
++import { ENCRYPTED_EXPIRY_DATE, ENCRYPTED_SECURITY_CODE } from '../../../../internal/SecuredFields/lib/constants';
++import enUS from '../../../../../../../server/translations/en-US.json';
++
++/**
++ * Builds a real Language instance (rather than the shared global.i18n mock) so that tests can supply
++ * their own customTranslations to verify merchant overrides are respected as-is.
++ */
++const createI18n = (customTranslations: Record<string, string> = {}) => {
++    const mockedService = mock<ILanguageService>({});
++    const i18n = new Language({
++        locale: 'en-US',
++        service: mockedService,
++        customTranslations: { 'en-US': customTranslations }
++    });
++    i18n['_translations'] = { ...enUS, ...customTranslations };
++    return i18n;
++};
++
++const renderCardFields = (props = {}, i18n = createI18n()) => {
++    return render(
++        <CoreProvider i18n={i18n} loadingContext="test" resources={global.resources}>
++            <CardFields
++                brand="card"
++                dualBrandingChangeHandler={() => {}}
++                selectedBrandValue=""
++                errors={{}}
++                hasCVC={true}
++                valid={{}}
++                onFocusField={() => {}}
++                {...props}
++            />
++        </CoreProvider>
++    );
++};
++
++describe('CardFields', () => {
++    test('should not render an error message when there is no error for the field', () => {
++        renderCardFields({ errors: {} });
++        expect(screen.queryByText(/enter/i)).not.toBeInTheDocument();
++    });
++
++    test('should show the expiry date format hint baked into the error message itself', () => {
++        renderCardFields({ errors: { [ENCRYPTED_EXPIRY_DATE]: 'cc.dat.912' } });
++
++        expect(screen.getByText('Enter a valid expiry date. Front of card in MM/YY format.')).toBeInTheDocument();
++    });
++
++    test('should show the "3 digits on back of card" hint for non-Amex CVC errors', () => {
++        renderCardFields({ errors: { [ENCRYPTED_SECURITY_CODE]: 'cc.cvc.920' }, brand: 'visa' });
++
++        expect(screen.getByText('Enter the security code. 3 digits on back of card.')).toBeInTheDocument();
++    });
++
++    test('should show the "4 digits on front of card" hint for Amex CVC errors', () => {
++        renderCardFields({ errors: { [ENCRYPTED_SECURITY_CODE]: 'cc.cvc.920' }, brand: 'amex' });
++
++        expect(screen.getByText('Enter the security code. 4 digits on front of card.')).toBeInTheDocument();
++    });
++
++    test('should render a merchant-provided custom translation for an error verbatim, unaffected by our default copy', () => {
++        const i18n = createI18n({ 'cc.dat.912': 'Data de validade inválida (MM/AA)' });
++
++        renderCardFields({ errors: { [ENCRYPTED_EXPIRY_DATE]: 'cc.dat.912' } }, i18n);
++
++        expect(screen.getByText('Data de validade inválida (MM/AA)')).toBeInTheDocument();
++    });
++});
+diff --git a/packages/lib/src/components/Card/components/CardInput/components/CardFields.tsx b/packages/lib/src/components/Card/components/CardInput/components/CardFields.tsx
+index 03ac167..1ee795d 100644
+--- a/packages/lib/src/components/Card/components/CardInput/components/CardFields.tsx
++++ b/packages/lib/src/components/Card/components/CardInput/components/CardFields.tsx
+@@ -35,7 +35,8 @@ export default function CardFields({
+     const { i18n } = useCoreContext();
+ 
+     const getError = (errors, fieldType) => {
+-        return errors[fieldType] ? i18n.get(errors[fieldType]) : null;
++        const errorKey = errors[fieldType];
++        return errorKey ? i18n.get(errorKey) : null;
+     };
+ 
+     // A set of brands filtered to exclude those that can never appear in the UI
+@@ -85,7 +86,7 @@ export default function CardFields({
+                 {hasCVC && (
+                     <CVC
+                         classNameModifiers={['col-50']}
+-                        error={getError(errors, ENCRYPTED_SECURITY_CODE)}
++                        errorCode={errors[ENCRYPTED_SECURITY_CODE]}
+                         focused={focusedElement === ENCRYPTED_SECURITY_CODE}
+                         cvcPolicy={cvcPolicy}
+                         isValid={!!valid.encryptedSecurityCode}
+diff --git a/packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx b/packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx
+index e2548c0..f31a3ef 100644
+--- a/packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx
++++ b/packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx
+@@ -5,6 +5,7 @@ import { CardBrandsConfiguration, DualBrandSelectElement, DualBrandButtons, Dual
+ import { mapDualBrandButtons } from '../utils';
+ import styles from './DualBrandSelector.module.scss';
+ import { useCoreContext } from '../../../../../core/Context/CoreProvider';
++import { stopPropagationForActionKeys } from '../../../../internal/Button/stopPropagationForActionKeys';
+ 
+ interface DualBrandSelectorProps {
+     dualBrandingElements: DualBrandSelectElement[];
+@@ -28,14 +29,6 @@ export default function DualBrandSelector({
+         dualBrandingChangeHandler(brandId);
+     };
+ 
+-    // override enter key to prevent submit form (default behavior)
+-    const handleKeyDown = (e: KeyboardEvent, brandId: string) => {
+-        if (e.key === 'Enter') {
+-            e.preventDefault();
+-            handleBrandSelect(brandId);
+-        }
+-    };
+-
+     return (
+         <div className={styles.dualBrandSelector} role="group" aria-label={i18n.get('creditCard.dualBrand.description')}>
+             {dualBrandItems.map((item: DualBrandButtons) => (
+@@ -47,7 +40,7 @@ export default function DualBrandSelector({
+                     })}
+                     onMouseDown={e => e.preventDefault()}
+                     onClick={() => handleBrandSelect(item.id)}
+-                    onKeyDown={e => handleKeyDown(e, item.id)}
++                    onKeyDown={stopPropagationForActionKeys}
+                     aria-label={item.altName}
+                     aria-pressed={selectedBrand === item.id}
+                 >
+diff --git a/packages/lib/src/components/Card/components/CardInput/components/StoredCardFields.tsx b/packages/lib/src/components/Card/components/CardInput/components/StoredCardFields.tsx
+index 86cd1e4..a959538 100644
+--- a/packages/lib/src/components/Card/components/CardInput/components/StoredCardFields.tsx
++++ b/packages/lib/src/components/Card/components/CardInput/components/StoredCardFields.tsx
+@@ -30,10 +30,6 @@ export default function StoredCardFields({
+         ? i18n.get('creditCard.securityCode.contextualText.4digits')
+         : i18n.get('creditCard.securityCode.contextualText.3digits');
+ 
+-    const getError = (errors, fieldType) => {
+-        return errors[fieldType] ? i18n.get(errors[fieldType]) : null;
+-    };
+-
+     return (
+         <div className="adyen-checkout__card__form adyen-checkout__card__form--oneClick" aria-label={ariaLabel}>
+             <Fieldset classNamesFields={['adyen-checkout__card__exp-cvc']}>
+@@ -58,7 +54,7 @@ export default function StoredCardFields({
+                 {hasCVC && (
+                     <CVC
+                         cvcPolicy={cvcPolicy}
+-                        error={getError(errors, ENCRYPTED_SECURITY_CODE)}
++                        errorCode={errors[ENCRYPTED_SECURITY_CODE]}
+                         focused={focusedElement === 'encryptedSecurityCode'}
+                         filled={!!valid.encryptedSecurityCode || !!errors.encryptedSecurityCode}
+                         isValid={!!valid.encryptedSecurityCode}
+diff --git a/packages/lib/src/components/Card/components/CardInput/components/types.ts b/packages/lib/src/components/Card/components/CardInput/components/types.ts
+index 1afa147..7763346 100644
+--- a/packages/lib/src/components/Card/components/CardInput/components/types.ts
++++ b/packages/lib/src/components/Card/components/CardInput/components/types.ts
+@@ -57,7 +57,12 @@ export interface CardNumberProps {
+ export interface CVCProps {
+     className?: string;
+     classNameModifiers?: string[];
+-    error?: string;
++    /**
++     * Untranslated error translation key (e.g. 'cc.cvc.920'), not pre-translated text.
++     * CVC resolves this itself (picking the Amex-specific variant when `frontCVC` is true) since the
++     * correct copy depends on card brand, which only CVC/its caller's `frontCVC` flag captures.
++     */
++    errorCode?: string;
+     filled?: boolean;
+     focused?: boolean;
+     frontCVC?: boolean;
+diff --git a/packages/lib/src/components/Card/components/CardInput/types.ts b/packages/lib/src/components/Card/components/CardInput/types.ts
+index 9039854..ee5ce6b 100644
+--- a/packages/lib/src/components/Card/components/CardInput/types.ts
++++ b/packages/lib/src/components/Card/components/CardInput/types.ts
+@@ -64,7 +64,7 @@ export interface CardInputErrorState {
+ 
+ export interface CardInputDataState {
+     holderName?: string;
+-    billingAddress?: AddressData;
++    billingAddress?: AddressData | null;
+     socialSecurityNumber?: string;
+     taxNumber?: string;
+ }
+@@ -128,7 +128,7 @@ export interface CardInputProps {
+     onFocus?: (e) => void;
+     onLoad?: (o: CardLoadData) => void;
+     onSubmitAnalytics: (event: AbstractAnalyticsEvent) => void;
+-    handleKeyPress?: (obj: KeyboardEvent) => void;
++    handleKeyDown?: (event: KeyboardEvent) => void;
+     onAddressLookup?: OnAddressLookupType;
+     onAddressSelected?: OnAddressSelectedType;
+     addressSearchDebounceMs?: number;
+diff --git a/packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts b/packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts
+index f8177ba..8373533 100644
+--- a/packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts
++++ b/packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts
+@@ -40,7 +40,10 @@ const useSRPanelForCardInputErrors = ({ errors, props, isValidating, retrieveLay
+                 isValidating: isValidating.current,
+                 layout: retrieveLayout(),
+                 // If we don't have country specific address labels, we might have a label related to a partialAddressSchema (i.e. zipCode)
+-                countrySpecificLabels: specifications.getAddressLabelsForCountry(billingAddress?.country) ?? partialAddressSchema?.default?.labels
++                countrySpecificLabels: specifications.getAddressLabelsForCountry(billingAddress?.country) ?? partialAddressSchema?.default?.labels,
++                // Only let this form clear the shared SR panel if it currently has errors on
++                // display. Otherwise it wipes status messages (loading etc) written by others.
++                hasDisplayedErrors: !!sortedErrorList?.length
+             });
+ 
+             // Store the array of sorted error objects separately so that we can use it to make comparisons between the old and new arrays
+diff --git a/packages/lib/src/components/Card/components/CardInput/utils.test.ts b/packages/lib/src/components/Card/components/CardInput/utils.test.ts
+index b3f7b20..77efc53 100644
+--- a/packages/lib/src/components/Card/components/CardInput/utils.test.ts
++++ b/packages/lib/src/components/Card/components/CardInput/utils.test.ts
+@@ -1,4 +1,4 @@
+-import { shouldShowInstallmentsComponent } from './utils';
++import { resolveCVCErrorKey, shouldShowInstallmentsComponent } from './utils';
+ 
+ describe('shouldShowInstallmentsComponent', () => {
+     const amount = { value: 1000, currency: 'EUR' };
+@@ -48,3 +48,20 @@ describe('shouldShowInstallmentsComponent', () => {
+         });
+     });
+ });
++
++describe('resolveCVCErrorKey', () => {
++    it('should return the base error key when isAmex is false', () => {
++        expect(resolveCVCErrorKey('cc.cvc.920', false)).toBe('cc.cvc.920');
++        expect(resolveCVCErrorKey('cc.cvc.921', false)).toBe('cc.cvc.921');
++    });
++
++    it('should return the Amex-specific error key when isAmex is true', () => {
++        expect(resolveCVCErrorKey('cc.cvc.920', true)).toBe('cc.cvc.920.amex');
++        expect(resolveCVCErrorKey('cc.cvc.921', true)).toBe('cc.cvc.921.amex');
++    });
++
++    it('should return the original error code unchanged when it has no Amex variant, regardless of brand', () => {
++        expect(resolveCVCErrorKey('cc.num.902', true)).toBe('cc.num.902');
++        expect(resolveCVCErrorKey('cc.num.902', false)).toBe('cc.num.902');
++    });
++});
+diff --git a/packages/lib/src/components/Card/components/CardInput/utils.ts b/packages/lib/src/components/Card/components/CardInput/utils.ts
+index 6c17d96..d3731cc 100644
+--- a/packages/lib/src/components/Card/components/CardInput/utils.ts
++++ b/packages/lib/src/components/Card/components/CardInput/utils.ts
+@@ -160,7 +160,7 @@ export const extractPropsForSFP = (props: CardInputProps): Pick<SFPProps, 'clien
+         onAutoComplete: props.onAutoComplete,
+         onBinValue: props.onBinValue,
+         onConfigSuccess: props.onConfigSuccess,
+-        handleKeyPress: props.handleKeyPress,
++        handleKeyDown: props.handleKeyDown,
+         onError: props.onError,
+         onFieldValid: props.onFieldValid,
+         onLoad: props.onLoad,
+@@ -191,6 +191,25 @@ export function getFullBrandName(brand: string): string {
+     return BRAND_READABLE_NAME_MAP[brand] ?? brand;
+ }
+ 
++// CVC's format guidance (digit count/position) is brand-dependent, so the Amex variant of each CVC
++// error message is a distinct, fully-translated key rather than something composed at runtime.
++// Shared between CVC.tsx (on-screen error) and SecuredFieldsProvider.mapErrorsToValidationRuleResult
++// (SR-live-panel announcement & the public state.errors.<field>.errorI18n API), so both resolve the
++// same key for the same errorCode/brand combination.
++export const CVC_AMEX_ERROR_KEYS: Record<string, string> = {
++    'cc.cvc.920': 'cc.cvc.920.amex',
++    'cc.cvc.921': 'cc.cvc.921.amex'
++};
++
++/**
++ * Resolve the correct (brand-aware) translation key for a CVC error code.
++ * @param errorCode - the raw, untranslated CVC error key (e.g. 'cc.cvc.920')
++ * @param isAmex - whether the current/detected card brand is Amex
++ */
++export function resolveCVCErrorKey(errorCode: string, isAmex: boolean): string {
++    return (isAmex && CVC_AMEX_ERROR_KEYS[errorCode]) || errorCode;
++}
++
+ export const mapDualBrandButtons = (
+     dualBrandSelectElements: DualBrandSelectElement[],
+     brandsConfiguration?: CardBrandsConfiguration
+diff --git a/packages/lib/src/components/ClickToPay/ClickToPay.test.ts b/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
+index 5315417..b332db7 100644
+--- a/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
++++ b/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
+@@ -104,7 +104,7 @@ test('should reject isAvailable if shopper account is not found', async () => {
+     await expect(element.isAvailable()).rejects.toBeFalsy();
+ });
+ 
+-describe('Click to Pay: ENTER keypress should perform an action only within the CtP Component and should not propagate the event up to UIElement', () => {
++describe('Click to Pay: ENTER keydown should perform an action only within the CtP Component and should not propagate the event up to UIElement', () => {
+     test('[Login form] should trigger shopper email lookup when ENTER key is pressed', async () => {
+         // It's not possible to wait for onChange because it's not called.
+         // Hence, add some delay between individual keystrokes, which yields to the event loop and allows pending state updates to be processed.
+diff --git a/packages/lib/src/components/CustomCard/CustomCard.tsx b/packages/lib/src/components/CustomCard/CustomCard.tsx
+index 26dc6f7..8dc8a4f 100644
+--- a/packages/lib/src/components/CustomCard/CustomCard.tsx
++++ b/packages/lib/src/components/CustomCard/CustomCard.tsx
+@@ -140,7 +140,7 @@ export class CustomCard extends UIElement<CustomCardConfiguration> {
+                 }}
+                 {...this.props}
+                 {...this.state}
+-                handleKeyPress={this.handleKeyPress}
++                handleKeyDown={this.handleKeyDown}
+                 rootNode={this._node}
+                 onChange={this.setState}
+                 onBinValue={this.onBinValue}
+diff --git a/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx b/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
+index 38942c8..8384e8e 100644
+--- a/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
++++ b/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
+@@ -34,7 +34,7 @@ interface SecuredFieldsProps {
+     onConfigSuccess?: () => {};
+     onChange: (data) => void;
+     onSubmitAnalytics?: (event: AbstractAnalyticsEvent) => void;
+-    handleKeyPress?: (obj: KeyboardEvent) => void;
++    handleKeyDown?: (event: KeyboardEvent) => void;
+     onError?: () => {};
+     onFieldValid?: () => {};
+     onFocus?: (e) => {};
+@@ -172,7 +172,6 @@ const extractPropsForSFP = (props: SecuredFieldsProps) => {
+         brandsConfiguration: props.brandsConfiguration,
+         clientKey: props.clientKey,
+         forceCompat: props.forceCompat,
+-        // countryCode: props.countryCode, // only used for korean cards when koreanAuthenticationRequired is true
+         i18n: props.i18n,
+         implementationType: props.implementationType,
+         keypadFix: props.keypadFix,
+@@ -185,14 +184,12 @@ const extractPropsForSFP = (props: SecuredFieldsProps) => {
+         onAutoComplete: props.onAutoComplete,
+         onBinValue: props.onBinValue,
+         onBrand: props.onBrand,
+-        // onChange // set directly
+         onConfigSuccess: props.onConfigSuccess,
+-        handleKeyPress: props.handleKeyPress,
++        handleKeyDown: props.handleKeyDown,
+         onError: props.onError,
+         onFieldValid: props.onFieldValid,
+         onFocus: props.onFocus,
+         onLoad: props.onLoad,
+-        // render // set directly
+         rootNode: props.rootNode,
+         showWarnings: props.showWarnings,
+         styles: props.styles,
+diff --git a/packages/lib/src/components/Dropin/Dropin.test.ts b/packages/lib/src/components/Dropin/Dropin.test.ts
+index 392e480..2b744dc 100644
+--- a/packages/lib/src/components/Dropin/Dropin.test.ts
++++ b/packages/lib/src/components/Dropin/Dropin.test.ts
+@@ -667,7 +667,7 @@ describe('Dropin', () => {
+             await waitFor(() => expect(screen.getByRole('button', { name: 'Continue to AliPay' })).toBeVisible());
+ 
+             const alipayHeader = screen.getByText('AliPay');
+-            fireEvent.keyPress(alipayHeader, { key: 'Enter', code: 'Enter', charCode: 13 });
++            fireEvent.keyDown(alipayHeader, { key: 'Enter', code: 'Enter', charCode: 13 });
+ 
+             expect(onEnterKeyPressedMock).toHaveBeenCalledTimes(1);
+         });
+diff --git a/packages/lib/src/components/Dropin/Dropin.tsx b/packages/lib/src/components/Dropin/Dropin.tsx
+index 7e1b482..0f57bf4 100644
+--- a/packages/lib/src/components/Dropin/Dropin.tsx
++++ b/packages/lib/src/components/Dropin/Dropin.tsx
+@@ -1,4 +1,4 @@
+-import { h } from 'preact';
++import { h, TargetedKeyboardEvent } from 'preact';
+ import UIElement from '../internal/UIElement/UIElement';
+ import defaultProps from './defaultProps';
+ import DropinComponent from '../../components/Dropin/components/DropinComponent';
+@@ -234,14 +234,14 @@ class DropinElement extends UIElement<DropinConfiguration> implements IDropin {
+         this.dropinRef.closeActivePaymentMethod();
+     }
+ 
+-    protected handleKeyPress(e: h.JSX.TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
++    protected handleKeyDown(e: TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
+         if (e.key === 'Enter' || e.code === 'Enter') {
+             // If the active element has role="radio", we're on a header in the PMList, in which case we don't want to validate the form, or, prevent the default behaviour
+             const isPMHeader = document?.activeElement?.getAttribute('role') === 'radio';
+             if (isPMHeader) {
+                 return;
+             }
+-            super.handleKeyPress(e);
++            super.handleKeyDown(e);
+         }
+     }
+ 
+diff --git a/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx b/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx
+index 4ee3c0e..e50ee3b 100644
+--- a/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx
++++ b/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx
+@@ -28,7 +28,6 @@ const DisableOneClickConfirmation = ({ id, open, onDisable, onCancel }) => {
+                         )}
+                         disabled={!open}
+                         onClick={onDisable}
+-                        onKeyPress={stopPropagationForActionKeys}
+                         onKeyDown={stopPropagationForActionKeys}
+                     >
+                         {i18n.get('storedPaymentMethod.disable.confirmButton')}
+@@ -42,7 +41,6 @@ const DisableOneClickConfirmation = ({ id, open, onDisable, onCancel }) => {
+                         )}
+                         disabled={!open}
+                         onClick={onCancel}
+-                        onKeyPress={stopPropagationForActionKeys}
+                         onKeyDown={stopPropagationForActionKeys}
+                     >
+                         {i18n.get('storedPaymentMethod.disable.cancelButton')}
+diff --git a/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx b/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx
+index a1a70dd..51ef0d3 100644
+--- a/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx
++++ b/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx
+@@ -58,7 +58,6 @@ export const OrderPaymentMethods = ({ order, orderStatus, onOrderCancel, brandLo
+                                             : undefined
+                                     }
+                                     label={i18n.get('storedPaymentMethod.disable.button')}
+-                                    onKeyPress={stopPropagationForActionKeys}
+                                     onKeyDown={stopPropagationForActionKeys}
+                                     onClick={() => {
+                                         onOrderCancel({ order });
+diff --git a/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx b/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx
+index ddb2a3a..9c0ccd1 100644
+--- a/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx
++++ b/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx
+@@ -128,7 +128,6 @@ class PaymentMethodItem extends Component<Readonly<PaymentMethodItemProps>> {
+                             inline
+                             variant="link"
+                             onClick={this.toggleDisableConfirmation}
+-                            onKeyPress={stopPropagationForActionKeys}
+                             onKeyDown={stopPropagationForActionKeys}
+                             ariaExpanded={this.state.showDisableStoredPaymentMethodConfirmation}
+                             ariaControls={disableConfirmationId}
+diff --git a/packages/lib/src/components/Giftcard/Giftcard.tsx b/packages/lib/src/components/Giftcard/Giftcard.tsx
+index 678729a..1d5e1f9 100644
+--- a/packages/lib/src/components/Giftcard/Giftcard.tsx
++++ b/packages/lib/src/components/Giftcard/Giftcard.tsx
+@@ -175,7 +175,7 @@ export class GiftcardElement extends UIElement<GiftCardConfiguration> {
+                     this.componentRef = ref;
+                 }}
+                 {...this.props}
+-                handleKeyPress={this.handleKeyPress}
++                handleKeyDown={this.handleKeyDown}
+                 showPayButton={this.props.showPayButton}
+                 onChange={this.setState}
+                 makeBalanceCheck={() => this.onBalanceCheck()}
+diff --git a/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx b/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
+index 05f13d4..68e94d7 100644
+--- a/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
++++ b/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
+@@ -25,7 +25,7 @@ interface GiftcardComponentProps extends Partial<Pick<SFPProps, 'clientKey' | 'l
+     expiryDateRequired?: boolean;
+     fieldsLayoutComponent: FunctionComponent<GiftcardFieldsProps>;
+     placeholders?: Placeholders;
+-    handleKeyPress?: (o: KeyboardEvent) => void;
++    handleKeyDown?: (event: KeyboardEvent) => void;
+     onSubmitAnalytics?: (event: AbstractAnalyticsEvent) => void;
+ }
+ 
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
+index 19a8b6b..a1ffba3 100644
+--- a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
+@@ -6,7 +6,14 @@ import ThreeDS2Form from '../Form';
+ import getProcessMessageHandler from '../../../../utils/get-process-message-handler';
+ import { encodeBase64URL } from '../utils';
+ import promiseTimeout from '../../../../utils/promiseTimeout';
+-import { CHALLENGE_TIMEOUT, CHALLENGE_TIMEOUT_REJECT_OBJECT, THREEDS2_NUM, PASSKEY_VISA_IFRAME_ALLOW, PASSKEY_3DS2_IFRAME_ALLOW, PASSKEY_VISA_IFRAME_SANDBOX } from '../../constants';
++import {
++    CHALLENGE_TIMEOUT,
++    CHALLENGE_TIMEOUT_REJECT_OBJECT,
++    THREEDS2_NUM,
++    PASSKEY_VISA_IFRAME_ALLOW,
++    PASSKEY_3DS2_IFRAME_ALLOW,
++    PASSKEY_VISA_IFRAME_SANDBOX
++} from '../../constants';
+ import { DoChallenge3DS2Props, DoChallenge3DS2State } from './types';
+ import { ThreeDS2FlowObject } from '../../types';
+ 
+@@ -67,7 +74,10 @@ class DoChallenge3DS2 extends Component<DoChallenge3DS2Props, DoChallenge3DS2Sta
+         window.removeEventListener('message', this.processMessageHandler);
+     }
+ 
+-    render({ acsURL, cReqData, iframeSizeArr, onFormSubmit, usePasskeyIFrameAttributes }: DoChallenge3DS2Props, { base64URLencodedData, status }: DoChallenge3DS2State) {
++    render(
++        { acsURL, cReqData, iframeSizeArr, onFormSubmit, usePasskeyIFrameAttributes }: DoChallenge3DS2Props,
++        { base64URLencodedData, status }: DoChallenge3DS2State
++    ) {
+         const [width, height] = iframeSizeArr;
+ 
+         return (
+diff --git a/packages/lib/src/components/ThreeDS2/types.ts b/packages/lib/src/components/ThreeDS2/types.ts
+index a105b6e..c0bad06 100644
+--- a/packages/lib/src/components/ThreeDS2/types.ts
++++ b/packages/lib/src/components/ThreeDS2/types.ts
+@@ -199,4 +199,5 @@ export type ThreeDS2ConfigProps = {
+     readonly i18n?: Language;
+ };
+ 
+-export type ThreeDS2ActionProps = CardConfiguration & Pick<ThreeDS2ConfigProps, 'isMDFlow' | 'on3DS2RedirectFlowComplete' | 'usePasskeyIFrameAttributes'>;
++export type ThreeDS2ActionProps = CardConfiguration &
++    Pick<ThreeDS2ConfigProps, 'isMDFlow' | 'on3DS2RedirectFlowComplete' | 'usePasskeyIFrameAttributes'>;
+diff --git a/packages/lib/src/components/internal/Address/Address.test.tsx b/packages/lib/src/components/internal/Address/Address.test.tsx
+index f0fc0bd..4d27487 100644
+--- a/packages/lib/src/components/internal/Address/Address.test.tsx
++++ b/packages/lib/src/components/internal/Address/Address.test.tsx
+@@ -76,6 +76,17 @@ describe('Address', () => {
+         expect(await screen.findByLabelText('Country/Region')).toBeInTheDocument();
+     });
+ 
++    test('should render with empty fields and no preselected country when data is null', async () => {
++        const requiredFields = ['street', 'houseNumberOrName', 'postalCode', 'country'];
++
++        customRender(<Address data={null} specifications={addressSpecificationsMock} requiredFields={requiredFields} />);
++
++        expect(screen.getByLabelText('Street')).toHaveValue('');
++        expect(screen.getByLabelText('House number')).toHaveValue('');
++        expect(screen.getByLabelText('Postal code')).toHaveValue('');
++        expect(await screen.findByLabelText('Country/Region')).toHaveValue('');
++    });
++
+     test('should maintain spaces while typing but trim and collapse them on blur', async () => {
+         const user = userEvent.setup();
+         const requiredFields = ['street', 'houseNumberOrName', 'postalCode', 'country'];
+diff --git a/packages/lib/src/components/internal/Address/Address.tsx b/packages/lib/src/components/internal/Address/Address.tsx
+index 4d3192a..233ebc0 100644
+--- a/packages/lib/src/components/internal/Address/Address.tsx
++++ b/packages/lib/src/components/internal/Address/Address.tsx
+@@ -17,6 +17,8 @@ import { ComponentMethodsRef } from '../UIElement/types';
+ import './Address.scss';
+ import { getAddressTypeFromLabel } from './utils';
+ 
++const EMPTY_ADDRESS_DATA: Readonly<AddressData> = {};
++
+ export default function Address(props: Readonly<AddressProps>) {
+     const { i18n } = useCoreContext();
+ 
+@@ -48,11 +50,12 @@ export default function Address(props: Readonly<AddressProps>) {
+ 
+     // In partial address mode the country field is not rendered, so it is absent from the address schema.
+     // The country the merchant configured must still be part of the form data for country dependent rules to be applied.
+-    const merchantCountry = (props.data as AddressData)?.country;
++    const addressData = props.data ?? EMPTY_ADDRESS_DATA;
++    const merchantCountry = addressData.country;
+     const formSchema = merchantCountry && !requiredFieldsSchema.includes(COUNTRY) ? [...requiredFieldsSchema, COUNTRY] : requiredFieldsSchema;
+     const defaultData = useMemo<AddressData>(
+-        () => (merchantCountry ? { ...props.data, country: merchantCountry.toUpperCase() } : (props.data)),
+-        [props.data, merchantCountry]
++        () => (merchantCountry ? { ...addressData, country: merchantCountry.toUpperCase() } : addressData),
++        [addressData, merchantCountry]
+     );
+ 
+     const { data, errors, valid, isValid, handleChangeFor, triggerValidation, setData, mergeData } = useForm<AddressData>({
+diff --git a/packages/lib/src/components/internal/Address/types.ts b/packages/lib/src/components/internal/Address/types.ts
+index c5015e5..475b893 100644
+--- a/packages/lib/src/components/internal/Address/types.ts
++++ b/packages/lib/src/components/internal/Address/types.ts
+@@ -16,7 +16,7 @@ export interface AddressProps {
+     addressType?: AddressType;
+     allowedCountries?: string[];
+     countryCode?: string;
+-    data?: object;
++    data?: AddressData | null;
+     label?: string;
+     onChange: (newState) => void;
+     onAddressLookup?: OnAddressLookupType;
+diff --git a/packages/lib/src/components/internal/Address/validate.ts b/packages/lib/src/components/internal/Address/validate.ts
+index 11bc608..bbcfb5d 100644
+--- a/packages/lib/src/components/internal/Address/validate.ts
++++ b/packages/lib/src/components/internal/Address/validate.ts
+@@ -9,7 +9,7 @@ const createPatternByDigits = (digits: number) => {
+     };
+ };
+ 
+-export const validatePostalCode = (val: string, countryCode: string, validatorRules: ValidatorRules) => {
++export const validatePostalCode = (val: string, countryCode: string | null, validatorRules: ValidatorRules) => {
+     if (countryCode) {
+         // If there is no value, we display the 'required' error message
+         if (isEmpty(val)) return null;
+@@ -80,7 +80,7 @@ const postalCodePatterns = {
+  *
+  * @param country - Country that will be used to validate postal code
+  */
+-export const getPartialAddressValidationRules = (country: string): ValidatorRules => {
++export const getPartialAddressValidationRules = (country: string | null): ValidatorRules => {
+     const validationRules: ValidatorRules = {
+         postalCode: {
+             modes: ['blur'],
+diff --git a/packages/lib/src/components/internal/BaseElement/BaseElement.ts b/packages/lib/src/components/internal/BaseElement/BaseElement.ts
+index 0ee74ab..c24f8a2 100644
+--- a/packages/lib/src/components/internal/BaseElement/BaseElement.ts
++++ b/packages/lib/src/components/internal/BaseElement/BaseElement.ts
+@@ -1,4 +1,4 @@
+-import { ComponentChild, h, render } from 'preact';
++import { ComponentChild, h, render, TargetedKeyboardEvent } from 'preact';
+ import uuid from '../../../utils/uuid';
+ import AdyenCheckoutError from '../../../core/Errors/AdyenCheckoutError';
+ import { NO_CHECKOUT_ATTEMPT_ID } from '../../../core/Analytics/constants';
+@@ -47,7 +47,7 @@ abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+         this.core = checkout;
+         this.buildElementProps(props);
+ 
+-        this.handleKeyPress = this.handleKeyPress.bind(this);
++        this.handleKeyDown = this.handleKeyDown.bind(this);
+     }
+ 
+     protected buildElementProps(componentProps?: P) {
+@@ -70,13 +70,11 @@ abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+         return {};
+     }
+ 
+-    /* eslint-disable-next-line */
+-    protected submitAnalytics(analyticsObj?: AbstractAnalyticsEvent) {
++    protected submitAnalytics(_analyticsObj?: AbstractAnalyticsEvent) {
+         return null;
+     }
+ 
+-    /* eslint-disable-next-line */
+-    protected handleKeyPress(e: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) {
++    protected handleKeyDown(_e: TargetedKeyboardEvent<HTMLInputElement>) {
+         return null;
+     }
+ 
+@@ -144,8 +142,8 @@ abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+ 
+         this._node = node;
+ 
+-        // Add listener for key press events, notably 'Enter' key presses
+-        on(this._node, 'keypress', this.handleKeyPress, false);
++        // Add listener for key down events, notably 'Enter' key presses
++        on(this._node, 'keydown', this.handleKeyDown, false);
+ 
+         this._component = this.render();
+ 
+@@ -172,7 +170,7 @@ abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+      */
+     public unmount(): this {
+         // Remove listener
+-        off(this._node, 'keypress', this.handleKeyPress);
++        off(this._node, 'keydown', this.handleKeyDown);
+ 
+         if (this._node) {
+             render(null, this._node);
+diff --git a/packages/lib/src/components/internal/Button/Button.tsx b/packages/lib/src/components/internal/Button/Button.tsx
+index 241e6a3..776143f 100644
+--- a/packages/lib/src/components/internal/Button/Button.tsx
++++ b/packages/lib/src/components/internal/Button/Button.tsx
+@@ -62,8 +62,7 @@ class Button extends Component<ButtonProps, ButtonState> {
+             onMouseLeave,
+             onFocus,
+             onBlur,
+-            onKeyDown,
+-            onKeyPress
++            onKeyDown
+         }: ButtonProps = this.props;
+         const { completed } = this.state;
+         const { i18n } = useCoreContext();
+@@ -149,7 +148,6 @@ class Button extends Component<ButtonProps, ButtonState> {
+                 onKeyDown={onKeyDown}
+                 onFocus={onFocus}
+                 onBlur={onBlur}
+-                onKeyPress={onKeyPress}
+             >
+                 {buttonText}
+                 {status !== 'loading' && status !== 'redirect' && this.props.children}
+diff --git a/packages/lib/src/components/internal/Button/CopyButton.tsx b/packages/lib/src/components/internal/Button/CopyButton.tsx
+index 67fcf4e..f053d99 100644
+--- a/packages/lib/src/components/internal/Button/CopyButton.tsx
++++ b/packages/lib/src/components/internal/Button/CopyButton.tsx
+@@ -1,4 +1,4 @@
+-import { h } from 'preact';
++import { h, TargetedMouseEvent } from 'preact';
+ import { useCallback } from 'preact/hooks';
+ import Button from './Button';
+ import { ButtonProps } from './types';
+@@ -14,7 +14,7 @@ export interface CopyButtonProps extends Omit<ButtonProps, 'variant' | 'onClickC
+      */
+     text: string;
+     copiedLabel?: string;
+-    onClick?: (e: h.JSX.TargetedMouseEvent<HTMLButtonElement>) => void;
++    onClick?: (e: TargetedMouseEvent<HTMLButtonElement>) => void;
+ }
+ 
+ const CopyButton = (props: Readonly<CopyButtonProps>) => {
+@@ -36,7 +36,6 @@ const CopyButton = (props: Readonly<CopyButtonProps>) => {
+             variant="action"
+             onClick={onClick}
+             // Workaround: See ADR-0001-uielement-keyboard-event-propagation-workaround
+-            onKeyPress={stopPropagationForActionKeys}
+             onKeyDown={stopPropagationForActionKeys}
+             icon={props.icon ?? getImage({ imageFolder: 'components/' })(`${PREFIX}copy`)}
+             label={props.label ?? i18n.get('button.copy')}
+diff --git a/packages/lib/src/components/internal/Button/CopyIconButton.tsx b/packages/lib/src/components/internal/Button/CopyIconButton.tsx
+index ded4301..e895ed0 100644
+--- a/packages/lib/src/components/internal/Button/CopyIconButton.tsx
++++ b/packages/lib/src/components/internal/Button/CopyIconButton.tsx
+@@ -5,8 +5,8 @@ import { ButtonProps } from './types';
+ import { useCoreContext } from '../../../core/Context/CoreProvider';
+ import copyToClipboard from '../../../utils/clipboard';
+ import { SingletonTooltipProvider, useTooltip } from '../Tooltip/SingletonTooltipProvider';
+-import './CopyIconButton.scss';
+ import { stopPropagationForActionKeys } from './stopPropagationForActionKeys';
++import './CopyIconButton.scss';
+ 
+ export interface CopyIconButtonProps extends ButtonProps {
+     /**
+@@ -25,7 +25,6 @@ const CopyIconButton = (props: Readonly<CopyIconButtonProps>) => {
+         showTooltip({ anchorRef, text: i18n.get('button.copied') });
+     }, [props.text, i18n, showTooltip]);
+ 
+-    // We need it because onKeyPress does not trigger for Esc key
+     const onKeyDown = useCallback(
+         (event: KeyboardEvent) => {
+             stopPropagationForActionKeys(event);
+@@ -53,8 +52,6 @@ const CopyIconButton = (props: Readonly<CopyIconButtonProps>) => {
+             onFocus={handleShowTooltip}
+             onBlur={hideTooltip}
+             onClick={onClick}
+-            // It's ok to have both, browsers will fire only one click event for enter/space key pressed.
+-            onKeyPress={stopPropagationForActionKeys}
+             onKeyDown={onKeyDown}
+         >
+             <svg
+diff --git a/packages/lib/src/components/internal/Button/types.ts b/packages/lib/src/components/internal/Button/types.ts
+index 2ec5478..9e7095e 100644
+--- a/packages/lib/src/components/internal/Button/types.ts
++++ b/packages/lib/src/components/internal/Button/types.ts
+@@ -27,7 +27,6 @@ export interface ButtonProps {
+     rel?: string;
+     onClick?: (e: TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>, callbacks?: { complete?: () => void }) => void;
+     onKeyDown?: (event: KeyboardEvent) => void;
+-    onKeyPress?: (event: KeyboardEvent) => void;
+     buttonRef?: Ref<HTMLButtonElement>;
+     onMouseEnter?: (event: MouseEvent) => void;
+     onMouseLeave?: (event: MouseEvent) => void;
+diff --git a/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx b/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
+index a634aa7..d337872 100644
+--- a/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
+@@ -1,4 +1,4 @@
+-import { h } from 'preact';
++import { h, TargetedKeyboardEvent } from 'preact';
+ import { useCallback, useEffect } from 'preact/hooks';
+ import { CtpState } from './services/ClickToPayService';
+ import useClickToPayContext from './context/useClickToPayContext';
+@@ -37,13 +37,13 @@ const ClickToPayComponent = ({ onDisplayCardComponent }: Readonly<ClickToPayComp
+     }, [ctpState]);
+ 
+     /**
+-     * We capture the ENTER keypress within the ClickToPay component because we do not want to propagate the event up to the UIElement
++     * We capture the ENTER keydown within the ClickToPay component because we do not want to propagate the event up to the UIElement
+      * UIElement would perform the payment flow (by calling .submit), which is not relevant/supported by Click to Pay
+      */
+-    const handleEnterKeyPress = useCallback((event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
++    const handleEnterKeyPress = useCallback((event: TargetedKeyboardEvent<HTMLInputElement>) => {
+         if (event.key === 'Enter') {
+             event.preventDefault(); // Prevent <form> submission if Component is placed inside a form
+-            event.stopPropagation(); // Prevent global BaseElement keypress event to be triggered
++            event.stopPropagation(); // Prevent global BaseElement keydown event to be triggered
+         }
+     }, []);
+ 
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
+index 1e8ab9b..f3597e1 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
+@@ -1,4 +1,4 @@
+-import { h } from 'preact';
++import { h, TargetedKeyboardEvent } from 'preact';
+ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+ import { loginValidationRules } from './validate';
+ import { useCoreContext } from '../../../../../core/Context/CoreProvider';
+@@ -58,8 +58,8 @@ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+         props.onSetInputHandlers(loginInputHandlersRef.current);
+     }, [validateInput, props.onSetInputHandlers]);
+ 
+-    const handleOnKeyPress = useCallback(
+-        (event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
++    const handleOnKeyDown = useCallback(
++        (event: TargetedKeyboardEvent<HTMLInputElement>) => {
+             if (event.key === 'Enter') {
+                 void props.onPressEnter();
+             }
+@@ -88,7 +88,7 @@ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+                     disabled={props.disabled}
+                     onInput={handleChangeFor('shopperLogin', 'input')}
+                     onBlur={handleChangeFor('shopperLogin', 'blur')}
+-                    onKeyPress={handleOnKeyPress}
++                    onKeyDown={handleOnKeyDown}
+                     autocomplete={'email'}
+                 />
+             </Field>
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
+index b2c825b..1aa84d4 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
+@@ -1,4 +1,4 @@
+-import { h } from 'preact';
++import { h, TargetedKeyboardEvent } from 'preact';
+ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+ import { otpValidationRules } from './validate';
+ import CtPResendOtpLink from './CtPResendOtpLink';
+@@ -96,8 +96,8 @@ const CtPOneTimePasswordInput = (props: Readonly<CtPOneTimePasswordInputProps>):
+         [i18n]
+     );
+ 
+-    const handleOnKeyPress = useCallback(
+-        (event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
++    const handleOnKeyDown = useCallback(
++        (event: TargetedKeyboardEvent<HTMLInputElement>) => {
+             if (event.key === 'Enter') {
+                 void props.onPressEnter();
+             }
+@@ -132,7 +132,7 @@ const CtPOneTimePasswordInput = (props: Readonly<CtPOneTimePasswordInputProps>):
+                     disabled={props.disabled}
+                     onInput={handleChangeFor('otp', 'input')}
+                     onBlur={handleChangeFor('otp', 'blur')}
+-                    onKeyPress={handleOnKeyPress}
++                    onKeyDown={handleOnKeyDown}
+                     setRef={(ref: HTMLInputElement) => {
+                         inputRef.current = ref;
+                     }}
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
+index abc4ef8..22cacb9 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
+@@ -1,4 +1,4 @@
+-import { h } from 'preact';
++import { h, TargetedKeyboardEvent } from 'preact';
+ import classnames from 'classnames';
+ import CtPLogoutLink from './CtPLogoutLink';
+ import { CtPBrand } from '../CtPBrand';
+@@ -6,7 +6,7 @@ import useClickToPayContext from '../../context/useClickToPayContext';
+ import './CtPSection.scss';
+ 
+ interface CtPSectionProps {
+-    onEnterKeyPress: (event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
++    onEnterKeyPress: (event: TargetedKeyboardEvent<HTMLInputElement>) => void;
+     children?: h.JSX.Element[];
+ }
+ 
+@@ -17,7 +17,7 @@ const CtPSection = ({ children, onEnterKeyPress }: Readonly<CtPSectionProps>): h
+         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+         <div
+             className={classnames('adyen-checkout-ctp__section', { 'adyen-checkout-ctp__section--standalone': isStandaloneComponent })}
+-            onKeyPress={onEnterKeyPress}
++            onKeyDown={onEnterKeyPress}
+         >
+             <div className="adyen-checkout-ctp__section-brand">
+                 <CtPBrand />
+diff --git a/packages/lib/src/components/internal/FormFields/InputBase.tsx b/packages/lib/src/components/internal/FormFields/InputBase.tsx
+index a58c46f..f1eedc6 100644
+--- a/packages/lib/src/components/internal/FormFields/InputBase.tsx
++++ b/packages/lib/src/components/internal/FormFields/InputBase.tsx
+@@ -64,31 +64,11 @@ export default function InputBase({ setRef, ...props }: Readonly<InputBaseProps>
+         [props.onInput]
+     );
+ 
+-    /**
+-     *  Event is fired when a key that produces a character value is pressed down.
+-     *  ENTER keypress also triggers this event.
+-     *
+-     *  TODO: 'keypress' event is deprecated
+-     *  https://developer.mozilla.org/en-US/docs/Web/API/Element/keypress_event
+-     */
+-    const handleKeyPress = useCallback(
+-        (event: TargetedKeyboardEvent<HTMLInputElement>) => {
+-            if (props?.onKeyPress) props.onKeyPress(event);
+-        },
+-        [props?.onKeyPress]
+-    );
+-
+-    /**
+-     * Event is fired when certain keys are pressed (keys that do not output characters):
+-     * Backspace, Arrow keys, Shift, Ctrl, Command, Option, Esc
+-     *
+-     * Exception: ENTER keypress triggers 'onKeyPress' AND 'onKeyUp'
+-     */
+-    const handleKeyUp = useCallback(
++    const handleKeyDown = useCallback(
+         (event: TargetedKeyboardEvent<HTMLInputElement>) => {
+-            if (props?.onKeyUp) props.onKeyUp(event);
++            if (props?.onKeyDown) props.onKeyDown(event);
+         },
+-        [props?.onKeyUp]
++        [props?.onKeyDown]
+     );
+ 
+     const handleBlur = useCallback(
+@@ -157,8 +137,7 @@ export default function InputBase({ setRef, ...props }: Readonly<InputBaseProps>
+             onInput={handleInput}
+             onBlur={handleBlur}
+             onFocus={handleFocus}
+-            onKeyUp={handleKeyUp}
+-            onKeyPress={handleKeyPress}
++            onKeyDown={handleKeyDown}
+             disabled={disabled}
+             ref={setRef}
+         />
+diff --git a/packages/lib/src/components/internal/FormFields/Select/Select.tsx b/packages/lib/src/components/internal/FormFields/Select/Select.tsx
+index f33937e..4e8f1ed 100644
+--- a/packages/lib/src/components/internal/FormFields/Select/Select.tsx
++++ b/packages/lib/src/components/internal/FormFields/Select/Select.tsx
+@@ -10,6 +10,7 @@ import './Select.scss';
+ import { ARIA_CONTEXT_SUFFIX, ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
+ import { simulateFocusScroll } from '../utils';
+ import { useCoreContext } from '../../../../core/Context/CoreProvider';
++import { stopPropagationForActionKeys } from '../../Button/stopPropagationForActionKeys';
+ 
+ function Select({
+     items = [],
+@@ -156,6 +157,7 @@ function Select({
+      * @param e - KeyboardEvent
+      */
+     const handleButtonKeyDown = (e: KeyboardEvent) => {
++        stopPropagationForActionKeys(e);
+         if (e.key === keys.enter && filterable && showList && textFilter) {
+             handleSelect(e);
+         } else if (e.key === keys.escape) {
+diff --git a/packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.test.tsx b/packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.test.tsx
+new file mode 100644
+index 0000000..b939826
+--- /dev/null
++++ b/packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.test.tsx
+@@ -0,0 +1,48 @@
++import { h } from 'preact';
++import { render, screen } from '@testing-library/preact';
++import LoadingWrapper from './LoadingWrapper';
++import { CoreProvider } from '../../../core/Context/CoreProvider';
++import SRPanelProvider from '../../../core/Errors/SRPanelProvider';
++import { SRPanel } from '../../../core/Errors/SRPanel';
++import { setupCoreMock } from '../../../../config/testMocks/setup-core-mock';
++
++// The SRPanel is a singleton owned by the Core instance (core.modules.srPanel), injected into
++// components via SRPanelProvider - mirror that here instead of constructing an SRPanel directly.
++const renderLoadingWrapper = (status?: string, srPanel: SRPanel = setupCoreMock().modules.srPanel) => {
++    render(
++        <CoreProvider i18n={global.i18n} loadingContext="test" resources={global.resources}>
++            <SRPanelProvider srPanel={srPanel}>
++                <LoadingWrapper status={status}>
++                    <div data-testid="child-content">Content</div>
++                </LoadingWrapper>
++            </SRPanelProvider>
++        </CoreProvider>
++    );
++};
++
++describe('LoadingWrapper', () => {
++    test('should render its children', () => {
++        renderLoadingWrapper('ready');
++        expect(screen.getByTestId('child-content')).toBeInTheDocument();
++    });
++
++    describe('Accessibility', () => {
++        test('should report the loading status to the SRPanel while status is loading', () => {
++            const srPanel = setupCoreMock().modules.srPanel;
++            const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++            renderLoadingWrapper('loading', srPanel);
++
++            expect(setMessagesSpy).toHaveBeenCalledWith('Loading…');
++        });
++
++        test('should not report a message before loading has started', () => {
++            const srPanel = setupCoreMock().modules.srPanel;
++            const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++            renderLoadingWrapper('ready', srPanel);
++
++            expect(setMessagesSpy).not.toHaveBeenCalled();
++        });
++    });
++});
+diff --git a/packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.tsx b/packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.tsx
+index 80d6966..093df88 100644
+--- a/packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.tsx
++++ b/packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.tsx
+@@ -1,6 +1,7 @@
+ import { ComponentChildren, h } from 'preact';
+ import classNames from 'classnames';
+ import Spinner from '../../internal/Spinner';
++import { useLoadingA11yReporter } from '../../../core/Errors/useLoadingA11yReporter';
+ import './LoadingWrapper.scss';
+ 
+ interface LoadingWrapperProps {
+@@ -9,6 +10,9 @@ interface LoadingWrapperProps {
+ }
+ 
+ const LoadingWrapper = ({ children, status }: Readonly<LoadingWrapperProps>) => {
++    // Announce the loading status to screen readers, since the spinner itself has no accessible name
++    useLoadingA11yReporter(status === 'loading');
++
+     const wrapperClass = classNames('adyen-checkout__loading-input__form', 'loading-input__form', {
+         'loading-input__form--loading': status === 'loading'
+     });
+diff --git a/packages/lib/src/components/internal/Modal/Modal.tsx b/packages/lib/src/components/internal/Modal/Modal.tsx
+index b6d6255..fc7898f 100644
+--- a/packages/lib/src/components/internal/Modal/Modal.tsx
++++ b/packages/lib/src/components/internal/Modal/Modal.tsx
+@@ -59,13 +59,13 @@ const Modal = ({
+     useEffect(() => {
+         if (!modalContainerRef.current) return;
+ 
+-        const suppressKeyPress = (event: KeyboardEvent) => {
++        const suppressKeyDown = (event: KeyboardEvent) => {
+             if (event.key === 'Enter' || event.code === 'Enter') event.stopPropagation();
+         };
+ 
+-        modalContainerRef.current.addEventListener('keypress', suppressKeyPress, { capture: true });
++        modalContainerRef.current.addEventListener('keydown', suppressKeyDown, { capture: true });
+         return () => {
+-            modalContainerRef.current.removeEventListener('keypress', suppressKeyPress);
++            modalContainerRef.current.removeEventListener('keydown', suppressKeyDown);
+         };
+     }, [modalContainerRef.current]);
+ 
+diff --git a/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.test.tsx b/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.test.tsx
+index 0324223..7fd4fb5 100644
+--- a/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.test.tsx
++++ b/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.test.tsx
+@@ -41,6 +41,15 @@ const renderOpenInvoice = (props: Partial<OpenInvoiceProps> = {}) => {
+ };
+ 
+ describe('OpenInvoice', () => {
++    test('should render empty personal details fields when personalDetails is null', () => {
++        renderOpenInvoice({
++            data: { personalDetails: null, billingAddress: {}, deliveryAddress: {} }
++        });
++
++        expect(screen.getByLabelText(/first name/i)).toHaveValue('');
++        expect(screen.getByLabelText(/last name/i)).toHaveValue('');
++    });
++
+     test('should not display fieldsets set to hidden', () => {
+         renderOpenInvoice({ visibility: { personalDetails: 'hidden' } });
+         expect(screen.queryByLabelText(/first name/i)).not.toBeInTheDocument();
+diff --git a/packages/lib/src/components/internal/OpenInvoice/types.ts b/packages/lib/src/components/internal/OpenInvoice/types.ts
+index de5f6aa..894847d 100644
+--- a/packages/lib/src/components/internal/OpenInvoice/types.ts
++++ b/packages/lib/src/components/internal/OpenInvoice/types.ts
+@@ -27,7 +27,7 @@ export interface OpenInvoiceProps extends UIElementProps {
+     countryCode?: string;
+     data: {
+         companyDetails?: CompanyDetailsSchema;
+-        personalDetails?: PersonalDetailsSchema;
++        personalDetails?: PersonalDetailsSchema | null;
+         billingAddress?: AddressData;
+         deliveryAddress?: AddressData;
+         bankAccount?: BankDetailsSchema;
+diff --git a/packages/lib/src/components/internal/PersonalDetails/types.ts b/packages/lib/src/components/internal/PersonalDetails/types.ts
+index 4f79e3a..b27cfe0 100644
+--- a/packages/lib/src/components/internal/PersonalDetails/types.ts
++++ b/packages/lib/src/components/internal/PersonalDetails/types.ts
+@@ -11,7 +11,7 @@ export interface PersonalDetailsProps {
+     namePrefix?: string;
+     requiredFields?: string[];
+     visibility?: FieldsetVisibility;
+-    data: PersonalDetailsSchema;
++    data: PersonalDetailsSchema | null;
+     onChange: (newState: object) => void;
+     placeholders?: PersonalDetailsPlaceholders;
+     readonly?: boolean;
+diff --git a/packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx b/packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx
+index c39758e..bed75e5 100644
+--- a/packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx
++++ b/packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx
+@@ -8,6 +8,7 @@ import SRPanelProvider from '../../../core/Errors/SRPanelProvider';
+ import AdyenCheckoutError from '../../../core/Errors/AdyenCheckoutError';
+ import type { QRLoaderProps } from './types';
+ import { AmountProvider, AmountProviderProps } from '../../../core/Context/AmountProvider';
++import { setupCoreMock } from '../../../../config/testMocks/setup-core-mock';
+ 
+ jest.mock('../../../core/Services/payment-status');
+ 
+@@ -15,12 +16,14 @@ const TIMEOUT_OFFSET = 200;
+ 
+ const renderQRLoader = ({
+     qrLoaderProps,
+-    amountProviderProps
++    amountProviderProps,
++    srPanel: externalSrPanel
+ }: {
+     qrLoaderProps: Partial<QRLoaderProps>;
+     amountProviderProps?: Partial<AmountProviderProps>;
++    srPanel?: SRPanel;
+ }) => {
+-    const srPanel = new SRPanel(global.core);
++    const srPanel = externalSrPanel ?? new SRPanel(global.core);
+     const defaultProps: QRLoaderProps = {
+         type: 'pix',
+         brandLogo: 'logo.png',
+@@ -162,4 +165,56 @@ describe('QRLoader', () => {
+         await waitFor(() => expect(checkPaymentStatus).toHaveBeenCalledTimes(3), { timeout: throttledInterval + TIMEOUT_OFFSET });
+         expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), throttledInterval);
+     });
++
++    describe('Accessibility', () => {
++        test('should report the loading status to the SRPanel while waiting for the initial payment status check', async () => {
++            const pendingResponse = { payload: 'Ab02b4c0!', resultCode: 'pending', type: 'complete' };
++            (checkPaymentStatus as jest.Mock).mockResolvedValue(pendingResponse);
++
++            const srPanel = setupCoreMock().modules.srPanel;
++            const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++            renderQRLoader({ qrLoaderProps: {}, srPanel });
++
++            expect(setMessagesSpy).toHaveBeenCalledWith('Loading…');
++
++            await waitFor(() => {
++                expect(screen.getByText('Scan QR code')).toBeInTheDocument();
++            });
++        });
++
++        test('should supersede the loading message once the QR code is shown', async () => {
++            const pendingResponse = { payload: 'Ab02b4c0!', resultCode: 'pending', type: 'complete' };
++            (checkPaymentStatus as jest.Mock).mockResolvedValue(pendingResponse);
++
++            const srPanel = setupCoreMock().modules.srPanel;
++            const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++            renderQRLoader({ qrLoaderProps: {}, srPanel });
++
++            expect(await screen.findByText('Scan QR code')).toBeInTheDocument();
++
++            // The SR panel is not cleared on unmount, so 'Loading…' would otherwise be left
++            // on display next to the QR code.
++            expect(setMessagesSpy).toHaveBeenLastCalledWith('Loaded');
++        });
++
++        /**
++         * loading and completed flip in the same state batch, so QRLoader re-renders to 'Loaded'
++         * at the same moment QRFinalState mounts and announces the result. The result must win.
++         */
++        test('should announce the payment result, not the generic loaded message, on completion', async () => {
++            const authorisedResponse = { payload: 'details-payload', resultCode: 'authorised', type: 'complete' };
++            (checkPaymentStatus as jest.Mock).mockResolvedValue(authorisedResponse);
++
++            const srPanel = setupCoreMock().modules.srPanel;
++            const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++            const { onCompleteMock } = renderQRLoader({ qrLoaderProps: {}, srPanel });
++
++            await waitFor(() => expect(onCompleteMock).toHaveBeenCalledTimes(1));
++
++            expect(setMessagesSpy).toHaveBeenLastCalledWith('Payment Successful');
++        });
++    });
+ });
+diff --git a/packages/lib/src/components/internal/QRLoader/QRLoader.tsx b/packages/lib/src/components/internal/QRLoader/QRLoader.tsx
+index b0bf6da..4e3a415 100644
+--- a/packages/lib/src/components/internal/QRLoader/QRLoader.tsx
++++ b/packages/lib/src/components/internal/QRLoader/QRLoader.tsx
+@@ -12,9 +12,10 @@ import Button from '../Button';
+ import ContentSeparator from '../ContentSeparator';
+ import { AnalyticsInfoEvent, InfoEventType, UiTarget } from '../../../core/Analytics/events/AnalyticsInfoEvent';
+ import { CountdownTime } from '../Countdown/types';
+-import Spinner from '../Spinner';
+ import { QRDetails } from './components/QRDetails';
+ import { QRFinalState } from './components/QRFinalState';
++import { QRLoaderPendingState } from './components/QRLoaderPendingState';
++import { useLoadingA11yReporter } from '../../../core/Errors/useLoadingA11yReporter';
+ import { QRLoaderDetailsProvider } from './QRLoaderDetailsProvider';
+ import { QRLoaderProps } from './types';
+ import { redirectToApp } from '../../../utils/urls';
+@@ -65,6 +66,17 @@ export function QRLoader(props: Readonly<QRLoaderProps>) {
+ 
+     const qrSubtitleRef = useAutoFocus();
+ 
++    /**
++     * Reported from here rather than from the child states: QRLoaderPendingState unmounts as soon
++     * as the QR code arrives and so cannot announce that loading has finished, and a reporter in
++     * QRFinalState would be overwritten by this one, since child effects run first and `loading`
++     * flips in the same batch as `completed`/`expired`.
++     */
++    let finalStateMessage: string | undefined;
++    if (expired) finalStateMessage = i18n.get('error.subtitle.payment');
++    if (completed) finalStateMessage = i18n.get('creditCard.success');
++    useLoadingA11yReporter(loading, finalStateMessage);
++
+     if (expired) {
+         return <QRFinalState image="error" message={i18n.get('error.subtitle.payment')} />;
+     }
+@@ -74,16 +86,7 @@ export function QRLoader(props: Readonly<QRLoaderProps>) {
+     }
+ 
+     if (loading) {
+-        return (
+-            <div className="adyen-checkout__qr-loader">
+-                {brandLogo && (
+-                    <div className="adyen-checkout__qr-loader__brand-logo-wrapper">
+-                        <img alt={brandName} src={brandLogo} className="adyen-checkout__qr-loader__brand-logo" />
+-                    </div>
+-                )}
+-                <Spinner />
+-            </div>
+-        );
++        return <QRLoaderPendingState brandLogo={brandLogo} brandName={brandName} />;
+     }
+ 
+     const classnames = props.classNameModifiers.map(m => `adyen-checkout__qr-loader--${m}`);
+diff --git a/packages/lib/src/components/internal/QRLoader/components/QRFinalState.tsx b/packages/lib/src/components/internal/QRLoader/components/QRFinalState.tsx
+index d483bde..9ca5fa4 100644
+--- a/packages/lib/src/components/internal/QRLoader/components/QRFinalState.tsx
++++ b/packages/lib/src/components/internal/QRLoader/components/QRFinalState.tsx
+@@ -1,12 +1,15 @@
+ import { h } from 'preact';
+ import useImage from '../../../../core/Context/useImage';
+-import { useA11yReporter } from '../../../../core/Errors/useA11yReporter';
+ 
++/**
++ * The result message is announced by QRLoader rather than here. `loading` and `completed`/`expired`
++ * flip in the same state batch, so this component mounts in the same commit that QRLoader
++ * re-renders. Child effects run before parent effects, so a reporter here would write the result
++ * and then immediately have it overwritten by the parent's terminal message.
++ */
+ export const QRFinalState = ({ image, message }: Readonly<{ image: string; message: string }>) => {
+     const getImage = useImage();
+ 
+-    useA11yReporter(message);
+-
+     return (
+         <div className="adyen-checkout__qr-loader adyen-checkout__qr-loader--result">
+             <img
+diff --git a/packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx b/packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx
+new file mode 100644
+index 0000000..cec66ef
+--- /dev/null
++++ b/packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx
+@@ -0,0 +1,25 @@
++import { h } from 'preact';
++import Spinner from '../../Spinner';
++
++interface QRLoaderPendingStateProps {
++    brandLogo?: string;
++    brandName?: string;
++}
++
++/**
++ * Rendered while QRLoader is waiting for the initial payment status check to resolve.
++ * The loading status is announced by QRLoader, which stays mounted across the transition and so
++ * can also announce that loading has finished.
++ */
++export const QRLoaderPendingState = ({ brandLogo, brandName }: Readonly<QRLoaderPendingStateProps>) => {
++    return (
++        <div className="adyen-checkout__qr-loader">
++            {brandLogo && (
++                <div className="adyen-checkout__qr-loader__brand-logo-wrapper">
++                    <img alt={brandName} src={brandLogo} className="adyen-checkout__qr-loader__brand-logo" />
++                </div>
++            )}
++            <Spinner />
++        </div>
++    );
++};
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.test.tsx b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.test.tsx
+index 83544eb..176f75f 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.test.tsx
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.test.tsx
+@@ -7,7 +7,8 @@ jest.mock('../lib/CSF', () => {
+     return () => true;
+ });
+ 
+-let sfp;
++// typed any here because this tests is badly written and reaches into private members
++let sfp: any;
+ let sfpRef;
+ 
+ const onError = jest.fn(() => {});
+@@ -301,3 +302,45 @@ describe('<SecuredFieldsProvider /> handling an binLookup response', () => {
+         }
+     );
+ });
++
++describe('<SecuredFieldsProvider /> mapErrorsToValidationRuleResult', () => {
++    it('should resolve the base (non-Amex) CVC error key into errorI18n when the brand is not Amex', async () => {
++        nodeHolder.innerHTML = mockNode;
++        renderSFP();
++
++        await act(() => {
++            sfp.setState({ brand: 'mc', errors: { encryptedSecurityCode: 'cc.cvc.920' } });
++        });
++
++        const result = sfp.mapErrorsToValidationRuleResult();
++
++        expect(result.encryptedSecurityCode.errorI18n).toEqual(global.i18n.get('cc.cvc.920'));
++        expect(result.encryptedSecurityCode.errorI18n).not.toEqual(global.i18n.get('cc.cvc.920.amex'));
++    });
++
++    it('should resolve the Amex-specific CVC error key into errorI18n when the brand is Amex', async () => {
++        nodeHolder.innerHTML = mockNode;
++        renderSFP();
++
++        await act(() => {
++            sfp.setState({ brand: 'amex', errors: { encryptedSecurityCode: 'cc.cvc.920' } });
++        });
++
++        const result = sfp.mapErrorsToValidationRuleResult();
++
++        expect(result.encryptedSecurityCode.errorI18n).toEqual(global.i18n.get('cc.cvc.920.amex'));
++    });
++
++    it('should leave non-CVC error codes unaffected by brand', async () => {
++        nodeHolder.innerHTML = mockNode;
++        renderSFP();
++
++        await act(() => {
++            sfp.setState({ brand: 'amex', errors: { encryptedCardNumber: SF_ErrorCodes.ERROR_MSG_INCOMPLETE_FIELD } });
++        });
++
++        const result = sfp.mapErrorsToValidationRuleResult();
++
++        expect(result.encryptedCardNumber.errorI18n).toEqual(global.i18n.get(SF_ErrorCodes.ERROR_MSG_INCOMPLETE_FIELD));
++    });
++});
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
+index 2314857..056c2d7 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
+@@ -14,7 +14,7 @@ import {
+     CardAutoCompleteData,
+     CardConfigSuccessData,
+     CardLoadData,
+-    SFKeyPressObj,
++    SFKeyDownObj,
+     SFFieldType
+ } from '../lib/types';
+ import { CSFReturnObject, CSFSetupObject } from '../lib/CSF/types';
+@@ -22,6 +22,7 @@ import { CVC_POLICY_REQUIRED, DATE_POLICY_REQUIRED, DEDICATED_CARD_COMPONENTS, E
+ import { BinLookupResponse } from '../../../Card/types';
+ import AdyenCheckoutError from '../../../../core/Errors/AdyenCheckoutError';
+ import { SFStateErrorObj } from '../../../Card/components/CardInput/types';
++import { resolveCVCErrorKey } from '../../../Card/components/CardInput/utils';
+ import { getErrorMessageFromCode } from '../../../../core/Errors/utils';
+ import { SF_ErrorCodes } from '../../../../core/Errors/constants';
+ import { TxVariants } from '../../../tx-variants';
+@@ -32,24 +33,24 @@ import { TxVariants } from '../../../tx-variants';
+  */
+ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+     private csfLoadFailTimeout: number;
+-    private csfLoadFailTimeoutMS: number;
+-    private csfConfigFailTimeout: number;
+-    private csfConfigFailTimeoutMS: number;
++    private readonly csfLoadFailTimeoutMS: number;
++    private readonly csfConfigFailTimeout: number;
++    private readonly csfConfigFailTimeoutMS: number;
+     private numCharsInField: object;
+     private rootNode: HTMLElement;
+     private numDateFields: number;
+     private csf: CSFReturnObject;
+-    private handleOnLoad: (obj: CardLoadData) => void;
+-    private handleOnConfigSuccess: (obj: CardConfigSuccessData) => void;
+-    private handleOnFieldValid: (obj: CardFieldValidData) => void;
+-    private handleOnAllValid: (obj: CardAllValidData) => void;
+-    private handleOnBrand: (obj: CardBrandData) => void;
+-    private handleFocus: (obj: CardFocusData) => void;
+-    private handleOnError: (obj: CardErrorData, hasUnsupportedCard?: boolean) => void;
+-    private handleOnAutoComplete: (obj: CardAutoCompleteData) => void;
+-    private handleOnNoDataRequired: () => void;
+-    private handleOnTouchstartIOS: (obj) => void;
+-    private handleKeyPressed: (obj: SFKeyPressObj) => void;
++    private readonly handleOnLoad: (obj: CardLoadData) => void;
++    private readonly handleOnConfigSuccess: (obj: CardConfigSuccessData) => void;
++    private readonly handleOnFieldValid: (obj: CardFieldValidData) => void;
++    private readonly handleOnAllValid: (obj: CardAllValidData) => void;
++    private readonly handleOnBrand: (obj: CardBrandData) => void;
++    private readonly handleFocus: (obj: CardFocusData) => void;
++    private readonly handleOnError: (obj: CardErrorData, hasUnsupportedCard?: boolean) => void;
++    private readonly handleOnAutoComplete: (obj: CardAutoCompleteData) => void;
++    private readonly handleOnNoDataRequired: () => void;
++    private readonly handleOnTouchstartIOS: (obj) => void;
++    private readonly handleKeyDown: (obj: SFKeyDownObj) => void;
+     public state: SFPState;
+     public props: SFPProps;
+     private issuingCountryCode: string;
+@@ -89,7 +90,7 @@ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+         this.handleOnNoDataRequired = handlers.handleOnNoDataRequired.bind(this);
+         this.handleOnAutoComplete = handlers.handleOnAutoComplete.bind(this);
+         this.handleOnTouchstartIOS = handlers.handleOnTouchstartIOS.bind(this); // Only called when iOS detected
+-        this.handleKeyPressed = handlers.handleKeyPressed.bind(this);
++        this.handleKeyDown = handlers.handleKeyDown.bind(this);
+ 
+         this.processBinLookupResponse = this.processBinLookupResponse.bind(this);
+ 
+@@ -185,7 +186,7 @@ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+                 onAdditionalSFConfig: this.props.onAdditionalSFConfig,
+                 onAdditionalSFRemoved: this.props.onAdditionalSFRemoved,
+                 onTouchstartIOS: this.handleOnTouchstartIOS,
+-                onKeyPressed: this.handleKeyPressed
++                onKeyDown: this.handleKeyDown
+             },
+             isKCP: this.state.hasKoreanFields,
+             legacyInputMode: this.props.legacyInputMode,
+@@ -329,7 +330,10 @@ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+                     errorMessage: getErrorMessageFromCode(errorCode, SF_ErrorCodes), // this is the human-readable, untranslated, explanation of the error that will exist on the error object in card.state.errors
+                     // For v5 the object found in state.errors should also contain the additional properties that used to be sent to the onError callback
+                     // namely: translation, errorCode, a ref to rootNode &, in the case of failed binLookup, an array of the detectedBrands
+-                    errorI18n: this.props.i18n.get(errorCode),
++                    // CVC's error copy is brand-dependent (Amex vs. others), so resolve the brand-aware
++                    // key here too - otherwise this errorI18n value (consumed by the SR-live-panel and
++                    // the public state.errors.<field>.errorI18n API) would always report the non-Amex text.
++                    errorI18n: this.props.i18n.get(resolveCVCErrorKey(errorCode, this.state.brand === 'amex')),
+                     error: errorCode,
+                     rootNode: this.rootNode,
+                     ...(this.state.detectedUnsupportedBrands && { detectedBrands: this.state.detectedUnsupportedBrands })
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts
+index 426d678..4d9c6ba 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts
+@@ -19,7 +19,7 @@ import {
+     CardAutoCompleteData,
+     CardConfigSuccessData,
+     CardLoadData,
+-    SFKeyPressObj
++    SFKeyDownObj
+ } from '../lib/types';
+ import { existy } from '../../../../utils/commonUtils';
+ import AdyenCheckoutError from '../../../../core/Errors/AdyenCheckoutError';
+@@ -222,15 +222,15 @@ function handleOnAutoComplete(cbObj: CardAutoCompleteData): void {
+     this.props.onAutoComplete(cbObj);
+ }
+ 
+-function handleKeyPressed(obj: SFKeyPressObj): void {
++function handleKeyDown(obj: SFKeyDownObj): void {
+     if (obj.action === 'enterKeyPressed') {
+-        const kb = new KeyboardEvent('keypress', {
++        const kb = new KeyboardEvent('keydown', {
+             bubbles: true,
+             cancelable: true,
+             key: 'Enter',
+             code: 'Enter'
+         });
+-        this.props.handleKeyPress?.(kb);
++        this.props.handleKeyDown?.(kb);
+     }
+ }
+ 
+@@ -253,5 +253,5 @@ export default {
+     handleOnError,
+     handleOnNoDataRequired,
+     handleOnTouchstartIOS,
+-    handleKeyPressed
++    handleKeyDown
+ };
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts b/packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts
+index 6ff32a2..705bb55 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts
+@@ -21,7 +21,7 @@ export default {
+     onBinValue: () => {},
+     onFocus: () => {},
+     onAutoComplete: () => {},
+-    handleKeyPress: () => {},
++    handleKeyDown: () => {},
+ 
+     // Customization
+     styles: {}
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/types.ts b/packages/lib/src/components/internal/SecuredFields/SFP/types.ts
+index 2e804f1..e498b38 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/types.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/types.ts
+@@ -62,7 +62,7 @@ export interface SFPProps {
+     onLoad?: (cbObj: CardLoadData) => void;
+     onStateUpdate?: (obj: SFPState) => void;
+     onSubmitAnalytics?: (event: AbstractAnalyticsEvent) => void;
+-    handleKeyPress?: (obj: KeyboardEvent) => void;
++    handleKeyDown?: (event: KeyboardEvent) => void;
+     rootNode?: HTMLElement; // Specific to SecuredFieldsInput
+     showWarnings?: boolean;
+     styles?: StylesObject;
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts
+index 65e8307..135ea92 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts
+@@ -28,5 +28,5 @@ export function configureCallbacks(callbacksObj: Partial<CSFCallbacksConfig> = {
+ 
+     this.callbacks.onTouchstartIOS = callbacksObj.onTouchstartIOS ? callbacksObj.onTouchstartIOS : noop;
+ 
+-    this.callbacks.onKeyPressed = callbacksObj.onKeyPressed ? callbacksObj.onKeyPressed : noop;
++    this.callbacks.onKeyDown = callbacksObj.onKeyDown ? callbacksObj.onKeyDown : noop;
+ }
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts
+index d6eae4a..fa7c0f6 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts
+@@ -21,7 +21,7 @@ const myCSF = {
+     callbacks: {
+         onLoad: jest.fn(() => {}),
+         onTouchstartIOS: jest.fn(() => {}),
+-        onKeyPressed: jest.fn(() => {})
++        onKeyDown: jest.fn(() => {})
+     },
+     createSecuredFields,
+     setupSecuredField,
+@@ -68,7 +68,7 @@ describe('Testing CSFs setupSecuredField functionality', () => {
+             onEncryptionCallback: null,
+             onValidationCallback: null,
+             onAutoCompleteCallback: null,
+-            onKeyPressedCallback: null,
++            onKeyDownCallback: null,
+             onIframeLoaded: cbFn => {
+                 MySecuredField.onIframeLoadedCallback = cbFn;
+                 return MySecuredField;
+@@ -105,8 +105,8 @@ describe('Testing CSFs setupSecuredField functionality', () => {
+                 MySecuredField.onAutoCompleteCallback = cbFn;
+                 return MySecuredField;
+             },
+-            onKeyPressed: cbFn => {
+-                MySecuredField.onKeyPressedCallback = cbFn;
++            onKeyDown: cbFn => {
++                MySecuredField.onKeyDownCallback = cbFn;
+                 return MySecuredField;
+             }
+         };
+@@ -312,10 +312,10 @@ describe('Testing CSFs setupSecuredField functionality', () => {
+         MySecuredField.onAutoCompleteCallback(dummyObj);
+         expect(myCSF.processAutoComplete).toHaveBeenCalledWith(dummyObj);
+ 
+-        // onKeyPressedCallback
+-        expect(MySecuredField.onKeyPressedCallback).not.toEqual(null);
++        // onKeyDownCallback
++        expect(MySecuredField.onKeyDownCallback).not.toEqual(null);
+ 
+-        MySecuredField.onKeyPressedCallback(dummyObjWithNumKey);
+-        expect(myCSF.callbacks.onKeyPressed).toHaveBeenCalledWith(dummyObj); // checking that numKey prop gets removed
++        MySecuredField.onKeyDownCallback(dummyObjWithNumKey);
++        expect(myCSF.callbacks.onKeyDown).toHaveBeenCalledWith(dummyObj); // checking that numKey prop gets removed
+     });
+ });
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts
+index 57460e1..9b4cfdb 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts
+@@ -301,9 +301,9 @@ export function setupSecuredField(pItem: HTMLElement, cvcPolicy?: CVCPolicyType,
+             .onAutoComplete((pFeedbackObj: SFFeedbackObj): void => {
+                 this.processAutoComplete(pFeedbackObj);
+             })
+-            .onKeyPressed((pFeedbackObj: SFFeedbackObj): void => {
++            .onKeyDown((pFeedbackObj: SFFeedbackObj): void => {
+                 const { numKey, ...rest } = pFeedbackObj;
+-                this.callbacks.onKeyPressed(rest);
++                this.callbacks.onKeyDown(rest);
+             });
+ 
+         // Store reference to securedField in this.state (under fieldType)
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts
+index 1fddeac..5ce5cae 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts
+@@ -90,7 +90,7 @@ export interface CSFCallbacksConfig {
+     onAdditionalSFConfig?: (callbackObj: object) => void;
+     onAdditionalSFRemoved?: (callbackObj: object) => void;
+     onTouchstartIOS?: (callbackObj: object) => void;
+-    onKeyPressed?: (callbackObj: object) => void;
++    onKeyDown?: (callbackObj: object) => void;
+ }
+ 
+ export interface CSFStateObject {
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/constants.ts b/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
+index be93b4c..96f6f6a 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
+@@ -15,7 +15,7 @@ export const ENCRYPTED_SECURITY_CODE_4_DIGITS = 'encryptedSecurityCode4digits';
+ 
+ export const GIFT_CARD = 'giftcard';
+ 
+-export const SF_VERSION = '6.2.1';
++export const SF_VERSION = '6.3.0';
+ 
+ export const DEFAULT_CARD_GROUP_TYPES = ['amex', 'mc', 'visa'];
+ 
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts b/packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts
+index b4b2bc4..2addeba 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts
+@@ -37,7 +37,7 @@ abstract class AbstractSecuredField {
+     protected onTouchstartCallback: RtnType_callbackFn;
+     protected onShiftTabCallback: RtnType_callbackFn;
+     protected onAutoCompleteCallback: RtnType_callbackFn;
+-    protected onKeyPressedCallback: RtnType_callbackFn;
++    protected onKeyDownCallback: RtnType_callbackFn;
+ 
+     protected constructor() {
+         this.sfConfig = {};
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
+index 486ee10..bc829cf 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
+@@ -182,6 +182,18 @@ describe('SecuredField handling ariaConfig object - should trim the config objec
+         expect(card.sfConfig.iframeUIConfig.ariaConfig[ENCRYPTED_EXPIRY_DATE].error[ERROR_MSG_CARD_TOO_OLD]).toEqual(TRANSLATED_CARD_TOO_OLD_ERROR);
+     });
+ 
++    test('cvc field, with default ariaConfig, should include both the base and the Amex-specific translated error strings', () => {
++        setupObj.fieldType = ENCRYPTED_SECURITY_CODE;
++        const card = new SecuredField(setupObj, global.i18n);
++
++        const cvcErrors = card.sfConfig.iframeUIConfig.ariaConfig[ENCRYPTED_SECURITY_CODE].error;
++
++        expect(cvcErrors[SF_ErrorCodes.ERROR_MSG_EMPTY_CVC]).toEqual(en[SF_ErrorCodes.ERROR_MSG_EMPTY_CVC]);
++        expect(cvcErrors[SF_ErrorCodes.ERROR_MSG_INCORRECTLY_FILLED_CVC]).toEqual(en[SF_ErrorCodes.ERROR_MSG_INCORRECTLY_FILLED_CVC]);
++        expect(cvcErrors[SF_ErrorCodes.ERROR_MSG_EMPTY_CVC_AMEX]).toEqual(en[SF_ErrorCodes.ERROR_MSG_EMPTY_CVC_AMEX]);
++        expect(cvcErrors[SF_ErrorCodes.ERROR_MSG_INCORRECTLY_FILLED_CVC_AMEX]).toEqual(en[SF_ErrorCodes.ERROR_MSG_INCORRECTLY_FILLED_CVC_AMEX]);
++    });
++
+     test('Card number field with default ariaConfig should have an error object containing certain keys whose values are the correct translations', () => {
+         setupObj.fieldType = ENCRYPTED_CARD_NUMBER;
+         setupObj.iframeUIConfig.ariaConfig = {};
+@@ -540,7 +552,7 @@ describe('SecuredField handling placeholders from the placeholders config', () =
+         });
+ 
+         test('Check callback is called after "enterKeyPressed" action', () => {
+-            card.onKeyPressed(myCallback);
++            card.onKeyDown(myCallback);
+ 
+             // Set action
+             data.action = 'enterKeyPressed';
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
+index 7d7924a..8036538 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
+@@ -285,7 +285,7 @@ class SecuredField extends AbstractSecuredField {
+                 break;
+ 
+             case 'enterKeyPressed':
+-                this.onKeyPressedCallback(feedbackObj);
++                this.onKeyDownCallback(feedbackObj);
+                 break;
+ 
+             case 'encryptionError': {
+@@ -406,8 +406,8 @@ class SecuredField extends AbstractSecuredField {
+         return this;
+     }
+ 
+-    onKeyPressed(callbackFn: RtnType_callbackFn): SecuredField {
+-        this.onKeyPressedCallback = callbackFn;
++    onKeyDown(callbackFn: RtnType_callbackFn): SecuredField {
++        this.onKeyDownCallback = callbackFn;
+         return this;
+     }
+     //------------------------------------
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/types.ts b/packages/lib/src/components/internal/SecuredFields/lib/types.ts
+index 2046910..9169453 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/types.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/types.ts
+@@ -349,7 +349,7 @@ export interface SFPlaceholdersObject {
+     [ENCRYPTED_PWD_FIELD]?: string;
+ }
+ 
+-export interface SFKeyPressObj {
++export interface SFKeyDownObj {
+     fieldType: string;
+     action: string;
+ }
+diff --git a/packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx b/packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx
+index ac550c9..214e97e 100644
+--- a/packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx
++++ b/packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx
+@@ -68,7 +68,6 @@ export const SegmentedControl = <T,>({
+                     key={value}
+                     onClick={(event: MouseEvent) => onChange(value, event)}
+                     // Workaround: See ADR-0001-uielement-keyboard-event-propagation-workaround
+-                    onKeyPress={stopPropagationForActionKeys}
+                     onKeyDown={stopPropagationForActionKeys}
+                     className={cx('adyen-checkout__segmented-control-segment', {
+                         'adyen-checkout__segmented-control-segment--selected': selectedValue === value
+diff --git a/packages/lib/src/components/internal/UIElement/UIElement.tsx b/packages/lib/src/components/internal/UIElement/UIElement.tsx
+index 7a71178..175c663 100644
+--- a/packages/lib/src/components/internal/UIElement/UIElement.tsx
++++ b/packages/lib/src/components/internal/UIElement/UIElement.tsx
+@@ -1,4 +1,4 @@
+-import { createRef, h, RefObject } from 'preact';
++import { createRef, h, RefObject, TargetedKeyboardEvent } from 'preact';
+ import { Resources } from '../../../core/Context/Resources';
+ import AdyenCheckoutError, { NETWORK_ERROR } from '../../../core/Errors/AdyenCheckoutError';
+ import { hasOwnProperty } from '../../../utils/hasOwnProperty';
+@@ -524,7 +524,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+         this.handleSuccessResult(response);
+     }
+ 
+-    protected handleKeyPress(e: h.JSX.TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
++    protected handleKeyDown(e: TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
+         if (e.key === 'Enter' || e.code === 'Enter') {
+             e.preventDefault(); // Prevent <form> submission if Component is placed inside a form
+ 
+@@ -533,7 +533,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+     }
+ 
+     /**
+-     * Handle Enter key pressed from a UIElement (called via handleKeyPress)
++     * Handle Enter key pressed from a UIElement (called via handleKeyDown)
+      * @param obj
+      */
+     protected onEnterKeyPressed(activeElement: Element, component: UIElement) {
+diff --git a/packages/lib/src/core/Errors/SRMessages.tsx b/packages/lib/src/core/Errors/SRMessages.tsx
+index 3691e66..2ed0756 100644
+--- a/packages/lib/src/core/Errors/SRMessages.tsx
++++ b/packages/lib/src/core/Errors/SRMessages.tsx
+@@ -4,7 +4,7 @@ import { SRMessagesProps } from './types';
+ 
+ // An interface for the members exposed by SRMessages to its parent
+ export interface SRMessagesRef {
+-    setMessages?: (who: string[]) => void;
++    setMessages?: (messages: string[] | null) => void;
+ }
+ 
+ export function SRMessages({ setComponentRef }: Readonly<SRMessagesProps>) {
+@@ -14,18 +14,45 @@ export function SRMessages({ setComponentRef }: Readonly<SRMessagesProps>) {
+         setComponentRef?.(messagesRef.current);
+     }
+ 
+-    const [messages, setMessages] = useState(null);
++    const [messages, setMessages] = useState<string[] | null>(null);
++
++    // Pairs with "never clear": if the panel is never emptied, re-writing the message that is
++    // already displayed would diff to nothing and the AT would stay silent. Bumping the key
++    // remounts the nodes so the change is observable.
++    //
++    // Only bump when the incoming messages are identical to what is rendered, so a partial
++    // change (one validation error replaced by another) still diffs granularly and announces
++    // just the new entry instead of re-reading the whole list.
++    const renderedRef = useRef<string[] | null>(null);
++    const versionRef = useRef(0);
++    const [version, setVersion] = useState(0);
+ 
+     // Expose method expected by parent
+-    messagesRef.current.setMessages = (msgs: string[]) => {
++    messagesRef.current.setMessages = (msgs: string[] | null) => {
++        const rendered = renderedRef.current;
++        const isDuplicate = !!msgs?.length && rendered?.length === msgs.length && rendered.every((m, i) => m === msgs[i]);
++
++        if (isDuplicate) {
++            versionRef.current += 1;
++            setVersion(versionRef.current);
++        }
++
+         setMessages(msgs);
+     };
+ 
++    // Track what is committed to the DOM rather than the latest pending state: a clear followed
++    // by a re-set in the same tick batches into one render, which would hide the duplicate.
++    renderedRef.current = messages;
++
+     return messages ? (
+         <Fragment>
+             {messages.map(msg => {
+                 return (
+-                    <div key={msg} className="adyen-checkout-sr-panel__msg" {...(process.env.NODE_ENV !== 'production' && { 'data-testid': msg })}>
++                    <div
++                        key={`${version}-${msg}`}
++                        className="adyen-checkout-sr-panel__msg"
++                        {...(process.env.NODE_ENV !== 'production' && { 'data-testid': msg })}
++                    >
+                         {msg}
+                     </div>
+                 );
+diff --git a/packages/lib/src/core/Errors/SRPanel.ownership.test.tsx b/packages/lib/src/core/Errors/SRPanel.ownership.test.tsx
+new file mode 100644
+index 0000000..5d98568
+--- /dev/null
++++ b/packages/lib/src/core/Errors/SRPanel.ownership.test.tsx
+@@ -0,0 +1,206 @@
++import { h } from 'preact';
++import { act, render, screen, waitFor } from '@testing-library/preact';
++import { setupCoreMock } from '../../../config/testMocks/setup-core-mock';
++import { SRPanel } from './SRPanel';
++import { SRPanelContext } from './SRPanelContext';
++import { useA11yReporter } from './useA11yReporter';
++import { setSRMessagesFromErrors } from './utils';
++
++/**
++ * Semantics for the shared SR panel, agreed while investigating PR #4098.
++ *
++ * The panel is a singleton written to by two unrelated families of consumer:
++ *   - status reporters (LoadingWrapper, Await, QRLoader, Countdown, ...) via useA11yReporter
++ *   - error reporters (Card/Giftcard/OpenInvoice validation) via setSRMessagesFromErrors
++ *
++ * Agreed rules:
++ *   1. A write always wins and takes ownership (last-writer-wins).
++ *   2. A clear is only honoured if the caller still owns what is displayed.
++ *   3. A status reporter unmounting does NOT clear; the message stays until superseded.
++ *
++ * These tests assert the DOM mutations the live region actually emits, because that -- not
++ * the fact that setMessages was called -- is what a screen reader observes.
++ */
++
++const core = setupCoreMock();
++
++// The panel is mounted onto document.body by SRPanel itself, not into a render container.
++// It carries role="log", so it is reachable via a normal accessible query.
++const getPanel = () => screen.getByRole('log');
++
++/**
++ * Let any pending state update commit. Required before asserting that something did NOT
++ * change: waitFor resolves immediately when the assertion already holds, so it would pass
++ * before a pending clear had a chance to flush.
++ */
++const flush = async () => {
++    await act(async () => {
++        await new Promise(resolve => setTimeout(resolve, 0));
++    });
++};
++
++/** Records add/remove of message nodes in the live region. */
++const watch = (panel: HTMLElement) => {
++    const records: string[] = [];
++    const observer = new MutationObserver(mutations =>
++        mutations.forEach(m => {
++            m.removedNodes.forEach(n => records.push(`-${n.textContent}`));
++            m.addedNodes.forEach(n => records.push(`+${n.textContent}`));
++        })
++    );
++    observer.observe(panel, { childList: true, subtree: true, characterData: true });
++    return { records, stop: () => observer.disconnect() };
++};
++
++/**
++ * Mimics the Card error hook running with no validation errors.
++ * `hasDisplayedErrors` reflects whether this form currently has errors of its own on display.
++ */
++const errorHookWithNoErrors = (srPanel: SRPanel, hasDisplayedErrors = false) =>
++    setSRMessagesFromErrors(
++        { i18n: core.modules.i18n, fieldTypeMappingFn: null, SRPanelRef: srPanel },
++        { errors: {}, isValidating: false, layout: null, countrySpecificLabels: null, hasDisplayedErrors }
++    );
++
++const StatusReporter = ({ message }: Readonly<{ message: string | null }>) => {
++    useA11yReporter(message);
++    return null;
++};
++
++const withPanel = (srPanel: SRPanel, message: string | null) => (
++    <SRPanelContext.Provider value={{ srPanel } as never}>
++        <StatusReporter message={message} />
++    </SRPanelContext.Provider>
++);
++
++describe('SRPanel ownership semantics', () => {
++    test('case 1: a status message survives a clear from the error hook that owns nothing', async () => {
++        const srPanel = new SRPanel(core);
++        const { records, stop } = watch(getPanel());
++
++        srPanel.setMessages('Loading…');
++        await waitFor(() => expect(getPanel().textContent).toBe('Loading…'));
++
++        // Card re-renders with no validation errors and wipes the shared panel.
++        errorHookWithNoErrors(srPanel);
++        errorHookWithNoErrors(srPanel);
++
++        await flush();
++        expect(getPanel().textContent).toBe('Loading…');
++        expect(records).toEqual(['+Loading…']);
++        stop();
++    });
++
++    test('case 2: the error hook can still clear errors it owns', async () => {
++        const srPanel = new SRPanel(core);
++        const { stop } = watch(getPanel());
++
++        srPanel.setMessages(['Card number invalid']);
++        await waitFor(() => expect(getPanel().textContent).toBe('Card number invalid'));
++
++        // The form has errors on display, so this clear is its own to make.
++        errorHookWithNoErrors(srPanel, true);
++
++        await waitFor(() => expect(getPanel().textContent).toBe(''));
++        stop();
++    });
++
++    test('case 3: a new status message overrides errors already on display', async () => {
++        const srPanel = new SRPanel(core);
++        const { stop } = watch(getPanel());
++
++        srPanel.setMessages(['Card number invalid']);
++        await waitFor(() => expect(getPanel().textContent).toBe('Card number invalid'));
++
++        render(withPanel(srPanel, 'Loading…'));
++
++        await waitFor(() => expect(getPanel().textContent).toBe('Loading…'));
++        stop();
++    });
++
++    test('case 4: a status reporter unmounting leaves its message in place', async () => {
++        const srPanel = new SRPanel(core);
++        const { stop } = watch(getPanel());
++
++        const { unmount } = render(withPanel(srPanel, 'Loading…'));
++        await waitFor(() => expect(getPanel().textContent).toBe('Loading…'));
++
++        unmount();
++
++        await flush();
++        expect(getPanel().textContent).toBe('Loading…');
++        stop();
++    });
++
++    test('case 5: one status reporter unmounting does not clear another reporter message', async () => {
++        const srPanel = new SRPanel(core);
++        const { stop } = watch(getPanel());
++
++        const { unmount: unmountFirstReporter } = render(withPanel(srPanel, 'Awaiting your approval'));
++        await waitFor(() => expect(getPanel().textContent).toBe('Awaiting your approval'));
++
++        render(withPanel(srPanel, 'Loading…'));
++        await waitFor(() => expect(getPanel().textContent).toBe('Loading…'));
++
++        unmountFirstReporter();
++
++        await flush();
++        expect(getPanel().textContent).toBe('Loading…');
++        stop();
++    });
++
++    test('case 7: the same validation error occurring twice is announced both times', async () => {
++        const srPanel = new SRPanel(core);
++        const { records, stop } = watch(getPanel());
++
++        // Shopper submits, gets an error.
++        srPanel.setMessages(['Card number invalid']);
++        await waitFor(() => expect(getPanel().textContent).toBe('Card number invalid'));
++
++        // Shopper edits the field, errors are recalculated as empty, then they submit again
++        // and hit the very same error.
++        errorHookWithNoErrors(srPanel, true);
++        await flush();
++        srPanel.setMessages(['Card number invalid']);
++        await flush();
++
++        // A screen reader only announces a DOM change, so the second occurrence must
++        // produce its own mutation rather than diffing away to nothing.
++        expect(records.filter(r => r === '+Card number invalid')).toHaveLength(2);
++        stop();
++    });
++
++    test('case 8: a second component announcing the same status is still announced', async () => {
++        const srPanel = new SRPanel(core);
++        const { records, stop } = watch(getPanel());
++
++        // Because unmounting no longer clears (case 4), "Loading…" is still on display when
++        // the next component mounts and reports the very same status.
++        const { unmount } = render(withPanel(srPanel, 'Loading…'));
++        await waitFor(() => expect(getPanel().textContent).toBe('Loading…'));
++        unmount();
++        await flush();
++
++        render(withPanel(srPanel, 'Loading…'));
++        await flush();
++
++        expect(records.filter(r => r === '+Loading…')).toHaveLength(2);
++        stop();
++    });
++
++    test('case 6: a deliberate clear-then-rewrite by the same owner still emits a mutation', async () => {
++        const srPanel = new SRPanel(core);
++        const { records, stop } = watch(getPanel());
++
++        srPanel.setMessages('10 seconds remaining');
++        await waitFor(() => expect(getPanel().textContent).toBe('10 seconds remaining'));
++
++        // CountdownA11yReporter clears then immediately rewrites on every tick.
++        srPanel.setMessages(null);
++        srPanel.setMessages('9 seconds remaining');
++
++        await waitFor(() => expect(getPanel().textContent).toBe('9 seconds remaining'));
++        expect(records).toContain('+9 seconds remaining');
++        stop();
++    });
++});
+diff --git a/packages/lib/src/core/Errors/SRPanel.tsx b/packages/lib/src/core/Errors/SRPanel.tsx
+index 20882d9..312994d 100644
+--- a/packages/lib/src/core/Errors/SRPanel.tsx
++++ b/packages/lib/src/core/Errors/SRPanel.tsx
+@@ -95,7 +95,7 @@ export class SRPanel extends BaseElement<SRPanelProps> {
+     }
+ 
+     // A method we can expose to allow comps to set messages in this panel
+-    public setMessages = (messages: string[] | string): void => {
++    public setMessages = (messages: string[] | string | null): void => {
+         if (!this.props.enabled) return;
+ 
+         let panelMessages = null;
+diff --git a/packages/lib/src/core/Errors/SRPanelProvider.tsx b/packages/lib/src/core/Errors/SRPanelProvider.tsx
+index 8452677..db8d64c 100644
+--- a/packages/lib/src/core/Errors/SRPanelProvider.tsx
++++ b/packages/lib/src/core/Errors/SRPanelProvider.tsx
+@@ -19,6 +19,12 @@ interface SetSRMessagesReturnFnProps {
+     isValidating: boolean;
+     layout?: string[];
+     countrySpecificLabels?: StringObject;
++    /**
++     * Whether this form currently has errors of its own on display. The SR panel is shared with
++     * status reporters (loading, await, countdown), so a form must not clear it when it has
++     * nothing of its own to clear. Defaults to true to preserve existing caller behaviour.
++     */
++    hasDisplayedErrors?: boolean;
+ }
+ 
+ export type SetSRMessagesReturnFn = (props: SetSRMessagesReturnFnProps) => SetSRMessagesReturnObject;
+diff --git a/packages/lib/src/core/Errors/constants.ts b/packages/lib/src/core/Errors/constants.ts
+index ccefc04..e95ed68 100644
+--- a/packages/lib/src/core/Errors/constants.ts
++++ b/packages/lib/src/core/Errors/constants.ts
+@@ -57,6 +57,9 @@ export enum SF_ErrorCodes {
+     ERROR_MSG_EMPTY_CVC = `${ErrorCodePrefixes.CC_CVC}.920`,
+     ERROR_MSG_INCORRECTLY_FILLED_CVC = `${ErrorCodePrefixes.CC_CVC}.921`,
+ 
++    ERROR_MSG_EMPTY_CVC_AMEX = `${ErrorCodePrefixes.CC_CVC}.920.amex`,
++    ERROR_MSG_INCORRECTLY_FILLED_CVC_AMEX = `${ErrorCodePrefixes.CC_CVC}.921.amex`,
++
+     ERROR_MSG_EMPTY_KCP_PWD = `${ErrorCodePrefixes.KCP_PWD}.940`,
+     ERROR_MSG_INCORRECTLY_FILLED_KCP_PWD = `${ErrorCodePrefixes.KCP_PWD}.941`
+ }
+diff --git a/packages/lib/src/core/Errors/useA11yReporter.ts b/packages/lib/src/core/Errors/useA11yReporter.ts
+index fab258d..2ef1c3d 100644
+--- a/packages/lib/src/core/Errors/useA11yReporter.ts
++++ b/packages/lib/src/core/Errors/useA11yReporter.ts
+@@ -1,18 +1,23 @@
+ import { useEffect } from 'preact/hooks';
+ import useSRPanelContext from './useSRPanelContext';
+ 
+-export const useA11yReporter = (statusMessage): void => {
++export const useA11yReporter = (statusMessage?: string | null): void => {
+     const { srPanel } = useSRPanelContext();
+ 
+     useEffect(() => {
++        if (!srPanel) return;
+         srPanel.setAriaProps({ 'aria-relevant': 'additions text' });
+         return () => {
+-            srPanel.setMessages(null);
++            // Deliberately does not clear the panel. The panel is shared, so clearing on unmount
++            // destroys whatever is on display -- often a message another component just wrote --
++            // and truncates our own message before a screen reader has had time to read it.
++            // A status message stays until something supersedes it.
+             srPanel.setAriaProps({ 'aria-relevant': srPanel.constructor['defaultProps'].ariaAttributes['aria-relevant'] });
+         };
+-    }, []);
++    }, [srPanel]);
+ 
+     useEffect(() => {
++        if (!srPanel || statusMessage === undefined) return;
+         srPanel.setMessages(statusMessage);
+-    }, [statusMessage]);
++    }, [srPanel, statusMessage]);
+ };
+diff --git a/packages/lib/src/core/Errors/useLoadingA11yReporter.test.tsx b/packages/lib/src/core/Errors/useLoadingA11yReporter.test.tsx
+new file mode 100644
+index 0000000..d853042
+--- /dev/null
++++ b/packages/lib/src/core/Errors/useLoadingA11yReporter.test.tsx
+@@ -0,0 +1,73 @@
++import { h } from 'preact';
++import { render } from '@testing-library/preact';
++import { CoreProvider } from '../Context/CoreProvider';
++import SRPanelProvider from './SRPanelProvider';
++import { SRPanel } from './SRPanel';
++import { useLoadingA11yReporter } from './useLoadingA11yReporter';
++import { setupCoreMock } from '../../../config/testMocks/setup-core-mock';
++
++const Consumer = ({ isLoading, finalMessage }: Readonly<{ isLoading: boolean; finalMessage?: string }>) => {
++    useLoadingA11yReporter(isLoading, finalMessage);
++    return null;
++};
++
++const renderConsumer = (srPanel: SRPanel, isLoading: boolean, finalMessage?: string) =>
++    render(
++        <CoreProvider i18n={global.i18n} loadingContext="test" resources={global.resources}>
++            <SRPanelProvider srPanel={srPanel}>
++                <Consumer isLoading={isLoading} finalMessage={finalMessage} />
++            </SRPanelProvider>
++        </CoreProvider>
++    );
++
++describe('useLoadingA11yReporter', () => {
++    test('does not report a message before loading has started', () => {
++        const srPanel = setupCoreMock().modules.srPanel;
++        const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++        renderConsumer(srPanel, false);
++
++        expect(setMessagesSpy).not.toHaveBeenCalled();
++    });
++
++    test('reports the loading message while loading', () => {
++        const srPanel = setupCoreMock().modules.srPanel;
++        const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++        renderConsumer(srPanel, true);
++
++        expect(setMessagesSpy).toHaveBeenCalledWith('Loading…');
++    });
++
++    /**
++     * The panel is not cleared when a reporter unmounts, so a terminal message is the only thing
++     * that removes "Loading…" from the live region once loading has finished.
++     */
++    test('supersedes the loading message once loading finishes', () => {
++        const srPanel = setupCoreMock().modules.srPanel;
++        const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++        const { rerender } = renderConsumer(srPanel, true);
++        expect(setMessagesSpy).toHaveBeenCalledWith('Loading…');
++
++        rerender(
++            <CoreProvider i18n={global.i18n} loadingContext="test" resources={global.resources}>
++                <SRPanelProvider srPanel={srPanel}>
++                    <Consumer isLoading={false} />
++                </SRPanelProvider>
++            </CoreProvider>
++        );
++
++        expect(setMessagesSpy).toHaveBeenCalledWith('Loaded');
++    });
++
++    test('announces a final message in place of the generic loaded message', () => {
++        const srPanel = setupCoreMock().modules.srPanel;
++        const setMessagesSpy = jest.spyOn(srPanel, 'setMessages');
++
++        renderConsumer(srPanel, false, 'Payment Successful');
++
++        expect(setMessagesSpy).toHaveBeenCalledWith('Payment Successful');
++        expect(setMessagesSpy).not.toHaveBeenCalledWith('Loaded');
++    });
++});
+diff --git a/packages/lib/src/core/Errors/useLoadingA11yReporter.ts b/packages/lib/src/core/Errors/useLoadingA11yReporter.ts
+new file mode 100644
+index 0000000..8342d20
+--- /dev/null
++++ b/packages/lib/src/core/Errors/useLoadingA11yReporter.ts
+@@ -0,0 +1,31 @@
++import { useRef } from 'preact/hooks';
++
++import { useCoreContext } from '../Context/CoreProvider';
++import { useA11yReporter } from './useA11yReporter';
++
++/**
++ * Announces loading transitions to screen readers, for components whose spinner has no
++ * accessible name of its own.
++ *
++ * The terminal message is required rather than cosmetic: the SR panel is shared and is
++ * deliberately not cleared when a reporter unmounts, so without something to supersede it the
++ * "loading" announcement would be left on display after loading has finished.
++ *
++ * Call this from a component that stays mounted across the whole transition. Calling it from a
++ * component that only exists while loading cannot work, because it unmounts before it is able
++ * to announce the terminal message.
++ *
++ * @param isLoading - whether the component is currently loading
++ * @param finalMessage - announced instead of the generic "loaded" once loading ends, e.g. a payment result
++ */
++export const useLoadingA11yReporter = (isLoading: boolean, finalMessage?: string): void => {
++    const { i18n } = useCoreContext();
++    const hasStartedLoading = useRef(isLoading);
++
++    if (isLoading) {
++        hasStartedLoading.current = true;
++    }
++
++    const statusMessage = isLoading ? i18n.get('loading') : (finalMessage ?? (hasStartedLoading.current ? i18n.get('loaded') : undefined));
++    useA11yReporter(statusMessage);
++};
+diff --git a/packages/lib/src/core/Errors/utils.ts b/packages/lib/src/core/Errors/utils.ts
+index 7c03592..5db53a0 100644
+--- a/packages/lib/src/core/Errors/utils.ts
++++ b/packages/lib/src/core/Errors/utils.ts
+@@ -179,7 +179,7 @@ export const sortErrorsByLayout = ({ errors, i18n, layout, countrySpecificLabels
+  */
+ export const setSRMessagesFromErrors = (
+     { i18n, fieldTypeMappingFn, SRPanelRef },
+-    { errors, isValidating, layout, countrySpecificLabels }
++    { errors, isValidating, layout, countrySpecificLabels, hasDisplayedErrors = true }
+ ): SetSRMessagesReturnObject => {
+     const currentErrorsSortedByLayout = sortErrorsByLayout({
+         errors,
+@@ -211,7 +211,14 @@ export const setSRMessagesFromErrors = (
+         }
+     } else {
+         if (doLog) console.log('### setSRMessagesFromErrors::componentDidUpdate:: #4 clearing errors:: NO currentErrorsSortedByLayout');
+-        SRPanelRef?.setMessages(null); // no errors - so clear SR panel
++        /**
++         * Only clear if we actually have errors on display to clear. The SR panel is shared with
++         * status reporters (loading, await, countdown); clearing it when this form has never shown
++         * an error wipes their messages instead - see PR #4098.
++         */
++        if (hasDisplayedErrors) {
++            SRPanelRef?.setMessages(null); // no errors - so clear SR panel
++        }
+         return { currentErrorsSortedByLayout, action: 'none' };
+     }
+ };
+diff --git a/packages/lib/src/utils/useForm/types.ts b/packages/lib/src/utils/useForm/types.ts
+index bbf2da6..4f5422b 100644
+--- a/packages/lib/src/utils/useForm/types.ts
++++ b/packages/lib/src/utils/useForm/types.ts
+@@ -23,11 +23,11 @@ export interface Formatter {
+ }
+ 
+ export type FormProps = {
+-    schema: string[];
+-    rules?: ValidatorRules;
++    schema: string[] | null;
++    rules?: ValidatorRules | null;
+     formatters?: {
+         [key: string]: Formatter | Function;
+-    };
++    } | null;
+     [key: string]: any;
+ };
+ 
+diff --git a/packages/lib/src/utils/useForm/useForm.test.tsx b/packages/lib/src/utils/useForm/useForm.test.tsx
+index 554ab8d..45e9b67 100644
+--- a/packages/lib/src/utils/useForm/useForm.test.tsx
++++ b/packages/lib/src/utils/useForm/useForm.test.tsx
+@@ -13,6 +13,11 @@ const wrapper = ({ children }: { children: any }) => (
+     </CoreProvider>
+ );
+ 
++function getHookResult<T>(result: { current: T | undefined }): T {
++    if (!result.current) throw new Error('Hook result is undefined');
++    return result.current;
++}
++
+ describe('useForm', () => {
+     const defaultSchema = ['firstName', 'lastName'];
+     type defaultSchemaType = {
+@@ -60,6 +65,34 @@ describe('useForm', () => {
+             expect(result.current.data.lastName).toEqual(null);
+         });
+ 
++        test('should initialize fields when defaultData is null', () => {
++            const { result } = renderHook<unknown, Form<defaultSchemaType>>(
++                () => useForm<defaultSchemaType>({ schema: defaultSchema, defaultData: null }),
++                { wrapper }
++            );
++            const form = getHookResult(result);
++
++            expect(form.schema).toEqual(defaultSchema);
++            expect(form.data).toEqual({ firstName: null, lastName: null });
++            expect(form.valid).toEqual({ firstName: false, lastName: false });
++            expect(form.errors).toEqual({ firstName: null, lastName: null });
++        });
++
++        test('should normalize null configuration values', () => {
++            const { result } = renderHook<unknown, Form<Record<string, unknown>>>(
++                () => useForm<Record<string, unknown>>({ schema: null, rules: null, formatters: null, defaultData: null, fieldProblems: null }),
++                { wrapper }
++            );
++            const form = getHookResult(result);
++
++            expect(form.schema).toEqual([]);
++            expect(form.data).toEqual({});
++            expect(form.valid).toEqual({});
++            expect(form.errors).toEqual({});
++            expect(form.fieldProblems).toEqual({});
++            expect(form.isValid).toBe(true);
++        });
++
+         it('should set default data after changing the schema', () => {
+             const { result } = renderHook(() => useForm({ schema: defaultSchema, defaultData }), { wrapper });
+ 
+diff --git a/packages/lib/src/utils/useForm/useForm.ts b/packages/lib/src/utils/useForm/useForm.ts
+index 41c2cba..b86b2ef 100644
+--- a/packages/lib/src/utils/useForm/useForm.ts
++++ b/packages/lib/src/utils/useForm/useForm.ts
+@@ -9,7 +9,19 @@ function isFormatterObject(formatter: Formatter | Function): formatter is Format
+ }
+ 
+ function useForm<FormSchema>(props: FormProps): Form<FormSchema> {
+-    const { rules = {}, formatters = {}, defaultData = {}, fieldProblems = {}, schema = [] } = props;
++    // Normalize null values to empty objects/arrays to avoid type errors
++    const {
++        rules: providedRules,
++        formatters: providedFormatters,
++        defaultData: providedDefaultData,
++        fieldProblems: providedFieldProblems,
++        schema: providedSchema
++    } = props;
++    const rules = providedRules ?? {};
++    const formatters = providedFormatters ?? {};
++    const defaultData = providedDefaultData ?? {};
++    const fieldProblems = providedFieldProblems ?? {};
++    const schema = providedSchema ?? [];
+ 
+     const { i18n } = useCoreContext();
+ 
+@@ -28,7 +40,7 @@ function useForm<FormSchema>(props: FormProps): Form<FormSchema> {
+ 
+     const [state, dispatch] = useReducer<FormState<FormSchema>, any, any>(
+         getReducer(processField),
+-        { defaultData, schema: schema ?? [], processField, fieldProblems },
++        { defaultData, schema, processField, fieldProblems },
+         init
+     );
+     const isValid = useMemo(() => state.schema.reduce((acc, val) => acc && state.valid[val], true), [state.schema, state.valid]);

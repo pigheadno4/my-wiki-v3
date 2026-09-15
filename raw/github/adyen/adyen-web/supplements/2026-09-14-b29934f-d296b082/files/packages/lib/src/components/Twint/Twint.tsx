@@ -1,0 +1,38 @@
+import RedirectElement from '../Redirect';
+import PayButton from '../internal/PayButton';
+import { payAmountLabel } from '../internal/PayButton/utils';
+import { h } from 'preact';
+import { TxVariants } from '../tx-variants';
+import { PayButtonProps } from '../internal/PayButton/PayButton';
+
+class TwintElement extends RedirectElement {
+    public static override readonly type: TxVariants = TxVariants.twint;
+
+    public static readonly defaultProps = {
+        type: TwintElement.type,
+        name: 'Twint'
+    };
+    /**
+     * Get the element displayable name
+     */
+    get displayName(): string {
+        const { i18n, name, isStoredPaymentMethod } = this.props;
+        return isStoredPaymentMethod ? `${name} ${i18n.get('twint.saved')}` : name || this.constructor['type'];
+    }
+
+    public payButtonLabel() {
+        const { i18n, amount, isStoredPaymentMethod, name } = this.props;
+        if (isStoredPaymentMethod) return payAmountLabel(i18n, amount);
+        return `${i18n.get('continueTo')} ${name}`;
+    }
+
+    /**
+     * Overrides RedirectElement default payButton behaviour to use label
+     * @param props - props
+     */
+    protected override payButton = (props: PayButtonProps): h.JSX.Element => {
+        return <PayButton {...props} label={this.payButtonLabel()} onClick={this.submit} showReview={!!this.props.onReview} />;
+    };
+}
+
+export default TwintElement;

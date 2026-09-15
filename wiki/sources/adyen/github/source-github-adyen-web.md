@@ -2,8 +2,15 @@
 title: "GitHub: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
+date_updated: 2026-09-15
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/manifest.json"
+  - "github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-14-f10995d-55e9e1ba/manifest.json"
+  - "github/adyen/adyen-web/snapshots/2026-09-14-b989173/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-08-09-1e157f8/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-08-09-c98ea8a/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-07-26-b19eec7/manifest.json"
@@ -12,13 +19,13 @@ tags: [adyen, checkout, web-sdk, cards, 3d-secure, github-repository]
 
 ## Overview
 
-`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and currently runs through `@adyen/adyen-web@6.42.0` at exact SHA `1e157f8bc62b9519d68becedd9c1267180810e77`.
+`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and currently runs through `@adyen/adyen-web@6.45.0` at exact SHA `b29934f6cf5de6e1912039f669b48ae45b75d3fd`.
 
 Repository: <https://github.com/Adyen/adyen-web>
 
 ## Evidence boundary
 
-- The retained snapshots prove implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.42.0`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
+- The ingested snapshots and supplements cover implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.45.0`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
 - Drop-in and Components are presentation and client-orchestration surfaces. Payment-method availability still comes from backend responses, merchant configuration, shopper context, and regional or product eligibility.
 - Stories are retained as intended integration scenarios. Tests were excluded by collection policy, so test-only behavior is outside this capsule.
 - PayPal Fastlane support in this repository depends on `@paypal/paypal-js`; these snapshots describe Adyen's adapter and configuration surface, not the delegated PayPal runtime.
@@ -46,6 +53,26 @@ Repository: <https://github.com/Adyen/adyen-web>
 > `raw/github/adyen/adyen-web/snapshots/2026-07-26-b19eec7/files/packages/lib/src/components/Card/components/CardInput/a11y.docs.mdx:15-28`
 
 ## Integration surfaces and architecture
+
+### 6.43.0 grounding
+
+> `tags?: TagProps[];`
+>
+> [Select item type, line 10](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/files/packages/lib/src/components/internal/FormFields/Select/types.ts#L10)
+
+> `export const Tag = ({ label, variant = TagVariant.INFO }: Readonly<TagProps>) => {`
+>
+> [Tag renderer, line 12](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/files/packages/lib/src/components/internal/Tag/Tag.tsx#L12)
+
+> `// Clicking the input of an open list keeps it open`
+>
+> [Select button, line 61](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/files/packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx#L61)
+
+> `"@paypal/paypal-js": "10.0.3",`
+>
+> [Package dependency, line 140](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b989173/files/packages/lib/package.json#L140)
+
+### Established architecture
 
 Drop-in is the all-in-one checkout surface. Components expose one payment method at a time for merchants that need control over layout and orchestration. The UMD bundle registers all Components, while tree-shakable integrations must register the Components they use.
 
@@ -130,6 +157,117 @@ Release `6.42.0` adds the Drop-in payment-list analytics event and the 3DS2 ifra
 
 This is a contained minor release. It changes checkout telemetry, partial-address validation, and internal authentication-frame capabilities without replacing the established Drop-in, Components, Sessions, or advanced-flow architecture.
 
+## `6.43.0` minor-release behavior
+
+Released 2026-08-12 and delta-ingested against 6.42.0. The standard capsule retains 218 unchanged files and two changed package manifests; the approved 14-file supplement supplies the changed Select/Tag implementation, styles, and three stories.
+
+- **Option tags:** internal `SelectItem.tags` accepts an array of labels with optional `info` or `success` styling; omitted variants default to `info`. Labels render literally, not as translation keys. Empty or missing tags render no tag-list node. These are presentation labels, not price, eligibility, or payment-state calculations.
+- **Expanded versus collapsed:** options show supporting `secondaryText` below the name, with tags beside the content. The collapsed control shows the selected name and tags, but no supporting text. In filterable controls, selected tags are hidden while the list is open. Code: [list item](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/files/packages/lib/src/components/internal/FormFields/Select/components/SelectListItem.tsx), [button](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/files/packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx).
+- **Interaction correction:** clicking the filterable wrapper toggles the list and focuses the input; clicking the input while open keeps it open. Readonly controls do not attach these click/key handlers. Filtering still checks option names, not tag labels or supporting text; selection still rejects disabled options. Only the click-handler change is new in this delta, not all existing filter/selection behavior.
+- **Layout and accessibility boundary:** name/input flex items can shrink and use ellipsis, while collapsed tags are limited to 50% width with overflow hidden. The existing polite result-announcement region gets a dedicated visually-hidden class. This is source/CSS evidence, not browser or screen-reader verification. Non-filterable controls with an ID label themselves through label/value IDs rather than necessarily including tag text in the accessible name.
+- **Dependency:** `@paypal/paypal-js` changes from `10.0.2` to `10.0.3`. Do not infer a new Adyen payment capability from that bump; delegated package behavior belongs to [[source-github-paypal-js]]. Public package export mappings remain unchanged.
+
+The [Select story](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/files/packages/lib/src/components/internal/FormFields/Select/Select.stories.tsx) covers tags, supporting text, long names, disabled options, filterable/non-filterable controls, and validation states. Tag and TagList stories demonstrate the variants and ordered multiple labels; they are examples, not executed tests.
+
+**Migration:** recheck custom styling and any UX relying on supporting text remaining visible after collapse. Do not advertise the internal Select/Tag types as a new top-level merchant configuration API. No broad checkout architecture change or contradiction with earlier version-qualified knowledge was found.
+
+## `6.44.0` minor-release behavior
+
+Released 2026-08-19 and delta-ingested against 6.43.0 at SHA `f10995d33491d8107c01a27dec2bc1fc4d6e28b0`. The standard capsule has 24 modified files, one added file, and 196 unchanged files; the approved supplement adds 40 exact-SHA files. Review covered the assigned current source and supplementary implementation, not the entire upstream repository.
+
+- **Keyboard dispatch:** the shared BaseElement/UIElement path moves from `keypress` to `keydown`, while the merchant callback remains `onEnterKeyPressed`. Without that callback, UIElement retains blur-then-submit behavior. Drop-in avoids submitting from a focused payment-method radio header; Click to Pay isolates its own Enter handling. The secured-field bridge still receives `enterKeyPressed` but dispatches a synthetic `keydown`. CustomCard's callback-only override and Giftcard's balance/payment routing remain distinct. This broadens the migration recorded for earlier releases, rather than asserting every path already migrated in 6.41.0.
+- **Dual-brand selection:** the selector removes its bespoke Enter handler, suppresses action-key propagation on keydown, and retains click-based selection using native button activation. Related internal controls remove duplicate keypress handlers. See [[co-badged-cards]].
+- **CVC and expiry guidance:** CVC rendering now receives the raw `errorCode` rather than already-translated text. For Amex, `cc.cvc.920` and `cc.cvc.921` resolve to `.amex` variants; other keys remain unchanged. Card and stored-card fields pass brand context, and the secured-field validation bridge applies the same mapping to `errorI18n` while retaining the raw error code. Release notes also report expiry/CVC format guidance in error states. Translation JSONs were not retained in this capsule, so this is not a full multilingual copy audit or a new top-level merchant API.
+- **Null inputs and country normalization:** `useForm` normalizes null rules, formatters, default data, and field problems to empty objects, and null schema to an empty array. Address uses an empty address fallback. CardInput reads initial country null-safely and uppercases it before existing partial-address postal rules run. Required-field validation still applies; this is not universal malformed-input acceptance.
+- **Screen-reader lifecycle:** the new loading hook announces completion only after loading has started. QRLoader owns its final announcement at a stable parent, avoiding a child-unmount/loading-effect overwrite. The generic accessibility hook no longer clears messages on unmount. Card error reporting passes whether errors were displayed so the no-error branch does not indiscriminately clear messages; this is not general message ownership tracking. Repeated identical nonempty messages get a new render key to trigger a DOM remount.
+- **Dependencies and nonchanges:** Preact changes from `10.29.2` to `10.29.7`; the Secured Fields version constant changes from `6.2.1` to `6.3.0`. The external iframe runtime itself was not audited. `@paypal/paypal-js` stays at `10.0.3`. Changed 3DS2 files are formatting-only: the existing passkey iframe capability is not new in this release.
+
+### 6.44.0 grounding
+
+> `onKeyDown={stopPropagationForActionKeys}`
+>
+> [Dual-brand selector, line 43](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx#L43)
+
+> `'cc.cvc.920': 'cc.cvc.920.amex',`
+>
+> [CVC error mapping, line 200](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/utils.ts#L200)
+
+> `hasDisplayedErrors: !!sortedErrorList?.length`
+>
+> [Card screen-reader error reporting, line 46](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts#L46)
+
+> `export const SF_VERSION = '6.3.0';`
+>
+> [Secured Fields constant, line 18](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-f10995d-55e9e1ba/files/packages/lib/src/components/internal/SecuredFields/lib/constants.ts#L18)
+
+**Migration:** recheck merchant Enter handlers, nested interactive controls, Amex custom translation keys, null initial form data, lowercase partial-address countries, and loading/error announcements. No incompatible top-level export or broad architecture change was established. No browser, screen-reader, payment, or upstream test suite was executed.
+
+**Mode decision:** the generated full/high recommendation remains recorded. Its security keyword signal matched "security code" (CVC), not evidence of a vulnerability. After supplement-backed source review bounded the changes, the user approved delta mode. Earlier version knowledge remains preserved.
+
+## `6.45.0` review-page checkout and fixes
+
+Released 2026-09-10; full-ingested additively on 2026-09-15 against 6.44.0 at SHA `b29934f6cf5de6e1912039f669b48ae45b75d3fd`. The standard capsule retains 221 files (13 modified, 208 unchanged); the approved 26-file supplement includes implementation, two architecture decisions, and three review-page story files. Full mode reflects a new cross-component payment lifecycle, not removal of earlier knowledge. The classifier's security signal concerns Content Security Policy, not established vulnerability evidence.
+
+### Review and final submission
+
+Core configuration adds `onReview(state, component, reviewDetails)` and `onAction(actionElement)`; both are propagated to Components. `ICore.processPayment(data: PaymentData): void` adds a component-independent Sessions submission path. See [[adyen-review-page-checkout]].
+
+In [UIElement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/files/packages/lib/src/components/internal/UIElement/UIElement.tsx), submit first checks validity. If `onReview` is set, it optionally retrieves order status using the current order, emits review analytics, calls the callback with payment data and optional order status, then returns without normal payment execution. An order-status lookup failure still invokes review with empty details. Without review, the established payment execution path remains.
+
+In [Core](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/files/packages/lib/src/core/core.ts), `processPayment` requires a Session and calls its submission method directly. It does not re-run Component validation or `beforeSubmit`. An action creates a Component and requires `onAction` to mount it; a missing Session or action handler reports an implementation error through optional `onError`. An order with remaining balance calls `onOrderUpdated` and returns. Terminal results route to completion/failure callbacks after cleanup; completion does not supply the original payment Component. Cancellation errors are ignored.
+
+**Merchant responsibilities:** preserve required validation and data transformation before final confirmation, prevent repeated or stale submissions, own action mounting/disposal, and implement error and partial-order recovery. This method returns `void`, not a Promise, and has no local in-flight guard. Advanced integrations must continue their own backend `/payments` flow and create returned actions; `processPayment` is not an Advanced API. Configuring `onAction` also intercepts ordinary mounted UIElement payment responses even without review. This does not establish that every additional-details or redirect-return path has changed.
+
+### Buttons and payment-method exceptions
+
+The internal PayButton review flag chooses the translated Continue label before custom text, amount, and zero-value authorization labels, and suppresses the icon. Its secondary amount-label helper is unchanged. Card, BacsDD, stored PayByBankUS, stored PayTo, and Twint pass this flag. A custom button calling normal submit retains the validity/review path; there is no new universal merchant `showReview` API.
+
+| Retained path | 6.45.0 behavior |
+| --- | --- |
+| Google Pay | Its submit/payment-authorized path calls payment execution directly, bypassing inherited review. |
+| Klarna | Widget enabled: direct payment execution and no review label. Widget disabled: inherited submit. |
+| Gift card | Initial Redeem is not review; insufficient balance or transaction limit creates/reuses an order and pays before final review. Sufficient-balance confirmation uses inherited submit. |
+| PayByBankPix | Hosted stored-payment branch bypasses review; merchant-page redirect still uses inherited submit. |
+| Apple Pay, Amazon Pay, PayPal, ANCV | ADR/type comments document exclusions; complete implementations were not retained in this supplement. Do not infer new built-in PayPal review support from the ADR's Advanced-flow discussion. |
+
+The [review stories](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/files/packages/lib/storybook/stories/demos/ReviewPage/review-page-renders.tsx) demonstrate Card and Drop-in with NL Sessions. They retain payment data, session ID and optional order status, then initialize a review-page checkout using the Session ID. Card end digits are separately captured from `onFieldValid`. The [review screen](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/files/packages/lib/storybook/stories/demos/ReviewPage/ReviewPage.tsx) disables confirmation while unready/submitting and mounts actions in a modal. It is an example, not production-complete: it prints the entire payment payload, lacks full error/order recovery and cleanup, and does not close the modal in every failure path. Do not reproduce that payload display in production.
+
+### Donation, CSP, form and rendering changes
+
+- **Donation:** `commercialTxAmount` becomes optional, falling back to checkout amount and then zero; a missing/zero amount still cannot support round-up donation. `processPayment` does not automatically set up Sessions donation presentation. Merchants inspect `askDonation` and construct Donation explicitly. No new `onDonationAvailable` callback is established.
+- **Google Pay CSP:** optional `nonce` is forwarded to PaymentOptions and to the Google Pay script attribute when this loader injects it. An already-loaded Google runtime is not modified. This does not generate a nonce, configure CSP headers, or verify the external runtime. See [GooglePayService](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/files/packages/lib/src/components/GooglePay/GooglePayService.ts).
+- **Address:** street, house number and city stop silently stripping the former punctuation set; blur validation instead rejects emoji and control/format characters while allowing ordinary punctuation and multilingual text. The Unicode regex includes pictographic, regional-indicator and keycap forms. Older browsers without Unicode property escapes fall back to narrower control-character checks. GB postcode formatting strips invalid characters and caps length at eight before existing postcode validation. This is not a general sanitization/security guarantee. Error key `field.error.invalidCharacters` and analytics code 937 are added; translation coverage was not audited. See [validator utilities](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/files/packages/lib/src/utils/validator-utils.ts).
+- **Drop-in:** PaymentMethodDetails retains its vnode in a ref and renders on transition to selected, avoiding repeated component rendering/state resets and render analytics across list re-renders. This is not persistence across reloads. See [implementation](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/files/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodDetails.tsx).
+- **Select:** text/filter-input end spacing grows with mirrored RTL rules; the content gap shrinks and secondary-label color uses the label token. No browser layout validation was performed.
+- **Dependencies and maintenance:** PayPal JS 10.0.3 to 10.1.0, Preact 10.29.7 to 10.29.8, Google Pay types 0.7.11 to 0.7.12. Delegated PayPal behavior belongs to [[source-github-paypal-js]]. Strict-null migration tooling/backlog is not proof that the entire library is strict-null clean. The retained README marks v6 active, v5 inactive, v4 EOL August 2026 and v3 EOL October 2025; this is release-qualified documentation, not a live support-policy check.
+
+### Documentation discrepancies and grounding
+
+> [!warning] Contradiction
+> The exact-SHA ADR-0004 says `askDonation` requires a cast, but `PaymentCompletedData` and `SessionsResponse` already include it. ADR-0003 describes `core.update` with remaining-order handling, but this `processPayment` branch only calls `onOrderUpdated`. The blanket PayByBankPix exclusion is also broader than its retained branch behavior. See [[adyen-review-page-checkout]]; implementation governs these version-specific details and raw ADRs remain unchanged.
+
+> `if (this.props.onReview) {`
+>
+> [UIElement, line 261](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/files/packages/lib/src/components/internal/UIElement/UIElement.tsx#L261)
+
+> `public processPayment(data: PaymentData): void {`
+>
+> [Core, line 371](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/files/packages/lib/src/core/core.ts#L371)
+
+> `this.options.onOrderUpdated?.({ order });`
+>
+> [Core, line 403](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/files/packages/lib/src/core/core.ts#L403)
+
+> `nonce?: string;`
+>
+> [Google Pay configuration, line 13](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/files/packages/lib/src/components/GooglePay/types.ts#L13)
+
+> `this.commercialTxAmount = donationCampaignProps.commercialTxAmount ?? checkout.options.amount?.value ?? 0;`
+>
+> [Donation service, line 34](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/files/packages/lib/src/components/Donation/DonationCampaignService.tsx#L34)
+
+No upstream tests, browser, screen-reader, payment, or delegated wallet runtime were executed. Diff test excerpts are source evidence, not executed proof. Full ingestion covers the assigned packet and supplement, not the entire upstream tree.
+
 ## `6.41.0` release findings
 
 The release propagates the `healthcare` field to `onBinLookup`, validates the 3DS2 challenge notification domain, and replaces deprecated `keypress` events. It removes several explicit `any` types, prevents misleading component-level installments in Sessions, and fixes Drop-in checked-state accessibility.
@@ -138,12 +276,31 @@ These are patch findings. The broader architecture above is the accumulated sour
 
 ## Related
 
+- [[adyen-review-page-checkout]] - opt-in review lifecycle and merchant responsibilities from 6.45.0
 - [[changelog-github-adyen-web]] — package-qualified release ledger
 - [[adyen]] — company and knowledge-status page
 - [[co-badged-cards]] — cross-provider card-network choice concept
 - [[source-github-paypal-js]] — independent evidence for the delegated PayPal JS dependency
 
 ## Raw sources
+
+- [6.45.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json)
+- [6.45.0 supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/manifest.json)
+- [6.45.0 release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.0/2026-09-14/manifest.json)
+- [6.45.0 release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.0/2026-09-14/release-notes.md)
+- [6.44.0 to 6.45.0 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.44.0--6.45.0/comparison.json)
+
+- [6.44.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json)
+- [6.44.0 supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-f10995d-55e9e1ba/manifest.json)
+- [6.44.0 release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.44.0/2026-09-14/manifest.json)
+- [6.44.0 release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.44.0/2026-09-14/release-notes.md)
+- [6.43.0 to 6.44.0 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.43.0--6.44.0/comparison.json)
+
+- [6.43.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b989173/manifest.json)
+- [6.43.0 supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/manifest.json)
+- [6.43.0 release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.43.0/2026-09-14/manifest.json)
+- [6.43.0 release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.43.0/2026-09-14/release-notes.md)
+- [6.42.0 to 6.43.0 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.42.0--6.43.0/comparison.json)
 
 - Current snapshot manifest: `raw/github/adyen/adyen-web/snapshots/2026-08-09-1e157f8/manifest.json`
 - `6.42.0` release manifest: `raw/github/adyen/adyen-web/releases/adyen-web/6.42.0/2026-08-09/manifest.json`

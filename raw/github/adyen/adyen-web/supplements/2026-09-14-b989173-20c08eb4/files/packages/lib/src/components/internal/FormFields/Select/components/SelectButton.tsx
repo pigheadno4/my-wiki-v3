@@ -1,0 +1,147 @@
+import { h, Fragment, Ref } from 'preact';
+import cx from 'classnames';
+import { SelectButtonElementProps, SelectButtonProps } from '../types';
+import Img from '../../../Img';
+import { TagList } from '../../../Tag';
+import { useMemo } from 'preact/hooks';
+import classnames from 'classnames';
+
+function SelectButtonElement({ filterable, toggleButtonRef, showList, selectListId, readonly, ...props }: Readonly<SelectButtonElementProps>) {
+    if (filterable) {
+        // Even if passed, we can't add an id to this div since it is not allowed to associate a div with a label element
+        const { id, ...strippedProps } = props;
+        return <div {...strippedProps} ref={toggleButtonRef as Ref<HTMLDivElement>} />;
+    }
+
+    return (
+        <button
+            role="combobox"
+            type="button"
+            id={props.id}
+            className={props.className}
+            aria-haspopup="listbox"
+            aria-expanded={showList}
+            aria-controls={selectListId}
+            aria-activedescendant={props['aria-activedescendant'] || undefined}
+            disabled={props.disabled}
+            aria-disabled={readonly}
+            aria-describedby={props['aria-describedby']}
+            aria-labelledby={props.id ? `${props.id as string}-label ${props.id as string}-value` : undefined}
+            onClick={props.onClick}
+            onKeyDown={props.onKeyDown}
+            ref={toggleButtonRef as Ref<HTMLButtonElement>}
+        >
+            {props.children}
+        </button>
+    );
+}
+
+function SelectButton(props: Readonly<SelectButtonProps>) {
+    const { active, selected, inputText, readonly, showList, required } = props;
+
+    const isShowingPlaceholder = useMemo(() => {
+        const displayText = selected.selectedOptionName || selected.name;
+        const isValidValue = typeof displayText === 'string' && displayText.trim() !== '';
+        return isValidValue !== true;
+    }, [selected, props.placeholder]);
+
+    // display fallback order
+    const displayText = selected.selectedOptionName || selected.name || props.placeholder || '';
+    // displayInputText only used for the text input for the filter
+    // display the "typed" filter text when showing the dropdown,
+    // hide it and show the "selected" value when collapsed
+    // When list is open, show user's typed input (or empty); otherwise show selected value
+    const textWhenListOpen = inputText ?? '';
+    const displayInputText = showList ? textWhenListOpen : displayText;
+
+    const handleClick = (e: Event) => {
+        e.preventDefault();
+        props.filterInputRef.current?.focus();
+
+        // Clicking the input of an open list keeps it open
+        if (e.target === props.filterInputRef.current && props.showList) return;
+
+        props.toggleList(e);
+    };
+
+    // 1. If readonly we ignore the click action
+    // 2. If filterable we want to toggle the list and focus on the input
+    // 3. Otherwise we just toggle the list
+    const getOnClickHandler = (): ((e: Event) => void) | null => {
+        if (readonly) return null;
+
+        if (props.filterable) return handleClick;
+
+        return props.toggleList;
+    };
+
+    // check COWEB-1301 [Investigate] Drop-in Accessibility - ADA Compliance questions
+    const currentSelectedItemId = active.id ? `listItem-${active.id}` : '';
+
+    return (
+        <SelectButtonElement
+            className={cx({
+                'adyen-checkout__dropdown__button': true,
+                'adyen-checkout__dropdown__button--readonly': readonly,
+                'adyen-checkout__dropdown__button--active': showList,
+                'adyen-checkout__dropdown__button--invalid': props.isInvalid,
+                'adyen-checkout__dropdown__button--valid': props.isValid,
+                'adyen-checkout__dropdown__button--disabled': selected.disabled
+            })}
+            disabled={props.disabled}
+            filterable={props.filterable}
+            readonly={readonly}
+            onClick={getOnClickHandler()}
+            onKeyDown={!readonly ? props.onButtonKeyDown : null}
+            toggleButtonRef={props.toggleButtonRef}
+            id={props.id}
+            showList={showList}
+            selectListId={props.selectListId}
+            aria-activedescendant={!props.filterable && showList ? currentSelectedItemId || undefined : undefined}
+            aria-describedby={props.ariaDescribedBy}
+        >
+            {!props.filterable ? (
+                <Fragment>
+                    {selected.icon && <Img className="adyen-checkout__dropdown__button__icon" src={selected.icon} alt={selected.name} />}
+                    <span
+                        id={props.id ? `${props.id}-value` : undefined}
+                        className={classnames('adyen-checkout__dropdown__button__text', {
+                            'adyen-checkout__dropdown__button__text-placeholder': isShowingPlaceholder
+                        })}
+                    >
+                        {displayText}
+                    </span>
+                    <TagList tags={selected.tags} className="adyen-checkout__dropdown__button__tags" />
+                </Fragment>
+            ) : (
+                <Fragment>
+                    {!showList && selected.icon && <Img className="adyen-checkout__dropdown__button__icon" src={selected.icon} alt={selected.name} />}
+                    <input
+                        value={displayInputText}
+                        aria-autocomplete="list"
+                        aria-controls={props.selectListId}
+                        aria-expanded={showList}
+                        aria-owns={props.selectListId}
+                        autoComplete="off"
+                        className={classnames('adyen-checkout__filter-input', {
+                            'adyen-checkout__filter-input--placeholder': !showList && isShowingPlaceholder
+                        })}
+                        onInput={props.onInput}
+                        ref={props.filterInputRef}
+                        role="combobox"
+                        aria-activedescendant={currentSelectedItemId}
+                        type="text"
+                        readOnly={props.readonly}
+                        aria-disabled={props.readonly}
+                        id={props.id}
+                        aria-describedby={props.ariaDescribedBy}
+                        required={required}
+                    />
+                    {!showList && <TagList tags={selected.tags} className="adyen-checkout__dropdown__button__tags" />}
+                </Fragment>
+            )}
+        </SelectButtonElement>
+    );
+}
+
+export default SelectButton;

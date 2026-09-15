@@ -2,8 +2,15 @@
 title: "GitHub changelog: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
+date_updated: 2026-09-15
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/manifest.json"
+  - "github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-14-f10995d-55e9e1ba/manifest.json"
+  - "github/adyen/adyen-web/snapshots/2026-09-14-b989173/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-08-09-1e157f8/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-08-09-c98ea8a/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-07-26-b19eec7/manifest.json"
@@ -13,6 +20,86 @@ tags: [adyen, checkout, web-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `Adyen/adyen-web`. Cumulative implementation knowledge belongs in [[source-github-adyen-web]] and the linked immutable snapshots.
+
+## `@adyen/adyen-web@6.45.0` (2026-09-10)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@adyen/adyen-web` | `6.44.0` | `6.45.0` | `b29934f6cf5de6e1912039f669b48ae45b75d3fd` | Full, additive |
+
+**Important findings:** opt-in review-page checkout introduces `onReview`, `onAction`, and Sessions-only `processPayment`. Supported submit paths validate and return review data before payment; final confirmation and action presentation become merchant responsibilities. Payment-method exceptions, gift-card partial payments, and branch-specific PayByBankPix behavior prevent treating this as a universal review flow. Donation amount gains a checkout fallback; Google Pay gains nonce forwarding; address validation permits ordinary punctuation while rejecting invalid characters; Drop-in avoids repeated payment-method rendering. Select receives spacing/color adjustments.
+
+**Dependencies:** PayPal JS 10.0.3 to 10.1.0, Preact 10.29.7 to 10.29.8, Google Pay types 0.7.11 to 0.7.12. These are independently versioned dependencies, not proof of delegated runtime behavior.
+
+**Migration:** `processPayment` returns void and does not repeat Component validation or `beforeSubmit`. Preserve transformations, prevent repeated/stale confirmation, mount/dispose actions, and implement errors plus remaining-order handling. Advanced integrations retain their backend payment path. `onAction` also changes ordinary mounted UIElement response handling. The stories demonstrate intent but print the full payment payload and omit production recovery/cleanup; do not copy those omissions. Recheck address validation, Google Pay CSP setup and custom Select styling.
+
+> [!warning] Contradiction
+> Retained ADRs lag code: response types already include `askDonation`; `processPayment` calls `onOrderUpdated` without the described `core.update`; PayByBankPix exclusion depends on its branch. The cumulative source and [[adyen-review-page-checkout]] record the implementation-qualified interpretation.
+
+**Mode and updated pages:** user-approved full ingest reflects the new cross-component lifecycle. The generated security signal is CSP, not a confirmed vulnerability. Added the 6.45.0 source section, five exact-code grounding excerpts, review-page concept, company/index/log updates; preserved all older sections and kept source count unchanged.
+
+**Evidence boundary:** serial reading of the assigned packet, comparison and 26-file exact-SHA supplement, including two ADRs and three stories. Standard capsule: 221 files, 13 modified and 208 unchanged. No upstream test, browser, payment, screen-reader or delegated runtime validation. Full does not mean every upstream file was retained.
+
+**Evidence:**
+
+- [Snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json)
+- [Supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/manifest.json)
+- [Release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.0/2026-09-14/manifest.json)
+- [Release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.0/2026-09-14/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.44.0--6.45.0/comparison.json)
+- [[source-github-adyen-web]] - implementation details and grounding
+
+## `@adyen/adyen-web@6.44.0` (2026-08-19)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@adyen/adyen-web` | `6.43.0` | `6.44.0` | `f10995d33491d8107c01a27dec2bc1fc4d6e28b0` | Delta |
+
+**Important findings:** shared keyboard dispatch moves to keydown while retaining `onEnterKeyPressed`; nested controls isolate action keys and dual-brand selection retains native button activation. CVC error keys gain Amex-specific resolution; release notes report expiry/CVC format guidance in error states. Form defaults tolerate null inputs, and CardInput normalizes partial-address country to uppercase. Loading, final QR status, card error clearing, and repeated screen-reader messages gain targeted lifecycle fixes.
+
+**Dependencies:** Preact 10.29.2 to 10.29.7; Secured Fields constant 6.2.1 to 6.3.0. PayPal JS remains 10.0.3. The changed 3DS2 files are formatting-only, not a new passkey feature.
+
+**Merchant/developer impact and migration:** recheck Enter-key callbacks, nested controls, Amex custom translations, null form initialization, lowercase country values, and assistive announcements. Required validation remains in place. No incompatible top-level export or broad checkout architecture change was established.
+
+**Updated source sections:** overview/evidence boundary, additive 6.44.0 behavior and grounding excerpts, raw links; co-badged-cards keyboard evidence; company/index/logs. Earlier releases remain intact; source count is unchanged. No new concept, cross-company comparison, or contradiction entry was warranted.
+
+**Mode decision:** the generated full/high recommendation remains unchanged. Its security keyword matched "security code" (CVC), not evidence of a vulnerability. The user approved delta after review of the assigned current source and 40-file supplement bounded the changes.
+
+**Evidence boundary:** the 221-file standard capsule has 24 modified, one added, and 196 unchanged files; the supplement retains 40 files. Translation JSONs and the external Secured Fields runtime were not audited. Standalone tests were excluded; diff test excerpts are not executed proof. No browser, screen-reader, or payment runtime verification was performed.
+
+**Evidence:**
+
+- [Snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json)
+- [Supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-f10995d-55e9e1ba/manifest.json)
+- [Release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.44.0/2026-09-14/manifest.json)
+- [Release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.44.0/2026-09-14/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.43.0--6.44.0/comparison.json)
+- [Source details and implementation links](source-github-adyen-web.md)
+
+## `@adyen/adyen-web@6.43.0` (2026-08-12)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@adyen/adyen-web` | `6.42.0` | `6.43.0` | `b98917359c0b5b701ef99b583aef44f447e73bf6` | Delta |
+
+**Important findings:** internal Select options gain tags with info/success variants. Supporting text moves below the option name and disappears from the collapsed control. Filterable wrapper clicks toggle the list while clicks on the open filter input keep it open. Long-name layout can shrink beside tags; the existing result-announcement region uses a dedicated visually-hidden class. The PayPal JS dependency changes from 10.0.2 to 10.0.3.
+
+**Merchant/developer impact:** selected supporting text is no longer persistently visible, so recheck affected UX and custom CSS. Tags are literal presentation labels, not translated keys or payment eligibility/pricing logic. Internal Select/Tag types are not a new top-level merchant API.
+
+**Migration action:** no breaking public export change is established. Recheck collapsed dropdown labels, long names, keyboard/read-only behavior, and custom styling. Consult the independent PayPal JS source for delegated dependency behavior.
+
+**Updated source sections:** overview and evidence boundary, 6.43.0 grounding and minor-release behavior, immutable links; Adyen company/index/log. Previous versions remain intact. Concept audit found no new product or relevant concept change; no cross-company comparison or contradiction entry was warranted.
+
+**Evidence boundary:** standard capsule has two modified package manifests and 218 unchanged files. The approved supplement adds 14 exact-SHA Select/Tag source/style files including three stories. Tests were not collected as standalone supplement files or executed; generated diff excerpts may contain upstream test changes. No browser, screen-reader, payment runtime, or delegated PayPal runtime test was performed.
+
+**Evidence:**
+
+- [Snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b989173/manifest.json)
+- [Supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b989173-20c08eb4/manifest.json)
+- [Release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.43.0/2026-09-14/manifest.json)
+- [Release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.43.0/2026-09-14/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.42.0--6.43.0/comparison.json)
+- [Source details and exact implementation links](source-github-adyen-web.md)
 
 ## `@adyen/adyen-web@6.42.0` (2026-08-04)
 

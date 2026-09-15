@@ -1375,6 +1375,32 @@
   Release: [manifest](../../raw/github/braintree/braintree-ios-drop-in/releases/braintreedropin/9.14.0/2026-08-13/manifest.json)
   Comparison: Not applicable
 
+## `github-92b6b54198b4cd5b55a6`
+
+- Repository: `adyen/adyen-web`
+- SHA: `f10995d33491d8107c01a27dec2bc1fc4d6e28b0`
+- Collection date: `2026-09-14`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-92b6b54198b4cd5b55a6/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-92b6b54198b4cd5b55a6/attachment.json)
+- Review priority: `high`
+- Required reading: `76` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.44.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.44.0/2026-09-14/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.43.0--6.44.0/comparison.json)
+
 ## `github-92e87b7fea5fb1703585`
 
 - Repository: `paypal/paypal-js`
@@ -1482,6 +1508,32 @@
 - `@paypal/react-paypal-js@10.3.0` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.1--10.3.0/comparison.json)
+
+## `github-9ddbf78a69c5ce3ccc94`
+
+- Repository: `adyen/adyen-web`
+- SHA: `b98917359c0b5b701ef99b583aef44f447e73bf6`
+- Collection date: `2026-09-14`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b989173/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-9ddbf78a69c5ce3ccc94/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-9ddbf78a69c5ce3ccc94/attachment.json)
+- Review priority: `normal`
+- Required reading: `27` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.43.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.43.0/2026-09-14/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.42.0--6.43.0/comparison.json)
 
 ## `github-9f56dfbe62e4e84b03c7`
 
@@ -1689,6 +1741,32 @@
 - `@paypal/react-paypal-js@8.9.2` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/manifest.json)
   Comparison: Not applicable
+
+## `github-b1ef47fd1c229bf1ffb7`
+
+- Repository: `adyen/adyen-web`
+- SHA: `b29934f6cf5de6e1912039f669b48ae45b75d3fd`
+- Collection date: `2026-09-14`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-b1ef47fd1c229bf1ffb7/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-b1ef47fd1c229bf1ffb7/attachment.json)
+- Review priority: `high`
+- Required reading: `50` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.45.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.0/2026-09-14/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.44.0--6.45.0/comparison.json)
 
 ## `github-b241eb5a8bcbadf2be62`
 

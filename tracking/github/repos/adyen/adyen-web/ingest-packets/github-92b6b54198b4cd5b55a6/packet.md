@@ -1,0 +1,201 @@
+# GitHub ingest packet
+
+- Repository: `adyen/adyen-web`
+- Work item: `github-92b6b54198b4cd5b55a6`
+- Snapshot: `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+## `@adyen/adyen-web`
+
+- Version: `6.43.0` -> `6.44.0`
+- Recommendation: `full` / `high`
+- Unchanged retained files: `196`
+
+### Required reading
+
+- `raw/github/adyen/adyen-web/releases/adyen-web/6.44.0/2026-09-14/manifest.json`
+- `raw/github/adyen/adyen-web/releases/adyen-web/6.44.0/2026-09-14/release-notes.md`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-b989173/manifest.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/package.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/package.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/Card.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/CardInput.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/components/CVC.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/components/CardFields.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/components/StoredCardFields.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/components/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Card/components/CardInput/utils.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Dropin/Dropin.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/components/ThreeDS2/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/core/Errors/SRMessages.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/core/Errors/SRPanel.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/core/Errors/SRPanelProvider.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/core/Errors/constants.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/core/Errors/useA11yReporter.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/core/Errors/useLoadingA11yReporter.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/files/packages/lib/src/core/Errors/utils.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.43.0--6.44.0/comparison.json`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.43.0--6.44.0/comparison.md`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.43.0--6.44.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `.github/workflows/.size-limit.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/automated-a11y.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/automated-visual.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/e2e-tests.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/gh-release.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/npm-publish.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/release-notifications.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/release-snapshot.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/release.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/sonarcloud.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/strict-typescript.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/unit-tests.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/update-screenshots.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/validate-locales.yml`: `intentional-policy-exclusion`
+- `modified` `.gitignore`: `intentional-policy-exclusion`
+- `modified` `docs/release-process.md`: `intentional-policy-exclusion`
+- `modified` `package.json`: `retained-evidence`
+- `added` `packages/e2e-playwright/tests/a11y/card/__screenshots__/linux/chromium/card-dual-branding-enter-key-selected.png`: `intentional-policy-exclusion`
+- `added` `packages/e2e-playwright/tests/a11y/card/__screenshots__/linux/chromium/card-dual-branding-space-key-selected.png`: `intentional-policy-exclusion`
+- `added` `packages/e2e-playwright/tests/a11y/card/__screenshots__/linux/firefox/card-dual-branding-enter-key-selected.png`: `intentional-policy-exclusion`
+- `added` `packages/e2e-playwright/tests/a11y/card/__screenshots__/linux/firefox/card-dual-branding-space-key-selected.png`: `intentional-policy-exclusion`
+- `added` `packages/e2e-playwright/tests/a11y/card/__screenshots__/linux/webkit/card-dual-branding-enter-key-selected.png`: `intentional-policy-exclusion`
+- `added` `packages/e2e-playwright/tests/a11y/card/__screenshots__/linux/webkit/card-dual-branding-space-key-selected.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/a11y/card/card.contextualTexts.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/a11y/card/dualBranding.a11y.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/a11y/card/errorPanel.avs.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/a11y/card/errorPanel.card.visible.spec.ts`: `intentional-policy-exclusion`
+- `added` `packages/e2e-playwright/tests/a11y/issuerList/__screenshots__/linux/chromium/online-banking-pl-keyboard-navigation-selected.png`: `intentional-policy-exclusion`
+- `added` `packages/e2e-playwright/tests/a11y/issuerList/__screenshots__/linux/firefox/online-banking-pl-keyboard-navigation-selected.png`: `intentional-policy-exclusion`
+- `added` `packages/e2e-playwright/tests/a11y/issuerList/__screenshots__/linux/webkit/online-banking-pl-keyboard-navigation-selected.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/a11y/issuerList/onlineBankingPL.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/e2e/card/bcmc/dualBranding.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/e2e/dropin/storedCard/stored-card-amex.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/e2e/dropin/storedCard/stored-card-mc.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/e2e/dropin/storedCard/stored-card-visa.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/CHANGELOG.md`: `intentional-policy-exclusion`
+- `modified` `packages/lib/package.json`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/Card.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/CardInput/CardInput.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Card/components/CardInput/CardInput.tsx`: `retained-evidence`
+- `added` `packages/lib/src/components/Card/components/CardInput/components/CVC.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Card/components/CardInput/components/CVC.tsx`: `retained-evidence`
+- `added` `packages/lib/src/components/Card/components/CardInput/components/CardFields.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Card/components/CardInput/components/CardFields.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/CardInput/components/DualBrandSelector.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/CardInput/components/StoredCardFields.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/CardInput/components/types.ts`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/CardInput/types.ts`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/CardInput/useSRPanelForCardInputErrors.ts`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/CardInput/utils.test.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Card/components/CardInput/utils.ts`: `retained-evidence`
+- `modified` `packages/lib/src/components/ClickToPay/ClickToPay.test.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/CustomCard/CustomCard.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Dropin/Dropin.test.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Dropin/Dropin.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Giftcard/Giftcard.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/ThreeDS2/types.ts`: `retained-evidence`
+- `modified` `packages/lib/src/components/internal/Address/Address.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Address/Address.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Address/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Address/validate.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/BaseElement/BaseElement.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Button/Button.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Button/CopyButton.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Button/CopyIconButton.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Button/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/FormFields/InputBase.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/FormFields/Select/Select.tsx`: `intentional-policy-exclusion`
+- `added` `packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/LoadingWrapper/LoadingWrapper.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Modal/Modal.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/OpenInvoice/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/PersonalDetails/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/QRLoader/QRLoader.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/QRLoader/components/QRFinalState.tsx`: `intentional-policy-exclusion`
+- `added` `packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/SFP/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/constants.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/UIElement/UIElement.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/core/Errors/SRMessages.tsx`: `retained-evidence`
+- `added` `packages/lib/src/core/Errors/SRPanel.ownership.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/core/Errors/SRPanel.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/core/Errors/SRPanelProvider.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/core/Errors/constants.ts`: `retained-evidence`
+- `modified` `packages/lib/src/core/Errors/useA11yReporter.ts`: `retained-evidence`
+- `added` `packages/lib/src/core/Errors/useLoadingA11yReporter.test.tsx`: `intentional-policy-exclusion`
+- `added` `packages/lib/src/core/Errors/useLoadingA11yReporter.ts`: `retained-evidence`
+- `modified` `packages/lib/src/core/Errors/utils.ts`: `retained-evidence`
+- `modified` `packages/lib/src/utils/useForm/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/utils/useForm/useForm.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/utils/useForm/useForm.ts`: `intentional-policy-exclusion`
+- `modified` `packages/playground/package.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/ar.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/bg-BG.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/ca-ES.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/cs-CZ.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/da-DK.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/de-DE.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/el-GR.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/en-US.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/es-ES.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/et-EE.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/fi-FI.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/fr-FR.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/hr-HR.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/hu-HU.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/is-IS.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/it-IT.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/ja-JP.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/ko-KR.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/lt-LT.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/lv-LV.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/nl-NL.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/no-NO.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/pl-PL.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/pt-BR.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/pt-PT.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/ro-RO.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/ru-RU.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/sk-SK.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/sl-SI.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/sv-SE.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/zh-CN.json`: `intentional-policy-exclusion`
+- `modified` `packages/server/translations/zh-TW.json`: `intentional-policy-exclusion`
+- `modified` `yarn.lock`: `intentional-policy-exclusion`
