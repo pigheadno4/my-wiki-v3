@@ -225,6 +225,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-php-api-library/releases/adyen-php-api-library/30.0.2/2026-08-19/manifest.json)
   Comparison: Not applicable
 
+## `github-21eb12ac207dc1342925`
+
+- Repository: `stripe/react-stripe-js`
+- SHA: `d1750b056f363f9a44fd70ecbe8d0a1bba3e3f4d`
+- Collection date: `2026-09-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/react-stripe-js/snapshots/2026-09-15-d1750b0/manifest.json)
+- Packet: [review packet](repos/stripe/react-stripe-js/ingest-packets/github-21eb12ac207dc1342925/packet.md)
+- Review priority: `normal`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/react-stripe-js@6.10.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.10.0/2026-09-15/manifest.json)
+  Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.9.0--6.10.0/comparison.json)
+
 ## `github-236dd1f1ac8a3f30f537`
 
 - Repository: `braintree/braintree-web`
@@ -2210,6 +2235,31 @@
   From SHA: `baseline`
   To SHA: `3a89f427466a0a978dbfcfd953913f4e76c3264a`
   Comparison: Not applicable
+
+## `github-d595e0d1b2664c8307ad`
+
+- Repository: `stripe/react-stripe-js`
+- SHA: `d270c7e5f01e1b8c3614aefc39eb5c57e7131c19`
+- Collection date: `2026-09-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/react-stripe-js/snapshots/2026-09-15-d270c7e/manifest.json)
+- Packet: [review packet](repos/stripe/react-stripe-js/ingest-packets/github-d595e0d1b2664c8307ad/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/react-stripe-js@6.9.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.9.0/2026-09-15/manifest.json)
+  Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.2--6.9.0/comparison.json)
 
 ## `github-d784ed22413ba025c631`
 

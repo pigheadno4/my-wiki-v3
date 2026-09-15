@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/react-stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-01
+date_updated: 2026-09-15
 original_format: github-repo
 raw_files:
+  - "github/stripe/react-stripe-js/snapshots/2026-09-15-d1750b0/manifest.json"
+  - "github/stripe/react-stripe-js/snapshots/2026-09-15-d270c7e/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/manifest.json"
@@ -15,6 +17,47 @@ tags: [stripe, react, stripe-js, elements, checkout, changelog, github-repositor
 ## Overview
 
 Chronological release synthesis for `stripe/react-stripe-js`. Cumulative implementation knowledge belongs in [[source-github-react-stripe-js]] and the linked immutable evidence.
+
+## `@stripe/react-stripe-js@6.10.0` - Change Set `d1750b0` (2026-09-10)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@stripe/react-stripe-js` | `6.9.0` | `6.10.0` | `d1750b056f363f9a44fd70ecbe8d0a1bba3e3f4d` | Delta |
+
+**Change and impact:** adds beta `LinkSignupElement` exports and props for standard Elements and Checkout Elements. Checkout Form is unsupported; creation checks for the SDK factory and throws when absent. `onReady` receives the Element instance, and the root lookup overload returns the instance or null. No public typed `onChange` is added. The existing lifecycle does not recreate an Element when options change and skips updates when no `update` member exists.
+
+**Migration:** Stripe JS peer floor rises from 9.10.0 to 9.16.0, still below 10; development dependency and lockfile also advance to 9.16.0. Use the matching provider/entrypoint, verify beta access independently, and rerun application type/build checks. React and React DOM ranges are unchanged.
+
+**Updated sections:** cumulative source status, compatibility, exports and additive version history; existing Elements, Checkout and Link concepts first, then company, provider index and logs. Earlier versions and source count preserved. This separately supplies React binding evidence, without changing the ownership of Stripe.js declaration history.
+
+**Evidence boundary:** six modified retained files, 54 unchanged. Tests, mocks and lockfile are comparison-only exclusions; the added tests were read as patch evidence, not executed. No hosted signup, consent, eligibility or payment behavior was verified. The packet's empty `public_api_changes` list is not proof of no API additions: full source review identifies the new additive exports and types. This remains a contained approved delta.
+
+- [Snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-15-d1750b0/manifest.json)
+- [Release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.10.0/2026-09-15/manifest.json)
+- [Release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.10.0/2026-09-15/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.9.0--6.10.0/comparison.json)
+- [Exact patch](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.9.0--6.10.0/diff.patch)
+- [[source-github-react-stripe-js]] - full findings, source links and grounding excerpts
+
+## `@stripe/react-stripe-js@6.9.0` - Change Set `d270c7e` (2026-09-03)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@stripe/react-stripe-js` | `6.8.2` | `6.9.0` | `d270c7e5f01e1b8c3614aefc39eb5c57e7131c19` | Delta |
+
+**Change and impact:** Stripe JS peer floor rises from 9.5.0 to 9.10.0, still below 10. React/React DOM ranges and public implementation remain unchanged. The development Stripe JS range was already `^9.10.0`. CI gains read-only contents permissions and an exact-minimum-peer typecheck/build job; lockfile updates include fast-uri 3.1.7 and Browserslist 4.28.8.
+
+**Migration:** upgrade resolved Stripe JS versions below 9.10.0 and rerun application checks. No new Link Signup component or merchant payment behavior belongs to this release. No vulnerability fix is inferred from dependency versions alone.
+
+**Updated sections:** source overview/status, compatibility and additive history; existing Elements concept, company, provider index and logs. Older versions and source count preserved; no new concept, comparison or contradiction needed.
+
+**Evidence boundary:** 60 retained files, one modified and 59 unchanged. CI and lockfile changes are comparison-only exclusions. No upstream CI, tests, build or payment runtime was executed.
+
+- [Snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-15-d270c7e/manifest.json)
+- [Release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.9.0/2026-09-15/manifest.json)
+- [Release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.9.0/2026-09-15/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.2--6.9.0/comparison.json)
+- [[source-github-react-stripe-js]] - detailed findings and exact-code grounding
 
 ## `@stripe/react-stripe-js@6.8.2` - Change Set `c48d651` (2026-08-20)
 

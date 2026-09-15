@@ -6,6 +6,19 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-15] ingest | React Stripe.js 6.10.0
+
+- Delta-ingested approved `github-21eb12ac207dc1342925`, 6.9.0 to exact SHA `d1750b056f363f9a44fd70ecbe8d0a1bba3e3f4d`, after full serial reading of assigned raw files, manifests, comparison and cumulative wiki context.
+- Recorded beta Link Signup root/Checkout wrappers, Checkout Form exclusion, callback/lookup contract and Stripe JS peer floor 9.16.0. Six retained files changed; 54 unchanged. Tests/mocks/lockfile remain comparison-only evidence; no upstream test/build/browser/payment execution.
+- Updated existing Elements, Checkout and Link concepts before source/changelog, then company, index and logs. Preserved older versions and source count. No new contradiction or cross-company comparison. Both collected September React releases are now ingested.
+- System Python encountered an Xcode-license prerequisite; used bundled Python for offline workflow and validation without modifying system settings.
+
+## [2026-09-15] ingest | React Stripe.js 6.9.0
+
+- Delta-ingested `github-d595e0d1b2664c8307ad`, 6.8.2 to exact SHA `d270c7e5f01e1b8c3614aefc39eb5c57e7131c19`, after serial assigned-evidence reading.
+- Recorded Stripe JS peer floor 9.10.0, unchanged React peers/runtime, comparison-only CI and lockfile changes. Capsule: one modified file and 59 unchanged. No upstream test/build/payment execution.
+- Updated existing Elements concept first, source/changelog, company, index and logs; preserved older versions and source count. No new contradiction or comparison. 6.10.0 remains collected, not ingested.
+
 ## [2026-09-15] ingest | stripe/stripe-js `@stripe/stripe-js@9.16.0`
 
 - Delta-ingested approved work item `github-3d250b234dd9acbad2a0`, 9.15.0 to exact SHA `e03ec565455178cd2b236f6b495ddc952397c3f0`, after serial reading of assigned current declarations, prior source/changelog and comparison evidence.

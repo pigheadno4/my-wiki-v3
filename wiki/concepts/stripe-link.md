@@ -151,7 +151,13 @@ The retained `@stripe/stripe-js@9.16.0` adds a distinct `linkSignup` Element, no
 
 Its typed events are `ready`, `focus`, `blur`, `escape`, `loaderstart`, and `loaderror`, with `on`/`once`/`off`. It inherits the base Element lifecycle but does not declare `change`, `update`, or `getValue`. Do not transfer Link Authentication's email-change or autofill semantics to it. The declarations do not establish enrollment, consent, saved-data behavior, merchant eligibility, or a React wrapper. See [[source-github-stripe-js]] and [[changelog-github-stripe-js]].
 
+### Separately retained React binding: 6.10.0
+
+`@stripe/react-stripe-js@6.10.0` adds beta `LinkSignupElement` to both entrypoints. Standard Elements uses `elements.create('linkSignup', options)`; Checkout Elements calls `createLinkSignupElement(options)`. Checkout Form is explicitly unsupported. The root props use `StripeLinkSignupElementOptions`; the Checkout props substitute `StripeCheckoutLinkSignupElementOptions`. Both expose readiness, focus/blur, escape and loading callbacks, not a typed `onChange`. The existing lifecycle forwards option changes only when the underlying Element exposes `update`, so changing props does not guarantee updated defaults. This separate repository supplies the React evidence missing from the Stripe.js-only declaration record above; it does not verify enrollment or consent behavior. See [[source-github-react-stripe-js]] and [[changelog-github-react-stripe-js]].
+
 ## Sources
+
+- [[source-github-react-stripe-js]] - beta Link Signup React wrapper and provider restrictions at 6.10.0
 
 - [[source-github-stripe-js]] - version-qualified Link Signup beta contract at 9.16.0
 

@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-09-15] ingest | React Stripe.js 6.10.0
+
+- Delta-ingested beta Link Signup wrappers and the Stripe JS 9.16.0 peer floor, preserving previous versions. Provider restrictions and unverified hosted behavior are explicit. Details: [[stripe-log]] and [[changelog-github-react-stripe-js]].
+
+## [2026-09-15] ingest | React Stripe.js 6.9.0
+
+- Delta-ingested the Stripe JS peer-floor and tooling update, preserving earlier compatibility history. No retained React runtime change. Details: [[stripe-log]] and [[changelog-github-react-stripe-js]]. 6.10.0 remains queued.
+
 ## [2026-09-15] ingest | Stripe JS 9.16.0
 
 - Delta-ingested 9.15.0 to 9.16.0, preserving earlier versions. Added beta Link Signup and Checkout tiered/package pricing declaration evidence with migration and runtime boundaries.

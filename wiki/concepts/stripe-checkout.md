@@ -82,6 +82,10 @@ The `@stripe/react-stripe-js@6.8.1` documentation makes Checkout Sessions with `
 
 Version `6.8.2` strengthens that example without changing the runtime surface. The server must verify `session.client_secret`; the client should handle loading and initialization errors, require `checkout.canConfirm`, disable duplicate submission, process both returned and thrown confirmation errors, and validate the Session-creation HTTP response. Removing the complete Payment Intents snippet from the README does not deprecate that lower-level integration path.
 
+### React Stripe.js 6.10.0 Link Signup delta
+
+The separately retained `@stripe/react-stripe-js@6.10.0` adds the beta `/checkout` `LinkSignupElement` wrapper with `StripeCheckoutLinkSignupElementOptions`. It requires `CheckoutElementsProvider`; the creation branch checks for `createLinkSignupElement` and throws an explicit error when absent, documenting Checkout Form as unsupported. This supplies React binding evidence beyond the Stripe.js 9.16.0 declaration record above. Its peer range is `@stripe/stripe-js >=9.16.0 <10.0.0`; beta access and hosted runtime behavior remain unverified. See [[source-github-react-stripe-js]] and [[stripe-link]].
+
 ## Checkout Sessions vs Payment Intents (for Elements)
 
 Both integrate with Elements + Appearance API. **Use Checkout Sessions for most integrations** — it handles the same payment flows as Payment Intents with significantly less code.
