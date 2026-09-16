@@ -14,7 +14,8 @@ Adyen splits its machine-readable docs across two `llms.txt` files — you need 
 | Field | Value |
 | --- | --- |
 | Doc host | `docs.adyen.com` |
-| Raw filename | `raw/adyen-<slug>-YYYY-MM-DD.md` |
+| General docs raw | `raw/adyen/docs/<official-path>/YYYY-MM-DD.md` (home: `docs/index/`) |
+| API Explorer raw | `raw/adyen/api-explorer/<official-path-after-api-explorer>/YYYY-MM-DD.md` |
 
 ## Known `url_fixups` (REQUIRED for API Explorer)
 
@@ -33,9 +34,11 @@ Encode this as a `[pattern, replacement]` pair in the `api-explorer` discovery e
 ## Collection notes
 
 - Adyen explicitly documents the `.md` convention ("Every page is also available as Markdown by appending `.md` to the URL").
-- General docs: prefer `--from llms-full.txt` for a complete corpus grab. Because `llms-full.txt` is one concatenated document, the fetcher must **split it back into per-page raw files** (one `raw/adyen-<slug>-YYYY-MM-DD.md` per page) so each ingests independently and orphan detection works per page.
+- Current supported command: `python scripts/fetch_psp.py adyen` collects both discovery catalogs page by page. `--source docs` or `--source api-explorer` scopes the catalog; `--limit N` is for smoke testing.
+- `llms-full.txt` is available, but full-corpus splitting and `--from` are not implemented. Use the page-by-page path above.
 - API reference: collect from `api-explorer/llms.txt` (with the fixup). No full corpus here — fetch each `.md` page.
-- Sections include: Online payments, Point of sale, Adyen for Platforms, Issuing, Risk management. Use `--section` to scope a run.
+- Sections include Online payments, Point of sale, Adyen for Platforms, Issuing, and Risk management. `--section` is not currently implemented.
+- Preserve official URL path case, including API names. Each page owns its dated snapshots; unchanged content adds no snapshot and accepted files are never overwritten. The September 14–15 flat files were relocated byte-for-byte into this layout. Manifests and future source `raw_files` use paths relative to `raw/`; wikilinks must include the path, not the ambiguous date alone. GitHub evidence remains under `raw/github/adyen/`.
 
 ## Known GitHub integration repos (manual path — see `github-repos.md`)
 

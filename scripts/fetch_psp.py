@@ -97,6 +97,19 @@ def strip_header(content: str) -> str:
     return "\n".join(lines).strip()
 
 
+def adyen_page_dir(url: str) -> Path:
+    """Keep official path spelling; separate guide and API namespaces."""
+    parsed = urlsplit(url)
+    if parsed.hostname != "docs.adyen.com" or parsed.query or parsed.fragment:
+        raise ValueError("Not a canonical Adyen documentation URL: " + url)
+    path = parsed.path.removesuffix(".md").strip("/")
+    if any(part in (".", "..") for part in path.split("/")):
+        raise ValueError("Unsafe documentation path: " + url)
+    if path.startswith("api-explorer/"):
+        return Path("adyen") / path
+    return Path("adyen/docs") / (path or "index")
+
+
 def latest_flat_prior(prefix: str, slug: str) -> Optional[Path]:
     base = f"{prefix}-{slug}"
     dated = sorted(RAW.glob(f"{base}-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md"))
@@ -150,8 +163,14 @@ def collect_source(psp: str, cfg: dict, source: dict, limit: int | None, dry_run
             continue
 
         staged = make_raw(url, body)
-        prior = latest_flat_prior(prefix, slug)
-        target = RAW / f"{prefix}-{slug}-{TODAY}.md"
+        if psp == "adyen":
+            folder = RAW / adyen_page_dir(url)
+            versions = sorted(folder.glob("[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md"))
+            prior = versions[-1] if versions else latest_flat_prior(prefix, slug)
+            target = folder / f"{TODAY}.md"
+        else:
+            prior = latest_flat_prior(prefix, slug)
+            target = RAW / f"{prefix}-{slug}-{TODAY}.md"
 
         if prior is not None and strip_header(prior.read_text(encoding="utf-8")) == strip_header(staged):
             results["unchanged"] += 1
@@ -161,16 +180,18 @@ def collect_source(psp: str, cfg: dict, source: dict, limit: int | None, dry_run
             results["unchanged"] += 1
             continue
 
+        target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(staged, encoding="utf-8")
+        target_name = target.relative_to(RAW).as_posix()
         if prior is None:
-            results["new"].append(target.name)
+            results["new"].append(target_name)
         else:
             diff = "\n".join(difflib.unified_diff(
                 strip_header(prior.read_text(encoding="utf-8")).splitlines(),
                 strip_header(staged).splitlines(),
-                fromfile=prior.name, tofile=target.name, lineterm="",
+                fromfile=prior.relative_to(RAW).as_posix(), tofile=target_name, lineterm="",
             ))
-            results["changed"].append((target.name, prior.name, diff))
+            results["changed"].append((target_name, prior.relative_to(RAW).as_posix(), diff))
         time.sleep(0.3)  # be polite
 
 
