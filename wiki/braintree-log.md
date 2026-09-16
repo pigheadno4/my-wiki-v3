@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-16] ingest | braintree-web 3.145.0
+
+- Delta-ingested work item `github-16166784785e0ab99eae` at `732ed094354d650605e678d98246ce6332952ad3`, preserving 3.143.0 and 3.144.0 knowledge.
+- Fully read all 29 changed retained files and their patches; verified hashes and reconciled all 47 upstream changes. Under the explicit one-item exception, mechanically checked 18 excluded-file dispositions without claiming full semantic review of excluded diffs; 303 retained files were unchanged.
+- Updated three existing concepts, cumulative source/changelog, company and index for v6 checkout-with-vault, ECD-gated Venmo desktop address requests/QR rescan, and loading/popup recovery. Gateway output and delegated runtime behavior are not guaranteed by these changes.
+- No payment-flow execution claimed. Details: [[source-github-braintree-web]] and [[changelog-github-braintree-web]].
+
 ## [2026-08-31] ingest | braintree/uuid `@braintree/uuid@2.0.0`
 
 - Approved and processed work item `github-eb6d76e762d6316a4a73` in full mode at exact SHA `d134a2ca93d12705a76ff036baeba568016f9b13`.

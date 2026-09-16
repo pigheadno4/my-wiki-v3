@@ -78,6 +78,10 @@ The sample README names `/paypal-api/checkout/orders/create`, but its code calls
 | Cross-merchant | Yes | Yes (PayPal account) | No (merchant-specific) |
 | Password required | No | Yes | No (but requires initial consent) |
 
+## Braintree Adapter Error Boundary
+
+The independent `braintree-web@3.145.0` adapter still depends on `@paypal/fastlane-sdk-loader@1.2.1`. Its load/initialization catch now preserves existing Braintree errors; other errors become `FASTLANE_SDK_LOAD_ERROR` with the original error under `details.originalError`. This improves adapter diagnostics, not Fastlane eligibility or the delegated identity/payment flow. Braintree processing must not be inferred to use the direct PayPal Orders API pattern above. Source: [[source-github-braintree-web]].
+
 ## Relevant Companies
 
 - [[paypal]] — PayPal company overview
@@ -86,3 +90,4 @@ The sample README names `/paypal-api/checkout/orders/create`, but its code calls
 
 - [[source-paypal-fastlane-getting-started]] — How Fastlane works: guest/member flows, swimlane diagram, Node.js setup
 - [[source-github-v6-web-sdk-sample-integration]] — current browser-token, identity, address, and single-use-token sample
+- [[source-github-braintree-web]] - independently versioned Braintree loader and error boundary

@@ -82,6 +82,12 @@ At `braintree-web@3.144.0`, the non-v6 `paypalCheckout` component adds a separat
 
 The same release expands the PayPal Checkout v6 session payload with locale, landing-page, user-action, risk-correlation, and shipping-address controls. Checkout-with-vault can also carry plan type and plan metadata. Availability remains subject to Braintree account configuration and the delegated PayPal runtime.
 
+## Braintree Web 3.145.0 Checkout-with-Vault Fix
+
+In `braintree-web@3.145.0`, v6 `tokenizePayment()` recognizes `billingToken` plus an order/payment identifier as checkout-with-vault rather than pure billing-agreement vaulting. Checkout requires the payer identifier too. Both uppercase-ID and camelCase aliases are accepted. The request includes `paypalAccount.billingAgreementToken` alongside checkout fields, and the result exposes `implicitlyVaultedPaymentMethodToken` only when supplied by the gateway.
+
+The earlier React-flow table records the independently evidenced wrapper versions, not the complete tokenization input for this newer Braintree SDK. Integrators must verify that their wrapper forwards the billing token; upgrading Braintree alone cannot prove that another package does so. The nonce-to-Braintree-server boundary remains unchanged. Source: [[source-github-braintree-web]].
+
 ## WebView Popup Transport
 
 The independently versioned `PopupBridge@3.1.0` iOS library lets a Braintree or compatible PayPal web checkout embedded in `WKWebView` open popup authentication through `ASWebAuthenticationSession` and return the callback payload to JavaScript. Its Venmo path can advertise a merchant-registered deep-link scheme when the Venmo app is installed.

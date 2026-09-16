@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-16] ingest | Braintree Web 3.145.0
+
+- Delta-ingested PayPal v6 checkout-with-vault, Venmo desktop address/QR changes, and loading/popup recovery, preserving earlier versions. Updated existing concepts and provider navigation. Details and approved review exception: [[braintree-log]] and [[changelog-github-braintree-web]].
+
 ## [2026-09-15] ingest | React Stripe.js 6.10.0
 
 - Delta-ingested beta Link Signup wrappers and the Stripe JS 9.16.0 peer floor, preserving previous versions. Provider restrictions and unverified hosted behavior are explicit. Details: [[stripe-log]] and [[changelog-github-react-stripe-js]].

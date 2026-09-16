@@ -2,8 +2,10 @@
 title: "GitHub: braintree/braintree-web"
 type: source
 date_ingested: 2026-07-28
+date_updated: 2026-09-16
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web/snapshots/2026-09-15-732ed09/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-07-28-41460fb/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-07-27-bae582d/manifest.json"
 tags: [braintree, javascript-sdk, checkout, hosted-fields, venmo, paypal, 3d-secure, github-repository]
@@ -11,13 +13,13 @@ tags: [braintree, javascript-sdk, checkout, hosted-fields, venmo, paypal, 3d-sec
 
 ## Overview
 
-`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest retained release is `braintree-web@3.144.0` at exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`.
+`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest retained release is `braintree-web@3.145.0` at exact SHA `732ed094354d650605e678d98246ce6332952ad3`. The `3.143.0` baseline and `3.144.0` additions remain preserved below.
 
 Repository: <https://github.com/braintree/braintree-web>
 
 ## Evidence Boundary
 
-- The snapshots prove implementation present in `braintree-web@3.143.0` and `3.144.0`. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
+- The snapshots prove implementation present in the retained `braintree-web@3.143.0`, `3.144.0`, and `3.145.0` releases. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
 - The package exposes SDK components, not Braintree Web Drop-in. Drop-in is a separately versioned repository.
 - The latest snapshot retains 28 stories that show intended integration scenarios. Tests, fixtures, and mocks are excluded, so test-only behavior is outside this capsule.
 - PayPal Checkout v6 and Fastlane delegate runtime behavior to PayPal SDKs. This source covers the Braintree adapters and nonce boundary, not the complete delegated runtimes.
@@ -61,6 +63,24 @@ Repository: <https://github.com/braintree/braintree-web>
 >
 > `raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/release-notes.md:10-11`
 
+### 3.145.0 Grounding Excerpts
+
+> `return loadClientScript(src, true);`
+>
+> `raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/lib/create-deferred-client.js:41`
+
+> `if (account.details && account.details.implicitlyVaultedPaymentMethodToken) {`
+>
+> `raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/paypal-checkout-v6/paypal-checkout-v6.js:2719`
+
+> `return Promise.reject(new BraintreeError(errors.VENMO_ECD_DISABLED));`
+>
+> `raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/venmo/venmo.js:136`
+
+> `convertToBraintreeError(err, errors.FASTLANE_SDK_LOAD_ERROR)`
+>
+> `raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/fastlane/fastlane.js:58`
+
 ## Package and Client Architecture
 
 The top-level package exports 23 components. Each component can be consumed from the aggregate `braintree-web` package or as an individual browser/CommonJS/AMD module. Most creation methods accept either an existing `Client` or authorization from which the SDK creates a deferred client, and asynchronous methods support promises when no callback is supplied.
@@ -96,6 +116,20 @@ Session options cover amount, currency, intent, shipping callbacks, contact pref
 
 At `3.144.0`, the shared v6 payment-session path also forwards optional locale, landing-page type, user action, risk-correlation ID, shipping-address enablement, and shipping-address editability. Checkout-with-vault can additionally carry `planType` and formatted `planMetadata` for recurring, subscription, unscheduled, or installment agreement patterns. These are client-side request capabilities; product availability and valid combinations still depend on current Braintree and PayPal guidance.
 
+### Checkout-with-Vault Tokenization in 3.145.0
+
+Previously, the presence of `billingToken` selected the billing-agreement-only request. In `3.145.0`, the adapter distinguishes three cases:
+
+| Approval input | Request behavior |
+| --- | --- |
+| Billing token without order/payment identifier | Pure billing-agreement vaulting; `vault: false` can opt out of automatic vaulting on this branch. |
+| Order/payment identifier plus payer identifier, without billing token | One-time checkout tokenization. |
+| Billing token plus order/payment identifier and payer identifier | Checkout-with-vault; sends `billingAgreementToken` together with the checkout fields. |
+
+`orderID`/`orderId`, `paymentID`/`paymentId`, and `payerID`/`payerId` aliases are accepted. Checkout branches require the payer identifier; billing-token-only vaulting does not. The adapter posts to Braintree `payment_methods/paypal_accounts`. It conditionally copies `account.details.implicitlyVaultedPaymentMethodToken` into the returned payload, so the release note's returning-token wording must not be read as an unconditional guarantee. This remains Braintree tokenization, not a direct Orders API capture.
+
+The v6 SDK-loading path now uses the shared asset loader with `forceScriptReload: true` when a load is needed, reports enriched load-failure analytics, and retains underlying error detail. The existing early return when `window.paypal.version` is present remains; this is not proof that every call reloads the SDK. The non-v6 loader is a separate implementation.
+
 ## PayPal View/Edit Funding Instrument
 
 `3.144.0` adds a non-v6 `paypalCheckout` path for a returning buyer to view or change the PayPal funding instrument behind an existing vaulted Billing Agreement. The merchant must generate the Braintree client token with a `preferredPaymentMethodToken`, call checkout `createPayment()` with `editBillingAgreement: true`, and use the PayPal SDK's `SavedPaymentMethods` component.
@@ -109,6 +143,20 @@ The standalone Venmo component tokenizes through mobile app switch and optional 
 Desktop support can render a QR flow, while optional desktop or mobile web login provides a non-app path. `paymentMethodUsage` declares `single_use` or `multi_use`; the latter is intended for a nonce that will be vaulted and reused through Braintree. Merchant eligibility, supported environments, and server processing still require product guidance beyond this source snapshot.
 
 In `3.144.0`, rejection of the asynchronous incognito-detection check no longer rejects `venmo.create()`. The SDK falls back to an unknown, non-private result and continues normal client creation and Venmo enablement checks. This is failure isolation, not evidence that Venmo is supported in private browsing.
+
+### Desktop QR Changes in 3.145.0
+
+Desktop QR now receives `collectCustomerBillingAddress` and `collectCustomerShippingAddress`. Requesting either flag requires gateway configuration `payWithVenmo.enrichedCustomerDataEnabled`; otherwise desktop creation rejects with `VENMO_ECD_DISABLED` before the desktop-setup fallback. For the modern mutation selected by a nonempty `paymentMethodUsage`, truthy flags are forwarded under `paysheetDetails`. The legacy QR mutation used without `paymentMethodUsage` does not forward them. The retained DesktopQR story uses `single_use` and requests both addresses; returned `payerInfo` still depends on the backend response.
+
+The modal refresh adds a rescan action on the waiting face, distinct rescan/error-view analytics, custom fonts, and a larger branded QR canvas rendered with the new `qrcode@1.5.4` dependency. Rescan requests a new payment context and polling cycle. The waiting text and UI state do not establish approval or payment completion; the result remains driven by the payment-context response. QR rendering validates HTTPS and the `venmo.com` hostname. The mobile hash-change flow now shares the cross-browser document-visibility helper.
+
+## Loading and Popup Recovery in 3.145.0
+
+- **Deferred client:** when client script loading is needed, any initial load rejection triggers one forced reload. The implementation does not restrict this retry to a diagnosed suspend failure. Successful client creation after retry emits recovery analytics; final load errors include the failure kind and `details.originalError`. Existing-client and already-loaded-client paths remain separate.
+- **Shared FrameService:** targets the dispatch frame explicitly and adds domain verification, delayed visibility-listener installation (500 ms), suspend/resume callbacks, and a delayed closed-frame check (1,000 ms) after a recorded suspend. Cleanup removes listeners and timers. PopupBridge takes a separate early-return path.
+- **PayPal and LocalPayment:** non-v6 vault-initiated checkout and popup-based local payments wire suspend/resume/recovered analytics into FrameService. A recovered event is emitted on a successful popup callback before tokenization; it is not proof of a nonce, authorization, or settlement. This is not automatic popup reopening or payment resumption.
+- **FraudNet:** load failure emits enriched analytics when a client is supplied and still resolves to `null`. DataCollector can reject if no collector instance remains; analytics does not turn missing device data into success.
+- **Fastlane:** the load/initialization catch uses error conversion. Existing Braintree errors pass through; other errors become `FASTLANE_SDK_LOAD_ERROR` with the original error retained. The delegated loader remains `@paypal/fastlane-sdk-loader@1.2.1`.
 
 ## Other Payment and Decision Surfaces
 
@@ -137,6 +185,12 @@ The release adds PayPal View/Edit Funding Instrument support, expands PayPal Che
 
 The exact-SHA comparison contains 319 byte-identical retained files, 10 changed files, and one added Edit FI story relative to `3.143.0`. The durable architecture sections remain valid; the additions above identify the material payment-flow changes without replacing the earlier baseline.
 
+## `3.145.0` Release Findings
+
+The `2026-08-24` release fixes PayPal v6 checkout-with-vault tokenization, extends Venmo desktop address passthrough and QR presentation, and improves script-load and popup recovery diagnostics. `@braintree/asset-loader` changes from `2.0.3` to `2.1.0`; `qrcode@1.5.4` is added. The repository package adds an npm engine constraint of `>11.7.0`; this is not a browser-support requirement.
+
+The approved high-priority delta compares `3.144.0` to `3.145.0`: two retained files added, 27 modified, and 303 byte-identical. Every changed retained file and its patch was read fully. The user approved mechanical disposition checking for excluded upstream test/lockfile/tooling changes for this item only. Snapshot integrity and all 47 upstream dispositions were checked; this is not a claim to have read the entire upstream repository or run its payment flows.
+
 ## Related
 
 - [[changelog-github-braintree-web]] — package-qualified release ledger
@@ -146,6 +200,18 @@ The exact-SHA comparison contains 319 byte-identical retained files, 10 changed 
 - [[paypal-fastlane]] — delegated Fastlane product concept
 
 ## Raw Sources
+
+- [3.145.0 snapshot manifest](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/manifest.json)
+- [3.145.0 release manifest](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.145.0/2026-09-15/manifest.json)
+- [3.145.0 release notes](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.145.0/2026-09-15/release-notes.md)
+- [3.144.0 to 3.145.0 comparison](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.144.0--3.145.0/comparison.md)
+- [PayPal v6 implementation](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/paypal-checkout-v6/paypal-checkout-v6.js)
+- [Venmo implementation](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/venmo/venmo.js) and [desktop context/polling](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/venmo/external/venmo-desktop.js)
+- [QR renderer](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/venmo/internal/ui-elements/qr-code-view.js)
+- [Deferred client loader](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/lib/create-deferred-client.js) and [FrameService](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/lib/frame-service/external/frame-service.js)
+- [Non-v6 PayPal](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/paypal-checkout/paypal-checkout.js) and [LocalPayment](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/local-payment/external/local-payment.js)
+- [FraudNet](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/data-collector/fraudnet.js) and [DataCollector caller](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/data-collector/index.js)
+- [Fastlane adapter](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/src/fastlane/fastlane.js) and [package dependencies](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/files/package.json)
 
 - Snapshot manifest: `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/manifest.json`
 - Release manifest: `raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json`

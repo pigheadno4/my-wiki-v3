@@ -113,19 +113,19 @@ This is engineering-operations evidence only. It does not establish SDK implemen
 
 ## Versioned Implementation Knowledge
 
-The retained history begins with `braintree-web@3.143.0` and currently reaches `3.144.0` at exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`. The newer release adds PayPal View/Edit Funding Instrument, expands PayPal Checkout v6 session options, and prevents failed incognito detection from aborting Venmo creation while preserving the 23-component architecture.
+The retained history begins with `braintree-web@3.143.0` and currently reaches `3.145.0` at exact SHA `732ed094354d650605e678d98246ce6332952ad3`. Version 3.144.0 added PayPal View/Edit Funding Instrument, expanded PayPal Checkout v6 session options, and prevented failed incognito detection from aborting Venmo creation. Version 3.145.0 fixes v6 checkout-with-vault tokenization, adds ECD-gated Venmo desktop address requests and QR rescan UI, and improves client loading and popup recovery. Recovery analytics do not prove payment success; delegated SDK and gateway behavior remain outside the retained implementation evidence. See [[source-github-braintree-web]] and [[changelog-github-braintree-web]].
 
 Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastlane modules have configuration or delegated-runtime boundaries, and legacy source modules should not be treated as recommendations for new integrations.
 
 ## Knowledge Status
 
 - Ingested cumulative GitHub repository sources: 16
-- Ingested package releases: 14
+- Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
 - Latest retained Braintree PHP release: `braintree_php@6.37.0` at `0f53ece38397c9fed05b94620634a5a23ef8ee48`
 - Latest retained Braintree Ruby release: `braintree@4.40.0` at `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`
-- Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
+- Latest retained Braintree Web release: `braintree-web@3.145.0` at `732ed094354d650605e678d98246ce6332952ad3`
 - Latest retained card-brand detector release: `credit-card-type@10.3.0` at `fbd8ed80a411fa9b238055208c19a7323cd38e21`
 - Latest retained UUID utility release: `@braintree/uuid@2.0.0` at `d134a2ca93d12705a76ff036baeba568016f9b13`
 - Latest retained input formatter ref: `default-branch@8dcc6ea` at `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089` (`package.json` 4.2.0)

@@ -1,0 +1,18 @@
+- Client/All Components
+  - Retry the client script load once with a cache-busting reload when a mobile background or suspend aborts it, and send recovery analytics when it recovers
+  - Name the failure kind in client script load errors and keep the enriched load-failure detail on `error.details.originalError`
+- PayPal Checkout
+  - Detect popup suspend and resume during vault-initiated checkout and re-check the popup on return
+- PayPal Checkout v6
+  - Fix Checkout with Vault flow so `tokenizePayment` sends both `billingToken` and `orderId` together, returning an `implicitlyVaultedPaymentMethodToken`
+  - Load the PayPal SDK through the shared asset loader and report enriched detail when the SDK script fails to load
+- Local Payment
+  - Detect popup suspend and resume during the payment window and re-check the popup on return
+- Data Collector
+  - Report FraudNet script load failures to analytics instead of silently ignoring them
+- Fastlane
+  - Preserve the underlying error detail when the Fastlane SDK fails to load
+- Venmo
+  - Add `collectCustomerBillingAddress` and `collectCustomerShippingAddress` params to Desktop QR flow to allow address passthrough.
+  - Refresh of Venmo QR Code modal UI
+  - Add custom fonts for Venmo QR experience

@@ -52,7 +52,16 @@ Venmo component creation now treats failed incognito detection as an unknown, no
 
 ## Versioned Evidence
 
-The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. The latest retained release is `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`. Its exact comparison adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback while preserving the earlier architecture.
+The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. Release `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7` adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback. The latest retained release is `3.145.0` at SHA `732ed094354d650605e678d98246ce6332952ad3`; both earlier baselines remain in the cumulative source and changelog.
+
+## Checkout and Recovery Changes in 3.145.0
+
+- PayPal Checkout v6 distinguishes billing-token-only vaulting from checkout-with-vault. The latter sends the billing token together with order/payment and payer identifiers. `implicitlyVaultedPaymentMethodToken` is exposed only if the gateway returns it; an upgrade does not guarantee vault success.
+- Venmo desktop QR forwards requested billing/shipping-address flags through the modern `paymentMethodUsage` payment-context mutation. Requesting either flag requires `enrichedCustomerDataEnabled`; otherwise creation rejects with `VENMO_ECD_DISABLED`. The legacy QR mutation does not forward those flags. The refreshed QR modal adds rescan handling and custom fonts.
+- Deferred client script loading retries once with forced reload after an initial load rejection. PayPal vault-initiated checkout and LocalPayment popup paths add suspend/resume observation and delayed close checking. Recovery analytics is not proof of tokenization, authorization, or settlement.
+- FraudNet load failures become observable in analytics; Fastlane preserves underlying error detail. Dependencies change to `@braintree/asset-loader@2.1.0` and add `qrcode@1.5.4`.
+
+These are changes in the Braintree adapter and retained browser implementation, not proof of changes in independently hosted PayPal/Fastlane runtimes. Source: [[source-github-braintree-web]]; release comparison: [[changelog-github-braintree-web]].
 
 ## Related
 

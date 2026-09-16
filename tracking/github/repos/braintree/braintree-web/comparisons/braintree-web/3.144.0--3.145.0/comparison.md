@@ -1,0 +1,107 @@
+# GitHub package comparison
+
+- Repository: `braintree/braintree-web`
+- Package: `braintree-web`
+- From: `3.144.0` (`41460fba05c1ea1222e795b36a10765a6699b8e7`)
+- To: `3.145.0` (`732ed094354d650605e678d98246ce6332952ad3`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.storybook/scripts/copy-local-build.js`
+- `.storybook/stories/Venmo/Venmo.stories.ts`
+- `.storybook/stories/branded_payments/venmo/VenmoIntegration.ts`
+- `.storybook/tests/playwright.config.ts`
+- `.storybook/utils/patch-assets-url.ts`
+- `CHANGELOG.md`
+- `__mocks__/framebus.js`
+- `package-lock.json`
+- `package.json`
+- `scripts/calculate-csp-hashes.js`
+- `src/data-collector/fraudnet.js`
+- `src/data-collector/index.js`
+- `src/fastlane/errors.js`
+- `src/fastlane/fastlane.js`
+- `src/lib/asset-load-detail.js`
+- `src/lib/create-deferred-client.js`
+- `src/lib/document-visibility.js`
+- `src/lib/frame-service/external/frame-service.js`
+- `src/lib/frame-service/shared/constants.js`
+- `src/local-payment/external/local-payment.js`
+- `src/paypal-checkout-v6/paypal-checkout-v6.js`
+- `src/paypal-checkout/paypal-checkout.js`
+- `src/venmo/external/venmo-desktop.js`
+- `src/venmo/internal/index.js`
+- `src/venmo/internal/ui-elements/back-view.js`
+- `src/venmo/internal/ui-elements/card-container.js`
+- `src/venmo/internal/ui-elements/close-icon.js`
+- `src/venmo/internal/ui-elements/error-view.js`
+- `src/venmo/internal/ui-elements/front-view.js`
+- `src/venmo/internal/ui-elements/modal-backdrop.js`
+- `src/venmo/internal/ui-elements/modal.js`
+- `src/venmo/internal/ui-elements/qr-code-view.js`
+- `src/venmo/internal/venmo-desktop-frame.html`
+- `src/venmo/shared/events.js`
+- `src/venmo/venmo.js`
+- `tasks/venmo.js`
+- `test/data-collector/unit/fraudnet.js`
+- `test/data-collector/unit/index.js`
+- `test/fastlane/unit/fastlane.js`
+- `test/lib/unit/create-deferred-client.js`
+- `test/lib/unit/document-visibility.js`
+- `test/lib/unit/frame-service/external/frame-service.js`
+- `test/local-payment/unit/external/local-payment.js`
+- `test/paypal-checkout-v6/unit/paypal-checkout-v6.js`
+- `test/paypal-checkout/unit/paypal-checkout.js`
+- `test/venmo/unit/venmo-desktop.js`
+- `test/venmo/unit/venmo.js`
+
+## Upstream changes
+
+- `modified`: `.storybook/scripts/copy-local-build.js`
+- `modified`: `.storybook/stories/Venmo/Venmo.stories.ts`
+- `modified`: `.storybook/stories/branded_payments/venmo/VenmoIntegration.ts`
+- `modified`: `.storybook/tests/playwright.config.ts`
+- `added`: `.storybook/utils/patch-assets-url.ts`
+- `modified`: `CHANGELOG.md`
+- `modified`: `__mocks__/framebus.js`
+- `modified`: `package-lock.json`
+- `modified`: `package.json`
+- `modified`: `scripts/calculate-csp-hashes.js`
+- `modified`: `src/data-collector/fraudnet.js`
+- `modified`: `src/data-collector/index.js`
+- `modified`: `src/fastlane/errors.js`
+- `modified`: `src/fastlane/fastlane.js`
+- `added`: `src/lib/asset-load-detail.js`
+- `modified`: `src/lib/create-deferred-client.js`
+- `added`: `src/lib/document-visibility.js`
+- `modified`: `src/lib/frame-service/external/frame-service.js`
+- `modified`: `src/lib/frame-service/shared/constants.js`
+- `modified`: `src/local-payment/external/local-payment.js`
+- `modified`: `src/paypal-checkout-v6/paypal-checkout-v6.js`
+- `modified`: `src/paypal-checkout/paypal-checkout.js`
+- `modified`: `src/venmo/external/venmo-desktop.js`
+- `modified`: `src/venmo/internal/index.js`
+- `modified`: `src/venmo/internal/ui-elements/back-view.js`
+- `modified`: `src/venmo/internal/ui-elements/card-container.js`
+- `modified`: `src/venmo/internal/ui-elements/close-icon.js`
+- `modified`: `src/venmo/internal/ui-elements/error-view.js`
+- `modified`: `src/venmo/internal/ui-elements/front-view.js`
+- `modified`: `src/venmo/internal/ui-elements/modal-backdrop.js`
+- `modified`: `src/venmo/internal/ui-elements/modal.js`
+- `modified`: `src/venmo/internal/ui-elements/qr-code-view.js`
+- `modified`: `src/venmo/internal/venmo-desktop-frame.html`
+- `modified`: `src/venmo/shared/events.js`
+- `modified`: `src/venmo/venmo.js`
+- `modified`: `tasks/venmo.js`
+- `modified`: `test/data-collector/unit/fraudnet.js`
+- `modified`: `test/data-collector/unit/index.js`
+- `modified`: `test/fastlane/unit/fastlane.js`
+- `modified`: `test/lib/unit/create-deferred-client.js`
+- `added`: `test/lib/unit/document-visibility.js`
+- `modified`: `test/lib/unit/frame-service/external/frame-service.js`
+- `modified`: `test/local-payment/unit/external/local-payment.js`
+- `modified`: `test/paypal-checkout-v6/unit/paypal-checkout-v6.js`
+- `modified`: `test/paypal-checkout/unit/paypal-checkout.js`
+- `modified`: `test/venmo/unit/venmo-desktop.js`
+- `modified`: `test/venmo/unit/venmo.js`

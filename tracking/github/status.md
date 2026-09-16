@@ -175,6 +175,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_php/releases/braintree_php/6.37.0/2026-08-19/manifest.json)
   Comparison: Not applicable
 
+## `github-16166784785e0ab99eae`
+
+- Repository: `braintree/braintree-web`
+- SHA: `732ed094354d650605e678d98246ce6332952ad3`
+- Collection date: `2026-09-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-web/ingest-packets/github-16166784785e0ab99eae/packet.md)
+- Review priority: `high`
+- Required reading: `38` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-web@3.145.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.145.0/2026-09-15/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.144.0--3.145.0/comparison.json)
+
 ## `github-1ab2662d292502a53058`
 
 - Repository: `braintree/braintree-web`
