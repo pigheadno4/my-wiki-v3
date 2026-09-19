@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-19] ingest | v6 Web SDK sample `bb23e7c`
+
+- Full additive ingest of `github-9b81f89deff88d93db88`, `de90a89c90b06421ca34241e7162236e2b04fd79` to `bb23e7c63305a872326f43c3d52c5edd53e20b43` (commit September 17).
+- Explicit one-time focused-reading approval: all 65 changed files and their prior versions read fully with affected dependencies; 197 unchanged files verified by hash. No claim to have reread all 532 assigned paths; immutable packet and registry remain unchanged. Review: `tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-review-9b81f89d.md`.
+- Added ACH Wallet and optional HTML/React card-name evidence; recorded all 46 LPM examples' popup-to-auto change. Flagged logging-only consent, missing local order-status enforcement, USD 100/205 mismatch, incomplete React vaulting, and stale presentation guidance.
+- Concept audit preceded source edits: created [[paypal-ach]], updated checkout/APM/expanded-checkout/vault. Preserved historical source/changelog; updated company and index. Source count remains 177; no cross-company comparison warranted.
+- No live payment or production eligibility proof. No commit or push in this operation.
+
 ## [2026-09-19] ingest | paypal/paypal-js core 11.1.0 and React 10.5.0
 
 - Full additive ingest of `github-961c3611b36c6341ad56`, shared SHA `abc4c8331a64e91d90a6eec911b635f36c0f273f`, released September 15: core 11.0.1 to 11.1.0 and React 10.4.1 to 10.5.0.

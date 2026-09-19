@@ -17,6 +17,8 @@ Standard e-commerce integration that renders PayPal, Venmo, and Debit/Credit Car
 
 ### PayPal JS SDK
 
+The v6 sample repository at `default-branch@bb23e7c` (September 17, 2026) adds [[paypal-ach|ACH Wallet]] HTML orchestration, optional cardholder-name fields in HTML/React, and auto presentation for 46 local-method HTML examples. It declares React wrapper `^10.5.0` and Server SDK `^2.5.0`. Consent storage is logging-only, ACH eligibility/order amounts differ, and the React save-card example omits the final payment-token exchange. These sample limitations and earlier history remain in [[source-github-v6-web-sdk-sample-integration]] and [[changelog-github-v6-web-sdk-sample-integration]].
+
 The September 15 releases, `@paypal/paypal-js@11.1.0` and `@paypal/react-paypal-js@10.5.0`, add required funding-source approval data, React wrappers for 50 v6 local methods, an optional v6 card name field, and a temporary Venmo sandbox-testing flag. Existing typed approval mocks may need updates. LPM eligibility and payment finalization remain explicit integration responsibilities; these package changes do not prove merchant enablement. See [[source-github-paypal-js]] for implementation and React examples, and [[changelog-github-paypal-js]] for preserved version history.
 
 The September 10 patches, core `11.0.1` and React `10.4.1`, refine environment validation, optional one-time approval callback types, async-finalization documentation, and scoped v6 ESM packaging. React's release-note claim that the callback is required conflicts with the inherited optional type; this is recorded in [[source-github-paypal-js]], not treated as permission to omit payment finalization.
@@ -208,8 +210,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-reports-analytics]] — Reports & Analytics overview: no-code (dashboard/scheduled/basic) vs pro-code (Transaction Search API/Reporting APIs/Webhooks); CSV/PDF/JSON output
 - [[source-paypal-disputes-api]] — Disputes API: 9 endpoints, INQUIRY→CHARGEBACK→PRE_ARBITRATION→ARBITRATION lifecycle, HATEOAS-driven actions, Accelerated Response, webhook pattern
 - [[source-paypal-disputes-overview]] — Disputes overview: internal (180-day window, 20-day amicable, 10-day PayPal adjudication) vs external (chargeback + ACH return); pre-chargeback alert 20-hour refund window; 6 buyer issue types; 2 flow diagrams
-- [[source-github-v6-web-sdk-sample-integration]] — cumulative GitHub v6 sample evidence from legacy `dd9ef8a` through the `b5f2df2` baseline and `de90a89` Basic Apple Pay delta
-- [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified expansion history, Basic Apple Pay delta, and documentation/code discrepancies
+- [[source-github-v6-web-sdk-sample-integration]] — cumulative GitHub v6 sample evidence through `bb23e7c`: ACH Wallet, card name, automatic LPM presentation; preserves earlier Apple Pay and baseline history
+- [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified expansion history through `bb23e7c`, sample limitations and documentation/code discrepancies
 - [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree-merchant v6 sample at `f1c7123`: nonce-based checkout, vault, billing agreements, Pay Later/Credit, Messages, React, and Node boundaries
 - [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — commit-qualified history for the first `f1c7123` Braintree v6 sample baseline
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample for Orders, partners, Hosted Fields, shipping, and Subscriptions

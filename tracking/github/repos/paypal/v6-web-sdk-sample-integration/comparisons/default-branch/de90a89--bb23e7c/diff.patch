@@ -1,0 +1,1336 @@
+diff --git a/.env.sample b/.env.sample
+index 5ae9acc..3dce06a 100644
+--- a/.env.sample
++++ b/.env.sample
+@@ -5,6 +5,6 @@ PAYPAL_SANDBOX_CLIENT_ID=
+ PAYPAL_SANDBOX_CLIENT_SECRET=
+ 
+ # Provide a comma-separated list of the domain names where
+-# the Fastlane component will be presented
++# the Fastlane component and the Bank ACH Wallet payment flow will be presented
+ # ex: DOMAINS=your-domain.com,your-domain2.com
+ DOMAINS=
+diff --git a/client/components/bankAchPayments/walletPayment/html/README.md b/client/components/bankAchPayments/walletPayment/html/README.md
+new file mode 100644
+index 0000000..8d8944c
+--- /dev/null
++++ b/client/components/bankAchPayments/walletPayment/html/README.md
+@@ -0,0 +1,19 @@
++# Bank ACH Wallet Payments HTML Sample Integration
++
++This sample integration uses HTML, JavaScript, and CSS. It does not require a build process to transpile the source code. It's just static files that can be served up by any web server.
++
++This example accepts ACH direct debit payments with the PayPal-hosted `bank-ach-wallet-payments` element. Buyers can either link and verify a bank account through an Open Banking provider or pay with a bank account saved in their PayPal Wallet.
++
++## How it works
++
++1. The client fetches a browser-safe client token and creates a JavaScript SDK v6 instance with the `bank-ach-payments` component. A client token is required because the SDK looks up the buyer's saved bank account in their PayPal Wallet.
++2. `findEligibleMethods()` confirms that ACH is available for the transaction.
++3. `createBankAchWalletPaymentSession()` creates the wallet payment session, and `walletSession.connect()` connects the `bank-ach-wallet-payments` element to a lazy order-creation callback.
++4. When the buyer accepts the ACH mandate, the SDK calls `onApprove()` with the order ID.
++5. A single server endpoint (`/paypal-api/checkout/orders/:orderId/capture-ach-wallet`) retrieves the order details, stores the buyer's authorization (consent) record for NACHA compliance, and captures the payment.
++
++## Testing
++
++ACH direct debit is available only to US merchants and supports payments only in US dollars. See the [Accept ACH payments](https://developer.paypal.com/limited-release/accept-ach-payments) guide for sandbox test credentials for both the PayPal Wallet bank path and the Open Banking path.
++
++This static example is hosted by the [server application](../../../../../server/node/README.md).
+diff --git a/client/components/bankAchPayments/walletPayment/html/src/recommended/app.js b/client/components/bankAchPayments/walletPayment/html/src/recommended/app.js
+new file mode 100644
+index 0000000..86ab8c4
+--- /dev/null
++++ b/client/components/bankAchPayments/walletPayment/html/src/recommended/app.js
+@@ -0,0 +1,199 @@
++/**
++ * Bank ACH Wallet One-Time Payment Integration
++ *
++ * This module accepts ACH direct debit payments using PayPal's v6 Web SDK and
++ * the PayPal-hosted `bank-ach-wallet-payments` element. Buyers can link a bank
++ * account through Open Banking or pay with a bank account saved in their PayPal
++ * Wallet. This flow requires a client token because the SDK looks up the buyer's
++ * saved bank account in their PayPal Wallet.
++ */
++
++/**
++ * Main setup function called when the PayPal Web SDK is loaded.
++ * Creates the SDK instance, checks ACH eligibility, and wires up the element.
++ *
++ * @returns {Promise<void>}
++ */
++async function onPayPalWebSdkLoaded() {
++  try {
++    // This integration requires a client token. Because the SDK looks up the
++    // buyer's saved bank account in their PayPal Wallet, client-ID-only
++    // integrations are not supported for the ACH wallet flow.
++    const clientToken = await getBrowserSafeClientToken();
++    const sdkInstance = await window.paypal.createInstance({
++      clientToken,
++      // A unique identifier for this checkout session, used for risk evaluation
++      clientMetadataId: crypto.randomUUID(),
++      components: ["bank-ach-payments"],
++      pageType: "checkout",
++    });
++
++    const paymentMethods = await sdkInstance.findEligibleMethods({
++      currencyCode: "USD",
++      paymentFlow: "ONE_TIME_PAYMENT",
++      amount: "100.00",
++    });
++
++    if (paymentMethods.isEligible("ach")) {
++      configureBankAchWalletPayment(sdkInstance);
++    } else {
++      renderAlert({ type: "warning", message: "Bank ACH is not eligible" });
++    }
++  } catch (error) {
++    renderAlert({
++      type: "danger",
++      message: `Bank ACH setup failed: ${error.message}`,
++    });
++    console.error(error);
++  }
++}
++
++/**
++ * Creates the ACH wallet payment session and connects the
++ * `bank-ach-wallet-payments` element to a lazy order-creation callback.
++ *
++ * @param {Object} sdkInstance - PayPal SDK instance
++ * @returns {void}
++ */
++function configureBankAchWalletPayment(sdkInstance) {
++  const walletSession = sdkInstance.createBankAchWalletPaymentSession({
++    // Optional NACHA Standard Entry Class (SEC) code. Defaults to "WEB".
++    standardEntryClassCode: "WEB",
++    async onApprove(data) {
++      console.log("onApprove", data);
++      try {
++        // The single capture endpoint retrieves the order details, stores the
++        // buyer's authorization (consent) record for NACHA compliance, and
++        // captures the payment.
++        const orderData = await captureOrder({ orderId: data.orderId });
++        renderAlert({
++          type: "success",
++          message: `Order successfully captured! ${JSON.stringify(data)}`,
++        });
++        console.log("Capture result", orderData);
++      } catch (error) {
++        renderAlert({
++          type: "danger",
++          message: `Payment capture failed: ${error.message}`,
++        });
++        console.error(error);
++      }
++    },
++    onError(error) {
++      renderAlert({
++        type: "danger",
++        message: `onError() callback called: ${error.message ?? error}`,
++      });
++      console.log("onError", error);
++    },
++  });
++
++  const bankAchWalletElement = document.querySelector(
++    "bank-ach-wallet-payments",
++  );
++  bankAchWalletElement.removeAttribute("hidden");
++
++  // Connect the rendered element with a lazy order-creation callback. The SDK
++  // calls the callback only when the buyer proceeds with the payment flow.
++  const createOrderSession = () => createOrder();
++  walletSession.connect("bank-ach-wallet-payments", createOrderSession);
++}
++
++/**
++ * Fetches a browser-safe client token from the server.
++ *
++ * @returns {Promise<string>} The client token access token
++ * @throws {Error} If the request fails
++ */
++async function getBrowserSafeClientToken() {
++  const response = await fetch("/paypal-api/auth/browser-safe-client-token", {
++    method: "GET",
++    headers: {
++      "Content-Type": "application/json",
++    },
++  });
++  if (!response.ok) {
++    throw new Error("Failed to fetch client token");
++  }
++  const { accessToken } = await response.json();
++
++  return accessToken;
++}
++
++/**
++ * Creates an order on the server for the one-time ACH payment.
++ *
++ * @returns {Promise<{orderId: string}>} The created order ID
++ * @throws {Error} If order creation fails
++ */
++async function createOrder() {
++  const response = await fetch(
++    "/paypal-api/checkout/orders/create-order-for-one-time-payment",
++    {
++      method: "POST",
++      headers: {
++        "Content-Type": "application/json",
++      },
++    },
++  );
++  const data = await response.json();
++
++  if (!response.ok) {
++    throw new Error(
++      `Order creation failed ${data ? JSON.stringify(data) : ""}`,
++    );
++  }
++
++  renderAlert({
++    type: "info",
++    message: `Order successfully created: ${data.id}`,
++  });
++
++  return { orderId: data.id };
++}
++
++/**
++ * Captures the approved order via the single ACH wallet capture endpoint, which
++ * also stores the buyer's authorization (consent) record for NACHA compliance.
++ *
++ * @param {Object} params
++ * @param {string} params.orderId - The approved order ID to capture
++ * @returns {Promise<Object>} The capture result
++ * @throws {Error} If the capture fails
++ */
++async function captureOrder({ orderId }) {
++  const response = await fetch(
++    `/paypal-api/checkout/orders/${orderId}/capture-ach-wallet`,
++    {
++      method: "POST",
++      headers: {
++        "Content-Type": "application/json",
++      },
++    },
++  );
++  const data = await response.json();
++
++  if (!response.ok) {
++    throw new Error(`Order capture failed ${data?.name ?? ""}`);
++  }
++
++  return data;
++}
++
++/**
++ * Renders a message in the shared alert component.
++ *
++ * @param {Object} params
++ * @param {("success"|"info"|"warning"|"danger")} params.type - Alert type
++ * @param {string} params.message - Message to display
++ * @returns {void}
++ */
++function renderAlert({ type, message }) {
++  const alertComponentElement = document.querySelector("alert-component");
++  if (!alertComponentElement) {
++    return;
++  }
++
++  alertComponentElement.setAttribute("type", type);
++  alertComponentElement.innerText = message;
++}
+diff --git a/client/components/bankAchPayments/walletPayment/html/src/recommended/index.html b/client/components/bankAchPayments/walletPayment/html/src/recommended/index.html
+new file mode 100644
+index 0000000..d14ec08
+--- /dev/null
++++ b/client/components/bankAchPayments/walletPayment/html/src/recommended/index.html
+@@ -0,0 +1,47 @@
++<!doctype html>
++<html lang="en">
++  <head>
++    <meta charset="UTF-8" />
++    <title>
++      Bank ACH Wallet Payments - One-time Payment Flow - PayPal Web SDK
++    </title>
++    <meta name="viewport" content="width=device-width, initial-scale=1" />
++    <link rel="stylesheet" href="/client/shared/styles.css" />
++    <style>
++      alert-component {
++        max-width: 50rem;
++        margin-top: 4rem;
++      }
++
++      bank-ach-wallet-payments {
++        display: block;
++        max-width: 30rem;
++        margin-top: 2rem;
++      }
++    </style>
++  </head>
++  <body>
++    <h1>Bank ACH Wallet Payments</h1>
++    <p>
++      This is the recommended integration pattern for accepting ACH direct debit
++      payments with the PayPal-hosted <code>bank-ach-wallet-payments</code>
++      element. Buyers can link a bank account through Open Banking or pay with a
++      bank account saved in their PayPal Wallet.
++    </p>
++
++    <!-- The bank-ach-wallet-payments element renders the email-capture,
++         saved-account mandate, and open banking flow -->
++    <bank-ach-wallet-payments hidden></bank-ach-wallet-payments>
++    <alert-component></alert-component>
++
++    <script src="app.js"></script>
++
++    <script
++      async
++      src="https://www.sandbox.paypal.com/web-sdk/v6/core"
++      onload="onPayPalWebSdkLoaded()"
++    ></script>
++
++    <script async src="/client/shared/alert-component.js"></script>
++  </body>
++</html>
+diff --git a/client/components/cardFields/oneTimePayment/html/README.md b/client/components/cardFields/oneTimePayment/html/README.md
+index fd0d3f8..2c02858 100644
+--- a/client/components/cardFields/oneTimePayment/html/README.md
++++ b/client/components/cardFields/oneTimePayment/html/README.md
+@@ -6,7 +6,7 @@ This static example is hosted by the [server application](../../../../../server/
+ 
+ ### Sample Integrations
+ 
+-| Sample Integration                          | Description                                                                                                                             |
+-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+-| [Recommended](src/recommended/index.html)   | Start with this recommended sample integration. It will render the Card Field, CVV, and Expiry fields necessary for a card transaction. |
+-| [3DS](src/advanced/threeDSecure/index.html) | This advanced integration demonstrates how a merchant would implement ThreeDSecure.                                                     |
++| Sample Integration                          | Description                                                                                                                                                  |
++| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
++| [Recommended](src/recommended/index.html)   | Start with this recommended sample integration. It renders the Number, CVV, and Expiry fields required for a card transaction, plus the optional Name field. |
++| [3DS](src/advanced/threeDSecure/index.html) | This advanced integration demonstrates how a merchant would implement ThreeDSecure.                                                                          |
+diff --git a/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/app.js b/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/app.js
+index 121e733..13e083a 100644
+--- a/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/app.js
++++ b/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/app.js
+@@ -40,9 +40,15 @@ function configureCardFields(sdkInstance) {
+     placeholder: "CVV",
+   });
+ 
++  const nameField = cardFieldsInstance.createCardFieldsComponent({
++    type: "name",
++    placeholder: "Name",
++  });
++
+   document.querySelector("#paypal-card-fields-number").appendChild(numberField);
+   document.querySelector("#paypal-card-fields-cvv").appendChild(cvvField);
+   document.querySelector("#paypal-card-fields-expiry").appendChild(expiryField);
++  document.querySelector("#paypal-card-fields-name").appendChild(nameField);
+ 
+   const payButton = document.querySelector("#pay-button");
+   payButton.removeAttribute("hidden");
+@@ -55,7 +61,7 @@ async function onPayClick(cardFieldsInstance) {
+ 
+     const { data, state } = await cardFieldsInstance.submit(orderId, {
+       billingAddress: {
+-        postalCode: "95131",
++        countryCode: "US",
+       },
+     });
+ 
+diff --git a/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/index.html b/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/index.html
+index ac6176c..70c277d 100644
+--- a/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/index.html
++++ b/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/index.html
+@@ -25,6 +25,7 @@
+     </h1>
+ 
+     <div class="card-fields-container">
++      <div class="card-field" id="paypal-card-fields-name"></div>
+       <div class="card-field" id="paypal-card-fields-number"></div>
+       <div class="card-field" id="paypal-card-fields-cvv"></div>
+       <div class="card-field" id="paypal-card-fields-expiry"></div>
+diff --git a/client/components/cardFields/oneTimePayment/html/src/recommended/app.js b/client/components/cardFields/oneTimePayment/html/src/recommended/app.js
+index 1ccc815..6d71705 100644
+--- a/client/components/cardFields/oneTimePayment/html/src/recommended/app.js
++++ b/client/components/cardFields/oneTimePayment/html/src/recommended/app.js
+@@ -40,9 +40,15 @@ function configureCardFields(sdkInstance) {
+     placeholder: "CVV",
+   });
+ 
++  const nameField = cardFieldsInstance.createCardFieldsComponent({
++    type: "name",
++    placeholder: "Name",
++  });
++
+   document.querySelector("#paypal-card-fields-number").appendChild(numberField);
+   document.querySelector("#paypal-card-fields-cvv").appendChild(cvvField);
+   document.querySelector("#paypal-card-fields-expiry").appendChild(expiryField);
++  document.querySelector("#paypal-card-fields-name").appendChild(nameField);
+ 
+   const payButton = document.querySelector("#pay-button");
+   payButton.removeAttribute("hidden");
+@@ -55,7 +61,7 @@ async function onPayClick(cardFieldsInstance) {
+ 
+     const { data, state } = await cardFieldsInstance.submit(orderId, {
+       billingAddress: {
+-        postalCode: "95131",
++        countryCode: "US",
+       },
+     });
+ 
+diff --git a/client/components/cardFields/oneTimePayment/html/src/recommended/index.html b/client/components/cardFields/oneTimePayment/html/src/recommended/index.html
+index 5adb17c..7507a0c 100644
+--- a/client/components/cardFields/oneTimePayment/html/src/recommended/index.html
++++ b/client/components/cardFields/oneTimePayment/html/src/recommended/index.html
+@@ -21,6 +21,7 @@
+     <h1>One-Time Payment Recommended Integration - Card Fields</h1>
+ 
+     <div class="card-fields-container">
++      <div class="card-field" id="paypal-card-fields-name"></div>
+       <div class="card-field" id="paypal-card-fields-number"></div>
+       <div class="card-field" id="paypal-card-fields-cvv"></div>
+       <div class="card-field" id="paypal-card-fields-expiry"></div>
+diff --git a/client/components/cardFields/savePayment/html/src/app.js b/client/components/cardFields/savePayment/html/src/app.js
+index 54e18ca..9564cbc 100644
+--- a/client/components/cardFields/savePayment/html/src/app.js
++++ b/client/components/cardFields/savePayment/html/src/app.js
+@@ -39,9 +39,15 @@ async function configureCardFields(sdkInstance) {
+     placeholder: "CVV",
+   });
+ 
++  const nameField = cardFieldsInstance.createCardFieldsComponent({
++    type: "name",
++    placeholder: "Name",
++  });
++
+   document.querySelector("#paypal-card-fields-number").appendChild(numberField);
+   document.querySelector("#paypal-card-fields-cvv").appendChild(cvvField);
+   document.querySelector("#paypal-card-fields-expiry").appendChild(expiryField);
++  document.querySelector("#paypal-card-fields-name").appendChild(nameField);
+ 
+   const payButton = document.querySelector("#save-payment-method-button");
+   payButton.removeAttribute("hidden");
+diff --git a/client/components/cardFields/savePayment/html/src/index.html b/client/components/cardFields/savePayment/html/src/index.html
+index 042b7a9..2be4f25 100644
+--- a/client/components/cardFields/savePayment/html/src/index.html
++++ b/client/components/cardFields/savePayment/html/src/index.html
+@@ -22,6 +22,7 @@
+     <h1>Save Payment Recommended Integration - Card Fields</h1>
+ 
+     <div class="card-fields-container">
++      <div class="card-field" id="paypal-card-fields-name"></div>
+       <div class="card-field" id="paypal-card-fields-number"></div>
+       <div class="card-field" id="paypal-card-fields-cvv"></div>
+       <div class="card-field" id="paypal-card-fields-expiry"></div>
+diff --git a/client/components/localPaymentMethods/afterpayPayments/html/src/app.js b/client/components/localPaymentMethods/afterpayPayments/html/src/app.js
+index 4697b23..b858625 100644
+--- a/client/components/localPaymentMethods/afterpayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/afterpayPayments/html/src/app.js
+@@ -107,7 +107,7 @@ function configureButtonHandler(afterpayCheckout) {
+ 
+         // Start payment flow with popup mode
+         await afterpayCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/alfamartPayments/html/src/app.js b/client/components/localPaymentMethods/alfamartPayments/html/src/app.js
+index b28578f..089cdca 100644
+--- a/client/components/localPaymentMethods/alfamartPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/alfamartPayments/html/src/app.js
+@@ -84,7 +84,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/alipayPayments/html/src/app.js b/client/components/localPaymentMethods/alipayPayments/html/src/app.js
+index 63807b1..d935298 100644
+--- a/client/components/localPaymentMethods/alipayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/alipayPayments/html/src/app.js
+@@ -90,10 +90,7 @@ function configureButtonHandler(alipayCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await alipayCheckout.start(
+-          { presentationMode: "popup" },
+-          createOrder(),
+-        );
++        await alipayCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/bancontactPayments/html/src/app.js b/client/components/localPaymentMethods/bancontactPayments/html/src/app.js
+index d08ddf3..5d84701 100644
+--- a/client/components/localPaymentMethods/bancontactPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/bancontactPayments/html/src/app.js
+@@ -102,7 +102,7 @@ function configureButtonHandler(bancontactCheckout) {
+ 
+         // Start payment flow with popup mode
+         await bancontactCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderPromise,
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/bizumPayments/html/src/app.js b/client/components/localPaymentMethods/bizumPayments/html/src/app.js
+index d89541f..27a2f6f 100644
+--- a/client/components/localPaymentMethods/bizumPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/bizumPayments/html/src/app.js
+@@ -90,7 +90,7 @@ function configureButtonHandler(bizumCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await bizumCheckout.start({ presentationMode: "popup" }, createOrder());
++        await bizumCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/blikPayLaterPayments/html/src/app.js b/client/components/localPaymentMethods/blikPayLaterPayments/html/src/app.js
+index 231f999..fe4871a 100644
+--- a/client/components/localPaymentMethods/blikPayLaterPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/blikPayLaterPayments/html/src/app.js
+@@ -78,7 +78,7 @@ function configureButtonHandler(blikpaylaterCheckout) {
+ 
+       if (isValid) {
+         await blikpaylaterCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/blikPayments/html/src/app.js b/client/components/localPaymentMethods/blikPayments/html/src/app.js
+index 8fcd839..b9701b7 100644
+--- a/client/components/localPaymentMethods/blikPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/blikPayments/html/src/app.js
+@@ -106,7 +106,7 @@ function configureButtonHandler(blikCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await blikCheckout.start({ presentationMode: "popup" }, createOrder());
++        await blikCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/boletobancarioPayments/html/src/app.js b/client/components/localPaymentMethods/boletobancarioPayments/html/src/app.js
+index 325fd89..fa70881 100644
+--- a/client/components/localPaymentMethods/boletobancarioPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/boletobancarioPayments/html/src/app.js
+@@ -162,7 +162,7 @@ async function configureBoletobancarioPayment(sdkInstance, currencyCode) {
+         // Start payment with popup presentation and billing data
+         // Call the function to get the promise
+         await boletobancarioCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createBoletobancarioOrder(currencyCode, billingData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/dokuPayments/html/src/app.js b/client/components/localPaymentMethods/dokuPayments/html/src/app.js
+index 4ebd727..fc0ccf3 100644
+--- a/client/components/localPaymentMethods/dokuPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/dokuPayments/html/src/app.js
+@@ -84,7 +84,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/dragonpayPayments/html/src/app.js b/client/components/localPaymentMethods/dragonpayPayments/html/src/app.js
+index b7f741f..ec9490b 100644
+--- a/client/components/localPaymentMethods/dragonpayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/dragonpayPayments/html/src/app.js
+@@ -206,7 +206,7 @@ async function configureDragonpayPayment(sdkInstance, currencyCode) {
+         console.log("Validation successful, starting payment flow...");
+         // Start payment with popup presentation and phone data
+         await dragonpayCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createDragonpayOrder(currencyCode, phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/epsPayments/html/src/app.js b/client/components/localPaymentMethods/epsPayments/html/src/app.js
+index 2104535..db3b343 100644
+--- a/client/components/localPaymentMethods/epsPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/epsPayments/html/src/app.js
+@@ -90,7 +90,7 @@ function configureButtonHandler(epsCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await epsCheckout.start({ presentationMode: "popup" }, createOrder());
++        await epsCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/estoniaBanksPayments/html/src/app.js b/client/components/localPaymentMethods/estoniaBanksPayments/html/src/app.js
+index 624ce49..052f2b5 100644
+--- a/client/components/localPaymentMethods/estoniaBanksPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/estoniaBanksPayments/html/src/app.js
+@@ -93,7 +93,7 @@ function configureButtonHandler(estoniaBanksCheckout) {
+ 
+         // Start payment flow with popup mode
+         await estoniaBanksCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/fiuuPayments/html/src/app.js b/client/components/localPaymentMethods/fiuuPayments/html/src/app.js
+index a7eb66a..33730d6 100644
+--- a/client/components/localPaymentMethods/fiuuPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/fiuuPayments/html/src/app.js
+@@ -67,7 +67,7 @@ function configureButtonHandler(apmCheckout) {
+     try {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+-        await apmCheckout.start({ presentationMode: "popup" }, createOrder());
++        await apmCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         showMessage({
+           text: "Please fill in all required fields correctly.",
+diff --git a/client/components/localPaymentMethods/floaPayments/html/src/app.js b/client/components/localPaymentMethods/floaPayments/html/src/app.js
+index 6c7f1b4..a33c552 100644
+--- a/client/components/localPaymentMethods/floaPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/floaPayments/html/src/app.js
+@@ -79,7 +79,7 @@ function configureButtonHandler(floaCheckout) {
+ 
+       if (isValid) {
+         await floaCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithFormData(formData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/fpxPayments/html/src/app.js b/client/components/localPaymentMethods/fpxPayments/html/src/app.js
+index f3fe9ae..03c5be9 100644
+--- a/client/components/localPaymentMethods/fpxPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/fpxPayments/html/src/app.js
+@@ -67,7 +67,7 @@ function configureButtonHandler(apmCheckout) {
+     try {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+-        await apmCheckout.start({ presentationMode: "popup" }, createOrder());
++        await apmCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         showMessage({
+           text: "Please fill in all required fields correctly.",
+diff --git a/client/components/localPaymentMethods/gopayPayments/html/src/app.js b/client/components/localPaymentMethods/gopayPayments/html/src/app.js
+index 24d641e..05e053b 100644
+--- a/client/components/localPaymentMethods/gopayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/gopayPayments/html/src/app.js
+@@ -83,7 +83,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/idealPayments/html/src/app.js b/client/components/localPaymentMethods/idealPayments/html/src/app.js
+index 917bc69..a89806a 100644
+--- a/client/components/localPaymentMethods/idealPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/idealPayments/html/src/app.js
+@@ -95,7 +95,7 @@ function configureButtonHandler(idealCheckout) {
+ 
+         // Start payment flow with popup mode
+         await idealCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderPromise,
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/indomaretPayments/html/src/app.js b/client/components/localPaymentMethods/indomaretPayments/html/src/app.js
+index 6d7f069..de8cab9 100644
+--- a/client/components/localPaymentMethods/indomaretPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/indomaretPayments/html/src/app.js
+@@ -83,7 +83,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/indonesiaBanksPayments/html/src/app.js b/client/components/localPaymentMethods/indonesiaBanksPayments/html/src/app.js
+index 7b2ed81..757d881 100644
+--- a/client/components/localPaymentMethods/indonesiaBanksPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/indonesiaBanksPayments/html/src/app.js
+@@ -85,7 +85,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/jeniuspayPayments/html/src/app.js b/client/components/localPaymentMethods/jeniuspayPayments/html/src/app.js
+index ead0083..a6c35c1 100644
+--- a/client/components/localPaymentMethods/jeniuspayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/jeniuspayPayments/html/src/app.js
+@@ -84,7 +84,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/klarnaPayments/html/src/app.js b/client/components/localPaymentMethods/klarnaPayments/html/src/app.js
+index 99b68df..3437d30 100644
+--- a/client/components/localPaymentMethods/klarnaPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/klarnaPayments/html/src/app.js
+@@ -106,10 +106,7 @@ function configureButtonHandler(klarnaCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await klarnaCheckout.start(
+-          { presentationMode: "popup" },
+-          createOrder(),
+-        );
++        await klarnaCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/kredivoPayments/html/src/app.js b/client/components/localPaymentMethods/kredivoPayments/html/src/app.js
+index c455225..b92ace4 100644
+--- a/client/components/localPaymentMethods/kredivoPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/kredivoPayments/html/src/app.js
+@@ -84,7 +84,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/latviaBanksPayments/html/src/app.js b/client/components/localPaymentMethods/latviaBanksPayments/html/src/app.js
+index c28bc76..daa6169 100644
+--- a/client/components/localPaymentMethods/latviaBanksPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/latviaBanksPayments/html/src/app.js
+@@ -175,7 +175,7 @@ async function configureLatviaBanksPayment(sdkInstance, currencyCode) {
+         console.log("Validation successful, starting payment flow...");
+         // Start payment with popup presentation
+         await latviabanksCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(currencyCode),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/linkajaPayments/html/src/app.js b/client/components/localPaymentMethods/linkajaPayments/html/src/app.js
+index 21bde90..54fdfee 100644
+--- a/client/components/localPaymentMethods/linkajaPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/linkajaPayments/html/src/app.js
+@@ -84,7 +84,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/app.js b/client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/app.js
+index 1b71b7e..04e25b6 100644
+--- a/client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/app.js
+@@ -176,7 +176,7 @@ async function configureLithuaniaBanksPayment(sdkInstance, currencyCode) {
+         console.log("Validation successful, starting payment flow...");
+         // Start payment with popup presentation
+         await lithuaniabanksCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(currencyCode),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/mbwayPayments/html/src/app.js b/client/components/localPaymentMethods/mbwayPayments/html/src/app.js
+index 76d4a9d..0ecc960 100644
+--- a/client/components/localPaymentMethods/mbwayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/mbwayPayments/html/src/app.js
+@@ -112,7 +112,7 @@ function configureButtonHandler(mbwayCheckout) {
+ 
+         // Start payment flow with popup mode and phone data
+         await mbwayCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/multibancoPayments/html/src/app.js b/client/components/localPaymentMethods/multibancoPayments/html/src/app.js
+index 21b9ea0..3f091f0 100644
+--- a/client/components/localPaymentMethods/multibancoPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/multibancoPayments/html/src/app.js
+@@ -92,7 +92,7 @@ function configureButtonHandler(multibancoCheckout) {
+ 
+         // Start payment flow with popup mode
+         await multibancoCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/mybankPayments/html/src/app.js b/client/components/localPaymentMethods/mybankPayments/html/src/app.js
+index b0c3079..076ecbe 100644
+--- a/client/components/localPaymentMethods/mybankPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/mybankPayments/html/src/app.js
+@@ -90,10 +90,7 @@ function configureButtonHandler(mybankCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await mybankCheckout.start(
+-          { presentationMode: "popup" },
+-          createOrder(),
+-        );
++        await mybankCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/ovoPayments/html/src/app.js b/client/components/localPaymentMethods/ovoPayments/html/src/app.js
+index 177a4f5..36cec93 100644
+--- a/client/components/localPaymentMethods/ovoPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/ovoPayments/html/src/app.js
+@@ -84,7 +84,7 @@ function configureButtonHandler(apmCheckout) {
+       const isValid = await apmCheckout.validate();
+       if (isValid) {
+         await apmCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/oxxopayPayments/html/src/app.js b/client/components/localPaymentMethods/oxxopayPayments/html/src/app.js
+index 76882a2..fcbe5fb 100644
+--- a/client/components/localPaymentMethods/oxxopayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/oxxopayPayments/html/src/app.js
+@@ -101,7 +101,7 @@ async function configureOxxopayPayment(sdkInstance, currencyCode) {
+         // Start payment with popup presentation. The session options are
+         // resolved once the order is created, supplying the expiry date.
+         await oxxoCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOxxopayOrder(currencyCode, expiryData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/p24Payments/html/src/app.js b/client/components/localPaymentMethods/p24Payments/html/src/app.js
+index e289ce5..7f8f1e3 100644
+--- a/client/components/localPaymentMethods/p24Payments/html/src/app.js
++++ b/client/components/localPaymentMethods/p24Payments/html/src/app.js
+@@ -106,7 +106,7 @@ function configureButtonHandler(p24Checkout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await p24Checkout.start({ presentationMode: "popup" }, createOrder());
++        await p24Checkout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/paysafecardPayments/html/src/app.js b/client/components/localPaymentMethods/paysafecardPayments/html/src/app.js
+index 310cfe9..6685f7b 100644
+--- a/client/components/localPaymentMethods/paysafecardPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/paysafecardPayments/html/src/app.js
+@@ -92,7 +92,7 @@ function configureButtonHandler(paysafecardCheckout) {
+ 
+         // Start payment flow with popup mode
+         await paysafecardCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/payseraPayments/html/src/app.js b/client/components/localPaymentMethods/payseraPayments/html/src/app.js
+index 0d96d47..334065d 100644
+--- a/client/components/localPaymentMethods/payseraPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/payseraPayments/html/src/app.js
+@@ -182,7 +182,7 @@ async function configurePayseraPayment(sdkInstance, currencyCode) {
+         console.log("Validation successful, starting payment flow...");
+         // Start payment with popup presentation
+         await payseraCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(currencyCode),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/payuPayments/html/src/app.js b/client/components/localPaymentMethods/payuPayments/html/src/app.js
+index 844c573..d742879 100644
+--- a/client/components/localPaymentMethods/payuPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/payuPayments/html/src/app.js
+@@ -90,7 +90,7 @@ function configureButtonHandler(payuCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await payuCheckout.start({ presentationMode: "popup" }, createOrder());
++        await payuCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/pixInternationalPayments/html/src/app.js b/client/components/localPaymentMethods/pixInternationalPayments/html/src/app.js
+index 3ca5198..e7bb243 100644
+--- a/client/components/localPaymentMethods/pixInternationalPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/pixInternationalPayments/html/src/app.js
+@@ -99,7 +99,7 @@ function configureButtonHandler(pixInternationalCheckout) {
+ 
+       if (isValid) {
+         await pixInternationalCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithTaxInfo(taxInfo),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/scalapayPayments/html/src/app.js b/client/components/localPaymentMethods/scalapayPayments/html/src/app.js
+index c8bd5f6..59c4aab 100644
+--- a/client/components/localPaymentMethods/scalapayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/scalapayPayments/html/src/app.js
+@@ -93,7 +93,7 @@ function configureButtonHandler(scalapayCheckout) {
+ 
+       if (isValid) {
+         await scalapayCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderWithPhone(phoneData),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/sepaPayments/html/src/app.js b/client/components/localPaymentMethods/sepaPayments/html/src/app.js
+index efc37f4..bfe8028 100644
+--- a/client/components/localPaymentMethods/sepaPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/sepaPayments/html/src/app.js
+@@ -98,7 +98,7 @@ function configureButtonHandler(sepaCheckout) {
+ 
+         // Start payment flow with popup mode
+         await sepaCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrderPromise,
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/skrillPayments/html/src/app.js b/client/components/localPaymentMethods/skrillPayments/html/src/app.js
+index 5097d83..3639463 100644
+--- a/client/components/localPaymentMethods/skrillPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/skrillPayments/html/src/app.js
+@@ -90,10 +90,7 @@ function configureButtonHandler(skrillCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await skrillCheckout.start(
+-          { presentationMode: "popup" },
+-          createOrder(),
+-        );
++        await skrillCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/swishPayments/html/src/app.js b/client/components/localPaymentMethods/swishPayments/html/src/app.js
+index 50f29a6..c4f54e2 100644
+--- a/client/components/localPaymentMethods/swishPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/swishPayments/html/src/app.js
+@@ -90,7 +90,7 @@ function configureButtonHandler(swishCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await swishCheckout.start({ presentationMode: "popup" }, createOrder());
++        await swishCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/thailandBanksPayments/html/src/app.js b/client/components/localPaymentMethods/thailandBanksPayments/html/src/app.js
+index 73771e6..6c648fd 100644
+--- a/client/components/localPaymentMethods/thailandBanksPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/thailandBanksPayments/html/src/app.js
+@@ -94,7 +94,7 @@ function configureButtonHandler(thailandBanksCheckout) {
+ 
+         // Start payment flow with popup mode
+         await thailandBanksCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/trustlyPayments/html/src/app.js b/client/components/localPaymentMethods/trustlyPayments/html/src/app.js
+index 1d578a7..ad4ad2f 100644
+--- a/client/components/localPaymentMethods/trustlyPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/trustlyPayments/html/src/app.js
+@@ -106,7 +106,7 @@ function configureButtonHandler(trustlyCheckout) {
+ 
+         // Start payment flow with popup mode
+         await trustlyCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/twintPayments/html/src/app.js b/client/components/localPaymentMethods/twintPayments/html/src/app.js
+index 77691fa..d54c193 100644
+--- a/client/components/localPaymentMethods/twintPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/twintPayments/html/src/app.js
+@@ -90,7 +90,7 @@ function configureButtonHandler(twintCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await twintCheckout.start({ presentationMode: "popup" }, createOrder());
++        await twintCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/verkkopankkiPayments/html/src/app.js b/client/components/localPaymentMethods/verkkopankkiPayments/html/src/app.js
+index 19d1e78..d9cd7b7 100644
+--- a/client/components/localPaymentMethods/verkkopankkiPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/verkkopankkiPayments/html/src/app.js
+@@ -108,7 +108,7 @@ function configureButtonHandler(verkkopankkiCheckout) {
+ 
+         // Start payment flow with popup mode
+         await verkkopankkiCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/wechatpayPayments/html/src/app.js b/client/components/localPaymentMethods/wechatpayPayments/html/src/app.js
+index 8e37594..f4c4007 100644
+--- a/client/components/localPaymentMethods/wechatpayPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/wechatpayPayments/html/src/app.js
+@@ -91,7 +91,7 @@ function configureButtonHandler(wechatpayCheckout) {
+ 
+         // Start payment flow with popup mode
+         await wechatpayCheckout.start(
+-          { presentationMode: "popup" },
++          { presentationMode: "auto" },
+           createOrder(),
+         );
+       } else {
+diff --git a/client/components/localPaymentMethods/weroPayments/html/src/app.js b/client/components/localPaymentMethods/weroPayments/html/src/app.js
+index 5b73df6..628a660 100644
+--- a/client/components/localPaymentMethods/weroPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/weroPayments/html/src/app.js
+@@ -90,7 +90,7 @@ function configureButtonHandler(weroCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await weroCheckout.start({ presentationMode: "popup" }, createOrder());
++        await weroCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/components/localPaymentMethods/zipPayments/html/src/app.js b/client/components/localPaymentMethods/zipPayments/html/src/app.js
+index f87a114..6f95e3b 100644
+--- a/client/components/localPaymentMethods/zipPayments/html/src/app.js
++++ b/client/components/localPaymentMethods/zipPayments/html/src/app.js
+@@ -90,7 +90,7 @@ function configureButtonHandler(zipCheckout) {
+         console.log("Validation successful, starting payment flow...");
+ 
+         // Start payment flow with popup mode
+-        await zipCheckout.start({ presentationMode: "popup" }, createOrder());
++        await zipCheckout.start({ presentationMode: "auto" }, createOrder());
+       } else {
+         console.error("Validation failed");
+         showMessage({
+diff --git a/client/index.html b/client/index.html
+index 2ab5b79..7f79956 100644
+--- a/client/index.html
++++ b/client/index.html
+@@ -210,6 +210,12 @@
+               >Recommended integration for Bank ACH</a
+             >
+           </li>
++          <li>
++            <a
++              href="/client/components/bankAchPayments/walletPayment/html/src/recommended/index.html"
++              >Recommended integration for Bank ACH Wallet</a
++            >
++          </li>
+         </ul>
+       </li>
+       <li>
+diff --git a/client/prebuiltPages/react/package.json b/client/prebuiltPages/react/package.json
+index 707bbda..870b928 100644
+--- a/client/prebuiltPages/react/package.json
++++ b/client/prebuiltPages/react/package.json
+@@ -13,7 +13,7 @@
+     "typecheck": "tsc --build --noEmit"
+   },
+   "dependencies": {
+-    "@paypal/react-paypal-js": "^10.4.0",
++    "@paypal/react-paypal-js": "^10.5.0",
+     "react": "19.2.8",
+     "react-dom": "19.2.8",
+     "react-error-boundary": "6.1.2",
+diff --git a/client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts b/client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts
+index fb93848..c4e8311 100644
+--- a/client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts
++++ b/client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts
+@@ -1,14 +1,17 @@
+ import { useCallback, useMemo, useState } from "react";
+ import type { EventPayload, FieldState } from "@paypal/react-paypal-js/sdk-v6";
+ 
+-export type CardFieldName = "number" | "cvv" | "expiry";
+-export type FieldsState = Record<CardFieldName, FieldState>;
++export type CardFieldName = "number" | "cvv" | "expiry" | "name";
++export type FieldsState = Record<Exclude<CardFieldName, "name">, FieldState> & {
++  name?: FieldState;
++};
+ type TouchedFields = Record<CardFieldName, boolean>;
+ 
+ const FIELD_LABELS: Record<CardFieldName, string> = {
+   number: "Card number",
+   cvv: "CVV",
+   expiry: "Expiry",
++  name: "Name",
+ };
+ 
+ const INITIAL_FIELD: FieldState = {
+@@ -28,6 +31,7 @@ const INITIAL_TOUCHED: TouchedFields = {
+   number: false,
+   cvv: false,
+   expiry: false,
++  name: false,
+ };
+ 
+ export type CardFieldsValidation = ReturnType<typeof useCardFieldsValidation>;
+@@ -40,8 +44,8 @@ export const useCardFieldsValidation = () => {
+   const [hasSubmitted, setHasSubmitted] = useState(false);
+ 
+   const syncFieldsState = useCallback((event: EventPayload) => {
+-    const { number, cvv, expiry } = event.data;
+-    setFieldsState({ number, cvv, expiry });
++    const { number, cvv, expiry, name } = event.data;
++    setFieldsState({ number, cvv, expiry, name });
+   }, []);
+ 
+   const handleBlur = useCallback(
+@@ -73,7 +77,10 @@ export const useCardFieldsValidation = () => {
+     (fieldName: CardFieldName): string | null => {
+       if (!touchedFields[fieldName] && !hasSubmitted) return null;
+       const field = fieldsState[fieldName];
+-      if (field.isEmpty) return `${FIELD_LABELS[fieldName]} is required`;
++      const isEmptyOrMissing = !field || field.isEmpty;
++
++      if (fieldName === "name" && isEmptyOrMissing) return null;
++      if (isEmptyOrMissing) return `${FIELD_LABELS[fieldName]} is required`;
+       if (!field.isValid) return `${FIELD_LABELS[fieldName]} is invalid`;
+       return null;
+     },
+@@ -83,7 +90,8 @@ export const useCardFieldsValidation = () => {
+   const isFormValid =
+     fieldsState.number.isValid &&
+     fieldsState.cvv.isValid &&
+-    fieldsState.expiry.isValid;
++    fieldsState.expiry.isValid &&
++    (!fieldsState.name || fieldsState.name.isEmpty || fieldsState.name.isValid);
+ 
+   return {
+     fieldsState,
+diff --git a/client/prebuiltPages/react/src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx b/client/prebuiltPages/react/src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx
+index eedf111..eb4586a 100644
+--- a/client/prebuiltPages/react/src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx
++++ b/client/prebuiltPages/react/src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx
+@@ -1,6 +1,7 @@
+ import {
+   PayPalCardCvvField,
+   PayPalCardExpiryField,
++  PayPalCardNameField,
+   PayPalCardNumberField,
+   usePayPalCardFields,
+   usePayPalCardFieldsOneTimePaymentSession,
+@@ -105,6 +106,16 @@ const PayPalCardFieldsOneTimePayment = ({
+           flexDirection: "column",
+         }}
+       >
++        <div className="card-field-wrapper">
++          <PayPalCardNameField
++            containerStyles={{ height: "3rem" }}
++            placeholder="Enter name"
++            style={invalidFieldStyle}
++          />
++          {getFieldError("name") && (
++            <span className="card-field-error">{getFieldError("name")}</span>
++          )}
++        </div>
+         <div className="card-field-wrapper">
+           <PayPalCardNumberField
+             containerStyles={{ height: "3rem" }}
+diff --git a/client/prebuiltPages/react/src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx b/client/prebuiltPages/react/src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx
+index c77f25c..c64c2a3 100644
+--- a/client/prebuiltPages/react/src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx
++++ b/client/prebuiltPages/react/src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx
+@@ -1,6 +1,7 @@
+ import {
+   PayPalCardCvvField,
+   PayPalCardExpiryField,
++  PayPalCardNameField,
+   PayPalCardNumberField,
+   usePayPalCardFields,
+   usePayPalCardFieldsSavePaymentSession,
+@@ -69,6 +70,12 @@ const PayPalCardFieldsSavePayment = ({
+           gap: "1rem",
+         }}
+       >
++        <PayPalCardNameField
++          containerStyles={{
++            height: "3rem",
++          }}
++          placeholder="Enter name"
++        />
+         <PayPalCardNumberField
+           containerStyles={{
+             height: "3rem",
+diff --git a/server/node/package.json b/server/node/package.json
+index 9b13236..11f8ba4 100644
+--- a/server/node/package.json
++++ b/server/node/package.json
+@@ -19,11 +19,11 @@
+   },
+   "license": "Apache-2.0",
+   "dependencies": {
+-    "@dotenvx/dotenvx": "^2.20.1",
+-    "@paypal/paypal-server-sdk": "^2.4.0",
++    "@dotenvx/dotenvx": "^2.23.0",
++    "@paypal/paypal-server-sdk": "^2.5.0",
+     "cors": "^2.8.6",
+     "express": "^5.2.1",
+-    "zod": "^4.4.3"
++    "zod": "^4.5.4"
+   },
+   "devDependencies": {
+     "@eslint/js": "^10.0.1",
+@@ -31,19 +31,19 @@
+     "@ngrok/ngrok": "^1.7.0",
+     "@types/cors": "^2.8.19",
+     "@types/express": "^5.0.6",
+-    "@types/node": "^26.2.0",
++    "@types/node": "^26.5.0",
+     "@types/semver": "^7.8.0",
+     "@types/supertest": "^7.2.1",
+-    "eslint": "^10.8.1",
++    "eslint": "^10.10.0",
+     "eslint-plugin-unicorn": "^65.0.0",
+-    "globals": "^17.9.0",
++    "globals": "^17.12.0",
+     "jiti": "^2.7.0",
+     "prettier": "^3.9.6",
+     "semver": "^7.8.5",
+     "supertest": "^7.2.2",
+-    "tsx": "^4.23.12",
++    "tsx": "^4.23.13",
+     "typescript": "^6.0.3",
+-    "typescript-eslint": "^8.66.0",
+-    "vitest": "^4.1.10"
++    "typescript-eslint": "^8.70.0",
++    "vitest": "^5.0.0"
+   }
+ }
+diff --git a/server/node/src/routes/index.ts b/server/node/src/routes/index.ts
+index 87acf46..871f64a 100644
+--- a/server/node/src/routes/index.ts
++++ b/server/node/src/routes/index.ts
+@@ -15,6 +15,7 @@ import {
+   createOrderForCardWithThreeDSecureRouteHandler,
+   getOrderRouteHandler,
+   captureOrderRouteHandler,
++  captureAchWalletOrderRouteHandler,
+ } from "./ordersRouteHandler";
+ 
+ import {
+@@ -78,6 +79,11 @@ router.post(
+   captureOrderRouteHandler,
+ );
+ 
++router.post(
++  "/paypal-api/checkout/orders/:orderId/capture-ach-wallet",
++  captureAchWalletOrderRouteHandler,
++);
++
+ router.post(
+   "/paypal-api/vault/create-setup-token-for-paypal-save-payment",
+   createSetupTokenForPayPalSavePaymentRouteHandler,
+diff --git a/server/node/src/routes/ordersRouteHandler.ts b/server/node/src/routes/ordersRouteHandler.ts
+index c7e9acf..0f26598 100644
+--- a/server/node/src/routes/ordersRouteHandler.ts
++++ b/server/node/src/routes/ordersRouteHandler.ts
+@@ -520,3 +520,78 @@ export async function captureOrderRouteHandler(
+ 
+   response.status(statusCode).json(result);
+ }
++
++/**
++ * Persists the buyer's authorization (consent) record to comply with NACHA.
++ *
++ * PayPal does not store the authorization on your behalf, so you must store it
++ * for every ACH transaction. Storage is hosted by the merchant. This demo just
++ * logs the record to the console.
++ *
++ * @param authorizationRecord - The consent record to persist
++ */
++async function storeConsent(authorizationRecord: Record<string, unknown>) {
++  console.log(
++    "Storing ACH authorization (consent) record for NACHA compliance:",
++    authorizationRecord,
++  );
++}
++
++/**
++ * Single endpoint for the ACH wallet flow: retrieves the order details, stores
++ * the buyer's authorization (consent) record for NACHA compliance, then captures
++ * the payment. The order status must be APPROVED before you capture.
++ *
++ * @param request - Express request; `params.orderId` is the approved order ID
++ * @param response - Express response
++ */
++export async function captureAchWalletOrderRouteHandler(
++  request: Request,
++  response: Response,
++) {
++  const { orderId } = z.object({ orderId: z.string() }).parse(request.params);
++
++  // 1. Retrieve order details to build the NACHA authorization record.
++  const { result: orderDetails, statusCode: getStatusCode } =
++    await ordersController.getOrder({ id: orderId });
++
++  if (getStatusCode !== 200) {
++    return response.status(getStatusCode).json(orderDetails);
++  }
++
++  // 2. Store the buyer's authorization (consent) record for NACHA compliance.
++  // The ACH debit details live under payment_source.bank.ach_debit, which the
++  // server SDK's PaymentSourceResponse type does not model, so we read it
++  // defensively.
++  const achDebit = (
++    orderDetails.paymentSource as
++      | {
++          bank?: {
++            achDebit?: {
++              bankName?: string;
++              lastDigits?: string;
++              accountHolderName?: string;
++            };
++          };
++        }
++      | undefined
++  )?.bank?.achDebit;
++  await storeConsent({
++    orderId,
++    bankName: achDebit?.bankName,
++    lastDigits: achDebit?.lastDigits,
++    accountHolderName: achDebit?.accountHolderName,
++    amount: orderDetails.purchaseUnits?.[0]?.amount?.value,
++    currencyCode: orderDetails.purchaseUnits?.[0]?.amount?.currencyCode,
++    authorizedAt: new Date().toISOString(),
++  });
++
++  // 3. Capture the payment.
++  const { result, statusCode } = await ordersController.captureOrder({
++    id: orderId,
++    prefer: "return=minimal",
++    paypalRequestId: randomUUID(),
++  });
++
++  response.status(statusCode).json(result);
++}

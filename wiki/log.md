@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-19] ingest | PayPal v6 sample `bb23e7c`
+
+- Full additive ingest with approved focused reading: ACH Wallet, optional card name, 46 LPM presentation updates and explicit sample limitations; preserved prior commits. Details: [[paypal-log]] and [[changelog-github-v6-web-sdk-sample-integration]].
+
 ## [2026-09-19] ingest | PayPal JS core 11.1.0 and React 10.5.0
 
 - Full additive ingest with the approved focused-reading exception; preserved older versions and added funding-source data, React LPM examples, card name field, and Venmo sandbox findings. Details: [[paypal-log]] and [[changelog-github-paypal-js]].

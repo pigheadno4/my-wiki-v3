@@ -2,9 +2,10 @@
 title: "GitHub: paypal-examples/v6-web-sdk-sample-integration"
 type: source
 date_ingested: 2026-04-17
-date_updated: 2026-08-30
+date_updated: 2026-09-19
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json"
   - "github-paypal-v6-samples.md"
@@ -17,9 +18,12 @@ tags: [paypal, web-sdk-v6, samples, node-js, react, card-fields, venmo, google-p
 
 Repository: <https://github.com/paypal-examples/v6-web-sdk-sample-integration>
 
+The latest collected baseline is `default-branch@bb23e7c` (`bb23e7c63305a872326f43c3d52c5edd53e20b43`, committed September 17, collected September 19, 2026). It adds ACH Wallet, optional cardholder-name fields, and local-method automatic presentation. Earlier commit-qualified findings below remain historical reference, not overwritten by this full additive update.
+
 ## Evidence Boundary
 
-- The current `de90a89` capsule retains 259 files totaling 864,367 bytes and excludes 11 files totaling 393,130 bytes under reviewed capsule policy. The generated comparison identifies eight retained changes from `b5f2df2`.
+- The `de90a89` capsule retains 259 files totaling 864,367 bytes and excludes 11 files totaling 393,130 bytes under reviewed capsule policy. The generated comparison identifies eight retained changes from `b5f2df2`.
+- The current `bb23e7c` capsule retains 262 files / 877,954 bytes with the same 11 exclusions. Comparison with `de90a89`: three added and 62 modified files; 197 unchanged retained files verified by SHA-256. Under an explicitly approved one-time focused-reading exception, all changed files and prior versions plus affected dependencies were read completely; the entire 532-path full-mode assignment was not semantically reread. Registry and immutable packet remain unchanged.
 - The sample demonstrates public integration contracts and orchestration. It does not establish merchant eligibility, regional availability, account enablement, certification, or production behavior.
 - No generated comparison connects the legacy `dd9ef8a` selection to `b5f2df2`; the earlier 36-file review is preserved as historical context and the current full baseline was compared manually during ingest.
 - Upstream README statements are not treated as stronger than contradictory implementation code.
@@ -58,7 +62,7 @@ Repository: <https://github.com/paypal-examples/v6-web-sdk-sample-integration>
 >
 > `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/components/applepayPayments/basicOneTimePayment/html/src/index.html:115-120`
 
-## Current Architecture at `b5f2df2`
+## Architecture Baseline at `b5f2df2`
 
 The repository combines static HTML/JavaScript examples, a React/TypeScript multi-flow application, and a Node.js Express backend. The backend uses `@paypal/paypal-server-sdk`, keeps product prices in a server-owned catalog, validates request bodies with Zod, and generates a fresh `PayPal-Request-Id` UUID for create, capture, subscription, and vault operations.
 
@@ -74,7 +78,7 @@ Advanced PayPal examples retain redirect, direct app switch, payment-handler, as
 
 ## Cards, Guest Payments, and Fastlane
 
-Card Fields exposes separate number, expiry, and CVV components. One-time submission returns `succeeded`, `canceled`, or `failed`; only success proceeds to capture. The 3DS variant creates an order with `SCA_ALWAYS` for sandbox testing. Save-without-purchase uses a setup token, submits it through `createCardFieldsSavePaymentSession()`, then upgrades it to a payment token server-side.
+At `b5f2df2`, Card Fields exposes separate number, expiry, and CVV components. One-time submission returns `succeeded`, `canceled`, or `failed`; only success proceeds to capture. The 3DS variant creates an order with `SCA_ALWAYS` for sandbox testing. HTML save-without-purchase uses a setup token, submits it through `createCardFieldsSavePaymentSession()`, then upgrades it to a payment token server-side. The React exception and later name field are documented below.
 
 Guest Payments supports click-to-open, automatic on-load, and shipping-callback patterns. Shipping callbacks can reject a non-US address or an unavailable shipping option; adding those callbacks changes presentation behavior to a popup or modal.
 
@@ -85,7 +89,7 @@ Fastlane uses a browser-safe client token, `identity.lookupCustomerByEmail()`, m
 The repository demonstrates both `VAULT_WITH_PAYMENT` and `VAULT_WITHOUT_PAYMENT`:
 
 - PayPal purchase plus vault sets `savePayment: true` in the session and `storeInVault: ON_SUCCESS` on the order.
-- PayPal and Card Fields save-without-purchase create a setup token, collect approval, upgrade it to a long-lived payment token, and keep that payment token server-side.
+- HTML PayPal and Card Fields save-without-purchase create a setup token, collect approval, upgrade it to a long-lived payment token, and keep that payment token server-side. Database persistence remains a placeholder; the React card flow does not perform that final token exchange.
 - Apple Pay purchase plus vault adds `paymentSource.applePay.attributes.vault.storeInVault: ON_SUCCESS` before confirm and capture.
 
 The subscription example initializes `paypal-subscriptions`, requests `RECURRING_PAYMENT` eligibility, and starts `createPayPalSubscriptionPaymentSession()`. The server uses an existing `PAYPAL_SUBSCRIPTION_PLAN_ID` or creates a sample product and active monthly plan before creating the subscription. This demonstrates the API sequence, not complete subscription lifecycle management.
@@ -143,10 +147,77 @@ The generated comparison contains eight paths: two added Basic Apple Pay files a
 - Upgrades the React sample from `@paypal/react-paypal-js ^10.1.0` to `^10.4.0`, adds native Apple Pay typings, and corrects the capability guard.
 - Updates React, router, Vite, lint, formatting, and Node development dependencies; `@paypal/paypal-server-sdk ^2.4.0` is unchanged.
 
+## Change from `de90a89` to `bb23e7c`
+
+### ACH Wallet: new HTML client and server route
+
+The new `client/components/bankAchPayments/walletPayment/html/` sample initializes `bank-ach-payments` with a browser-safe client token, a UUID client metadata ID and `pageType: "checkout"`. It checks `ach` eligibility with USD, `ONE_TIME_PAYMENT`, and `100.00`; creates `createBankAchWalletPaymentSession({ standardEntryClassCode: "WEB", ... })`; and connects the `bank-ach-wallet-payments` element to a lazy create-order callback:
+
+```js
+const createOrderSession = () => createOrder();
+walletSession.connect("bank-ach-wallet-payments", createOrderSession);
+```
+
+This excerpt assumes the sample's initialized session and server-backed helper. Unlike the older ACH button's `start()` with an order promise, `connect()` receives a callback for later order creation. No React ACH Wallet implementation is introduced.
+
+Approval calls `POST /paypal-api/checkout/orders/:orderId/capture-ach-wallet`. The new handler retrieves the order; returns early on a non-200 GET response; constructs a record with order ID, optional bank name/last digits/account holder, first purchase-unit amount/currency, and server timestamp; calls `storeConsent()`; then captures using `return=minimal` and a fresh request UUID. `.env.sample` now includes ACH Wallet in its `DOMAINS` guidance; the existing auth endpoint conditionally passes `domains[]`.
+
+> [!warning] Contradiction - ACH consent storage and approval enforcement
+> The README describes storing consent, but `storeConsent()` only calls `console.log`. The comment says the order must be APPROVED, but the handler does not inspect `orderDetails.status` before capture. A TypeScript assertion accesses optional `bank.achDebit` fields not modeled by the declared response type; it neither validates them nor proves deserialization retains them. This sample is not evidence of durable consent storage, regulatory compliance, or final settlement. See [[paypal-ach]].
+
+The wallet's hardcoded USD 100 eligibility amount also differs from its empty create-order request: the server default catalog cart totals USD 205 (two USD 75 items plus one USD 55 item). This default-cart pattern already exists in the older ACH button. Align eligibility and order amounts when adapting either example. The new README describes US merchants/USD and links a limited-release guide; treat that as snapshot guidance, not verified current enablement.
+
+### Optional cardholder name, including React
+
+HTML recommended, 3DS and save-card examples add and mount `createCardFieldsComponent({ type: "name", placeholder: "Name" })`. The README calls this optional. The two HTML one-time variants replace the example billing postal code `95131` with `countryCode: "US"`; this does not remove postal-code requirements for all integrations.
+
+The React sample declares `@paypal/react-paypal-js ^10.5.0` (previously `^10.4.0`) and imports `PayPalCardNameField` from `/sdk-v6` for both one-time and save-card forms. Field-only excerpt, rendered inside the existing `PayPalCardFieldsProvider` and initialized payment session:
+
+```tsx
+import { PayPalCardNameField } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCardNameField
+  placeholder="Enter name"
+  containerStyles={{ height: "3rem" }}
+/>
+```
+
+The one-time parent wires validation handlers into that provider. The hook retains required number, expiry and CVV checks and adds this optional-name condition:
+
+```ts
+(!fieldsState.name || fieldsState.name.isEmpty || fieldsState.name.isValid)
+```
+
+An absent/empty name is accepted; a populated invalid name is not. Validity, empty/notempty, and blur events update the field state. Successful one-time submission is checked through `submitResponse.state === "succeeded"` before a separate server capture. The snippet is not a complete checkout and does not establish payment success.
+
+> [!warning] Contradiction - React save-card completion
+> The React save-card page has a bare Card Fields provider without this validation hook. It displays success after setup-token submission, without calling the final payment-token endpoint. The HTML save-card flow does call `/paypal-api/vault/payment-token/create`, but the server's `savePaymentTokenToDatabase()` is empty. This corrects the earlier broad vault description; the React gap was already present at `de90a89`, not introduced by the name field. See [[paypal-vault]].
+
+### Local-method presentation and dependencies
+
+All 46 local-method HTML implementations change `presentationMode: "popup"` to `presentationMode: "auto"`. Session callbacks and completion strategy are unchanged: Bancontact, BLIK, EPS, iDEAL, P24 and SEPA still explicitly capture; the other 40 use order auto-completion plus retrieval. `auto` delegates presentation choice, not proof of browser-specific behavior.
+
+> [!warning] Contradiction - local-method presentation guidance
+> The shared README and some comments still describe popup mode, while code requests auto. The independently collected React 10.5.0 LPM wrappers are typed popup-only; do not assume the HTML change updates that package contract. See [[paypal-apm]] and [[source-github-paypal-js]].
+
+The Node sample moves `@paypal/paypal-server-sdk ^2.4.0` to `^2.5.0`, alongside environment/tooling updates. These manifest ranges do not establish exact installed versions or ingest the Server SDK's own release behavior. Existing Apple Pay, Google Pay, PayPal, Venmo, Fastlane and subscription implementation files are unchanged by hash. The externally hosted Web SDK runtime remains outside this snapshot.
+
+### Exact evidence for this update
+
+Paths below are under `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/files/`:
+
+- `client/components/bankAchPayments/walletPayment/html/README.md` and `src/recommended/app.js` (session at line 61; `connect()` at line 99), plus its HTML entry point.
+- `server/node/src/routes/ordersRouteHandler.ts:533-599` - consent logging and capture; `src/routes/index.ts` - route; `src/productCatalog.ts` - default-cart prices.
+- `client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts:94` - optional-name condition; `src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx` and `src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx` - field and completion code.
+- `client/components/localPaymentMethods/idealPayments/html/src/app.js:98` - representative `auto` option; all 46 changed implementations were read, not inferred from this one example.
+- `client/prebuiltPages/react/package.json` and `server/node/package.json` - declared ranges, not lockfile resolutions.
+
 ## Related
 
 - Company: [[paypal]]
 - Checkout: [[paypal-checkout]]
+- ACH: [[paypal-ach]]
+- Card fields: [[paypal-expanded-checkout]]
 - Local methods: [[paypal-apm]]
 - Fastlane: [[paypal-fastlane]]
 - Vaulting: [[paypal-vault]]
@@ -156,6 +227,10 @@ The generated comparison contains eight paths: two added Basic Apple Pay files a
 - Repository history: [[changelog-github-v6-web-sdk-sample-integration]]
 
 ## Raw Sources
+
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json` - immutable exact-SHA capsule for ACH Wallet, card-name and LPM presentation update
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/de90a89--bb23e7c/comparison.json` - 65 changed paths, 197 unchanged
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-review-9b81f89d.md` - user-approved focused-reading exception and operator review record
 
 - `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json` - immutable exact-SHA snapshot for the Basic Apple Pay delta
 - `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/b5f2df2--de90a89/comparison.json` - generated eight-path comparison

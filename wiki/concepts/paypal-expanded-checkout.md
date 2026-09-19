@@ -61,6 +61,12 @@ The paired `@paypal/react-paypal-js@9.3.0` Card Fields hooks pass those optional
 
 The retained one-time hook returns `Promise<void>` from `submit()` and stores success/failure in `submitResponse` and `error`; a resolved call alone does not prove successful payment. The accompanying story checks `submitResponse.state === "succeeded"` before a separate server capture. Its helper does not validate HTTP/capture status, so production finalization still requires server verification. The new field does not add automatic capture or establish merchant eligibility.
 
+### Sample adoption at `bb23e7c`
+
+The September 17, 2026 v6 sample declares React wrapper `^10.5.0` and adds `PayPalCardNameField` to one-time and save-card forms. Its one-time validation permits an absent/empty name but requires a nonempty name to be valid; number, expiry and CVV remain required. HTML recommended, 3DS and save-card examples mount a `type: "name"` component. The two HTML one-time variants replace the hardcoded postal code with `countryCode: "US"`; this is not a universal removal of postal-code requirements. Source: [[source-github-v6-web-sdk-sample-integration]].
+
+The React save-card form does not attach that validation hook and displays success after setup-token submission without making the final payment-token request. Keep this incomplete example separate from durable vault storage; see [[paypal-vault]].
+
 ### `liabilityShift`
 
 Returned in the `onApprove` callback after 3DS authentication. Indicates whether fraud liability has shifted from the merchant to the card issuer. Merchants use this to decide whether to capture.

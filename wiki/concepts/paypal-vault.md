@@ -43,9 +43,12 @@ The `paypal/postman-collections` baseline at `7f7240a` preserves both sides of t
 
 ### v6 sample server boundary at `b5f2df2`
 
-The current sample implements PayPal and card save-without-purchase by creating a setup token, collecting browser approval, and upgrading it with `VaultController.createPaymentToken()`. The resulting long-lived token is passed to a placeholder database function and deliberately not returned to the browser. Purchase-with-vault examples separately set `storeInVault: ON_SUCCESS` for PayPal and Apple Pay orders.
+The HTML sample implements PayPal and card save-without-purchase by creating a setup token, collecting browser approval, and upgrading it with `VaultController.createPaymentToken()`. The resulting long-lived token is passed to a placeholder database function and deliberately not returned to the browser. Purchase-with-vault examples separately set `storeInVault: ON_SUCCESS` for PayPal and Apple Pay orders.
 
 This is orchestration evidence, not a production token store: `savePaymentTokenToDatabase()` remains unimplemented in the sample.
+
+> [!warning] Contradiction - React save-card success is not durable vaulting
+> Review at `default-branch@bb23e7c` narrows the earlier repository-wide description: the React save-card example creates and submits a setup token, then displays success without calling `/paypal-api/vault/payment-token/create`. The HTML card example does make that request, but the shared server still has no implemented database persistence. The React gap already exists at `de90a89`; the new name field does not fix or introduce it. Source: [[source-github-v6-web-sdk-sample-integration]].
 
 ### Version 10.0.1 package evidence
 

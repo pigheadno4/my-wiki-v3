@@ -22,8 +22,8 @@ Operations history: [[paypal-log]]
 - [[source-stripe-paypal-custom-payment-method]] — PayPal as CPM: low-code adapter for Checkout, EU→standard PM vs global→CPM adapter decision rule (webpage, 2026-05-08)
 - [[source-stripe-subscriptions-paypal]] — PayPal subscription: Checkout + Direct API, off_session required, billing agreement ID, mandate.updated on revoke (webpage, 2026-05-13)
 - [[stripe-paypal]] — Stripe PayPal Integration: Checkout + SetupIntents, off_session critical, BAID, mandate.updated, detach cancels billing agreement
-- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 Web SDK samples through `de90a89`: Basic and recommended Apple Pay, React `^10.4.0`, HTML, Node, PayPal, Venmo, cards, Fastlane, vault, subscriptions, and 46 local methods
-- [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified history through the `b5f2df2` to `de90a89` Basic Apple Pay delta
+- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 Web SDK samples through `bb23e7c`: ACH Wallet, optional HTML/React card name, auto presentation for 46 local methods; earlier Apple Pay and baseline history retained
+- [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified history through `de90a89` to `bb23e7c`, with sample limitations and the approved focused-reading boundary
 - [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree-merchant v6 sample: one-time, vault, billing agreements, Pay Later/Credit, Messages, React, and Node at `f1c7123`
 - [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — first commit-qualified Braintree v6 sample baseline and production-boundary ledger (`f1c7123`)
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample: Orders, partner headers, Hosted Fields, shipping patches, subscriptions, and retained defects (`5409a3b`)
@@ -207,6 +207,8 @@ Operations history: [[paypal-log]]
 - [[source-paypal-payment-links-overview]] — Payment Links and Buttons overview: 4 no-code options, vs Invoicing (webpage, 2026-04-16)
 
 ## Concepts
+
+- [[paypal-ach]] — v6 ACH button versus Wallet flow, lazy order creation, consent/capture boundary, and sample limitations
 
 - [[paypal-checkout]] — PayPal Checkout: JS SDK + Orders API integration, package-qualified v6 environment and eligibility behavior
 - [[paypal-braintree-integration]] — Braintree PayPal v6: client-token provider, payment sessions, Pay Later and Messages, nonce-based server processing

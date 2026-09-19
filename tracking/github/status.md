@@ -1588,6 +1588,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.0--10.1.1/comparison.json)
 
+## `github-9b81f89deff88d93db88`
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- SHA: `bb23e7c63305a872326f43c3d52c5edd53e20b43`
+- Collection date: `2026-09-19`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json)
+- Packet: [review packet](repos/paypal/v6-web-sdk-sample-integration/ingest-packets/github-9b81f89deff88d93db88/packet.md)
+- Review priority: `high`
+- Required reading: `532` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@bb23e7c` (recommended `full`)
+  Ref: `main`
+  From SHA: `de90a89c90b06421ca34241e7162236e2b04fd79`
+  To SHA: `bb23e7c63305a872326f43c3d52c5edd53e20b43`
+  Comparison: [manifest](repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/de90a89--bb23e7c/comparison.json)
+
 ## `github-9ce02cb999656064a1a6`
 
 - Repository: `paypal/paypal-js`

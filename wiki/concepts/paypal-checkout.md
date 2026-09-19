@@ -87,19 +87,26 @@ These transports are version-specific. The iOS README lists PayPal SDK v5 as sup
 ## JS SDK v6 Key Details
 
 - **Script**: `https://www.paypal.com/web-sdk/v6/core` (prod) / `https://www.sandbox.paypal.com/web-sdk/v6/core` (sandbox)
-- **clientToken** (vaulting + Fastlane only): expires **15 minutes**; bound to domain; generate with `response_type=client_token` + `domains[]` params
-- **8 components**: paypal-payments, venmo-payments, paypal-guest-payments, paypal-messages, card-fields, fastlane, googlepay-payments, applepay-payments
+- **clientToken** (older setup-guide scope: vaulting + Fastlane): expires **15 minutes**; bound to domain; generate with `response_type=client_token` + `domains[]` params. Later Basic Apple Pay and ACH Wallet samples also use client tokens; the older list is not exhaustive.
+- **8 components in the older setup guide**: paypal-payments, venmo-payments, paypal-guest-payments, paypal-messages, card-fields, fastlane, googlepay-payments, applepay-payments. Later sample/package evidence adds other components.
 - **5 pageType values**: checkout, product-details, cart, mini-cart, home
 - **Eligibility**: `findEligibleMethods({currencyCode})` → `.isEligible("paypal"|"paylater"|"credit")`, `.getDetails()` returns `productCode` (Pay Later) / `countryCode` (Credit)
 - **Session methods**: `createPayPalOneTimePaymentSession()`, `createPayLaterOneTimePaymentSession()`, `createPayPalCreditOneTimePaymentSession()`
 - **Web components**: `<paypal-button>`, `<paypal-pay-later-button>`, `<paypal-credit-button>`
 - **Security**: NEVER pass item total from browser; validate order on server before capture
 
-### Current v6 sample baseline at `b5f2df2`
+### Historical v6 sample baseline at `b5f2df2`
 
 The `paypal-examples/v6-web-sdk-sample-integration` baseline combines static JavaScript, React/TypeScript, and Node.js examples. The standard PayPal flow fetches a server-owned client ID, checks PayPal, Pay Later, and Credit eligibility separately, starts the selected session with an unresolved create-order promise to preserve browser transient activation, and captures on approval.
 
 The React sample uses `@paypal/react-paypal-js@10.1.0` through `/sdk-v6` and explicitly sets `environment="sandbox"`, matching the v10 requirement below. Its dropdown gates Venmo, Pay Later, and Credit with `useEligibleMethods()` while retaining PayPal and guest card choices. These examples establish integration shape, not merchant or regional eligibility.
+
+### Sample update at `bb23e7c`
+
+The September 17, 2026 sample adds a client-token ACH Wallet flow and server consent/capture route, optional cardholder-name fields in HTML and React, and `auto` presentation in all 46 local-method HTML examples. It declares React wrapper `^10.5.0` and Server SDK `^2.5.0`; these are ranges, not locked installed versions. See [[paypal-ach]], [[paypal-expanded-checkout]], [[paypal-apm]], and [[source-github-v6-web-sdk-sample-integration]].
+
+> [!warning] Contradiction - older client-token scope
+> The older setup guide's vaulting/Fastlane-only description is narrower than the retained Basic Apple Pay (`de90a89`) and ACH Wallet (`bb23e7c`) implementations. This corrects the scope of the evidence, not merchant availability or hosted runtime guarantees.
 
 ### Historical server-side sample at `5409a3b`
 

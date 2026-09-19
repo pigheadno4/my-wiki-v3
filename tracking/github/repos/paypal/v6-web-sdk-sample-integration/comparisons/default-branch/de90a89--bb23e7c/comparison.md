@@ -1,0 +1,143 @@
+# GitHub repository ref comparison
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- Ref: `default-branch/main`
+- From SHA: `de90a89c90b06421ca34241e7162236e2b04fd79`
+- To SHA: `bb23e7c63305a872326f43c3d52c5edd53e20b43`
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.env.sample`
+- `client/components/bankAchPayments/walletPayment/html/README.md`
+- `client/components/bankAchPayments/walletPayment/html/src/recommended/app.js`
+- `client/components/bankAchPayments/walletPayment/html/src/recommended/index.html`
+- `client/components/cardFields/oneTimePayment/html/README.md`
+- `client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/app.js`
+- `client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/index.html`
+- `client/components/cardFields/oneTimePayment/html/src/recommended/app.js`
+- `client/components/cardFields/oneTimePayment/html/src/recommended/index.html`
+- `client/components/cardFields/savePayment/html/src/app.js`
+- `client/components/cardFields/savePayment/html/src/index.html`
+- `client/components/localPaymentMethods/afterpayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/alfamartPayments/html/src/app.js`
+- `client/components/localPaymentMethods/alipayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/bancontactPayments/html/src/app.js`
+- `client/components/localPaymentMethods/bizumPayments/html/src/app.js`
+- `client/components/localPaymentMethods/blikPayLaterPayments/html/src/app.js`
+- `client/components/localPaymentMethods/blikPayments/html/src/app.js`
+- `client/components/localPaymentMethods/boletobancarioPayments/html/src/app.js`
+- `client/components/localPaymentMethods/dokuPayments/html/src/app.js`
+- `client/components/localPaymentMethods/dragonpayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/epsPayments/html/src/app.js`
+- `client/components/localPaymentMethods/estoniaBanksPayments/html/src/app.js`
+- `client/components/localPaymentMethods/fiuuPayments/html/src/app.js`
+- `client/components/localPaymentMethods/floaPayments/html/src/app.js`
+- `client/components/localPaymentMethods/fpxPayments/html/src/app.js`
+- `client/components/localPaymentMethods/gopayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/idealPayments/html/src/app.js`
+- `client/components/localPaymentMethods/indomaretPayments/html/src/app.js`
+- `client/components/localPaymentMethods/indonesiaBanksPayments/html/src/app.js`
+- `client/components/localPaymentMethods/jeniuspayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/klarnaPayments/html/src/app.js`
+- `client/components/localPaymentMethods/kredivoPayments/html/src/app.js`
+- `client/components/localPaymentMethods/latviaBanksPayments/html/src/app.js`
+- `client/components/localPaymentMethods/linkajaPayments/html/src/app.js`
+- `client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/app.js`
+- `client/components/localPaymentMethods/mbwayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/multibancoPayments/html/src/app.js`
+- `client/components/localPaymentMethods/mybankPayments/html/src/app.js`
+- `client/components/localPaymentMethods/ovoPayments/html/src/app.js`
+- `client/components/localPaymentMethods/oxxopayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/p24Payments/html/src/app.js`
+- `client/components/localPaymentMethods/paysafecardPayments/html/src/app.js`
+- `client/components/localPaymentMethods/payseraPayments/html/src/app.js`
+- `client/components/localPaymentMethods/payuPayments/html/src/app.js`
+- `client/components/localPaymentMethods/pixInternationalPayments/html/src/app.js`
+- `client/components/localPaymentMethods/scalapayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/sepaPayments/html/src/app.js`
+- `client/components/localPaymentMethods/skrillPayments/html/src/app.js`
+- `client/components/localPaymentMethods/swishPayments/html/src/app.js`
+- `client/components/localPaymentMethods/thailandBanksPayments/html/src/app.js`
+- `client/components/localPaymentMethods/trustlyPayments/html/src/app.js`
+- `client/components/localPaymentMethods/twintPayments/html/src/app.js`
+- `client/components/localPaymentMethods/verkkopankkiPayments/html/src/app.js`
+- `client/components/localPaymentMethods/wechatpayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/weroPayments/html/src/app.js`
+- `client/components/localPaymentMethods/zipPayments/html/src/app.js`
+- `client/index.html`
+- `client/prebuiltPages/react/package.json`
+- `client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts`
+- `client/prebuiltPages/react/src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx`
+- `client/prebuiltPages/react/src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx`
+- `server/node/package.json`
+- `server/node/src/routes/index.ts`
+- `server/node/src/routes/ordersRouteHandler.ts`
+
+## Upstream changes
+
+- `modified`: `.env.sample`
+- `added`: `client/components/bankAchPayments/walletPayment/html/README.md`
+- `added`: `client/components/bankAchPayments/walletPayment/html/src/recommended/app.js`
+- `added`: `client/components/bankAchPayments/walletPayment/html/src/recommended/index.html`
+- `modified`: `client/components/cardFields/oneTimePayment/html/README.md`
+- `modified`: `client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/app.js`
+- `modified`: `client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/index.html`
+- `modified`: `client/components/cardFields/oneTimePayment/html/src/recommended/app.js`
+- `modified`: `client/components/cardFields/oneTimePayment/html/src/recommended/index.html`
+- `modified`: `client/components/cardFields/savePayment/html/src/app.js`
+- `modified`: `client/components/cardFields/savePayment/html/src/index.html`
+- `modified`: `client/components/localPaymentMethods/afterpayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/alfamartPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/alipayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/bancontactPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/bizumPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/blikPayLaterPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/blikPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/boletobancarioPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/dokuPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/dragonpayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/epsPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/estoniaBanksPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/fiuuPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/floaPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/fpxPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/gopayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/idealPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/indomaretPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/indonesiaBanksPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/jeniuspayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/klarnaPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/kredivoPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/latviaBanksPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/linkajaPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/mbwayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/multibancoPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/mybankPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/ovoPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/oxxopayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/p24Payments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/paysafecardPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/payseraPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/payuPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/pixInternationalPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/scalapayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/sepaPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/skrillPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/swishPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/thailandBanksPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/trustlyPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/twintPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/verkkopankkiPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/wechatpayPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/weroPayments/html/src/app.js`
+- `modified`: `client/components/localPaymentMethods/zipPayments/html/src/app.js`
+- `modified`: `client/index.html`
+- `modified`: `client/prebuiltPages/react/package.json`
+- `modified`: `client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts`
+- `modified`: `client/prebuiltPages/react/src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx`
+- `modified`: `client/prebuiltPages/react/src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx`
+- `modified`: `server/node/package.json`
+- `modified`: `server/node/src/routes/index.ts`
+- `modified`: `server/node/src/routes/ordersRouteHandler.ts`

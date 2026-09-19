@@ -37,6 +37,15 @@ The `default-branch@b5f2df2` v6 sample catalog contains 46 local-method implemen
 > [!warning] Contradiction - shared sample guidance
 > The repository's shared local-method README describes auto-completion as universal, but those six retained implementations use explicit capture. Determine completion behavior from the exact method implementation and current product documentation rather than applying one repository-wide rule.
 
+## Sample Presentation Update at `bb23e7c`
+
+All 46 local-method HTML implementations switch `presentationMode` from `popup` to `auto` in the September 17, 2026 sample commit. Completion behavior remains method-specific: the six explicit-capture paths above are unchanged. `auto` requests SDK-selected presentation; it does not prove a particular browser experience or merchant availability. Source: [[source-github-v6-web-sdk-sample-integration]].
+
+> [!warning] Contradiction - sample presentation guidance
+> The unchanged shared README and some inline comments still describe popup presentation, while the current implementations request `auto`. Separately, the collected React 10.5.0 LPM wrapper contract below is popup-only; do not copy the HTML option into that typed React API without matching package evidence.
+
+The new ACH Wallet sample is documented separately in [[paypal-ach]]; it is not one of these 46 local-method changes.
+
 ## v6 Core Type Surface
 
 `@paypal/paypal-js@11.0.0` adds `/sdk-v6` TypeScript contracts for 50 local-payment components. `createInstance({ components })` accepts package names such as `ideal-payments`, `bancontact-payments`, `blik-payments`, `pix-international-payments`, `wechatpay-payments`, and `sepa-payments`, and narrows the returned instance to the session-creation methods actually requested.

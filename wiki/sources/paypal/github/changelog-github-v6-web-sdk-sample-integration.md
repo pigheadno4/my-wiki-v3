@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal-examples/v6-web-sdk-sample-integration"
 type: source
 date_ingested: 2026-08-04
-date_updated: 2026-08-30
+date_updated: 2026-09-19
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json"
   - "github-paypal-v6-samples.md"
@@ -14,6 +15,39 @@ tags: [paypal, web-sdk-v6, samples, changelog, github-repository]
 ## Overview
 
 Commit-qualified history for `paypal-examples/v6-web-sdk-sample-integration`. Durable integration guidance belongs in [[source-github-v6-web-sdk-sample-integration]].
+
+## `default-branch@bb23e7c` - ACH Wallet and Card Name (2026-09-17)
+
+| Ref | Prior SHA | Current SHA | Ingest mode |
+| --- | --- | --- | --- |
+| `main` | `de90a89c90b06421ca34241e7162236e2b04fd79` | `bb23e7c63305a872326f43c3d52c5edd53e20b43` | Full additive; approved focused-reading exception |
+
+Collected and ingested September 19, 2026. Three added files and 62 modified files; 197 unchanged retained files verified by hash. Full reads covered all changed files, prior versions, and affected dependencies, not all 532 default assigned paths. Prior baselines remain in the cumulative source.
+
+### New and changed behavior
+
+- Adds HTML ACH Wallet using a browser-safe client token, `bank-ach-payments`, `ach` eligibility, `standardEntryClassCode: "WEB"`, and `connect()` with a lazy create-order callback.
+- Adds `POST /paypal-api/checkout/orders/:orderId/capture-ach-wallet`: get order, construct/log a consent record, then capture. Environment guidance now includes ACH Wallet for domain configuration.
+- Adds optional name fields to HTML recommended/3DS/save-card and React one-time/save-card examples. One-time React validation accepts an empty name but rejects a populated invalid name.
+- Changes all 46 local-method HTML examples from popup to auto presentation, retaining their separate explicit-capture and auto-completion strategies.
+- Raises declared React wrapper range `^10.4.0` to `^10.5.0` and Server SDK range `^2.4.0` to `^2.5.0`. These are dependency declarations, not exact package release ingests.
+
+### Findings and limits
+
+- ACH consent storage is console logging only; the capture handler does not locally enforce the documented APPROVED status. Optional bank fields are asserted, not validated. No compliance or settlement proof.
+- ACH eligibility uses USD 100 while the empty order request creates the USD 205 default cart; reconcile before use.
+- React save-card success does not include the final payment-token exchange. This gap predates the update; HTML performs the exchange but database persistence is still a placeholder.
+- Shared LPM guidance still says popup while HTML code requests auto. React LPM wrapper typing remains a separate package boundary.
+- No React ACH Wallet example or changed Apple Pay/Google Pay/subscription implementation is established.
+
+Updated source sections: evidence boundary; card/vault scope corrections; new ACH, name-field, presentation, dependency and limitation sections. Concepts: new [[paypal-ach]], plus [[paypal-checkout]], [[paypal-apm]], [[paypal-expanded-checkout]], and [[paypal-vault]]. Company, index and logs updated; source count unchanged.
+
+**Evidence:**
+
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json`
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/de90a89--bb23e7c/comparison.json`
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/de90a89--bb23e7c/diff.patch`
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-review-9b81f89d.md`
 
 ## `default-branch@de90a89` - Basic Apple Pay Delta (2026-08-29)
 
