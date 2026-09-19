@@ -187,6 +187,15 @@ Core `11.0.1` extends own-property environment checks to loader validation: lega
 > [!warning] Contradiction
 > React `10.4.1` release notes describe `onApprove` as required, but its unchanged button/hook type chain inherits the now-optional core member through dependency `^11.0.1`. Treat this as a documentation/type mismatch, not proof that an in-page checkout can omit finalization. See [[source-github-paypal-js]] and [[changelog-github-paypal-js]] for exact evidence. No runtime or compiler integration test was performed.
 
+### Core 11.1.0 and React 10.5.0
+
+The September 15 release adds required `fundingSource: FundingSource` members to core one-time, save-payment, legacy billing-agreement, and subscription approval-data types. Existing callbacks may ignore the field, but manually constructed typed approval objects and mocks must now provide it. This is distinct from whether the callback itself is optional. The loader implementation is unchanged from `11.0.1`. Source: [[source-github-paypal-js]].
+
+React `10.5.0` depends on core `^11.1.0`, adds the v6 LPM wrappers described in [[paypal-apm]], and adds the optional card name field described in [[paypal-expanded-checkout]]. Its Venmo one-time hook forwards a locally typed, temporary `sandboxSupport: { enabled: true }` flag to session start; this does not establish native SDK support, production availability, or merchant eligibility.
+
+> [!warning] Contradiction - eligibility examples
+> Some retained README and hook-comment examples pass REST-style `purchase_units` to the client `useEligibleMethods()` hook, but the exact client type accepts `amount`, `currencyCode`, and `paymentFlow`. The retained LPM stories use `payload: { currencyCode }`. Do not mix client options with server request shapes; [[source-github-paypal-js]] records the mismatch and version-qualified examples. The earlier callback documentation/type warning remains unresolved.
+
 ## Payment Failure Webhook Events
 
 - `PAYMENT.CAPTURE.COMPLETED` — successful capture

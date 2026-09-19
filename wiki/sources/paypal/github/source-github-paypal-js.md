@@ -2,9 +2,11 @@
 title: "GitHub: paypal/paypal-js"
 type: source
 date_ingested: 2026-04-13
-date_updated: 2026-09-13
+date_updated: 2026-09-19
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json"
+  - "github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json"
@@ -23,7 +25,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 ## Overview
 
-Latest ingested patches: `@paypal/paypal-js@11.0.1` and `@paypal/react-paypal-js@10.4.1` (September 10, 2026). These extend the preserved baselines below with loader validation, callback typing/documentation, and v6 ESM packaging corrections.
+Latest ingested releases: `@paypal/paypal-js@11.1.0` and `@paypal/react-paypal-js@10.5.0` (September 15, 2026; collected September 19). These add required funding-source approval data, React LPM wrappers, an optional v6 card name field, and a temporary Venmo sandbox flag. Earlier package-qualified knowledge remains below.
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
@@ -38,6 +40,7 @@ Repository: <https://github.com/paypal/paypal-js>
 - The React package delegates script loading and SDK behavior to `@paypal/paypal-js`; its component behavior remains separately versioned.
 - Runtime behavior implemented by `paypal/paypal-checkout-components` is outside this repository and requires that repository's own evidence history.
 - Current product guidance may be newer than an ingested historical package snapshot. Version-specific questions must use the matching release and SHA.
+- September 15 work item `github-961c3611b36c6341ad56` was approved as full additive ingest with an explicit item-specific focused reading scope: all 24 changed retained files, relevant dependencies, complete release/comparison records and wiki history, and all six attached Storybook files. The entire capsule remains immutable; unchanged unrelated files and generated schemas were not reread. This does not change the registry's default full-reading policy or claim a whole-repository review.
 
 ## Grounding excerpts
 
@@ -241,12 +244,34 @@ Repository: <https://github.com/paypal/paypal-js>
 >
 > [React README, line 336](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/react-paypal-js/README.md#L336)
 
+### September 15 grounding
+
+> `fundingSource: FundingSource;`
+>
+> Current snapshot `packages/paypal-js/types/v6/components/base-component.d.ts:11`.
+
+> "Added new PayPalCardNameField component to use with Card Fields"
+>
+> Current snapshot `packages/react-paypal-js/CHANGELOG.md:7`.
+
+> "Add React wrappers for all 50 v6 SDK Local Payment Methods (LPMs)"
+>
+> Current snapshot `packages/react-paypal-js/CHANGELOG.md:8`.
+
+> "Session fields are merchant-collected inputs resolved on the"
+>
+> Current snapshot `packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.ts:172`; the next two lines place them on the second `start()` argument.
+
+> "`sandboxSupport` is a temporary Venmo sandbox-testing flag that the JS SDK will"
+>
+> Current snapshot `packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts:19`; the comment continues with planned removal and local-only typing.
+
 ## Package status
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `11.0.1` | Approved delta ingest; v8 through 11.0.0 history retained |
-| `@paypal/react-paypal-js` | `10.4.1` | Approved delta ingest; v8 through 10.4.0 history retained |
+| `@paypal/paypal-js` | `11.1.0` | Full additive ingest with approved focused reading; v8 through 11.0.1 history retained |
+| `@paypal/react-paypal-js` | `10.5.0` | Same shared-SHA ingest; v8 through 10.4.1 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -405,6 +430,29 @@ Patch release at `b304434a881b58d057558043c8d4d2914d1b1a8f` (released 2026-09-10
 - **V6 ESM packaging:** [Rollup configuration](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/files/packages/paypal-js/rollup.config.js) writes a scoped `dist/v6/esm/package.json` containing `{"type":"module"}`, addressing module interpretation described in the release notes. Public export mappings and the legacy CommonJS package boundary are unchanged. The evidence is build configuration, not a tested published npm artifact.
 
 Earlier Apple Pay, Google Pay 3DS, and local-method findings remain versioned above; this patch does not establish new payment-method availability.
+
+#### `@paypal/paypal-js@11.1.0`
+
+Released September 15 at `abc4c8331a64e91d90a6eec911b635f36c0f273f`, compared with `11.0.1` at `b304434`. The new [FundingSource declaration](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/paypal-js/types/v6/components/constants.d.ts) is exported through `/sdk-v6`. Its 58 string literals cover wallet, card, and local-method identifiers.
+
+- Required `fundingSource` is added to `OnApproveDataOneTimePayments`, `OnApproveDataSavePayments`, `OnApproveDataBillingAgreements`, and `OnApproveDataSubscriptions`. Manually constructed typed data or test mocks can therefore stop compiling despite the minor version. Callbacks may ignore the new field; this does not make every existing integration incompatible or reverse the optional-callback change in `11.0.1`.
+- [Card Fields declarations](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/paypal-js/types/v6/components/card-fields.d.ts) add `"name"` to field types and optional `name?: FieldState` to field-event state. The React wrapper is separately added in `10.5.0`.
+- LPM session declarations already existed in `11.0.0`; formatting/type reuse in this release is not first-time runtime support. Registry keys and funding identifiers are not interchangeable: React uses `floa` and `fiuu`, whereas this union uses `floa_pay` and `fiuu_cash`.
+- The retained loader implementation is hash-identical to `11.0.1`. Core `rollup.config.js` is absent from this collection's capsule but is not an upstream deletion in the Git comparison; do not infer a build removal.
+
+Illustrative typed test data, not a payment request or observed SDK response:
+
+```ts
+import type { OnApproveDataOneTimePayments } from "@paypal/paypal-js/sdk-v6";
+
+// The same object without fundingSource no longer satisfies the 11.1.0 type.
+const approved: OnApproveDataOneTimePayments = {
+  orderId: "EXAMPLE-ORDER",
+  fundingSource: "ideal",
+};
+```
+
+The full-mode override reflects the required public member missed by the automated API scan. It does not rewrite the immutable packet's original delta recommendation.
 
 ## `@paypal/react-paypal-js`
 
@@ -652,6 +700,107 @@ The same September 10 SHA updates the core dependency from `^11.0.0` to `^11.0.1
 
 No runtime checkout, npm build/import, or merchant eligibility test was performed. The patch adds no retained React Apple Pay, Google Pay, or local-method implementation change.
 
+#### `@paypal/react-paypal-js@10.5.0`
+
+Released at the same September 15 SHA, compared with `10.4.1`; core dependency becomes `^11.1.0`. The [new exports](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/src/v6/lpmExports.ts) remain in `@paypal/react-paypal-js/sdk-v6`, sharing the existing provider/context/SDK instance. The legacy root entry is not replaced.
+
+**Local methods:** all 50 registry methods receive a named all-in-one button, a named session hook, and a standalone button. `LPMOneTimePaymentButton` and `useLPMOneTimePaymentSession` also accept a dynamic `lpm` key. [The registry](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/src/v6/config/lpmRegistry.ts) maps each method to its component, session creator, button tag, rendered fields, session fields, and sandbox buyer country. Use those mappings rather than deriving names; FIUU deliberately uses `fiuu-cash-payments` but `fiuu-button`.
+
+- LPM presentation options accept `popup`, not the other wallet presentation modes. Load the matching component and explicitly gate eligibility; the generic button/hook does not perform an eligibility request itself.
+- The all-in-one button renders SDK payment fields and accepts `fieldValues` for initial prefills. Keep that object stable across renders; changing its reference rebuilds the fields. Hook-returned field components accept an initial `value`, not a controlled React input contract.
+- Enhanced hooks return `LPMSessionProvider` and the method's field components, such as `NameField` for iDEAL and `NameField` plus `EmailField` for BLIK/MB WAY. Standalone buttons must be inside that session provider. Actual MB WAY exports are spelled `useMbwayOneTimePaymentSession` and `MbwayPaymentButton`.
+- `phone`, `billingAddress`, `taxInfo`, and other configured session fields are merged into the promise resolving to order data, the second `start()` argument. They are not presentation options. The wrapper only forwards configured, non-undefined values; it does not enforce all method-specific requirements.
+- [The session hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.ts) exposes `handleValidate()`, but `handleClick()` does not explicitly call it. `isPending` is SDK loading state, not a payment-in-progress lock. The source does not establish that the hosted SDK omits its own validation.
+- Named factories have `/*#__PURE__*/` annotations retained by Rollup, with package side-effect metadata for compatible bundlers. Unused wrappers can be removed, but the shared registry remains when an LPM is used. No npm artifact or bundle-size measurement was performed.
+
+**Card name:** `PayPalCardNameField` wraps the existing v6 `PayPalCardField` with `type="name"`; use it under `PayPalCardFieldsProvider`, with the appropriate session hook. The README describes it as optional. This is separate from the legacy root's `PayPalNameField`. The retained story gates `advanced_cards`, checks `submitResponse.state === "succeeded"`, and then calls server capture. The hook's `submit()` returns `Promise<void>` and catches errors into state, so resolution alone is not successful payment or capture.
+
+**Venmo sandbox:** the one-time hook accepts temporary, locally typed `sandboxSupport?: { enabled: boolean }` and forwards it to the first `start()` argument when supplied. The unchanged prebuilt Venmo button forwards hook props as well. This is web sandbox-test configuration, not native Venmo support, new production entitlement, or a core public type guarantee.
+
+##### React examples for the new APIs
+
+Adapted from the retained iDEAL/BLIK stories and exact type declarations; not executed integration tests. Application-provided `createOrder` and `onApprove` below must implement server-owned amounts, appropriate finalization, and response verification. They are not SDK backend helpers.
+
+```tsx
+import {
+  PayPalProvider,
+  IdealOneTimePaymentButton,
+  useEligibleMethods,
+  type IdealOneTimePaymentButtonProps,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+type CheckoutProps = {
+  createOrder: NonNullable<IdealOneTimePaymentButtonProps["createOrder"]>;
+  onApprove: NonNullable<IdealOneTimePaymentButtonProps["onApprove"]>;
+};
+const initialFields = { name: "Example Buyer" };
+
+function IdealCheckout(props: CheckoutProps) {
+  const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods({
+    payload: { currencyCode: "EUR" },
+  });
+  if (error) return <p>Payment method unavailable.</p>;
+  if (isLoading) return <p>Loading payment methods...</p>;
+  if (!eligiblePaymentMethods?.isEligible("ideal")) return null;
+  return (
+    <IdealOneTimePaymentButton
+      presentationMode="popup"
+      createOrder={props.createOrder}
+      onApprove={props.onApprove}
+      fieldValues={initialFields}
+    />
+  );
+}
+
+export function SandboxCheckout(props: CheckoutProps) {
+  return (
+    <PayPalProvider clientId="YOUR_SANDBOX_CLIENT_ID"
+      environment="sandbox" components={["ideal-payments"]}
+      testBuyerCountry="NL" pageType="checkout">
+      <IdealCheckout {...props} />
+    </PayPalProvider>
+  );
+}
+```
+
+For split field/button layout, inside the same provider and an eligibility-gated child:
+
+```tsx
+import {
+  useMbwayOneTimePaymentSession,
+  MbwayPaymentButton,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+// Inside your component; createOrder/onApprove are application callbacks.
+const { LPMSessionProvider, NameField, EmailField, isPending } =
+  useMbwayOneTimePaymentSession({
+    presentationMode: "popup", createOrder, onApprove,
+    phone: { countryCode: "351", nationalNumber: "912345678" },
+  });
+return (
+  <LPMSessionProvider>
+    <NameField />
+    <EmailField />
+    <MbwayPaymentButton disabled={isPending} />
+  </LPMSessionProvider>
+);
+```
+
+Load `mbway-payments` for that second example; the phone is merchant-collected session data, not another iframe field. Add application-level transaction state where needed; `isPending` alone does not provide it. For an existing v6 card form with its session hook, adding the name field is simply:
+
+```tsx
+import { PayPalCardNameField } from "@paypal/react-paypal-js/sdk-v6";
+
+// Inside the existing PayPalCardFieldsProvider, beside number/expiry/CVV.
+<PayPalCardNameField placeholder="Cardholder name"
+  containerStyles={{ height: "3rem" }} />;
+```
+
+> [!warning] Contradiction - eligibility examples
+> Some retained README and `useEligibleMethods` comment examples supply REST-style `purchase_units`, but the client hook's exact `FindEligibleMethodsOptions` accepts `amount`, `currencyCode`, and `paymentFlow`. Use the client shape shown above rather than copying the server shape. This is mirrored in [[paypal-checkout]]. The prior `onApprove` documentation/type mismatch remains historical evidence, not resolved by this release.
+
+**Example limitations:** the attached iDEAL/BLIK stories and shared Card Fields code await capture helpers that parse JSON without verifying `response.ok` or final capture status. Their success logs/UI do not prove capture. A card vault setup token likewise is not independently verified durable vault completion. No payment runtime, native integration, published-package compiler, or merchant-eligibility test was run; hosted behavior remains outside this source capsule.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -671,11 +820,19 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 ## Related
 
 - Company: [[paypal]]
-- Concepts: [[paypal-checkout]], [[paypal-vault]]
+- Concepts: [[paypal-checkout]], [[paypal-vault]], [[paypal-apm]], [[paypal-expanded-checkout]]
 - Sources: [[source-paypal-javascript-sdk-reference]], [[source-paypal-js-sdk-v6-setup]]
 
 ## Raw Sources
 
+- [September 15 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json)
+- [Core 11.1.0 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.0/2026-09-19/manifest.json) and [release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.0/2026-09-19/release-notes.md)
+- [React 10.5.0 release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.0/2026-09-19/manifest.json) and [release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.0/2026-09-19/release-notes.md)
+- [Core 11.0.1 to 11.1.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.0.1--11.1.0/comparison.json) and [React 10.4.1 to 10.5.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.4.1--10.5.0/comparison.json)
+- [React README](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/README.md), [client eligibility type](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/paypal-js/types/v6/components/find-eligible-methods.d.ts), and [client hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts)
+- [Base approval data](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/paypal-js/types/v6/components/base-component.d.ts), [save-payment data](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/paypal-js/types/v6/components/paypal-payments.d.ts), [billing-agreement data](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/paypal-js/types/v6/components/paypal-legacy-billing-agreements.d.ts), and [subscription data](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/paypal-js/types/v6/components/paypal-subscriptions.d.ts)
+- [Card name wrapper](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/src/v6/components/PayPalCardNameField.tsx), [one-time card hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/src/v6/hooks/usePayPalCardFieldsOneTimePaymentSession.ts), and [Venmo hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts)
+- [Same-SHA Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/manifest.json): all six retained files reviewed, including [iDEAL](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/files/packages/react-paypal-js-storybook/v6/src/stories/lpm/IdealOneTimePaymentButton.stories.tsx), [BLIK](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/files/packages/react-paypal-js-storybook/v6/src/stories/lpm/BlikOneTimePaymentButton.stories.tsx), [Card Fields](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/files/packages/react-paypal-js-storybook/v6/src/stories/card-fields/CardFieldsOneTimePayment.stories.tsx), [shared code](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/files/packages/react-paypal-js-storybook/v6/src/shared/code.ts), [shared helpers](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/files/packages/react-paypal-js-storybook/v6/src/shared/utils.ts), and [provider decorator](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/files/packages/react-paypal-js-storybook/v6/src/decorators/PayPalProviderDecorator.tsx)
 - [September 10 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json)
 - [Core 11.0.1 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.1/2026-09-13/manifest.json)
 - [Core 11.0.1 release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.1/2026-09-13/release-notes.md)

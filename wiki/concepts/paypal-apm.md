@@ -43,6 +43,14 @@ The `default-branch@b5f2df2` v6 sample catalog contains 46 local-method implemen
 
 An LPM session accepts presentation options plus a separate promise resolving to `orderId` and any merchant-collected phone, billing-address, tax, expiry-date, birth-date, or installment fields required by that method. The declared billing address requires both `addressLine2` and `adminArea2`. These declarations prove compile-time integration contracts only: they do not establish that all 50 methods are enabled for a merchant, available in every country, or implemented by this loader package at runtime.
 
+## React 10.5.0 LPM Integration
+
+`@paypal/react-paypal-js@10.5.0` adds wrappers and hooks for the 50 registry entries through the existing `/sdk-v6` export. This is a React-layer addition; core LPM types already existed in `@paypal/paypal-js@11.0.0`. Named all-in-one buttons, named hooks with field/session providers and standalone buttons, and the generic `LPMOneTimePaymentButton` share `PayPalProvider` and its SDK instance. LPM presentation is typed as `popup` only. Source: [[source-github-paypal-js]].
+
+Keep three boundaries separate: load the method's component, check eligibility for the checkout context, and then create/start its session. The retained iDEAL and BLIK stories gate rendering using `useEligibleMethods()` with EUR/NL and PLN/PL sandbox examples. Registry presence or `testBuyerCountry` is not merchant enablement. Rendered name/email fields accept initial values; phone, billing address, and other method-specific `sessionFields` are instead merged into the promise passed as the second `start()` argument.
+
+The hook exposes `handleValidate()`, but its click handler does not explicitly call it. `isPending` represents SDK initialization, not transaction-level duplicate-submit protection. Example capture helpers do not validate HTTP or final capture status, so their success display is not settlement evidence. The existing method-specific completion distinctions above remain in force. See [[changelog-github-paypal-js]] for the release boundary and [[source-github-paypal-js]] for React snippets.
+
 ## Swish (Sweden) — Added Nov 2025
 
 > [!info] Not in APM overview table

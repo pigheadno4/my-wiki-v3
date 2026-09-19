@@ -55,6 +55,12 @@ In `@paypal/paypal-js@9.8.0`, both one-time and save-payment Card Fields session
 
 The paired `@paypal/react-paypal-js@9.3.0` Card Fields hooks pass those optional submit values through for both order IDs and vault setup tokens.
 
+### React 10.5.0 v6 name field
+
+`@paypal/react-paypal-js@10.5.0` adds `PayPalCardNameField` to `/sdk-v6`; core `@paypal/paypal-js@11.1.0` adds the `name` field type and optional name-field event state. This is the v6 wrapper, not the older legacy `PayPalNameField`. Render it within `PayPalCardFieldsProvider`; a one-time or save-payment hook selects and initializes the session. The README describes the name field as optional. Source: [[source-github-paypal-js]].
+
+The retained one-time hook returns `Promise<void>` from `submit()` and stores success/failure in `submitResponse` and `error`; a resolved call alone does not prove successful payment. The accompanying story checks `submitResponse.state === "succeeded"` before a separate server capture. Its helper does not validate HTTP/capture status, so production finalization still requires server verification. The new field does not add automatic capture or establish merchant eligibility.
+
 ### `liabilityShift`
 
 Returned in the `onApprove` callback after 3DS authentication. Indicates whether fraud liability has shifted from the merchant to the card issuer. Merchants use this to decide whether to capture.

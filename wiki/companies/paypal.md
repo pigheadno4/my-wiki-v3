@@ -17,6 +17,8 @@ Standard e-commerce integration that renders PayPal, Venmo, and Debit/Credit Car
 
 ### PayPal JS SDK
 
+The September 15 releases, `@paypal/paypal-js@11.1.0` and `@paypal/react-paypal-js@10.5.0`, add required funding-source approval data, React wrappers for 50 v6 local methods, an optional v6 card name field, and a temporary Venmo sandbox-testing flag. Existing typed approval mocks may need updates. LPM eligibility and payment finalization remain explicit integration responsibilities; these package changes do not prove merchant enablement. See [[source-github-paypal-js]] for implementation and React examples, and [[changelog-github-paypal-js]] for preserved version history.
+
 The September 10 patches, core `11.0.1` and React `10.4.1`, refine environment validation, optional one-time approval callback types, async-finalization documentation, and scoped v6 ESM packaging. React's release-note claim that the callback is required conflicts with the inherited optional type; this is recorded in [[source-github-paypal-js]], not treated as permission to omit payment finalization.
 
 Client-side SDK injected via `<script>` tag. Renders payment buttons on the page and manages the checkout pop-up lifecycle. Accessed globally via `window.paypal`. Handles:

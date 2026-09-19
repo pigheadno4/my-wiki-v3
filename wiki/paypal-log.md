@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-19] ingest | paypal/paypal-js core 11.1.0 and React 10.5.0
+
+- Full additive ingest of `github-961c3611b36c6341ad56`, shared SHA `abc4c8331a64e91d90a6eec911b635f36c0f273f`, released September 15: core 11.0.1 to 11.1.0 and React 10.4.1 to 10.5.0.
+- User-approved item-specific scope: full reads of all 24 changed retained files, relevant dependencies and history, release/comparison records, and six attached same-SHA Storybook files. The full capsule is preserved; unrelated unchanged files and generated schemas were not all reread. Registry and immutable packet remain unchanged.
+- Added required funding-source approval data, LPM wrapper/session/field boundaries and React examples, optional v6 card name field, temporary Venmo sandbox flag, and eligibility-example contradictions. Earlier versions remain in [[source-github-paypal-js]] and [[changelog-github-paypal-js]].
+- Updated checkout, APM, and expanded-checkout concepts before source edits; updated company and provider index. Source count remains 177 because no source page was added. No cross-company comparison warranted.
+- No runtime payment, npm build/compiler, merchant eligibility, or bundle-size proof. No commit or push in this ingest operation.
+
 ## [2026-09-13] ingest | paypal/paypal-js core 11.0.1 and React 10.4.1
 
 - Serial delta ingest of `github-d21f4ea0c14aed999bce`, shared SHA `b304434a881b58d057558043c8d4d2914d1b1a8f`: core 11.0.0 to 11.0.1 and React 10.4.0 to 10.4.1.

@@ -1,0 +1,3782 @@
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index f78dbac..ebc03f7 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,44 @@
+ # Changelog
+ 
++## 10.5.0
++
++### Minor Changes
++
++- 4286bfc: Added new PayPalCardNameField component to use with Card Fields
++- 7060972: Add React wrappers for all 50 v6 SDK Local Payment Methods (LPMs) to the existing `@paypal/react-paypal-js/sdk-v6` entry. The legacy `@paypal/react-paypal-js` entry remains unaffected.
++
++  Each LPM ships three usage patterns:
++
++  ```tsx
++  import {
++    PayPalProvider,
++    IdealOneTimePaymentButton,
++    useIdealOneTimePaymentSession,
++    IdealPaymentButton,
++  } from "@paypal/react-paypal-js/sdk-v6";
++  ```
++
++  - An all-in-one named button, e.g. `IdealOneTimePaymentButton`.
++  - A split hook + standalone button, e.g. `useIdealOneTimePaymentSession` + `IdealPaymentButton`.
++  - A generic dynamic-selector button, `LPMOneTimePaymentButton`.
++
++  PayPal and LPM components imported from `@paypal/react-paypal-js/sdk-v6` share the same `PayPalProvider`, React context, and SDK instance. Named LPM factory calls are annotated as side-effect free, allowing compatible bundlers to remove unused React wrapper components and hooks. When at least one LPM is used, the shared `LPM_REGISTRY` remains because the factories access it by runtime key.
++
++  The rendered payment fields can be prefilled with initial values (mapping to the SDK `createPaymentFields({ value })` option):
++  - `LPMOneTimePaymentButton` (and the named `*OneTimePaymentButton` components) accept a `fieldValues` prop, e.g. `fieldValues={{ name: "John Doe", email: "john@example.com" }}`.
++  - The field components returned by the `use*OneTimePaymentSession` hooks accept a `value` prop.
++
++  Each entry in `LPM_REGISTRY` also carries a `testBuyerCountry` (ISO 3166 alpha-2) so sandbox/testing integrations can set the buyer country the LPM session creators require.
++
++- 3dbd4a7: Updates the useVenmo one time payment hook to accept the sandboxSupport object and pass it to .start.
++
++### Patch Changes
++
++- Updated dependencies [d4bc19a]
++- Updated dependencies [cb9899e]
++- Updated dependencies [a6997f0]
++  - @paypal/paypal-js@11.1.0
++
+ ## 10.4.1
+ 
+ ### Patch Changes
+diff --git a/packages/react-paypal-js/README.md b/packages/react-paypal-js/README.md
+index e8674bd..16e9c4a 100644
+--- a/packages/react-paypal-js/README.md
++++ b/packages/react-paypal-js/README.md
+@@ -46,12 +46,18 @@
+   - [PayPalCreditOneTimePaymentButton](#paypalcreditonetimepaymentbutton)
+   - [PayPalCreditSavePaymentButton](#paypalcreditsavepaymentbutton)
+   - [ApplePayOneTimePaymentButton](#applepayonetimepaymentbutton)
++- [Local Payment Methods (LPM)](#local-payment-methods-lpm)
++  - [Quick Start](#quick-start-1)
++  - [Presentation mode](#presentation-mode)
++  - [Multi-field LPMs](#multi-field-lpms)
++  - [Resources](#resources-1)
+ - [Payment Flow](#payment-flow)
+ - [Card Fields Components](#card-fields-components)
+   - [PayPalCardFieldsProvider](#paypalcardfieldsprovider)
+   - [PayPalCardNumberField](#paypalcardnumberfield)
+   - [PayPalCardExpiryField](#paypalcardexpiryfield)
+   - [PayPalCardCvvField](#paypalcardcvvfield)
++  - [PayPalCardNameField](#paypalcardnamefield-optional-field)
+   - [Field Component Props](#field-component-props)
+ - [Payment Flow: Card Fields](#payment-flow-card-fields)
+ - [Hooks API](#hooks-api)
+@@ -922,6 +928,121 @@ export default function App() {
+ - `applePayConfig` is required and must be obtained from `useEligibleMethods()`
+ - `onApprove` receives `ConfirmOrderResponse` — capture the order using `data.approveApplePayPayment.id`
+ 
++## Local Payment Methods (LPM)
++
++`react-paypal-js` ships pre-built components and hooks for 45+ regional Local Payment Methods (LPMs) — iDEAL, Bancontact, BLIK, Pix, Klarna, and more — from the same `@paypal/react-paypal-js/sdk-v6` entry as the other v6 payment methods. With static named imports, compatible production bundlers can remove unused LPM React wrapper components and hooks. When at least one LPM is used, the shared `LPM_REGISTRY` remains in the bundle because it is accessed by runtime key.
++
++Every LPM exposes the same three integration points, named after the method (e.g. `Ideal`, `Bancontact`, `Pix`):
++
++- **`<Ideal>OneTimePaymentButton`** — the simplest way to add an LPM. Renders any required buyer fields (e.g. full name) and the payment button in one self-contained component, mirroring `PayPalOneTimePaymentButton`.
++- **`use<Ideal>OneTimePaymentSession`** — a hook for full control over the click handler, pending/error state, and rendering your own button UI.
++- **`<Ideal>PaymentButton`** — a standalone button component that reads its session from context (see "Multi-field LPMs" below), for LPMs whose required fields need to be laid out separately from the button.
++
++Generic (non-name-specific) exports — `LPMOneTimePaymentButton`, `useLPMOneTimePaymentSession`, `LPM_REGISTRY`, and `LPMName` — are also available from the same V6 entry if you want to select the LPM dynamically (e.g. `lpm="ideal"`) rather than importing a specific named component.
++
++### Quick Start
++
++```tsx
++import {
++  PayPalProvider,
++  IdealOneTimePaymentButton,
++} from "@paypal/react-paypal-js/sdk-v6";
++
++async function createOrder() {
++  const response = await fetch("/api/paypal/create-order", {
++    method: "POST",
++    headers: { "Content-Type": "application/json" },
++    body: JSON.stringify({ items: [{ id: "item-1", quantity: 1 }] }),
++  });
++  const data = await response.json();
++  return { orderId: data.id };
++}
++
++async function onApprove(data) {
++  const response = await fetch(`/api/paypal/capture/${data.orderId}`, {
++    method: "POST",
++  });
++  console.log("iDEAL payment captured:", await response.json());
++}
++
++export default function App() {
++  return (
++    <PayPalProvider
++      clientId="YOUR_CLIENT_ID"
++      environment="sandbox"
++      components={["ideal-payments"]}
++      pageType="checkout"
++    >
++      <IdealOneTimePaymentButton
++        presentationMode="popup"
++        createOrder={createOrder}
++        onApprove={onApprove}
++        onCancel={() => console.log("Payment cancelled")}
++      />
++    </PayPalProvider>
++  );
++}
++```
++
++### Presentation mode
++
++LPMs only support `presentationMode="popup"` — `"auto"`, `"modal"`, and other presentation modes available on `PayPalOneTimePaymentButton` are not supported for LPMs and are rejected at the type level.
++
++### Multi-field LPMs
++
++Some LPMs (e.g. Pix, MB WAY, FLOA) require additional buyer-provided data — phone number, billing address, tax ID, or date of birth — passed via session fields rather than the presentation-mode options. Check `LPM_REGISTRY["<lpm>"].sessionFields` for which fields a given LPM needs.
++
++```tsx
++import { PixInternationalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
++
++<PixInternationalOneTimePaymentButton
++  presentationMode="popup"
++  createOrder={createOrder}
++  onApprove={onApprove}
++  phone={{ countryCode: "55", nationalNumber: "11987654321" }}
++  billingAddress={{
++    addressLine1: "123 Main St",
++    addressLine2: "Apt 4",
++    adminArea1: "SP",
++    adminArea2: "São Paulo",
++    postalCode: "01310-100",
++    countryCode: "BR",
++  }}
++  taxInfo={{ taxId: "12345678909", taxIdType: "BR_CPF" }}
++/>;
++```
++
++For layouts where the buyer fields need to be positioned independently of the button (e.g. fields above a form, button in a sticky footer), use the enhanced hook form instead — it returns field components and a `LPMSessionProvider` alongside the session state:
++
++```tsx
++import { useMbwayOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
++
++function MbWayCheckout() {
++  // "phone" is a session field for MB WAY (LPM_REGISTRY.mbway.sessionFields),
++  // so it's passed directly to the hook rather than rendered as a field component.
++  const { LPMSessionProvider, NameField, EmailField, isPending } =
++    useMbwayOneTimePaymentSession({
++      presentationMode: "popup",
++      createOrder,
++      onApprove,
++      phone: { countryCode: "351", nationalNumber: "912345678" },
++    });
++
++  return (
++    <LPMSessionProvider>
++      <NameField />
++      <EmailField />
++      <MbwayPaymentButton disabled={isPending} />
++    </LPMSessionProvider>
++  );
++}
++```
++
++### Resources
++
++- [PayPal V6 SDK Local Payment Methods Documentation](https://docs.paypal.ai/payments/methods)
++- [React Sample Integration](https://github.com/paypal-examples/v6-web-sdk-sample-integration/tree/main/client/prebuiltPages/react) — Full working example with Node.js backend
++
+ ## Payment Flow
+ 
+ 1. User clicks a payment button
+@@ -1023,9 +1144,22 @@ import { PayPalCardCvvField } from "@paypal/react-paypal-js/sdk-v6";
+ />;
+ ```
+ 
++### PayPalCardNameField (Optional Field)
++
++Renders a Name input field. Must be used within a [PayPalCardFieldsProvider](#paypalcardfieldsprovider) component. This field is optional, and a transaction can complete without it being rendered or filled.
++
++```tsx
++import { PayPalCardNameField } from "@paypal/react-paypal-js/sdk-v6";
++
++<PayPalCardNameField
++  placeholder="Name"
++  containerStyles={{ height: "3rem", marginBottom: "1rem" }}
++/>;
++```
++
+ ### Field Component Props
+ 
+-All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPalCardExpiryField`](#paypalcardexpiryfield), [`PayPalCardCvvField`](#paypalcardcvvfield)) accept the same set of props. They combine container styling properties with CardField-specific configuration options.
++All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPalCardExpiryField`](#paypalcardexpiryfield), [`PayPalCardCvvField`](#paypalcardcvvfield), and [`PayPalCardNameField`](#paypalcardnamefield-optional-field)) accept the same set of props. They combine container styling properties with CardField-specific configuration options.
+ 
+ | Prop                      | Type                  | Required | Description                                    |
+ | ------------------------- | --------------------- | -------- | ---------------------------------------------- |
+@@ -1040,7 +1174,7 @@ All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPa
+ 
+ ## Payment Flow: Card Fields
+ 
+-1. User enters card number, expiry, and CVV in the card fields
++1. User enters card number, expiry, CVV, and an optional name in the card fields
+ 2. User clicks your submit button
+ 3. `createOrder` creates an order via your backend API
+ 4. `submit(orderId)` processes the card payment with the order ID
+@@ -1568,6 +1702,7 @@ function CardPaymentForm() {
+ 
+   return (
+     <div>
++      <PayPalCardNameField />
+       <PayPalCardNumberField />
+       <PayPalCardExpiryField />
+       <PayPalCardCvvField />
+@@ -1628,6 +1763,7 @@ function CardPaymentForm() {
+ 
+   return (
+     <div>
++      <PayPalCardNameField />
+       <PayPalCardNumberField />
+       <PayPalCardExpiryField />
+       <PayPalCardCvvField />
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index 6d79024..e7b2fec 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "10.4.1",
++  "version": "10.5.0",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+@@ -15,6 +15,13 @@
+   "main": "index.js",
+   "module": "dist/esm/react-paypal-js.js",
+   "types": "dist/types/index.d.ts",
++  "sideEffects": [
++    "./index.js",
++    "./dist/cjs/**",
++    "./dist/esm/**",
++    "./dist/v6/esm/server.js",
++    "./dist/v6/esm/server.min.js"
++  ],
+   "publishConfig": {
+     "access": "public"
+   },
+@@ -59,7 +66,7 @@
+   },
+   "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
+   "dependencies": {
+-    "@paypal/paypal-js": "^11.0.1",
++    "@paypal/paypal-js": "^11.1.0",
+     "@paypal/sdk-constants": "^1.0.122",
+     "server-only": "^0.0.1"
+   },
+diff --git a/packages/react-paypal-js/rollup.config.js b/packages/react-paypal-js/rollup.config.js
+index 2dcd2ba..55a9186 100644
+--- a/packages/react-paypal-js/rollup.config.js
++++ b/packages/react-paypal-js/rollup.config.js
+@@ -96,8 +96,9 @@ export default [
+     ],
+   },
+ 
+-  // V6 ESM build
++  // V6 Client ESM build
+   // - Bundle-level "use client" directive for RSC compatibility
++  // - Exposes core and LPM APIs from one public client entry
+   // - Externalizes @paypal/paypal-js to avoid bundling the core SDK
+   // - Externalizes server-only for RSC server/client boundary enforcement
+   // - ESM-only (no CJS) as v6 targets modern React/Next.js environments
+@@ -108,7 +109,7 @@ export default [
+         tsconfig: "./tsconfig.v6.json",
+       }),
+       cleanup({
+-        comments: "none",
++        comments: [/__PURE__/],
+       }),
+       emitEsmModuleMarker(),
+     ],
+diff --git a/packages/react-paypal-js/src/v6/components/LPMOneTimePaymentButton.test.tsx b/packages/react-paypal-js/src/v6/components/LPMOneTimePaymentButton.test.tsx
+new file mode 100644
+index 0000000..ce7944c
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/components/LPMOneTimePaymentButton.test.tsx
+@@ -0,0 +1,211 @@
++import React from "react";
++import { render, fireEvent } from "@testing-library/react";
++
++import { LPMOneTimePaymentButton } from "./LPMOneTimePaymentButton";
++import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
++import { usePayPal } from "../hooks/usePayPal";
++
++import type { LPMOneTimePaymentButtonProps } from "./LPMOneTimePaymentButton";
++
++jest.mock("../hooks/useLPMOneTimePaymentSession", () => ({
++  useLPMOneTimePaymentSession: jest.fn(),
++}));
++jest.mock("../hooks/usePayPal", () => ({
++  usePayPal: jest.fn(),
++}));
++
++const mockUseLPMOneTimePaymentSession =
++  useLPMOneTimePaymentSession as jest.Mock;
++const mockUsePayPal = usePayPal as jest.Mock;
++
++const mockHandleClick = jest.fn();
++
++const defaultProps: LPMOneTimePaymentButtonProps = {
++  lpm: "ideal",
++  presentationMode: "popup",
++  orderId: "test-order-id",
++  onApprove: jest.fn().mockResolvedValue(undefined),
++};
++
++describe("LPMOneTimePaymentButton", () => {
++  beforeEach(() => {
++    jest.clearAllMocks();
++    mockUseLPMOneTimePaymentSession.mockReturnValue({
++      error: null,
++      isPending: false,
++      handleClick: mockHandleClick,
++    });
++    mockUsePayPal.mockReturnValue({
++      isHydrated: true,
++    });
++  });
++
++  describe("rendering", () => {
++    test.each([
++      { lpm: "ideal" as const, expectedTag: "ideal-button" },
++      { lpm: "bancontact" as const, expectedTag: "bancontact-button" },
++      { lpm: "eps" as const, expectedTag: "eps-button" },
++      { lpm: "blik" as const, expectedTag: "blik-button" },
++      { lpm: "zip" as const, expectedTag: "zip-button" },
++    ])("should render $expectedTag for lpm=$lpm", ({ lpm, expectedTag }) => {
++      const { container } = render(
++        <LPMOneTimePaymentButton {...defaultProps} lpm={lpm} />,
++      );
++      expect(container.querySelector(expectedTag)).toBeInTheDocument();
++    });
++
++    test("should render div placeholder when not hydrated", () => {
++      mockUsePayPal.mockReturnValue({ isHydrated: false });
++
++      const { container } = render(
++        <LPMOneTimePaymentButton {...defaultProps} />,
++      );
++
++      expect(container.querySelector("ideal-button")).not.toBeInTheDocument();
++      expect(container.querySelector("div")).toBeInTheDocument();
++    });
++  });
++
++  describe("user interaction", () => {
++    test("should call handleClick when button is clicked", () => {
++      const { container } = render(
++        <LPMOneTimePaymentButton {...defaultProps} />,
++      );
++
++      const button = container.querySelector("ideal-button");
++      fireEvent.click(button!);
++      expect(mockHandleClick).toHaveBeenCalledTimes(1);
++    });
++  });
++
++  describe("disabled state", () => {
++    test("should disable button when disabled prop is true", () => {
++      const { container } = render(
++        <LPMOneTimePaymentButton {...defaultProps} disabled={true} />,
++      );
++
++      expect(container.querySelector("ideal-button")).toHaveAttribute(
++        "disabled",
++      );
++    });
++
++    test("should disable button when isPending is true", () => {
++      mockUseLPMOneTimePaymentSession.mockReturnValue({
++        error: null,
++        isPending: true,
++        handleClick: mockHandleClick,
++      });
++
++      const { container } = render(
++        <LPMOneTimePaymentButton {...defaultProps} />,
++      );
++
++      expect(container.querySelector("ideal-button")).toHaveAttribute(
++        "disabled",
++      );
++    });
++
++    test("should disable button when error is present", () => {
++      mockUseLPMOneTimePaymentSession.mockReturnValue({
++        error: new Error("Test error"),
++        isPending: false,
++        handleClick: mockHandleClick,
++      });
++
++      const { container } = render(
++        <LPMOneTimePaymentButton {...defaultProps} />,
++      );
++
++      expect(container.querySelector("ideal-button")).toHaveAttribute(
++        "disabled",
++      );
++    });
++  });
++
++  describe("error handling", () => {
++    test("should disable button when error is present", () => {
++      const testError = new Error("Test error");
++
++      mockUseLPMOneTimePaymentSession.mockReturnValue({
++        error: testError,
++        isPending: false,
++        handleClick: mockHandleClick,
++        handleCancel: jest.fn(),
++        handleDestroy: jest.fn(),
++        session: null,
++        handleValidate: jest.fn().mockResolvedValue(true),
++      });
++
++      render(<LPMOneTimePaymentButton {...defaultProps} />);
++
++      // Error state disables the button; console.error is the merchant's responsibility
++      const button = document.querySelector("ideal-button");
++      expect(button).toHaveAttribute("disabled");
++    });
++  });
++
++  describe("hook props forwarding", () => {
++    test("should pass lpm and hook props to useLPMOneTimePaymentSession", () => {
++      const hookProps = {
++        lpm: "bancontact" as const,
++        presentationMode: "popup" as const,
++        orderId: "my-order",
++        onApprove: jest.fn().mockResolvedValue(undefined),
++        onCancel: jest.fn(),
++      };
++
++      render(<LPMOneTimePaymentButton {...hookProps} />);
++
++      expect(mockUseLPMOneTimePaymentSession).toHaveBeenCalledWith(
++        expect.objectContaining({
++          lpm: "bancontact",
++          presentationMode: "popup",
++          orderId: "my-order",
++        }),
++      );
++    });
++  });
++
++  describe("fieldContainerStyle (M3)", () => {
++    test("applies custom fieldContainerStyle to field containers", () => {
++      mockUseLPMOneTimePaymentSession.mockReturnValue({
++        error: null,
++        isPending: false,
++        handleClick: mockHandleClick,
++        session: {
++          createPaymentFields: jest
++            .fn()
++            .mockReturnValue(document.createElement("div")),
++        },
++        handleValidate: jest.fn().mockResolvedValue(true),
++      });
++
++      const customStyle = { marginBottom: 16, border: "1px solid red" };
++      const { container } = render(
++        <LPMOneTimePaymentButton
++          {...defaultProps}
++          fieldContainerStyle={customStyle}
++        />,
++      );
++
++      // blik has fields: ["name", "email"] — use ideal (fields: ["name"])
++      const fieldDiv = container.querySelector(
++        '[data-testid="ideal-name-field"]',
++      );
++      expect(fieldDiv).not.toBeNull();
++      expect((fieldDiv as HTMLElement).style.marginBottom).toBe("16px");
++    });
++
++    test("defaults to marginBottom:8 when fieldContainerStyle is not provided", () => {
++      const { container } = render(
++        <LPMOneTimePaymentButton {...defaultProps} />,
++      );
++
++      const fieldDiv = container.querySelector(
++        '[data-testid="ideal-name-field"]',
++      );
++      expect(fieldDiv).not.toBeNull();
++      expect((fieldDiv as HTMLElement).style.marginBottom).toBe("8px");
++    });
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/components/LPMOneTimePaymentButton.tsx b/packages/react-paypal-js/src/v6/components/LPMOneTimePaymentButton.tsx
+new file mode 100644
+index 0000000..ba17ddf
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/components/LPMOneTimePaymentButton.tsx
+@@ -0,0 +1,118 @@
++import React, { useEffect, useRef, useCallback, type JSX } from "react";
++
++import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
++import { usePayPal } from "../hooks/usePayPal";
++import { LPM_REGISTRY } from "../config/lpmRegistry";
++
++import type { ButtonProps } from "../types";
++import type { UseLPMOneTimePaymentSessionProps } from "../hooks/useLPMOneTimePaymentSession";
++
++export type LPMOneTimePaymentButtonProps = UseLPMOneTimePaymentSessionProps &
++  ButtonProps & {
++    /**
++     * Optional initial values to prefill the rendered payment fields, keyed by
++     * field type (e.g. `{ name: "John Doe", email: "john@example.com" }`).
++     * Maps to the SDK `createPaymentFields({ value })` option.
++     *
++     * Pass a stable reference (e.g. from `useState`/`useMemo`, or defined
++     * outside the component) rather than an inline object literal — a new
++     * object on every render will re-run the payment fields effect below.
++     */
++    fieldValues?: Record<string, string>;
++    /**
++     * Optional CSS styles applied to each field's container `<div>`.
++     * Defaults to `{ marginBottom: 8 }` when not provided.
++     */
++    fieldContainerStyle?: React.CSSProperties;
++    /**
++     * Optional CSS class name applied to each field's container `<div>`.
++     */
++    fieldContainerClassName?: string;
++  };
++
++/**
++ * `LPMOneTimePaymentButton` renders the LPM payment fields and button
++ * in a self-contained component — matching the same merchant experience as
++ * `PayPalOneTimePaymentButton`. Fields (e.g. Full Name) are rendered
++ * internally above the button; no manual `session.createPaymentFields()` needed.
++ *
++ * @example
++ * <IdealOneTimePaymentButton
++ *   presentationMode="popup"
++ *   createOrder={async () => { return { orderId: "..." }; }}
++ *   onApprove={async (data) => { /* capture *\/ }}
++ * />
++ */
++export const LPMOneTimePaymentButton = ({
++  lpm,
++  type = "pay",
++  disabled = false,
++  fieldValues,
++  fieldContainerStyle,
++  fieldContainerClassName,
++  ...hookProps
++}: LPMOneTimePaymentButtonProps): JSX.Element | null => {
++  const config = LPM_REGISTRY[lpm];
++  const fieldRefs = useRef<Map<string, HTMLDivElement>>(new Map());
++
++  const { error, isPending, session, handleClick } =
++    useLPMOneTimePaymentSession({
++      lpm,
++      ...hookProps,
++    } as UseLPMOneTimePaymentSessionProps);
++  const { isHydrated } = usePayPal();
++
++  const setFieldRef = useCallback(
++    (fieldType: string) => (el: HTMLDivElement | null) => {
++      if (el) {
++        fieldRefs.current.set(fieldType, el);
++      } else {
++        fieldRefs.current.delete(fieldType);
++      }
++    },
++    [],
++  );
++
++  // Render payment field iframes into their containers when session is ready
++  useEffect(() => {
++    if (!session || !session.createPaymentFields) {
++      return;
++    }
++    config.fields.forEach((fieldType) => {
++      const container = fieldRefs.current.get(fieldType);
++      if (container) {
++        container.innerHTML = "";
++        const value = fieldValues?.[fieldType];
++        const fieldElement = session.createPaymentFields(
++          value !== undefined
++            ? { type: fieldType, value }
++            : { type: fieldType },
++        );
++        container.appendChild(fieldElement);
++      }
++    });
++  }, [session, config.fields, fieldValues]);
++
++  if (!isHydrated) {
++    return <div />;
++  }
++
++  return (
++    <div>
++      {config.fields.map((fieldType) => (
++        <div
++          key={fieldType}
++          data-testid={`${lpm}-${fieldType}-field`}
++          ref={setFieldRef(fieldType)}
++          style={fieldContainerStyle ?? { marginBottom: 8 }}
++          className={fieldContainerClassName}
++        />
++      ))}
++      {React.createElement(config.buttonTag, {
++        onClick: handleClick,
++        type,
++        disabled: disabled || isPending || error !== null ? true : undefined,
++      })}
++    </div>
++  );
++};
+diff --git a/packages/react-paypal-js/src/v6/components/LPMPaymentProvider.tsx b/packages/react-paypal-js/src/v6/components/LPMPaymentProvider.tsx
+new file mode 100644
+index 0000000..8aea2e0
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/components/LPMPaymentProvider.tsx
+@@ -0,0 +1,332 @@
++import React, { createContext, useContext, useRef, type JSX } from "react";
++
++import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
++import { usePayPal } from "../hooks/usePayPal";
++
++import type { LPMOneTimePaymentSession } from "../types";
++import type { LPMName, LPMFieldType } from "../config/lpmRegistry";
++import type {
++  UseLPMOneTimePaymentSessionProps,
++  LPMPaymentSessionReturn,
++} from "../hooks/useLPMOneTimePaymentSession";
++import type { ButtonProps } from "../types/sdkWebComponents";
++
++// ─── LPM Session Context ──────────────────────────────────────────────────────
++
++/**
++ * React context carrying the active `LPMOneTimePaymentSession` instance.
++ * Consumed by field components rendered inside an `LPMSessionProvider`.
++ */
++export const LPMSessionContext =
++  /*#__PURE__*/ createContext<LPMOneTimePaymentSession | null>(null);
++
++/**
++ * The click handler and pending/error state a payment button needs.
++ * Provided alongside {@link LPMSessionContext} by `LPMSessionProvider`, and
++ * consumed by button components created with {@link createLPMButtonComponent}.
++ */
++export interface LPMSessionHandleContextValue {
++  handleClick: () => Promise<{ redirectURL?: string } | void>;
++  isPending: boolean;
++  error: Error | null;
++}
++
++/**
++ * React context carrying the click handler and pending/error state for the
++ * active LPM session. Consumed by button components rendered inside an
++ * `LPMSessionProvider`.
++ */
++export const LPMSessionHandleContext =
++  /*#__PURE__*/ createContext<LPMSessionHandleContextValue | null>(null);
++
++// ─── Enhanced hook return type ─────────────────────────────────────────────────
++
++/**
++ * Maps each field type in `Fields` to its `<Capitalize>Field` component key
++ * (e.g. `"name"` → `NameField`), typed as a field component rather than
++ * `unknown` — so merchants (and tests) never need to cast the result.
++ */
++export type FieldComponents<Fields extends readonly LPMFieldType[]> = {
++  [
++    F in Fields[number] as `${Capitalize<F>}Field`
++  ]: React.FC<LPMFieldComponentProps>;
++};
++
++/**
++ * Return type of every `createEnhancedLPMHook`-generated hook.
++ *
++ * Extends `LPMPaymentSessionReturn` with an `LPMSessionProvider` and a
++ * field-component map so merchants can destructure `NameField`, `EmailField`,
++ * etc. with correct prop types:
++ *
++ * ```tsx
++ * const { LPMSessionProvider, NameField, isPending } =
++ *   useIdealOneTimePaymentSession({ ... });
++ *
++ * return (
++ *   <LPMSessionProvider>
++ *     <NameField />
++ *     <IdealPaymentButton type="pay" />
++ *   </LPMSessionProvider>
++ * );
++ * ```
++ */
++export type LPMEnhancedHookReturn<
++  Fields extends readonly LPMFieldType[] = readonly LPMFieldType[],
++> = LPMPaymentSessionReturn & {
++  /**
++   * Wrap field and button components with this provider so they can access
++   * the active session through {@link LPMSessionContext} and
++   * {@link LPMSessionHandleContext}.
++   */
++  LPMSessionProvider: (props: { children: React.ReactNode }) => JSX.Element;
++} & FieldComponents<Fields>;
++
++// ─── Session handle ───────────────────────────────────────────────────────────
++
++/**
++ * The click handler and pending/error state a payment button reads from
++ * {@link LPMSessionHandleContext}. Alias of {@link LPMSessionHandleContextValue}
++ * kept for naming continuity.
++ */
++export type LPMSessionHandle = LPMSessionHandleContextValue;
++
++// ─── Shared prop types ────────────────────────────────────────────────────────
++
++export type LPMFieldComponentProps = {
++  containerStyles?: React.CSSProperties;
++  containerClassName?: string;
++  /**
++   * Optional initial value to prefill the field with (maps to the SDK
++   * `createPaymentFields({ value })` option). Useful for demos or restoring a
++   * buyer's previously entered value.
++   */
++  value?: string;
++};
++
++export type LPMButtonComponentProps = Omit<ButtonProps, "onClick">;
++
++// ─── Helpers ──────────────────────────────────────────────────────────────────
++
++function capitalize(s: string): string {
++  return s.charAt(0).toUpperCase() + s.slice(1);
++}
++
++// ─── Standalone button factory ────────────────────────────────────────────────
++
++/**
++ * Creates a named, standalone payment button component (e.g. `IdealPaymentButton`).
++ *
++ * The component reads its click handler and pending/error state from
++ * {@link LPMSessionHandleContext} — render it inside the `LPMSessionProvider`
++ * returned by the corresponding `use*OneTimePaymentSession` hook.
++ *
++ * The underlying SDK web component tag is wrapped internally; merchants never
++ * import or reference the raw tag (e.g. `<ideal-button>`).
++ *
++ * @example
++ * // Inside lpmExports.ts:
++ * export const IdealPaymentButton =
++ *   createLPMButtonComponent("ideal-button", "IdealPaymentButton");
++ *
++ * // Merchant usage:
++ * const { LPMSessionProvider } = useIdealOneTimePaymentSession({ ... });
++ * <LPMSessionProvider>
++ *   <IdealPaymentButton type="pay" />
++ * </LPMSessionProvider>
++ */
++export function createLPMButtonComponent(
++  buttonTag: string,
++  displayName: string,
++): { (props: LPMButtonComponentProps): JSX.Element; displayName: string } {
++  function ButtonComponent({
++    type = "pay",
++    disabled,
++    ...rest
++  }: LPMButtonComponentProps): JSX.Element {
++    const handle = useContext(LPMSessionHandleContext);
++    const { isHydrated } = usePayPal();
++    const isPending = handle?.isPending ?? false;
++    const error = handle?.error ?? null;
++
++    if (!isHydrated) {
++      return <div />;
++    }
++
++    return React.createElement(buttonTag, {
++      ...rest,
++      onClick: handle?.handleClick,
++      type,
++      disabled: disabled || isPending || error !== null ? true : undefined,
++    });
++  }
++
++  ButtonComponent.displayName = displayName;
++  return ButtonComponent;
++}
++
++// ─── Module-level field component factory ─────────────────────────────────────
++
++/**
++ * Creates a stable SDK-iframe field component for a given field type.
++ *
++ * This is a module-level factory (not defined inside the hook render) so
++ * React concurrent-mode is fully safe. The component reads the current session
++ * from {@link LPMSessionContext} — wrap field components with the
++ * `LPMSessionProvider` returned by every `use*OneTimePaymentSession` hook.
++ */
++function createFieldComponent(
++  fieldType: LPMFieldType,
++): React.FC<LPMFieldComponentProps> {
++  const componentName = `${capitalize(fieldType)}Field`;
++
++  function FieldComponent({
++    containerStyles,
++    containerClassName,
++    value,
++  }: LPMFieldComponentProps): JSX.Element {
++    const session = useContext(LPMSessionContext);
++    const containerRef = useRef<HTMLDivElement>(null);
++
++    React.useEffect(() => {
++      const container = containerRef.current;
++      const s = session;
++      if (!s?.createPaymentFields || !container) {
++        return;
++      }
++      container.innerHTML = "";
++      container.appendChild(
++        s.createPaymentFields(
++          value !== undefined
++            ? { type: fieldType, value }
++            : { type: fieldType },
++        ),
++      );
++    }, [session, value]); // eslint-disable-line react-hooks/exhaustive-deps
++
++    return (
++      <div
++        ref={containerRef}
++        style={containerStyles}
++        className={containerClassName}
++      />
++    );
++  }
++
++  FieldComponent.displayName = componentName;
++  return FieldComponent as React.FC<LPMFieldComponentProps>;
++}
++
++// ─── Enhanced hook factory ────────────────────────────────────────────────────
++
++/**
++ * Creates a named `use*OneTimePaymentSession` hook that returns everything the
++ * underlying `useLPMOneTimePaymentSession` returns **plus** an `LPMSessionProvider`
++ * and a pre-bound field component for every field the LPM requires — e.g.
++ * `NameField`, `EmailField`.
++ *
++ * Field component names are derived from the field type in the registry:
++ *   `"name"`  → `NameField`
++ *   `"email"` → `EmailField`
++ *
++ * Wrap your field and button components with the returned `LPMSessionProvider`
++ * so they can access the active session through {@link LPMSessionContext} and
++ * {@link LPMSessionHandleContext}. Import the named button component directly
++ * — it reads the click handler and pending/error state from context, no props
++ * required.
++ *
++ * @example
++ * const { LPMSessionProvider, NameField, isPending } =
++ *   useIdealOneTimePaymentSession({
++ *     createOrder: async () => ({ orderId: await createOrder() }),
++ *     onApprove:   async ({ orderId }) => { await capture(orderId); },
++ *     presentationMode: "popup",
++ *   });
++ *
++ * return (
++ *   <LPMSessionProvider>
++ *     <section className="billing">
++ *       <input name="email" />
++ *       <NameField containerStyles={{ marginBottom: 8 }} />
++ *     </section>
++ *     <IdealPaymentButton type="pay" />
++ *   </LPMSessionProvider>
++ * );
++ */
++export function createEnhancedLPMHook<
++  const Fields extends readonly LPMFieldType[],
++>(
++  lpm: LPMName,
++  fieldTypes: Fields,
++): (
++  props: Omit<UseLPMOneTimePaymentSessionProps, "lpm">,
++) => LPMEnhancedHookReturn<Fields> {
++  type NamedHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;
++
++  return function useLPMEnhancedSession(
++    props: NamedHookProps,
++  ): LPMEnhancedHookReturn<Fields> {
++    const result = useLPMOneTimePaymentSession({
++      lpm,
++      ...props,
++    } as UseLPMOneTimePaymentSessionProps);
++
++    const { session, handleClick, isPending, error } = result;
++
++    // Refs holding the latest session/handle, read synchronously during render
++    // by the stable Provider component below. Because the Provider re-renders
++    // whenever its caller does (standard JSX reconciliation), reading the ref
++    // here — rather than closing over `session`/`handleClick` directly — is
++    // all that's needed to propagate updates through context; no pub/sub
++    // listener set or effect-driven bridge required.
++    const sessionRef = useRef(session);
++    sessionRef.current = session;
++
++    const handleRef = useRef<LPMSessionHandleContextValue>({
++      handleClick,
++      isPending,
++      error,
++    });
++    handleRef.current = { handleClick, isPending, error };
++
++    // Stable Provider component created once per hook instantiation.
++    const LPMSessionProviderRef = useRef<
++      ((props: { children: React.ReactNode }) => JSX.Element) | null
++    >(null);
++    if (!LPMSessionProviderRef.current) {
++      const LPMSessionProvider = ({
++        children,
++      }: {
++        children: React.ReactNode;
++      }): JSX.Element => (
++        <LPMSessionContext.Provider value={sessionRef.current}>
++          <LPMSessionHandleContext.Provider value={handleRef.current}>
++            {children}
++          </LPMSessionHandleContext.Provider>
++        </LPMSessionContext.Provider>
++      );
++      LPMSessionProvider.displayName = "LPMSessionProvider";
++      LPMSessionProviderRef.current = LPMSessionProvider;
++    }
++
++    // Create field components once per hook instantiation (stable identity).
++    // Each component reads the session from LPMSessionContext via useContext.
++    const fieldComponentsRef =
++      useRef<Record<string, React.FC<LPMFieldComponentProps>>>();
++
++    if (!fieldComponentsRef.current) {
++      const components: Record<string, React.FC<LPMFieldComponentProps>> = {};
++      for (const fieldType of fieldTypes) {
++        const componentName = `${capitalize(fieldType)}Field`;
++        components[componentName] = createFieldComponent(fieldType);
++      }
++      fieldComponentsRef.current = components;
++    }
++
++    return {
++      ...result,
++      LPMSessionProvider: LPMSessionProviderRef.current,
++      ...fieldComponentsRef.current,
++    } as LPMEnhancedHookReturn<Fields>;
++  };
++}
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalCardNameField.test.tsx b/packages/react-paypal-js/src/v6/components/PayPalCardNameField.test.tsx
+new file mode 100644
+index 0000000..8f6c872
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/components/PayPalCardNameField.test.tsx
+@@ -0,0 +1,49 @@
++import React from "react";
++import { render } from "@testing-library/react";
++
++import { PayPalCardNameField } from "./PayPalCardNameField";
++import { PayPalCardField } from "./PayPalCardField";
++
++jest.mock("./PayPalCardField", () => ({
++  PayPalCardField: jest.fn(() => <div data-testid="mock-card-field" />),
++}));
++
++const mockPayPalCardField = PayPalCardField as jest.MockedFunction<
++  typeof PayPalCardField
++>;
++
++const fieldType = "name";
++
++describe("PayPalCardNameField", () => {
++  beforeEach(() => {
++    jest.clearAllMocks();
++  });
++
++  it("Should pass type='name' to PayPalCardField", () => {
++    render(<PayPalCardNameField />);
++    expect(mockPayPalCardField.mock.calls[0][0]).toEqual(
++      expect.objectContaining({ type: fieldType }),
++    );
++  });
++
++  it("should render PayPalCardField with the correct props", () => {
++    const testProps = {
++      placeholder: "Enter your name",
++      containerClassName: "test-container",
++      style: {
++        input: {
++          background: "lightgray",
++        },
++      },
++    };
++
++    render(<PayPalCardNameField {...testProps} />);
++
++    expect(mockPayPalCardField.mock.calls[0][0]).toEqual(
++      expect.objectContaining({
++        type: fieldType,
++        ...testProps,
++      }),
++    );
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalCardNameField.tsx b/packages/react-paypal-js/src/v6/components/PayPalCardNameField.tsx
+new file mode 100644
+index 0000000..f1c7078
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/components/PayPalCardNameField.tsx
+@@ -0,0 +1,46 @@
++import React from "react";
++
++import { PayPalCardField } from "./PayPalCardField";
++
++import type { CardFieldOptions } from "../types";
++import type { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
++
++type PayPalCardNameFieldProps = Omit<CardFieldOptions, "type"> & {
++  containerStyles?: React.CSSProperties;
++  containerClassName?: string;
++};
++
++/**
++ * `PayPalCardNameField` is a component that renders a name field using the PayPal Card Fields SDK. It must be used within a {@link PayPalCardFieldsProvider} component.
++ *
++ * @example
++ * // Basic usage creating a name field
++ * <PayPalCardNameField
++ *   placeholder="Enter your name"
++ *   containerStyles={{ height: "3rem", marginBottom: "1rem" }}
++ * />
++ */
++export const PayPalCardNameField = ({
++  containerStyles,
++  containerClassName,
++  placeholder,
++  label,
++  style,
++  ariaDescription,
++  ariaLabel,
++  ariaInvalidErrorMessage,
++}: PayPalCardNameFieldProps): JSX.Element | null => {
++  return (
++    <PayPalCardField
++      type="name"
++      containerStyles={containerStyles}
++      containerClassName={containerClassName}
++      placeholder={placeholder}
++      label={label}
++      style={style}
++      ariaDescription={ariaDescription}
++      ariaLabel={ariaLabel}
++      ariaInvalidErrorMessage={ariaInvalidErrorMessage}
++    />
++  );
++};
+diff --git a/packages/react-paypal-js/src/v6/config/__fixtures__/testBuyerCountry.ts b/packages/react-paypal-js/src/v6/config/__fixtures__/testBuyerCountry.ts
+new file mode 100644
+index 0000000..e0328eb
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/config/__fixtures__/testBuyerCountry.ts
+@@ -0,0 +1,58 @@
++import type { LPMName } from "../lpmRegistry";
++
++/**
++ * Sandbox test buyer country codes per LPM, used only in tests. Kept out of
++ * `LPM_REGISTRY` so this fixture data isn't bundled into the shipped package.
++ */
++export const TEST_BUYER_COUNTRY: Record<LPMName, string> = {
++  ideal: "NL",
++  bancontact: "BE",
++  eps: "AT",
++  blik: "PL",
++  mybank: "IT",
++  trustly: "SE",
++  p24: "PL",
++  multibanco: "PT",
++  bizum: "ES",
++  swish: "SE",
++  twint: "CH",
++  wechatpay: "CN",
++  verkkopankki: "FI",
++  payu: "PL",
++  mbway: "PT",
++  satispay: "IT",
++  wero: "DE",
++  floa: "FR",
++  grabpay: "SG",
++  pixInternational: "BR",
++  sepa: "DE",
++  doku: "ID",
++  estonia: "EE",
++  gopay: "ID",
++  alipay: "CN",
++  indonesiaBanks: "ID",
++  kredivo: "ID",
++  linkaja: "ID",
++  ovo: "ID",
++  paysera: "LT",
++  skrill: "DE",
++  blikPayLater: "PL",
++  bancomatPay: "IT",
++  jeniuspay: "ID",
++  klarna: "SE",
++  afterpay: "AU",
++  oxxopay: "MX",
++  boletobancario: "BR",
++  paysafecard: "AT",
++  scalapay: "IT",
++  crypto: "US",
++  dragonpay: "PH",
++  fpx: "MY",
++  indomaret: "ID",
++  thailandBanks: "TH",
++  alfamart: "ID",
++  zip: "AU",
++  latviaBanks: "LV",
++  fiuu: "MY",
++  lithuaniaBanks: "LT",
++};
+diff --git a/packages/react-paypal-js/src/v6/config/lpmRegistry.test.ts b/packages/react-paypal-js/src/v6/config/lpmRegistry.test.ts
+new file mode 100644
+index 0000000..3936d3d
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/config/lpmRegistry.test.ts
+@@ -0,0 +1,110 @@
++import { LPM_REGISTRY } from "./lpmRegistry";
++import { TEST_BUYER_COUNTRY } from "./__fixtures__/testBuyerCountry";
++import { SDK_LPM_BUTTON_TAGS } from "../types/sdkWebComponents";
++
++describe("LPM_REGISTRY", () => {
++  test("every entry has required fields", () => {
++    for (const [key, config] of Object.entries(LPM_REGISTRY)) {
++      expect(config.component).toMatch(/-payments$/);
++      expect(config.buttonTag).toMatch(/-button$/);
++      expect(config.sessionMethod).toMatch(
++        /^create[A-Z]\w+OneTimePaymentSession$/,
++      );
++      expect(config.displayName).toBeTruthy();
++      expect(config.testBuyerCountry).toMatch(/^[A-Z]{2}$/);
++      expect(typeof key).toBe("string");
++    }
++  });
++
++  test("every entry has a sandbox test buyer country fixture", () => {
++    for (const key of Object.keys(LPM_REGISTRY)) {
++      expect(TEST_BUYER_COUNTRY[key as keyof typeof LPM_REGISTRY]).toMatch(
++        /^[A-Z]{2}$/,
++      );
++    }
++  });
++
++  test("every button tag is a registered SDK web component", () => {
++    for (const [key, config] of Object.entries(LPM_REGISTRY)) {
++      const isValid = SDK_LPM_BUTTON_TAGS.has(config.buttonTag);
++      if (!isValid) {
++        throw new Error(
++          `"${key}" has buttonTag "${config.buttonTag}" which is not in SDK_LPM_BUTTON_TAGS`,
++        );
++      }
++      expect(isValid).toBe(true);
++    }
++  });
++
++  test("contains expected LPMs from each geographic region", () => {
++    const lpmNames = Object.keys(LPM_REGISTRY);
++    // Europe - Western
++    expect(lpmNames).toContain("ideal");
++    expect(lpmNames).toContain("bancontact");
++    expect(lpmNames).toContain("eps");
++    expect(lpmNames).toContain("sepa");
++    // Europe - Nordic & Baltic
++    expect(lpmNames).toContain("trustly");
++    expect(lpmNames).toContain("swish");
++    expect(lpmNames).toContain("verkkopankki");
++    expect(lpmNames).toContain("klarna");
++    // Europe - Central
++    expect(lpmNames).toContain("blik");
++    expect(lpmNames).toContain("twint");
++    expect(lpmNames).toContain("p24");
++    // Asia - Southeast
++    expect(lpmNames).toContain("grabpay");
++    expect(lpmNames).toContain("fpx");
++    expect(lpmNames).toContain("gopay");
++    // Asia - East
++    expect(lpmNames).toContain("alipay");
++    expect(lpmNames).toContain("wechatpay");
++    // Americas
++    expect(lpmNames).toContain("pixInternational");
++    expect(lpmNames).toContain("boletobancario");
++    // Oceania
++    expect(lpmNames).toContain("afterpay");
++    expect(lpmNames).toContain("zip");
++  });
++
++  test("FIUU has non-derived button tag (special exception)", () => {
++    expect(LPM_REGISTRY.fiuu.component).toBe("fiuu-cash-payments");
++    expect(LPM_REGISTRY.fiuu.buttonTag).toBe("fiuu-button");
++    // Verify it does NOT follow standard derivation
++    expect(
++      LPM_REGISTRY.fiuu.component.replace("-payments", "-button"),
++    ).not.toBe(LPM_REGISTRY.fiuu.buttonTag);
++  });
++
++  test("LPMs with sessionFields have correct types", () => {
++    const validSessionFieldTypes = new Set([
++      "phone",
++      "billingAddress",
++      "taxInfo",
++      "expiryDate",
++      "dateOfBirth",
++      "numberOfInstallments",
++      "bic",
++      "identification",
++    ]);
++
++    for (const [lpmKey, config] of Object.entries(LPM_REGISTRY)) {
++      for (const field of config.sessionFields) {
++        expect(validSessionFieldTypes.has(field)).toBe(true);
++        // Verify the documented fields match registry entries
++        if (lpmKey === "mbway") {
++          expect(config.sessionFields).toContain("phone");
++        }
++        if (lpmKey === "pixInternational") {
++          expect(config.sessionFields).toContain("phone");
++          expect(config.sessionFields).toContain("billingAddress");
++          expect(config.sessionFields).toContain("taxInfo");
++        }
++        if (lpmKey === "floa") {
++          expect(config.sessionFields).toContain("dateOfBirth");
++          expect(config.sessionFields).toContain("numberOfInstallments");
++        }
++      }
++    }
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/config/lpmRegistry.ts b/packages/react-paypal-js/src/v6/config/lpmRegistry.ts
+new file mode 100644
+index 0000000..824e9fd
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/config/lpmRegistry.ts
+@@ -0,0 +1,479 @@
++import type { LPMComponents, LPMSessionMethodName } from "../types";
++
++export type SessionFieldType =
++  | "phone"
++  | "billingAddress"
++  | "taxInfo"
++  | "expiryDate"
++  | "dateOfBirth"
++  | "numberOfInstallments";
++
++export type LPMFieldType = "name" | "email" | "tax_id" | "tax_id_type";
++
++export interface LPMConfig {
++  readonly component: LPMComponents;
++  readonly buttonTag: string;
++  readonly sessionMethod: LPMSessionMethodName;
++  readonly displayName: string;
++  readonly fields: readonly LPMFieldType[];
++  readonly sessionFields: readonly SessionFieldType[];
++  readonly testBuyerCountry: string;
++}
++
++export const LPM_REGISTRY = {
++  ideal: {
++    component: "ideal-payments",
++    buttonTag: "ideal-button",
++    sessionMethod: "createIdealOneTimePaymentSession",
++    displayName: "iDEAL",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "NL",
++  },
++  bancontact: {
++    component: "bancontact-payments",
++    buttonTag: "bancontact-button",
++    sessionMethod: "createBancontactOneTimePaymentSession",
++    displayName: "Bancontact",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "BE",
++  },
++  eps: {
++    component: "eps-payments",
++    buttonTag: "eps-button",
++    sessionMethod: "createEpsOneTimePaymentSession",
++    displayName: "EPS",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "AT",
++  },
++  blik: {
++    component: "blik-payments",
++    buttonTag: "blik-button",
++    sessionMethod: "createBlikOneTimePaymentSession",
++    displayName: "BLIK",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "PL",
++  },
++  mybank: {
++    component: "mybank-payments",
++    buttonTag: "mybank-button",
++    sessionMethod: "createMyBankOneTimePaymentSession",
++    displayName: "MyBank",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "IT",
++  },
++  trustly: {
++    component: "trustly-payments",
++    buttonTag: "trustly-button",
++    sessionMethod: "createTrustlyOneTimePaymentSession",
++    displayName: "Trustly",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "SE",
++  },
++  p24: {
++    component: "p24-payments",
++    buttonTag: "p24-button",
++    sessionMethod: "createP24OneTimePaymentSession",
++    displayName: "Przelewy24",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "PL",
++  },
++  multibanco: {
++    component: "multibanco-payments",
++    buttonTag: "multibanco-button",
++    sessionMethod: "createMultibancoOneTimePaymentSession",
++    displayName: "Multibanco",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "PT",
++  },
++  bizum: {
++    component: "bizum-payments",
++    buttonTag: "bizum-button",
++    sessionMethod: "createBizumOneTimePaymentSession",
++    displayName: "Bizum",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "ES",
++  },
++  swish: {
++    component: "swish-payments",
++    buttonTag: "swish-button",
++    sessionMethod: "createSwishOneTimePaymentSession",
++    displayName: "Swish",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "SE",
++  },
++  twint: {
++    component: "twint-payments",
++    buttonTag: "twint-button",
++    sessionMethod: "createTwintOneTimePaymentSession",
++    displayName: "TWINT",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "CH",
++  },
++  wechatpay: {
++    component: "wechatpay-payments",
++    buttonTag: "wechatpay-button",
++    sessionMethod: "createWechatpayOneTimePaymentSession",
++    displayName: "WeChat Pay",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "CN",
++  },
++  verkkopankki: {
++    component: "verkkopankki-payments",
++    buttonTag: "verkkopankki-button",
++    sessionMethod: "createVerkkopankkiOneTimePaymentSession",
++    displayName: "Verkkopankki",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "FI",
++  },
++  payu: {
++    component: "payu-payments",
++    buttonTag: "payu-button",
++    sessionMethod: "createPayuOneTimePaymentSession",
++    displayName: "PayU",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "PL",
++  },
++  mbway: {
++    component: "mbway-payments",
++    buttonTag: "mbway-button",
++    sessionMethod: "createMbWayOneTimePaymentSession",
++    displayName: "MB WAY",
++    fields: ["name", "email"],
++    sessionFields: ["phone"],
++    testBuyerCountry: "PT",
++  },
++  satispay: {
++    component: "satispay-payments",
++    buttonTag: "satispay-button",
++    sessionMethod: "createSatispayOneTimePaymentSession",
++    displayName: "Satispay",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "IT",
++  },
++  wero: {
++    component: "wero-payments",
++    buttonTag: "wero-button",
++    sessionMethod: "createWeroOneTimePaymentSession",
++    displayName: "Wero",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "DE",
++  },
++  floa: {
++    component: "floa-payments",
++    buttonTag: "floa-button",
++    sessionMethod: "createFloaOneTimePaymentSession",
++    displayName: "FLOA",
++    fields: ["name"],
++    sessionFields: ["dateOfBirth", "numberOfInstallments"],
++    testBuyerCountry: "FR",
++  },
++  grabpay: {
++    component: "grabpay-payments",
++    buttonTag: "grabpay-button",
++    sessionMethod: "createGrabpayOneTimePaymentSession",
++    displayName: "GrabPay",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "SG",
++  },
++  pixInternational: {
++    component: "pix-international-payments",
++    buttonTag: "pix-international-button",
++    sessionMethod: "createPixInternationalOneTimePaymentSession",
++    displayName: "Pix",
++    fields: ["name", "email"],
++    sessionFields: ["phone", "billingAddress", "taxInfo"],
++    testBuyerCountry: "BR",
++  },
++  sepa: {
++    component: "sepa-payments",
++    buttonTag: "sepa-button",
++    sessionMethod: "createSepaOneTimePaymentSession",
++    displayName: "SEPA",
++    fields: [],
++    sessionFields: [],
++    testBuyerCountry: "DE",
++  },
++  doku: {
++    component: "doku-payments",
++    buttonTag: "doku-button",
++    sessionMethod: "createDOKUOneTimePaymentSession",
++    displayName: "DOKU",
++    fields: ["name", "email"],
++    sessionFields: ["phone"],
++    testBuyerCountry: "ID",
++  },
++  estonia: {
++    component: "estoniabank-payments",
++    buttonTag: "estonia-button",
++    sessionMethod: "createEstoniaOneTimePaymentSession",
++    displayName: "Estonia Banks",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "EE",
++  },
++  gopay: {
++    component: "gopay-payments",
++    buttonTag: "gopay-button",
++    sessionMethod: "createGopayOneTimePaymentSession",
++    displayName: "GoPay",
++    fields: ["name", "email"],
++    sessionFields: ["phone"],
++    testBuyerCountry: "ID",
++  },
++  alipay: {
++    component: "alipay-payments",
++    buttonTag: "alipay-button",
++    sessionMethod: "createAlipayOneTimePaymentSession",
++    displayName: "Alipay",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "CN",
++  },
++  indonesiaBanks: {
++    component: "indonesiabanks-payments",
++    buttonTag: "indonesiabanks-button",
++    sessionMethod: "createIndonesiaBanksOneTimePaymentSession",
++    displayName: "Indonesia Banks",
++    fields: ["name", "email"],
++    sessionFields: ["phone"],
++    testBuyerCountry: "ID",
++  },
++  kredivo: {
++    component: "kredivo-payments",
++    buttonTag: "kredivo-button",
++    sessionMethod: "createKredivoOneTimePaymentSession",
++    displayName: "Kredivo",
++    fields: ["name", "email"],
++    sessionFields: ["phone", "taxInfo"],
++    testBuyerCountry: "ID",
++  },
++  linkaja: {
++    component: "linkaja-payments",
++    buttonTag: "linkaja-button",
++    sessionMethod: "createLinkajaOneTimePaymentSession",
++    displayName: "LinkAja",
++    fields: ["name", "email"],
++    sessionFields: ["phone"],
++    testBuyerCountry: "ID",
++  },
++  ovo: {
++    component: "ovo-payments",
++    buttonTag: "ovo-button",
++    sessionMethod: "createOvoOneTimePaymentSession",
++    displayName: "OVO",
++    fields: ["name", "email"],
++    sessionFields: ["phone"],
++    testBuyerCountry: "ID",
++  },
++  paysera: {
++    component: "paysera-payments",
++    buttonTag: "paysera-button",
++    sessionMethod: "createPayseraOneTimePaymentSession",
++    displayName: "Paysera",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "LT",
++  },
++  skrill: {
++    component: "skrill-payments",
++    buttonTag: "skrill-button",
++    sessionMethod: "createSkrillOneTimePaymentSession",
++    displayName: "Skrill",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "DE",
++  },
++  blikPayLater: {
++    component: "blikpaylater-payments",
++    buttonTag: "blikpaylater-button",
++    sessionMethod: "createBlikPayLaterOneTimePaymentSession",
++    displayName: "BLIK Pay Later",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "PL",
++  },
++  bancomatPay: {
++    component: "bancomatpay-payments",
++    buttonTag: "bancomatpay-button",
++    sessionMethod: "createBancomatPayOneTimePaymentSession",
++    displayName: "Bancomat Pay",
++    fields: ["name"],
++    sessionFields: ["phone", "taxInfo"],
++    testBuyerCountry: "IT",
++  },
++  jeniuspay: {
++    component: "jeniuspay-payments",
++    buttonTag: "jeniuspay-button",
++    sessionMethod: "createJeniuspayOneTimePaymentSession",
++    displayName: "Jeniuspay",
++    fields: ["name", "email"],
++    sessionFields: ["phone"],
++    testBuyerCountry: "ID",
++  },
++  klarna: {
++    component: "klarna-payments",
++    buttonTag: "klarna-button",
++    sessionMethod: "createKlarnaOneTimePaymentSession",
++    displayName: "Klarna",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "SE",
++  },
++  afterpay: {
++    component: "afterpay-payments",
++    buttonTag: "afterpay-button",
++    sessionMethod: "createAfterpayOneTimePaymentSession",
++    displayName: "Afterpay",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "AU",
++  },
++  oxxopay: {
++    component: "oxxopay-payments",
++    buttonTag: "oxxopay-button",
++    sessionMethod: "createOxxopayOneTimePaymentSession",
++    displayName: "OXXO",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "MX",
++  },
++  boletobancario: {
++    component: "boletobancario-payments",
++    buttonTag: "boletobancario-button",
++    sessionMethod: "createBoletobancarioOneTimePaymentSession",
++    displayName: "Boleto Bancário",
++    fields: ["name", "email"],
++    sessionFields: ["taxInfo"],
++    testBuyerCountry: "BR",
++  },
++  paysafecard: {
++    component: "paysafecard-payments",
++    buttonTag: "paysafecard-button",
++    sessionMethod: "createPaysafecardOneTimePaymentSession",
++    displayName: "Paysafecard",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "AT",
++  },
++  scalapay: {
++    component: "scalapay-payments",
++    buttonTag: "scalapay-button",
++    sessionMethod: "createScalapayOneTimePaymentSession",
++    displayName: "Scalapay",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "IT",
++  },
++  crypto: {
++    component: "crypto-payments",
++    buttonTag: "crypto-button",
++    sessionMethod: "createCryptoOneTimePaymentSession",
++    displayName: "Crypto",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "US",
++  },
++  dragonpay: {
++    component: "dragonpay-payments",
++    buttonTag: "dragonpay-button",
++    sessionMethod: "createDragonpayOneTimePaymentSession",
++    displayName: "Dragonpay",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "PH",
++  },
++  fpx: {
++    component: "fpx-payments",
++    buttonTag: "fpx-button",
++    sessionMethod: "createFpxOneTimePaymentSession",
++    displayName: "FPX",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "MY",
++  },
++  indomaret: {
++    component: "indomaret-payments",
++    buttonTag: "indomaret-button",
++    sessionMethod: "createIndomaretOneTimePaymentSession",
++    displayName: "Indomaret",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "ID",
++  },
++  thailandBanks: {
++    component: "thailand-banks-payments",
++    buttonTag: "thailandbanks-button",
++    sessionMethod: "createThailandBanksOneTimePaymentSession",
++    displayName: "Thailand Banks",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "TH",
++  },
++  alfamart: {
++    component: "alfamart-payments",
++    buttonTag: "alfamart-button",
++    sessionMethod: "createAlfamartOneTimePaymentSession",
++    displayName: "Alfamart",
++    fields: ["name", "email"],
++    sessionFields: [],
++    testBuyerCountry: "ID",
++  },
++  zip: {
++    component: "zip-payments",
++    buttonTag: "zip-button",
++    sessionMethod: "createZipOneTimePaymentSession",
++    displayName: "Zip",
++    fields: ["name"],
++    sessionFields: ["phone", "billingAddress"],
++    testBuyerCountry: "AU",
++  },
++  latviaBanks: {
++    component: "latviabanks-payments",
++    buttonTag: "latviabanks-button",
++    sessionMethod: "createLatviaBanksOneTimePaymentSession",
++    displayName: "Latvia Banks",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "LV",
++  },
++  fiuu: {
++    // FIUU's SDK component is "fiuu-cash-payments" but the registered
++    // custom-element button tag is "fiuu-button" (not "fiuu-cash-button"),
++    // so buttonTag does NOT follow the standard component→tag derivation.
++    component: "fiuu-cash-payments",
++    buttonTag: "fiuu-button",
++    sessionMethod: "createFIUUOneTimePaymentSession",
++    displayName: "FIUU",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "MY",
++  },
++  lithuaniaBanks: {
++    component: "lithuaniabanks-payments",
++    buttonTag: "lithuaniabanks-button",
++    sessionMethod: "createLithuaniaBanksOneTimePaymentSession",
++    displayName: "Lithuania Banks",
++    fields: ["name"],
++    sessionFields: [],
++    testBuyerCountry: "LT",
++  },
++} as const satisfies Record<string, LPMConfig>;
++
++export type LPMName = keyof typeof LPM_REGISTRY;
+diff --git a/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.test.ts b/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.test.ts
+new file mode 100644
+index 0000000..a2bba4e
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.test.ts
+@@ -0,0 +1,632 @@
++import { renderHook, act } from "@testing-library/react-hooks";
++
++import { useLPMOneTimePaymentSession } from "./useLPMOneTimePaymentSession";
++import { useProxyProps } from "../utils";
++import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
++import {
++  mockPayPalContext,
++  mockPayPalRejected,
++} from "./usePayPalTestUtils";
++
++import type { LPMOneTimePaymentSession } from "../types";
++
++jest.mock("./usePayPal");
++jest.mock("../utils", () => ({
++  ...jest.requireActual("../utils"),
++  useProxyProps: jest.fn(),
++}));
++
++const mockUseProxyProps = useProxyProps as jest.MockedFunction<
++  typeof useProxyProps
++>;
++
++const createMockLPMSession = (): LPMOneTimePaymentSession => ({
++  start: jest.fn().mockResolvedValue(undefined),
++  cancel: jest.fn(),
++  destroy: jest.fn(),
++  createPaymentFields: jest.fn().mockReturnValue(document.createElement("div")),
++  validate: jest.fn().mockResolvedValue(true),
++});
++
++const createMockSdkInstance = (
++  sessionMethod: string,
++  session = createMockLPMSession(),
++) => ({
++  [sessionMethod]: jest.fn().mockReturnValue(session),
++});
++
++describe("useLPMOneTimePaymentSession", () => {
++  const onApprove = jest.fn().mockResolvedValue(undefined);
++  const onCancel = jest.fn();
++  const onError = jest.fn();
++  let mockSession: LPMOneTimePaymentSession;
++  let mockSdkInstance: Record<string, jest.Mock>;
++
++  beforeEach(() => {
++    jest.clearAllMocks();
++    mockSession = createMockLPMSession();
++    mockSdkInstance = createMockSdkInstance(
++      "createIdealOneTimePaymentSession",
++      mockSession,
++    );
++    mockUseProxyProps.mockImplementation((props) => props);
++    mockPayPalContext({ sdkInstance: mockSdkInstance });
++  });
++
++  describe("works with multiple LPMs", () => {
++    test.each([
++      {
++        lpm: "ideal" as const,
++        sessionMethod: "createIdealOneTimePaymentSession",
++        buttonDisplay: "iDEAL",
++      },
++      {
++        lpm: "bancontact" as const,
++        sessionMethod: "createBancontactOneTimePaymentSession",
++        buttonDisplay: "Bancontact",
++      },
++      {
++        lpm: "eps" as const,
++        sessionMethod: "createEpsOneTimePaymentSession",
++        buttonDisplay: "EPS",
++      },
++      {
++        lpm: "zip" as const,
++        sessionMethod: "createZipOneTimePaymentSession",
++        buttonDisplay: "Zip",
++      },
++    ])(
++      "should create session using $sessionMethod for $lpm",
++      ({ lpm, sessionMethod }) => {
++        const session = createMockLPMSession();
++        const sdk = createMockSdkInstance(sessionMethod, session);
++        mockPayPalContext({ sdkInstance: sdk });
++
++        renderHook(() =>
++          useLPMOneTimePaymentSession({
++            lpm,
++            presentationMode: "popup",
++            orderId: "test-order-id",
++            onApprove,
++            onCancel,
++            onError,
++          }),
++        );
++
++        expect(sdk[sessionMethod]).toHaveBeenCalledWith(
++          expect.objectContaining({ orderId: "test-order-id" }),
++        );
++      },
++    );
++  });
++
++  describe("initialization", () => {
++    test("should create session when SDK instance is available", () => {
++      renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++          onCancel,
++          onError,
++        }),
++      );
++
++      expect(
++        mockSdkInstance.createIdealOneTimePaymentSession,
++      ).toHaveBeenCalledWith(
++        expect.objectContaining({ orderId: "test-order-id" }),
++      );
++    });
++
++    test("should not create session when no SDK instance is available", () => {
++      mockPayPalRejected();
++
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      expect(result.current.error).toEqual(
++        new Error("no sdk instance available"),
++      );
++      expect(
++        mockSdkInstance.createIdealOneTimePaymentSession,
++      ).not.toHaveBeenCalled();
++    });
++
++    test("should set error when session method is not found on SDK instance", () => {
++      mockPayPalContext({ sdkInstance: {} });
++
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      expect(result.current.error?.message).toContain(
++        'Session method "createIdealOneTimePaymentSession" not found',
++      );
++      expect(result.current.error?.message).toContain("ideal-payments");
++    });
++
++    test.each([
++      [INSTANCE_LOADING_STATE.PENDING, true],
++      [INSTANCE_LOADING_STATE.RESOLVED, false],
++      [INSTANCE_LOADING_STATE.REJECTED, false],
++    ])(
++      "should return isPending as %s when loadingStatus is %s",
++      (loadingStatus, expectedIsPending) => {
++        mockPayPalContext({
++          loadingStatus,
++          sdkInstance: expectedIsPending ? null : mockSdkInstance,
++        });
++
++        const { result } = renderHook(() =>
++          useLPMOneTimePaymentSession({
++            lpm: "ideal",
++            presentationMode: "popup",
++            orderId: "test-order-id",
++            onApprove,
++          }),
++        );
++
++        expect(result.current.isPending).toBe(expectedIsPending);
++      },
++    );
++
++    test.each([
++      {
++        description: "Error object",
++        thrownError: new Error("SDK create session error"),
++      },
++      {
++        description: "non-Error string",
++        thrownError: "String error message",
++      },
++    ])(
++      "should handle $description thrown by session creation",
++      ({ thrownError }) => {
++        const failingSdk = {
++          createIdealOneTimePaymentSession: jest
++            .fn()
++            .mockImplementation(() => {
++              throw thrownError;
++            }),
++        };
++        mockPayPalContext({ sdkInstance: failingSdk });
++
++        const { result } = renderHook(() =>
++          useLPMOneTimePaymentSession({
++            lpm: "ideal",
++            presentationMode: "popup",
++            orderId: "test-order-id",
++            onApprove,
++          }),
++        );
++
++        expect(result.current.error?.message).toContain(
++          "Failed to create payment session",
++        );
++        expect(
++          (result.current.error as Error & { cause: typeof thrownError })
++            ?.cause,
++        ).toBe(thrownError);
++      },
++    );
++  });
++
++  describe("session lifecycle", () => {
++    test("should destroy session on unmount", () => {
++      const { unmount } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      unmount();
++      expect(mockSession.destroy).toHaveBeenCalled();
++    });
++
++    test("should recreate session when orderId changes", () => {
++      const { rerender } = renderHook(
++        ({ orderId }) =>
++          useLPMOneTimePaymentSession({
++            lpm: "ideal",
++            presentationMode: "popup",
++            orderId,
++            onApprove,
++            onCancel,
++            onError,
++          }),
++        { initialProps: { orderId: "test-order-id-1" } },
++      );
++
++      jest.clearAllMocks();
++      rerender({ orderId: "test-order-id-2" });
++
++      expect(mockSession.destroy).toHaveBeenCalled();
++      expect(
++        mockSdkInstance.createIdealOneTimePaymentSession,
++      ).toHaveBeenCalledWith(
++        expect.objectContaining({ orderId: "test-order-id-2" }),
++      );
++    });
++
++    test("should NOT recreate session when only callbacks change", () => {
++      mockUseProxyProps.mockImplementation(
++        jest.requireActual("../utils").useProxyProps,
++      );
++      const initialOnApprove = jest.fn().mockResolvedValue(undefined);
++
++      const { rerender } = renderHook(
++        ({ onApprove: onApproveProp }) =>
++          useLPMOneTimePaymentSession({
++            lpm: "ideal",
++            presentationMode: "popup",
++            orderId: "test-order-id",
++            onApprove: onApproveProp,
++          }),
++        { initialProps: { onApprove: initialOnApprove } },
++      );
++
++      jest.clearAllMocks();
++      rerender({ onApprove: jest.fn().mockResolvedValue(undefined) });
++
++      expect(mockSession.destroy).not.toHaveBeenCalled();
++      expect(
++        mockSdkInstance.createIdealOneTimePaymentSession,
++      ).not.toHaveBeenCalled();
++    });
++  });
++
++  describe("handleClick", () => {
++    test("should start session with presentation mode and orderId", async () => {
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockSession.start).toHaveBeenCalledWith(
++        { presentationMode: "popup" },
++        expect.any(Promise),
++      );
++      const paymentSessionPromise = (mockSession.start as jest.Mock).mock
++        .calls[0][1];
++      await expect(paymentSessionPromise).resolves.toEqual({
++        orderId: "test-order-id",
++      });
++    });
++
++    test("should start session with createOrder when provided", async () => {
++      const mockCreateOrder = jest
++        .fn()
++        .mockReturnValue(Promise.resolve({ orderId: "created-order-id" }));
++
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          createOrder: mockCreateOrder,
++          onApprove,
++        }),
++      );
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockSession.start).toHaveBeenCalledWith(
++        { presentationMode: "popup" },
++        expect.any(Promise),
++      );
++      expect(mockCreateOrder).toHaveBeenCalled();
++    });
++
++    test("should do nothing if component is unmounted", async () => {
++      const { result, unmount } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      unmount();
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockSession.start).not.toHaveBeenCalled();
++    });
++
++    test("should set error when session is not available", async () => {
++      mockPayPalContext({ sdkInstance: {} });
++
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(result.current.error).toBeTruthy();
++    });
++  });
++
++  describe("handleCancel", () => {
++    test("should call cancel on the session", () => {
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      act(() => {
++        result.current.handleCancel();
++      });
++
++      expect(mockSession.cancel).toHaveBeenCalled();
++    });
++  });
++
++  describe("handleDestroy", () => {
++    test("should destroy session and set error on subsequent click", async () => {
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      act(() => {
++        result.current.handleDestroy();
++      });
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(result.current.error).toEqual(
++        new Error("iDEAL session not available"),
++      );
++    });
++  });
++
++  describe("return value stability", () => {
++    test("should return stable function references across renders", () => {
++      const { result, rerender } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      const firstRender = { ...result.current };
++      rerender();
++
++      expect(result.current.handleDestroy).toBe(firstRender.handleDestroy);
++      expect(result.current.handleCancel).toBe(firstRender.handleCancel);
++    });
++  });
++
++  describe("handleValidate", () => {
++    test("should call validate on the session and return true", async () => {
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      const isValid = await result.current.handleValidate();
++
++      expect(mockSession.validate).toHaveBeenCalled();
++      expect(isValid).toBe(true);
++    });
++
++    test("should return false when no session is available", async () => {
++      // Use rejected state (no sdkInstance) to avoid side effects from error loops
++      mockPayPalRejected();
++
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      const isValid = await result.current.handleValidate();
++
++      expect(isValid).toBe(false);
++    });
++  });
++
++  describe("sessionFields (T1)", () => {
++    test("should include phone in startOptions for LPMs that require it (mbway)", async () => {
++      const mbwaySession = createMockLPMSession();
++      const mbwaySdk = createMockSdkInstance(
++        "createMbWayOneTimePaymentSession",
++        mbwaySession,
++      );
++      mockPayPalContext({ sdkInstance: mbwaySdk });
++
++      const phone = { countryCode: "351", nationalNumber: "912345678" };
++
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "mbway",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++          phone,
++        }),
++      );
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mbwaySession.start).toHaveBeenCalledWith(
++        { presentationMode: "popup" },
++        expect.any(Promise),
++      );
++      const paymentSessionPromise = (mbwaySession.start as jest.Mock).mock
++        .calls[0][1];
++      await expect(paymentSessionPromise).resolves.toEqual(
++        expect.objectContaining({ phone }),
++      );
++    });
++
++    test("should include taxInfo in startOptions for LPMs that require it (boletobancario)", async () => {
++      const boletoSession = createMockLPMSession();
++      const boletoSdk = createMockSdkInstance(
++        "createBoletobancarioOneTimePaymentSession",
++        boletoSession,
++      );
++      mockPayPalContext({ sdkInstance: boletoSdk });
++
++      const taxInfo = { taxId: "12345678901", taxIdType: "BR_CPF" };
++
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "boletobancario",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++          taxInfo,
++        }),
++      );
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(boletoSession.start).toHaveBeenCalledWith(
++        { presentationMode: "popup" },
++        expect.any(Promise),
++      );
++      const paymentSessionPromise = (boletoSession.start as jest.Mock).mock
++        .calls[0][1];
++      await expect(paymentSessionPromise).resolves.toEqual(
++        expect.objectContaining({ taxInfo }),
++      );
++    });
++
++    test("should include phone and billingAddress in startOptions for LPMs that require both (zip)", async () => {
++      const zipSession = createMockLPMSession();
++      const zipSdk = createMockSdkInstance(
++        "createZipOneTimePaymentSession",
++        zipSession,
++      );
++      mockPayPalContext({ sdkInstance: zipSdk });
++
++      const phone = { countryCode: "61", nationalNumber: "412345678" };
++      const billingAddress = {
++        addressLine1: "1 Main St",
++        addressLine2: "",
++        adminArea1: "NSW",
++        adminArea2: "Sydney",
++        postalCode: "2000",
++        countryCode: "AU",
++      };
++
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "zip",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++          phone,
++          billingAddress,
++        }),
++      );
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(zipSession.start).toHaveBeenCalledWith(
++        { presentationMode: "popup" },
++        expect.any(Promise),
++      );
++      const paymentSessionPromise = (zipSession.start as jest.Mock).mock
++        .calls[0][1];
++      await expect(paymentSessionPromise).resolves.toEqual(
++        expect.objectContaining({ phone, billingAddress }),
++      );
++    });
++
++    test("should not include undefined sessionFields in startOptions", async () => {
++      // iDEAL has no sessionFields — startOptions should only have presentationMode
++      const { result } = renderHook(() =>
++        useLPMOneTimePaymentSession({
++          lpm: "ideal",
++          presentationMode: "popup",
++          orderId: "test-order-id",
++          onApprove,
++        }),
++      );
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockSession.start).toHaveBeenCalledWith(
++        { presentationMode: "popup" },
++        expect.any(Promise),
++      );
++      // Verify no session field keys (phone, billingAddress, etc.) are present
++      const startCallArg = (mockSession.start as jest.Mock).mock.calls[0][0];
++      const unexpectedKeys = ["phone", "billingAddress", "taxInfo", "expiryDate", "dateOfBirth", "numberOfInstallments"];
++      for (const key of unexpectedKeys) {
++        expect(startCallArg).not.toHaveProperty(key);
++      }
++
++      const paymentSessionPromise = (mockSession.start as jest.Mock).mock
++        .calls[0][1];
++      const resolvedPayload = await paymentSessionPromise;
++      for (const key of unexpectedKeys) {
++        expect(resolvedPayload).not.toHaveProperty(key);
++      }
++    });
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.ts b/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.ts
+new file mode 100644
+index 0000000..ba97063
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.ts
+@@ -0,0 +1,201 @@
++import { useCallback, useEffect, useRef, useState } from "react";
++
++import { usePayPal } from "./usePayPal";
++import { useIsMountedRef } from "./useIsMounted";
++import { useError } from "./useError";
++import { useProxyProps, createPaymentSession } from "../utils";
++import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
++import { LPM_REGISTRY } from "../config/lpmRegistry";
++
++import type { LPMName } from "../config/lpmRegistry";
++import type {
++  LPMSessionFields,
++  LPMStartOptions,
++  LPMOneTimePaymentSession,
++  LPMOneTimePaymentSessionOptions,
++  LPMOneTimePaymentSessionPromise,
++  LPMPresentationModeOptions,
++  LPMPaymentsInstance,
++  BasePaymentSessionReturn,
++} from "../types";
++
++export interface LPMPaymentSessionReturn extends BasePaymentSessionReturn {
++  session: LPMOneTimePaymentSession | null;
++  handleValidate: () => Promise<boolean>;
++}
++
++export type UseLPMOneTimePaymentSessionProps = {
++  lpm: LPMName;
++} & (
++  | (Omit<LPMOneTimePaymentSessionOptions, "orderId"> & {
++      createOrder: () => LPMOneTimePaymentSessionPromise;
++      orderId?: never;
++    })
++  | (LPMOneTimePaymentSessionOptions & {
++      createOrder?: never;
++      orderId: string;
++    })
++) &
++  LPMPresentationModeOptions &
++  LPMSessionFields;
++
++export function useLPMOneTimePaymentSession({
++  lpm,
++  presentationMode,
++  fullPageOverlay,
++  createOrder,
++  orderId,
++  ...callbacks
++}: UseLPMOneTimePaymentSessionProps): LPMPaymentSessionReturn {
++  const config = LPM_REGISTRY[lpm];
++  const { sdkInstance, loadingStatus } = usePayPal();
++  const isMountedRef = useIsMountedRef();
++  const sessionRef = useRef<LPMOneTimePaymentSession | null>(null);
++  const [sessionState, setSessionState] =
++    useState<LPMOneTimePaymentSession | null>(null);
++  const proxyCallbacks = useProxyProps(callbacks);
++  const [error, setError] = useError();
++
++  // Stabilize createOrder reference so handleClick doesn't recreate on every render
++  const createOrderRef = useRef(createOrder);
++  createOrderRef.current = createOrder;
++
++  const failedSdkRef = useRef<unknown>(null);
++
++  const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
++
++  const handleDestroy = useCallback(() => {
++    sessionRef.current?.destroy();
++    sessionRef.current = null;
++    setSessionState(null);
++  }, []);
++
++  useEffect(() => {
++    if (failedSdkRef.current !== sdkInstance) {
++      failedSdkRef.current = null;
++    }
++
++    if (sdkInstance) {
++      setError(null);
++    } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
++      setError(new Error("no sdk instance available"));
++    }
++  }, [sdkInstance, setError, loadingStatus]);
++
++  useEffect(() => {
++    if (!sdkInstance) {
++      return;
++    }
++
++    const createSession = (sdkInstance as LPMPaymentsInstance)[
++      config.sessionMethod
++    ];
++
++    if (!createSession) {
++      setError(
++        new Error(
++          `Session method "${config.sessionMethod}" not found. ` +
++            `Ensure "${config.component}" is included in the SDK components array.`,
++        ),
++      );
++      return;
++    }
++
++    const newSession = createPaymentSession({
++      // orderId is read here (not only later via paymentSessionPromise in
++      // handleClick) because the `orderId` prop variant of this hook creates
++      // the session immediately with a known order — createSession() needs it
++      // up front in that case, so it must stay a dependency of this effect.
++      sessionCreator: () =>
++        createSession({
++          orderId,
++          ...proxyCallbacks,
++        }),
++      failedSdkRef,
++      sdkInstance,
++      setError,
++      errorMessage: `Failed to create payment session. This may occur if the required component "${config.component}" is not included in the SDK components array.`,
++    });
++
++    if (!newSession) {
++      return;
++    }
++
++    sessionRef.current = newSession;
++    setSessionState(newSession);
++
++    return () => {
++      newSession.destroy();
++      setSessionState(null);
++    };
++    // proxyCallbacks is a stable Proxy reference (see useProxyProps) that is
++    // mutated in place on every render — including it here would recreate the
++    // session whenever its identity changes instead of only when session
++    // inputs actually change.
++    // eslint-disable-next-line react-hooks/exhaustive-deps
++  }, [sdkInstance, orderId, setError, config]);
++
++  const handleCancel = useCallback(() => {
++    sessionRef.current?.cancel();
++  }, []);
++
++  const handleValidate = useCallback(async (): Promise<boolean> => {
++    return sessionRef.current?.validate() ?? false;
++  }, []);
++
++  const handleClick = useCallback(async () => {
++    if (!isMountedRef.current) {
++      return;
++    }
++
++    if (!sessionRef.current) {
++      setError(new Error(`${config.displayName} session not available`));
++      return;
++    }
++
++    // Collect merchant-provided session-level fields (phone, billingAddress,
++    // taxInfo, etc.) required by specific LPMs (e.g. MB WAY, Pix, DOKU).
++    const sessionFieldValues: Partial<LPMSessionFields> = {};
++    for (const field of config.sessionFields) {
++      const key = field as keyof LPMSessionFields;
++      const value = (proxyCallbacks as unknown as LPMSessionFields)[key];
++      if (value !== undefined) {
++        (sessionFieldValues as Record<string, unknown>)[field] = value;
++      }
++    }
++
++    const startOptions: LPMStartOptions = {
++      presentationMode,
++      fullPageOverlay,
++    } as LPMStartOptions;
++
++    // Session fields are merchant-collected inputs resolved on the
++    // paymentSessionPromise (start()'s 2nd argument), not on the
++    // presentation-mode options (1st argument).
++    const paymentSessionPromise: LPMOneTimePaymentSessionPromise = (
++      createOrderRef.current
++        ? createOrderRef.current()
++        : Promise.resolve({ orderId: orderId as string })
++    ).then((result) => ({ ...result, ...sessionFieldValues }));
++
++    await sessionRef.current.start(startOptions, paymentSessionPromise);
++  }, [
++    isMountedRef,
++    presentationMode,
++    fullPageOverlay,
++    setError,
++    config,
++    proxyCallbacks,
++    orderId,
++  ]);
++
++  return {
++    error,
++    isPending,
++    session: sessionState,
++    handleCancel,
++    handleClick,
++    handleDestroy,
++    handleValidate,
++  };
++}
+diff --git a/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.test.ts b/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.test.ts
+index 5326dc7..61ed586 100644
+--- a/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.test.ts
++++ b/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.test.ts
+@@ -532,6 +532,71 @@ describe("useVenmoOneTimePaymentSession", () => {
+         mockPayPalContext({ sdkInstance: mockSdkInstance });
+       }
+     });
++
++    test("should forward sandboxSupport to start", async () => {
++      const props: UseVenmoOneTimePaymentSessionProps = {
++        orderId: "test-order-id",
++        onApprove: jest.fn(),
++        sandboxSupport: { enabled: true },
++      };
++
++      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockVenmoSession.start).toHaveBeenCalledWith(
++        expect.objectContaining({
++          presentationMode: "auto",
++          sandboxSupport: { enabled: true },
++        }),
++        undefined,
++      );
++    });
++
++    test("should omit sandboxSupport from start options when not provided", async () => {
++      const props: UseVenmoOneTimePaymentSessionProps = {
++        orderId: "test-order-id",
++        onApprove: jest.fn(),
++      };
++
++      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      const startOptions = (mockVenmoSession.start as jest.Mock).mock
++        .calls[0][0];
++      expect(startOptions).not.toHaveProperty("sandboxSupport");
++    });
++
++    test("should use the latest sandboxSupport after a prop update", async () => {
++      const onApprove = jest.fn();
++      const { result, rerender } = renderHook(
++        ({ sandboxSupport }) =>
++          useVenmoOneTimePaymentSession({
++            orderId: "test-order-id",
++            onApprove,
++            sandboxSupport,
++          }),
++        { initialProps: { sandboxSupport: { enabled: false } } },
++      );
++
++      rerender({ sandboxSupport: { enabled: true } });
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockVenmoSession.start).toHaveBeenCalledWith(
++        expect.objectContaining({
++          sandboxSupport: { enabled: true },
++        }),
++        undefined,
++      );
++    });
+   });
+ 
+   describe("handleCancel", () => {
+diff --git a/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts b/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts
+index af66a6f..400ea70 100644
+--- a/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts
++++ b/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts
+@@ -15,6 +15,16 @@ import type {
+   WithOptionalPresentationMode,
+ } from "../types";
+ 
++/**
++ * `sandboxSupport` is a temporary Venmo sandbox-testing flag that the JS SDK will
++ * remove once it is no longer needed. It is intentionally typed locally here
++ * rather than in `@paypal/paypal-js`, so it can be dropped from react-paypal-js
++ * without a breaking change to the published SDK types.
++ */
++type VenmoSandboxSupport = {
++  sandboxSupport?: { enabled: boolean };
++};
++
+ export type UseVenmoOneTimePaymentSessionProps = (
+   | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
+       createOrder: () => VenmoOneTimePaymentSessionPromise;
+@@ -25,7 +35,8 @@ export type UseVenmoOneTimePaymentSessionProps = (
+       orderId: string;
+     })
+ ) &
+-  WithOptionalPresentationMode<VenmoPresentationModeOptions>;
++  WithOptionalPresentationMode<VenmoPresentationModeOptions> &
++  VenmoSandboxSupport;
+ 
+ /**
+  * Hook for managing Venmo one-time payment sessions.
+@@ -58,6 +69,7 @@ export function useVenmoOneTimePaymentSession({
+   fullPageOverlay,
+   createOrder,
+   orderId,
++  sandboxSupport,
+   ...callbacks
+ }: UseVenmoOneTimePaymentSessionProps): BasePaymentSessionReturn {
+   const { sdkInstance, loadingStatus } = usePayPal();
+@@ -137,10 +149,18 @@ export function useVenmoOneTimePaymentSession({
+     const startOptions = {
+       presentationMode,
+       fullPageOverlay,
+-    } as VenmoPresentationModeOptions;
++      ...(sandboxSupport && { sandboxSupport }),
++    } as VenmoPresentationModeOptions & VenmoSandboxSupport;
+ 
+     await sessionRef.current.start(startOptions, createOrder?.());
+-  }, [isMountedRef, presentationMode, fullPageOverlay, createOrder, setError]);
++  }, [
++    isMountedRef,
++    presentationMode,
++    fullPageOverlay,
++    sandboxSupport,
++    createOrder,
++    setError,
++  ]);
+ 
+   return {
+     error,
+diff --git a/packages/react-paypal-js/src/v6/index.ts b/packages/react-paypal-js/src/v6/index.ts
+index 1dbc0c1..f8ff601 100644
+--- a/packages/react-paypal-js/src/v6/index.ts
++++ b/packages/react-paypal-js/src/v6/index.ts
+@@ -66,6 +66,7 @@ export {
+   GooglePayOneTimePaymentButton,
+   type GooglePayOneTimePaymentButtonProps,
+ } from "./components/GooglePayOneTimePaymentButton";
++export { PayPalCardNameField } from "./components/PayPalCardNameField";
+ export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
+ export { PayPalCardExpiryField } from "./components/PayPalCardExpiryField";
+ export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
+@@ -166,6 +167,12 @@ export {
+   type GooglePayOnApproveData,
+ } from "./hooks/useGooglePayOneTimePaymentSession";
+ 
++// ============================================================================
++// Local Payment Methods
++// ============================================================================
++
++export * from "./lpmExports";
++
+ // React 19+ JSX SDK Web Components type declaration
+ declare global {
+   // eslint-disable-next-line @typescript-eslint/no-namespace
+diff --git a/packages/react-paypal-js/src/v6/lpmExports.test.tsx b/packages/react-paypal-js/src/v6/lpmExports.test.tsx
+new file mode 100644
+index 0000000..14f40a3
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/lpmExports.test.tsx
+@@ -0,0 +1,336 @@
++import React from "react";
++import { render, act } from "@testing-library/react";
++
++import {
++  IdealOneTimePaymentButton,
++  BancontactOneTimePaymentButton,
++  EpsOneTimePaymentButton,
++  KlarnaOneTimePaymentButton,
++  FiuuOneTimePaymentButton,
++  ZipOneTimePaymentButton,
++  useIdealOneTimePaymentSession,
++  useEpsOneTimePaymentSession,
++} from "./lpmExports";
++import {
++  IdealPaymentButton,
++  EpsPaymentButton,
++  FiuuPaymentButton,
++  LPMSessionHandleContext,
++} from "./lpmExports";
++import { useLPMOneTimePaymentSession } from "./hooks/useLPMOneTimePaymentSession";
++
++import type { LPMOneTimePaymentSession } from "./types";
++
++jest.mock("./hooks/useLPMOneTimePaymentSession", () => ({
++  useLPMOneTimePaymentSession: jest.fn().mockReturnValue({
++    error: null,
++    isPending: false,
++    handleClick: jest.fn(),
++  }),
++}));
++jest.mock("./hooks/usePayPal", () => ({
++  usePayPal: jest.fn().mockReturnValue({ isHydrated: true }),
++}));
++
++const mockedUseLPM = jest.mocked(useLPMOneTimePaymentSession);
++
++function makeDefaultMockReturn(session: LPMOneTimePaymentSession | null = null) {
++  return {
++    error: null,
++    isPending: false,
++    session,
++    handleClick: jest.fn(),
++    handleCancel: jest.fn(),
++    handleDestroy: jest.fn(),
++    handleValidate: jest.fn().mockResolvedValue(true),
++  };
++}
++
++describe("Factory-generated LPM exports", () => {
++  beforeEach(() => {
++    jest.clearAllMocks();
++    mockedUseLPM.mockReturnValue(makeDefaultMockReturn());
++  });
++
++  test("IdealOneTimePaymentButton passes lpm='ideal'", () => {
++    render(
++      <IdealOneTimePaymentButton
++        presentationMode="popup"
++        orderId="test"
++        onApprove={jest.fn().mockResolvedValue(undefined)}
++      />,
++    );
++
++    expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
++      expect.objectContaining({ lpm: "ideal" }),
++    );
++  });
++
++  test("BancontactOneTimePaymentButton passes lpm='bancontact'", () => {
++    render(
++      <BancontactOneTimePaymentButton
++        presentationMode="popup"
++        orderId="test"
++        onApprove={jest.fn().mockResolvedValue(undefined)}
++      />,
++    );
++
++    expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
++      expect.objectContaining({ lpm: "bancontact" }),
++    );
++  });
++
++  test("EpsOneTimePaymentButton passes lpm='eps'", () => {
++    render(
++      <EpsOneTimePaymentButton
++        presentationMode="popup"
++        orderId="test"
++        onApprove={jest.fn().mockResolvedValue(undefined)}
++      />,
++    );
++
++    expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
++      expect.objectContaining({ lpm: "eps" }),
++    );
++  });
++
++  test("KlarnaOneTimePaymentButton passes lpm='klarna'", () => {
++    render(
++      <KlarnaOneTimePaymentButton
++        presentationMode="popup"
++        orderId="test"
++        onApprove={jest.fn().mockResolvedValue(undefined)}
++      />,
++    );
++
++    expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
++      expect.objectContaining({ lpm: "klarna" }),
++    );
++  });
++
++  test("FiuuOneTimePaymentButton passes lpm='fiuu'", () => {
++    render(
++      <FiuuOneTimePaymentButton
++        presentationMode="popup"
++        orderId="test"
++        onApprove={jest.fn().mockResolvedValue(undefined)}
++      />,
++    );
++
++    expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
++      expect.objectContaining({ lpm: "fiuu" }),
++    );
++  });
++
++  test("ZipOneTimePaymentButton passes lpm='zip'", () => {
++    render(
++      <ZipOneTimePaymentButton
++        presentationMode="popup"
++        orderId="test"
++        onApprove={jest.fn().mockResolvedValue(undefined)}
++      />,
++    );
++
++    expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
++      expect.objectContaining({ lpm: "zip" }),
++    );
++  });
++
++  test("factory components have correct displayName", () => {
++    expect(IdealOneTimePaymentButton.displayName).toBe(
++      "iDEALOneTimePaymentButton",
++    );
++    expect(BancontactOneTimePaymentButton.displayName).toBe(
++      "BancontactOneTimePaymentButton",
++    );
++    expect(EpsOneTimePaymentButton.displayName).toBe(
++      "EPSOneTimePaymentButton",
++    );
++  });
++});
++
++// ─── Enhanced hooks — field components returned by hook ──────────────────────
++
++// Helper: capture a hook's return value synchronously by rendering a probe component.
++function captureHookResult<T>(hookFn: () => T): T {
++  const captured: { current: T | null } = { current: null };
++
++  function Probe() {
++    captured.current = hookFn();
++    return null;
++  }
++
++  render(<Probe />);
++  return captured.current as T;
++}
++
++describe("Enhanced LPM hooks — field components", () => {
++  beforeEach(() => {
++    jest.clearAllMocks();
++    mockedUseLPM.mockReturnValue(makeDefaultMockReturn());
++  });
++
++  test("useIdealOneTimePaymentSession returns a NameField component", () => {
++    const result = captureHookResult(() =>
++      useIdealOneTimePaymentSession({
++        presentationMode: "popup",
++        createOrder: jest.fn().mockResolvedValue({ orderId: "test" }),
++        onApprove: jest.fn().mockResolvedValue(undefined),
++      }),
++    );
++
++    expect(typeof result.NameField).toBe("function");
++    expect(result.NameField.displayName).toBe("NameField");
++  });
++
++  test("useEpsOneTimePaymentSession returns a NameField component (eps has fields: ['name'])", () => {
++    const result = captureHookResult(() =>
++      useEpsOneTimePaymentSession({
++        presentationMode: "popup",
++        createOrder: jest.fn().mockResolvedValue({ orderId: "test" }),
++        onApprove: jest.fn().mockResolvedValue(undefined),
++      }),
++    );
++
++    expect(typeof result.NameField).toBe("function");
++  });
++
++  test("NameField renders a div container", () => {
++    const result = captureHookResult(() =>
++      useIdealOneTimePaymentSession({
++        presentationMode: "popup",
++        createOrder: jest.fn().mockResolvedValue({ orderId: "test" }),
++        onApprove: jest.fn().mockResolvedValue(undefined),
++      }),
++    );
++
++    const { NameField } = result;
++    const { container } = render(<NameField containerStyles={{ marginBottom: 8 }} />);
++    expect(container.querySelector("div")).not.toBeNull();
++  });
++
++  test("FieldComponent calls createPaymentFields when session becomes available via LPMSessionContext", async () => {
++    const makeSession = (): LPMOneTimePaymentSession => ({
++      start: jest.fn().mockResolvedValue(undefined),
++      cancel: jest.fn(),
++      destroy: jest.fn(),
++      createPaymentFields: jest.fn().mockReturnValue(document.createElement("div")),
++      validate: jest.fn().mockResolvedValue(true),
++    });
++
++    const session1 = makeSession();
++    let currentSession: LPMOneTimePaymentSession | null = null;
++
++    mockedUseLPM.mockImplementation(() => makeDefaultMockReturn(currentSession));
++
++    // Capture hook result + render NameField wrapped in LPMSessionProvider
++    let capturedResult: ReturnType<typeof useIdealOneTimePaymentSession> | null = null;
++
++    function TestTree() {
++      capturedResult = useIdealOneTimePaymentSession({
++        presentationMode: "popup",
++        createOrder: jest.fn().mockResolvedValue({ orderId: "t" }),
++        onApprove: jest.fn().mockResolvedValue(undefined),
++      });
++      if (!capturedResult) {
++        return null;
++      }
++      const { LPMSessionProvider } = capturedResult;
++      const NF = capturedResult.NameField as React.FC;
++      return (
++        <LPMSessionProvider>
++          <NF />
++        </LPMSessionProvider>
++      );
++    }
++
++    const { rerender } = render(<TestTree />);
++
++    // No session yet — createPaymentFields not called
++    expect(session1.createPaymentFields).not.toHaveBeenCalled();
++
++    // Provide a session
++    currentSession = session1;
++    await act(async () => {
++      rerender(<TestTree />);
++    });
++
++    expect(session1.createPaymentFields).toHaveBeenCalledWith({ type: "name" });
++  });
++});
++
++// ─── Standalone named button components ──────────────────────────────────────
++
++describe("Standalone LPM payment buttons (lpmProviderExports)", () => {
++  test("IdealPaymentButton has correct displayName", () => {
++    expect(IdealPaymentButton.displayName).toBe("IdealPaymentButton");
++  });
++
++  test("EpsPaymentButton has correct displayName", () => {
++    expect(EpsPaymentButton.displayName).toBe("EpsPaymentButton");
++  });
++
++  test("FiuuPaymentButton renders the fiuu-button web component (non-derived tag)", () => {
++    const mockHandle = {
++      handleClick: jest.fn(),
++      isPending: false,
++      error: null,
++    };
++
++    const { container } = render(
++      <LPMSessionHandleContext.Provider value={mockHandle}>
++        <FiuuPaymentButton />
++      </LPMSessionHandleContext.Provider>,
++    );
++
++    expect(container.querySelector("fiuu-button")).not.toBeNull();
++  });
++
++  test("IdealPaymentButton renders the ideal-button web component", () => {
++    const mockHandle = {
++      handleClick: jest.fn(),
++      isPending: false,
++      error: null,
++    };
++
++    const { container } = render(
++      <LPMSessionHandleContext.Provider value={mockHandle}>
++        <IdealPaymentButton />
++      </LPMSessionHandleContext.Provider>,
++    );
++
++    expect(container.querySelector("ideal-button")).not.toBeNull();
++  });
++
++  test("IdealPaymentButton is disabled when isPending=true", () => {
++    const mockHandle = {
++      handleClick: jest.fn(),
++      isPending: true,
++      error: null,
++    };
++
++    const { container } = render(
++      <LPMSessionHandleContext.Provider value={mockHandle}>
++        <IdealPaymentButton />
++      </LPMSessionHandleContext.Provider>,
++    );
++
++    expect(container.querySelector("ideal-button")?.getAttribute("disabled")).not.toBeNull();
++  });
++
++  test("IdealPaymentButton is disabled when error is present", () => {
++    const mockHandle = {
++      handleClick: jest.fn(),
++      isPending: false,
++      error: new Error("Something went wrong"),
++    };
++
++    const { container } = render(
++      <LPMSessionHandleContext.Provider value={mockHandle}>
++        <IdealPaymentButton />
++      </LPMSessionHandleContext.Provider>,
++    );
++
++    expect(container.querySelector("ideal-button")?.getAttribute("disabled")).not.toBeNull();
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/lpmExports.ts b/packages/react-paypal-js/src/v6/lpmExports.ts
+new file mode 100644
+index 0000000..b9b79a4
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/lpmExports.ts
+@@ -0,0 +1,559 @@
++import React from "react";
++
++import {
++  LPMOneTimePaymentButton,
++  type LPMOneTimePaymentButtonProps,
++} from "./components/LPMOneTimePaymentButton";
++import { LPM_REGISTRY } from "./config/lpmRegistry";
++import {
++  createLPMButtonComponent,
++  createEnhancedLPMHook,
++  LPMSessionContext,
++  LPMSessionHandleContext,
++  type LPMSessionHandle,
++  type LPMSessionHandleContextValue,
++  type LPMButtonComponentProps,
++  type LPMFieldComponentProps,
++  type LPMEnhancedHookReturn,
++} from "./components/LPMPaymentProvider";
++
++import type { UseLPMOneTimePaymentSessionProps } from "./hooks/useLPMOneTimePaymentSession";
++import type { LPMName } from "./config/lpmRegistry";
++
++export { LPMSessionContext, LPMSessionHandleContext };
++export type {
++  LPMSessionHandle,
++  LPMSessionHandleContextValue,
++  LPMButtonComponentProps,
++  LPMFieldComponentProps,
++  LPMEnhancedHookReturn,
++};
++
++type NamedLPMButtonProps = Omit<LPMOneTimePaymentButtonProps, "lpm">;
++type NamedLPMHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;
++
++function createLPMButton(lpm: LPMName) {
++  const Component = (props: NamedLPMButtonProps): JSX.Element | null =>
++    React.createElement(LPMOneTimePaymentButton, {
++      lpm,
++      ...props,
++    } as LPMOneTimePaymentButtonProps);
++  Component.displayName = `${LPM_REGISTRY[lpm].displayName}OneTimePaymentButton`;
++  return Component;
++}
++
++function createLPMHook<const L extends LPMName>(lpm: L) {
++  return createEnhancedLPMHook(lpm, LPM_REGISTRY[lpm].fields);
++}
++
++function createStandaloneLPMButton(lpm: LPMName, displayName: string) {
++  return createLPMButtonComponent(LPM_REGISTRY[lpm].buttonTag, displayName);
++}
++
++// Named Button Components
++export const IdealOneTimePaymentButton = /*#__PURE__*/ createLPMButton("ideal");
++export const BancontactOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("bancontact");
++export const EpsOneTimePaymentButton = /*#__PURE__*/ createLPMButton("eps");
++export const BlikOneTimePaymentButton = /*#__PURE__*/ createLPMButton("blik");
++export const MybankOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("mybank");
++export const TrustlyOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("trustly");
++export const P24OneTimePaymentButton = /*#__PURE__*/ createLPMButton("p24");
++export const MultibancoOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("multibanco");
++export const BizumOneTimePaymentButton = /*#__PURE__*/ createLPMButton("bizum");
++export const SwishOneTimePaymentButton = /*#__PURE__*/ createLPMButton("swish");
++export const TwintOneTimePaymentButton = /*#__PURE__*/ createLPMButton("twint");
++export const WechatpayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("wechatpay");
++export const VerkkopankkiOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("verkkopankki");
++export const PayuOneTimePaymentButton = /*#__PURE__*/ createLPMButton("payu");
++export const MbwayOneTimePaymentButton = /*#__PURE__*/ createLPMButton("mbway");
++export const SatispayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("satispay");
++export const WeroOneTimePaymentButton = /*#__PURE__*/ createLPMButton("wero");
++export const FloaOneTimePaymentButton = /*#__PURE__*/ createLPMButton("floa");
++export const GrabpayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("grabpay");
++export const PixInternationalOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("pixInternational");
++export const SepaOneTimePaymentButton = /*#__PURE__*/ createLPMButton("sepa");
++export const DokuOneTimePaymentButton = /*#__PURE__*/ createLPMButton("doku");
++export const EstoniaOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("estonia");
++export const GopayOneTimePaymentButton = /*#__PURE__*/ createLPMButton("gopay");
++export const AlipayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("alipay");
++export const IndonesiaBanksOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("indonesiaBanks");
++export const KredivoOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("kredivo");
++export const LinkajaOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("linkaja");
++export const OvoOneTimePaymentButton = /*#__PURE__*/ createLPMButton("ovo");
++export const PayseraOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("paysera");
++export const SkrillOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("skrill");
++export const BlikPayLaterOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("blikPayLater");
++export const BancomatPayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("bancomatPay");
++export const JeniuspayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("jeniuspay");
++export const KlarnaOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("klarna");
++export const AfterpayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("afterpay");
++export const OxxopayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("oxxopay");
++export const BoletobancarioOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("boletobancario");
++export const PaysafecardOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("paysafecard");
++export const ScalapayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("scalapay");
++export const CryptoOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("crypto");
++export const DragonpayOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("dragonpay");
++export const FpxOneTimePaymentButton = /*#__PURE__*/ createLPMButton("fpx");
++export const IndomaretOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("indomaret");
++export const ThailandBanksOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("thailandBanks");
++export const AlfamartOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("alfamart");
++export const ZipOneTimePaymentButton = /*#__PURE__*/ createLPMButton("zip");
++export const LatviaBanksOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("latviaBanks");
++export const FiuuOneTimePaymentButton = /*#__PURE__*/ createLPMButton("fiuu");
++export const LithuaniaBanksOneTimePaymentButton =
++  /*#__PURE__*/ createLPMButton("lithuaniaBanks");
++
++// Button prop type aliases
++export type IdealOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type BancontactOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type EpsOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type BlikOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type MybankOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type TrustlyOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type P24OneTimePaymentButtonProps = NamedLPMButtonProps;
++export type MultibancoOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type BizumOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type SwishOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type TwintOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type WechatpayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type VerkkopankkiOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type PayuOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type MbwayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type SatispayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type WeroOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type FloaOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type GrabpayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type PixInternationalOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type SepaOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type DokuOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type EstoniaOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type GopayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type AlipayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type IndonesiaBanksOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type KredivoOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type LinkajaOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type OvoOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type PayseraOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type SkrillOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type BlikPayLaterOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type BancomatPayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type JeniuspayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type KlarnaOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type AfterpayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type OxxopayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type BoletobancarioOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type PaysafecardOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type ScalapayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type CryptoOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type DragonpayOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type FpxOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type IndomaretOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type ThailandBanksOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type AlfamartOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type ZipOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type LatviaBanksOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type FiuuOneTimePaymentButtonProps = NamedLPMButtonProps;
++export type LithuaniaBanksOneTimePaymentButtonProps = NamedLPMButtonProps;
++
++// Named Hooks
++export const useIdealOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("ideal");
++export const useBancontactOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("bancontact");
++export const useEpsOneTimePaymentSession = /*#__PURE__*/ createLPMHook("eps");
++export const useBlikOneTimePaymentSession = /*#__PURE__*/ createLPMHook("blik");
++export const useMybankOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("mybank");
++export const useTrustlyOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("trustly");
++export const useP24OneTimePaymentSession = /*#__PURE__*/ createLPMHook("p24");
++export const useMultibancoOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("multibanco");
++export const useBizumOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("bizum");
++export const useSwishOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("swish");
++export const useTwintOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("twint");
++export const useWechatpayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("wechatpay");
++export const useVerkkopankkiOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("verkkopankki");
++export const usePayuOneTimePaymentSession = /*#__PURE__*/ createLPMHook("payu");
++export const useMbwayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("mbway");
++export const useSatispayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("satispay");
++export const useWeroOneTimePaymentSession = /*#__PURE__*/ createLPMHook("wero");
++export const useFloaOneTimePaymentSession = /*#__PURE__*/ createLPMHook("floa");
++export const useGrabpayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("grabpay");
++export const usePixInternationalOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("pixInternational");
++export const useSepaOneTimePaymentSession = /*#__PURE__*/ createLPMHook("sepa");
++export const useDokuOneTimePaymentSession = /*#__PURE__*/ createLPMHook("doku");
++export const useEstoniaOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("estonia");
++export const useGopayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("gopay");
++export const useAlipayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("alipay");
++export const useIndonesiaBanksOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("indonesiaBanks");
++export const useKredivoOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("kredivo");
++export const useLinkajaOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("linkaja");
++export const useOvoOneTimePaymentSession = /*#__PURE__*/ createLPMHook("ovo");
++export const usePayseraOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("paysera");
++export const useSkrillOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("skrill");
++export const useBlikPayLaterOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("blikPayLater");
++export const useBancomatPayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("bancomatPay");
++export const useJeniuspayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("jeniuspay");
++export const useKlarnaOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("klarna");
++export const useAfterpayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("afterpay");
++export const useOxxopayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("oxxopay");
++export const useBoletobancarioOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("boletobancario");
++export const usePaysafecardOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("paysafecard");
++export const useScalapayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("scalapay");
++export const useCryptoOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("crypto");
++export const useDragonpayOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("dragonpay");
++export const useFpxOneTimePaymentSession = /*#__PURE__*/ createLPMHook("fpx");
++export const useIndomaretOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("indomaret");
++export const useThailandBanksOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("thailandBanks");
++export const useAlfamartOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("alfamart");
++export const useZipOneTimePaymentSession = /*#__PURE__*/ createLPMHook("zip");
++export const useLatviaBanksOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("latviaBanks");
++export const useFiuuOneTimePaymentSession = /*#__PURE__*/ createLPMHook("fiuu");
++export const useLithuaniaBanksOneTimePaymentSession =
++  /*#__PURE__*/ createLPMHook("lithuaniaBanks");
++
++// Provider + context utilities are re-exported through the single ./sdk-v6
++// public entry so PayPal and LPM components share the same React context.
++export { PayPalProvider } from "./components/PayPalProvider";
++export { usePayPal } from "./hooks/usePayPal";
++export { INSTANCE_LOADING_STATE } from "./types/ProviderEnums";
++
++// Generic LPM exports are also exposed through the single ./sdk-v6 entry.
++export {
++  LPMOneTimePaymentButton,
++  type LPMOneTimePaymentButtonProps,
++} from "./components/LPMOneTimePaymentButton";
++export { LPM_REGISTRY } from "./config/lpmRegistry";
++export type { LPMName } from "./config/lpmRegistry";
++export {
++  useLPMOneTimePaymentSession,
++  type UseLPMOneTimePaymentSessionProps,
++  type LPMPaymentSessionReturn,
++} from "./hooks/useLPMOneTimePaymentSession";
++
++// Hook prop type aliases
++export type UseIdealOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseBancontactOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseEpsOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseBlikOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseMybankOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseTrustlyOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseP24OneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseMultibancoOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseBizumOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseSwishOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseTwintOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseWechatpayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseVerkkopankkiOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UsePayuOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseMbwayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseSatispayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseWeroOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseFloaOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseGrabpayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UsePixInternationalOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseSepaOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseDokuOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseEstoniaOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseGopayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseAlipayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseIndonesiaBanksOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseKredivoOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseLinkajaOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseOvoOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UsePayseraOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseSkrillOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseBlikPayLaterOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseBancomatPayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseJeniuspayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseKlarnaOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseAfterpayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseOxxopayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseBoletobancarioOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UsePaysafecardOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseScalapayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseCryptoOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseDragonpayOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseFpxOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseIndomaretOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseThailandBanksOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseAlfamartOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseZipOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseLatviaBanksOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseFiuuOneTimePaymentSessionProps = NamedLPMHookProps;
++export type UseLithuaniaBanksOneTimePaymentSessionProps = NamedLPMHookProps;
++
++// ─── Named standalone button components ───────────────────────────────────────
++// Read session state from LPMSessionHandleContext — render inside the
++// LPMSessionProvider returned by the corresponding use*OneTimePaymentSession hook.
++export const IdealPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "ideal",
++  "IdealPaymentButton",
++);
++export const BancontactPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "bancontact",
++  "BancontactPaymentButton",
++);
++export const EpsPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "eps",
++  "EpsPaymentButton",
++);
++export const BlikPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "blik",
++  "BlikPaymentButton",
++);
++export const MybankPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "mybank",
++  "MybankPaymentButton",
++);
++export const TrustlyPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "trustly",
++  "TrustlyPaymentButton",
++);
++export const P24PaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "p24",
++  "P24PaymentButton",
++);
++export const MultibancoPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "multibanco",
++  "MultibancoPaymentButton",
++);
++export const BizumPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "bizum",
++  "BizumPaymentButton",
++);
++export const SwishPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "swish",
++  "SwishPaymentButton",
++);
++export const TwintPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "twint",
++  "TwintPaymentButton",
++);
++export const WechatpayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "wechatpay",
++  "WechatpayPaymentButton",
++);
++export const VerkkopankkiPaymentButton =
++  /*#__PURE__*/ createStandaloneLPMButton(
++    "verkkopankki",
++    "VerkkopankkiPaymentButton",
++  );
++export const PayuPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "payu",
++  "PayuPaymentButton",
++);
++export const MbwayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "mbway",
++  "MbwayPaymentButton",
++);
++export const SatispayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "satispay",
++  "SatispayPaymentButton",
++);
++export const WeroPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "wero",
++  "WeroPaymentButton",
++);
++export const FloaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "floa",
++  "FloaPaymentButton",
++);
++export const GrabpayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "grabpay",
++  "GrabpayPaymentButton",
++);
++export const PixInternationalPaymentButton =
++  /*#__PURE__*/ createStandaloneLPMButton(
++    "pixInternational",
++    "PixInternationalPaymentButton",
++  );
++export const SepaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "sepa",
++  "SepaPaymentButton",
++);
++export const DokuPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "doku",
++  "DokuPaymentButton",
++);
++export const EstoniaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "estonia",
++  "EstoniaPaymentButton",
++);
++export const GopayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "gopay",
++  "GopayPaymentButton",
++);
++export const AlipayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "alipay",
++  "AlipayPaymentButton",
++);
++export const IndonesiaBanksPaymentButton =
++  /*#__PURE__*/ createStandaloneLPMButton(
++    "indonesiaBanks",
++    "IndonesiaBanksPaymentButton",
++  );
++export const KredivoPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "kredivo",
++  "KredivoPaymentButton",
++);
++export const LinkajaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "linkaja",
++  "LinkajaPaymentButton",
++);
++export const OvoPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "ovo",
++  "OvoPaymentButton",
++);
++export const PayseraPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "paysera",
++  "PayseraPaymentButton",
++);
++export const SkrillPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "skrill",
++  "SkrillPaymentButton",
++);
++export const BlikPayLaterPaymentButton =
++  /*#__PURE__*/ createStandaloneLPMButton(
++    "blikPayLater",
++    "BlikPayLaterPaymentButton",
++  );
++export const BancomatPayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "bancomatPay",
++  "BancomatPayPaymentButton",
++);
++export const JeniuspayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "jeniuspay",
++  "JeniuspayPaymentButton",
++);
++export const KlarnaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "klarna",
++  "KlarnaPaymentButton",
++);
++export const AfterpayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "afterpay",
++  "AfterpayPaymentButton",
++);
++export const OxxopayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "oxxopay",
++  "OxxopayPaymentButton",
++);
++export const BoletobancarioPaymentButton =
++  /*#__PURE__*/ createStandaloneLPMButton(
++    "boletobancario",
++    "BoletobancarioPaymentButton",
++  );
++export const PaysafecardPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "paysafecard",
++  "PaysafecardPaymentButton",
++);
++export const ScalapayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "scalapay",
++  "ScalapayPaymentButton",
++);
++export const CryptoPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "crypto",
++  "CryptoPaymentButton",
++);
++export const DragonpayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "dragonpay",
++  "DragonpayPaymentButton",
++);
++export const FpxPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "fpx",
++  "FpxPaymentButton",
++);
++export const IndomaretPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "indomaret",
++  "IndomaretPaymentButton",
++);
++export const ThailandBanksPaymentButton =
++  /*#__PURE__*/ createStandaloneLPMButton(
++    "thailandBanks",
++    "ThailandBanksPaymentButton",
++  );
++export const AlfamartPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "alfamart",
++  "AlfamartPaymentButton",
++);
++export const ZipPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "zip",
++  "ZipPaymentButton",
++);
++export const LatviaBanksPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "latviaBanks",
++  "LatviaBanksPaymentButton",
++);
++export const FiuuPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
++  "fiuu",
++  "FiuuPaymentButton",
++);
++export const LithuaniaBanksPaymentButton =
++  /*#__PURE__*/ createStandaloneLPMButton(
++    "lithuaniaBanks",
++    "LithuaniaBanksPaymentButton",
++  );
+diff --git a/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts b/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts
+index 9cd6c26..6ca1a77 100644
+--- a/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts
++++ b/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts
+@@ -101,4 +101,111 @@ export type SDKWebComponents = {
+   "paypal-basic-card-container": HTMLAttributes<HTMLElement>;
+   "paypal-message": PayPalMessagesElement;
+   "apple-pay-button": ApplePayButtonElementProps;
++  "ideal-button": ButtonProps;
++  "bancontact-button": ButtonProps;
++  "eps-button": ButtonProps;
++  "blik-button": ButtonProps;
++  "mybank-button": ButtonProps;
++  "trustly-button": ButtonProps;
++  "p24-button": ButtonProps;
++  "multibanco-button": ButtonProps;
++  "bizum-button": ButtonProps;
++  "swish-button": ButtonProps;
++  "klarna-button": ButtonProps;
++  "twint-button": ButtonProps;
++  "wechatpay-button": ButtonProps;
++  "afterpay-button": ButtonProps;
++  "oxxopay-button": ButtonProps;
++  "boletobancario-button": ButtonProps;
++  "verkkopankki-button": ButtonProps;
++  "payu-button": ButtonProps;
++  "paysafecard-button": ButtonProps;
++  "mbway-button": ButtonProps;
++  "satispay-button": ButtonProps;
++  "wero-button": ButtonProps;
++  "floa-button": ButtonProps;
++  "scalapay-button": ButtonProps;
++  "grabpay-button": ButtonProps;
++  "pix-international-button": ButtonProps;
++  "sepa-button": ButtonProps;
++  "crypto-button": ButtonProps;
++  "doku-button": ButtonProps;
++  "dragonpay-button": ButtonProps;
++  "estonia-button": ButtonProps;
++  "fpx-button": ButtonProps;
++  "gopay-button": ButtonProps;
++  "alipay-button": ButtonProps;
++  "indomaret-button": ButtonProps;
++  "indonesiabanks-button": ButtonProps;
++  "kredivo-button": ButtonProps;
++  "linkaja-button": ButtonProps;
++  "ovo-button": ButtonProps;
++  "paysera-button": ButtonProps;
++  "skrill-button": ButtonProps;
++  "thailandbanks-button": ButtonProps;
++  "blikpaylater-button": ButtonProps;
++  "alfamart-button": ButtonProps;
++  "zip-button": ButtonProps;
++  "bancomatpay-button": ButtonProps;
++  "latviabanks-button": ButtonProps;
++  "fiuu-button": ButtonProps;
++  "lithuaniabanks-button": ButtonProps;
++  "jeniuspay-button": ButtonProps;
+ };
++
++/**
++ * Runtime set of all LPM button tag names registered as SDK custom elements.
++ * Used to validate registry entries at test time.
++ */
++export const SDK_LPM_BUTTON_TAGS = new Set([
++  "ideal-button",
++  "bancontact-button",
++  "eps-button",
++  "blik-button",
++  "mybank-button",
++  "trustly-button",
++  "p24-button",
++  "multibanco-button",
++  "bizum-button",
++  "swish-button",
++  "klarna-button",
++  "twint-button",
++  "wechatpay-button",
++  "afterpay-button",
++  "oxxopay-button",
++  "boletobancario-button",
++  "verkkopankki-button",
++  "payu-button",
++  "paysafecard-button",
++  "mbway-button",
++  "satispay-button",
++  "wero-button",
++  "floa-button",
++  "scalapay-button",
++  "grabpay-button",
++  "pix-international-button",
++  "sepa-button",
++  "crypto-button",
++  "doku-button",
++  "dragonpay-button",
++  "estonia-button",
++  "fpx-button",
++  "gopay-button",
++  "alipay-button",
++  "indomaret-button",
++  "indonesiabanks-button",
++  "kredivo-button",
++  "linkaja-button",
++  "ovo-button",
++  "paysera-button",
++  "skrill-button",
++  "thailandbanks-button",
++  "blikpaylater-button",
++  "alfamart-button",
++  "zip-button",
++  "bancomatpay-button",
++  "latviabanks-button",
++  "fiuu-button",
++  "lithuaniabanks-button",
++  "jeniuspay-button",
++] as const);

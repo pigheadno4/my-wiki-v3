@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-19] ingest | PayPal JS core 11.1.0 and React 10.5.0
+
+- Full additive ingest with the approved focused-reading exception; preserved older versions and added funding-source data, React LPM examples, card name field, and Venmo sandbox findings. Details: [[paypal-log]] and [[changelog-github-paypal-js]].
+
 ## [2026-09-16] ingest | Braintree Web 3.145.0
 
 - Delta-ingested PayPal v6 checkout-with-vault, Venmo desktop address/QR changes, and loading/popup recovery, preserving earlier versions. Updated existing concepts and provider navigation. Details and approved review exception: [[braintree-log]] and [[changelog-github-braintree-web]].

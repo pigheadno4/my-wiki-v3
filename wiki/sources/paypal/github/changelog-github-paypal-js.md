@@ -2,9 +2,11 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-13
+date_updated: 2026-09-19
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json"
+  - "github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json"
@@ -23,6 +25,34 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `abc4c83` (2026-09-15)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `11.0.1` | `11.1.0` | 2026-09-15 | `abc4c8331a64e91d90a6eec911b635f36c0f273f` | Full, additive |
+| `@paypal/react-paypal-js` | `10.4.1` | `10.5.0` | 2026-09-15 | `abc4c8331a64e91d90a6eec911b635f36c0f273f` | Full, additive |
+
+Package-qualified releases `@paypal/paypal-js@11.1.0` and `@paypal/react-paypal-js@10.5.0` were collected September 19 and ingested together as work item `github-961c3611b36c6341ad56`. The user approved full mode because required approval-data fields introduce a compatibility impact missed by the automated API scan. The collection-time delta recommendation remains unchanged.
+
+**Core changes:** required `fundingSource: FundingSource` on one-time, save-payment, legacy billing-agreement, and subscription approval data; exported funding-source union; name Card Field and optional name-field event state. Existing core LPM contracts predate this release. The loader implementation is unchanged from `11.0.1`.
+
+**React changes:** 50 LPM wrapper/hook/standalone-button sets in the existing `/sdk-v6` entry, generic LPM selection, rendered-field prefills, session-field forwarding, and bundler tree-shaking annotations; optional `PayPalCardNameField`; temporary locally typed Venmo sandbox flag; core dependency `^11.1.0`.
+
+**Migration and cautions:** update manually constructed approval objects/mocks for `fundingSource`; callbacks may ignore it. LPM integrations must load their matching component and check eligibility; presentation is popup-only. Session data belongs to the second `start()` argument. `isPending` is SDK loading, not a transaction lock. Card `submit()` resolution alone is not successful payment or capture. Retained sample helpers do not establish final capture status, and registry presence does not prove merchant enablement.
+
+> [!warning] Contradiction - eligibility examples
+> README/hook-comment examples sometimes use REST-style `purchase_units` for the client eligibility hook despite its `amount`, `currencyCode`, and `paymentFlow` type. Use the exact client contract; the warning is mirrored in [[source-github-paypal-js]] and [[paypal-checkout]]. The previous callback documentation/type mismatch remains unresolved.
+
+**Updated sections:** added both package release sections, grounding excerpts, and React examples to [[source-github-paypal-js]]; extended [[paypal-checkout]], [[paypal-apm]], and [[paypal-expanded-checkout]]. All older release knowledge remains.
+
+### Evidence boundary
+
+The user explicitly approved complete reads of all 24 changed retained files plus relevant dependencies, all release/comparison records and prior wiki history, and all six same-SHA Storybook supplement files. The 133 unchanged retained files remain available; unrelated unchanged source and generated schemas were not all reread. This is an item-specific reading exception, not a permanent registry change. The missing core Rollup file is a capsule-selection difference, not a demonstrated upstream deletion. No runtime payment, published-package build/compiler, merchant eligibility, or bundle-size test was performed.
+
+Evidence: [snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json), [core release](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.0/2026-09-19/manifest.json), [React release](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.0/2026-09-19/manifest.json), [core comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.0.1--11.1.0/comparison.json), [React comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.4.1--10.5.0/comparison.json), and [Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/manifest.json). Exact implementation links are in the cumulative source.
 
 ## Repository change set: `b304434` (2026-09-10)
 
@@ -437,6 +467,10 @@ The same SHA contains `@paypal/paypal-js@9.0.0`, matching React 8.9.2's declared
 The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is recorded in this change set because the approved work item contains only `@paypal/paypal-js@8.4.2`. A future React release ingest will add its own package-qualified timeline entry.
 
 ## Raw Sources
+
+- [September 15 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json)
+- [Same-SHA Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/manifest.json)
+- [Core 11.1.0 notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.0/2026-09-19/release-notes.md) and [React 10.5.0 notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.0/2026-09-19/release-notes.md)
 
 - [September 10 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json)
 - [Core 11.0.1 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.1/2026-09-13/manifest.json)
