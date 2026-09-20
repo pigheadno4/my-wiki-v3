@@ -27,6 +27,11 @@ It also pins `@braintree/uuid@1.0.1`. The independently retained UUID source is 
 
 The repository schedules deprecated status for 2026-09-01 and unsupported status for 2027-09-01, and directs merchants to migrate to the Braintree SDK. The notice says processing will be supported for one year after deprecation, while processing on unsupported SDKs may be suspended at any time. These statements describe the retained snapshot; current operational status should be rechecked when answering time-sensitive questions.
 
+## Card Label Hardening in 1.48.0
+
+`braintree-web-drop-in@1.48.0` adds numeric conversion, first-four-character truncation, and zero-padding to the card `lastFour` display. It preserves `0012` and `0000`, but malformed text produces `0NaN`; this is output normalization, not strict card-data validation. The payment-method template still uses `innerHTML`. PayPal email and Venmo username escaping are unchanged, as are the pinned `braintree-web@3.123.2` and `@braintree/uuid@1.0.1` dependencies. No new wallet or nonce behavior is established by this delta. [[source-github-braintree-web-drop-in]] [[changelog-github-braintree-web-drop-in]]
+
+
 ## Related
 
 - [[source-github-braintree-web-drop-in]] - cumulative exact-SHA implementation evidence

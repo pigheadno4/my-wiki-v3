@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-09-20] ingest | Braintree Web Drop-in `1.48.0`
+
+- Delta-ingested card-label hardening with complete assigned reading; preserved `1.47.0` history, pinned dependency boundaries, and conflicting lifecycle evidence. Details: [[braintree-log]] and [[changelog-github-braintree-web-drop-in]].
+
+
 ## [2026-09-20] ingest | Messaging Components `1.97.0`
 
 - Full-additive ingest with approved focused reading and two immutable disclosure supplements: page-type migration, inline disclosures, ES/IT warning layouts and v2 defaults. Preserved older releases and source/runtime boundaries. Details: [[paypal-log]] and [[changelog-github-paypal-messaging-components]].

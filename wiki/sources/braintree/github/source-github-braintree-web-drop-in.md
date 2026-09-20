@@ -2,8 +2,10 @@
 title: "GitHub: braintree/braintree-web-drop-in"
 type: source
 date_ingested: 2026-07-28
+date_updated: 2026-09-20
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/manifest.json"
   - "github/braintree/braintree-web-drop-in/snapshots/2026-07-28-ec1c7c5/manifest.json"
 tags: [braintree, drop-in, checkout, javascript-sdk, hosted-fields, paypal, venmo, 3d-secure, github-repository]
 ---
@@ -14,12 +16,17 @@ tags: [braintree, drop-in, checkout, javascript-sdk, hosted-fields, paypal, venm
 
 Repository: <https://github.com/braintree/braintree-web-drop-in>
 
+Latest ingested release: `braintree-web-drop-in@1.48.0` (2026-09-10) at `5e6de786a463598b4583a657acbd5cafee72dbf9`. This additive delta retains the `1.47.0` baseline below and changes card-label output handling, not the checkout API or runtime dependency versions.
+
 ## Evidence Boundary
 
 - This snapshot proves implementation present in `braintree-web-drop-in@1.47.0`, released on 2026-06-17. It does not prove merchant, buyer, region, browser, or payment-method eligibility.
 - Drop-in is an independent package and repository. At this release it depends on `braintree-web@3.123.2`; later findings from the separately collected `braintree-web@3.144.0` source cannot be attributed to this Drop-in baseline.
 - The repository announces future deprecation on 2026-09-01 and unsupported status on 2027-09-01. It says processing will be supported for one year after deprecation, while processing on unsupported SDKs may be suspended at any time. At this snapshot date, those milestones are scheduled rather than already effective.
 - The capsule contains production source and translations but no tests. Test-only behavior and upstream Braintree Web implementation outside the pinned dependency boundary are not retained here.
+
+> [!warning] Contradiction: lifecycle evidence
+> The September milestones above describe the `1.47.0` baseline and remain unchanged in the `1.48.0` README. However, `1.48.0` was released September 10, after the stated September 1 no-updates date. This release does not establish a revised support commitment.
 
 ## Grounding Excerpts
 
@@ -82,6 +89,41 @@ The release adds conventional-commit tooling, expands `sanitizeHtml()` to escape
 
 The sanitization changes reduce unsafe interpolation paths but are not described as a security advisory. No payment method, public checkout API, or pinned `braintree-web@3.123.2` dependency change is documented for this release.
 
+## `1.48.0` Delta from `1.47.0`
+
+Four of 86 retained files changed: `CHANGELOG.md`, `README.md`, `package.json`, and `src/views/payment-method-view.js`; 82 are hash-identical. The upstream comparison also includes lockfile and unit-test changes excluded from the retained capsule. Their changed hunks were reviewed, not executed.
+
+### Card Label Output
+
+The card branch previously inserted `details.lastFour` directly into the localized `endingIn` string. It now uses:
+
+```javascript
+Number(this.paymentMethod.details.lastFour)
+  .toString()
+  .slice(0, 4)
+  .padStart(4, '0')
+```
+
+This is first-four-character truncation after number conversion, not extraction of the final four digits from a card number. Examples of the expression's behavior:
+
+| Input | Display substitution |
+| --- | --- |
+| `"0012"` | `"0012"` |
+| `"0000"` | `"0000"` |
+| `"123456"` | `"1234"` |
+| `"abc"` or `"<alert>test!</alert>"` | `"0NaN"` |
+| `"12.3"` | `"12.3"` |
+
+The expression does not reject invalid input or guarantee four decimal digits. The view still writes `this.element.innerHTML = html`; PayPal email and Venmo username continue through the existing HTML-escaping helper, while Apple Pay and Google Pay label branches are unchanged. Treat this as a bounded card-display hardening change, not a complete `textContent` migration, payment-data validator, or demonstrated security advisory.
+
+### Release and Integration Boundary
+
+- Release notes say "sanitize `lastFour` card digits"; the changelog describes tightening its `innerHtml` usage. The same changelog retrospectively qualifies the `1.47.0` textContent entry with "(where possible)". The original `1.47.0` raw snapshot remains preserved.
+- README CDN examples move from `1.47.0` to `1.48.0`; the lifecycle notice does not change. See the contradiction above.
+- `package.json` changes only the package version. Runtime pins remain `braintree-web@3.123.2` and `@braintree/uuid@1.0.1`, among the unchanged dependencies. Independently ingested newer SDK behavior must not be projected onto Drop-in.
+- No public integration API, tokenization, nonce, wallet, or eligibility change is identified in this comparison. Existing integrations updating to `1.48.0` should check selected-card labels, including leading-zero values; malformed-value examples above are diagnostic behavior, not supported payment inputs.
+- Changed upstream test hunks cover overlong strings, markup-like input, and zero padding. No upstream test suite, browser checkout, or payment transaction was run during this ingest.
+
 ## Related
 
 - [[changelog-github-braintree-web-drop-in]] - package-qualified release ledger
@@ -90,6 +132,20 @@ The sanitization changes reduce unsafe interpolation paths but are not described
 - [[braintree-web-sdk]] - modular SDK used underneath Drop-in
 
 ## Raw Sources
+
+- Current snapshot: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/manifest.json`
+- `1.48.0` release: `raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.48.0/2026-09-20/manifest.json`
+- `1.48.0` notes: `raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.48.0/2026-09-20/release-notes.md`
+- Comparison: `tracking/github/repos/braintree/braintree-web-drop-in/comparisons/braintree-web-drop-in/1.47.0--1.48.0/comparison.json`
+- Comparison overview: `tracking/github/repos/braintree/braintree-web-drop-in/comparisons/braintree-web-drop-in/1.47.0--1.48.0/comparison.md`
+- Upstream diff: `tracking/github/repos/braintree/braintree-web-drop-in/comparisons/braintree-web-drop-in/1.47.0--1.48.0/diff.patch`
+- Current payment-method view: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/src/views/payment-method-view.js`
+- Prior payment-method view: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-07-28-ec1c7c5/files/src/views/payment-method-view.js`
+- Current HTML template: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/src/html/payment-method.html`
+- Current sanitizer: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/src/lib/sanitize-html.js`
+- Current README: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/README.md`
+- Current package: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/package.json`
+- Current changelog: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/CHANGELOG.md`
 
 - Snapshot manifest: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-07-28-ec1c7c5/manifest.json`
 - Release manifest: `raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.47.0/2026-07-28/manifest.json`

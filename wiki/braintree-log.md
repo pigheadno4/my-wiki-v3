@@ -6,6 +6,15 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-20] ingest | braintree-web-drop-in `1.48.0`
+
+- User-approved delta from `1.47.0` to `1.48.0`, work item `github-d83a391d04b7021d0ef7`, exact SHA `5e6de786a463598b4583a657acbd5cafee72dbf9`.
+- Read all 13 assigned paths completely and prior affected implementation; both 86-file snapshot inventories passed size/hash checks. Four retained files changed, 82 unchanged; excluded lockfile/test changes were reviewed in the diff, not executed.
+- Added card-label numeric conversion/truncation/padding and malformed-input limitations; retained `innerHTML`, unchanged runtime dependencies, and all `1.47.0` history.
+- Flagged the September 10 release after its unchanged September 1 no-updates notice. Updated source, changelog, concept, company, and index; no new source page or source-count increment.
+- No upstream suite, browser checkout, or payment transaction run. Details: [[source-github-braintree-web-drop-in]] and [[changelog-github-braintree-web-drop-in]].
+
+
 ## [2026-09-16] ingest | braintree-web 3.145.0
 
 - Delta-ingested work item `github-16166784785e0ab99eae` at `732ed094354d650605e678d98246ce6332952ad3`, preserving 3.143.0 and 3.144.0 knowledge.

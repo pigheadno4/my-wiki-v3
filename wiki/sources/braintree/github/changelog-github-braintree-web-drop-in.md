@@ -2,8 +2,10 @@
 title: "GitHub changelog: braintree/braintree-web-drop-in"
 type: source
 date_ingested: 2026-07-28
+date_updated: 2026-09-20
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/manifest.json"
   - "github/braintree/braintree-web-drop-in/snapshots/2026-07-28-ec1c7c5/manifest.json"
 tags: [braintree, drop-in, javascript-sdk, changelog, github-repository]
 ---
@@ -11,6 +13,37 @@ tags: [braintree, drop-in, javascript-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/braintree-web-drop-in`. Cumulative implementation knowledge belongs in [[source-github-braintree-web-drop-in]] and the linked immutable snapshots.
+
+## `braintree-web-drop-in@1.48.0` (2026-09-10)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `braintree-web-drop-in` | `1.47.0` | `1.48.0` | `5e6de786a463598b4583a657acbd5cafee72dbf9` | Delta |
+
+**Important findings:** Card-label interpolation now converts `lastFour` to a number, stringifies it, takes its first four characters, and pads with zeros. `0012` and `0000` remain intact; overlong `123456` becomes `1234`; nonnumeric strings become `0NaN`. This is not strict digits-only validation. The enclosing view still uses `innerHTML`; other wallet label branches are unchanged.
+
+**Developer or merchant impact:** A contained display-hardening update, not a new payment method or public API. Runtime dependencies remain unchanged, including `braintree-web@3.123.2` and `@braintree/uuid@1.0.1`. README CDN examples advance to `1.48.0`. Existing integration checks should include selected-card labels and leading zeros.
+
+**History clarification:** The new cumulative upstream changelog adds "(where possible)" to the old `1.47.0` textContent statement. The original release history below and its immutable evidence are retained.
+
+> [!warning] Contradiction: lifecycle evidence
+> The September 10 release retains a README saying updates stop September 1, 2026, with unsupported status September 1, 2027. Do not infer a support extension or resolve the conflict from this release alone. [[source-github-braintree-web-drop-in]]
+
+**Updated source sections:** Latest ingested boundary; card-label implementation and examples; lifecycle contradiction; immutable evidence navigation. Prior architecture and `1.47.0` findings remain intact.
+
+**Evidence boundary:** All 13 assigned paths read fully; four retained files modified and 82 unchanged. Lockfile and unit tests remain policy-excluded as full files, but changed hunks are available in the comparison. Reviewed tests are not executed tests; no browser/payment validation or security advisory is established.
+
+**Evidence:**
+
+- Release manifest: `raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.48.0/2026-09-20/manifest.json`
+- Notes: `raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.48.0/2026-09-20/release-notes.md`
+- Snapshot: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/manifest.json`
+- Comparison: `tracking/github/repos/braintree/braintree-web-drop-in/comparisons/braintree-web-drop-in/1.47.0--1.48.0/comparison.json`
+- Diff: `tracking/github/repos/braintree/braintree-web-drop-in/comparisons/braintree-web-drop-in/1.47.0--1.48.0/diff.patch`
+- Implementation: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/src/views/payment-method-view.js`
+- README: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/README.md`
+- Package: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/package.json`
+- Upstream history: `raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/files/CHANGELOG.md`
 
 ## `braintree-web-drop-in@1.47.0` (2026-06-17)
 

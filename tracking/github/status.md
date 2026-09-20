@@ -2520,6 +2520,31 @@
   To SHA: `93321ab3644d5460213725abe0595247c403eb46`
   Comparison: Not applicable
 
+## `github-d83a391d04b7021d0ef7`
+
+- Repository: `braintree/braintree-web-drop-in`
+- SHA: `5e6de786a463598b4583a657acbd5cafee72dbf9`
+- Collection date: `2026-09-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-web-drop-in/snapshots/2026-09-20-5e6de78/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-web-drop-in/ingest-packets/github-d83a391d04b7021d0ef7/packet.md)
+- Review priority: `high`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-web-drop-in@1.48.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.48.0/2026-09-20/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree-web-drop-in/comparisons/braintree-web-drop-in/1.47.0--1.48.0/comparison.json)
+
 ## `github-dac96e3489eeeca5d8e0`
 
 - Repository: `paypal/paypal-checkout-components`

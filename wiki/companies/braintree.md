@@ -61,6 +61,8 @@ The utility uses separate iOS, Android Chrome or ChromeOS, KitKat WebView, IE9, 
 
 ## Drop-in Surface
 
+The additive `braintree-web-drop-in@1.48.0` update hardens the displayed card suffix through numeric conversion, truncation, and zero-padding; it retains the HTML template and the same runtime dependencies. This is not new checkout functionality or a digits-only validator. Its September 10 release leaves the September 1 no-updates notice unchanged; do not infer renewed support from the later release. [[source-github-braintree-web-drop-in]] [[changelog-github-braintree-web-drop-in]]
+
 `braintree-web-drop-in@1.47.0` provides an opinionated UI for cards, PayPal, PayPal Credit, Venmo, Apple Pay, and Google Pay, with vaulted-method display, optional Data Collector output, and 3D Secure verification. It pins `braintree-web@3.123.2`, not the separately retained `3.144.0` modular SDK.
 
 The repository schedules Drop-in deprecation for 2026-09-01 and unsupported status for 2027-09-01 and directs merchants to migrate to the modular Braintree SDK. Its notice says processing will be supported for one year after deprecation, while processing on unsupported SDKs may be suspended at any time. Current support status should be rechecked for time-sensitive guidance.
