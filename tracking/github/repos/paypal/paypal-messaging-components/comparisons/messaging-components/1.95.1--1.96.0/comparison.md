@@ -1,0 +1,145 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-messaging-components`
+- Package: `@paypal/messaging-components`
+- From: `1.95.1` (`2bdaf940cdb0dcd29a8a3bc992eea975798d6d00`)
+- To: `1.96.0` (`a682a8d6689f308155da4cca9521265d9e156b03`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `content/messages/v2/AU/short-term_nq.json`
+- `content/messages/v2/AU/short-term_q.json`
+- `content/messages/v2/DE/generic.json`
+- `content/messages/v2/DE/long_term_multi_eqz.json`
+- `content/messages/v2/DE/long_term_multi_gtz.json`
+- `content/messages/v2/DE/long_term_nq_eqz.json`
+- `content/messages/v2/DE/long_term_nq_gtz.json`
+- `content/messages/v2/DE/pay_in_1_nq.json`
+- `content/messages/v2/DE/pay_in_1_q.json`
+- `content/messages/v2/ES/long_term_nq.json`
+- `content/messages/v2/ES/long_term_q.json`
+- `content/messages/v2/ES/short_term_no_amount.json`
+- `content/messages/v2/ES/short_term_nq.json`
+- `content/messages/v2/ES/short_term_q.json`
+- `content/messages/v2/FR/short-term_nq.json`
+- `content/messages/v2/FR/short-term_q.json`
+- `content/messages/v2/GB/short-term_nq.json`
+- `content/messages/v2/GB/short-term_q.json`
+- `content/messages/v2/IT/long_term_nq.json`
+- `content/messages/v2/IT/long_term_q.json`
+- `content/messages/v2/IT/short_term_no_amount.json`
+- `content/messages/v2/IT/short_term_nq.json`
+- `content/messages/v2/IT/short_term_q.json`
+- `content/messages/v2/README.md`
+- `content/messages/v2/US/generic.json`
+- `content/messages/v2/US/long_term_multi_eqz.json`
+- `content/messages/v2/US/long_term_multi_gtz.json`
+- `content/messages/v2/US/long_term_nq_eqz.json`
+- `content/messages/v2/US/long_term_nq_gtz.json`
+- `content/messages/v2/US/long_term_single_eqz.json`
+- `content/messages/v2/US/long_term_single_gtz.json`
+- `content/messages/v2/US/pp_bal.json`
+- `content/messages/v2/US/pp_cbmc.json`
+- `content/messages/v2/US/pp_dc.json`
+- `content/messages/v2/US/ppbal_amount_q.json`
+- `content/messages/v2/US/ppc_ni_nq.json`
+- `content/messages/v2/US/ppc_ni_q.json`
+- `content/messages/v2/US/short_term_nq.json`
+- `content/messages/v2/US/short_term_q.json`
+- `content/modals/AT/long_term.json`
+- `content/modals/CA/long_term_xo.json`
+- `content/modals/CA/long_term_xo_fr.json`
+- `content/modals/DE/long_term.json`
+- `content/modals/DE/long_term_en.json`
+- `content/modals/ES/long_term.json`
+- `content/modals/ES/long_term_en.json`
+- `content/modals/IT/long_term.json`
+- `content/modals/IT/long_term_en.json`
+- `content/modals/US/PL2GO/apple_wallet_long_term.json`
+- `content/modals/US/PL2GO/apple_wallet_short_term.json`
+- `content/modals/US/PL2GO/pl2go_long_term.json`
+- `content/modals/US/PLHub/plhub_long_term.json`
+- `content/modals/US/long_term_df.json`
+- `content/modals/US/v2_long_term-onboarding.json`
+- `content/modals/US/v2_long_term.json`
+- `content/modals/US/v2_long_term_rb.json`
+- `content/modals/US/v2_long_term_xo.json`
+- `docs/message-demo-pages.md`
+- `package.json`
+- `src/components/modal/v2/parts/Calculator.jsx`
+- `src/components/modal/v2/parts/LoadingShimmer.jsx`
+- `src/components/modal/v2/parts/OfferCard.jsx`
+- `src/server/message/index.jsx`
+- `src/server/message/parts/Logo.jsx`
+- `src/server/v2/flexStyles.js`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `added`: `content/messages/v2/AU/short-term_nq.json`
+- `added`: `content/messages/v2/AU/short-term_q.json`
+- `added`: `content/messages/v2/DE/generic.json`
+- `added`: `content/messages/v2/DE/long_term_multi_eqz.json`
+- `added`: `content/messages/v2/DE/long_term_multi_gtz.json`
+- `added`: `content/messages/v2/DE/long_term_nq_eqz.json`
+- `added`: `content/messages/v2/DE/long_term_nq_gtz.json`
+- `added`: `content/messages/v2/DE/pay_in_1_nq.json`
+- `added`: `content/messages/v2/DE/pay_in_1_q.json`
+- `added`: `content/messages/v2/ES/long_term_nq.json`
+- `added`: `content/messages/v2/ES/long_term_q.json`
+- `added`: `content/messages/v2/ES/short_term_no_amount.json`
+- `added`: `content/messages/v2/ES/short_term_nq.json`
+- `added`: `content/messages/v2/ES/short_term_q.json`
+- `added`: `content/messages/v2/FR/short-term_nq.json`
+- `added`: `content/messages/v2/FR/short-term_q.json`
+- `added`: `content/messages/v2/GB/short-term_nq.json`
+- `added`: `content/messages/v2/GB/short-term_q.json`
+- `added`: `content/messages/v2/IT/long_term_nq.json`
+- `added`: `content/messages/v2/IT/long_term_q.json`
+- `added`: `content/messages/v2/IT/short_term_no_amount.json`
+- `added`: `content/messages/v2/IT/short_term_nq.json`
+- `added`: `content/messages/v2/IT/short_term_q.json`
+- `added`: `content/messages/v2/README.md`
+- `added`: `content/messages/v2/US/generic.json`
+- `added`: `content/messages/v2/US/long_term_multi_eqz.json`
+- `added`: `content/messages/v2/US/long_term_multi_gtz.json`
+- `added`: `content/messages/v2/US/long_term_nq_eqz.json`
+- `added`: `content/messages/v2/US/long_term_nq_gtz.json`
+- `added`: `content/messages/v2/US/long_term_single_eqz.json`
+- `added`: `content/messages/v2/US/long_term_single_gtz.json`
+- `added`: `content/messages/v2/US/pp_bal.json`
+- `added`: `content/messages/v2/US/pp_cbmc.json`
+- `added`: `content/messages/v2/US/pp_dc.json`
+- `added`: `content/messages/v2/US/ppbal_amount_q.json`
+- `added`: `content/messages/v2/US/ppc_ni_nq.json`
+- `added`: `content/messages/v2/US/ppc_ni_q.json`
+- `added`: `content/messages/v2/US/short_term_nq.json`
+- `added`: `content/messages/v2/US/short_term_q.json`
+- `modified`: `content/modals/AT/long_term.json`
+- `modified`: `content/modals/CA/long_term_xo.json`
+- `modified`: `content/modals/CA/long_term_xo_fr.json`
+- `modified`: `content/modals/DE/long_term.json`
+- `modified`: `content/modals/DE/long_term_en.json`
+- `modified`: `content/modals/ES/long_term.json`
+- `modified`: `content/modals/ES/long_term_en.json`
+- `modified`: `content/modals/IT/long_term.json`
+- `modified`: `content/modals/IT/long_term_en.json`
+- `added`: `content/modals/US/PL2GO/apple_wallet_long_term.json`
+- `added`: `content/modals/US/PL2GO/apple_wallet_short_term.json`
+- `modified`: `content/modals/US/PL2GO/pl2go_long_term.json`
+- `modified`: `content/modals/US/PLHub/plhub_long_term.json`
+- `modified`: `content/modals/US/long_term_df.json`
+- `modified`: `content/modals/US/v2_long_term-onboarding.json`
+- `modified`: `content/modals/US/v2_long_term.json`
+- `modified`: `content/modals/US/v2_long_term_rb.json`
+- `modified`: `content/modals/US/v2_long_term_xo.json`
+- `modified`: `docs/message-demo-pages.md`
+- `modified`: `package.json`
+- `modified`: `src/components/modal/v2/parts/Calculator.jsx`
+- `modified`: `src/components/modal/v2/parts/LoadingShimmer.jsx`
+- `modified`: `src/components/modal/v2/parts/OfferCard.jsx`
+- `modified`: `src/server/message/index.jsx`
+- `modified`: `src/server/message/parts/Logo.jsx`
+- `modified`: `src/server/v2/flexStyles.js`

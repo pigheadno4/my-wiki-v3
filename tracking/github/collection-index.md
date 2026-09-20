@@ -51,7 +51,7 @@ Generated: `2026-09-20`
 | paypal | `paypal/paypal-checkout-components` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-09-20 | ingested | 2026-09-27 | `wait` |
 | paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-09-15 | ingested | 2026-09-22 | `wait` |
 | paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-09-19 | ingested | 2026-09-26 | `wait` |
-| paypal | `paypal/paypal-messaging-components` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-28 | ingested | 2026-09-04 | `collect-baseline` |
+| paypal | `paypal/paypal-messaging-components` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-09-20 | ingested | 2026-09-27 | `wait` |
 | paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-11 | ingested | 2026-09-11 | `collect-baseline` |
 | paypal | `paypal/paypal-messages-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `collect-baseline` |
 | paypal | `paypal/paypal-messages-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `collect-baseline` |

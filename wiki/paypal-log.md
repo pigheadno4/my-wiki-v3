@@ -6,6 +6,20 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-20] ingest | Messaging Components `1.97.0`
+
+- Full-additive ingest of `github-d20af06106d6d3e9a2b7`, `@paypal/messaging-components@1.96.0` to `1.97.0` at `39769bc09150879c1e85d3f5ae27a516279f652a`; user approved full mode because the page-type enum rename is incompatible despite the generated delta recommendation.
+- Applied the item-specific focused-reading exception: complete changed implementation/content and affected prior versions; 708 prior and 710 current file hashes verified, with 653 unchanged files and unchanged historical changelog. Added only the two approved immutable disclosure supplemental files and linked their canonical attachment. Review: `tracking/github/repos/paypal/paypal-messaging-components/ingest-review-d20af061.md`.
+- Recorded page-type migration, inline disclosure iframe/Back flow and URL-formatting boundary, native callback URL, ES/IT warning layouts and v2 12px default. Kept accessibility wording, narrow-font readability and excluded stylesheet aggregation as untested limitations.
+- Updated concept first, cumulative source/changelog, company, provider index and logs. Preserved `1.95.1`/`1.96.0`; source_count remains 177; no new cross-company comparison or collection-policy change. No commit/push.
+
+## [2026-09-20] ingest | Messaging Components `1.96.0`
+
+- Delta-ingested `github-c9338f57d905235adf30`, `@paypal/messaging-components@1.95.1` to `1.96.0` at `a682a8d6689f308155da4cca9521265d9e156b03`.
+- User-approved focused reading for this item only: complete changed implementation/content and prior affected versions; unchanged changelog history and manifest inventories checked mechanically. Both snapshots verified, 642 unchanged files; 41 added and 25 modified. Review: `tracking/github/repos/paypal/paypal-messaging-components/ingest-review-c9338f57.md`.
+- Recorded calculator errors/loading, semantic headings, logo text alternative, Apple Wallet-named modal content and v2 fixtures/layout. Explicitly excluded merchant Apple Pay API/eligibility conclusions and untested screen-reader/visual outcomes.
+- Updated Pay Later concept before cumulative source/changelog, then company, index and logs. Preserved `1.95.1`; source_count remains 177; no cross-company comparison. `1.97.0` remains awaiting approval. No commit/push.
+
 ## [2026-09-20] ingest | Checkout Components `5.0.434`
 
 - Delta-ingested `github-c58f0a0c5af4f1348981`, `5.0.433` to `5.0.434` at `79fa938be54dd364bb251e5b5caa49c7c809030a` with user-approved item-specific focused reading.

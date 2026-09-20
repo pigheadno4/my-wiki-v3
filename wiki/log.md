@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-09-20] ingest | Messaging Components `1.97.0`
+
+- Full-additive ingest with approved focused reading and two immutable disclosure supplements: page-type migration, inline disclosures, ES/IT warning layouts and v2 defaults. Preserved older releases and source/runtime boundaries. Details: [[paypal-log]] and [[changelog-github-paypal-messaging-components]].
+
+## [2026-09-20] ingest | Messaging Components `1.96.0`
+
+- Delta-ingested accessibility semantics, Apple modal content and v2 development evidence with the approved focused-reading exception; preserved `1.95.1` history and availability/runtime boundaries. Details: [[paypal-log]] and [[changelog-github-paypal-messaging-components]].
+
 ## [2026-09-20] ingest | Checkout Components `5.0.434`
 
 - Delta-ingested checkout-child window-name monitoring with approved focused reading; preserved historical releases and documented logging/privacy/runtime limitations. Details: [[paypal-log]] and [[changelog-github-paypal-checkout-components]].

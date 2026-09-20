@@ -1,0 +1,127 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-messaging-components`
+- Package: `@paypal/messaging-components`
+- From: `1.96.0` (`a682a8d6689f308155da4cca9521265d9e156b03`)
+- To: `1.97.0` (`39769bc09150879c1e85d3f5ae27a516279f652a`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `content/messages/ES/long_term_nq.json`
+- `content/messages/ES/long_term_nq_eqz.json`
+- `content/messages/ES/long_term_q.json`
+- `content/messages/ES/long_term_q_eqz.json`
+- `content/messages/ES/short_term_no_amount.json`
+- `content/messages/ES/short_term_nq.json`
+- `content/messages/ES/short_term_q.json`
+- `content/messages/IT/long_term_nq.json`
+- `content/messages/IT/long_term_nq_eqz.json`
+- `content/messages/IT/long_term_q.json`
+- `content/messages/IT/long_term_q_eqz.json`
+- `content/messages/IT/short_term_no_amount.json`
+- `content/messages/IT/short_term_nq.json`
+- `content/messages/IT/short_term_q.json`
+- `content/modals/US/PL2GO/apple_wallet_long_term.json`
+- `content/modals/US/PL2GO/apple_wallet_short_term.json`
+- `demo/helpers/accounts.js`
+- `package.json`
+- `src/components/modal/v2/lib/providers/disclosureView.js`
+- `src/components/modal/v2/lib/providers/index.js`
+- `src/components/modal/v2/lib/zoid-polyfill.js`
+- `src/components/modal/v2/parts/BodyContent.jsx`
+- `src/components/modal/v2/parts/InlineLinks.jsx`
+- `src/components/modal/v2/parts/Modal.jsx`
+- `src/library/zoid/message/validation.js`
+- `src/server/locale/ES/mutations/long_term_nq.js`
+- `src/server/locale/ES/mutations/long_term_nq_eqz.js`
+- `src/server/locale/ES/mutations/long_term_q.js`
+- `src/server/locale/ES/mutations/long_term_q_eqz.js`
+- `src/server/locale/ES/mutations/short_term_no_amount.js`
+- `src/server/locale/ES/mutations/short_term_nq.js`
+- `src/server/locale/ES/mutations/short_term_q.js`
+- `src/server/locale/ES/styles/flex/ratio--1x1.css`
+- `src/server/locale/ES/styles/flex/ratio--1x4.css`
+- `src/server/locale/ES/styles/flex/ratio--20x1.css`
+- `src/server/locale/ES/styles/flex/ratio--6x1.css`
+- `src/server/locale/ES/styles/flex/ratio--8x1.css`
+- `src/server/locale/IT/mutations/long_term_nq.js`
+- `src/server/locale/IT/mutations/long_term_nq_eqz.js`
+- `src/server/locale/IT/mutations/long_term_q.js`
+- `src/server/locale/IT/mutations/long_term_q_eqz.js`
+- `src/server/locale/IT/mutations/short_term_no_amount.js`
+- `src/server/locale/IT/mutations/short_term_nq.js`
+- `src/server/locale/IT/mutations/short_term_q.js`
+- `src/server/locale/IT/styles/flex/base.css`
+- `src/server/locale/IT/styles/flex/ratio--1x1.css`
+- `src/server/locale/IT/styles/flex/ratio--1x4.css`
+- `src/server/locale/IT/styles/flex/ratio--20x1.css`
+- `src/server/locale/IT/styles/flex/ratio--6x1.css`
+- `src/server/locale/IT/styles/flex/ratio--8x1.css`
+- `src/server/locale/IT/styles/text/disclaimer.css`
+- `src/server/locale/IT/styles/text/index.js`
+- `src/server/message/mediaQueries.js`
+- `src/server/message/styles/text/base.css`
+- `src/server/v2/styles.js`
+- `src/server/v2/validOptions.js`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `content/messages/ES/long_term_nq.json`
+- `modified`: `content/messages/ES/long_term_nq_eqz.json`
+- `modified`: `content/messages/ES/long_term_q.json`
+- `modified`: `content/messages/ES/long_term_q_eqz.json`
+- `modified`: `content/messages/ES/short_term_no_amount.json`
+- `modified`: `content/messages/ES/short_term_nq.json`
+- `modified`: `content/messages/ES/short_term_q.json`
+- `modified`: `content/messages/IT/long_term_nq.json`
+- `modified`: `content/messages/IT/long_term_nq_eqz.json`
+- `modified`: `content/messages/IT/long_term_q.json`
+- `modified`: `content/messages/IT/long_term_q_eqz.json`
+- `modified`: `content/messages/IT/short_term_no_amount.json`
+- `modified`: `content/messages/IT/short_term_nq.json`
+- `modified`: `content/messages/IT/short_term_q.json`
+- `modified`: `content/modals/US/PL2GO/apple_wallet_long_term.json`
+- `modified`: `content/modals/US/PL2GO/apple_wallet_short_term.json`
+- `modified`: `demo/helpers/accounts.js`
+- `modified`: `package.json`
+- `added`: `src/components/modal/v2/lib/providers/disclosureView.js`
+- `modified`: `src/components/modal/v2/lib/providers/index.js`
+- `modified`: `src/components/modal/v2/lib/zoid-polyfill.js`
+- `modified`: `src/components/modal/v2/parts/BodyContent.jsx`
+- `modified`: `src/components/modal/v2/parts/InlineLinks.jsx`
+- `modified`: `src/components/modal/v2/parts/Modal.jsx`
+- `modified`: `src/library/zoid/message/validation.js`
+- `modified`: `src/server/locale/ES/mutations/long_term_nq.js`
+- `modified`: `src/server/locale/ES/mutations/long_term_nq_eqz.js`
+- `modified`: `src/server/locale/ES/mutations/long_term_q.js`
+- `modified`: `src/server/locale/ES/mutations/long_term_q_eqz.js`
+- `modified`: `src/server/locale/ES/mutations/short_term_no_amount.js`
+- `modified`: `src/server/locale/ES/mutations/short_term_nq.js`
+- `modified`: `src/server/locale/ES/mutations/short_term_q.js`
+- `modified`: `src/server/locale/ES/styles/flex/ratio--1x1.css`
+- `modified`: `src/server/locale/ES/styles/flex/ratio--1x4.css`
+- `modified`: `src/server/locale/ES/styles/flex/ratio--20x1.css`
+- `modified`: `src/server/locale/ES/styles/flex/ratio--6x1.css`
+- `modified`: `src/server/locale/ES/styles/flex/ratio--8x1.css`
+- `modified`: `src/server/locale/IT/mutations/long_term_nq.js`
+- `modified`: `src/server/locale/IT/mutations/long_term_nq_eqz.js`
+- `modified`: `src/server/locale/IT/mutations/long_term_q.js`
+- `modified`: `src/server/locale/IT/mutations/long_term_q_eqz.js`
+- `modified`: `src/server/locale/IT/mutations/short_term_no_amount.js`
+- `modified`: `src/server/locale/IT/mutations/short_term_nq.js`
+- `modified`: `src/server/locale/IT/mutations/short_term_q.js`
+- `modified`: `src/server/locale/IT/styles/flex/base.css`
+- `modified`: `src/server/locale/IT/styles/flex/ratio--1x1.css`
+- `modified`: `src/server/locale/IT/styles/flex/ratio--1x4.css`
+- `modified`: `src/server/locale/IT/styles/flex/ratio--20x1.css`
+- `modified`: `src/server/locale/IT/styles/flex/ratio--6x1.css`
+- `modified`: `src/server/locale/IT/styles/flex/ratio--8x1.css`
+- `added`: `src/server/locale/IT/styles/text/disclaimer.css`
+- `modified`: `src/server/locale/IT/styles/text/index.js`
+- `modified`: `src/server/message/mediaQueries.js`
+- `modified`: `src/server/message/styles/text/base.css`
+- `modified`: `src/server/v2/styles.js`
+- `modified`: `src/server/v2/validOptions.js`

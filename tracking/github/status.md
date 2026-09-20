@@ -2237,6 +2237,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.434/2026-09-20/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.433--5.0.434/comparison.json)
 
+## `github-c9338f57d905235adf30`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `a682a8d6689f308155da4cca9521265d9e156b03`
+- Collection date: `2026-09-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-09-20-a682a8d/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-c9338f57d905235adf30/packet.md)
+- Review priority: `normal`
+- Required reading: `18` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/messaging-components@1.96.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.96.0/2026-09-20/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.95.1--1.96.0/comparison.json)
+
 ## `github-ca78b4ec339be0d6bdb8`
 
 - Repository: `paypal/paypal-js`
@@ -2336,6 +2361,32 @@
 - `stripe-android@23.13.1` (recommended `full`)
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.13.1/2026-07-31/manifest.json)
   Comparison: Not applicable
+
+## `github-d20af06106d6d3e9a2b7`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `39769bc09150879c1e85d3f5ae27a516279f652a`
+- Collection date: `2026-09-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-09-20-39769bc/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-d20af06106d6d3e9a2b7/packet.md)
+- Evidence attachment: [manifest](repos/paypal/paypal-messaging-components/evidence-attachments/github-d20af06106d6d3e9a2b7/attachment.json)
+- Review priority: `normal`
+- Required reading: `53` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/messaging-components@1.97.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.97.0/2026-09-20/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.96.0--1.97.0/comparison.json)
 
 ## `github-d21f4ea0c14aed999bce`
 

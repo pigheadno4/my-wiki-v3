@@ -1,0 +1,2809 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 85eedeb..ef261c3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,26 @@
+ # Changelog
+ 
++## [1.96.0](https://github.com/paypal/paypal-messaging-components/compare/v1.95.1...v1.96.0) (2026-09-03)
++
++
++### Features
++
++* apple modals ([#1398](https://github.com/paypal/paypal-messaging-components/issues/1398)) ([cf1c3c1](https://github.com/paypal/paypal-messaging-components/commit/cf1c3c1662b5ec36c7297c11a019664eb6ab9e3b))
++* create v2 demo ([#1384](https://github.com/paypal/paypal-messaging-components/issues/1384)) ([7e7fbf6](https://github.com/paypal/paypal-messaging-components/commit/7e7fbf6391d75ccbc89f448a4f30f4029e27ea73))
++
++
++### Bug Fixes
++
++* expose financing plans as headings ([#1392](https://github.com/paypal/paypal-messaging-components/issues/1392)) ([63641ec](https://github.com/paypal/paypal-messaging-components/commit/63641ec4f7fd3296d6464c49db0d1cb7ed2b1961))
++* improve calculator field accessibility ([#1390](https://github.com/paypal/paypal-messaging-components/issues/1390)) ([791af2b](https://github.com/paypal/paypal-messaging-components/commit/791af2b5b1912a86abd133a560fdd3540a3c55ee))
++* make modal loading states accessible ([#1394](https://github.com/paypal/paypal-messaging-components/issues/1394)) ([ac4d86c](https://github.com/paypal/paypal-messaging-components/commit/ac4d86c957a466e05e9a3be8962e4a3c27103269))
++* restore PayPal logo text alternative ([#1393](https://github.com/paypal/paypal-messaging-components/issues/1393)) ([8165bb1](https://github.com/paypal/paypal-messaging-components/commit/8165bb16a3c55ba0228efcf42bd3c5cc0a8eeead))
++
++
++### Documentation
++
++* correct contribution checks and screenshot guidance ([#1396](https://github.com/paypal/paypal-messaging-components/issues/1396)) ([069de83](https://github.com/paypal/paypal-messaging-components/commit/069de83e3bea08c7b6d10ea1b7a23710c5ed86dc))
++
+ ### [1.95.1](https://github.com/paypal/paypal-messaging-components/compare/v1.95.0...v1.95.1) (2026-08-25)
+ 
+ 
+diff --git a/content/messages/v2/AU/short-term_nq.json b/content/messages/v2/AU/short-term_nq.json
+new file mode 100644
+index 0000000..9333870
+--- /dev/null
++++ b/content/messages/v2/AU/short-term_nq.json
+@@ -0,0 +1,42 @@
++{
++    "id": "94a9d3d1-6f4f-4100-b83b-1b1fe5aec471",
++    "type": "PLST_NQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 3
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Pay in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.preferred_offer.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " interest-free payments on purchases under $2,000."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/AU/short-term_q.json b/content/messages/v2/AU/short-term_q.json
+new file mode 100644
+index 0000000..5241fe1
+--- /dev/null
++++ b/content/messages/v2/AU/short-term_q.json
+@@ -0,0 +1,52 @@
++{
++    "id": "a5a8a34b-3fec-45da-9ad2-684c36502e61",
++    "type": "PLST_SQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 6
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Pay in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.preferred_offer.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " interest-free payments of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_SHORT_TERM.preferred_offer.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/DE/generic.json b/content/messages/v2/DE/generic.json
+new file mode 100644
+index 0000000..7d878ea
+--- /dev/null
++++ b/content/messages/v2/DE/generic.json
+@@ -0,0 +1,40 @@
++{
++    "id": "fe7e77e9-5d1f-4745-9775-c3d26d303c18",
++    "type": "PL_GENERIC",
++    "offer_types": ["PAY_LATER_LONG_TERM", "PAY_LATER_PAY_IN_1"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "min_amount": "0.00",
++            "max_amount": "0.00",
++            "priority_score": 5
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Jetzt kaufen, später bezahlen."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "Nur mit dt. PayPal Konto."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Mehr erfahren",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/DE/long_term_multi_eqz.json b/content/messages/v2/DE/long_term_multi_eqz.json
+new file mode 100644
+index 0000000..69c0a0c
+--- /dev/null
++++ b/content/messages/v2/DE/long_term_multi_eqz.json
+@@ -0,0 +1,50 @@
++{
++    "id": "c38c6d9d-4759-414b-8bca-e34138c972c1",
++    "type": "PLLT_MQ_EZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "multiple": true,
++            "apr": "0.00",
++            "priority_score": 8.1
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "0% eff. Jahreszins: ab "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_LONG_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " pro Monat."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "Nur mit dt. PayPal Konto."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Mehr erfahren",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/DE/long_term_multi_gtz.json b/content/messages/v2/DE/long_term_multi_gtz.json
+new file mode 100644
+index 0000000..c19fd4a
+--- /dev/null
++++ b/content/messages/v2/DE/long_term_multi_gtz.json
+@@ -0,0 +1,49 @@
++{
++    "id": "7f38c610-7c72-461b-b926-865169fbb02a",
++    "type": "PLLT_MQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "multiple": true,
++            "priority_score": 8
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Bezahlen Sie in bis zu "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_periodic_payment_count",
++                "text": "{PAY_LATER_LONG_TERM.max_periodic_payment_count}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.product.max_periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " monatlichen Raten."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "Nur mit dt. PayPal Konto."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Mehr erfahren",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/DE/long_term_nq_eqz.json b/content/messages/v2/DE/long_term_nq_eqz.json
+new file mode 100644
+index 0000000..7d5f838
+--- /dev/null
++++ b/content/messages/v2/DE/long_term_nq_eqz.json
+@@ -0,0 +1,75 @@
++{
++    "id": "a934c1c0-627c-4a44-8fd9-18e506a88ae7",
++    "type": "PLLT_NQ_EZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "min_amount": "${ctx.PAY_LATER_LONG_TERM.max_amount.value}",
++            "apr": "0.00",
++            "priority_score": 4.1
++        },
++        {
++            "type": "ELIGIBLE",
++            "apr": "0.00",
++            "priority_score": 2.1
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "0% eff. Jahreszins: Bezahlen Sie in bis zu "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_periodic_payment_count",
++                "text": "{PAY_LATER_LONG_TERM.max_periodic_payment_count}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.product.max_periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " monatlichen Raten bei Einkäufen i.H.v. "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_LONG_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "-"
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_LONG_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "Nur mit dt. PayPal Konto."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Mehr erfahren",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/DE/long_term_nq_gtz.json b/content/messages/v2/DE/long_term_nq_gtz.json
+new file mode 100644
+index 0000000..50aeadb
+--- /dev/null
++++ b/content/messages/v2/DE/long_term_nq_gtz.json
+@@ -0,0 +1,73 @@
++{
++    "id": "df77535c-f926-4288-b312-ab16faa791cf",
++    "type": "PLLT_NQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "min_amount": "${ctx.PAY_LATER_LONG_TERM.max_amount.value}",
++            "priority_score": 4
++        },
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 2
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Bezahlen Sie in bis zu "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_periodic_payment_count",
++                "text": "{PAY_LATER_LONG_TERM.max_periodic_payment_count}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.product.max_periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " monatlichen Raten bei Einkäufen i.H.v. "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_LONG_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "-"
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_LONG_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "Nur mit dt. PayPal Konto."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Mehr erfahren",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/DE/pay_in_1_nq.json b/content/messages/v2/DE/pay_in_1_nq.json
+new file mode 100644
+index 0000000..877291a
+--- /dev/null
++++ b/content/messages/v2/DE/pay_in_1_nq.json
+@@ -0,0 +1,58 @@
++{
++    "id": "bab62ca1-0874-4d13-a1d9-843400472850",
++    "type": "PLP1_NQ",
++    "offer_types": ["PAY_LATER_PAY_IN_1"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 3
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Bezahlen Sie bei Einkäufen von "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_PAY_IN_1.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_PAY_IN_1.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " bis "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_PAY_IN_1.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_PAY_IN_1.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " erst nach 30 Tagen."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "Nur mit dt. PayPal Konto."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Mehr erfahren",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/DE/pay_in_1_q.json b/content/messages/v2/DE/pay_in_1_q.json
+new file mode 100644
+index 0000000..103ad54
+--- /dev/null
++++ b/content/messages/v2/DE/pay_in_1_q.json
+@@ -0,0 +1,38 @@
++{
++    "id": "a4a02246-2b63-4c95-a198-e4e3ce6238fc",
++    "type": "PLP1_SQ",
++    "offer_types": ["PAY_LATER_PAY_IN_1"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 7
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Bezahlen Sie nach 30 Tagen."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "Nur mit dt. PayPal Konto."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Mehr erfahren",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/ES/long_term_nq.json b/content/messages/v2/ES/long_term_nq.json
+new file mode 100644
+index 0000000..52e8291
+--- /dev/null
++++ b/content/messages/v2/ES/long_term_nq.json
+@@ -0,0 +1,50 @@
++{
++    "id": "b3b602e0-349f-4262-9315-98a903d42b3e",
++    "type": "PLLT_NQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 7.1,
++            "multiple": true,
++            "min_amount": "${ctx.PAY_LATER_LONG_TERM.max_amount.value}"
++        },
++        {
++            "type": "ELIGIBLE",
++            "multiple": true,
++            "priority_score": 4
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_wordmark.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Paga a plazos para compras de 120€ a "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_LONG_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "disclaimer_items": [],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Más información",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/ES/long_term_q.json b/content/messages/v2/ES/long_term_q.json
+new file mode 100644
+index 0000000..2cd0702
+--- /dev/null
++++ b/content/messages/v2/ES/long_term_q.json
+@@ -0,0 +1,51 @@
++{
++    "id": "d7942cee-dffc-471e-aa56-14ffb3a679f2",
++    "type": "PLLT_MQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 7.2,
++            "multiple": true,
++            "min_amount": "500.00",
++            "max_amount": "${ctx.PAY_LATER_LONG_TERM.max_amount.value}"
++        },
++        {
++            "type": "QUALIFYING",
++            "multiple": true,
++            "priority_score": 6.9
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_wordmark.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Paga en hasta "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_periodic_payment_count",
++                "text": "{PAY_LATER_LONG_TERM.max_periodic_payment_count}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " plazos."
++            }
++        ],
++        "disclaimer_items": [],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Más información",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/ES/short_term_no_amount.json b/content/messages/v2/ES/short_term_no_amount.json
+new file mode 100644
+index 0000000..7258579
+--- /dev/null
++++ b/content/messages/v2/ES/short_term_no_amount.json
+@@ -0,0 +1,34 @@
++{
++    "id": "cdb377bd-42fe-42eb-9ac4-389f9bd2bdb4",
++    "type": "PL_GENERIC",
++    "offer_types": ["PAY_LATER_LONG_TERM", "PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "min_amount": "0.00",
++            "max_amount": "0.00",
++            "priority_score": 6
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Compra ahora y paga después."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Más información",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/ES/short_term_nq.json b/content/messages/v2/ES/short_term_nq.json
+new file mode 100644
+index 0000000..b2aee1d
+--- /dev/null
++++ b/content/messages/v2/ES/short_term_nq.json
+@@ -0,0 +1,68 @@
++{
++    "id": "98e0f4fe-e32b-4a5b-8769-d1498b093c8d",
++    "type": "PLST_NQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 5
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Paga en "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " plazos sin intereses tus compras de "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_SHORT_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " a "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_SHORT_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "0% TAE."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Más información",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/ES/short_term_q.json b/content/messages/v2/ES/short_term_q.json
+new file mode 100644
+index 0000000..298fd51
+--- /dev/null
++++ b/content/messages/v2/ES/short_term_q.json
+@@ -0,0 +1,58 @@
++{
++    "id": "f7ebfd16-3d68-4f0e-b8ac-3627d4ab0ad0",
++    "type": "PLST_SQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 7
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Paga en "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " plazos de "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": ", sin intereses."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "0% TAE."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Más información",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/FR/short-term_nq.json b/content/messages/v2/FR/short-term_nq.json
+new file mode 100644
+index 0000000..a472638
+--- /dev/null
++++ b/content/messages/v2/FR/short-term_nq.json
+@@ -0,0 +1,62 @@
++{
++    "id": "41b1307b-643d-42aa-b19e-47c3e7f71eb4",
++    "type": "PLST_NQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 3
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Payez en "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": "X sans frais pour les achats de "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_SHORT_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " à "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_SHORT_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "En savoir plus",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/FR/short-term_q.json b/content/messages/v2/FR/short-term_q.json
+new file mode 100644
+index 0000000..1788b3a
+--- /dev/null
++++ b/content/messages/v2/FR/short-term_q.json
+@@ -0,0 +1,52 @@
++{
++    "id": "fc95f6dd-6b43-4a73-aeb4-2a351fc9cf99",
++    "type": "PLST_SQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 6
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Payez en "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " échéances de "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " sans frais."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "En savoir plus",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/GB/short-term_nq.json b/content/messages/v2/GB/short-term_nq.json
+new file mode 100644
+index 0000000..9e076a8
+--- /dev/null
++++ b/content/messages/v2/GB/short-term_nq.json
+@@ -0,0 +1,62 @@
++{
++    "id": "1531dcba-ca51-4e30-9fd5-f22c75ab4fb2",
++    "type": "PLST_NQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 3
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Pay in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " interest-free payments on purchases from "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_SHORT_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "-"
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_SHORT_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/GB/short-term_q.json b/content/messages/v2/GB/short-term_q.json
+new file mode 100644
+index 0000000..82dfc66
+--- /dev/null
++++ b/content/messages/v2/GB/short-term_q.json
+@@ -0,0 +1,52 @@
++{
++    "id": "cca4420f-481f-47a8-8135-f8ab0d5e18da",
++    "type": "PLST_SQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 6
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Pay in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " interest-free payments of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/IT/long_term_nq.json b/content/messages/v2/IT/long_term_nq.json
+new file mode 100644
+index 0000000..a8dc2d7
+--- /dev/null
++++ b/content/messages/v2/IT/long_term_nq.json
+@@ -0,0 +1,50 @@
++{
++    "id": "91b4d7f6-e52a-4c8d-9eb3-a2f8c5d9e670",
++    "type": "PLLT_NQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 7.1,
++            "multiple": true,
++            "min_amount": "${ctx.PAY_LATER_LONG_TERM.max_amount.value}"
++        },
++        {
++            "type": "ELIGIBLE",
++            "multiple": true,
++            "priority_score": 4
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_wordmark.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Paga a rate per acquisti da 120€ a "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_LONG_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "disclaimer_items": [],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Scopri di più",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/IT/long_term_q.json b/content/messages/v2/IT/long_term_q.json
+new file mode 100644
+index 0000000..80eeaa7
+--- /dev/null
++++ b/content/messages/v2/IT/long_term_q.json
+@@ -0,0 +1,51 @@
++{
++    "id": "78a0c3e5-f8d2-46db-92f1-c7a5e4d7f9e8",
++    "type": "PLLT_MQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 7.2,
++            "multiple": true,
++            "min_amount": "500.00",
++            "max_amount": "${ctx.PAY_LATER_LONG_TERM.max_amount.value}"
++        },
++        {
++            "type": "QUALIFYING",
++            "multiple": true,
++            "priority_score": 6.9
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_wordmark.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Paga fino a "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_periodic_payment_count",
++                "text": "{PAY_LATER_LONG_TERM.max_periodic_payment_count}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " rate."
++            }
++        ],
++        "disclaimer_items": [],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Scopri di più",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/IT/short_term_no_amount.json b/content/messages/v2/IT/short_term_no_amount.json
+new file mode 100644
+index 0000000..3fb77f3
+--- /dev/null
++++ b/content/messages/v2/IT/short_term_no_amount.json
+@@ -0,0 +1,34 @@
++{
++    "id": "0d5f0c31-39b8-4c3e-930e-55f4e831585e",
++    "type": "PL_GENERIC",
++    "offer_types": ["PAY_LATER_LONG_TERM", "PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "min_amount": "0.00",
++            "max_amount": "0.00",
++            "priority_score": 6
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Acquista ora, paga dopo."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Scopri di più",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/IT/short_term_nq.json b/content/messages/v2/IT/short_term_nq.json
+new file mode 100644
+index 0000000..be51a01
+--- /dev/null
++++ b/content/messages/v2/IT/short_term_nq.json
+@@ -0,0 +1,68 @@
++{
++    "id": "c43d922f-0f0f-4af6-9fcf-125025af52c6",
++    "type": "PLST_NQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 5
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Paga gli acquisti tra "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_SHORT_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " e "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_SHORT_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " rate senza interessi."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "TAEG 0%."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Scopri di più",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/IT/short_term_q.json b/content/messages/v2/IT/short_term_q.json
+new file mode 100644
+index 0000000..b0730b7
+--- /dev/null
++++ b/content/messages/v2/IT/short_term_q.json
+@@ -0,0 +1,58 @@
++{
++    "id": "d5b34d63-2208-42e2-8524-2b3040ce0e19",
++    "type": "PLST_SQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 7
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Paga in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " rate da "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": " senza interessi."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "TAEG 0%."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Scopri di più",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/README.md b/content/messages/v2/README.md
+new file mode 100644
+index 0000000..6e47627
+--- /dev/null
++++ b/content/messages/v2/README.md
+@@ -0,0 +1,59 @@
++# CPS v2 Message Fixtures
++
++This directory contains representative CPS v2 message content fixtures for testing the `renderV2Message` SSR path.
++
++## Fixture Shape
++
++The fixtures use the CPS v6 block schema with the following structure:
++
++```json
++{
++    "id": "unique-id",
++    "type": "message-type",
++    "offer_types": ["OFFER_TYPE_1", "OFFER_TYPE_2"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "min_amount": "0.00",
++            "max_amount": "0.00"
++        }
++    ],
++    "content": {
++        "main_items": [
++            { "type": "IMAGE", "name": "logo", "source_url": "..." },
++            { "type": "TEXT", "text": "..." },
++            { "type": "TEXT_VARIABLE", "variable_name": "..." }
++        ],
++        "action_items": [{ "type": "LINK", "text": "Learn more", "click_url": "..." }],
++        "disclaimer_items": [{ "type": "TEXT", "text": "..." }]
++    }
++}
++```
++
++## Block Types Exercised
++
++### Main Items
++
++-   **IMAGE**: PayPal logo or brand imagery
++-   **TEXT**: Headline/body copy
++-   **TEXT_VARIABLE**: Placeholder for dynamic content (e.g., amount-based messaging)
++
++### Action Items
++
++-   **LINK**: Call-to-action button/link
++
++### Disclaimer Items
++
++-   **TEXT**: Legal/disclosure text
++
++## Usage in Tests/Demos
++
++-   **Local demo**: `demo/standalone.html` - Run via `npm run dev:standalone` with features flag `useRenderV2Message` and navigate to `http://localhost:8080/demo/standalone.html`
++-   **Local legacy / v2 comparison demo**: `demo/standalone-v2-comparison.html` - Run via `npm run dev:v2-comparison` and navigate to `http://localhost:8080/demo/standalone-v2-comparison.html` for side-by-side legacy vs v2 rendering
++-   **Snapshot page**: `demo/snapshot/banner.html` - Querystring-driven page; feature flag injected via test setup when `BANNER_SNAPSHOT_MODE='v2Renderer'` is set
++-   **Snapshot routing**: v2 snapshots are automatically routed to `./tests/functional/snapshots/v2Renderer/` when v2 test mode is active (configured in `createBannerTest.js`)
++-   **Functional tests**: Use `features: 'useRenderV2Message'` in config to route to v2 path; see `tests/functional/spec/non-snapshot-tests/v2-renderer-path.test.js`
++
++## Future Work
++
++These fixtures will be evolved to full visual parity as the `renderV2Message` Preact/v6 renderer is implemented. The current harness preserves SSR wiring and message iframe/container flow independent of final styling.
+diff --git a/content/messages/v2/US/generic.json b/content/messages/v2/US/generic.json
+new file mode 100644
+index 0000000..a2de501
+--- /dev/null
++++ b/content/messages/v2/US/generic.json
+@@ -0,0 +1,34 @@
++{
++    "id": "f2f081cd-08fc-4779-a3f2-484c01ce67ed",
++    "type": "PL_GENERIC",
++    "offer_types": ["PAY_LATER_SHORT_TERM", "PAY_LATER_LONG_TERM", "PAYPAL_CREDIT_NO_INTEREST"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "min_amount": "0.00",
++            "max_amount": "0.00",
++            "priority_score": 3
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Buy now, pay later."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/long_term_multi_eqz.json b/content/messages/v2/US/long_term_multi_eqz.json
+new file mode 100644
+index 0000000..82940c7
+--- /dev/null
++++ b/content/messages/v2/US/long_term_multi_eqz.json
+@@ -0,0 +1,45 @@
++{
++    "id": "2725dc5f-9f82-4d9b-bbbc-adb5cd80d127",
++    "type": "PLLT_MQ_EZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "multiple": true,
++            "apr": "0.00",
++            "priority_score": 7.3
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "As low as "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_LONG_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "/mo at 0% APR.",
++                "alternative_text": " per month at 0% APR."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/long_term_multi_gtz.json b/content/messages/v2/US/long_term_multi_gtz.json
+new file mode 100644
+index 0000000..d9d20d7
+--- /dev/null
++++ b/content/messages/v2/US/long_term_multi_gtz.json
+@@ -0,0 +1,50 @@
++{
++    "id": "dc77b2bc-4c82-43d2-be99-51b0787a58d2",
++    "type": "PLLT_MQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "multiple": true,
++            "min_amount": "199.00",
++            "priority_score": 7.2
++        },
++        {
++            "type": "QUALIFYING",
++            "multiple": true,
++            "priority_score": 5.8
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "As low as "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_LONG_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "/mo.",
++                "alternative_text": " per month."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/long_term_nq_eqz.json b/content/messages/v2/US/long_term_nq_eqz.json
+new file mode 100644
+index 0000000..02c9390
+--- /dev/null
++++ b/content/messages/v2/US/long_term_nq_eqz.json
+@@ -0,0 +1,59 @@
++{
++    "id": "ebff62e6-2116-407d-a671-3646f2305c22",
++    "type": "PLLT_NQ_EZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "apr": "0.00",
++            "min_amount": "${ctx.PAY_LATER_LONG_TERM.max_amount.value}",
++            "priority_score": 5.6
++        },
++        {
++            "type": "ELIGIBLE",
++            "apr": "0.00",
++            "priority_score": 1.1
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Pay monthly at 0% APR for purchases of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_LONG_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.product.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "-"
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_LONG_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.product.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/long_term_nq_gtz.json b/content/messages/v2/US/long_term_nq_gtz.json
+new file mode 100644
+index 0000000..15ae212
+--- /dev/null
++++ b/content/messages/v2/US/long_term_nq_gtz.json
+@@ -0,0 +1,57 @@
++{
++    "id": "be5af3e8-d724-4386-ab61-8f9518e3b53f",
++    "type": "PLLT_NQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "min_amount": "${ctx.PAY_LATER_LONG_TERM.max_amount.value}",
++            "priority_score": 5.5
++        },
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 1
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Pay monthly for purchases of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_LONG_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.product.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "-"
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_LONG_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.product.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/long_term_single_eqz.json b/content/messages/v2/US/long_term_single_eqz.json
+new file mode 100644
+index 0000000..6665474
+--- /dev/null
++++ b/content/messages/v2/US/long_term_single_eqz.json
+@@ -0,0 +1,54 @@
++{
++    "id": "6e5134d8-4b3e-40a1-b01f-6b24b553722f",
++    "type": "PLLT_SQ_EZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "apr": "0.00",
++            "priority_score": 7.1
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Make "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_LONG_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " payments of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_LONG_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "/mo at 0% APR.",
++                "alternative_text": " per month at 0% APR."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/long_term_single_gtz.json b/content/messages/v2/US/long_term_single_gtz.json
+new file mode 100644
+index 0000000..953b2f5
+--- /dev/null
++++ b/content/messages/v2/US/long_term_single_gtz.json
+@@ -0,0 +1,58 @@
++{
++    "id": "598d6714-85b1-44f9-bead-fdd7140a4502",
++    "type": "PLLT_SQ_GZ",
++    "offer_types": ["PAY_LATER_LONG_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "min_amount": "199.00",
++            "priority_score": 7.1
++        },
++        {
++            "type": "QUALIFYING",
++            "priority_score": 5.7
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Make "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_LONG_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " payments of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_LONG_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_LONG_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "/mo.",
++                "alternative_text": " per month."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/pp_bal.json b/content/messages/v2/US/pp_bal.json
+new file mode 100644
+index 0000000..320f965
+--- /dev/null
++++ b/content/messages/v2/US/pp_bal.json
+@@ -0,0 +1,25 @@
++{
++    "id": "a4ed1918-55ad-41bd-ad68-4497d4b63abd",
++    "type": "PPBAL_GENERIC",
++    "offer_types": ["PAYPAL_BALANCE"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 0
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Balance available."
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/pp_cbmc.json b/content/messages/v2/US/pp_cbmc.json
+new file mode 100644
+index 0000000..c80c2ce
+--- /dev/null
++++ b/content/messages/v2/US/pp_cbmc.json
+@@ -0,0 +1,38 @@
++{
++    "id": "b438d446-045a-4ad5-8a36-f5aa648d71ee",
++    "type": "PPCBMC",
++    "offer_types": ["PAYPAL_CASHBACK_MASTERCARD"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 0
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Earn 3% cash back with PayPal Cashback Mastercard."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "Eligibility varies."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "See terms",
++                "click_url": "https://www.synchronybankterms.com/gecrbterms/html/PayPalCashbackRewardsTerms.htm"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/pp_dc.json b/content/messages/v2/US/pp_dc.json
+new file mode 100644
+index 0000000..6b9da9c
+--- /dev/null
++++ b/content/messages/v2/US/pp_dc.json
+@@ -0,0 +1,32 @@
++{
++    "id": "0615fea0-ba66-4cd9-bd79-d8217bef6fe3",
++    "type": "PPDC",
++    "offer_types": ["PAYPAL_DEBIT_CARD"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 0
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Earn 5% cash back with PayPal Debit Mastercard."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "See terms",
++                "click_url": "http://paypal.com/rewardspal"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/ppbal_amount_q.json b/content/messages/v2/US/ppbal_amount_q.json
+new file mode 100644
+index 0000000..c2047d3
+--- /dev/null
++++ b/content/messages/v2/US/ppbal_amount_q.json
+@@ -0,0 +1,35 @@
++{
++    "id": "f7a9c7e5-6f90-4c0a-8c36-3e9dbe8540bc",
++    "type": "PPBAL_AMOUNT",
++    "offer_types": ["PAYPAL_BALANCE"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 0
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_wordmark.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Use your "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "paypal_balance_amount",
++                "text": "{PAYPAL_BALANCE.balance_amount.formatted_value}",
++                "text_path": "{PAYPAL_BALANCE}.balance_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "+ balance."
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/ppc_ni_nq.json b/content/messages/v2/US/ppc_ni_nq.json
+new file mode 100644
+index 0000000..89f32a2
+--- /dev/null
++++ b/content/messages/v2/US/ppc_ni_nq.json
+@@ -0,0 +1,59 @@
++{
++    "id": "1a293c31-5533-4e4f-b366-229fc4d68f12",
++    "type": "PPCNI_NQ",
++    "offer_types": ["PAYPAL_CREDIT_NO_INTEREST"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 2
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_credit_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_credit_badge.svg",
++                "alternative_text": "PayPal Credit"
++            },
++            {
++                "type": "TEXT",
++                "text": "No Interest if paid in full in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAYPAL_CREDIT_NO_INTEREST.periodic_payment_count}",
++                "text_path": "{PAYPAL_CREDIT_NO_INTEREST.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " months on all purchases of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAYPAL_CREDIT_NO_INTEREST.min_amount.formatted_value}",
++                "text_path": "{PAYPAL_CREDIT_NO_INTEREST.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "alternative_text": " or more.",
++                "text": "+."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "US only."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/ppc_ni_q.json b/content/messages/v2/US/ppc_ni_q.json
+new file mode 100644
+index 0000000..b729515
+--- /dev/null
++++ b/content/messages/v2/US/ppc_ni_q.json
+@@ -0,0 +1,48 @@
++{
++    "id": "ce881304-7d05-43c8-8dca-5193485045a0",
++    "type": "PPCNI_SQ",
++    "offer_types": ["PAYPAL_CREDIT_NO_INTEREST"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 5
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_credit_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_credit_badge.svg",
++                "alternative_text": "PayPal Credit"
++            },
++            {
++                "type": "TEXT",
++                "text": "No Interest if paid in full in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAYPAL_CREDIT_NO_INTEREST.periodic_payment_count}",
++                "text_path": "{PAYPAL_CREDIT_NO_INTEREST.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " months."
++            }
++        ],
++        "disclaimer_items": [
++            {
++                "type": "TEXT",
++                "text": "US only."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/short_term_nq.json b/content/messages/v2/US/short_term_nq.json
+new file mode 100644
+index 0000000..7d75031
+--- /dev/null
++++ b/content/messages/v2/US/short_term_nq.json
+@@ -0,0 +1,62 @@
++{
++    "id": "b3221448-2116-4d30-ba2a-7c5d40c8a149",
++    "type": "PLST_NQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "ELIGIBLE",
++            "priority_score": 3
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Pay in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " interest-free payments on purchases of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "min_amount",
++                "text": "{PAY_LATER_SHORT_TERM.min_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.min_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "-"
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "max_amount",
++                "text": "{PAY_LATER_SHORT_TERM.max_amount.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.max_amount.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/messages/v2/US/short_term_q.json b/content/messages/v2/US/short_term_q.json
+new file mode 100644
+index 0000000..4af9944
+--- /dev/null
++++ b/content/messages/v2/US/short_term_q.json
+@@ -0,0 +1,52 @@
++{
++    "id": "1d8435e1-61ee-4585-8b05-a989de205c3e",
++    "type": "PLST_SQ",
++    "offer_types": ["PAY_LATER_SHORT_TERM"],
++    "priority_rules": [
++        {
++            "type": "QUALIFYING",
++            "priority_score": 6
++        }
++    ],
++    "content": {
++        "main_items": [
++            {
++                "type": "IMAGE",
++                "name": "paypal_logo",
++                "source_url": "https://www.paypalobjects.com/upstream/assets/logos/v2/paypal_badge.svg",
++                "alternative_text": "PayPal"
++            },
++            {
++                "type": "TEXT",
++                "text": "Pay in "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment_count",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment_count}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.periodic_payment_count"
++            },
++            {
++                "type": "TEXT",
++                "text": " interest-free payments of "
++            },
++            {
++                "type": "TEXT_VARIABLE",
++                "name": "periodic_payment",
++                "text": "{PAY_LATER_SHORT_TERM.periodic_payment.formatted_value}",
++                "text_path": "{PAY_LATER_SHORT_TERM.preferred_offer.financing_code}.breakdown.periodic_payment.formatted_value"
++            },
++            {
++                "type": "TEXT",
++                "text": "."
++            }
++        ],
++        "action_items": [
++            {
++                "type": "LINK",
++                "text": "Learn more",
++                "click_url": "{click_url}"
++            }
++        ]
++    }
++}
+diff --git a/content/modals/AT/long_term.json b/content/modals/AT/long_term.json
+index 0bfff5e..da43355 100644
+--- a/content/modals/AT/long_term.json
++++ b/content/modals/AT/long_term.json
+@@ -28,7 +28,8 @@
+             "inputLabel": "Warenwert",
+             "inputPlaceholder": "{formattedMinAmount} - {formattedMaxAmount}",
+             "inputCurrencySymbol": "€",
+-            "genericError": "Etwas ist schief gelaufen. Versuchen Sie es später erneut."
++            "genericError": "Etwas ist schief gelaufen. Versuchen Sie es später erneut.",
++            "loadingLabel": "Finanzierungsoptionen werden geladen"
+         },
+         "instructions": [
+             "Wählen Sie PayPal als Bezahlmethode aus, um mit<strong> PayPal Ratenzahlung</strong> zu bezahlen.",
+diff --git a/content/modals/CA/long_term_xo.json b/content/modals/CA/long_term_xo.json
+index b0b6b41..7bde9ad 100644
+--- a/content/modals/CA/long_term_xo.json
++++ b/content/modals/CA/long_term_xo.json
+@@ -25,7 +25,8 @@
+             "title": "How much is your purchase?",
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "$0",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
+         "instructions": [
+diff --git a/content/modals/CA/long_term_xo_fr.json b/content/modals/CA/long_term_xo_fr.json
+index 543e053..aa0feb7 100644
+--- a/content/modals/CA/long_term_xo_fr.json
++++ b/content/modals/CA/long_term_xo_fr.json
+@@ -26,7 +26,8 @@
+             "title": "Quel est le montant de votre achat?",
+             "inputLabel": "Montant de l'achat",
+             "inputPlaceholder": "0 CAD",
+-            "genericError": "Une erreur s’est produite. Veuillez réessayer plus tard."
++            "genericError": "Une erreur s’est produite. Veuillez réessayer plus tard.",
++            "loadingLabel": "Chargement des options de financement"
+         },
+         "genericDisclaimer": "Les conditions varient en fonction du montant de l'achat et de votre crédit.",
+         "instructions": [
+diff --git a/content/modals/DE/long_term.json b/content/modals/DE/long_term.json
+index 6e01499..88971ee 100644
+--- a/content/modals/DE/long_term.json
++++ b/content/modals/DE/long_term.json
+@@ -28,7 +28,8 @@
+             "inputLabel": "Warenwert",
+             "inputPlaceholder": "{formattedMinAmount} - {formattedMaxAmount}",
+             "inputCurrencySymbol": "€",
+-            "genericError": "Etwas ist schief gelaufen. Versuchen Sie es später erneut."
++            "genericError": "Etwas ist schief gelaufen. Versuchen Sie es später erneut.",
++            "loadingLabel": "Finanzierungsoptionen werden geladen"
+         },
+         "instructions": [
+             "Wählen Sie PayPal als Bezahlmethode aus, um mit<strong> PayPal Ratenzahlung</strong> zu bezahlen.",
+diff --git a/content/modals/DE/long_term_en.json b/content/modals/DE/long_term_en.json
+index f362487..23518d7 100644
+--- a/content/modals/DE/long_term_en.json
++++ b/content/modals/DE/long_term_en.json
+@@ -29,7 +29,8 @@
+             "inputLabel": "Value of goods",
+             "inputPlaceholder": "{formattedMinAmount} - {formattedMaxAmount}",
+             "inputCurrencySymbol": "€",
+-            "genericError": "Something went wrong. Please try later."
++            "genericError": "Something went wrong. Please try later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "instructions": [
+             "Choose PayPal at checkout to pay later with<strong> PayPal Ratenzahlung</strong>.",
+diff --git a/content/modals/ES/long_term.json b/content/modals/ES/long_term.json
+index a7da82a..d0f7df6 100644
+--- a/content/modals/ES/long_term.json
++++ b/content/modals/ES/long_term.json
+@@ -29,7 +29,8 @@
+             "inputLabel": "Importe de compra",
+             "inputPlaceholder": "0 €",
+             "inputCurrencySymbol": "€",
+-            "genericError": "Algo salió mal. Por favor, inténtalo de nuevo más tarde."
++            "genericError": "Algo salió mal. Por favor, inténtalo de nuevo más tarde.",
++            "loadingLabel": "Cargando opciones de financiación"
+         },
+         "genericDisclaimer": "*Todos los ejemplos tienen carácter representativo. Las condiciones finales y los tipos de interés varían en función del importe de la compra y el perfil del cliente. El importe de los plazos está redondeado.",
+         "instructions": [
+diff --git a/content/modals/ES/long_term_en.json b/content/modals/ES/long_term_en.json
+index 2d06417..a7bd994 100644
+--- a/content/modals/ES/long_term_en.json
++++ b/content/modals/ES/long_term_en.json
+@@ -30,7 +30,8 @@
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "0 €",
+             "inputCurrencySymbol": "€",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "All examples are representative. Terms and rates vary based on purchase amount and the customer profile.",
+         "instructions": [
+diff --git a/content/modals/IT/long_term.json b/content/modals/IT/long_term.json
+index c5b1c1b..c745db9 100644
+--- a/content/modals/IT/long_term.json
++++ b/content/modals/IT/long_term.json
+@@ -29,7 +29,8 @@
+             "inputLabel": "Importo dell'acquisto",
+             "inputPlaceholder": "0 €",
+             "inputCurrencySymbol": "€",
+-            "genericError": "Qualcosa è andato storto. Riprova più tardi."
++            "genericError": "Qualcosa è andato storto. Riprova più tardi.",
++            "loadingLabel": "Caricamento delle opzioni di finanziamento"
+         },
+         "genericDisclaimer": "*Tutti gli esempi hanno natura rappresentativa. Le condizioni finali e i tassi d'interesse applicati variano in base all'importo dell'acquisto e al profilo del cliente. L’importo delle rate è arrotondato.",
+         "instructions": [
+diff --git a/content/modals/IT/long_term_en.json b/content/modals/IT/long_term_en.json
+index 48e9469..cec82f6 100644
+--- a/content/modals/IT/long_term_en.json
++++ b/content/modals/IT/long_term_en.json
+@@ -30,7 +30,8 @@
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "0 €",
+             "inputCurrencySymbol": "€",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "All examples are representative. Terms and rates vary based on purchase amount and the customer profile.",
+         "instructions": [
+diff --git a/content/modals/US/PL2GO/apple_wallet_long_term.json b/content/modals/US/PL2GO/apple_wallet_long_term.json
+new file mode 100644
+index 0000000..8bdf171
+--- /dev/null
++++ b/content/modals/US/PL2GO/apple_wallet_long_term.json
+@@ -0,0 +1,45 @@
++{
++    "meta": {
++        "product": "PAY_LATER_LONG_TERM",
++        "offerCountry": "US",
++        "useV5Design": "true",
++        "v5.1": "true",
++        "enableDarkMode": "true",
++        "variables": {
++            "transaction_amount": "${eval(transaction_amount ? transaction_amount : '-')}",
++            "qualifying_offer": "${eval(CREDIT_OFFERS_DS.qualifying_offer ? CREDIT_OFFERS_DS.qualifying_offer : 'false')}",
++            "financing_code": "${CREDIT_OFFERS_DS.financing_code}",
++            "formattedPeriodicPayment": "${CREDIT_OFFERS_DS.formattedPeriodicPayment}",
++            "total_payments": "${CREDIT_OFFERS_DS.total_payments}",
++            "formattedMinAmount": "${CREDIT_OFFERS_DS.formattedMinAmount}",
++            "formattedMaxAmount": "${CREDIT_OFFERS_DS.formattedMaxAmount}",
++            "formattedTotalCost": "${CREDIT_OFFERS_DS.formattedTotalCost}",
++            "minAmount": "${CREDIT_OFFERS_DS.minAmount}",
++            "maxAmount": "${CREDIT_OFFERS_DS.maxAmount}",
++            "apr": "${CREDIT_OFFERS_DS.apr}",
++            "nominal_rate": "${CREDIT_OFFERS_DS.nominal_rate}"
++        }
++    },
++    "content": {
++        "headline": "Pay Monthly",
++        "subheadline": "Get more time to pay, with no down payment or late fees.",
++        "calculator": {
++            "title": "How much is your purchase?",
++            "inputLabel": "Purchase amount",
++            "inputPlaceholder": "Enter amount",
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
++        },
++        "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
++        "instructions": [
++            "Apply for Pay Monthly. Available for purchases of {formattedMinAmount} to {formattedMaxAmount}.",
++            "Shop almost anywhere after receiving a single-use virtual card number.",
++            "Pay back what you spend in monthly installments. $0 due today."
++        ],
++        "disclosure": [
++            "Pay Monthly is subject to consumer credit approval and eligibility. Payments may change based on shipping, taxes, updates to your purchase, or missed payments. Availability depends on the merchant and may not be available for subscriptions or recurring payments. Pay Monthly is currently not available to residents of <span aria-hidden='true'>AK, CT, HI, or WA</span><span class='sr-only'>Alaska, Connecticut, Hawaii, or Washington</span>. You must be 18 years old or older to apply. Missed payments may have an impact on your credit score. The lender for Pay Monthly is WebBank. PayPal, Inc. (NMLS #910457): <span aria-hidden='true'>RI</span><span class='sr-only'>Rhode Island</span> Loan Broker Licensee. <span aria-hidden='true'>VT</span><span class='sr-only'>Vermont</span> Loan Solicitation Licensee. <span aria-hidden='true'>VT</span><span class='sr-only'>Vermont</span> residents:",
++            ["Find more disclosures ", "https://www.paypal.com/us/digital-wallet/ways-to-pay/buy-now-pay-later"],
++            "by going to PayPal's page on Pay Later."
++        ]
++    }
++}
+diff --git a/content/modals/US/PL2GO/apple_wallet_short_term.json b/content/modals/US/PL2GO/apple_wallet_short_term.json
+new file mode 100644
+index 0000000..6b55277
+--- /dev/null
++++ b/content/modals/US/PL2GO/apple_wallet_short_term.json
+@@ -0,0 +1,44 @@
++{
++    "meta": {
++        "product": "PAY_LATER_SHORT_TERM",
++        "periodicPayment": "{formattedPeriodicPayment}",
++        "minAmount": "{minAmount}",
++        "maxAmount": "{maxAmount}",
++        "qualifying": "{qualifying_offer}",
++        "amount": "{transaction_amount}",
++        "apr": "{apr}",
++        "useV5Design": "true",
++        "v5.1": "true",
++        "enableDarkMode": "true",
++        "variables": {
++            "transaction_amount": "${eval(transaction_amount ? transaction_amount : '-')}",
++            "qualifying_offer": "${eval(CREDIT_OFFERS_DS.qualifying_offer ? CREDIT_OFFERS_DS.qualifying_offer : 'false')}",
++            "financing_code": "${CREDIT_OFFERS_DS.financing_code}",
++            "formattedPeriodicPayment": "${CREDIT_OFFERS_DS.formattedPeriodicPayment}",
++            "total_payments": "${CREDIT_OFFERS_DS.total_payments}",
++            "formattedMinAmount": "${CREDIT_OFFERS_DS.formattedMinAmount}",
++            "formattedMaxAmount": "${CREDIT_OFFERS_DS.formattedMaxAmount}",
++            "formattedTotalCost": "${CREDIT_OFFERS_DS.formattedTotalCost}",
++            "minAmount": "${CREDIT_OFFERS_DS.minAmount}",
++            "maxAmount": "${CREDIT_OFFERS_DS.maxAmount}",
++            "apr": "${CREDIT_OFFERS_DS.apr}",
++            "nominal_rate": "${CREDIT_OFFERS_DS.nominal_rate}"
++        }
++    },
++    "content": {
++        "headline": "Pay in 4 interest-free payments",
++        "subheadline": "No impact on credit score and no late fees. Available for purchases of {formattedMinAmount} to {formattedMaxAmount}.",
++        "qualifyingSubheadline": "Split your purchase of {formattedTotalCost} into {total_payments} with no impact on credit score and no late fees.",
++        "donutTimestamps": ["Today", "2 weeks", "4 weeks", "6 weeks"],
++        "instructions": [
++            "Apply for Pay in 4. Available for purchases of {formattedMinAmount} to {formattedMaxAmount}. ",
++            "Shop almost anywhere after receiving a single-use virtual card number.",
++            "Pay back what you spend in 4 payments, every 2 weeks, starting today."
++        ],
++        "disclosure": [
++            "Pay in 4 is available to consumers upon approval for purchases of {formattedMinAmount} to {formattedMaxAmount}. Pay in 4 is currently not available to residents of <span aria-hidden='true'>MO</span><span class='sr-only'>Missouri</span>. Offer availability depends on the merchant and also may not be available for certain recurring, subscription services. When applying, a soft credit check may be needed, but will not affect your credit score. You must be 18 years old or older to apply. PayPal, Inc.: Loans to <span aria-hidden='true'>CA</span><span class='sr-only'>California</span> residents are made or arranged pursuant to a <span aria-hidden='true'>CA</span><span class='sr-only'>California</span> Financing Law License. <span aria-hidden='true'>GA</span><span class='sr-only'>Georgia</span> Installment Lender Licensee, NMLS #910457. <span aria-hidden='true'>RI</span><span class='sr-only'>Rhode Island</span> Small Loan Lender Licensee. <span aria-hidden='true'>NM</span><span class='sr-only'>New Mexico</span> residents:",
++            ["Find more disclosures ", "https://www.paypal.com/us/webapps/mpp/campaigns/newmexicodisclosure"],
++            "related to Pay in 4."
++        ]
++    }
++}
+diff --git a/content/modals/US/PL2GO/pl2go_long_term.json b/content/modals/US/PL2GO/pl2go_long_term.json
+index f173948..8bdf171 100644
+--- a/content/modals/US/PL2GO/pl2go_long_term.json
++++ b/content/modals/US/PL2GO/pl2go_long_term.json
+@@ -27,7 +27,8 @@
+             "title": "How much is your purchase?",
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "Enter amount",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
+         "instructions": [
+diff --git a/content/modals/US/PLHub/plhub_long_term.json b/content/modals/US/PLHub/plhub_long_term.json
+index 39d2a27..ca2b31e 100644
+--- a/content/modals/US/PLHub/plhub_long_term.json
++++ b/content/modals/US/PLHub/plhub_long_term.json
+@@ -26,7 +26,8 @@
+             "title": "How much is your purchase?",
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "Enter amount",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
+         "instructions": [
+diff --git a/content/modals/US/long_term_df.json b/content/modals/US/long_term_df.json
+index 62ab6fe..16408d3 100644
+--- a/content/modals/US/long_term_df.json
++++ b/content/modals/US/long_term_df.json
+@@ -27,7 +27,8 @@
+             "genericTitle": "How much is your purchase?",
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "Enter amount",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
+         "instructions": {
+diff --git a/content/modals/US/v2_long_term-onboarding.json b/content/modals/US/v2_long_term-onboarding.json
+index 54e6ff3..c4f0f2f 100644
+--- a/content/modals/US/v2_long_term-onboarding.json
++++ b/content/modals/US/v2_long_term-onboarding.json
+@@ -26,7 +26,8 @@
+             "title": "How much is your purchase?",
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "Enter amount",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
+         "instructions": [
+diff --git a/content/modals/US/v2_long_term.json b/content/modals/US/v2_long_term.json
+index d0e8099..07861f0 100644
+--- a/content/modals/US/v2_long_term.json
++++ b/content/modals/US/v2_long_term.json
+@@ -27,7 +27,8 @@
+             "title": "How much is your purchase?",
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "Enter amount",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
+         "instructions": [
+diff --git a/content/modals/US/v2_long_term_rb.json b/content/modals/US/v2_long_term_rb.json
+index bb93393..4d242a6 100644
+--- a/content/modals/US/v2_long_term_rb.json
++++ b/content/modals/US/v2_long_term_rb.json
+@@ -27,7 +27,8 @@
+             "title": "How much is your purchase?",
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "Enter amount",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
+         "instructions": [
+diff --git a/content/modals/US/v2_long_term_xo.json b/content/modals/US/v2_long_term_xo.json
+index 115cd3d..9621f07 100644
+--- a/content/modals/US/v2_long_term_xo.json
++++ b/content/modals/US/v2_long_term_xo.json
+@@ -26,7 +26,8 @@
+             "title": "How much is your purchase?",
+             "inputLabel": "Purchase amount",
+             "inputPlaceholder": "Enter amount",
+-            "genericError": "Something went wrong. Please try again later."
++            "genericError": "Something went wrong. Please try again later.",
++            "loadingLabel": "Loading financing options"
+         },
+         "genericDisclaimer": "Terms vary based on purchase amount and your credit.",
+         "instructions": {
+diff --git a/docs/message-demo-pages.md b/docs/message-demo-pages.md
+index 428d5fc..5a8c2f8 100644
+--- a/docs/message-demo-pages.md
++++ b/docs/message-demo-pages.md
+@@ -4,6 +4,8 @@
+ 
+ [demo/standalone.html](https://github.com/paypal/paypal-messaging-components/blob/develop/demo/standalone.html) is the standard page to edit and view when confirming changes were successful without using other PayPal infrastructure.
+ 
++Use the same standalone page for both v1 and v2 renderers. To exercise renderMessage, run npm run dev:standalone. To exercise renderV2Message, add query param features=useRenderV2Message.
++
+ ## View Multiple Banners
+ 
+ ### Pages
+diff --git a/package.json b/package.json
+index 8a3275b..72f6a32 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@paypal/messaging-components",
+-    "version": "1.95.1",
++    "version": "1.96.0",
+     "description": "PayPal messaging library for integrating PayPal Credit messaging on merchant websites",
+     "homepage": "https://github.com/paypal/paypal-messaging-components",
+     "repository": {
+@@ -31,14 +31,18 @@
+         "dev:stage": "webpack serve --config webpack.config.dev.js --env TARGET=standalone --env NODE_ENV=stage",
+         "dev:sandbox": "webpack serve --config webpack.config.dev.js --env TARGET=standalone --env NODE_ENV=sandbox",
+         "dev:production": "webpack serve --config webpack.config.dev.js --env TARGET=standalone --env NODE_ENV=production",
++        "dev:v2-comparison": "node scripts/dev/v2-comparison.js",
+         "lint": "eslint . --ext .js,.jsx",
+         "start": "npm run dev",
+         "test": "jest --verbose",
+         "test:func": "jest --detectOpenHandles --runInBand --verbose --config tests/functional/jest.allFunctional.config.js",
+         "test:func:nosnaps": "jest --detectOpenHandles --runInBand --verbose --config tests/functional/jest.noSnapshots.config.js",
++        "test:func:nosnaps:v2": "jest --detectOpenHandles --runInBand --verbose --config tests/functional/jest.noSnapshots.v2Renderer.config.js",
+         "test:func:ciupdate": "jest --verbose --config tests/functional/jest.allFunctional.config.js --updateSnapshot",
+         "test:func:snapshots": "jest --detectOpenHandles --runInBand --verbose --config tests/functional/v2/jest.snapshotTests.config.js",
+-        "test:func:snapshots:ciupdate": "jest --verbose --config tests/functional/v2/jest.snapshotTests.config.js --updateSnapshot"
++        "test:func:snapshots:ciupdate": "jest --verbose --config tests/functional/v2/jest.snapshotTests.config.js --updateSnapshot",
++        "test:func:banner:snapshots:v2": "jest --detectOpenHandles --runInBand --verbose --config tests/functional/jest.bannerSnapshots.v2Renderer.config.js",
++        "test:func:banner:snapshots:v2:ciupdate": "jest --verbose --config tests/functional/jest.bannerSnapshots.v2Renderer.config.js --updateSnapshot"
+     },
+     "dependencies": {
+         "@krakenjs/beaver-logger": "^5.0.0",
+@@ -93,7 +97,7 @@
+         "jest-environment-jsdom-sixteen": "^1.0.3",
+         "jest-environment-puppeteer": "^11.0.0",
+         "jest-html-reporter": "^3.3.0",
+-        "jest-image-snapshot": "^6.5.2",
++        "jest-image-snapshot": "6.5.2",
+         "lint-staged": "^8.0.4",
+         "preact": "^10.1.1",
+         "preact-render-to-string": "^5.1.9",
+diff --git a/src/components/modal/v2/parts/Calculator.jsx b/src/components/modal/v2/parts/Calculator.jsx
+index bfc1a46..5661fc0 100644
+--- a/src/components/modal/v2/parts/Calculator.jsx
++++ b/src/components/modal/v2/parts/Calculator.jsx
+@@ -84,7 +84,15 @@ const Calculator = ({
+     const { amount } = useXProps();
+     const { country, views } = useServerData();
+     const { language } = views[0].meta;
+-    const { title, genericTitle, inputLabel, inputPlaceholder, inputCurrencySymbol } = calculator;
++    const {
++        title,
++        genericTitle,
++        inputLabel,
++        inputPlaceholder,
++        inputCurrencySymbol,
++        loadingLabel = 'Loading financing options'
++    } = calculator;
++    const formattedInputPlaceholder = currencyFormat(inputPlaceholder).replace(/(\s?€)/g, '');
+ 
+     // Set hasUsedInputField to true if someone has typed in the input field at any point.
+     const [hasUsedInputField, setHasUsedInputField] = useState(false);
+@@ -102,6 +110,10 @@ const Calculator = ({
+ 
+     // Pass view, isLoading state, and calculator props into getError to get the appropriate error, if any. Could return as 'null'.
+     const error = getError(view, isLoading, calculator, delocalize(displayValue ?? '0', country, language), country);
++    const hasInputError = Boolean(
++        error && error !== calculator.genericError && (hasInitialAmount || hasUsedInputField)
++    );
++    const showVisualInputError = Boolean(error && error !== calculator.genericError && hasEnteredAmount);
+ 
+     useEffect(() => {
+         if (!hasInitialAmount && !hasUsedInputField) {
+@@ -176,8 +188,8 @@ const Calculator = ({
+                     } ${useDarkMode ? 'darkMode' : ''}`}
+                 >
+                     <div>
+-                        {error && hasEnteredAmount ? <Icon name="warning" /> : null}
+-                        <div>{error}</div>
++                        {showVisualInputError ? <Icon name="warning" /> : null}
++                        <div id={hasInputError ? 'purchase-amount-error' : undefined}>{error}</div>
+                     </div>
+                 </div>
+             );
+@@ -215,7 +227,7 @@ const Calculator = ({
+                 <div
+                     className={`input__wrapper transitional ${useV5Design === 'true' ? 'v5Design' : ''} ${
+                         cta ? 'checkout' : ''
+-                    } ${country || ''} ${error && hasEnteredAmount ? 'input__wrapper--error' : ''}`}
++                    } ${country || ''} ${showVisualInputError ? 'input__wrapper--error' : ''}`}
+                 >
+                     <label htmlFor="purchase-amount" className={`input__label ${country}`}>
+                         {renderInputLabelOnEmptyField(country)}
+@@ -223,9 +235,12 @@ const Calculator = ({
+                     {inputCurrencySymbol && <div className="input__currency-symbol">{inputCurrencySymbol}</div>}
+                     <input
+                         id="purchase-amount"
++                        aria-label={country === 'US' && displayValue === '' ? formattedInputPlaceholder : undefined}
++                        aria-invalid={hasInputError ? 'true' : undefined}
++                        aria-describedby={hasInputError ? 'purchase-amount-error' : undefined}
+                         aria-required="true"
+                         className={`input ${displayValue === '' && country === 'US' ? 'empty-input' : ''}`}
+-                        placeholder={currencyFormat(inputPlaceholder).replace(/(\s?€)/g, '')}
++                        placeholder={formattedInputPlaceholder}
+                         type="text"
+                         value={displayValue}
+                         onInput={onInput}
+@@ -235,8 +250,11 @@ const Calculator = ({
+                 </div>
+                 <div aria-live="polite">{renderError(error || emptyState || isLoading)}</div>
+             </form>
++            <div role="status" className="sr-only">
++                {isLoading ? loadingLabel : ''}
++            </div>
+             {(hasInitialAmount || hasUsedInputField) && !error ? (
+-                <div aria-live="polite" className="content-column">
++                <div className="content-column" aria-live="polite" aria-busy={isLoading ? 'true' : undefined}>
+                     <TermsTable
+                         view={view}
+                         isLoading={isLoading}
+diff --git a/src/components/modal/v2/parts/LoadingShimmer.jsx b/src/components/modal/v2/parts/LoadingShimmer.jsx
+index e155088..434f986 100644
+--- a/src/components/modal/v2/parts/LoadingShimmer.jsx
++++ b/src/components/modal/v2/parts/LoadingShimmer.jsx
+@@ -16,7 +16,7 @@ const LoadingShimmer = ({ numOffers = 3, offerCountry, useNewCheckoutDesign }) =
+             {Array.from({ length: numOffers }).map((_, index) => {
+                 if (accordionShimmerCountries.includes(offerCountry)) {
+                     return (
+-                        <div id={index} className="accordion__container shimmer">
++                        <div id={index} className="accordion__container shimmer" aria-hidden="true">
+                             <div className="accordion__row">
+                                 <div className="accordion__header-container loading">
+                                     <div className="offer__field-loading" style={{ width: '60%' }} />
+@@ -31,6 +31,7 @@ const LoadingShimmer = ({ numOffers = 3, offerCountry, useNewCheckoutDesign }) =
+                         className={`offer__container shimmer key=${index} ${
+                             useNewCheckoutDesign === 'true' ? 'checkout' : ''
+                         }`}
++                        aria-hidden="true"
+                     >
+                         <div className="offer__row">
+                             <div className="offer__field-loading" />
+diff --git a/src/components/modal/v2/parts/OfferCard.jsx b/src/components/modal/v2/parts/OfferCard.jsx
+index c46675d..37c7e08 100644
+--- a/src/components/modal/v2/parts/OfferCard.jsx
++++ b/src/components/modal/v2/parts/OfferCard.jsx
+@@ -19,7 +19,7 @@ const OfferCard = ({
+             className={`offer__container ${useV5Design === 'true' ? 'v5Design' : ''} ${useDarkMode ? 'darkMode' : ''}`}
+         >
+             <div className={`offer__row ${useV5Design === 'true' ? 'v5Design' : ''}`}>
+-                <strong
++                <h4
+                     className={`offer__field-header ${use5Dot1Design ? 'v5Dot1Design' : ''}`}
+                     // eslint-disable-next-line react/no-danger
+                     dangerouslySetInnerHTML={{ __html: offerHeaderField }}
+diff --git a/src/server/message/index.jsx b/src/server/message/index.jsx
+index a2be39f..99bea9f 100644
+--- a/src/server/message/index.jsx
++++ b/src/server/message/index.jsx
+@@ -1,7 +1,7 @@
+ /** @jsx h */
+ /** @jsxFrag Fragment */
+ import { h, Fragment } from 'preact';
+-import { objectMerge, objectFlattenToArray, curry } from '../../utils/server';
++import { objectMerge, objectFlattenToArray, curry, getStandardProductOffer, OFFER } from '../../utils/server';
+ import { getMutations, getLocaleStyles, getLocaleClass, getLocaleProductName } from '../locale';
+ import allStyles from './styles';
+ import Logo from './parts/Logo';
+@@ -85,7 +85,14 @@ export default ({ options, markup, locale }) => {
+     }
+ 
+     const logoType = style.logo?.type;
+-    const logoEl = <Logo mutations={mutationRules.logo} />;
++    const brandName =
++        getStandardProductOffer(messageType) === OFFER.PAYPAL_CREDIT_NO_INTEREST ? 'PayPal Credit' : 'PayPal';
++    const logoEl = (
++        <>
++            <Logo mutations={mutationRules.logo} />
++            <span className="sr-only">{brandName}</span>
++        </>
++    );
+ 
+     const [withText, productName] = getLocaleProductName(locale, messageType, contextualComponents, language);
+ 
+diff --git a/src/server/message/parts/Logo.jsx b/src/server/message/parts/Logo.jsx
+index 7485785..c02ede4 100644
+--- a/src/server/message/parts/Logo.jsx
++++ b/src/server/message/parts/Logo.jsx
+@@ -7,9 +7,9 @@ const Logos = ({ mutations }) => {
+     const logos = Array.isArray(mutations) ? mutations : [mutations];
+ 
+     return (
+-        <div className="message__logo-container" aria-hidden="true">
++        <div className="message__logo-container">
+             {logos.map(({ src, dimensions: [width, height] }) => (
+-                <div className="message__logo message__logo--svg">
++                <div className="message__logo message__logo--svg" aria-hidden="true">
+                     <img src={src} alt="" role="presentation" />
+                     <canvas height={height} width={width} />
+                 </div>
+diff --git a/src/server/v2/flexStyles.js b/src/server/v2/flexStyles.js
+index f9234b4..889c722 100644
+--- a/src/server/v2/flexStyles.js
++++ b/src/server/v2/flexStyles.js
+@@ -547,7 +547,7 @@ html {
+ .pp-message.pp-flex {
+     position: relative;
+     width: 100%;
+-    height: 100%;
++    height: 100vh;
+     font-family: ${effectiveFontFamily};
+     font-weight: 300;
+     cursor: pointer;

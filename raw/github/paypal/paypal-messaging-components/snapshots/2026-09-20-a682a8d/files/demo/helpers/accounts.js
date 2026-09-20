@@ -1,0 +1,130 @@
+// prettier-ignore
+const accounts = [
+    // US
+    'DEV00000000NI',
+    'DEV0000000NIQ',
+    'DEV000NINONUS',
+    'DEV00NINONUSQ',
+    // pay later short term
+    'DEV0000000GPL',
+    'DEV00000GPLNQ',
+    'DEV000000GPLQ',
+    // pay later long term
+    // 'DEV0USGENERIC',
+    // 'DEV00USLTNQEZ',
+    // 'DEV00USLTNQGZ',
+    // 'DEV00USLTMQEZ',
+    // 'DEVUSLTMQEZRB',
+    // 'DEV00USLTMQGZ',
+    // 'DEV00USLTSQEZ',
+    // 'DEVUSLTSQEZRB',
+    // 'DEV00USLTSQGZ',
+
+
+    // US Buttons Messages
+    // 'DEV0GENERICPL',
+    // 'DEV000GENBNPL',
+    // 'DEV000GENPYPL',
+    // 'DEV0BTNPYPLPP',
+    // 'DEVBTNLTMQGTZ',
+    // 'DEVBTNLTMQEQZ',
+    // 'DEVBTNLTNQGTZ',
+    // 'DEVBTNLTNQEQZ',
+    // 'DEVBTNLTSQGTZ',
+    // 'DEVBTNLTSQEQZ',
+    // 'DEV00BTNSTSNQ',
+    // 'DEV000BTNSTSQ',
+
+    // US Marks Messages
+    // 'DEV00MRKGENPL',
+    // 'DEVMRKGENBNPL',
+    // 'DEVMRKGENPYPL',
+    // 'DEV0MRKPYPLPP',
+    // 'DEVMRKLTMQGTZ',
+    // 'DEVMRKLTMQEQZ',
+    // 'DEVMRKLTNQGTZ',
+    // 'DEVMRKLTNQEQZ',
+    // 'DEVMRKLTSQGTZ',
+    // 'DEVMRKLTSQEQZ',
+    // 'DEV00MRKSTSNQ',
+    // 'DEV000MRKSTSQ',
+
+   // DE
+    // 'DEV000DEPLEQZ',
+    // 'DEV000DEPLGTZ',
+    // 'DEV00DEPLQEQZ',
+    // 'DEV00DEPLQGTZ',
+    // 'DEV0XBDEPLEQZ',
+    // 'DEV0XBDEPLGTZ',
+    // 'DEVXBDEPLQEQZ',
+    // 'DEVXBDEPLQGTZ',
+    // 'DEV00DEPI30NQ',
+    // 'DEV000DEPI30Q',
+    // 'DEV0000DEPI30',
+    // 'DEV000DEMULTI',
+    // 'DEVXBDEPI30NQ',
+    // 'DEV0XBDEPI30Q',
+    // 'DEV00XBDEPI30',
+    // 'DEV0XBDEMULTI',
+
+    // AT
+    // 'DEV000ATPLEQZ',
+    // 'DEV000ATPLGTZ',
+    // 'DEV00ATPLQEQZ',
+    // 'DEV00ATPLQGTZ',
+    // 'DEVXBATPLQEQZ',
+    // 'DEVXBATPLQGTZ',
+    // 'DEV00ATPI30NQ',
+    // 'DEV000ATPI30Q',
+    // 'DEV0000ATPI30',
+    // 'DEVXBATPI30NQ',
+    // 'DEV0XBATPI30Q',
+    // 'DEV00XBATPI30',
+    // 'DEV000ATMULTI',
+    // 'DEV0XBATMULTI',
+    // 'DEV0ATGENERIC',
+    // 'DEV000XBATGEN',
+
+    // GB
+    // 'DEV000000GBPL',
+    // 'DEV00000GBPLQ',
+    // 'DEV00GBPI30NQ',
+    // 'DEV000GBPI30Q',
+
+    // FR
+    // DEV0FRGENERIC
+    // DEV000000FRPL
+    // DEV00000FRPLQ
+    // DEV0000FRPLTQ
+    // DEV000FRPLTNQ
+
+    // ES
+    // 'DEV00000ESPLQ',
+    // 'DEV0000ESPLNQ',
+    // 'DEV0000ESPLNA',
+    // 'DEV0000ESPLTQ',
+    // 'DEV000ESPLTNQ',
+    // DEV000ESPLEQZ,
+    // DEV00ESPLQEQZ,
+
+    // AU
+    // 'DEV000000AUPL',
+    // 'DEV00000AUPLQ'
+
+    // IT
+    // 'DEV0000ITPLNA',
+    // 'DEV00000ITPLQ',
+    // 'DEV0000ITPLNQ',
+    // 'DEV0000ITPLTQ',
+    // 'DEV000ITPLTNQ',
+    // DEV000ITPLEQZ,
+    // DEV00ITPLQEQZ,
+
+    // CA
+    // 'DEV000ENCAPLQ',
+    // 'DEV00ENCAPLNQ',
+    // 'DEV00ENCAPLNA',
+    // 'DEV000FRCAPLQ',
+    // 'DEV00FRCAPLNQ',
+    // 'DEV00FRCAPLNA',
+];
