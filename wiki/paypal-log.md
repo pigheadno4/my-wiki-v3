@@ -6,6 +6,27 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-20] ingest | Checkout Components `5.0.434`
+
+- Delta-ingested `github-c58f0a0c5af4f1348981`, `5.0.433` to `5.0.434` at `79fa938be54dd364bb251e5b5caa49c7c809030a` with user-approved item-specific focused reading.
+- Fully reviewed the changed checkout component and package; verified snapshot hashes and 210 unchanged retained files. Changelog history and prior generated evidence checked mechanically. Capsule bundle omission is not an upstream deletion. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-c58f0a0c.md`.
+- Recorded checkout-child window-name monitoring, 50-character truncation (not redaction), and setup-versus-setter error boundaries. No merchant API migration or browser/deployment proof. Preserved all previous releases and the `5.0.433` aria-label revert.
+- Updated concept first, then source/changelog, company, index and logs. Source count remains 177; no cross-company comparison. No commit/push.
+
+## [2026-09-20] ingest | Checkout Components `5.0.433`
+
+- Delta-ingested `github-645ba7c91bcd94bdb64e`, `5.0.432` to `5.0.433` at `e5f517b7311d4e358b546bf796b67560195e4995`.
+- User separately approved focused reading for this item: complete authored component/package, revert entry, mechanical bundle/history checks. Both 214-file snapshots verified; 210 files unchanged. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-645ba7c9.md`.
+- Removed the iframe aria-label; the entire Buttons component equals `5.0.431`. Rollback reason/replacement mitigation undocumented. Preserved `5.0.432` history, updated Checkout concept before source/changelog, then company/index/logs. Source count remains 177; no cross-company comparison or runtime testing.
+- `5.0.434` remains queued. No commit/push.
+
+## [2026-09-20] ingest | Checkout Components `5.0.432`
+
+- Delta-ingested `github-ac14a515ca3bffb44e18`, `5.0.431` to `5.0.432` at `e4c6f20d6bd1f6b1c7cc812a6b89e9a180146478`.
+- Explicit one-time focused-reading exception: full authored component/package, new changelog entry, mechanical bundle/history checks. Both 214-file snapshots hash-verified; 210 retained files byte-identical. Raw and packet unchanged. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-ac14a515.md`.
+- Added iframe `aria-label="Payment Button"`, preserving funding-qualified title and presentation role. No merchant API or dependency change; no independent screen-reader/deployment proof. Retained bundle does not contain the label.
+- Updated Checkout concept before source/changelog; company, index and logs updated. Prior versions preserved; source_count remains 177; no cross-company comparison. `5.0.433` and `5.0.434` remain queued. No commit/push.
+
 ## [2026-09-19] ingest | v6 Web SDK sample `bb23e7c`
 
 - Full additive ingest of `github-9b81f89deff88d93db88`, `de90a89c90b06421ca34241e7162236e2b04fd79` to `bb23e7c63305a872326f43c3d52c5edd53e20b43` (commit September 17).

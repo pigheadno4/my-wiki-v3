@@ -893,6 +893,31 @@
   To SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
   Comparison: Not applicable
 
+## `github-645ba7c91bcd94bdb64e`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `e5f517b7311d4e358b546bf796b67560195e4995`
+- Collection date: `2026-09-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-645ba7c91bcd94bdb64e/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.433` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.433/2026-09-20/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.432--5.0.433/comparison.json)
+
 ## `github-647016eaa69d9b32d93d`
 
 - Repository: `stripe/stripe-terminal-android`
@@ -1848,6 +1873,31 @@
   To SHA: `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
   Comparison: Not applicable
 
+## `github-ac14a515ca3bffb44e18`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `e4c6f20d6bd1f6b1c7cc812a6b89e9a180146478`
+- Collection date: `2026-09-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-ac14a515ca3bffb44e18/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.432` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.432/2026-09-20/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.431--5.0.432/comparison.json)
+
 ## `github-b11f1f62c66a78b84806`
 
 - Repository: `paypal/paypal-js`
@@ -2161,6 +2211,31 @@
 - `@paypal/react-paypal-js@10.2.0` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.0/2026-07-30/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.2--10.2.0/comparison.json)
+
+## `github-c58f0a0c5af4f1348981`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `79fa938be54dd364bb251e5b5caa49c7c809030a`
+- Collection date: `2026-09-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-c58f0a0c5af4f1348981/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.434` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.434/2026-09-20/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.433--5.0.434/comparison.json)
 
 ## `github-ca78b4ec339be0d6bdb8`
 

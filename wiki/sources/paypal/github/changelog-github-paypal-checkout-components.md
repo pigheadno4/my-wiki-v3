@@ -2,8 +2,12 @@
 title: "GitHub changelog: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
+date_updated: 2026-09-20
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json"
+  - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json"
+  - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-01-9bb1162/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-01-1e6da34/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-01-a7b2d95/manifest.json"
@@ -18,6 +22,75 @@ tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-checkout-components`. Cumulative implementation knowledge belongs in [[source-github-paypal-checkout-components]] and the linked immutable snapshots.
+
+## `@paypal/checkout-components@5.0.434` (2026-09-09)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/checkout-components` | `5.0.433` | `5.0.434` | `79fa938be54dd364bb251e5b5caa49c7c809030a` | Delta, approved focused reading |
+
+**Finding:** Adds checkout-child `window.name` observation. Zoid-shaped names pass silently; other assignments log `checkout_window_name_overwritten` and then update the stored value. Old/new logged values are each truncated to 50 characters, not redacted. Installation errors log `checkout_window_name_spy_error`.
+
+**Impact and limits:** Monitoring, not name blocking or writer authentication. The installation catch does not cover later setter execution; logging failure could interrupt that assignment. No browser/lifecycle or hosted deployment proof. No merchant API migration or dependency-range change documented; the Buttons aria-label revert from `5.0.433` remains.
+
+**Evidence boundary:** Three upstream changed files: checkout component, version-only package manifest and new changelog prefix. The capsule additionally omits the prior generated bundle; this is not an upstream deletion. All 210 unchanged retained files byte-verified. Complete authored component/package read with item-specific focused-reading approval; historical/generated evidence checked mechanically. Separate release notes unavailable.
+
+**Updated areas:** cumulative source, Checkout concept, company, provider index and logs. All earlier versions preserved; no new source or cross-company comparison.
+
+**Evidence:**
+
+- `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.434/2026-09-20/manifest.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/files/src/zoid/checkout/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/files/CHANGELOG.md`
+- `tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.433--5.0.434/comparison.json`
+- `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-c58f0a0c.md`
+
+## `@paypal/checkout-components@5.0.433` (2026-09-04)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/checkout-components` | `5.0.432` | `5.0.433` | `e5f517b7311d4e358b546bf796b67560195e4995` | Delta, approved focused reading |
+
+**Finding:** Removes the `aria-label="Payment Button"` added in `5.0.432`. The complete Buttons component returns to its `5.0.431` bytes; funding-qualified title and presentation role remain unchanged.
+
+**Impact:** The changelog explicitly identifies a revert but gives no reason or replacement mitigation. Preserve the label as `5.0.432`-only history. No merchant callback, dependency-range or public-export change; no browser/screen-reader verification or documented merchant API migration.
+
+**Evidence boundary:** Four retained changes, 210 unchanged files byte-verified. Package change is version-only, and prior changelog history is identical. Generated bundle bytes differ but neither contains the label, so no deployed-bundle inference. Upstream release notes unavailable. Full authored component/package read with the separately approved focused-reading exception; generated/history evidence checked mechanically.
+
+**Updated areas:** cumulative source; PayPal Checkout concept; company; provider index; logs. No new source page or cross-company comparison.
+
+**Evidence:**
+
+- `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.433/2026-09-20/manifest.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/files/src/zoid/buttons/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/files/CHANGELOG.md`
+- `tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.432--5.0.433/comparison.json`
+- `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-645ba7c9.md`
+
+## `@paypal/checkout-components@5.0.432` (2026-09-01)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/checkout-components` | `5.0.431` | `5.0.432` | `e4c6f20d6bd1f6b1c7cc812a6b89e9a180146478` | Delta, approved focused reading |
+
+**Finding:** Adds `aria-label="Payment Button"` to the Buttons iframe. Its existing funding-qualified title and `role="presentation"` remain. This is a different approach from the `5.0.428` title change reverted in `5.0.429`.
+
+**Impact:** Upstream changelog describes a duplicate screen-reader-announcement fix. No merchant API migration, dependency change or public-export change is documented. Browser/screen-reader behavior was not independently tested. Do not extrapolate this release-specific attribute to later versions.
+
+**Evidence boundary:** Four retained files change; 210 unchanged files are byte-equal. Package JSON changes only its version; the cumulative upstream changelog is a new entry plus identical history. The generated bundle changes but does not contain the new label, so authored source is the authority for this finding, not evidence of hosted deployment. Separate release notes are unavailable. The user approved focused reading of authored source/package and mechanical review of generated/history evidence; no full semantic-read claim for the large bundle or patch.
+
+**Updated areas:** cumulative source, PayPal Checkout concept, company, provider index and logs. Earlier releases preserved; no new source page or cross-company comparison.
+
+**Evidence:**
+
+- `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.432/2026-09-20/manifest.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/manifest.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/files/src/zoid/buttons/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/files/CHANGELOG.md`
+- `tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.431--5.0.432/comparison.json`
+- `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-ac14a515.md`
 
 ## `@paypal/checkout-components@5.0.431` (2026-08-24)
 

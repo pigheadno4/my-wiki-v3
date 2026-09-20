@@ -2,8 +2,12 @@
 title: "GitHub: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
+date_updated: 2026-09-20
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json"
+  - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json"
+  - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-01-9bb1162/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-01-1e6da34/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-01-a7b2d95/manifest.json"
@@ -17,7 +21,7 @@ tags: [paypal, checkout, javascript-sdk, github-repository, venmo, pay-later]
 
 ## Overview
 
-`paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends the release history through `@paypal/checkout-components@5.0.431` at exact SHA `9bb1162373b4dd96d5a3196dbfab41990f606bb7`; the latest retained implementation change remains the `5.0.429` title-fix revert.
+`paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends ingested history through `@paypal/checkout-components@5.0.434` at exact SHA `79fa938be54dd364bb251e5b5caa49c7c809030a`. This release adds checkout-child window-name monitoring. The iframe aria-label addition in `5.0.432` and revert in `5.0.433` remain documented.
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
 
@@ -222,6 +226,56 @@ The retained comparison contains only `CHANGELOG.md`, `package.json`, and genera
 
 The `5.0.430` to `5.0.431` comparison again contains only `CHANGELOG.md`, `package.json`, and generated `dist` bundles. The changelog records `chore(release): 5.0.430`; no retained authored source file changed, and no public API export or dependency range change is reported. Consequently, `5.0.431` still carries the `5.0.429` iframe-title revert and establishes no new merchant or runtime capability.
 
+## Version 5.0.432 iframe accessibility label
+
+Released September 1, 2026; collected and delta-ingested September 20. The only changed authored implementation adds `"aria-label": "Payment Button"` to the Buttons Zoid iframe attributes:
+
+```js
+title: `${FUNDING_BRAND_LABEL.PAYPAL}${fundingSource}`,
+"aria-label": "Payment Button",
+role: "presentation",
+```
+
+The existing optional `-<fundingSource>` suffix remains. Unlike `5.0.428`, this does not change the generic title to `PayPal Payment Buttons`; it supplies a separate, unconditional accessible-label attribute. The changelog describes a fix for duplicate PayPal screen-reader announcements. No browser/screen-reader validation was run, so that outcome is upstream intent rather than independently reproduced proof.
+
+Package JSON changes only its version. There are no detected dependency, public-export, merchant-callback or payment-flow changes. No merchant API migration is documented; this release does not establish additional payment-method availability.
+
+The comparison contains four retained changes: changelog, package manifest, authored component and generated `dist/button.js`; the generated test bundle is policy-excluded. All 210 unchanged retained files were verified byte-equal. The generated bundle changes but contains neither `Payment Button` nor `allowpaymentrequest` in either snapshot; it does not independently substantiate this source-level iframe change. No bundle semantic-equivalence or hosted deployment claim is made.
+
+User-approved focused-reading exception: complete authored component and package reads, new changelog entry review, unchanged-history and bundle mechanical checks. The full upstream changelog, generated bundle and large diff were not all semantically reread. Raw evidence and the 13-path packet remain immutable. Review record: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-ac14a515.md`.
+
+Grounding under `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/files/`: `CHANGELOG.md:3` says "Fix duplicate PayPal announcement for screen readers via distinct iframe aria-label"; `src/zoid/buttons/component.jsx:244` adds `"aria-label": "Payment Button"`; line 245 retains `role: "presentation"`; `package.json:3` declares `"version": "5.0.432"`. Upstream release notes are unavailable; the retained changelog supplies release intent.
+
+## Version 5.0.433 iframe label revert
+
+Released September 4, 2026; delta-ingested September 20. The only authored implementation change removes `"aria-label": "Payment Button"` from the Buttons iframe. The complete component is byte-identical to `5.0.431`, including the existing funding-qualified title and `role="presentation"`. This is the reversal of the second accessibility attempt, not the older `5.0.428` title fix (already reverted in `5.0.429`).
+
+```diff
+ title: `${FUNDING_BRAND_LABEL.PAYPAL}${fundingSource}`,
+-"aria-label": "Payment Button",
+ role: "presentation",
+```
+
+The changelog explicitly records the revert but does not explain the reason or provide a replacement mitigation. Keep `5.0.432` as version-specific history; do not promise its label in `5.0.433`. No merchant API migration, dependency-range change or payment-flow change is established. No browser or screen-reader behavior was independently tested.
+
+Four retained files change: component, package version, new changelog prefix and generated bundle; 210 other retained files are byte-equal. The generated bundle differs but contains no `Payment Button` literal in either version, so the authored component is the authority for this change. The approved item-specific focused-reading exception covered full authored component/package reads and mechanical bundle/history checks; it did not authorize semantic claims about unread generated code. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-645ba7c9.md`.
+
+Grounding under `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/files/`: `CHANGELOG.md:3` names the revert; `src/zoid/buttons/component.jsx:243-244` retains the title immediately followed by `role: "presentation"`; `package.json:3` declares `5.0.433`. Separate release notes remain unavailable.
+
+## Version 5.0.434 checkout window-name monitoring
+
+Released September 9, 2026; collected and delta-ingested September 20. The checkout component calls `spyOnWindowNameAssignment()` only when `component.isChild()`. The helper captures the existing name and installs a configurable getter/setter on that child window's `name` property. It does not install this hook on arbitrary merchant parent windows or the Buttons iframe.
+
+Names matching `/^__zoid__.+__$/` update the stored value silently. Other assignments log `checkout_window_name_overwritten`, then update the stored value on the normal logging path. Matching the name shape is not authentication of the writer or origin. This helper observes assignments; it does not reject, restore or sanitize unexpected names.
+
+Both the new value embedded in the error message and the original value are truncated to 50 characters. Truncation is not redaction. Installation failures log `checkout_window_name_spy_error`. The surrounding try/catch executes during installation, not future setter invocations: if logging throws inside a later setter call, the following value update may not execute. No cleanup/restoration is implemented in this helper, and no browser/navigation lifecycle testing was performed here.
+
+The package differs only in version; no dependency-range, public export or merchant-callback change is established. The Buttons component is unchanged, retaining the `5.0.433` aria-label revert. No merchant API migration is documented, and source evidence does not prove hosted SDK deployment.
+
+The upstream comparison changes only `CHANGELOG.md`, `package.json` and `src/zoid/checkout/component.jsx`. The packet also reports `dist/button.js` removed from retained evidence; that capsule difference is not an upstream file deletion. All 210 common unchanged retained files are byte-equal. The approved focused-reading exception covered complete authored component/package reads, new changelog entry and mechanical history/generated-evidence verification; no semantic full-read claim for the prior generated bundle. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-c58f0a0c.md`.
+
+Grounding under `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/files/`: `CHANGELOG.md` records "observe window name"; the checkout component defines `WINDOW_NAME_LOG_TRUNCATION_LENGTH = 50`, the Zoid-name regex, `Object.defineProperty(window, "name", ...)`, and both named log events. Separate upstream release notes are unavailable; motivation beyond the named observation change is undocumented.
+
 ## Public and security boundary
 
 The browser-facing `Buttons` component is public on merchant pages. Lower-level checkout controls remain PayPal-domain-only. The iframe helper is therefore not a merchant escape hatch for forcing an unsupported presentation mode.
@@ -238,6 +292,27 @@ The exact snapshot also shows that layout, platform, remembered funding, and ser
 - [[source-paypal-pay-with-venmo]] — current product documentation for mobile app switch and desktop QR
 
 ## Raw sources
+
+- Snapshot (`5.0.434`): `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json`
+- Release (`5.0.434`): `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.434/2026-09-20/manifest.json`
+- Comparison: `tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.433--5.0.434/comparison.json`
+- Checkout component: `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/files/src/zoid/checkout/component.jsx`
+- Package: `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/files/package.json`
+- Changelog (new entry reviewed; prior history verified unchanged): `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/files/CHANGELOG.md`
+
+- Snapshot (`5.0.433`): `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json`
+- Release (`5.0.433`): `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.433/2026-09-20/manifest.json`
+- Comparison: `tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.432--5.0.433/comparison.json`
+- Authored component: `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/files/src/zoid/buttons/component.jsx`
+- Package: `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/files/package.json`
+- Changelog (new entry reviewed; prior history verified unchanged): `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/files/CHANGELOG.md`
+
+- Snapshot (`5.0.432`): `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/manifest.json`
+- Release (`5.0.432`): `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.432/2026-09-20/manifest.json`
+- Comparison: `tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.431--5.0.432/comparison.json`
+- Authored iframe attributes: `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/files/src/zoid/buttons/component.jsx`
+- Package: `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/files/package.json`
+- Changelog (new release entry reviewed; prior body verified unchanged): `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/files/CHANGELOG.md`
 
 - Snapshot manifest (`5.0.431`): `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-01-9bb1162/manifest.json`
 - Release manifest (`5.0.431`): `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.431/2026-09-01/manifest.json`

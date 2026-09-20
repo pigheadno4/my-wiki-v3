@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-09-20] ingest | Checkout Components `5.0.434`
+
+- Delta-ingested checkout-child window-name monitoring with approved focused reading; preserved historical releases and documented logging/privacy/runtime limitations. Details: [[paypal-log]] and [[changelog-github-paypal-checkout-components]].
+
+## [2026-09-20] ingest | Checkout Components `5.0.433`
+
+- Delta-ingested the iframe aria-label revert with the approved focused-reading exception; retained `5.0.432` as historical evidence and recorded the unknown rollback rationale. Details: [[paypal-log]] and [[changelog-github-paypal-checkout-components]].
+
+## [2026-09-20] ingest | Checkout Components `5.0.432`
+
+- Delta-ingested the version-specific iframe aria-label addition with an approved focused-reading exception; preserved earlier title-fix/revert history and recorded bundle/runtime limits. Details: [[paypal-log]] and [[changelog-github-paypal-checkout-components]].
+
 ## [2026-09-19] ingest | PayPal v6 sample `bb23e7c`
 
 - Full additive ingest with approved focused reading: ACH Wallet, optional card name, 46 LPM presentation updates and explicit sample limitations; preserved prior commits. Details: [[paypal-log]] and [[changelog-github-v6-web-sdk-sample-integration]].
