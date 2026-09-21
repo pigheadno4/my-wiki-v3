@@ -7,7 +7,7 @@ tags: [stripe, node-js, sdk, payment-intents, webhooks, pagination, error-handli
 
 ## Definition
 
-The official Stripe Node.js library (`stripe` npm package) wraps the Stripe REST API for server-side JavaScript. The latest ingested release is `stripe@22.6.1` at SHA `9f82c466c0a5913906ab1bf39790edd4d231ee5d`, pinning Stripe API `2026-08-26.dahlia` and OpenAPI marker `v2442`. Earlier `22.1.1`, `22.4.0`, `22.5.0` and `22.6.0` knowledge remains version-qualified in the cumulative source. It supports Node.js 18+ and exports builds for Node, browser/worker, Bun, Deno, and workerd environments, plus an opt-in `extensibility` export condition introduced in 22.5.0. Collected but uningested versions are not this page's knowledge baseline.
+The official Stripe Node.js library (`stripe` npm package) wraps the Stripe REST API for server-side JavaScript. The latest ingested release is `stripe@22.6.2` at SHA `d9d092737b4a891f0beaf47c26c222972a4c7b0f`, pinning Stripe API `2026-08-26.dahlia` and OpenAPI marker `v2442`. Earlier `22.1.1`, `22.4.0`, `22.5.0` and `22.6.0` knowledge remains version-qualified in the cumulative source. It supports Node.js 18+ and exports builds for Node, browser/worker, Bun, Deno, and workerd environments, plus an opt-in `extensibility` export condition introduced in 22.5.0. Collected but uningested versions are not this page's knowledge baseline.
 
 **Install**: `npm install stripe`
 
@@ -110,6 +110,12 @@ Source: [[source-github-stripe-node]]. Existing checkout resource files are unch
 
 Source: [[source-github-stripe-node]] and [[changelog-github-stripe-node]]. These are source-reviewed changes, not executed SDK or live payment tests.
 
+## Webhook Secret Guard in 22.6.2
+
+The latest ingested patch is `stripe@22.6.2` (SHA `d9d092737b4a891f0beaf47c26c222972a4c7b0f`), superseding the 22.6.1 baseline above without changing its API pin. Sync/async signature verification now rejects an empty or nullish secret with `StripeSignatureVerificationError` before calculating HMAC, but after parsing the payload/signature header. The message mentions `whsec_`; the guard does not enforce that prefix or reject whitespace-only strings. WithoutVerification helpers remain unauthenticated and unchanged.
+
+Examples now explicitly check missing environment configuration: Express/Koa exit, NestJS config throws, Next.js Pages returns 500, and App Router catches the configuration error as 400. These are example-specific choices, not a universal SDK response contract. Source: [[source-github-stripe-node]] and [[changelog-github-stripe-node]].
+
 ## Pagination
 
 ```js
@@ -136,5 +142,5 @@ Stripe Node types always follow the latest API shape retained by that SDK releas
 
 ## Sources
 
-- [[source-github-stripe-node]] — cumulative SDK repository evidence through `stripe@22.6.1`, preserving all earlier ingested versions
+- [[source-github-stripe-node]] — cumulative SDK repository evidence through `stripe@22.6.2`, preserving all earlier ingested versions
 - [[changelog-github-stripe-node]] — package-qualified retained release history

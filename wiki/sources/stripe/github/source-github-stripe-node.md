@@ -5,6 +5,7 @@ date_ingested: 2026-05-08
 date_updated: 2026-09-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json"
   - "github/stripe/stripe-node/supplements/2026-09-21-2f64e7a-f49df03e/manifest.json"
@@ -16,7 +17,7 @@ tags: [stripe, stripe-node, node-js, sdk, typescript, payment-intents, checkout,
 
 ## Overview
 
-`stripe/stripe-node` publishes the `stripe` npm package, Stripe's server-side JavaScript SDK. This cumulative page preserves the `stripe@22.1.1` baseline, full `22.4.0` ingest, `22.5.0` delta and full `22.6.0` ingest, then adds approved delta `stripe@22.6.1` at SHA `9f82c466c0a5913906ab1bf39790edd4d231ee5d`. See the separate [[changelog-github-stripe-node]] for release chronology.
+`stripe/stripe-node` publishes the `stripe` npm package, Stripe's server-side JavaScript SDK. This cumulative page preserves the `stripe@22.1.1` baseline, full `22.4.0` ingest, `22.5.0` delta and full `22.6.0` ingest, then adds approved delta `stripe@22.6.1` at SHA `9f82c466c0a5913906ab1bf39790edd4d231ee5d`. The subsequent 22.6.2 delta adds missing-webhook-secret guards while retaining that history. See the separate [[changelog-github-stripe-node]] for release chronology.
 
 Repository: <https://github.com/stripe/stripe-node>
 
@@ -58,7 +59,7 @@ The 22.6.1 delta uses an explicitly approved focused-reading exception: changed 
 
 | Package | Latest ingested release | Pinned API | OpenAPI marker | Node support | Evidence status |
 | --- | --- | --- | --- | --- | --- |
-| `stripe` | `22.6.1` | `2026-08-26.dahlia` | `v2442` | Node.js 18+ | Approved delta with focused reading; earlier versions retained |
+| `stripe` | `22.6.2` | `2026-08-26.dahlia` | `v2442` | Node.js 18+ | Approved delta with focused reading; earlier versions retained |
 
 This table reports wiki ingest progress, not the latest release currently published upstream.
 
@@ -218,6 +219,25 @@ README and `OtherString` comments clarify that open enums may gain values on old
 
 The historical handler-context and parser-entrypoint caveats above are not resolved by this patch. Upstream CI also pins actions and adds workflow security checks; these are repository-maintenance changes, not SDK runtime behavior.
 
+## 22.6.2: Missing Webhook Secrets
+
+The September 9 patch at SHA `d9d092737b4a891f0beaf47c26c222972a4c7b0f` advances the latest ingested version to `stripe@22.6.2`. Both `signature.verifyHeader` and `verifyHeaderAsync` now test `!secret` and raise `StripeSignatureVerificationError` before HMAC computation. Empty strings, null and undefined are explicitly covered in the upstream test diff. The guard follows payload/header parsing, so malformed input can produce an earlier error; higher-level constructors can also fail while obtaining their default crypto provider before reaching this guard.
+
+The error says the secret should start with `whsec_`, but the implementation does not enforce that prefix, trim whitespace, or reject whitespace-only strings via this guard. Normal HMAC verification still applies. The unauthenticated WithoutVerification helpers, raw-body requirement and timestamp-tolerance behavior are unchanged. This is a bounded configuration-safety improvement, not complete secret-format validation.
+
+The retained examples explicitly check their environment configuration:
+
+| Example | Missing-secret behavior |
+| --- | --- |
+| Thin-event snippet, Express, Koa | Log configuration message and exit with code 1 before serving webhooks |
+| NestJS config | Throw while constructing configuration |
+| Next.js Pages API | Return 500 with a configuration message |
+| Next.js App Router | Throw inside request try/catch, which returns 400 |
+
+Therefore do not describe all examples as startup validation or infer one SDK-mandated HTTP response. Deno/handler-endpoint example edits and Node ESM are comparison-only evidence. CI publication configuration changes are maintenance-only. API `2026-08-26.dahlia`, OpenAPI `v2442`, generated checkout resources, package exports and runtime dependencies remain unchanged. Earlier handler-context and parser-entrypoint caveats are not resolved.
+
+This delta uses explicit focused-reading approval: full changed Webhooks implementation and six retained examples, complete diff and release records; unchanged history/inventories and version-only core/package changes checked mechanically. All 68 snapshot hashes/sizes pass; 11 modified, 57 unchanged. No SDK build, upstream test execution or live webhook proof. See the [review receipt](../../../../tracking/github/repos/stripe/stripe-node/ingest-review-c5fa7a03.md).
+
 ## Pagination and Search
 
 List promises support async iteration, `autoPagingEach()`, and bounded `autoPagingToArray()`. Array collection requires an explicit limit and caps it at 10,000 to prevent accidental unbounded accumulation.
@@ -281,6 +301,10 @@ The September 21 delta ingest retains the September 1 release: 13 modified and 5
 - History: [[changelog-github-stripe-node]]
 
 ## Raw Sources
+
+- [22.6.2 snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/manifest.json), [release manifest](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.2/2026-09-21/manifest.json), [release notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.2/2026-09-21/release-notes.md)
+- [22.6.1 to 22.6.2 comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.1--22.6.2/comparison.json), [diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.1--22.6.2/diff.patch), [Webhooks implementation](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/files/src/Webhooks.ts)
+- [Thin-event example](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/files/examples/snippets/event_notification_webhook_handler.ts), [Express](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/files/examples/webhook-signing/express/main.ts), [Koa](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/files/examples/webhook-signing/koa/main.ts), [NestJS config](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/files/examples/webhook-signing/nestjs/config.ts), [Next.js App Router](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/files/examples/webhook-signing/nextjs/app/api/webhooks/route.ts), [Next.js Pages](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/files/examples/webhook-signing/nextjs/pages/api/webhooks.ts)
 
 - [22.6.1 snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json), [release manifest](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.1/2026-09-21/manifest.json), [release notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.1/2026-09-21/release-notes.md)
 - [22.6.0 to 22.6.1 comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.0--22.6.1/comparison.json), [complete diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.0--22.6.1/diff.patch)

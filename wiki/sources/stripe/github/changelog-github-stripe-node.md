@@ -5,6 +5,7 @@ date_ingested: 2026-08-08
 date_updated: 2026-09-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json"
   - "github/stripe/stripe-node/supplements/2026-09-21-2f64e7a-f49df03e/manifest.json"
@@ -16,6 +17,20 @@ tags: [stripe, stripe-node, node-js, changelog, github-repository]
 ## Overview
 
 Package-qualified retained release history for `stripe/stripe-node`. Cumulative implementation knowledge belongs in [[source-github-stripe-node]].
+
+## `stripe@22.6.2` - Change Set `d9d0927` (2026-09-09)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `stripe` | `22.6.1` | `22.6.2` | `d9d092737b4a891f0beaf47c26c222972a4c7b0f` | Delta; approved focused reading |
+
+**Change:** Both signature verification methods explicitly reject falsy secrets before HMAC computation, after payload/header parsing. Empty/null/undefined values produce StripeSignatureVerificationError when the guard is reached. The message mentions `whsec_`, but prefix and whitespace-only validation are not implemented by this guard. WithoutVerification and tolerance behavior remain unchanged.
+
+**Developer impact:** Configure the endpoint's signing secret explicitly. Examples no longer fall back silently to empty strings: Express/Koa/snippet exit, NestJS throws, Next.js Pages returns 500 and App Router returns 400 through its catch. These are example-specific behaviors. Earlier parser/context caveats remain; no new checkout fields, API pin, exports or dependencies.
+
+**Reading/validation boundary:** Eleven modified and 57 unchanged retained files. Both 68-file snapshots hash/size checked; historical changelog unchanged. Webhooks and six changed retained examples read fully, full diff reviewed, version-only core/package changes mechanically checked under the explicit exception. No SDK or upstream tests executed. Prior source/changelog history retained, existing concept updated first, company/index/logs updated; no source count change or cross-company comparison.
+
+**Evidence:** [Release](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.2/2026-09-21/manifest.json), [notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.2/2026-09-21/release-notes.md), [snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/manifest.json), [comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.1--22.6.2/comparison.json), [diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.1--22.6.2/diff.patch), [review](../../../../tracking/github/repos/stripe/stripe-node/ingest-review-c5fa7a03.md). Implementation/example links: [[source-github-stripe-node]].
 
 ## `stripe@22.6.1` - Change Set `9f82c46` (2026-09-01)
 

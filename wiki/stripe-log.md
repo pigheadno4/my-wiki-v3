@@ -6,6 +6,12 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-21] ingest | Stripe Node `22.6.2`
+
+- Delta-ingested `github-c5fa7a0352b6764a7481` with approved focused reading, exact SHA `d9d092737b4a891f0beaf47c26c222972a4c7b0f`. Both 68-file snapshots verified; 11 modified, 57 unchanged. Older changelog identical; version-only core/package changes mechanically checked.
+- Recorded sync/async missing-secret guards, error-order/format limits and framework-specific example failure handling. API pin, checkout contracts and earlier caveats unchanged. Updated concept first, cumulative source/changelog, company/provider index and logs; no source count change or cross-company comparison.
+- Review: `tracking/github/repos/stripe/stripe-node/ingest-review-c5fa7a03.md`. No upstream SDK tests, commit or push. This finishes the currently collected Stripe Node release queue, not a new upstream freshness check.
+
 ## [2026-09-21] ingest | Stripe Node `22.6.1`
 
 - Approved delta `github-2402efbbc4962288beb9`, `stripe@22.6.0` -> `stripe@22.6.1`, SHA `9f82c466c0a5913906ab1bf39790edd4d231ee5d`, with explicit focused-reading approval for this release. Changed implementation and complete diff read; both 68-file snapshots verified by hash/size. 13 modified, 55 unchanged; older changelog byte-identical.

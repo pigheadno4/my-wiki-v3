@@ -71,7 +71,7 @@ Generated: `2026-09-21`
 | stripe | `stripe/link-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | stripe | `stripe/stripe-apps` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-28 | ingested | 2026-09-28 | `wait` |
 | stripe | `stripe/stripe-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-14 | ingested | 2026-09-14 | `collect-baseline` |
-| stripe | `stripe/stripe-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-09-21 | awaiting_approval | 2026-10-21 | `review-delta` |
+| stripe | `stripe/stripe-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-09-21 | ingested | 2026-10-21 | `wait` |
 | stripe | `stripe/stripe-php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | stripe | `stripe/sync-engine` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-26 | ingested | 2026-09-26 | `wait` |
 | stripe | `stripe/stripe-ios-spm` | tier3 | commit | on-demand | - | - | - | `disabled` |

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-21] ingest | Stripe Node `22.6.2`
+
+- Approved focused-reading delta: missing webhook secret guards and example configuration handling; older history preserved. Details: [[stripe-log]] and [[changelog-github-stripe-node]].
+
 ## [2026-09-21] ingest | Stripe Node `22.6.1`
 
 - Approved focused-reading delta: upload/request hardening, GET/DELETE query coercion and enum documentation; preserved earlier history and unchanged API pin. Details: [[stripe-log]] and [[changelog-github-stripe-node]].
