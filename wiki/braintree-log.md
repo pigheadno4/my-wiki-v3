@@ -6,6 +6,40 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-21] ingest | Braintree website C12
+
+- Ten independent website sources promoted: Dispute Add Text Evidence,
+  Merchant Account Create/Create For Currency/Update/All/Find, Grant API/OAuth/
+  Local Payment Methods Webhooks and Settlement Batch Summary Generate.
+- Initial worker handoffs10/10; initial content approvals9/10. One bounded
+  navigation/wording correction received targeted review; no full retry or
+  coordinator semantic repair. Retained access/status, beta/environment,
+  event/action and report-versus-settlement boundaries.
+- Four existing concepts received approved retrieval routes; no new concept.
+  Company/index cover91 sources=75 website+16 GitHub, excluding changelogs.
+- Query/mechanical-close results and timings are recorded in
+  tracking/ingest/braintree/braintree-campaign-12/quality-audit.md and
+  retrospective.md. This entry records promotion, not an extra close gate.
+- No raw edits, collection, GitHub ingest, code/rule changes, commit/push or
+  next campaign performed by C12.
+
+## [2026-09-21] ingest | Braintree website C11
+
+- Ten website references independently read/reviewed and promoted: Search Fields/
+  Results, Customer Search, Credit Card Verification Search, Dispute Accept/
+  Finalize/Find/Search/Remove Evidence and Document Upload Create.
+- Initial worker handoffs10/10; initial content approvals9/10. One bounded local
+  navigation-link correction received targeted review; no full retry/rereview
+  or coordinator semantic repair. Preserved access/status/refund warnings,
+  damaged rendering and upload-versus-submission boundaries.
+- Two existing concepts received approved retrieval routes. Company/index cover
+  81 sources=65 website+16 GitHub, excluding changelogs. No new concept.
+- Query/mechanical-close results and timings are in
+  `tracking/ingest/braintree/braintree-campaign-11/quality-audit.md` and
+  `retrospective.md`; this entry records promotion, not a separate close gate.
+- No raw edits, collection, GitHub ingest, code/rule changes, commit/push or
+  next campaign performed by C11.
+
 ## [2026-09-21] ingest | Braintree website C10
 
 - Ten independently read/reviewed Node references promoted: Payment Method

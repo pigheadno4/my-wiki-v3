@@ -108,6 +108,8 @@ Metronome documents a billing-data reconciliation pattern that extends beyond ma
 
 ## Sources
 
+- [[source-braintree-settlement-batch-summary-generate-node]] - Braintree Node.js reporting route for per-date settlement batch totals of sales and credits, with optional single-custom-field grouping shown in the examples
+
 - [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - product-level and period-specific billing data for merchant-owned ASC 606 workflows, external subledger and ERP routing, and accounting, completeness, and sign-off boundaries
 
 - [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] — illustrative billing-data revenue scenarios, sample-key conflicts, and accounting-authority boundary

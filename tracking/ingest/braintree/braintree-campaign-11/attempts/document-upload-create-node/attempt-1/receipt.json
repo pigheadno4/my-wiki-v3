@@ -1,0 +1,47 @@
+{
+  "job_id": "document-upload-create-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Document Upload Create (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/document-upload/create/node\"\nraw_files:\n  - \"braintree/docs/reference/request/document-upload/create/node-2026-09-16.md\"\ntags: [braintree, node-js, document-upload]\n---\n\n## Overview\n\nThis Braintree Node.js reference shows creating a document upload through `gateway.documentUpload.create()`. The example supplies an `EvidenceDocument` kind and a file stream, but it does not establish attaching the resulting upload to a dispute or submitting dispute evidence.\n\n## Key takeaways\n\n- The example opens `local_file.pdf` with `fs.createReadStream()` and passes that stream as `file` alongside `DocumentUpload.Kind.EvidenceDocument`. These are example values, not an exhaustive request schema or supported-file policy.\n- The result-handling branch intends to test success, access `documentUpload` on success, and log errors otherwise.\n- The displayed Promise callback is internally inconsistent: it binds the callback parameter as `result` but then reads `response.success`, `response.documentUpload`, and `response.errors`. This entry does not silently repair the example or claim that it runs verbatim.\n- The page shows upload creation only. It does not state that creation attaches, submits, removes, or finalizes evidence for a dispute, and it provides no dispute identifier or dispute-state transition.\n\n## Detail locators\n\n- Document-upload creation identity: `# Document Upload: Create`, line 13.\n- Node file-stream input, `EvidenceDocument` kind, and `gateway.documentUpload.create()` call: `## Examples > ### Node`, lines 19-26.\n- Intended success/document result and error branches, including the `result`/`response` variable mismatch: `## Examples > ### Node`, lines 26-33.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/document-upload/create/node-2026-09-16|Braintree Node.js document-upload creation reference]] - complete collected page covering the example file stream, `EvidenceDocument` kind, create call, intended result handling, and displayed variable mismatch\n",
+  "quotes": [
+    {
+      "text": "# Document Upload: Create",
+      "location": "line 13, # Document Upload: Create"
+    },
+    {
+      "text": "let fs = require('fs');\n\ngateway.documentUpload.create({\n    kind: DocumentUpload.Kind.EvidenceDocument,\n    file: fs.createReadStream('local_file.pdf')\n}).then((result) => {",
+      "location": "lines 21-26, ## Examples > ### Node code block"
+    },
+    {
+      "text": "if (response.success) {\n        // document successfully uploaded\n        let document = response.documentUpload;\n    } else {\n        console.log(response.errors);\n    }",
+      "location": "lines 27-32, ## Examples > ### Node code block"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "document-upload-create-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-document-upload-create-node]] - Node.js document-upload creation with an `EvidenceDocument` kind and file-stream example, preserving the displayed result-variable mismatch and no inference that upload creation submits dispute evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Do not infer that document-upload creation attaches or submits evidence on a dispute; this page shows no dispute identifier, evidence-association call, finalization action, or state transition.",
+          "Preserve the displayed `result`/`response` Promise callback mismatch rather than silently repairing it or claiming the example runs verbatim.",
+          "Treat `local_file.pdf` and `EvidenceDocument` as displayed example inputs; this source does not establish an exhaustive file-format, size, request-field, or purpose inventory.",
+          "Keep this route on the Braintree server-SDK concept; adding it to the disputes concept would imply a dispute association that the assigned raw does not establish."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/document-upload/create/node-2026-09-16.md",
+  "raw_sha256": "18212132c94f475191bdb2e9cca1dd2ce41521c9637b1fe21088cbee8b53be7c",
+  "status": "candidate_ready"
+}

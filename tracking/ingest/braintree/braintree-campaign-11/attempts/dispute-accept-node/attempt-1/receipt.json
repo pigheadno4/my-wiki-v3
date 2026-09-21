@@ -1,0 +1,57 @@
+{
+  "job_id": "dispute-accept-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Dispute Accept (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/dispute/accept/node\"\nraw_files:\n  - \"braintree/docs/reference/request/dispute/accept/node-2026-09-16.md\"\ntags: [braintree, node-js, disputes]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents accepting a dispute by ID with `gateway.dispute.accept()`. API dispute management is restricted to merchants who can access disputes in the Braintree Control Panel, and the page preserves an important alternate-evidence route when the disputed transaction was already refunded.\n\n## Key takeaways\n\n- Managing disputes through the API is available only to merchants who can access disputes in the Braintree Control Panel.\n- The collected page says that only disputes in a particular status can be accepted, but the status value is missing from the rendered sentence (`status of.`). This source does not reconstruct the missing eligibility value; consult the current dispute-status authority before relying on status eligibility.\n- If the merchant has already refunded the disputed transaction, the page explicitly says not to accept the dispute. It directs the merchant to submit file or text evidence of the refund instead.\n- The Promise example calls `gateway.dispute.accept(\"a_dispute_id\")`. A successful acceptance produces a successful result; otherwise the page directs readers to validation errors.\n\n## Detail locators\n\n- Dispute response-object route and Control Panel access restriction: `# Dispute: Accept`, lines 13-17.\n- Damaged status-eligibility sentence and prior-refund do-not-accept warning with evidence alternatives: `# Dispute: Accept`, lines 19-21.\n- `gateway.dispute.accept()` Promise invocation: `# Dispute: Accept > first ### Promise`, lines 22-25.\n- Success outcome and validation-error result handling: `# Dispute: Accept`, lines 26-37.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/response/dispute/node-2026-09-16|Braintree Node.js Dispute response reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/dispute/add-text-evidence/node-2026-09-16|Braintree Node.js add-text-evidence request reference]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/dispute/accept/node-2026-09-16|Braintree Node.js dispute-accept request reference]] - complete collected page covering access availability, damaged status eligibility, the prior-refund warning, acceptance invocation, and result handling\n",
+  "quotes": [
+    {
+      "text": "Managing disputes via the API is only available to merchants who can access disputes in the Braintree Control Panel.",
+      "location": "lines 16-17, # Dispute: Accept > AVAILABILITY"
+    },
+    {
+      "text": "You can only accept disputes that have a[`status`](/braintree/docs/reference/response/dispute/node#status)of. If you have already issued a refund for the disputed\ntransaction,**do not accept the dispute**- instead, submit[file](/braintree/docs/reference/request/dispute/add-file-evidence)or[text](/braintree/docs/reference/request/dispute/add-text-evidence)evidence of the\nrefund.",
+      "location": "lines 19-21, # Dispute: Accept"
+    },
+    {
+      "text": "const result = gateway.dispute.accept(\"a_dispute_id\");",
+      "location": "line 24, # Dispute: Accept > first ### Promise code block"
+    },
+    {
+      "text": "If the dispute is successfully accepted, the result will be successful. Otherwise, check for\nvalidation errors.",
+      "location": "lines 26-27, # Dispute: Accept"
+    },
+    {
+      "text": "result.then((response) => {\n    if (response.success) {\n        // dispute successfully accepted\n    } else {\n        console.log(response.errors);\n    }\n});",
+      "location": "lines 30-36, # Dispute: Accept > second ### Promise code block"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "dispute-accept-node-disputes-route",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-dispute-accept-node]] - Braintree Node.js dispute acceptance by ID, restricted to merchants with Control Panel dispute access, with the prior-refund do-not-accept warning and an unreconstructed missing status-eligibility value",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The eligibility status value is absent from the collected sentence (`status of.`); never infer or reconstruct it from adjacent or unrelated dispute documentation.",
+          "Preserve the instruction not to accept a dispute after refunding the disputed transaction and the alternate file-or-text evidence route.",
+          "Keep API availability qualified to merchants who can access disputes in the Braintree Control Panel.",
+          "Treat the linked Dispute response and evidence pages as navigation only; this source does not establish their unread status schema, evidence request fields, or broader dispute lifecycle."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/dispute/accept/node-2026-09-16.md",
+  "raw_sha256": "7e014b4ebf7c639b619b4015b2f66e2d3f51b76ed0453407767dcf3e0849ab69",
+  "status": "candidate_ready"
+}

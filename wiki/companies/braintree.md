@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 71
+source_count: 91
 ---
 
 ## Overview
@@ -11,9 +11,31 @@ Braintree is represented in this wiki by sixteen independently tracked repositor
 
 ## Website Documentation
 
-Fifty-five independently reviewed website sources complement the sixteen repository
+Seventy-five independently reviewed website sources complement the sixteen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-dispute-add-text-evidence-node]] - Braintree Node.js text-evidence addition for `open` disputes, restricted to merchants with Control Panel dispute access, with plain and categorized evidence routes and a separate finalization boundary for submission to the banks
+- [[source-braintree-merchant-account-create-node]] - Node.js merchant-account creation examples covering individual/business identity, bank-oriented funding, terms acceptance, master-merchant association, callback arguments and a Promise-resolved result value, without establishing universal onboarding eligibility
+- [[source-braintree-merchant-account-create-for-currency-node]] - Braintree Node.js currency-specific merchant-account creation for Braintree Auth merchants, with callback and Promise result handling plus unsupported-currency validation routes
+- [[source-braintree-merchant-account-update-node]] - Node.js merchant-account update example using an account identifier, an individual first-name change and a `result.success` callback check, with a separate not-found route and no inferred wider update effects
+- [[source-braintree-merchant-account-all-node]] - Node.js merchant-account collection retrieval through `gateway.merchantAccount.all()`, with callback `forEach` consumption and displayed `currencyIsoCode` access, without importing account-creation or update behavior
+- [[source-braintree-merchant-account-find-node]] - Node.js single merchant-account lookup by ID through `gateway.merchantAccount.find()`, with callback arguments and separate response-object and not-found routes
+- [[source-braintree-webhooks-grant-api-node]] - Node.js Grant API notifications for updates to previously granted payment instruments and grantor revocation, with side-qualified update kinds and broad payload-category routes
+- [[source-braintree-webhooks-oauth-node]] - Node.js OAuth access-revocation notification for connected merchants, with production closed-beta and sandbox open-beta qualifications plus payload and parsing routes
+- [[source-braintree-webhooks-local-payment-methods-node]] - Node.js instant local-payment completion and reversal versus non-instant funding and expiry events, with the completion event's separate nonce-based Transaction Sale route
+- [[source-braintree-settlement-batch-summary-generate-node]] - Node.js date-scoped settlement batch summary reporting with single-custom-field grouping examples and callback or Promise access to summary records
+
+- [[source-braintree-search-fields-node]] - Node.js search-field categories and operators, including the 255-character text limit and distinct non-time versus time-range boundary semantics
+- [[source-braintree-search-results-node]] - Node.js search-result consumption through version-qualified no-callback object-mode streams or callback-provided `each` iteration, with lazy-fetch race behavior, maximum-count guidance and transaction-versus-other-search caps
+- [[source-braintree-customer-search-node]] - Node.js customer search through `gateway.customer.search()`, with callback `response.each()` consumption, raw routes for filter examples and operator restrictions, the preserved results-limitation notice, and the unavailable all-customers Node call
+- [[source-braintree-credit-card-verification-search-node]] - Node.js credit-card-verification search by verification, customer, card, payment-method, billing-address or creation-time criteria, with callback iteration, qualified timezone behavior and a preserved policy-based result-limitation notice
+- [[source-braintree-dispute-accept-node]] - Braintree Node.js dispute acceptance by ID, restricted to merchants with Control Panel dispute access, with the prior-refund do-not-accept warning and an unreconstructed missing status-eligibility value
+- [[source-braintree-dispute-finalize-node]] - Braintree Node.js dispute finalization for `Open` disputes, restricted to merchants with Control Panel dispute access, requiring the finalize call to submit evidence to the banks and transition status to `Disputed`
+- [[source-braintree-dispute-find-node]] - Braintree Node.js single-dispute lookup by dispute ID, restricted to merchants with Control Panel dispute access and preserving the results-limitation policy notice
+- [[source-braintree-dispute-search-node]] - Braintree Node.js dispute search with callback `response.forEach()` result access, raw routes for criteria and operators, Control Panel access qualification, and the preserved results-limitation notice
+- [[source-braintree-document-upload-create-node]] - Node.js document-upload creation with an `EvidenceDocument` kind and file-stream example, preserving the displayed result-variable mismatch and no inference that upload creation submits dispute evidence
+- [[source-braintree-dispute-remove-evidence-node]] - Braintree Node.js removal of one evidence item by dispute and evidence IDs while the dispute is `Open`, restricted to merchants with Control Panel dispute access and distinct from evidence submission or finalization
 
 - [[source-braintree-payment-method-create-node]] - Node.js existing-customer payment-method creation with required customer ID and nonce, default and billing-address behavior, payment-type limits on duplicate rejection, card-verification and Premium Fraud Management Tools guidance, and nonce-versus-raw-card precedence
 - [[source-braintree-payment-method-update-node]] - Node.js stored-payment-method updates by token, including shared or replacement billing-address behavior, PayPal/default-method restrictions, card verification with the AVS-update transaction/CVV rejection condition, and nonce-association and precedence rules
@@ -184,7 +206,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested website-document sources: 55 (Braintree C01–C10; raw snapshots collected 2026-09-16)
+- Ingested website-document sources: 75 (Braintree C01–C12; raw snapshots collected 2026-09-16)
 - Ingested cumulative GitHub repository sources: 16
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`

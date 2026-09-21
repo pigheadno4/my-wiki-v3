@@ -1,0 +1,57 @@
+{
+  "job_id": "webhooks-grant-api-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Grant API Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/grant-api/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/grant-api/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, grant-api, payment-methods]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents Grant API webhook notifications for updates to, or revocation of, payment instruments that were previously granted to another Braintree merchant. It describes event conditions and payload categories; it does not document how to grant or revoke access.\n\n## Key takeaways\n\n- The page labels an update notification type as `granted_payment_instrument_update` when a payment instrument previously granted to another Braintree merchant is updated. It says the `kind` is `GrantorUpdatedGrantedPaymentMethod` or `RecipientUpdatedGrantedPaymentMethod`, depending on which side of the relationship receives the webhook.\n- The `granted_payment_instrument_revoked` notification is triggered when the grantor revokes a previously granted payment instrument. This notification is evidence of that event, not an instruction or authorization to perform revocation.\n- The attributes section covers notification identity and trigger time, Vault/payment-method references, the revoked payment-method object, owning and recipient merchant identifiers, updated-instrument nonce information, nonce-use state, and names of updated fields. The collected rendering concatenates these descriptions, so this source does not reconstruct field names or assign every category to a particular webhook kind; the separate Grant API webhook guide owns kind-specific attribute details.\n\n## Detail locators\n\n- Notification-kind purpose: `# Grant API > ### Notification kinds`, lines 17-21.\n- Previously granted instrument update condition and grantor/recipient-side kind labels: `# Grant API > ### Notification kinds`, lines 23-36.\n- Grantor revocation condition: `# Grant API > ### Notification kinds`, lines 37-39.\n- Concatenated payload-category descriptions and separate kind-specific guide route: `# Grant API > ### Attributes`, lines 42-46.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/webhooks/parse/node-2026-09-16|Braintree Node.js webhook parsing guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/payment-method/grant/node-2026-09-16|Braintree Node.js payment-method grant request]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/payment-method/revoke/node-2026-09-16|Braintree Node.js payment-method revoke request]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/response/payment-method/node-2026-09-16|Braintree Node.js PaymentMethod response reference]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/grant-api/node-2026-09-16|Braintree Node.js Grant API webhook reference]] - complete collected page covering notification conditions, side-qualified update kinds, revocation notification scope, and broad payload categories\n",
+  "quotes": [
+    {
+      "text": "The notification kind, returned by calling`kind`on the[notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The`webhook_notification.kind`for Grant API webhooks will be one of the following:",
+      "location": "line 19, # Grant API > ### Notification kinds"
+    },
+    {
+      "text": "| ```syntax-inline\ngranted_payment_instrument_update\n``` | A payment instrument that was previously granted to another Braintree merchant has been updated. The ```syntax-inline\nkind\n```\n will either be ```syntax-inline\nGrantorUpdatedGrantedPaymentMethod\n```\n or ```syntax-inline\nRecipientUpdatedGrantedPaymentMethod\n```\n depending on which side of the relationship the webhook is being sent to. |",
+      "location": "lines 25-36, # Grant API > ### Notification kinds table"
+    },
+    {
+      "text": "| ```syntax-inline\ngranted_payment_instrument_revoked\n``` | A payment instrument that was previously granted has been revoked by the grantor. |",
+      "location": "lines 37-39, # Grant API > ### Notification kinds table"
+    },
+    {
+      "text": "The kind of webhook notification.The UTC time at which the webhook was triggered.An alphanumeric value that references a specific payment method stored in your Vault.A value representing an existing customer's payment method stored in your Vault. Use[Customer: Find](/braintree/docs/reference/request/customer/find)call to look up a single customer.The[PaymentMethod](/braintree/docs/reference/response/payment-method)object associated with the revoked granted payment method.The[merchant ID](/braintree/articles/control-panel/important-gateway-credentials#merchant-id)of the Braintree merchant that owns the payment instrument.The[merchant ID](/braintree/articles/control-panel/important-gateway-credentials#merchant-id)of the Braintree merchant that was granted the payment instrument.An object containing the payment method nonce, which represents the updated payment instrument.A payment method nonce representing the updated payment instrument.A value that indicates if the payment method nonce has been used.An array of strings denoting all of the fields of the payment instrument that were updated.",
+      "location": "line 44, # Grant API > ### Attributes"
+    },
+    {
+      "text": "See the [Grant API webhooks guide](/braintree/docs/reference/xml-api/grant-api/webhooks) for additional attributes specific to each webhook kind.",
+      "location": "line 46, # Grant API > ### Attributes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-grant-api-node-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-grant-api-node]] - Node.js Grant API notifications for updates to previously granted payment instruments and grantor revocation, with side-qualified update kinds and broad payload-category routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this source scoped to webhook notifications about previously granted payment instruments; do not import grant or revoke request behavior from unread adjacent references.",
+          "Preserve the grantor-versus-recipient qualification for `GrantorUpdatedGrantedPaymentMethod` and `RecipientUpdatedGrantedPaymentMethod`.",
+          "Do not reconstruct attribute field names or kind-specific mappings from the concatenated collected rendering; the page routes additional kind-specific attributes to a separate unread guide.",
+          "A revocation notification reports that the grantor revoked the instrument; it does not itself grant revocation authority or document the revocation operation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/grant-api/node-2026-09-16.md",
+  "raw_sha256": "2e827fb7e15bc040c40285099e8cccd2035e962e8c8c2911228799fc99a4203b",
+  "status": "candidate_ready"
+}

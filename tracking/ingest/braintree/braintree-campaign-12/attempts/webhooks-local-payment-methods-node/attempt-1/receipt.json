@@ -1,0 +1,57 @@
+{
+  "job_id": "webhooks-local-payment-methods-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Local Payment Method Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/local-payment-methods/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/local-payment-methods/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, local-payment-methods]\n---\n\n## Overview\n\nThis Braintree Node.js reference distinguishes webhook events for instant and non-instant local payments. For the instant-payment completion event, transaction creation is a separate follow-on `Transaction: Sale` call using the supplied payment-method nonce; the webhook does not itself establish that a transaction was created.\n\n## Key takeaways\n\n- `local_payment_completed` means the customer approved an instant local payment and the purchase amount was withdrawn. The page says a transaction can then be created by calling `Transaction: Sale` with the `payment_method_nonce`; it does not state that the webhook automatically creates that transaction.\n- `local_payment_reversed` reports that an instant local payment was reversed and the purchase amount refunded to the customer's account.\n- Non-instant methods use `local_payment_funded` when the buyer has completed the payment and `local_payment_expired` when it has expired. These event descriptions do not import the instant flow's separate nonce-based transaction-creation action.\n- The attributes section routes payment/order correlation, payment-context, nonce, payer/bank and transaction categories, with several values explicitly limited to `local_payment_completed`. Because the collected rendering concatenates field descriptions and leaves the field owning the displayed `Authorized` and `Settled` values unnamed, use the raw locator rather than reconstructing a payload schema.\n\n## Detail locators\n\n- Notification-kind purpose: `# Local Payment Methods > ### Notification kinds`, lines 17-21.\n- Instant completion, separate sale call and nonce guidance: `# Local Payment Methods > ### Notification kinds`, line 25.\n- Instant reversal condition: `# Local Payment Methods > ### Notification kinds`, line 26.\n- Non-instant funded and expired conditions: `# Local Payment Methods > ### Notification kinds`, lines 27-28.\n- Payload categories, completion-only qualifications and unreconstructed trailing values: `# Local Payment Methods > ### Attributes`, lines 31-36.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/webhooks/parse/node-2026-09-16|Braintree Node.js webhook parsing guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Braintree Node.js Transaction Sale request reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/local-payment-methods/overview-2026-09-16|Braintree local payment methods overview]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/articles/guides/payment-methods/local-payment-methods-2026-09-16|Braintree local payment methods and payment-context article]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/local-payment-methods/node-2026-09-16|Braintree Node.js local-payment-method webhook reference]] - complete collected page covering instant completion and reversal, non-instant funding and expiry, separate transaction creation, and payload categories\n",
+  "quotes": [
+    {
+      "text": "The notification kind, returned by calling `kind` on the [notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The `webhook_notification.kind` for Local Payment Method webhooks will be one of the following:",
+      "location": "line 19, # Local Payment Methods > ### Notification kinds"
+    },
+    {
+      "text": "| local_payment_completed | The customer has approved the instant local payment and the purchase amount has been withdrawn from their account. A transaction can now be created by calling[Transaction: Sale](/braintree/docs/reference/request/transaction/sale)with the payment_method_nonce. |",
+      "location": "line 25, # Local Payment Methods > ### Notification kinds table"
+    },
+    {
+      "text": "| local_payment_reversed | The instant local payment has been reversed and the purchased amount has been refunded to the customer's account. |",
+      "location": "line 26, # Local Payment Methods > ### Notification kinds table"
+    },
+    {
+      "text": "| local_payment_funded | The non-instant local payment has been completed by the buyer. |\n| local_payment_expired | The non-instant local payment has expired. |",
+      "location": "lines 27-28, # Local Payment Methods > ### Notification kinds table"
+    },
+    {
+      "text": "The payment_method_nonce can be used to complete the instant transaction by calling[Transaction: Sale](/braintree/docs/reference/request/transaction/sale). Only present for local_payment_completed webhooks.",
+      "location": "line 33, # Local Payment Methods > ### Attributes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-local-payment-methods-node-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-local-payment-methods-node]] - Node.js instant local-payment completion and reversal versus non-instant funding and expiry events, with the completion event's separate nonce-based Transaction Sale route",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep instant and non-instant event families distinct: completion/reversal are described for instant payments, while funded/expired are described for non-instant payments.",
+          "Associate the separate nonce-based `Transaction: Sale` action only with `local_payment_completed`; do not import it into funded, expired or reversed events.",
+          "Preserve the source wording that a transaction can now be created; do not turn the available follow-on action into a universal requirement or claim the webhook creates the transaction automatically.",
+          "Do not reconstruct attribute names or assign the trailing `Authorized` and `Settled` values to an unnamed field from the concatenated rendering; adjacent parsing, sale and local-payment pages remain unread navigation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/local-payment-methods/node-2026-09-16.md",
+  "raw_sha256": "1b3262970d8b829600948ba8904e4b720aafb4f24a1783caa2e00983239e7057",
+  "status": "candidate_ready"
+}

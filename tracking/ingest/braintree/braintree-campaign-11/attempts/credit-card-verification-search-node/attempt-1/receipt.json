@@ -1,0 +1,57 @@
+{
+  "job_id": "credit-card-verification-search-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Credit Card Verification Search (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/credit-card-verification/search/node\"\nraw_files:\n  - \"braintree/docs/reference/request/credit-card-verification/search/node-2026-09-16.md\"\ntags: [braintree, node-js, credit-card-verification, search]\n---\n\n## Overview\n\nThis Braintree Node.js request reference documents searching credit-card verifications through `gateway.creditCardVerification.search()`. It routes readers to verification-specific criteria examples, callback-based result iteration, a result-limitation policy notice, and exact timezone behavior for created-at searches without treating the page as transaction or customer search documentation.\n\n## Key takeaways\n\n- The opening example filters by verification ID and iterates returned verifications through `response.each()` in the search callback, exposing each verification's status in the example.\n- The page demonstrates verification-specific criteria across customer details, credit-card details, an associated payment-method token, billing-address postal code, and creation time. The separate Search fields page is the route for the available operators; this source does not promote its examples into an exhaustive operator or field inventory.\n- For created-at searches, a supplied timezone is respected. When no timezone is supplied, the gateway account's timezone is used, while returned time values are always UTC.\n- The page says results are limited according to the linked PayPal Data Protection Addendum for Card Processing Products. That external policy is not part of this raw, so this entry does not infer a numeric limit, affected fields, or a reason for the restriction.\n\n## Detail locators\n\n- Result-limitation policy notice and Search fields operator route: `# Credit Card Verification: Search`, lines 16-19.\n- Verification-ID criterion, `gateway.creditCardVerification.search()`, callback response iteration and displayed status access: `# Credit Card Verification: Search > ### Node`, lines 22-33.\n- Customer email and customer ID examples, including `endsWith`: `## Examples > ### Customer Details`, lines 38-60.\n- Cardholder name, expiration date, card-number prefix/suffix and card-type examples: `## Examples > ### Credit Card Details`, lines 62-77.\n- Associated payment-method-token criterion: `## Examples > ### Payment Methods`, lines 79-91.\n- Billing postal-code criterion: `## Examples > ### Billing Address`, lines 93-103.\n- Created-at range and timezone/default/UTC qualifications: `## Examples > ### Created At`, lines 105-118.\n- Navigation-only general Search fields and Search results routes: `## See also`, lines 123-127.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/credit-card-verification/search/node-2026-09-16|Braintree Node.js credit-card-verification search reference]] - complete collected page covering verification-specific criteria, callback result iteration, the policy limitation notice, and created-at timezone behavior\n",
+  "quotes": [
+    {
+      "text": "Results are limited according to the [PayPal Data Protection Addendum For Card Processing Products policy](https://www.paypal.com/us/legalhub/braintree/data-protection-addendum) .",
+      "location": "line 17, `# Credit Card Verification: Search > **NOTE**`"
+    },
+    {
+      "text": "const stream = gateway.creditCardVerification.search((search) => {\n  search.id().is(\"the_verification_id\");\n}, (err, response) => {\n  response.each((err, verification) => {\n    console.log(verification.status);\n  });",
+      "location": "lines 25-30, `# Credit Card Verification: Search > ### Node`"
+    },
+    {
+      "text": "const stream = gateway.creditCardVerification.search((search) => {\n  search.customerEmail().is(\"jen@example.com\");\n  search.customerId().is(\"cust1234\");\n});",
+      "location": "lines 44-47, `## Examples > ### Customer Details > ### Node`"
+    },
+    {
+      "text": "const stream = gateway.creditCardVerification.search((search) => {\n  search.creditCardCardholderName().is(\"Patrick Smith\");\n  search.creditCardExpirationDate().is(\"05/2012\");\n  search.creditCardNumber().starts_with(\"4111\");\n  search.creditCardNumber().ends_with(\"1111\");\n  search.creditCardCardType().is(Braintree.CreditCard.Visa);\n  search.creditCardExpirationDate().is(\"02/16\");\n});",
+      "location": "lines 68-75, `## Examples > ### Credit Card Details > ### Node`"
+    },
+    {
+      "text": "Time zones specified in the time value will be respected in the search; if you do not specify a time zone, the search will default to the time zone associated with your gateway account. Results will always be returned with time values in UTC.",
+      "location": "line 118, `## Examples > ### Created At > **NOTE**`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "credit-card-verification-search-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-credit-card-verification-search-node]] - Node.js credit-card-verification search by verification, customer, card, payment-method, billing-address or creation-time criteria, with callback iteration, qualified timezone behavior and a preserved policy-based result-limitation notice",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route scoped to credit-card-verification searches; its criteria and returned verification examples do not establish transaction-search or customer-search behavior.",
+          "Preserve the PayPal Data Protection Addendum notice without interpreting the unread external policy or inventing a numeric result cap, affected fields or restriction rationale.",
+          "Do not import generic stream, callback, maximum-count or search-cap semantics from the separate Search results page; this source directly establishes only its displayed callback `response.each()` example and assigns other example calls to `stream` without demonstrating consumption.",
+          "Keep the created-at timezone qualification intact: supplied timezone respected, gateway-account timezone used when absent, and returned time values in UTC."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/credit-card-verification/search/node-2026-09-16.md",
+  "raw_sha256": "ca8a27537272aa529150dad905e4220171aba8e6bfb07a8d83f05edb3689f5df",
+  "status": "candidate_ready"
+}

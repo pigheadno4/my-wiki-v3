@@ -1,0 +1,58 @@
+{
+  "job_id": "dispute-finalize-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Dispute Finalize (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/dispute/finalize/node\"\nraw_files:\n  - \"braintree/docs/reference/request/dispute/finalize/node-2026-09-16.md\"\ntags: [braintree, node-js, disputes, evidence]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents finalizing a dispute by ID with `gateway.dispute.finalize()`. Finalization is the required action for submitting the dispute's evidence to the banks, and API dispute management is restricted to merchants who can access disputes in the Braintree Control Panel.\n\n## Key takeaways\n\n- Managing disputes through the API is available only to merchants who can access disputes in the Braintree Control Panel.\n- The page limits finalization to disputes with status `Open`. Finalization submits the evidence to the banks and updates the dispute status to `Disputed`.\n- The page marks the finalize call as required for evidence to be submitted on the dispute; adding or preparing evidence alone is not established here as submission.\n- The Node example calls `gateway.dispute.finalize(\"a_dispute_id\")`. A successful finalization produces a successful result; otherwise the example traverses validation errors.\n\n## Detail locators\n\n- Dispute response-object route and Control Panel access restriction: `# Dispute: Finalize`, lines 13-17.\n- `Open` eligibility, evidence submission to the banks, and transition to `Disputed`: `# Dispute: Finalize`, line 19.\n- Required finalize call for evidence submission: `# Dispute: Finalize > IMPORTANT`, lines 20-21.\n- `gateway.dispute.finalize()` invocation: `# Dispute: Finalize > first ### Node`, lines 24-27.\n- Success outcome and validation-error traversal: `# Dispute: Finalize`, lines 28-45.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/response/dispute/node-2026-09-16|Braintree Node.js Dispute response reference]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/dispute/finalize/node-2026-09-16|Braintree Node.js dispute-finalize request reference]] - complete collected page covering access availability, `Open` eligibility, required evidence submission, the transition to `Disputed`, and result handling\n",
+  "quotes": [
+    {
+      "text": "Managing disputes via the API is only available to merchants who can access disputes in the Braintree Control Panel.",
+      "location": "lines 16-17, # Dispute: Finalize > AVAILABILITY"
+    },
+    {
+      "text": "You can only finalize disputes that have a[`status`](/braintree/docs/reference/response/dispute/node#status)of`Open`. This will submit the evidence to the banks and update the status to`Disputed`.",
+      "location": "line 19, # Dispute: Finalize"
+    },
+    {
+      "text": "You must call this function in order for the evidence to be submitted on the dispute.",
+      "location": "lines 20-21, # Dispute: Finalize > IMPORTANT"
+    },
+    {
+      "text": "const result = gateway.dispute.finalize(\"a_dispute_id\");",
+      "location": "line 26, # Dispute: Finalize > first ### Node code block"
+    },
+    {
+      "text": "If the dispute is successfully finalized, the result will be successful. Otherwise, check for validation errors.",
+      "location": "line 28, # Dispute: Finalize"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "dispute-finalize-node-disputes-route",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-dispute-finalize-node]] - Braintree Node.js dispute finalization for `Open` disputes, restricted to merchants with Control Panel dispute access, requiring the finalize call to submit evidence to the banks and transition status to `Disputed`",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep finalization scoped to disputes with status `Open` and preserve the resulting `Disputed` status exactly as stated by this page.",
+          "Preserve that the finalize call is required for evidence to be submitted; do not equate evidence upload, addition, removal, or preparation with submission.",
+          "Keep API availability qualified to merchants who can access disputes in the Braintree Control Panel.",
+          "Do not import or reconstruct the missing eligibility status from the separate Dispute Accept page; its damaged rendering is not evidence for finalization.",
+          "Treat the linked Dispute response page as navigation only; this source does not establish its unread full status schema or broader dispute lifecycle."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/dispute/finalize/node-2026-09-16.md",
+  "raw_sha256": "649ec4f5a44e839f45a13090faf190763df165d58a25397af55f0ac598be31dc",
+  "status": "candidate_ready"
+}

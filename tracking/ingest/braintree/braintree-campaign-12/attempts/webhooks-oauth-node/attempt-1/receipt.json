@@ -1,0 +1,57 @@
+{
+  "job_id": "webhooks-oauth-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree OAuth Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/oauth/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/oauth/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, oauth, beta]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents the OAuth access-revocation webhook for a connected merchant. OAuth is qualified as closed beta in production and open beta in sandbox; the page's callback and Promise examples parse the notification rather than performing revocation or triggering webhook delivery.\n\n## Key takeaways\n\n- The documented `oauth_access_revocation` notification is triggered when a connected merchant revokes API access. The page does not describe other OAuth event kinds.\n- The attribute categories are the webhook kind, UTC trigger time, connected merchant ID, and OAuth application client ID. The callback and Promise examples show `notification.kind` as `OAuthAccessRevoked` and access the connected merchant ID through `notification.oauthAccessRevocation.merchantId`.\n- Both examples configure the displayed gateway for `Sandbox`, but the availability notice separately states open beta in sandbox and closed beta in production. The example environment must not be generalized into a sandbox-only availability claim.\n\n## Detail locators\n\n- Production closed-beta and sandbox open-beta qualification: `# OAuth > AVAILABILITY`, lines 17-18.\n- Notification-kind semantics and the sole documented event condition: `# OAuth > ### Notification kinds`, lines 23-33.\n- Payload categories: `# OAuth > ### Attributes`, lines 36-38.\n- Callback parsing and nested merchant-ID access: `# OAuth > ### OAuth access revoked > ### Callback`, lines 39-62.\n- Promise parsing and nested merchant-ID access: `# OAuth > ### OAuth access revoked > ### Promise`, lines 64-82.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/webhooks/parse/node-2026-09-16|Braintree Node.js webhook parsing guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/extend/oauth/overview-2026-09-16|Braintree OAuth overview]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/extend/oauth/access-tokens/node-2026-09-16|Braintree Node.js OAuth access-token guide]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/oauth/node-2026-09-16|Braintree Node.js OAuth webhook reference]] - complete collected page covering beta availability, connected-merchant access revocation, payload categories, and callback and Promise parsing examples\n",
+  "quotes": [
+    {
+      "text": "OAuth is in closed beta in production, and open beta in sandbox. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest in the production beta release.",
+      "location": "line 18, # OAuth > AVAILABILITY"
+    },
+    {
+      "text": "The notification kind, returned by calling `kind` on the [notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The `webhook_notification.kind` for OAuth webhooks will be one of the following:",
+      "location": "line 25, # OAuth > ### Notification kinds"
+    },
+    {
+      "text": "| ```syntax-inline\noauth_access_revocation\n``` | A connected merchant has revoked API access. |",
+      "location": "lines 31-33, # OAuth > ### Notification kinds table"
+    },
+    {
+      "text": "The kind of webhook notification.The UTC time at which the webhook was triggered.The ID of the connected merchant.The OAuth application client ID.",
+      "location": "line 38, # OAuth > ### Attributes"
+    },
+    {
+      "text": "gateway.webhookNotification.parse(btSignature, btPayload, (err, notification) => {\n  notification.kind\n  // braintree.notification.Kind.OAuthAccessRevoked\n\n  notification.oauthAccessRevocation.merchantId\n  // \"merchant_id\"\n});",
+      "location": "lines 54-60, # OAuth > ### OAuth access revoked > ### Callback code block"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-oauth-node-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-oauth-node]] - Node.js OAuth access-revocation notification for connected merchants, with production closed-beta and sandbox open-beta qualifications plus payload and parsing routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the availability split exactly: closed beta in production and open beta in sandbox.",
+          "Keep the event scoped to a connected merchant revoking API access; do not infer other OAuth notification kinds.",
+          "The callback and Promise code parses a received notification; it does not perform access revocation or trigger webhook delivery.",
+          "Do not generalize the examples' `Sandbox` gateway configuration into a sandbox-only claim, and do not import behavior from the unread OAuth or parsing guides."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/oauth/node-2026-09-16.md",
+  "raw_sha256": "429fbef83ca7a057dfba2e85c9850e869da515db157e40c1cd120964e7e7f6e2",
+  "status": "candidate_ready"
+}

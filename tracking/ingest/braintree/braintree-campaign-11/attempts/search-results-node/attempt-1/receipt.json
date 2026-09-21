@@ -1,0 +1,57 @@
+{
+  "job_id": "search-results-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Search Results (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/searching/search-results/node\"\nraw_files:\n  - \"braintree/docs/reference/general/searching/search-results/node-2026-09-16.md\"\ntags: [braintree, node-js, search, search-results]\n---\n\n## Overview\n\nThis Braintree Node.js reference explains how search results are consumed as streams or callback-provided iterables. It also documents lazy record retrieval, the resulting race conditions, and maximum result counts; implementation examples remain available at the exact raw locators below.\n\n## Key takeaways\n\n- As of version 1.11.0, calling a search function without a callback returns a Node stream in object mode. The page demonstrates both piping that stream to an object-mode writable stream and consuming `data` and `end` events before calling `resume()`.\n- When a callback is supplied, the yielded response object defines an `each` method for result iteration. This callback form is distinct from the no-callback stream behavior.\n- Searches initially return matching IDs and then fetch each record dynamically during iteration. A record deleted during iteration is skipped; an updated record is returned only if it still matches the criteria and otherwise is skipped.\n- Because of those race conditions, the exact result count is not known while iterating. The displayed stream example reads `searchResponse.length()` after the `ready` event as the maximum number of results, not as a guaranteed final count.\n- Transaction searches return at most 50,000 results, while all other searches return at most 10,000.\n\n## Detail locators\n\n- Version-qualified no-callback object-mode stream behavior and the `pipe()` example: `## Stream responses`, lines 16-29.\n- Event-driven `data` / `end` consumption and `resume()`: `## Stream responses`, lines 31-43.\n- Callback-provided iterable response and `response.each()`: `## Iterable responses`, lines 45-57.\n- Lazy ID-first retrieval and deletion/update race behavior: `## Race conditions`, lines 59-73.\n- Maximum-count qualification and `ready` / `searchResponse.length()` example: `## Maximum size`, lines 76-88.\n- Transaction versus other-search result caps: `## Search limit`, lines 90-93.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/searching/search-results/node-2026-09-16|Braintree Node.js search-results reference]] - complete collected page covering stream and callback result consumption, lazy retrieval race behavior, maximum-count access, and result caps\n",
+  "quotes": [
+    {
+      "text": "## Stream responses As of version 1.11.0, thesearchfunction returns a[node stream in object mode](https://nodejs.org/api/stream.html#stream_object_mode)if no callback is provided.",
+      "location": "line 16, `## Stream responses`"
+    },
+    {
+      "text": "If a callback is provided to thesearchfunction, an object with theeachmethod defined is yielded.",
+      "location": "line 47, `## Iterable responses`"
+    },
+    {
+      "text": "To optimize the processing of large searches, data is retrieved from the serverlazily.\nInitially, the server returns a list of ids that matched the search criteria. While you're iterating\nover search results, the data for each record is fetched dynamically. This causes race conditions to\nexist when records are modified on the server while you are iterating over them.",
+      "location": "lines 61-64, `## Race conditions`"
+    },
+    {
+      "text": "If a record is updated server-side while you are iterating over the results, one of two things could\nhappen:\n- the record still matches the search criteria and the modified record isreturned\n- the record no longer matches the search criteria and isskipped",
+      "location": "lines 70-73, `## Race conditions > ### Records are updated`"
+    },
+    {
+      "text": "Transaction searches return a maximum of 50,000 results; all other searches return a maximum of\n10,000 results.",
+      "location": "lines 92-93, `## Search limit`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "search-results-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-search-results-node]] - Node.js search-result consumption through version-qualified no-callback object-mode streams or callback-provided `each` iteration, with lazy-fetch race behavior, maximum-count guidance and transaction-versus-other-search caps",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep version 1.11.0 qualified to the no-callback object-mode stream behavior documented by this Node page; do not generalize it to every result mode or another SDK.",
+          "Preserve the callback versus stream distinction: a callback yields an object with `each`, while omitting the callback returns the stream described by the page.",
+          "Treat `searchResponse.length()` as the maximum number that will be given, not an exact final count, because records are fetched lazily and can be skipped after deletion or after an update no longer matches.",
+          "Keep the result caps scoped by search type: 50,000 for transaction searches and 10,000 for all other searches."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/searching/search-results/node-2026-09-16.md",
+  "raw_sha256": "f5285154662ac662b0b1c43d2920c60eff0cf587886fcf1bc03b90e99a9b6e71",
+  "status": "candidate_ready"
+}
