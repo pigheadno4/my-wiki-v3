@@ -7,7 +7,7 @@ tags: [stripe, node-js, sdk, payment-intents, webhooks, pagination, error-handli
 
 ## Definition
 
-The official Stripe Node.js library (`stripe` npm package) wraps the Stripe REST API for server-side JavaScript. The latest ingested release is `stripe@22.5.0` at SHA `65d99a2b76d0786d7cec8544920affadccc8b670`; it preserves the `22.4.0` Stripe API pin `2026-07-29.dahlia` and OpenAPI marker `v2349`. It supports Node.js 18+ and exports builds for Node, browser/worker, Bun, Deno, and workerd environments, plus an opt-in `extensibility` export condition in 22.5.0. Collected but uningested versions are not this page's knowledge baseline.
+The official Stripe Node.js library (`stripe` npm package) wraps the Stripe REST API for server-side JavaScript. The latest ingested release is `stripe@22.6.0` at SHA `2f64e7ac920bd6863fdb851f4fb1fcc6190d963f`, pinning Stripe API `2026-08-26.dahlia` and OpenAPI marker `v2442`. Earlier `22.1.1`, `22.4.0` and `22.5.0` knowledge remains version-qualified in the cumulative source. It supports Node.js 18+ and exports builds for Node, browser/worker, Bun, Deno, and workerd environments, plus an opt-in `extensibility` export condition introduced in 22.5.0. Collected but uningested versions are not this page's knowledge baseline.
 
 **Install**: `npm install stripe`
 
@@ -57,7 +57,9 @@ try {
 
 ## Retry Logic
 
-`RequestSender` implements exponential backoff with jitter. Set `maxNetworkRetries` on the client or per request. For V1, POST requests get an automatic idempotency key when retries are enabled; for V2, POST and DELETE requests get one. Retry decisions cover connection errors, HTTP 409, HTTP 5xx, and the `stripe-should-retry` response header.
+`RequestSender` implements exponential backoff with jitter. Set `maxNetworkRetries` on the client or per request. Through 22.5.0, V1 POST requests get an automatic idempotency key when retries are enabled; 22.6.0 generates one even with `maxNetworkRetries: 0`, protecting the existing first `ECONNRESET`/`EPIPE` retry exception. V2 POST and DELETE behavior is unchanged. Separate application calls still need an explicit stable operation key for application-level deduplication. Retry decisions cover connection errors, HTTP 409, HTTP 5xx, and the `stripe-should-retry` response header. Source: [[source-github-stripe-node]].
+
+In 22.6.0, JSON response-body timeouts become `StripeConnectionError`; other body-read failures and invalid JSON remain `StripeAPIError`. Body-read failures terminate that call rather than entering a new SDK retry loop. Fetch keeps its timeout through JSON body consumption but releases it on streaming handoff; Node stream consumers can now receive an `ETIMEDOUT` TypeError instead of an `ECONNRESET` error on a stalled body. These are transport-specific boundaries, not a universal wall-clock deadline.
 
 ## Webhook Verification
 
@@ -80,6 +82,15 @@ V2 event notifications use `parseEventNotification()` or `parseEventNotification
 
 > [!warning] Contradiction
 > In this exact release, shared core permits absent/null `object` after envelope extraction or verified parsing, while the Node ESM implementation requires `object === 'v2.core.event'`. Both reject a V1 event in the thin parser. The direct unverified raw-JSON path requires a recognized `object` before reaching that check. Do not assume import/require parity for omitted-object inputs; this is source/diff evidence, not a packaged-runtime test. See [[changelog-github-stripe-node]].
+
+### Thin Notification Handlers in 22.6.0
+
+Create handlers with `stripe.notificationHandler(secret, fallback)` or, only behind an authenticated delivery boundary, `stripe.notificationHandlerWithoutVerification(fallback)`. Register one `.on(type, callback)` per type and at most one `.preHandle(callback)` before the first `.handle()` invocation. A failed parse also locks further registration. A false pre-hook result skips both the registered callback and fallback; durable deduplication remains application-owned. Despite returning a promise, verified `handle` calls the synchronous parser, not the async-crypto parser.
+
+> [!warning] Contradiction
+> The 22.6.0 handler comment promises an event-context client, but its shallow copy shares resource objects and RequestSender still bound to the original client. Source tracing therefore does not establish automatic context propagation for ordinary callback-client API calls. Prefer event fetch helpers, which explicitly pass context, or explicit per-request context; validate the packaged runtime before relying on implicit routing. This is a source-level finding, not an executed SDK reproduction. See [[source-github-stripe-node]].
+
+The client-level `constructEventWithoutVerification` alias is deprecated in 22.6.0; use `stripe.webhooks.constructEventWithoutVerification`. The thin unverified parser now accepts `Uint8Array` as well as strings. The historical 22.5.0 APIs above remain evidence for that version.
 
 ## Runtime Additions in 22.5.0
 
@@ -112,7 +123,9 @@ const all = await stripe.paymentIntents.list().autoPagingToArray({ limit: 10000 
 
 Stripe Node types always follow the latest API shape retained by that SDK release. Minor releases can add response enum values or otherwise weaken TypeScript exhaustiveness without a runtime-breaking API change, so minor upgrades still require a TypeScript check. Major SDK updates correspond to backwards-incompatible Stripe API changes; validated older-version knowledge remains in the cumulative source history.
 
+22.6.0 adds discriminated-union V2 coercion: a missing/non-string discriminator on a non-null request object throws; a recognized variant enables int64/decimal conversion; an unknown string passes through. Response coercion is in-place and tolerates missing/unknown discriminators. This is not complete schema validation and cannot recover precision already lost in a JavaScript number. Its generated types also make PaymentIntent/SetupIntent response allowlists required but nullable, extend open enums, and remove `OtherString` from WebhookEndpoint create/update `enabled_events`. Recheck typed mocks and exhaustive switches. Source: [[source-github-stripe-node]].
+
 ## Sources
 
-- [[source-github-stripe-node]] — cumulative SDK repository evidence through `stripe@22.5.0`, preserving `22.1.1` and `22.4.0`
+- [[source-github-stripe-node]] — cumulative SDK repository evidence through `stripe@22.6.0`, preserving `22.1.1`, `22.4.0` and `22.5.0`
 - [[changelog-github-stripe-node]] — package-qualified retained release history

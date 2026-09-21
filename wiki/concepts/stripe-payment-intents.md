@@ -114,6 +114,10 @@ stripe.paymentIntents.create({
 
 `@stripe/stripe-js@9.15.0` adds `metadata?: MetadataParam` to `ConfirmationTokenCreateParams`, so typed web integrations can attach metadata while calling `stripe.createConfirmationToken({elements, params})`. The declaration documents a maximum of 50 keys and rejects unsupported value types at compile time. This is package-level TypeScript evidence; server persistence and Stripe-hosted runtime availability still require current API and product confirmation.
 
+## Server SDK 22.6.0 Type Boundary
+
+`stripe@22.6.0` changes PaymentIntent and SetupIntent **response** `allowed_payment_method_types` to required-but-nullable; create/update/confirm request parameters remain optional. The allowlist enums add `touch_n_go`. ConfirmationToken gains required-but-nullable `metadata` in the server response type. These are versioned SDK contracts, not evidence of universal method availability or a newly mandatory request field. See [[source-github-stripe-node]].
+
 ## Related Concepts
 
 - [[stripe-elements]] — Stripe Elements (UI component library used with Payment Intents)

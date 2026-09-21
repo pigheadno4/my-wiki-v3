@@ -610,17 +610,18 @@
 - Repository: `stripe/stripe-node`
 - SHA: `2f64e7ac920bd6863fdb851f4fb1fcc6190d963f`
 - Collection date: `2026-09-21`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `delta`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](../../raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json)
 - Packet: [review packet](repos/stripe/stripe-node/ingest-packets/github-436c32c59360977be8fa/packet.md)
+- Evidence attachment: [manifest](repos/stripe/stripe-node/evidence-attachments/github-436c32c59360977be8fa/attachment.json)
 - Review priority: `high`
-- Required reading: `42` files
+- Required reading: `46` files
 - Unclassified changes: `0`
 - Evidence gaps: `0`
 

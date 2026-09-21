@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-21] ingest | Stripe Node `22.6.0`
+
+- Full-mode ingest of approved `github-436c32c59360977be8fa`, `stripe@22.5.0` -> `stripe@22.6.0`, SHA `2f64e7ac920bd6863fdb851f4fb1fcc6190d963f`, with the explicitly approved focused-reading exception. Both 68-file snapshots passed hash/size checks; 33 modified, 35 unchanged. Earlier changelog text preserved. Two approved implementation supplements are linked canonically and read fully.
+- Added handler lifecycle/context caveats, V2 coercion, exact body-error/timeout behavior, unconditional V1 POST idempotency, new API pin and generated checkout/billing contract changes. Recorded sample limitations; no SDK execution or live payment proof.
+- Updated concepts before cumulative source/changelog, then company/index/logs. All earlier version history preserved; no new source page or cross-company comparison. Review: `tracking/github/repos/stripe/stripe-node/ingest-review-436c32c5.md`.
+- `22.6.1` and `22.6.2` remain awaiting approval. No commit or push in this operation.
+
 ## [2026-09-21] ingest | Stripe Node `22.5.0`
 
 - Delta-ingested approved `github-fdb611aa510b593685f6`, `stripe@22.4.0` -> `stripe@22.5.0`, exact SHA `65d99a2b76d0786d7cec8544920affadccc8b670`. User authorized focused reading for this release only: changed implementation and full 3,575-line diff read; both manifest inventories/all file hashes and 4,868 unchanged historical changelog lines verified mechanically. Two added, 12 modified, 54 unchanged retained files.

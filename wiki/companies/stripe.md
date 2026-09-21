@@ -81,7 +81,7 @@ The `stripe/ai` repository supplies independently versioned LLM token-billing pa
 
 ### Stripe Node SDK
 
-The cumulative Node server SDK evidence now includes `stripe@22.5.0`, preserving `22.1.1` and `22.4.0`. The delta adds parsing for previously verified snapshot/thin events, cloud-envelope extraction, `Stripe.MAJOR_API_VERSION`, and a Stripe Script-specific extensibility transport. Public webhook authentication remains mandatory; unverified parsing is not a verification substitute. The pinned API and generated checkout resources are unchanged from 22.4.0. Entry-point and documentation inconsistencies are recorded in [[source-github-stripe-node]], [[changelog-github-stripe-node]], and [[stripe-node-sdk]].
+The cumulative Node server SDK evidence now includes `stripe@22.6.0`, preserving `22.1.1`, `22.4.0` and `22.5.0`. The 22.5.0 additions cover trusted-event parsing, API-family metadata and the extensibility transport. Version 22.6.0 pins API `2026-08-26.dahlia` and adds thin-notification handlers, polymorphic coercion, response-body timeout handling, V1 POST idempotency at zero configured retries, and generated checkout/billing fields. Public webhook authentication remains mandatory. The new handler's shallow-client context risk and transport/type boundaries are recorded in [[source-github-stripe-node]], [[changelog-github-stripe-node]], and [[stripe-node-sdk]]; these are source findings, not live integration proof.
 
 ### Express Checkout Element
 
@@ -594,8 +594,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[source-stripe-sca-readiness]] — SCA readiness: EEA scope, grandfathering (EU Dec 2020/UK Sep 2021), off-session checklist, MIT mandate, Charges API not SCA-ready
 - [[source-stripe-currencies]] — Supported currencies: minor units formatting, ISK/HUF/TWD/UGX special rules, min/max charge amounts, EEA card definition
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider/useCheckoutElements + Elements/useStripe/useElements/ElementsConsumer
-- [[source-github-stripe-node]] — cumulative `stripe` Node SDK history through `22.5.0`: server/runtime boundary, checkout resources, trusted-event parsing, API-family constant and extensibility transport
-- [[changelog-github-stripe-node]] — package-qualified stripe-node release history retaining `22.1.1`, `22.4.0` and `22.5.0`
+- [[source-github-stripe-node]] — cumulative `stripe` Node SDK history through `22.6.0`: checkout resources, thin-event handlers, transport/coercion and context boundaries
+- [[changelog-github-stripe-node]] — package-qualified stripe-node release history retaining `22.1.1`, `22.4.0`, `22.5.0` and `22.6.0`
 - [[source-github-react-stripe-js]] — cumulative react-stripe-js history through `@stripe/react-stripe-js@6.10.0`: beta Link Signup wrappers, provider restrictions, compatibility and preserved Checkout Sessions guidance
 - [[changelog-github-react-stripe-js]] — package-qualified react-stripe-js release history
 - [[source-stripe-bizum]] — Bizum: Spain-only real-time, phone auth, 395-day refunds, 40-day evidence, onboarding required

@@ -5,6 +5,8 @@ date_ingested: 2026-08-08
 date_updated: 2026-09-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json"
+  - "github/stripe/stripe-node/supplements/2026-09-21-2f64e7a-f49df03e/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-08-08-57626dc/manifest.json"
 tags: [stripe, stripe-node, node-js, changelog, github-repository]
@@ -13,6 +15,31 @@ tags: [stripe, stripe-node, node-js, changelog, github-repository]
 ## Overview
 
 Package-qualified retained release history for `stripe/stripe-node`. Cumulative implementation knowledge belongs in [[source-github-stripe-node]].
+
+## `stripe@22.6.0` - Change Set `2f64e7a` (2026-08-26)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe` | `22.5.0` | `22.6.0` | Changelog 2026-08-26; GitHub 2026-08-27 UTC | `2f64e7ac920bd6863fdb851f4fb1fcc6190d963f` | Full; user-approved focused reading |
+
+**Important changes:** API pin `2026-08-26.dahlia`, OpenAPI `v2442`; typed thin-notification handlers; V2 discriminated-union coercion; response-body timeout/failure handling; automatic V1 POST idempotency even with zero configured retries; Checkout funding-type restrictions; Payment Links update-time Connect fields; required-but-nullable PaymentIntent/SetupIntent response allowlists; Billie/cancellation feedback typing. Broader `OtherString` enum changes coexist with removal of `OtherString` from WebhookEndpoint create/update enabled-events types.
+
+**Developer impact:** Register handlers before first use, including before a failing parse; authenticate public webhook ingress; implement durable, failure-aware deduplication and HTTP acknowledgement yourself. Verified handler uses synchronous crypto. Request discriminators must be strings for non-null polymorphic objects; unknown strings still pass through. Recheck typed mocks and exhaustive switches. No new merchant eligibility is inferred from generated types.
+
+**Implementation caveats:** Callback client is shallow-copied, leaving resource/RequestSender bindings on the original client; implicit event-context routing is a source-level risk, not runtime-tested. Event fetch helpers explicitly pass context. Body timeouts become StripeConnectionError; other body-read failures and malformed JSON remain StripeAPIError. Body failures do not enter a new automatic retry loop. Fetch timer is released on streaming handoff; Node stream timeout error shape changes. The diff-only sample's early Set insertion can suppress failed-event retries and its HTTP handlers omit a response.
+
+**Migration:** Prefer `stripe.webhooks.constructEventWithoutVerification` over the now-deprecated client alias. Use explicit per-request context when needed and stable application-operation idempotency keys across separate calls. PaymentIntent/SetupIntent request allowlists remain optional: the newly required fields are response fields. Preserve all 22.1.1/22.4.0/22.5.0 history and historical parser/entrypoint caveats.
+
+**Reading boundary:** 68 retained files, 33 modified/35 unchanged; both snapshot inventories/hashes and unchanged historical changelog verified mechanically. Changed behavior, relevant prior diff context and dependencies reviewed under the explicit exception; two supplemental files read fully. Excluded non-checkout areas are release-note overview only. No full-repository read, SDK execution, upstream test run or live payment proof.
+
+**Updated sections:** Source package/evidence status, retries, new 22.6.0 handler/transport/coercion/API sections, retained history; Stripe Node, Payment Intents and Checkout concepts; company/provider index and logs. Source count unchanged.
+
+**Evidence:**
+
+- [Release manifest](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.0/2026-09-21/manifest.json), [release notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.0/2026-09-21/release-notes.md), [snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json)
+- [Comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.5.0--22.6.0/comparison.json), [diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.5.0--22.6.0/diff.patch)
+- [Supplement](../../../../raw/github/stripe/stripe-node/supplements/2026-09-21-2f64e7a-f49df03e/manifest.json), [handler](../../../../raw/github/stripe/stripe-node/supplements/2026-09-21-2f64e7a-f49df03e/files/src/StripeEventNotificationHandler.ts), [coercion](../../../../raw/github/stripe/stripe-node/supplements/2026-09-21-2f64e7a-f49df03e/files/src/V2Coercion.ts)
+- [Review receipt](../../../../tracking/github/repos/stripe/stripe-node/ingest-review-436c32c5.md); exact per-topic implementation links in [[source-github-stripe-node]]
 
 ## `stripe@22.5.0` - Change Set `65d99a2` (2026-08-10)
 
