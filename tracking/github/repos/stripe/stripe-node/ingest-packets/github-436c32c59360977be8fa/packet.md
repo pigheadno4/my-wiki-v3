@@ -1,0 +1,160 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-node`
+- Work item: `github-436c32c59360977be8fa`
+- Snapshot: `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `stripe`
+
+- Version: `22.5.0` -> `22.6.0`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `35`
+
+### Required reading
+
+- `raw/github/stripe/stripe-node/releases/stripe/22.6.0/2026-09-21/manifest.json`
+- `raw/github/stripe/stripe-node/releases/stripe/22.6.0/2026-09-21/release-notes.md`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/CODEGEN_VERSION`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/OPENAPI_VERSION`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/README.md`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/VERSION`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/package.json`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/RequestSender.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/Types.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/Webhooks.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/apiVersion.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/net/FetchHttpClient.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/net/HttpClient.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/net/NodeHttpClient.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Charges.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Checkout/Sessions.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/ConfirmationTokens.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Customers.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Invoices.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Mandates.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/PaymentIntents.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/PaymentLinks.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/PaymentMethods.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Prices.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Products.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Refunds.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/SetupIntents.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/SubscriptionItems.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/SubscriptionSchedules.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/Subscriptions.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/resources/WebhookEndpoints.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/stripe.core.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/files/src/utils.ts`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json`
+- `raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/manifest.json`
+- `tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.5.0--22.6.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.5.0--22.6.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.5.0--22.6.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `.eslintrc.js`: `intentional-policy-exclusion`
+- `modified` `CHANGELOG.md`: `retained-evidence`
+- `modified` `CODEGEN_VERSION`: `retained-evidence`
+- `modified` `OPENAPI_VERSION`: `retained-evidence`
+- `modified` `README.md`: `retained-evidence`
+- `modified` `VERSION`: `retained-evidence`
+- `added` `examples/snippets/event_notification_handler_endpoint.ts`: `intentional-policy-exclusion`
+- `modified` `package.json`: `retained-evidence`
+- `modified` `src/RequestSender.ts`: `retained-evidence`
+- `added` `src/StripeEventNotificationHandler.ts`: `intentional-policy-exclusion`
+- `modified` `src/Types.ts`: `retained-evidence`
+- `modified` `src/V2Coercion.ts`: `intentional-policy-exclusion`
+- `modified` `src/Webhooks.ts`: `retained-evidence`
+- `modified` `src/apiVersion.ts`: `retained-evidence`
+- `modified` `src/net/FetchHttpClient.ts`: `retained-evidence`
+- `modified` `src/net/HttpClient.ts`: `retained-evidence`
+- `modified` `src/net/NodeHttpClient.ts`: `retained-evidence`
+- `modified` `src/resources.ts`: `retained-evidence`
+- `modified` `src/resources/AccountLinks.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/AccountSessions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Accounts.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/BalanceTransactions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/BankAccounts.ts`: `intentional-policy-exclusion`
+- `added` `src/resources/Billing/FeedbackOptions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Billing/index.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/BillingPortal/Configurations.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/BillingPortal/Sessions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Cards.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/CashBalances.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Charges.ts`: `retained-evidence`
+- `modified` `src/resources/Checkout/Sessions.ts`: `retained-evidence`
+- `modified` `src/resources/Climate/Orders.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Climate/Products.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/ConfirmationTokens.ts`: `retained-evidence`
+- `modified` `src/resources/CreditNoteLineItems.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/CreditNotes.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/CustomerSessions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Customers.ts`: `retained-evidence`
+- `modified` `src/resources/Files.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/FinancialConnections/Sessions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/InvoiceItems.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/InvoiceLineItems.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/InvoicePayments.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/InvoiceRenderingTemplates.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Invoices.ts`: `retained-evidence`
+- `modified` `src/resources/Issuing/Cardholders.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Issuing/Cards.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Mandates.ts`: `retained-evidence`
+- `modified` `src/resources/PaymentAttemptRecords.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/PaymentIntents.ts`: `retained-evidence`
+- `modified` `src/resources/PaymentLinks.ts`: `retained-evidence`
+- `modified` `src/resources/PaymentMethods.ts`: `retained-evidence`
+- `modified` `src/resources/PaymentRecords.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Payouts.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Plans.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Prices.ts`: `retained-evidence`
+- `modified` `src/resources/Products.ts`: `retained-evidence`
+- `modified` `src/resources/Quotes.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Radar/PaymentEvaluations.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Radar/ValueLists.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Refunds.ts`: `retained-evidence`
+- `modified` `src/resources/Reporting/ReportRuns.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Reviews.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/SetupAttempts.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/SetupIntents.ts`: `retained-evidence`
+- `modified` `src/resources/ShippingRates.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/SourceTransactions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Sources.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/SubscriptionItems.ts`: `retained-evidence`
+- `modified` `src/resources/SubscriptionSchedules.ts`: `retained-evidence`
+- `modified` `src/resources/Subscriptions.ts`: `retained-evidence`
+- `modified` `src/resources/Tax/CalculationLineItems.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Tax/Calculations.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Tax/Registrations.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Tax/Settings.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Tax/Transactions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/TaxIds.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/TaxRates.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Terminal/Readers.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/TestHelpers/ConfirmationTokens.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/TestHelpers/Issuing/Authorizations.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/TestHelpers/Issuing/Transactions.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Tokens.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Topups.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/Transfers.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/V2/Core/Accounts.ts`: `intentional-policy-exclusion`
+- `modified` `src/resources/WebhookEndpoints.ts`: `retained-evidence`
+- `modified` `src/stripe.cjs.node.ts`: `intentional-policy-exclusion`
+- `modified` `src/stripe.core.ts`: `retained-evidence`
+- `modified` `src/stripe.esm.node.ts`: `intentional-policy-exclusion`
+- `modified` `src/utils.ts`: `retained-evidence`
+- `added` `test/DiscriminatedUnion.spec.ts`: `intentional-policy-exclusion`
+- `modified` `test/RequestSender.spec.ts`: `intentional-policy-exclusion`
+- `added` `test/StripeEventNotificationHandler.spec.ts`: `intentional-policy-exclusion`
+- `modified` `test/V2Coercion.spec.ts`: `intentional-policy-exclusion`
+- `modified` `test/net/FetchHttpClient.spec.ts`: `intentional-policy-exclusion`
+- `modified` `test/resources/generated_examples_test.spec.js`: `intentional-policy-exclusion`
+- `modified` `testProjects/types-cjs-node16/typescriptTest.ts`: `intentional-policy-exclusion`
+- `modified` `testProjects/types-cjs/typescriptTest.ts`: `intentional-policy-exclusion`
+- `modified` `testProjects/types/typescriptTest.ts`: `intentional-policy-exclusion`
+- `modified` `yarn.lock`: `intentional-policy-exclusion`

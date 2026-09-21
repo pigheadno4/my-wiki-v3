@@ -1,0 +1,1093 @@
+diff --git a/.github/workflows/main.yml b/.github/workflows/main.yml
+index ed8ec89..302426a 100644
+--- a/.github/workflows/main.yml
++++ b/.github/workflows/main.yml
+@@ -6,6 +6,7 @@ on:
+     branches:
+       - master
+       - beta
++      - private-preview
+       - sdk-release/**
+       - feature/**
+     tags:
+@@ -28,25 +29,17 @@ jobs:
+       contents: read
+ 
+     steps:
+-      - uses: extractions/setup-just@v2
+-      - uses: actions/checkout@v2
++      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
+ 
+       - name: Setup node
+-        uses: actions/setup-node@v2
++        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+         with:
+           node-version: '22'
+-
+-      - name: Get yarn cache directory path
+-        id: yarn-cache-dir-path
+-        run: echo "dir=$(yarn cache dir)" >> "$GITHUB_OUTPUT"
+-
+-      - uses: actions/cache@v4
+-        id: yarn-cache
+-        with:
+-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+-          restore-keys: |
+-            ${{ runner.os }}-yarn-
++          # Disable automatic dependency caching to reduce cache poisoning risk
++          package-manager-cache: false
+ 
+       - name: Verify Linting
+         run: just lint-check
+@@ -82,43 +75,30 @@ jobs:
+     permissions:
+       contents: read
+     steps:
+-      - uses: extractions/setup-just@v2
+-      - uses: actions/checkout@v2
++      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
+ 
+       - name: Setup node
+-        uses: actions/setup-node@v2
++        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+         with:
+           node-version: ${{ matrix.node }}
++          # Disable automatic dependency caching to reduce cache poisoning risk
++          package-manager-cache: false
+ 
+       - name: Print Node.js version
+         run: node -v
+ 
+       # used for one of the integration tests
+       - name: Setup Deno
+-        uses: denoland/setup-deno@v1
++        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+         with:
+           deno-version: v1.x
+ 
+       - name: Print Deno version
+         run: deno -V
+ 
+-      - name: Get yarn cache directory path
+-        # caches are platform-specific and there's only one windows job, so don't bother caching
+-        if: runner.os != 'Windows'
+-        id: yarn-cache-dir-path
+-        run: echo "dir=$(yarn cache dir)" >> "$GITHUB_OUTPUT"
+-
+-      - uses: actions/cache@v4
+-        # caches are platform-specific and there's only one windows job, so don't bother caching
+-        if: runner.os != 'Windows'
+-        id: yarn-cache
+-        with:
+-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+-          # searching very deep deps can time out, so only cache on the root yarn.lock
+-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+-          restore-keys: |
+-            ${{ runner.os }}-yarn-
+-
+       - uses: stripe/openapi/actions/stripe-mock@master
+ 
+       - name: Test
+@@ -136,13 +116,16 @@ jobs:
+       id-token: write # Required for OIDC
+     steps:
+       # just is called in `yarn prepack`, which is called during the `publish` operation
+-      - uses: extractions/setup-just@v2
+-      - uses: actions/checkout@v2
+-      - uses: actions/setup-node@v4
++      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
++      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+         with:
+           node-version: '24'
+           registry-url: 'https://registry.npmjs.org'
+-      - run: npm install -g npm@11
++          # Disable automatic dependency caching to reduce cache poisoning risk
++          package-manager-cache: false
+       - name: Publish to NPM
+         run: |
+           set -euxo pipefail
+diff --git a/.github/workflows/zizmor.yml b/.github/workflows/zizmor.yml
+new file mode 100644
+index 0000000..b9b202b
+--- /dev/null
++++ b/.github/workflows/zizmor.yml
+@@ -0,0 +1,21 @@
++on: [push, pull_request]
++name: Workflow security
++
++permissions: {}
++
++jobs:
++  zizmor:
++    name: zizmor
++    runs-on: ubuntu-latest
++    permissions:
++      contents: read
++    steps:
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
++      - uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
++        with:
++          advanced-security: false
++          annotations: true
++          min-severity: high
++          version: 1.29.0
+diff --git a/.github/zizmor.yml b/.github/zizmor.yml
+new file mode 100644
+index 0000000..75f2e01
+--- /dev/null
++++ b/.github/zizmor.yml
+@@ -0,0 +1,8 @@
++# Actions under the stripe/openapi namespace are unpinned on purpose.
++# This is deliberately scoped to that namespace so that other actions
++# still require a full commit hash.
++rules:
++  unpinned-uses:
++    config:
++      policies:
++        "stripe/openapi/*": ref-pin
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6d51212..133ebc6 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,12 @@
+ # Changelog
+ 
++## 22.6.1 - 2026-09-01
++* [#2831](https://github.com/stripe/stripe-node/pull/2831) Use cryptographically secure boundaries for multipart file uploads
++* [#2836](https://github.com/stripe/stripe-node/pull/2836) update OtherString docstring
++* [#2835](https://github.com/stripe/stripe-node/pull/2835) Fix request coercion for GET and DELETE parameters
++  - Fixes serialization of schema-coerced values, including `Decimal`, in GET and DELETE query parameters.
++* [#2829](https://github.com/stripe/stripe-node/pull/2829) Harden API requestor code against malicious URLs
++
+ ## 22.6.0 - 2026-08-26
+ This release changes the pinned API version to 2026-08-26.dahlia.
+ 
+diff --git a/README.md b/README.md
+index d4bead8..b9d7d21 100644
+--- a/README.md
++++ b/README.md
+@@ -165,6 +165,16 @@ The TypeScript types in stripe-node always reflect the latest shape of the Strip
+ 
+ Please feel welcome to share your thoughts about the versioning policy in a Github issue. For now, we judge it to be better than the two alternatives: outdated, inaccurate types, or vastly more frequent major releases, which would distract from any future breaking changes with potentially more disruptive runtime implications.
+ 
++### Open and Closed Enum
++
++Many of Stripe API enums are open, meaning Stripe may add new values even on older API versions.
++To reflect this, open enum fields in TypeScript include a string type (via `OtherString`) in addition to the known literal values.
++This ensures the field has the correct type for both values known at SDK release time and other values that may be added later.
++
++A small number of enums are closed, meaning Stripe guarantees no new values will be added without an API version change.
++
++Refer to the [API Reference](https://docs.stripe.com) for the latest set of allowed values.
++
+ ### Using Promises
+ 
+ Every method returns a chainable promise which can be used instead of a regular
+diff --git a/VERSION b/VERSION
+index dc5f6a5..3e31049 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-22.6.0
++22.6.1
+diff --git a/package.json b/package.json
+index 425d7fd..2f6b209 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "stripe",
+-  "version": "22.6.0",
++  "version": "22.6.1",
+   "description": "Stripe API wrapper",
+   "keywords": [
+     "stripe",
+diff --git a/src/RequestSender.ts b/src/RequestSender.ts
+index 32d40c2..642ac72 100644
+--- a/src/RequestSender.ts
++++ b/src/RequestSender.ts
+@@ -31,6 +31,7 @@ import {
+ } from './net/HttpClient.js';
+ import {Stripe} from './stripe.core.js';
+ import {
++  validatePath,
+   jsonStringifyRequestData,
+   normalizeHeaders,
+   queryStringifyRequestData,
+@@ -388,8 +389,22 @@ export class RequestSender {
+   }
+ 
+   _defaultIdempotencyKey(method: string, apiMode: ApiMode): string | null {
+-    const genKey = (): string =>
+-      `stripe-node-retry-${this._stripe._platformFunctions.uuid4()}`;
++    const genKey = (): string => {
++      let uuid: string;
++      try {
++        uuid = this._stripe._platformFunctions.uuid4();
++      } catch {
++        // our uuid4 function needs to be cryptographically secure, but idempotency key just needs to be unique
++        // so we can safely fall back to a basic approach
++        uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
++          const r = (Math.random() * 16) | 0;
++          const v = c === 'x' ? r : (r & 0x3) | 0x8;
++          return v.toString(16);
++        });
++      }
++
++      return `stripe-node-retry-${uuid}`;
++    };
+ 
+     // more verbose than it needs to be, but gives clear separation between V1 and V2 behavior
+     if (apiMode === 'v2') {
+@@ -620,6 +635,9 @@ export class RequestSender {
+   ): void {
+     let requestData: string | Uint8Array;
+     authenticator = authenticator ?? this._stripe._authenticator;
++    // Validate before anything derives meaning from the path -- apiMode is
++    // sniffed from its prefix, and the path may have come from remote data.
++    validatePath(path);
+     const apiMode: ApiMode = getAPIMode(path);
+     const retryRequest = (
+       requestFn: typeof makeRequest,
+diff --git a/src/StripeResource.ts b/src/StripeResource.ts
+index bdbf890..12c040c 100644
+--- a/src/StripeResource.ts
++++ b/src/StripeResource.ts
+@@ -65,7 +65,7 @@ class StripeResource implements StripeResourceObject {
+   ): Promise<any> {
+     const requestMethod = method.toUpperCase();
+     const encode = spec?.encode || ((data: RequestData): RequestData => data);
+-    const data = encode(params ? {...params} : {});
++    let data = encode(params ? {...params} : {});
+     const processed = processOptions(options);
+     const apiBase = processed.apiBase || spec?.apiBase || null;
+     const host = apiBase ? this._stripe.resolveBaseAddress(apiBase) : null;
+@@ -73,26 +73,23 @@ class StripeResource implements StripeResourceObject {
+     const headers = Object.assign(processed.headers, spec?.headers);
+     const usage = spec?.usage || [];
+ 
+-    const dataInQuery = requestMethod === 'GET' || requestMethod === 'DELETE';
+-    let bodyData: RequestData | null = dataInQuery ? null : data;
+-    const queryData: RequestData = dataInQuery ? data : {};
+-
+     try {
+       if (spec?.validator) {
+         spec.validator(data, {headers});
+       }
+ 
+-      // Coerce int64_string/decimal_string fields in request body
+-      if (spec?.requestSchema && bodyData) {
+-        bodyData = coerceV2RequestData(
+-          bodyData,
+-          spec.requestSchema
+-        ) as RequestData;
++      // Coerce int64_string/decimal_string fields in request data
++      if (spec?.requestSchema) {
++        data = coerceV2RequestData(data, spec.requestSchema) as RequestData;
+       }
+     } catch (err) {
+       return Promise.reject(err);
+     }
+ 
++    const dataInQuery = requestMethod === 'GET' || requestMethod === 'DELETE';
++    const bodyData: RequestData | null = dataInQuery ? null : data;
++    const queryData: RequestData = dataInQuery ? data : {};
++
+     // Capture the caller's stack trace before the async boundary so errors can
+     // include the user's call site, not just SDK internals.
+     const callSiteStack = new Error().stack;
+diff --git a/src/multipart.ts b/src/multipart.ts
+index 85b6ce0..c4e9354 100644
+--- a/src/multipart.ts
++++ b/src/multipart.ts
+@@ -15,14 +15,11 @@ type MultipartCallback = (
+ // Mostly taken from Fermata.js
+ // https://github.com/natevw/fermata/blob/5d9732a33d776ce925013a265935facd1626cc88/fermata.js#L315-L343
+ const multipartDataGenerator = (
+-  method: string,
+   data: MultipartRequestData,
+-  headers: RequestHeaders
++  headers: RequestHeaders,
++  segmentBoundary: string
+ ): Uint8Array => {
+-  const segno = (
+-    Math.round(Math.random() * 1e16) + Math.round(Math.random() * 1e16)
+-  ).toString();
+-  headers['Content-Type'] = `multipart/form-data; boundary=${segno}`;
++  headers['Content-Type'] = `multipart/form-data; boundary=${segmentBoundary}`;
+   const textEncoder = new TextEncoder();
+ 
+   let buffer = new Uint8Array(0);
+@@ -39,8 +36,14 @@ const multipartDataGenerator = (
+     buffer.set(endBuffer, buffer.length - 2);
+   }
+ 
+-  function q(s: string): string {
+-    return `"${s.replace(/"|"/g, '%22').replace(/\r\n|\r|\n/g, ' ')}"`;
++  // CR/LF would end the header line, letting a caller-supplied value introduce
++  // additional part headers.
++  function stripCrLf(s: string): string {
++    return s.replace(/\r\n|\r|\n/g, ' ');
++  }
++
++  function quote(s: string): string {
++    return `"${stripCrLf(s.replace(/"/g, '%22'))}"`;
+   }
+ 
+   const flattenedData = flattenAndStringify(data);
+@@ -51,7 +54,7 @@ const multipartDataGenerator = (
+     }
+ 
+     const v = flattenedData[k];
+-    push(`--${segno}`);
++    push(`--${segmentBoundary}`);
+     if (Object.prototype.hasOwnProperty.call(v, 'data')) {
+       const typedEntry: {
+         name: string;
+@@ -59,20 +62,24 @@ const multipartDataGenerator = (
+         type: string;
+       } = v as any;
+       push(
+-        `Content-Disposition: form-data; name=${q(k)}; filename=${q(
++        `Content-Disposition: form-data; name=${quote(k)}; filename=${quote(
+           typedEntry.name || 'blob'
+         )}`
+       );
+-      push(`Content-Type: ${typedEntry.type || 'application/octet-stream'}`);
++      push(
++        `Content-Type: ${stripCrLf(
++          typedEntry.type || 'application/octet-stream'
++        )}`
++      );
+       push('');
+       push(typedEntry.data);
+     } else {
+-      push(`Content-Disposition: form-data; name=${q(k)}`);
++      push(`Content-Disposition: form-data; name=${quote(k)}`);
+       push('');
+       push(v);
+     }
+   }
+-  push(`--${segno}--`);
++  push(`--${segmentBoundary}--`);
+ 
+   return buffer;
+ };
+@@ -93,7 +100,13 @@ export function multipartRequestDataProcessor(
+   this._stripe._platformFunctions
+     .tryBufferData(data)
+     .then((bufferedData: MultipartRequestData) => {
+-      const buffer = multipartDataGenerator(method, bufferedData, headers);
++      const buffer = multipartDataGenerator(
++        bufferedData,
++        headers,
++        // segment boundaries must be generated from a cryptographically secure method
++        // see: https://go/j/RUN_DEVSDK-2807
++        this._stripe._platformFunctions.uuid4()
++      );
+       return callback(null, buffer);
+     })
+     .catch((err: Error) => callback(err, null));
+diff --git a/src/platform/ExtensibilityPlatformFunctions.ts b/src/platform/ExtensibilityPlatformFunctions.ts
+index c558594..de4b615 100644
+--- a/src/platform/ExtensibilityPlatformFunctions.ts
++++ b/src/platform/ExtensibilityPlatformFunctions.ts
+@@ -21,7 +21,7 @@ const unsupportedRuntimeError = (method: string, alternative?: string): Error =>
+   );
+ 
+ /**
+- * Platform functions for extensibility scripts.
++ * Platform functions for extensibility scripts. It uses a pretty plain Deno ECMAScript implementation without many imports.
+  */
+ export class ExtensibilityPlatformFunctions extends PlatformFunctions {
+   /** @override */
+diff --git a/src/platform/NodePlatformFunctions.ts b/src/platform/NodePlatformFunctions.ts
+index 268487c..15d1480 100644
+--- a/src/platform/NodePlatformFunctions.ts
++++ b/src/platform/NodePlatformFunctions.ts
+@@ -21,11 +21,9 @@ class StreamProcessingError extends StripeError {}
+ export class NodePlatformFunctions extends PlatformFunctions {
+   /** @override */
+   uuid4(): string {
+-    // available in: v14.17.x+
+-    if (crypto.randomUUID) {
+-      return crypto.randomUUID();
+-    }
+-    return super.uuid4();
++    // we need to override the base `uuid4` implementation because it uses `globalThis.crypto`, which isn't available in unflagged in node until Node 19
++    // TODO(https://go/j/DEVSDK-3253)
++    return crypto.randomUUID();
+   }
+ 
+   /** @override */
+diff --git a/src/platform/PlatformFunctions.ts b/src/platform/PlatformFunctions.ts
+index c6979f9..f6778d9 100644
+--- a/src/platform/PlatformFunctions.ts
++++ b/src/platform/PlatformFunctions.ts
+@@ -93,14 +93,17 @@ export class PlatformFunctions {
+   }
+ 
+   /**
+-   * Generates a v4 UUID. See https://stackoverflow.com/a/2117523
++   * Generates a v4 UUID. Must be cryptographically secure: this seeds both `Idempotency-Key` values and the multipart/form-data boundary.
++   *
++   * Deliberately throws rather than degrading to `Math.random()`.
+    */
+   uuid4(): string {
+-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+-      const r = (Math.random() * 16) | 0;
+-      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+-      return v.toString(16);
+-    });
++    if (typeof crypto === 'undefined' || !crypto.randomUUID) {
++      throw new Error(
++        'Stripe: no cryptographically secure random number generator is available in this runtime; `crypto.randomUUID` is required.'
++      );
++    }
++    return crypto.randomUUID();
+   }
+ 
+   /**
+diff --git a/src/shared.ts b/src/shared.ts
+index 2b7e5b1..bf8a7a4 100644
+--- a/src/shared.ts
++++ b/src/shared.ts
+@@ -182,7 +182,10 @@ export interface PaginationParams {
+ export type Emptyable<T> = null | '' | T;
+ 
+ /**
+- * Marker type to append to "open" string unions so IntelliSense keeps known literals
+- * while still allowing arbitrary strings.
++ * Stripe's enums are considered either "open" or "closed". Open enums can have new values added that are backported to older API versions. Because the SDK only includes the enum members that existed when the SDK was released, values you might see at runtime may not be present in the generated types.
++ *
++ * So, we intentionally join the enum Literal types with `OtherString`, which resolves down to `string`. This is to help communicate that your integration should be prepared to handle enum variants that are listed in the API Documentation (but not the SDK).
++ *
++ * For more information, see: https://github.com/stripe/stripe-node#open-and-closed-enum
+  */
+ export type OtherString = string & Record<never, never>;
+diff --git a/src/stripe.core.ts b/src/stripe.core.ts
+index 6985272..c25b621 100644
+--- a/src/stripe.core.ts
++++ b/src/stripe.core.ts
+@@ -963,7 +963,7 @@ const defaultRequestSenderFactory: RequestSenderFactory = (stripe) =>
+   new RequestSender(stripe, StripeResource.MAX_BUFFERED_REQUEST_METRICS);
+ 
+ export class Stripe {
+-  static PACKAGE_VERSION = '22.6.0';
++  static PACKAGE_VERSION = '22.6.1';
+   static API_VERSION: typeof ApiVersion = ApiVersion;
+   /**
+    * The major API version that this SDK uses. Objects retrieved using the same
+@@ -1626,7 +1626,9 @@ export class Stripe {
+     parsed.fetchEvent = (): Promise<unknown> => {
+       return this._requestSender._rawRequest(
+         'GET',
+-        `/v2/core/events/${parsed.id}`,
++        // `id` comes from the notification body, so encode it the way the
++        // generated resources do -- otherwise it can inject path or query segments.
++        `/v2/core/events/${encodeURIComponent(parsed.id as string)}`,
+         undefined,
+         {
+           stripeContext: parsed.context as any,
+diff --git a/src/stripe.esm.node.ts b/src/stripe.esm.node.ts
+index ced8ed0..c96a118 100644
+--- a/src/stripe.esm.node.ts
++++ b/src/stripe.esm.node.ts
+@@ -964,7 +964,7 @@ const defaultRequestSenderFactory: RequestSenderFactory = (stripe) =>
+   new RequestSender(stripe, StripeResource.MAX_BUFFERED_REQUEST_METRICS);
+ 
+ export class Stripe {
+-  static PACKAGE_VERSION = '22.6.0';
++  static PACKAGE_VERSION = '22.6.1';
+   static API_VERSION: typeof ApiVersion = ApiVersion;
+   /**
+    * The major API version that this SDK uses. Objects retrieved using the same
+@@ -1604,7 +1604,9 @@ export class Stripe {
+     parsed.fetchEvent = (): Promise<unknown> => {
+       return this._requestSender._rawRequest(
+         'GET',
+-        `/v2/core/events/${parsed.id}`,
++        // `id` comes from the notification body, so encode it the way the
++        // generated resources do -- otherwise it can inject path or query segments.
++        `/v2/core/events/${encodeURIComponent(parsed.id as string)}`,
+         undefined,
+         {
+           stripeContext: parsed.context as any,
+diff --git a/src/utils.ts b/src/utils.ts
+index e6e7893..b651a85 100644
+--- a/src/utils.ts
++++ b/src/utils.ts
+@@ -438,6 +438,37 @@ export function jsonStringifyRequestData(data: RequestData | string): string {
+   return JSON.stringify(data, dateTimeReplacer);
+ }
+ 
++/**
++ * Asserts that a request path is origin-relative: that it begins with a single
++ * '/'.
++ *
++ * Some HTTP clients build the absolute URL by concatenating a host onto this
++ * path, and the configured hosts carry no trailing slash. A path like
++ * '@evil.example/v1/x' or '.evil.example/v1/x' would modify the resulting host
++ * and direct the request (including the API key) to a non-Stripe host.
++ *
++ * Because some relative urls arrive from potentially untrusted sources (like
++ * webhook bodies), we have to be a little defensive.
++ *
++ * So, we require that a path starts with a leading slash.
++ *
++ * NodeHttpClient passes {host, path} to `http.request` individually, so it doesn't need the same checks
++ * but the public `httpClient` needs the same security guarantees.
++ */
++export function validatePath(path: string): void {
++  if (
++    typeof path !== 'string' ||
++    !path.startsWith('/') ||
++    path.startsWith('//')
++  ) {
++    throw new Error(
++      `Request path must be a string beginning with a single "/", got: ${JSON.stringify(
++        path
++      )}`
++    );
++  }
++}
++
+ /**
+  * Inspects the given path to determine if the endpoint is for v1 or v2 API
+  */
+diff --git a/test/PlatformFunctions.spec.ts b/test/PlatformFunctions.spec.ts
+index e0039ed..eb280f8 100644
+--- a/test/PlatformFunctions.spec.ts
++++ b/test/PlatformFunctions.spec.ts
+@@ -14,9 +14,11 @@ import {SubtleCryptoProvider} from '../src/crypto/SubtleCryptoProvider.js';
+ import {expect} from 'chai';
+ import {webcrypto} from 'crypto';
+ 
+-if (process.versions.node < '15') {
++// TODO(https://go/j/DEVSDK-3253)
++if (process.versions.node < '19') {
++  // Node 18 has no `globalThis.crypto`, so we can only run our WebPlatformFunctions tests on more modern node versions
+   console.log(
+-    `Skipping WebPlatformFunctions tests. Cannot load WebPlatformFunctions because 'Event' is not available in the global scope for ${process.version}.`
++    `Skipping WebPlatformFunctions tests. No 'globalThis.crypto' in module scope for ${process.version}.`
+   );
+ } else {
+   import(
+@@ -58,14 +60,6 @@ function testPlatform(platformFunctions: PlatformFunctions): void {
+             expect(called).to.equal(isNodeEnvironment);
+           }
+         });
+-
+-        it('returns a valid v4 UUID without it', () => {
+-          crypto.randomUUID = null;
+-          expect(platformFunctions.uuid4()).to.match(
+-            // regex from https://createuuid.com/validator/, specifically for v4
+-            /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+-          );
+-        });
+       });
+ 
+       it('should return a well-formatted v4 UUID', () => {
+@@ -76,6 +70,20 @@ function testPlatform(platformFunctions: PlatformFunctions): void {
+         // further test: could spy on crypto.randomUUID to ensure it's being used, if available
+         // whether that's useful is a race between using jest/sinon for these tests and dropping support for node < 14
+       });
++
++      it('is not derived from Math.random', () => {
++        // Idempotency-Key values come from uuid4, so pinning Math.random must
++        // not pin them.
++        const random$ = Math.random;
++        Math.random = (): number => 0.5;
++        try {
++          expect(platformFunctions.uuid4()).to.not.equal(
++            platformFunctions.uuid4()
++          );
++        } finally {
++          Math.random = random$;
++        }
++      });
+     });
+ 
+     describe('secureCompare with crypto.timingSafeEqual', () => {
+@@ -438,3 +446,70 @@ function testPlatform(platformFunctions: PlatformFunctions): void {
+     });
+   });
+ }
++
++describe('PlatformFunctions.uuid4 without globalThis.crypto', () => {
++  // because uuid4 is used in a cryptographic context, PlatformFunctions.uuid4 should throw if it can't access a CSPRNG
++
++  // some extra housekeeping for node 18, which truly _doesn't_ have the global crypto
++  // no need to remove what isn't there
++  // TODO(https://go/j/DEVSDK-3253) - can remove when we drop node 18
++  const hasCryptoGlobal = typeof globalThis.crypto !== 'undefined';
++
++  beforeEach(() => {
++    if (!hasCryptoGlobal) return;
++    Object.defineProperty(globalThis.crypto, 'randomUUID', {
++      value: undefined,
++      configurable: true,
++      writable: true,
++    });
++  });
++
++  afterEach(() => {
++    if (!hasCryptoGlobal) return;
++    delete (globalThis.crypto as any).randomUUID;
++  });
++
++  it('throws instead of degrading to a weak RNG', () => {
++    expect(() => new PlatformFunctions().uuid4()).to.throw(
++      /no cryptographically secure random number generator is available/
++    );
++  });
++
++  it('does not fall back to Math.random', () => {
++    const random$ = Math.random;
++    let called = false;
++    Math.random = (): number => {
++      called = true;
++      return 0.5;
++    };
++    try {
++      expect(() => new PlatformFunctions().uuid4()).to.throw();
++      expect(called).to.equal(false);
++    } finally {
++      Math.random = random$;
++    }
++  });
++});
++
++// TODO(https://go/j/DEVSDK-3253) - can remove when we drop node 18
++if (process.versions.node < '19') {
++  describe('NodePlatformFunctions.uuid4 without globalThis.crypto', () => {
++    it('still generates a valid v4 UUID', () => {
++      expect(typeof globalThis.crypto).to.equal('undefined');
++      expect(new NodePlatformFunctions().uuid4()).to.match(
++        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
++      );
++    });
++
++    it('generates a distinct key each call', () => {
++      const fns = new NodePlatformFunctions();
++      expect(fns.uuid4()).to.not.equal(fns.uuid4());
++    });
++
++    it('is why the override exists: the base implementation cannot', () => {
++      expect(() => new PlatformFunctions().uuid4()).to.throw(
++        /no cryptographically secure random number generator is available/
++      );
++    });
++  });
++}
+diff --git a/test/RequestSender.spec.ts b/test/RequestSender.spec.ts
+index ed59a08..be7af0b 100644
+--- a/test/RequestSender.spec.ts
++++ b/test/RequestSender.spec.ts
+@@ -32,6 +32,8 @@ import {StripeContext} from '../src/StripeContext.js';
+ 
+ const stripe = getSpyableStripe();
+ 
++const IDEMPOTENCY_KEY = /^stripe-node-retry-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
++
+ describe('RequestSender', () => {
+   const sender = new RequestSender(stripe, 0);
+ 
+@@ -96,7 +98,7 @@ describe('RequestSender', () => {
+           userSuppliedSettings: {maxNetworkRetries: 3},
+           apiMode: 'v1',
+         });
+-        expect(headers['Idempotency-Key']).matches(/^stripe-node-retry/);
++        expect(headers['Idempotency-Key']).matches(IDEMPOTENCY_KEY);
+       });
+       // closed-connection errors are retried even with retries disabled, so
+       // these requests still need a key to dedupe against
+@@ -106,7 +108,7 @@ describe('RequestSender', () => {
+           userSuppliedSettings: {maxNetworkRetries: 0},
+           apiMode: 'v1',
+         });
+-        expect(headers['Idempotency-Key']).matches(/^stripe-node-retry/);
++        expect(headers['Idempotency-Key']).matches(IDEMPOTENCY_KEY);
+       });
+       it('does not create an idempotency key for v1 GET requests', () => {
+         const headers = sender._makeHeaders({
+@@ -118,11 +120,11 @@ describe('RequestSender', () => {
+       });
+       it('always creates an idempotency key for v2 POST requests', () => {
+         const headers = sender._makeHeaders({method: 'POST', apiMode: 'v2'});
+-        expect(headers['Idempotency-Key']).matches(/^stripe-node-retry/);
++        expect(headers['Idempotency-Key']).matches(IDEMPOTENCY_KEY);
+       });
+       it('always creates an idempotency key for v2 DELETE requests', () => {
+         const headers = sender._makeHeaders({method: 'DELETE', apiMode: 'v2'});
+-        expect(headers['Idempotency-Key']).matches(/^stripe-node-retry/);
++        expect(headers['Idempotency-Key']).matches(IDEMPOTENCY_KEY);
+       });
+       it('generates a new key every time', () => {
+         expect(sender._defaultIdempotencyKey('POST', 'v2')).not.to.equal(
+diff --git a/test/V2DecimalIntegration.spec.ts b/test/V2DecimalIntegration.spec.ts
+new file mode 100644
+index 0000000..ec297f5
+--- /dev/null
++++ b/test/V2DecimalIntegration.spec.ts
+@@ -0,0 +1,71 @@
++// @ts-nocheck
++import {expect} from 'chai';
++import {Decimal} from '../src/Decimal.js';
++import {StripeResource} from '../src/StripeResource.js';
++import {getSpyableStripe} from './testUtils.js';
++
++describe('V2 decimal_string integration', () => {
++  const requestSchema = {
++    kind: 'object',
++    fields: {
++      lines: {
++        kind: 'array',
++        element: {
++          kind: 'object',
++          fields: {
++            unit_amount_decimal: {kind: 'decimal_string'},
++          },
++        },
++      },
++    },
++  };
++
++  const makeRequest = (method: string) => {
++    const stripe = getSpyableStripe();
++    const resource = new StripeResource(stripe);
++
++    resource._makeRequest(
++      method,
++      '/v2/test/resources',
++      {
++        lines: [
++          {
++            unit_amount_decimal: Decimal.from('434'),
++            description: 'test',
++          },
++        ],
++      },
++      undefined,
++      {requestSchema}
++    );
++
++    return stripe.LAST_REQUEST;
++  };
++
++  it('coerces nested decimal_string fields in GET query parameters', () => {
++    const request = makeRequest('GET');
++
++    expect(request.data).to.equal(null);
++    expect(request.url).to.equal(
++      '/v2/test/resources?lines[0][unit_amount_decimal]=434&lines[0][description]=test'
++    );
++  });
++
++  it('coerces nested decimal_string fields in DELETE query parameters', () => {
++    const request = makeRequest('DELETE');
++
++    expect(request.data).to.equal(null);
++    expect(request.url).to.equal(
++      '/v2/test/resources?lines[0][unit_amount_decimal]=434&lines[0][description]=test'
++    );
++  });
++
++  it('continues to coerce nested decimal_string fields in POST bodies', () => {
++    const request = makeRequest('POST');
++
++    expect(request.data).to.deep.equal({
++      lines: [{unit_amount_decimal: '434', description: 'test'}],
++    });
++    expect(request.url).to.equal('/v2/test/resources');
++  });
++});
+diff --git a/test/V2Int64Integration.spec.ts b/test/V2Int64Integration.spec.ts
+index d4fd673..414f02f 100644
+--- a/test/V2Int64Integration.spec.ts
++++ b/test/V2Int64Integration.spec.ts
+@@ -74,10 +74,9 @@ describe('V2 int64_string integration', () => {
+       expect(stripe.LAST_REQUEST.data).to.deep.equal({amount: 42});
+     });
+ 
+-    it('handles null body data gracefully', () => {
++    it('keeps the GET request body null when a request schema is present', () => {
+       const resource = new StripeResource(stripe);
+ 
+-      // GET requests have no body data, so coercion should be a no-op
+       resource._makeRequest('GET', '/v2/test/resources', undefined, undefined, {
+         requestSchema: {
+           kind: 'object',
+diff --git a/test/multipart.spec.ts b/test/multipart.spec.ts
+new file mode 100644
+index 0000000..35b53fa
+--- /dev/null
++++ b/test/multipart.spec.ts
+@@ -0,0 +1,160 @@
++// @ts-nocheck
++
++import {NodePlatformFunctions} from '../src/platform/NodePlatformFunctions.js';
++import {PlatformFunctions} from '../src/platform/PlatformFunctions.js';
++import {multipartRequestDataProcessor} from '../src/multipart.js';
++
++import {expect} from 'chai';
++
++// Lines of the body that begin a header, so an injected CRLF that opens a new
++// header line is visible even though the escaped text still contains the name.
++function headerLines(body: string, prefix: string): Array<string> {
++  return body.split('\r\n').filter((line) => line.startsWith(prefix));
++}
++
++const file = {
++  data: 'file contents',
++  name: 'minimal.pdf',
++  type: 'application/pdf',
++};
++
++if (process.versions.node < '19') {
++  // Node 18 has no `globalThis.crypto` in CommonJS module scope, so WebPlatformFunctions has no CSPRNG to derive a boundary from.
++  console.log(
++    `Skipping WebPlatformFunctions multipart tests. No 'globalThis.crypto' in module scope for ${process.version}.`
++  );
++} else {
++  import(
++    '../src/platform/WebPlatformFunctions.js'
++  ).then(({WebPlatformFunctions}) => testMultipart(new WebPlatformFunctions()));
++}
++
++testMultipart(new NodePlatformFunctions());
++
++function testMultipart(platformFunctions: PlatformFunctions): void {
++  // Drives `multipartRequestDataProcessor` through a minimal stand-in for a
++  // StripeResourceObject so the `headers` object it mutates is observable.
++  function generate(data: any): Promise<{body: string; boundary: string}> {
++    const headers: Record<string, string> = {};
++    const resource = {_stripe: {_platformFunctions: platformFunctions}};
++
++    return new Promise((resolve, reject) => {
++      multipartRequestDataProcessor.call(
++        resource,
++        'POST',
++        data,
++        headers,
++        (error: Error | null, buffer: Uint8Array | string | null) => {
++          if (error) {
++            reject(error);
++            return;
++          }
++          const match = /boundary=(.+)$/.exec(headers['Content-Type']);
++          resolve({
++            body: new TextDecoder('utf8').decode(buffer as Uint8Array),
++            boundary: match ? match[1] : '',
++          });
++        }
++      );
++    });
++  }
++
++  describe(`multipart (${platformFunctions.constructor.name})`, () => {
++    describe('boundary', () => {
++      it('is not derived from Math.random', async () => {
++        // Pinning Math.random must not pin the boundary. A boundary an attacker
++        // can predict lets a caller-influenced value (including the file bytes)
++        // inject additional parts.
++        const random$ = Math.random;
++        Math.random = (): number => 0.5;
++        try {
++          const first = await generate({purpose: 'dispute_evidence', file});
++          const second = await generate({purpose: 'dispute_evidence', file});
++
++          // A v4 UUID. Hyphens are legal boundary characters (RFC 2046 §5.1.1).
++          const v4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
++          expect(first.boundary).to.match(v4);
++          expect(second.boundary).to.match(v4);
++          expect(first.boundary).to.not.equal(second.boundary);
++        } finally {
++          Math.random = random$;
++        }
++      });
++
++      it('matches the delimiter used in the body', async () => {
++        const {body, boundary} = await generate({
++          purpose: 'dispute_evidence',
++          file,
++        });
++
++        expect(body.startsWith(`--${boundary}\r\n`)).to.equal(true);
++        expect(body.endsWith(`--${boundary}--\r\n`)).to.equal(true);
++        // Two parts: two opening delimiters plus the closing one.
++        expect(body.split(`--${boundary}`).length - 1).to.equal(3);
++      });
++    });
++
++    describe('part header escaping', () => {
++      it('strips CR/LF from a param name', async () => {
++        const {body, boundary} = await generate({
++          'a\r\nContent-Disposition: form-data; name="purpose': 'value',
++          file,
++        });
++
++        expect(headerLines(body, 'Content-Disposition:')).to.have.lengthOf(2);
++        expect(body.split(`--${boundary}`).length - 1).to.equal(3);
++      });
++
++      it('escapes quotes in a param name', async () => {
++        const {body} = await generate({'a"b': 'value', file});
++
++        expect(headerLines(body, 'Content-Disposition:')).to.deep.equal([
++          'Content-Disposition: form-data; name="a%22b"',
++          'Content-Disposition: form-data; name="file"; filename="minimal.pdf"',
++        ]);
++      });
++
++      it('strips CR/LF from a filename', async () => {
++        const {body} = await generate({
++          file: {...file, name: 'a\r\nX-Injected: yes"b.pdf'},
++        });
++
++        expect(headerLines(body, 'X-Injected:')).to.deep.equal([]);
++        expect(headerLines(body, 'Content-Disposition:')).to.deep.equal([
++          'Content-Disposition: form-data; name="file"; ' +
++            'filename="a X-Injected: yes%22b.pdf"',
++        ]);
++      });
++
++      it('strips CR/LF from a file content type', async () => {
++        const {body} = await generate({
++          file: {...file, type: 'text/plain\r\nX-Injected: yes'},
++        });
++
++        expect(headerLines(body, 'X-Injected:')).to.deep.equal([]);
++        expect(headerLines(body, 'Content-Type:')).to.deep.equal([
++          'Content-Type: text/plain X-Injected: yes',
++        ]);
++      });
++    });
++
++    it('leaves a value carrying a guessed delimiter inert', async () => {
++      // The value below is a complete forged part terminated by an epilogue
++      // marker. Values cannot be sanitized — the file bytes *are* the document —
++      // so the defense is that the real boundary is unguessable: the forgery
++      // stays literal text inside a part body rather than reframing the request.
++      const guessed = '00000000-0000-4000-8000-000000000000';
++      const {body, boundary} = await generate({
++        purpose: `--${guessed}\r\nContent-Disposition: form-data; name="file"; filename="evil.pdf"\r\n\r\nevil\r\n--${guessed}--`,
++        file,
++      });
++
++      expect(boundary).to.not.equal(guessed);
++      // Still two parts, and the real closing delimiter is still last: the
++      // forged epilogue marker discarded nothing.
++      expect(body.split(`--${boundary}`).length - 1).to.equal(3);
++      expect(body.endsWith(`--${boundary}--\r\n`)).to.equal(true);
++      expect(body).to.contain('file contents');
++    });
++  });
++}
+diff --git a/test/stripe.spec.ts b/test/stripe.spec.ts
+index c707c8b..54e196f 100644
+--- a/test/stripe.spec.ts
++++ b/test/stripe.spec.ts
+@@ -1669,7 +1669,7 @@ describe('Stripe Module', function() {
+       );
+     });
+ 
+-    it('should throw a descriptive error when an absolute URL is passed as path with FetchHttpClient', async () => {
++    it('should throw a descriptive error when an absolute URL is passed as path', async () => {
+       const fetchStripe = Stripe(FAKE_API_KEY, {
+         httpClient: new FetchHttpClient(require('node-fetch')),
+       });
+@@ -1680,8 +1680,24 @@ describe('Stripe Module', function() {
+         caughtError = e;
+       }
+       expect(caughtError).to.exist;
+-      expect(caughtError.detail?.message).to.match(
+-        /Only relative paths are supported/
++      expect(caughtError.message).to.match(
++        /must be a string beginning with a single/
++      );
++    });
++
++    it('should reject a path that would move the request authority', async () => {
++      // A webhook body's related_object.url or a response's next_page_url
++      // reaches this sink, so a path like this must never be sent.
++      const stripe = Stripe(FAKE_API_KEY);
++      let caughtError: any;
++      try {
++        await stripe.rawRequest('GET', '@evil.example/v1/leak');
++      } catch (e) {
++        caughtError = e;
++      }
++      expect(caughtError).to.exist;
++      expect(caughtError.message).to.match(
++        /must be a string beginning with a single/
+       );
+     });
+   });
+diff --git a/test/utils.spec.ts b/test/utils.spec.ts
+index 21ea11e..bfa42d7 100644
+--- a/test/utils.spec.ts
++++ b/test/utils.spec.ts
+@@ -837,6 +837,50 @@ describe('utils', () => {
+       expect(mergedBufToString).to.equal('foobar');
+     });
+   });
++
++  describe('assertOriginRelativePath', () => {
++    it('accepts origin-relative paths', () => {
++      const valid = [
++        '/v1/customers/cus_123',
++        '/v1/customers',
++        '/v2/core/accounts?page=page_123&limit=2',
++        // '@' is legal inside a path or query string -- it only opens an
++        // authority when it precedes the first '/'.
++        '/v1/customers?email=user%40example.com',
++        '/v1/invoices/in_123@456',
++        // A backslash does not open an authority: the '/' already closed it.
++        '/v1/\\evil.example',
++      ];
++      valid.forEach((path) => {
++        expect(() => utils.validatePath(path)).to.not.throw();
++      });
++    });
++
++    it('rejects paths that could move the request authority', () => {
++      const hostile = [
++        '@evil.example/v1/leak',
++        ':pw@evil.example/v1/leak',
++        ':80@evil.example/v1/leak',
++        // Extends the host into an attacker-owned subdomain
++        // (api.stripe.com.evil.example), which has a valid certificate.
++        '.evil.example/v1/leak',
++        '-evil.example/v1/leak',
++        'https://evil.example/v1/leak',
++        '//evil.example/v1/leak',
++        '',
++        'v1/customers',
++        null,
++        undefined,
++        42,
++      ];
++      hostile.forEach((path) => {
++        expect(
++          () => utils.validatePath(path),
++          `expected to reject ${JSON.stringify(path)}`
++        ).to.throw(/must be a string beginning with a single/);
++      });
++    });
++  });
+ });
+ 
+ function handleWarnings(doWithShimmedConsoleWarn, onWarn): void {

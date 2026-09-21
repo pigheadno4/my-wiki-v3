@@ -1,0 +1,310 @@
+diff --git a/.github/workflows/main.yml b/.github/workflows/main.yml
+index 302426a..980095f 100644
+--- a/.github/workflows/main.yml
++++ b/.github/workflows/main.yml
+@@ -127,6 +127,17 @@ jobs:
+           # Disable automatic dependency caching to reduce cache poisoning risk
+           package-manager-cache: false
+       - name: Publish to NPM
++        env:
++          # needed because setup-node writes a .npmrc file with `registry-url` and
++          # `_authToken=${NODE_AUTH_TOKEN}`. OIDC overwrites this with a real token
++          # before anything is uploaded, but we need to have a value for yarn install
++          # to work.
++          NODE_AUTH_TOKEN: XXXXX-XXXXX-XXXXX-XXXXX
++          # npm hides its HTTP exchange, and the OIDC token exchange with it, below
++          # `verbose`. `notice` is npm's own default, so an ordinary release logs exactly
++          # what it does today, and re-running this job with debug logging enabled shows
++          # where a failed publish gave up.
++          NPM_CONFIG_LOGLEVEL: ${{ runner.debug && 'verbose' || 'notice' }}
+         run: |
+           set -euxo pipefail
+           VERSION=$(cat package.json | jq -r '.version')
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 133ebc6..a5caf65 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,8 @@
+ # Changelog
+ 
++## 22.6.2 - 2026-09-09
++* [#2841](https://github.com/stripe/stripe-node/pull/2841) Validate that webhook secrets are non-empty
++
+ ## 22.6.1 - 2026-09-01
+ * [#2831](https://github.com/stripe/stripe-node/pull/2831) Use cryptographically secure boundaries for multipart file uploads
+ * [#2836](https://github.com/stripe/stripe-node/pull/2836) update OtherString docstring
+diff --git a/VERSION b/VERSION
+index 3e31049..7d45883 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-22.6.1
++22.6.2
+diff --git a/examples/snippets/event_notification_handler_endpoint.ts b/examples/snippets/event_notification_handler_endpoint.ts
+index 6fa8354..1456837 100644
+--- a/examples/snippets/event_notification_handler_endpoint.ts
++++ b/examples/snippets/event_notification_handler_endpoint.ts
+@@ -14,7 +14,12 @@ import {Stripe} from 'stripe';
+ import express from 'express';
+ 
+ const apiKey = process.env.STRIPE_API_KEY ?? '';
+-const webhookSecret = process.env.WEBHOOK_SECRET ?? '';
++const webhookSecret = process.env.WEBHOOK_SECRET;
++
++if (!webhookSecret) {
++  console.error('Please set the WEBHOOK_SECRET environment variable');
++  process.exit(1);
++}
+ 
+ const app = express();
+ const client = new Stripe(apiKey);
+diff --git a/examples/snippets/event_notification_webhook_handler.ts b/examples/snippets/event_notification_webhook_handler.ts
+index f634f00..682e834 100644
+--- a/examples/snippets/event_notification_webhook_handler.ts
++++ b/examples/snippets/event_notification_webhook_handler.ts
+@@ -19,7 +19,12 @@ import express from 'express';
+ const app = express();
+ 
+ const apiKey = process.env.STRIPE_API_KEY ?? '';
+-const webhookSecret = process.env.WEBHOOK_SECRET ?? '';
++const webhookSecret = process.env.WEBHOOK_SECRET;
++
++if (!webhookSecret) {
++  console.error('Please set the WEBHOOK_SECRET environment variable');
++  process.exit(1);
++}
+ 
+ const client = new Stripe(apiKey);
+ 
+diff --git a/examples/webhook-signing/deno/main.ts b/examples/webhook-signing/deno/main.ts
+index f4c523f..7db0c37 100755
+--- a/examples/webhook-signing/deno/main.ts
++++ b/examples/webhook-signing/deno/main.ts
+@@ -7,6 +7,13 @@ import Stripe from 'npm:stripe@^11.16';
+ 
+ const stripe = Stripe(Deno.env.get('STRIPE_API_KEY'));
+ 
++const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
++
++if (!webhookSecret) {
++  console.error('Please set the STRIPE_WEBHOOK_SECRET environment variable');
++  Deno.exit(1);
++}
++
+ // Must specify hostname explicitly, see https://github.com/denoland/deno/issues/5144
+ const server = Deno.listen({hostname: '127.0.0.1', port: 0});
+ const {port} = server.addr;
+@@ -24,7 +31,7 @@ async function handler(request) {
+     event = await stripe.webhooks.constructEventAsync(
+       body,
+       signature,
+-      Deno.env.get('STRIPE_WEBHOOK_SECRET'),
++      webhookSecret,
+       undefined
+     );
+   } catch (err) {
+diff --git a/examples/webhook-signing/express/main.ts b/examples/webhook-signing/express/main.ts
+index 80eab35..3374bd9 100755
+--- a/examples/webhook-signing/express/main.ts
++++ b/examples/webhook-signing/express/main.ts
+@@ -9,7 +9,12 @@ env.config();
+ 
+ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+ 
+-const webhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET;
++const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
++
++if (!webhookSecret) {
++  console.error('Please set the STRIPE_WEBHOOK_SECRET environment variable');
++  process.exit(1);
++}
+ 
+ const app = express();
+ 
+diff --git a/examples/webhook-signing/koa/main.ts b/examples/webhook-signing/koa/main.ts
+index b7785e6..e8a8bd2 100755
+--- a/examples/webhook-signing/koa/main.ts
++++ b/examples/webhook-signing/koa/main.ts
+@@ -11,6 +11,11 @@ const app = new Koa();
+ env.config();
+ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+ 
++if (!webhookSecret) {
++  console.error('Please set the STRIPE_WEBHOOK_SECRET environment variable');
++  process.exit(1);
++}
++
+ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+ 
+ const handleWebhook = async (ctx: Koa.ParameterizedContext, next: Koa.Next) => {
+diff --git a/examples/webhook-signing/nestjs/config.ts b/examples/webhook-signing/nestjs/config.ts
+index 4a4fa65..5cad6f4 100644
+--- a/examples/webhook-signing/nestjs/config.ts
++++ b/examples/webhook-signing/nestjs/config.ts
+@@ -5,9 +5,18 @@ type Config = {
+   };
+ };
+ 
+-export const config = (): Config => ({
+-  Stripe: {
+-    secret_key: process.env.STRIPE_SECRET_KEY || '',
+-    webhook_secret: process.env.STRIPE_WEBHOOK_SECRET || '',
+-  },
+-});
++export const config = (): Config => {
++  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
++  if (!webhookSecret) {
++    throw new Error(
++      'Please set the STRIPE_WEBHOOK_SECRET environment variable'
++    );
++  }
++
++  return {
++    Stripe: {
++      secret_key: process.env.STRIPE_SECRET_KEY || '',
++      webhook_secret: webhookSecret,
++    },
++  };
++};
+diff --git a/examples/webhook-signing/nextjs/app/api/webhooks/route.ts b/examples/webhook-signing/nextjs/app/api/webhooks/route.ts
+index bf1be18..2b192e8 100644
+--- a/examples/webhook-signing/nextjs/app/api/webhooks/route.ts
++++ b/examples/webhook-signing/nextjs/app/api/webhooks/route.ts
+@@ -10,10 +10,17 @@ export async function POST(req: Request) {
+   try {
+     const stripeSignature = (await headers()).get('stripe-signature');
+ 
++    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
++    if (!webhookSecret) {
++      throw new Error(
++        'Please set the STRIPE_WEBHOOK_SECRET environment variable'
++      );
++    }
++
+     event = stripe.webhooks.constructEvent(
+       await req.text(),
+       stripeSignature as string,
+-      process.env.STRIPE_WEBHOOK_SECRET as string
++      webhookSecret
+     );
+   } catch (err) {
+     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+diff --git a/examples/webhook-signing/nextjs/pages/api/webhooks.ts b/examples/webhook-signing/nextjs/pages/api/webhooks.ts
+index 4c95f9d..34ca4c4 100644
+--- a/examples/webhook-signing/nextjs/pages/api/webhooks.ts
++++ b/examples/webhook-signing/nextjs/pages/api/webhooks.ts
+@@ -7,7 +7,13 @@ const handler = async (
+ ): Promise<void> => {
+   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+ 
+-  const webhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET;
++  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
++
++  if (!webhookSecret) {
++    console.error('Please set the STRIPE_WEBHOOK_SECRET environment variable');
++    res.status(500).send('Webhook secret is not configured');
++    return;
++  }
+ 
+   if (req.method === 'POST') {
+     const sig = req.headers['stripe-signature'];
+diff --git a/package.json b/package.json
+index 2f6b209..a0cf8cc 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "stripe",
+-  "version": "22.6.1",
++  "version": "22.6.2",
+   "description": "Stripe API wrapper",
+   "keywords": [
+     "stripe",
+diff --git a/src/Webhooks.ts b/src/Webhooks.ts
+index a7bb5ce..f7e8412 100644
+--- a/src/Webhooks.ts
++++ b/src/Webhooks.ts
+@@ -258,6 +258,12 @@ export function createWebhooks(
+         encodedHeader,
+         this.EXPECTED_SCHEME
+       );
++      if (!secret) {
++        throw new StripeSignatureVerificationError(header, payload, {
++          message:
++            'No webhook secret value was provided. It should start with `whsec_`',
++        });
++      }
+       const secretContainsWhitespace = /\s/.test(secret);
+ 
+       cryptoProvider = cryptoProvider || getCryptoProvider();
+@@ -303,6 +309,12 @@ export function createWebhooks(
+         encodedHeader,
+         this.EXPECTED_SCHEME
+       );
++      if (!secret) {
++        throw new StripeSignatureVerificationError(header, payload, {
++          message:
++            'No webhook secret value was provided. It should start with `whsec_`',
++        });
++      }
+       const secretContainsWhitespace = /\s/.test(secret);
+ 
+       cryptoProvider = cryptoProvider || getCryptoProvider();
+diff --git a/src/stripe.core.ts b/src/stripe.core.ts
+index c25b621..5324567 100644
+--- a/src/stripe.core.ts
++++ b/src/stripe.core.ts
+@@ -963,7 +963,7 @@ const defaultRequestSenderFactory: RequestSenderFactory = (stripe) =>
+   new RequestSender(stripe, StripeResource.MAX_BUFFERED_REQUEST_METRICS);
+ 
+ export class Stripe {
+-  static PACKAGE_VERSION = '22.6.1';
++  static PACKAGE_VERSION = '22.6.2';
+   static API_VERSION: typeof ApiVersion = ApiVersion;
+   /**
+    * The major API version that this SDK uses. Objects retrieved using the same
+diff --git a/src/stripe.esm.node.ts b/src/stripe.esm.node.ts
+index c96a118..7c478bd 100644
+--- a/src/stripe.esm.node.ts
++++ b/src/stripe.esm.node.ts
+@@ -964,7 +964,7 @@ const defaultRequestSenderFactory: RequestSenderFactory = (stripe) =>
+   new RequestSender(stripe, StripeResource.MAX_BUFFERED_REQUEST_METRICS);
+ 
+ export class Stripe {
+-  static PACKAGE_VERSION = '22.6.1';
++  static PACKAGE_VERSION = '22.6.2';
+   static API_VERSION: typeof ApiVersion = ApiVersion;
+   /**
+    * The major API version that this SDK uses. Objects retrieved using the same
+diff --git a/test/Webhook.spec.ts b/test/Webhook.spec.ts
+index 5a5891e..15b6bd7 100644
+--- a/test/Webhook.spec.ts
++++ b/test/Webhook.spec.ts
+@@ -466,6 +466,27 @@ function createWebhooksTestSuite(stripe) {
+         );
+       });
+ 
++      it('should raise a SignatureVerificationError when the signing secret is empty or nullish', async () => {
++        const header = stripe.webhooks.generateTestHeaderString({
++          payload: EVENT_PAYLOAD_STRING,
++          secret: SECRET,
++        });
++
++        const expectedMessage = /No webhook secret value was provided\. It should start with `whsec_`/;
++
++        await expect(
++          verifyHeaderFn(EVENT_PAYLOAD_STRING, header, '')
++        ).to.be.rejectedWith(StripeSignatureVerificationError, expectedMessage);
++
++        await expect(
++          verifyHeaderFn(EVENT_PAYLOAD_STRING, header, null)
++        ).to.be.rejectedWith(StripeSignatureVerificationError, expectedMessage);
++
++        await expect(
++          verifyHeaderFn(EVENT_PAYLOAD_STRING, header, undefined)
++        ).to.be.rejectedWith(StripeSignatureVerificationError, expectedMessage);
++      });
++
+       describe('custom CryptoProvider', () => {
+         const cryptoProvider = new FakeCryptoProvider();
+ 

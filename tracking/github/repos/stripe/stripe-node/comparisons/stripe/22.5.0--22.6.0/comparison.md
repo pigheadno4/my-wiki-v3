@@ -1,0 +1,215 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-node`
+- Package: `stripe`
+- From: `22.5.0` (`65d99a2b76d0786d7cec8544920affadccc8b670`)
+- To: `22.6.0` (`2f64e7ac920bd6863fdb851f4fb1fcc6190d963f`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.eslintrc.js`
+- `CHANGELOG.md`
+- `CODEGEN_VERSION`
+- `OPENAPI_VERSION`
+- `README.md`
+- `VERSION`
+- `examples/snippets/event_notification_handler_endpoint.ts`
+- `package.json`
+- `src/RequestSender.ts`
+- `src/StripeEventNotificationHandler.ts`
+- `src/Types.ts`
+- `src/V2Coercion.ts`
+- `src/Webhooks.ts`
+- `src/apiVersion.ts`
+- `src/net/FetchHttpClient.ts`
+- `src/net/HttpClient.ts`
+- `src/net/NodeHttpClient.ts`
+- `src/resources.ts`
+- `src/resources/AccountLinks.ts`
+- `src/resources/AccountSessions.ts`
+- `src/resources/Accounts.ts`
+- `src/resources/BalanceTransactions.ts`
+- `src/resources/BankAccounts.ts`
+- `src/resources/Billing/FeedbackOptions.ts`
+- `src/resources/Billing/index.ts`
+- `src/resources/BillingPortal/Configurations.ts`
+- `src/resources/BillingPortal/Sessions.ts`
+- `src/resources/Cards.ts`
+- `src/resources/CashBalances.ts`
+- `src/resources/Charges.ts`
+- `src/resources/Checkout/Sessions.ts`
+- `src/resources/Climate/Orders.ts`
+- `src/resources/Climate/Products.ts`
+- `src/resources/ConfirmationTokens.ts`
+- `src/resources/CreditNoteLineItems.ts`
+- `src/resources/CreditNotes.ts`
+- `src/resources/CustomerSessions.ts`
+- `src/resources/Customers.ts`
+- `src/resources/Files.ts`
+- `src/resources/FinancialConnections/Sessions.ts`
+- `src/resources/InvoiceItems.ts`
+- `src/resources/InvoiceLineItems.ts`
+- `src/resources/InvoicePayments.ts`
+- `src/resources/InvoiceRenderingTemplates.ts`
+- `src/resources/Invoices.ts`
+- `src/resources/Issuing/Cardholders.ts`
+- `src/resources/Issuing/Cards.ts`
+- `src/resources/Mandates.ts`
+- `src/resources/PaymentAttemptRecords.ts`
+- `src/resources/PaymentIntents.ts`
+- `src/resources/PaymentLinks.ts`
+- `src/resources/PaymentMethods.ts`
+- `src/resources/PaymentRecords.ts`
+- `src/resources/Payouts.ts`
+- `src/resources/Plans.ts`
+- `src/resources/Prices.ts`
+- `src/resources/Products.ts`
+- `src/resources/Quotes.ts`
+- `src/resources/Radar/PaymentEvaluations.ts`
+- `src/resources/Radar/ValueLists.ts`
+- `src/resources/Refunds.ts`
+- `src/resources/Reporting/ReportRuns.ts`
+- `src/resources/Reviews.ts`
+- `src/resources/SetupAttempts.ts`
+- `src/resources/SetupIntents.ts`
+- `src/resources/ShippingRates.ts`
+- `src/resources/SourceTransactions.ts`
+- `src/resources/Sources.ts`
+- `src/resources/SubscriptionItems.ts`
+- `src/resources/SubscriptionSchedules.ts`
+- `src/resources/Subscriptions.ts`
+- `src/resources/Tax/CalculationLineItems.ts`
+- `src/resources/Tax/Calculations.ts`
+- `src/resources/Tax/Registrations.ts`
+- `src/resources/Tax/Settings.ts`
+- `src/resources/Tax/Transactions.ts`
+- `src/resources/TaxIds.ts`
+- `src/resources/TaxRates.ts`
+- `src/resources/Terminal/Readers.ts`
+- `src/resources/TestHelpers/ConfirmationTokens.ts`
+- `src/resources/TestHelpers/Issuing/Authorizations.ts`
+- `src/resources/TestHelpers/Issuing/Transactions.ts`
+- `src/resources/Tokens.ts`
+- `src/resources/Topups.ts`
+- `src/resources/Transfers.ts`
+- `src/resources/V2/Core/Accounts.ts`
+- `src/resources/WebhookEndpoints.ts`
+- `src/stripe.cjs.node.ts`
+- `src/stripe.core.ts`
+- `src/stripe.esm.node.ts`
+- `src/utils.ts`
+- `test/DiscriminatedUnion.spec.ts`
+- `test/RequestSender.spec.ts`
+- `test/StripeEventNotificationHandler.spec.ts`
+- `test/V2Coercion.spec.ts`
+- `test/net/FetchHttpClient.spec.ts`
+- `test/resources/generated_examples_test.spec.js`
+- `testProjects/types-cjs-node16/typescriptTest.ts`
+- `testProjects/types-cjs/typescriptTest.ts`
+- `testProjects/types/typescriptTest.ts`
+- `yarn.lock`
+
+## Upstream changes
+
+- `modified`: `.eslintrc.js`
+- `modified`: `CHANGELOG.md`
+- `modified`: `CODEGEN_VERSION`
+- `modified`: `OPENAPI_VERSION`
+- `modified`: `README.md`
+- `modified`: `VERSION`
+- `added`: `examples/snippets/event_notification_handler_endpoint.ts`
+- `modified`: `package.json`
+- `modified`: `src/RequestSender.ts`
+- `added`: `src/StripeEventNotificationHandler.ts`
+- `modified`: `src/Types.ts`
+- `modified`: `src/V2Coercion.ts`
+- `modified`: `src/Webhooks.ts`
+- `modified`: `src/apiVersion.ts`
+- `modified`: `src/net/FetchHttpClient.ts`
+- `modified`: `src/net/HttpClient.ts`
+- `modified`: `src/net/NodeHttpClient.ts`
+- `modified`: `src/resources.ts`
+- `modified`: `src/resources/AccountLinks.ts`
+- `modified`: `src/resources/AccountSessions.ts`
+- `modified`: `src/resources/Accounts.ts`
+- `modified`: `src/resources/BalanceTransactions.ts`
+- `modified`: `src/resources/BankAccounts.ts`
+- `added`: `src/resources/Billing/FeedbackOptions.ts`
+- `modified`: `src/resources/Billing/index.ts`
+- `modified`: `src/resources/BillingPortal/Configurations.ts`
+- `modified`: `src/resources/BillingPortal/Sessions.ts`
+- `modified`: `src/resources/Cards.ts`
+- `modified`: `src/resources/CashBalances.ts`
+- `modified`: `src/resources/Charges.ts`
+- `modified`: `src/resources/Checkout/Sessions.ts`
+- `modified`: `src/resources/Climate/Orders.ts`
+- `modified`: `src/resources/Climate/Products.ts`
+- `modified`: `src/resources/ConfirmationTokens.ts`
+- `modified`: `src/resources/CreditNoteLineItems.ts`
+- `modified`: `src/resources/CreditNotes.ts`
+- `modified`: `src/resources/CustomerSessions.ts`
+- `modified`: `src/resources/Customers.ts`
+- `modified`: `src/resources/Files.ts`
+- `modified`: `src/resources/FinancialConnections/Sessions.ts`
+- `modified`: `src/resources/InvoiceItems.ts`
+- `modified`: `src/resources/InvoiceLineItems.ts`
+- `modified`: `src/resources/InvoicePayments.ts`
+- `modified`: `src/resources/InvoiceRenderingTemplates.ts`
+- `modified`: `src/resources/Invoices.ts`
+- `modified`: `src/resources/Issuing/Cardholders.ts`
+- `modified`: `src/resources/Issuing/Cards.ts`
+- `modified`: `src/resources/Mandates.ts`
+- `modified`: `src/resources/PaymentAttemptRecords.ts`
+- `modified`: `src/resources/PaymentIntents.ts`
+- `modified`: `src/resources/PaymentLinks.ts`
+- `modified`: `src/resources/PaymentMethods.ts`
+- `modified`: `src/resources/PaymentRecords.ts`
+- `modified`: `src/resources/Payouts.ts`
+- `modified`: `src/resources/Plans.ts`
+- `modified`: `src/resources/Prices.ts`
+- `modified`: `src/resources/Products.ts`
+- `modified`: `src/resources/Quotes.ts`
+- `modified`: `src/resources/Radar/PaymentEvaluations.ts`
+- `modified`: `src/resources/Radar/ValueLists.ts`
+- `modified`: `src/resources/Refunds.ts`
+- `modified`: `src/resources/Reporting/ReportRuns.ts`
+- `modified`: `src/resources/Reviews.ts`
+- `modified`: `src/resources/SetupAttempts.ts`
+- `modified`: `src/resources/SetupIntents.ts`
+- `modified`: `src/resources/ShippingRates.ts`
+- `modified`: `src/resources/SourceTransactions.ts`
+- `modified`: `src/resources/Sources.ts`
+- `modified`: `src/resources/SubscriptionItems.ts`
+- `modified`: `src/resources/SubscriptionSchedules.ts`
+- `modified`: `src/resources/Subscriptions.ts`
+- `modified`: `src/resources/Tax/CalculationLineItems.ts`
+- `modified`: `src/resources/Tax/Calculations.ts`
+- `modified`: `src/resources/Tax/Registrations.ts`
+- `modified`: `src/resources/Tax/Settings.ts`
+- `modified`: `src/resources/Tax/Transactions.ts`
+- `modified`: `src/resources/TaxIds.ts`
+- `modified`: `src/resources/TaxRates.ts`
+- `modified`: `src/resources/Terminal/Readers.ts`
+- `modified`: `src/resources/TestHelpers/ConfirmationTokens.ts`
+- `modified`: `src/resources/TestHelpers/Issuing/Authorizations.ts`
+- `modified`: `src/resources/TestHelpers/Issuing/Transactions.ts`
+- `modified`: `src/resources/Tokens.ts`
+- `modified`: `src/resources/Topups.ts`
+- `modified`: `src/resources/Transfers.ts`
+- `modified`: `src/resources/V2/Core/Accounts.ts`
+- `modified`: `src/resources/WebhookEndpoints.ts`
+- `modified`: `src/stripe.cjs.node.ts`
+- `modified`: `src/stripe.core.ts`
+- `modified`: `src/stripe.esm.node.ts`
+- `modified`: `src/utils.ts`
+- `added`: `test/DiscriminatedUnion.spec.ts`
+- `modified`: `test/RequestSender.spec.ts`
+- `added`: `test/StripeEventNotificationHandler.spec.ts`
+- `modified`: `test/V2Coercion.spec.ts`
+- `modified`: `test/net/FetchHttpClient.spec.ts`
+- `modified`: `test/resources/generated_examples_test.spec.js`
+- `modified`: `testProjects/types-cjs-node16/typescriptTest.ts`
+- `modified`: `testProjects/types-cjs/typescriptTest.ts`
+- `modified`: `testProjects/types/typescriptTest.ts`
+- `modified`: `yarn.lock`

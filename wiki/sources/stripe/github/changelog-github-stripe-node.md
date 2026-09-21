@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/stripe-node"
 type: source
 date_ingested: 2026-08-08
-date_updated: 2026-08-08
+date_updated: 2026-09-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-08-08-57626dc/manifest.json"
 tags: [stripe, stripe-node, node-js, changelog, github-repository]
 ---
@@ -12,6 +13,34 @@ tags: [stripe, stripe-node, node-js, changelog, github-repository]
 ## Overview
 
 Package-qualified retained release history for `stripe/stripe-node`. Cumulative implementation knowledge belongs in [[source-github-stripe-node]].
+
+## `stripe@22.5.0` - Change Set `65d99a2` (2026-08-10)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe` | `22.4.0` | `22.5.0` | 2026-08-10 | `65d99a2b76d0786d7cec8544920affadccc8b670` | Delta; approved focused reading |
+
+**Important changes:** Adds snapshot/thin-event `WithoutVerification` helpers with AWS EventBridge and Azure CloudEvents extraction, static `Stripe.MAJOR_API_VERSION` (`dahlia`), an opt-in extensibility export condition and runtime transport, direct runtime-error propagation, shared response JSON parsing, and an environment-triggered Claude Code stderr hint. API pin `2026-07-29.dahlia`, OpenAPI marker `v2349`, generated checkout resources and runtime dependencies are unchanged.
+
+**Developer impact:** Authenticate incoming events before queuing, then use the appropriate unverified parser only behind the trusted boundary. Shape recognition does not verify sender, timestamp or schema. Thin notifications retain lazy context-aware fetch helpers. The new transport is Stripe Script-specific, not a keyless regular Node integration: `api.stripe.com` only, no response headers/streaming, no local timeout enforcement in the adapter, and no default crypto provider.
+
+**Migration and contradictions:** Existing verified methods remain available. Comments incorrectly name `webhooks.verifySignatureHeader`; use the actual `webhooks.signature.verifyHeader`/Async with an explicit positive tolerance if using the low-level API. High-level verified parsers retain a 300-second fallback. Release notes name lowercase `stripe.major_api_version`, but source/type-test diffs expose static `Stripe.MAJOR_API_VERSION`. Shared core permits missing/null `object` in the thin builder, while Node ESM requires `v2.core.event`; unexpected non-null object values now throw. Do not assume malformed/omitted-object input parity. The source-vs-README retry conflict persists: base platform default 2, extensibility configured default 0, README 1. Set the retry budget explicitly; the existing first connection-closed retry exception is separate.
+
+**History clarification:** The new raw changelog rewrites the older 22.4.0 `OtherString` explanation to emphasize open enums. This is retrospective documentation, not a new 22.5.0 enum feature.
+
+**Updated source sections:** Package status, evidence boundary, event parsing, runtime/metadata additions, retained history; Stripe Node concept, company/index and logs. Existing `22.1.1` and `22.4.0` history preserved; source count unchanged.
+
+**Reading boundary:** Read all changed retained implementation and the complete comparison. Under the user-approved exception, unchanged historical changelog blocks and manifests were verified mechanically. Two added, 12 modified, 54 unchanged retained files. ESM entrypoint/emitter/test changes are comparison-only evidence; no SDK build, upstream test execution or live payment verification.
+
+**Evidence:**
+
+- [Release manifest](../../../../raw/github/stripe/stripe-node/releases/stripe/22.5.0/2026-09-21/manifest.json) and [release notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.5.0/2026-09-21/release-notes.md)
+- [Snapshot manifest](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/manifest.json)
+- [Comparison manifest](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.4.0--22.5.0/comparison.json) and [complete diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.4.0--22.5.0/diff.patch)
+- [Webhooks](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/files/src/Webhooks.ts), [core](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/files/src/stripe.core.ts), [utilities](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/files/src/utils.ts)
+- [Extensibility platform](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/files/src/platform/ExtensibilityPlatformFunctions.ts), [endpointFetch](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/files/src/net/EndpointFetchHttpClient.ts), [request sender](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/files/src/RequestSender.ts)
+- [Repository changelog](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/files/CHANGELOG.md)
+- [Review receipt](../../../../tracking/github/repos/stripe/stripe-node/ingest-review-fdb611aa.md)
 
 ## `stripe@22.4.0` — Change Set `57626dc` (2026-07-29)
 

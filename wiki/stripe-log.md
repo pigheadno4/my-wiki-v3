@@ -6,6 +6,14 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-21] ingest | Stripe Node `22.5.0`
+
+- Delta-ingested approved `github-fdb611aa510b593685f6`, `stripe@22.4.0` -> `stripe@22.5.0`, exact SHA `65d99a2b76d0786d7cec8544920affadccc8b670`. User authorized focused reading for this release only: changed implementation and full 3,575-line diff read; both manifest inventories/all file hashes and 4,868 unchanged historical changelog lines verified mechanically. Two added, 12 modified, 54 unchanged retained files.
+- Recorded unverified snapshot/thin parsing with cloud-envelope extraction, static API-family constant, opt-in extensibility transport and runtime-error behavior, plus the initialization stderr hint. API pin and generated checkout resources unchanged; older source/changelog knowledge preserved.
+- Recorded wrong helper/constant names in upstream prose, low-level tolerance caveat, core/Node ESM object-check divergence and continuing README/retry-default conflict. Excluded entrypoint/emitter/test changes were reviewed in the diff; no build, upstream test, or live payment execution.
+- Updated Stripe Node concept first, then cumulative source/changelog, company/index and logs. Company source count unchanged at 666. No cross-company comparison warranted. Review: `tracking/github/repos/stripe/stripe-node/ingest-review-fdb611aa.md`.
+- `22.6.0`, `22.6.1` and `22.6.2` remain collected, awaiting approval; this ingest does not advance their state.
+
 ## [2026-09-15] ingest | React Stripe.js 6.10.0
 
 - Delta-ingested approved `github-21eb12ac207dc1342925`, 6.9.0 to exact SHA `d1750b056f363f9a44fd70ecbe8d0a1bba3e3f4d`, after full serial reading of assigned raw files, manifests, comparison and cumulative wiki context.

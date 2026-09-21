@@ -325,6 +325,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_ruby/releases/braintree/4.40.0/2026-08-23/manifest.json)
   Comparison: Not applicable
 
+## `github-2402efbbc4962288beb9`
+
+- Repository: `stripe/stripe-node`
+- SHA: `9f82c466c0a5913906ab1bf39790edd4d231ee5d`
+- Collection date: `2026-09-21`
+- State: `awaiting_approval`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-node/ingest-packets/github-2402efbbc4962288beb9/packet.md)
+- Review priority: `normal`
+- Required reading: `22` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe@22.6.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-node/releases/stripe/22.6.1/2026-09-21/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-node/comparisons/stripe/22.6.0--22.6.1/comparison.json)
+
 ## `github-26220457423a12b6b561`
 
 - Repository: `paypal/paypal-php-server-sdk`
@@ -579,6 +604,31 @@
 - `AdyenWeChatPayInternal@2.2.0` (recommended `full`)
   Release: [manifest](../../raw/github/adyen/adyen-wechatpay-ios/releases/adyenwechatpayinternal/2.2.0/2026-08-26/manifest.json)
   Comparison: Not applicable
+
+## `github-436c32c59360977be8fa`
+
+- Repository: `stripe/stripe-node`
+- SHA: `2f64e7ac920bd6863fdb851f4fb1fcc6190d963f`
+- Collection date: `2026-09-21`
+- State: `awaiting_approval`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-node/ingest-packets/github-436c32c59360977be8fa/packet.md)
+- Review priority: `high`
+- Required reading: `42` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe@22.6.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-node/releases/stripe/22.6.0/2026-09-21/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-node/comparisons/stripe/22.5.0--22.6.0/comparison.json)
 
 ## `github-43baf5daaf3a92e79a79`
 
@@ -2262,6 +2312,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.434/2026-09-20/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.433--5.0.434/comparison.json)
 
+## `github-c5fa7a0352b6764a7481`
+
+- Repository: `stripe/stripe-node`
+- SHA: `d9d092737b4a891f0beaf47c26c222972a4c7b0f`
+- Collection date: `2026-09-21`
+- State: `awaiting_approval`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-node/ingest-packets/github-c5fa7a0352b6764a7481/packet.md)
+- Review priority: `normal`
+- Required reading: `20` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe@22.6.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-node/releases/stripe/22.6.2/2026-09-21/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-node/comparisons/stripe/22.6.1--22.6.2/comparison.json)
+
 ## `github-c9338f57d905235adf30`
 
 - Repository: `paypal/paypal-messaging-components`
@@ -2897,6 +2972,31 @@
 - `@paypal/paypal-js@11.0.0` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.0/2026-08-30/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/10.1.0--11.0.0/comparison.json)
+
+## `github-fdb611aa510b593685f6`
+
+- Repository: `stripe/stripe-node`
+- SHA: `65d99a2b76d0786d7cec8544920affadccc8b670`
+- Collection date: `2026-09-21`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-node/ingest-packets/github-fdb611aa510b593685f6/packet.md)
+- Review priority: `high`
+- Required reading: `23` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe@22.5.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-node/releases/stripe/22.5.0/2026-09-21/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-node/comparisons/stripe/22.4.0--22.5.0/comparison.json)
 
 ## `github-fed285eccd42cc9507d5`
 
