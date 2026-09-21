@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-typescript-server-sdk"
 type: source
 date_ingested: 2026-04-16
-date_updated: 2026-08-10
+date_updated: 2026-09-21
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/manifest.json"
   - "github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/manifest.json"
   - "github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-b37cec5/manifest.json"
   - "github-paypal-ts-server-sdk.md"
@@ -15,7 +16,7 @@ tags: [paypal, typescript, server-sdk, orders, payments, vault, subscriptions, t
 
 `paypal/paypal-typescript-server-sdk` publishes the official `@paypal/paypal-server-sdk` package for Node.js. The fully read `2.3.0` baseline is pinned to commit `b37cec58f2cdeecf5b9b7a7c15131cc5f4fff712`; the reviewed `2.4.0` delta is pinned to `dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3`. The package wraps five PayPal REST API families: Orders v2, Payments v2, Payment Method Tokens v3, Transaction Search v1, and Subscriptions v1.
 
-Install the latest reviewed package with `npm install @paypal/paypal-server-sdk@2.4.0`. Repository: <https://github.com/paypal/PayPal-TypeScript-Server-SDK>
+Latest reviewed delta: `@paypal/paypal-server-sdk@2.5.0` at `790be9be9b694be08157e1cd5d50321c72727a76`, released 2026-08-21, collected 2026-09-20 and ingested 2026-09-21. Install with `npm install @paypal/paypal-server-sdk@2.5.0`. Repository: <https://github.com/paypal/PayPal-TypeScript-Server-SDK>
 
 ## Evidence Boundary
 
@@ -87,6 +88,61 @@ Billing models support trial and regular cycles, pricing schemes, payment prefer
 
 ## Version-Qualified History
 
+### `2.5.0` delta
+
+The capsule retains 400 files (927,259 bytes): three additions, seven modifications, and 390 hash-identical files relative to `2.4.0`. Ingest used the user-approved focused-reading exception for generated documentation and inventories. Older history below is preserved.
+
+**Subscription response typing:** `Subscription` adds optional `status`, `statusChangeNote`, and `statusUpdateTime`, mapped to wire fields `status`, `status_change_note`, and `status_update_time`. The public `SubscriptionStatus` enum contains `ApprovalPending`, `Approved`, `Active`, `Suspended`, `Cancelled`, and `Expired`. This is typed lifecycle information, not a new create/activate/revise endpoint. Active status does not itself prove a payment.
+
+**Recurring metadata frequency:** `BillingCycle` gains optional `frequency: CycleFrequency`, with required `intervalUnit` and optional `intervalCount`. Its new `FrequencyIntervalUnit` supports DAY/WEEK/MONTH/YEAR/LIFETIME; the count is documented as ignored for LIFETIME. `OrderBillingPlan` uses this model for merchant-managed recurring metadata during saved-payment-token or billing-agreement creation. In contrast, `PlanRequest.billingCycles` still uses `SubscriptionBillingCycle` with existing `Frequency`/`IntervalUnit` (no LIFETIME). Do not infer LIFETIME support for subscription-plan creation or merchant eligibility.
+
+> [!warning] Documentation versus local validation
+> New generated frequency documentation states default count 1 and range 1-365, but the retained schema only applies `optional(number())`; it does not explicitly insert that default or enforce those bounds. New subscription note/time fields likewise use optional string schemas rather than the documented length/date constraints. Server-side acceptance and external adapter behavior are not established here.
+
+**Packaging:** `@apimatic/core` moves from `^0.10.28` to `^0.10.30`; `tslib@^2.5.0` moves from development to runtime dependencies. Both compared TypeScript configuration files add `skipLibCheck: true`. Node's declared minimum stays `>=14.17.0`. No external-core implementation or build result is established.
+
+**Documentation/support:** Generated model examples migrate from JSON to typed TypeScript. Of 373 model-document diffs, 368 change only example sections; five also add field/model descriptions. The new contribution notice in the diff rejects external PRs and directs merchant/partner issues to PayPal technical support rather than GitHub. LICENSE is hash-unchanged; this is not evidence of a new license.
+
+**Release attribution:** No `2.5.0` release notes were available. The current CHANGELOG adds only a retrospective `2.4.0` entry for processing-instruction and documentation-URL fixes. Exact `2.5.0` findings come from retained source/diff evidence.
+
+### `2.5.0` TypeScript examples
+
+Illustrative server-side typing, not live API or payment verification. `subscription` below is an SDK-parsed model, not raw snake_case JSON:
+
+```typescript
+import { SubscriptionStatus } from '@paypal/paypal-server-sdk';
+import type { Subscription } from '@paypal/paypal-server-sdk';
+
+function describeSubscription(subscription: Subscription) {
+  return {
+    status: subscription.status ?? 'UNKNOWN',
+    isActive: subscription.status === SubscriptionStatus.Active,
+    note: subscription.statusChangeNote,
+    updatedAt: subscription.statusUpdateTime,
+  };
+}
+```
+
+The two frequency models remain distinct:
+
+```typescript
+import { FrequencyIntervalUnit, IntervalUnit } from '@paypal/paypal-server-sdk';
+import type { CycleFrequency, Frequency } from '@paypal/paypal-server-sdk';
+
+// Merchant-managed metadata; not a subscription-plan request.
+const lifetimeTerms: CycleFrequency = {
+  intervalUnit: FrequencyIntervalUnit.Lifetime,
+};
+
+// Existing subscription-plan frequency type.
+const monthlyPlan: Frequency = {
+  intervalUnit: IntervalUnit.Month,
+  intervalCount: 1,
+};
+```
+
+No upstream build, API call, or payment test was executed for this ingest.
+
 ### `2.4.0` delta
 
 - Adds the public `ProcessingInstruction` enum with `ORDER_COMPLETE_ON_PAYMENT_APPROVAL`. Optional `processingInstruction` fields are exposed on create- and confirm-order requests and returned Order/authorization models. This proves typed Orders API support for the instruction; it does not establish eligibility for every payment source.
@@ -94,7 +150,7 @@ Billing models support trial and regular cycles, pricing schemes, payment prefer
 - Generated controller documentation now states OAuth requirements and successful HTTP response semantics. Many response fields are newly marked read-only and relative PayPal documentation links are normalized to absolute URLs. These are contract/documentation clarifications, not new payment-method availability.
 - Package and README references advance from `2.3.0` to `2.4.0`. No upstream `2.4.0` release notes were available in the collected release record.
 
-The retained repository changelog records `1.0.0` as the GA Orders, Payments, and Vault release; `1.1.0` added Apple Pay and Google Pay models; `2.0.0` added Transaction Search and Subscriptions with breaking model renames; `2.1.0` fixed Transaction Search naming and a shipment-carrier enum; `2.2.0` added missing subscriber and PayPal vault fields; and `2.3.0` fixed ESM/CommonJS build differences. Package `2.3.0` remains the full baseline and `2.4.0` is the latest reviewed delta.
+The retained repository changelog records `1.0.0` as the GA Orders, Payments, and Vault release; `1.1.0` added Apple Pay and Google Pay models; `2.0.0` added Transaction Search and Subscriptions with breaking model renames; `2.1.0` fixed Transaction Search naming and a shipment-carrier enum; `2.2.0` added missing subscriber and PayPal vault fields; and `2.3.0` fixed ESM/CommonJS build differences. Package `2.3.0` remains the full baseline; `2.4.0` and `2.5.0` are separate reviewed deltas.
 
 See [[changelog-github-paypal-typescript-server-sdk]] for the release ledger and future deltas.
 
@@ -108,6 +164,15 @@ See [[changelog-github-paypal-typescript-server-sdk]] for the release ledger and
 - PHP server SDK: [[source-github-paypal-php-server-sdk]]
 
 ## Raw Sources
+
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/manifest.json` - exact 400-file `2.5.0` capsule.
+- `raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.5.0/2026-09-20/manifest.json` - release identity; notes unavailable.
+- `tracking/github/repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.4.0--2.5.0/comparison.json` - comparison inventory.
+- `tracking/github/repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.4.0--2.5.0/diff.patch` - implementation, generated-documentation, build and contribution changes.
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/files/src/models/subscription.ts` - new lifecycle fields and mapping.
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/files/src/models/cycleFrequency.ts` - terms-reset frequency schema.
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/files/src/models/orderBillingPlan.ts` - merchant-managed metadata boundary.
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/files/src/models/planRequest.ts` - distinct subscription-plan model.
 
 - `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/manifest.json` - 397-file exact-SHA `2.4.0` source capsule.
 - `raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-10/manifest.json` - package-qualified `2.4.0` release identity and release date.

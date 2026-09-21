@@ -1,0 +1,789 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-typescript-server-sdk`
+- Package: `@paypal/paypal-server-sdk`
+- From: `2.4.0` (`dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3`)
+- To: `2.5.0` (`790be9be9b694be08157e1cd5d50321c72727a76`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.codegenignore`
+- `.gitattributes`
+- `CHANGELOG.md`
+- `CONTRIBUTING.md`
+- `README.md`
+- `doc/models/activate-subscription-request.md`
+- `doc/models/activity-timestamps.md`
+- `doc/models/address.md`
+- `doc/models/amount-breakdown.md`
+- `doc/models/amount-with-breakdown.md`
+- `doc/models/app-switch-context.md`
+- `doc/models/apple-pay-attributes-response.md`
+- `doc/models/apple-pay-attributes.md`
+- `doc/models/apple-pay-card-response.md`
+- `doc/models/apple-pay-card.md`
+- `doc/models/apple-pay-decrypted-token-data.md`
+- `doc/models/apple-pay-experience-context.md`
+- `doc/models/apple-pay-payment-data-type.md`
+- `doc/models/apple-pay-payment-data.md`
+- `doc/models/apple-pay-payment-object.md`
+- `doc/models/apple-pay-payment-token.md`
+- `doc/models/apple-pay-request-card.md`
+- `doc/models/apple-pay-request.md`
+- `doc/models/apple-pay-tokenized-card.md`
+- `doc/models/application-context-user-action.md`
+- `doc/models/assurance-details.md`
+- `doc/models/auction-information.md`
+- `doc/models/authentication-response.md`
+- `doc/models/authorization-incomplete-reason.md`
+- `doc/models/authorization-status-details.md`
+- `doc/models/authorization-status-with-details.md`
+- `doc/models/authorization-status.md`
+- `doc/models/authorization-with-additional-data.md`
+- `doc/models/authorization.md`
+- `doc/models/avs-code.md`
+- `doc/models/balance-information.md`
+- `doc/models/balances-response.md`
+- `doc/models/bancontact-payment-object.md`
+- `doc/models/bancontact-payment-request.md`
+- `doc/models/bank-request.md`
+- `doc/models/billing-cycle-override.md`
+- `doc/models/billing-cycle.md`
+- `doc/models/billing-plan.md`
+- `doc/models/bin-details.md`
+- `doc/models/blik-experience-context.md`
+- `doc/models/blik-level-0-payment-object.md`
+- `doc/models/blik-one-click-payment-object.md`
+- `doc/models/blik-one-click-payment-request.md`
+- `doc/models/blik-payment-object.md`
+- `doc/models/blik-payment-request.md`
+- `doc/models/callback-configuration.md`
+- `doc/models/callback-events.md`
+- `doc/models/cancel-subscription-request.md`
+- `doc/models/capture-incomplete-reason.md`
+- `doc/models/capture-payment-instruction.md`
+- `doc/models/capture-request.md`
+- `doc/models/capture-status-details.md`
+- `doc/models/capture-status-with-details.md`
+- `doc/models/capture-status.md`
+- `doc/models/capture-subscription-request.md`
+- `doc/models/capture-type.md`
+- `doc/models/captured-payment.md`
+- `doc/models/card-attributes-response.md`
+- `doc/models/card-attributes.md`
+- `doc/models/card-authentication-response.md`
+- `doc/models/card-brand.md`
+- `doc/models/card-customer-information.md`
+- `doc/models/card-customer.md`
+- `doc/models/card-experience-context.md`
+- `doc/models/card-from-request.md`
+- `doc/models/card-payment-token-entity.md`
+- `doc/models/card-request.md`
+- `doc/models/card-response-address.md`
+- `doc/models/card-response-with-billing-address.md`
+- `doc/models/card-response.md`
+- `doc/models/card-stored-credential.md`
+- `doc/models/card-supplementary-data.md`
+- `doc/models/card-type.md`
+- `doc/models/card-vault-response.md`
+- `doc/models/card-verification-details.md`
+- `doc/models/card-verification-processor-response.md`
+- `doc/models/card-verification-status.md`
+- `doc/models/card-verification.md`
+- `doc/models/cart-information.md`
+- `doc/models/checkout-option.md`
+- `doc/models/checkout-payment-intent.md`
+- `doc/models/cobranded-card.md`
+- `doc/models/confirm-order-request.md`
+- `doc/models/create-subscription-request.md`
+- `doc/models/custom-error.md`
+- `doc/models/customer-information.md`
+- `doc/models/customer-response.md`
+- `doc/models/customer-vault-payment-tokens-response.md`
+- `doc/models/customer.md`
+- `doc/models/cvv-code.md`
+- `doc/models/cycle-execution.md`
+- `doc/models/cycle-frequency.md`
+- `doc/models/default-error.md`
+- `doc/models/disbursement-mode.md`
+- `doc/models/dispute-category.md`
+- `doc/models/eci-flag.md`
+- `doc/models/enrollment-status.md`
+- `doc/models/eps-payment-object.md`
+- `doc/models/eps-payment-request.md`
+- `doc/models/error-details.md`
+- `doc/models/exchange-rate.md`
+- `doc/models/experience-context-shipping-preference.md`
+- `doc/models/experience-context.md`
+- `doc/models/experience-status.md`
+- `doc/models/failed-payment-details.md`
+- `doc/models/frequency-interval-unit.md`
+- `doc/models/frequency.md`
+- `doc/models/fulfillment-type.md`
+- `doc/models/giropay-payment-object.md`
+- `doc/models/giropay-payment-request.md`
+- `doc/models/google-pay-authentication-method.md`
+- `doc/models/google-pay-card-response.md`
+- `doc/models/google-pay-card.md`
+- `doc/models/google-pay-decrypted-token-data.md`
+- `doc/models/google-pay-experience-context.md`
+- `doc/models/google-pay-payment-method.md`
+- `doc/models/google-pay-request-card.md`
+- `doc/models/google-pay-request.md`
+- `doc/models/google-pay-wallet-response.md`
+- `doc/models/ideal-payment-object.md`
+- `doc/models/ideal-payment-request.md`
+- `doc/models/incentive-details.md`
+- `doc/models/incentive-information.md`
+- `doc/models/interval-unit.md`
+- `doc/models/item-category.md`
+- `doc/models/item-details.md`
+- `doc/models/item-request.md`
+- `doc/models/item.md`
+- `doc/models/last-payment-details.md`
+- `doc/models/level-2-card-processing-data.md`
+- `doc/models/level-3-card-processing-data.md`
+- `doc/models/liability-shift-indicator.md`
+- `doc/models/line-item.md`
+- `doc/models/link-description.md`
+- `doc/models/link-http-method.md`
+- `doc/models/merchant-preferences.md`
+- `doc/models/mobile-return-flow.md`
+- `doc/models/mobile-web-context.md`
+- `doc/models/modify-subscription-request.md`
+- `doc/models/modify-subscription-response.md`
+- `doc/models/money.md`
+- `doc/models/mybank-payment-object.md`
+- `doc/models/mybank-payment-request.md`
+- `doc/models/name.md`
+- `doc/models/native-app-context.md`
+- `doc/models/net-amount-breakdown-item.md`
+- `doc/models/network-token.md`
+- `doc/models/network-transaction-reference-entity.md`
+- `doc/models/network-transaction.md`
+- `doc/models/o-auth-provider-error-1.md`
+- `doc/models/o-auth-provider-error.md`
+- `doc/models/o-auth-token.md`
+- `doc/models/one-time-charge.md`
+- `doc/models/order-application-context-landing-page.md`
+- `doc/models/order-application-context-shipping-preference.md`
+- `doc/models/order-application-context-user-action.md`
+- `doc/models/order-application-context.md`
+- `doc/models/order-authorize-request-payment-source.md`
+- `doc/models/order-authorize-request.md`
+- `doc/models/order-authorize-response-payment-source.md`
+- `doc/models/order-authorize-response.md`
+- `doc/models/order-billing-plan.md`
+- `doc/models/order-capture-request-payment-source.md`
+- `doc/models/order-capture-request.md`
+- `doc/models/order-confirm-application-context.md`
+- `doc/models/order-request.md`
+- `doc/models/order-status.md`
+- `doc/models/order-tracker-item.md`
+- `doc/models/order-tracker-request.md`
+- `doc/models/order-tracker-response.md`
+- `doc/models/order-tracker-status.md`
+- `doc/models/order.md`
+- `doc/models/orders-capture.md`
+- `doc/models/orders-card-verification-method.md`
+- `doc/models/os-type.md`
+- `doc/models/p24-payment-object.md`
+- `doc/models/p24-payment-request.md`
+- `doc/models/pa-res-status.md`
+- `doc/models/participant-metadata.md`
+- `doc/models/patch-op.md`
+- `doc/models/patch.md`
+- `doc/models/payee-base.md`
+- `doc/models/payee-payment-method-preference.md`
+- `doc/models/payer-base.md`
+- `doc/models/payer-information.md`
+- `doc/models/payer-name.md`
+- `doc/models/payer.md`
+- `doc/models/payment-advice-code.md`
+- `doc/models/payment-authorization.md`
+- `doc/models/payment-collection.md`
+- `doc/models/payment-initiator.md`
+- `doc/models/payment-instruction.md`
+- `doc/models/payment-method-preference.md`
+- `doc/models/payment-method.md`
+- `doc/models/payment-preferences-override.md`
+- `doc/models/payment-preferences.md`
+- `doc/models/payment-source-response.md`
+- `doc/models/payment-source.md`
+- `doc/models/payment-supplementary-data.md`
+- `doc/models/payment-token-request-card.md`
+- `doc/models/payment-token-request-payment-source.md`
+- `doc/models/payment-token-request.md`
+- `doc/models/payment-token-response-payment-source.md`
+- `doc/models/payment-token-response.md`
+- `doc/models/payment-token-status.md`
+- `doc/models/payments-capture.md`
+- `doc/models/paypal-experience-landing-page.md`
+- `doc/models/paypal-experience-user-action.md`
+- `doc/models/paypal-payment-token-customer-type.md`
+- `doc/models/paypal-payment-token-usage-type.md`
+- `doc/models/paypal-payment-token.md`
+- `doc/models/paypal-reference-id-type.md`
+- `doc/models/paypal-wallet-account-verification-status.md`
+- `doc/models/paypal-wallet-attributes-response.md`
+- `doc/models/paypal-wallet-attributes.md`
+- `doc/models/paypal-wallet-contact-preference.md`
+- `doc/models/paypal-wallet-context-shipping-preference.md`
+- `doc/models/paypal-wallet-customer-request.md`
+- `doc/models/paypal-wallet-customer.md`
+- `doc/models/paypal-wallet-experience-context.md`
+- `doc/models/paypal-wallet-response.md`
+- `doc/models/paypal-wallet-stored-credential.md`
+- `doc/models/paypal-wallet-vault-base.md`
+- `doc/models/paypal-wallet-vault-instruction.md`
+- `doc/models/paypal-wallet-vault-response.md`
+- `doc/models/paypal-wallet-vault-status.md`
+- `doc/models/paypal-wallet.md`
+- `doc/models/phone-number-with-country-code.md`
+- `doc/models/phone-number-with-optional-country-code.md`
+- `doc/models/phone-number.md`
+- `doc/models/phone-type.md`
+- `doc/models/phone-with-type.md`
+- `doc/models/phone.md`
+- `doc/models/plan-collection.md`
+- `doc/models/plan-details.md`
+- `doc/models/plan-override.md`
+- `doc/models/plan-request-status.md`
+- `doc/models/plan-request.md`
+- `doc/models/plan.md`
+- `doc/models/platform-fee.md`
+- `doc/models/pricing-model.md`
+- `doc/models/pricing-scheme.md`
+- `doc/models/pricing-tier.md`
+- `doc/models/processing-instruction.md`
+- `doc/models/processor-response-code.md`
+- `doc/models/processor-response.md`
+- `doc/models/purchase-unit-request.md`
+- `doc/models/purchase-unit.md`
+- `doc/models/reason-code.md`
+- `doc/models/reauthorize-request.md`
+- `doc/models/refund-incomplete-reason.md`
+- `doc/models/refund-payment-instruction.md`
+- `doc/models/refund-platform-fee.md`
+- `doc/models/refund-request.md`
+- `doc/models/refund-status-details.md`
+- `doc/models/refund-status-with-details.md`
+- `doc/models/refund-status.md`
+- `doc/models/refund.md`
+- `doc/models/related-identifiers.md`
+- `doc/models/return-flow.md`
+- `doc/models/risk-supplementary-data.md`
+- `doc/models/search-error.md`
+- `doc/models/search-response.md`
+- `doc/models/seller-payable-breakdown.md`
+- `doc/models/seller-protection-status.md`
+- `doc/models/seller-protection.md`
+- `doc/models/seller-receivable-breakdown.md`
+- `doc/models/sepa-debit-experience-context.md`
+- `doc/models/sepa-debit-request.md`
+- `doc/models/setup-fee-failure-action.md`
+- `doc/models/setup-token-request-card.md`
+- `doc/models/setup-token-request-payment-source.md`
+- `doc/models/setup-token-request.md`
+- `doc/models/setup-token-response-card.md`
+- `doc/models/setup-token-response-payment-source.md`
+- `doc/models/setup-token-response.md`
+- `doc/models/shipment-carrier.md`
+- `doc/models/shipping-details.md`
+- `doc/models/shipping-information.md`
+- `doc/models/shipping-name.md`
+- `doc/models/shipping-option.md`
+- `doc/models/shipping-type.md`
+- `doc/models/shipping-with-tracking-details.md`
+- `doc/models/simple-postal-address-coarse-grained.md`
+- `doc/models/sofort-payment-object.md`
+- `doc/models/sofort-payment-request.md`
+- `doc/models/standard-entry-class-code.md`
+- `doc/models/store-in-vault-instruction.md`
+- `doc/models/store-information.md`
+- `doc/models/stored-payment-source-payment-type.md`
+- `doc/models/stored-payment-source-usage-type.md`
+- `doc/models/stored-payment-source.md`
+- `doc/models/subscriber-request.md`
+- `doc/models/subscriber.md`
+- `doc/models/subscription-amount-with-breakdown.md`
+- `doc/models/subscription-application-context.md`
+- `doc/models/subscription-billing-cycle.md`
+- `doc/models/subscription-billing-information.md`
+- `doc/models/subscription-card-request.md`
+- `doc/models/subscription-collection.md`
+- `doc/models/subscription-customer-information.md`
+- `doc/models/subscription-error.md`
+- `doc/models/subscription-patch-application-context.md`
+- `doc/models/subscription-payer-name.md`
+- `doc/models/subscription-payer.md`
+- `doc/models/subscription-payment-source-response.md`
+- `doc/models/subscription-payment-source.md`
+- `doc/models/subscription-plan-status.md`
+- `doc/models/subscription-pricing-model.md`
+- `doc/models/subscription-pricing-scheme.md`
+- `doc/models/subscription-status.md`
+- `doc/models/subscription-transaction-details.md`
+- `doc/models/subscription.md`
+- `doc/models/subscriptions-card-attributes.md`
+- `doc/models/subscriptions-card-brand.md`
+- `doc/models/supplementary-data.md`
+- `doc/models/suspend-subscription.md`
+- `doc/models/tax-amount.md`
+- `doc/models/tax-id-type.md`
+- `doc/models/tax-info.md`
+- `doc/models/taxes-override.md`
+- `doc/models/taxes.md`
+- `doc/models/tenure-type.md`
+- `doc/models/three-d-secure-authentication-response.md`
+- `doc/models/three-d-secure-card-authentication-response.md`
+- `doc/models/token-type.md`
+- `doc/models/token.md`
+- `doc/models/transaction-details.md`
+- `doc/models/transaction-information.md`
+- `doc/models/transaction-search-error-details.md`
+- `doc/models/transactions-list.md`
+- `doc/models/trustly-payment-object.md`
+- `doc/models/trustly-payment-request.md`
+- `doc/models/universal-product-code.md`
+- `doc/models/upc-type.md`
+- `doc/models/update-pricing-scheme.md`
+- `doc/models/update-pricing-schemes-request.md`
+- `doc/models/usage-pattern.md`
+- `doc/models/usage-type.md`
+- `doc/models/vault-apple-pay-request.md`
+- `doc/models/vault-card-experience-context.md`
+- `doc/models/vault-card-verification-method.md`
+- `doc/models/vault-customer.md`
+- `doc/models/vault-experience-context.md`
+- `doc/models/vault-instruction-action.md`
+- `doc/models/vault-instruction-base.md`
+- `doc/models/vault-instruction.md`
+- `doc/models/vault-paypal-wallet-request.md`
+- `doc/models/vault-response-customer.md`
+- `doc/models/vault-response.md`
+- `doc/models/vault-status.md`
+- `doc/models/vault-token-request-type.md`
+- `doc/models/vault-token-request.md`
+- `doc/models/vault-user-action.md`
+- `doc/models/vault-venmo-request.md`
+- `doc/models/vaulted-digital-wallet-shipping-details.md`
+- `doc/models/vaulted-digital-wallet.md`
+- `doc/models/venmo-experience-context.md`
+- `doc/models/venmo-payment-token-customer-type.md`
+- `doc/models/venmo-payment-token-usage-pattern.md`
+- `doc/models/venmo-payment-token-usage-type.md`
+- `doc/models/venmo-payment-token.md`
+- `doc/models/venmo-vault-response-status.md`
+- `doc/models/venmo-vault-response.md`
+- `doc/models/venmo-wallet-additional-attributes.md`
+- `doc/models/venmo-wallet-attributes-response.md`
+- `doc/models/venmo-wallet-customer-information.md`
+- `doc/models/venmo-wallet-experience-context-shipping-preference.md`
+- `doc/models/venmo-wallet-experience-context-user-action.md`
+- `doc/models/venmo-wallet-experience-context.md`
+- `doc/models/venmo-wallet-request.md`
+- `doc/models/venmo-wallet-response.md`
+- `doc/models/venmo-wallet-vault-attributes.md`
+- `package.json`
+- `src/client.ts`
+- `src/index.ts`
+- `src/models/billingCycle.ts`
+- `src/models/cycleFrequency.ts`
+- `src/models/frequencyIntervalUnit.ts`
+- `src/models/subscription.ts`
+- `src/models/subscriptionStatus.ts`
+- `tsconfig.base.json`
+- `tsconfig.json`
+
+## Upstream changes
+
+- `modified`: `.codegenignore`
+- `added`: `.gitattributes`
+- `modified`: `CHANGELOG.md`
+- `added`: `CONTRIBUTING.md`
+- `modified`: `README.md`
+- `modified`: `doc/models/activate-subscription-request.md`
+- `modified`: `doc/models/activity-timestamps.md`
+- `modified`: `doc/models/address.md`
+- `modified`: `doc/models/amount-breakdown.md`
+- `modified`: `doc/models/amount-with-breakdown.md`
+- `modified`: `doc/models/app-switch-context.md`
+- `modified`: `doc/models/apple-pay-attributes-response.md`
+- `modified`: `doc/models/apple-pay-attributes.md`
+- `modified`: `doc/models/apple-pay-card-response.md`
+- `modified`: `doc/models/apple-pay-card.md`
+- `modified`: `doc/models/apple-pay-decrypted-token-data.md`
+- `modified`: `doc/models/apple-pay-experience-context.md`
+- `modified`: `doc/models/apple-pay-payment-data-type.md`
+- `modified`: `doc/models/apple-pay-payment-data.md`
+- `modified`: `doc/models/apple-pay-payment-object.md`
+- `modified`: `doc/models/apple-pay-payment-token.md`
+- `modified`: `doc/models/apple-pay-request-card.md`
+- `modified`: `doc/models/apple-pay-request.md`
+- `modified`: `doc/models/apple-pay-tokenized-card.md`
+- `modified`: `doc/models/application-context-user-action.md`
+- `modified`: `doc/models/assurance-details.md`
+- `modified`: `doc/models/auction-information.md`
+- `modified`: `doc/models/authentication-response.md`
+- `modified`: `doc/models/authorization-incomplete-reason.md`
+- `modified`: `doc/models/authorization-status-details.md`
+- `modified`: `doc/models/authorization-status-with-details.md`
+- `modified`: `doc/models/authorization-status.md`
+- `modified`: `doc/models/authorization-with-additional-data.md`
+- `modified`: `doc/models/authorization.md`
+- `modified`: `doc/models/avs-code.md`
+- `modified`: `doc/models/balance-information.md`
+- `modified`: `doc/models/balances-response.md`
+- `modified`: `doc/models/bancontact-payment-object.md`
+- `modified`: `doc/models/bancontact-payment-request.md`
+- `modified`: `doc/models/bank-request.md`
+- `modified`: `doc/models/billing-cycle-override.md`
+- `modified`: `doc/models/billing-cycle.md`
+- `modified`: `doc/models/billing-plan.md`
+- `modified`: `doc/models/bin-details.md`
+- `modified`: `doc/models/blik-experience-context.md`
+- `modified`: `doc/models/blik-level-0-payment-object.md`
+- `modified`: `doc/models/blik-one-click-payment-object.md`
+- `modified`: `doc/models/blik-one-click-payment-request.md`
+- `modified`: `doc/models/blik-payment-object.md`
+- `modified`: `doc/models/blik-payment-request.md`
+- `modified`: `doc/models/callback-configuration.md`
+- `modified`: `doc/models/callback-events.md`
+- `modified`: `doc/models/cancel-subscription-request.md`
+- `modified`: `doc/models/capture-incomplete-reason.md`
+- `modified`: `doc/models/capture-payment-instruction.md`
+- `modified`: `doc/models/capture-request.md`
+- `modified`: `doc/models/capture-status-details.md`
+- `modified`: `doc/models/capture-status-with-details.md`
+- `modified`: `doc/models/capture-status.md`
+- `modified`: `doc/models/capture-subscription-request.md`
+- `modified`: `doc/models/capture-type.md`
+- `modified`: `doc/models/captured-payment.md`
+- `modified`: `doc/models/card-attributes-response.md`
+- `modified`: `doc/models/card-attributes.md`
+- `modified`: `doc/models/card-authentication-response.md`
+- `modified`: `doc/models/card-brand.md`
+- `modified`: `doc/models/card-customer-information.md`
+- `modified`: `doc/models/card-customer.md`
+- `modified`: `doc/models/card-experience-context.md`
+- `modified`: `doc/models/card-from-request.md`
+- `modified`: `doc/models/card-payment-token-entity.md`
+- `modified`: `doc/models/card-request.md`
+- `modified`: `doc/models/card-response-address.md`
+- `modified`: `doc/models/card-response-with-billing-address.md`
+- `modified`: `doc/models/card-response.md`
+- `modified`: `doc/models/card-stored-credential.md`
+- `modified`: `doc/models/card-supplementary-data.md`
+- `modified`: `doc/models/card-type.md`
+- `modified`: `doc/models/card-vault-response.md`
+- `modified`: `doc/models/card-verification-details.md`
+- `modified`: `doc/models/card-verification-processor-response.md`
+- `modified`: `doc/models/card-verification-status.md`
+- `modified`: `doc/models/card-verification.md`
+- `modified`: `doc/models/cart-information.md`
+- `modified`: `doc/models/checkout-option.md`
+- `modified`: `doc/models/checkout-payment-intent.md`
+- `modified`: `doc/models/cobranded-card.md`
+- `modified`: `doc/models/confirm-order-request.md`
+- `modified`: `doc/models/create-subscription-request.md`
+- `modified`: `doc/models/custom-error.md`
+- `modified`: `doc/models/customer-information.md`
+- `modified`: `doc/models/customer-response.md`
+- `modified`: `doc/models/customer-vault-payment-tokens-response.md`
+- `modified`: `doc/models/customer.md`
+- `modified`: `doc/models/cvv-code.md`
+- `modified`: `doc/models/cycle-execution.md`
+- `added`: `doc/models/cycle-frequency.md`
+- `modified`: `doc/models/default-error.md`
+- `modified`: `doc/models/disbursement-mode.md`
+- `modified`: `doc/models/dispute-category.md`
+- `modified`: `doc/models/eci-flag.md`
+- `modified`: `doc/models/enrollment-status.md`
+- `modified`: `doc/models/eps-payment-object.md`
+- `modified`: `doc/models/eps-payment-request.md`
+- `modified`: `doc/models/error-details.md`
+- `modified`: `doc/models/exchange-rate.md`
+- `modified`: `doc/models/experience-context-shipping-preference.md`
+- `modified`: `doc/models/experience-context.md`
+- `modified`: `doc/models/experience-status.md`
+- `modified`: `doc/models/failed-payment-details.md`
+- `added`: `doc/models/frequency-interval-unit.md`
+- `modified`: `doc/models/frequency.md`
+- `modified`: `doc/models/fulfillment-type.md`
+- `modified`: `doc/models/giropay-payment-object.md`
+- `modified`: `doc/models/giropay-payment-request.md`
+- `modified`: `doc/models/google-pay-authentication-method.md`
+- `modified`: `doc/models/google-pay-card-response.md`
+- `modified`: `doc/models/google-pay-card.md`
+- `modified`: `doc/models/google-pay-decrypted-token-data.md`
+- `modified`: `doc/models/google-pay-experience-context.md`
+- `modified`: `doc/models/google-pay-payment-method.md`
+- `modified`: `doc/models/google-pay-request-card.md`
+- `modified`: `doc/models/google-pay-request.md`
+- `modified`: `doc/models/google-pay-wallet-response.md`
+- `modified`: `doc/models/ideal-payment-object.md`
+- `modified`: `doc/models/ideal-payment-request.md`
+- `modified`: `doc/models/incentive-details.md`
+- `modified`: `doc/models/incentive-information.md`
+- `modified`: `doc/models/interval-unit.md`
+- `modified`: `doc/models/item-category.md`
+- `modified`: `doc/models/item-details.md`
+- `modified`: `doc/models/item-request.md`
+- `modified`: `doc/models/item.md`
+- `modified`: `doc/models/last-payment-details.md`
+- `modified`: `doc/models/level-2-card-processing-data.md`
+- `modified`: `doc/models/level-3-card-processing-data.md`
+- `modified`: `doc/models/liability-shift-indicator.md`
+- `modified`: `doc/models/line-item.md`
+- `modified`: `doc/models/link-description.md`
+- `modified`: `doc/models/link-http-method.md`
+- `modified`: `doc/models/merchant-preferences.md`
+- `modified`: `doc/models/mobile-return-flow.md`
+- `modified`: `doc/models/mobile-web-context.md`
+- `modified`: `doc/models/modify-subscription-request.md`
+- `modified`: `doc/models/modify-subscription-response.md`
+- `modified`: `doc/models/money.md`
+- `modified`: `doc/models/mybank-payment-object.md`
+- `modified`: `doc/models/mybank-payment-request.md`
+- `modified`: `doc/models/name.md`
+- `modified`: `doc/models/native-app-context.md`
+- `modified`: `doc/models/net-amount-breakdown-item.md`
+- `modified`: `doc/models/network-token.md`
+- `modified`: `doc/models/network-transaction-reference-entity.md`
+- `modified`: `doc/models/network-transaction.md`
+- `modified`: `doc/models/o-auth-provider-error-1.md`
+- `modified`: `doc/models/o-auth-provider-error.md`
+- `modified`: `doc/models/o-auth-token.md`
+- `modified`: `doc/models/one-time-charge.md`
+- `modified`: `doc/models/order-application-context-landing-page.md`
+- `modified`: `doc/models/order-application-context-shipping-preference.md`
+- `modified`: `doc/models/order-application-context-user-action.md`
+- `modified`: `doc/models/order-application-context.md`
+- `modified`: `doc/models/order-authorize-request-payment-source.md`
+- `modified`: `doc/models/order-authorize-request.md`
+- `modified`: `doc/models/order-authorize-response-payment-source.md`
+- `modified`: `doc/models/order-authorize-response.md`
+- `modified`: `doc/models/order-billing-plan.md`
+- `modified`: `doc/models/order-capture-request-payment-source.md`
+- `modified`: `doc/models/order-capture-request.md`
+- `modified`: `doc/models/order-confirm-application-context.md`
+- `modified`: `doc/models/order-request.md`
+- `modified`: `doc/models/order-status.md`
+- `modified`: `doc/models/order-tracker-item.md`
+- `modified`: `doc/models/order-tracker-request.md`
+- `modified`: `doc/models/order-tracker-response.md`
+- `modified`: `doc/models/order-tracker-status.md`
+- `modified`: `doc/models/order.md`
+- `modified`: `doc/models/orders-capture.md`
+- `modified`: `doc/models/orders-card-verification-method.md`
+- `modified`: `doc/models/os-type.md`
+- `modified`: `doc/models/p24-payment-object.md`
+- `modified`: `doc/models/p24-payment-request.md`
+- `modified`: `doc/models/pa-res-status.md`
+- `modified`: `doc/models/participant-metadata.md`
+- `modified`: `doc/models/patch-op.md`
+- `modified`: `doc/models/patch.md`
+- `modified`: `doc/models/payee-base.md`
+- `modified`: `doc/models/payee-payment-method-preference.md`
+- `modified`: `doc/models/payer-base.md`
+- `modified`: `doc/models/payer-information.md`
+- `modified`: `doc/models/payer-name.md`
+- `modified`: `doc/models/payer.md`
+- `modified`: `doc/models/payment-advice-code.md`
+- `modified`: `doc/models/payment-authorization.md`
+- `modified`: `doc/models/payment-collection.md`
+- `modified`: `doc/models/payment-initiator.md`
+- `modified`: `doc/models/payment-instruction.md`
+- `modified`: `doc/models/payment-method-preference.md`
+- `modified`: `doc/models/payment-method.md`
+- `modified`: `doc/models/payment-preferences-override.md`
+- `modified`: `doc/models/payment-preferences.md`
+- `modified`: `doc/models/payment-source-response.md`
+- `modified`: `doc/models/payment-source.md`
+- `modified`: `doc/models/payment-supplementary-data.md`
+- `modified`: `doc/models/payment-token-request-card.md`
+- `modified`: `doc/models/payment-token-request-payment-source.md`
+- `modified`: `doc/models/payment-token-request.md`
+- `modified`: `doc/models/payment-token-response-payment-source.md`
+- `modified`: `doc/models/payment-token-response.md`
+- `modified`: `doc/models/payment-token-status.md`
+- `modified`: `doc/models/payments-capture.md`
+- `modified`: `doc/models/paypal-experience-landing-page.md`
+- `modified`: `doc/models/paypal-experience-user-action.md`
+- `modified`: `doc/models/paypal-payment-token-customer-type.md`
+- `modified`: `doc/models/paypal-payment-token-usage-type.md`
+- `modified`: `doc/models/paypal-payment-token.md`
+- `modified`: `doc/models/paypal-reference-id-type.md`
+- `modified`: `doc/models/paypal-wallet-account-verification-status.md`
+- `modified`: `doc/models/paypal-wallet-attributes-response.md`
+- `modified`: `doc/models/paypal-wallet-attributes.md`
+- `modified`: `doc/models/paypal-wallet-contact-preference.md`
+- `modified`: `doc/models/paypal-wallet-context-shipping-preference.md`
+- `modified`: `doc/models/paypal-wallet-customer-request.md`
+- `modified`: `doc/models/paypal-wallet-customer.md`
+- `modified`: `doc/models/paypal-wallet-experience-context.md`
+- `modified`: `doc/models/paypal-wallet-response.md`
+- `modified`: `doc/models/paypal-wallet-stored-credential.md`
+- `modified`: `doc/models/paypal-wallet-vault-base.md`
+- `modified`: `doc/models/paypal-wallet-vault-instruction.md`
+- `modified`: `doc/models/paypal-wallet-vault-response.md`
+- `modified`: `doc/models/paypal-wallet-vault-status.md`
+- `modified`: `doc/models/paypal-wallet.md`
+- `modified`: `doc/models/phone-number-with-country-code.md`
+- `modified`: `doc/models/phone-number-with-optional-country-code.md`
+- `modified`: `doc/models/phone-number.md`
+- `modified`: `doc/models/phone-type.md`
+- `modified`: `doc/models/phone-with-type.md`
+- `modified`: `doc/models/phone.md`
+- `modified`: `doc/models/plan-collection.md`
+- `modified`: `doc/models/plan-details.md`
+- `modified`: `doc/models/plan-override.md`
+- `modified`: `doc/models/plan-request-status.md`
+- `modified`: `doc/models/plan-request.md`
+- `modified`: `doc/models/plan.md`
+- `modified`: `doc/models/platform-fee.md`
+- `modified`: `doc/models/pricing-model.md`
+- `modified`: `doc/models/pricing-scheme.md`
+- `modified`: `doc/models/pricing-tier.md`
+- `modified`: `doc/models/processing-instruction.md`
+- `modified`: `doc/models/processor-response-code.md`
+- `modified`: `doc/models/processor-response.md`
+- `modified`: `doc/models/purchase-unit-request.md`
+- `modified`: `doc/models/purchase-unit.md`
+- `modified`: `doc/models/reason-code.md`
+- `modified`: `doc/models/reauthorize-request.md`
+- `modified`: `doc/models/refund-incomplete-reason.md`
+- `modified`: `doc/models/refund-payment-instruction.md`
+- `modified`: `doc/models/refund-platform-fee.md`
+- `modified`: `doc/models/refund-request.md`
+- `modified`: `doc/models/refund-status-details.md`
+- `modified`: `doc/models/refund-status-with-details.md`
+- `modified`: `doc/models/refund-status.md`
+- `modified`: `doc/models/refund.md`
+- `modified`: `doc/models/related-identifiers.md`
+- `modified`: `doc/models/return-flow.md`
+- `modified`: `doc/models/risk-supplementary-data.md`
+- `modified`: `doc/models/search-error.md`
+- `modified`: `doc/models/search-response.md`
+- `modified`: `doc/models/seller-payable-breakdown.md`
+- `modified`: `doc/models/seller-protection-status.md`
+- `modified`: `doc/models/seller-protection.md`
+- `modified`: `doc/models/seller-receivable-breakdown.md`
+- `modified`: `doc/models/sepa-debit-experience-context.md`
+- `modified`: `doc/models/sepa-debit-request.md`
+- `modified`: `doc/models/setup-fee-failure-action.md`
+- `modified`: `doc/models/setup-token-request-card.md`
+- `modified`: `doc/models/setup-token-request-payment-source.md`
+- `modified`: `doc/models/setup-token-request.md`
+- `modified`: `doc/models/setup-token-response-card.md`
+- `modified`: `doc/models/setup-token-response-payment-source.md`
+- `modified`: `doc/models/setup-token-response.md`
+- `modified`: `doc/models/shipment-carrier.md`
+- `modified`: `doc/models/shipping-details.md`
+- `modified`: `doc/models/shipping-information.md`
+- `modified`: `doc/models/shipping-name.md`
+- `modified`: `doc/models/shipping-option.md`
+- `modified`: `doc/models/shipping-type.md`
+- `modified`: `doc/models/shipping-with-tracking-details.md`
+- `modified`: `doc/models/simple-postal-address-coarse-grained.md`
+- `modified`: `doc/models/sofort-payment-object.md`
+- `modified`: `doc/models/sofort-payment-request.md`
+- `modified`: `doc/models/standard-entry-class-code.md`
+- `modified`: `doc/models/store-in-vault-instruction.md`
+- `modified`: `doc/models/store-information.md`
+- `modified`: `doc/models/stored-payment-source-payment-type.md`
+- `modified`: `doc/models/stored-payment-source-usage-type.md`
+- `modified`: `doc/models/stored-payment-source.md`
+- `modified`: `doc/models/subscriber-request.md`
+- `modified`: `doc/models/subscriber.md`
+- `modified`: `doc/models/subscription-amount-with-breakdown.md`
+- `modified`: `doc/models/subscription-application-context.md`
+- `modified`: `doc/models/subscription-billing-cycle.md`
+- `modified`: `doc/models/subscription-billing-information.md`
+- `modified`: `doc/models/subscription-card-request.md`
+- `modified`: `doc/models/subscription-collection.md`
+- `modified`: `doc/models/subscription-customer-information.md`
+- `modified`: `doc/models/subscription-error.md`
+- `modified`: `doc/models/subscription-patch-application-context.md`
+- `modified`: `doc/models/subscription-payer-name.md`
+- `modified`: `doc/models/subscription-payer.md`
+- `modified`: `doc/models/subscription-payment-source-response.md`
+- `modified`: `doc/models/subscription-payment-source.md`
+- `modified`: `doc/models/subscription-plan-status.md`
+- `modified`: `doc/models/subscription-pricing-model.md`
+- `modified`: `doc/models/subscription-pricing-scheme.md`
+- `added`: `doc/models/subscription-status.md`
+- `modified`: `doc/models/subscription-transaction-details.md`
+- `modified`: `doc/models/subscription.md`
+- `modified`: `doc/models/subscriptions-card-attributes.md`
+- `modified`: `doc/models/subscriptions-card-brand.md`
+- `modified`: `doc/models/supplementary-data.md`
+- `modified`: `doc/models/suspend-subscription.md`
+- `modified`: `doc/models/tax-amount.md`
+- `modified`: `doc/models/tax-id-type.md`
+- `modified`: `doc/models/tax-info.md`
+- `modified`: `doc/models/taxes-override.md`
+- `modified`: `doc/models/taxes.md`
+- `modified`: `doc/models/tenure-type.md`
+- `modified`: `doc/models/three-d-secure-authentication-response.md`
+- `modified`: `doc/models/three-d-secure-card-authentication-response.md`
+- `modified`: `doc/models/token-type.md`
+- `modified`: `doc/models/token.md`
+- `modified`: `doc/models/transaction-details.md`
+- `modified`: `doc/models/transaction-information.md`
+- `modified`: `doc/models/transaction-search-error-details.md`
+- `modified`: `doc/models/transactions-list.md`
+- `modified`: `doc/models/trustly-payment-object.md`
+- `modified`: `doc/models/trustly-payment-request.md`
+- `modified`: `doc/models/universal-product-code.md`
+- `modified`: `doc/models/upc-type.md`
+- `modified`: `doc/models/update-pricing-scheme.md`
+- `modified`: `doc/models/update-pricing-schemes-request.md`
+- `modified`: `doc/models/usage-pattern.md`
+- `modified`: `doc/models/usage-type.md`
+- `modified`: `doc/models/vault-apple-pay-request.md`
+- `modified`: `doc/models/vault-card-experience-context.md`
+- `modified`: `doc/models/vault-card-verification-method.md`
+- `modified`: `doc/models/vault-customer.md`
+- `modified`: `doc/models/vault-experience-context.md`
+- `modified`: `doc/models/vault-instruction-action.md`
+- `modified`: `doc/models/vault-instruction-base.md`
+- `modified`: `doc/models/vault-instruction.md`
+- `modified`: `doc/models/vault-paypal-wallet-request.md`
+- `modified`: `doc/models/vault-response-customer.md`
+- `modified`: `doc/models/vault-response.md`
+- `modified`: `doc/models/vault-status.md`
+- `modified`: `doc/models/vault-token-request-type.md`
+- `modified`: `doc/models/vault-token-request.md`
+- `modified`: `doc/models/vault-user-action.md`
+- `modified`: `doc/models/vault-venmo-request.md`
+- `modified`: `doc/models/vaulted-digital-wallet-shipping-details.md`
+- `modified`: `doc/models/vaulted-digital-wallet.md`
+- `modified`: `doc/models/venmo-experience-context.md`
+- `modified`: `doc/models/venmo-payment-token-customer-type.md`
+- `modified`: `doc/models/venmo-payment-token-usage-pattern.md`
+- `modified`: `doc/models/venmo-payment-token-usage-type.md`
+- `modified`: `doc/models/venmo-payment-token.md`
+- `modified`: `doc/models/venmo-vault-response-status.md`
+- `modified`: `doc/models/venmo-vault-response.md`
+- `modified`: `doc/models/venmo-wallet-additional-attributes.md`
+- `modified`: `doc/models/venmo-wallet-attributes-response.md`
+- `modified`: `doc/models/venmo-wallet-customer-information.md`
+- `modified`: `doc/models/venmo-wallet-experience-context-shipping-preference.md`
+- `modified`: `doc/models/venmo-wallet-experience-context-user-action.md`
+- `modified`: `doc/models/venmo-wallet-experience-context.md`
+- `modified`: `doc/models/venmo-wallet-request.md`
+- `modified`: `doc/models/venmo-wallet-response.md`
+- `modified`: `doc/models/venmo-wallet-vault-attributes.md`
+- `modified`: `package.json`
+- `modified`: `src/client.ts`
+- `modified`: `src/index.ts`
+- `modified`: `src/models/billingCycle.ts`
+- `added`: `src/models/cycleFrequency.ts`
+- `added`: `src/models/frequencyIntervalUnit.ts`
+- `modified`: `src/models/subscription.ts`
+- `added`: `src/models/subscriptionStatus.ts`
+- `modified`: `tsconfig.base.json`
+- `modified`: `tsconfig.json`

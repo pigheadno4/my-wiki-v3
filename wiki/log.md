@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-21] ingest | PayPal TypeScript Server SDK `2.5.0`
+
+- Delta-ingested with approved focused reading; preserved prior versions and added subscription status, separate recurring-frequency models, dependency/build boundaries and TypeScript examples. Details: [[paypal-log]] and [[changelog-github-paypal-typescript-server-sdk]].
+
 ## [2026-09-20] ingest | Braintree Web Drop-in `1.48.0`
 
 - Delta-ingested card-label hardening with complete assigned reading; preserved `1.47.0` history, pinned dependency boundaries, and conflicting lifecycle evidence. Details: [[braintree-log]] and [[changelog-github-braintree-web-drop-in]].

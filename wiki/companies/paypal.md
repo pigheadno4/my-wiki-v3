@@ -87,6 +87,8 @@ PayPal-owned peer-to-peer payment network; surfaced as a payment button option i
 
 ## Developer Experience
 
+The TypeScript Server SDK `@paypal/paypal-server-sdk@2.5.0` adds subscription response lifecycle typing and merchant-managed billing metadata frequency. Its LIFETIME enum does not extend the separate subscription-plan interval type. Runtime dependency/build metadata changes and missing release notes are recorded with the exact source comparison. [[source-github-paypal-typescript-server-sdk]] [[changelog-github-paypal-typescript-server-sdk]]
+
 - **Auth**: Client ID + Client Secret from Developer Dashboard. Access token for REST API calls.
 - **Sandbox**: Full sandbox environment with personal and business test accounts creatable from Developer Dashboard.
 - **Button placement**: Recommended on product detail pages, cart pages, and checkout pages.

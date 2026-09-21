@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-21] ingest | TypeScript Server SDK `2.5.0`
+
+- Delta-ingested `github-2d232d73cb3e8d105629`, `@paypal/paypal-server-sdk@2.4.0` to `2.5.0`, SHA `790be9be9b694be08157e1cd5d50321c72727a76`.
+- User approved focused reading: changed retained files and affected code read, inventories hash-verified, repetitive generated examples checked mechanically. Current capsule has 400 files, 927259 bytes; three added, seven modified, 390 unchanged.
+- Added subscription status fields, the merchant-managed versus subscription-plan frequency distinction, dependency/build updates, source-qualified validation limits, and illustrative TypeScript examples. Preserved both earlier versions; source count unchanged.
+- No upstream 2.5.0 notes or runtime/payment tests. Review: `tracking/github/repos/paypal/paypal-typescript-server-sdk/ingest-review-2d232d73.md`. Sources: [[source-github-paypal-typescript-server-sdk]], [[changelog-github-paypal-typescript-server-sdk]].
+
 ## [2026-09-20] ingest | Messaging Components `1.97.0`
 
 - Full-additive ingest of `github-d20af06106d6d3e9a2b7`, `@paypal/messaging-components@1.96.0` to `1.97.0` at `39769bc09150879c1e85d3f5ae27a516279f652a`; user approved full mode because the page-type enum rename is incompatible despite the generated delta recommendation.

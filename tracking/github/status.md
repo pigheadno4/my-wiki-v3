@@ -453,6 +453,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.9.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-2d232d73cb3e8d105629`
+
+- Repository: `paypal/paypal-typescript-server-sdk`
+- SHA: `790be9be9b694be08157e1cd5d50321c72727a76`
+- Collection date: `2026-09-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-typescript-server-sdk/ingest-packets/github-2d232d73cb3e8d105629/packet.md)
+- Review priority: `normal`
+- Required reading: `19` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-server-sdk@2.5.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.5.0/2026-09-20/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.4.0--2.5.0/comparison.json)
+
 ## `github-39a4005f41fbb0234224`
 
 - Repository: `paypal/paypal-messages-android`

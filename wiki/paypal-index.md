@@ -32,8 +32,8 @@ Operations history: [[paypal-log]]
 - [[changelog-github-paypal-android-sdk-demo-app]] — commit-qualified demo baseline, 3DS gap, and Payment Link verification boundary
 - [[source-github-paypal-ios-sdk-demo-app]] — SwiftUI PayPal/card checkout plus separate hosted Payment Link flow, compatible with PayPal iOS SDK `>=2.0.0,<3.0.0` (`047a50e`)
 - [[changelog-github-paypal-ios-sdk-demo-app]] — commit-qualified demo baseline, README/code gaps, and Universal Link verification boundary
-- [[source-github-paypal-typescript-server-sdk]] — cumulative `@paypal/paypal-server-sdk` evidence: full `2.3.0` baseline plus `2.4.0` processing-instruction and OAuth-base delta (github-repo, updated 2026-08-10)
-- [[changelog-github-paypal-typescript-server-sdk]] — package-qualified server SDK ledger preserving `2.3.0` and the reviewed `2.4.0` delta
+- [[source-github-paypal-typescript-server-sdk]] — cumulative `@paypal/paypal-server-sdk` evidence through `2.5.0`: lifecycle typing, distinct frequency models, and preserved `2.3.0`/`2.4.0` history (github-repo, updated 2026-09-21)
+- [[changelog-github-paypal-typescript-server-sdk]] — package-qualified server SDK ledger preserving `2.3.0`, `2.4.0`, and `2.5.0`
 - [[source-github-paypal-rest-api-specifications]] — cumulative exact-SHA contracts for 13 PayPal REST API families, with detailed checkout-domain coverage (github-repo, updated 2026-08-11)
 - [[changelog-github-paypal-rest-api-specifications]] — commit-qualified REST specification baseline and future delta ledger
 - [[source-github-paypal-js-v6]] — historical GitHub SDK v6 + React v9 review; provider, hooks, Card Fields, and corrected explicit eligibility boundary (github-repo, corrected 2026-07-23)

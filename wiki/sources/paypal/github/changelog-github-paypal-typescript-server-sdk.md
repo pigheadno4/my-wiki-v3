@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-typescript-server-sdk"
 type: source
 date_ingested: 2026-08-10
-date_updated: 2026-08-10
+date_updated: 2026-09-21
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/manifest.json"
   - "github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/manifest.json"
   - "github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-b37cec5/manifest.json"
 tags: [paypal, typescript, server-sdk, changelog, github-repository]
@@ -13,6 +14,29 @@ tags: [paypal, typescript, server-sdk, changelog, github-repository]
 ## Overview
 
 Package-qualified history for `paypal/paypal-typescript-server-sdk`. Durable SDK behavior belongs in [[source-github-paypal-typescript-server-sdk]]; this page records reviewed releases and future deltas without replacing older findings.
+
+## `@paypal/paypal-server-sdk@2.5.0` - Delta (2026-08-21)
+
+Compared with `@paypal/paypal-server-sdk@2.4.0` (`dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3`); new SHA `790be9be9b694be08157e1cd5d50321c72727a76`. Collected 2026-09-20; ingested 2026-09-21 with the approved focused-reading exception. Capsule: 400 files, three added, seven modified, 390 unchanged.
+
+- Adds optional subscription response status, change note, and update time with public `SubscriptionStatus` enum. This does not add lifecycle endpoints or prove payment success.
+- Adds `BillingCycle.frequency`, `CycleFrequency`, and `FrequencyIntervalUnit`, including LIFETIME for merchant-managed recurring metadata. Subscription-plan requests still use the separate `SubscriptionBillingCycle`/`Frequency` model without LIFETIME.
+- Raises the `@apimatic/core` range to `^0.10.30`, moves `tslib` to runtime dependencies, and adds `skipLibCheck` in two build configurations. No build or external dependency behavior was tested.
+- Converts generated model examples to typed TypeScript; adds internal-maintenance/contribution guidance while LICENSE stays unchanged.
+- No upstream release notes for `2.5.0`. The new CHANGELOG entry describes `2.4.0`, not `2.5.0`.
+
+**Migration/checks:** Use optional-field handling for subscription state and preserve server-side payment verification. Do not apply the new LIFETIME enum to subscription-plan requests. Generated frequency default/range and subscription string constraints are not explicitly enforced by the retained schemas; see the warning and examples in [[source-github-paypal-typescript-server-sdk]].
+
+**Updated knowledge:** source version history and examples, [[paypal-subscriptions]], company, index and logs. Earlier `2.3.0`/`2.4.0` entries are preserved.
+
+**Evidence:**
+
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/manifest.json`
+- `raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.5.0/2026-09-20/manifest.json`
+- `tracking/github/repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.4.0--2.5.0/comparison.json`
+- `tracking/github/repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.4.0--2.5.0/diff.patch`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/files/src/models/subscription.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-09-20-790be9b/files/src/models/cycleFrequency.ts`
 
 ## `@paypal/paypal-server-sdk@2.4.0` - Delta (2026-06-05)
 

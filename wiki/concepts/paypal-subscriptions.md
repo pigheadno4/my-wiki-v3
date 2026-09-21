@@ -60,6 +60,12 @@ PREPAID = charged before delivery; POSTPAID = charged after delivery.
 
 The independent exact REST-contract baseline at `90e8041` separates Catalog Products 1.0 from Subscriptions 1.8. Catalog owns product create/list/get/patch; Subscriptions owns plan management and the subscription create/get/patch/revise/suspend/cancel/activate/outstanding-balance/transaction lifecycle. See [[source-github-paypal-rest-api-specifications]].
 
+### TypeScript server SDK delta at `2.5.0`
+
+`@paypal/paypal-server-sdk@2.5.0` adds optional subscription response fields `status`, `statusChangeNote`, and `statusUpdateTime`, plus the public `SubscriptionStatus` enum. These expose lifecycle state; they do not introduce new activation operations or prove a successful charge. Missing optional status must not be treated as active. [[source-github-paypal-typescript-server-sdk]]
+
+The new `BillingCycle.frequency: CycleFrequency` belongs to the merchant-managed recurring-plan metadata surface, including `OrderBillingPlan`. Its `FrequencyIntervalUnit` includes `LIFETIME`, with an interval count documented as ignored for that unit. This is **not** the subscription-plan creation type: `PlanRequest.billingCycles` still uses `SubscriptionBillingCycle` with `Frequency` and `IntervalUnit` (DAY/WEEK/MONTH/YEAR). Do not infer LIFETIME support for Subscriptions API plans. [[source-github-paypal-typescript-server-sdk]]
+
 ### v6 sample baseline at `b5f2df2`
 
 The current sample initializes `paypal-subscriptions`, requests `RECURRING_PAYMENT` eligibility, and starts `createPayPalSubscriptionPaymentSession()`. Its Node server uses `PAYPAL_SUBSCRIPTION_PLAN_ID` when supplied; otherwise it creates a sample service product, an active USD 9.99 monthly plan, and then the subscription. This is a creation and approval example, not evidence of lifecycle management, retries, cancellation, or production eligibility.

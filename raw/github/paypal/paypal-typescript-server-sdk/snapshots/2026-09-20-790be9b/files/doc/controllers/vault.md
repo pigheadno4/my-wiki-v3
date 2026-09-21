@@ -1,0 +1,482 @@
+# Vault
+
+Use the `/vault` resource to create, retrieve, and delete payment and setup tokens.
+
+```ts
+const vaultController = new VaultController(client);
+```
+
+## Class Name
+
+`VaultController`
+
+## Methods
+
+* [Create Payment Token](../../doc/controllers/vault.md#create-payment-token)
+* [List Customer Payment Tokens](../../doc/controllers/vault.md#list-customer-payment-tokens)
+* [Get Payment Token](../../doc/controllers/vault.md#get-payment-token)
+* [Delete Payment Token](../../doc/controllers/vault.md#delete-payment-token)
+* [Create Setup Token](../../doc/controllers/vault.md#create-setup-token)
+* [Get Setup Token](../../doc/controllers/vault.md#get-setup-token)
+
+
+# Create Payment Token
+
+Creates a Payment Token from the given payment source and adds it to the Vault of the associated customer.
+
+```ts
+async createPaymentToken(
+  {
+    body,
+    paypalRequestId,
+  }: {
+    body: PaymentTokenRequest;
+    paypalRequestId?: string;
+  },
+  requestOptions?: RequestOptions
+): Promise<ApiResponse<PaymentTokenResponse>>
+```
+
+## Authentication
+
+This endpoint requires [Oauth2](../../doc/auth/oauth-2-client-credentials-grant.md)
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `body` | [`PaymentTokenRequest`](../../doc/models/payment-token-request.md) | Body, Required | Payment Token creation with a financial instrument and an optional customer_id. |
+| `paypalRequestId` | `string \| undefined` | Header, Optional | The server stores keys for 3 hours.<br><br>**Constraints**: *Minimum Length*: `1`, *Maximum Length*: `108`, *Pattern*: `^.*$` |
+| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
+
+## Response Type
+
+**200**: Idempotent response for a successful creation of payment token.
+
+This method returns an [`ApiResponse`](../../doc/api-response.md) instance. The `result` property of this instance returns the response data which is of type [`PaymentTokenResponse`](../../doc/models/payment-token-response.md).
+
+## Example Usage
+
+```ts
+const collect = {
+  body: {
+    paymentSource: {
+    },
+  }
+}
+
+try {
+  const response = await vaultController.createPaymentToken(collect);
+
+  // Extracting fully parsed response body.
+  console.log(response.result);
+
+  // Extracting response status code.
+  console.log(response.statusCode);
+  // Extracting response headers.
+  console.log(response.headers);
+  // Extracting response body of type `string | Stream`
+  console.log(response.body);
+} catch (error) {
+  if (error instanceof ApiError) {
+    // Extracting response error status code.
+    console.log(error.statusCode);
+    // Extracting response error headers.
+    console.log(error.headers);
+    // Extracting response error body of type `string | Stream`.
+    console.log(error.body);
+    if (error instanceof CustomError) {
+      console.log(error.result);
+    }
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 400 | Request is not well-formed, syntactically incorrect, or violates schema. | [`CustomError`](../../doc/models/custom-error.md) |
+| 403 | Authorization failed due to insufficient permissions. | [`CustomError`](../../doc/models/custom-error.md) |
+| 404 | Request contains reference to resources that do not exist. | [`CustomError`](../../doc/models/custom-error.md) |
+| 422 | The requested action could not be performed, semantically incorrect, or failed business validation. | [`CustomError`](../../doc/models/custom-error.md) |
+| 500 | An internal server error has occurred. | [`CustomError`](../../doc/models/custom-error.md) |
+
+
+# List Customer Payment Tokens
+
+Returns all payment tokens for a customer.
+
+```ts
+async listCustomerPaymentTokens(
+  {
+    customerId,
+    pageSize,
+    page,
+    totalRequired,
+  }: {
+    customerId: string;
+    pageSize?: number;
+    page?: number;
+    totalRequired?: boolean;
+  },
+  requestOptions?: RequestOptions
+): Promise<ApiResponse<CustomerVaultPaymentTokensResponse>>
+```
+
+## Authentication
+
+This endpoint requires [Oauth2](../../doc/auth/oauth-2-client-credentials-grant.md)
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `customerId` | `string` | Query, Required | A unique identifier representing a specific customer in merchant's/partner's system or records.<br><br>**Constraints**: *Minimum Length*: `7`, *Maximum Length*: `36`, *Pattern*: `^[0-9a-zA-Z_-]+$` |
+| `pageSize` | `number \| undefined` | Query, Optional | A non-negative, non-zero integer indicating the maximum number of results to return at one time.<br><br>**Default**: `5`<br><br>**Constraints**: `>= 1`, `<= 5` |
+| `page` | `number \| undefined` | Query, Optional | A non-negative, non-zero integer representing the page of the results.<br><br>**Default**: `1`<br><br>**Constraints**: `>= 1`, `<= 10` |
+| `totalRequired` | `boolean \| undefined` | Query, Optional | A boolean indicating total number of items (total_items) and pages (total_pages) are expected to be returned in the response.<br><br>**Default**: `false` |
+| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
+
+## Response Type
+
+**200**: Successful execution.
+
+This method returns an [`ApiResponse`](../../doc/api-response.md) instance. The `result` property of this instance returns the response data which is of type [`CustomerVaultPaymentTokensResponse`](../../doc/models/customer-vault-payment-tokens-response.md).
+
+## Example Usage
+
+```ts
+const collect = {
+  customerId: 'customer_id8',
+  pageSize: 5,
+  page: 1,
+  totalRequired: false
+}
+
+try {
+  const response = await vaultController.listCustomerPaymentTokens(collect);
+
+  // Extracting fully parsed response body.
+  console.log(response.result);
+
+  // Extracting response status code.
+  console.log(response.statusCode);
+  // Extracting response headers.
+  console.log(response.headers);
+  // Extracting response body of type `string | Stream`
+  console.log(response.body);
+} catch (error) {
+  if (error instanceof ApiError) {
+    // Extracting response error status code.
+    console.log(error.statusCode);
+    // Extracting response error headers.
+    console.log(error.headers);
+    // Extracting response error body of type `string | Stream`.
+    console.log(error.body);
+    if (error instanceof CustomError) {
+      console.log(error.result);
+    }
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 400 | Request is not well-formed, syntactically incorrect, or violates schema. | [`CustomError`](../../doc/models/custom-error.md) |
+| 403 | Authorization failed due to insufficient permissions. | [`CustomError`](../../doc/models/custom-error.md) |
+| 500 | An internal server error has occurred. | [`CustomError`](../../doc/models/custom-error.md) |
+
+
+# Get Payment Token
+
+Returns a readable representation of vaulted payment source associated with the payment token id.
+
+```ts
+async getPaymentToken(
+  id: string,
+  requestOptions?: RequestOptions
+): Promise<ApiResponse<PaymentTokenResponse>>
+```
+
+## Authentication
+
+This endpoint requires [Oauth2](../../doc/auth/oauth-2-client-credentials-grant.md)
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `id` | `string` | Template, Required | ID of the payment token.<br><br>**Constraints**: *Minimum Length*: `1`, *Maximum Length*: `36`, *Pattern*: `^[0-9a-zA-Z_-]+$` |
+| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
+
+## Response Type
+
+**200**: Successful execution.
+
+This method returns an [`ApiResponse`](../../doc/api-response.md) instance. The `result` property of this instance returns the response data which is of type [`PaymentTokenResponse`](../../doc/models/payment-token-response.md).
+
+## Example Usage
+
+```ts
+const id = 'id0';
+
+try {
+  const response = await vaultController.getPaymentToken(id);
+
+  // Extracting fully parsed response body.
+  console.log(response.result);
+
+  // Extracting response status code.
+  console.log(response.statusCode);
+  // Extracting response headers.
+  console.log(response.headers);
+  // Extracting response body of type `string | Stream`
+  console.log(response.body);
+} catch (error) {
+  if (error instanceof ApiError) {
+    // Extracting response error status code.
+    console.log(error.statusCode);
+    // Extracting response error headers.
+    console.log(error.headers);
+    // Extracting response error body of type `string | Stream`.
+    console.log(error.body);
+    if (error instanceof CustomError) {
+      console.log(error.result);
+    }
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 403 | Authorization failed due to insufficient permissions. | [`CustomError`](../../doc/models/custom-error.md) |
+| 404 | The specified resource does not exist. | [`CustomError`](../../doc/models/custom-error.md) |
+| 422 | The requested action could not be performed, semantically incorrect, or failed business validation. | [`CustomError`](../../doc/models/custom-error.md) |
+| 500 | An internal server error has occurred. | [`CustomError`](../../doc/models/custom-error.md) |
+
+
+# Delete Payment Token
+
+Delete the payment token associated with the payment token id.
+
+```ts
+async deletePaymentToken(
+  id: string,
+  requestOptions?: RequestOptions
+): Promise<ApiResponse<void>>
+```
+
+## Authentication
+
+This endpoint requires [Oauth2](../../doc/auth/oauth-2-client-credentials-grant.md)
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `id` | `string` | Template, Required | ID of the payment token.<br><br>**Constraints**: *Minimum Length*: `1`, *Maximum Length*: `36`, *Pattern*: `^[0-9a-zA-Z_-]+$` |
+| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
+
+## Response Type
+
+**204**: The server has successfully executed the method, but there is no entity body to return.
+
+This method returns an [`ApiResponse`](../../doc/api-response.md) instance.
+
+## Example Usage
+
+```ts
+const id = 'id0';
+
+try {
+  const response = await vaultController.deletePaymentToken(id);
+
+  // Extracting fully parsed response body.
+  console.log(response.result);
+
+  // Extracting response status code.
+  console.log(response.statusCode);
+  // Extracting response headers.
+  console.log(response.headers);
+  // Extracting response body of type `string | Stream`
+  console.log(response.body);
+} catch (error) {
+  if (error instanceof ApiError) {
+    // Extracting response error status code.
+    console.log(error.statusCode);
+    // Extracting response error headers.
+    console.log(error.headers);
+    // Extracting response error body of type `string | Stream`.
+    console.log(error.body);
+    if (error instanceof CustomError) {
+      console.log(error.result);
+    }
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 400 | Request is not well-formed, syntactically incorrect, or violates schema. | [`CustomError`](../../doc/models/custom-error.md) |
+| 403 | Authorization failed due to insufficient permissions. | [`CustomError`](../../doc/models/custom-error.md) |
+| 500 | An internal server error has occurred. | [`CustomError`](../../doc/models/custom-error.md) |
+
+
+# Create Setup Token
+
+Creates a Setup Token from the given payment source and adds it to the Vault of the associated customer.
+
+```ts
+async createSetupToken(
+  {
+    body,
+    paypalRequestId,
+  }: {
+    body: SetupTokenRequest;
+    paypalRequestId?: string;
+  },
+  requestOptions?: RequestOptions
+): Promise<ApiResponse<SetupTokenResponse>>
+```
+
+## Authentication
+
+This endpoint requires [Oauth2](../../doc/auth/oauth-2-client-credentials-grant.md)
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `body` | [`SetupTokenRequest`](../../doc/models/setup-token-request.md) | Body, Required | Setup Token creation with a instrument type optional financial instrument details and customer_id. |
+| `paypalRequestId` | `string \| undefined` | Header, Optional | The server stores keys for 3 hours.<br><br>**Constraints**: *Minimum Length*: `1`, *Maximum Length*: `108`, *Pattern*: `^.*$` |
+| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
+
+## Response Type
+
+**200**: Idempotent response for a successful creation of setup token.
+
+This method returns an [`ApiResponse`](../../doc/api-response.md) instance. The `result` property of this instance returns the response data which is of type [`SetupTokenResponse`](../../doc/models/setup-token-response.md).
+
+## Example Usage
+
+```ts
+const collect = {
+  body: {
+    paymentSource: {
+    },
+  }
+}
+
+try {
+  const response = await vaultController.createSetupToken(collect);
+
+  // Extracting fully parsed response body.
+  console.log(response.result);
+
+  // Extracting response status code.
+  console.log(response.statusCode);
+  // Extracting response headers.
+  console.log(response.headers);
+  // Extracting response body of type `string | Stream`
+  console.log(response.body);
+} catch (error) {
+  if (error instanceof ApiError) {
+    // Extracting response error status code.
+    console.log(error.statusCode);
+    // Extracting response error headers.
+    console.log(error.headers);
+    // Extracting response error body of type `string | Stream`.
+    console.log(error.body);
+    if (error instanceof CustomError) {
+      console.log(error.result);
+    }
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 400 | Request is not well-formed, syntactically incorrect, or violates schema. | [`CustomError`](../../doc/models/custom-error.md) |
+| 403 | Authorization failed due to insufficient permissions. | [`CustomError`](../../doc/models/custom-error.md) |
+| 422 | The requested action could not be performed, semantically incorrect, or failed business validation. | [`CustomError`](../../doc/models/custom-error.md) |
+| 500 | An internal server error has occurred. | [`CustomError`](../../doc/models/custom-error.md) |
+
+
+# Get Setup Token
+
+Returns a readable representation of temporarily vaulted payment source associated with the setup token id.
+
+```ts
+async getSetupToken(
+  id: string,
+  requestOptions?: RequestOptions
+): Promise<ApiResponse<SetupTokenResponse>>
+```
+
+## Authentication
+
+This endpoint requires [Oauth2](../../doc/auth/oauth-2-client-credentials-grant.md)
+
+## Parameters
+
+| Parameter | Type | Tags | Description |
+|  --- | --- | --- | --- |
+| `id` | `string` | Template, Required | ID of the setup token.<br><br>**Constraints**: *Minimum Length*: `7`, *Maximum Length*: `36`, *Pattern*: `^[0-9a-zA-Z_-]+$` |
+| `requestOptions` | `RequestOptions \| undefined` | Optional | Pass additional request options. |
+
+## Response Type
+
+**200**: Found requested setup-token, returned a payment method associated with the token.
+
+This method returns an [`ApiResponse`](../../doc/api-response.md) instance. The `result` property of this instance returns the response data which is of type [`SetupTokenResponse`](../../doc/models/setup-token-response.md).
+
+## Example Usage
+
+```ts
+const id = 'id0';
+
+try {
+  const response = await vaultController.getSetupToken(id);
+
+  // Extracting fully parsed response body.
+  console.log(response.result);
+
+  // Extracting response status code.
+  console.log(response.statusCode);
+  // Extracting response headers.
+  console.log(response.headers);
+  // Extracting response body of type `string | Stream`
+  console.log(response.body);
+} catch (error) {
+  if (error instanceof ApiError) {
+    // Extracting response error status code.
+    console.log(error.statusCode);
+    // Extracting response error headers.
+    console.log(error.headers);
+    // Extracting response error body of type `string | Stream`.
+    console.log(error.body);
+    if (error instanceof CustomError) {
+      console.log(error.result);
+    }
+  }
+}
+```
+
+## Errors
+
+| HTTP Status Code | Error Description | Exception Class |
+|  --- | --- | --- |
+| 403 | Authorization failed due to insufficient permissions. | [`CustomError`](../../doc/models/custom-error.md) |
+| 404 | The specified resource does not exist. | [`CustomError`](../../doc/models/custom-error.md) |
+| 422 | The requested action could not be performed, semantically incorrect, or failed business validation. | [`CustomError`](../../doc/models/custom-error.md) |
+| 500 | An internal server error has occurred. | [`CustomError`](../../doc/models/custom-error.md) |
+
