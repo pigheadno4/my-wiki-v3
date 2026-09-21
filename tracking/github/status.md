@@ -330,10 +330,10 @@
 - Repository: `stripe/stripe-node`
 - SHA: `9f82c466c0a5913906ab1bf39790edd4d231ee5d`
 - Collection date: `2026-09-21`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `delta`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `delta`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

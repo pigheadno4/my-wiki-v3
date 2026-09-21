@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-21] ingest | Stripe Node `22.6.1`
+
+- Approved delta `github-2402efbbc4962288beb9`, `stripe@22.6.0` -> `stripe@22.6.1`, SHA `9f82c466c0a5913906ab1bf39790edd4d231ee5d`, with explicit focused-reading approval for this release. Changed implementation and complete diff read; both 68-file snapshots verified by hash/size. 13 modified, 55 unchanged; older changelog byte-identical.
+- Recorded secure multipart boundaries and MIME header protection, path validation/event-ID encoding, GET/DELETE schema coercion, and enum documentation clarification. Distinguished existing filename escaping and idempotency-key fallback. No API pin or generated checkout changes; no upstream SDK/test execution.
+- Updated Stripe Node concept first, cumulative source/changelog, company/provider index and logs. Prior history and source count preserved. No cross-company comparison; older caveats retained. Review: `tracking/github/repos/stripe/stripe-node/ingest-review-2402efbb.md`.
+- `22.6.2` remains awaiting approval. No commit or push in this operation.
+
 ## [2026-09-21] ingest | Stripe Node `22.6.0`
 
 - Full-mode ingest of approved `github-436c32c59360977be8fa`, `stripe@22.5.0` -> `stripe@22.6.0`, SHA `2f64e7ac920bd6863fdb851f4fb1fcc6190d963f`, with the explicitly approved focused-reading exception. Both 68-file snapshots passed hash/size checks; 33 modified, 35 unchanged. Earlier changelog text preserved. Two approved implementation supplements are linked canonically and read fully.

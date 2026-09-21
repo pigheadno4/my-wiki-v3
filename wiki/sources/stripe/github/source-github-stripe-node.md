@@ -5,6 +5,7 @@ date_ingested: 2026-05-08
 date_updated: 2026-09-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json"
   - "github/stripe/stripe-node/supplements/2026-09-21-2f64e7a-f49df03e/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/manifest.json"
@@ -15,7 +16,7 @@ tags: [stripe, stripe-node, node-js, sdk, typescript, payment-intents, checkout,
 
 ## Overview
 
-`stripe/stripe-node` publishes the `stripe` npm package, Stripe's server-side JavaScript SDK. This cumulative page preserves the `stripe@22.1.1` baseline, full `22.4.0` ingest and `22.5.0` delta, then adds approved full-mode `stripe@22.6.0` at SHA `2f64e7ac920bd6863fdb851f4fb1fcc6190d963f`. See the separate [[changelog-github-stripe-node]] for release chronology.
+`stripe/stripe-node` publishes the `stripe` npm package, Stripe's server-side JavaScript SDK. This cumulative page preserves the `stripe@22.1.1` baseline, full `22.4.0` ingest, `22.5.0` delta and full `22.6.0` ingest, then adds approved delta `stripe@22.6.1` at SHA `9f82c466c0a5913906ab1bf39790edd4d231ee5d`. See the separate [[changelog-github-stripe-node]] for release chronology.
 
 Repository: <https://github.com/stripe/stripe-node>
 
@@ -30,6 +31,8 @@ Repository: <https://github.com/stripe/stripe-node>
 - The 22.6.0 full-mode ingest also has an explicit one-time focused-reading exception: changed behavior and affected prior context reviewed, unchanged evidence and historical changelog checked mechanically. Two exact-SHA supplemental implementation files close the notification-handler/coercion gap without changing future collection policy. Non-checkout release-note entries remain overview-only; tests/fixtures and the entire repository were not read or executed.
 
 ## Grounding Excerpts
+
+The 22.6.1 delta uses an explicitly approved focused-reading exception: changed retained implementation and the complete comparison were read, while unchanged historical changelog and manifest inventories were checked mechanically. Both 68-file snapshots pass size/hash verification. Tests outside the capsule were reviewed as diff evidence only, not executed. No whole-repository read or runtime security guarantee is claimed.
 
 > "The Stripe Node library provides convenient access to the Stripe API from applications written in server-side JavaScript."
 >
@@ -55,7 +58,7 @@ Repository: <https://github.com/stripe/stripe-node>
 
 | Package | Latest ingested release | Pinned API | OpenAPI marker | Node support | Evidence status |
 | --- | --- | --- | --- | --- | --- |
-| `stripe` | `22.6.0` | `2026-08-26.dahlia` | `v2442` | Node.js 18+ | Approved full mode with focused reading; earlier versions retained |
+| `stripe` | `22.6.1` | `2026-08-26.dahlia` | `v2442` | Node.js 18+ | Approved delta with focused reading; earlier versions retained |
 
 This table reports wiki ingest progress, not the latest release currently published upstream.
 
@@ -191,6 +194,30 @@ Subscription billing-schedule comments additionally clarify flexible-mode/API-ve
 
 Release notes also announce Billing FeedbackOption operations, Billing Portal feedback/customer-update flows, CustomerSession components, AccountSession payment-method settings, FinancialConnections country filters, InvoiceItem frozen fields, IGIC registration fields and removal of PaymentRecord/PaymentAttemptRecord `cryptogram`. These are overview/navigation facts only in this ingest; collect/read the relevant full files before a detailed non-checkout integration answer. New generated error-code values do not establish new runtime error classes.
 
+## 22.6.1: Request and Upload Hardening
+
+### Multipart Boundaries and Headers
+
+POST multipart generation now obtains its delimiter from the platform's cryptographically secure `uuid4()` instead of combining `Math.random()` values. The base platform requires `crypto.randomUUID`; Node calls its imported crypto module, so absence of global crypto alone does not break the supported Node path. Failure to obtain secure randomness rejects multipart generation before sending, without a weak-boundary fallback.
+
+Automatic idempotency key generation is deliberately different: RequestSender catches a UUID failure and falls back to a Math.random-derived UUID-shaped value. This preserves automatic key generation but is not a uniqueness guarantee or a substitute for stable application-operation keys across separate calls.
+
+The file part's MIME Content-Type now replaces CR/LF with spaces to prevent injected header lines. Name/filename quote escaping and CR/LF replacement already existed in 22.6.0 and are refactored, not newly introduced protections. File bytes are preserved; unpredictable boundaries are not file-content sanitization.
+
+### Request Paths and Thin Event IDs
+
+`utils.validatePath` rejects non-string paths, strings without a leading `/`, and strings beginning `//`. RequestSender invokes it before deriving V1/V2 mode, authentication or network dispatch. Invalid raw requests reject with an ordinary Error rather than requiring an HTTP response. This protects the shared sink used by raw requests and remotely supplied paths, but is not a complete URL validator or an authorization mechanism.
+
+Thin-notification `fetchEvent()` now builds its path with `encodeURIComponent(parsed.id)`, preventing ID characters from injecting path/query segments. `fetchRelatedObject()` still uses the supplied related-object URL, subject to the shared path guard. Both retain explicit Stripe context and request-trigger metadata. The Node ESM change is corroborated by the comparison diff, not a standalone retained entrypoint file. Parsing without verification remains unauthenticated; these changes do not make untrusted notifications safe to accept.
+
+### GET/DELETE Coercion and Enum Documentation
+
+StripeResource now applies `requestSchema` coercion before separating query data from body data. Schema-marked int64/Decimal values, including nested fields, therefore serialize in GET/DELETE queries as well as POST bodies. GET/DELETE bodies remain null. Unknown fields and the prior coercion limitations remain; this is not general schema validation. The separate `rawRequest()` API still rejects non-POST requests with nonempty structured params, so its callers must not infer new query-object support from this fix.
+
+README and `OtherString` comments clarify that open enums may gain values on older API versions. `OtherString = string & Record<never, never>` itself is unchanged. API pin `2026-08-26.dahlia`, OpenAPI `v2442`, generated checkout resource files, Node minimum, package exports and runtime dependencies are unchanged. No new checkout product or merchant eligibility is established.
+
+The historical handler-context and parser-entrypoint caveats above are not resolved by this patch. Upstream CI also pins actions and adds workflow security checks; these are repository-maintenance changes, not SDK runtime behavior.
+
 ## Pagination and Search
 
 List promises support async iteration, `autoPagingEach()`, and bounded `autoPagingToArray()`. Array collection requires an explicit limit and caps it at 10,000 to prevent accidental unbounded accumulation.
@@ -243,6 +270,10 @@ The September 21 delta ingest adds trusted-event parsing, the API-family constan
 
 The September 21 full-mode ingest adds the August 26 changelog release (GitHub release timestamp August 27 UTC), with 33 modified and 35 unchanged capsule files plus two approved supplemental implementation files. It appends notification, transport, coercion and generated-contract knowledge without replacing the earlier baselines. Reading scope and verification are recorded in the [review receipt](../../../../tracking/github/repos/stripe/stripe-node/ingest-review-436c32c5.md).
 
+### `stripe@22.6.1`
+
+The September 21 delta ingest retains the September 1 release: 13 modified and 55 unchanged capsule files, with older raw evidence and all source/changelog history preserved. See the [review receipt](../../../../tracking/github/repos/stripe/stripe-node/ingest-review-2402efbb.md).
+
 ## Related
 
 - Company: [[stripe]]
@@ -250,6 +281,12 @@ The September 21 full-mode ingest adds the August 26 changelog release (GitHub r
 - History: [[changelog-github-stripe-node]]
 
 ## Raw Sources
+
+- [22.6.1 snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json), [release manifest](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.1/2026-09-21/manifest.json), [release notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.1/2026-09-21/release-notes.md)
+- [22.6.0 to 22.6.1 comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.0--22.6.1/comparison.json), [complete diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.0--22.6.1/diff.patch)
+- [Multipart](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/src/multipart.ts), [base platform](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/src/platform/PlatformFunctions.ts), [Node platform](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/src/platform/NodePlatformFunctions.ts), [request sender](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/src/RequestSender.ts) - boundary generation, fallback and request dispatch
+- [Utilities](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/src/utils.ts), [core](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/src/stripe.core.ts), [resource](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/src/StripeResource.ts) - path checks, event-ID encoding and query coercion
+- [README](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/README.md), [shared types](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/src/shared.ts), [package](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/files/package.json) - enum clarification and unchanged compatibility boundary
 
 - [22.6.0 snapshot manifest](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json), [release manifest](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.0/2026-09-21/manifest.json), [release notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.0/2026-09-21/release-notes.md)
 - [22.5.0 to 22.6.0 comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.5.0--22.6.0/comparison.json) and [diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.5.0--22.6.0/diff.patch) - includes excluded entrypoint/sample files; not all test/fixture or non-checkout content was read

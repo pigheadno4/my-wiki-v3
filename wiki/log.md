@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-21] ingest | Stripe Node `22.6.1`
+
+- Approved focused-reading delta: upload/request hardening, GET/DELETE query coercion and enum documentation; preserved earlier history and unchanged API pin. Details: [[stripe-log]] and [[changelog-github-stripe-node]].
+
 ## [2026-09-21] ingest | Stripe Node `22.6.0`
 
 - Full-additive ingest with approved focused reading and two exact-SHA supplements; preserved older releases and recorded handler context limits, transport/coercion, idempotency and generated API changes. Details: [[stripe-log]] and [[changelog-github-stripe-node]].

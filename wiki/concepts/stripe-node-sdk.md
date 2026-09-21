@@ -7,7 +7,7 @@ tags: [stripe, node-js, sdk, payment-intents, webhooks, pagination, error-handli
 
 ## Definition
 
-The official Stripe Node.js library (`stripe` npm package) wraps the Stripe REST API for server-side JavaScript. The latest ingested release is `stripe@22.6.0` at SHA `2f64e7ac920bd6863fdb851f4fb1fcc6190d963f`, pinning Stripe API `2026-08-26.dahlia` and OpenAPI marker `v2442`. Earlier `22.1.1`, `22.4.0` and `22.5.0` knowledge remains version-qualified in the cumulative source. It supports Node.js 18+ and exports builds for Node, browser/worker, Bun, Deno, and workerd environments, plus an opt-in `extensibility` export condition introduced in 22.5.0. Collected but uningested versions are not this page's knowledge baseline.
+The official Stripe Node.js library (`stripe` npm package) wraps the Stripe REST API for server-side JavaScript. The latest ingested release is `stripe@22.6.1` at SHA `9f82c466c0a5913906ab1bf39790edd4d231ee5d`, pinning Stripe API `2026-08-26.dahlia` and OpenAPI marker `v2442`. Earlier `22.1.1`, `22.4.0`, `22.5.0` and `22.6.0` knowledge remains version-qualified in the cumulative source. It supports Node.js 18+ and exports builds for Node, browser/worker, Bun, Deno, and workerd environments, plus an opt-in `extensibility` export condition introduced in 22.5.0. Collected but uningested versions are not this page's knowledge baseline.
 
 **Install**: `npm install stripe`
 
@@ -101,6 +101,15 @@ The client-level `constructEventWithoutVerification` alias is deprecated in 22.6
 
 Source: [[source-github-stripe-node]]. Existing checkout resource files are unchanged across this release boundary.
 
+## Request Hardening in 22.6.1
+
+- Multipart uploads use cryptographically secure UUID boundaries and fail generation if that randomness is unavailable. Node uses imported `crypto.randomUUID`; automatic idempotency keys alone retain a non-cryptographic fallback. File MIME Content-Type now replaces CR/LF with spaces; name/filename escaping already existed.
+- The shared request sender rejects paths that are non-strings, lack a leading slash, or begin with `//`, before authentication/network dispatch. Thin notification `fetchEvent()` additionally URL-encodes its event ID. These guards do not replace webhook authentication or validate every possible URL property.
+- Schema-marked V2 int64/Decimal request fields are coerced before splitting GET/DELETE query data from the body, fixing query serialization while keeping those bodies null. This does not add structured non-POST parameters to `rawRequest()`.
+- README/OtherString comments clarify open enums; the marker type itself, generated checkout resource files and API pin do not change.
+
+Source: [[source-github-stripe-node]] and [[changelog-github-stripe-node]]. These are source-reviewed changes, not executed SDK or live payment tests.
+
 ## Pagination
 
 ```js
@@ -127,5 +136,5 @@ Stripe Node types always follow the latest API shape retained by that SDK releas
 
 ## Sources
 
-- [[source-github-stripe-node]] — cumulative SDK repository evidence through `stripe@22.6.0`, preserving `22.1.1`, `22.4.0` and `22.5.0`
+- [[source-github-stripe-node]] — cumulative SDK repository evidence through `stripe@22.6.1`, preserving all earlier ingested versions
 - [[changelog-github-stripe-node]] — package-qualified retained release history

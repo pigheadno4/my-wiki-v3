@@ -5,6 +5,7 @@ date_ingested: 2026-08-08
 date_updated: 2026-09-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json"
   - "github/stripe/stripe-node/supplements/2026-09-21-2f64e7a-f49df03e/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-65d99a2/manifest.json"
@@ -15,6 +16,24 @@ tags: [stripe, stripe-node, node-js, changelog, github-repository]
 ## Overview
 
 Package-qualified retained release history for `stripe/stripe-node`. Cumulative implementation knowledge belongs in [[source-github-stripe-node]].
+
+## `stripe@22.6.1` - Change Set `9f82c46` (2026-09-01)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe` | `22.6.0` | `22.6.1` | 2026-09-01 | `9f82c466c0a5913906ab1bf39790edd4d231ee5d` | Delta; approved focused reading |
+
+**Important changes:** Cryptographically secure multipart boundaries; CR/LF replacement in file MIME Content-Type; shared request-path validation; encoded thin-event fetch IDs; schema coercion for GET/DELETE query parameters. Open-enum documentation clarifies existing OtherString behavior. API pin `2026-08-26.dahlia`, OpenAPI `v2442`, generated checkout files and runtime dependencies unchanged.
+
+**Developer impact:** Upload generation fails without secure UUID support; Node uses imported crypto.randomUUID. Automatic idempotency keys alone keep a weaker fallback. Name/filename escaping already existed and must not be reported as new. Paths must be strings beginning with a single slash; this is not general URL validation or webhook authentication. Schema-marked Decimal/int64 query values are coerced before serialization; GET/DELETE bodies stay null. rawRequest still does not accept nonempty non-POST params.
+
+**Migration and limits:** Check custom runtimes' secure randomness and callers supplying request paths. Preserve explicit business-operation idempotency and webhook verification. Existing notification-handler context, parser-entrypoint and retry-default caveats are not resolved here. CI action pinning/security checks are maintenance-only. No SDK build, upstream test execution or live integration verification.
+
+**Reading boundary:** Both 68-file snapshots hash/size verified; 13 modified and 55 unchanged. Changed retained implementation and complete 1,093-line diff read. Unchanged historical changelog and manifest inventories mechanically verified under this release's explicit exception. Earlier ingested history preserved.
+
+**Updated sections:** Stripe Node concept first; cumulative source, this changelog, company/provider catalog and logs. No new source or cross-company comparison; source count unchanged.
+
+**Evidence:** [Release](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.1/2026-09-21/manifest.json), [notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.1/2026-09-21/release-notes.md), [snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json), [comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.0--22.6.1/comparison.json), [diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.0--22.6.1/diff.patch), [review receipt](../../../../tracking/github/repos/stripe/stripe-node/ingest-review-2402efbb.md). Exact implementation links in [[source-github-stripe-node]].
 
 ## `stripe@22.6.0` - Change Set `2f64e7a` (2026-08-26)
 
