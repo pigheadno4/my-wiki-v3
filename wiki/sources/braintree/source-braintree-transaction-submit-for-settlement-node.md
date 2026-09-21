@@ -21,6 +21,9 @@ This Braintree reference page documents the Node.js server SDK's `gateway.transa
 - Adding Level 2/3 data through submit for settlement requires internal approval. Data supplied there overrides Level 2/3 data from the sale request, and the page recommends providing it through either the sale request or settlement submission, not both.
 - Sending shipping-address fields through submit for settlement also requires internal approval. Those fields override corresponding shipping-address fields from the sale request, and the page likewise recommends choosing one of the two request points.
 
+> [!warning] Unresolved partial-settlement availability conflict
+> This source includes PayPal and Venmo transactions and some credit-card transactions for select merchants in its multiple-partial-settlement availability statement. The dedicated [[source-braintree-transaction-submit-for-partial-settlement-node]] page instead says multiple partial settlements are available only for PayPal and Venmo transactions. This conflict is unresolved; verify current payment-method and merchant eligibility with Braintree.
+
 ## Important source limitation
 
 > [!warning] Incomplete source text

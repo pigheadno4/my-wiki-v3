@@ -6,6 +6,27 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-21] ingest | Braintree website C13
+
+- Ten website request references independently read/reviewed and promoted:
+  Subscription Create/Update; Transaction Search, Submit For Partial Settlement,
+  Adjust Authorization, Clone, Hold In Escrow, Release From Escrow, Cancel
+  Release; Transaction Line Item Find All.
+- Initial worker handoffs10/10; first content approvals9/10. One bounded
+  supporting-evidence/reciprocal-conflict correction received targeted review;
+  no full retry review. Preserved payment-method/Marketplace qualifications,
+  consequential warnings, attempted outcomes and damaged-rendering boundaries.
+- The partial-settlement eligibility conflict remains unresolved and linked
+  from both the new partial-settlement and existing ordinary-settlement sources.
+  The latter received one exact reviewer-approved warning, not a broad rewrite.
+- Two existing concepts received approved retrieval routes. Company/index
+  cover101 sources=85 website+16 GitHub, excluding changelogs.
+- Query/mechanical-close evidence and timings are in
+  tracking/ingest/braintree/braintree-campaign-13/quality-audit.md and
+  retrospective.md; this entry records promotion, not a separate close gate.
+- No raw edits, collection, GitHub ingest, code/rule changes, commit/push or
+  next campaign performed by C13.
+
 ## [2026-09-21] ingest | Braintree website C12
 
 - Ten independent website sources promoted: Dispute Add Text Evidence,

@@ -1,0 +1,52 @@
+{
+  "job_id": "transaction-clone-transaction-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Clone Transaction (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/clone_transaction/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/clone_transaction/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, cloning, settlement]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents `gateway.transaction.cloneTransaction()`. Cloning creates a new transaction by copying all attributes except amount from an original transaction; Braintree recommends saving and reusing payment-method or customer information in the Vault instead of cloning in most cases.\n\n## Key takeaways\n\n- The clone is a new transaction, not a mutation of the original. The page says it copies all original transaction attributes except amount, but it does not enumerate those copied attributes.\n- Braintree marks both an amount and an option flag that submits the transaction for settlement as required. The callback and Promise examples pass an original transaction ID, amount `\"10.00\"`, and `options.submitForSettlement: true`; those displayed values are examples rather than a complete input schema.\n- The page recommends Vault reuse of payment-method or customer information as the better practice in most cases. This is a recommendation, not a statement that cloning is unavailable.\n- If the original transaction cannot be found, the page routes the failure to Braintree's `notFoundError` reference; detailed exception behavior remains in that unread reference.\n\n> [!warning] New-transaction and copied-attribute boundary\n> Treat cloning as creation of a separate transaction. The page does not identify the copied attributes individually or establish that lifecycle state, settlement outcome, processor behavior, eligibility, or side effects are identical to the original transaction.\n\n## Detail locators\n\n- New-transaction effect, all-attributes-except-amount copy scope, and recommended Vault alternative: `# Transaction: Clone Transaction`, lines 15-18.\n- Required amount and settlement-submission option flag: `# Transaction: Clone Transaction > **IMPORTANT**`, lines 19-20.\n- Callback invocation and displayed inputs: `### Callback`, lines 23-36.\n- Promise invocation and displayed inputs: `### Promise`, lines 38-51.\n- Missing-transaction error route: line 52.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Related operation: [[source-braintree-transaction-sale-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/response/transaction/node-2026-09-16|Braintree Node.js Transaction response reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/payment-methods/node-2026-09-16|Braintree Node.js payment-method guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/customers/node-2026-09-16|Braintree Node.js customer guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/exceptions/node-2026-09-16|Braintree Node.js exceptions reference]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/clone_transaction/node-2026-09-16|Braintree Node.js transaction-clone request reference]] - complete collected page covering new-transaction creation, copied-attribute scope, required amount and settlement option, Vault recommendation, callback and Promise forms, and the not-found route\n",
+  "quotes": [
+    {
+      "text": "See also the[Transaction](/braintree/docs/reference/response/transaction)response\nobject. Cloning a transaction will create a new transaction by copying all the attributes, except\namount, of the original transaction. Instead of cloning transactions, a better practice in most\ncases is to use the Vault to save and reuse[payment method](/braintree/docs/guides/payment-methods#create)or[customer](/braintree/docs/guides/customers#create)information.",
+      "location": "lines 15-18, # Transaction: Clone Transaction"
+    },
+    {
+      "text": "**IMPORTANT**\nYou must include an amount and an option flag to submit the transaction for settlement.",
+      "location": "lines 19-20, # Transaction: Clone Transaction"
+    },
+    {
+      "text": "gateway.transaction.cloneTransaction(\n    \"transactionId\",\n    {\n        amount: \"10.00\",\n        options: {\n            submitForSettlement: true\n        }\n    },\n    (err, result) => {\n    }\n);",
+      "location": "lines 25-35, # Transaction: Clone Transaction > ### Callback code block"
+    },
+    {
+      "text": "If the transaction can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions#not-found-error).",
+      "location": "line 52, # Transaction: Clone Transaction"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-clone-transaction-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-clone-transaction-node]] - Node.js creation of a new transaction by copying all original attributes except amount, with required amount and settlement-submission option input plus Braintree's preferred Vault-reuse alternative",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve that cloning creates a new transaction and excludes amount from copied attributes; do not describe it as mutation or retry of the original.",
+          "Keep the amount and settlement-submission option requirement together as stated by the page; do not infer a broader input inventory from the example.",
+          "Retain Vault reuse as Braintree's better-practice recommendation in most cases, not as a prohibition or proof of universal Vault eligibility.",
+          "Do not enumerate copied attributes or import lifecycle, settlement outcome, processor behavior, eligibility or side effects from unread references."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/clone_transaction/node-2026-09-16.md",
+  "raw_sha256": "2926b6c05d559d8df79b1b39fae160b5139a02fe768b84ecd5b898f2ea52d298",
+  "status": "candidate_ready"
+}

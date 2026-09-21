@@ -1,0 +1,57 @@
+{
+  "job_id": "transaction-search-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Search (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/search/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/search/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, search]\n---\n\n## Overview\n\nThis Braintree Node.js request reference documents transaction search through `gateway.transaction.search()`. It returns a collection of Transaction response objects, demonstrates callback-based `response.each()` consumption, and routes detailed criteria, operator behavior, and general result handling to exact documentation locations.\n\n## Key takeaways\n\n- The opening example filters by customer ID and iterates the returned transaction collection through `response.each()`, displaying each transaction's amount in the example.\n- The examples cover criteria involving card, customer, billing and shipping details; Vault and creation associations; merchant account, card type, status, source, transaction type, amount, status-change time, and dispute date. These examples are retrieval routes rather than an exhaustive field or operator inventory; the separate Search fields reference is the authority linked by the page for available operators.\n- For transaction type, the page distinguishes sales from credits and qualifies refunds as a special kind of credit. A credit-only search includes both refunds and standalone credits; the raw examples show how the additional refund criterion narrows those groups.\n- Status-change criteria can select transactions that entered a listed status at a given date and time. For time values in transaction search, supplied time zones are respected; without one, the gateway account's time zone is used, while returned time values are always UTC.\n- The page states that results are limited according to the linked PayPal Data Protection Addendum for Card Processing Products. Because that external policy is not part of this raw, this entry preserves the notice without inferring a numeric limit, affected fields, or rationale.\n\n## Detail locators\n\n- Policy-based result-limitation notice, Transaction response-object route, and Search fields operator route: `# Transaction: Search`, lines 16-19.\n- `gateway.transaction.search()`, customer-ID criterion, callback and `response.each()` result consumption: `# Transaction: Search > ### Node`, lines 20-29.\n- Card, customer, billing, shipping and top-level-attribute examples: `## Examples`, lines 31-112.\n- Vault association, creation mode, customer location, merchant-account, card-type, status and source criteria: `## Examples`, lines 114-221.\n- Sale, credit, refund and standalone-credit distinctions: `## Examples > ### Transaction type`, lines 223-254.\n- Amount range examples: `## Examples > ### Amount`, lines 256-272.\n- Status-change criteria and displayed status list: `## Examples > ### Status changes`, lines 274-316.\n- Dispute-date example and timezone/default/UTC qualifications: `## Examples > ### Dispute date range`, lines 318-332.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Search operator reference: [[source-braintree-search-fields-node]]\n- General result-consumption reference: [[source-braintree-search-results-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/general/searching/search-fields/node-2026-09-16|Braintree Node.js Search fields reference]] - navigation-only route for available operators; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/searching/search-results/node-2026-09-16|Braintree Node.js Search results reference]] - navigation-only route for general result-consumption behavior and limits; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/search/node-2026-09-16|Braintree Node.js transaction-search request reference]] - complete collected page covering transaction criteria, callback result iteration, transaction-type scope, status-change searches, timezone behavior, and the policy limitation notice\n",
+  "quotes": [
+    {
+      "text": "**NOTE**\nResults are limited according to the [PayPal Data Protection Addendum For Card Processing Products policy](https://www.paypal.com/us/legalhub/braintree/data-protection-addendum) .\n\nReturns a collection of[Transaction](/braintree/docs/reference/response/transaction)response objects. For operators available on search fields, see the[search fields](/braintree/docs/reference/general/searching/search-fields)page.",
+      "location": "lines 16-19, `# Transaction: Search`"
+    },
+    {
+      "text": "const stream = gateway.transaction.search((search) => {\n    search.customerId().is(\"the_customer_id\");\n}, (err, response) => {\n    response.each((err, transaction) => {\n        console.log(transaction.amount);\n    });\n});",
+      "location": "lines 22-28, `# Transaction: Search > ### Node` code block"
+    },
+    {
+      "text": "### Transaction type\n\nThe two types of transactions are sale and credit. Refunds are a special kind of credit, so there are some extra options around them.\n### Node\n```javascript\nconst stream = gateway.transaction.search((search) => {\n    search.type().is(braintree.Transaction.Type.Sale);\n});\n```\nThis will return all credits, regardless of whether they're refunds, or standalone credits.\n### Node\n```javascript\nconst stream = gateway.transaction.search((search) => {\n    search.type().is(braintree.Transaction.Type.Credit);\n});\n```",
+      "location": "lines 223-238, `## Examples > ### Transaction type`"
+    },
+    {
+      "text": "You can search for transactions that entered a given status at a certain date and time. For instance, you can find all transactions which were submitted for settlement in the past 3 days. You can search on these statuses:\n- `created_at`\n- `authorized_at`\n- `submitted_for_settlement_at`\n- `settled_at`\n- `voided_at`\n- `processor_declined_at`\n- `gateway_rejected_at`\n- `failed_at`\n- `authorization_expired_at`",
+      "location": "lines 276-285, `## Examples > ### Status changes`"
+    },
+    {
+      "text": "Time zones specified in the time value will be respected in the search; if you do not specify a time zone, the search will default to the time zone associated with your gateway account. Results will always be returned with time values in UTC.",
+      "location": "line 332, `## Examples > ### Dispute date range > **NOTE**`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-search-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-search-node]] - Node.js transaction search through `gateway.transaction.search()`, with callback `response.each()` consumption, criteria routes, the preserved policy limitation, refund-versus-credit scope, and timezone-qualified date searches",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the result-limitation statement scoped to the linked external policy; this raw gives no numeric cap, affected-field inventory, or rationale.",
+          "Do not treat the displayed criteria examples as an exhaustive field or operator inventory; route operator details to the separate Search fields reference.",
+          "Preserve the transaction-type distinction: a credit search includes refunds and standalone credits unless the refund criterion narrows it.",
+          "Keep timezone behavior qualified to time values in this transaction-search page; omitted time zones use the gateway account time zone, and returned time values are UTC."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/search/node-2026-09-16.md",
+  "raw_sha256": "2af4c7f62a0dd0463beff6d1ffa40d0ea4572f45a70da3e26201f944b4905612",
+  "status": "candidate_ready"
+}

@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 91
+source_count: 101
 ---
 
 ## Overview
@@ -11,9 +11,20 @@ Braintree is represented in this wiki by sixteen independently tracked repositor
 
 ## Website Documentation
 
-Seventy-five independently reviewed website sources complement the sixteen repository
+Eighty-five independently reviewed website sources complement the sixteen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-subscription-create-node]] - Node.js subscription creation using a vaulted payment-method token or conditional nonce, with 3DS-first-transaction, merchant-account currency, plan-modification and start-date qualifications routed to exact raw sections
+- [[source-braintree-subscription-update-node]] - Node.js updates to an existing subscription, including add-on and discount add-update-remove scope, conditional 3DS-enriched nonce guidance for the next transaction, and the option that removes all existing add-ons and discounts
+- [[source-braintree-transaction-search-node]] - Node.js transaction search through `gateway.transaction.search()`, with callback `response.each()` consumption, criteria routes, the preserved policy limitation, refund-versus-credit scope, and timezone-qualified date searches
+- [[source-braintree-transaction-submit-for-partial-settlement-node]] - Node.js multiple partial settlement against one parent authorization, with separate child transactions and child-only refund restrictions, plus a preserved payment-method availability conflict and damaged lifecycle-status rendering
+- [[source-braintree-transaction-adjust-authorization-node]] - Node.js adjustment of an `authorized` transaction's amount, with lower-amount partial-reversal attempts, higher-amount incremental-authorization attempts, and the some-market merchant-fee qualification
+- [[source-braintree-transaction-clone-transaction-node]] - Node.js creation of a new transaction by copying all original attributes except amount, with required amount and settlement-submission option input plus Braintree's preferred Vault-reuse alternative
+- [[source-braintree-transaction-hold-in-escrow-node]] - Braintree Marketplace-specific Node.js hold-in-escrow invocation by transaction ID, limited to `authorized` or `submitted_for_settlement` transactions and preserving the empty-handler result boundary
+- [[source-braintree-transaction-release-from-escrow-node]] - Braintree Marketplace-specific Node.js escrow release by transaction ID, with the `held` prerequisite, master/sub-merchant fund distribution, next-business-day timing, and empty-handler evidence boundary
+- [[source-braintree-transaction-cancel-release-node]] - Braintree Marketplace-specific Node.js cancellation of a previously requested escrow release while `escrow_status` is `release_pending`, explicitly distinct from refund evidence
+- [[source-braintree-transaction-line-item-find-all-node]] - Node.js transaction-ID retrieval of a Transaction Line Item collection, with callback and Promise result variables, the preserved policy notice, and unreconstructed damaged explanatory prose
 
 - [[source-braintree-dispute-add-text-evidence-node]] - Braintree Node.js text-evidence addition for `open` disputes, restricted to merchants with Control Panel dispute access, with plain and categorized evidence routes and a separate finalization boundary for submission to the banks
 - [[source-braintree-merchant-account-create-node]] - Node.js merchant-account creation examples covering individual/business identity, bank-oriented funding, terms acceptance, master-merchant association, callback arguments and a Promise-resolved result value, without establishing universal onboarding eligibility
@@ -206,7 +217,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested website-document sources: 75 (Braintree C01–C12; raw snapshots collected 2026-09-16)
+- Ingested website-document sources: 85 (Braintree C01–C13; raw snapshots collected 2026-09-16)
 - Ingested cumulative GitHub repository sources: 16
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`

@@ -1,0 +1,52 @@
+{
+  "job_id": "transaction-release-from-escrow-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Release from Escrow (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/release-from-escrow/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/release-from-escrow/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, marketplace, escrow]\n---\n\n## Overview\n\nThis Braintree Node.js request reference documents `gateway.transaction.releaseFromEscrow()` for releasing funds from a Braintree Marketplace transaction's escrow. It shows callback and Promise invocation by transaction ID, the `held` escrow-status prerequisite, stated fund distribution, and missing-transaction behavior.\n\n## Key takeaways\n\n- The page scopes this functionality specifically to Braintree Marketplace merchants. It does not establish availability for ordinary Braintree transactions or another marketplace product.\n- Both Node examples call `gateway.transaction.releaseFromEscrow()` with a transaction ID. The callback body and Promise resolution handler are empty, so the page demonstrates invocation forms but does not expose a success flag, returned transaction, resulting escrow status, or other result shape.\n- If the transaction cannot be found, the page routes the outcome to Braintree's Node.js `notFoundError` reference. It does not document other failure modes here.\n- For a released Braintree Marketplace transaction, the page says Braintree disburses the service fee less processing fees to the master merchant account and the remaining funds to the sub-merchant on the business day after the release request is submitted.\n- A transaction's `escrow_status` must be `held` before its funds can be released. This prerequisite does not itself document how funds were held, whether release can later be cancelled, or any post-release lifecycle state.\n\n## Scope boundary\n\nThis page documents release from escrow. It does not document holding funds in escrow, cancelling a release, refunding a transaction, or a resulting transaction or escrow-status transition. The empty handlers must not be treated as evidence of those outcomes.\n\n## Detail locators\n\n- Braintree Marketplace merchant qualification: `# Transaction: Release From Escrow`, line 17.\n- Callback and Promise `gateway.transaction.releaseFromEscrow()` invocation, empty handlers, and missing-transaction route: `### Callback` and `### Promise`, lines 18-30.\n- Master-merchant/sub-merchant distribution and next-business-day timing: `# Transaction: Release From Escrow`, line 32.\n- Required `held` escrow status: `# Transaction: Release From Escrow`, line 34.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Marketplace escrow-status lookup: [[source-braintree-transaction-find-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/request/transaction/hold-in-escrow/node-2026-09-16|Braintree Node.js Hold in Escrow reference]] - navigation-only route for the distinct hold operation; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/transaction/cancel-release/node-2026-09-16|Braintree Node.js Cancel Release reference]] - navigation-only route for the distinct cancellation operation; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/release-from-escrow/node-2026-09-16|Braintree Node.js release-from-escrow reference]] - complete collected page covering Marketplace scope, release invocation, empty result handlers, fund distribution, timing, not-found routing, and the `held` prerequisite\n",
+  "quotes": [
+    {
+      "text": "This functionality is specific to[Braintree Marketplace](/braintree/docs/guides/braintree-marketplace/overview)merchants.",
+      "location": "line 17, `# Transaction: Release From Escrow`"
+    },
+    {
+      "text": "### Callback\n```javascript\ngateway.transaction.releaseFromEscrow(\"transaction_id\", function(err, result) {\n});\n```\n\n### Promise\n```javascript\ngateway.transaction.releaseFromEscrow(\"transaction_id\")\n    .then(result => {\n    });\n```\nIf the transaction can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "lines 18-30, `### Callback` and `### Promise`"
+    },
+    {
+      "text": "When you release a[Braintree Marketplace transaction's](/braintree/docs/guides/braintree-marketplace/create)funds from escrow, we'll disburse the service fee less any processing fees to the master merchant account and the remaining funds to the sub-merchant. This occurs on the business day after you submit the release request.",
+      "location": "line 32, `# Transaction: Release From Escrow`"
+    },
+    {
+      "text": "The[`escrow_status`](/braintree/docs/reference/general/statuses#escrow)of a transaction must be`held`before its funds can be released from escrow.",
+      "location": "line 34, `# Transaction: Release From Escrow`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-release-from-escrow-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-release-from-escrow-node]] - Braintree Marketplace-specific Node.js escrow release by transaction ID, with the `held` prerequisite, master/sub-merchant fund distribution, next-business-day timing, and empty-handler evidence boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the operation scoped specifically to Braintree Marketplace merchants; do not generalize it to ordinary Braintree transactions or another marketplace product.",
+          "Do not infer success fields, returned objects, post-release statuses, or other lifecycle outcomes from the empty callback and Promise handlers.",
+          "Keep release distinct from holding funds, cancelling a release, and refunding a transaction; those operations are not documented by this page.",
+          "Preserve the `held` escrow-status prerequisite and the stated next-business-day timing after submission of the release request."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/release-from-escrow/node-2026-09-16.md",
+  "raw_sha256": "0a13b6d9849cd891bdfa8fda382ee92aea193a5e26ba40ccc3385ff295dd12c6",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,73 @@
+{
+  "job_id": "subscription-create-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Subscription Create (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/subscription/create/node\"\nraw_files:\n  - \"braintree/docs/reference/request/subscription/create/node-2026-09-16.md\"\ntags: [braintree, node-js, subscriptions, recurring-billing]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents creating a subscription through `gateway.subscription.create()`. It centers the vaulted-payment-method requirement and the token-versus-conditional-nonce choice, then routes readers to creation-time merchant-account, plan-modification, trial, start-date and descriptor inputs without reproducing the full parameter inventory.\n\n## Key takeaways\n\n- A subscription can use a payment-method token or, under certain conditions, a payment-method nonce. Braintree states that the payment method must be vaulted before it can be associated with the subscription, so the token path is usually simplest.\n- Payment-method tokens do not carry 3D Secure data. To apply 3DS to the first transaction of a new subscription, the page requires creation with a 3DS-enriched payment-method nonce.\n- A merchant account can be selected at creation; omitting it uses the default merchant account. A selected merchant account must use the subscription plan's currency, otherwise attempted subscription transactions trigger a validation error; using another currency requires a new plan in that currency.\n- Creation can add, update or remove plan add-ons and discounts. An add-on or discount can be added to a subscription only once; use `quantity` when the same modification is to be applied several times. Detailed inheritance and override fields remain in the raw page.\n- The page offers three ways to override the plan's start date: `first_billing_date`, `billing_day_of_month`, or `start_immediately`. Passing more than one produces a validation error. Trial and dynamic-descriptor examples are also routed to the raw page rather than treated as a complete input schema.\n\n## Detail locators\n\n- Token-versus-conditional-nonce creation and the vault prerequisite: `# Subscription: Create`, lines 15-19.\n- Token 3DS limitation and the 3DS-enriched nonce requirement for the first transaction: `# Subscription: Create`, line 39, with the worked call under `## Examples > ### Create with 3D Secure enriched payment method nonce`, lines 72-93.\n- Merchant-account selection, default behavior and same-currency qualification: `## Examples > ### Specify merchant account`, lines 43-70.\n- Add-on and discount add/update/remove scope, inheritance, override categories and single-add qualification: `## Examples > ### Override plan details`, lines 95-307.\n- Trial inputs and qualifications: `## Examples > ### Override trial details`, lines 310-343.\n- Three mutually exclusive start-date inputs and examples: `## Examples > ### Set start date`, lines 346-408.\n- Dynamic-descriptor examples: `## Examples > ### Dynamic descriptors`, lines 410-449.\n\n## Evidence limitations\n\n> [!warning] Request-detail and outcome boundary\n> The examples demonstrate Node.js creation shapes but are not a complete request schema. This page does not establish a minimum SDK version, exhaustive validation behavior, or settlement and later subscription lifecycle outcomes. Use the pinned raw locators and the dedicated response, recurring-billing and validation references for those separate details.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Supporting concept: [[recurring-payments]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/response/subscription/node-2026-09-16|Braintree Node.js Subscription response reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/recurring-billing/create/node-2026-09-16|Braintree Node.js recurring-billing creation guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/validation-errors/all/node-2026-09-16|Braintree Node.js validation-error reference]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/subscription/create/node-2026-09-16|Braintree Node.js subscription-create request reference]] - complete collected page covering payment-method prerequisites, token and 3DS-enriched nonce creation paths, merchant-account currency, plan modifications, trials, start dates and descriptors\n",
+  "quotes": [
+    {
+      "text": "A subscription can be created using either a payment method token or -[under certain conditions](#payment_method_nonce)\u2013 a payment method nonce.\n\nThe payment method must be vaulted before you can associate it with a subscription, so it's usually simplest to refer to the payment method using its[`payment_method_token`](#payment_method_token). Here's an example:",
+      "location": "lines 17-19, # Subscription: Create"
+    },
+    {
+      "text": "However, payment method tokens do not carry any 3D Secure data. If you use 3D Secure and need to apply 3DS to the first transaction of a new subscription, you must[create the subscription using a 3DS-enriched payment method nonce](#create-with-3d-secure-enriched-payment-method-nonce).",
+      "location": "line 39, # Subscription: Create"
+    },
+    {
+      "text": "If you have multiple merchant accounts, you can pass the merchant account ID to specify which merchant account to use to process transactions for the subscription. If a merchant account ID is not passed, we'll use your default merchant account. If you would like to change which merchant account is default,[contact us](/braintree/help?issue=RecurringBillingQuestion).\n**IMPORTANT**\nThe specified merchant account must be in the same currency as the subscription plan, or any attempted subscription transactions will trigger a [validation error](/braintree/docs/reference/general/validation-errors/all#code-91923) . If you want to use a merchant account with a different currency, you must create a new plan with the indicated currency.",
+      "location": "lines 45-47, ## Examples > ### Specify merchant account"
+    },
+    {
+      "text": "**NOTE**\nYou can only add an add-on or discount to a subscription once. If you'd like to apply an add-on or discount to a subscription several times, you can pass `quantity` when creating or updating the add-on/discount.",
+      "location": "lines 306-307, ## Examples > ### Override plan details"
+    },
+    {
+      "text": "You can override the start date from the plan in three different ways:\n- Set`first_billing_date`to a specific date.\n\n\n- Set`billing_day_of_month`.\n- Set the option`start_immediately`, which overrides any plan start date and starts the subscription immediately.\n\n\n**IMPORTANT**\nPassing in more than one of these fields will result in a [validation error](/braintree/docs/reference/general/validation-errors/all#recurring-billing) .",
+      "location": "lines 348-357, ## Examples > ### Set start date"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "subscription-create-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-subscription-create-node]] - Node.js subscription creation using a vaulted payment-method token or conditional nonce, with 3DS-first-transaction, merchant-account currency, plan-modification and start-date qualifications routed to exact raw sections",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the Node.js and subscription-create scope; do not import update behavior, automatic billing outcomes or a minimum SDK version.",
+          "Keep the vault prerequisite and the conditional nonce wording together; do not generalize nonce availability beyond the documented conditions.",
+          "Retain the 3DS qualification as applying 3DS to the first transaction of a new subscription, not to every later subscription transaction.",
+          "Keep merchant-account currency matching, single-add modification behavior and mutually exclusive start-date inputs discoverable; routine field inventories remain in the raw locators."
+        ]
+      },
+      {
+        "update_id": "subscription-create-node-recurring-payments-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-subscription-create-node]] - Braintree Node.js subscription-creation route for vaulted tokens or conditional nonces, including the first-transaction 3DS nonce and merchant-account currency qualifications",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Use this as a Braintree Node.js retrieval route; do not replace the generic recurring-payment model or the separate Braintree iOS consent boundary.",
+          "Do not expand the concept entry with request-field inventories, examples or inferred lifecycle outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/subscription/create/node-2026-09-16.md",
+  "raw_sha256": "c83a9561ad34a454cb4e95e0480d2fbb2982a53c26b62a0acfdb91eeb880c726",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,57 @@
+{
+  "job_id": "transaction-submit-for-partial-settlement-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Submit for Partial Settlement (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/submit-for-partial-settlement/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/submit-for-partial-settlement/node-2026-09-16.md\"\n  - \"braintree/docs/reference/request/transaction/submit-for-settlement/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, partial-settlement, paypal, venmo]\n---\n\n## Overview\n\nThis Braintree Node.js request reference documents `gateway.transaction.submitForPartialSettlement()` for settling multiple partial amounts against one authorization. It describes a parent authorization for the order and a separate child transaction for each settled portion, with callback and Promise examples and qualified refund guidance.\n\n## Key takeaways\n\n- The primary page marks multiple partial settlements as available only for PayPal and Venmo transactions. Its procedure says not to submit the parent authorization for settlement through the ordinary option or call, then to make a separate partial-settlement call for each portion with the authorized transaction and amount. The method name missing from one collected instruction line is not reconstructed.\n- Each partial settlement creates a child transaction with the original transaction's details and the amount specified in that partial-settlement call. The page says the parent and child then move through lifecycle states, but the collected state names and transition symbols are missing; this entry does not reconstruct them.\n- The page lists conditions for a later parent transition and says no more settlements can be created after that transition, but the target state and several condition qualifiers are absent from the collected rendering. Use the exact raw locator to inspect this damaged section rather than inferring statuses.\n- After a transaction has been submitted for partial settlement, refunds can be issued only against child transactions and only up to the amount settled on each child. The corresponding transaction must be fully settled, but the required state name is missing from the collected text.\n- The Control Panel links the parent authorization and settlement child records; the parent shows its children under Settlement Information, while each child shows its parent as authorization information.\n\n> [!warning] Availability conflict\n> The primary partial-settlement page says availability is only for PayPal and Venmo transactions. The fully read [[source-braintree-transaction-submit-for-settlement-node|Submit for Settlement source]] and its raw page additionally route some credit-card transactions for select merchants to multiple partial settlements. These statements do not establish one universal current eligibility rule; verify payment-method and merchant availability with Braintree rather than generalizing either scope.\n\n## Detail locators\n\n- PayPal/Venmo availability, parent-authorization pattern, ordinary-settlement prohibition, separate-call guidance, and missing method rendering: `# Transaction: Submit For Partial Settlement`, lines 15-25.\n- Callback and Promise `gateway.transaction.submitForPartialSettlement()` examples and success/error result access: `### Callback` and `### Promise`, lines 30-63.\n- Child-transaction creation, damaged parent/child statuses and transitions, transition conditions, and no-further-settlement restriction: `## Transaction settlement`, lines 65-76.\n- Child-only refund scope, per-child amount ceiling, fully-settled prerequisite, and missing required state: `## Refunds`, lines 79-84.\n- Parent/child Control Panel links: `## Control Panel visibility`, lines 87-91.\n- Conflicting select-merchant credit-card availability route: [[raw/braintree/docs/reference/request/transaction/submit-for-settlement/node-2026-09-16|Braintree Node.js Submit for Settlement reference]], `## Examples > ### Specifying settlement amount`, line 32.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Ordinary settlement submission and availability conflict: [[source-braintree-transaction-submit-for-settlement-node]]\n- Related refund operation: [[source-braintree-transaction-refund-node]]\n- Related void operation: [[source-braintree-transaction-void-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/submit-for-partial-settlement/node-2026-09-16|Braintree Node.js submit-for-partial-settlement reference]] - complete primary page covering PayPal/Venmo availability, parent/child behavior, damaged lifecycle rendering, refund restrictions, and Control Panel links\n- [[raw/braintree/docs/reference/request/transaction/submit-for-settlement/node-2026-09-16|Braintree Node.js submit-for-settlement reference]] - complete supplemental page used for the conflicting select-merchant credit-card availability statement at line 32\n",
+  "quotes": [
+    {
+      "text": "**AVAILABILITY**\nMultiple partial settlements are only available for PayPal and Venmo transactions.\n\nThis method allows you to settle multiple partial amounts against the same authorization, which is helpful if you send physical goods to customers in multiple shipments. You can create a parent authorization for the entire order amount, and when you're ready to send each portion of the order, you can charge the customer for that portion in a separate child transaction. To settle a transaction in multiple portions:\n- Authorize the entire order amount using.\n- Do not pass the`submit_for_settlement`option or make a`submit_for_settlement`call.\n\n\n- Make a separate`submit_for_partial_settlement`call for each portion you want to settle separately.\n- For each call, specify the[`authorized-transaction`](#arg-authorized_transaction)and the[`amount`](#arg-amount)to settle.",
+      "location": "lines 16-25, `# Transaction: Submit For Partial Settlement`"
+    },
+    {
+      "text": "gateway.transaction.submitForPartialSettlement(\n    \"theParentAuthTransactionId\",\n    \"10.00\",\n    {\n        \"orderId\": \"orderId\"\n    },\n    function(err, result) {\n        if (result.success) {\n            const settledTransaction = result.transaction;\n        } else {\n            console.log(result.errors);\n        }\n    }\n);",
+      "location": "lines 32-45, `### Callback` code block"
+    },
+    {
+      "text": "- Each partial settlement will create a new child transaction in the gateway with the same details as the original transaction, but with the amount specified in the`submit_for_partial_settlement`call.\n- Once the child transaction is created, the parent will move to astatus, whereas the child will move from&gt;&gt;.\n- The parent transaction will move fromtowhen any of the following is true:\n- All child transactions areand the cumulative amount submitted for settlement across all child transactions is equal to the amount authorized on the parent transaction.\n- The original authorization isand there are one or morechild transactions associated with the parent transaction.\n- The parent transaction has remained infor longer than 30 days, regardless of the child transactions' status.\n\n\n- Once the parent moves to thestatus, no further settlements can be created on that transaction.",
+      "location": "lines 68-76, `## Transaction settlement`"
+    },
+    {
+      "text": "- Once you've submitted a transaction for partial settlement, you can only issue a refund against the child transaction(s).\n- A refund on a child transaction can be up to the amount settled on the child.\n- A refund can be issued only when the corresponding transaction has fully settled and is in astate.",
+      "location": "lines 82-84, `## Refunds`"
+    },
+    {
+      "text": "- The parent and child transactions will appear linked in the Control Panel as Authorized Transaction and Settlement Transaction ID, respectively.\n- The parent transaction will show the child transaction(s) under the Settlement Information section on the transaction search in the Control Panel. Similarly, the child transactions will show the parent for authorization information.",
+      "location": "lines 90-91, `## Control Panel visibility`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-submit-for-partial-settlement-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-submit-for-partial-settlement-node]] - Node.js multiple partial settlement against one parent authorization, with separate child transactions and child-only refund restrictions, plus a preserved payment-method availability conflict and damaged lifecycle-status rendering",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the availability conflict: this primary page says PayPal and Venmo only, while the fully read Submit for Settlement page also names some credit-card transactions for select merchants; do not state a universal eligibility rule.",
+          "Do not reconstruct the method omitted after `Authorize the entire order amount using.` or any missing parent/child lifecycle state and transition names in the damaged rendering.",
+          "Keep the central behavior scoped to multiple partial settlement: one parent authorization and a separate child transaction for each settled portion.",
+          "Keep refunds scoped to child transactions, capped by the amount settled on that child, and conditioned on full settlement; the required rendered state name is unavailable."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/submit-for-partial-settlement/node-2026-09-16.md",
+  "raw_sha256": "ee0e96a52e0f5b846c2aedb3bdcd9104abaddcf7ebc9b5472aa789da8e10de41",
+  "status": "candidate_ready"
+}

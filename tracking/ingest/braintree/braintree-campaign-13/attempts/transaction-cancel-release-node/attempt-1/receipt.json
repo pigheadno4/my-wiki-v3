@@ -1,0 +1,57 @@
+{
+  "job_id": "transaction-cancel-release-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Cancel Release (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/cancel-release/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/cancel-release/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, marketplace, escrow]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents `gateway.transaction.cancelRelease()` for Braintree Marketplace merchants. It applies after an escrowed Marketplace transaction has previously been released and allows that release to be cancelled while the transaction's `escrow_status` is `release_pending`.\n\n## Key takeaways\n\n- The functionality is specific to Braintree Marketplace merchants; the page does not establish availability for ordinary Braintree merchant integrations.\n- The callback and Promise examples pass a transaction ID to `cancelRelease()`. They show generic result handlers but no result properties, success condition, returned status, or completed lifecycle outcome.\n- The eligible state is narrow: an escrowed Braintree Marketplace transaction must have been previously released, and its `escrow_status` must still be `release_pending`.\n- Cancelling a release is not documented here as a refund or transaction cancellation. The page does not state the resulting escrow status or any settlement, disbursement, buyer-funds, or later-release effect.\n- If the transaction cannot be found, the page routes the failure to the separate Node.js `notFoundError` reference.\n\n> [!warning] Cancel-release is not refund evidence\n> This operation cancels a previously requested escrow release under the stated `release_pending` condition. Do not treat its name or generic result handlers as proof of a refund, transaction cancellation, returned escrow status, or completed downstream outcome.\n\n## Detail locators\n\n- Transaction response-object navigation: `# Transaction: Cancel Release`, line 15.\n- Braintree Marketplace merchant qualification: line 17.\n- Callback invocation and generic result handler: `### Callback`, lines 18-23.\n- Promise invocation and generic result handler: `### Promise`, lines 25-31.\n- Missing-transaction route and prior-release plus `release_pending` eligibility: lines 32-34.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Prior escrow-placement operation: [[source-braintree-transaction-hold-in-escrow-node]]\n- Distinct refund operation: [[source-braintree-transaction-refund-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/response/transaction/node-2026-09-16|Braintree Node.js Transaction response reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/braintree-marketplace/overview-2026-09-16|Braintree Marketplace overview]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/braintree-marketplace/create/node-2026-09-16|Braintree Node.js Marketplace transaction-creation guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/statuses-2026-09-16|Braintree status reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/exceptions/node-2026-09-16|Braintree Node.js exceptions reference]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/cancel-release/node-2026-09-16|Braintree Node.js cancel-release request reference]] - complete collected page covering Marketplace scope, callback and Promise invocation, not-found navigation, and the prior-release plus `release_pending` condition\n",
+  "quotes": [
+    {
+      "text": "This functionality is specific to[Braintree Marketplace](/braintree/docs/guides/braintree-marketplace/overview)merchants.",
+      "location": "line 17, # Transaction: Cancel Release"
+    },
+    {
+      "text": "gateway.transaction.cancelRelease(\"transaction_id\", function (err, result) {\n    // Handle result\n});",
+      "location": "lines 20-22, # Transaction: Cancel Release > ### Callback code block"
+    },
+    {
+      "text": "gateway.transaction.cancelRelease(\"transaction_id\")\n    .then(result => {\n        // Handle result\n    });",
+      "location": "lines 27-30, # Transaction: Cancel Release > ### Promise code block"
+    },
+    {
+      "text": "If the transaction can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "line 32, # Transaction: Cancel Release"
+    },
+    {
+      "text": "If you previously released an escrowed[Braintree Marketplace transaction](/braintree/docs/guides/braintree-marketplace/create), you can cancel the release while the[`escrow_status`](/braintree/docs/reference/general/statuses#escrow)is`release_pending`.",
+      "location": "line 34, # Transaction: Cancel Release"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-cancel-release-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-cancel-release-node]] - Braintree Marketplace-specific Node.js cancellation of a previously requested escrow release while `escrow_status` is `release_pending`, explicitly distinct from refund evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve Braintree Marketplace merchant scope; do not generalize the operation to every Braintree merchant.",
+          "Retain both conditions: the escrowed transaction was previously released and its `escrow_status` is `release_pending`.",
+          "Keep cancel-release distinct from transaction refund or transaction cancellation; the raw does not state a buyer-funds effect or resulting escrow status.",
+          "The handlers show only generic result handling; do not infer result properties, success conditions or completed lifecycle outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/cancel-release/node-2026-09-16.md",
+  "raw_sha256": "01d15cfb40da643e5d764cb81ed16dbee91f10b804fdb35d27e9d053ccfaa24a",
+  "status": "candidate_ready"
+}

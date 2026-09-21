@@ -1,0 +1,57 @@
+{
+  "job_id": "transaction-hold-in-escrow-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Hold In Escrow (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/hold-in-escrow/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/hold-in-escrow/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, marketplace, escrow]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents `gateway.transaction.holdInEscrow()` for Braintree Marketplace merchants. It shows callback and Promise invocations using a transaction ID and limits eligibility to transactions whose status is `authorized` or `submitted_for_settlement`.\n\n## Key takeaways\n\n- Braintree states that this functionality is specific to Braintree Marketplace merchants; the page does not establish availability for ordinary Braintree merchant integrations.\n- Both displayed forms pass a transaction ID to `holdInEscrow()`. The callback receives `err` and `result`, while the Promise resolves a `result`, but both handlers are empty and therefore establish no result properties, success test, returned status, or completed escrow outcome.\n- A transaction can be held in escrow only when its status is `authorized` or `submitted_for_settlement`. The page does not document how the transaction reached either status or what later escrow transitions occur.\n- If the transaction cannot be found, the page routes the failure to the separate Node.js `notFoundError` reference.\n\n> [!warning] Invocation is not lifecycle evidence\n> The empty callback and Promise handlers show invocation shape only. They do not prove that the hold succeeded, identify a resulting transaction status, or establish release, cancellation, settlement, disbursement, timing, or failure behavior.\n\n## Detail locators\n\n- Transaction response-object navigation: `# Transaction: Hold In Escrow`, line 15.\n- Braintree Marketplace merchant qualification: `# Transaction: Hold In Escrow`, line 17.\n- Callback invocation and empty handler: `### Callback`, lines 18-21.\n- Promise invocation and empty handler: `### Promise`, lines 23-26.\n- Missing-transaction error route and eligible input statuses: lines 27-29.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Marketplace transaction creation route: [[source-braintree-transaction-sale-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/response/transaction/node-2026-09-16|Braintree Node.js Transaction response reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/braintree-marketplace/overview-2026-09-16|Braintree Marketplace overview]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/exceptions/node-2026-09-16|Braintree Node.js exceptions reference]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/hold-in-escrow/node-2026-09-16|Braintree Node.js hold-in-escrow request reference]] - complete collected page covering Marketplace scope, callback and Promise invocation, not-found navigation, and eligible transaction statuses\n",
+  "quotes": [
+    {
+      "text": "This functionality is specific to[Braintree Marketplace](/braintree/docs/guides/braintree-marketplace/overview)merchants.",
+      "location": "line 17, # Transaction: Hold In Escrow"
+    },
+    {
+      "text": "gateway.transaction.holdInEscrow(\"transaction_id\", (err, result) => { });",
+      "location": "line 20, # Transaction: Hold In Escrow > ### Callback code block"
+    },
+    {
+      "text": "gateway.transaction.holdInEscrow(\"transaction_id\").then(result => { });",
+      "location": "line 25, # Transaction: Hold In Escrow > ### Promise code block"
+    },
+    {
+      "text": "If the transaction can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "line 27, # Transaction: Hold In Escrow"
+    },
+    {
+      "text": "You can only hold a transaction in escrow if its[`status`](/braintree/docs/reference/response/transaction/node#status)is`authorized`or`submitted_for_settlement`.",
+      "location": "line 29, # Transaction: Hold In Escrow"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-hold-in-escrow-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-hold-in-escrow-node]] - Braintree Marketplace-specific Node.js hold-in-escrow invocation by transaction ID, limited to `authorized` or `submitted_for_settlement` transactions and preserving the empty-handler result boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve Braintree Marketplace merchant scope; do not generalize the operation to every Braintree merchant.",
+          "Retain the exact eligible input statuses `authorized` and `submitted_for_settlement` without importing how they were reached or what later transitions occur.",
+          "The callback and Promise handlers are empty; do not infer result properties, success tests, returned status or completion from them.",
+          "Do not import release, cancellation, settlement, disbursement, timing or other escrow lifecycle behavior from the operation name or unread references."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/hold-in-escrow/node-2026-09-16.md",
+  "raw_sha256": "e9f4ae0fb60c83a3596ee5bf7a85c0b2bb932f2a221fd28ac720b81bab0ad41d",
+  "status": "candidate_ready"
+}

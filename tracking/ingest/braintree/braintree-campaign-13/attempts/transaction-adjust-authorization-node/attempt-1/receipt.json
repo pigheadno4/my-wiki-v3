@@ -1,0 +1,52 @@
+{
+  "job_id": "transaction-adjust-authorization-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Adjust Authorization (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/adjust-authorization/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/adjust-authorization/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, authorization-adjustments]\n---\n\n## Overview\n\nThis Braintree Node.js request reference documents `gateway.transaction.adjustAuthorization()` for changing a transaction's authorized amount after the transaction has been created. It identifies the eligible transaction status, required inputs, lower-versus-higher adjustment attempts, and callback result handling without treating the operation as capture or settlement submission.\n\n## Key takeaways\n\n- Authorization adjustment is limited by this page to transactions whose status is `authorized`. The required information is the transaction ID and amount; the page does not state broader payment-method, merchant, or processor availability.\n- When the new authorized amount is lower than the original amount, Braintree says it attempts a partial reversal of the difference back to the cardholder. When the new amount is higher, it attempts an incremental authorization. Both effects are attempts, not guaranteed outcomes.\n- The Node example passes a transaction ID and an amount to `gateway.transaction.adjustAuthorization()`. On success it reads the adjusted transaction from `result.transaction`; otherwise it displays `result.errors`.\n- The page warns that authorization and capture can incur merchant fees in some markets and points readers to the Braintree User Agreement. It does not identify the markets, assign a fee to every adjustment, or say that this operation captures the transaction.\n\n## Scope boundary\n\nThis page changes an authorized amount. It does not document capture, settlement submission, or a transaction-status transition caused by a successful adjustment; use [[source-braintree-transaction-submit-for-settlement-node]] for the distinct settlement-submission route.\n\n## Detail locators\n\n- Some-market merchant-fee qualification and Braintree User Agreement route: `# Transaction: Adjust Authorization > **NOTE**`, lines 16-17.\n- Post-creation adjustment purpose, `authorized`-status restriction, and required transaction ID plus amount: `# Transaction: Adjust Authorization`, lines 21-23.\n- Lower-amount partial-reversal attempt and higher-amount incremental-authorization attempt: `# Transaction: Adjust Authorization`, line 25.\n- Node method, inputs, success transaction, and error branch: `# Transaction: Adjust Authorization > ### Node`, lines 26-40.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Distinct settlement-submission operation: [[source-braintree-transaction-submit-for-settlement-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/adjust-authorization/node-2026-09-16|Braintree Node.js adjust-authorization reference]] - complete collected page covering authorized-status scope, amount-adjustment attempts, fee qualification, and callback result handling\n",
+  "quotes": [
+    {
+      "text": "**NOTE**\nAuthorization and capture can incur merchant fees in some markets. For more information, see your [Braintree User Agreement](https://www.braintreepayments.com/legal) .",
+      "location": "lines 16-17, `# Transaction: Adjust Authorization > **NOTE**`"
+    },
+    {
+      "text": "After creating a transaction, the authorized amount of the transaction can be adjusted.\n\nYou can only adjust authorization for transactions that have a status of[authorized](/braintree/docs/reference/general/statuses#authorized). The required information is the transaction ID and the amount.",
+      "location": "lines 21-23, `# Transaction: Adjust Authorization`"
+    },
+    {
+      "text": "When a transaction is submitted for[adjust authorization](/braintree/docs/reference/response/transaction/node#authorization-adjustments), if the new authorizing amount is less than the original authorized amount, we attempt a partial reversal to reverse the difference back to the cardholder. If the new authorizing amount is greater than the original authorized amount, we attempt an incremental authorization to increase the authorized amount.",
+      "location": "line 25, `# Transaction: Adjust Authorization`"
+    },
+    {
+      "text": "gateway.transaction.adjustAuthorization(\n    \"the_transaction_id\",\n    {\n        amount: \"10.00\",\n    },\n    (err, result) => {\n        if (result.success) {\n            const adjustedTransaction = result.transaction;\n        } else {\n            console.log(result.errors);\n        }\n    }\n);",
+      "location": "lines 28-40, `# Transaction: Adjust Authorization > ### Node` code block"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-adjust-authorization-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-adjust-authorization-node]] - Node.js adjustment of an `authorized` transaction's amount, with lower-amount partial-reversal attempts, higher-amount incremental-authorization attempts, and the some-market merchant-fee qualification",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep eligibility scoped to transactions in `authorized` status; this page does not establish broader payment-method, merchant, or processor availability.",
+          "Preserve `attempt` for both the lower-amount partial reversal and higher-amount incremental authorization; do not guarantee either outcome.",
+          "Do not equate authorization adjustment with capture or settlement submission; the page changes the authorized amount and documents no resulting transaction-status transition.",
+          "Keep the fee language modal and qualified: authorization and capture can incur merchant fees in some markets, with no fee amount, market list, or per-adjustment guarantee stated."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/adjust-authorization/node-2026-09-16.md",
+  "raw_sha256": "6e5fa65ac3cf3c9f379afbfb8faa646b6279376b4d583a61a7ea17a0561b8146",
+  "status": "candidate_ready"
+}
