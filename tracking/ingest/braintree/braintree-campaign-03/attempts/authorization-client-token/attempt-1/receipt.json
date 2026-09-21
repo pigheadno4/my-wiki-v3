@@ -1,0 +1,50 @@
+{
+  "job_id": "authorization-client-token",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Client Token Authorization\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/authorization/client-token\"\nraw_files:\n  - \"braintree/docs/guides/authorization/client-token-2026-09-16.md\"\ntags: [braintree, client-token, client-sdk, authorization, jwt]\n---\n\n## Overview\n\nThis Braintree guide explains the client token used to configure and authorize a Braintree client SDK. It assigns token generation to the merchant server and token retrieval plus SDK initialization to the client; this is client-SDK application authorization, not evidence of transaction authorization or payment success.\n\n## Key takeaways\n\n- A client token is a signed JWT containing the configuration and authorization information required by the Braintree client SDK.\n- The server generates the client token and provides it to the client, which obtains the token and uses it to initialize the client SDK. The guide says this authenticates the application to communicate directly with Braintree.\n- Client tokens are valid for up to 24 hours, not a guaranteed full 24-hour lifetime. If a token includes a customer ID and creates an excessive number of payment methods, Braintree says it will be invalidated; the page gives no numeric threshold.\n- The page does not document a fixed use count or broader reuse guarantee.\n\n## Detail locators\n\n- Token format, contents, and client-SDK purpose: `# Client Token`, line 16.\n- Server generation, server-to-client delivery, and application-communication scope: `# Client Token`, lines 18-20.\n- Validity and customer-ID/excessive-payment-method invalidation: `# Client Token`, line 22.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-web-sdk]]\n- Related concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/authorization/client-token-2026-09-16|Braintree client-token authorization guide]] - complete guide covering token purpose, server/client roles, validity, and stated invalidation\n",
+  "quotes": [
+    {
+      "text": "A client token is a signed JWT that includes configuration and authorization information required by the [Braintree client SDK](/braintree/docs/start/hello-client/javascript/v3/).",
+      "location": "line 16, # Client Token"
+    },
+    {
+      "text": "Your server is responsible for [generating the client token](/braintree/docs/start/hello-server/ruby/#generate-a-client-token), which contains all of the necessary configuration information to set up the client SDKs. When your server provides a client token to your client, it authenticates the application to communicate directly to Braintree.",
+      "location": "line 18, # Client Token"
+    },
+    {
+      "text": "Your client is responsible for obtaining the client token from your server and initializing the client SDK.",
+      "location": "line 20, # Client Token"
+    },
+    {
+      "text": "Client tokens are valid for up to 24 hours. If the client token includes a customer ID and creates an excessive number of payment methods, it will be invalidated.",
+      "location": "line 22, # Client Token"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "authorization-client-token-braintree-web-sdk-route",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-authorization-client-token]] - signed client-token purpose, server-to-client initialization roles, application-communication scope, and stated validity and invalidation boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep authorization scoped to authenticating the application for direct client-SDK communication; do not present the client token as transaction authorization or evidence of payment success.",
+          "Preserve 'up to 24 hours' rather than promising a full 24-hour lifetime; customer-ID invalidation is conditioned on excessive payment-method creation, and the page states neither a numeric threshold nor a fixed reuse count."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/authorization/client-token-2026-09-16.md",
+  "raw_sha256": "60163770c2e79dbd7b5e47aff3c8a617d4ec2e94540fedf7b4441b4285b65082",
+  "status": "candidate_ready"
+}

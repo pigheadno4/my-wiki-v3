@@ -2,12 +2,75 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 16
+source_count: 71
 ---
 
 ## Overview
 
 Braintree is represented in this wiki by sixteen independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, separately versioned Android and iOS Drop-in UIs, independent Android and iOS PopupBridge WebView transports, the standalone `credit-card-type` detector, the `restricted-input` formatter, the shared `@braintree/uuid` utility, and mobile SDK review tooling. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations; PopupBridge only transports browser popup results; `credit-card-type` infers likely card brands; `restricted-input` formats browser input; `@braintree/uuid` generates internal identifiers; and mobile SDK tooling only coordinates engineering review. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+
+## Website Documentation
+
+Fifty-five independently reviewed website sources complement the sixteen repository
+sources. Their collected documentation scope remains separate from exact-SHA
+implementation evidence:
+
+- [[source-braintree-payment-method-create-node]] - Node.js existing-customer payment-method creation with required customer ID and nonce, default and billing-address behavior, payment-type limits on duplicate rejection, card-verification and Premium Fraud Management Tools guidance, and nonce-versus-raw-card precedence
+- [[source-braintree-payment-method-update-node]] - Node.js stored-payment-method updates by token, including shared or replacement billing-address behavior, PayPal/default-method restrictions, card verification with the AVS-update transaction/CVV rejection condition, and nonce-association and precedence rules
+- [[source-braintree-subscription-search-node]] - Node.js subscription search through `gateway.subscription.search()`, with callback and stream result consumption, qualified filter-example routes, the preserved results-limitation policy notice, and no reconstructed SDK version from the damaged rendering
+- [[source-braintree-subscription-retry-charge-node]] - Node.js manual retry of a past-due subscription charge, with the explicit example amount, displayed success access, and separate transaction-settlement submission route
+- [[source-braintree-payment-method-grant-node]] - limited-release Node.js Grant API route for giving another Braintree merchant controlled access to one customer payment method through a recipient access token and returned nonce
+- [[source-braintree-payment-method-revoke-node]] - limited-release Node.js revocation of a payment-method grant, deleting the granted version from the receiving merchant's Vault without importing the separate payment-method deletion cascade
+- [[source-braintree-webhooks-transaction-node]] - Node.js ACH and SEPA Direct Debit transaction settlement notification kinds, qualified post-settled decline wording, and damaged availability/attribute-rendering boundaries
+- [[source-braintree-webhooks-account-updater-node]] - feature-restricted Account Updater daily-report webhook, including its 24-hour updated-method scope, no-updates suppression, payload-category route, and one-week report-link expiry
+- [[source-braintree-webhooks-fraud-protection-node]] - Node.js `transaction_reviewed` notification for an accepted or rejected Fraud Protection Dashboard review, with requested-not-completed void/refund scope and review payload categories
+- [[source-braintree-address-find-node]] - Node.js lookup of one address by customer ID plus address ID, with `err`/`address` callback evidence, separate response-object navigation, and a shared customer-or-address not-found route
+
+- [[source-braintree-plan-update-node]] — plan updates, omission warning and override/trial guidance
+- [[source-braintree-plan-create-node]] — merchant prerequisite and plan-creation input routes
+- [[source-braintree-plan-find-node]] — single-plan lookup and result forms
+- [[source-braintree-add-on-all-node]] — add-on collection retrieval and SDK-language boundary
+- [[source-braintree-discount-all-node]] — discount collection retrieval and result access
+- [[source-braintree-credit-card-update-node]] — stored-card update and nonce/raw-card precedence
+- [[source-braintree-credit-card-create-node]] — card creation and qualified PCI/input guidance
+- [[source-braintree-credit-card-expiring-between-node]] — expiry-date retrieval and incomplete-example boundaries
+- [[source-braintree-credit-card-find-node]] — card-token lookup and qualified alternative guidance
+- [[source-braintree-credit-card-delete-node]] — card-token deletion without imported downstream effects
+- [[source-braintree-address-create-node]] — customer-scoped Vault address creation and limits
+- [[source-braintree-webhooks-dispute-node]] — dispute notification triggers and attribute routes
+- [[source-braintree-address-update-node]] — address-ID/customer-ID updates and error routes
+- [[source-braintree-address-delete-node]] — address deletion and payment-method reference removal
+- [[source-braintree-plan-all-node]] — callback/Promise retrieval of a Plan collection
+- [[source-braintree-customer-update-node]] — customer updates and payment-method update boundaries
+- [[source-braintree-transaction-find-node]] — transaction lookup and Marketplace-qualified escrow example
+- [[source-braintree-subscription-cancel-node]] — subscription cancellation and billing-effect guidance
+- [[source-braintree-webhooks-subscription-node]] — subscription notification triggers and payload limits
+- [[source-braintree-subscription-find-node]] — subscription lookup, result handling and policy notice
+- [[source-braintree-customer-create-node]] — Node customer creation and verification variants with retained evidence gaps
+- [[source-braintree-payment-method-find-node]] — stored payment-method lookup and result-limitation notice
+- [[source-braintree-webhooks-payment-method-node]] — scoped payment-method revocation and customer-data update events
+- [[source-braintree-customer-delete-node]] — customer deletion and cascading consequences
+- [[source-braintree-customer-find-node]] — customer-ID lookup with an explicit missing-code limitation
+- [[source-braintree-tokenization-key-javascript-v3]] — reduced-privilege client authorization and JavaScript initialization
+- [[source-braintree-webhooks-testing-go-live-node]] — sample versus delivered webhook testing and limitations
+- [[source-braintree-payment-method-nonce-find-node]] — non-consuming nonce lookup and risk-check information
+- [[source-braintree-payment-method-nonce-create-node]] — nonce creation with source-qualified usage guidance
+- [[source-braintree-payment-method-delete-node]] — deletion and associated-subscription consequences
+- [[source-braintree-transaction-submit-for-settlement-node]] — explicit Node settlement submission and availability-qualified adjustment/data routes
+- [[source-braintree-authorization-overview]] — client-authorization capability comparison and selection guidance
+- [[source-braintree-client-token-generate-node]] — Node token generation and customer-ID variant
+- [[source-braintree-transaction-void-node]] — void eligibility and conditional reversal
+- [[source-braintree-authorization-client-token]] — signed-token roles and validity boundaries
+- [[source-braintree-hosted-fields-events-javascript-v3]] — JavaScript Hosted Fields events and field-state retrieval
+- [[source-braintree-transaction-refund-node]] — Node refund requirements and failure distinctions
+- [[source-braintree-webhooks-parse-node]] — webhook parsing, ordering and retry qualifications
+- [[source-braintree-payment-method-nonces]] — nonce/single-use naming, use and lifespan boundaries
+- [[source-braintree-webhooks-create-node]] — webhook configuration and destination requirements
+- [[source-braintree-get-started]] — initial integration and client/server flow; preserves the website-versus-repository Drop-in lifecycle-date conflict
+- [[source-braintree-transaction-sale-node]] — Node transaction creation and raw-detail routes, including the risk/fraud prerequisite and an inconsistent example
+- [[source-braintree-webhooks-overview]] — notification overview, permissions and volume boundaries
+- [[source-braintree-control-panel-overview]] — administrative UI, reporting limitations and environment isolation
+- [[source-braintree-credit-cards-client-javascript-v3]] — version-qualified Card Fields/Hosted Fields support boundary
 
 ## GraphQL API Contract
 
@@ -61,7 +124,7 @@ The utility uses separate iOS, Android Chrome or ChromeOS, KitKat WebView, IE9, 
 
 ## Drop-in Surface
 
-The additive `braintree-web-drop-in@1.48.0` update hardens the displayed card suffix through numeric conversion, truncation, and zero-padding; it retains the HTML template and the same runtime dependencies. This is not new checkout functionality or a digits-only validator. Its September 10 release leaves the September 1 no-updates notice unchanged; do not infer renewed support from the later release. [[source-github-braintree-web-drop-in]] [[changelog-github-braintree-web-drop-in]]
+The additive `braintree-web-drop-in@1.48.0` update hardens the displayed card suffix through numeric conversion, truncation, and zero-padding; it retains the HTML template and the same runtime dependencies. This is not new checkout functionality or a digits-only validator. Its September 10 release leaves the September 1 no-updates notice unchanged, while the website guide gives October lifecycle dates; retain this unresolved source-specific conflict rather than infer renewed support. [[source-github-braintree-web-drop-in]] [[changelog-github-braintree-web-drop-in]] [[source-braintree-get-started]]
 
 `braintree-web-drop-in@1.47.0` provides an opinionated UI for cards, PayPal, PayPal Credit, Venmo, Apple Pay, and Google Pay, with vaulted-method display, optional Data Collector output, and 3D Secure verification. It pins `braintree-web@3.123.2`, not the separately retained `3.144.0` modular SDK.
 
@@ -121,6 +184,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
+- Ingested website-document sources: 55 (Braintree C01–C10; raw snapshots collected 2026-09-16)
 - Ingested cumulative GitHub repository sources: 16
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
@@ -177,6 +241,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Related
 
+- [[braintree-webhooks]] — website-document notification entry
+- [[braintree-control-panel]] — website-document administration entry
 - [[braintree-index]] — Braintree catalog and operations links
 - [[braintree-log]] — collection and ingest history
 - [[braintree-web-sdk]] — browser SDK concept

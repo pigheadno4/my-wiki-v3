@@ -1,4 +1,4 @@
-"""Thin JSON CLI for the minimum Metronome ingest dry run."""
+"""Provider-scoped ingest CLI; --campaign accepts provider/id (legacy: Metronome id)."""
 
 import argparse
 import json
@@ -10,7 +10,7 @@ from ingest_pilot.state import PilotError
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
 
     init = commands.add_parser("init")

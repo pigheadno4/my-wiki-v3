@@ -1,0 +1,51 @@
+{
+  "job_id": "address-delete-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Address Delete (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/address/delete/node\"\nraw_files:\n  - \"braintree/docs/reference/request/address/delete/node-2026-09-16.md\"\ntags: [braintree, node-js, addresses, customers, vault, payment-method]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents `gateway.address.delete()` for deleting a customer address identified by both customer ID and address ID. It preserves the operation's effect on Vault payment methods that reference the address and routes missing-address or missing-customer cases to the page's not-found error reference.\n\n## Key takeaways\n\n- Both the customer ID and address ID are needed to identify and delete an address.\n- The Node example passes the customer ID and address ID to `gateway.address.delete()` and receives an error-only callback.\n- Deleting an address from a customer also removes that address from any Vault payment methods that reference it for billing or shipping. The page does not state that those payment methods, the customer, or subscriptions are deleted.\n- If the address or customer cannot be found, the page directs readers to its Node `notFoundError` reference.\n\n## Detail locators\n\n- Required customer-ID and address-ID identity: `# Address: Delete`, lines 15-16.\n- Node deletion invocation and callback form: `### Node`, lines 17-21.\n- Effect on billing or shipping references from Vault payment methods: `**NOTE**`, lines 23-24.\n- Not-found error route: line 26.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/general/exceptions/node-2026-09-16|Braintree Node.js exceptions reference]] - navigation-only destination for the linked `notFoundError`; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/address/delete/node-2026-09-16|Braintree Node.js address-delete request reference]] - complete collected page covering two-part address identity, the Node deletion call, removal of billing or shipping address references from Vault payment methods, and the linked not-found error route\n",
+  "quotes": [
+    {
+      "text": "Addresses are uniquely identified by a customer id and an address id, so you need both of these\nfields to delete an address.",
+      "location": "lines 15-16, # Address: Delete"
+    },
+    {
+      "text": "### Node\n```javascript\ngateway.address.delete(\"theCustomerId\", \"theAddressId\", (err) => {\n});\n```",
+      "location": "lines 17-21, ### Node"
+    },
+    {
+      "text": "**NOTE**\nWhen an address is deleted from a customer, it is also removed from any Vault payment methods that reference the address for billing or shipping.",
+      "location": "lines 23-24, **NOTE**"
+    },
+    {
+      "text": "If the address or customer can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "line 26, after **NOTE**"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "address-delete-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-address-delete-node]] - Node.js customer-address deletion by customer ID plus address ID, including removal of that address from billing or shipping references on Vault payment methods and the not-found error route",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve the two-part customer-ID plus address-ID identity; do not describe the address ID as globally sufficient.",
+          "The stated effect removes the deleted address from referencing Vault payment methods; do not claim that it deletes the payment methods, customer, or subscriptions.",
+          "Keep address deletion separate from address creation and update, and treat the linked exceptions page as navigation only unless fully read."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/address/delete/node-2026-09-16.md",
+  "raw_sha256": "f73ac29a33df66f453ded77d92bde617c374a677a94139d3bb68ebee8a943a66",
+  "status": "candidate_ready"
+}

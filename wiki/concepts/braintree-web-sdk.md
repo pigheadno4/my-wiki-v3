@@ -24,6 +24,8 @@ Component presence proves an SDK integration surface at this exact version. It d
 
 ## Card and Authentication Boundary
 
+The collected JavaScript v3 credit-card guide distinguishes Hosted Fields from Card Fields: JavaScript v3 supports Hosted Fields but does not support Card Fields, while that guide lists client-side Card Fields only for Android v5 and iOS v7. Keep this boundary SDK- and version-qualified; the named native availability does not establish support in other versions. [[source-braintree-credit-cards-client-javascript-v3]]
+
 Hosted Fields keeps sensitive card inputs inside injected Braintree frames while exposing styling, validation-state events, card-type changes, BIN availability, and tokenization to the merchant page. Direct card submission through the lower-level client API is a different PCI scope.
 
 The retained `braintree-web@3.144.0` release updates its `credit-card-type` dependency to `10.2.0`. The independently retained standalone package is `credit-card-type@10.3.0`; its Troy addition must not be attributed to Braintree Web `3.144.0` without a newer exact dependency snapshot. See [[card-brand-detection]].
@@ -64,6 +66,14 @@ The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143
 These are changes in the Braintree adapter and retained browser implementation, not proof of changes in independently hosted PayPal/Fastlane runtimes. Source: [[source-github-braintree-web]]; release comparison: [[changelog-github-braintree-web]].
 
 ## Related
+
+- [[source-braintree-tokenization-key-javascript-v3]] - JavaScript client initialization with static, reduced-privilege tokenization keys, including revocation, environment binding, and capability limits
+
+- [[source-braintree-authorization-client-token]] - signed client-token purpose, server-to-client initialization roles, application-communication scope, and stated validity and invalidation boundaries
+
+- [[source-braintree-authorization-overview]] - client-authorization guide comparing client tokens and tokenization keys, qualified capability differences, and selection guidance
+
+- [[source-braintree-hosted-fields-events-javascript-v3]] - JavaScript v3 Hosted Fields event-driven UI state and `getState` field-validity retrieval route
 
 - [[source-github-braintree-web]] — cumulative exact-SHA implementation evidence
 - [[changelog-github-braintree-web]] — package-qualified release ledger

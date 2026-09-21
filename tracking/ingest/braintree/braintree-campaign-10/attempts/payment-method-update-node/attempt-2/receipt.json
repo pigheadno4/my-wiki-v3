@@ -1,0 +1,57 @@
+{
+  "job_id": "payment-method-update-node",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Payment Method Update (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/payment-method/update/node\"\nraw_files:\n  - \"braintree/docs/reference/request/payment-method/update/node-2026-09-16.md\"\ntags: [braintree, node-js, payment-method, vault, card-verification, paypal]\n---\n\n## Overview\n\nThis Braintree Node.js request reference documents updating a stored payment method by token. It covers billing-address replacement or reuse, the limited PayPal-account update surface, default-payment-method selection, credit-card verification, and nonce-based credit-card updates.\n\n## Key takeaways\n\n- `gateway.paymentMethod.update()` identifies the stored payment method by token. If it cannot be found, the operation returns Braintree's linked `notFoundError`.\n- For billing addresses, `billingAddress.options.updateExisting: true` updates the existing address and therefore also affects any other payment methods associated with that same address. Omitting `updateExisting` creates a new address and leaves the old address in the customer's Vault; an existing customer address can instead be selected by `billingAddressId`.\n- A PayPal account update is limited to changing its associated token or making it the customer's default payment method. This call can make only a credit card or PayPal account the default; Braintree recommends the separate customer-update route. The collected sentence for other payment-method types is damaged after naming `default_payment_method_token`, so this source does not reconstruct the missing destination.\n- Credit-card validations run by default, but verification does not. Account-enabled AVS/CVV checks run during payment-method update and can be skipped with `verifyCard: false`; manual verification uses `verifyCard: true`. When Premium Fraud Management Tools are used, Braintree strongly recommends supplying `device_data` whenever a card is verified. When `verifyCard: true` is used specifically to verify AVS information for an existing payment method, the page says that update creates a transaction; if processing options reject transactions without CVV, the request must include CVV or that rule must be disabled.\n- For a credit-card update using a nonce, a field already supplied by the client inside nonce data should not also be passed explicitly. The nonce must not be associated with a customer; a nonce created with a customer ID in its authorization raises the linked cannot-update-card error. Passing raw card data together with a nonce is possible but discouraged: explicit fields take precedence and remaining attributes come from the nonce.\n\n## Detail locators\n\n- Base Node update call and token position: `# Payment Method: Update > ### Node`, lines 22-32.\n- Existing-address mutation, shared-address effect, omitted-`updateExisting` behavior, and `billingAddressId` reuse: `## Examples > ### Update billing address` through `## Update with existing billing address`, lines 37-108.\n- PayPal-account token restriction: `### Updating a PayPal account token`, lines 110-125.\n- Type-specific default selection, damaged non-card destination, and recommended customer-update route: `## Make default`, lines 127-149.\n- Validation, verification, AVS/CVV, `verifyCard`, and Premium Fraud Management Tools guidance: `### Card verification`, lines 152-178.\n- AVS-verification update transaction and reject-without-CVV action: `### Updating with a nonce and additional parameters`, line 223.\n- Nonce plus additional parameters, duplicate-field warning, customer-association restriction, and raw-data precedence: `### Updating with a nonce and additional parameters` through `### Payment method nonces vs. raw card data`, lines 181-239.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/payment-method/update/node-2026-09-16|Braintree Node.js payment-method update reference]] - complete page covering stored payment-method updates, billing-address behavior, PayPal and default-selection limits, verification conditions, and nonce handling\n",
+  "quotes": [
+    {
+      "text": "To update the existing billing address when updating a payment method use the`update_existing`option. If any other payment methods are associated with the same billing address, this will also update the billing address for those payment methods.",
+      "location": "## Examples > ### Update billing address, line 39"
+    },
+    {
+      "text": "If you don't use the`update_existing`option, a new address will be created. The existing billing address will remain in the Vault associated with the customer.",
+      "location": "## Examples > ### Update billing address > ### New billing address, line 66"
+    },
+    {
+      "text": "The only fields that may be updated on a PayPal account are the token associated with that account, and setting the account as the default payment method for a customer.",
+      "location": "### Updating a PayPal account token, line 112"
+    },
+    {
+      "text": "This only works with credit cards and PayPal accounts. We recommend [updating the customer](/braintree/docs/reference/request/customer/update/node#update-default-payment-method) to set a default payment method.",
+      "location": "## Make default > **NOTE**, line 149"
+    },
+    {
+      "text": "**NOTE**\nNonce used for updating a payment method must not be associated with any customer. A nonce that was created with a customer ID in authorization when used to update a payment method will raise a [Braintree::CannotUpdateCardUsingPaymentMethodNonce](/braintree/docs/reference/general/validation-errors/all/ruby#code-91735) .\n\n\n**IMPORTANT**\nIf you are using our Premium Fraud Management Tools, we strongly recommend passing [`device_data`](/braintree/docs/guides/premium-fraud-management-tools/server-side/node#using-device-data) each time you verify a card.\n\nTo verify the AVS information of an existing payment method, pass the update request withverify_cardset to \"**true**\". Note that an update will create a transaction, so if your processing options are set to reject transactions without CVV, you will need to include CVV as a parameter, or disable this rule (see below).",
+      "location": "### Updating with a nonce and additional parameters, lines 216-223"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payment-method-update-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-payment-method-update-node]] - Node.js stored-payment-method updates by token, including shared or replacement billing-address behavior, PayPal/default-method restrictions, card verification with the AVS-update transaction/CVV rejection condition, and nonce-association and precedence rules",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the source payment-method-wide while preserving which behaviors are credit-card-only or PayPal-only; do not generalize card verification, nonce mixing, or PayPal token updates to every payment-method type.",
+          "Preserve the shared-address effect of updateExisting and the omission behavior that creates a new address while leaving the old address in the customer's Vault.",
+          "Do not reconstruct the damaged destination after default_payment_method_token for other payment-method types; retain the explicit credit-card/PayPal limitation and the verified customer-update recommendation.",
+          "Do not imply that validations equal verification, that verification is always performed, or that a nonce associated with a customer is acceptable for this update operation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/payment-method/update/node-2026-09-16.md",
+  "raw_sha256": "93d912a7f1aa11b05dc2f2d869e1c7c71388a24b168f780271a052cba96ecce0",
+  "status": "candidate_ready"
+}

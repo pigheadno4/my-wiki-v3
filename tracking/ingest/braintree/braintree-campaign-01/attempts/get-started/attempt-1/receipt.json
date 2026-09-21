@@ -1,0 +1,66 @@
+{
+  "job_id": "get-started",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Get Started: Direct Integration Overview\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/start/overview\"\nraw_files:\n  - \"braintree/docs/start/overview-2026-09-16.md\"\ntags: [braintree, braintree-direct, drop-in, client-sdk, server-sdk, payment-method-nonce]\n---\n\n## Overview\n\nThis Braintree guide introduces a basic Braintree Direct integration that accepts sandbox credit-card payments through Drop-in UI. Its retrieval value is the client/server responsibility split and the client-token-to-payment-method-nonce flow, together with a dated warning to migrate away from Drop-in.\n\n## Key takeaways\n\n- Braintree Direct is described as a toolkit for processing cards, PayPal, Apple Pay, Google Pay, and US-only Venmo, with fraud-prevention, data-security, and operational tooling. Actual merchant, buyer, platform, and regional availability still requires the relevant product documentation.\n- The client SDK collects payment information; the server SDK acts on the resulting payment information. In this guide, the server generates a client token for client-SDK initialization.\n- The customer submits payment information through the client integration, Braintree returns a payment-method nonce, the front end sends that nonce to the merchant server, and the server SDK uses it to create a transaction.\n- The page says Drop-in becomes deprecated on October 1, 2026, remains supported for payment processing until October 1, 2027, and becomes unsupported on that date, after which processing may be suspended at any time. It directs merchants to migrate to the Braintree Android, iOS, or JavaScript SDK.\n\n## Integration flow\n\n1. The front end requests a client token, and the merchant server generates it with a server SDK.\n2. The client SDK sends the customer's payment information to Braintree and receives a payment-method nonce.\n3. The front end sends the nonce to the merchant server, where the server SDK creates a transaction.\n\nThe raw guide's `What you will need` and `How it works` sections provide the platform/language list, authorization route, checkout-UI alternatives, and exact five-step sequence. The statement that the server creates a transaction does not by itself define amount sourcing, authorization versus settlement behavior, success criteria, errors, or fulfillment policy; use the dedicated server SDK and transaction references for those details.\n\n> [!warning] Conflicting Drop-in lifecycle dates\n> This website snapshot gives October 1 dates. The retained `braintree-web-drop-in@1.47.0` GitHub source gives September 1, 2026 and September 1, 2027 for the corresponding lifecycle milestones. Treat each schedule as source-specific evidence and verify current official status before migration planning.\n\n## Related\n\n- Company: [[braintree]]\n- Concepts: [[braintree-web-drop-in]], [[braintree-server-sdk]], [[braintree-web-sdk]]\n- Related source: [[source-github-braintree-web-drop-in]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/start/overview-2026-09-16|Braintree Get Started overview]] - complete guide, client/server flow, and Drop-in lifecycle notice\n",
+  "quotes": [
+    {
+      "text": " **Starting October 1, 2026**, the Drop-in SDK will be [**deprecated**](/braintree/docs/guides/client-sdk/deprecation-policy/ios/v6/#status-categories). No new features, improvements, or bug fixes will be released after this date. Payment processing will continue to be supported until **October 1, 2027**, but we strongly recommend migrating to the Braintree SDK as soon as possible to avoid future disruption.",
+      "location": "IMPORTANT notice, line 15"
+    },
+    {
+      "text": "  **Starting October 1, 2027**, the Drop-in SDK will become [**unsupported**](/braintree/docs/guides/client-sdk/deprecation-policy/ios/v6/#status-categories). Braintree support team will no longer provide assistance for this SDK, and payment processing may be suspended at any time.",
+      "location": "IMPORTANT notice, line 17"
+    },
+    {
+      "text": "Braintree Direct is a set of tools to accept and process cards, PayPal, and wallets such as Apple Pay, Google Pay, and Venmo (US only). It also includes everything you need to help prevent fraudulent transactions, manage data security, and streamline operations.",
+      "location": "Overview > About this guide > Braintree Direct, line 52"
+    },
+    {
+      "text": "Our client SDK enables you to securely collect payment information from your customers and the server SDK enables you to act on the collected payment information.",
+      "location": "Overview > What you will need > Client and server SDKs, line 67"
+    },
+    {
+      "text": "This diagram shows how your client, your server, and Braintree interact:\n##### Step 1\n\nYour front-end requests a client token from your server and initializes the client SDK.\n\n\n##### Step 2\n\nYour server generates and sends a client token back to your client using the server SDK.\n\n\n##### Step 3\n\nThe customer submits payment information, the client SDK communicates that information to Braintree and returns a payment method nonce.\n\n\n##### Step 4\n\nYour front-end sends the payment method nonce to your server.\n\n\n##### Step 5\n\nYour server code receives the payment method nonce and then uses the server SDK to create a transaction.",
+      "location": "Overview > How it works, lines 87-110"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-started-drop-in-lifecycle-conflict",
+        "target_path": "wiki/concepts/braintree-web-drop-in.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Version and Migration Boundary",
+        "proposed_markdown": "> [!warning] Website lifecycle date conflict\n> The Braintree Get Started website snapshot says Drop-in deprecation starts October 1, 2026, payment processing remains supported until October 1, 2027, and unsupported status begins on October 1, 2027. Those dates differ from the September milestones in the retained `braintree-web-drop-in@1.47.0` repository source. Treat the schedules as source-specific and verify current status before migration planning. [[source-braintree-get-started]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Preserve the existing exact-version GitHub dates and present this as a source conflict, not as an overwrite or a reconciled current schedule.",
+          "The website notice links an iOS v6 status-category path even though the page discusses Drop-in generally; do not infer that the dates apply identically to every separately versioned Drop-in package without current product-specific verification."
+        ]
+      },
+      {
+        "update_id": "get-started-server-sdk-reciprocal",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-get-started]] - provider guide to the client-token initialization, client-side payment-method nonce, front-end-to-server nonce handoff, and server-side transaction-creation sequence",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as retrieval navigation; the guide does not define amount sourcing, authorization versus settlement, result semantics, errors, or fulfillment behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/start/overview-2026-09-16.md",
+  "raw_sha256": "2d1f7b0eb07cd0b30750365d19857637373c77f3a504711059e7683ce899b7b4",
+  "status": "candidate_ready"
+}

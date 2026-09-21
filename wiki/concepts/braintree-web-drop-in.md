@@ -21,6 +21,9 @@ A customer-scoped client token can display supported vaulted cards and PayPal ac
 
 ## Version and Migration Boundary
 
+> [!warning] Website lifecycle date conflict
+> The Braintree Get Started website snapshot says Drop-in deprecation starts October 1, 2026, payment processing remains supported until October 1, 2027, and unsupported status begins on October 1, 2027. Those dates differ from the September milestones retained in both `braintree-web-drop-in@1.47.0` and `1.48.0`. The latter was released September 10 despite its unchanged README saying updates stop September 1; do not infer a support extension. Treat the schedules as source-specific and verify current status before migration planning. [[source-braintree-get-started]] [[source-github-braintree-web-drop-in]]
+
 The first retained release is `braintree-web-drop-in@1.47.0` at SHA `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`. It pins `braintree-web@3.123.2`, so it must not inherit claims from the independently collected `braintree-web@3.144.0` source.
 
 It also pins `@braintree/uuid@1.0.1`. The independently retained UUID source is `2.0.0`, so its secure-random implementation and explicit no-secure-source error must not be attributed to this Drop-in release without exact v1 evidence.
@@ -30,7 +33,6 @@ The repository schedules deprecated status for 2026-09-01 and unsupported status
 ## Card Label Hardening in 1.48.0
 
 `braintree-web-drop-in@1.48.0` adds numeric conversion, first-four-character truncation, and zero-padding to the card `lastFour` display. It preserves `0012` and `0000`, but malformed text produces `0NaN`; this is output normalization, not strict card-data validation. The payment-method template still uses `innerHTML`. PayPal email and Venmo username escaping are unchanged, as are the pinned `braintree-web@3.123.2` and `@braintree/uuid@1.0.1` dependencies. No new wallet or nonce behavior is established by this delta. [[source-github-braintree-web-drop-in]] [[changelog-github-braintree-web-drop-in]]
-
 
 ## Related
 

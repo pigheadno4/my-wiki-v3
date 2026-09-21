@@ -1,0 +1,47 @@
+{
+  "job_id": "credit-card-create-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Credit Card Create (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/credit-card/create/node\"\nraw_files:\n  - \"braintree/docs/reference/request/credit-card/create/node-2026-09-16.md\"\ntags: [braintree, node-js, credit-cards, vault, payment-method-nonce, pci-dss]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents `gateway.creditCard.create()` for creating a credit card with the server SDK. It shows a raw-card callback example, preserves the page's qualified PCI warning and payment-method recommendation, and explains how raw card fields interact with a payment-method nonce when both are supplied.\n\n## Key takeaways\n\n- The Node example constructs credit-card parameters containing a customer ID and raw card details, then passes them to `gateway.creditCard.create()` in callback form.\n- The page says this approach **typically requires** PCI SAQ D compliance and recommends using `payment_method` functions so raw credit-card data is not present on the merchant's server. This collected advisory is not a guarantee that using those functions establishes compliance.\n- Although the operation accepts raw card data and a payment-method nonce in the same call, the page recommends supplying only a nonce. If both are supplied, explicitly passed fields take precedence and the remaining attributes come from the nonce.\n\n> [!warning] Qualified PCI guidance\n> Preserve the provider's wording: direct credit-card creation **typically requires** PCI SAQ D compliance. The recommendation to use `payment_method` functions does not establish a compliance guarantee, and this page does not say that every credit-card-method use always requires SAQ D.\n\n## Detail locators\n\n- Qualified PCI warning and recommendation to use `payment_method` functions: `# Credit Card: Create`, lines 16-17.\n- Node raw-card callback example and `gateway.creditCard.create()` invocation: `### Node`, lines 20-31.\n- Nonce-versus-raw-card recommendation and attribute precedence: `## Payment method nonces vs. raw card data`, lines 33-40.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Related source: [[source-braintree-payment-method-nonces]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/payment-methods/node-2026-09-16|Braintree Node.js payment-methods guide]] - navigation-only destination linked by the PCI advisory; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/credit-card/create/node-2026-09-16|Braintree Node.js credit-card-create request reference]] - complete collected page covering the qualified PCI advisory, raw-card callback example, and nonce-versus-raw-card recommendation and precedence\n",
+  "quotes": [
+    {
+      "text": "**Typically requires** [PCI SAQ D compliance](https://www.pcisecuritystandards.org/pci_security/completing_self_assessment) We recommend using [`payment_method`](/braintree/docs/guides/payment-methods/node#create) functions to avoid any PCI concerns with raw credit card data being present on your server.",
+      "location": "lines 16-17, # Credit Card: Create"
+    },
+    {
+      "text": "### Node\n```javascript\nlet creditCardParams = {\n    customerId,\n    number: '4111111111111111',\n    expirationDate: '06/2022',\n    cvv: '100'\n};\n\ngateway.creditCard.create(creditCardParams, (err, response) => {\n});\n```",
+      "location": "lines 20-31, ### Node"
+    },
+    {
+      "text": "While it is possible to pass both raw card data and a payment method nonce in the same call, we\nrecommend passing only a payment method nonce. Passing both will result in a payment method that has\na mix of their attributes, with precedence given to the fields individually, then to the attributes\nof the payment method nonce. For example, if you pass both a card number and a payment method nonce,\nthe payment method will have the number you passed explicitly, but the rest of the attributes will\nbe obtained through the nonce.",
+      "location": "lines 35-40, ## Payment method nonces vs. raw card data"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "credit-card-create-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-credit-card-create-node]] - Node.js `creditCard.create()` reference with a raw-card callback example, the qualified PCI SAQ D advisory and payment-method recommendation, and nonce-versus-raw-card precedence guidance",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Preserve the source's 'Typically requires' PCI wording and its recommendation to use payment_method functions; do not turn either into a universal compliance rule or guarantee.",
+          "Keep direct credit-card creation distinct from client-side tokenization and from the linked payment-method functions.",
+          "Preserve that nonce-only input is recommended even though the call can accept both a nonce and raw card data, and retain the stated field-precedence behavior when both are supplied.",
+          "Treat the linked payment-methods guide and PCI resource as navigation only unless separately read; do not import their claims into this source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/credit-card/create/node-2026-09-16.md",
+  "raw_sha256": "1ad2ff8270103d4c373cb3b4597f9461e9905f67a32d1f01f32c0cb717453457",
+  "status": "candidate_ready"
+}

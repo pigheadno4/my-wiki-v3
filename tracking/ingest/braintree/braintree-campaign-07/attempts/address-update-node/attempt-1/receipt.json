@@ -1,0 +1,56 @@
+{
+  "job_id": "address-update-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Address Update (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/address/update/node\"\nraw_files:\n  - \"braintree/docs/reference/request/address/update/node-2026-09-16.md\"\ntags: [braintree, node-js, address, customer, vault]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents updating a Vault address through `gateway.address.update()`. The example identifies the customer and address separately, supplies updated address attributes, and receives `err` and `result` through a callback.\n\n## Key takeaways\n\n- The Node example passes a customer ID, an address ID, an address-attribute object, and a callback to `gateway.address.update()`. Its callback exposes `err` and `result`, but the page does not describe result fields or a success condition.\n- The page links to the Address response-object reference for response details; this source does not reconstruct that unread response schema.\n- In addition to direct address updating, the page says an address can be updated while updating a customer or while updating a payment method. It does not describe the qualifications or field behavior of those linked operations.\n- If either the address or customer cannot be found, the page routes the failure to Braintree's Node.js `notFoundError` reference.\n\n## Detail locators\n\n- Address response-object route: `# Address: Update`, line 15.\n- Customer ID, address ID, update attributes, and callback result handling: `# Address: Update > ### Node`, lines 17-30.\n- Direct-update and alternative customer/payment-method update routes: `# Address: Update > **NOTE**`, lines 33-34.\n- Missing-address or missing-customer error route: line 36.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-server-sdk]]\n- Related operation: [[source-braintree-customer-update-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/address/update/node-2026-09-16|Braintree Node.js address update reference]] - complete page covering update identifiers, callback shape, alternative update routes, and the missing-address or missing-customer error route\n",
+  "quotes": [
+    {
+      "text": "See also the[Address](/braintree/docs/reference/response/address)response object.",
+      "location": "line 15, # Address: Update"
+    },
+    {
+      "text": "gateway.address.update(\"theCustomerId\", \"theAddressId\", {",
+      "location": "line 18, # Address: Update > ### Node"
+    },
+    {
+      "text": "}, (err, result) => {",
+      "location": "line 28, # Address: Update > ### Node"
+    },
+    {
+      "text": "In addition to updating an address directly, you can also update an address while [updating a customer](/braintree/docs/reference/request/customer/update) or [updating a payment method](/braintree/docs/reference/request/payment-method/update) .",
+      "location": "line 34, # Address: Update > **NOTE**"
+    },
+    {
+      "text": "If the address or customer can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "line 36, after # Address: Update > **NOTE**"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "address-update-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-address-update-node]] - Node.js customer-scoped Vault address update using customer and address IDs, callback `err`/`result` handling, alternative customer/payment-method update routes, and the missing-address or missing-customer error route",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep address identity customer-scoped: the direct update example passes both a customer ID and an address ID.",
+          "Do not infer result fields or a success condition from the callback parameter name or the unread Address response-object link.",
+          "Do not import omitted-attribute semantics or other behavior from the separate customer-update source; this page only states that customer and payment-method updates are alternative routes for updating an address."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/address/update/node-2026-09-16.md",
+  "raw_sha256": "e852632d403e97856d2d0bb34fc4395e28c2689af04bed14e3e349a5816a6780",
+  "status": "candidate_ready"
+}

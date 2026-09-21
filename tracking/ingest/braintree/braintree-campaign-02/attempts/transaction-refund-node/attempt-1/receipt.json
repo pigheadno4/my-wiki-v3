@@ -1,0 +1,54 @@
+{
+  "job_id": "transaction-refund-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Refund (Node.js)\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/refund/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/refund/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, refunds, settlement]\n---\n\n## Overview\n\nThis Braintree reference page documents the Node.js server SDK's `gateway.transaction.refund()` operation. It explains which transaction states are eligible, how an omitted refund amount is handled, and where to distinguish validation, lookup, processor-decline, and settlement-failure outcomes.\n\n## Key takeaways\n\n- A transaction must be `settled` or `settling` to be refunded. The refund cannot exceed the original transaction's remaining non-refunded amount, a completely refunded transaction cannot be refunded again, and an escrow-held transaction can only be refunded in full.\n- When no amount is specified, the page says the entire transaction amount is refunded; after an earlier partial refund, it says a subsequent refund without specifying the balance refunds the remaining non-refunded amount. Multiple partial refunds are supported while their sum remains below the initial transaction amount.\n- A transaction lookup failure returns a `notFoundError`. Other unsuccessful refunds include validation errors for invalid parameters or a processor settlement response code for the settlement failure type.\n- The page qualifies processor-decline reporting by SDK recency: the most current SDK exposes `processor_response_code`, while an older SDK may return a validation error instead. A processor-declined capture for the refund transaction exposes `processor_settlement_response_code` on the transaction object.\n- Partial-refund calls for the same transaction should complete before another is created. The page strongly recommends waiting 5\u201310 seconds between attempts because too many simultaneous refund requests are likely to fail with a gateway error.\n\n## Important documentation gap\n\n> [!warning] Incomplete source text\n> The introduction says that if a transaction has not begun settlement, `useinstead`, but the action name is missing. This source does not reconstruct or infer the omitted action.\n\n## Detail locators\n\n- `# Transaction: Refund > Node` contains the callback invocation plus the not-found and unsuccessful-result behavior.\n- `## Requirements` contains the status, remaining-amount, completed-refund, and escrow constraints.\n- `## Examples > Partial refunds` contains callback and Promise examples, multiple-partial-refund behavior, omitted-balance behavior, and the concurrency warning.\n- `## Examples > Refund processor declines` distinguishes most-current-SDK and older-SDK decline reporting.\n- `## Examples > Settlement failures` identifies the settlement response field and links to the settlement-declined status details.\n- `## Examples > Issuing a credit` is a separate operation whose security warning and parameters remain in the raw source; it does not repair the introduction's missing action.\n\n## Related\n\n- Companies: [[braintree]]\n- Concepts: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/refund/node-2026-09-16]] \u2014 fully read Braintree Node.js Transaction: Refund reference page\n",
+  "quotes": [
+    {
+      "text": "You can[refund](/braintree/articles/control-panel/transactions/refunds-voids-credits#refunds)transactions that have a status of[settled](/braintree/docs/reference/general/statuses#settled)or[settling](/braintree/docs/reference/general/statuses#settling). If the transaction has not yet begun settlement, useinstead. If you do not specify an amount to refund, the entire transaction amount will be refunded.",
+      "location": "line 15, # Transaction: Refund introduction"
+    },
+    {
+      "text": "### Node\n```javascript\ngateway.transaction.refund(\"theTransactionId\", (err, result) => {\n});\n```\nIf the transaction can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).\n\nIf the refund fails, then the result will be unsuccessful and will include either[validation errors](/braintree/docs/reference/general/validation-errors/all)indicating which parameters were invalid, or a[processor settlement response code](/braintree/docs/reference/general/processor-responses/settlement-responses)indicating the type of settlement failure.",
+      "location": "lines 18-25, # Transaction: Refund > Node"
+    },
+    {
+      "text": "- Transaction status must be settled or settling.\n- Refund amount can't be greater than remaining non-refunded amount of the original transaction.\n- Transaction can't be refunded again after being completely refunded.\n- Transactions[held in escrow](/braintree/docs/guides/braintree-marketplace/create/node#holding-funds-in-escrow)can only be refunded in full. Attempts to partially refund an escrow transaction will throw a[validation error](/braintree/docs/reference/general/validation-errors/all#braintree-marketplace).",
+      "location": "lines 34-37, ## Requirements"
+    },
+    {
+      "text": "We support single and multiple partial refunds on a given transaction. You can continue to refund a transaction as many times as you like, as long as the sum of the refund amounts is less than the amount of the initial transaction.\n\nIf you have already partially refunded a transaction and you perform another refund without specifying the balance, we will refund the remaining non-refunded amount of the transaction.\n**NOTE**\nIt's best practice to allow each partial refund call to complete successfully before creating any more for the same transaction. If a single transaction has too many simultaneous refund requests, some are likely to fail, returning an error from the gateway. A wait time of 5-10 seconds between partial refund attempts is strongly recommended to minimize errors.",
+      "location": "lines 73-77, ## Examples > Partial refunds"
+    },
+    {
+      "text": "If using the most current SDK, and the processor declines the refund, the response will have the`processor_response_code`available. See the[transaction statuses page](/braintree/docs/reference/general/statuses#processor-declined)for additional information on the Processor Declined response. If using an older SDK version, and the processor declines the refund, you may receive a[validation error](/braintree/docs/reference/general/validation-errors/all#code-915200)in lieu of a processor response code.\n### node\n```node\nresult.success; // false\nresult.transaction.status; // \"processor_declined\"\nresult.transaction.processorResponseCode; // e.g. \"2005\"\nresult.transaction.processorResponseText; // e..g \"Invalid Credit Card Number\"\n```\n\n### Settlement failures\n\nIf the processor declines the capture for the refund transaction, the transaction object will have the`processor_settlement_response_code`available. See the[transaction statuses page](/braintree/docs/reference/general/statuses#settlement-declined)for additional information on theSettlement Declinedresponse.",
+      "location": "lines 82-93, ## Examples > Refund processor declines and Settlement failures"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-refund-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-refund-node]] - Node.js `transaction.refund()` reference for eligible transaction states, omitted-amount behavior, partial and escrow limits, and processor-decline versus settlement-failure routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw introduction contains `useinstead` with the action name missing; do not infer or add that action to the concept route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/refund/node-2026-09-16.md",
+  "raw_sha256": "ffc419baf8cc3a2eb0556da4358d03e5768aeb9470940d3d964df2b1a6ff3da0",
+  "status": "candidate_ready"
+}

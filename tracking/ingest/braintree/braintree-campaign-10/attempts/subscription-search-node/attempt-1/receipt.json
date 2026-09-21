@@ -1,0 +1,57 @@
+{
+  "job_id": "subscription-search-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Subscription Search (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/subscription/search/node\"\nraw_files:\n  - \"braintree/docs/reference/request/subscription/search/node-2026-09-16.md\"\ntags: [braintree, node-js, subscriptions, search]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents searching subscriptions with `gateway.subscription.search()`. It returns Subscription response objects and shows both callback-based iteration and Node stream consumption; detailed filter examples and linked result schemas remain routed to the raw documentation.\n\n## Key takeaways\n\n- The page supports searching subscriptions with multiple criteria and directs readers to the separate Search fields reference for available operators. Its displayed examples qualify price as a range field, plan ID and status as multiple-value fields, and active-status searches by whether a trial period is present; the complete filter examples remain in the raw page rather than being reproduced here.\n- The opening callback example consumes the response with `response.each()`. The Search results section states that the search method returns a Node stream and shows consumption through `pipe()` or `data` and `end` events followed by `resume()`.\n- The collected rendering omits the version values from both `All examples assume versionor greater` and the prior-version sentence. This source therefore does not claim a minimum Node SDK version or reconstruct the missing version qualifier.\n- The page states that results are limited according to the linked PayPal Data Protection Addendum for Card Processing Products policy. Because that external policy was not part of this source, this entry preserves the notice without interpreting which results or fields are limited, or why.\n- The sentence about looking up one subscription by ID is incomplete (`useinstead`). It does not establish the missing method; the separately retained subscription-find source is the retrieval route for single-ID lookup.\n\n## Detail locators\n\n- Results-limitation policy notice, Subscription response-object route, and general search-criteria/operator route: `# Subscription: Search`, lines 16-21.\n- Callback search and `response.each()` result iteration: `# Subscription: Search > ### Node`, lines 22-31.\n- Incomplete single-subscription lookup sentence: `# Subscription: Search`, line 32.\n- Node stream statement, `pipe()` form, event/resume form, and missing rendered version qualifiers: `## Search results`, lines 33-61.\n- Filter examples and their displayed qualifications: `## Examples`, lines 62-180.\n- Linked Search fields, Search results, Subscription object, and payment-method response routes: `## See Also`, lines 182-192.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Distinct single-subscription lookup: [[source-braintree-subscription-find-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/subscription/search/node-2026-09-16|Braintree Node.js subscription-search request reference]] - complete collected page covering subscription-search criteria, result collection and stream consumption, qualified filter examples, the results-limitation notice, and the damaged version rendering\n",
+  "quotes": [
+    {
+      "text": "Results are limited according to the [PayPal Data Protection Addendum For Card Processing Products policy](https://www.paypal.com/us/legalhub/braintree/data-protection-addendum) .",
+      "location": "lines 16-17, # Subscription: Search > NOTE"
+    },
+    {
+      "text": "Returns a collection of[Subscription](/braintree/docs/reference/response/subscription)response objects.\n\nYou can search for subscriptions using a variety of criteria. For operators available on search fields, see the[search fields](/braintree/docs/reference/general/searching/search-fields)page.",
+      "location": "lines 19-21, # Subscription: Search"
+    },
+    {
+      "text": "const stream = gateway.subscription.search((search) => {\n    search.planId().is(\"the_plan_id\");\n}, (err, response) => {\n    response.each((err, subscription) => {\n        console.log(subscription.billingDayOfMonth);\n    });\n});",
+      "location": "lines 23-30, # Subscription: Search > first ### Node code block"
+    },
+    {
+      "text": "All examples assume versionor greater. The search method returns a node stream and can be consumed as any other stream.",
+      "location": "line 35, ## Search results"
+    },
+    {
+      "text": "When searching for subscriptions that are active, you have the ability to search for all active subscriptions (with or without a trial period), subscriptions with a trial period, or subscriptions without a trial period.",
+      "location": "line 94, ## Examples > ### Searching by status"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "subscription-search-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-subscription-search-node]] - Node.js subscription search through `gateway.subscription.search()`, with callback and stream result consumption, qualified filter-example routes, the preserved results-limitation policy notice, and no reconstructed SDK version from the damaged rendering",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Retain the PayPal Data Protection Addendum notice without interpreting the unread external policy or specifying which results or fields are limited.",
+          "The collected page renders `versionor greater` and `versioncan` without version values; do not infer or reconstruct a minimum Node SDK version.",
+          "Treat the linked Search fields, Search results, and Subscription response pages as navigation only; this source does not establish their unread schemas or an exhaustive filter/operator inventory.",
+          "Keep single-subscription ID lookup distinct because the raw sentence naming its method is damaged; route that query to the separately retained subscription-find source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/subscription/search/node-2026-09-16.md",
+  "raw_sha256": "b64c4bfbc338212d07eadcffa5774c885594f71cae1e25a0b03a16bcb80a822c",
+  "status": "candidate_ready"
+}

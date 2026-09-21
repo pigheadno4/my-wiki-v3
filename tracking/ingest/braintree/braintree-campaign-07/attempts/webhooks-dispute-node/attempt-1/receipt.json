@@ -1,0 +1,66 @@
+{
+  "job_id": "webhooks-dispute-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Dispute Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/dispute/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/dispute/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, disputes]\n---\n\n## Overview\n\nThis Braintree Node.js reference catalogs dispute webhook notification kinds, the conditions represented by those kinds, and the page's notification-attribute routes. It is an event reference, not a guarantee of webhook delivery or a complete dispute lifecycle specification.\n\n## Key takeaways\n\n- The notification object's `kind` identifies what triggered the webhook. The page lists accepted, automatically accepted, disputed, expired, lost, opened, under-review, and won dispute notification kinds.\n- The `dispute_under_review` kind is specifically described as a dispute being under internal review with PayPal. The other rows state the named dispute condition without adding timing, transition, or outcome guarantees.\n- The collected **Attributes** section identifies notification kind and UTC trigger time, then gives a deprecation direction to use `transaction` on the Dispute object. Because the collected rendering omits the affected attribute's label, this source does not identify which attribute is deprecated or reconstruct the complete notification payload.\n\n## Detail locators\n\n- Notification-kind purpose and event-trigger catalog: `# Dispute` > `### Notification kinds`, lines 17-46.\n- PayPal-qualified internal-review trigger: row `dispute_under_review`, lines 41-43.\n- Notification attributes and the unresolved deprecated-attribute direction: `# Dispute` > `### Attributes`, lines 49-51.\n\n> [!warning] Event-reference scope\n> The notification-kind rows name conditions that trigger dispute webhooks. They do not establish webhook delivery timing, ordering, retries, duplicate handling, or a universal sequence between dispute states; use the dedicated webhook and dispute authorities for those separate questions.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n- Cross-cutting concept: [[disputes]]\n- Related source: [[source-braintree-webhooks-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/dispute/node-2026-09-16|Braintree Node.js dispute-webhook reference]] - complete page covering dispute notification kinds, event conditions, and the collected attribute/deprecation route\n",
+  "quotes": [
+    {
+      "text": "The notification kind, returned by calling`kind`on the[notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The`webhook_notification.kind`for Dispute webhooks will be one of the following:The following table describes the conditions that trigger each kind of webhook.",
+      "location": "line 19, # Dispute > ### Notification kinds, introductory paragraph"
+    },
+    {
+      "text": "| ```syntax-inline\ndispute_opened\n``` | A dispute is opened. |",
+      "location": "lines 38-40, # Dispute > ### Notification kinds, dispute_opened row"
+    },
+    {
+      "text": "| ```syntax-inline\ndispute_under_review\n``` | A dispute is under internal review with PayPal. |",
+      "location": "lines 41-43, # Dispute > ### Notification kinds, dispute_under_review row"
+    },
+    {
+      "text": "The kind of webhook notification.The UTC time at which the webhook was triggered.Deprecated. Please use[transaction](/braintree/docs/reference/response/dispute/node#transaction)on the Dispute object instead.",
+      "location": "line 51, # Dispute > ### Attributes, collected attribute prose"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-dispute-node-braintree-webhooks-reciprocal",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-dispute-node]] - Node.js dispute notification kinds, event-condition catalog, PayPal-qualified internal-review trigger, and notification-attribute/deprecation route",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep this as a retrieval route: the page names dispute webhook triggers but does not establish delivery, ordering, retry, duplicate-handling, or universal dispute-state progression semantics.",
+          "The collected Attributes rendering omits the deprecated attribute's label; do not name that attribute or reconstruct the payload from this page."
+        ]
+      },
+      {
+        "update_id": "webhooks-dispute-node-disputes-reciprocal",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-dispute-node]] - Braintree Node.js dispute webhook notification kinds, event-specific trigger conditions, and notification-attribute routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "This source documents Braintree webhook notification labels and routes, not merchant response actions, adjudication rules, or a guaranteed dispute lifecycle."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/dispute/node-2026-09-16.md",
+  "raw_sha256": "487d69812fe86a346e593e1a33a435360a16792d8af3bc6694a8bb798b630149",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,57 @@
+{
+  "job_id": "credit-card-update-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Credit Card Update (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/credit-card/update/node\"\nraw_files:\n  - \"braintree/docs/reference/request/credit-card/update/node-2026-09-16.md\"\ntags: [braintree, node-js, credit-card, vault, payment-method-nonce]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents updating a stored credit card by token through `gateway.creditCard.update()`. Its example supplies update attributes and receives `err` and `result` through a callback.\n\n## Key takeaways\n\n- The page says this operation **typically** requires PCI SAQ D compliance and recommends using `payment_method` functions to avoid PCI concerns from raw credit-card data being present on the merchant server. This is the page's qualified advisory and recommendation, not a guarantee of compliance or a claim that every use of a credit-card method requires SAQ D.\n- When card verification is enabled, the page says credit-card updates are subject to those verification rules. It does not describe those linked rules on this page.\n- The Node example identifies the stored card with `creditCardToken`, supplies card, billing-address, and verification-option inputs, and exposes `err` and `result` in its callback; the page does not describe result fields or a success condition.\n- The page permits raw card data and a payment-method nonce in the same call but recommends passing only a nonce. If both are supplied, the resulting payment method mixes their attributes: individually supplied fields take precedence, and remaining attributes come from the nonce.\n\n## Detail locators\n\n- Qualified PCI SAQ D advisory and `payment_method` recommendation: `# Credit Card: Update > **IMPORTANT**`, lines 16-17.\n- Conditional card-verification note: `# Credit Card: Update > **NOTE**`, lines 20-21.\n- Node token, example input categories, `verifyCard` option, and callback shape: `# Credit Card: Update > ### Node`, lines 24-40.\n- Nonce-versus-raw-card recommendation and attribute precedence: `## Payment method nonces vs. raw card data`, lines 42-49.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/credit-card/update/node-2026-09-16|Braintree Node.js credit-card update reference]] - complete page covering the update example, qualified PCI advisory, card-verification condition, and nonce-versus-raw-card guidance\n",
+  "quotes": [
+    {
+      "text": "# Credit Card: Update",
+      "location": "line 13, # Credit Card: Update"
+    },
+    {
+      "text": "**Typically requires** [PCI SAQ D compliance](https://www.pcisecuritystandards.org/pci_security/completing_self_assessment) We recommend using [`payment_method`](/braintree/docs/guides/payment-methods/node#update) functions to avoid any PCI concerns with raw credit card data being present on your server.",
+      "location": "line 17, # Credit Card: Update > **IMPORTANT**"
+    },
+    {
+      "text": "If you have [card verification](/braintree/articles/control-panel/vault/card-verification) enabled, any updates made to credit cards are subject to those rules.",
+      "location": "line 21, # Credit Card: Update > **NOTE**"
+    },
+    {
+      "text": "gateway.creditCard.update(creditCardToken, {\n    cardholderName: 'New Holder',\n    number: '4111111111111111',\n    expirationDate: '06/2022',\n    cvv: '456',\n    billingAddress: {\n        region: 'IL'\n    },\n    options: {\n        verifyCard: true\n    }\n}, (err, result) => {\n    \n});",
+      "location": "lines 26-39, # Credit Card: Update > ### Node"
+    },
+    {
+      "text": "While it is possible to pass both raw card data and a payment method nonce in the same call, we\nrecommend passing only a payment method nonce. Passing both will result in a payment method that has\na mix of their attributes, with precedence given to the fields individually, then to the attributes\nof the payment method nonce. For example, if you pass both a card number and a payment method nonce,\nthe payment method will have the number you passed explicitly, but the rest of the attributes will\nbe obtained through the nonce.",
+      "location": "lines 44-49, ## Payment method nonces vs. raw card data"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "credit-card-update-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-credit-card-update-node]] - Node.js stored-credit-card update by token, with the qualified PCI SAQ D advisory, conditional card-verification scope, callback example, and nonce-versus-raw-card recommendation and precedence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the source's word 'typically' and its recommendation language; do not present the page as a compliance guarantee or claim that every use of a credit-card method always requires SAQ D.",
+          "Keep card-verification scope conditional on verification being enabled, and do not reconstruct the unread linked verification rules.",
+          "Do not infer response fields or a success condition from the callback parameter names.",
+          "For mixed nonce and raw-card input, state precedence narrowly: individually supplied fields take precedence, while remaining attributes come from the nonce."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/credit-card/update/node-2026-09-16.md",
+  "raw_sha256": "d1b926cc90106e76ed9601f0d5f897d9af9eaa61ccdd9d8f684ab33cdcb8323b",
+  "status": "candidate_ready"
+}

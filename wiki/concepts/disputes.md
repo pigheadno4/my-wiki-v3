@@ -329,6 +329,8 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 
 ## Sources
 
+- [[source-braintree-webhooks-dispute-node]] - Braintree Node.js dispute webhook notification kinds, event-specific trigger conditions, and notification-attribute routes
+
 - [[source-paypal-disputes-api]] — Disputes API guide, test & go-live, reasons/evidence reference, test values, file types
 - [[source-paypal-disputes-overview]] — overview, setup, Resolution Center guide
 - [[source-paypal-customer-disputes]] — older disputes API coverage from developer.paypal.com

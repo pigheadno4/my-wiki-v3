@@ -1,0 +1,50 @@
+{
+  "job_id": "payment-method-nonce-find-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Payment Method Nonce Find (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/payment-method-nonce/find/node\"\nraw_files:\n  - \"braintree/docs/reference/request/payment-method-nonce/find/node-2026-09-16.md\"\ntags: [braintree, node-js, payment-method-nonce, 3d-secure, risk-checking]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents `gateway.paymentMethodNonce.find()` for retrieving information about an existing payment-method nonce. Unlike an operation that uses the nonce for a transaction or Vault action, this lookup does not consume it; the returned nonce and available 3D Secure information can support server-side risk checking before transaction creation.\n\n## Key takeaways\n\n- The page provides callback and Promise forms of `gateway.paymentMethodNonce.find(\"nonce_string\")`.\n- A find call does not consume the payment-method nonce. It returns the nonce string with available 3D Secure information, including liability-shift indicators, for server-side risk checking before a transaction is created. This lookup is not documented as creating, authorizing, or guaranteeing a successful payment.\n- `threeDSecureInfo` may be absent when 3D Secure information was not captured with the nonce.\n- When the nonce cannot be found, the page routes the failure to Braintree's Node.js `notFoundError` reference.\n\n## Detail locators\n\n- Lookup purpose: `# Payment Method Nonce: Find`, lines 15-17.\n- Non-consuming behavior, returned 3D Secure fields, and server-side risk-check scope: `# Payment Method Nonce: Find`, line 19.\n- Callback and Promise examples, including the absent-3D-Secure-information branch: `### Callback`, lines 20-32, and `### Promise`, lines 35-47.\n- Missing-nonce failure route: immediately after the Promise example, line 49.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Related concept: [[braintree-web-sdk]]\n- Related source: [[source-braintree-payment-method-nonces]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/payment-method-nonce/find/node-2026-09-16|Braintree Node.js payment-method nonce find reference]] - complete page covering lookup, non-consumption, returned 3D Secure information, and the missing-nonce route\n",
+  "quotes": [
+    {
+      "text": "You can get more information about a payment method nonce by passing the nonce string as an argument to the find method.",
+      "location": "line 17, # Payment Method Nonce: Find"
+    },
+    {
+      "text": "Unlike other calls, a find call does not consume the payment method nonce - instead, it returns the nonce string back to your server along with 3D Secure information such as`liability_shifted`and`liability_shift_possible`. This can be used for server-side risk checking before creating transactions.",
+      "location": "line 19, # Payment Method Nonce: Find"
+    },
+    {
+      "text": "// This means 3D Secure info was not captured with this payment method nonce",
+      "location": "line 30, # Payment Method Nonce: Find > ### Callback"
+    },
+    {
+      "text": "If the payment method nonce can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "line 49, immediately after # Payment Method Nonce: Find > ### Promise"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payment-method-nonce-find-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-payment-method-nonce-find-node]] - Node.js non-consuming nonce lookup, returned 3D Secure information, server-side pre-transaction risk-check scope, and missing-nonce error route",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the operation scoped to Node.js payment-method nonce lookup: it does not consume the nonce, and the page describes risk checking before transaction creation rather than payment creation, authorization, or success.",
+          "Do not imply that 3D Secure information is always present; the examples explicitly handle a nonce for which it was not captured."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/payment-method-nonce/find/node-2026-09-16.md",
+  "raw_sha256": "b94626a054da43209556c3b92a3c3d1cf87c1e373c5164c9fde7da7bb814246c",
+  "status": "candidate_ready"
+}

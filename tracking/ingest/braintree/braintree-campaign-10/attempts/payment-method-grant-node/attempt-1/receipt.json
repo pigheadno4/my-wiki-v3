@@ -1,0 +1,52 @@
+{
+  "job_id": "payment-method-grant-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Payment Method Grant (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/payment-method/grant/node\"\nraw_files:\n  - \"braintree/docs/reference/request/payment-method/grant/node-2026-09-16.md\"\ntags: [braintree, node-js, payment-method, grant-api, limited-release]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents the limited-release Grant API operation for giving another Braintree merchant controlled access to one of the granting merchant's customer's payment methods. The example uses the recipient's access token and returns a payment-method nonce for the recipient.\n\n## Key takeaways\n\n- The Grant API is currently in limited release. Braintree directs merchants to contact it to assess fit and request API access; the page does not establish general merchant availability.\n- The stated scope is controlled access by another Braintree merchant to one payment method belonging to the granting merchant's customer. It does not grant generic access to the customer, all Vault payment methods, or the merchant account, and it does not describe transfer of ownership, deletion, or revocation.\n- The Node example initializes `BraintreeGateway` with `accessTokenForRecipient`, then calls `gateway.paymentMethod.grant()` with `the_payment_method_token`. Its options example sets `allow_vaulting: false` and `include_billing_postal_code: true`; this page does not define those options' defaults or broader permission effects.\n- The callback reads `grantResult.paymentMethodNonce.nonce` into `nonceToSendToRecipient`. The page does not establish nonce lifetime, reuse, transaction success, payment authorization, or settlement.\n\n## Detail locators\n\n- Limited-release status and access-request route: `# Payment Method: Grant > **AVAILABILITY**`, lines 17-18.\n- Grant purpose and participating merchant/customer/payment-method identities: `# Payment Method: Grant`, lines 20-21.\n- Recipient access-token gateway initialization: `### Node`, lines 22-26.\n- Payment-method token, displayed options, and returned nonce handoff: `### Node`, lines 27-37.\n\n## Evidence limitations\n\n> [!warning] Controlled grant, not generic permission\n> This page establishes only the named controlled-access grant and the displayed Node handoff. It does not define account-wide permissions, payment-method ownership transfer, revocation or deletion behavior, option defaults, or downstream payment outcomes.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/payment-method/grant/node-2026-09-16|Braintree Node.js payment-method grant reference]] - complete page covering limited-release availability, participating identities, controlled-access scope, and the recipient-token/nonce example\n",
+  "quotes": [
+    {
+      "text": "**The Grant API is currently in a limited release.**  [Contact us](https://www.braintreepayments.com/products/braintree-extend#contact) to determine whether it's right for your needs and to request access to the API.",
+      "location": "# Payment Method: Grant > **AVAILABILITY**, line 18"
+    },
+    {
+      "text": "The[Grant API](/braintree/docs/reference/xml-api/grant-api/overview)allows you to give\nanother Braintree merchant controlled access to one of your customer's payment methods.",
+      "location": "# Payment Method: Grant, lines 20-21"
+    },
+    {
+      "text": "const gateway = new braintree.BraintreeGateway({\n    accessToken: accessTokenForRecipient\n});",
+      "location": "# Payment Method: Grant > ### Node, lines 24-26"
+    },
+    {
+      "text": "gateway.paymentMethod.grant(\n    \"the_payment_method_token\",\n    {\n        allow_vaulting: false,\n        include_billing_postal_code: true\n    },\n    (err, grantResult) => {\n        const nonceToSendToRecipient = grantResult.paymentMethodNonce.nonce;\n        // ...\n    }\n);",
+      "location": "# Payment Method: Grant > ### Node, lines 27-37"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payment-method-grant-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-payment-method-grant-node]] - limited-release Node.js Grant API route for giving another Braintree merchant controlled access to one customer payment method through a recipient access token and returned nonce",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the Grant API's current limited-release status and access-request requirement prominent; do not present the operation as generally available.",
+          "Preserve all participating identities: the granting merchant, another Braintree merchant as recipient, the granting merchant's customer, and one of that customer's payment methods.",
+          "Describe the scope as controlled access to the named payment method, not generic account/customer permission, ownership transfer, deletion, or revocation.",
+          "Treat allow_vaulting false and include_billing_postal_code true as displayed example values only; do not infer defaults or broader permission semantics, and do not treat the returned nonce as proof of payment success or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/payment-method/grant/node-2026-09-16.md",
+  "raw_sha256": "a505045b0bfed5bd2f16976ded81ec9139ab2877686d5663f4ffb61e0bbe5de1",
+  "status": "candidate_ready"
+}

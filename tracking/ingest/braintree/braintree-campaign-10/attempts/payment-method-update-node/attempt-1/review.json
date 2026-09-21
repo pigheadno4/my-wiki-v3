@@ -1,0 +1,21 @@
+{
+  "job_id": "payment-method-update-node",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full C10 retrieval-scope review started at 2026-09-21T11:22:10Z and ended at 2026-09-21T11:24:09Z UTC; final verdict: changes_requested. The complete 239-line pinned raw supports the candidate's Node.js stored-payment-method update identity and nearly all retained qualifications: token-scoped gateway.paymentMethod.update(), the linked notFoundError route, shared-address mutation with updateExisting, new-address creation and old-address retention when updateExisting is omitted, existing-address reuse by billingAddressId, the PayPal-account token/default-only update surface, credit-card/PayPal-only makeDefault scope, the damaged destination for other payment-method types, and the separate customer-update recommendation. It also accurately distinguishes default credit-card validation from verification; preserves enabled AVS/CVV checks, verifyCard true/false behavior, and the Premium Fraud Management Tools device_data recommendation; scopes nonce-based update guidance to credit cards; preserves the duplicate-field warning and customer-unassociated nonce requirement; and accurately states explicit-field-before-nonce precedence when raw card data and nonce data are combined. Routine examples and option shapes remain appropriately routed to the raw. The canonical URL, raw path, source target, and SHA-256 match the trusted input and manifest; candidate.md equals receipt.source_page; suggestions.json equals receipt.suggestions; receipt status is candidate_ready; the source target is absent; required links resolve; and all five submitted quotes are byte-exact, unique, and correctly located at raw line 39, line 66, line 112, line 149, and lines 216-217. One material verification warning is not retained in the source body or reciprocal route: in the AVS-verification context, raw line 223 says the update creates a transaction and that merchants whose processing options reject transactions without CVV must include CVV or disable that rule. The existing broad detail locator names a verification-transaction/CVV condition but does not state this consequential side effect or required action, while the reciprocal route says only conditional card verification. Concrete query: `When verifying AVS information during a stored-payment-method update, does the update create a transaction, and what must be done when transactions without CVV are rejected?` The current source-level answer is incomplete and the concept route lacks transaction/CVV vocabulary, so the reader can miss operationally consequential rejection behavior unless already opening and interpreting the raw; a locator alone is not an adequate substitute for this material warning.",
+  "required_changes": [
+    "Add one concise, context-qualified takeaway or warning stating that the page's AVS-verification update with verifyCard set to true creates a transaction and that, when processing options reject transactions without CVV, the request must include CVV or the rule must be disabled. Cite or refine the existing raw locator to exact line 223. Do not broaden this into a claim that every payment-method update creates a transaction, and do not copy the Control Panel steps or any optional field inventory.",
+    "Revise the `payment-method-update-node-braintree-server-sdk-route` proposed one-line purpose so the AVS-verification transaction/CVV qualification is retrievable, while preserving its existing type-specific billing-address, PayPal/default, verification, and nonce boundaries. No broader concept prose change is needed."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "payment-method-update-node-braintree-server-sdk-route",
+      "verdict": "rejected",
+      "reason": "The target, anchor, and reciprocal-source-link kind are correct, and the proposed route preserves the other type-specific update boundaries. It is rejected only because generic `conditional card verification` wording omits the material AVS-verification transaction/CVV condition at raw line 223; add concise retrieval vocabulary for that condition without expanding into an API inventory or Control Panel procedure."
+    }
+  ],
+  "reviewer_identity": "bt10-r-update",
+  "reviewer_model": "gpt-5.6-sol"
+}

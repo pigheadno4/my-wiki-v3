@@ -1,0 +1,57 @@
+{
+  "job_id": "plan-update-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Plan Update (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/plan/update/node\"\nraw_files:\n  - \"braintree/docs/reference/request/plan/update/node-2026-09-16.md\"\ntags: [braintree, node-js, plans, recurring-billing, add-ons, discounts]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents updating a plan by ID through `gateway.plan.update()` in callback and Promise forms. It covers plan attributes, associated add-on and discount changes, and a trial-period update effect; it does not establish whether plan changes propagate to existing subscriptions.\n\n## Key takeaways\n\n- If the requested plan cannot be found, the page says the operation returns a `notFoundError`.\n- When a plan already has add-ons or discounts, the page warns that modification tokens must be passed during an update; otherwise all modifications associated with that plan are removed after the update.\n- As an alternative to modification tokens, the update can add, update, and remove associated add-ons or discounts, including multiple changes in one request. The prose uses names such as `add_ons`, `inherited_from_id`, and `existing_id`, while the displayed Node examples use `addOns`, `inheritedFromId`, and `existingId`.\n- For added modifications, details are inherited from the referenced add-on or discount; for updated modifications, details are inherited from the existing associated item. The page provides a short, explicit override-field list at the locator below rather than establishing arbitrary override support.\n- The page says that passing `trial_period` removes the plan's billing day of month; its Node examples express that input as `trialPeriod`. It does not document units, validation, or effects on existing subscriptions.\n\n## Detail locators\n\n- Plan-ID update invocation, update attributes, and callback form: `# Plan: Update > ### Callback`, lines 16-28.\n- Promise form: `# Plan: Update > ### Promise`, lines 30-41.\n- Missing-plan error route: `# Plan: Update`, line 42.\n- Modification-token approach and destructive omission warning: `### Add-ons and discounts`, lines 43-80.\n- Add, update, and remove examples for add-ons and discounts: `### Add-ons and discounts`, lines 82-146.\n- Multiple add-on or discount changes in one update: `### Multiple updates`, lines 148-199.\n- Inheritance behavior and the allowed override-field list: `### Override details`, lines 201-288.\n- Trial-period update effect and callback/Promise examples: `### Update trail period`, lines 290-311.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/plan/update/node-2026-09-16|Braintree Node.js plan-update request reference]] - complete collected page covering plan-ID updates, missing-plan handling, add-on and discount modification paths, override details, and the trial-period update effect\n",
+  "quotes": [
+    {
+      "text": "gateway.plan.update(\n    \"aPlanId\",\n    {\n        id: \"newId\",\n        name: \"Awesome Bar\",\n        description: \"Incredibly Mediocre\",\n        price: \"2.00\"\n    }, (err, result) => {\n    }\n);",
+      "location": "lines 18-27, # Plan: Update > ### Callback"
+    },
+    {
+      "text": "You have to pass modification tokens if there are add-ons/dicounts belonging to a plan when updating the plan. Otherwise it removes all modifications associated with this plan after updating the plan",
+      "location": "line 80, ### Add-ons and discounts > **NOTE**"
+    },
+    {
+      "text": "Secondly, you can modify the add-ons and discounts by passing add_ons/discounts when updating a plan.\n- New add-ons/discounts can be added to the plan\n- Existing add-ons/discounts associated with the plan can be updated\n- Existing add-ons/discounts associated with the plan can be removed",
+      "location": "lines 82-85, ### Add-ons and discounts"
+    },
+    {
+      "text": "When adding add-ons/discounts, all details will be inherited from the add-on/discount specified by the`inherited_from_id`. When updating add-ons/discounts, all details will be inherited from the add-on/discount specified by the`existing_id`. You can override any of the following:\n- `amount`\n- `number_of_billing_cycles`\n- `name`\n- `description`",
+      "location": "lines 203-207, ### Override details"
+    },
+    {
+      "text": "Updating a plan removes \"billing day of the month\" when`trial_period`is passed. In the example below, the plan will not have its \"billing day of the month\" after it is updated.",
+      "location": "line 292, ### Update trail period"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "plan-update-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-plan-update-node]] - Node.js plan updates by ID, including the destructive modification-token omission warning, add-on/discount add-update-remove routes, qualified override details, and the trial-period billing-day effect, without establishing propagation to existing subscriptions",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer that plan updates propagate to existing subscriptions; the page does not establish existing-subscription effects.",
+          "Preserve the warning that omitting modification tokens when add-ons or discounts belong to the plan removes all associated modifications after the plan update.",
+          "Keep prose snake_case names distinct from the camelCase names shown in the Node examples; do not silently normalize one into the other.",
+          "Do not generalize override support beyond the page's listed fields, and do not infer trial-period units or validation from the example."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/plan/update/node-2026-09-16.md",
+  "raw_sha256": "120cc44ad59c27c3d4a59b6b0be755446964dd55a5fa2719f4660b54b0e013d5",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "webhooks-parse-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Webhook Parsing (Node.js)\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/webhooks/parse/node\"\nraw_files:\n  - \"braintree/docs/guides/webhooks/parse/node-2026-09-16.md\"\ntags: [braintree, webhooks, node-js, signature-verification, retries]\n---\n\n## Overview\n\nThis guide shows how a Node.js webhook handler passes Braintree's signed `bt_signature` and `bt_payload` POST parameters to `gateway.webhookNotification.parse()`. It also identifies the parsed notification shape, invalid-signature failure, non-sequential arrival warning, and the response condition that controls Braintree's documented retries.\n\n## Key takeaways\n\n- Braintree sends the webhook to the configured destination URL as a POST whose `application/x-www-form-urlencoded` body contains `bt_signature` and `bt_payload`. The signed payload is intended to show that the message came from Braintree and was not modified in transit.\n- The Node examples pass both parameters to `gateway.webhookNotification.parse()` using either a callback or a Promise. The result is a `WebhookNotification` with a UTC timestamp, a kind mapped to webhook triggers, and a Braintree object determined by the notification type.\n- Parsing a notification with an invalid signature raises an invalid-signature exception. Use the dedicated exception reference linked from the raw page for exception details.\n\n> [!warning] Ordering and retry scope\n> Notifications may not be delivered sequentially, so handlers should use the event timestamp rather than assuming arrival order. If a webhook takes longer than 30 seconds to respond, Braintree treats it as a timeout and retries hourly for up to 3 hours in sandbox or 24 hours in production, stopping when it receives a successful HTTPS `2xx` response within 30 seconds. These conditions describe retry behavior; they do not establish a general delivery-time or sequential-delivery guarantee.\n\n## Detail locators\n\n- Signed inputs and notification contents: `# Parse`, paragraphs and list before `### Callback`.\n- Callback handler: `### Callback`.\n- Promise handler: `### Promise`.\n- Invalid-signature failure: `### Exceptions`.\n- Timeout, cadence, environment windows, and successful-response condition: `### Retries`.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-webhooks]]\n- Related source: [[source-braintree-webhooks-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/webhooks/parse/node-2026-09-16|Braintree webhook parsing for Node.js]] \u2014 complete collected guide covering signed inputs, callback and Promise parsing, invalid signatures, ordering, and retries\n",
+  "quotes": [
+    {
+      "text": "When webhooks are triggered in the gateway, a notification is sent as a POST request to the specified destination URL. The post body contains two x-www-form-urlencoded parameters:\n\n\n- bt_signature\n- bt_payload",
+      "location": "# Parse, lines 16-20"
+    },
+    {
+      "text": "This payload is signed to ensure that the message originated from Braintree and was not modified in transit. The message is identical to standard API responses and contains a snapshot of the related entity at the time the webhook was triggered.",
+      "location": "# Parse, line 22"
+    },
+    {
+      "text": "An [invalid signature exception](/braintree/docs/reference/general/exceptions/node#invalid-signature) is raised if the webhook notification you attempt to parse has an invalid signature.",
+      "location": "### Exceptions, line 74"
+    },
+    {
+      "text": "If a webhook takes longer than 30 seconds to respond, it is considered a timeout and will be retried. We will resend webhook notifications every hour for up to 3 hours in sandbox, or up to 24 hours in production, until the webhook responds with a successful HTTPS response code (i.e. \u20182xx\u2019) within 30 seconds.",
+      "location": "### Retries, line 79"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-parse-node-braintree-webhooks-scope-and-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Configuration and operating boundaries, final paragraph; ## Sources",
+        "proposed_markdown": "Replace the final paragraph under `## Configuration and operating boundaries` with:\n\n`Braintree states that it strives to send notifications as quickly as events occur, but the overview does not establish a delivery-time guarantee. Simultaneous subscription billing can produce a flood of notifications in a short period, so integrations should be designed for burst volume. That overview itself does not define retry, ordering, duplicate-delivery, signature-verification, or parsing semantics. [[source-braintree-webhooks-overview]]`\n\n`The dedicated Node.js parsing guide documents signed `bt_signature` and `bt_payload` parsing, an invalid-signature exception, non-sequential arrival, and hourly retries when the handler does not return a successful HTTPS `2xx` response within 30 seconds; the retry window is up to 3 hours in sandbox and 24 hours in production. These guide-specific conditions do not establish a general delivery-time or sequential-delivery guarantee. [[source-braintree-webhooks-parse-node]]`\n\nUnder `## Sources`, add: `- [[source-braintree-webhooks-parse-node]] \u2014 Node.js signed-input parsing, invalid-signature failure, non-sequential arrival, and response-conditioned retry timing`",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the existing overview claim explicitly scoped to the overview; this guide supplies the omitted parsing, ordering, and retry details rather than contradicting that source-scoped statement.",
+          "Do not turn the documented retry cadence and cutoff windows into a delivery-time, eventual-delivery, exactly-once, or sequential-delivery guarantee.",
+          "Retain the successful HTTPS 2xx within 30 seconds condition whenever summarizing when retries stop."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/webhooks/parse/node-2026-09-16.md",
+  "raw_sha256": "87ed66fd084f4e5bbe7fab87bb086eed17e024cb51141caaea6db8d6c35a865a",
+  "status": "candidate_ready"
+}

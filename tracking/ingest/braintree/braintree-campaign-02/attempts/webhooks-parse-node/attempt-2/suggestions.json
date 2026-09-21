@@ -1,0 +1,27 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "webhooks-parse-node-braintree-webhooks-scope-and-route",
+      "target_path": "wiki/concepts/braintree-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Configuration and operating boundaries, final paragraph; ## Sources",
+      "proposed_markdown": "Replace the final paragraph under `## Configuration and operating boundaries` with:\n\n`Braintree states that it strives to send notifications as quickly as events occur, but the overview does not establish a delivery-time guarantee. Simultaneous subscription billing can produce a flood of notifications in a short period, so integrations should be designed for burst volume. That overview itself does not define retry, ordering, duplicate-delivery, signature-verification, or parsing semantics. [[source-braintree-webhooks-overview]]`\n\n`The dedicated Node.js parsing guide documents parsing the `bt_signature` parameter together with the signed `bt_payload` parameter, an invalid-signature exception, non-sequential arrival, and hourly retries when the handler does not return a successful HTTPS `2xx` response within 30 seconds; the retry window is up to 3 hours in sandbox and 24 hours in production. These guide-specific conditions do not establish a general delivery-time or sequential-delivery guarantee. [[source-braintree-webhooks-parse-node]]`\n\nUnder `## Sources`, add: `- [[source-braintree-webhooks-parse-node]] \u2014 Node.js `bt_signature` plus signed-`bt_payload` parsing, invalid-signature failure, non-sequential arrival, and response-conditioned retry timing`",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep the existing overview claim explicitly scoped to the overview; this guide supplies the omitted parsing, ordering, and retry details rather than contradicting that source-scoped statement.",
+        "Distinguish the `bt_signature` parameter from the signed `bt_payload`; do not state that both parameters are signed.",
+        "Do not turn the documented retry cadence and cutoff windows into a delivery-time, eventual-delivery, exactly-once, or sequential-delivery guarantee.",
+        "Retain the successful HTTPS 2xx within 30 seconds condition whenever summarizing when retries stop."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "tokenization-key-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Tokenization Keys (JavaScript v3)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/authorization/tokenization-key/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/authorization/tokenization-key/javascript/v3-2026-09-16.md\"\ntags: [braintree, javascript-sdk, client-authorization, tokenization-key, payment-method-tokenization]\n---\n\n## Overview\n\nThis Braintree guide documents tokenization keys as static, reduced-privilege credentials for client-side payment-information tokenization. In the JavaScript route, it shows callback and Promise initialization for Drop-in and custom Braintree clients; this is client-SDK authorization, not transaction authorization or payment success.\n\n## Key takeaways\n\n- A tokenization key can be reused indefinitely across multiple client apps. Multiple active keys may be labeled for separate purposes, and revoking a key deauthorizes clients that use it.\n- A tokenization key authorizes tokenization of credit cards, PayPal, Venmo, Apple Pay, and Google Pay, but only a subset of client API capabilities. It cannot supply a customer ID, merchant account ID, or other configuration; retrieve a customer's saved methods in Drop-in; or create a 3D Secure transaction.\n- Payment methods cannot be saved directly from the client to a customer in the Vault with a tokenization key. The page routes merchants either to send the resulting payment-method nonce to their server or to generate a client token with a customer ID.\n- Reduced authorization makes tokenization keys publishable in client apps, but each key is bound to one environment. A production key always communicates with Braintree's live environment regardless of environment variables or debug modes, so sandbox and production keys must not be confused when shipping an app.\n- The page states that tokenization keys work with JavaScript SDK v2.17 or higher. Its JavaScript examples initialize Drop-in or a custom client by passing the key as `authorization` before displaying payment UI; the SDK then fetches Braintree configuration.\n\n## Detail locators\n\n- Static and reduced-privilege identity, reuse, labeling, revocation, and client deauthorization: `# Tokenization Keys`, lines 16-18; `### Static`, lines 25-29.\n- Supported payment-method categories and capability restrictions: `# Tokenization Keys`, line 20; `### Reduced privilege`, lines 34-41.\n- Control Panel setup and the possible Account Admin permission requirement: `# Tokenization Keys`, line 18; `## Obtaining a tokenization key`, lines 44-54.\n- Publishability and environment binding, including the live-environment warning: `## Adding a tokenization key to your app`, lines 57-73.\n- SDK-version qualification and callback/Promise initialization examples: `## Initializing the SDK`, lines 78-115.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-web-sdk]]\n- Related source: [[source-braintree-authorization-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/authorization/tokenization-key/javascript/v3-2026-09-16|Braintree tokenization-key guide for JavaScript v3]] - complete guide covering reduced privileges, key lifecycle, environment binding, setup, and SDK initialization\n",
+  "quotes": [
+    {
+      "text": "Unlike a client token, a tokenization key is both static and reduced privilege. It can be shipped with your apps without generating a new key for each session. To ensure your tokenization key functions seamlessly, you may need to acquire the Account Admin role permission if you encounter an insufficient privileges error message.",
+      "location": "# Tokenization Keys, line 18"
+    },
+    {
+      "text": "If you decide you no longer want a specific tokenization key to be used, it can be revoked. Doing so will deauthorize any clients using that key.",
+      "location": "### Static, line 29"
+    },
+    {
+      "text": "- When using a tokenization key, clients may only tokenize payment information.\n- You may not specify a customer ID, set a specific merchant account ID, or otherwise provide any configuration.\n- Payment methods can't be saved directly from the client to a customer in the Vault using a tokenization key. To save the payment method, you'll need to[pass the resulting payment method nonce to your server](/braintree/docs/start/hello-client#send-payment-method-nonce-to-server). Otherwise, generate a client token with a customer ID.\n- Drop-in will not be able to retrieve a customer's saved payment methods. Repeat purchases will show the add payment method UI.\n- You can't use a tokenization key to create a[3D Secure](/braintree/articles/guides/fraud-tools/3d-secure)transaction.",
+      "location": "### Reduced privilege, lines 37-41"
+    },
+    {
+      "text": "Because of their reduced authorization, tokenization keys are publishable, meaning safe to include in your app. They are not sensitive information and can be exposed in an insecure client.",
+      "location": "## Adding a tokenization key to your app, line 59"
+    },
+    {
+      "text": "Tokenization keys can be used with any version of the Android and iOS SDKs and JavaScript SDK v2.17 or higher.\n\nInitialize the SDK with your tokenization key before you want to display the payment UI. The SDK will fetch configuration information from PayPal Braintree.",
+      "location": "## Initializing the SDK, lines 80-82"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "tokenization-key-javascript-v3-braintree-web-sdk-route",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-tokenization-key-javascript-v3]] - JavaScript client initialization with static, reduced-privilege tokenization keys, including revocation, environment binding, and capability limits",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Tokenization-key authorization is client authorization for payment-information tokenization, not transaction authorization or payment success.",
+          "Preserve the JavaScript SDK v2.17-or-higher qualification and the single-environment live-key warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/authorization/tokenization-key/javascript/v3-2026-09-16.md",
+  "raw_sha256": "5b90f79342ef1592f47e7452c83b8b46dc3e1a74facfd62e6babec2086a9e246",
+  "status": "candidate_ready"
+}

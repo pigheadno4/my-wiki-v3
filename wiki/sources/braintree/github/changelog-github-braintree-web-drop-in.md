@@ -27,7 +27,7 @@ Chronological release synthesis for `braintree/braintree-web-drop-in`. Cumulativ
 **History clarification:** The new cumulative upstream changelog adds "(where possible)" to the old `1.47.0` textContent statement. The original release history below and its immutable evidence are retained.
 
 > [!warning] Contradiction: lifecycle evidence
-> The September 10 release retains a README saying updates stop September 1, 2026, with unsupported status September 1, 2027. Do not infer a support extension or resolve the conflict from this release alone. [[source-github-braintree-web-drop-in]]
+> The September 10 release retains a README saying updates stop September 1, 2026, with unsupported status September 1, 2027. The website source instead gives October milestones. Do not infer a support extension or resolve the conflict from this release alone. [[source-braintree-get-started]] [[source-github-braintree-web-drop-in]]
 
 **Updated source sections:** Latest ingested boundary; card-label implementation and examples; lifecycle contradiction; immutable evidence navigation. Prior architecture and `1.47.0` findings remain intact.
 

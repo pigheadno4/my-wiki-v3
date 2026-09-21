@@ -26,7 +26,7 @@ my-wiki/
 │   │   ├── paypal-legacy.md   # historical developer portal policy
 │   │   ├── paypal-new.md      # upgraded portal; implementation in worktree
 │   │   ├── adyen.md
-│   │   ├── braintree.md       # approved collection policy; collector pending
+│   │   ├── braintree.md       # standalone collector; smoke-pilot stage
 │   │   └── metronome.md
 │   ├── github-repos.md        # common GitHub authority and strategy router
 │   ├── github/                # release, commit, and supplement workflow rules
@@ -220,4 +220,4 @@ tags: [<relevant tags>]
 - **Payment networks** (Visa, Mastercard, etc.) are companies, not concepts.
 - **Regulations** (PCI DSS, PSD2, etc.) are concepts with category `regulation`.
 - Track funding rounds, acquisitions, and partnerships as timeline entries on company pages.
-- **PSPs are a registry, not a fixed set.** Simple providers can use `scripts/psp_config.toml`; provider-specific discovery and recovery policies live under `rules/psp/`. Braintree's approved policy is in `rules/psp/braintree.md`, but its documentation collector is pending. A rule file does not imply runnable script support.
+- **PSPs are a registry, not a fixed set.** Simple providers can use `scripts/psp_config.toml`; provider-specific discovery and recovery policies live under `rules/psp/`. Braintree's standalone collector is at the smoke-pilot stage; see `rules/psp/braintree.md` for commands and approval boundaries. A rule file does not imply full collection completion.

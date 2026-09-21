@@ -1,0 +1,54 @@
+{
+  "job_id": "transaction-sale-node",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Transaction Sale (Node.js)\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/sale/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/sale/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, settlement, vault]\n---\n\n## Overview\n\nThis Braintree reference page documents the Node.js server SDK's `gateway.transaction.sale()` request for creating a transaction from an amount and a payment-method nonce, a vaulted payment-method token, or a customer's default payment method. It also routes readers to the page's worked examples for settlement submission, vault storage, merchant-account and address selection, custom fields, dynamic descriptors, and Braintree Marketplace escrow.\n\n## Key takeaways\n\n- A sale requires `amount` plus one of `payment_method_nonce`, `payment_method_token`, or `customer_id`; using `customer_id` selects that customer's default payment method.\n- Braintree's transaction risk and fraud products require adequate supporting data, added during the Braintree SDK or GraphQL integration before those products are used.\n- The Node example sets `options.submitForSettlement` to request immediate settlement submission. The page says a valid example returns `success` as true with status `submitted_for_settlement`.\n- Vaulting can be requested for an existing or new customer, but the `customer` parameter is intended only when creating a new customer with a new payment method, and `store_in_vault_on_success` stores the method only after a successful transaction.\n- If `merchant_account_id` is omitted, Braintree uses the default merchant account. Dynamic-descriptor acceptance and formatting vary by processor and payment path, so use the dedicated raw subsections rather than assuming the general example applies everywhere.\n\n## Important documentation inconsistency\n\n> [!warning] Contradiction\n> Although this is the Transaction: Sale page, its successful-result example labels `result.transaction.type` as `\"credit\"`. Verify transaction type against the linked Transaction response documentation or current SDK implementation before relying on that example.\n\n## Detail locators\n\n- The `# Transaction: Sale` introductory risk/fraud paragraph at raw line 19 gives the supporting-data prerequisite and routes to Premium Fraud Management Tools guidance.\n- `Examples > Storing in your vault` covers existing-customer and new-customer storage, plus the success condition for `store_in_vault_on_success`.\n- `Examples > Using a vaulted payment method` and `Using a CVV-only nonce` distinguish a vaulted token, a customer's default method, and the combined token-plus-CVV-nonce case.\n- `Examples > Specify merchant account ID`, `Using stored addresses`, and `Custom fields` contain the corresponding Node callback and Promise examples.\n- `Examples > Dynamic descriptors` contains general processor restrictions and separate Venmo, PayPal, and Braintree Marketplace rules, including path-specific character, length, prefix, ignore, and truncation behavior.\n- `Examples > Hold a Braintree Marketplace transaction in escrow on creation` shows the escrow option and states that funds are not held by default.\n\n## Related\n\n- Companies: [[braintree]]\n- Concepts: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16]] \u2014 fully read Braintree Node.js Transaction: Sale reference page\n",
+  "quotes": [
+    {
+      "text": "To create a transaction, you must include an[`amount`](#amount)and either a[`payment_method_nonce`](#payment_method_nonce), a[`payment_method_token`](#payment_method_token), or a[`customer_id`](#customer_id). Passing a`customer_id`is equivalent to passing the`payment_method_token`of the customer's default payment method.",
+      "location": "lines 17-17 under # Transaction: Sale"
+    },
+    {
+      "text": "Braintree offers products that manage risk and fraud related to each transaction. These products can only be leveraged if there is adequate data to support the capabilities. The required data can be easily added during the Braintree SDK or[Graph QL](/braintree/graphql/). integration, and must be done prior using risk products. For additional guidance go to[Premium Fraud Management Tools](/braintree/articles/guides/fraud-tools/premium/overview).\n\nThe following example creates a transaction using a[`payment_method_nonce`](#payment_method_nonce)from a client and instructs that it should be submitted for settlement immediately using[`options.submit_for_settlement`](#options-submit_for_settlement). You can see more[examples](#examples), including[using a vaulted payment method](#using-a-vaulted-payment-method), below the parameter reference.",
+      "location": "lines 19-21 under # Transaction: Sale, risk/fraud prerequisite and opening Node example"
+    },
+    {
+      "text": "If all the parameters are valid, a transaction will be created with a status of submitted_for_settlement and success? will return true.\n### Node\n```javascript\nresult.success; // true\nresult.transaction.type; // \"credit\"\nresult.transaction.status; // \"submitted_for_settlement\"",
+      "location": "lines 145-150 under ## Examples > ### Full example, successful result example"
+    },
+    {
+      "text": "The [`customer`](#customer) parameter should only be used when creating a new customer with a new payment method, and `store_in_vault_on_success` only vaults the payment method if the transaction is successful.",
+      "location": "lines 222-223, NOTE under ## Examples > ### Storing in your vault > #### New customer with new payment method"
+    },
+    {
+      "text": "Your processor may also restrict which descriptor values you can pass; certain processors allow you to pass URLs instead of phone numbers, while others accept only phone numbers or only names. If your processor supports URLs and you send both a phone number and URL, we will only pass the URL to the processor.[Contact us](/braintree/help?issue=updateDescriptor)for more information on your processor's specific requirements.",
+      "location": "lines 389-389 under ## Examples > ### Dynamic descriptors"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-sale-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-sale-node]] - current Node.js `transaction.sale()` request guide for payment-source selection, immediate settlement submission, conditional vault storage, risk/fraud supporting-data prerequisites, merchant-account routing, descriptor constraints, and Marketplace escrow",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw page's successful sale example reports transaction type as `credit`; the source candidate flags this internal documentation inconsistency and does not promote that value as behavior.",
+          "Keep this website-document route separate from the existing package-qualified GitHub implementation source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16.md",
+  "raw_sha256": "e8b790af5d8ec095e71d4715f497fb6f6c51806f76c62ac2b2491016ec3e5988",
+  "status": "candidate_ready"
+}

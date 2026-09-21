@@ -6,14 +6,194 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-21] ingest | Braintree website C10
+
+- Ten independently read/reviewed Node references promoted: Payment Method
+  Create/Update/Grant/Revoke, Subscription Search/Retry Charge, Transaction/
+  Account Updater/Fraud Protection Webhooks and Address Find.
+- Initial worker handoffs10/10 accepted; initial content reviews9/10 approved.
+  One bounded AVS/CVV warning correction received targeted review; no full
+  analysis retry, full rereview or coordinator semantic repair.
+- Two existing concepts received approved reciprocal retrieval routes. Company
+  and index cover71 sources:55 website+16 GitHub, excluding changelogs.
+- Query audit, mechanical-close results and actual timings are recorded in
+  `tracking/ingest/braintree/braintree-campaign-10/quality-audit.md` and
+  `retrospective.md`; this entry records promotion, not an independent close gate.
+- No raw edits, collection, GitHub ingest, code/rule changes, commit/push or
+  next campaign authorized or performed by C10.
+
 ## [2026-09-20] ingest | braintree-web-drop-in `1.48.0`
 
 - User-approved delta from `1.47.0` to `1.48.0`, work item `github-d83a391d04b7021d0ef7`, exact SHA `5e6de786a463598b4583a657acbd5cafee72dbf9`.
 - Read all 13 assigned paths completely and prior affected implementation; both 86-file snapshot inventories passed size/hash checks. Four retained files changed, 82 unchanged; excluded lockfile/test changes were reviewed in the diff, not executed.
 - Added card-label numeric conversion/truncation/padding and malformed-input limitations; retained `innerHTML`, unchanged runtime dependencies, and all `1.47.0` history.
-- Flagged the September 10 release after its unchanged September 1 no-updates notice. Updated source, changelog, concept, company, and index; no new source page or source-count increment.
+- Preserved the September-versus-October lifecycle conflict and flagged the September 10 release after its unchanged September 1 no-updates notice. Updated source, changelog, concept, company, reciprocal website warning, and index; no new source page or source-count increment.
 - No upstream suite, browser checkout, or payment transaction run. Details: [[source-github-braintree-web-drop-in]] and [[changelog-github-braintree-web-drop-in]].
 
+## [2026-09-20] ingest | Braintree website C09
+
+- Ingested five independently read/reviewed Node references: Plan Update/Create/
+  Find, Add-on All and Discount All. Initial worker handoffs5/5 accepted; initial
+  content reviews5/5 approved. No format/semantic retries or full/targeted rereviews.
+- Preserved merchant recurring-billing prerequisite, destructive modification-token
+  omission warning, qualified override/trial effects and missing-name/code evidence.
+  No inferred propagation to existing subscriptions. Kept Node result access and
+  linked Ruby navigation distinct; listing does not establish creation/application.
+- One existing server-SDK concept received five approved reciprocal routes.
+  Company/index cover61 sources:45 website plus16 GitHub summaries, excluding
+  changelogs. No new concept, parameter inventory or validation mechanism.
+- Audit/timing records: `tracking/ingest/braintree/braintree-campaign-09/`.
+  Fixed query audit10/10 PASS, no extra selected raw reads or post-audit repairs;
+  mechanical close and8 typed pages passed. Operational closure12m40s.
+  No collection, raw edits, GitHub ingest, runtime/rule changes, commit/push or
+  following campaign executed.
+
+## [2026-09-20] ingest | Braintree website C08
+
+- Ingested five independently read/reviewed Node Credit Card references: Update,
+  Create, Expiring Between, Find and Delete. Initial worker handoffs5/5 accepted;
+  initial content reviews5/5 approved. No format/semantic retries, full rereviews,
+  targeted rereviews or coordinator semantic repairs.
+- Preserved qualified PCI advisory/recommendation language, nonce versus raw-card
+  precedence and conditional verification; no current compliance conclusion.
+  Retained Expiring Between's missing object label, incomplete/mismatched stream
+  example and unspecified date inclusivity/timezone semantics without repair to raw.
+- One existing server-SDK concept received five approved reciprocal routes.
+  Company/index cover56 sources:40 website plus16 GitHub summaries, excluding
+  changelogs. No new concept, schema expansion or new validation mechanism.
+- Audit and stage timing: `tracking/ingest/braintree/braintree-campaign-08/`.
+  Fixed query audit10/10 PASS, no extra selected raw reads or post-audit repairs;
+  mechanical close and8 typed pages passed. Operational closure12m41s.
+  No collection, GitHub ingest, runtime/rule changes, commit/push or next campaign.
+
+## [2026-09-20] ingest | Braintree website C07
+
+- Ingested five independently read/reviewed website snapshots: Address Create,
+  Address Update, Address Delete, Plan All and Dispute Webhooks. Initial worker
+  handoffs 5/5 accepted; initial content reviews 5/5 approved. No format/semantic
+  retries, full rereviews, targeted rereviews or coordinator semantic repairs.
+- Retained customer-scoped address identity and creation limits, address deletion's
+  payment-method-reference effect, listing-versus-creation distinctions and dispute
+  event qualifications. The collected dispute attribute's missing label remains
+  explicitly unresolved; no payload reconstruction or raw edit.
+- Three existing concepts received approved reciprocal routes. Company/index now
+  cover 51 cumulative sources: 35 website plus 16 GitHub summaries, excluding
+  changelogs. One fresh native spawn hit thread limit; the same persisted order
+  continued on an idle same-model worker without duplicate dispatch.
+- Audit and timing evidence: `tracking/ingest/braintree/braintree-campaign-07/`.
+  Fixed query audit10/10 PASS; no extra selected raw reads or post-audit repair.
+  Mechanical close and10 touched typed pages passed. Operational closure12m58s;
+  shorter raw mix means this is not a controlled speed comparison with C06.
+  No collection, GitHub ingest, code/rule changes, commit, push or next campaign.
+
+## [2026-09-20] ingest | Braintree website C06
+
+- Ingested Customer Update, Transaction Find, Subscription Cancel, Subscription
+  Webhooks and Subscription Find from five immutable website snapshots. All five
+  initial independent content reviews approved; initial worker handoffs passed
+  4/5. Subscription Find required one format-only retry (`completed` changed to
+  `candidate_ready`); source, quotes and concept suggestions remained unchanged.
+- Five full initial reviews, no full-analysis retries, no targeted rereviews and
+  no coordinator semantic repairs. Two existing concepts received reciprocal
+  retrieval routes; no new concepts or copied API specifications.
+- Preserved update/default/verification distinctions, cancellation scope,
+  event-specific trigger and payload qualifications, lookup code evidence and
+  result-limitation notices without interpreting unread legal text.
+- Company/index cover 46 cumulative sources: thirty website plus sixteen GitHub
+  summaries, excluding changelogs. Final audit and timing records:
+  `tracking/ingest/braintree/braintree-campaign-06/`.
+  Query audit: 10/10 PASS, no extra selected raw reads or post-audit repairs;
+  operational closure: 19m20s. Mechanical close and nine typed-page checks passed.
+  No collection, GitHub ingest, commit, push or following campaign executed.
+
+## [2026-09-20] ingest | Braintree website C05
+
+- Ingested five independently read and reviewed Node website snapshots: Customer
+  Create, Payment Method Find, Payment Method Webhooks, Customer Delete and
+  Customer Find. Five initial approvals, zero retries or coordinator semantic
+  repairs; two existing concepts received approved reciprocal routes.
+- Preserved incomplete prose and missing invocation evidence without guessed
+  code, policy notices without unread legal interpretation, scoped PayPal/Venmo
+  events and cascading deletion effects. Raw files remain unchanged.
+- Company/index now cover 41 cumulative sources: twenty-five website plus sixteen
+  GitHub summaries, excluding changelogs. Initial native thread-limit dispatch
+  was reconciled by reusing an idle Sol medium worker with the same trusted order.
+- Final audit: 10/10 PASS, zero extra full raw reads or repairs. Operational
+  closure: 15m35s. Audit/timings: `tracking/ingest/braintree/braintree-campaign-05/`.
+  No collection retry, GitHub ingest, commit, push or following campaign executed.
+
+## [2026-09-20] ingest | Braintree website C04
+
+- Ingested five independently read and reviewed website snapshots: JavaScript v3
+  Tokenization Keys, Node Webhook Testing, Node Nonce Find, Node Nonce Create, and
+  Node Payment Method Delete. Initial approvals: 4/5; five full initial reviews
+  and one targeted rereview, with no full retry or coordinator semantic repair.
+- The bounded correction preserved Braintree's should-only guidance in a concept
+  route instead of presenting it as an enforced restriction. Source and quotes
+  were unchanged. Three existing concepts received reciprocal retrieval routes;
+  no new concepts or copied API specifications.
+- Preserved reduced privileges, test-versus-production boundaries, non-consuming
+  lookup, source-qualified creation guidance and destructive deletion consequences.
+  Company/index cover 36 cumulative sources: twenty website plus sixteen GitHub
+  summaries, excluding changelogs. Raw evidence remains unchanged.
+- Final audit: 10/10 PASS, no extra full raw reads or repairs. Operational closure:
+  17m01s. Audit and timings: `tracking/ingest/braintree/braintree-campaign-04/`.
+  No collection, GitHub ingest, commit, push or following campaign executed.
+
+## [2026-09-19] ingest | Braintree website C03
+
+- Ingested five independently read and reviewed snapshots: Node Submit for
+  Settlement, Authorization Overview, Node Client Token Generate, Node Transaction
+  Void, and Client Token Guide. All five approved on their first attempt;
+  five full initial reviews and zero worker retries. Final query audit found a
+  narrower PayPal void qualification in related authorities, triggering one
+  bounded post-audit warning/evidence correction with independent review.
+- Final fixed questions: 10/10 PASS; one independently approved post-audit repair
+  preserves the narrower PayPal qualification and two fully read supplemental
+  evidence routes. Operational closure took 22m39s; no speedup over C02 claimed.
+- Added approved retrieval routes to two existing concepts, with no new concepts
+  or duplicated API specifications. Preserved client-versus-payment authorization,
+  customer scope, PayPal-specific void eligibility, conditional reversal and
+  settlement availability qualifications. Raw evidence is unchanged.
+- Company and provider index cover 31 cumulative sources: fifteen website and
+  sixteen GitHub summaries, excluding changelogs. Final query audit and close
+  checks are recorded in `tracking/ingest/braintree/braintree-campaign-03/`.
+- No collection retry, GitHub ingest, commit or push performed by this campaign.
+
+## [2026-09-19] ingest | Braintree website C02
+
+- Ingested five independently read and reviewed snapshots: JavaScript v3 Hosted
+  Fields Events, Node Transaction Refund, Node Webhook Parse, Payment Method
+  Nonces, and Node Webhook Create. Raw evidence remains unchanged.
+- First-pass approvals: 4/5. One bounded correction distinguished the signature
+  parameter from the signed payload and strengthened quote coverage. Five initial
+  full reviews and one targeted rereview; zero full retries or coordinator
+  semantic repairs.
+- Updated three existing concepts with approved routes and scoped webhook
+  semantics; no new concepts. Company and provider index now cover 26 cumulative
+  sources: ten website and sixteen GitHub summaries, excluding changelogs.
+- Final retrieval audit: 10/10 passed, no extra raw reads or query repairs.
+  Evidence and per-stage timing: `tracking/ingest/braintree/braintree-campaign-02/`.
+- No collection retry, GitHub ingest, commit or push performed by this campaign.
+
+## [2026-09-19] ingest | Braintree website C01
+
+- Ingested five separately read and independently reviewed website snapshots:
+  Get Started, Node Transaction Sale, Webhooks Overview, Control Panel Overview,
+  and JavaScript v3 client-side credit-card support. Website documentation remains
+  distinct from the sixteen cumulative GitHub repository sources.
+- First-pass approvals: 2/5. Three bounded corrections addressed risk/fraud
+  prerequisites, ACH Direct Debit event scope, and Dashboard/email-receipt wording.
+  Five completed initial full reviews and three targeted rereviews; no full retry.
+  One interrupted cards review had no receipt and was restarted on resume.
+- Added two provider concepts (Webhooks and Control Panel), updated three existing
+  concept routes/boundaries, and preserved source-qualified Drop-in lifecycle and
+  Transaction Sale example inconsistencies. Source count is 21, excluding separate
+  GitHub changelog pages.
+- Final retrieval audit: 10/10 questions passed, no extra raw reads or query repairs.
+  Raw evidence is unchanged; detailed checks and the interruption-aware timing
+  record live in `tracking/ingest/braintree/braintree-campaign-01/`.
+- No collection retry, GitHub ingest, commit or push was performed by this campaign.
 
 ## [2026-09-16] ingest | braintree-web 3.145.0
 

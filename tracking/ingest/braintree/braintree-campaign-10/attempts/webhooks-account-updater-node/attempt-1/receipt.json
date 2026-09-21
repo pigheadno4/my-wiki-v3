@@ -1,0 +1,52 @@
+{
+  "job_id": "webhooks-account-updater-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Account Updater Webhook (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/account-updater/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/account-updater/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, account-updater, vault]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents the Account Updater daily-report webhook. The webhook is available only to merchants using Braintree's Account Updater feature, and its single listed notification kind is suppressed when there were no updates.\n\n## Key takeaways\n\n- This webhook is available only to merchants using the Account Updater feature. The page does not establish that every Braintree merchant has the feature or describe feature enrollment, configuration, pricing, or regional availability.\n- `webhook_notification.kind` identifies what triggered the webhook. The only listed kind is `account_updater_daily_report`.\n- That notification represents a daily report containing all vaulted payment methods updated during the prior 24 hours. If there are no updates, the webhook is not triggered. This page does not establish when individual updates occur or promise a webhook for each updated payment method.\n- The Attributes section is concatenated and supplies no visible attribute names. It identifies the payload categories as notification kind, UTC trigger time, report-generation date, and an assigned report-download URL that expires after one week. It does not document the report's file format, download authentication, delivery guarantees, retries, ordering, or duplicate handling.\n\n## Detail locators\n\n- Account Updater merchant-availability restriction: `# Account Updater > **AVAILABILITY**`, lines 17-18.\n- Notification-kind trigger role: `### Notification kinds`, lines 23-27.\n- Daily-report contents and no-updates suppression condition: notification table, lines 29-31.\n- Concatenated payload categories and one-week link expiry: `### Attributes`, lines 34-36.\n\n## Evidence limitations\n\n> [!warning] Feature-specific webhook\n> The page does not support universalizing Account Updater availability or reconstructing missing attribute identifiers. It documents a report-level notification for feature users, not per-payment-method delivery or proof that a Vault update occurred successfully in every case.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/account-updater/node-2026-09-16|Braintree Node.js Account Updater webhook reference]] - complete page covering feature-specific merchant availability, the daily-report trigger, no-update suppression, payload categories, and report-link expiry\n",
+  "quotes": [
+    {
+      "text": "This webhook is only available to merchants using our [Account Updater](/braintree/articles/guides/account-updater) feature.",
+      "location": "# Account Updater > **AVAILABILITY**, line 18"
+    },
+    {
+      "text": "The notification kind, returned by calling `kind` on the [notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The `webhook_notification.kind` for Account Updater webhooks will be one of the following:",
+      "location": "# Account Updater > ### Notification kinds, line 25"
+    },
+    {
+      "text": "| account_updater_daily_report | A daily report containing all vaulted payment methods updated in the last 24 hours. If there are no updates, the webhook will not be triggered. |",
+      "location": "# Account Updater > ### Notification kinds, table row at line 31"
+    },
+    {
+      "text": "The kind of webhook notification.The UTC time at which the webhook was triggered.The date the report was generated.The assigned URL to download the report. Link expires after 1 week.",
+      "location": "# Account Updater > ### Attributes, line 36"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-account-updater-node-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-account-updater-node]] - feature-restricted Account Updater daily-report webhook, including its 24-hour updated-method scope, no-updates suppression, payload-category route, and one-week report-link expiry",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep availability limited to merchants using Braintree's Account Updater feature; do not infer universal merchant access or undocumented enablement terms.",
+          "Preserve the report-level trigger: the daily report covers vaulted payment methods updated in the last 24 hours, and no updates means no webhook; do not recast it as one webhook per payment-method update.",
+          "The Attributes section provides concatenated categories without visible field names; do not invent identifiers or a complete report schema.",
+          "Do not infer report format, download authentication, delivery timing, retry, ordering, duplicate-handling, or individual update success from the webhook description."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/account-updater/node-2026-09-16.md",
+  "raw_sha256": "da71891132e0c4b6a21dbfe544960d26765974d3a848492275c19a38458a7d5c",
+  "status": "candidate_ready"
+}

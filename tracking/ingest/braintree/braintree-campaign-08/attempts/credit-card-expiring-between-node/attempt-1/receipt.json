@@ -1,0 +1,51 @@
+{
+  "job_id": "credit-card-expiring-between-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Credit Card Expiring Between (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/credit-card/expiring-between/node\"\nraw_files:\n  - \"braintree/docs/reference/request/credit-card/expiring-between/node-2026-09-16.md\"\ntags: [braintree, node-js, credit-cards, vault, retrieval]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents `gateway.creditCard.expiringBetween(before, after)` for finding objects that expire between two supplied dates. It shows callback and stream-oriented examples, but the collected purpose sentence does not render the object type and the stream example does not show a complete connection from the gateway call to the displayed stream consumer.\n\n## Key takeaways\n\n- The callback example constructs two JavaScript `Date` values, passes them as `before` and `after`, and receives `err` and an `expiredCards` callback argument. The callback body does not show how the returned collection is processed.\n- The stream section creates an object-mode `Writable` named `writableStream`, calls `gateway.creditCard.expiringBetween(before, after)` without assigning or piping its return value, and then registers a `data` listener on the differently spelled `writeableStream`. Treat this as an incomplete collected example rather than reconstructing the intended result flow.\n- The page says the objects expire between the specified dates, but it does not state whether either date boundary is inclusive or how timezones are interpreted. The literal dates in the examples do not establish those semantics.\n- The collected phrase `collection ofobjects` omits the rendered object name. This source therefore does not identify a response-object type or import a response schema from another page.\n\n> [!warning] Incomplete collected rendering\n> The pinned page omits the object name in its purpose sentence and contains an unconnected, inconsistently spelled stream example. Use it to locate the Node.js date-range operation and the displayed callback/stream forms, not to infer a response schema, a working stream-consumption pattern, boundary inclusivity, or timezone behavior.\n\n## Detail locators\n\n- Operation purpose and missing rendered object name: `# Credit Card: Expiring Between`, lines 13-16.\n- Callback dates, invocation, and callback arguments: `# Credit Card: Expiring Between > ### Node` under `Using a callback`, lines 17-22.\n- Object-mode writable-stream setup: `Using a stream > ### Node`, lines 24-32.\n- Stream-section dates, unassigned invocation, and `writeableStream` listener: `Using a stream > ### Node`, lines 34-38.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/credit-card/expiring-between/node-2026-09-16|Braintree Node.js credit-card expiring-between reference]] - complete collected page covering the date-range operation, callback example, incomplete stream example, and evidence limitations\n",
+  "quotes": [
+    {
+      "text": "# Credit Card: Expiring Between\n\nReturns a collection ofobjects that expire\nbetween the specified dates. Using a callback:",
+      "location": "lines 13-16, # Credit Card: Expiring Between"
+    },
+    {
+      "text": "const before = new Date('2018-01-01');\nconst after = new Date('2018-12-31');\ngateway.creditCard.expiringBetween(before, after, (err, expiredCards) => {\n});",
+      "location": "lines 19-22, # Credit Card: Expiring Between > ### Node under Using a callback"
+    },
+    {
+      "text": "Using a stream:\n### Node\n```javascript\nconst stream = require(\"stream\");\nconst writableStream = stream.Writable({ objectMode: true });",
+      "location": "lines 24-28, Using a stream > ### Node"
+    },
+    {
+      "text": "const before = new Date('2018-01-01');\nconst after = new Date('2018-12-31');\ngateway.creditCard.expiringBetween(before, after);\nwriteableStream.on('data', () => {\n});",
+      "location": "lines 34-38, Using a stream > ### Node"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "credit-card-expiring-between-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-credit-card-expiring-between-node]] - Node.js credit-card date-range retrieval through `gateway.creditCard.expiringBetween()`, with callback and incomplete stream examples plus unspecified boundary and timezone semantics",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not reconstruct the object type omitted from the collected phrase `collection ofobjects` or import a response schema from neighboring documentation.",
+          "Do not infer an operational stream-consumption pattern: the example neither assigns nor pipes the gateway call result and spells `writableStream` as `writeableStream` at the listener.",
+          "Do not infer inclusive or exclusive date boundaries, timezone interpretation, or other date-range semantics from the parameter names or example literals."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/credit-card/expiring-between/node-2026-09-16.md",
+  "raw_sha256": "8b00fe5237205aec9fc7ad1b635bf99fd0057cedb8e221ec9b3dc94127bcd288",
+  "status": "candidate_ready"
+}

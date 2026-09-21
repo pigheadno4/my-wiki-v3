@@ -26,7 +26,7 @@ Latest ingested release: `braintree-web-drop-in@1.48.0` (2026-09-10) at `5e6de78
 - The capsule contains production source and translations but no tests. Test-only behavior and upstream Braintree Web implementation outside the pinned dependency boundary are not retained here.
 
 > [!warning] Contradiction: lifecycle evidence
-> The September milestones above describe the `1.47.0` baseline and remain unchanged in the `1.48.0` README. However, `1.48.0` was released September 10, after the stated September 1 no-updates date. This release does not establish a revised support commitment.
+> The September milestones above describe the `1.47.0` baseline and remain unchanged in the `1.48.0` README. However, `1.48.0` was released September 10, after the stated September 1 no-updates date. Separately, [[source-braintree-get-started]] gives October 1, 2026 and October 1, 2027 milestones. Preserve these source-specific statements; neither this release nor the conflicting dates establish a revised support commitment.
 
 ## Grounding Excerpts
 

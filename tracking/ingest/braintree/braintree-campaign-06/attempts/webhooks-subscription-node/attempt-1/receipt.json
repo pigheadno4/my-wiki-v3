@@ -1,0 +1,58 @@
+{
+  "job_id": "webhooks-subscription-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Subscription Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/subscription/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/subscription/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, subscriptions, recurring-billing]\n---\n\n## Overview\n\nThis Braintree Node.js reference catalogs subscription webhook notification kinds, the conditions that trigger them, and the subscription data exposed through the notification attributes. It is an event reference, not a general webhook-delivery or subscription-billing guarantee.\n\n## Key takeaways\n\n- The notification object's `kind` identifies the trigger. The table covers billing skipped, cancellation, successful and unsuccessful charging, expiration, trial end, activation, and transition to past due.\n- A successful-charge notification also occurs when proration on an upgrade creates a new transaction mid-cycle. An unsuccessful-charge notification requires an existing subscription that fails to create a successful charge; the page excludes manual retries and subscription-creation attempts that fail because of an unsuccessful transaction.\n- The active notification is triggered by creation of the first authorized transaction or by a successful transaction moving a subscription from Past Due to Active. A trial-to-first-billing-cycle transition does not trigger it.\n- The past-due notification is limited to a decline of the initial transaction in a billing cycle and is not triggered again in that billing cycle after the status has moved to past due. A skipped-billing notification has its own condition: a negative or zero balance that covers the subscription cost.\n- The attributes route identifies the notification kind, UTC trigger time, and a `Subscription` object. That subscription object contains only the 20 most recent associated transactions.\n\n## Detail locators\n\n- Notification-kind meaning and trigger catalog: `# Subscription` > `### Notification kinds`, lines 17-32.\n- Skipped-billing balance condition: notification row `subscription_billing_skipped`, line 25.\n- Successful- and unsuccessful-charge qualifications: rows `subscription_charged_successfully` and `subscription_charged_unsuccessfully`, lines 27-28.\n- Active and past-due transition qualifications and exceptions: rows `subscription_went_active` and `subscription_went_past_due`, lines 31-32.\n- Notification attributes and 20-most-recent-transactions limit: `# Subscription` > `### Attributes`, lines 35-37.\n\n## Collected evidence limitation\n\n> [!warning] Event-reference scope\n> These rows state when the named subscription notification kinds are triggered and what the documented payload route contains. They do not establish universal webhook delivery, ordering, retry, duplicate-handling, billing-success, or payment-finality guarantees; use the dedicated webhook and subscription authorities for those separate questions.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n- Related source: [[source-braintree-webhooks-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/subscription/node-2026-09-16|Braintree Node.js subscription-webhook reference]] - complete page covering subscription notification kinds, event-specific trigger conditions, and payload-attribute limits\n",
+  "quotes": [
+    {
+      "text": "The notification kind, returned by calling `kind` on the [notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The `webhook_notification.kind` for Subscription webhooks will be one of the following:\n\nThe following table describes the conditions that trigger each kind of webhook.",
+      "location": "lines 19-21, # Subscription > ### Notification kinds"
+    },
+    {
+      "text": "| subscription_billing_skipped | A subscription's billing cycle is skipped due to the presence of a negative or zero[balance](/braintree/docs/guides/recurring-billing/manage/node#negative-balance)that covers the cost of the subscription. |",
+      "location": "line 25, # Subscription > ### Notification kinds, subscription_billing_skipped row"
+    },
+    {
+      "text": "| subscription_charged_successfully | A subscription successfully moves to the next billing cycle. This will also occur when a new transaction is created mid-cycle due to proration on an upgrade. |\n| subscription_charged_unsuccessfully | A subscription already exists and fails to create a successful charge. This will not trigger on manual retries or if the attempt to create a subscription fails due to an unsuccessful transaction. |",
+      "location": "lines 27-28, # Subscription > ### Notification kinds, charged successfully and unsuccessfully rows"
+    },
+    {
+      "text": "| subscription_went_active | A subscription's first authorized transaction is created, or a successful transaction moves a subscription from the[Past Due](/braintree/docs/guides/recurring-billing/overview#past-due)status to the Active status. Subscriptions with trial periods will not trigger this notification when they move from the trial period into the first billing cycle. |\n| subscription_went_past_due | A subscription has moved from the Active status to the[Past Due](/braintree/docs/guides/recurring-billing/overview#past-due)status. This will only be triggered when the initial transaction in a billing cycle is declined. Once the status moves to past due, it will not be triggered again in that billing cycle. |",
+      "location": "lines 31-32, # Subscription > ### Notification kinds, went active and went past due rows"
+    },
+    {
+      "text": "The kind of webhook notification.The UTC time at which the webhook was triggered.A[Subscription](/braintree/docs/reference/response/subscription)object. Contains an array of the 20 most recent transactions associated with the subscription.",
+      "location": "line 37, # Subscription > ### Attributes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-subscription-node-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-subscription-node]] - Node.js subscription notification kinds with event-specific charge, activation, past-due and skipped-billing trigger qualifications, plus the 20-most-recent-transactions payload limit",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the named event scope and each retained exception: unsuccessful-charge excludes manual retries and failed subscription-creation transactions; trial-to-first-cycle does not trigger went-active; went-past-due is limited to the initial declined transaction and does not repeat in that billing cycle.",
+          "Keep the skipped-billing condition tied to a negative or zero balance that covers the subscription cost; do not generalize it into a billing outcome for other balance states.",
+          "Preserve that the Subscription object contains the 20 most recent associated transactions; do not claim complete transaction history.",
+          "Do not turn notification names or trigger conditions into universal webhook delivery, ordering, retry, duplicate-handling, billing-success, or payment-finality guarantees.",
+          "Treat linked parsing, recurring-billing, balance, and Subscription-object pages as navigation only because they were not fully read for this candidate."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/subscription/node-2026-09-16.md",
+  "raw_sha256": "e5de3f19807dbabd6e771d6b23f57205dd74cd1cf2b7e0dc921b03ab5b7d55d4",
+  "status": "candidate_ready"
+}

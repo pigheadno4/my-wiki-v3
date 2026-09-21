@@ -1,0 +1,56 @@
+{
+  "job_id": "authorization-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Client Authorization Overview\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/authorization/overview\"\nraw_files:\n  - \"braintree/docs/guides/authorization/overview-2026-09-16.md\"\ntags: [braintree, client-sdk, client-authorization, client-token, tokenization-key, 3d-secure]\n---\n\n## Overview\n\nThis Braintree guide compares the two credentials used to authorize Client SDK access: tokenization keys and client tokens. It is a client-authorization selection guide; it does not establish that a payment transaction has been authorized.\n\n## Key takeaways\n\n- A tokenization key is a lightweight reusable client-authorization value for payment-method tokenization. It can ship with an app, and the Control Panel provides its deactivation route.\n- A client token is generated with a server-side library and must be sent from the merchant server to the client. The guide calls it short-lived and reusable for up to 24 hours, while noting that Braintree may deactivate it before its JWT expiration.\n- Client tokens authorize payment-method tokenization, payment-method retrieval, and client-side vaulting. Direct client-side vaulting and listing saved payment methods require a customer ID; a tokenization-key flow can instead send a single-use payment-method token to the server for vaulting.\n- The capability table gives client tokens configuration-supply and 3D Secure capabilities that tokenization keys do not have. Both forms cover payment-method tokenization and the listed card and wallet categories; those rows describe client-authorization capabilities, not payment authorization, merchant enablement, or buyer eligibility.\n- For collecting payment information and handing it to a server, especially when 3D Secure is not required, the guide recommends a tokenization key. It recommends a client token for the full range of Drop-in functionality, direct client-side saving, or presenting returning customers with saved methods. It also says client tokens can reduce tokenization latency, particularly outside the US.\n- An app that supports both guest and registered-user purchases may use both forms by instantiating a new Braintree instance with the chosen authentication method.\n\n## Detail locators\n\n- Client authorization purpose and the two credential definitions: `# Overview`, line 16; `## Types of authorization`, lines 21-25.\n- Creation, delivery, deactivation, reuse, vaulting, retrieval, configuration, payment-method, wallet, and 3D Secure differences: `## Types of authorization` > `### Capabilities`, lines 30-44.\n- Tokenization-key selection guidance: `## When to use tokenization keys`, lines 49-51.\n- Client-token selection and latency guidance: `## When to use client tokens`, lines 56-58.\n- Guest and registered-user combination guidance: `## Using both`, line 63.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-web-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/authorization/overview-2026-09-16|Braintree client authorization overview]] - complete guide comparing tokenization keys and client tokens, their qualified capabilities, and selection guidance\n",
+  "quotes": [
+    {
+      "text": "Client SDKs require a form of authorization to interact with the Braintree gateway. The type of authorization you provide to your client determines what the client can do.",
+      "location": "# Overview, line 16"
+    },
+    {
+      "text": "- A tokenization key is a lightweight reusable value that authorizes payment method tokenization.\n- A client token is a short-lived value that authorizes payment method tokenization, payment method retrieval, and client-side vaulting.",
+      "location": "## Types of authorization, lines 24-25"
+    },
+    {
+      "text": "| **Creation** | Generated using server-side library | Generated in Control Panel |\n| **Deactivation** | At Braintree's discretion prior to JWT expiration | Via the Control Panel |\n| **Delivery to your client** | Must be sent from your server | Can be shipped with your app |\n| **Payment method vaulting** | Yes, with customer ID | Requires[sending a payment method single-use token to your server](/braintree/docs/start/hello-client/#send-payment-method-nonce-to-server) |\n| **List payment methods** | Yes, with customer ID | No |\n| **Supply**[configuration information](/braintree/docs/reference/request/client-token/generate) | Yes | No |\n| **Reusable** | Yes, up to 24 hours | Yes |\n| **Payment method tokenization** | Yes | Yes |\n| **Credit cards** | Yes | Yes |\n| **PayPal** | Yes | Yes |\n| **Apple Pay and Google Pay** | Yes | Yes |\n| **Venmo** | Yes | Yes |\n| **3D Secure** | Yes | No |",
+      "location": "## Types of authorization > ### Capabilities, lines 32-44"
+    },
+    {
+      "text": "Tokenization keys do not require any interaction with your server until after payment information is tokenized. If you want to collect payment information to hand off to your server, tokenization keys are ideal.\n\nTokenization keys are also useful for situations where you want to tokenize payment information as simply as possible. If you do not require 3D Secure, tokenization keys should do everything you need.",
+      "location": "## When to use tokenization keys, lines 49-51"
+    },
+    {
+      "text": "Client tokens allow use of the full range of Drop-in functionality. If you want customers to save their payment methods directly from your client or want to present returning customers with a list of their saved payment methods, use client tokens.\n\nCompared to tokenization keys, client tokens also reduce the latency of tokenization \u2013 particularly for clients outside the US \u2013 because they rely on public key cryptography rather than retrieval for authentication.\n\n\n## Using both\n\nIf your client apps allow both guests and registered users to make purchases, you may wish to use both tokenization keys and client tokens. If this applies, instantiate a new Braintree instance with your authentication method of choice.",
+      "location": "## When to use client tokens through ## Using both, lines 56-63"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "authorization-overview-braintree-web-sdk-route",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-authorization-overview]] - client-authorization guide comparing client tokens and tokenization keys, qualified capability differences, and selection guidance",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Client authorization determines Client SDK capabilities; it is not evidence that a payment transaction has been authorized.",
+          "Preserve the customer-ID condition on direct client-side vaulting and listing saved payment methods with a client token.",
+          "Do not turn listed card or wallet client-authorization capability into merchant enablement or buyer eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/authorization/overview-2026-09-16.md",
+  "raw_sha256": "3449c348a8fc8a56ab70d5d6fa01dcca984d9957a825c6c9a90669dca7733c85",
+  "status": "candidate_ready"
+}

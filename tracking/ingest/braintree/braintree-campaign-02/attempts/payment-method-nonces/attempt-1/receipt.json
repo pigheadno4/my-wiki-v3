@@ -1,0 +1,50 @@
+{
+  "job_id": "payment-method-nonces",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Payment Method Nonces and Single-Use Payment Methods\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/payment-method-nonces\"\nraw_files:\n  - \"braintree/docs/guides/payment-method-nonces-2026-09-16.md\"\ntags: [braintree, payment-method-nonce, single-use-payment-method, tokenization, vault]\n---\n\n## Overview\n\nThis Braintree guide explains the shared role of SDK payment-method nonces and GraphQL single-use payment methods. It is the retrieval entry for their naming, client/server handoff, supported uses, and one-use lifecycle; it does not establish that a transaction or Vault request succeeds.\n\n## Key takeaways\n\n- In Braintree SDK terminology, a payment-method nonce is a secure one-time reference to payment information; the GraphQL API calls the equivalent reference a single-use payment method. The guide uses \"single-use token\" for both.\n- A single-use token can reference any payment method, allowing the merchant server to use a common processing pattern across payment-method types.\n- Braintree can generate these tokens in response to merchant client or server requests. Generally, the client sends the token to the merchant server, which returns it to Braintree as an input to a supported action.\n- Each token can be used only once. If unused, it expires three hours after creation.\n\n## Uses and lifecycle\n\nThe guide identifies two main purposes: creating a transaction through an SDK or the GraphQL API, and creating or updating a Vault payment method for repeat use. Those statements describe where the token is used, not the success state or downstream outcome of either operation.\n\nFor exact use routes, see the raw page's **Functionality** section. For the one-use restriction and unused-token expiry, see **Lifespan**. The **Security** section explains how substituting single-use tokens for raw card data reduces exposure and can reduce PCI DSS compliance burden.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/payment-method-nonces-2026-09-16|Braintree payment method nonces guide]] - complete guide covering terminology, use, security, and lifespan\n",
+  "quotes": [
+    {
+      "text": "In the SDKs, a payment method nonce is a secure, one-time-use reference to payment information. It's the key element that allows your server to communicate sensitive payment information to Braintree without ever touching the raw data.     In the GraphQL API, a payment method nonce is refered to as a single-use payment method and has the same functionality.     In this article, a single-use token will refer to both a payment method nonce and single-use payment method.",
+      "location": "line 16, introductory paragraph beneath # Payment Method Nonces and Single-Use Payment Methods"
+    },
+    {
+      "text": "A single-use token can reference any payment method. This can help keep your integration simple and lightweight; for example, you could use the same server-side code for creating a PayPal transaction as you use for creating a credit card transaction.",
+      "location": "line 21, ## Payment method types"
+    },
+    {
+      "text": "Braintree's servers will generate single-use tokens in response to requests from merchant clients and servers.     In general, your client will be responsible for handling the responses from Braintree and sending them to your server. Your server is then responsible for sending those single-use tokens back to Braintree on requests to perform certain actions.     You'll need a single-use token for two main purposes:",
+      "location": "line 31, ## Functionality introductory paragraph"
+    },
+    {
+      "text": "A single-use token may only be used once. If it is not used, it expires 3 hours after being created.",
+      "location": "line 40, ## Lifespan"
+    },
+    {
+      "text": "- To create transactions with the[SDK](/braintree/docs/guides/transactions)or[GraphQL API](/braintree/graphql/guides/transactions/#creating-transactions)\n- To create or update payment methods in your Vault for repeat use with the[SDK](/braintree/docs/guides/payment-methods)or[GraphQL API](/braintree/graphql/guides/payment_methods/)",
+      "location": "lines 34-35, ## Functionality list of two main purposes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payment-method-nonces-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-payment-method-nonces]] - Braintree SDK nonce and GraphQL single-use payment-method naming, client/server use routes, and the one-use plus three-hour unused-token lifespan",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/payment-method-nonces-2026-09-16.md",
+  "raw_sha256": "bc9e8d94f366525a58037adf4ec4e73f438f42d9a3c71957dfc69c96d5cd3429",
+  "status": "candidate_ready"
+}

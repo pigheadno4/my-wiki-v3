@@ -20,7 +20,7 @@ PSPs (Stripe, PayPal, Adyen, and any added later) publish machine-readable docs:
 
 For PayPal, start with the [profile router](psp/paypal.md): PayPal.ai, legacy developer documentation, and the upgraded portal have different policies. `fetch_psp.py paypal` only targets PayPal.ai. The PayPal-new implementation remains in its separate worktree; the legacy profile is policy-only.
 
-Read the provider profile before choosing a command. [Braintree](psp/braintree.md) has an approved three-stage routing policy but no implemented documentation collector; the generic commands below do not support it. Provider-specific discovery/recovery must not be reduced to a configuration-only onboarding step.
+Read the provider profile before choosing a command. [Braintree](psp/braintree.md) uses its standalone `fetch_braintree.py` smoke-pilot collector and three-stage routing policy; the generic commands below do not support it. Full collection requires separate approval. Provider-specific discovery/recovery must not be reduced to a configuration-only onboarding step.
 
 [Stripe](psp/stripe.md) requires a reconciled llms + sitemap union under its restored policy. Its existing script still collects llms links only; consult the profile's implementation boundary before running it or claiming complete coverage.
 

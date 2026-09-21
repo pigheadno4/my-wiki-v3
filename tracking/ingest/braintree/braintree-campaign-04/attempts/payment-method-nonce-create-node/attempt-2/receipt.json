@@ -1,0 +1,50 @@
+{
+  "job_id": "payment-method-nonce-create-node",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Payment Method Nonce Create (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/payment-method-nonce/create/node\"\nraw_files:\n  - \"braintree/docs/reference/request/payment-method-nonce/create/node-2026-09-16.md\"\ntags: [braintree, node-js, payment-method-nonce, server-sdk, 3d-secure, paypal]\n---\n\n## Overview\n\nThis Braintree Node.js server SDK reference documents `gateway.paymentMethodNonce.create()` for creating a payment-method nonce from a payment-method token. Braintree explicitly says merchants should only create payment-method nonces server-side when using 3D Secure or Checkout with PayPal.\n\n## Key takeaways\n\n- The only input this page requires for nonce creation is the payment-method token.\n- The callback and Promise examples both call `gateway.paymentMethodNonce.create(\"A_PAYMENT_METHOD_TOKEN\")` and retrieve the created nonce from `response.paymentMethodNonce.nonce`.\n- If the payment method cannot be found, the page routes the failure to Braintree's Node.js `notFoundError` reference.\n\n> [!warning] Server-side creation scope\n> Braintree says payment-method nonces should only be created server-side for 3D Secure or Checkout with PayPal. This reference does not broaden server-side nonce creation beyond those named use cases.\n\n## Detail locators\n\n- Related response object and server-side creation warning: `# Payment Method Nonce: Create`, lines 15-18.\n- Required input and callback example: `# Payment Method Nonce: Create`, lines 20-26.\n- Promise example: `# Payment Method Nonce: Create` > `### Promise`, lines 28-32.\n- Missing-payment-method failure route: line 34, immediately after the Promise example.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Related source: [[source-braintree-payment-method-nonces]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/payment-method-nonce/create/node-2026-09-16|Braintree Node.js payment-method nonce create reference]] - complete page covering the server-side use-case restriction, required payment-method-token input, callback and Promise forms, and missing-payment-method failure route\n",
+  "quotes": [
+    {
+      "text": "You should only create payment method nonces server-side when using [3D Secure](/braintree/docs/guides/3d-secure/overview) or [Checkout with PayPal](/braintree/docs/guides/paypal/checkout-with-paypal) .",
+      "location": "line 18, # Payment Method Nonce: Create > NOTE"
+    },
+    {
+      "text": "To create a payment method nonce, only the payment method token is required.",
+      "location": "line 20, # Payment Method Nonce: Create"
+    },
+    {
+      "text": "gateway.paymentMethodNonce.create(\"A_PAYMENT_METHOD_TOKEN\", function(err, response) {\n    const nonce = response.paymentMethodNonce.nonce;\n});",
+      "location": "lines 23-25, # Payment Method Nonce: Create > ### Callback"
+    },
+    {
+      "text": "If the payment method can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "line 34, immediately after # Payment Method Nonce: Create > ### Promise"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payment-method-nonce-create-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-payment-method-nonce-create-node]] - Node.js server-side payment-method nonce creation from a payment-method token, with Braintree's guidance that merchants should only create these nonces server-side for 3D Secure or Checkout with PayPal, plus the missing-payment-method error route",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve the advisory modal: Braintree says merchants should only create payment-method nonces server-side for 3D Secure or Checkout with PayPal; do not recast this as a categorical unsupported or prohibited boundary outside those cases.",
+          "Keep the operation scoped to the Node.js server SDK and do not present nonce creation as transaction creation, payment authorization, or payment success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/payment-method-nonce/create/node-2026-09-16.md",
+  "raw_sha256": "600f6f22b1ab28fb134d79c38b835bb8d99f880a97588b4de8eb5f65334791c6",
+  "status": "candidate_ready"
+}

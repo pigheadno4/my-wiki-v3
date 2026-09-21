@@ -1,6 +1,6 @@
 # PSP: Braintree — documentation collection profile
 
-> Approved historical design restored on 2026-09-15 from the “Collect PayPal new docs” task (019f5498-f600-7472-b942-8b290fbb127b). Read with [psp-collection.md](../psp-collection.md). **Rule only: a Braintree documentation collector is not implemented yet.** Do not run `fetch_psp.py braintree` or interpret this document as collection completion.
+> Approved historical design restored on 2026-09-15 from the “Collect PayPal new docs” task (019f5498-f600-7472-b942-8b290fbb127b). Read with [psp-collection.md](../psp-collection.md). A minimal standalone `scripts/fetch_braintree.py` was added for the September 16 smoke pilot. Do not run `fetch_psp.py braintree`; full collection still requires separate approval.
 
 ## Scope and discovery
 
@@ -46,6 +46,19 @@ Keep network retry attempts separate from the three routing stages in logs. This
 - Summarize original inventory coverage separately from additional SDK documents. Every selected original target must be accounted for as collected/unchanged, recovered through listed variants, or failed. Keep unresolved candidates in the failure list; do not report complete corpus coverage merely because the run exited successfully.
 
 ## Execution boundary
+
+Current commands (run serially, one collector process per provider):
+
+```bash
+python3 scripts/fetch_braintree.py discover
+python3 scripts/fetch_braintree.py collect --inventory tracking/collections/braintree/inventories/<id>/inventory.json --smoke
+# Only after full-collection approval:
+python3 scripts/fetch_braintree.py collect --inventory tracking/collections/braintree/inventories/<id>/inventory.json --all
+```
+
+Discovery retains `in-person` and GraphQL documentation, not just `docs` and `articles`; literal `$` placeholder routes are recorded as excluded. Historical/deprecated pages are not silently excluded. The fixed smoke selection has five parent targets covering articles, start, Node recovery, three client SDK variants, and GraphQL. Recovery probes are limited to unqualified `docs/guides` and `docs/reference` routes, excluding overview and already SDK-qualified routes. One HTTP attempt per candidate is recorded; there is no additional network retry multiplier. The implemented canonical validator rejects ambiguous queries and unsafe paths for explicit review.
+
+Each run stores its selected target list, inventory hash, attempt ledger, parent results, and summary. Hashes of the inventory and discovery snapshots are checked before collection. A run can finish with failed targets: read the summary and attempts, not just the exit status. No automated resume/retry command is implemented yet. Successful variants are individually named; a parent marked recovered does not establish complete cross-SDK coverage. Incomplete interrupted runs retain their ledgers for review.
 
 Implement only the minimum provider-specific collector needed for this policy; reuse existing versioning/reporting helpers where practical. Do not refactor unrelated PSP collectors.
 

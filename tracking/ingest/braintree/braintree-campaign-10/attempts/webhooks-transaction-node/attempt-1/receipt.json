@@ -1,0 +1,52 @@
+{
+  "job_id": "webhooks-transaction-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/transaction/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/transaction/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, transactions, ach, sepa-direct-debit]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents two transaction webhook notification kinds and limits the stated availability to ACH and SEPA Direct Debit requests. The collected availability sentence and attribute rendering are damaged, so this source retains only the unambiguous payment-method names, event conditions, and payload categories.\n\n## Key takeaways\n\n- The availability line explicitly names ACH and SEPA Direct Debit requests, but it ends with the malformed text `Direct Debitandrequests`. This source does not reconstruct a missing payment method, operation, link, or qualification and does not extend transaction webhooks to all Braintree transactions.\n- `webhook_notification.kind` identifies the trigger. The retained table lists `transaction_settlement_declined` when settlement for the transaction was declined and `transaction_settled` when the transaction successfully settled.\n- The page says `transaction_settlement_declined` may occur after `transaction_settled` if the customer's bank \"returns the refund after it has appeared to settle.\" That unusual wording is preserved as source-specific text rather than normalized into a broader return, reversal, or finality rule.\n- The Attributes section is concatenated and supplies no visible attribute names. It indicates only the categories: notification kind, UTC trigger date/time, and an associated Braintree Transaction object. It does not establish the object's field inventory or universal webhook delivery, ordering, retry, duplication, parsing, or finality behavior.\n\n## Detail locators\n\n- Payment-method availability and damaged trailing prose: `# Transaction > **AVAILABILITY**`, lines 17-18.\n- Notification-kind trigger role: `### Notification kinds`, lines 21-25.\n- `transaction_settlement_declined`, its qualified post-settled possibility, and `transaction_settled`: notification table, lines 27-39.\n- Concatenated payload categories with missing visible attribute names: `### Attributes`, lines 42-44.\n\n## Evidence limitations\n\n> [!warning] Damaged availability and attribute rendering\n> The collected page does not support reconstructing the text after `SEPA Direct Debit`, any additional payment method or operation, or the missing attribute labels. The dedicated page adds SEPA Direct Debit to the existing overview's ACH route without contradicting that overview; neither page establishes universal transaction-webhook support.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/transaction/node-2026-09-16|Braintree Node.js transaction-webhook reference]] - complete page covering payment-method availability, two settlement notification kinds, their stated trigger conditions, and damaged attribute rendering\n",
+  "quotes": [
+    {
+      "text": "Transaction webhooks are available for ACH and SEPA Direct Debitandrequests.",
+      "location": "# Transaction > **AVAILABILITY**, line 18"
+    },
+    {
+      "text": "The notification kind, returned by calling`kind`on the[notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The`webhook_notification.kind`for Transaction webhooks will be one of the following:",
+      "location": "# Transaction > ### Notification kinds, line 23"
+    },
+    {
+      "text": "| ```syntax-inline\ntransaction_settlement_declined\n``` | Settlement for the transaction was declined.\n\n May be triggered after the ```syntax-inline\ntransaction_settled\n```\n webhook if the customer's bank returns the refund after it has appeared to settle. |\n| ```syntax-inline\ntransaction_settled\n``` | Transaction successfully settled. |",
+      "location": "# Transaction > ### Notification kinds, table rows at lines 29-39"
+    },
+    {
+      "text": "The kind of webhook notification.The UTC date/time at which the webhook was triggered.A[Transaction](/braintree/docs/reference/response/transaction)object. The associated transaction.",
+      "location": "# Transaction > ### Attributes, line 44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-transaction-node-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-transaction-node]] - Node.js ACH and SEPA Direct Debit transaction settlement notification kinds, qualified post-settled decline wording, and damaged availability/attribute-rendering boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Retain only the explicit ACH and SEPA Direct Debit availability; do not reconstruct the malformed `Direct Debitandrequests` text or infer support for all transaction payment methods.",
+          "Preserve the page's unusual phrase that the customer's bank `returns the refund after it has appeared to settle`; do not silently normalize it into a general bank-return, reversal, or payment-finality rule.",
+          "The Attributes section exposes only concatenated categories with no visible field names; do not invent attribute identifiers or a complete payload schema.",
+          "No material conflict was found with the existing overview: it routes ACH transaction-status webhooks but does not exclude SEPA. Do not import universal delivery, ordering, retry, duplication, parsing, or finality claims."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/transaction/node-2026-09-16.md",
+  "raw_sha256": "42956aec723253e1af3f2aa16ac1d2baa2ab875621b17e87ef18d9b380de06ca",
+  "status": "candidate_ready"
+}

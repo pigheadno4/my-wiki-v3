@@ -1,0 +1,56 @@
+{
+  "job_id": "transaction-find-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Find (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/transaction/find/node\"\nraw_files:\n  - \"braintree/docs/reference/request/transaction/find/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, lookup, marketplace, escrow]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents lookup of a transaction by its ID through `gateway.transaction.find()`. It shows callback and Promise invocation forms and a separate Braintree Marketplace example for reading the found transaction's escrow status.\n\n## Key takeaways\n\n- Both Node.js examples pass a transaction ID to `gateway.transaction.find()` and receive a transaction through either a callback or a Promise. If the transaction cannot be found, the page routes the outcome to Braintree's Node.js `notFoundError` reference.\n- The page states that results are limited according to the linked PayPal Data Protection Addendum for Card Processing Products policy. Because that external policy was not part of this source, this entry preserves the limitation notice without inferring which result data is limited or why.\n- The escrow-status example is explicitly scoped to Braintree Marketplace transactions. It uses the transaction's ID to find the transaction and reads `escrowStatus`; its shown `\"held\"` value is an example, not a claim that every Marketplace transaction has that status.\n- The page links to the Transaction response-object reference for result details; this source does not reconstruct that unread response schema or the linked escrow-status definitions.\n\n## Detail locators\n\n- Results-limitation notice and Transaction response-object route: `# Transaction: Find`, lines 16-19.\n- Transaction lookup callback and Promise forms: `# Transaction: Find > ### Callback`, lines 20-23, and `### Promise`, lines 25-28.\n- Missing-transaction `notFoundError` route: `# Transaction: Find`, line 29.\n- Marketplace-specific escrow-status purpose and callback/Promise examples: `### Escrow status on Braintree Marketplace transactions`, lines 30-45.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-server-sdk]]\n- Distinct transaction creation operation: [[source-braintree-transaction-sale-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/transaction/find/node-2026-09-16|Braintree Node.js transaction find reference]] - complete page covering transaction-ID lookup, the results-limitation notice, the missing-transaction route, and the Marketplace escrow-status example\n",
+  "quotes": [
+    {
+      "text": "Results are limited according to the [PayPal Data Protection Addendum For Card Processing Products policy](https://www.paypal.com/us/legalhub/braintree/data-protection-addendum) .",
+      "location": "lines 16-17, # Transaction: Find > NOTE"
+    },
+    {
+      "text": "gateway.transaction.find(\"theTransactionId\", (err, transaction) => { });",
+      "location": "line 22, # Transaction: Find > ### Callback"
+    },
+    {
+      "text": "gateway.transaction.find(\"theTransactionId\").then(transaction => { });",
+      "location": "line 27, # Transaction: Find > ### Promise"
+    },
+    {
+      "text": "If the transaction can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "line 29, immediately after # Transaction: Find > ### Promise"
+    },
+    {
+      "text": "Use the transaction's`id`to find the[`escrow_status`](/braintree/docs/reference/general/statuses#escrow)on[Braintree Marketplace](/braintree/docs/guides/braintree-marketplace/overview)transactions:",
+      "location": "line 32, ### Escrow status on Braintree Marketplace transactions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-find-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-find-node]] - Node.js transaction-ID lookup through callback or Promise, preserved results-limitation policy notice, missing-transaction error route, and Braintree Marketplace-specific escrow-status example",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the page's results-limitation notice without interpreting the unread external PayPal Data Protection Addendum or claiming which result data is limited.",
+          "Keep the escrow-status route scoped to Braintree Marketplace transactions; do not generalize the example to all Braintree transactions.",
+          "Treat the shown escrowStatus value of held as an example, not as a guaranteed status for every found Marketplace transaction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/transaction/find/node-2026-09-16.md",
+  "raw_sha256": "5e3101952dfe03bea32c8f766d396c9da4999b7fe58e7a679a783b40dde1b768",
+  "status": "candidate_ready"
+}

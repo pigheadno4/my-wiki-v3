@@ -1,0 +1,47 @@
+{
+  "job_id": "address-find-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Address Find (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/address/find/node\"\nraw_files:\n  - \"braintree/docs/reference/request/address/find/node-2026-09-16.md\"\ntags: [braintree, node-js, address, customer, vault]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents looking up one customer address through `gateway.address.find()`. The displayed call identifies the lookup with both a customer ID and an address ID and returns callback arguments named `err` and `address`.\n\n## Key takeaways\n\n- The Node example passes `\"aCustomerId\"` first and `\"anAddressId\"` second to `gateway.address.find()`. Keep the customer identity and address identity distinct; the page does not show an address-only lookup.\n- The callback exposes `(err, address)`. The page does not display fields on `address`, a success flag, a Promise form, or any other response shape; it instead links to the separate Address response-object reference.\n- If either the address or the customer cannot be found, the page routes the failure to Braintree's linked Node.js `notFoundError`. It does not show different errors for the two missing identities or define the error object's fields.\n\n## Detail locators\n\n- Separate Address response-object route: `# Address: Find`, line 15.\n- Customer ID, address ID, and callback argument names: `# Address: Find > ### Node`, lines 16-20.\n- Missing-address or missing-customer error route: line 21.\n\n## Evidence limitations\n\n> [!warning] Response details are not supplied here\n> This page shows only the two lookup identifiers and the callback names. Do not infer Address fields, success semantics, Promise behavior, customer/address uniqueness rules, or distinct not-found outcomes from the example.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/address/find/node-2026-09-16|Braintree Node.js address-find reference]] - complete page covering the customer/address identifiers, callback names, response-object route, and shared not-found condition\n",
+  "quotes": [
+    {
+      "text": "See also the[Address](/braintree/docs/reference/response/address)response object.",
+      "location": "# Address: Find, line 15"
+    },
+    {
+      "text": "gateway.address.find(\"aCustomerId\", \"anAddressId\", (err, address) => {\n});",
+      "location": "# Address: Find > ### Node, lines 18-19"
+    },
+    {
+      "text": "If the address or customer can't be found, it will return a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).",
+      "location": "# Address: Find, line 21"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "address-find-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-address-find-node]] - Node.js lookup of one address by customer ID plus address ID, with `err`/`address` callback evidence, separate response-object navigation, and a shared customer-or-address not-found route",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Preserve the argument identity and order shown by the page: customer ID first and address ID second; do not collapse them into a generic token or address-only lookup.",
+          "Do not infer fields on the callback's address value, a success flag, Promise behavior, or any other response schema from the callback parameter name.",
+          "Keep missing address and missing customer under the single linked notFoundError route; the page does not distinguish their error objects or outcomes.",
+          "Do not import address-ID generation, uniqueness, mutation, deletion, or payment-method effects from adjacent address operations into this lookup source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/address/find/node-2026-09-16.md",
+  "raw_sha256": "56498cb401e04c9f336bc9be9af2748bd3e8d96e5bc45a69175dd7f8ce65055a",
+  "status": "candidate_ready"
+}

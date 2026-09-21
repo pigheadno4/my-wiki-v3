@@ -1,0 +1,57 @@
+{
+  "job_id": "subscription-retry-charge-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Subscription Retry Charge (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/subscription/retry-charge/node\"\nraw_files:\n  - \"braintree/docs/reference/request/subscription/retry-charge/node-2026-09-16.md\"\ntags: [braintree, node-js, subscriptions, retry-charge, settlement]\n---\n\n## Overview\n\nThis Braintree Node.js request reference documents manually retrying a charge for a past-due subscription through `gateway.subscription.retryCharge()`. Its displayed callback and Promise variants show an explicit amount and two settlement-handling shapes.\n\n## Key takeaways\n\n- The page scopes this operation to manually retrying charges for subscriptions that are past due. It does not establish automatic retry behavior, a schedule, a subscription status transition, or a successful billing lifecycle.\n- The displayed calls pass `subscription.id` and the explicit string amount `\"24.00\"`. The page does not state a currency, whether another amount is permitted, whether the amount may be omitted or defaulted, or whether it represents the complete past-due balance.\n- The opening callback and Promise examples also pass an unlabeled third argument of `true` and show `result.success` as `true`. This page does not define that boolean in prose or state that the success flag proves settlement or payment finality.\n- Under **Manually submit transaction for settlement**, the examples call `retryCharge()` without the third argument. Only after `retryResult.success` is true do they pass `retryResult.transaction.id` to `gateway.transaction.submitForSettlement()`; the nested result again shows `success` as true. This documents the displayed manual-submission sequence, not eventual settlement completion or any further subscription lifecycle effect.\n\n## Detail locators\n\n- Past-due and manual-retry scope plus the linked managing-subscriptions guide: `# Subscription: Retry Charge`, lines 13-17.\n- Callback form with explicit amount, unlabeled `true`, and displayed result flag: `### Callback`, lines 18-28.\n- Promise form with the same explicit arguments and displayed result flag: `### Promise`, lines 30-39.\n- Separate callback settlement submission using the retry transaction ID: `## Examples > ### Manually submit transaction for settlement > ### Callback`, lines 41-63.\n- Separate Promise settlement submission using the retry transaction ID: `## Examples > ### Manually submit transaction for settlement > ### Promise`, lines 65-79.\n\n## Evidence limitations\n\n> [!warning] Example-only argument and outcome semantics\n> The collected page does not label the third `retryCharge()` argument, define an amount default or currency, show a failure response, provide transaction fields beyond the ID used in the settlement call, or state a final settlement status. Consult the linked raw page and dedicated transaction/subscription authorities for details not established here.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/subscription/retry-charge/node-2026-09-16|Braintree Node.js subscription retry-charge reference]] - complete page covering the past-due manual-retry scope, explicit example amount, result access, and displayed settlement-submission sequence\n",
+  "quotes": [
+    {
+      "text": "You can manually retry charging past due subscriptions. For details on how to do this, see the[managing subscriptions](/braintree/docs/guides/recurring-billing/manage/node#retrying-transactions-manually)page.",
+      "location": "# Subscription: Retry Charge, line 17"
+    },
+    {
+      "text": "gateway.subscription.retryCharge(\n    subscription.id,\n    \"24.00\",\n    true,\n    (err, result) => {\n        result.success; // true\n    }\n);",
+      "location": "# Subscription: Retry Charge > ### Callback, lines 20-27"
+    },
+    {
+      "text": "gateway.subscription.retryCharge(\n    subscription.id,\n    \"24.00\",\n    true\n).then(result => {\n    result.success; // true\n});",
+      "location": "# Subscription: Retry Charge > ### Promise, lines 32-38"
+    },
+    {
+      "text": "gateway.subscription.retryCharge(\n    subscription.id,\n    \"24.00\",\n    (err, retryResult) => {\n        if (retryResult.success) {\n            gateway.transaction.submitForSettlement(\n                retryResult.transaction.id,\n                (err, result) => {\n                    result.success; // true\n                }\n            );\n        }\n    }\n);",
+      "location": "## Examples > ### Manually submit transaction for settlement > ### Callback, lines 49-62"
+    },
+    {
+      "text": "gateway.subscription.retryCharge(\n    subscription.id,\n    \"24.00\"\n).then(retryResult => {\n    if (retryResult.success) {\n        gateway.transaction.submitForSettlement(\n            retryResult.transaction.id\n        ).then(result => {\n            result.success; // true\n        });\n    }\n});",
+      "location": "## Examples > ### Manually submit transaction for settlement > ### Promise, lines 67-78"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "subscription-retry-charge-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-subscription-retry-charge-node]] - Node.js manual retry of a past-due subscription charge, with the explicit example amount, displayed success access, and separate transaction-settlement submission route",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the operation scoped to manual retry of a past-due subscription; do not infer automatic retries, retry cadence, status transitions, or later billing behavior.",
+          "Treat \"24.00\" as the explicit amount used by the examples only; the page does not establish currency, a default or omitted-amount behavior, or whether it is the full past-due balance.",
+          "Do not assign undocumented semantics to the unlabeled third argument `true`, and do not treat either displayed `success` comment as proof of settlement completion or payment finality.",
+          "Describe the manual settlement branch as the displayed sequence: after retry success, submit the returned transaction ID for settlement; do not infer downstream settlement state or subscription lifecycle effects."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/subscription/retry-charge/node-2026-09-16.md",
+  "raw_sha256": "2cb2c24a63c4f787cdc0677fb6eda7fdd3d2a695bd9e8762d3fd42e763676c6c",
+  "status": "candidate_ready"
+}

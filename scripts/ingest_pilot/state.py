@@ -1,7 +1,8 @@
-"""Trusted local state for the minimum Metronome dry-run pilot."""
+"""Trusted local state for provider-scoped ingestion campaigns."""
 
 import json
 import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Union
@@ -15,8 +16,25 @@ class PilotError(Exception):
     """Raised when trusted pilot state cannot be read or written."""
 
 
+def campaign_selector(manifest: Mapping[str, Any]) -> str:
+    """Use explicit provider metadata; legacy manifests default to Metronome."""
+    provider = manifest.get("provider", "metronome")
+    campaign_id = manifest.get("campaign_id")
+    for value in (provider, campaign_id):
+        if not isinstance(value, str) or not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", value):
+            raise PilotError("provider and campaign_id must be non-empty path-safe slugs")
+    return f"{provider}/{campaign_id}"
+
+
 def campaign_paths(root: Path, campaign_id: str) -> Dict[str, Path]:
-    campaign_dir = root / "tracking" / "ingest" / "metronome" / campaign_id
+    """Accept provider/campaign-id, or a legacy Metronome campaign-id."""
+    parts = campaign_id.split("/") if isinstance(campaign_id, str) else []
+    if len(parts) == 1:
+        parts = ["metronome", parts[0]]
+    if len(parts) != 2:
+        raise PilotError("campaign selector must be provider/campaign-id or campaign-id")
+    selector = campaign_selector({"provider": parts[0], "campaign_id": parts[1]})
+    campaign_dir = root / "tracking" / "ingest" / selector
     return {
         "campaign_dir": campaign_dir,
         "manifest": campaign_dir / "manifest.json",
@@ -276,7 +294,8 @@ def _review_configuration(manifest: Mapping[str, Any]) -> Dict[str, Any]:
 def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> None:
     manifest_data = _manifest_data(manifest)
     campaign_id = manifest_data["campaign_id"]
-    paths = campaign_paths(root, campaign_id)
+    selector = campaign_selector(manifest_data)
+    paths = campaign_paths(root, selector)
     campaign_dir = paths["campaign_dir"]
     if paths["campaign"].exists() or paths["jobs"].exists():
         raise PilotError("campaign is already initialized")
@@ -301,7 +320,7 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
         campaign = {
             "schema_version": SCHEMA_VERSION,
             "campaign_id": campaign_id,
-            "provider": "metronome",
+            "provider": manifest_data.get("provider", "metronome"),
             "state": "active",
             "worker_concurrency": worker_concurrency,
             "max_attempts": 3,

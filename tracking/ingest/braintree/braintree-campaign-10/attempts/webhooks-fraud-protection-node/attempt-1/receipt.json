@@ -1,0 +1,47 @@
+{
+  "job_id": "webhooks-fraud-protection-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Fraud Protection Webhook (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/fraud-protection/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/fraud-protection/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, fraud-protection, transaction-review]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents the `transaction_reviewed` Fraud Protection webhook. It covers the event condition for a dashboard-reviewed transaction and the categories of review data reported by the notification.\n\n## Key takeaways\n\n- `webhook_notification.kind` identifies what triggered the webhook. The only notification kind listed on this page is `transaction_reviewed`.\n- The event applies when a transaction cited for Review in the Fraud Protection Dashboard has been accepted or rejected. The page does not establish that every transaction, fraud decision, product, payment method, or merchant is covered by this webhook.\n- If the reviewed transaction was rejected, the page says a void or refund of the transaction amount **has been requested**. It does not state that the void or refund completed, succeeded, settled, or became final.\n- The Attributes section is concatenated and supplies no visible attribute names. It identifies the payload categories as notification kind, reviewed transaction identifier, resulting risk decision, reviewer email, reviewer notes, UTC review time, and UTC webhook-trigger time, then routes further detail to the Fraud Protection guide.\n\n## Detail locators\n\n- Notification-kind trigger role: `### Notification kinds`, lines 17-21.\n- `transaction_reviewed` acceptance/rejection condition and requested void/refund qualification: notification table, lines 23-25.\n- Concatenated review payload categories and further-guide route: `### Attributes`, lines 28-30.\n\n## Evidence limitations\n\n> [!warning] Event-specific scope\n> This page documents one Fraud Protection Dashboard review event. It does not establish universal fraud screening or notification coverage, merchant or payment-method eligibility, review automation, delivery guarantees, or completion of a requested void or refund; it also does not expose visible payload field names.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/fraud-protection/node-2026-09-16|Braintree Node.js Fraud Protection webhook reference]] - complete page covering the reviewed-transaction trigger, requested void/refund qualification, payload categories, and further-guide route\n",
+  "quotes": [
+    {
+      "text": "The notification kind, returned by calling `kind` on the [notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The `webhook_notification.kind` for Fraud Protection webhooks will be one of the following:",
+      "location": "# Fraud Protection > ### Notification kinds, line 19"
+    },
+    {
+      "text": "| transaction_reviewed | A transaction that was cited for Review in the Fraud Protection Dashboard has been accepted or rejected. If the transaction was rejected, a void or refund of the transaction amount has been requested. |",
+      "location": "# Fraud Protection > ### Notification kinds, table row at line 25"
+    },
+    {
+      "text": "The kind of webhook notification.The identifier of the transaction that was reviewed.The resulting risk decision of the transaction that was reviewed.The email of the user that reviewed the transction.Any notes left by the user that reviewed the transaction.The UTC time at which the transaction was reviewed.The UTC time at which the webhook was triggered. See our [Fraud Protection](/braintree/docs/guides/premium-fraud-management-tools/webhooks) guide for more information.",
+      "location": "# Fraud Protection > ### Attributes, line 30"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-fraud-protection-node-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-fraud-protection-node]] - Node.js `transaction_reviewed` notification for an accepted or rejected Fraud Protection Dashboard review, with requested-not-completed void/refund scope and review payload categories",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Keep the trigger specific to a transaction cited for Review in the Fraud Protection Dashboard and then accepted or rejected; do not infer coverage of every transaction, fraud decision, product, payment method, or merchant.",
+          "Preserve `has been requested` for a rejected transaction's void or refund; do not claim completion, success, settlement, or payment finality.",
+          "The Attributes section provides concatenated categories without visible field names; do not invent attribute identifiers or a complete payload schema.",
+          "Do not infer review automation, webhook delivery timing, retry, ordering, duplicate handling, or universal fraud-protection availability from this event reference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/fraud-protection/node-2026-09-16.md",
+  "raw_sha256": "563ae85f2b8e23f9639ca098b75b32a587fa76f6c54b7cc8f5ef870ac775a0eb",
+  "status": "candidate_ready"
+}

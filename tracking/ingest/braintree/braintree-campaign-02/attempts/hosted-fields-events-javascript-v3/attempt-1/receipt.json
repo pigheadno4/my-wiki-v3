@@ -1,0 +1,53 @@
+{
+  "job_id": "hosted-fields-events-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Hosted Fields Events (JavaScript v3)\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/hosted-fields/events/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/hosted-fields/events/javascript/v3-2026-09-16.md\"\ntags: [braintree, javascript-sdk, hosted-fields, events, form-validation]\n---\n\n## Overview\n\nThis Braintree JavaScript v3 guide explains how a merchant page can listen for Hosted Fields events and update its UI from field state. It also routes readers to `getState` for on-demand field inspection; the guide's Hosted Fields reference links target version 3.92.1.\n\n## Key takeaways\n\n- Register an event listener with the Hosted Fields `on` function in the `create` callback, then use the emitted event object to inspect fields and update the merchant-controlled UI.\n- The event set covers focus, blur, transitions between empty and non-empty states, card-type changes, validity changes, and customer input-submission requests. Use the event table in the raw guide for the exact triggers.\n- `cardTypeChange` is emitted only from changes in the card-number field. The worked example changes the CVV label and placeholder when exactly one possible card type remains, and falls back to `CVV` otherwise.\n- When event-driven handling is unnecessary, `getState` returns the form state. The example checks `isValid` for every provided field before proceeding toward tokenization; this is field-validity and UI-flow state, not evidence that tokenization or a payment succeeded.\n- The guide is scoped to JavaScript v3, while its Hosted Fields API reference links are pinned to `braintree-web` 3.92.1. Do not project those linked reference details onto unspecified SDK versions.\n\n## Detail locators\n\n- Event names and trigger descriptions: `# Events` > event table, lines 20-28.\n- Listener setup and the `cardTypeChange` CVV-label example: `# Events` > `### Callback`, lines 30-55; Promise equivalent at lines 59-85.\n- On-demand state inspection before form submission: `# Events`, lines 86-87; Callback example at lines 88-108 and Promise example at lines 110-130.\n- Version-qualified Hosted Fields reference route: `# Events`, line 133.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-web-sdk]]\n- Related source: [[source-braintree-credit-cards-client-javascript-v3]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/hosted-fields/events/javascript/v3-2026-09-16|Braintree JavaScript v3 Hosted Fields events guide]] - complete guide covering event-driven UI updates and on-demand field-state inspection\n",
+  "quotes": [
+    {
+      "text": "You can subscribe to [Hosted Fields events](https://braintree.github.io/braintree-web/3.92.1/HostedFields.html#event:blur) using an event listener.",
+      "location": "# Events, line 16"
+    },
+    {
+      "text": "This allows you to update the UI of your form based on the [state of the fields](https://braintree.github.io/braintree-web/3.92.1/HostedFields.html#~stateObject).",
+      "location": "# Events, line 17"
+    },
+    {
+      "text": "| ``[cardTypeChange](https://braintree.github.io/braintree-web/3.92.1/HostedFields.html#event:cardTypeChange) | Emitted when the possible card type has changed. Only emitted from a change in thenumberfield. |",
+      "location": "# Events > event table, line 26"
+    },
+    {
+      "text": "Set up an event listener using the Hosted Fields[`on`](https://braintree.github.io/braintree-web/3.92.1/HostedFields.html#on)function in yourcreatecallback. You can use the event object to get information about your fields and update your UI accordingly. Here's how you might usecardTypeChangeto update yourcvvlabel and placeholder.",
+      "location": "# Events, line 30"
+    },
+    {
+      "text": "If you want to get the state of your form without using events, use the[`getState`](https://braintree.github.io/braintree-web/3.92.1/HostedFields.html#getState)function.\nThis example usesgetStateto confirm that all of the provided fields are valid before form submission.",
+      "location": "# Events, lines 86-87"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "hosted-fields-events-javascript-v3-braintree-web-sdk-route",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-hosted-fields-events-javascript-v3]] - JavaScript v3 Hosted Fields event-driven UI state and `getState` field-validity retrieval route",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "The guide's Hosted Fields reference links target braintree-web 3.92.1; do not generalize those linked reference details to unspecified versions.",
+          "Field validity before tokenization is not evidence of tokenization or payment success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/hosted-fields/events/javascript/v3-2026-09-16.md",
+  "raw_sha256": "8deddae2653e4fd16281a2ca12543e7b4348ed8f5769819c18550acfc6c07dd6",
+  "status": "candidate_ready"
+}

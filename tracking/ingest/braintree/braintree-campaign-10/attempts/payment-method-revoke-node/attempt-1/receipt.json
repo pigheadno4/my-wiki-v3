@@ -1,0 +1,52 @@
+{
+  "job_id": "payment-method-revoke-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Payment Method Grant Revocation (Node.js)\"\ntype: source\ndate_ingested: 2026-09-21\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/payment-method/revoke/node\"\nraw_files:\n  - \"braintree/docs/reference/request/payment-method/revoke/node-2026-09-16.md\"\ntags: [braintree, node-js, payment-method, grant-api, vault, limited-release]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents revoking a payment-method grant made through the limited-release Grant API. The stated effect is deletion of the granted version of the payment method from the receiving merchant's Vault.\n\n## Key takeaways\n\n- The Grant API is currently in limited release. Braintree directs merchants to contact it to assess fit and request access; the page does not establish general merchant availability.\n- The surrounding Grant API scope is controlled access by another Braintree merchant to one payment method belonging to the granting merchant's customer.\n- Revoking the grant deletes the version of that payment method from the receiving merchant's Vault. This is grant revocation, not the general `paymentMethod.delete()` operation; the page does not say that it deletes the granting merchant's original payment method or cancels associated subscriptions.\n- The Node example passes `theToken` to `gateway.paymentMethod.revoke()` and exposes `err` and `result` in the callback. The page supplies no result fields, success condition, failure behavior, timing, downstream transaction effect, or additional cascade.\n\n## Detail locators\n\n- Limited-release status and access-request route: `# Payment Method: Revoke > **AVAILABILITY**`, lines 18-19.\n- Grant purpose and participating merchant/customer/payment-method scope: `# Payment Method: Revoke`, line 21.\n- Revocation effect on the receiving merchant's Vault version: `# Payment Method: Revoke`, line 23.\n- Node token invocation and callback shape: `### Node`, lines 24-30.\n\n## Evidence limitations\n\n> [!warning] Grant revocation is not payment-method deletion\n> The page establishes deletion only of the receiving merchant's granted Vault version. It does not state effects on the granting merchant's original payment method, subscriptions, transactions, previously issued nonces, or other recipient state; do not import the separate payment-method deletion operation's cascade.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/payment-method/revoke/node-2026-09-16|Braintree Node.js payment-method grant revocation reference]] - complete page covering limited-release availability, controlled-grant scope, receiving-Vault deletion effect, and the token-based Node invocation\n",
+  "quotes": [
+    {
+      "text": "**The Grant API is currently in a limited release.**  [Contact us](https://www.braintreepayments.com/products/braintree-extend#contact) to determine whether it's right for your needs and to request access to the API.",
+      "location": "# Payment Method: Revoke > **AVAILABILITY**, line 19"
+    },
+    {
+      "text": "The[Grant API](/braintree/docs/reference/xml-api/grant-api/overview)allows you to give another Braintree merchant controlled access to one of your customer's payment methods.",
+      "location": "# Payment Method: Revoke, line 21"
+    },
+    {
+      "text": "When you[revoke](/braintree/docs/reference/xml-api/grant-api/revocation/node)a grant, we delete the version of the payment method from the receiving merchant's Vault.",
+      "location": "# Payment Method: Revoke, line 23"
+    },
+    {
+      "text": "gateway.paymentMethod.revoke(\n    \"theToken\",\n    (err, result) => {}\n);",
+      "location": "# Payment Method: Revoke > ### Node, lines 26-29"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payment-method-revoke-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-payment-method-revoke-node]] - limited-release Node.js revocation of a payment-method grant, deleting the granted version from the receiving merchant's Vault without importing the separate payment-method deletion cascade",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the Grant API's current limited-release status and access-request requirement prominent; do not present revocation as generally available.",
+          "Describe the effect exactly as deletion of the granted payment-method version from the receiving merchant's Vault; do not broaden it to the granting merchant's original payment method or generic account access.",
+          "Do not import subscription cancellation, paid-day forfeiture, transaction effects, or other cascades from the separate paymentMethod.delete operation.",
+          "Do not infer success semantics or response fields from the callback's err and result parameter names."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/payment-method/revoke/node-2026-09-16.md",
+  "raw_sha256": "b7cbe2b7f15f1f609f2d235470a2e2019a98b5e1d697a5b40c55df21a0db74be",
+  "status": "candidate_ready"
+}

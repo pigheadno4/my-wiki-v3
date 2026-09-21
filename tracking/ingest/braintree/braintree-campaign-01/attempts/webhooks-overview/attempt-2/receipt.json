@@ -1,0 +1,55 @@
+{
+  "job_id": "webhooks-overview",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Webhooks Overview\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/webhooks/overview\"\nraw_files:\n  - \"braintree/docs/guides/webhooks/overview-2026-09-16.md\"\ntags: [braintree, webhooks, notifications, gateway-events]\n---\n\n## Overview\n\nBraintree webhooks push automated gateway-event notifications to a merchant-controlled server instead of requiring the merchant to poll the API. Notifications are delivered by HTTPS POST for selected triggers and carry a notification kind plus the Braintree object being reported, so merchants can update their systems or start business processes.\n\n## Key takeaways\n\n- The overview routes webhook selection across ACH Direct Debit transaction statuses, subscription status changes, payment-method and account activity, disputes, fraud, local payment methods, OAuth revocation, disbursements, and endpoint tests. The linked trigger and notification-kind references own the detailed event catalog.\n- A webhook destination must be a valid HTTPS path. Account users also need webhook permission on their assigned Control Panel role before they can access the Webhooks tab and create a destination.\n- Setup spans creating the server destination, selecting at least one notification type in the Control Panel, parsing incoming notifications, and testing the handler.\n\n> [!warning] Delivery volume and timing\n> Braintree says it strives to send notifications as quickly as events occur, but this overview gives no delivery-time guarantee. When many subscriptions bill simultaneously, notifications may arrive in a short, high-volume burst, so handler capacity must not assume evenly spaced delivery.\n\n## Detail locators\n\n- Event families: `# Overview`, notification list.\n- Delivery shape and chosen triggers: `# Overview`, paragraph beginning \"Notifications are delivered via HTTPS POST\".\n- Setup sequence and HTTPS requirement: `# Overview`, note and configuration checklist.\n- Control Panel role requirement: `## User permissions`.\n- Burst-volume qualification: `## Volume`.\n\nThis overview does not document delivery retries, ordering, duplicate-delivery behavior, signature verification, or parsing details; use the dedicated linked guides and references when those details are required.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-webhooks]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/webhooks/overview-2026-09-16|Braintree webhooks overview]] \u2014 complete collected overview covering purpose, event families, setup, permissions, and volume\n",
+  "quotes": [
+    {
+      "text": "Webhooks are a system of automated notifications indicating that an event has occurred in your gateway. Rather than requiring you to pull information via our API, webhooks push information to your destination when important events occur. You can create webhooks for:",
+      "location": "# Overview, line 16"
+    },
+    {
+      "text": "Notifications are delivered via HTTPS POST to a [destination URL](/braintree/docs/guides/webhooks/create#destination-url) on your server and are sent based on the [triggers](/braintree/docs/reference/general/webhooks/overview#triggers) you choose. Each webhook contains a [notification kind](/braintree/docs/reference/general/webhooks/overview#notification-kinds) and the full Braintree object that the notification is reporting on. This information can be used to update your system or to trigger business processes. ",
+      "location": "# Overview, line 32"
+    },
+    {
+      "text": "Braintree requires a valid HTTPS path for [security purposes](/braintree/docs/reference/general/best-practices#transport-layer-security).",
+      "location": "# Overview > NOTE, line 34"
+    },
+    {
+      "text": "In order to set up webhooks for your account, you need to enable your user's role to include webhooks permissions:",
+      "location": "## User permissions, line 47"
+    },
+    {
+      "text": "We strive to send webhook notifications as quickly as events occur in our system. If you have a large number of subscriptions that are billed simultaneously (e.g. the first of the month), you may get a flood of notifications delivered within a short period of time.",
+      "location": "## Volume, line 62"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-braintree-webhooks-concept",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree Webhooks\"\ntype: concept\ncategory: technology\ntags: [braintree, webhooks, notifications, gateway-events]\n---\n\n## Braintree Webhooks\n\nBraintree Webhooks are the gateway's push-notification mechanism for important events. For merchant-selected triggers, Braintree sends an HTTPS POST to a merchant server; each notification contains a notification kind and the Braintree object being reported, allowing the merchant to update internal state or start a business process.\n\n## Configuration and operating boundaries\n\nThe destination must be a valid HTTPS path, and the Control Panel user who configures it needs webhook permission on their role. The overview covers event families including ACH Direct Debit transaction statuses, subscription, payment-method, account, dispute, fraud, OAuth, local-payment, disbursement, and test notifications; dedicated references own the trigger and notification-kind details.\n\nBraintree states that it strives to send notifications as quickly as events occur, but the overview does not establish a delivery-time guarantee. Simultaneous subscription billing can produce a flood of notifications in a short period, so integrations should be designed for burst volume. The overview does not define retry, ordering, duplicate-delivery, signature-verification, or parsing semantics. [[source-braintree-webhooks-overview]]\n\n## Sources\n\n- [[source-braintree-webhooks-overview]] \u2014 notification purpose, HTTPS delivery, event-family routing, permissions, and burst-volume warning\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not turn Braintree's statement that it strives to send quickly into a delivery-time SLA or an ordering guarantee.",
+          "Retry, duplicate-delivery, signature-verification, and parsing behavior are not documented by this overview and require separate fully read authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/webhooks/overview-2026-09-16.md",
+  "raw_sha256": "222d304fa6eac14e1e694bc291bf697d6949d7e016a4ab63ab4c26be1a0b5d0e",
+  "status": "candidate_ready"
+}

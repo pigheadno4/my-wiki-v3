@@ -1,0 +1,46 @@
+{
+  "job_id": "customer-delete-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Customer Delete (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/customer/delete/node\"\nraw_files:\n  - \"braintree/docs/reference/request/customer/delete/node-2026-09-16.md\"\ntags: [braintree, node-js, customers, payment-method, subscriptions]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents `gateway.customer.delete()` for deleting a customer by customer ID. It also identifies the operation's cascading effects on the customer's associated payment methods and recurring billing subscriptions.\n\n## Key takeaways\n\n- Delete the customer by passing its ID to `gateway.customer.delete()`.\n- When a customer is deleted, all associated payment methods are also deleted.\n- All recurring billing subscriptions associated with that customer are canceled.\n\n> [!warning] Cascading deletion\n> Customer deletion affects more than the customer record: the page states that every associated payment method is deleted and every associated recurring billing subscription is canceled. This page does not state cancellation timing or any refund, proration, or paid-term outcome.\n\n## Detail locators\n\n- Customer-ID input and both cascading effects: `# Customer: Delete`, lines 15-16.\n- Node.js callback invocation: `# Customer: Delete > ### Node`, lines 17-21.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/customer/delete/node-2026-09-16|Braintree Node.js customer-delete reference]] - complete page covering deletion by customer ID, associated payment-method deletion, recurring billing subscription cancellation, and the Node.js invocation\n",
+  "quotes": [
+    {
+      "text": "You can delete a customer using its ID.",
+      "location": "line 15, # Customer: Delete"
+    },
+    {
+      "text": "When a customer is deleted, all associated payment methods\nare also deleted, and all associated recurring billing subscriptions are canceled.",
+      "location": "lines 15-16, # Customer: Delete"
+    },
+    {
+      "text": "gateway.customer.delete(\"theCustomerId\", (err) => {\n    err; // null\n});",
+      "location": "lines 19-21, # Customer: Delete > ### Node"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "customer-delete-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-customer-delete-node]] - Node.js customer deletion by customer ID, with cascading deletion of all associated payment methods and cancellation of all associated recurring billing subscriptions",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Keep the destructive effects explicit: the page states that deleting a customer also deletes every associated payment method and cancels every associated recurring billing subscription.",
+          "Do not import immediate timing, refunds, proration, paid-day forfeiture, recovery, response semantics, or other consequences from the separate payment-method deletion endpoint or neighboring references.",
+          "Keep the route scoped to the Node.js customer-delete operation identified by customer ID; do not generalize it to other SDK languages or deletion objects."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/customer/delete/node-2026-09-16.md",
+  "raw_sha256": "1f599f1a4875b2661adace6bde1641e584fe44e7d9fd31afe28d1d9941abaab9",
+  "status": "candidate_ready"
+}

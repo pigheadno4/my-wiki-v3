@@ -8,6 +8,8 @@ from typing import Any, Dict, Mapping, Optional, Sequence, Union
 from .scheduler import review_order, shared_slot_orders, worker_orders
 from .state import (
     PilotError,
+    campaign_paths,
+    campaign_selector,
     append_event,
     create_attempt,
     initialize_state,
@@ -115,7 +117,7 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
         ):
             raise PilotError("approved shared update evidence is invalid")
         attempt_dir = (
-            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+            campaign_paths(root, campaign_id)["attempts"]
             / job_id / f"attempt-{attempt}"
         )
         suggestions = _load_result(attempt_dir / "suggestions.json")
@@ -170,7 +172,7 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
             ):
                 raise PilotError("approved shared update evidence is invalid")
             sample_review = _load_result(
-                root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+                campaign_paths(root, campaign_id)["attempts"]
                 / sample_job_id / f"attempt-{evidence['sample_attempt']}" / "review.json"
             )
             if (
@@ -308,9 +310,9 @@ def init_campaign(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> Dict[
     """Create a trusted dry-run campaign and return its current state."""
     initialize_state(root, manifest)
     if isinstance(manifest, Path):
-        campaign_id = _load_result(manifest)["campaign_id"]
+        campaign_id = campaign_selector(_load_result(manifest))
     else:
-        campaign_id = manifest["campaign_id"]
+        campaign_id = campaign_selector(manifest)
     return _campaign_payload(root, str(campaign_id))
 
 
@@ -327,12 +329,7 @@ def _apply_worker_result(
     if job["state"] != "running":
         raise PilotError("worker result requires a running job")
     attempt_dir = (
-        root
-        / "tracking"
-        / "ingest"
-        / "metronome"
-        / campaign_id
-        / "attempts"
+        campaign_paths(root, campaign_id)["attempts"]
         / job["job_id"]
         / f"attempt-{job['attempt']}"
     )
@@ -446,7 +443,7 @@ def _release_deferred_reviews(
         deferred["failure_reason"] = None
         deferred["waiver_sample_job_id"] = sample_job["job_id"]
         attempt_dir = (
-            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+            campaign_paths(root, campaign_id)["attempts"]
             / deferred["job_id"] / f"attempt-{deferred['attempt']}"
         )
         files.append((
@@ -502,7 +499,7 @@ def _apply_review_result(
     changes = result["required_changes"]
     if is_schema_v2:
         attempt_dir = (
-            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+            campaign_paths(root, campaign_id)["attempts"]
             / job["job_id"] / f"attempt-{job['attempt']}"
         )
         suggestions = _load_result(attempt_dir / "suggestions.json")
@@ -522,7 +519,7 @@ def _apply_review_result(
         raise PilotError("review result is invalid")
     files = []
     attempt_dir = (
-        root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+        campaign_paths(root, campaign_id)["attempts"]
         / job["job_id"] / f"attempt-{job['attempt']}"
     )
     if is_schema_v2 or "reviewer_identity" in job:
@@ -649,7 +646,7 @@ def _assignment_by_job(
 
 def _persist_review_order(root: Path, campaign_id: str, order: Mapping[str, object]) -> None:
     attempt_dir = (
-        root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+        campaign_paths(root, campaign_id)["attempts"]
         / str(order["job_id"]) / f"attempt-{order['attempt']}"
     )
     destination = attempt_dir / "input.json"
@@ -880,7 +877,7 @@ def route_candidate(
     if is_sample and decision == "review_required" and campaign.get("risk_gate") == "pending":
         _expand_deferred_reviews(campaign, jobs)
     attempt_dir = (
-        root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+        campaign_paths(root, campaign_id)["attempts"]
         / job_id / f"attempt-{job['attempt']}"
     )
     write_attempt_file(

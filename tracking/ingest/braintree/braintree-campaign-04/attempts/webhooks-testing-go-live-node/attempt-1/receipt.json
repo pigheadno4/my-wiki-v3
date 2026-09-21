@@ -1,0 +1,56 @@
+{
+  "job_id": "webhooks-testing-go-live-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Webhook Testing (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/webhooks/testing-go-live/node\"\nraw_files:\n  - \"braintree/docs/guides/webhooks/testing-go-live/node-2026-09-16.md\"\ntags: [braintree, webhooks, node-js, testing]\n---\n\n## Overview\n\nThis Node.js guide documents two distinct webhook-testing routes: generating a parsable sample signature and payload for the merchant to POST to its own application, and using the Control Panel to fire a test notification to an already configured webhook destination. These testing paths exercise different parts of a handler and do not by themselves prove production webhook delivery.\n\n## Key takeaways\n\n- `gateway.webhookTesting.sampleNotification()` generates a sample signature and payload. The merchant posts those generated values to its application to test webhook-handling code; the callback and Promise examples then parse them with `gateway.webhookNotification.parse()`.\n- The sample method takes a webhook-notification kind and the ID of the object that triggered it. Its returned notification contains a dummy object of the requested type, not a complete gateway object, so it may omit data expected from a production webhook.\n- After creating a webhook, a merchant can use the Control Panel's **Check URL** action to fire a test notification to that webhook's destination URL. This is a Braintree-triggered test route, distinct from generating and posting a merchant-generated sample payload.\n\n> [!warning] Test scope and handler behavior\n> Neither route on this page establishes successful delivery of a real production event or completeness of a production payload. When using **Check URL** in production, handler code must inspect the notification kind: code that assumes a different kind can fail when it accesses an object that the test notification does not contain. The collected page leaves the test notification's exact kind as an unresolved template expression, so this source does not name that kind.\n\n## Detail locators\n\n- Generated sample purpose and Node callback example: `## Sample payload and signature > ### Callback`.\n- Node Promise example: `## Sample payload and signature > ### Promise`.\n- Method arguments and incomplete dummy-object warning: paragraph after the Promise example and the following **NOTE**.\n- Braintree-triggered destination test and Control Panel steps: `## Trigger a test notification from Braintree`.\n- Production-use caution and mismatched-kind example: final two paragraphs under `## Trigger a test notification from Braintree`.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-webhooks]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/webhooks/testing-go-live/node-2026-09-16|Braintree Node.js webhook testing guide]] \u2014 fully read guide covering generated samples, Control Panel test delivery, sample-object limitations, and handler-kind cautions\n",
+  "quotes": [
+    {
+      "text": "We've provided a`sample_notification`method to generate a parsable signature and payload. This allows you to generate a sample notification and POST the contents of the payload and signature to your application to test your webhook handling code.",
+      "location": "line 19, ## Sample payload and signature"
+    },
+    {
+      "text": "This method expects two arguments: the kind of webhook notification to be generated, and an ID of the object which triggered it.\n**NOTE**\nThe notification returned will contain a dummy object of the type specified, but this object is not a complete item from your gateway. It will not necessarily have everything you expect from a production webhook.",
+      "location": "lines 48-50, ## Sample payload and signature, after ### Promise"
+    },
+    {
+      "text": "Once you've created a webhook, you can use the Control Panel to fire a test notification to the webhook's destination URL. This notification's kind is{{lookup viewModel.prefix serverSdk.name}}.",
+      "location": "line 58, ## Trigger a test notification from Braintree"
+    },
+    {
+      "text": "- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on the gear icon in the top right corner\n- Click**API**from the drop-down menu\n- Click on the**Webhooks**tab\n- Click the**Check URL**link located to the right of the URL you'd like to check\n\nBe careful when using this check in production \u2013 if your webhook handling code doesn\u2019t look for the[kind](/braintree/docs/reference/general/webhooks/overview#notification-kinds)of webhooks it receives, this could lead to unexpected behavior. .",
+      "location": "lines 63-69, ## Trigger a test notification from Braintree"
+    },
+    {
+      "text": "For example, if your integration assumes it will only receiveSubscription Canceledwebhooks and you test the URL, it might cause an exception when your code tries to access the non-existent subscription object on the webhook.",
+      "location": "line 71, ## Trigger a test notification from Braintree"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-testing-go-live-node-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-testing-go-live-node]] \u2014 Node.js routes for merchant-posted sample payloads and Control Panel-delivered test notifications, with dummy-object and notification-kind handling cautions",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep generated sample payloads, Braintree-triggered Control Panel tests, and actual production event delivery distinct.",
+          "Do not name the Control Panel test notification kind from this snapshot because the raw contains an unresolved template expression.",
+          "Keep the dummy-object incompleteness and notification-kind handler caution discoverable."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/webhooks/testing-go-live/node-2026-09-16.md",
+  "raw_sha256": "0d598c4655ef9602d4ea1044f35633c334e375350a98bdb8db64833dc8191e76",
+  "status": "candidate_ready"
+}

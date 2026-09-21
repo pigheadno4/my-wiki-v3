@@ -1,0 +1,58 @@
+{
+  "job_id": "customer-update-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Customer Update (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/customer/update/node\"\nraw_files:\n  - \"braintree/docs/reference/request/customer/update/node-2026-09-16.md\"\ntags: [braintree, node-js, customers, payment-method, card-verification, billing-address]\n---\n\n## Overview\n\nThis Braintree Node.js request guide documents `gateway.customer.update()` for changing a customer by ID. It distinguishes ordinary attribute updates, existing-credit-card updates, new payment-method association, default-payment-method selection, billing-address handling, and optional card verification.\n\n## Key takeaways\n\n- New attributes are validated under the same customer rules used at creation, while any attribute omitted from the update remains unchanged.\n- Updating an existing payment method through the customer-update method is limited here to credit cards and requires the existing card token in `creditCard.options.updateExistingToken`. Omitting that option creates and associates a new credit card instead; more generally, a payment-method nonce can associate a new payment method of any type with the customer.\n- For billing addresses, setting the nested update-existing option updates the address. Omitting it creates a new customer address, associates the new address with the credit card, and leaves the old address attached to the customer but no longer as that card's billing address. The page also warns that some credit-card parameters have been deprecated to avoid PCI concerns around raw card data on the server.\n- A customer's default payment method is selected by passing that payment method's token as `defaultPaymentMethodToken`.\n- Credit-card validation runs by default, but verification does not. Braintree strongly recommends account-wide card verification before Vault storage; the manual example sets `verifyCard: true`. When Premium Fraud Management Tools are used, the page strongly recommends passing `device_data` each time a card is verified.\n\n## Variant and detail locators\n\n- Base update-by-ID behavior, unchanged omitted attributes, and Node callback example: `# Customer: Update`, lines 13-27.\n- Existing-credit-card update, credit-card-only qualification, `updateExistingToken`, and callback/Promise examples: `## Examples > ### Update customer and existing credit card`, lines 32-85.\n- Billing-address update option, deprecated raw-card parameters, and omission behavior: `### Update customer, credit card, and billing address`, lines 88-135.\n- New-credit-card versus any-payment-method association: `### Update customer and create new payment method`, lines 136-181.\n- Default-payment-method token selection and callback/Promise examples: `### Update default payment method`, lines 184-203.\n- Validation-versus-verification default, account-wide recommendation, manual `verifyCard`, and conditional Premium Fraud Management Tools `device_data` advisory: `### Card verification`, lines 206-240.\n\n## Collected evidence limitation\n\n> [!warning] Missing non-card update route\n> The note at lines 36-37 says only credit cards can be updated through the customer-update method and begins to direct other payment-method types elsewhere, but the collected sentence ends at `use.` without naming a method or destination. This source does not reconstruct that missing route; consult the dedicated reference for the payment-method type being updated.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/customer/update/node-2026-09-16|Braintree Node.js customer-update request guide]] - complete collected page covering unchanged omitted attributes, existing versus new payment-method behavior, billing-address handling, default selection, verification qualifications, and the retained missing-route gap\n",
+  "quotes": [
+    {
+      "text": "To update a customer, use its ID along with new attributes. The same [validations](/braintree/docs/reference/general/validation-errors/all#customer) apply as when creating a customer. Any attribute not passed will remain unchanged.",
+      "location": "line 17, # Customer: Update"
+    },
+    {
+      "text": "To update an existing credit card when using the customer update method, you need to pass the token of the credit card under the credit card options.\n\n**NOTE**\nCredit cards are the only payment method type that you can update using the customer update method. To update other payment method types, use.",
+      "location": "lines 34-37, ## Examples > ### Update customer and existing credit card"
+    },
+    {
+      "text": "If you omit the`update_existing_token`valoption from the examples in the previous sections, a new credit card will be created and associated to the customer.### Callback",
+      "location": "line 143, ## Examples > ### Update customer and create new payment method > #### Credit card"
+    },
+    {
+      "text": "You can use a payment method nonce for any payment method type\u2014not just a credit card\u2014to associate that payment method to the customer. The example below shows adding a payment method while also updating customer details.",
+      "location": "line 160, ## Examples > ### Update customer and create new payment method > #### Any payment method type"
+    },
+    {
+      "text": "### Update default payment method\n\nTo update a customer's default payment method, get that payment method's[`token`](/braintree/docs/reference/response/payment-method/node#token)and pass it as the`default_payment_method_token`value below:### Callback\n```javascript\n\nbraintree.customer.update(\"theCustomerId\", {\n  defaultPaymentMethodToken: \"theToken\",\n}, (err, result) => {\n});\n\n```\n\n### Promise\n```javascript\n\nbraintree.customer.update(\"theCustomerId\", {\n  defaultPaymentMethodToken: \"theToken\",\n}).then(result => { });\n\n```\n\n\n### Card verification\n\nBy default we will run[credit card validations](/braintree/docs/reference/general/validation-errors/all#credit-card)but not perform[verification](/braintree/docs/guides/credit-cards/server-side/node#card-verification). Braintree strongly recommends verifying all cards before they are stored in your Vault by[enabling card verification for your entire account](/braintree/articles/control-panel/vault/card-verification)in the Control Panel. If you choose to manually verify cards, set`verify_card`to`true`.### Callback\n```javascript\n\nbraintree.customer.update(\"theCustomerId\", {\n  paymentMethodNonce: nonceFromTheClient,\n  creditCard: {\n    options: {\n      updateExistingToken: \"theToken\",\n      verifyCard: true\n    }\n  }\n}, (err, result) => {\n});\n\n```\n\n### Promise\n```javascript\n\nbraintree.customer.update(\"theCustomerId\", {\n  paymentMethodNonce: nonceFromTheClient,\n  creditCard: {\n    options: {\n      updateExistingToken: \"theToken\",\n      verifyCard: true\n    }\n  }\n}).then(result => { });\n\n```\n  \n**IMPORTANT**\nIf you are using our Premium Fraud Management Tools, we strongly recommend passing[`device_data`](/braintree/docs/guides/premium-fraud-management-tools/server-side/node#using-device-data)each time you verify a card.",
+      "location": "lines 184-240, ## Examples > ### Update default payment method through ### Card verification"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "customer-update-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-customer-update-node]] - Node.js customer updates with unchanged omitted attributes, existing-credit-card versus new-payment-method behavior, billing-address update semantics, default-payment-method selection, verification qualifications, and a retained missing non-card update route",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve that omitted customer attributes remain unchanged; do not generalize this to nested option omission where the page explicitly describes creation or reassociation effects.",
+          "Distinguish updating an existing credit card from creating a new credit card or associating a new payment method of any type; do not claim the customer-update method updates existing non-card payment methods.",
+          "Keep default-payment-method selection separate from payment-method creation and existing-card update behavior.",
+          "Preserve that validation runs by default while verification does not, and keep both the account-wide verification and Premium Fraud Management Tools device_data language advisory and conditional.",
+          "Do not reconstruct the missing method or destination after `use.` in the collected non-card update note, and do not treat linked validation, response-object, payment-method, or Control Panel pages as fully read evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/customer/update/node-2026-09-16.md",
+  "raw_sha256": "e9082439e7ae5b1bf2c6714c25ef5f2c086308e749084a0ef2b5e556b4cfa3e0",
+  "status": "candidate_ready"
+}

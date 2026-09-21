@@ -1,0 +1,50 @@
+{
+  "job_id": "webhooks-payment-method-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Payment Method Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/payment-method/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/payment-method/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, payment-methods, paypal, venmo]\n---\n\n## Overview\n\nThis Braintree Node.js reference documents payment-method webhook notification kinds and routes to their payload attributes. Its currently documented triggers are specific to PayPal billing-agreement cancellation and named Venmo revocation or customer-data events; it does not establish notification coverage for every stored payment method.\n\n## Key takeaways\n\n- The notification object's `kind` identifies what triggered a payment-method webhook. This page lists `payment_method_revoked_by_customer` and `payment_method_customer_data_updated`.\n- `payment_method_revoked_by_customer` concerns a previously enabled payment instrument revoked by the customer or by Venmo. The page says this webhook is currently sent only when a customer cancels a PayPal billing agreement, removes a Venmo connection, or Venmo suspends the account because of suspicious activity on the customer's Venmo account.\n- `payment_method_customer_data_updated` reports updated customer data on a payment method. The only trigger currently stated is a customer updating Enriched Customer Data in Venmo, provided the merchant has enabled that feature.\n\n> [!warning] Current payment-method scope\n> Both trigger descriptions are explicitly qualified as current and are PayPal- or Venmo-specific. Do not generalize this reference into webhook coverage for all payment instruments or all customer-data changes.\n\n## Detail locators\n\n- Notification-kind meaning and trigger table: `# Payment Method` > `### Notification kinds`, lines 17-24.\n- Revocation triggers and current PayPal/Venmo scope: notification table row `payment_method_revoked_by_customer`, line 23.\n- Customer-data update trigger and merchant-enablement condition: notification table row `payment_method_customer_data_updated`, line 24.\n- Payload routes, including kind and trigger time, Vault payment-method/customer references, the revoked `PaymentMethod`, and updated-customer-data structures: `# Payment Method` > `### Attributes`, lines 27-29.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-webhooks]]\n- Related source: [[source-braintree-webhooks-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/payment-method/node-2026-09-16|Braintree Node.js payment-method webhook reference]] - complete page covering notification kinds, currently documented PayPal/Venmo triggers, and payload-attribute routes\n",
+  "quotes": [
+    {
+      "text": "The notification kind, returned by calling`kind`on the[notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook.",
+      "location": "line 19, # Payment Method > ### Notification kinds"
+    },
+    {
+      "text": "| payment_method_revoked_by_customer | A payment instrument that was previously enabled has been revoked by the customer or by Venmo. Currently this webhook will only be sent when a customer cancels their PayPal billing agreement, removes their[Venmo connection](/braintree/docs/guides/venmo/server-side/node#removing-connections), or when Venmo suspends the account due to suspicious activity on the customer's Venmo account. |",
+      "location": "line 23, # Payment Method > ### Notification kinds table"
+    },
+    {
+      "text": "| payment_method_customer_data_updated | A payment method's customer data has been updated. Currently, the only trigger for this webhook is when a customer updates their[Enriched Customer Data](/braintree/articles/guides/payment-methods/venmo#enriched-customer-data)in Venmo, provided that the merchant has enabled the feature. |",
+      "location": "line 24, # Payment Method > ### Notification kinds table"
+    },
+    {
+      "text": "The[PaymentMethod](/braintree/docs/reference/response/payment-method)object associated with the revoked payment method.",
+      "location": "line 29, # Payment Method > ### Attributes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-payment-method-node-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-payment-method-node]] - Node.js payment-method webhook notification kinds and payload routes, with currently documented PayPal billing-agreement cancellation and Venmo revocation or enabled Enriched Customer Data update triggers",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve the page's currently qualification and do not generalize the notification kinds to every payment instrument or customer-data change.",
+          "Keep the two event subjects separate: revocation currently covers PayPal billing-agreement cancellation and named Venmo cases, while customer-data updates currently concern Venmo Enriched Customer Data and require merchant feature enablement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/payment-method/node-2026-09-16.md",
+  "raw_sha256": "1b427273b365cc5e2f3505d87415eb4d4e847217bcc6dc07b80a19dd845888ae",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,50 @@
+{
+  "job_id": "client-token-generate-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Client Token Generation (Node.js)\"\ntype: source\ndate_ingested: 2026-09-19\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/client-token/generate/node\"\nraw_files:\n  - \"braintree/docs/reference/request/client-token/generate/node-2026-09-16.md\"\ntags: [braintree, node-js, client-token, client-sdk, drop-in, vault]\n---\n\n## Overview\n\nThis Braintree reference page documents Node.js client-token generation with `gateway.clientToken.generate()`. The returned client token contains the authorization and configuration information a client needs to initialize a Braintree client SDK.\n\n## Key takeaways\n\n- The page provides both callback and Promise forms of `gateway.clientToken.generate({})`; each reads the generated token from `response.clientToken`.\n- For a customer already stored in the merchant's Braintree vault, the merchant can pass that customer's ID when generating the token. In this customer-scoped variant, Braintree says Drop-in can present the returning customer with saved payment methods.\n- If the specified customer cannot be found, the response contains the message `Customer specified by customer_id does not exist`. The page does not characterize a broader failure type or promise other customer behavior.\n\n## Detail locators\n\n- Token purpose and client-SDK initialization role: `# Client Token: Generate`, lines 15-16.\n- Empty-options callback and Promise calls, including `response.clientToken`: `### CallBack`, lines 17-22, and `### Promise`, lines 24-29.\n- Customer-scoped Drop-in purpose and `customerId` examples: `## Examples > ### Specify a customer ID`, lines 34-51.\n- Missing-customer message: immediately after the customer-ID Promise example, lines 53-54.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-server-sdk]]\n- Related concept: [[braintree-web-drop-in]]\n- Related source: [[source-braintree-get-started]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/client-token/generate/node-2026-09-16|Braintree Node.js client-token generation reference]] - complete page covering basic generation and the customer-ID variant\n",
+  "quotes": [
+    {
+      "text": "Returns a string which contains all authorization and configuration information your client needs to\ninitialize the client SDK to communicate with Braintree.",
+      "location": "lines 15-16, # Client Token: Generate"
+    },
+    {
+      "text": "### CallBack\n```javascript\ngateway.clientToken.generate({}, (err, response) => {\n    const clientToken = response.clientToken\n});\n```",
+      "location": "lines 17-22, # Client Token: Generate > ### CallBack"
+    },
+    {
+      "text": "### Specify a customer ID\n\nThe Drop-in UI supports presenting returning customers with their saved payment methods. To generate\na token for a customer in your vault provide the customer's ID.",
+      "location": "lines 34-37, ## Examples > ### Specify a customer ID"
+    },
+    {
+      "text": "If the customer can't be found, the response will contain a message stating \"Customer specified by\ncustomer_id does not exist\".",
+      "location": "lines 53-54, immediately after ## Examples > ### Specify a customer ID > ### Promise"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "client-token-generate-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-client-token-generate-node]] - Node.js `clientToken.generate()` reference, including response-token extraction and the customer-ID variant for returning-customer Drop-in saved-payment presentation",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the saved-payment presentation claim scoped to Drop-in, a customer already in the merchant's vault, and a token generated with that customer's ID; do not generalize it to all client tokens or authentication behavior.",
+          "The missing-customer statement documents response message text only; it does not identify an exception class, HTTP status, or broader failure semantics."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/client-token/generate/node-2026-09-16.md",
+  "raw_sha256": "bb50a91e4bd0978238021940dc3031e40695315e82e1df8afb4c59eee31144d2",
+  "status": "candidate_ready"
+}

@@ -10,6 +10,67 @@ Operations history: [[braintree-log]]
 
 ## Sources
 
+### Website documentation
+
+- [[source-braintree-payment-method-create-node]] - Node.js existing-customer payment-method creation with required customer ID and nonce, default and billing-address behavior, payment-type limits on duplicate rejection, card-verification and Premium Fraud Management Tools guidance, and nonce-versus-raw-card precedence
+- [[source-braintree-payment-method-update-node]] - Node.js stored-payment-method updates by token, including shared or replacement billing-address behavior, PayPal/default-method restrictions, card verification with the AVS-update transaction/CVV rejection condition, and nonce-association and precedence rules
+- [[source-braintree-subscription-search-node]] - Node.js subscription search through `gateway.subscription.search()`, with callback and stream result consumption, qualified filter-example routes, the preserved results-limitation policy notice, and no reconstructed SDK version from the damaged rendering
+- [[source-braintree-subscription-retry-charge-node]] - Node.js manual retry of a past-due subscription charge, with the explicit example amount, displayed success access, and separate transaction-settlement submission route
+- [[source-braintree-payment-method-grant-node]] - limited-release Node.js Grant API route for giving another Braintree merchant controlled access to one customer payment method through a recipient access token and returned nonce
+- [[source-braintree-payment-method-revoke-node]] - limited-release Node.js revocation of a payment-method grant, deleting the granted version from the receiving merchant's Vault without importing the separate payment-method deletion cascade
+- [[source-braintree-webhooks-transaction-node]] - Node.js ACH and SEPA Direct Debit transaction settlement notification kinds, qualified post-settled decline wording, and damaged availability/attribute-rendering boundaries
+- [[source-braintree-webhooks-account-updater-node]] - feature-restricted Account Updater daily-report webhook, including its 24-hour updated-method scope, no-updates suppression, payload-category route, and one-week report-link expiry
+- [[source-braintree-webhooks-fraud-protection-node]] - Node.js `transaction_reviewed` notification for an accepted or rejected Fraud Protection Dashboard review, with requested-not-completed void/refund scope and review payload categories
+- [[source-braintree-address-find-node]] - Node.js lookup of one address by customer ID plus address ID, with `err`/`address` callback evidence, separate response-object navigation, and a shared customer-or-address not-found route
+
+- [[source-braintree-plan-update-node]] — plan-ID updates, destructive modification omission warning and override/trial routes
+- [[source-braintree-plan-create-node]] — plan creation prerequisite, required-input and add-on/discount routes
+- [[source-braintree-plan-find-node]] — single-plan lookup with code-grounded method and callback/Promise forms
+- [[source-braintree-add-on-all-node]] — Node add-on collection/result access and Ruby-reference boundary
+- [[source-braintree-discount-all-node]] — Node discount collection/result access without inferred creation/application behavior
+- [[source-braintree-credit-card-update-node]] — stored-card updates, conditional verification and nonce/raw-card precedence
+- [[source-braintree-credit-card-create-node]] — card creation, qualified PCI advisory and nonce/raw-card input guidance
+- [[source-braintree-credit-card-expiring-between-node]] — date-range retrieval, callback and incomplete stream example boundaries
+- [[source-braintree-credit-card-find-node]] — card-token lookup and qualified payment-method alternative guidance
+- [[source-braintree-credit-card-delete-node]] — card-token deletion, error-only callback and qualified PCI advisory
+- [[source-braintree-address-create-node]] — customer-scoped Vault address creation, generated IDs and per-customer limit
+- [[source-braintree-webhooks-dispute-node]] — dispute notification triggers and qualified attribute/deprecation routes
+- [[source-braintree-address-update-node]] — customer/address-ID updates, callback and alternative update routes
+- [[source-braintree-address-delete-node]] — address deletion and removal of billing/shipping references from Vault payment methods
+- [[source-braintree-plan-all-node]] — Plan collection retrieval through callback and Promise examples
+- [[source-braintree-customer-update-node]] — customer-ID updates, omitted attributes and existing versus new payment-method boundaries
+- [[source-braintree-transaction-find-node]] — transaction-ID lookup, result-limitation notice and Marketplace escrow example
+- [[source-braintree-subscription-cancel-node]] — subscription cancellation, billing effect and result/error routes
+- [[source-braintree-webhooks-subscription-node]] — subscription notification kinds, qualified triggers and payload limits
+- [[source-braintree-subscription-find-node]] — subscription-ID lookup, callback/Promise code and result-limitation notice
+- [[source-braintree-customer-create-node]] — Node customer creation variants, verification qualifications, custom fields and raw evidence gaps
+- [[source-braintree-payment-method-find-node]] — stored-token lookup, result-limitation notice and separate PayPal-account examples
+- [[source-braintree-webhooks-payment-method-node]] — current PayPal/Venmo revocation and enabled customer-data update notification scope
+- [[source-braintree-customer-delete-node]] — customer-ID deletion with associated payment-method and recurring-subscription consequences
+- [[source-braintree-customer-find-node]] — single-customer ID lookup and missing Node invocation evidence
+- [[source-braintree-tokenization-key-javascript-v3]] — static reduced-privilege client authorization, lifecycle, environment and JavaScript initialization routes
+- [[source-braintree-webhooks-testing-go-live-node]] — Node sample payloads versus Braintree-delivered tests, dummy-object and handler-kind warnings
+- [[source-braintree-payment-method-nonce-find-node]] — non-consuming Node nonce lookup and available 3D Secure information
+- [[source-braintree-payment-method-nonce-create-node]] — Node nonce creation, token input and Braintree's should-only usage guidance
+- [[source-braintree-payment-method-delete-node]] — Node payment-method deletion with immediate subscription cancellation and paid-days forfeiture
+- [[source-braintree-transaction-submit-for-settlement-node]] — Node settlement submission, amount adjustments and availability-qualified supplemental data
+- [[source-braintree-authorization-overview]] — client tokens versus tokenization keys, capability conditions and selection routes
+- [[source-braintree-client-token-generate-node]] — Node token generation and customer-scoped Drop-in saved-payment presentation
+- [[source-braintree-transaction-void-node]] — Node void eligibility, PayPal-specific state and conditional authorization reversal
+- [[source-braintree-authorization-client-token]] — signed client-token purpose, server/client roles and validity boundaries
+- [[source-braintree-hosted-fields-events-javascript-v3]] — JavaScript Hosted Fields events and field-state lookup, with version-qualified reference links
+- [[source-braintree-transaction-refund-node]] — Node refund eligibility, omitted amounts, partial-refund restrictions and failure routes
+- [[source-braintree-webhooks-parse-node]] — Node signature/payload parsing, ordering warning and response-conditioned retries
+- [[source-braintree-payment-method-nonces]] — SDK nonce versus GraphQL single-use payment method, use and lifespan boundaries
+- [[source-braintree-webhooks-create-node]] — Control Panel webhook creation, Manage Webhooks permission and HTTPS destination requirements
+- [[source-braintree-get-started]] — Braintree Direct sandbox integration, client-token/nonce flow, and source-qualified Drop-in lifecycle conflict
+- [[source-braintree-transaction-sale-node]] — Node transaction sale, payment-source choices, settlement submission, risk/fraud data prerequisites, and raw example inconsistency
+- [[source-braintree-webhooks-overview]] — HTTPS notifications, ACH Direct Debit transaction-status scope, permissions, and burst-volume warning
+- [[source-braintree-control-panel-overview]] — gateway administration, Dashboard versus reconciliation, and Sandbox/Production isolation
+- [[source-braintree-credit-cards-client-javascript-v3]] — JavaScript v3 Hosted Fields versus Card Fields and named native SDK alternatives
+
+### Versioned GitHub implementation evidence
+
 - [[source-github-mobile-sdk-tooling]] - shared mobile SDK pull-request review digest, GitHub App authentication, CODEOWNER-aware review reduction, Slack routing, and operational limits at `default-branch@a3b0ffe` (github-repo, 2026-08-27)
 - [[changelog-github-mobile-sdk-tooling]] - commit-qualified mobile SDK tooling history beginning at `default-branch@a3b0ffe` (github-repo, 2026-08-27)
 - [[source-github-graphql-api]] - commit-qualified GraphQL contract for transactions, vaulting, PayPal, Venmo, 3DS, recurring billing, and broader API inventory at `default-branch@3a89f42` (github-repo, 2026-08-11)
@@ -44,6 +105,9 @@ Operations history: [[braintree-log]]
 - [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger beginning at `5.3.0` (github-repo, 2026-08-27)
 
 ## Concepts
+
+- [[braintree-webhooks]] — gateway notification purpose, setup routes, permissions, and volume boundaries
+- [[braintree-control-panel]] — gateway administration, Dashboard limits, and separate environments
 
 - [[braintree-server-sdk]] - shared server-side gateway boundary with independent Node.js, PHP, and Ruby package evidence
 - [[braintree-web-sdk]] — modular client/nonce architecture and exact-version evidence boundaries

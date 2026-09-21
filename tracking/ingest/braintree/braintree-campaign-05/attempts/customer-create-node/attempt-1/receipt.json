@@ -1,0 +1,57 @@
+{
+  "job_id": "customer-create-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Customer Create (Node.js)\"\ntype: source\ndate_ingested: 2026-09-20\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/request/customer/create/node\"\nraw_files:\n  - \"braintree/docs/reference/request/customer/create/node-2026-09-16.md\"\ntags: [braintree, node-js, customers, payment-method, card-verification, custom-fields]\n---\n\n## Overview\n\nThis Braintree Node.js request guide documents `gateway.customer.create()` for creating a customer alone, with a payment method, or with a credit card and billing address. It routes implementers to optional customer-ID, payment-method token, card-verification, billing-address, and custom-field variants while retaining validation and setup qualifications.\n\n## Key takeaways\n\n- A merchant may supply its own customer ID, and the page says customer IDs are case insensitive.\n- When creating a payment method with the customer, success is conditioned on the applicable customer and credit-card or PayPal-account validations passing, and on a supplied credit card passing verification when verification is requested. If no payment-method token is supplied, the gateway generates one; a custom integration may instead choose the token.\n- Card validation runs by default, but card verification does not. Braintree strongly recommends enabling account-wide verification before cards are stored in the Vault; the manual example sets `verifyCard: true`.\n- Premium Fraud Management Tools users are strongly advised to pass `device_data` each time they verify a card. Custom fields must be configured in the Control Panel before they are used through the API.\n\n## Variant and detail locators\n\n- Base Node.js callback and returned `result.success` / `result.customer.id` reads: `# Customer: Create > ### Node`, lines 24-40.\n- Merchant-supplied customer ID, callback, and Promise variants: `## Examples > ### Specify your own customer ID`, lines 46-69.\n- Payment-method creation, validation conditions, generated/custom tokens, callback, and Promise variants: `## Examples > ### Customer with a payment method`, lines 77-106.\n- Payment method with a nested billing address: `#### Customer with a payment method and billing address`, lines 109-153.\n- Default validation-versus-verification behavior, account-wide recommendation, manual `verifyCard` examples, and the Premium Fraud Management Tools `device_data` advisory: `#### Card verification`, lines 155-192.\n- Control Panel prerequisite and callback/Promise custom-field examples: `### Use custom fields`, lines 197-242.\n\n## Collected evidence limitations\n\n> [!warning] Incomplete transaction note\n> The opening NOTE at lines 20-21 says that a different route may be preferable when creating a transaction and customer together, but the collected sentence is missing the action and option names (`usewith either theoroptions`). This source does not reconstruct them; use the dedicated transaction reference before implementing that combined flow.\n\n> [!info] Missing blank-customer example\n> The `### Blank customer` section at lines 72-75 states that a blank customer can be created when only a payment method is being stored, but the collected page contains no invocation beneath that heading. It therefore does not supply a usable blank-customer Node.js example.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/request/customer/create/node-2026-09-16|Braintree Node.js customer-create request guide]] - complete collected page covering customer creation variants, validation and verification qualifications, Control Panel-configured custom fields, and retained missing-prose/example gaps\n",
+  "quotes": [
+    {
+      "text": "You can create a customer by itself, with a payment method, or with a [credit card with a billing address](#customer-with-a-payment-method-and-billing-address).",
+      "location": "line 17, # Customer: Create"
+    },
+    {
+      "text": "You can optionally choose what you would like the ID to be. Customer IDs are case insensitive.",
+      "location": "line 48, ## Examples > ### Specify your own customer ID"
+    },
+    {
+      "text": "You can also create a payment method along with a customer. If all [customer validations](/braintree/docs/reference/general/validation-errors/all#customer) and [credit card validations](/braintree/docs/reference/general/validation-errors/all#payment-method) or [PayPal account validations](/braintree/docs/reference/general/validation-errors/all#paypal) pass, and the credit card is verified (if supplied and verification [is requested](/braintree/docs/reference/general/validation-errors/all#payment-method) ), success will return true.\n\nIf you do not specify a token for the payment method, as in the example above, the gateway will generate one. If you are using a custom integration, you can also choose what you want the token to be.",
+      "location": "lines 79-81, ## Examples > ### Customer with a payment method"
+    },
+    {
+      "text": "By default we will run[credit card validations](/braintree/docs/reference/general/validation-errors/all#credit-card)but not perform[verification](/braintree/docs/guides/credit-cards/server-side/node#card-verification). Braintree strongly recommends verifying all cards before they are stored in your Vault by[enabling card verification for your entire account](/braintree/articles/control-panel/vault/card-verification)in the Control Panel. If you choose to manually verify cards, set`verify_card`to`true`.",
+      "location": "line 157, ## Examples > #### Card verification"
+    },
+    {
+      "text": "Use custom fields to store additional data about your customers in Braintree. You'll need to [configure your custom fields in the Control Panel](/braintree/articles/control-panel/custom-fields) to use them via the API.",
+      "location": "line 199, ## Examples > ### Use custom fields"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "customer-create-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-customer-create-node]] - Node.js customer creation alone or with payment-method and billing-address variants, optional case-insensitive merchant customer IDs, validation and card-verification qualifications, Control Panel-configured custom fields, and retained collected-document gaps",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the payment-method success conditions and the distinction between default card validation and separately requested verification; do not turn recommendations into requirements.",
+          "Keep the Premium Fraud Management Tools device_data language conditional and advisory: the page strongly recommends it when those tools are in use and a card is verified.",
+          "Do not reconstruct the missing action or option names in the malformed lines 20-21 transaction note, and do not invent a blank-customer invocation absent from lines 72-75.",
+          "Do not generalize this Node.js guide to other SDK languages or treat linked validation, transaction, or Control Panel pages as fully read evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/request/customer/create/node-2026-09-16.md",
+  "raw_sha256": "62e6f0e9e904d801ad59af1dfae9ee88fb87bb38911d29aa7e2dc1aac97acaa2",
+  "status": "candidate_ready"
+}
