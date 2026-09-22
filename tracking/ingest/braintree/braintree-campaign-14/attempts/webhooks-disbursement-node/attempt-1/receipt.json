@@ -1,0 +1,57 @@
+{
+  "job_id": "webhooks-disbursement-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Disbursement Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-09-22\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/webhooks/disbursement/node\"\nraw_files:\n  - \"braintree/docs/reference/general/webhooks/disbursement/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, disbursements, merchant-accounts]\n---\n\n## Overview\n\nThis Braintree Node.js reference distinguishes two disbursement webhook notification kinds and the conditions that trigger them. Both are limited to merchant accounts whose funding Braintree manages, and the page's bank-departure wording does not establish when a merchant receives funds.\n\n## Key takeaways\n\n- Calling `kind` on the notification object identifies what triggered the webhook. The page documents `disbursement` and the deprecated `transaction_disbursed` kind.\n- `disbursement` means Braintree has sent a disbursement to the account, stated as leaving Braintree's bank account that day. It is sent once per merchant account per day rather than once per transaction.\n- The deprecated `transaction_disbursed` kind means a transaction has been marked for disbursement, also stated as leaving Braintree's bank account that day.\n- Both notification kinds are for Braintree-funded merchant accounts only. The page further says a merchant receives a disbursement webhook only when Braintree manages funding for the selected merchant account; availability of Disbursement Summary reports is the stated indicator.\n- The concatenated attributes section identifies payload categories for notification kind and trigger time, disbursement identity, amount, date and debit/credit type, associated transaction IDs, merchant account, and retry/success indicators. The exact attribute presentation remains in the pinned raw.\n\n## Detail locators\n\n- Notification-object `kind` purpose and event-kind scope: `# Disbursement > ### Notification kinds`, lines 17-21.\n- `disbursement` event condition and per-account-per-day boundary: notification table, lines 23-30.\n- Deprecated `transaction_disbursed` event condition: notification table, lines 31-33.\n- Payload categories, Braintree-managed funding qualification, report-availability indicator and retry/success indicator prose: `# Disbursement > ### Attributes`, lines 36-38.\n\n## Evidence limitations\n\n> [!warning] Bank departure is not merchant receipt\n> The page says the disbursement or marked transaction will leave Braintree's bank account that day. It does not promise merchant receipt that day, provide arrival timing, establish settlement finality, or guarantee a payout outcome. The collected attributes prose is concatenated, so this source preserves broad payload categories without reconstructing property names or structure.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n- Webhook purpose and delivery setup: [[source-braintree-webhooks-overview]]\n- Node.js parsing and delivery-response behavior: [[source-braintree-webhooks-parse-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/webhooks/disbursement/node-2026-09-16|Braintree Node.js disbursement webhook reference]] - complete collected page covering notification kinds, trigger conditions, funding qualification and payload categories\n",
+  "quotes": [
+    {
+      "text": "The notification kind, returned by calling `kind` on the [notification object](/braintree/docs/guides/webhooks/parse), reveals what triggered the webhook. The `webhook_notification.kind` for Disbursement webhooks will be one of the following:",
+      "location": "line 19, # Disbursement > ### Notification kinds"
+    },
+    {
+      "text": "**Braintree-funded merchant accounts only**    We have sent a disbursement to your account (meaning it will leave our bank account today).",
+      "location": "line 27, notification table > disbursement"
+    },
+    {
+      "text": "**Braintree-funded merchant accounts only**   **Deprecated**   A transaction has been marked for disbursement (meaning it will leave our bank account today).",
+      "location": "line 33, notification table > transaction_disbursed"
+    },
+    {
+      "text": "The kind of webhook notification.The UTC time at which the webhook was triggered.The id of the disbursement.The amount of the disbursement.The date the funds were disbursed.The type of disbursement (debit/credit).The ids of all transactions associated with this disbursement.The merchant account the disbursement corresponds to.",
+      "location": "line 38, # Disbursement > ### Attributes"
+    },
+    {
+      "text": "You will only receive a disbursement webhook if Braintree manages funding for the selected merchant account. You'll know this is the case if Disbursement Summary reports are available for that account.",
+      "location": "line 38, # Disbursement > ### Attributes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-disbursement-node-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-webhooks-disbursement-node]] - Node.js `disbursement` and deprecated `transaction_disbursed` notification conditions for Braintree-funded merchant accounts, with broad payload-category and bank-departure boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the Braintree-funded merchant-account qualification for both notification kinds.",
+          "Keep `disbursement` scoped per merchant account per day and `transaction_disbursed` scoped per transaction and marked deprecated.",
+          "Use the raw phrase that funds leave Braintree's bank account that day; do not infer merchant receipt timing, settlement finality or payout guarantees.",
+          "Do not reconstruct property names or response structure from the concatenated attributes prose."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/webhooks/disbursement/node-2026-09-16.md",
+  "raw_sha256": "c4b0f55c373ed4293b032c158372e4636bccacfb1864aa909ea85435614c1eb7",
+  "status": "candidate_ready"
+}

@@ -38,6 +38,16 @@ The Node and PHP baselines expose `preferredPaymentMethodToken` during client-to
 
 ## Related
 
+- [[source-braintree-transactions-guide-node]] - Node.js transaction guide distinguishing sale authorization, settlement submission, pre-settlement void, refund, parameter-scoped validation errors, and account-qualified dispute retrieval
+
+- [[source-braintree-recurring-billing-plans-node]] - Node.js recurring-billing guide for plan templates, new-subscription inheritance, add-on and discount control boundaries, and subscription-time overrides
+
+- [[source-braintree-recurring-billing-manage-node]] - Node.js subscription-management guide covering status-qualified updates, proration and failed-charge behavior, past-due retries, version-qualified retry settlement, and transaction-based refunds
+
+- [[source-braintree-recurring-billing-testing-go-live-node]] - Node.js recurring-billing testing and production-transition route covering isolated credentials and settings, server-side production configuration, the client-token boundary, and real-payment production-test warnings
+
+- [[source-braintree-recurring-billing-create-node]] - Node.js recurring-billing guide for vaulted payment-method and plan prerequisites, plan inheritance, and immediate, future-date or trial-dependent initial transaction flow
+
 - [[source-braintree-transaction-line-item-find-all-node]] - Node.js transaction-ID retrieval of a Transaction Line Item collection, with callback and Promise result variables, the preserved policy notice, and unreconstructed damaged explanatory prose
 
 - [[source-braintree-transaction-cancel-release-node]] - Braintree Marketplace-specific Node.js cancellation of a previously requested escrow release while `escrow_status` is `release_pending`, explicitly distinct from refund evidence

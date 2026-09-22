@@ -77,6 +77,8 @@ See platform-specific concept pages for integration details:
 
 ## Platform-Specific Implementation
 
+- **Braintree subscription management**: [[source-braintree-recurring-billing-manage-node]] routes status-qualified updates, mid-cycle proration and failed-proration behavior, past-due balance and retry handling, manual-retry settlement boundaries, and transaction-based refunds. Canceled and Expired subscriptions cannot be changed; Past Due updates are limited to non-price fields. A refund does not itself cancel future subscription billing.
+
 - **Stripe**: See [[stripe-subscriptions]] for full Subscriptions API, Checkout integration, customer portal, flexible billing mode, and provisioning pattern
 - **PayPal**: See [[paypal-subscriptions]] for Subscriptions API + vault-based recurring
 - **Braintree iOS**: [[braintree-ios-sdk]] can collect PayPal billing-agreement consent and recurring-plan metadata, but the merchant server still owns token storage and later charges. An Apple Pay recurring request shown by the demo is not, by itself, a recurring-payment engine.
@@ -88,6 +90,16 @@ See platform-specific concept pages for integration details:
 - What are typical involuntary churn rates by payment method?
 
 ## Sources
+
+- [[source-braintree-recurring-billing-plans-node]] - Braintree plan-template inheritance, EU price and dormant-customer notice qualification, and Control Panel/API boundaries for recurring-billing add-ons and discounts
+
+- [[source-braintree-recurring-billing-manage-node]] - Braintree Node.js subscription-management guide for status-dependent updates, proration, retry handling, settlement qualification and refunds
+
+- [[source-braintree-recurring-billing-overview]] - Braintree recurring-billing availability, plan-and-Vault setup flow, and `Pending`, `Active`, `Past Due`, `Expired` and `Canceled` subscription meanings
+
+- [[source-braintree-recurring-billing-testing-go-live-node]] - Braintree Node.js route for sandbox recurring-billing setup and test-value locators, plus the separate production credentials, recreated settings and plans, environment switch, and limited real-payment settlement checks
+
+- [[source-braintree-recurring-billing-create-node]] - Braintree Node.js guide to stored-payment-method and plan prerequisites, plan-derived subscription setup, and start-date or trial-dependent creation, charge and status timing
 
 - [[source-braintree-subscription-create-node]] - Braintree Node.js subscription-creation route for vaulted tokens or conditional nonces, including the first-transaction 3DS nonce and merchant-account currency qualifications
 

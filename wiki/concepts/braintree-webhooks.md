@@ -19,6 +19,14 @@ The dedicated Node.js parsing guide documents parsing the `bt_signature` paramet
 
 ## Sources
 
+- [[source-braintree-webhooks-braintree-auth-node]] - Closed-beta Node.js Braintree Auth notifications for connected-merchant underwriting/application and PayPal link-status events, with connected-merchant and OAuth-application payload routes
+
+- [[source-braintree-webhooks-test-node]] - Node.js `check` test notification triggered in the Control Panel, with only notification kind and UTC trigger time documented and no business-object payload established
+
+- [[source-braintree-webhooks-sub-merchant-account-node]] - Node.js Braintree Marketplace sub-merchant approval and decline notification conditions, with notification-kind, trigger-time and `MerchantAccount` payload routes
+
+- [[source-braintree-webhooks-disbursement-node]] - Node.js `disbursement` and deprecated `transaction_disbursed` notification conditions for Braintree-funded merchant accounts, with broad payload-category and bank-departure boundaries
+
 - [[source-braintree-webhooks-local-payment-methods-node]] - Node.js instant local-payment completion and reversal versus non-instant funding and expiry events, with the completion event's separate nonce-based Transaction Sale route
 
 - [[source-braintree-webhooks-oauth-node]] - Node.js OAuth access-revocation notification for connected merchants, with production closed-beta and sandbox open-beta qualifications plus payload and parsing routes

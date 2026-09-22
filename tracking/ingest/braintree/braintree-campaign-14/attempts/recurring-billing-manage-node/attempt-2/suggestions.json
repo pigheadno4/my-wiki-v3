@@ -1,0 +1,46 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "recurring-billing-manage-node-recurring-payments-lifecycle",
+      "target_path": "wiki/concepts/recurring-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Platform-Specific Implementation; ## Sources",
+      "proposed_markdown": "Under `## Platform-Specific Implementation`, add: `- **Braintree subscription management**: [[source-braintree-recurring-billing-manage-node]] routes status-qualified updates, mid-cycle proration and failed-proration behavior, past-due balance and retry handling, manual-retry settlement boundaries, and transaction-based refunds. Canceled and Expired subscriptions cannot be changed; Past Due updates are limited to non-price fields. A refund does not itself cancel future subscription billing.`\n\nUnder `## Sources`, add: `- [[source-braintree-recurring-billing-manage-node]] - Braintree Node.js subscription-management guide for status-dependent updates, proration, retry handling, settlement qualification and refunds`",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep Past Due update scope limited to subscription ID, payment method, merchant account and descriptor; do not generalize it to every non-price field.",
+        "Preserve the default failed-proration behavior and the separately configurable continue-and-add-to-balance path.",
+        "Do not convert automatic retry timing or some-declines-not-retried wording into a success, cadence or eventual-collection guarantee.",
+        "Keep refund eligibility scoped to an existing Settled or Settling sale transaction, and keep cancellation as a separate action."
+      ]
+    },
+    {
+      "update_id": "recurring-billing-manage-node-braintree-server-sdk-route",
+      "target_path": "wiki/concepts/braintree-server-sdk.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Related",
+      "proposed_markdown": "- [[source-braintree-recurring-billing-manage-node]] - Node.js subscription-management guide covering status-qualified updates, proration and failed-charge behavior, past-due retries, version-qualified retry settlement, and transaction-based refunds",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The collected guide says `latest versions of our server SDKs` without naming a version; do not map the behavior to the retained `braintree@3.39.0` package baseline without separate evidence.",
+        "Authorization after a retry is not settlement completion; preserve the separate settlement-submission boundary.",
+        "Do not import routine request fields or worked examples into the concept; keep them behind the source and raw locators."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

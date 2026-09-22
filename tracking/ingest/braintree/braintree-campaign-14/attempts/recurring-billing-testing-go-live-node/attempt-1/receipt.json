@@ -1,0 +1,73 @@
+{
+  "job_id": "recurring-billing-testing-go-live-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Recurring Billing Testing and Go Live (Node.js)\"\ntype: source\ndate_ingested: 2026-09-22\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/recurring-billing/testing-go-live/node\"\nraw_files:\n  - \"braintree/docs/guides/recurring-billing/testing-go-live/node-2026-09-16.md\"\ntags: [braintree, node-js, recurring-billing, sandbox, production]\n---\n\n## Overview\n\nThis Braintree Node.js guide covers testing a recurring-billing integration in the sandbox and moving that integration to production. It keeps simulated sandbox values separate from live behavior, identifies the production credentials and account configuration that must be established separately, and routes detailed test values to the pinned raw page.\n\n## Key takeaways\n\n- Sandbox recurring-billing testing starts by storing a payment method with test values, creating a plan, and creating a subscription. The detailed payment-method, plan, subscription, nonce, verification, CVV and 3D Secure examples remain in the raw locators below rather than forming a live-behavior specification.\n- In sandbox card testing, transaction success is determined by the test amount, while verification success is determined by the test nonce. The page's test nonces and Node.js nonce objects simulate sandbox outcomes; they are not production payment methods or proof of live processing behavior.\n- A sandbox account is not linked to a production account. Sandbox processing options, recurring-billing settings and other created objects do not transfer, and production uses different login information, merchant ID and API keys.\n- For production, the guide recommends a dedicated API user rather than an individual user's credentials, with a non-employee-specific email and Account Admin permissions. The integration then uses that user's production merchant ID, public key and private key; the public and private keys are environment- and user-specific.\n- The production account must mirror the tested sandbox settings, including recreated recurring-billing plans or settings. Server-side Node.js configuration switches to `braintree.Environment.Production` and production credentials. The page says the client side needs no configuration update for this switch because it obtains its client token from the server.\n- Production verification uses a small number of low-value sale transactions for every intended payment-method type, submitted for settlement and followed through to bank deposit. Production requires real payment methods: settled tests debit the associated method and incur fees, so Braintree warns to use reasonable amounts and limit the number of transactions.\n\n> [!warning] Sandbox simulations are not live-payment evidence\n> Nothing created in sandbox transfers to production, sandbox test values do not work in production, and a successful simulated result does not establish production availability or settlement. Production tests use real payment methods and can move real funds and incur fees.\n\n## Detail locators\n\n- Sandbox recurring-billing setup sequence: `# Testing and Go Live`, lines 16-21.\n- Card-transaction versus card-verification test-success controls: `## Test values > ### Nonces representing cards`, lines 27-35.\n- Card and alternative-payment-method nonce tables: `## Test values`, lines 27-94.\n- Card-verification, CVV-only and 3D Secure test scenarios: `## Test values`, lines 96-169.\n- Node.js nonce objects and general testing-reference route: `## Test values > ### Nonce objects > ### Node.js`, lines 171-183.\n- Sandbox/production separation warning: `## Go live`, lines 186-190.\n- Dedicated API-user recommendation and production credential requirements: `## Go live > ### Create an API user` through `### Get production credentials`, lines 193-211.\n- Production account, server and client configuration transition: `## Go live > ### Update production account settings` through `### Update live server configuration`, lines 214-235.\n- Low-value production sale, settlement and deposit checks plus the real-payment-method, debit and fee warning: `## Test transactions in production`, lines 238-244.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[recurring-payments]]\n- Supporting concept: [[braintree-server-sdk]]\n- Related transaction creation: [[source-braintree-transaction-sale-node]]\n- Related settlement submission: [[source-braintree-transaction-submit-for-settlement-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/request/payment-method/create/node-2026-09-16|Braintree Node.js payment-method creation reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/recurring-billing/plans/node-2026-09-16|Braintree Node.js recurring-billing plans guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/recurring-billing/create/node-2026-09-16|Braintree Node.js recurring-billing creation guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/testing/node-2026-09-16|Braintree Node.js testing reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/articles/control-panel/important-gateway-credentials-2026-09-16|Braintree gateway-credentials article]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/articles/control-panel/users-roles/managing-users-roles-2026-09-16|Braintree users-and-roles article]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/transactions/node-2026-09-16|Braintree Node.js transactions guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/payment-method-types-overview-2026-09-16|Braintree payment-method types overview]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/articles/get-started/try-it-out-2026-09-16|Braintree sandbox-versus-production article]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/recurring-billing/testing-go-live/node-2026-09-16|Braintree Recurring Billing Testing and Go Live for Node.js]] - complete collected page covering sandbox setup and test-value routes, isolated production credentials and settings, Node.js environment transition, and limited real-payment production tests\n",
+  "quotes": [
+    {
+      "text": "To test recurring billing functionality in sandbox:\n\n\n- [Store a payment method in your sandbox](/braintree/docs/reference/request/payment-method/create)using the test values below\n- [Create a plan](/braintree/docs/guides/recurring-billing/plans)\n- [Create a subscription](/braintree/docs/guides/recurring-billing/create)",
+      "location": "lines 16-21, # Testing and Go Live"
+    },
+    {
+      "text": "You can use any of the nonces in this table to simulate a card transaction or trigger a successful card verification response.\n\n\n**NOTE**\nWhen testing card verifications and transactions, keep in mind: \n- **Transaction**success is determined by the[test amount](/braintree/docs/reference/general/testing/node#transaction-amounts)you use\n- **Verification**success is determined by the[test nonce](#nonces-for-testing-card-verification)you use",
+      "location": "lines 29-35, ## Test values > ### Nonces representing cards"
+    },
+    {
+      "text": "**IMPORTANT**\n **Your sandbox account is not linked to your production account in any way** . Nothing created in the sandbox will transfer to production. This includes processing options and recurring billing settings. Your login information, merchant ID, and API keys will also be different.",
+      "location": "lines 189-190, ## Go live"
+    },
+    {
+      "text": "Production [API credentials](/braintree/articles/control-panel/important-gateway-credentials), including your API keys, must be entered into your server-side code to connect API calls to the Braintree gateway. While each user in your gateway has their own unique set of API keys, only one set can be included in your integration.\n\nWe do not recommend including an individual user's API credentials. If you ever need to delete or suspend that user, this could break your connection to Braintree and result in failed transactions.\n\nInstead, [create a new user](/braintree/articles/control-panel/users-roles/managing-users-roles#creating-users) specifically designated as the API user, whose API keys can be used for your integration. This user should be set up with an email address that is not associated with a single employee and should have Account Admin permissions in order to avoid issues such as an [authorization error](/braintree/docs/reference/general/exceptions/node#authorization-error)\n\n.\n### Get production credentials\n\n[Log into your production account](https://www.braintreegateway.com/login) as the [API user](#create-an-api-user) to obtain your [API credentials](/braintree/articles/control-panel/important-gateway-credentials). You'll need the:\n\n\n- Production merchant ID\n- Production public key\n- Production private key\n\nKeep in mind that public and private keys are both **environment- and user-specific**.",
+      "location": "lines 195-211, ## Go live > ### Create an API user through ### Get production credentials"
+    },
+    {
+      "text": "Make sure your production account settings mirror the ones in your tested sandbox configuration. Be sure to recreate any recurring billing plans or settings if you plan to use recurring billing in production.\n\n\n### Update live server configuration\n\nIn your server code, update your configuration to production values:\n\n\n### Node.js\n```node\nconst gateway = new braintree.BraintreeGateway({\n  environment: braintree.Environment.Production,\n  merchantId: \"YOUR_PRODUCTION_MERCHANT_ID\",\n  publicKey: \"YOUR_PRODUCTION_PUBLIC_KEY\",\n  privateKey: \"YOUR_PRODUCTION_PRIVATE_KEY\"\n});\n```\nOnce you have updated these values and configured your preferred processing settings, the live production environment will function similarly to the sandbox environment you've been using for development. [Learn more about the differences between production and the sandbox.](/braintree/articles/get-started/try-it-out#sandbox-versus-production)\n\nOn the client side, no configuration updates are needed when you make the switch to production - your client obtains its client token from your server, which is all the configuration it needs.\n\n\n## Test transactions in production\n\nIt is important to test your production account by creating a couple of low-value [sale transactions](/braintree/docs/reference/request/transaction/sale) for each of the [payment method types](/braintree/docs/guides/payment-method-types-overview) you plan to accept. Be sure to submit the transactions for [settlement](/braintree/docs/guides/transactions/node#settlement), and then confirm that the funds have deposited into your bank account. This typically happens a few days after they have settled.\n\n\n**IMPORTANT**\nReal payment methods must be used in the production environment. Test values from the sandbox testing page will not work. This means that every test transaction that you allow to settle in your production account will debit funds from the associated payment method and fees will be assessed. Be sure to test with reasonable amounts and only run a limited number of transactions.",
+      "location": "lines 216-244, ## Go live > ### Update production account settings through ## Test transactions in production"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "recurring-billing-testing-go-live-node-recurring-payments-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-recurring-billing-testing-go-live-node]] - Braintree Node.js route for sandbox recurring-billing setup and test-value locators, plus the separate production credentials, recreated settings and plans, environment switch, and limited real-payment settlement checks",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep sandbox simulations separate from production behavior; the source explicitly says sandbox objects, settings and credentials do not transfer.",
+          "Do not copy nonce, CVV or 3D Secure value tables into the concept; route those routine values to the source's exact raw locators.",
+          "Preserve the production warning that real payment methods, debits and fees apply to settled tests."
+        ]
+      },
+      {
+        "update_id": "recurring-billing-testing-go-live-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-recurring-billing-testing-go-live-node]] - Node.js recurring-billing testing and production-transition route covering isolated credentials and settings, server-side production configuration, the client-token boundary, and real-payment production-test warnings",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the Node.js and recurring-billing scope; do not generalize this guide into current enablement for every merchant or payment method.",
+          "The no-client-configuration-update statement is specifically tied to a client obtaining its token from the server during this production switch.",
+          "Do not treat similarity between live and sandbox after configuration as equivalence or as proof of production settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/recurring-billing/testing-go-live/node-2026-09-16.md",
+  "raw_sha256": "33bf03a89de049f2ce331d69402f11fa06f0986ec172662228ffdb9b223dd519",
+  "status": "candidate_ready"
+}

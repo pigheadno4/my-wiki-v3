@@ -1,0 +1,67 @@
+{
+  "job_id": "transactions-guide-node",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Transactions Guide (Node.js)\"\ntype: source\ndate_ingested: 2026-09-22\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/transactions/node\"\nraw_files:\n  - \"braintree/docs/guides/transactions/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, authorization, settlement, validation-errors, disputes]\n---\n\n## Overview\n\nThis Braintree Node.js guide organizes transaction operations around attempts to transfer money between a merchant and its customers. It distinguishes authorization through a sale, submission of an authorized sale for settlement, voiding before settlement, refunding previously collected money, validation-error routes, and account-qualified dispute retrieval. Exact request fields, status meanings, processor responses, and test values remain in the linked dedicated references.\n\n## Key takeaways\n\n- Creating a sale gets authorization to collect money; submitting the authorized sale transaction for settlement is the separate step the guide identifies for collecting the money. A transaction can instead be voided before it settles, while a refund returns previously collected money. These are distinct actions rather than interchangeable transaction outcomes.\n- Settlement submission can be requested while creating the sale with the Node.js request field `options.submitForSettlement`, or afterward through `gateway.transaction.submitForSettlement()` using the transaction ID. The transaction must be authorized before the latter submission. A successful request result exposes `result.transaction`, but the guide does not state that `result.success` proves final settlement.\n- A transaction's `status` indicates its current lifecycle stage. The collected page routes exact status explanations to a separate reference and includes a diagram; it does not define the complete status set in text.\n- Invalid or malformed transaction details produce validation errors on the transaction, and additional information such as the payment method, customer, or address can produce its own validation errors. Because billing and shipping addresses may return the same error code, the guide says errors are scoped by parameter and the affected address must be identified.\n- For certain account setups, Braintree recommends collecting and passing billing-address information when storing payment methods or creating transactions; it says at least the postal code can help increase the likelihood of successful authorization. This is account-qualified guidance, not a universal required-field rule or an authorization guarantee.\n- Depending on account setup, disputes filed through a customer's bank or card network can be retrieved from the transaction response object's `disputes` array, which contains zero or more disputes. The guide also routes disputed-transaction search by dispute date and says handling after location depends on the merchant's banking partner.\n\n## Detail locators\n\n- Transaction purpose and sale, settlement, void, refund, search/find, and advanced-action routes: `# Transactions`, lines 20-28.\n- Lifecycle-status purpose, diagram, and external status reference: `## Status`, lines 31-35.\n- Settlement purpose and sale-time Node.js `options.submitForSettlement` callback/Promise examples (the surrounding prose/link label is `options.submit_for_settlement`): `## Settlement`, lines 36-78.\n- Separate `gateway.transaction.submitForSettlement()` callback/Promise examples, missing-transaction route, and authorization prerequisite: `## Settlement`, lines 80-106.\n- Transaction and associated-information validation errors, account-qualified billing-address recommendation, and parameter-scoped duplicate error codes: `## Validations`, lines 107-115.\n- Account-qualified dispute retrieval, zero-or-more response-array scope, dispute-date search, and banking-partner handling boundary: `## Disputes`, lines 116-122.\n- Processor-response, gateway-rejection, currency, refund/void/credit, 3D Secure, and sandbox-testing navigation: `## Learn more`, lines 123-134.\n\n## Evidence limitations\n\n> [!warning] Submission, validation, and dispute boundaries\n> This guide distinguishes authorization from settlement submission but does not establish final settlement from the example's success branch or variable name. Its billing-address recommendation applies only to certain account setups, and its dispute route depends on account setup and the banking partner. Dedicated status, request, response, validation, processor-response, and dispute authorities listed below are unread navigation only in this source.\n\n## Related\n\n- Company: [[braintree]]\n- Concepts: [[braintree-server-sdk]], [[disputes]]\n- Existing operation routes: [[source-braintree-transaction-sale-node]], [[source-braintree-transaction-submit-for-settlement-node]], [[source-braintree-transaction-void-node]], [[source-braintree-transaction-refund-node]], [[source-braintree-transaction-search-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/transactions/node-2026-09-16|Braintree Transactions guide for Node.js]] - complete collected guide covering authorization, settlement submission, validation and dispute navigation\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Transaction Sale (Node.js)]] - unread navigation-only sale request reference\n- [[raw/braintree/docs/reference/request/transaction/submit-for-settlement/node-2026-09-16|Transaction Submit for Settlement (Node.js)]] - unread navigation-only settlement-submission request reference\n- [[raw/braintree/docs/reference/request/transaction/void/node-2026-09-16|Transaction Void (Node.js)]] - unread navigation-only void request reference\n- [[raw/braintree/docs/reference/request/transaction/refund/node-2026-09-16|Transaction Refund (Node.js)]] - unread navigation-only refund request reference\n- [[raw/braintree/docs/reference/general/statuses-2026-09-16|Transaction statuses]] - unread navigation-only lifecycle-status reference\n- [[raw/braintree/docs/reference/general/validation-errors/all/node-2026-09-16|Validation errors (Node.js)]] - unread navigation-only transaction and associated-information validation reference\n- [[raw/braintree/docs/reference/response/transaction/node-2026-09-16|Transaction response object (Node.js)]] - unread navigation-only response and disputes-property reference\n- [[raw/braintree/docs/reference/request/transaction/search/node-2026-09-16|Transaction Search (Node.js)]] - unread navigation-only disputed-transaction search reference\n",
+  "quotes": [
+    {
+      "text": "Transactions represent attempts to transfer money between you and your customers. You can:\n\n\n- Get authorization to collect money from a customer by creating a[sale](/braintree/docs/reference/request/transaction/sale).\n- Collect the money from an authorized sale by[submitting the transaction for settlement](#settlement).\n- Undo a transaction before it settles by creating a[void](/braintree/docs/reference/request/transaction/void).\n- Return previously collected money to a customer by creating a[refund](/braintree/docs/reference/request/transaction/refund).\n- [Search for](/braintree/docs/reference/request/transaction/search)or[find](/braintree/docs/reference/request/transaction/search)transactions you've created.\n- Take[more advanced actions](/braintree/docs/reference/request/transaction/cancel-release)depending on your setup.",
+      "location": "# Transactions, lines 20-28"
+    },
+    {
+      "text": "To collect money, you'll need to submit the sale transaction for settlement. You can do this in two ways:\n\n\n- When creating a transaction, use the[`options.submit_for_settlement`](/braintree/docs/reference/request/transaction/sale/node#options-submit_for_settlement)option:",
+      "location": "# Transactions > ## Settlement, lines 38-41"
+    },
+    {
+      "text": "If the transaction can't be found, you'll receive a[notFoundError](/braintree/docs/reference/general/exceptions/node#not-found-error).\n\nThe transaction must be authorized to submit for settlement. Learn more about submitting authorized transactions for settlement in our[Managing Authorizations](/braintree/articles/control-panel/transactions/managing-authorizations)support article.\n## Validations\n\nIf you provide invalid or malformed transaction details, the gateway returns[validation errors on the transaction](/braintree/docs/reference/general/validation-errors/all#transaction). You may also receive other types of validation errors on any additional information associated with the transaction, including the payment method, customer, and address.\n\n\n**NOTE**\nFor certain account setups, we recommend that merchants collect and pass billing address information when storing payment methods or creating transactions. Passing billing address details (at least the postal code) can help increase the likelihood of a successful authorization. To learn more about your specific account setup, [contact us](/braintree/help/TransactionProcessingQuestion) .\n\nBecause transactions can have both a billing and a shipping address, you may get the same error code twice. Errors are scoped by parameter, so if you get an error such asStreet address is too long, verify whether the error is on the billing street address or the shipping street address. See the[validation errors overview](/braintree/docs/reference/general/validation-errors/overview)for more information.",
+      "location": "# Transactions > ## Settlement and ## Validations, lines 104-115"
+    },
+    {
+      "text": "Depending on your account setup, when a customer files a chargeback or other dispute with their bank or card network, you can retrieve those details from the[transaction response object](/braintree/docs/reference/response/transaction). Each transaction response object has a[`disputes`](/braintree/docs/reference/response/transaction/node#disputes)property that is an array of zero or more disputes.\n\nYou can also[search for disputed transactions by the dispute date](/braintree/docs/reference/request/transaction/search/node#dispute-date-range).\n\nAfter you've located a disputed transaction, how you handle it depends on your banking partner.[Learn more about chargebacks and retrievals in our support articles.](/braintree/articles/risk-and-security/chargebacks-retrievals/overview)",
+      "location": "# Transactions > ## Disputes, lines 118-122"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transactions-guide-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transactions-guide-node]] - Node.js transaction guide distinguishing sale authorization, settlement submission, pre-settlement void, refund, parameter-scoped validation errors, and account-qualified dispute retrieval",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Retain the guide's own authorization, submit for settlement, void, and refund terminology; do not replace settlement with broader capture or payment-success language.",
+          "Do not treat `result.success` or the example variable `settledTransaction` as proof of final settlement.",
+          "Keep the billing-address recommendation qualified to certain account setups and as improving likelihood, not guaranteeing authorization.",
+          "Keep dispute retrieval and subsequent handling qualified by account setup and banking partner."
+        ]
+      },
+      {
+        "update_id": "transactions-guide-node-disputes-route",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-transactions-guide-node]] - Braintree Node.js transaction-level route to account-qualified dispute details on the transaction response, disputed-transaction search by dispute date, and banking-partner-dependent handling",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "This guide supports transaction-level retrieval navigation only; it does not define dispute lifecycle stages, evidence actions, eligibility, deadlines, or outcomes.",
+          "Preserve `zero or more disputes` and the account-setup qualification; do not imply every transaction exposes a dispute or every merchant has the same retrieval path.",
+          "Do not import PayPal Disputes API terminology or behavior into this Braintree guide route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/transactions/node-2026-09-16.md",
+  "raw_sha256": "98ff39704d69ce9e42d183df0fc7f513cbad07b321adb5fa5495fec270ea53ae",
+  "status": "candidate_ready"
+}

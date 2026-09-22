@@ -6,6 +6,27 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-22] ingest | Braintree website C14
+
+- Ten website guides/references independently read, reviewed and promoted:
+  Recurring Billing Manage, Testing and Go Live, Create, Overview and Plans;
+  Transactions Guide; Disbursement, Sub-merchant Account, Test and Braintree
+  Auth Webhooks.
+- Initial worker handoffs10/10; first content approvals6/10. Four bounded
+  corrections received targeted review: charge-or-credit proration, indefinite
+  Past Due retry/status grounding, plan-name terminology, and Node.js request
+  field versus prose-label naming. No full retry review.
+- Four existing concepts received approved routes. One already-approved
+  two-heading Manage suggestion was normalized into its exact named snippets
+  with reviewer confirmation; no receipt or semantic rewrite.
+- Company/index cover111 sources=95 website+16 GitHub, excluding changelogs.
+  Website documentation and exact-SHA implementation evidence remain separate.
+- Fixed query audit, mechanical-close evidence and actual timings are in
+  tracking/ingest/braintree/braintree-campaign-14/quality-audit.md and
+  retrospective.md. This entry records promotion, not an extra close gate.
+- No raw edits, collection, GitHub ingest, code/rule changes, commit/push or
+  next campaign performed by C14. Unrelated shared-checkout changes preserved.
+
 ## [2026-09-21] ingest | Braintree website C13
 
 - Ten website request references independently read/reviewed and promoted:

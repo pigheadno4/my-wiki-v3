@@ -1,0 +1,70 @@
+{
+  "job_id": "recurring-billing-plans-node",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Recurring Billing Plans (Node.js)\"\ntype: source\ndate_ingested: 2026-09-22\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/recurring-billing/plans/node\"\nraw_files:\n  - \"braintree/docs/guides/recurring-billing/plans/node-2026-09-16.md\"\ntags: [braintree, node-js, recurring-billing, plans, add-ons, discounts]\n---\n\n## Overview\n\nThis Braintree Node.js guide describes plans as templates that must exist before subscriptions are created. It explains how plan settings and associated add-ons or discounts flow into new subscriptions, while keeping detailed Node request shapes with the pinned raw and dedicated API references.\n\n## Key takeaways\n\n- A plan must be created before a subscription. The plan supplies the plan name and description, trial and billing schedule, amount and currency; subscription creation then identifies the plan with `plan_id`.\n- The guide displays callback and Promise forms of Node.js plan creation, but the request inventory remains in the raw and the dedicated plan-create reference.\n- Merchants operating in the European Union must give customers four weeks' notice before changing a recurring plan's price and also before billing when at least six months have passed since the customer's last payment. The guide says these notices are not required outside the EU, while calling them good practice.\n- Add-ons and discounts are created in the Control Panel; the guide explicitly says they cannot be created or updated through the API. They can be applied case by case or associated with a plan so new subscriptions inherit them automatically.\n- Inherited add-on or discount details can be overridden when the subscription is created or updated. The guide does not say that later plan association or modification automatically changes existing subscriptions.\n\n## Detail locators\n\n- Plan prerequisite, template role and populated attribute categories: `# Plans`, lines 14-26.\n- Node.js callback and Promise creation examples: `# Plans > ### Callbacks` and `### Promises`, lines 28-46.\n- Subscription `plan_id` requirement and EU notice qualification: `# Plans`, lines 47-49.\n- Control Panel creation and API create/update boundary for add-ons and discounts: `## Add-ons and discounts`, lines 52-54.\n- Case-by-case application, plan association, automatic inheritance by new subscriptions and subscription-time override route: `## Add-ons and discounts`, line 58.\n- Add-on and discount field examples plus active-subscription response-array routes: `## Add-ons and discounts`, lines 60-73.\n- Separate response references: `## See also`, lines 76-82.\n\n## Evidence limitations\n\n> [!warning] Plan and modification boundaries\n> Automatic inheritance is stated for new subscriptions created from an associated plan. This guide does not establish that changing a plan or its associations changes existing subscriptions, and its API prohibition applies specifically to creating or updating add-ons and discounts rather than to plan creation itself.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[recurring-payments]]\n- Supporting concept: [[braintree-server-sdk]]\n- Node.js plan creation details: [[source-braintree-plan-create-node]]\n- Node.js plan modification details: [[source-braintree-plan-update-node]]\n- Node.js add-on retrieval: [[source-braintree-add-on-all-node]]\n- Node.js discount retrieval: [[source-braintree-discount-all-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/recurring-billing/plans/node-2026-09-16|Braintree Node.js recurring-billing plans guide]] - complete collected page covering plan templates, EU notice requirements, add-on and discount creation boundaries, inheritance and subscription-time overrides\n",
+  "quotes": [
+    {
+      "text": "Before creating subscriptions, you must create a plan. You can also [retrieve existing plans](/braintree/docs/reference/request/plan/all) via the API. A plan is a template for your subscriptions: when you create a plan, it will be used to populate the following attributes when a new subscription is created:",
+      "location": "line 16, # Plans"
+    },
+    {
+      "text": "Merchants operating in the European Union must give customers 4 weeks' notice before changing the price of their recurring billing plan; 4 weeks' notice is also required before billing customers if it has been 6+ months since their last payment. If you don't operate in the EU, these notices aren't required (but they're still good practice).",
+      "location": "line 49, # Plans > IMPORTANT"
+    },
+    {
+      "text": "Add-ons and discounts are [created in the Control Panel](/braintree/articles/guides/recurring-billing/add-ons-discounts). You can't create or update them through the API.",
+      "location": "line 54, ## Add-ons and discounts"
+    },
+    {
+      "text": "Add-ons and discounts can be applied manually on a case-by-case basis, or you can associate them with certain plans to apply them automatically to new subscriptions. When[creating a subscription](/braintree/docs/guides/recurring-billing/create), it will automatically inherit any add-ons and/or discounts associated with the plan. You can[override those details](/braintree/docs/guides/recurring-billing/create/node#overriding-plan-details)at the time you create or update the subscription.",
+      "location": "line 58, ## Add-ons and discounts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "recurring-billing-plans-node-recurring-payments-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-recurring-billing-plans-node]] - Braintree plan-template inheritance, EU price and dormant-customer notice qualification, and Control Panel/API boundaries for recurring-billing add-ons and discounts",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve the European Union scope, four-week period and six-or-more-month condition on the notice requirements.",
+          "Keep the API create/update prohibition scoped to add-ons and discounts; the page separately displays API plan creation.",
+          "State automatic inheritance only for new subscriptions and do not infer propagation to existing subscriptions.",
+          "Keep endpoint field inventories and worked request examples in the primary raw or dedicated API sources."
+        ]
+      },
+      {
+        "update_id": "recurring-billing-plans-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-recurring-billing-plans-node]] - Node.js recurring-billing guide for plan templates, new-subscription inheritance, add-on and discount control boundaries, and subscription-time overrides",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not duplicate the dedicated plan-create or plan-update request inventories in the concept route.",
+          "Distinguish Control Panel creation of add-ons and discounts from API plan creation.",
+          "Do not claim plan changes propagate to existing subscriptions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/recurring-billing/plans/node-2026-09-16.md",
+  "raw_sha256": "56a221c8db65df502e5b33dcadbb3b62c5168b47de076f5f8f32d74a27191ec8",
+  "status": "candidate_ready"
+}

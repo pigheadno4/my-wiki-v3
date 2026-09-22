@@ -329,6 +329,8 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 
 ## Sources
 
+- [[source-braintree-transactions-guide-node]] - Braintree Node.js transaction-level route to account-qualified dispute details on the transaction response, disputed-transaction search by dispute date, and banking-partner-dependent handling
+
 - [[source-braintree-dispute-add-text-evidence-node]] - Braintree Node.js text-evidence addition for `open` disputes, restricted to merchants with Control Panel dispute access, with plain and categorized evidence routes and a separate finalization boundary for submission to the banks
 
 - [[source-braintree-dispute-remove-evidence-node]] - Braintree Node.js removal of one evidence item by dispute and evidence IDs while the dispute is `Open`, restricted to merchants with Control Panel dispute access and distinct from evidence submission or finalization

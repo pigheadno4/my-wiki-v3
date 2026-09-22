@@ -1,0 +1,76 @@
+{
+  "job_id": "recurring-billing-create-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Recurring Billing Create (Node.js)\"\ntype: source\ndate_ingested: 2026-09-22\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/recurring-billing/create/node\"\nraw_files:\n  - \"braintree/docs/guides/recurring-billing/create/node-2026-09-16.md\"\ntags: [braintree, node-js, recurring-billing, subscriptions]\n---\n\n## Overview\n\nThis Braintree Node.js guide explains how subscription creation combines a stored payment method with a plan, and how the plan supplies pricing, trial, billing, add-on and discount details unless selected details are overridden. It also distinguishes creation and initial-charge behavior for subscriptions that bill immediately, begin on a future billing date, or include a trial.\n\n## Key takeaways\n\n- The basic inputs are a stored `payment_method_token` and a `plan_id`; the subscription inherits the plan's price, trial duration, billing details, add-ons and discounts. A payment-method nonce is available only under the guide's linked conditions, and the payment method must already be vaulted before association with the subscription.\n- Payment-method tokens carry no 3D Secure data. When 3DS must apply to the first transaction, the guide requires creating the subscription with a 3DS-enriched payment-method nonce.\n- With multiple merchant accounts, creation can select an account or use the default. The selected account must use the plan's currency; otherwise attempted subscription transactions trigger a validation error, and a different currency requires a new plan.\n- Selected plan details can be overridden during creation; the exact override categories and examples remain in the pinned raw under `## Overriding plan details`.\n- Without a trial, immediate billing attempts the charge and submits the transaction for settlement right away; the subscription is created as `Active` only after a successful attempt, while a failed attempt creates no subscription. A future-billing subscription is created immediately as `Pending`, then becomes `Active` or `Past Due` according to the first billing-date charge attempt. A trial subscription is created as `Active`, with the charge attempted at trial end and failure changing it to `Past Due`.\n- Subscription days run midnight to midnight in the gateway account's time zone, regardless of creation time. Braintree separately directs merchants to read its trial-period risks and requirements before configuring trials.\n\n## Detail locators\n\n- Stored token and plan prerequisites, inherited plan details, conditional nonce route and vault prerequisite: `# Create Subscriptions`, lines 14-20.\n- First-transaction 3DS requirement: `# Create Subscriptions`, line 40.\n- Merchant-account selection, defaulting and plan-currency warning: `## Specifying merchant account`, lines 41-47.\n- Plan-detail override categories and worked examples: `## Overriding plan details`, lines 72-84.\n- Immediate, future-date and trial transaction flows: `## Transaction flow`, lines 87-121.\n- Trial risk route and full status-flow diagram route: `## Transaction flow`, lines 124-127.\n- Gateway-time-zone definition of a subscription day: `## Subscription days`, lines 128-130.\n- Optional recurring-billing email setup and enablement route: `## Email notifications`, lines 131-133.\n\n## Evidence limitations\n\n> [!warning] Settlement submission is not settlement completion\n> For immediate billing, the guide says Braintree attempts the charge and submits the transaction for settlement right away. It does not say that settlement completes immediately. Detailed request fields, validation behavior, status definitions, trial requirements and later lifecycle behavior remain with the linked references or the pinned raw.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[recurring-payments]]\n- Supporting concept: [[braintree-server-sdk]]\n- Dedicated Node.js request reference: [[source-braintree-subscription-create-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/recurring-billing/create/node-2026-09-16|Braintree Node.js recurring-billing creation guide]] - complete collected page covering prerequisites, inherited and overridden plan details, merchant-account currency, initial transaction flows, subscription-day timing and optional notifications\n",
+  "quotes": [
+    {
+      "text": "To create a subscription, you only need a[stored`payment_method_token`](/braintree/docs/guides/payment-methods)and a[`plan_id`](/braintree/docs/guides/recurring-billing/plans). The subscription will be created using the price, trial duration (if any), billing details, and any add-ons or discounts specified within the plan's details.",
+      "location": "line 16, # Create Subscriptions"
+    },
+    {
+      "text": "However, payment method tokens do not carry any 3D Secure data. If you use 3D Secure and need to apply 3DS to the first transaction of a new subscription, you must[create the subscription using a 3DS-enriched payment method nonce](/braintree/docs/reference/request/subscription/create/node#create-with-3d-secure-enriched-payment-method-nonce).",
+      "location": "line 40, # Create Subscriptions"
+    },
+    {
+      "text": "The specified merchant account must be in the same currency as the subscription plan, or any attempted subscription transactions will trigger a [validation error](/braintree/docs/reference/general/validation-errors/all#code-91923) . If you want to use a merchant account with a different currency, you must create a new plan with the indicated currency.",
+      "location": "line 47, ## Specifying merchant account > IMPORTANT"
+    },
+    {
+      "text": "The transaction flow depends on when the subscription is set to start and whether it includes a trial period.",
+      "location": "line 89, ## Transaction flow"
+    },
+    {
+      "text": "Each subscription day runs from midnight to midnight in the time zone associated with your gateway account, regardless of the time of day the subscription was created. For example, a subscription created at 11pm in your Control Panel time zone will be in its second day at midnight.",
+      "location": "line 130, ## Subscription days"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "recurring-billing-create-node-recurring-payments-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-recurring-billing-create-node]] - Braintree Node.js guide to stored-payment-method and plan prerequisites, plan-derived subscription setup, and start-date or trial-dependent creation, charge and status timing",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the Node.js guide scope and do not turn its examples into a complete request schema.",
+          "Keep payment-method vaulting, first-transaction 3DS nonce and merchant-account currency prerequisites discoverable.",
+          "Distinguish submitting a transaction for settlement from completed settlement.",
+          "Retain the immediate, future-date and trial conditions when describing creation, charge attempts and status changes."
+        ]
+      },
+      {
+        "update_id": "recurring-billing-create-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-recurring-billing-create-node]] - Node.js recurring-billing guide for vaulted payment-method and plan prerequisites, plan inheritance, and immediate, future-date or trial-dependent initial transaction flow",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this guide distinct from the dedicated subscription-create request reference, which owns detailed request shapes.",
+          "Preserve the plan-currency condition and the difference between settlement submission and settlement completion.",
+          "Do not infer later subscription lifecycle behavior beyond the initial flows stated in the primary guide."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/recurring-billing/create/node-2026-09-16.md",
+  "raw_sha256": "1d4904f9ceb4506f7162275a1ceecbff27d8477179b5a09f7fcbf2e5ff5ae471",
+  "status": "candidate_ready"
+}

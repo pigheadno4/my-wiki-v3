@@ -1,0 +1,21 @@
+{
+  "job_id": "recurring-billing-overview",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full review ran from 2026-09-22T13:10:28Z to 2026-09-22T13:12:27Z UTC. The candidate accurately preserves the Braintree Marketplace incompatibility, monthly-increment scope, plan/Vault/subscription setup flow, and the Pending, Active, Expired and Canceled meanings. It also correctly routes manual retry, automatic-retry configuration, payment-method-update/proration behavior and related local Node.js authorities without importing request-schema detail. One bounded lifecycle defect blocks approval: the Past Due takeaway omits the raw page's indefinite retry path and does not clearly retain that an unsuccessfully retried subscription remains Past Due until its specified cycle count makes it Expired or it is canceled. The current wording instead ends at a configured cycle count or cancellation, which can mislead readers when no cycle cap ends retries. The five-quote grounding set also lacks direct evidence for the candidate's retained Expired/Canceled definitions and the reciprocal route's claim to cover all five status meanings. All other reviewed identity, provenance, locator, candidate/receipt, suggestions/receipt, raw-route, related-route and concept-placement checks passed; the blocker-completeness pass found no additional material issue.",
+  "required_changes": [
+    "Revise the Past Due takeaway to preserve the complete raw-line-52 qualification: after unsuccessful retries, the balance continues to increase and Braintree continues retrying each billing cycle either indefinitely or until the subscription's specified number of cycles is reached; the status remains Past Due until that cycle count changes it to Expired or the subscription is canceled. Concrete query: `What happens after repeated unsuccessful Past Due retries when there is no reached cycle limit?` The current source suggests only a configured-cycle-count or cancellation endpoint and therefore omits the documented indefinite path; an exact raw locator does not cure that misleading retained summary.",
+    "Rebalance the three-to-five grounding excerpts so the retained status inventory is directly supported without exceeding five quotes. A bounded correction is to expand the setup excerpt through the Integration steps list, combine Pending and Active into one byte-exact excerpt, retain the Marketplace and full Past Due excerpts, and use the freed slot for the Expired and Canceled definitions at raw lines 55-62. Keep the reciprocal update's quote_indexes aligned to that corrected set; no additional concept or schema detail is required."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "recurring-billing-overview-recurring-payments-route",
+      "verdict": "rejected",
+      "reason": "The reciprocal route, recurring-payments target, Sources anchor, Marketplace warning and setup/status vocabulary are otherwise accurate and purpose-fit. Approval is blocked until the Past Due indefinite-retry qualification is restored in the candidate and the quote set directly grounds the Expired/Canceled meanings named by the proposed route; the same route can be resubmitted after that bounded correction."
+    }
+  ],
+  "reviewer_identity": "bt14-r-overview",
+  "reviewer_model": "gpt-5.6-sol"
+}

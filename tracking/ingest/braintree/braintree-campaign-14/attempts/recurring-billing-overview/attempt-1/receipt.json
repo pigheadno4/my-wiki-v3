@@ -1,0 +1,57 @@
+{
+  "job_id": "recurring-billing-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Recurring Billing Overview\"\ntype: source\ndate_ingested: 2026-09-22\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/recurring-billing/overview\"\nraw_files:\n  - \"braintree/docs/guides/recurring-billing/overview-2026-09-16.md\"\ntags: [braintree, recurring-billing, subscriptions, vault]\n---\n\n## Overview\n\nThis Braintree guide introduces recurring billing as automatic customer charging in monthly increments and routes the setup sequence from plans and vaulted customer payment methods to subscription creation and management. It also defines the main subscription statuses and their billing significance.\n\n## Key takeaways\n\n- Braintree explicitly states that its recurring billing is not compatible with Braintree Marketplace. The guide does not document an alternative Marketplace subscription flow.\n- Setup requires a plan created through the API or Control Panel and a customer with a payment method stored in the Vault. Subscription creation then associates the customer's preferred payment method with the plan; the guide's integration sequence is create plans, create subscriptions, and manage subscriptions.\n- `Pending` means the subscription has not started, such as when its specified billing date is in the future. `Active` subscriptions are charged on the next billing date, and subscriptions in a trial period are `Active`.\n- `Past Due` most commonly follows a failed subscription payment, but can also result from a balance too high to process or merchant-account setup that prevents transaction creation. For payment failures, the guide routes manual retry and Control Panel automatic-retry setup; it also describes a qualified automatic retry after the associated payment method is updated when proration is enabled. A successful retry before the final billing date returns the subscription to `Active`; unsuccessful retries can increase the balance each billing cycle until the configured cycle count is reached or the subscription is canceled.\n- `Expired` means the subscription reached its specified number of billing cycles. Canceling makes the status `Canceled` and stops further billing.\n\n## Detail locators\n\n- Braintree Marketplace incompatibility: `# Overview > AVAILABILITY`, lines 16-17.\n- Monthly recurring-billing purpose, plan and Vault prerequisites, and payment-method-to-plan association: `# Overview`, line 19.\n- Required Vault preparation and the three-step integration route: `## Integration steps`, lines 22-29.\n- `Pending` and `Active` meanings, including future billing dates and trial status: `## Subscription statuses > ### Pending` and `### Active`, lines 37-44.\n- `Past Due` causes, manual and automatic retry routes, payment-method-update/proration condition, recovery and balance-growth behavior: `## Subscription statuses > ### Past Due`, lines 47-52.\n- `Expired` and `Canceled` meanings: `## Subscription statuses > ### Expired` and `### Canceled`, lines 55-62.\n\n## Evidence limitations\n\n> [!warning] Availability and lifecycle boundary\n> This page makes Braintree recurring billing unavailable with Braintree Marketplace and describes monthly-increment billing. It does not establish a Marketplace substitute, a complete request schema, exact retry configuration, transaction settlement finality, or behavior beyond the stated subscription-status transitions.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[recurring-payments]]\n- Node.js subscription creation details: [[source-braintree-subscription-create-node]]\n- Node.js manual past-due retry details: [[source-braintree-subscription-retry-charge-node]]\n- Node.js cancellation details: [[source-braintree-subscription-cancel-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/recurring-billing/overview-2026-09-16|Braintree recurring-billing overview]] - complete collected page covering availability, setup sequence and subscription-status meanings\n",
+  "quotes": [
+    {
+      "text": "Braintree's recurring billing is not compatible with Braintree Marketplace.",
+      "location": "line 17, # Overview > AVAILABILITY"
+    },
+    {
+      "text": " With Braintree's recurring billing, you can charge your customers automatically in monthly increments.     To set this up, you'll need to create a plan [via the API](/braintree/docs/guides/recurring-billing/plans) or [in the Control Panel](/braintree/articles/guides/recurring-billing/plans) and [store your customers in the Vault](/braintree/docs/guides/customers#create). Then use [Subscription: Create](/braintree/docs/reference/request/subscription/create) to associate each customer's preferred payment method with the plan.",
+      "location": "line 19, # Overview"
+    },
+    {
+      "text": "Pending subscriptions are subscriptions that have not started yet. For example, if you create a subscription with a specific billing date in the future, the subscription will start out as Pending.",
+      "location": "line 39, ## Subscription statuses > ### Pending"
+    },
+    {
+      "text": "Active subscriptions will be charged on the next billing date. You can get the dates from the [subscription object](/braintree/docs/reference/response/subscription). Subscriptions in a trial period are Active.",
+      "location": "line 44, ## Subscription statuses > ### Active"
+    },
+    {
+      "text": " A subscription status can change to Past Due for multiple reasons. The most common reason is a failed subscription payment. Other less common reasons for a Past Due status include that the balance is too high to be processed **or** issues in the merchant account setup, that would prevent a transaction from being created.     If the reason for your Past Due status is a failed subscription payment, you can manually retry the charge, or you can [set up logic in the Control Panel](/braintree/articles/guides/recurring-billing/recurring-advanced-settings#automatic-retries) to automatically retry a declined or failed charge at specific intervals. Additionally, a Past Due subscription will be automatically retried if [the payment method associated with the subscription is updated](/braintree/docs/guides/recurring-billing/manage#updating-past-due-subscriptions) and you have [proration](/braintree/articles/guides/recurring-billing/recurring-advanced-settings#proration) enabled. If the retried transaction is successful and the subscription has not passed its final billing date, the status will change to Active.     If a retried transaction is unsuccessful, the balance on the past due subscription will continue to increase every billing cycle, and we'll continue to retry the transaction each billing cycle\u2014either indefinitely or until the number of cycles in the subscription is reached. If all retries are unsuccessful, the subscription\u2019s status will remain Past Due until the subscription a) reaches the specified [number of billing cycles](/braintree/articles/guides/recurring-billing/billing-cycles#number-of-billing-cycles) and the status changes to Expired, or b) is canceled.",
+      "location": "line 52, ## Subscription statuses > ### Past Due"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "recurring-billing-overview-recurring-payments-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-recurring-billing-overview]] - Braintree recurring-billing availability, plan-and-Vault setup flow, and `Pending`, `Active`, `Past Due`, `Expired` and `Canceled` subscription meanings",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the explicit incompatibility with Braintree Marketplace.",
+          "Keep the plan, vaulted customer payment method and subscription association as distinct setup steps.",
+          "Retain the future-date, trial, final-billing-date and proration qualifications attached to status and retry behavior.",
+          "Do not expand the page's monthly-increment scope or infer settlement finality, exact retry configuration or a Marketplace alternative."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/recurring-billing/overview-2026-09-16.md",
+  "raw_sha256": "8a1981226ceba54b93957207cf46ead00559374064a980e43d6802e73927867a",
+  "status": "candidate_ready"
+}
