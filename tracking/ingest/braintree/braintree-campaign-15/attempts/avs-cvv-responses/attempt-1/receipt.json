@@ -1,0 +1,53 @@
+{
+  "job_id": "avs-cvv-responses",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree AVS and CVV Response Codes\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/processor-responses/avs-cvv-responses\"\nraw_files:\n  - \"braintree/docs/reference/general/processor-responses/avs-cvv-responses-2026-09-16.md\"\ntags: [braintree, avs, cvv, card-verification, processor-responses]\n---\n\n## Overview\n\nThis Braintree reference defines the documented Address Verification System (AVS) and Card Verification Value (CVV) response categories. It distinguishes matches and mismatches from not-verified, not-provided, unsupported or nonparticipating, not-applicable, skipped and AVS system-error outcomes, while preserving an evidence gap in the damaged introduction that should have named the response objects.\n\n## Key takeaways\n\n- AVS reports postal-code and street-address results separately. For each, `M` means the supplied value matches the cardholder bank's information, `N` means it does not match, `U` means the issuing bank received the value but did not verify it, and `I` means the value was not provided.\n- An AVS `U` is not a mismatch: the page says it typically occurs when the processor declines an authorization before the bank evaluates the postal code or street address.\n- The remaining AVS categories are issuing-bank non-support (`S`), system error preventing verification (`E`), transaction type not supporting address verification (`A`), and a skipped AVS check (`B`). The page says `S` typically indicates an issuing bank outside the US, Canada and the UK.\n- CVV uses match (`M`), mismatch (`N`), not verified (`U`), not provided (`I`), issuer nonparticipation (`S`), not applicable (`A`) and skipped (`B`) categories. For `U`, the page again qualifies that the bank may have declined authorization before evaluating the CVV; `I` also occurs for a transaction made with a vaulted payment method.\n- The collected introduction reads only `Available on theandresponse objects.` Because the object names are missing, this page cannot establish which response objects or SDK fields expose these values. It also does not state that an AVS/CVV match guarantees transaction approval or that a mismatch alone determines a decline, fraud decision or retry action.\n\n> [!warning] Damaged response-object scope\n> Do not reconstruct the missing response-object names or field placement from the tables. Use this page for result-category semantics only; consult a complete operation or SDK authority before attributing the categories to a specific object, field or transaction outcome.\n\n## Detail locators\n\n- Damaged response-object introduction: `# AVS and CVV Response Codes`, line 16.\n- AVS postal-code match, mismatch, not-verified and not-provided categories: `## AVS`, lines 19-24.\n- AVS street-address categories plus unsupported, system-error, not-applicable and skipped results: `## AVS`, lines 25-32.\n- CVV match, mismatch, not-verified, not-provided/vaulted, issuer-nonparticipation, not-applicable and skipped results: `## CVV`, lines 35-45.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Related stored-payment-method update route: [[source-braintree-payment-method-update-node]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/guides/fraud-tools/basic/avs-cvv-rules-2026-09-16|Braintree AVS and CVV rules]] - navigation-only route linked for Vault-specific rules; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/processor-responses/avs-cvv-responses-2026-09-16|Braintree AVS and CVV Response Codes]] - complete collected page defining AVS postal/street and CVV result categories with a damaged response-object introduction\n",
+  "quotes": [
+    {
+      "text": "Available on theandresponse objects.",
+      "location": "# AVS and CVV Response Codes, line 16"
+    },
+    {
+      "text": "| Postal Code matches (M) | The postal code provided matches the information on file with the cardholder's bank. |\n| Postal Code does not match (N) | The postal code provided does not match the information on file with the cardholder's bank. |\n| Postal Code not verified (U) | The card-issuing bank received the postal code but did not verify whether it was correct. This typically happens if the processor declines an authorization before the bank evaluates the postal code. |\n| Postal Code not provided (I) | No postal code was provided. |",
+      "location": "# AVS and CVV Response Codes > ## AVS, lines 21-24"
+    },
+    {
+      "text": "| Street Address matches (M) | The street address provided matches the information on file with the cardholder's bank. |\n| Street Address does not match (N) | The street address provided does not match the information on file with the cardholder's bank. |\n| Street Address not verified (U) | The card-issuing bank received the street address but did not verify whether it was correct. This typically happens if the processor declines an authorization before the bank evaluates the address. |\n| Street Address not provided (I) | No street address was provided. |\n| Issuing bank does not support AVS (S) | AVS information was provided but the card-issuing bank does not participate in address verification. This typically indicates a card-issuing bank outside of the US, Canada, and the UK. |\n| AVS system error (E) | A system error prevented any verification of street address or postal code. |\n| AVS not applicable (A) | AVS information was provided but this type of transaction does not support address verification. |\n| AVS skipped (B) | AVS checks were skipped for this transaction. |",
+      "location": "# AVS and CVV Response Codes > ## AVS, lines 25-32"
+    },
+    {
+      "text": "| CVV matches (M) | The CVV provided matches the information on file with the cardholder's bank. |\n| CVV does not match (N) | The CVV provided does not match the information on file with the cardholder's bank. |\n| CVV is not verified (U) | The card-issuing bank received the CVV, but did not verify whether it was correct. This typically happens if the bank declines an authorization before evaluating the CVV. |\n| CVV not provided (I) | No CVV was provided. This also happens if the transaction was made with a vaulted payment method.[Learn more about AVS and CVV rules in the Vault.](/braintree/articles/guides/fraud-tools/basic/avs-cvv-rules#avs-and-cvv-rules-in-the-vault) |\n| Issuer does not participate (S) | The CVV was provided but the card-issuing bank does not participate in card verification. |\n| CVV not applicable (A) | The CVV was provided but this type of transaction does not support card verification. |\n| CVV skipped (B) | CVV checks were skipped for this transaction. |",
+      "location": "# AVS and CVV Response Codes > ## CVV, lines 39-45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "avs-cvv-responses-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-avs-cvv-responses]] - AVS postal/street and CVV match, mismatch, not-verified, not-provided, unsupported or nonparticipating, not-applicable and skipped response categories, plus AVS system-error semantics and an unreconstructed response-object evidence gap",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not reconstruct the missing response-object names or infer SDK field placement from the damaged introduction.",
+          "Keep `U` distinct from `N`: not verified may reflect an authorization decline before the bank evaluates the supplied value.",
+          "Preserve that CVV `I` can also occur for a transaction made with a vaulted payment method.",
+          "Do not infer transaction approval, decline, fraud disposition or retry behavior from an AVS/CVV category alone.",
+          "Keep the linked Vault rules as navigation-only until fully read."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/processor-responses/avs-cvv-responses-2026-09-16.md",
+  "raw_sha256": "8c85badbe6e42704ebc46e26ed8ee85e3ee143c9bc00035d3ab6cdc33f9aca41",
+  "status": "candidate_ready"
+}

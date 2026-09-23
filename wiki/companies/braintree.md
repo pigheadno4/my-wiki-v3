@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 111
+source_count: 121
 ---
 
 ## Overview
@@ -11,9 +11,20 @@ Braintree is represented in this wiki by sixteen independently tracked repositor
 
 ## Website Documentation
 
-Ninety-five independently reviewed website sources complement the sixteen repository
+One hundred five independently reviewed website sources complement the sixteen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-best-practices-node]] - Node server-SDK response-code, timeout-uncertainty and transport-security guidance with historical version and certificate-table qualifications
+- [[source-braintree-authorization-responses]] - processor authorization response classes, gateway-rejection distinction and card-network retry restrictions
+- [[source-braintree-exceptions-node]] - Node server-SDK exception categories and distinct timeout boundaries without inferred transaction failure or retry safety
+- [[source-braintree-result-objects-node]] - Node result-wrapper versus collection behavior, and validation-only error details distinct from other failed results
+- [[source-braintree-server-sdk-deprecation-policy]] - server-SDK lifecycle categories and maintenance routes without inferring a current version's status
+- [[source-braintree-server-sdk-migration-guide-node]] - historical Node 2.24.0-or-earlier to v3 migration changes and damaged legacy-function rendering
+- [[source-braintree-upgrade]] - historical Server-to-Server, Transparent Redirect and Braintree.js migration routes to client SDKs and payment-method nonces
+- [[source-braintree-settlement-responses]] - capture-request processor responses distinguishing settled, pending and declined outcomes
+- [[source-braintree-avs-cvv-responses]] - AVS postal/street and CVV response categories, with damaged response-object naming and no inferred transaction outcome
+- [[source-braintree-merchant-advice-codes]] - optional Mastercard advice codes, stop/no-retry instructions and exact wait durations under separate retry restrictions
 
 - [[source-braintree-recurring-billing-manage-node]] - Node.js subscription-management guide covering status-qualified updates, proration and failed-charge behavior, past-due retries, version-qualified retry settlement, and transaction-based refunds
 - [[source-braintree-recurring-billing-testing-go-live-node]] - Braintree Node.js route for sandbox recurring-billing setup and test-value locators, plus the separate production credentials, recreated settings and plans, environment switch, and limited real-payment settlement checks
@@ -228,7 +239,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested website-document sources: 95 (Braintree C01–C14; raw snapshots collected 2026-09-16)
+- Ingested website-document sources: 105 (Braintree C01–C15; raw snapshots collected 2026-09-16)
 - Ingested cumulative GitHub repository sources: 16
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`

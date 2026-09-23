@@ -6,6 +6,25 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-23] ingest | Braintree website C15
+
+- Ten website sources independently read, reviewed and promoted: Best Practices,
+  Authorization Responses, Exceptions, Result Objects, Server SDK Deprecation
+  Policy, Server SDK Migration Guide, Upgrade, Settlement Responses, AVS/CVV
+  Responses and Merchant Advice Codes.
+- Initial content approvals9/10; one Best Practices timeout-scope correction
+  received targeted diff/context review. No full retry review. Historical SDK
+  scope, pending-versus-settled outcomes and card-network retry constraints were
+  preserved; routine code tables remain behind exact raw locators.
+- Approved reciprocal retrieval routes were added to existing concepts. Company
+  and provider index cover121 sources=105 website+16 GitHub, excluding changelogs.
+- Fixed query audit, mechanical close and timings are in
+  tracking/ingest/braintree/braintree-campaign-15/quality-audit.md and
+  retrospective.md. This entry records promotion, not an extra close gate.
+- No raw edits, collection, GitHub ingest, code/rule changes or next campaign
+  during C15 execution. Commit/push require a separate authorization; unrelated
+  shared-checkout changes were preserved.
+
 ## [2026-09-22] ingest | Braintree website C14
 
 - Ten website guides/references independently read, reviewed and promoted:

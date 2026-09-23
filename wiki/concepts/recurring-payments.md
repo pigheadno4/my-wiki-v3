@@ -91,6 +91,8 @@ See platform-specific concept pages for integration details:
 
 ## Sources
 
+- [[source-braintree-authorization-responses]] - Braintree processor-decline categories and retry restrictions, including recurring-ECI limits and same-payment-information restrictions
+
 - [[source-braintree-recurring-billing-plans-node]] - Braintree plan-template inheritance, EU price and dormant-customer notice qualification, and Control Panel/API boundaries for recurring-billing add-ons and discounts
 
 - [[source-braintree-recurring-billing-manage-node]] - Braintree Node.js subscription-management guide for status-dependent updates, proration, retry handling, settlement qualification and refunds

@@ -1,0 +1,72 @@
+{
+  "job_id": "authorization-responses",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Authorization Responses\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/processor-responses/authorization-responses\"\nraw_files:\n  - \"braintree/docs/reference/general/processor-responses/authorization-responses-2026-09-16.md\"\ntags: [braintree, authorization, processor-responses, declines, retries]\n---\n\n## Overview\n\nThis Braintree reference explains processor authorization response classes, including approvals, hard and soft declines, and network problems. It also documents retry restrictions that narrow when a declined transaction may be attempted again; the full response-code inventory and code-specific implications remain in the raw page.\n\n## Key takeaways\n\n- Braintree says 1000-class codes mean the processor successfully authorized the transaction and `success` is true. That processor approval does not rule out a separate gateway rejection under the merchant's processing settings.\n- A 2000-class code means the processor declined the authorization and `success` is false, while a 3000-class code indicates a back-end processing-network problem. The page warns that an individual code's explanation can be ambiguous.\n- Hard declines are non-temporary issues for which another attempt with the same payment method is unlikely to succeed. Soft declines are temporary and may succeed on a later attempt, but that category does not itself grant unrestricted retries.\n- Mastercard prohibits retries for the listed hard-decline codes. Transactions originally carrying a recurring ecommerce indicator have additional card-association restrictions: soft declines are limited to 15 retries in 30 days, codes 2004 and 2015 must not be retried, and code 2005 must not be retried with the same payment information.\n- Authorization and capture can incur merchant fees in some markets. The page routes the fee qualification to the Braintree User Agreement and does not state that every authorization or capture incurs a fee.\n\n## Scope boundary\n\nThis page classifies processor authorization responses and retry handling. Processor approval is distinct from gateway acceptance, and neither an approval class nor `success` alone establishes capture or final settlement. Code-specific meanings, customer guidance, payment-method qualifications, and the complete decline table remain at the raw locators below.\n\n## Detail locators\n\n- Some-market merchant-fee qualification and Braintree User Agreement route: `# Authorization > **NOTE**`, lines 17-18.\n- 1000-class processor approval, `success` value, and separate gateway-rejection possibility: `## Approvals`, lines 21-23.\n- Approval-code inventory, including refund, credit, voice-authorization, partial-approval, risk and settlement-captured cases: `## Approvals`, lines 25-32.\n- 2000-class declines, 3000-class network problems and ambiguity qualification: `## Declines`, lines 35-37.\n- Hard-versus-soft decline definitions and general pending-order retry approach: `### Types of declines` through `#### Retrying declined transactions`, lines 38-52.\n- Mastercard prohibited-retry codes and recurring-ECI retry restrictions: `#### Retrying declined transactions`, lines 54-74.\n- Complete response-code meanings, implications and hard/soft labels: `### Decline codes`, lines 77-191.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Recurring-ECI retry context: [[recurring-payments]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/processor-responses/authorization-responses-2026-09-16|Braintree authorization-response reference]] - complete collected page covering approval and decline classes, retry restrictions, merchant-fee qualification, and the response-code table\n",
+  "quotes": [
+    {
+      "text": "Authorization and capture can incur merchant fees in some markets. For more information, see your [Braintree User Agreement](https://www.braintreepayments.com/legal) .",
+      "location": "line 18, # Authorization > NOTE"
+    },
+    {
+      "text": "1000-class codes mean the processor has successfully authorized the transaction and success will be true. However, depending on your processing settings, it is possible that the authorization will be[gateway rejected](/braintree/articles/control-panel/transactions/gateway-rejections)even if the processor returns a successful response.",
+      "location": "line 23, ## Approvals"
+    },
+    {
+      "text": "2000-class codes mean the authorization was declined by the processor and success will be false; 3000-class codes indicate a problem with the back-end processing network. The code is meant to tell you more about why the card was declined, but it can sometimes be ambiguous. For some of the more elusive processor responses, we\u2019ve included more context below.",
+      "location": "line 37, ## Declines"
+    },
+    {
+      "text": "- **Hard declines**are the result of an error or issue which can't be resolved immediately; the decline is not temporary and subsequent attempts with the same payment method will likely not be successful.\n- **Soft declines**result from a temporary issue and can be retried; subsequent transaction attempts with the provided payment method information may process successfully.",
+      "location": "lines 43-44, ### Types of declines"
+    },
+    {
+      "text": "Additionally, some card associations have rules around retrying transactions originally passed with a recurring ecommerce indicator (ECI) flag. To comply with these rules, do not attempt manual or automated retries on transactions with this flag in the following cases:\n\n\n- **Soft declines**: Do not retry the transaction more than 15 times in 30 days\n- **2004 hard decline**: Do not retry the transaction\n- **2005 hard decline**: Do not retry the transaction with the same payment information\n- **2015 hard decline**: Do not retry the transaction",
+      "location": "lines 64-70, #### Retrying declined transactions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "authorization-responses-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-authorization-responses]] - processor authorization approvals, decline and network-response classes, hard-versus-soft handling, retry restrictions, and the some-market merchant-fee qualification",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep processor approval distinct from a separate gateway rejection and do not infer capture or final settlement from `success`.",
+          "Do not turn soft-decline retryability into permission for unrestricted retries; preserve the network and recurring-ECI restrictions.",
+          "Keep the fee statement qualified to authorization and capture in some markets; the page does not say every attempt incurs a fee.",
+          "Leave the complete response-code inventory and code-specific implications in the raw source."
+        ]
+      },
+      {
+        "update_id": "authorization-responses-recurring-payments-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-authorization-responses]] - Braintree processor-decline categories and retry restrictions, including recurring-ECI limits and same-payment-information restrictions",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the 15-in-30-days and code-specific restrictions conditioned on transactions originally passed with a recurring ecommerce indicator flag.",
+          "Do not generalize the listed Braintree processor codes into universal cross-provider dunning rules."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/processor-responses/authorization-responses-2026-09-16.md",
+  "raw_sha256": "13a556093c15d117f6837e37a400770cb0a116698617c5803ba69cf786234999",
+  "status": "candidate_ready"
+}

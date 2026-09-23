@@ -1,0 +1,56 @@
+{
+  "job_id": "settlement-responses",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Settlement Responses\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/processor-responses/settlement-responses\"\nraw_files:\n  - \"braintree/docs/reference/general/processor-responses/settlement-responses-2026-09-16.md\"\ntags: [braintree, settlement, processor-responses, capture, refunds]\n---\n\n## Overview\n\nThis Braintree reference classifies 4000-class processor responses for requests to capture funds and says Braintree updates the transaction status according to the processor response. It separates settled approval, settlement-pending and decline responses so a pending response is not mistaken for final settlement.\n\n## Key takeaways\n\n- Braintree describes 4000-class codes as indicating success or failure of a request to capture funds and says the processor response is used to update transaction status.\n- Approval code `4000` is labeled `Settled`. The separate pending-request code `4002` is labeled `Settlement Pending`; it is not the settled approval and does not by itself establish final settlement.\n- Decline code `4001` means the processor declined to settle the sale or refund request. The decline table also routes already-captured, already-refunded, PayPal risk, capture-amount-limit and PayPal refund/account conditions to their exact response rows.\n- `4018 PayPal Pending Payments Not Supported` appears under declines, not under pending requests: it covers a PayPal pending sale or refund response that Braintree disallows, says account misconfiguration is a likely cause and directs readers to transaction details. It should not be collapsed into `4002 Settlement Pending`.\n\n## Detail locators\n\n- 4000-class capture-request scope and transaction-status update: `# Settlement`, lines 16-17.\n- Settled approval code: `## Approvals`, lines 18-22.\n- Settlement-pending response: `## Pending requests`, lines 25-29.\n- Processor settlement decline and other decline categories: `## Declines`, lines 32-49.\n- Disallowed PayPal pending-payment response and transaction-detail route: `## Declines`, line 41.\n\n## Evidence limitations\n\n> [!warning] Pending response is not final settlement\n> Code `4002 Settlement Pending` is documented separately from `4000 Settled`. This response table does not establish when or whether a pending transaction will reach final settlement, confirm funds movement, or provide a general safe-retry rule. Follow the transaction's updated status and the applicable operation-specific authority before fulfillment or another capture/refund attempt.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Settlement-submission operation: [[source-braintree-transaction-submit-for-settlement-node]]\n- Refund operation and settlement-failure route: [[source-braintree-transaction-refund-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/processor-responses/settlement-responses-2026-09-16|Braintree settlement responses]] - complete collected response table separating settled approval, settlement pending and decline codes\n",
+  "quotes": [
+    {
+      "text": "4000-class codes indicate the success or failure of the request to capture the funds. Based on the\nprocessor response we receive, we will update the[transaction status](/braintree/docs/reference/general/statuses#transaction)accordingly.",
+      "location": "lines 16-17, # Settlement"
+    },
+    {
+      "text": "| 4000 | Settled |",
+      "location": "line 22, # Settlement > ## Approvals"
+    },
+    {
+      "text": "| 4002 | Settlement Pending |",
+      "location": "line 29, # Settlement > ## Pending requests"
+    },
+    {
+      "text": "| 4001 | Settlement Declined | The processor declined to settle the sale or refund request. |",
+      "location": "line 36, # Settlement > ## Declines"
+    },
+    {
+      "text": "| 4018 | PayPal Pending Payments Not Supported | PayPal returned a pending sale or refund response which is disallowed by Braintree. This failure is likely due to a misconfiguration in your PayPal account. Further details may be found in the transaction details. |",
+      "location": "line 41, # Settlement > ## Declines"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "settlement-responses-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-settlement-responses]] - 4000-class capture-request responses separating `4000 Settled`, `4002 Settlement Pending` and settlement declines, including the distinct disallowed PayPal pending-payment decline",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not present `4002 Settlement Pending` as final settlement or confirmed funds movement.",
+          "Keep `4018 PayPal Pending Payments Not Supported` under declines and distinct from the `4002` pending-request response.",
+          "Do not infer a general safe-retry rule or eventual settlement outcome from this response table."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/processor-responses/settlement-responses-2026-09-16.md",
+  "raw_sha256": "3ef08acd765c4b6186e120349fd5ca6dd328166d20203005d5fc324c51218665",
+  "status": "candidate_ready"
+}

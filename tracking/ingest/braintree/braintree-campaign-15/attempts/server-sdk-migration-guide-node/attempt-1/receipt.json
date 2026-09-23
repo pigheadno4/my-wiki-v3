@@ -1,0 +1,56 @@
+{
+  "job_id": "server-sdk-migration-guide-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Server SDK Migration Guide (Node.js)\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/server-sdk-migration-guide/node\"\nraw_files:\n  - \"braintree/docs/reference/general/server-sdk-migration-guide/node-2026-09-16.md\"\ntags: [braintree, node-js, server-sdk, migration, sdk-versioning]\n---\n\n## Overview\n\nThis collected Braintree guide is a historical migration route for Node integrations moving from Server SDK version 2.24.0 or below to major version 3. It identifies the main runtime, gateway-initialization, search-result and exception changes; it is not a universal current upgrade requirement, and the page says a new integration starting on the latest SDK can skip this guide.\n\n## Key takeaways\n\n- Starting with Node SDK 3.0.0, the documented targets are Node 10+ and npm CLI 6+. These are v3 migration-era targets, not evidence of current runtime support.\n- The prior gateway-setup function is rendered as `functionconnect()` in the collected page. The guide says it was deprecated in SDK 2.15.0 and removed in 3.0.0, and replaces it with construction of a `braintree.BraintreeGateway` instance.\n- The `CreditCardGateway` `expired` and `expiringBetween` methods previously returned arrays of credit-card IDs because of a bug. The guide says the updated methods return either an iterable response or a stream containing full credit-card result objects.\n- The migration guide says Down For Maintenance exceptions were renamed Service Unavailable exceptions and that additional timeout exceptions were added to clarify whether the source is the client request or gateway response.\n\n## Detail locators\n\n- Node applicability threshold and skip condition for new latest-SDK integrations: `# Server SDK Migration Guide > **AVAILABILITY**`, lines 17-26.\n- Semantic-versioning purpose and the separate changelog route: `## Overview`, lines 29-33.\n- Node 10+ and npm CLI 6+ targets for SDK 3.0.0: `## SDK major version 3 > ### Node versions`, lines 39-41.\n- Deprecated and removed gateway-setup function plus replacement constructor example: `## SDK major version 3 > ### Creating a gateway instance`, lines 42-53.\n- `expired` and `expiringBetween` result-shape correction: `## SDK major version 3 > ### Search methods for expiring credit cards updated`, lines 55-57.\n- Renamed availability exception and additional timeout categories: `## SDK major version 3 > ### Exceptions`, lines 60-66.\n\n## Evidence limitations\n\n> [!warning] Historical migration scope\n> This page describes the transition from Node SDK 2.24.0 or below to major version 3. It does not establish the currently supported SDK major version, Node runtime, npm version, deprecation deadline or upgrade path from later releases. Use current package and lifecycle authorities for present-day planning. The collected rendering also concatenates the legacy gateway function name with surrounding prose, so this source preserves that limitation instead of treating the page as clean API-signature evidence.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/server-sdk-migration-guide/node-2026-09-16|Braintree Node.js Server SDK Migration Guide]] - complete collected guide for the version-2.24.0-and-below to major-version-3 migration scope\n",
+  "quotes": [
+    {
+      "text": "- ****[Node](/braintree/docs/reference/general/server-sdk-migration-guide/node)migrating from version 2.24.0 and below,",
+      "location": "line 23, # Server SDK Migration Guide > **AVAILABILITY**"
+    },
+    {
+      "text": " You can skip this guide if you are starting a new integration using the latest version of an SDK.",
+      "location": "line 26, # Server SDK Migration Guide > **AVAILABILITY**, after the language-specific thresholds"
+    },
+    {
+      "text": "Starting with version 3.0.0, the Braintree Node SDK targets Node versions 10+ and npm CLI 6+.",
+      "location": "line 41, # Server SDK Migration Guide > ## SDK major version 3 > ### Node versions"
+    },
+    {
+      "text": "Previous code examples used the functionconnect()to set up the Braintree Gateway. This method was deprecated in version 2.15.0, and removed in version 3.0.0. Instead, initialize the gateway by creating a new instance:",
+      "location": "line 44, # Server SDK Migration Guide > ## SDK major version 3 > ### Creating a gateway instance"
+    },
+    {
+      "text": "Previous versions of the Node SDK contained a bug where the expired and expiringBetween methods on CreditCardGateway returned an array of credit card ids rather than the full results. These methods have been updated to return either [an iterable response or a stream](/braintree/docs/reference/general/searching/search-results/node#stream-responses) containing the full credit card result objects. See [expiringBetween](/braintree/docs/reference/request/credit-card/expiring-between/node) for more details.",
+      "location": "line 57, # Server SDK Migration Guide > ## SDK major version 3 > ### Search methods for expiring credit cards updated"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "server-sdk-migration-guide-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-server-sdk-migration-guide-node]] - historical Node Server SDK migration route from version 2.24.0 or below to major version 3, covering runtime targets, gateway initialization, expiring-card search results and exception changes without implying current support",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the route explicitly historical and Node-specific; do not turn the page into a universal current upgrade requirement.",
+          "Do not treat Node 10+, npm CLI 6+ or SDK 3.0.0 as current support/version evidence.",
+          "Preserve the collected `functionconnect()` rendering limitation when discussing the removed gateway-setup function."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/server-sdk-migration-guide/node-2026-09-16.md",
+  "raw_sha256": "1e5908665d025bcc9384679bbe6f5f2bcb32e1e02dfdf238689e6968c1f58ab4",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "merchant-advice-codes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Merchant Advice Codes\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/merchant-responses/merchant-advice-codes\"\nraw_files:\n  - \"braintree/docs/reference/general/merchant-responses/merchant-advice-codes-2026-09-16.md\"\ntags: [braintree, mastercard, merchant-advice-code, declines, retries]\n---\n\n## Overview\n\nThis Braintree reference explains Mastercard Merchant Advice Codes (MACs), which may accompany a declined transaction with a reason or merchant action. When present, the transaction response returns a merchant advice code and corresponding text; some codes prohibit or stop an action, while others suggest whether and when a retry may be considered.\n\n## Key takeaways\n\n- The page names the response values as `merchant_advice_code` and `merchant_advice_code_text`; the collected prose renders those names without surrounding spaces. A MAC is optional, so its absence does not establish a retry instruction.\n- Code `03` means \"Do not try again\", and code `21` means \"Stop recurring payment\". Code `02` says \"Cannot approve at this time, try again later\" but supplies no waiting duration.\n- The duration-specific retry codes are `24` after 1 hour, `25` after 24 hours, `26` after 2 days, `27` after 4 days, `28` after 6 days, `29` after 8 days and `30` after 10 days. These are the exact durations in this table; the page does not define an attempt count or guarantee that a later retry will succeed.\n- The remaining listed meanings identify new account information (`01`), an unsupported token (`04`), a non-reloadable prepaid card (`40`), a single-use virtual card number (`41`) or a multi-use virtual card number (`43`). Consult the raw table for the authoritative code-to-text mapping.\n\n## Retry boundary\n\nA MAC communicates Mastercard decline advice when it is present. This page does not say that a retry-oriented MAC overrides processor-response prohibitions, recurring-payment restrictions, operation state checks or other payment-method rules. Use [[source-braintree-authorization-responses]] for the separately documented authorization-response and retry restrictions before repeating a transaction.\n\n## Detail locators\n\n- Mastercard purpose, optional presence and possible retry-duration information: `# Merchant Advice Codes`, line 16.\n- Transaction-response field names: `# Merchant Advice Codes`, line 18.\n- Account, later-retry, do-not-retry, token and stop-recurring meanings: code table, lines 22-28.\n- Exact retry durations for codes `24` through `30`: code table, lines 29-35.\n- Prepaid and virtual-card meanings for codes `40`, `41` and `43`: code table, lines 36-38.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Authorization decline and retry restrictions: [[source-braintree-authorization-responses]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/merchant-responses/merchant-advice-codes-2026-09-16|Braintree Merchant Advice Codes]] - complete collected page containing the Mastercard purpose, response-field route and full code-to-text table\n",
+  "quotes": [
+    {
+      "text": "Merchant Advice Codes (MACs) are introduced by Mastercard to clearly communicate to merchants the reason for declining transactions, and the course of action that merchants can take. If present, the MAC contains information about why the payment failed, whether it can be retried and in some cases, the recommended duration after which it should be retried.",
+      "location": "line 16, # Merchant Advice Codes"
+    },
+    {
+      "text": "In the transaction responsemerchant_advice_codeand its corresponding descriptionmerchant_advice_code_textwill be returned.",
+      "location": "line 18, # Merchant Advice Codes"
+    },
+    {
+      "text": "| 01 | New account information available |\n| 02 | Cannot approve at this time, try again later |\n| 03 | Do not try again |\n| 04 | Token not supported |\n| 21 | Stop recurring payment |",
+      "location": "lines 24-28, # Merchant Advice Codes > code table"
+    },
+    {
+      "text": "| 24 | Retry after 1 hour |\n| 25 | Retry after 24 hours |\n| 26 | Retry after 2 days |\n| 27 | Retry after 4 days |\n| 28 | Retry after 6 days |\n| 29 | Retry after 8 days |\n| 30 | Retry after 10 days |",
+      "location": "lines 29-35, # Merchant Advice Codes > code table"
+    },
+    {
+      "text": "| 40 | Consumer non-reloadable prepaid card |\n| 41 | Consumer single-use virtual card number |\n| 43 | Consumer multi-use virtual card number |",
+      "location": "lines 36-38, # Merchant Advice Codes > code table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "merchant-advice-codes-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-merchant-advice-codes]] - optional Mastercard decline advice in transaction responses, including do-not-retry, stop-recurring, later-retry and exact wait-duration codes with separate authorization-retry restrictions preserved",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not present MAC presence as universal or infer a retry instruction when the fields are absent.",
+          "Do not treat a retry-oriented MAC as overriding processor-response prohibitions, recurring-payment restrictions or operation-specific state checks.",
+          "Preserve exact table wording and durations; code 02 supplies no duration and codes 24 through 30 do."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/merchant-responses/merchant-advice-codes-2026-09-16.md",
+  "raw_sha256": "abcdfd4cc6ebf08beeaea3555b089ee0b603dd1ecd9024a1ac865b681e36706e",
+  "status": "candidate_ready"
+}

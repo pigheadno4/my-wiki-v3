@@ -1,0 +1,57 @@
+{
+  "job_id": "exceptions-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Exceptions (Node.js)\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/exceptions/node\"\nraw_files:\n  - \"braintree/docs/reference/general/exceptions/node-2026-09-16.md\"\ntags: [braintree, node-js, server-sdk, exceptions, timeouts]\n---\n\n## Overview\n\nThis Braintree Node.js reference shows callback and Promise patterns for handling server-SDK exceptions and separates credential, authorization, webhook, lookup, server, client-library, request-volume, version, timeout and availability categories. Its timeout distinctions are important for recovery decisions because a custom SDK timeout does not establish that the gateway operation failed.\n\n## Key takeaways\n\n- Node.js integrations can inspect an exception in either a callback error branch or a Promise `catch`; the examples expose `type`, `name` and `message`. The page says its exception list tracks the latest server SDKs and sends older-version integrations to the migration guide, so names and handling remain SDK-version scoped.\n- Authentication errors mean the API keys are incorrect. Authorization errors instead cover a key whose owning user role cannot perform the attempted action, and can also result from malformed submitted data. Exact classes and category explanations are located under the corresponding error headings.\n- A not-found exception applies when the record being operated on cannot be found, but an invalid reference or association is documented as a validation error instead. Server, unexpected-client-library, unsafe-request-volume, unsupported-library-version and service-unavailable categories have separate headings and should not be collapsed into one outcome or recovery rule.\n- The documented timeout categories identify different boundaries: a custom server-SDK timeout, Braintree timing out while delivering a response, or Braintree timing out while waiting for the complete request from the merchant server. Only the search-call gateway-timeout passage suggests an action\u2014breaking a large search into smaller batches.\n\n## Detail locators\n\n- Callback and Promise handling, exposed exception properties and older-SDK route: `# Exceptions > ## Handling exceptions`, lines 23-57.\n- Credential, role/malformed-data, webhook, lookup and validation distinctions: `## Authentication Error` through `## Not Found Error`, lines 60-96.\n- Server, client-library, volume-limit and unsupported-library-version categories: `## Server Error` through `## Upgrade Required Error`, lines 99-124.\n- Custom-limit, gateway-delivery and incomplete-request timeout categories: `## Timeouts`, lines 127-148.\n- Downstream availability category: `## Service Unavailable Error`, lines 151-155.\n\n## Evidence limitations\n\n> [!warning] Timeout is not transaction-outcome or retry evidence\n> A custom server-SDK timeout can occur even when the request later succeeds within Braintree's stated 60-second gateway timeout. The page does not provide a general safe-retry rule, establish the outcome of a timed-out mutation, or say that every gateway, request or service-availability exception is retryable. Determine operation state and recovery through the applicable operation-specific authority before repeating a request.\n\n> [!note] Operational issue route\n> Braintree says some exceptions may indicate a known API issue and recommends its status page's Braintree Product and API sections for current issues or scheduled maintenance. This collected page does not itself establish current service status.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/exceptions/node-2026-09-16|Braintree Exceptions (Node.js)]] - complete collected page covering Node.js handling patterns, exception categories and timeout boundaries\n",
+  "quotes": [
+    {
+      "text": "Handling exceptions is straightforward and follows common language conventions.",
+      "location": "line 25, # Exceptions > ## Handling exceptions"
+    },
+    {
+      "text": "Our list of available exceptions is up-to-date with the latest versions of the server SDKs. Check our [migration guide](/braintree/docs/reference/general/server-sdk-migration-guide) if you are integrating from an older version.",
+      "location": "line 57, # Exceptions > ## Handling exceptions"
+    },
+    {
+      "text": "Raised when the record that you're trying to operate on can't be found. For example, if you try to update a customer and the customer ID isn't valid. For references and associations, you'll receive a [validation error](/braintree/docs/reference/general/validation-errors/overview) if the reference is invalid. For example, when creating a credit card and specifying which customer ID it should be associated to, if the customer ID is invalid, it will be a validation error, not a not found exception.",
+      "location": "line 96, # Exceptions > ## Not Found Error"
+    },
+    {
+      "text": "Raised when a request times out **because it takes longer than the custom timeout limit you set** in the server SDKs. A request that returns this exception could still be successful if it processes within the Braintree gateway timeout limit of 60 seconds. [Learn more about timeouts.](/braintree/docs/reference/general/best-practices/node#timeouts)",
+      "location": "line 134, # Exceptions > ## Timeouts > ### Timeout Exception"
+    },
+    {
+      "text": "Raised when Braintree servers time out delivering a response. For search API calls, this usually indicates the amount of information you are requesting is greater than the amount of time Braintree servers have to retrieve it and send a response. Try breaking down your search calls into smaller batches.",
+      "location": "line 141, # Exceptions > ## Timeouts > ### Gateway Timeout Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "exceptions-node-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-exceptions-node]] - Node.js callback and Promise exception handling, distinct credential, authorization, lookup, server, timeout and availability categories, and the warning that a custom SDK timeout does not establish gateway-operation failure or safe retry",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep all behavior scoped to the Braintree Node.js server SDK reference and its collected page.",
+          "Do not infer transaction outcome or a general safe-retry rule from any timeout or error category.",
+          "Preserve that only the search-call gateway-timeout passage suggests breaking a request into smaller batches.",
+          "Keep not-found exceptions distinct from validation errors for invalid references or associations."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/exceptions/node-2026-09-16.md",
+  "raw_sha256": "0e16fbab63900e0fcf34d1a4ed8ab8075c10cfffe90c698fa2af9a4135546e8d",
+  "status": "candidate_ready"
+}

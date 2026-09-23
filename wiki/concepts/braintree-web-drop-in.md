@@ -36,6 +36,8 @@ The repository schedules deprecated status for 2026-09-01 and unsupported status
 
 ## Related
 
+- [[source-braintree-upgrade]] - historical guidance that routes Transparent Redirect to Drop-in and changes the server handoff from redirect confirmation to a payment-method nonce; consult the separately retained lifecycle evidence before current migration planning
+
 - [[source-github-braintree-web-drop-in]] - cumulative exact-SHA implementation evidence
 - [[changelog-github-braintree-web-drop-in]] - package-qualified release ledger
 - [[braintree-web-sdk]] - modular SDK and migration target

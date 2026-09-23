@@ -38,6 +38,26 @@ The Node and PHP baselines expose `preferredPaymentMethodToken` during client-to
 
 ## Related
 
+- [[source-braintree-merchant-advice-codes]] - optional Mastercard decline advice in transaction responses, including do-not-retry, stop-recurring, later-retry and exact wait-duration codes with separate authorization-retry restrictions preserved
+
+- [[source-braintree-avs-cvv-responses]] - AVS postal/street and CVV match, mismatch, not-verified, not-provided, unsupported or nonparticipating, not-applicable and skipped response categories, plus AVS system-error semantics and an unreconstructed response-object evidence gap
+
+- [[source-braintree-settlement-responses]] - 4000-class capture-request responses separating `4000 Settled`, `4002 Settlement Pending` and settlement declines, including the distinct disallowed PayPal pending-payment decline
+
+- [[source-braintree-server-sdk-migration-guide-node]] - historical Node Server SDK migration route from version 2.24.0 or below to major version 3, covering runtime targets, gateway initialization, expiring-card search results and exception changes without implying current support
+
+- [[source-braintree-upgrade]] - historical routes from Server-to-Server, Transparent Redirect and Braintree.js integrations toward client SDK tokenization and server-side payment-method nonce handling, including the collected Vault-continuity statement without asserting current support
+
+- [[source-braintree-server-sdk-deprecation-policy]] - server SDK lifecycle categories, deprecation and processing-risk guidance, two-year update recommendation, and per-SDK README route for version-specific status and dates
+
+- [[source-braintree-best-practices-node]] - Node.js integration guidance for response-code handling, version and upgrade locators, timeout late-success uncertainty, TLS/HTTPS requirements, and certificate-pinning warnings, with collected version and security tables kept distinct from current guarantees
+
+- [[source-braintree-result-objects-node]] - Node.js result-wrapper success and target-object semantics, search collection return boundary, failure categories, and validation-only `errors` population
+
+- [[source-braintree-authorization-responses]] - processor authorization approvals, decline and network-response classes, hard-versus-soft handling, retry restrictions, and the some-market merchant-fee qualification
+
+- [[source-braintree-exceptions-node]] - Node.js callback and Promise exception handling, distinct credential, authorization, lookup, server, timeout and availability categories, and the warning that a custom SDK timeout does not establish gateway-operation failure or safe retry
+
 - [[source-braintree-transactions-guide-node]] - Node.js transaction guide distinguishing sale authorization, settlement submission, pre-settlement void, refund, parameter-scoped validation errors, and account-qualified dispute retrieval
 
 - [[source-braintree-recurring-billing-plans-node]] - Node.js recurring-billing guide for plan templates, new-subscription inheritance, add-on and discount control boundaries, and subscription-time overrides

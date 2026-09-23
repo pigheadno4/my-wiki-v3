@@ -67,6 +67,8 @@ These are changes in the Braintree adapter and retained browser implementation, 
 
 ## Related
 
+- [[source-braintree-upgrade]] - historical browser-integration routes from Transparent Redirect and old Braintree.js toward Drop-in or client SDK tokenization plus a server-side payment-method nonce handoff, with current lifecycle and availability left to current evidence
+
 - [[source-braintree-tokenization-key-javascript-v3]] - JavaScript client initialization with static, reduced-privilege tokenization keys, including revocation, environment binding, and capability limits
 
 - [[source-braintree-authorization-client-token]] - signed client-token purpose, server-to-client initialization roles, application-communication scope, and stated validity and invalidation boundaries
