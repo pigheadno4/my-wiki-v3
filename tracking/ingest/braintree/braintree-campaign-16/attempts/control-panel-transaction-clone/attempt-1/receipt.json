@@ -1,0 +1,57 @@
+{
+  "job_id": "control-panel-transaction-clone",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel: Clone Transactions\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/transactions/clone\"\nraw_files:\n  - \"braintree/articles/control-panel/transactions/clone-2026-09-16.md\"\ntags: [braintree, control-panel, transactions, cloning, payment-methods, settlement]\n---\n\n## Overview\n\nThis collected Braintree article documents cloning an existing transaction in the Control Panel. It describes copying transaction information, including the payment method, into a new transaction workflow while identifying payment-method, Vault-origin, status, permission, CVV, and settlement-submission boundaries. This is a Control Panel action, not the server SDK/API clone operation.\n\n## Key takeaways\n\n- The article describes cloning as copying information from an existing transaction, including its payment method. Its opening says the amount is the only information the merchant must provide when the original transaction is compatible, while the later procedure separately instructs the merchant to enter the amount and CVV if applicable; the remaining information is automatically filled in.\n- Most transactions are described as cloneable, but an original transaction is ineligible if it was processed through PayPal, Apple Pay, Google Pay, or Venmo; was created from a Vault record; or has `Processor Declined`, `Failed`, `Gateway Rejected`, or `Settling` status. For a Vault-origin transaction, the article routes the merchant to create a new transaction from the Vault record instead.\n- The gateway-rejection exclusion has a narrow exception: a transaction rejected for a Fraud or Risk Threshold reason can be cloned when a legitimate transaction was mistakenly rejected as fraudulent. The page does not extend that exception to other gateway-rejection reasons or other excluded statuses.\n- In the Control Panel procedure, the merchant enters the new transaction's amount and CVV if applicable. For an authorization, the merchant is instructed to clear `Submit for Settlement`; this separates authorization-only creation from settlement submission and does not establish final settlement or funding.\n- If an otherwise eligible transaction does not display the clone option, the article directs the merchant to check that the Control Panel user's role has both **Create Sales** and **Submit Sales for Settlement** permissions.\n- When CVV rules are enabled, a merchant who wants a CVV check must enter the CVV under **Payment Information**. If no CVV is included, Braintree says it will not check CVV, regardless of whether CVV rules are enabled.\n\n> [!warning] Collected eligibility and lifecycle boundaries\n> This page was fetched on 2026-09-16 and does not prove current payment-method support, role behavior, or merchant eligibility. Preserve the listed exclusions and the narrow fraud/risk gateway-rejection exception, and do not treat transaction creation or settlement submission as proof of final settlement or funding.\n\n## Detail locators\n\n- Copy purpose, included payment method, automatic fill, and amount premise: `# Clone Transactions`, lines 16-18.\n- Payment-method, Vault-origin, and transaction-status exclusions: `## Compatibility`, lines 23-28.\n- Fraud/Risk Threshold gateway-rejection exception: `## Compatibility`, line 30.\n- Control Panel search, clone, amount/CVV entry, authorization-only settlement choice, and creation steps: `## Cloning a transaction`, lines 35-48.\n- Required Control Panel role permissions when the clone option is absent: `## Cloning a transaction > NOTE`, lines 51-52.\n- CVV-entry and no-CVV/no-check behavior: `## Checking CVV on cloned transactions`, lines 57-59.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/request/transaction/clone_transaction/node-2026-09-16|Transaction Clone Transaction (Node.js)]] - unread navigation-only route for the distinct server SDK/API operation; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/transactions/create-2026-09-16|Control Panel Create Transactions]] - unread navigation-only route for creating a transaction from a Vault record; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/transactions/gateway-rejections-2026-09-16|Control Panel Gateway Rejections]] - unread navigation-only route for gateway-rejection reasons; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/users-roles/role-permissions-2026-09-16|Control Panel Role Permissions]] - unread navigation-only route for permission details; not used as factual evidence here\n- [[raw/braintree/articles/guides/fraud-tools/basic/avs-cvv-rules-2026-09-16|AVS and CVV Rules]] - unread navigation-only route for CVV-rule configuration; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/transactions/clone-2026-09-16|Braintree Control Panel Clone Transactions article]] - complete collected page covering copied information, compatibility exclusions, the fraud/risk exception, Control Panel steps, role permissions, CVV handling, and the authorization settlement-submission choice\n",
+  "quotes": [
+    {
+      "text": "Cloning is an easy way to copy information from an existing transaction, including the payment method, so you don't have to enter it again.\n\nAs long as the original transaction meets [the compatibility requirements](#compatibility), the only information you'll need to provide is the transaction amount \u2013 the rest will be automatically filled in.",
+      "location": "# Clone Transactions, lines 16-18"
+    },
+    {
+      "text": "Most transactions can be cloned, but there are some restrictions. A transaction cannot be cloned if the original transaction:\n\n\n- Was processed through PayPal, Apple Pay, Google Pay, or Venmo\n- Was created from a Vault record \u2013 if the customer's information is stored in the vault, you'll need to[create a new transaction from their Vault record](/braintree/articles/control-panel/transactions/create#on-an-existing-vault-record)\n- Has the statusProcessor Declined,Failed,Gateway Rejected* orSettling",
+      "location": "## Compatibility, lines 23-28"
+    },
+    {
+      "text": "*Gateway rejections with the [Fraud or Risk Thresholds reasons](/braintree/articles/control-panel/transactions/gateway-rejections) can be cloned in the case that a legitimate transaction was mistakenly rejected as fraudulent.",
+      "location": "## Compatibility, line 30"
+    },
+    {
+      "text": "- Enter the amount you want to charge for the new transaction and the CVV,[if applicable](#checking-cvv-on-cloned-transactions)\n- For authorizations, uncheck the box next toSubmit for Settlement",
+      "location": "## Cloning a transaction, lines 44-45"
+    },
+    {
+      "text": "If you have [CVV rules](/braintree/articles/guides/fraud-tools/basic/avs-cvv-rules) enabled and would like to check the CVV when cloning a transaction, fill in the Card Verification Value (CVV) field under the **Payment Information** section. If you do not include a CVV with the cloned transaction \u2013 regardless of whether you have CVV rules enabled \u2013 we will not check the CVV.",
+      "location": "## Checking CVV on cloned transactions, line 59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-transaction-clone-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-transaction-clone]] \u2014 Control Panel transaction cloning with copied payment information, payment-method/Vault/status eligibility limits, the narrow fraud/risk rejection exception, amount/CVV entry, and authorization-only settlement selection",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this Control Panel workflow distinct from the server SDK/API clone operation.",
+          "Preserve the PayPal, Apple Pay, Google Pay, Venmo, Vault-origin, status, and role-permission boundaries; do not generalize the Fraud or Risk Threshold exception to other gateway rejections.",
+          "Reconcile the opening amount-only statement with the later CVV-if-applicable instruction, including the explicit no-CVV/no-check behavior.",
+          "Do not present authorization creation or settlement submission as final settlement or funding, and treat the 2026-09-16 snapshot as collected rather than current support evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/transactions/clone-2026-09-16.md",
+  "raw_sha256": "d94fca2138fbc8bd84e35275316511703b3ad0a06c2d7a3f09ea4d399d49a900",
+  "status": "candidate_ready"
+}

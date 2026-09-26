@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 121
+source_count: 131
 ---
 
 ## Overview
@@ -11,9 +11,20 @@ Braintree is represented in this wiki by sixteen independently tracked repositor
 
 ## Website Documentation
 
-One hundred five independently reviewed website sources complement the sixteen repository
+One hundred fifteen independently reviewed website sources complement the sixteen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-control-panel-managing-authorizations]] - verify/store versus repeated authorization, qualified amount adjustments, and conflicting region availability in the collected page
+- [[source-braintree-control-panel-email-receipts]] - transaction/refund email-receipt activation, configuration, manual generation and custom-receipt boundaries
+- [[source-braintree-control-panel-bank-identification-numbers]] - Control Panel/CSV BIN lookup, six-digit availability and dated PCI qualifications
+- [[source-braintree-control-panel-duplicate-checking]] - conditional duplicate matching, default time window, gateway rejection and Control Panel configuration
+- [[source-braintree-control-panel-transaction-create]] - manual creation and payment-method eligibility with authorization/settlement boundaries
+- [[source-braintree-control-panel-transaction-clone]] - copied transaction data, compatibility restrictions, CVV and permission boundaries
+- [[source-braintree-transaction-lifecycle]] - authorization, settlement submission, settling and merchant-account settlement without inferred bank funding
+- [[source-braintree-control-panel-gateway-rejections]] - gateway-rule versus bank decline, pre/post-authorization rejection and automatic-void limits
+- [[source-braintree-control-panel-transaction-issues]] - separate issue category, notification/recipient routes and absent investigation workflow
+- [[source-braintree-control-panel-descriptors]] - soft, hard and dynamic descriptors with bank, region and Control Panel/API boundaries
 
 - [[source-braintree-best-practices-node]] - Node server-SDK response-code, timeout-uncertainty and transport-security guidance with historical version and certificate-table qualifications
 - [[source-braintree-authorization-responses]] - processor authorization response classes, gateway-rejection distinction and card-network retry restrictions

@@ -1,0 +1,56 @@
+{
+  "job_id": "control-panel-email-receipts",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Control Panel Email Receipts\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/transactions/email-receipts\"\nraw_files:\n  - \"braintree/articles/control-panel/transactions/email-receipts-2026-09-16.md\"\ntags: [braintree, control-panel, email-receipts, transactions, refunds]\n---\n\n## Overview\n\nThis collected Braintree Control Panel article documents activation and configuration of gateway email receipts for transactions and refunds successfully submitted for settlement. It also covers manual receipt generation from the Control Panel Transaction Details page and separately explains merchant-built custom receipts, while explicitly routing subscription failed-payment alerts to separate notification documentation; the collected snapshot does not establish current availability.\n\n## Key takeaways\n\n- A Braintree gateway can be configured to send customers email receipts for each transaction or refund successfully submitted for settlement. Using the feature requires Control Panel enablement and an email address in the customer information for transactions created either in the Control Panel or through the API.\n- Activation must first be requested from Support by the account's authorized signer. After Support confirms activation, the merchant enables and configures Email Receipts under the Control Panel's Processing settings.\n- With **Send Receipt by Default?** enabled, the page says receipts are sent for every successful transaction; each transaction must specify an email address or use a Vault customer with one, otherwise submission triggers a validation error.\n- Gateway receipt customization is limited: the sender address is fixed, while Reply To, BCC and up to 1,000 characters of plain-text email text are configurable. HTML and broader content or delivery customization require merchant-built receipts.\n- PayPal already sends its own PayPal-transaction receipts by default, so PayPal customers receive both a Braintree receipt and a PayPal receipt when Braintree receipts are enabled.\n\n> [!warning] Notification and delivery boundaries\n> This page does not document subscription failed-charge notification emails; it directs that use case to a separate recurring-billing article. For merchant-built receipts, consult the raw section's card-data display warning rather than treating this gateway-configuration page as a general email-notification or receipt-compliance specification.\n\n## Detail locators\n\n- Separate subscription failed-payment notification scope: `# Email Receipts`, lines 17-18.\n- Gateway receipt trigger, email prerequisite and customization boundary: `# Email Receipts`, lines 22-30.\n- Duplicate PayPal and Braintree receipt behavior: `## PayPal email receipts`, lines 33-35.\n- Support activation and Control Panel enablement path: `## Enabling email receipts`, lines 38-50.\n- Default sending, missing-email validation, sender, Reply To, BCC and plain-text limits: `## Enabling email receipts > ### Configuration options`, lines 53-74.\n- Authorized-signer identity and change route: `## Enabling email receipts > #### Authorized signer`, lines 79-87.\n- Manual sending, merchant-built receipt routes and card-data display warning: `## Sending an email receipt manually` through `## Sending your own email receipts`, lines 99-114.\n\n## Related\n\n- Company: [[braintree]]\n- Control Panel concept: [[braintree-control-panel]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/transactions/email-receipts-2026-09-16|Braintree Control Panel Email Receipts]] - complete collected article covering transaction/refund receipt triggers, activation, configuration, delivery and customization boundaries\n",
+  "quotes": [
+    {
+      "text": "For information about how to alert customers when subscription payments fail, [see our article on email notifications](/braintree/articles/guides/recurring-billing/email-notifications) instead.",
+      "location": "# Email Receipts, line 18"
+    },
+    {
+      "text": "Your Braintree gateway can be configured to send email receipts to your customers for every transaction or refund that you successfully submit for settlement.\n\nTo use this feature, you must:\n\n\n- [Enable email receipts in the Control Panel](#enabling-email-receipts)\n- Include an email address in the customer information for all transactions created \u2013 both in the Control Panel or via the API\n\nBraintree's email receipts can include a line of custom text, but can't otherwise be altered. If you want to customize the delivery or content of your receipts, it\u2019s best to create and [send your own](#sending-your-own-email-receipts).",
+      "location": "# Email Receipts, lines 22-30"
+    },
+    {
+      "text": "PayPal sends receipts to its customers for PayPal transactions by default. If you are using Braintree\u2019s email receipts, PayPal customers will receive two receipts: one from Braintree and one from PayPal.",
+      "location": "## PayPal email receipts, line 35"
+    },
+    {
+      "text": "Have the authorized signer on your account contact Support to request activation of this feature. After receiving confirmation from Support, enable email receipts in the Control Panel:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on the gear icon in the top right corner\n- Click**Processing**from the drop-down menu\n- Scroll to the**Transactions**section\n- Next to**Email Receipts**, click the**Options**link\n- Check the box next to**Enabled**\n- [Configure your settings](#configuration-options)\n- Click the**Save**button",
+      "location": "## Enabling email receipts, lines 40-50"
+    },
+    {
+      "text": "- **Send Receipt by Default?**: With this box checked, receipts will be sent to customers for every successful transaction\n\n\n**IMPORTANT**\n If you choose to enable this option, you will need to either specify an email address when creating each transaction or ensure each customer in your Vault has an associated email address. Transactions submitted for customers that do not have an email address will trigger a validation error.\n\n \n\n\n- **Sender Email Address**: All transaction receipt emails will be sent from[no-reply@braintreegateway.com](mailto:no-reply@braintreegateway.com).\n- **Reply To**: This is the email your customers will use if they need to contact you after their purchase.\n- **BCC**: This allows you to send copies of all receipts to yourself (e.g.[receipt-archive@mydomain.com](mailto:receipt-archive@mydomain.com)); this email address will not be visible to customers.\n- **Email Text**: Custom plain text that will appear at the top of every receipt, limited to a maximum of 1000 characters.\n\n\n**NOTE**\n The **Email text** field does not support HTML markup and must be written as plain text. If you want to send fully customized email receipts, you'll need to [create and send your own](#sending-your-own-email-receipts).",
+      "location": "## Enabling email receipts > ### Configuration options, lines 58-74"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-email-receipts-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-email-receipts]] \u2014 Control Panel gateway-receipt activation and configuration, submitted-for-settlement transaction/refund scope, customer-email and customization limits, duplicate PayPal receipts, and the separate subscription-failure-notification boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize this article to subscription failed-charge notification emails; the raw explicitly routes that use case elsewhere.",
+          "Preserve successfully submitted for settlement as the transaction/refund trigger wording and do not equate it with final settlement or funding.",
+          "Treat the 2026-09-16 collected page as evidence of its documented configuration, not proof of current feature availability."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/transactions/email-receipts-2026-09-16.md",
+  "raw_sha256": "4b1fe5feec83344e4a9aa0046bb945736d9d9638b8c8e33478de16d78d06a1c1",
+  "status": "candidate_ready"
+}

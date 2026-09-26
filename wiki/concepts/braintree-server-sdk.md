@@ -37,6 +37,8 @@ Both retained SDKs support merchant API-key credentials and OAuth access tokens 
 The Node and PHP baselines expose `preferredPaymentMethodToken` during client-token generation; the Ruby `4.40.0` client-token signature does not. All three warn that legacy Venmo SDK parameters are unsupported in favor of Pay with Venmo. This confirms the broad gateway contract while also demonstrating why optional fields must remain package-qualified. Current enablement and client experience still require client-SDK and product documentation evidence.
 
 ## Related
+- [[source-braintree-transaction-lifecycle]] - provider-level transaction-status route distinguishing authorization holds, settlement submission, processor settling, settled merchant-account movement, and separate bank-account funding timing
+- [[source-braintree-control-panel-managing-authorizations]] - gateway authorization-management routes for recommended Vault reuse, discouraged payment-method-timed reauthorization, and merchant/processor-qualified pre-settlement or settlement-time amount adjustments
 
 - [[source-braintree-merchant-advice-codes]] - optional Mastercard decline advice in transaction responses, including do-not-retry, stop-recurring, later-retry and exact wait-duration codes with separate authorization-retry restrictions preserved
 

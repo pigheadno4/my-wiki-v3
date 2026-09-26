@@ -1,0 +1,57 @@
+{
+  "job_id": "control-panel-duplicate-checking",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel Duplicate Transaction Checking\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/transactions/duplicate-checking\"\nraw_files:\n  - \"braintree/articles/control-panel/transactions/duplicate-checking-2026-09-16.md\"\ntags: [braintree, control-panel, transactions, duplicate-checking, gateway-rejections]\n---\n\n## Overview\n\nThis collected Braintree article documents gateway-side duplicate transaction checking for repeated transaction requests, including its matching window, general and payment-method-specific conditions, immediate rejection behavior, and Control Panel configuration boundary. The article notes that repeated checkout actions can issue new API requests, but the operation it describes is gateway duplicate screening configured in the Control Panel, not an API or SDK request-construction guide. Its 2026-09-16 collection is evidence of the documented behavior at that snapshot, not proof of current support or settings.\n\n## Key takeaways\n\n- The article says duplicate transaction checking is enabled in the gateway by default. Its documented default window is 30 seconds, and the configuration section says the feature is enabled with that window in both Sandbox and Production.\n- A suspected duplicate is Gateway Rejected only when all relevant conditions match within the configured timeframe. The general comparison covers amount, the applicable order-or-subscription identifier condition, and an initial transaction that the article classifies as successful; additional matching depends on the payment method.\n- The payment-method-specific comparison uses the same DPAN for Google Pay or Apple Pay, payer email for PayPal, or card number and expiration date for credit cards. These are gateway matching conditions, not documentation of API idempotency keys or SDK retry guarantees.\n- A duplicate request is rejected immediately without waiting for an in-flight initial request to receive a card-network response. If that initial transaction is later declined, the article says neither transaction is automatically retried.\n- Users with Account Admin permissions can enable or disable the checking feature and change its timeframe in the Control Panel. The article separately recommends form-level safeguards, such as disabling a buy button after it is clicked, to reduce repeated submissions.\n\n## Detail locators\n\n- Repeated-checkout causes, gateway purpose, default enablement, and Control Panel configuration route: `# Duplicate Transaction Checking`, lines 16-22.\n- Timeframe-qualified gateway-rejection rule and default 30-second window: `## Duplicate checking logic`, lines 27-31.\n- General amount, order/subscription identifier, initial-status matching, and in-flight/automatic-retry warning: `### General conditions`, lines 34-46.\n- Google Pay, Apple Pay, PayPal, and credit-card matching categories: `### Payment method-specific conditions`, lines 51-58.\n- Sandbox/Production default and Account Admin configuration boundary: `## Configuring duplicate transaction checking`, lines 61-72.\n\n## Evidence limitations\n\n> [!warning] Gateway screening is not API idempotency evidence\n> This collected article explains Braintree's gateway duplicate-screening logic and where Account Admin users configure it in the Control Panel. It does not document an API idempotency key, SDK retry contract, exactly-once processing, or the broader semantics of a Gateway Rejected transaction. Follow the linked gateway-rejections authority for that status and the applicable API or SDK authority for request-level behavior.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/transactions/gateway-rejections-2026-09-16|Braintree Control Panel Gateway Rejections]] - navigation-only authority linked by the article for the resulting status; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/transactions/duplicate-checking-2026-09-16|Braintree Duplicate Transaction Checking]] - complete collected article covering gateway duplicate matching, timeframe, immediate-rejection behavior, payment-method-specific conditions, and Control Panel configuration\n",
+  "quotes": [
+    {
+      "text": "Duplicate transactions can happen if a customer refreshes your checkout page or clicks your buy button multiple times, issuing a new API request with each click. Duplicate transaction checking prevents transaction requests from accidentally processing more than once.\n\nDuplicate transaction checking logic is enabled in your gateway by default, but can be [turned off or updated in the Control Panel](#configuring-duplicate-transaction-checking).",
+      "location": "lines 16-18, # Duplicate Transaction Checking"
+    },
+    {
+      "text": "Our duplicate checking logic runs within a specific time frame. If all of the general and relevant payment method-specific conditions are met within the designated timeframe, any suspected duplicate transactions will be [Gateway Rejected](/braintree/articles/control-panel/transactions/gateway-rejections).\n\nThe timeframe for duplicate checking logic is set to 30 seconds by default, but can be updated to meet your needs in the [Control Panel](#configuring-duplicate-transaction-checking).",
+      "location": "lines 29-31, ## Duplicate checking logic"
+    },
+    {
+      "text": "In order for a transaction to be Gateway Rejected as a duplicate transaction, it must meet all of the following conditions within the designated timeframe:\n\n\n- Amount is the same as the initial transaction\n- Order ID is the same (**if**collected and**if**the transaction**was not**created by Braintree's recurring billing functionality)\n- Subscription ID is the same (**if**the transaction**was**created by Braintree's recurring billing functionality)\n- The initial transaction was successful (status can beAuthorized,Submitted for Settlement,Settling,Settled, orVoided)\n\n\n**NOTE**\n A duplicate transaction request is immediately rejected and will not wait on any in-flight transactions that are still pending a response from the card processing network. If the initial transaction is subsequently declined, neither transaction will be automatically retried.",
+      "location": "lines 36-46, ### General conditions"
+    },
+    {
+      "text": "In addition to the general conditions listed above, there are conditions specific to supported payment methods. For the following payment methods, the listed condition must also be true in order for our duplicate transaction logic to reject the transaction:\n\n\n- Google Pay or Apple Pay \u2013 DPAN is the same\n- PayPal \u2013 payer email address is the same\n- Credit card \u2013 number and expiration date are the same",
+      "location": "lines 53-58, ### Payment method-specific conditions"
+    },
+    {
+      "text": "Duplicate transaction checking is enabled by default with a 30 second window in both the sandbox and production environments. These settings can be updated or disabled by users with Account Admin permissions.",
+      "location": "line 63, ## Configuring duplicate transaction checking"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-duplicate-checking-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-duplicate-checking]] \u2014 default-enabled gateway duplicate screening for qualifying repeated transaction requests, payment-method-specific matching, immediate rejection behavior, and Account Admin Control Panel configuration boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the 2026-09-16 raw as collected evidence, not proof of current Braintree support or configuration defaults.",
+          "Keep repeated API requests, gateway duplicate screening, and Control Panel configuration distinct; this article does not establish API idempotency-key or SDK retry semantics.",
+          "Preserve the immediate-rejection and no-automatic-retry warning for an in-flight initial transaction that is subsequently declined.",
+          "Do not generalize the listed matching conditions beyond the payment methods and conditional order/subscription identifiers documented by the article."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/transactions/duplicate-checking-2026-09-16.md",
+  "raw_sha256": "fc1b079452ee7a246e35b810b4adaf4cc78ef84e91041a99298c3825456136f8",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,57 @@
+{
+  "job_id": "control-panel-transaction-create",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel: Create Transactions\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/transactions/create\"\nraw_files:\n  - \"braintree/articles/control-panel/transactions/create-2026-09-16.md\"\ntags: [braintree, control-panel, transactions, vault, authorization, settlement]\n---\n\n## Overview\n\nThis collected Braintree article explains when a merchant can manually create a transaction in the Control Panel, while recommending the API as the normal creation route. It distinguishes new-card and vaulted-payment-method eligibility and identifies authorization and settlement-submission controls without establishing final settlement or funding.\n\n## Key takeaways\n\n- Braintree recommends creating transactions through the API, but the article permits manual creation in the Control Panel when necessary. This page documents the Control Panel workflow, not an API or SDK transaction-creation operation.\n- Credit- and debit-card transactions can use either a new card or one already stored in the Vault. Other payment types, with PayPal and Apple Pay given as examples, must already be stored in the Vault before a merchant can use them to create a Control Panel transaction.\n- The collected page warns that a transaction cannot be settled for more than its authorized amount unless the merchant's industry and processor support settlement adjustment; it directs merchants to Braintree for more information rather than establishing general adjustment eligibility.\n- For an existing Vault customer, the merchant can charge the default payment method or select another stored payment-method token. Exact Control Panel steps and fields remain at the raw locators.\n- To create an authorization from an existing Vault record, the article instructs the merchant to clear `Submit for Settlement`. Selecting submission is a request to enter the settlement flow; this page does not say that transaction creation, submission, or a checked control proves final settlement or merchant funding.\n\n> [!warning] Collected eligibility and lifecycle boundaries\n> The page was fetched on 2026-09-16 and does not prove current payment-method support, merchant eligibility, or processor capabilities. Confirm current availability with Braintree, preserve the industry-and-processor qualification for settlement adjustment, and keep authorization, settlement submission, final settlement, and funding distinct.\n\n## Detail locators\n\n- API recommendation and manual Control Panel alternative: `# Create Transactions`, line 16.\n- New-card versus Vault eligibility and the stored-method prerequisite for other payment types: `# Create Transactions`, line 18.\n- Authorized-amount ceiling and industry/processor-qualified settlement-adjustment exception: `# Create Transactions > NOTE`, lines 21-22.\n- New-card Control Panel creation and optional Vault-storage steps: `## On a new credit card`, lines 27-39.\n- Existing-customer default-method and alternate-token selection: `## On an existing Vault record`, lines 42-52.\n- Authorization-only Control Panel choice, transaction creation, and alternate Vault navigation: `## On an existing Vault record`, lines 55-61.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- API/SDK context: [[braintree-server-sdk]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/transactions/node-2026-09-16|Braintree Transactions guide for Node.js]] - unread navigation-only route for the recommended API/SDK transaction lifecycle; not used as factual evidence here\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Transaction Sale (Node.js)]] - unread navigation-only transaction-creation request reference; not used as factual evidence here\n- [[raw/braintree/docs/reference/request/transaction/submit-for-settlement/node-2026-09-16|Transaction Submit for Settlement (Node.js)]] - unread navigation-only settlement-submission request reference; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/transactions/create-2026-09-16|Braintree Control Panel Create Transactions article]] - complete collected page covering manual transaction creation, payment-method eligibility, Vault selection, authorization-only creation, and the settlement-adjustment boundary\n",
+  "quotes": [
+    {
+      "text": "We recommend creating transactions [via the API](/braintree/docs/guides/transactions). However, if necessary, you can use the Braintree Control Panel to create transactions manually.",
+      "location": "# Create Transactions, line 16"
+    },
+    {
+      "text": "Credit and debit card transactions can be created either with a new card or with those already stored in the Vault. For other payment types (e.g. PayPal, Apple Pay), the payment method must already be stored in the Vault before you can create transactions via the Control Panel.",
+      "location": "# Create Transactions, line 18"
+    },
+    {
+      "text": "When creating transactions, keep in mind that you can't settle transactions for more than the authorized amount unless your industry and processor support settlement adjustment. [Contact us](/braintree/help/TransactionProcessingQuestion) for more information.",
+      "location": "# Create Transactions > NOTE, line 22"
+    },
+    {
+      "text": "- Locate the customer you'd like to charge using the search bar under the**Want to create a transaction for an existing customer?**section\n- Click the**Charge**link located to the right of your customer of choice to create a transaction using their default payment method\n- If you want to charge a different payment method other than the customer's default, click on the desired payment method token**ID**instead and click the**New Transaction**button on the top of the Payment Method page",
+      "location": "## On an existing Vault record, lines 50-52"
+    },
+    {
+      "text": "- For authorizations, uncheck the box next toSubmit for Settlementunder the**Transaction Information**section",
+      "location": "## On an existing Vault record, line 56"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-transaction-create-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-transaction-create]] \u2014 manual Control Panel transaction creation, new-card versus Vault payment-method eligibility, authorization-only selection, and the industry-and-processor-qualified settlement-adjustment limit",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the Control Panel action distinct from the recommended API/SDK route.",
+          "Preserve the stored-in-Vault prerequisite for non-card payment types and do not present PayPal and Apple Pay as an exhaustive list.",
+          "Do not turn transaction creation or settlement submission into proof of final settlement or funding.",
+          "Keep settlement adjustment qualified by both industry and processor support, and treat the 2026-09-16 snapshot as collected rather than current support evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/transactions/create-2026-09-16.md",
+  "raw_sha256": "bfa3918d8ffeadf8095f44463503f56149d5f3f0f8b86300687b0ff25e1fb012",
+  "status": "candidate_ready"
+}

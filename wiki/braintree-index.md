@@ -12,6 +12,17 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+- [[source-braintree-control-panel-managing-authorizations]] - authorization-management options, qualification and conflicting regional statements
+- [[source-braintree-control-panel-email-receipts]] - gateway receipts, signer activation, Control Panel settings and custom/manual distinctions
+- [[source-braintree-control-panel-bank-identification-numbers]] - BIN lookup routes, six-digit data scope and dated PCI warnings
+- [[source-braintree-control-panel-duplicate-checking]] - conditional duplicate screening and gateway configuration
+- [[source-braintree-control-panel-transaction-create]] - Control Panel transaction creation and payment-method/settlement limits
+- [[source-braintree-control-panel-transaction-clone]] - Control Panel cloning, compatibility, CVV and permissions
+- [[source-braintree-transaction-lifecycle]] - distinct authorization, submission, settling and settled stages
+- [[source-braintree-control-panel-gateway-rejections]] - gateway versus bank rejection and post-authorization voiding
+- [[source-braintree-control-panel-transaction-issues]] - exceptional issue notices, recipient scope and investigation-evidence gap
+- [[source-braintree-control-panel-descriptors]] - soft/hard/dynamic descriptors and configuration routes
+
 - [[source-braintree-best-practices-node]] - Node response-code, timeout-uncertainty and transport-security routes with collected-version qualifications
 - [[source-braintree-authorization-responses]] - processor approval/decline/network classes and scoped retry restrictions
 - [[source-braintree-exceptions-node]] - Node exception categories and distinct timeout boundaries

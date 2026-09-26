@@ -1,0 +1,57 @@
+{
+  "job_id": "control-panel-bank-identification-numbers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel Bank Identification Numbers\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/transactions/bank-identification-numbers\"\nraw_files:\n  - \"braintree/articles/control-panel/transactions/bank-identification-numbers-2026-09-16.md\"\ntags: [braintree, control-panel, transactions, bin, iin, pci-dss]\n---\n\n## Overview\n\nThis collected Braintree article explains how bank identification numbers (BINs), also called issuer identification numbers (IINs), can be used for transaction analysis and found through Control Panel transaction search, CSV exports, or a linked transaction-search API route. It also records Braintree's treatment of the 8-digit issuer-BIN expansion and payment-card-data handling; these dated statements are evidence from the collected page, not confirmation of current feature support or PCI requirements.\n\n## Key takeaways\n\n- The article defines a BIN/IIN as the first six digits of a debit or credit card and presents BIN lookup as a way to investigate purchase and decline patterns, including customer location and card-type trends.\n- For one transaction, the documented Control Panel route is Transaction Search, where the BIN appears as the first six digits in the Payment Information column. For comparisons across transactions, the article directs readers to download the search results as CSV and use its First Six of Credit Card column.\n- The article also links transaction-ID search through the API and says its response includes the BIN as a parameter. It does not name an SDK, method, response-object path, or current availability on this page, so those details remain with the linked API authority.\n- Although the page discusses the April 2022 move to 8-digit issuer BINs and says Braintree processes them, its BIN data-availability section says the existing APIs, GraphQL integrations, console search, and BIN reports continue to expose six-digit BINs. Do not infer that these surfaces return the full 8-digit issuer BIN.\n- The page says viewing and storing BINs does not compromise or change PCI compliance requirements. Its 8-digit-expansion section separately cites PCI DSS v3.2.1 requirement 3.3 for displayed-PAN masking and warns that merchants relying only on truncation for data-at-rest protection need another acceptable protection method.\n\n## Detail locators\n\n- BIN/IIN definition and described business-analysis uses: `# Bank Identification Numbers`, lines 16-18.\n- Page-level PCI qualification for viewing and storing BINs: `# Bank Identification Numbers`, line 20.\n- Dated 8-digit BIN notice and no-action qualification when an integration does not use BINs: `# Bank Identification Numbers > NOTE`, lines 23-24.\n- Control Panel transaction-search route and displayed result location: `## Finding BINs in the gateway`, lines 29-37.\n- Multi-transaction CSV route and column name: `## Finding BINs in the gateway`, line 39.\n- API transaction-ID search route and response-level BIN statement: `## Finding BINs in the gateway`, line 41.\n- Collected 8-digit processing/readiness statement: `## 8-Digit BIN expansion readiness`, line 46.\n- Six-digit output boundary across APIs, GraphQL, console search, and BIN reports: `### BIN data availability`, line 61.\n- Displayed-PAN masking, data-at-rest protection, and cited PCI version: `### Payment Card Industry Data Security Standards (e.g. PCI, DSS) and BIN Expansion`, lines 64-78.\n\n## Evidence limitations\n\n> [!warning] Dated support and PCI evidence\n> The raw is a 2026-09-16 collection of a page whose 8-digit-transition language is framed around April 2022 and whose PCI footnote names PCI DSS v3.2.1. Use the page to retrieve Braintree's collected BIN lookup and output boundaries, but verify current Braintree behavior and current PCI DSS obligations with the applicable authorities before implementation or compliance decisions. In particular, the page does not establish that exposing or storing the first eight PAN digits has the same treatment as the six-digit BIN visibility it documents.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/request/transaction/search/node-2026-09-16|Braintree Node.js transaction-search reference]] - navigation-only implementation authority linked by topic; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/reporting/decline-analysis-2026-09-16|Braintree decline-analysis article]] - navigation-only analysis route; not used as factual evidence here\n- [[raw/braintree/articles/risk-and-security/compliance/pci-compliance-2026-09-16|Braintree PCI-compliance article]] - navigation-only compliance route; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/transactions/bank-identification-numbers-2026-09-16|Braintree Control Panel Bank Identification Numbers]] - complete collected article covering BIN/IIN purpose, Control Panel and CSV lookup, the linked API route, 8-digit expansion, six-digit output boundaries, and PCI qualifications\n",
+  "quotes": [
+    {
+      "text": "The first 6 digits of a debit or credit card are known as the bank identification number (BIN), or issuer identification number (IIN).\n\nLooking up the BINs associated with cards you\u2019re processing can provide a lot of insight into your business \u2013 like identifying trends in [declines](/braintree/articles/control-panel/reporting/decline-analysis) or purchases (e.g. where most of your customers are located, or what types of cards they use).",
+      "location": "lines 16-18, # Bank Identification Numbers"
+    },
+    {
+      "text": "You can view and store BINs without compromising or changing your [PCI compliance requirements](/braintree/articles/risk-and-security/compliance/pci-compliance).",
+      "location": "line 20, # Bank Identification Numbers"
+    },
+    {
+      "text": "For a single transaction, you can view the associated card's BIN in the Control Panel. Find these details by running a transaction search:",
+      "location": "line 29, ## Finding BINs in the gateway"
+    },
+    {
+      "text": "If you want to compare BINs across multiple transactions, download your transaction search into a CSV file by clicking the **Download** button at the top of the search results page. The BINs will be in the First Six of Credit Card column of the CSV file.\n\nYou can also find BINs by [searching a transaction ID via the API](/braintree/docs/reference/request/transaction/search). The response object will include the BIN as one of the parameters, and you can investigate from there.",
+      "location": "lines 39-41, ## Finding BINs in the gateway"
+    },
+    {
+      "text": "Existing Braintree APIs, GraphQL integrations, console search, and BIN reports will continue to provide 6 digit BINs.",
+      "location": "line 61, ### BIN data availability"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-bank-identification-numbers-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-bank-identification-numbers]] \u2014 Control Panel and CSV BIN lookup, linked API retrieval, six-digit output boundaries during the 8-digit issuer-BIN expansion, and collected PCI qualifications",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the 2026-09-16 raw as collected evidence, not proof of current Braintree support or current PCI requirements.",
+          "Keep Control Panel search, CSV export, and the linked API transaction search distinct; this page does not supply an SDK method or response-object field path.",
+          "Do not infer that Braintree APIs, GraphQL, console search, or BIN reports expose the full 8-digit issuer BIN; the article says these surfaces continue to provide six-digit BINs.",
+          "Preserve the PCI DSS v3.2.1 and displayed-PAN/data-at-rest qualifications in the source rather than converting the page-level statement into general compliance advice."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/transactions/bank-identification-numbers-2026-09-16.md",
+  "raw_sha256": "f4d5df0d7dced0d2db4d7d0e0c5a63f89d4148abaceea11526cf21df60a9dae9",
+  "status": "candidate_ready"
+}

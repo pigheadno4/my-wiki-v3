@@ -18,6 +18,7 @@ Braintree states that it strives to send notifications as quickly as events occu
 The dedicated Node.js parsing guide documents parsing the `bt_signature` parameter together with the signed `bt_payload` parameter, an invalid-signature exception, non-sequential arrival, and hourly retries when the handler does not return a successful HTTPS `2xx` response within 30 seconds; the retry window is up to 3 hours in sandbox and 24 hours in production. These guide-specific conditions do not establish a general delivery-time or sequential-delivery guarantee. [[source-braintree-webhooks-parse-node]]
 
 ## Sources
+- [[source-braintree-control-panel-transaction-issues]] — optional webhook delivery alongside email for transaction issue notifications, with linked preparation/setup routes and recipient-scope boundaries but no payload, delivery, retry, or investigation semantics
 
 - [[source-braintree-webhooks-braintree-auth-node]] - Closed-beta Node.js Braintree Auth notifications for connected-merchant underwriting/application and PayPal link-status events, with connected-merchant and OAuth-application payload routes
 

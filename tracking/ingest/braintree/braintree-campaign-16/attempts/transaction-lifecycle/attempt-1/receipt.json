@@ -1,0 +1,57 @@
+{
+  "job_id": "transaction-lifecycle",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Lifecycle\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/get-started/transaction-lifecycle\"\nraw_files:\n  - \"braintree/articles/get-started/transaction-lifecycle-2026-09-16.md\"\ntags: [braintree, transactions, authorization, settlement, transaction-statuses]\n---\n\n## Overview\n\nThis collected Braintree article explains the status sequence it documents for a successful transaction as money travels from the customer toward the merchant's bank account. It distinguishes authorization, settlement submission, processor settlement work, and settled status so those stages are not collapsed into one event.\n\n## Key takeaways\n\n- `Authorized` means the customer's bank approved the initial payment-method and sufficient-funds check. The authorization places a hold on the customer's funds but does not remove them.\n- `Submitted for Settlement` means the process of removing money from the customer's account has been initiated. The article says authorization eventually expires, submission is needed to collect funds, and submission happens by default for transactions created through the Control Panel; it also calls this status \"captured or capturing\" in payments-industry usage. Submission is still a distinct stage from `Settling` and `Settled`.\n- `Settling` begins when Braintree starts communicating with the processor about the settlement request. Time in this state depends on the processing bank.\n- `Settled` is displayed once the article says the money has moved from the customer's bank through the merchant account and hit the merchant account; the funds are then routed to the merchant's bank account. The page does not document the timing of arrival in that bank account, so `Settled` should not be presented as proof of completed bank funding.\n- Unsuccessful or interrupted transactions can have other statuses. This article does not enumerate them; it routes readers to the separate transaction-status reference.\n\n> [!warning] Keep lifecycle stages distinct\n> An authorization is a hold rather than removal of funds. Submission initiates settlement processing, `Settling` identifies processor communication, and `Settled` identifies the later merchant-account stage described by this page. The 2026-09-16 collected snapshot does not prove current timing, support, or funding behavior beyond the article's statements.\n\n## Detail locators\n\n- Successful-transaction sequence and status purpose: `# Transaction Lifecycle`, lines 16-20.\n- Bank approval, sufficient-funds check, authorization status, and hold-without-removal boundary: `## Authorized`, lines 23-25.\n- Authorization expiry, collection requirement, Control Panel default, and initiation of funds removal: `## Submitted for Settlement`, lines 28-32.\n- Processor communication and processing-bank-dependent duration: `## Settling`, lines 35-37.\n- Merchant-account movement, settled display, and routing toward the bank account: `## Settled`, lines 40-42.\n- Unsuccessful or interrupted transaction route to the full status reference: `## Other statuses`, lines 45-47.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/general/statuses-2026-09-16|Braintree transaction-status reference]] - unread navigation-only destination for the article's complete-status link; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/transactions/managing-authorizations-2026-09-16|Braintree Managing Authorizations article]] - unread navigation-only destination for authorization timing and delayed-submission guidance; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/get-started/transaction-lifecycle-2026-09-16|Braintree Transaction Lifecycle article]] - complete collected page covering Authorized, Submitted for Settlement, Settling, Settled, and the route to other statuses\n",
+  "quotes": [
+    {
+      "text": "As money travels from the customer to your bank account, the transaction is given a series of statuses. A **successful** transaction will go through the following statuses:",
+      "location": "# Transaction Lifecycle, line 16"
+    },
+    {
+      "text": "When a purchase is first submitted by a customer, we start by checking with the customer\u2019s bank to see if the payment method is legitimate and has sufficient funds to pay for your product or service. If the customer's bank approves, the transaction will be given an Authorized status. An authorization puts a hold on the funds in the customer\u2019s account, but doesn\u2019t remove any funds just yet.",
+      "location": "## Authorized, line 25"
+    },
+    {
+      "text": "Eventually, authorizations will expire. In order to collect funds, a transaction needs to be submitted for settlement \u2013 which happens by default when creating transactions via the Control Panel. Transactions with the Submitted for Settlement status (also known in the payments industry as captured or capturing) indicate that the process of removing money from the customer's account has been initiated.",
+      "location": "## Submitted for Settlement, line 30"
+    },
+    {
+      "text": "When we begin communicating with the processor about the settlement request, the transaction will move from Submitted for Settlement to Settling. The amount of time a transaction spends in the Settling state depends on the processing bank. [Contact us](/braintree/help/TransactionProcessingQuestion) if you have questions on transactions with a Settling status.",
+      "location": "## Settling, line 37"
+    },
+    {
+      "text": "This is when the money moves from your customer\u2019s bank through your merchant account. Once the money hits your merchant account, the transaction will display as Settled, and the funds will be routed to your bank account.",
+      "location": "## Settled, line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-lifecycle-braintree-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-lifecycle]] - provider-level transaction-status route distinguishing authorization holds, settlement submission, processor settling, settled merchant-account movement, and separate bank-account funding timing",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not describe an authorization hold as removal of customer funds.",
+          "Do not equate Submitted for Settlement or Settling with Settled status or completed bank funding.",
+          "The page says Settled funds are routed to the merchant's bank account but does not document bank-arrival timing.",
+          "Treat the 2026-09-16 raw as collected evidence rather than proof of current status timing or support."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/get-started/transaction-lifecycle-2026-09-16.md",
+  "raw_sha256": "a4e0b3def84ceddf59f7f0d470c0515df1c9f0bde434ffc2f3f5772a2c96f825",
+  "status": "candidate_ready"
+}

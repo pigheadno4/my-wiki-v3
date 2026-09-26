@@ -1,0 +1,75 @@
+{
+  "job_id": "control-panel-managing-authorizations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel: Managing Authorizations\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/transactions/managing-authorizations\"\nraw_files:\n  - \"braintree/articles/control-panel/transactions/managing-authorizations-2026-09-16.md\"\ntags: [braintree, control-panel, transactions, authorizations, settlement, vault]\n---\n\n## Overview\n\nThis collected Braintree article routes merchants managing expiring payment authorizations to three gateway workflows: verify and store, repeated authorizations, and authorization adjustments. Although the page sits in the Control Panel Transactions documentation tree, its described actions are merchant integration and API/SDK operations; it does not document a Control Panel button or transaction-editing action.\n\n## Key takeaways\n\n- Authorization expiry timing varies by payment method. For credit or debit cards, Braintree recommends card verification before vaulting the payment method; the merchant then creates the transaction when ready to collect. This avoids maintaining an authorization but does not guarantee sufficient funds or an active account at that later time.\n- Braintree does not recommend repeated authorizations as a standard workflow. The merchant must identify the payment-method type, apply its expiration timing, authorize without submitting for settlement, void within that window, reauthorize through the vaulted token as needed, and submit only the latest transaction for settlement. This requires merchant-side logic and can create duplicate pending transactions that confuse customers and restrict their available funds.\n- Authorization adjustments are described for select merchants and processors. The article routes adjustments before settlement to the Auth Adjustment API and describes a final adjustment during settlement submission. Lower amounts trigger an attempted partial reversal; higher amounts trigger an attempted incremental authorization. If the issuer declines either adjustment, Braintree returns a validation error and the original transaction remains `Authorized`.\n- The article limits adjustments to Visa and Mastercard and says Mastercard permits all merchant categories while Visa limits use to listed categories. Its regional availability statements conflict, so the collected page cannot establish one reliable region list without current confirmation from Braintree.\n- The page also warns that authorization and capture can incur merchant fees in some markets. It separately says delaying settlement for shipped PayPal goods is unnecessary because of Seller Protection; follow the linked agreement and protection terms rather than treating that note as a universal settlement rule.\n\n## Control Panel and API boundary\n\nThe documentation location is a Control Panel article, but the operative flows link to card verification, Vault storage, transaction sale, void, Auth Adjustment, and submit-for-settlement APIs or SDK references. Configuration screens, user permissions, API request shapes, and current merchant enablement are not established by this page.\n\n## Availability warning\n\n> [!warning] Conflicting regional statements in the collected page\n> The pre-settlement adjustment section says the feature is available only in the US for Visa and Mastercard, while the later Availability section lists US, APAC, EU, and Australia for both brands. This source preserves both statements and does not resolve them. Confirm current merchant, processor, region, card-brand, and Visa merchant-category eligibility with Braintree before implementation.\n\n## Detail locators\n\n- Expiration premise and PayPal Seller Protection plus market-qualified fee notes: `# Managing Authorizations`, lines 16-22.\n- Three workflow choices and post-authorization amount-adjustment route: `## Authorization options`, lines 27-35.\n- Recommended verify-and-store steps, benefits, and later-funds/account limitations: `### Verify and store`, lines 38-60.\n- Repeated-authorization warning, payment-method-specific timing logic, void/reauthorize/latest-settlement flow, and duplicate-pending consequence: `### Multiple authorizations`, lines 63-94.\n- Pre-settlement Auth Adjustment API behavior, issuer-decline result, and US-only statement: `#### Authorization adjustments without settlement`, lines 108-118.\n- Settlement-time final adjustment and required validation-error handling: `#### Authorization adjustments during settlement`, lines 125-131.\n- Broader region list, card-brand and merchant-category eligibility, plus the full Visa category list: `#### Availability`, lines 134-156.\n- Decline-response and success-tracking benefits: `#### Benefits`, lines 159-163.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- Gateway/API operations: [[braintree-server-sdk]]\n- Dedicated adjustment operation: [[source-braintree-transaction-adjust-authorization-node]]\n- Settlement-submission operation: [[source-braintree-transaction-submit-for-settlement-node]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/transactions/managing-authorizations-2026-09-16|Braintree Managing Authorizations article]] - complete collected page covering authorization workflow options, timing, adjustment behavior, eligibility, and warnings\n",
+  "quotes": [
+    {
+      "text": "All authorizations expire, though the timeframes differ [by payment method](/braintree/docs/reference/general/statuses#authorization-expired). This is a common challenge for businesses that wait to collect funds until they are ready to ship their products, provide their services, or need to adjust a transaction's amount post-authorization. Below are some options and limitations to be aware of when managing your authorization workflow.",
+      "location": "line 16, # Managing Authorizations"
+    },
+    {
+      "text": "Merchants in some industries may want an authorization to stay active on a customer's account for longer than the timeframe established by the customer\u2019s bank. There are two ways to do this in the Braintree gateway:\n\n\n- [**Verify and store**](#verify-and-store)\u2013 recommended\n- [**Multiple authorizations**](#multiple-authorizations)\u2013 not recommended\n\nEligible merchants that need to adjust the amount of a transaction after it has already been authorized (e.g. adding a tip post-authorization) can use the [authorization adjustment option](#authorization-adjustments).",
+      "location": "lines 29-35, ## Authorization options"
+    },
+    {
+      "text": "- [Create a transaction](/braintree/docs/reference/request/transaction/sale)to authorize the amount you plan to charge; do not submit for settlement yet. Store the payment method in the vault using the \"store in vault\" option in the transaction request\n- [Void the transaction](/braintree/docs/reference/request/transaction/void)within the appropriate expiration timeframe\n- Create a new transaction to authorize the amount again using the vaulted token created in step 1. Do not submit for settlement yet\n- Repeat steps 2 and 3 if you need to continue to extend the authorization\n- When you\u2019re ready to collect funds,[submit the latest transaction for settlement](/braintree/docs/reference/request/transaction/submit-for-settlement)",
+      "location": "lines 76-80, ### Multiple authorizations"
+    },
+    {
+      "text": "#### Authorization adjustments without settlement\n\nFor some business models, there is a need to adjust an authorization for either more or less than the amount it was originally authorized for (e.g. incremental charges). This action is commonly referred to as an authorization (or auth) adjustment.\n\nYou can call our [Auth adjustment](/braintree/docs/reference/request/transaction/adjust-authorization) API to adjust an authorization as many times as you want by passing in a new authorization amount and the original authorization reference. If you adjust an authorization for less than the original authorized amount, we attempt a partial reversal in order to reverse the difference back to the cardholder. If you adjust for more than the original authorized amount, we attempt an incremental authorization to increase the authorized amount. In either case, if the cardholder\u2019s issuing bank declines the adjustment, we will return a validation error. When an adjustment is declined in this way, the original transaction will remain in an Authorized status.\n\n\n**AVAILABILITY**\n \n\n  This is currently available only in US only for Visa and Mastercard.",
+      "location": "lines 108-118, #### Authorization adjustments without settlement"
+    },
+    {
+      "text": "#### Authorization adjustments during settlement\n\nFor some business models, there is a need to [submit a transaction for settlement](/braintree/docs/reference/request/transaction/submit-for-settlement#authorization-adjustments) for either more or less than the amount it was originally authorized for (e.g. tip adjustments).\n\nIf you submit for less than the original authorized amount, we attempt a partial reversal in order to reverse the difference back to the cardholder. If you submit for more than the original authorized amount, we attempt an incremental authorization to increase the authorized amount. In either case, if the cardholder\u2019s issuing bank declines the adjustment, we will return a validation error. When an adjustment is declined in this way, the original transaction will remain in an Authorized status. If you had previously adjusted an authorization using the adjustment endpoint, you can still do one final adjustment while you [submit for settlement](/braintree/docs/reference/request/transaction/submit-for-settlement#authorization-adjustments).\n\nIf you qualify for and utilize auth adjustments, you will need to update your logic to listen for [validation errors](/braintree/docs/reference/general/validation-errors/overview) when submitting for higher or lower than the original authorized amount.\n\n\n#### Availability\n\nAuthorization adjustments can only be made on Visa and Mastercard transactions, and are available for select processors in the following regions:\n\n\n- US - Visa and Mastercard\n- APAC - Visa and Mastercard\n- EU - Visa and Mastercard\n- Australia - Visa and Mastercard\n\nAll merchant categories are eligible to utilize Mastercard\u2019s adjustment functionality; however, Visa limits adjustment usage to the following merchant categories:",
+      "location": "lines 125-144, #### Authorization adjustments during settlement and #### Availability"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-managing-authorizations-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-managing-authorizations]] \u2014 collected authorization-management article covering recommended Vault reuse, discouraged repeated authorizations, eligibility-qualified adjustments, and the boundary between its Control Panel documentation location and API/SDK operations",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not describe the linked workflows as Control Panel buttons or UI actions; the article routes operative steps to gateway APIs and SDK references.",
+          "Preserve the conflict between the US-only statement and the later US/APAC/EU/Australia list; do not present either as resolved current availability.",
+          "Do not equate settlement submission with settlement or funding, and retain the issuer-decline outcome that leaves the original transaction Authorized."
+        ]
+      },
+      {
+        "update_id": "control-panel-managing-authorizations-server-sdk-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-control-panel-managing-authorizations]] - gateway authorization-management routes for recommended Vault reuse, discouraged payment-method-timed reauthorization, and merchant/processor-qualified pre-settlement or settlement-time amount adjustments",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep payment-method expiration timing, merchant and processor eligibility, Visa/Mastercard scope, and the unresolved regional conflict visible.",
+          "Lower and higher adjustments are attempted partial reversals and incremental authorizations; they are not guaranteed final effects.",
+          "Leave routine steps, Visa merchant-category inventory, and linked request shapes behind the raw locators."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/transactions/managing-authorizations-2026-09-16.md",
+  "raw_sha256": "4a43296a1ba89273ef9a7fbcc4fae79e151e9cf3901edcc119829ee188d94918",
+  "status": "candidate_ready"
+}

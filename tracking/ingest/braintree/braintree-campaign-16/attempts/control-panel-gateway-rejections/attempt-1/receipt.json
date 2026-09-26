@@ -1,0 +1,58 @@
+{
+  "job_id": "control-panel-gateway-rejections",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel Gateway Rejections\"\ntype: source\ndate_ingested: 2026-09-23\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/transactions/gateway-rejections\"\nraw_files:\n  - \"braintree/articles/control-panel/transactions/gateway-rejections-2026-09-16.md\"\ntags: [braintree, control-panel, gateway-rejections, transactions, verifications, authorization-voids]\n---\n\n## Overview\n\nThis Braintree Control Panel article explains gateway rejections for transaction and verification requests that fail settings or rules in a merchant's Braintree gateway. It distinguishes them from declines attributed here to the customer's bank and documents both pre-processor rejection and rejection after authorization.\n\n## Key takeaways\n\n- A gateway rejection is caused by gateway settings, while the article describes a decline as being blocked by the customer's bank. The separate Declines article is linked only as navigation below and was not used as factual evidence for this source.\n- Depending on the trigger, Braintree may reject a transaction or verification before sending information to the processor or after authorization completes. When authorization precedes rejection, the gateway automatically voids the transaction.\n- A bank may not acknowledge the automatic void promptly, or at all. The article says a customer seeking removal of the authorization can contact their bank to speed the process.\n- Braintree changes a rejected transaction or verification request to `Gateway Rejected` and provides a rejection reason. The complete reason list and linked reason-specific guidance remain at the raw locator below.\n- `Application Incomplete` can apply when a provisionally processing merchant reaches its account limit before full approval; subsequent transaction or verification attempts are then rejected until the merchant has approval for a full merchant account.\n\n> [!warning] Authorization removal is not necessarily immediate\n> Automatic voiding after a post-authorization gateway rejection does not guarantee that the customer's bank will acknowledge or remove the authorization promptly.\n\n## Detail locators\n\n- Gateway rejection versus customer-bank decline: `# Gateway Rejections > **NOTE**`, lines 17-18.\n- Pre-processor versus post-authorization rejection and automatic void: `# Gateway Rejections`, line 22.\n- Bank acknowledgment limitation and customer route: `# Gateway Rejections > **NOTE**`, lines 25-26.\n- `Gateway Rejected` status and complete reason list: `# Gateway Rejections`, lines 30-41.\n- Provisional-account processing limit and `Application Incomplete` behavior: `## A note on Application Incomplete`, lines 44-46.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/transactions/declines-2026-09-16|Braintree transaction declines article]] - navigation-only destination linked by this article; not read or used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/transactions/gateway-rejections-2026-09-16|Braintree Control Panel gateway-rejections article]] - complete collected page covering gateway-setting rejection, the customer-bank decline distinction, automatic voiding after authorization, rejection status and reasons, and the provisional-account limit\n",
+  "quotes": [
+    {
+      "text": "Gateway rejections are not the same as declines. Gateway rejections are blocked by your gateway settings, while declines are blocked by the customer's bank.",
+      "location": "line 18, # Gateway Rejections > **NOTE**"
+    },
+    {
+      "text": "A gateway rejection indicates that a transaction or verification request did not pass certain settings or rules in your Braintree gateway. Depending on what triggered the gateway rejection, some requests are rejected before we send the information to the processor, and some are rejected after the authorization has been completed. If a transaction was authorized before being rejected, the gateway will automatically void it.",
+      "location": "line 22, # Gateway Rejections"
+    },
+    {
+      "text": "Some banks don\u2019t acknowledge these voids right away, and others don\u2019t acknowledge them at all. If a customer is requesting the authorization be removed, they can contact their bank to speed this process along.",
+      "location": "line 26, # Gateway Rejections > **NOTE**"
+    },
+    {
+      "text": "If a transaction or verification is rejected, we\u2019ll update the status of the request to Gateway Rejected and provide a reason for the rejection.",
+      "location": "line 30, # Gateway Rejections"
+    },
+    {
+      "text": "If you reach the processing limits on your provisional account, any subsequent transaction or verification attempts will be rejected with Application Incomplete until you have been approved for a full merchant account.",
+      "location": "line 46, ## A note on Application Incomplete"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-gateway-rejections-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-gateway-rejections]] \u2014 gateway-setting rejection versus customer-bank decline, pre-processor and post-authorization rejection timing, automatic void behavior, bank-acknowledgment warning, and `Gateway Rejected` reason routing",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as gateway behavior documented by a Control Panel article; do not imply that an operator manually performs the rejection or void in the Control Panel.",
+          "Do not equate authorization with capture, settlement submission, final settlement, or funding.",
+          "Preserve the warning that a bank may delay or never acknowledge the automatic void.",
+          "Do not import decline classifications or behavior from the unread Declines article; it is navigation only.",
+          "Treat the 2026-09-16 raw as collected evidence, not proof of current support or settings."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/transactions/gateway-rejections-2026-09-16.md",
+  "raw_sha256": "91d1e10fc4579abd45d98741213ea55ee20ecf1b921516c33427adac691382e4",
+  "status": "candidate_ready"
+}

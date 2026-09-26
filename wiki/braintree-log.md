@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-23] ingest | Braintree website C16
+
+- Ten collected website pages independently read, reviewed and promoted: Transaction Lifecycle and nine Control Panel transaction articles covering Managing Authorizations, Email Receipts, BINs, Duplicate Checking, Create, Clone, Gateway Rejections, Transaction Issues and Descriptors.
+- Initial content approvals 9/10. Email Receipts needed one bounded manual-versus-merchant-built wording correction, approved by targeted diff/context review; no full retry review. The Issues source preserves the missing investigation-workflow evidence; authorization-region statements remain explicitly conflicted.
+- Approved reciprocal routes were added to existing concepts. Company and provider index cover 131 sources = 115 website + 16 GitHub, excluding changelogs.
+- Fixed 20-question audit, mechanical close and timings: `tracking/ingest/braintree/braintree-campaign-16/quality-audit.md` and `retrospective.md`. This entry records promotion, not an additional close gate.
+- No raw edits, collection, GitHub ingest, code/rule changes, commit or push were authorized by C16 execution; unrelated shared-checkout changes preserved.
+
 ## [2026-09-23] ingest | Braintree website C15
 
 - Ten website sources independently read, reviewed and promoted: Best Practices,
