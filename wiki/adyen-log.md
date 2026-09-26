@@ -6,6 +6,18 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-22] ingest | adyen/adyen-web `@adyen/adyen-web@6.45.2`
+
+- Serial delta ingest of `github-929e37b8057fae0c095e` after 6.45.1 completed: ten changed retained files, four complete supplements, complete comparison/records and cumulative wiki history read; 211 unchanged files and inventories checked mechanically.
+- Recorded upstream payment-action rollback fix, restored status props and type/form behavior, preserved review lifecycle, and six retained-file differences versus 6.45.0. The 6.45.1 warning and all earlier knowledge remain.
+- Updated concept, source, changelog, company, index and logs. No new source or cross-company comparison; no SDK tests, browser or live payment verification. Commit/push remain a separate step.
+
+## [2026-09-22] ingest | adyen/adyen-web `@adyen/adyen-web@6.45.1`
+
+- Additive full ingest of `github-e27c0e62a2e8e19ebd7c`, SHA `0d1e03308389f42fdd880ca476aa463f7e4c7c62`, with user-approved focused reading: 14 changed retained files, four supplements, complete diff and wiki history; 207 unchanged files and inventories hash-checked.
+- Recorded the upstream do-not-use warning, status-signature/ref-wiring changes, address-lookup story and style/maintenance changes. Exact runtime cause remains unproven; no SDK tests or payments executed.
+- Updated concept first, cumulative source/changelog, company, index and logs; preserved prior releases and source count. 6.45.2 remains the next separate ingest. Details: [[source-github-adyen-web]], [[changelog-github-adyen-web]].
+
 ## [2026-09-15] ingest | adyen/adyen-web `@adyen/adyen-web@6.45.0`
 
 - Full-ingested `github-b1ef47fd1c229bf1ffb7` at exact SHA `b29934f6cf5de6e1912039f669b48ae45b75d3fd`, after user approval and serial reading of the assigned packet, comparison and 26-file supplement. Standard snapshot: 221 files, 13 modified, 208 unchanged.

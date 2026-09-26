@@ -11,6 +11,11 @@ In `@adyen/adyen-web@6.45.0`, the opt-in `onReview` callback separates valid pay
 
 ## Lifecycle
 
+> [!warning] Version warning
+> Adyen marks `@adyen/adyen-web@6.45.1` **do not use** because of a payment-action handling bug and directs users to 6.45.2. This warning applies beyond review-page checkout; do not interpret the established 6.45.0 lifecycle as proof that 6.45.1 action mounting works. See [[source-github-adyen-web]] and [[changelog-github-adyen-web]].
+
+The retained 6.45.2 release reports a payment-action mounting fix by reverting the BaseElement/UIElement refactor. Its complete supplemental UIElement implementation is byte-identical to the retained 6.45.0 implementation, restoring status-prop forwarding while preserving the review lifecycle below. Core implementation is also unchanged versus the 6.45.0 snapshot. This is code/release-note evidence, not a reproduced browser or payment result; merchant action ownership and recovery responsibilities remain.
+
 1. A supported Component validates on submit. With `onReview`, it supplies payment data, the Component, and optional order status, then returns without executing its normal payment call.
 2. The merchant retains the data and displays a review screen. Card end digits in the retained story are captured separately through `onFieldValid`, not automatically included in review details.
 3. For Sessions, `checkout.processPayment(data)` submits through the Session without needing the original payment Component. It returns `void`; completion is callback-driven. Advanced integrations continue their own backend payment flow instead.

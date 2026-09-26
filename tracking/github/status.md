@@ -1551,6 +1551,32 @@
   Release: [manifest](../../raw/github/braintree/braintree-ios-drop-in/releases/braintreedropin/9.14.0/2026-08-13/manifest.json)
   Comparison: Not applicable
 
+## `github-929e37b8057fae0c095e`
+
+- Repository: `adyen/adyen-web`
+- SHA: `386715eebb31dd703168ecdecb1477b3311f85cf`
+- Collection date: `2026-09-22`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-929e37b8057fae0c095e/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-929e37b8057fae0c095e/attachment.json)
+- Review priority: `high`
+- Required reading: `25` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.45.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.2/2026-09-22/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.45.1--6.45.2/comparison.json)
+
 ## `github-92b6b54198b4cd5b55a6`
 
 - Repository: `adyen/adyen-web`
@@ -2720,6 +2746,32 @@
 - `adyen-3ds2-android@2.2.27` (recommended `full`)
   Release: [manifest](../../raw/github/adyen/adyen-3ds2-android/releases/adyen-3ds2-android/2.2.27/2026-08-17/manifest.json)
   Comparison: Not applicable
+
+## `github-e27c0e62a2e8e19ebd7c`
+
+- Repository: `adyen/adyen-web`
+- SHA: `0d1e03308389f42fdd880ca476aa463f7e4c7c62`
+- Collection date: `2026-09-22`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-e27c0e62a2e8e19ebd7c/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-e27c0e62a2e8e19ebd7c/attachment.json)
+- Review priority: `high`
+- Required reading: `29` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.45.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.45.0--6.45.1/comparison.json)
 
 ## `github-e923ffd86b6fd634a620`
 

@@ -1,0 +1,171 @@
+# GitHub ingest packet
+
+- Repository: `adyen/adyen-web`
+- Work item: `github-e27c0e62a2e8e19ebd7c`
+- Snapshot: `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `@adyen/adyen-web`
+
+- Version: `6.45.0` -> `6.45.1`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `207`
+
+### Required reading
+
+- `raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/manifest.json`
+- `raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/release-notes.md`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/package.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/package.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/Card.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/components/CardInput/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/components/ClickToPayHolder.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/components/ClickToPayWrapper.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/stories/Card.stories.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Dropin/Dropin.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Dropin/components/DropinComponent.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/ThreeDS2/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/core/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/types/global-types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.0--6.45.1/comparison.json`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.0--6.45.1/comparison.md`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.0--6.45.1/diff.patch`
+
+### Upstream changes
+
+- `modified` `.github/workflows/.size-limit.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/automated-a11y.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/automated-visual.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/check-release-build.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/codeql-analysis.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/e2e-tests.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/gh-release.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/npm-publish.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/pr.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/release-notifications.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/release-snapshot.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/release.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/sonarcloud.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/stale-issues-bot.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/strict-typescript.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/unit-tests.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/update-screenshots.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/validate-changesets.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/validate-locales.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/validate-remote-assets.yml`: `intentional-policy-exclusion`
+- `modified` `package.json`: `retained-evidence`
+- `modified` `packages/e2e-playwright/tests/a11y/issuerList/__screenshots__/linux/chromium/online-banking-pl-keyboard-navigation-selected.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/a11y/issuerList/__screenshots__/linux/firefox/online-banking-pl-keyboard-navigation-selected.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/a11y/issuerList/__screenshots__/linux/webkit/online-banking-pl-keyboard-navigation-selected.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/automated/visual/__screenshots__/linux/chromium/components-issuerlist-onlinebankingcz--default.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/automated/visual/__screenshots__/linux/chromium/components-issuerlist-onlinebankingpl--default.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/automated/visual/__screenshots__/linux/chromium/components-issuerlist-onlinebankingsk--default.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/e2e/dropin/sessions/__screenshots__/linux/chromium/redeemed-gift-cards.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/e2e/dropin/sessions/__screenshots__/linux/firefox/redeemed-gift-cards.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/e2e/dropin/sessions/__screenshots__/linux/webkit/redeemed-gift-cards.png`: `intentional-policy-exclusion`
+- `modified` `packages/e2e-playwright/tests/ui/card/binLookup/panLength/panLength.focus.regular.spec.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/.size-limit.cjs`: `intentional-policy-exclusion`
+- `modified` `packages/lib/CHANGELOG.md`: `intentional-policy-exclusion`
+- `modified` `packages/lib/eslint-rules/strict-null-checks.js`: `intentional-policy-exclusion`
+- `modified` `packages/lib/eslint.config.js`: `intentional-policy-exclusion`
+- `modified` `packages/lib/package.json`: `retained-evidence`
+- `modified` `packages/lib/src/components/ANCV/components/ANCVInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Ach/Ach.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Ach/components/AchComponent.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/AmazonPay/AmazonPay.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/AmazonPay/AmazonPay.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/AmazonPay/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/BacsDD/BacsDD.test.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/BacsDD/BacsDD.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/BacsDD/components/BacsInput.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/BacsDD/components/BacsInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/BacsDD/components/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/BankTransfer/BankTransfer.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Blik/Blik.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Blik/components/BlikInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Card/Card.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/CardInput/types.ts`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/ClickToPayHolder.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/components/ClickToPayWrapper.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/stories/Card.stories.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Card/types.ts`: `retained-evidence`
+- `modified` `packages/lib/src/components/CashAppPay/CashAppPay.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/CustomCard/CustomCard.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/CustomCard/CustomCardInput/index.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Donation/Donation.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Donation/components/DonationComponent.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Donation/components/DonationComponent.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Donation/components/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Dropin/Dropin.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Dropin/components/DropinComponent.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/Giftcard/Giftcard.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Giropay/Giropay.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/MBWay/MBWay.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/MBWay/components/MBWayInput/MBWayInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Multibanco/Multibanco.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/PayByBankPix/PayByBankPix.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/PayByBankPix/components/Enrollment/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/PayByBankUS/PayByBankUS.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/PayTo/components/BSBInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/PayTo/components/PayToNameFields.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/PayTo/components/PayToPhone.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Pix/Pix.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Pix/components/PixInput/PixInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Pix/components/PixInput/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/PreAuthorizedDebitCanada/PreAuthorizedDebitCanada.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/PreAuthorizedDebitCanada/components/PreAuthorizedDebitCanadaComponent.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Redirect/Redirect.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Sepa/Sepa.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/Sepa/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx`: `retained-evidence`
+- `modified` `packages/lib/src/components/ThreeDS2/types.ts`: `retained-evidence`
+- `modified` `packages/lib/src/components/Trustly/Trustly.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/helpers/IssuerListContainer/IssuerListContainer.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/helpers/QRLoaderContainer/QRLoaderContainer.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Address/Specifications.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Address/components/AddressSearch.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Address/components/FieldContainer.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Address/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/BaseElement/BaseElement.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/BaseElement/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/Button/Button.scss`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/sdks/MastercardSdk.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/sdks/VisaSdk.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/sdks/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/FormFields/Field/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/IbanInput/IbanInput.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/IbanInput/validate.test.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/IbanInput/validate.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/IssuerList/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/OpenInvoice/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/PersonalDetails/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/PhoneInput/PhoneInputForm.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/RedirectButton/RedirectButton.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/UIElement/UIElement.tsx`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/UIElement/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/components/internal/UIElement/utils.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/core/types.ts`: `retained-evidence`
+- `modified` `packages/lib/src/styles/mixins.scss`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/styles/variable-generator.scss`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/types/global-types.ts`: `retained-evidence`
+- `modified` `packages/lib/src/utils/Validator/Validator.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/utils/useForm/reducer.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/utils/useForm/types.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/utils/useForm/useForm.ts`: `intentional-policy-exclusion`
+- `modified` `packages/lib/src/utils/useForm/useFormWithA11y.ts`: `intentional-policy-exclusion`
+- `modified` `packages/playground/package.json`: `intentional-policy-exclusion`
+- `modified` `yarn.lock`: `intentional-policy-exclusion`

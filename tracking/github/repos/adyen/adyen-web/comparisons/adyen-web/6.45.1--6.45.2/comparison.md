@@ -1,0 +1,175 @@
+# GitHub package comparison
+
+- Repository: `adyen/adyen-web`
+- Package: `@adyen/adyen-web`
+- From: `6.45.1` (`0d1e03308389f42fdd880ca476aa463f7e4c7c62`)
+- To: `6.45.2` (`386715eebb31dd703168ecdecb1477b3311f85cf`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `packages/lib/.size-limit.cjs`
+- `packages/lib/CHANGELOG.md`
+- `packages/lib/eslint-rules/strict-null-checks.js`
+- `packages/lib/eslint.config.js`
+- `packages/lib/package.json`
+- `packages/lib/src/components/ANCV/components/ANCVInput.tsx`
+- `packages/lib/src/components/Ach/Ach.tsx`
+- `packages/lib/src/components/Ach/components/AchComponent.tsx`
+- `packages/lib/src/components/AmazonPay/AmazonPay.test.tsx`
+- `packages/lib/src/components/AmazonPay/AmazonPay.tsx`
+- `packages/lib/src/components/AmazonPay/types.ts`
+- `packages/lib/src/components/BacsDD/BacsDD.test.ts`
+- `packages/lib/src/components/BacsDD/BacsDD.tsx`
+- `packages/lib/src/components/BacsDD/components/BacsInput.test.tsx`
+- `packages/lib/src/components/BacsDD/components/BacsInput.tsx`
+- `packages/lib/src/components/BacsDD/components/types.ts`
+- `packages/lib/src/components/BankTransfer/BankTransfer.tsx`
+- `packages/lib/src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx`
+- `packages/lib/src/components/Blik/Blik.tsx`
+- `packages/lib/src/components/Blik/components/BlikInput.tsx`
+- `packages/lib/src/components/Card/Card.tsx`
+- `packages/lib/src/components/Card/components/CardInput/types.ts`
+- `packages/lib/src/components/Card/types.ts`
+- `packages/lib/src/components/CashAppPay/CashAppPay.tsx`
+- `packages/lib/src/components/CustomCard/CustomCard.tsx`
+- `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`
+- `packages/lib/src/components/CustomCard/CustomCardInput/index.ts`
+- `packages/lib/src/components/Donation/Donation.tsx`
+- `packages/lib/src/components/Donation/components/DonationComponent.test.tsx`
+- `packages/lib/src/components/Donation/components/DonationComponent.tsx`
+- `packages/lib/src/components/Donation/components/types.ts`
+- `packages/lib/src/components/Dropin/Dropin.tsx`
+- `packages/lib/src/components/Dropin/components/DropinComponent.tsx`
+- `packages/lib/src/components/Giftcard/Giftcard.tsx`
+- `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`
+- `packages/lib/src/components/Giropay/Giropay.tsx`
+- `packages/lib/src/components/MBWay/MBWay.tsx`
+- `packages/lib/src/components/MBWay/components/MBWayInput/MBWayInput.tsx`
+- `packages/lib/src/components/Multibanco/Multibanco.tsx`
+- `packages/lib/src/components/PayByBankPix/PayByBankPix.tsx`
+- `packages/lib/src/components/PayByBankUS/PayByBankUS.tsx`
+- `packages/lib/src/components/PayTo/components/BSBInput.tsx`
+- `packages/lib/src/components/PayTo/components/PayToNameFields.tsx`
+- `packages/lib/src/components/PayTo/components/PayToPhone.tsx`
+- `packages/lib/src/components/Pix/Pix.tsx`
+- `packages/lib/src/components/Pix/components/PixInput/PixInput.tsx`
+- `packages/lib/src/components/Pix/components/PixInput/types.ts`
+- `packages/lib/src/components/PreAuthorizedDebitCanada/PreAuthorizedDebitCanada.tsx`
+- `packages/lib/src/components/PreAuthorizedDebitCanada/components/PreAuthorizedDebitCanadaComponent.tsx`
+- `packages/lib/src/components/Redirect/Redirect.tsx`
+- `packages/lib/src/components/Sepa/Sepa.tsx`
+- `packages/lib/src/components/Sepa/types.ts`
+- `packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx`
+- `packages/lib/src/components/ThreeDS2/types.ts`
+- `packages/lib/src/components/Trustly/Trustly.tsx`
+- `packages/lib/src/components/helpers/IssuerListContainer/IssuerListContainer.tsx`
+- `packages/lib/src/components/helpers/QRLoaderContainer/QRLoaderContainer.tsx`
+- `packages/lib/src/components/internal/BaseElement/BaseElement.ts`
+- `packages/lib/src/components/internal/BaseElement/types.ts`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`
+- `packages/lib/src/components/internal/IbanInput/IbanInput.tsx`
+- `packages/lib/src/components/internal/IbanInput/validate.test.ts`
+- `packages/lib/src/components/internal/IbanInput/validate.ts`
+- `packages/lib/src/components/internal/IssuerList/types.ts`
+- `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx`
+- `packages/lib/src/components/internal/OpenInvoice/types.ts`
+- `packages/lib/src/components/internal/PersonalDetails/types.ts`
+- `packages/lib/src/components/internal/PhoneInput/PhoneInputForm.tsx`
+- `packages/lib/src/components/internal/RedirectButton/RedirectButton.tsx`
+- `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`
+- `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`
+- `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `packages/lib/src/components/internal/UIElement/types.ts`
+- `packages/lib/src/components/internal/UIElement/utils.ts`
+- `packages/lib/src/core/types.ts`
+- `packages/lib/src/types/global-types.ts`
+- `packages/lib/src/utils/Validator/Validator.ts`
+- `packages/lib/src/utils/useForm/reducer.ts`
+- `packages/lib/src/utils/useForm/types.ts`
+- `packages/lib/src/utils/useForm/useForm.ts`
+- `packages/lib/src/utils/useForm/useFormWithA11y.ts`
+
+## Upstream changes
+
+- `modified`: `packages/lib/.size-limit.cjs`
+- `modified`: `packages/lib/CHANGELOG.md`
+- `modified`: `packages/lib/eslint-rules/strict-null-checks.js`
+- `modified`: `packages/lib/eslint.config.js`
+- `modified`: `packages/lib/package.json`
+- `modified`: `packages/lib/src/components/ANCV/components/ANCVInput.tsx`
+- `modified`: `packages/lib/src/components/Ach/Ach.tsx`
+- `modified`: `packages/lib/src/components/Ach/components/AchComponent.tsx`
+- `modified`: `packages/lib/src/components/AmazonPay/AmazonPay.test.tsx`
+- `modified`: `packages/lib/src/components/AmazonPay/AmazonPay.tsx`
+- `modified`: `packages/lib/src/components/AmazonPay/types.ts`
+- `modified`: `packages/lib/src/components/BacsDD/BacsDD.test.ts`
+- `modified`: `packages/lib/src/components/BacsDD/BacsDD.tsx`
+- `modified`: `packages/lib/src/components/BacsDD/components/BacsInput.test.tsx`
+- `modified`: `packages/lib/src/components/BacsDD/components/BacsInput.tsx`
+- `modified`: `packages/lib/src/components/BacsDD/components/types.ts`
+- `modified`: `packages/lib/src/components/BankTransfer/BankTransfer.tsx`
+- `modified`: `packages/lib/src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx`
+- `modified`: `packages/lib/src/components/Blik/Blik.tsx`
+- `modified`: `packages/lib/src/components/Blik/components/BlikInput.tsx`
+- `modified`: `packages/lib/src/components/Card/Card.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/types.ts`
+- `modified`: `packages/lib/src/components/Card/types.ts`
+- `modified`: `packages/lib/src/components/CashAppPay/CashAppPay.tsx`
+- `modified`: `packages/lib/src/components/CustomCard/CustomCard.tsx`
+- `modified`: `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`
+- `modified`: `packages/lib/src/components/CustomCard/CustomCardInput/index.ts`
+- `modified`: `packages/lib/src/components/Donation/Donation.tsx`
+- `modified`: `packages/lib/src/components/Donation/components/DonationComponent.test.tsx`
+- `modified`: `packages/lib/src/components/Donation/components/DonationComponent.tsx`
+- `modified`: `packages/lib/src/components/Donation/components/types.ts`
+- `modified`: `packages/lib/src/components/Dropin/Dropin.tsx`
+- `modified`: `packages/lib/src/components/Dropin/components/DropinComponent.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/Giftcard.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`
+- `modified`: `packages/lib/src/components/Giropay/Giropay.tsx`
+- `modified`: `packages/lib/src/components/MBWay/MBWay.tsx`
+- `modified`: `packages/lib/src/components/MBWay/components/MBWayInput/MBWayInput.tsx`
+- `modified`: `packages/lib/src/components/Multibanco/Multibanco.tsx`
+- `modified`: `packages/lib/src/components/PayByBankPix/PayByBankPix.tsx`
+- `modified`: `packages/lib/src/components/PayByBankUS/PayByBankUS.tsx`
+- `modified`: `packages/lib/src/components/PayTo/components/BSBInput.tsx`
+- `modified`: `packages/lib/src/components/PayTo/components/PayToNameFields.tsx`
+- `modified`: `packages/lib/src/components/PayTo/components/PayToPhone.tsx`
+- `modified`: `packages/lib/src/components/Pix/Pix.tsx`
+- `modified`: `packages/lib/src/components/Pix/components/PixInput/PixInput.tsx`
+- `modified`: `packages/lib/src/components/Pix/components/PixInput/types.ts`
+- `modified`: `packages/lib/src/components/PreAuthorizedDebitCanada/PreAuthorizedDebitCanada.tsx`
+- `modified`: `packages/lib/src/components/PreAuthorizedDebitCanada/components/PreAuthorizedDebitCanadaComponent.tsx`
+- `modified`: `packages/lib/src/components/Redirect/Redirect.tsx`
+- `modified`: `packages/lib/src/components/Sepa/Sepa.tsx`
+- `modified`: `packages/lib/src/components/Sepa/types.ts`
+- `modified`: `packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx`
+- `modified`: `packages/lib/src/components/ThreeDS2/types.ts`
+- `modified`: `packages/lib/src/components/Trustly/Trustly.tsx`
+- `modified`: `packages/lib/src/components/helpers/IssuerListContainer/IssuerListContainer.tsx`
+- `modified`: `packages/lib/src/components/helpers/QRLoaderContainer/QRLoaderContainer.tsx`
+- `modified`: `packages/lib/src/components/internal/BaseElement/BaseElement.ts`
+- `modified`: `packages/lib/src/components/internal/BaseElement/types.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`
+- `modified`: `packages/lib/src/components/internal/IbanInput/IbanInput.tsx`
+- `modified`: `packages/lib/src/components/internal/IbanInput/validate.test.ts`
+- `modified`: `packages/lib/src/components/internal/IbanInput/validate.ts`
+- `modified`: `packages/lib/src/components/internal/IssuerList/types.ts`
+- `modified`: `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx`
+- `modified`: `packages/lib/src/components/internal/OpenInvoice/types.ts`
+- `modified`: `packages/lib/src/components/internal/PersonalDetails/types.ts`
+- `modified`: `packages/lib/src/components/internal/PhoneInput/PhoneInputForm.tsx`
+- `modified`: `packages/lib/src/components/internal/RedirectButton/RedirectButton.tsx`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`
+- `modified`: `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`
+- `modified`: `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `modified`: `packages/lib/src/components/internal/UIElement/types.ts`
+- `modified`: `packages/lib/src/components/internal/UIElement/utils.ts`
+- `modified`: `packages/lib/src/core/types.ts`
+- `modified`: `packages/lib/src/types/global-types.ts`
+- `modified`: `packages/lib/src/utils/Validator/Validator.ts`
+- `modified`: `packages/lib/src/utils/useForm/reducer.ts`
+- `modified`: `packages/lib/src/utils/useForm/types.ts`
+- `modified`: `packages/lib/src/utils/useForm/useForm.ts`
+- `modified`: `packages/lib/src/utils/useForm/useFormWithA11y.ts`

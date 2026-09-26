@@ -1,0 +1,3097 @@
+diff --git a/packages/lib/.size-limit.cjs b/packages/lib/.size-limit.cjs
+index e3529f1..63b436f 100644
+--- a/packages/lib/.size-limit.cjs
++++ b/packages/lib/.size-limit.cjs
+@@ -42,7 +42,7 @@ module.exports = [
+         name: 'Auto',
+         path: 'auto/auto.js',
+         import: '{ AdyenCheckout, Dropin }',
+-        limit: '139 KB',
++        limit: '138 KB',
+         running: false
+     },
+     /**
+diff --git a/packages/lib/CHANGELOG.md b/packages/lib/CHANGELOG.md
+index 5464931..fa515db 100644
+--- a/packages/lib/CHANGELOG.md
++++ b/packages/lib/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # @adyen/adyen-web
+ 
++## 6.45.2
++
++### Patch Changes
++
++- Fixed: revert internal changes to remove implicit and explicit any from BaseElement and UIElement to fix issue with payment actions mounting
++
+ ## 6.45.1
+ 
+ ### Patch Changes
+diff --git a/packages/lib/eslint-rules/strict-null-checks.js b/packages/lib/eslint-rules/strict-null-checks.js
+index 7db0dbd..690b132 100644
+--- a/packages/lib/eslint-rules/strict-null-checks.js
++++ b/packages/lib/eslint-rules/strict-null-checks.js
+@@ -199,6 +199,7 @@ const STRICT_NULL_CHECKS_BACKLOG = [
+     'src/components/GooglePay/requests.ts',
+ 
+     // ── Ticket 9: Amazon Pay, PayPal and Cash App Pay (79 errors) ──
++    'src/components/AmazonPay/AmazonPay.tsx',
+     'src/components/AmazonPay/components/AmazonPayButton.tsx',
+     'src/components/AmazonPay/components/AmazonPayComponent.tsx',
+     'src/components/AmazonPay/components/OrderButton.tsx',
+@@ -243,12 +244,14 @@ const STRICT_NULL_CHECKS_BACKLOG = [
+     'src/components/ANCV/ANCV.tsx',
+     'src/components/ANCV/components/ANCVInput.tsx',
+     // src/components/BacsDD (5 errors)
++    'src/components/BacsDD/components/BacsInput.tsx',
+     // src/components/BankTransfer (6 errors)
+     'src/components/BankTransfer/BankTransfer.tsx',
+     'src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx',
+     'src/components/BankTransfer/components/BankTransferResult/BankTransferResult.tsx',
+     // src/components/Blik (9 errors)
+     'src/components/Blik/Blik.tsx',
++    'src/components/Blik/components/BlikInput.tsx',
+     // src/components/Boleto (3 errors)
+     'src/components/Boleto/components/BoletoInput/BoletoInput.tsx',
+     // src/components/Doku (4 errors)
+diff --git a/packages/lib/eslint.config.js b/packages/lib/eslint.config.js
+index 6ff8db4..92ead35 100644
+--- a/packages/lib/eslint.config.js
++++ b/packages/lib/eslint.config.js
+@@ -153,6 +153,19 @@ const config = defineConfig(
+             'src/components/Klarna/**',
+             'src/components/PayTo/**',
+ 
++            // ── Internal Components ──
++            'src/components/internal/Address/**',
++            'src/components/internal/BaseElement/**',
++            'src/components/internal/ClickToPay/**',
++            'src/components/internal/FormFields/**',
++            'src/components/internal/IbanInput/**',
++            'src/components/internal/IssuerList/**',
++            'src/components/internal/OpenInvoice/**',
++            'src/components/internal/UIElement/**',
++
++            // ── Utils ──
++            'src/utils/useForm/**',
++
+             // ── Others ──
+             'src/core/**',
+             'src/types/**'
+diff --git a/packages/lib/package.json b/packages/lib/package.json
+index a815d45..b204f8c 100644
+--- a/packages/lib/package.json
++++ b/packages/lib/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@adyen/adyen-web",
+-    "version": "6.45.1",
++    "version": "6.45.2",
+     "license": "MIT",
+     "homepage": "https://docs.adyen.com/checkout",
+     "type": "module",
+diff --git a/packages/lib/src/components/ANCV/components/ANCVInput.tsx b/packages/lib/src/components/ANCV/components/ANCVInput.tsx
+index 40fa409..6be9753 100644
+--- a/packages/lib/src/components/ANCV/components/ANCVInput.tsx
++++ b/packages/lib/src/components/ANCV/components/ANCVInput.tsx
+@@ -54,7 +54,7 @@ function ANCVInput({ showPayButton, payButton, onChange, onSubmit, setComponentR
+             <div className="adyen-checkout__ancv">
+                 <p className="adyen-checkout-form-instruction">{i18n.get('ancv.form.instruction')}</p>
+                 <Field
+-                    errorMessage={typeof errors.beneficiaryId?.errorMessage === 'string' && i18n.get(errors.beneficiaryId.errorMessage)}
++                    errorMessage={!!errors.beneficiaryId && i18n.get(errors.beneficiaryId.errorMessage)}
+                     label={i18n.get('ancv.input.label')}
+                     isValid={valid.beneficiaryId}
+                     name={'beneficiaryId'}
+diff --git a/packages/lib/src/components/Ach/Ach.tsx b/packages/lib/src/components/Ach/Ach.tsx
+index b2cec26..c292214 100644
+--- a/packages/lib/src/components/Ach/Ach.tsx
++++ b/packages/lib/src/components/Ach/Ach.tsx
+@@ -63,7 +63,9 @@ export class AchElement extends UIElement<AchConfiguration> {
+                 name={this.displayName}
+                 payButton={this.payButton}
+                 onSubmit={this.submit}
+-                setComponentRef={this.setComponentRef}
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+             />
+         ) : (
+             <AchComponent
+diff --git a/packages/lib/src/components/Ach/components/AchComponent.tsx b/packages/lib/src/components/Ach/components/AchComponent.tsx
+index bb70300..e68c684 100644
+--- a/packages/lib/src/components/Ach/components/AchComponent.tsx
++++ b/packages/lib/src/components/Ach/components/AchComponent.tsx
+@@ -1,4 +1,4 @@
+-import { h, TargetedInputEvent } from 'preact';
++import { h } from 'preact';
+ import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+ import { useCoreContext } from '../../../core/Context/CoreProvider';
+ import FormInstruction from '../../internal/FormInstruction';
+@@ -92,7 +92,7 @@ function AchComponent({
+         setComponentRef(achRef.current);
+     }, [setComponentRef, achRef.current]);
+ 
+-    useSRPanelForAchErrors({ errors: errors as unknown as AchStateErrors, data, isValidating });
++    useSRPanelForAchErrors({ errors: errors as AchStateErrors, data, isValidating });
+ 
+     useEffect(() => {
+         onChange({ data, valid, errors, isValid, storePaymentMethod });
+@@ -103,10 +103,10 @@ function AchComponent({
+      * its validation when there is any change done to the "Account number" field
+      */
+     const onAccountNumberInput = useCallback(
+-        (event: TargetedInputEvent<HTMLInputElement>) => {
++        (event: h.JSX.TargetedInputEvent<HTMLInputElement>) => {
+             handleChangeFor('accountNumber', 'input')(event);
+ 
+-            const hasAccountVerificationError = Boolean(errors.accountNumberVerification);
++            const hasAccountVerificationError = !!errors.accountNumberVerification;
+             if (hasAccountVerificationError) {
+                 triggerValidation(['accountNumberVerification']);
+             }
+@@ -124,13 +124,13 @@ function AchComponent({
+                     onSelect={handleChangeFor('selectedAccountType')}
+                     selectedAccountType={data.selectedAccountType}
+                     disabled={isFormDisabled}
+-                    errorMessage={typeof errors.selectedAccountType?.errorMessage === 'string' && i18n.get(errors.selectedAccountType.errorMessage)}
++                    errorMessage={!!errors.selectedAccountType && i18n.get(errors.selectedAccountType.errorMessage)}
+                 />
+ 
+                 {hasHolderName && (
+                     <Field
+                         label={i18n.get('ach.accountHolderNameField.title')}
+-                        errorMessage={typeof errors.ownerName?.errorMessage === 'string' && i18n.get(errors.ownerName.errorMessage)}
++                        errorMessage={!!errors.ownerName && i18n.get(errors.ownerName.errorMessage)}
+                         isValid={!!valid.ownerName}
+                         name={'ownerName'}
+                     >
+@@ -150,7 +150,7 @@ function AchComponent({
+                 <Field
+                     label={i18n.get('ach.routingNumber.label')}
+                     classNameModifiers={['col-60']}
+-                    errorMessage={typeof errors.routingNumber?.errorMessage === 'string' && i18n.get(errors.routingNumber.errorMessage)}
++                    errorMessage={!!errors.routingNumber && i18n.get(errors.routingNumber.errorMessage)}
+                     name={'routingNumber'}
+                     isValid={!!valid.routingNumber}
+                 >
+@@ -170,7 +170,7 @@ function AchComponent({
+                 <Field
+                     label={i18n.get('ach.bankAccountNumber.label')}
+                     classNameModifiers={['col-40']}
+-                    errorMessage={typeof errors.accountNumber?.errorMessage === 'string' && i18n.get(errors.accountNumber.errorMessage)}
++                    errorMessage={!!errors.accountNumber && i18n.get(errors.accountNumber.errorMessage)}
+                     isValid={!!valid.accountNumber}
+                     name={'accountNumber'}
+                 >
+@@ -189,9 +189,7 @@ function AchComponent({
+ 
+                 <Field
+                     label={i18n.get('ach.bankAccountNumberVerification.label')}
+-                    errorMessage={
+-                        typeof errors.accountNumberVerification?.errorMessage === 'string' && i18n.get(errors.accountNumberVerification.errorMessage)
+-                    }
++                    errorMessage={!!errors.accountNumberVerification && i18n.get(errors.accountNumberVerification.errorMessage)}
+                     name={'accountNumberVerification'}
+                     isValid={!!valid.accountNumberVerification}
+                 >
+diff --git a/packages/lib/src/components/AmazonPay/AmazonPay.test.tsx b/packages/lib/src/components/AmazonPay/AmazonPay.test.tsx
+index 73d83d9..74ab9c1 100644
+--- a/packages/lib/src/components/AmazonPay/AmazonPay.test.tsx
++++ b/packages/lib/src/components/AmazonPay/AmazonPay.test.tsx
+@@ -52,7 +52,7 @@ describe('AmazonPay', () => {
+             const amazonPay = getElement(props);
+             expect(amazonPay.props.environment).toBe('TEST');
+             expect(amazonPay.props.locale).toBe('en_US');
+-            expect(amazonPay.props.configuration?.region).toBe('EU');
++            expect(amazonPay.props.configuration.region).toBe('EU');
+         });
+ 
+         test('sets checkoutMode to ProcessOrder when isDropin is true', () => {
+@@ -129,11 +129,11 @@ describe('AmazonPay', () => {
+             expect(mockSubmitFn).toHaveBeenCalled();
+         });
+ 
+-        test('falls back to makePaymentsCall when getSubmitFunction returns nothing', () => {
++        test('falls back to makePaymentsCall when getSubmitFunction returns null', () => {
+             const amazonPay = getElement();
+             // @ts-ignore setting componentRef for testing
+             amazonPay.componentRef = {
+-                getSubmitFunction: jest.fn()
++                getSubmitFunction: () => null
+             };
+             // @ts-ignore accessing protected method for testing
+             const makePaymentsCallSpy = jest.spyOn(amazonPay, 'makePaymentsCall').mockResolvedValue({ resultCode: 'Authorised' });
+diff --git a/packages/lib/src/components/AmazonPay/AmazonPay.tsx b/packages/lib/src/components/AmazonPay/AmazonPay.tsx
+index 5f3d935..8c4f322 100644
+--- a/packages/lib/src/components/AmazonPay/AmazonPay.tsx
++++ b/packages/lib/src/components/AmazonPay/AmazonPay.tsx
+@@ -2,7 +2,7 @@ import { h } from 'preact';
+ import UIElement from '../internal/UIElement/UIElement';
+ import collectBrowserInfo from '../../utils/browserInfo';
+ import AmazonPayComponent from './components/AmazonPayComponent';
+-import { AmazonPayElementData, AmazonPayConfiguration, CheckoutDetailsRequest, AmazonPayComponentRef } from './types';
++import { AmazonPayElementData, AmazonPayConfiguration, CheckoutDetailsRequest } from './types';
+ import defaultProps from './defaultProps';
+ import { getCheckoutDetails } from './services';
+ import { TxVariants } from '../tx-variants';
+@@ -16,14 +16,12 @@ export class AmazonPayElement extends UIElement<AmazonPayConfiguration> {
+ 
+     protected static readonly defaultProps = defaultProps;
+ 
+-    protected componentRef: AmazonPayComponentRef | undefined;
+-
+-    formatProps(props: AmazonPayConfiguration): AmazonPayConfiguration {
++    formatProps(props) {
+         return {
+             ...props,
+             checkoutMode: props.isDropin ? 'ProcessOrder' : props.checkoutMode,
+-            environment: props.environment?.toUpperCase(),
+-            locale: props.locale?.replace('-', '_'),
++            environment: props.environment.toUpperCase(),
++            locale: props.locale.replace('-', '_'),
+             productType: props.isDropin && !props.addressDetails ? 'PayOnly' : props.productType
+         };
+     }
+@@ -61,11 +59,11 @@ export class AmazonPayElement extends UIElement<AmazonPayConfiguration> {
+         const request: CheckoutDetailsRequest = {
+             checkoutSessionId: amazonCheckoutSessionId,
+             getDeliveryAddress: true,
+-            publicKeyId: configuration?.publicKeyId || '',
++            publicKeyId: configuration.publicKeyId,
+             region: configuration.region
+         };
+ 
+-        return getCheckoutDetails(loadingContext ?? '', clientKey ?? '', request);
++        return getCheckoutDetails(loadingContext, clientKey, request);
+     }
+ 
+     public handleDeclineFlow() {
+@@ -75,17 +73,17 @@ export class AmazonPayElement extends UIElement<AmazonPayConfiguration> {
+         const request: CheckoutDetailsRequest = {
+             checkoutSessionId: amazonCheckoutSessionId,
+             getDeclineFlowUrl: true,
+-            publicKeyId: configuration.publicKeyId ?? '',
++            publicKeyId: configuration.publicKeyId,
+             region: configuration.region
+         };
+ 
+-        getCheckoutDetails(loadingContext ?? '', clientKey ?? '', request)
++        getCheckoutDetails(loadingContext, clientKey, request)
+             .then((response = {}) => {
+                 if (!response?.declineFlowUrl) throw response;
+                 window.location.assign(response.declineFlowUrl);
+             })
+             .catch(error => {
+-                if (this.props.onError) this.props.onError(error, this);
++                if (this.props.onError) this.props.onError(error, this.componentRef);
+             });
+     }
+ 
+@@ -98,7 +96,7 @@ export class AmazonPayElement extends UIElement<AmazonPayConfiguration> {
+     }
+ 
+     public submit(): void {
+-        const amazonComponentSubmitFunction = this.componentRef?.getSubmitFunction?.() || null;
++        const amazonComponentSubmitFunction = this.componentRef?.getSubmitFunction() || null;
+         if (amazonComponentSubmitFunction) {
+             return amazonComponentSubmitFunction();
+         }
+diff --git a/packages/lib/src/components/AmazonPay/types.ts b/packages/lib/src/components/AmazonPay/types.ts
+index 66e831e..eb84ae2 100644
+--- a/packages/lib/src/components/AmazonPay/types.ts
++++ b/packages/lib/src/components/AmazonPay/types.ts
+@@ -54,7 +54,6 @@ export interface AmazonPayConfiguration extends UIElementProps {
+     buttonColor?: ButtonColor;
+     cancelUrl?: string;
+     chargePermissionType?: ChargePermissionType;
+-    checkoutMode?: string;
+     clientKey?: string;
+     configuration?: AmazonPayBackendConfiguration;
+     currency?: Currency;
+@@ -97,14 +96,12 @@ export interface AmazonPayConfiguration extends UIElementProps {
+     isExpress?: boolean;
+ }
+ 
+-export type AmazonPayComponentRef = ComponentMethodsRef & { getSubmitFunction?: () => () => void };
+-
+ export interface AmazonPayComponentProps extends AmazonPayConfiguration {
+     showSignOutButton?: boolean;
+     amazonCheckoutSessionId?: string;
+     showOrderButton?: boolean;
+     showChangePaymentDetailsButton?: boolean;
+-    setComponentRef: (ref: AmazonPayComponentRef) => void;
++    setComponentRef: (ref: ComponentMethodsRef & { getSubmitFunction?: () => () => void }) => void;
+ }
+ 
+ export interface AmazonPayButtonProps {
+@@ -253,7 +250,7 @@ export interface CheckoutDetailsRequest {
+     getDeliveryAddress?: boolean;
+     getDeclineFlowUrl?: boolean;
+     publicKeyId: string;
+-    region?: Region;
++    region: Region;
+ }
+ 
+ export interface UpdateAmazonCheckoutSessionRequest {
+diff --git a/packages/lib/src/components/BacsDD/BacsDD.test.ts b/packages/lib/src/components/BacsDD/BacsDD.test.ts
+index 82bd2fe..7198f6a 100644
+--- a/packages/lib/src/components/BacsDD/BacsDD.test.ts
++++ b/packages/lib/src/components/BacsDD/BacsDD.test.ts
+@@ -10,8 +10,8 @@ describe('Bacs Direct Debit', () => {
+         const core = setupCoreMock();
+ 
+         const bacs = new BacsDD(core, {
+-            modules: { resources: core.modules.resources },
+-            i18n: core.modules.i18n,
++            modules: { resources: global.resources },
++            i18n: global.i18n,
+             onSubmit: onSubmitMock,
+             loadingContext: 'https://checkoutshopper-live.adyen.com/checkoutshopper/'
+         });
+@@ -71,8 +71,8 @@ describe('Bacs Direct Debit', () => {
+         const onSubmitMock = jest.fn();
+ 
+         const bacs = new BacsDD(core, {
+-            modules: { resources: core.modules.resources },
+-            i18n: core.modules.i18n,
++            modules: { resources: global.resources },
++            i18n: global.i18n,
+             onSubmit: onSubmitMock,
+             loadingContext: 'https://checkoutshopper-live.adyen.com/checkoutshopper/'
+         });
+@@ -107,8 +107,8 @@ describe('Bacs Direct Debit', () => {
+         const onSubmitMock = jest.fn();
+ 
+         const bacs = new BacsDD(core, {
+-            modules: { analytics: core.modules.analytics, resources: core.modules.resources },
+-            i18n: core.modules.i18n,
++            modules: { analytics: global.analytics, resources: global.resources },
++            i18n: global.i18n,
+             onSubmit: onSubmitMock,
+             loadingContext: 'https://checkoutshopper-live.adyen.com/checkoutshopper/'
+         });
+@@ -190,8 +190,8 @@ describe('Bacs Direct Debit', () => {
+         const core = setupCoreMock();
+ 
+         const bacs = new BacsDD(core, {
+-            modules: { analytics: core.modules.analytics, resources: core.modules.resources },
+-            i18n: core.modules.i18n,
++            modules: { analytics: global.analytics, resources: global.resources },
++            i18n: global.i18n,
+             loadingContext: 'https://checkoutshopper-live.adyen.com/checkoutshopper/',
+             url: 'https://test.adyen.com/hpp/generateDdi.shtml?pdfFields=%2BjXS7Uo2RhBavkz'
+         });
+diff --git a/packages/lib/src/components/BacsDD/BacsDD.tsx b/packages/lib/src/components/BacsDD/BacsDD.tsx
+index 31dfa47..dd92b93 100644
+--- a/packages/lib/src/components/BacsDD/BacsDD.tsx
++++ b/packages/lib/src/components/BacsDD/BacsDD.tsx
+@@ -34,15 +34,22 @@ class BacsElement extends UIElement<VoucherConfiguration> {
+     protected override componentToRender(): h.JSX.Element {
+         return this.props.url ? (
+             <BacsResult
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+                 icon={this.icon}
+                 url={this.props.url}
+                 paymentMethodType={this.props.paymentMethodType}
+                 onActionHandled={this.onActionHandled}
++                // originalAction={this.props.originalAction}
+             />
+         ) : (
+             <BacsInput
++                // @ts-ignore ref is internal from the Component
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+                 {...this.props}
+-                setComponentRef={this.setComponentRef}
+                 onChange={this.setState}
+                 payButton={this.payButton}
+                 onSubmit={this.submit}
+diff --git a/packages/lib/src/components/BacsDD/components/BacsInput.test.tsx b/packages/lib/src/components/BacsDD/components/BacsInput.test.tsx
+index 473e42d..738e9cc 100644
+--- a/packages/lib/src/components/BacsDD/components/BacsInput.test.tsx
++++ b/packages/lib/src/components/BacsDD/components/BacsInput.test.tsx
+@@ -3,21 +3,19 @@ import { render, screen, act } from '@testing-library/preact';
+ import BacsInput from './BacsInput';
+ import { CoreProvider } from '../../../core/Context/CoreProvider';
+ import { AmountProvider } from '../../../core/Context/AmountProvider';
+-import { setupCoreMock } from '../../../../config/testMocks/setup-core-mock';
+ 
+ const defaultProps = {
+-    onChange: jest.fn(),
+-    onSubmit: jest.fn()
++    onChange: () => {},
++    onSubmit: () => {}
+ };
+ 
+-const core = setupCoreMock();
+-
+ const renderBacsInput = (props = {}) => {
+     const bacsRef = createRef();
+     render(
+-        <CoreProvider i18n={core.modules.i18n} loadingContext="test" resources={core.modules.resources}>
++        <CoreProvider i18n={global.i18n} loadingContext="test" resources={global.resources}>
+             <AmountProvider amount={{ currency: 'EUR', value: 1234 }} providerRef={createRef()}>
+-                <BacsInput {...defaultProps} {...props} setComponentRef={ref => (bacsRef.current = ref)} />
++                {/* @ts-ignore ref is internal from the Component */}
++                <BacsInput ref={bacsRef} {...defaultProps} {...props} />
+             </AmountProvider>
+         </CoreProvider>
+     );
+diff --git a/packages/lib/src/components/BacsDD/components/BacsInput.tsx b/packages/lib/src/components/BacsDD/components/BacsInput.tsx
+index d536799..867da84 100644
+--- a/packages/lib/src/components/BacsDD/components/BacsInput.tsx
++++ b/packages/lib/src/components/BacsDD/components/BacsInput.tsx
+@@ -1,5 +1,5 @@
+ import { h } from 'preact';
+-import { useState, useEffect, useRef } from 'preact/hooks';
++import { useState, useEffect } from 'preact/hooks';
+ import classNames from 'classnames';
+ import { useCoreContext } from '../../../core/Context/CoreProvider';
+ import Field from '../../internal/FormFields/Field';
+@@ -16,7 +16,6 @@ import FormInstruction from '../../internal/FormInstruction';
+ import { getErrorMessage } from '../../../utils/getErrorMessage';
+ import { PREFIX } from '../../internal/Icon/constants';
+ import { useAmount } from '../../../core/Context/AmountProvider';
+-import { ComponentMethodsRef, UIElementStatus } from '../../types';
+ 
+ const ENTER_STATE = 'enter-data';
+ const CONFIRM_STATE = 'confirm-data';
+@@ -34,30 +33,21 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+     });
+ 
+     const [status, setStatus] = useState(ENTER_STATE);
+-
+-    const bacsInputRef = useRef<ComponentMethodsRef>({
+-        setStatus,
+-        showValidation: () => {
+-            triggerValidation();
+-        }
+-    });
+-
+-    useEffect(() => {
+-        props.setComponentRef(bacsInputRef.current);
+-    }, [props.setComponentRef]);
++    this.setStatus = setStatus;
++    this.showValidation = triggerValidation;
+ 
+     const handlePayButton = () => {
+-        if (!isValid) return bacsInputRef.current?.showValidation?.();
++        if (!isValid) return this.showValidation();
+ 
+         if (status === ENTER_STATE) {
+-            return bacsInputRef.current?.setStatus?.(CONFIRM_STATE as UIElementStatus);
++            return this.setStatus(CONFIRM_STATE);
+         } else if (status === CONFIRM_STATE) {
+             return props.onSubmit();
+         }
+     };
+ 
+     const handleEdit = () => {
+-        return bacsInputRef.current?.setStatus?.(ENTER_STATE as UIElementStatus);
++        return this.setStatus(ENTER_STATE);
+     };
+ 
+     useEffect(() => {
+@@ -106,7 +96,7 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+                 <InputText
+                     name={'bacs.accountHolderName'}
+                     className={'adyen-checkout__bacs-input--holder-name'}
+-                    placeholder={props.placeholders?.holderName}
++                    placeholder={props.placeholders.holderName}
+                     value={data.holderName}
+                     aria-invalid={!valid.holderName}
+                     aria-label={i18n.get('bacs.accountHolderName')}
+@@ -122,7 +112,7 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+ 
+             <div className="adyen-checkout__bacs__num-id adyen-checkout__field-wrapper">
+                 <Field
+-                    errorMessage={Boolean(errors.bankAccountNumber) && i18n.get('bacs.accountNumber.invalid')}
++                    errorMessage={!!errors.bankAccountNumber && i18n.get('bacs.accountNumber.invalid')}
+                     label={i18n.get('bacs.accountNumber')}
+                     className={classNames({
+                         'adyen-checkout__bacs--bank-account-number': true,
+@@ -136,7 +126,7 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+                     <InputText
+                         value={data.bankAccountNumber}
+                         className={'adyen-checkout__bacs-input--bank-account-number'}
+-                        placeholder={props.placeholders?.bankAccountNumber}
++                        placeholder={props.placeholders.bankAccountNumber}
+                         aria-invalid={!valid.bankAccountNumber}
+                         aria-label={i18n.get('bacs.accountNumber')}
+                         aria-required={'true'}
+@@ -150,7 +140,7 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+                 </Field>
+ 
+                 <Field
+-                    errorMessage={Boolean(errors.bankLocationId) && i18n.get('bacs.bankLocationId.invalid')}
++                    errorMessage={!!errors.bankLocationId && i18n.get('bacs.bankLocationId.invalid')}
+                     label={i18n.get('bacs.bankLocationId')}
+                     className={classNames({
+                         'adyen-checkout__bacs--bank-location-id': true,
+@@ -164,7 +154,7 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+                     <InputText
+                         value={data.bankLocationId}
+                         className={'adyen-checkout__bacs-input--bank-location-id'}
+-                        placeholder={props.placeholders?.bankLocationId}
++                        placeholder={props.placeholders.bankLocationId}
+                         aria-invalid={!valid.bankLocationId}
+                         aria-label={i18n.get('bacs.bankLocationId')}
+                         aria-required={'true'}
+@@ -179,7 +169,7 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+             </div>
+ 
+             <Field
+-                errorMessage={getErrorMessage(i18n, errors.shopperEmail ?? undefined, i18n.get('shopperEmail'))}
++                errorMessage={getErrorMessage(i18n, errors.shopperEmail, i18n.get('shopperEmail'))}
+                 label={i18n.get('shopperEmail')}
+                 className={classNames({
+                     'adyen-checkout__bacs--shopper-email': true,
+@@ -194,7 +184,7 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+                     name={'shopperEmail'}
+                     className={'adyen-checkout__bacs-input--shopper-email'}
+                     classNameModifiers={['large']}
+-                    placeholder={props.placeholders?.shopperEmail}
++                    placeholder={props.placeholders.shopperEmail}
+                     spellcheck={false}
+                     aria-invalid={!valid.shopperEmail}
+                     aria-label={i18n.get('shopperEmail')}
+@@ -211,10 +201,10 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+             {status === ENTER_STATE && (
+                 <ConsentCheckbox
+                     classNameModifiers={['amountConsentCheckbox']}
+-                    errorMessage={errors.amountConsentCheckbox}
++                    errorMessage={!!errors.amountConsentCheckbox}
+                     label={i18n.get('bacs.consent.amount')}
+                     onChange={handleChangeFor('amountConsentCheckbox')}
+-                    checked={Boolean(data.amountConsentCheckbox)}
++                    checked={!!data.amountConsentCheckbox}
+                     i18n={i18n}
+                 />
+             )}
+@@ -222,16 +212,16 @@ function BacsInput(props: Readonly<BacsInputProps>) {
+             {status === ENTER_STATE && (
+                 <ConsentCheckbox
+                     classNameModifiers={['accountConsentCheckbox']}
+-                    errorMessage={errors.accountConsentCheckbox}
++                    errorMessage={!!errors.accountConsentCheckbox}
+                     label={i18n.get('bacs.consent.account')}
+                     onChange={handleChangeFor('accountConsentCheckbox')}
+-                    checked={Boolean(data.accountConsentCheckbox)}
++                    checked={!!data.accountConsentCheckbox}
+                     i18n={i18n}
+                 />
+             )}
+ 
+             {props.showPayButton &&
+-                props.payButton?.({
++                props.payButton({
+                     status,
+                     label:
+                         status === ENTER_STATE
+diff --git a/packages/lib/src/components/BacsDD/components/types.ts b/packages/lib/src/components/BacsDD/components/types.ts
+index 0d1c416..345914b 100644
+--- a/packages/lib/src/components/BacsDD/components/types.ts
++++ b/packages/lib/src/components/BacsDD/components/types.ts
+@@ -1,4 +1,4 @@
+-import { ComponentMethodsRef, UIElementProps } from '../../internal/UIElement/types';
++import { UIElementProps } from '../../internal/UIElement/types';
+ 
+ export interface BacsInputData {
+     holderName?: string;
+@@ -12,7 +12,7 @@ export interface BacsInputProps extends UIElementProps {
+     placeholders?: BacsInputData;
+     onChange: (state) => void;
+     onSubmit: () => void;
+-    setComponentRef: (ref: ComponentMethodsRef) => void;
++    onEdit: (e, revertToEnter) => void;
+ }
+ 
+ export interface BacsDataState {
+diff --git a/packages/lib/src/components/BankTransfer/BankTransfer.tsx b/packages/lib/src/components/BankTransfer/BankTransfer.tsx
+index 2d1510a..9f99258 100644
+--- a/packages/lib/src/components/BankTransfer/BankTransfer.tsx
++++ b/packages/lib/src/components/BankTransfer/BankTransfer.tsx
+@@ -80,7 +80,6 @@ export class BankTransferElement extends UIElement<BankTransferConfiguration> {
+                 {this.props.showEmailAddress && <BankTransferInput setComponentRef={this.setComponentRef} {...this.props} onChange={this.setState} />}
+                 <RedirectButton
+                     {...this.props}
+-                    setComponentRef={this.setComponentRef}
+                     showPayButton={this.props.showPayButton}
+                     name={this.displayName}
+                     onSubmit={this.submit}
+diff --git a/packages/lib/src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx b/packages/lib/src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx
+index 87f082e..e1dbff9 100644
+--- a/packages/lib/src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx
++++ b/packages/lib/src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx
+@@ -44,7 +44,7 @@ function BankTransferInput(props: Readonly<BankTransferInputProps>) {
+                 <Field
+                     label={emailOptionalLabel}
+                     classNameModifiers={['shopperEmail']}
+-                    errorMessage={Boolean(errors.shopperEmail) && getErrorMessage(i18n, errors.shopperEmail, i18n.get('shopperEmail'))}
++                    errorMessage={!!errors.shopperEmail && getErrorMessage(i18n, errors.shopperEmail, i18n.get('shopperEmail'))}
+                     isValid={valid.shopperEmail}
+                     name={'shopperEmail'}
+                     showContextualElement={props.showContextualElement}
+diff --git a/packages/lib/src/components/Blik/Blik.tsx b/packages/lib/src/components/Blik/Blik.tsx
+index ffe5e4a..d7cc8f1 100644
+--- a/packages/lib/src/components/Blik/Blik.tsx
++++ b/packages/lib/src/components/Blik/Blik.tsx
+@@ -85,12 +85,17 @@ class BlikElement extends UIElement<AwaitConfiguration> {
+                 name={this.displayName}
+                 payButton={this.payButton}
+                 onSubmit={this.submit}
+-                setComponentRef={this.setComponentRef}
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+             />
+         ) : (
+             <BlikInput
++                // @ts-ignore Ref is used by preact component
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+                 {...this.props}
+-                setComponentRef={this.setComponentRef}
+                 onChange={this.setState}
+                 onSubmit={this.submit}
+                 payButton={this.payButton}
+diff --git a/packages/lib/src/components/Blik/components/BlikInput.tsx b/packages/lib/src/components/Blik/components/BlikInput.tsx
+index 81844b5..dd45a47 100644
+--- a/packages/lib/src/components/Blik/components/BlikInput.tsx
++++ b/packages/lib/src/components/Blik/components/BlikInput.tsx
+@@ -1,5 +1,5 @@
+ import { h } from 'preact';
+-import { useState, useEffect, useRef } from 'preact/hooks';
++import { useState, useEffect } from 'preact/hooks';
+ import { useCoreContext } from '../../../core/Context/CoreProvider';
+ import Field from '../../internal/FormFields/Field';
+ import './BlikInput.scss';
+@@ -7,14 +7,12 @@ import useForm from '../../../utils/useForm';
+ import { digitsOnlyFormatter } from '../../../utils/Formatters/formatters';
+ import useImage from '../../../core/Context/useImage';
+ import InputText from '../../internal/FormFields/InputText';
+-import { ComponentMethodsRef, UIElementProps } from '../../internal/UIElement/types';
++import { UIElementProps } from '../../internal/UIElement/types';
+ import { PREFIX } from '../../internal/Icon/constants';
+-import { OnChangeDataErrors, PaymentData } from '../../../types';
+ 
+ interface BlikInputProps extends UIElementProps {
+     data?: BlikInputDataState;
+     placeholders?: BlikInputDataState;
+-    setComponentRef: (ref: ComponentMethodsRef) => void;
+ }
+ 
+ interface BlikInputDataState {
+@@ -39,27 +37,19 @@ function BlikInput(props: Readonly<BlikInputProps>) {
+     });
+ 
+     useEffect(() => {
+-        props.onChange?.({ data: data as unknown as PaymentData, errors: errors as OnChangeDataErrors, valid, isValid: Boolean(isValid) }, this);
++        // @ts-ignore TODO: Fix this. Preact component types should not inherit from UIElementProps.
++        props.onChange({ data, errors, valid, isValid }, this);
+     }, [data, valid, errors, isValid]);
+ 
+     const [status, setStatus] = useState('ready');
+-
+-    const blikComponentRef = useRef<ComponentMethodsRef>({
+-        setStatus: setStatus,
+-        showValidation: () => {
+-            triggerValidation();
+-        }
+-    });
+-
+-    useEffect(() => {
+-        props.setComponentRef(blikComponentRef.current);
+-    }, [props.setComponentRef]);
++    this.setStatus = setStatus;
++    this.showValidation = triggerValidation;
+ 
+     return (
+         <div className="adyen-checkout__blik">
+             <p className="adyen-checkout__blik__helper">{i18n.get('blik.help')}</p>
+             <Field
+-                errorMessage={typeof errors.blikCode?.errorMessage === 'string' ? i18n.get(errors.blikCode.errorMessage) : false}
++                errorMessage={!!errors.blikCode && i18n.get(errors.blikCode.errorMessage)}
+                 label={i18n.get('blik.code')}
+                 classNameModifiers={['blikCode', '50']}
+                 isValid={valid.blikCode}
+@@ -82,7 +72,7 @@ function BlikInput(props: Readonly<BlikInputProps>) {
+             </Field>
+ 
+             {props.showPayButton &&
+-                props.payButton?.({
++                props.payButton({
+                     status,
+                     icon: getImage({ imageFolder: 'components/' })(`${PREFIX}lock`)
+                 })}
+diff --git a/packages/lib/src/components/Card/Card.tsx b/packages/lib/src/components/Card/Card.tsx
+index e7ad060..0c319bb 100644
+--- a/packages/lib/src/components/Card/Card.tsx
++++ b/packages/lib/src/components/Card/Card.tsx
+@@ -3,14 +3,7 @@ import CardInput from './components/CardInput';
+ import collectBrowserInfo from '../../utils/browserInfo';
+ import { BinLookupResponse, CardElementData, CardConfiguration } from './types';
+ import { triggerBinLookUp } from '../internal/SecuredFields/binLookup/triggerBinLookUp';
+-import {
+-    CardBinLookupData,
+-    CardBrandData,
+-    CardConfigSuccessData,
+-    CardErrorData,
+-    CardFocusData,
+-    StylesObject
+-} from '../internal/SecuredFields/lib/types';
++import { CardBinLookupData, CardConfigSuccessData, CardFocusData } from '../internal/SecuredFields/lib/types';
+ import { fieldTypeToSnakeCase, isSecuredField } from '../internal/SecuredFields/utils';
+ import { notFalsy, reject } from '../../utils/commonUtils';
+ import { shouldIncludeInstallmentsInPaymentData } from './components/CardInput/utils';
+@@ -28,15 +21,12 @@ import CardInputDefaultProps from './components/CardInput/defaultProps';
+ import { PayButtonProps } from '../internal/PayButton/PayButton';
+ import { AnalyticsInfoEvent, InfoEventType, UiTarget } from '../../core/Analytics/events/AnalyticsInfoEvent';
+ import { InstallmentOptions } from './components/CardInput/components/Installments/Installments';
+-import { AddressModeOptions, CardInputRef } from './components/CardInput/types';
+ 
+ export class CardElement extends UIElement<CardConfiguration> {
+     public static readonly type: TxVariants = TxVariants.scheme;
+ 
+     private readonly clickToPayService: IClickToPayService | null;
+ 
+-    protected componentRef: CardInputRef | undefined;
+-
+     /**
+      * Reference to the 'ClickToPayComponent'
+      */
+@@ -65,9 +55,9 @@ export class CardElement extends UIElement<CardConfiguration> {
+         ...reject(['type', 'setComponentRef']).from(CardInputDefaultProps)
+     };
+ 
+-    public setStatus(status: UIElementStatus): this {
++    public setStatus(status: UIElementStatus, props?): this {
+         if (this.componentRef?.setStatus) {
+-            this.componentRef.setStatus(status);
++            this.componentRef.setStatus(status, props);
+         }
+         if (this.clickToPayRef?.setStatus) {
+             this.clickToPayRef.setStatus(status);
+@@ -216,17 +206,17 @@ export class CardElement extends UIElement<CardConfiguration> {
+         this.analytics.sendAnalytics(event);
+     }
+ 
+-    updateStyles(stylesObj: StylesObject) {
++    updateStyles(stylesObj) {
+         if (this.componentRef?.updateStyles) this.componentRef.updateStyles(stylesObj);
+         return this;
+     }
+ 
+-    setFocusOn(fieldName: string) {
++    setFocusOn(fieldName) {
+         if (this.componentRef?.setFocusOn) this.componentRef.setFocusOn(fieldName);
+         return this;
+     }
+ 
+-    public onBrand = (event: CardBrandData) => {
++    public onBrand = event => {
+         this.props.onBrand?.(event);
+     };
+ 
+@@ -235,7 +225,7 @@ export class CardElement extends UIElement<CardConfiguration> {
+         return this;
+     }
+ 
+-    handleUnsupportedCard(errObj: CardErrorData) {
++    handleUnsupportedCard(errObj) {
+         if (this.componentRef?.handleUnsupportedCard) this.componentRef.handleUnsupportedCard(errObj);
+         return this;
+     }
+@@ -379,7 +369,6 @@ export class CardElement extends UIElement<CardConfiguration> {
+                 setComponentRef={this.setComponentRef}
+                 {...this.props}
+                 {...this.state}
+-                billingAddressMode={this.props.billingAddressMode as AddressModeOptions}
+                 onSubmitAnalytics={this.submitAnalytics}
+                 onChange={this.setState}
+                 onSubmit={this.submit}
+diff --git a/packages/lib/src/components/Card/components/CardInput/types.ts b/packages/lib/src/components/Card/components/CardInput/types.ts
+index 8ed424a..ee5ce6b 100644
+--- a/packages/lib/src/components/Card/components/CardInput/types.ts
++++ b/packages/lib/src/components/Card/components/CardInput/types.ts
+@@ -7,6 +7,7 @@ import type {
+     DualBrandSelectElement,
+     CardPlaceholders
+ } from '../../types';
++import { ValidationResult } from '../../../internal/PersonalDetails/types';
+ import {
+     CardAllValidData,
+     CardAutoCompleteData,
+@@ -37,8 +38,6 @@ import { h } from 'preact';
+ import { InstallmentOptions } from './components/Installments/Installments';
+ import type { Form } from '../../../../utils/useForm/types';
+ import type { SecuredFieldsProviderRef } from '../../../internal/SecuredFields/SFP/types';
+-import { AdyenCheckoutError } from '../../../../types';
+-import { ValidationRuleResult } from '../../../../utils/Validator/ValidationRuleResult';
+ 
+ export interface CardInputValidState {
+     holderName?: boolean;
+@@ -53,13 +52,13 @@ export interface CardInputValidState {
+ }
+ 
+ export interface CardInputErrorState {
+-    holderName?: ValidationRuleResult;
+-    billingAddress?: ValidationRuleResult;
+-    socialSecurityNumber?: ValidationRuleResult;
++    holderName?: ValidationResult;
++    billingAddress?: ValidationResult;
++    socialSecurityNumber?: ValidationResult;
+     encryptedCardNumber?: boolean;
+     encryptedExpiryDate?: boolean;
+     encryptedSecurityCode?: boolean;
+-    taxNumber?: ValidationRuleResult;
++    taxNumber?: ValidationResult;
+     encryptedPassword?: boolean;
+ }
+ 
+@@ -85,7 +84,7 @@ export interface CardInputProps {
+     brands?: string[];
+     brandsConfiguration?: CardBrandsConfiguration;
+     brandsIcons: Array<BrandConfiguration>;
+-    clientKey?: string;
++    clientKey: string;
+     configuration: CardBackendConfiguration;
+     countryCode?: string;
+     cvcPolicy?: CVCPolicyType;
+@@ -106,14 +105,14 @@ export interface CardInputProps {
+     installmentOptions?: InstallmentOptions;
+     keypadFix?: boolean;
+     lastFour?: string;
+-    loadingContext?: string;
++    loadingContext: string;
+     legacyInputMode?: boolean;
+     minimumExpiryDate?: string;
+     modules?: {
+-        srPanel?: SRPanel;
+-        analytics?: IAnalytics;
+-        risk?: RiskElement;
+-        resources?: Resources;
++        srPanel: SRPanel;
++        analytics: IAnalytics;
++        risk: RiskElement;
++        resources: Resources;
+     };
+     onAdditionalSFConfig?: () => void;
+     onAdditionalSFRemoved?: () => void;
+@@ -124,7 +123,7 @@ export interface CardInputProps {
+     onBrand?: (o: CardBrandData) => void;
+     onConfigSuccess?: (O: CardConfigSuccessData) => void;
+     onChange: (state) => void;
+-    onError?: (e: AdyenCheckoutError) => void;
++    onError?: () => void;
+     onFieldValid?: (o: CardFieldValidData) => void;
+     onFocus?: (e) => void;
+     onLoad?: (o: CardLoadData) => void;
+@@ -132,7 +131,6 @@ export interface CardInputProps {
+     handleKeyDown?: (event: KeyboardEvent) => void;
+     onAddressLookup?: OnAddressLookupType;
+     onAddressSelected?: OnAddressSelectedType;
+-    onSubmit?: () => void;
+     addressSearchDebounceMs?: number;
+     payButton?: (props: PayButtonProps) => h.JSX.Element;
+     placeholders?: CardPlaceholders;
+@@ -141,7 +139,7 @@ export interface CardInputProps {
+     setComponentRef?: (ref) => void;
+     showBrandIcon?: boolean;
+     showInstallmentAmounts?: boolean;
+-    showPayButton?: boolean;
++    showPayButton: boolean;
+     showStoreDetailsCheckbox?: boolean;
+     showWarnings?: boolean;
+     showContextualElement?: boolean;
+@@ -175,7 +173,7 @@ export interface CardInputState {
+ // An interface for the members exposed by CardInput to its parent Card/UIElement
+ export interface CardInputRef extends ComponentMethodsRef {
+     sfp?: SecuredFieldsProviderRef;
+-    setFocusOn?: (field: string) => void;
++    setFocusOn?: (who) => void;
+     processBinLookupResponse?: (binLookupResponse: BinLookupResponse, isReset: boolean) => void;
+     updateStyles?: (stylesObj: StylesObject) => void;
+     handleUnsupportedCard?: (errObj: CardErrorData) => boolean;
+diff --git a/packages/lib/src/components/Card/types.ts b/packages/lib/src/components/Card/types.ts
+index d235e74..a89f3bc 100644
+--- a/packages/lib/src/components/Card/types.ts
++++ b/packages/lib/src/components/Card/types.ts
+@@ -18,7 +18,6 @@ import type { OnAddressLookupType, OnAddressSelectedType } from '../internal/Add
+ import type { FastlaneSignupConfiguration } from '../PayPalFastlane/types';
+ import type { ChallengeWindowSize } from '../ThreeDS2/types';
+ import { InstallmentOptions } from './components/CardInput/components/Installments/Installments';
+-import { AddressModeOptions } from './components/CardInput/types';
+ 
+ type PlaceholderKeys =
+     'holderName' | 'cardNumber' | 'expiryDate' | 'expiryMonth' | 'expiryYear' | 'securityCodeThreeDigits' | 'securityCodeFourDigits' | 'password';
+@@ -49,7 +48,7 @@ export interface CardConfiguration extends UIElementProps {
+      *
+      * - merchant set config option
+      */
+-    billingAddressMode?: `${AddressModeOptions}`;
++    billingAddressMode?: 'full' | 'partial' | 'none';
+ 
+     /**
+      * Show Address fields
+diff --git a/packages/lib/src/components/CashAppPay/CashAppPay.tsx b/packages/lib/src/components/CashAppPay/CashAppPay.tsx
+index cabc523..fe97342 100644
+--- a/packages/lib/src/components/CashAppPay/CashAppPay.tsx
++++ b/packages/lib/src/components/CashAppPay/CashAppPay.tsx
+@@ -152,7 +152,9 @@ export class CashAppPay extends UIElement<CashAppPayConfiguration> {
+                 name={this.displayName}
+                 payButton={this.payButton}
+                 onSubmit={this.submit}
+-                setComponentRef={this.setComponentRef}
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+             />
+         ) : (
+             <CashAppComponent
+diff --git a/packages/lib/src/components/CustomCard/CustomCard.tsx b/packages/lib/src/components/CustomCard/CustomCard.tsx
+index 2ab2e2e..8dc8a4f 100644
+--- a/packages/lib/src/components/CustomCard/CustomCard.tsx
++++ b/packages/lib/src/components/CustomCard/CustomCard.tsx
+@@ -10,7 +10,6 @@ import { TxVariants } from '../tx-variants';
+ import { CustomCardConfiguration } from './types';
+ import { AnalyticsInfoEvent, InfoEventType, UiTarget } from '../../core/Analytics/events/AnalyticsInfoEvent';
+ import { DUAL_BRANDS_THAT_NEED_SELECTION_MECHANISM } from '../Card/constants';
+-import type { CustomCardInputRef } from './CustomCardInput';
+ 
+ const SELECTABLE_DUAL_BRANDED_SCENARIO = 'Dual Branded (Selectable): Regulation mandates that you must provide a brand selection mechanism';
+ const DISPLAY_ONLY_DUAL_BRANDED_SCENARIO = 'Dual Branded (Display-only): No selection mechanism required';
+@@ -18,14 +17,12 @@ const DISPLAY_ONLY_DUAL_BRANDED_SCENARIO = 'Dual Branded (Display-only): No sele
+ export class CustomCard extends UIElement<CustomCardConfiguration> {
+     public static readonly type = TxVariants.customCard;
+ 
+-    protected componentRef: CustomCardInputRef | undefined;
+-
+     protected static readonly defaultProps = {
+         onBinLookup: () => {},
+         brandsConfiguration: {}
+     };
+ 
+-    private readonly brand = TxVariants.card;
++    private brand = TxVariants.card;
+ 
+     formatProps(props: CustomCardConfiguration) {
+         return {
+@@ -39,11 +36,10 @@ export class CustomCard extends UIElement<CustomCardConfiguration> {
+      */
+     formatData() {
+         const sfBrand = this.state.selectedBrandValue;
+-        const securedFieldsData = this.state.data as Record<string, string>;
+         return {
+             paymentMethod: {
+                 type: 'scheme',
+-                ...securedFieldsData,
++                ...this.state.data,
+                 ...(sfBrand && { brand: sfBrand })
+             },
+             browserInfo: this.browserInfo,
+@@ -119,7 +115,7 @@ export class CustomCard extends UIElement<CustomCardConfiguration> {
+         return collectBrowserInfo();
+     }
+ 
+-    private readonly onFocus = (obj: CardFocusData) => {
++    private onFocus = (obj: CardFocusData) => {
+         const event = new AnalyticsInfoEvent({
+             component: this.type,
+             type: obj.focus === true ? InfoEventType.focus : InfoEventType.unfocus,
+diff --git a/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx b/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
+index 387302e..8384e8e 100644
+--- a/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
++++ b/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
+@@ -1,79 +1,52 @@
+-import { h, Ref } from 'preact';
++import { h } from 'preact';
+ import { useState, useEffect, useRef, useMemo } from 'preact/hooks';
+ import Language from '../../../language/Language';
+ import SecuredFieldsProvider from '../../internal/SecuredFields/SFP/SecuredFieldsProvider';
+ import { SFPState } from '../../internal/SecuredFields/SFP/types';
+ import { BinLookupResponse, CardBrandsConfiguration, CardPlaceholders } from '../../Card/types';
+ import SFExtensions from '../../internal/SecuredFields/binLookup/extensions';
+-import {
+-    CardAllValidData,
+-    CardAutoCompleteData,
+-    CardBinValueData,
+-    CardBrandData,
+-    CardConfigSuccessData,
+-    CardFieldValidData,
+-    CardFocusData,
+-    CardLoadData,
+-    CardErrorData,
+-    SFFieldType,
+-    StylesObject
+-} from '../../internal/SecuredFields/lib/types';
++import { StylesObject } from '../../internal/SecuredFields/lib/types';
+ import { Resources } from '../../../core/Context/Resources';
+ import { SFError } from '../../Card/components/CardInput/types';
+ import { ValidationError } from '../types';
+ import type { AbstractAnalyticsEvent } from '../../../core/Analytics/events/AbstractAnalyticsEvent';
+-import type AdyenCheckoutError from '../../../core/Errors/AdyenCheckoutError';
+-import type UIElement from '../../internal/UIElement';
+-import type { ComponentMethodsRef } from '../../internal/UIElement/types';
+-
+-/**
+- * Methods that CustomCardInput exposes to the CustomCard element through the ref
+- */
+-export interface CustomCardInputRef extends ComponentMethodsRef {
+-    processBinLookupResponse(binLookupResponse: BinLookupResponse, isReset?: boolean): void;
+-    dualBrandingChangeHandler(event: Event | string): void;
+-    setFocusOn(frame: SFFieldType): void;
+-    updateStyles(stylesObj: StylesObject): void;
+-    handleUnsupportedCard(errObj: CardErrorData): boolean;
+-}
+ 
+ interface SecuredFieldsProps {
+     autoFocus?: boolean;
+     brand?: string;
+     brands?: string[];
+     brandsConfiguration?: CardBrandsConfiguration;
+-    clientKey?: string;
++    clientKey: string;
+     countryCode?: string;
+     forceCompat?: boolean;
+-    i18n?: Language;
++    i18n: Language;
+     implementationType?: 'components' | 'custom';
+     keypadFix?: boolean;
+     loadingContext?: string;
+     legacyInputMode?: boolean;
+     minimumExpiryDate?: string;
+-    onAdditionalSFConfig?: () => void;
+-    onAdditionalSFRemoved?: () => void;
+-    onAllValid?: (data: CardAllValidData) => void;
+-    onAutoComplete?: (data: CardAutoCompleteData) => void;
+-    onBinValue?: (data: CardBinValueData) => void;
+-    onBrand?: (data: CardBrandData) => void;
+-    onConfigSuccess?: (data: CardConfigSuccessData) => void;
+-    onChange?: (data) => void;
++    onAdditionalSFConfig?: () => {};
++    onAdditionalSFRemoved?: () => {};
++    onAllValid?: () => {};
++    onAutoComplete?: () => {};
++    onBinValue?: () => {};
++    onBrand?: () => {};
++    onConfigSuccess?: () => {};
++    onChange: (data) => void;
+     onSubmitAnalytics?: (event: AbstractAnalyticsEvent) => void;
+     handleKeyDown?: (event: KeyboardEvent) => void;
+-    onError?: (error: AdyenCheckoutError, component?: UIElement) => void;
+-    onFieldValid?: (data: CardFieldValidData) => void;
+-    onFocus?: (data: CardFocusData) => void;
+-    onLoad?: (data: CardLoadData) => void;
++    onError?: () => {};
++    onFieldValid?: () => {};
++    onFocus?: (e) => {};
++    onLoad?: () => {};
+     placeholders?: CardPlaceholders;
+-    rootNode?: HTMLElement;
+-    resources?: Resources;
++    rootNode: HTMLElement;
++    resources: Resources;
+     showWarnings?: boolean;
+     styles?: StylesObject;
+     trimTrailingSeparator?: boolean;
+-    type?: string;
++    type: string;
+     maskSecurityCode?: boolean;
+-    ref?: Ref<CustomCardInputRef>;
+ }
+ 
+ const defaultProps = {
+@@ -124,17 +97,25 @@ function CustomCardInput(props: Readonly<SecuredFieldsProps>) {
+ 
+     this.dualBrandingChangeHandler = extensions.handleDualBrandSelection;
+ 
++    /**
++     * EFFECT HOOKS
++     */
+     useEffect(() => {
++        // componentDidMount
+         this.setFocusOn = sfp.current.setFocusOn;
+         this.updateStyles = sfp.current.updateStyles;
+         this.showValidation = sfp.current.showValidation;
+         this.handleUnsupportedCard = sfp.current.handleUnsupportedCard;
+ 
++        // componentWillUnmount
+         return () => {
+             sfp.current.destroy();
+         };
+     }, []);
+ 
++    /**
++     * Main 'componentDidUpdate' handler
++     */
+     useEffect(() => {
+         const sfStateErrorsObj = sfp.current.mapErrorsToValidationRuleResult();
+ 
+@@ -161,6 +142,10 @@ function CustomCardInput(props: Readonly<SecuredFieldsProps>) {
+         }
+     }, [data, valid, errors, selectedBrandValue]);
+ 
++    /**
++     * RENDER
++     */
++    // prettier-ignore
+     return (
+         <SecuredFieldsProvider
+             ref={sfp}
+diff --git a/packages/lib/src/components/CustomCard/CustomCardInput/index.ts b/packages/lib/src/components/CustomCard/CustomCardInput/index.ts
+index 9d1f72b..9041057 100644
+--- a/packages/lib/src/components/CustomCard/CustomCardInput/index.ts
++++ b/packages/lib/src/components/CustomCard/CustomCardInput/index.ts
+@@ -1,2 +1 @@
+ export { default } from './CustomCardInput';
+-export type { CustomCardInputRef } from './CustomCardInput';
+diff --git a/packages/lib/src/components/Donation/Donation.tsx b/packages/lib/src/components/Donation/Donation.tsx
+index c0421c1..c06c767 100644
+--- a/packages/lib/src/components/Donation/Donation.tsx
++++ b/packages/lib/src/components/Donation/Donation.tsx
+@@ -143,7 +143,10 @@ class DonationElement extends UIElement<DonationConfiguration> {
+         return (
+             <DonationComponent
+                 {...this.props}
+-                setComponentRef={this.setComponentRef}
++                // @ts-ignore ref is internal from the Component
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+                 onChange={this.setState}
+                 onDonate={this.donate}
+                 onCancel={this.cancel}
+diff --git a/packages/lib/src/components/Donation/components/DonationComponent.test.tsx b/packages/lib/src/components/Donation/components/DonationComponent.test.tsx
+index 3966e07..db74119 100644
+--- a/packages/lib/src/components/Donation/components/DonationComponent.test.tsx
++++ b/packages/lib/src/components/Donation/components/DonationComponent.test.tsx
+@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
+ import DonationComponent from './DonationComponent';
+ import { CoreProvider } from '../../../core/Context/CoreProvider';
+ import type { DonationComponentProps, FixedAmountsDonation, RoundupDonation } from './types';
+-import { setupCoreMock } from '../../../../config/testMocks/setup-core-mock';
+ 
+ const onDonate = jest.fn();
+ const onCancel = jest.fn();
+@@ -25,19 +24,16 @@ const roundUp: RoundupDonation = {
+ 
+ const commercialTxAmount = 1000;
+ 
+-const core = setupCoreMock();
+-
+ const renderComponent = (props: Partial<DonationComponentProps> = {}) => {
+     const defaultProps: DonationComponentProps = {
+         commercialTxAmount,
+         onDonate,
+         donation: fixedAmounts,
+-        onAmountSelected,
+-        setComponentRef: jest.fn()
++        onAmountSelected
+     };
+ 
+     return render(
+-        <CoreProvider i18n={core.modules.i18n} loadingContext="test" resources={core.modules.resources}>
++        <CoreProvider i18n={global.i18n} loadingContext="test" resources={global.resources}>
+             <DonationComponent {...defaultProps} {...props} />
+         </CoreProvider>
+     );
+diff --git a/packages/lib/src/components/Donation/components/DonationComponent.tsx b/packages/lib/src/components/Donation/components/DonationComponent.tsx
+index cb7f8e1..218fea2 100644
+--- a/packages/lib/src/components/Donation/components/DonationComponent.tsx
++++ b/packages/lib/src/components/Donation/components/DonationComponent.tsx
+@@ -1,5 +1,5 @@
+ import { h } from 'preact';
+-import { useEffect, useRef, useState } from 'preact/hooks';
++import { useEffect, useState } from 'preact/hooks';
+ import CampaignContent from './CampaignContent';
+ import Button from '../../internal/Button';
+ import Img from '../../internal/Img';
+@@ -11,7 +11,6 @@ import useImage from '../../../core/Context/useImage';
+ import FixedAmounts from './FixedAmounts';
+ import Roundup from './Roundup';
+ import { getAmountLabel, getRoundupAmount, getRoundupAmountLabel } from './utils';
+-import { ComponentMethodsRef } from '../../types';
+ 
+ export default function DonationComponent(props: Readonly<DonationComponentProps>) {
+     const { donation, commercialTxAmount, onAmountSelected, onCancel, onDonate, showCancelButton = true, termsAndConditionsUrl } = props;
+@@ -26,13 +25,9 @@ export default function DonationComponent(props: Readonly<DonationComponentProps
+         value: isRoundupDonation ? getRoundupAmount(donation.maxRoundupAmount, commercialTxAmount) : null
+     });
+ 
+-    const donationComponentRef = useRef<ComponentMethodsRef>({
+-        setStatus: setStatus
+-    });
+-
+-    useEffect(() => {
+-        props.setComponentRef(donationComponentRef.current);
+-    }, [props.setComponentRef]);
++    this.setStatus = (status: Status) => {
++        setStatus(status);
++    };
+ 
+     const handleAmountSelected = ({ target }) => {
+         const value = parseInt(target.value, 10);
+diff --git a/packages/lib/src/components/Donation/components/types.ts b/packages/lib/src/components/Donation/components/types.ts
+index dd05fd0..3431f7d 100644
+--- a/packages/lib/src/components/Donation/components/types.ts
++++ b/packages/lib/src/components/Donation/components/types.ts
+@@ -1,4 +1,3 @@
+-import { ComponentMethodsRef } from '../../types';
+ import type { CampaignContentProps } from './CampaignContent';
+ 
+ export type Donation = RoundupDonation | FixedAmountsDonation;
+@@ -42,5 +41,4 @@ export interface DonationComponentProps extends CampaignContentProps {
+     onCancel?: (payload: DonationPayload) => void;
+     onChange?: (payload: DonationPayload) => void;
+     onAmountSelected: (payload: DonationPayload) => void;
+-    setComponentRef: (ref: ComponentMethodsRef) => void;
+ }
+diff --git a/packages/lib/src/components/Dropin/Dropin.tsx b/packages/lib/src/components/Dropin/Dropin.tsx
+index c59d237..0f57bf4 100644
+--- a/packages/lib/src/components/Dropin/Dropin.tsx
++++ b/packages/lib/src/components/Dropin/Dropin.tsx
+@@ -12,7 +12,6 @@ import type { DropinComponentProps, DropinConfiguration, InstantPaymentTypes, Pa
+ import type { PaymentAction, PaymentAmount, PaymentResponseData } from '../../types/global-types';
+ import type { ICore } from '../../core/types';
+ import type { IDropin } from './types';
+-import { UIElementStatus } from '../types';
+ 
+ const SUPPORTED_INSTANT_PAYMENTS = ['paywithgoogle', 'googlepay', 'applepay'];
+ 
+@@ -23,9 +22,7 @@ class DropinElement extends UIElement<DropinConfiguration> implements IDropin {
+ 
+     public dropinRef = null;
+ 
+-    public elementRef: DropinElement;
+-
+-    private readonly paymentMethodsConfiguration: PaymentMethodsConfiguration;
++    private paymentMethodsConfiguration: PaymentMethodsConfiguration;
+     /**
+      * Reference to the component created from `handleAction` (Ex.: ThreeDS2Challenge)
+      */
+@@ -54,7 +51,7 @@ class DropinElement extends UIElement<DropinConfiguration> implements IDropin {
+         this.core.storeElementReference(this);
+     }
+ 
+-    formatProps(props: DropinConfiguration) {
++    formatProps(props) {
+         return {
+             ...super.formatProps(props),
+             instantPaymentTypes: Array.from<InstantPaymentTypes>(new Set(props.instantPaymentTypes)).filter(value =>
+@@ -75,12 +72,7 @@ class DropinElement extends UIElement<DropinConfiguration> implements IDropin {
+         return this;
+     }
+ 
+-    public setElementStatus(status: UIElementStatus, props?: Record<string, unknown>): this {
+-        this.elementRef?.setStatus?.(status, props);
+-        return this;
+-    }
+-
+-    public setStatus(status: UIElementStatus, props: Record<string, unknown> = {}): this {
++    public setStatus(status, props = {}): this {
+         this.dropinRef?.setStatus(status, props);
+         return this;
+     }
+@@ -161,7 +153,7 @@ class DropinElement extends UIElement<DropinConfiguration> implements IDropin {
+     /**
+      * Creates the Drop-in elements
+      */
+-    private readonly handleCreate = (): ReturnType<DropinComponentProps['onCreateElements']> => {
++    private handleCreate = (): ReturnType<DropinComponentProps['onCreateElements']> => {
+         const { paymentMethodsConfiguration, showStoredPaymentMethods, showPaymentMethods, instantPaymentTypes } = this.props;
+ 
+         const { paymentMethods, storedPaymentMethods, instantPaymentMethods, fastlanePaymentMethod } = splitPaymentMethods(
+@@ -222,7 +214,7 @@ class DropinElement extends UIElement<DropinConfiguration> implements IDropin {
+         });
+ 
+         if (paymentAction) {
+-            this.setStatus(paymentAction.props.statusType as UIElementStatus, { component: paymentAction });
++            this.setStatus(paymentAction.props.statusType, { component: paymentAction });
+             this.componentFromAction = paymentAction;
+             return this;
+         }
+diff --git a/packages/lib/src/components/Dropin/components/DropinComponent.tsx b/packages/lib/src/components/Dropin/components/DropinComponent.tsx
+index a6ef039..7ba329f 100644
+--- a/packages/lib/src/components/Dropin/components/DropinComponent.tsx
++++ b/packages/lib/src/components/Dropin/components/DropinComponent.tsx
+@@ -193,7 +193,6 @@ export class DropinComponent extends Component<DropinComponentProps, DropinCompo
+                 new Promise<{ amount: PaymentAmount }>((resolve, reject) => {
+                     this.props.onOrderCancel({ order }, { resolve, reject });
+                 })
+-                    // @ts-ignore - handleAdvanceFlowPaymentMethodsUpdate is protected but we need to call it from here
+                     .then(({ amount }) => this.props.elementRef.handleAdvanceFlowPaymentMethodsUpdate(null, amount))
+                     .catch(error => {
+                         throw new AdyenCheckoutError('NETWORK_ERROR', error);
+diff --git a/packages/lib/src/components/Giftcard/Giftcard.tsx b/packages/lib/src/components/Giftcard/Giftcard.tsx
+index 5bfa019..3ffa99a 100644
+--- a/packages/lib/src/components/Giftcard/Giftcard.tsx
++++ b/packages/lib/src/components/Giftcard/Giftcard.tsx
+@@ -51,7 +51,7 @@ export class GiftcardElement extends UIElement<GiftCardConfiguration> {
+         this.componentRef?.setBalanceCheckErrors?.(errorMessage);
+     }
+ 
+-    private readonly handleBalanceCheck = (data: GiftCardElementData): Promise<balanceCheckResponseType> => {
++    private handleBalanceCheck = (data: GiftCardElementData): Promise<balanceCheckResponseType> => {
+         if (this.props.onBalanceCheck) {
+             return new Promise((resolve, reject) => {
+                 void this.props.onBalanceCheck(resolve, reject, data);
+@@ -63,7 +63,7 @@ export class GiftcardElement extends UIElement<GiftCardConfiguration> {
+         }
+     };
+ 
+-    private readonly onOrderRequest = data => {
++    private onOrderRequest = data => {
+         if (this.props.onOrderRequest)
+             return new Promise((resolve, reject) => {
+                 void this.props.onOrderRequest(resolve, reject, data);
+@@ -77,7 +77,7 @@ export class GiftcardElement extends UIElement<GiftCardConfiguration> {
+         return this.onBalanceCheck();
+     }
+ 
+-    private readonly onBalanceCheck = (): void => {
++    private onBalanceCheck = (): void => {
+         if (!this.isValid) {
+             this.showValidation();
+             return;
+@@ -128,7 +128,7 @@ export class GiftcardElement extends UIElement<GiftCardConfiguration> {
+     /**
+      * Check if it should call onRequiringConfirmation
+      */
+-    private readonly handleOnRequiringConfirmation = (balance: PaymentAmount, transactionLimit: PaymentAmount): Promise<void> | void => {
++    private handleOnRequiringConfirmation = (balance: PaymentAmount, transactionLimit: PaymentAmount): Promise<void> | void => {
+         this.componentRef.setBalance({ balance, transactionLimit });
+         this.setStatus('ready');
+ 
+diff --git a/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx b/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
+index 87a76bc..92eb1c2 100644
+--- a/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
++++ b/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
+@@ -62,7 +62,7 @@ class Giftcard extends Component<Readonly<GiftcardComponentProps>> {
+         return this.sfp.mapErrorsToValidationRuleResult();
+     };
+ 
+-    private readonly updateTransformedErrors = (balanceCheckErrors?: Record<string, GiftCardValidationError>) => {
++    private updateTransformedErrors = (balanceCheckErrors?: Record<string, GiftCardValidationError>) => {
+         const transformedErrors = this.mapErrorsToValidationObjects();
+ 
+         const mergedErrors = { ...transformedErrors, ...balanceCheckErrors };
+diff --git a/packages/lib/src/components/Giropay/Giropay.tsx b/packages/lib/src/components/Giropay/Giropay.tsx
+index 1a1bf7e..21e4fbc 100644
+--- a/packages/lib/src/components/Giropay/Giropay.tsx
++++ b/packages/lib/src/components/Giropay/Giropay.tsx
+@@ -19,7 +19,9 @@ class GiropayElement extends RedirectElement {
+                     name={this.displayName}
+                     onSubmit={this.submit}
+                     payButton={this.payButton}
+-                    setComponentRef={this.setComponentRef}
++                    ref={ref => {
++                        this.componentRef = ref;
++                    }}
+                 />
+             );
+         }
+diff --git a/packages/lib/src/components/MBWay/MBWay.tsx b/packages/lib/src/components/MBWay/MBWay.tsx
+index be8a161..d9deebc 100644
+--- a/packages/lib/src/components/MBWay/MBWay.tsx
++++ b/packages/lib/src/components/MBWay/MBWay.tsx
+@@ -5,7 +5,6 @@ import config from './components/MBWayAwait/config';
+ import { Await } from '../../components/internal/Await';
+ import { TxVariants } from '../tx-variants';
+ import { AwaitConfiguration } from '../internal/Await/types';
+-import { PaymentData } from '../../types';
+ 
+ export class MBWayElement extends UIElement<AwaitConfiguration> {
+     public static readonly type = TxVariants.mbway;
+@@ -28,7 +27,7 @@ export class MBWayElement extends UIElement<AwaitConfiguration> {
+     /**
+      * Formats the component data output
+      */
+-    formatData(): PaymentData {
++    formatData(): object {
+         return {
+             paymentMethod: {
+                 type: MBWayElement.type,
+@@ -70,6 +69,10 @@ export class MBWayElement extends UIElement<AwaitConfiguration> {
+ 
+         return (
+             <MBWayInput
++                /* @ts-ignore ref handled internally by Component */
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+                 {...this.props}
+                 setComponentRef={this.setComponentRef}
+                 onChange={this.setState}
+diff --git a/packages/lib/src/components/MBWay/components/MBWayInput/MBWayInput.tsx b/packages/lib/src/components/MBWay/components/MBWayInput/MBWayInput.tsx
+index 0f38f6e..f93ec98 100644
+--- a/packages/lib/src/components/MBWay/components/MBWayInput/MBWayInput.tsx
++++ b/packages/lib/src/components/MBWay/components/MBWayInput/MBWayInput.tsx
+@@ -1,12 +1,11 @@
+ import { h } from 'preact';
+-import { useCallback, useRef, useState } from 'preact/hooks';
++import { useState } from 'preact/hooks';
+ import { useCoreContext } from '../../../../core/Context/CoreProvider';
+ import { MBWayInputProps } from './types';
+ import './MBWayInput.scss';
+ import PhoneInputForm from '../../../internal/PhoneInput';
+ import LoadingWrapper from '../../../internal/LoadingWrapper';
+ import usePhonePrefixes from '../../../internal/PhoneInput/usePhonePrefixes';
+-import type { ComponentMethodsRef } from '../../../internal/UIElement/types';
+ 
+ function MBWayInput(props: Readonly<MBWayInputProps>) {
+     const { i18n, loadingContext } = useCoreContext();
+@@ -15,29 +14,18 @@ function MBWayInput(props: Readonly<MBWayInputProps>) {
+ 
+     const [status, setStatus] = useState<string>('ready');
+ 
+-    const { loadingStatus: prefixLoadingStatus, phonePrefixes } = usePhonePrefixes({ allowedCountries, loadingContext, handleError: props.onError });
++    this.setStatus = setStatus;
+ 
+-    const mbwayRef = useRef<ComponentMethodsRef>({
+-        setStatus,
+-        showValidation: () => {}
+-    });
++    const { loadingStatus: prefixLoadingStatus, phonePrefixes } = usePhonePrefixes({ allowedCountries, loadingContext, handleError: props.onError });
+ 
+     const onChange = ({ data, valid, errors, isValid }) => {
+         props.onChange({ data, valid, errors, isValid });
+     };
+ 
+-    const setPhoneInputRef = useCallback(
+-        (ref: ComponentMethodsRef) => {
+-            mbwayRef.current.showValidation = ref.showValidation;
+-            props.setComponentRef(mbwayRef.current);
+-        },
+-        [props.setComponentRef]
+-    );
+-
+     return (
+         <LoadingWrapper status={prefixLoadingStatus}>
+             <div className="adyen-checkout__mb-way">
+-                <PhoneInputForm {...props} setComponentRef={setPhoneInputRef} items={phonePrefixes} onChange={onChange} data={props.data} />
++                <PhoneInputForm setComponentRef={props.setComponentRef} {...props} items={phonePrefixes} onChange={onChange} data={props.data} />
+ 
+                 {props.showPayButton && props.payButton({ status, label: i18n.get('confirmPurchase') })}
+             </div>
+diff --git a/packages/lib/src/components/Multibanco/Multibanco.tsx b/packages/lib/src/components/Multibanco/Multibanco.tsx
+index 0131eda..31172d3 100644
+--- a/packages/lib/src/components/Multibanco/Multibanco.tsx
++++ b/packages/lib/src/components/Multibanco/Multibanco.tsx
+@@ -42,7 +42,9 @@ export class MultibancoElement extends UIElement<VoucherConfiguration> {
+                     name={this.displayName}
+                     payButton={this.payButton}
+                     onSubmit={this.submit}
+-                    setComponentRef={this.setComponentRef}
++                    ref={ref => {
++                        this.componentRef = ref;
++                    }}
+                 />
+             );
+         }
+diff --git a/packages/lib/src/components/PayByBankPix/PayByBankPix.tsx b/packages/lib/src/components/PayByBankPix/PayByBankPix.tsx
+index 893b900..e754da1 100644
+--- a/packages/lib/src/components/PayByBankPix/PayByBankPix.tsx
++++ b/packages/lib/src/components/PayByBankPix/PayByBankPix.tsx
+@@ -225,7 +225,9 @@ class PayByBankPixElement extends UIElement<PayByBankPixConfiguration> {
+                     label={this.props.i18n.get('paybybankpix.redirectBtn.label')}
+                     payButton={this.payButton}
+                     onSubmit={this.submit}
+-                    setComponentRef={this.setComponentRef}
++                    ref={ref => {
++                        this.componentRef = ref;
++                    }}
+                 />
+             );
+         }
+diff --git a/packages/lib/src/components/PayByBankUS/PayByBankUS.tsx b/packages/lib/src/components/PayByBankUS/PayByBankUS.tsx
+index 909d4ca..44a661d 100644
+--- a/packages/lib/src/components/PayByBankUS/PayByBankUS.tsx
++++ b/packages/lib/src/components/PayByBankUS/PayByBankUS.tsx
+@@ -6,8 +6,8 @@ import getIssuerImageUrl from '../../utils/get-issuer-image';
+ import PayButton from '../internal/PayButton';
+ import { payAmountLabel } from '../internal/PayButton/utils';
+ import { PaymentMethodBrand } from '../../types/global-types';
+-import './PayByBankUS.scss';
+ 
++import './PayByBankUS.scss';
+ export default class PayByBankUS extends RedirectElement {
+     public static override readonly type: TxVariants = TxVariants.paybybank_AIS_DD;
+ 
+@@ -85,7 +85,9 @@ export default class PayByBankUS extends RedirectElement {
+                         name={this.displayName}
+                         onSubmit={this.submit}
+                         payButton={this.payButton}
+-                        setComponentRef={this.setComponentRef}
++                        ref={ref => {
++                            this.componentRef = ref;
++                        }}
+                     />
+                 )}
+             </Fragment>
+diff --git a/packages/lib/src/components/PayTo/components/BSBInput.tsx b/packages/lib/src/components/PayTo/components/BSBInput.tsx
+index fa8a0de..8cf9271 100644
+--- a/packages/lib/src/components/PayTo/components/BSBInput.tsx
++++ b/packages/lib/src/components/PayTo/components/BSBInput.tsx
+@@ -66,7 +66,7 @@ export default function BSBInput({ setComponentRef, defaultData, placeholders, o
+             <Field
+                 label={i18n.get('payto.bsb.label.bankAccountNumber')}
+                 classNameModifiers={['col-60', 'bankAccountNumber']}
+-                errorMessage={getErrorMessage(i18n, errors.bankAccountNumber ?? undefined, i18n.get('payto.bsb.label.bankAccountNumber'))}
++                errorMessage={getErrorMessage(i18n, errors.bankAccountNumber, i18n.get('payto.bsb.label.bankAccountNumber'))}
+                 name={'bankAccountNumber'}
+                 i18n={i18n}
+                 errorLive={true}
+@@ -86,7 +86,7 @@ export default function BSBInput({ setComponentRef, defaultData, placeholders, o
+             <Field
+                 label={i18n.get('Bank State Branch')}
+                 classNameModifiers={['col-40', 'bsb']}
+-                errorMessage={getErrorMessage(i18n, errors.bsb ?? undefined, i18n.get('Bank State Branch'))}
++                errorMessage={getErrorMessage(i18n, errors.bsb, i18n.get('Bank State Branch'))}
+                 name={'bsb'}
+                 i18n={i18n}
+                 errorLive={true}
+diff --git a/packages/lib/src/components/PayTo/components/PayToNameFields.tsx b/packages/lib/src/components/PayTo/components/PayToNameFields.tsx
+index b0fa21a..df315df 100644
+--- a/packages/lib/src/components/PayTo/components/PayToNameFields.tsx
++++ b/packages/lib/src/components/PayTo/components/PayToNameFields.tsx
+@@ -1,18 +1,21 @@
+-import { h, Fragment, TargetedEvent } from 'preact';
++import { h, Fragment } from 'preact';
+ import Field from '../../internal/FormFields/Field';
+ import { getErrorMessage } from '../../../utils/getErrorMessage';
+ import InputText from '../../internal/FormFields/InputText';
+ import Language from '../../../language';
+-import { FormStateErrors, HandleChangeForModeType } from '../../../utils/useForm/types';
++import { HandleChangeForModeType } from '../../../utils/useForm/types';
++import { ValidationRuleResult } from '../../../utils/Validator/ValidationRuleResult';
+ 
+ export interface PayToNameFieldsProps {
+     i18n: Language;
+-    errors: FormStateErrors;
++    errors: {
++        [key: string]: ValidationRuleResult;
++    };
+     data: {
+         firstName: string;
+         lastName: string;
+     };
+-    handleChangeFor: (key: string, mode?: HandleChangeForModeType) => (e: TargetedEvent<HTMLInputElement, Event>) => void;
++    handleChangeFor: (key: string, mode?: HandleChangeForModeType) => (e: h.JSX.TargetedEvent<HTMLInputElement, Event>) => void;
+     placeholders: {
+         firstName: string;
+         lastName: string;
+@@ -25,7 +28,7 @@ export default function PayToNameFields({ i18n, errors, data, handleChangeFor, p
+             <Field
+                 label={i18n.get('payto.label.firstName')}
+                 classNameModifiers={['col-50', 'firstName']}
+-                errorMessage={getErrorMessage(i18n, errors.firstName ?? undefined, i18n.get('firstName'))}
++                errorMessage={getErrorMessage(i18n, errors.firstName, i18n.get('firstName'))}
+                 name={'firstName'}
+                 i18n={i18n}
+                 errorLive={true}
+@@ -45,7 +48,7 @@ export default function PayToNameFields({ i18n, errors, data, handleChangeFor, p
+             <Field
+                 label={i18n.get('payto.label.lastName')}
+                 classNameModifiers={['col-50', 'lastName']}
+-                errorMessage={getErrorMessage(i18n, errors.lastName ?? undefined, i18n.get('lastName'))}
++                errorMessage={getErrorMessage(i18n, errors.lastName, i18n.get('lastName'))}
+                 name={'lastName'}
+                 i18n={i18n}
+                 errorLive={true}
+diff --git a/packages/lib/src/components/PayTo/components/PayToPhone.tsx b/packages/lib/src/components/PayTo/components/PayToPhone.tsx
+index 51b0c1b..3d410b9 100644
+--- a/packages/lib/src/components/PayTo/components/PayToPhone.tsx
++++ b/packages/lib/src/components/PayTo/components/PayToPhone.tsx
+@@ -22,7 +22,7 @@ const AUSTRALIAN_PHONE_PREFIXES = [
+ export default function PayToPhone({ form }: Readonly<PayToPhoneProps>) {
+     const { i18n } = useCoreContext();
+ 
+-    const getError = useCallback((field: string) => getErrorMessage(i18n, form.errors[field] ?? undefined), [i18n, form]);
++    const getError = useCallback((field: string) => getErrorMessage(i18n, form.errors[field]), [i18n, form]);
+ 
+     return (
+         <PhoneInputFields
+diff --git a/packages/lib/src/components/Pix/Pix.tsx b/packages/lib/src/components/Pix/Pix.tsx
+index 4ad4e91..2f9ecf2 100644
+--- a/packages/lib/src/components/Pix/Pix.tsx
++++ b/packages/lib/src/components/Pix/Pix.tsx
+@@ -66,13 +66,15 @@ class PixElement extends QRLoaderContainer<PixConfiguration> {
+ 
+         return (
+             <PixInput
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+                 {...this.props}
+                 showPayButton={this.props.showPayButton}
+                 personalDetailsRequired={this.props.personalDetailsRequired}
+                 name={this.displayName}
+                 onChange={this.setState}
+                 payButton={this.payButton}
+-                setComponentRef={this.setComponentRef}
+             />
+         );
+     }
+diff --git a/packages/lib/src/components/Pix/components/PixInput/PixInput.tsx b/packages/lib/src/components/Pix/components/PixInput/PixInput.tsx
+index cbf3694..5cb6261 100644
+--- a/packages/lib/src/components/Pix/components/PixInput/PixInput.tsx
++++ b/packages/lib/src/components/Pix/components/PixInput/PixInput.tsx
+@@ -1,14 +1,13 @@
+ import { h } from 'preact';
+-import { useEffect, useRef, useState } from 'preact/hooks';
++import { useEffect, useState } from 'preact/hooks';
+ import { pixValidationRules } from './validate';
+ import { pixFormatters } from './utils';
+ import { useCoreContext } from '../../../../core/Context/CoreProvider';
+ import useForm from '../../../../utils/useForm';
+ import { BrazilPersonalDetail } from '../../../internal/SocialSecurityNumberBrazil/BrazilPersonalDetail';
+ import { PixInputDataState, PixInputProps } from './types';
+-import { ComponentMethodsRef } from '../../../types';
+ 
+-function PixInput({ name, data: dataProps, personalDetailsRequired, showPayButton, onChange, payButton, setComponentRef }: Readonly<PixInputProps>) {
++function PixInput({ name, data: dataProps, personalDetailsRequired, showPayButton, onChange, payButton }: Readonly<PixInputProps>) {
+     const { i18n } = useCoreContext();
+     const formSchema = ['firstName', 'lastName', 'socialSecurityNumber'];
+ 
+@@ -26,23 +25,17 @@ function PixInput({ name, data: dataProps, personalDetailsRequired, showPayButto
+     }, [personalDetailsRequired]);
+ 
+     const [status, setStatus] = useState('ready');
++    this.setStatus = setStatus;
+ 
+-    const pixInputRef = useRef<ComponentMethodsRef>({
+-        setStatus: setStatus,
+-        showValidation: () => {
+-            triggerValidation();
+-        }
+-    });
+-
+-    useEffect(() => {
+-        setComponentRef(pixInputRef.current);
+-    }, [setComponentRef]);
++    this.showValidation = () => {
++        triggerValidation();
++    };
+ 
+     useEffect(() => {
+         onChange({ data, valid, errors, isValid });
+     }, [onChange, data, valid, errors]);
+ 
+-    const buttonModifiers = personalDetailsRequired ? [] : ['standalone'];
++    const buttonModifiers = !personalDetailsRequired ? ['standalone'] : [];
+ 
+     return (
+         <div className="adyen-checkout__pix-input__field" style={!showPayButton && !personalDetailsRequired ? { display: 'none' } : null}>
+diff --git a/packages/lib/src/components/Pix/components/PixInput/types.ts b/packages/lib/src/components/Pix/components/PixInput/types.ts
+index f418c1a..b277a8f 100644
+--- a/packages/lib/src/components/Pix/components/PixInput/types.ts
++++ b/packages/lib/src/components/Pix/components/PixInput/types.ts
+@@ -1,6 +1,6 @@
+-import { h } from 'preact';
++import { h, RefObject } from 'preact';
++import PixInput from './PixInput';
+ import { PayButtonProps } from '../../../internal/PayButton/PayButton';
+-import { ComponentMethodsRef } from '../../../types';
+ 
+ export interface PixInputDataState {
+     firstName?: string;
+@@ -19,5 +19,5 @@ export interface PixInputProps {
+     showPayButton: boolean;
+     onChange({ data, valid, errors, isValid }): void;
+     payButton(props: PayButtonProps): h.JSX.Element;
+-    setComponentRef: (ref: ComponentMethodsRef) => void;
++    ref(ref: RefObject<typeof PixInput>): void;
+ }
+diff --git a/packages/lib/src/components/PreAuthorizedDebitCanada/PreAuthorizedDebitCanada.tsx b/packages/lib/src/components/PreAuthorizedDebitCanada/PreAuthorizedDebitCanada.tsx
+index 54a2d40..c6f5224 100644
+--- a/packages/lib/src/components/PreAuthorizedDebitCanada/PreAuthorizedDebitCanada.tsx
++++ b/packages/lib/src/components/PreAuthorizedDebitCanada/PreAuthorizedDebitCanada.tsx
+@@ -73,7 +73,9 @@ export class PreAuthorizedDebitCanada extends UIElement<PreAuthorizedDebitCanada
+                     name={this.displayName}
+                     payButton={this.payButton}
+                     onSubmit={this.submit}
+-                    setComponentRef={this.setComponentRef}
++                    ref={ref => {
++                        this.componentRef = ref;
++                    }}
+                 />
+             </Fragment>
+         ) : (
+diff --git a/packages/lib/src/components/PreAuthorizedDebitCanada/components/PreAuthorizedDebitCanadaComponent.tsx b/packages/lib/src/components/PreAuthorizedDebitCanada/components/PreAuthorizedDebitCanadaComponent.tsx
+index 481880f..4a17951 100644
+--- a/packages/lib/src/components/PreAuthorizedDebitCanada/components/PreAuthorizedDebitCanadaComponent.tsx
++++ b/packages/lib/src/components/PreAuthorizedDebitCanada/components/PreAuthorizedDebitCanadaComponent.tsx
+@@ -90,7 +90,7 @@ function PreAuthorizedDebitCanadaComponent({
+             <Fieldset>
+                 <Field
+                     label={i18n.get('eftpad-canada.input.accountHolderName.label')}
+-                    errorMessage={typeof errors.ownerName?.errorMessage === 'string' ? i18n.get(errors.ownerName.errorMessage) : null}
++                    errorMessage={!!errors.ownerName && i18n.get(errors.ownerName.errorMessage)}
+                     isValid={!!valid.ownerName}
+                     name={'ownerName'}
+                 >
+@@ -109,7 +109,7 @@ function PreAuthorizedDebitCanadaComponent({
+ 
+                 <Field
+                     label={i18n.get('eftpad-canada.input.accountNumber.label')}
+-                    errorMessage={typeof errors.bankAccountNumber?.errorMessage === 'string' ? i18n.get(errors.bankAccountNumber.errorMessage) : null}
++                    errorMessage={!!errors.bankAccountNumber && i18n.get(errors.bankAccountNumber.errorMessage)}
+                     name={'bankAccountNumber'}
+                     isValid={!!valid.bankAccountNumber}
+                     showContextualElement={showContextualElement}
+@@ -131,7 +131,7 @@ function PreAuthorizedDebitCanadaComponent({
+                 <Field
+                     label={i18n.get('eftpad-canada.input.institutionNumber.label')}
+                     classNameModifiers={['col-50']}
+-                    errorMessage={typeof errors.bankCode?.errorMessage === 'string' ? i18n.get(errors.bankCode.errorMessage) : null}
++                    errorMessage={!!errors.bankCode && i18n.get(errors.bankCode.errorMessage)}
+                     isValid={!!valid.bankCode}
+                     name={'bankCode'}
+                     showContextualElement={showContextualElement}
+@@ -153,7 +153,7 @@ function PreAuthorizedDebitCanadaComponent({
+                 <Field
+                     label={i18n.get('eftpad-canada.input.transitNumber.label')}
+                     classNameModifiers={['col-50']}
+-                    errorMessage={typeof errors.bankLocationId?.errorMessage === 'string' ? i18n.get(errors.bankLocationId.errorMessage) : null}
++                    errorMessage={!!errors.bankLocationId && i18n.get(errors.bankLocationId.errorMessage)}
+                     name={'bankLocationId'}
+                     isValid={!!valid.bankLocationId}
+                     showContextualElement={showContextualElement}
+diff --git a/packages/lib/src/components/Redirect/Redirect.tsx b/packages/lib/src/components/Redirect/Redirect.tsx
+index 2797de9..2e2a563 100644
+--- a/packages/lib/src/components/Redirect/Redirect.tsx
++++ b/packages/lib/src/components/Redirect/Redirect.tsx
+@@ -64,7 +64,9 @@ class RedirectElement extends UIElement<RedirectConfiguration> {
+                     name={this.displayName}
+                     onSubmit={this.submit}
+                     payButton={this.payButton}
+-                    setComponentRef={this.setComponentRef}
++                    ref={ref => {
++                        this.componentRef = ref;
++                    }}
+                 />
+             );
+         }
+diff --git a/packages/lib/src/components/Sepa/Sepa.tsx b/packages/lib/src/components/Sepa/Sepa.tsx
+index 134aa9d..5628c9f 100644
+--- a/packages/lib/src/components/Sepa/Sepa.tsx
++++ b/packages/lib/src/components/Sepa/Sepa.tsx
+@@ -17,7 +17,7 @@ class SepaElement extends UIElement<SepaConfiguration> {
+     /**
+      * Formats props on construction time
+      */
+-    formatProps(props: SepaConfiguration): SepaConfiguration & { holderName: boolean } {
++    formatProps(props) {
+         return {
+             holderName: true,
+             ...props
+@@ -49,12 +49,14 @@ class SepaElement extends UIElement<SepaConfiguration> {
+             <Fragment>
+                 <FormInstruction />
+ 
++                {/* @ts-ignore TODO: add props */}
+                 <IbanInput
+                     ref={ref => {
+                         this.componentRef = ref;
+                     }}
+                     {...this.props}
+                     onChange={this.setState}
++                    // onSubmit={this.submit}
+                     payButton={this.payButton}
+                 />
+             </Fragment>
+diff --git a/packages/lib/src/components/Sepa/types.ts b/packages/lib/src/components/Sepa/types.ts
+index 5a7fceb..c209ec9 100644
+--- a/packages/lib/src/components/Sepa/types.ts
++++ b/packages/lib/src/components/Sepa/types.ts
+@@ -1,4 +1,3 @@
+-import { IbanData } from '../internal/IbanInput/IbanInput';
+ import { UIElementProps } from '../internal/UIElement/types';
+ 
+ export interface SepaElementData {
+@@ -9,6 +8,4 @@ export interface SepaElementData {
+     };
+ }
+ 
+-export interface SepaConfiguration extends UIElementProps {
+-    data?: IbanData;
+-}
++export interface SepaConfiguration extends UIElementProps {}
+diff --git a/packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx b/packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx
+index 6d95674..f7f2d5b 100644
+--- a/packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx
++++ b/packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx
+@@ -10,7 +10,6 @@ import { THREEDS2_FINGERPRINT, THREEDS2_FINGERPRINT_ERROR } from './constants';
+ import { ActionHandledReturnObject } from '../../types/global-types';
+ import { AnalyticsLogEvent, LogEventSubtype, LogEventType } from '../../core/Analytics/events/AnalyticsLogEvent';
+ import { AnalyticsErrorEvent, ErrorEventCode, ErrorEventType } from '../../core/Analytics/events/AnalyticsErrorEvent';
+-import { AdditionalDetailsData } from '../../types';
+ 
+ class ThreeDS2DeviceFingerprint extends UIElement<ThreeDS2DeviceFingerprintConfiguration> {
+     public static readonly type = TxVariants.threeDS2Fingerprint;
+@@ -20,7 +19,7 @@ class ThreeDS2DeviceFingerprint extends UIElement<ThreeDS2DeviceFingerprintConfi
+         type: THREEDS2_FINGERPRINT
+     };
+ 
+-    private readonly callSubmit3DS2Fingerprint = callSubmit3DS2Fingerprint.bind(this); // New 3DS2 flow
++    private callSubmit3DS2Fingerprint = callSubmit3DS2Fingerprint.bind(this); // New 3DS2 flow
+ 
+     protected override beforeRender() {
+         /* Do not send rendered events for ThreeDS2DeviceFingerprint - it will have the same timestamp as the "threeDSMethodData sent" event */
+@@ -46,7 +45,7 @@ class ThreeDS2DeviceFingerprint extends UIElement<ThreeDS2DeviceFingerprintConfi
+         if (this.props.isMDFlow) {
+             this.props.on3DS2RedirectFlowComplete?.(state, this.elementRef);
+         } else {
+-            super.onComplete(state as AdditionalDetailsData);
++            super.onComplete(state);
+         }
+ 
+         this.unmount(); // re. fixing issue around back to back fingerprinting calls
+diff --git a/packages/lib/src/components/ThreeDS2/types.ts b/packages/lib/src/components/ThreeDS2/types.ts
+index e3850f3..c0bad06 100644
+--- a/packages/lib/src/components/ThreeDS2/types.ts
++++ b/packages/lib/src/components/ThreeDS2/types.ts
+@@ -139,9 +139,12 @@ type CheckoutThreeDS2Action = {
+     authorisationToken: string;
+ };
+ 
+-export type FingerprintResolveData = {
+-    data: Omit<AdditionalDetailsData['data'], 'details'>;
+-};
++export interface FingerprintResolveData {
++    data: {
++        [key: string]: string;
++        paymentData: string;
++    };
++}
+ 
+ export interface ChallengeResolveData {
+     data: {
+diff --git a/packages/lib/src/components/Trustly/Trustly.tsx b/packages/lib/src/components/Trustly/Trustly.tsx
+index 649f1aa..097ef19 100644
+--- a/packages/lib/src/components/Trustly/Trustly.tsx
++++ b/packages/lib/src/components/Trustly/Trustly.tsx
+@@ -29,7 +29,9 @@ class TrustlyElement extends RedirectElement {
+                         name={this.displayName}
+                         onSubmit={this.submit}
+                         payButton={this.payButton}
+-                        setComponentRef={this.setComponentRef}
++                        ref={ref => {
++                            this.componentRef = ref;
++                        }}
+                     />
+                 )}
+             </Fragment>
+diff --git a/packages/lib/src/components/helpers/IssuerListContainer/IssuerListContainer.tsx b/packages/lib/src/components/helpers/IssuerListContainer/IssuerListContainer.tsx
+index 1ca6caa..e1a75a1 100644
+--- a/packages/lib/src/components/helpers/IssuerListContainer/IssuerListContainer.tsx
++++ b/packages/lib/src/components/helpers/IssuerListContainer/IssuerListContainer.tsx
+@@ -6,13 +6,10 @@ import { FALLBACK_CONTEXT } from '../../../core/config';
+ import RedirectButton from '../../internal/RedirectButton';
+ import { IssuerListConfiguration, IssuerListData } from './types';
+ import type { ICore } from '../../../core/types';
+-import { PaymentData, PaymentMethodBrand } from '../../../types/global-types';
++import { PaymentMethodBrand } from '../../../types/global-types';
+ import { ImageOptions } from '../../../core/Context/Resources';
+ 
+-class IssuerListContainer<
+-    TProps extends IssuerListConfiguration = IssuerListConfiguration,
+-    TData extends PaymentData = IssuerListData
+-> extends UIElement<TProps> {
++class IssuerListContainer<TProps extends IssuerListConfiguration = IssuerListConfiguration, TData = IssuerListData> extends UIElement<TProps> {
+     protected static readonly defaultProps = {
+         showImage: true,
+         issuers: [],
+@@ -52,7 +49,7 @@ class IssuerListContainer<
+                 type: this.type,
+                 issuer: this.state?.data?.issuer
+             }
+-        } as unknown as TData;
++        } as TData;
+     }
+ 
+     /**
+@@ -104,7 +101,9 @@ class IssuerListContainer<
+                 {...this.props}
+                 onSubmit={this.submit}
+                 payButton={this.payButton}
+-                setComponentRef={this.setComponentRef}
++                ref={ref => {
++                    this.componentRef = ref;
++                }}
+             />
+         );
+     }
+diff --git a/packages/lib/src/components/helpers/QRLoaderContainer/QRLoaderContainer.tsx b/packages/lib/src/components/helpers/QRLoaderContainer/QRLoaderContainer.tsx
+index 8c1c942..e6ea91d 100644
+--- a/packages/lib/src/components/helpers/QRLoaderContainer/QRLoaderContainer.tsx
++++ b/packages/lib/src/components/helpers/QRLoaderContainer/QRLoaderContainer.tsx
+@@ -56,7 +56,9 @@ class QRLoaderContainer<T extends QRLoaderConfiguration = QRLoaderConfiguration>
+                     name={this.displayName}
+                     onSubmit={this.submit}
+                     payButton={this.payButton}
+-                    setComponentRef={this.setComponentRef}
++                    ref={ref => {
++                        this.componentRef = ref;
++                    }}
+                 />
+             );
+         }
+diff --git a/packages/lib/src/components/internal/BaseElement/BaseElement.ts b/packages/lib/src/components/internal/BaseElement/BaseElement.ts
+index 7943a97..c24f8a2 100644
+--- a/packages/lib/src/components/internal/BaseElement/BaseElement.ts
++++ b/packages/lib/src/components/internal/BaseElement/BaseElement.ts
+@@ -3,7 +3,7 @@ import uuid from '../../../utils/uuid';
+ import AdyenCheckoutError from '../../../core/Errors/AdyenCheckoutError';
+ import { NO_CHECKOUT_ATTEMPT_ID } from '../../../core/Analytics/constants';
+ import type { ICore } from '../../../core/types';
+-import type { BaseElementProps, BaseElementState, IBaseElement } from './types';
++import type { BaseElementProps, IBaseElement } from './types';
+ import type { PaymentData } from '../../../types/global-types';
+ import { off, on } from '../../../utils/listenerUtils';
+ import { AbstractAnalyticsEvent } from '../../../core/Analytics/events/AbstractAnalyticsEvent';
+@@ -22,13 +22,13 @@ function assertIsCoreInstance(checkout: ICore): checkout is ICore {
+     return isCoreObject;
+ }
+ 
+-abstract class BaseElement<P extends BaseElementProps, S extends BaseElementState = BaseElementState> implements IBaseElement<P> {
++abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+     public readonly _id = `${this.constructor['type']}-${uuid()}`;
+     public readonly core: ICore;
+ 
+     public props: P;
+-    public state: S = {} as S;
+-    public _component: ComponentChild | undefined;
++    public state: any = {};
++    public _component;
+ 
+     protected _node: HTMLElement = null;
+ 
+@@ -66,8 +66,8 @@ abstract class BaseElement<P extends BaseElementProps, S extends BaseElementStat
+      * Executed on the `data` getter.
+      * Returns the component data necessary for the /payments request
+      */
+-    protected formatData(): PaymentData {
+-        return {} as PaymentData;
++    protected formatData(): any {
++        return {};
+     }
+ 
+     protected submitAnalytics(_analyticsObj?: AbstractAnalyticsEvent) {
+@@ -78,7 +78,7 @@ abstract class BaseElement<P extends BaseElementProps, S extends BaseElementStat
+         return null;
+     }
+ 
+-    protected setState(newState: S): void {
++    protected setState(newState: object): void {
+         this.state = { ...this.state, ...newState };
+     }
+ 
+@@ -160,7 +160,7 @@ abstract class BaseElement<P extends BaseElementProps, S extends BaseElementStat
+      */
+     public update(props: Partial<P>): this {
+         this.props = this.formatProps({ ...this.props, ...props });
+-        this.state = {} as S;
++        this.state = {};
+ 
+         return this.unmount().mount(this._node); // for new mount fny
+     }
+diff --git a/packages/lib/src/components/internal/BaseElement/types.ts b/packages/lib/src/components/internal/BaseElement/types.ts
+index b7fa9b4..bb21575 100644
+--- a/packages/lib/src/components/internal/BaseElement/types.ts
++++ b/packages/lib/src/components/internal/BaseElement/types.ts
+@@ -1,10 +1,9 @@
+-import { Order, PaymentData } from '../../../types/global-types';
++import { Order } from '../../../types/global-types';
+ import { SRPanel } from '../../../core/Errors/SRPanel';
+ import { Resources } from '../../../core/Context/Resources';
+ import RiskElement from '../../../core/RiskModule';
+ import { ComponentChild } from 'preact';
+ import type { IAnalytics } from '../../../core/Analytics/Analytics';
+-import type { OnChangeData } from '../../../types';
+ 
+ export interface BaseElementProps {
+     order?: Order;
+@@ -20,19 +19,15 @@ export interface BaseElementProps {
+     isDropin?: boolean;
+ }
+ 
+-// TODO: Remove any when the state data of all components have been typed
+-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+-export type BaseElementState = { order?: Order } & Pick<OnChangeData, 'valid' | 'errors'> & Record<string, any>;
+-
+-export interface IBaseElement<P extends BaseElementProps = BaseElementProps, S extends BaseElementState = BaseElementState> {
+-    data: PaymentData;
+-    state: S;
+-    props: P;
++export interface IBaseElement {
++    data: object;
++    state: any;
++    props: any;
+     _id: string;
+-    _component: ComponentChild;
++    _component: any;
+     render(): ComponentChild | Error;
+     mount(domNode: HTMLElement | string): IBaseElement;
+-    update(props: Partial<P>): IBaseElement;
++    update(props): IBaseElement;
+     unmount(): IBaseElement;
+     remove(): void;
+     activate(): void;
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
+index c42cf45..f3597e1 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
+@@ -76,14 +76,7 @@ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+             <Field
+                 name="shopperLogin"
+                 label={i18n.get('ctp.login.inputLabel')}
+-                errorMessage={
+-                    isLoginInputDirty
+-                        ? props.errorMessage ||
+-                          (errors.shopperLogin && typeof errors.shopperLogin?.errorMessage === 'string'
+-                              ? i18n.get(errors.shopperLogin.errorMessage)
+-                              : null)
+-                        : null
+-                }
++                errorMessage={isLoginInputDirty ? props.errorMessage || (errors.shopperLogin && i18n.get(errors.shopperLogin.errorMessage)) : null}
+                 classNameModifiers={['shopperLogin']}
+                 errorLive={true}
+             >
+diff --git a/packages/lib/src/components/internal/IbanInput/IbanInput.tsx b/packages/lib/src/components/internal/IbanInput/IbanInput.tsx
+index d1ccb58..c893cc4 100644
+--- a/packages/lib/src/components/internal/IbanInput/IbanInput.tsx
++++ b/packages/lib/src/components/internal/IbanInput/IbanInput.tsx
+@@ -6,36 +6,28 @@ import { electronicFormat, formatIban, getCountryCode, getNextCursorPosition } f
+ import Fieldset from '../FormFields/Fieldset';
+ import { GenericError } from '../../../core/Errors/types';
+ import InputText from '../FormFields/InputText';
+-import { UIElementStatus } from '../UIElement/types';
+-import { PayButtonProps } from '../PayButton/PayButton';
+-
+-export interface IbanData {
+-    ownerName?: string;
+-    ibanNumber?: string;
+-    countryCode?: string;
+-}
+-
+-interface IbanInputOnChangeData {
+-    data: IbanData;
+-    isValid: boolean;
+-    errors?: Record<string, GenericError | null>;
+-}
+ 
+ interface IbanInputProps {
+     holderName?: boolean;
+     placeholders?: Omit<IbanData, 'countryCode'>;
+     countryCode?: string;
+     showPayButton?: boolean;
+-    payButton?: (props: PayButtonProps) => h.JSX.Element;
+-    onChange: (data: IbanInputOnChangeData) => void;
++    payButton?: any;
++    onChange: (data) => void;
+     label: string;
+-    data?: IbanData;
++    data: IbanData;
++}
++
++interface IbanData {
++    ownerName?: string;
++    ibanNumber?: string;
++    countryCode?: string;
+ }
+ 
+ interface IbanInputState {
+-    data: IbanData;
+-    errors: Record<string, GenericError | null>;
+-    valid: Record<string, boolean>;
++    data: any;
++    errors: any;
++    valid: any;
+     status: string;
+     isValid: boolean;
+     cursor: number;
+@@ -54,6 +46,8 @@ const ibanErrorObj: GenericError = {
+ };
+ 
+ class IbanInput extends Component<Readonly<IbanInputProps>, IbanInputState> {
++    private ibanNumber: HTMLInputElement;
++
+     constructor(props) {
+         super(props);
+ 
+@@ -76,8 +70,8 @@ class IbanInput extends Component<Readonly<IbanInputProps>, IbanInputState> {
+         }
+ 
+         if (this.state.data['ibanNumber'] || this.state.data['ownerName']) {
+-            const holderNameValid = this.props.holderName ? isValidHolder(this.state.data['ownerName']) : true;
+-            const ibanValid = this.state.data['ibanNumber'] ? checkIbanStatus(this.state.data['ibanNumber']).status === 'valid' : false;
++            const holderNameValid = this.props.holderName ? isValidHolder(this.state.data['ownerName']) : '';
++            const ibanValid = this.state.data['ibanNumber'] ? checkIbanStatus(this.state.data['ibanNumber']).status === 'valid' : '';
+             const isValid = ibanValid && holderNameValid;
+             const data = { data: this.state.data, isValid };
+ 
+@@ -93,7 +87,7 @@ class IbanInput extends Component<Readonly<IbanInputProps>, IbanInputState> {
+         label: null
+     };
+ 
+-    setStatus(status: UIElementStatus) {
++    setStatus(status) {
+         this.setState({ status });
+     }
+ 
+@@ -106,16 +100,27 @@ class IbanInput extends Component<Readonly<IbanInputProps>, IbanInputState> {
+         this.props.onChange(data);
+     }
+ 
++    public setData = (key, value, cb?) => {
++        this.setState(prevState => ({ data: { ...prevState.data, [key]: value } }), cb);
++    };
++
+     public setError = (key, value, cb?) => {
+         this.setState(prevState => ({ errors: { ...prevState.errors, [key]: value } }), cb);
+     };
+ 
++    public setValid = (key, value, cb?) => {
++        this.setState(prevState => ({ valid: { ...prevState.valid, [key]: value } }), cb);
++    };
++
+     public handleHolderInput = holder => {
+         this.setState(
+             prevState => ({ data: { ...prevState.data, ownerName: holder } }),
+             () => {
+                 const holderStatus = isValidHolder(this.state.data['ownerName']);
+-                const holderErr = holderStatus && !holderStatus ? ibanHolderNameErrorObj : null;
++                const holderErr =
++                    holderStatus != null && !holderStatus // *don't* consider null, i.e. a value that has just been deleted, to be in error
++                        ? ibanHolderNameErrorObj
++                        : null;
+ 
+                 this.setError('holder', holderErr, this.onChange);
+             }
+@@ -156,7 +161,7 @@ class IbanInput extends Component<Readonly<IbanInputProps>, IbanInputState> {
+ 
+         if (currentIban.length > 0) {
+             const validationStatus = checkIbanStatus(currentIban).status;
+-            this.setError('iban', validationStatus === 'valid' ? null : ibanErrorObj, this.onChange);
++            this.setError('iban', validationStatus !== 'valid' ? ibanErrorObj : null, this.onChange);
+         } else {
+             // Empty field is not in error
+             this.setError('iban', null, this.onChange);
+@@ -166,9 +171,11 @@ class IbanInput extends Component<Readonly<IbanInputProps>, IbanInputState> {
+     showValidation() {
+         const validationStatus = checkIbanStatus(this.state.data['ibanNumber']).status;
+         const holderStatus = isValidHolder(this.state.data['ownerName']);
+-        this.setError('iban', validationStatus === 'valid' ? null : ibanErrorObj);
++        this.setError('iban', validationStatus !== 'valid' ? ibanErrorObj : null);
+ 
+-        const holderErr = holderStatus ? null : ibanHolderNameErrorObj;
++        const holderErr = !holderStatus // *do* consider null, i.e. an empty field, to be in error
++            ? ibanHolderNameErrorObj
++            : null;
+ 
+         this.setError('holder', holderErr, this.onChange); // add callback param to force propagation of state to parent comp
+     }
+@@ -213,6 +220,9 @@ class IbanInput extends Component<Readonly<IbanInputProps>, IbanInputState> {
+                     name={'ibanNumber'}
+                 >
+                     <InputText
++                        setRef={ref => {
++                            this.ibanNumber = ref;
++                        }}
+                         name={'ibanNumber'}
+                         className={'adyen-checkout__iban-input__iban-number'}
+                         classNameModifiers={['large']}
+diff --git a/packages/lib/src/components/internal/IbanInput/validate.test.ts b/packages/lib/src/components/internal/IbanInput/validate.test.ts
+index 959ae6a..1775e21 100644
+--- a/packages/lib/src/components/internal/IbanInput/validate.test.ts
++++ b/packages/lib/src/components/internal/IbanInput/validate.test.ts
+@@ -39,12 +39,12 @@ describe('IBAN Validations', () => {
+             expect(isValidHolder('John Doe')).toBe(true);
+         });
+ 
+-        test('Returns false for an empty account Holder Name', () => {
+-            expect(isValidHolder('')).toBe(false);
++        test('Returns null for an empty account Holder Name', () => {
++            expect(isValidHolder('')).toBe(null);
+         });
+ 
+-        test('Returns false for an undefined account Holder Name', () => {
+-            expect(isValidHolder(undefined)).toBe(false);
++        test('Returns null for an undefined account Holder Name', () => {
++            expect(isValidHolder(undefined)).toBe(null);
+         });
+     });
+ 
+diff --git a/packages/lib/src/components/internal/IbanInput/validate.ts b/packages/lib/src/components/internal/IbanInput/validate.ts
+index 6ee40aa..3740441 100644
+--- a/packages/lib/src/components/internal/IbanInput/validate.ts
++++ b/packages/lib/src/components/internal/IbanInput/validate.ts
+@@ -72,4 +72,4 @@ export const checkIbanStatus = iban => {
+ /**
+  * Checks validity of a holder name
+  */
+-export const isValidHolder = (value: string) => !isEmpty(value);
++export const isValidHolder = value => (isEmpty(value) ? null : true); // true, if there are chars other than spaces
+diff --git a/packages/lib/src/components/internal/IssuerList/types.ts b/packages/lib/src/components/internal/IssuerList/types.ts
+index feb9c88..94d222f 100644
+--- a/packages/lib/src/components/internal/IssuerList/types.ts
++++ b/packages/lib/src/components/internal/IssuerList/types.ts
+@@ -17,7 +17,7 @@ export interface IssuerListProps {
+     items: IssuerItem[];
+     // Component type (e.g. onlineBanking)
+     type: string;
+-    showPayButton?: boolean;
++    showPayButton: boolean;
+     payButton(props: PayButtonProps): ComponentChildren;
+     onChange(payload: IssuerListState): void;
+     highlightedIds?: string[];
+diff --git a/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx b/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx
+index 2052b3e..d5a517a 100644
+--- a/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx
++++ b/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx
+@@ -1,6 +1,5 @@
+ import { h } from 'preact';
+ import { useEffect, useRef, useState } from 'preact/hooks';
+-import classNames from 'classnames';
+ import { useCoreContext } from '../../../core/Context/CoreProvider';
+ import CompanyDetails from '../CompanyDetails';
+ import PersonalDetails from '../PersonalDetails';
+@@ -16,13 +15,14 @@ import {
+     OpenInvoiceStateError,
+     OpenInvoiceStateValid
+ } from './types';
++import './OpenInvoice.scss';
+ import IbanInput from '../IbanInput';
+ import { GenericError } from '../../../core/Errors/types';
+ import Field from '../FormFields/Field';
+ import FormInstruction from '../FormInstruction';
+ import { ComponentMethodsRef } from '../UIElement/types';
+ import useSRPanelForOpenInvoiceErrors from './useSRPanelForOpenInvoiceErrors';
+-import './OpenInvoice.scss';
++import classNames from 'classnames';
+ 
+ const consentCBErrorObj: GenericError = {
+     isValid: false,
+@@ -34,6 +34,13 @@ export default function OpenInvoice(props: Readonly<OpenInvoiceProps>) {
+     const { countryCode, visibility } = props;
+     const { i18n } = useCoreContext();
+ 
++    /** An object by which to expose 'public' members to the parent UIElement */
++    const openInvoiceRef = useRef<ComponentMethodsRef>({});
++    // Just call once
++    if (!Object.keys(openInvoiceRef.current).length) {
++        props.setComponentRef?.(openInvoiceRef.current);
++    }
++
+     const isValidating = useRef(false);
+     const containerRef = useRef<HTMLDivElement>(null);
+ 
+@@ -62,11 +69,7 @@ export default function OpenInvoice(props: Readonly<OpenInvoiceProps>) {
+     const [valid, setValid] = useState<OpenInvoiceStateValid>({});
+     const [status, setStatus] = useState('ready');
+ 
+-    const openInvoiceRef = useRef<ComponentMethodsRef>({
+-        setStatus,
+-        showValidation: () => {}
+-    });
+-
++    // Expose methods expected by parent
+     openInvoiceRef.current.showValidation = () => {
+         isValidating.current = true;
+         fieldsetsSchema.forEach(fieldset => {
+@@ -78,9 +81,7 @@ export default function OpenInvoice(props: Readonly<OpenInvoiceProps>) {
+         });
+     };
+ 
+-    useEffect(() => {
+-        props.setComponentRef?.(openInvoiceRef.current);
+-    }, [props.setComponentRef]);
++    openInvoiceRef.current.setStatus = setStatus;
+ 
+     useSRPanelForOpenInvoiceErrors({ errors, data, props, isValidating, containerRef });
+ 
+diff --git a/packages/lib/src/components/internal/OpenInvoice/types.ts b/packages/lib/src/components/internal/OpenInvoice/types.ts
+index b0131ef..77d2851 100644
+--- a/packages/lib/src/components/internal/OpenInvoice/types.ts
++++ b/packages/lib/src/components/internal/OpenInvoice/types.ts
+@@ -4,7 +4,7 @@ import { AddressSpecifications } from '../Address/types';
+ import UIElement from '../UIElement/UIElement';
+ import { GenericError, ValidationRuleErrorObj } from '../../../core/Errors/types';
+ import { UIElementProps } from '../UIElement/types';
+-import { h, ComponentChild } from 'preact';
++import { h } from 'preact';
+ import { PayButtonProps } from '../PayButton/PayButton';
+ 
+ type OpenInvoiceAddressSpecification = AddressSpecifications & { allowedCountries?: string[] };
+@@ -25,9 +25,9 @@ export interface BankDetailsSchema {
+ 
+ export interface OpenInvoiceProps extends UIElementProps {
+     allowedCountries?: string[];
+-    consentCheckboxLabel?: ComponentChild;
++    consentCheckboxLabel: any;
+     countryCode?: string;
+-    data?: {
++    data: {
+         companyDetails?: CompanyDetailsSchema;
+         personalDetails?: PersonalDetailsSchema | null;
+         billingAddress?: AddressData;
+diff --git a/packages/lib/src/components/internal/PersonalDetails/types.ts b/packages/lib/src/components/internal/PersonalDetails/types.ts
+index f6f1f1d..b27cfe0 100644
+--- a/packages/lib/src/components/internal/PersonalDetails/types.ts
++++ b/packages/lib/src/components/internal/PersonalDetails/types.ts
+@@ -42,3 +42,8 @@ export interface ReadOnlyPersonalDetailsProps {
+     shopperEmail?: string;
+     telephoneNumber?: string;
+ }
++
++export interface ValidationResult {
++    errorMessage: string;
++    isValid: boolean;
++}
+diff --git a/packages/lib/src/components/internal/PhoneInput/PhoneInputForm.tsx b/packages/lib/src/components/internal/PhoneInput/PhoneInputForm.tsx
+index 3e06a39..6bfc3eb 100644
+--- a/packages/lib/src/components/internal/PhoneInput/PhoneInputForm.tsx
++++ b/packages/lib/src/components/internal/PhoneInput/PhoneInputForm.tsx
+@@ -57,7 +57,7 @@ function PhoneInputForm(props: Readonly<PhoneInputFormProps>) {
+             if (errors[field]) {
+                 const propsField = field === 'phoneNumber' ? 'phoneNumberErrorKey' : 'phonePrefixErrorKey';
+                 const key = props[propsField] ? props[propsField] : errors[field].errorMessage;
+-                return typeof key === 'string' ? i18n.get(key) : null;
++                return i18n.get(key) ?? null;
+             }
+             return null;
+         },
+diff --git a/packages/lib/src/components/internal/RedirectButton/RedirectButton.tsx b/packages/lib/src/components/internal/RedirectButton/RedirectButton.tsx
+index 9dd89ae..650eff6 100644
+--- a/packages/lib/src/components/internal/RedirectButton/RedirectButton.tsx
++++ b/packages/lib/src/components/internal/RedirectButton/RedirectButton.tsx
+@@ -1,9 +1,10 @@
+-import { h, Fragment } from 'preact';
++import { h, Fragment, Ref } from 'preact';
+ import { useCoreContext } from '../../../core/Context/CoreProvider';
+-import { useEffect, useRef, useState } from 'preact/hooks';
++import { useState } from 'preact/hooks';
+ import { useAmount } from '../../../core/Context/AmountProvider';
+-import { ComponentMethodsRef } from '../UIElement/types';
+ 
++// TODO this should ideally be remove but we need let prop propagate down
++//  probably not worth changing this behaviour now
+ export interface RedirectButtonProps {
+     label?: string;
+     icon?: string;
+@@ -11,30 +12,17 @@ export interface RedirectButtonProps {
+     onSubmit: Function;
+     name: string;
+     showPayButton: boolean;
+-    setComponentRef: (ref: ComponentMethodsRef) => void;
++    ref?: Ref<typeof RedirectButton>;
+ }
+ 
+-function RedirectButton({
+-    label = null,
+-    icon = null,
+-    payButton,
+-    onSubmit,
+-    name,
+-    showPayButton,
+-    setComponentRef,
+-    ...props
+-}: Readonly<RedirectButtonProps>) {
++function RedirectButton({ label = null, icon = null, payButton, onSubmit, name, showPayButton, ...props }: Readonly<RedirectButtonProps>) {
+     const { i18n } = useCoreContext();
+     const [status, setStatus] = useState('ready');
+     const { amount } = useAmount();
+ 
+-    const redirectButtonRef = useRef<ComponentMethodsRef>({
+-        setStatus: setStatus
+-    });
+-
+-    useEffect(() => {
+-        setComponentRef(redirectButtonRef.current);
+-    }, [setComponentRef]);
++    this.setStatus = newStatus => {
++        setStatus(newStatus);
++    };
+ 
+     const payButtonLabel = () => {
+         const isZeroAuth = amount && {}.hasOwnProperty.call(amount, 'value') && amount.value === 0;
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
+index a17cad1..056c2d7 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
+@@ -32,7 +32,7 @@ import { TxVariants } from '../../../tx-variants';
+  * Initialises & handles the client-side part of SecuredFields
+  */
+ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+-    private readonly csfLoadFailTimeout: number;
++    private csfLoadFailTimeout: number;
+     private readonly csfLoadFailTimeoutMS: number;
+     private readonly csfConfigFailTimeout: number;
+     private readonly csfConfigFailTimeoutMS: number;
+@@ -397,7 +397,7 @@ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+         if (this.csf) this.csf.brandsFromBinLookup(binLookupResponse, mustResetDedicatedBrand ? resetObject : null);
+     }
+ 
+-    private readonly setRootNode = (input: HTMLElement): void => {
++    private setRootNode = (input: HTMLElement): void => {
+         this.rootNode = input;
+     };
+ 
+diff --git a/packages/lib/src/components/internal/UIElement/UIElement.test.tsx b/packages/lib/src/components/internal/UIElement/UIElement.test.tsx
+index 64ee497..6786522 100644
+--- a/packages/lib/src/components/internal/UIElement/UIElement.test.tsx
++++ b/packages/lib/src/components/internal/UIElement/UIElement.test.tsx
+@@ -26,7 +26,7 @@ class MyElement extends UIElement<MyElementProps> {
+         return false;
+     }
+     public callOnComplete() {
+-        super.onComplete({ data: { details: {} } });
++        super.onComplete({});
+     }
+     public callOnChange() {
+         super.onChange();
+diff --git a/packages/lib/src/components/internal/UIElement/UIElement.tsx b/packages/lib/src/components/internal/UIElement/UIElement.tsx
+index 2cf9908..f58ac94 100644
+--- a/packages/lib/src/components/internal/UIElement/UIElement.tsx
++++ b/packages/lib/src/components/internal/UIElement/UIElement.tsx
+@@ -41,7 +41,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+     /**
+      * componentRef is a ref to the primary component inside the subclass that extends UIElement e.g. CardInput.tsx (which sits inside Card.tsx)
+      */
+-    protected componentRef: ComponentMethodsRef | undefined;
++    protected componentRef: any;
+ 
+     protected resources: Resources;
+ 
+@@ -104,7 +104,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+     private createBeforeRenderHook(configSetByMerchant: P): void {
+         const originalRender = this.render;
+ 
+-        this.render = (...args: unknown[]) => {
++        this.render = (...args: any[]) => {
+             this.beforeRender(configSetByMerchant);
+             return originalRender.apply(this, args);
+         };
+@@ -195,7 +195,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+     }
+ 
+     public showValidation(): this {
+-        this.componentRef?.showValidation?.();
++        if (this.componentRef && this.componentRef.showValidation) this.componentRef.showValidation();
+         return this;
+     }
+ 
+@@ -221,16 +221,18 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+      * - If Drop-in, will set status for Dropin component, and then it will propagate the new status for the active payment method component
+      * - If Component, it will set its own status
+      */
+-    public setElementStatus(status: UIElementStatus): this {
+-        this.elementRef?.setStatus?.(status);
++    public setElementStatus(status: UIElementStatus, props?: any): this {
++        this.elementRef?.setStatus(status, props);
+         return this;
+     }
+ 
+     /**
+      * componentRef is a ref to the primary component inside that subclass e.g. CardInput.tsx
+      */
+-    public setStatus(status: UIElementStatus): this {
+-        this.componentRef?.setStatus?.(status);
++    public setStatus(status: UIElementStatus, props?): this {
++        if (this.componentRef?.setStatus) {
++            this.componentRef.setStatus(status, props);
++        }
+         return this;
+     }
+ 
+@@ -367,7 +369,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+         // };
+     }
+ 
+-    protected onComplete(state: AdditionalDetailsData): void {
++    protected onComplete(state): void {
+         this.handleAdditionalDetails(state);
+     }
+ 
+@@ -421,7 +423,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+         );
+     }
+ 
+-    private async submitAdditionalDetailsUsingSessionsFlow(data: AdditionalDetailsData['data']): Promise<CheckoutSessionDetailsResponse> {
++    private async submitAdditionalDetailsUsingSessionsFlow(data: any): Promise<CheckoutSessionDetailsResponse> {
+         try {
+             return await this.core.session.submitDetails(data);
+         } catch (error: unknown) {
+diff --git a/packages/lib/src/components/internal/UIElement/types.ts b/packages/lib/src/components/internal/UIElement/types.ts
+index 408b05a..df3644b 100644
+--- a/packages/lib/src/components/internal/UIElement/types.ts
++++ b/packages/lib/src/components/internal/UIElement/types.ts
+@@ -3,7 +3,7 @@ import Session from '../../../core/CheckoutSession';
+ import Language from '../../../language';
+ import UIElement from './UIElement';
+ import type { PaymentAction, PaymentAmount } from '../../../types/global-types';
+-import type { BaseElementProps, BaseElementState } from '../BaseElement/types';
++import type { BaseElementProps } from '../BaseElement/types';
+ import type { CoreConfiguration } from '../../../core/types';
+ import { PayButtonProps } from '../PayButton/PayButton';
+ 
+@@ -35,7 +35,7 @@ export type UIElementProps = {
+         environment?: string;
+         session?: Session;
+ 
+-        onComplete?: (state: BaseElementState, element: UIElement) => void;
++        onComplete?: (state, element: UIElement) => void;
+ 
+         isInstantPayment?: boolean;
+ 
+@@ -89,7 +89,7 @@ export type UIElementProps = {
+         clientKey?: string;
+ 
+         /** @internal */
+-        elementRef?: UIElement;
++        elementRef?: any;
+ 
+         /** @internal */
+         i18n?: Language;
+diff --git a/packages/lib/src/components/internal/UIElement/utils.ts b/packages/lib/src/components/internal/UIElement/utils.ts
+index 67cb24f..7b184bd 100644
+--- a/packages/lib/src/components/internal/UIElement/utils.ts
++++ b/packages/lib/src/components/internal/UIElement/utils.ts
+@@ -1,4 +1,4 @@
+-import UIElement from '.';
++import { UIElementStatus } from './types';
+ import { RawPaymentResponse, PaymentResponseData, Order } from '../../../types/global-types';
+ import { IDropin } from '../../Dropin/types';
+ 
+@@ -36,6 +36,21 @@ export function cleanupFinalResult(paymentResponse?: PaymentResponseData): void
+     }
+ }
+ 
++export function resolveFinalResult(result: PaymentResponseData): [status: UIElementStatus, statusProps?: any] {
++    switch (result.resultCode) {
++        case 'Authorised':
++        case 'Received':
++            return ['success'];
++        case 'Pending':
++            return ['success'];
++        case 'Cancelled':
++        case 'Error':
++        case 'Refused':
++            return ['error'];
++        default:
++    }
++}
++
+ export function verifyPaymentDidNotFail(response: PaymentResponseData): Promise<PaymentResponseData> {
+     if (['Cancelled', 'Error', 'Refused'].includes(response.resultCode)) {
+         return Promise.reject(response);
+@@ -44,18 +59,14 @@ export function verifyPaymentDidNotFail(response: PaymentResponseData): Promise<
+     return Promise.resolve(response);
+ }
+ 
+-export function assertIsDropin(element?: UIElement): element is UIElement & IDropin {
++export function assertIsDropin(element: any): element is IDropin {
+     if (!element) return false;
+ 
+-    const isDropin =
+-        `activePaymentMethod` in element &&
+-        typeof element.activePaymentMethod === 'object' &&
+-        `closeActivePaymentMethod` in element &&
+-        typeof element.closeActivePaymentMethod === 'function';
++    const isDropin = typeof element.activePaymentMethod === 'object' && typeof element.closeActivePaymentMethod === 'function';
+     return isDropin;
+ }
+ 
+-export function getRegulatoryDefaults(countryCode: string, isDropinInstance: boolean) {
++export function getRegulatoryDefaults(countryCode: string, isDropinInstance: boolean): Record<string, any> {
+     switch (countryCode) {
+         // Finnish regulations state that no payment method can be open by default
+         case 'FI':
+diff --git a/packages/lib/src/core/types.ts b/packages/lib/src/core/types.ts
+index baace9c..f9639fe 100644
+--- a/packages/lib/src/core/types.ts
++++ b/packages/lib/src/core/types.ts
+@@ -94,18 +94,21 @@ export type BeforeSubmitActions = {
+     reject: () => void;
+ };
+ 
+-export type OnChangeDataErrors = Record<
+-    string,
+-    { isValid: boolean; errorMessage: string; errorI18n: string; error?: string; rootNode?: HTMLElement }
+->;
+-
+ export type OnChangeData = {
+     data: PaymentData;
+     isValid: boolean;
+     valid?: {
+         [fieldKey: string]: boolean;
+     };
+-    errors?: OnChangeDataErrors;
++    errors?: {
++        [fieldKey: string]: {
++            isValid: boolean;
++            errorMessage: string;
++            errorI18n: string;
++            error: string;
++            rootNode: HTMLElement;
++        };
++    };
+ };
+ 
+ export interface CoreConfiguration {
+diff --git a/packages/lib/src/types/global-types.ts b/packages/lib/src/types/global-types.ts
+index 5505433..600ba6d 100644
+--- a/packages/lib/src/types/global-types.ts
++++ b/packages/lib/src/types/global-types.ts
+@@ -291,7 +291,7 @@ export interface PaymentData extends PaymentMethodData {
+         orderData: string;
+         pspReference: string;
+     };
+-    clientStateDataIndicator?: boolean;
++    clientStateDataIndicator: boolean;
+     sessionData?: string;
+     storePaymentMethod?: boolean;
+     billingAddress?: AddressData;
+diff --git a/packages/lib/src/utils/Validator/Validator.ts b/packages/lib/src/utils/Validator/Validator.ts
+index 963c7d0..a16f504 100644
+--- a/packages/lib/src/utils/Validator/Validator.ts
++++ b/packages/lib/src/utils/Validator/Validator.ts
+@@ -2,8 +2,8 @@ import { ValidatorRules, ValidatorRule, FieldContext, FieldData } from './types'
+ import { ValidationRuleResult } from './ValidationRuleResult';
+ import type Language from '../../language';
+ 
+-export class ValidationResult {
+-    private readonly validationResults: ValidationRuleResult[];
++class ValidationResult {
++    private validationResults: ValidationRuleResult[];
+ 
+     constructor(results: ValidationRuleResult[]) {
+         this.validationResults = results;
+@@ -20,8 +20,8 @@ export class ValidationResult {
+     }
+ 
+     /** Returns the first validation result that returned an error */
+-    getError(isValidatingForm = false): ValidationRuleResult | null {
+-        return this.validationResults.find(result => result.hasError(isValidatingForm)) ?? null;
++    getError(isValidatingForm = false) {
++        return this.validationResults.find(result => result.hasError(isValidatingForm));
+     }
+ 
+     /** Returns all validation results that returned an error */
+@@ -45,7 +45,7 @@ class Validator {
+         this.i18n = i18n;
+     }
+ 
+-    setRules(newRules: ValidatorRules) {
++    setRules(newRules) {
+         this.rules = {
+             ...this.rules,
+             ...newRules
+diff --git a/packages/lib/src/utils/useForm/reducer.ts b/packages/lib/src/utils/useForm/reducer.ts
+index 721a5f2..e1eca0b 100644
+--- a/packages/lib/src/utils/useForm/reducer.ts
++++ b/packages/lib/src/utils/useForm/reducer.ts
+@@ -1,22 +1,21 @@
+-import { FormAction, FormInitArg, FormState, FormStateErrors, FormStateValid, ProcessFieldType } from './types';
+-
+-const omitKeys = <O extends object>(obj: O, omit: string[]): O =>
++const omitKeys = (obj, omit) =>
+     Object.keys(obj)
+         .filter(k => !omit.includes(k))
+         .reduce((a, c) => {
+             a[c] = obj[c];
+             return a;
+-        }, {} as O);
++        }, {});
+ 
+-const addKeys = <O extends object>(obj: O, add: string[], initialValue: unknown, defaultData?: NoInfer<O>, pendingData?: NoInfer<O>): O =>
++const addKeys = (obj, add, initialValue, defaultData, pendingData) =>
+     add.reduce((a, c) => ({ ...a, [c]: a[c] ?? pendingData?.[c] ?? defaultData?.[c] ?? initialValue }), obj);
+ 
+ /**
+  * Processes default data and sets as default in state
+  */
+-export function init<FormSchema>({ schema, defaultData, processField, fieldProblems }: FormInitArg<FormSchema>): FormState<FormSchema> {
+-    const getProcessedState = (fieldKey: string) => {
+-        if (defaultData[fieldKey] === undefined) return { valid: false, errors: null, data: null, fieldProblems: fieldProblems?.[fieldKey] ?? null };
++export function init({ schema, defaultData, processField, fieldProblems }) {
++    const getProcessedState = fieldKey => {
++        if (typeof defaultData[fieldKey] === 'undefined')
++            return { valid: false, errors: null, data: null, fieldProblems: fieldProblems?.[fieldKey] ?? null };
+ 
+         const [formattedValue, validationResult] = processField(
+             { key: fieldKey, value: defaultData[fieldKey], mode: 'blur' },
+@@ -32,7 +31,7 @@ export function init<FormSchema>({ schema, defaultData, processField, fieldProbl
+     };
+ 
+     const formData = schema.reduce(
+-        (acc: Pick<FormState<FormSchema>, 'data' | 'valid' | 'errors' | 'fieldProblems'>, fieldKey) => {
++        (acc: any, fieldKey) => {
+             const { valid, errors, data, fieldProblems } = getProcessedState(fieldKey);
+ 
+             return {
+@@ -42,7 +41,7 @@ export function init<FormSchema>({ schema, defaultData, processField, fieldProbl
+                 fieldProblems: { ...acc.fieldProblems, [fieldKey]: fieldProblems }
+             };
+         },
+-        { data: {} as FormSchema, valid: {}, errors: {}, fieldProblems: {} }
++        { data: {}, valid: {}, errors: {}, fieldProblems: {} }
+     );
+ 
+     return {
+@@ -54,39 +53,36 @@ export function init<FormSchema>({ schema, defaultData, processField, fieldProbl
+     };
+ }
+ 
+-export function getReducer<FormSchema extends object>(processField: ProcessFieldType) {
+-    return function reducer(state: FormState<FormSchema>, action: FormAction<FormSchema>): FormState<FormSchema> {
+-        switch (action.type) {
++export function getReducer(processField) {
++    return function reducer(state, { type, key, value, mode, schema, defaultData, formValue, selectedSchema, fieldProblems, data }) {
++        const validationSchema: string[] = selectedSchema || state.schema;
++
++        switch (type) {
+             case 'setData': {
+-                const { key, value } = action;
+                 return { ...state, data: { ...state['data'], [key]: value } };
+             }
+             case 'mergeData': {
+-                return { ...state, data: { ...state['data'], ...action.data } };
++                return { ...state, data: { ...state['data'], ...data } };
+             }
+             case 'setValid': {
+-                const { key, value } = action;
+                 return { ...state, valid: { ...state['valid'], [key]: value } };
+             }
+             case 'setErrors': {
+-                const { key, value } = action;
+                 return { ...state, errors: { ...state['errors'], [key]: value } };
+             }
+             case 'setFieldProblems': {
+-                const { fieldProblems } = action;
+                 return (
+                     state?.schema?.reduce(
+                         (acc, key) => ({
+                             ...acc,
+                             fieldProblems: { ...state['fieldProblems'], [key]: fieldProblems?.[key] ?? null },
+-                            valid: { ...state['valid'], [key]: state['valid']?.[key] && !fieldProblems?.[key] }
++                            valid: { ...state['valid'], [key]: state['valid']?.[key] && !fieldProblems[key] }
+                         }),
+                         state
+                     ) ?? state
+                 );
+             }
+             case 'updateField': {
+-                const { key, value, mode } = action;
+                 const [formattedValue, validation] = processField({ key, value, mode }, { state });
+                 const oldValue = state.data[key];
+                 const fieldProblems = { ...state.fieldProblems };
+@@ -102,14 +98,13 @@ export function getReducer<FormSchema extends object>(processField: ProcessField
+                 };
+             }
+             case 'mergeForm': {
+-                const { formValue } = action;
+                 // To provide a uniform result from forms even if there are multiple levels of nested forms are present
+                 const mergedState = {
+                     ...state,
+-                    data: { ...state['data'], ...formValue?.['data'] },
+-                    errors: { ...state['errors'], ...formValue?.['errors'] },
+-                    valid: { ...state['valid'], ...formValue?.['valid'] },
+-                    fieldProblems: { ...state['fieldProblems'], ...formValue?.['fieldProblems'] }
++                    data: { ...state['data'], ...formValue['data'] },
++                    errors: { ...state['errors'], ...formValue['errors'] },
++                    valid: { ...state['valid'], ...formValue['valid'] },
++                    fieldProblems: { ...state['fieldProblems'], ...formValue['fieldProblems'] }
+                 };
+                 if (mergedState['valid']) {
+                     mergedState.isValid = Object.values(mergedState.valid).every(isValid => isValid);
+@@ -117,10 +112,9 @@ export function getReducer<FormSchema extends object>(processField: ProcessField
+                 return mergedState;
+             }
+             case 'setSchema': {
+-                const { schema, defaultData } = action;
+-                const defaultState = init({ schema, defaultData, processField });
+-                const removedSchemaFields = state.schema.filter(x => !schema?.includes(x));
+-                const newSchemaFields = schema?.filter(x => !state.schema.includes(x));
++                const defaultState = init({ schema, defaultData, processField, fieldProblems });
++                const removedSchemaFields = state.schema.filter(x => !schema.includes(x));
++                const newSchemaFields = schema.filter(x => !state.schema.includes(x));
+ 
+                 // if we remove a key from the schema we also lost the latest value of the field
+                 // to prevent this we have to store the value in a local state so we can recover it when the key is re-added to the schema
+@@ -131,32 +125,13 @@ export function getReducer<FormSchema extends object>(processField: ProcessField
+                 };
+ 
+                 // reindex data and validation according to the new schema
+-                const data = addKeys(
+-                    omitKeys<FormSchema>(state.data, removedSchemaFields),
+-                    newSchemaFields,
+-                    null,
+-                    defaultState.data,
+-                    state.local?.data
+-                );
+-                const valid = addKeys(
+-                    omitKeys<FormStateValid>(state.valid, removedSchemaFields),
+-                    newSchemaFields,
+-                    false,
+-                    defaultState.valid,
+-                    state.local?.valid
+-                );
+-                const errors = addKeys(
+-                    omitKeys<FormStateErrors>(state.errors, removedSchemaFields),
+-                    newSchemaFields,
+-                    null,
+-                    defaultState.errors,
+-                    state.local?.errors
+-                );
++                const data = addKeys(omitKeys(state.data, removedSchemaFields), newSchemaFields, null, defaultState.data, state.local?.data);
++                const valid = addKeys(omitKeys(state.valid, removedSchemaFields), newSchemaFields, false, defaultState.valid, state.local?.valid);
++                const errors = addKeys(omitKeys(state.errors, removedSchemaFields), newSchemaFields, null, defaultState.errors, state.local?.errors);
+ 
+                 return { ...state, schema, data, valid, errors, local };
+             }
+             case 'validateForm': {
+-                const validationSchema: string[] = action.selectedSchema || state.schema;
+                 const formValidation = validationSchema.reduce(
+                     (acc, cur) => {
+                         const [, validation] = processField({ key: cur, value: state.data[cur], mode: 'blur' }, { state });
+diff --git a/packages/lib/src/utils/useForm/types.ts b/packages/lib/src/utils/useForm/types.ts
+index 89a908e..4f5422b 100644
+--- a/packages/lib/src/utils/useForm/types.ts
++++ b/packages/lib/src/utils/useForm/types.ts
+@@ -1,26 +1,21 @@
+-import { FieldContext, ValidatorMode, ValidatorRules } from '../Validator/types';
+-import { ValidationRuleResult } from '../Validator/ValidationRuleResult';
+-import type { ValidationResult } from '../Validator/Validator';
++import { ValidatorRules } from '../Validator/types';
+ import { FormatterFn } from '../Formatters/types';
+ 
+-export type FormStateValid = Record<string, boolean>;
+-export type FormStateErrors = Record<string, ValidationRuleResult | null>;
+-export type FormStateFieldProblems = Record<string, string | null>;
+-
+-export type FormStateLocal<FormSchema> = {
++export type FormState<FormSchema> = {
++    schema: string[];
+     data: FormSchema;
+-    valid: FormStateValid;
+-    errors: FormStateErrors;
+-    fieldProblems: FormStateFieldProblems;
++    errors: {
++        [key: string]: any;
++    };
++    valid: {
++        [key: string]: boolean;
++    };
++    fieldProblems?: {
++        [key: string]: any;
++    };
+     isValid?: boolean;
+ };
+ 
+-export type FormState<FormSchema> = FormStateLocal<FormSchema> & {
+-    schema: string[];
+-    /** Values of fields removed from the schema, kept around so they can be recovered if the field is re-added */
+-    local?: Omit<FormStateLocal<FormSchema>, 'fieldProblems'>;
+-};
+-
+ export interface Formatter {
+     formatterFn?: FormatterFn;
+     format?: string;
+@@ -33,48 +28,19 @@ export type FormProps = {
+     formatters?: {
+         [key: string]: Formatter | Function;
+     } | null;
+-    [key: string]: unknown;
++    [key: string]: any;
+ };
+ 
+ export type HandleChangeForModeType = 'input' | 'blur';
+ 
+-export type FormChangeEventTarget = {
+-    type?: string;
+-    value?: unknown;
+-    name?: string;
+-};
+-
+ export interface Form<FormSchema> extends FormState<FormSchema> {
+-    handleChangeFor: (key: string, mode?: HandleChangeForModeType) => (e: unknown) => void;
+-    triggerValidation: (schema?: FormState<FormSchema>['schema']) => void;
+-    setSchema: (schema: FormState<FormSchema>['schema']) => void;
+-    setData: (key: string, value: unknown) => void;
++    handleChangeFor: (key: string, mode?: HandleChangeForModeType) => (e: any) => void;
++    triggerValidation: (schema?: any) => void;
++    setSchema: (schema: any) => void;
++    setData: (key: string, value: any) => void;
+     mergeData: (data: FormSchema) => void;
+-    setValid: (key: string, value: boolean) => void;
+-    setErrors: (key: string, value: ValidationRuleResult | null) => void;
+-    mergeForm: (formValue: FormState<FormSchema>) => void;
+-    setFieldProblems: (fieldProblems: FormStateFieldProblems) => void;
++    setValid: (key: string, value: any) => void;
++    setErrors: (key: string, value: any) => void;
++    mergeForm: (formValue: any) => void;
++    setFieldProblems: (fieldProblems: any) => void;
+ }
+-
+-export type FormInitArg<FormSchema> = {
+-    schema: string[];
+-    defaultData: FormSchema;
+-    processField: ProcessFieldType;
+-    fieldProblems?: FormStateFieldProblems;
+-};
+-
+-export type FormAction<FormSchema> =
+-    | { type: 'setData'; key: string; value: unknown }
+-    | { type: 'mergeData'; data: FormSchema }
+-    | { type: 'setValid'; key: string; value: boolean }
+-    | { type: 'setErrors'; key: string; value: ValidationRuleResult | null }
+-    | { type: 'setFieldProblems'; fieldProblems: FormStateFieldProblems }
+-    | { type: 'updateField'; key: string; value: unknown; mode: ValidatorMode }
+-    | { type: 'mergeForm'; formValue: FormState<FormSchema> }
+-    | { type: 'setSchema'; schema: string[]; defaultData: FormSchema }
+-    | { type: 'validateForm'; selectedSchema?: string[] };
+-
+-export type ProcessFieldType = (
+-    field: { key: string; value: unknown; mode: ValidatorMode },
+-    fieldContext: FieldContext
+-) => [unknown, ValidationResult];
+diff --git a/packages/lib/src/utils/useForm/useForm.ts b/packages/lib/src/utils/useForm/useForm.ts
+index 5c55a26..b86b2ef 100644
+--- a/packages/lib/src/utils/useForm/useForm.ts
++++ b/packages/lib/src/utils/useForm/useForm.ts
+@@ -1,21 +1,14 @@
+ import { useCallback, useEffect, useMemo, useReducer } from 'preact/hooks';
+ import Validator from '../Validator';
+ import { getReducer, init } from './reducer';
+-
+-import type { Form, FormState, FormProps, Formatter, FormAction, FormInitArg, ProcessFieldType, FormChangeEventTarget } from './types';
++import { Form, FormState, FormProps, Formatter } from './types';
+ import { useCoreContext } from '../../core/Context/CoreProvider';
+-import { ValidatorMode } from '../Validator/types';
+-import { ValidationRuleResult } from '../Validator/ValidationRuleResult';
+ 
+ function isFormatterObject(formatter: Formatter | Function): formatter is Formatter {
+     return formatter && 'formatterFn' in formatter;
+ }
+ 
+-function hasEventTarget(event: unknown): event is { target: FormChangeEventTarget } {
+-    return !!event && typeof event === 'object' && 'target' in event;
+-}
+-
+-function useForm<FormSchema extends object>(props: FormProps): Form<FormSchema> {
++function useForm<FormSchema>(props: FormProps): Form<FormSchema> {
+     // Normalize null values to empty objects/arrays to avoid type errors
+     const {
+         rules: providedRules,
+@@ -26,8 +19,8 @@ function useForm<FormSchema extends object>(props: FormProps): Form<FormSchema>
+     } = props;
+     const rules = providedRules ?? {};
+     const formatters = providedFormatters ?? {};
+-    const defaultData = (providedDefaultData ?? {}) as FormSchema;
+-    const fieldProblems = (providedFieldProblems ?? {}) as Record<string, string | null>;
++    const defaultData = providedDefaultData ?? {};
++    const fieldProblems = providedFieldProblems ?? {};
+     const schema = providedSchema ?? [];
+ 
+     const { i18n } = useCoreContext();
+@@ -35,7 +28,7 @@ function useForm<FormSchema extends object>(props: FormProps): Form<FormSchema>
+     const validator = useMemo(() => new Validator(rules, i18n), [rules]);
+ 
+     /** Formats and validates a field */
+-    const processField: ProcessFieldType = ({ key, value, mode }, fieldContext) => {
++    const processField = ({ key, value, mode }, fieldContext) => {
+         // Find a formatting function either stored under 'key' or a level deeper under a 'formatter' property
+         const formatter = formatters?.[key];
+         const formatterFn = isFormatterObject(formatter) ? formatter.formatterFn : formatter;
+@@ -45,45 +38,42 @@ function useForm<FormSchema extends object>(props: FormProps): Form<FormSchema>
+         return [formattedValue, validationResult];
+     };
+ 
+-    const [state, dispatch] = useReducer<FormState<FormSchema>, FormAction<FormSchema>, FormInitArg<FormSchema>>(
+-        getReducer<FormSchema>(processField),
++    const [state, dispatch] = useReducer<FormState<FormSchema>, any, any>(
++        getReducer(processField),
+         { defaultData, schema, processField, fieldProblems },
+         init
+     );
+     const isValid = useMemo(() => state.schema.reduce((acc, val) => acc && state.valid[val], true), [state.schema, state.valid]);
+ 
+-    const getTargetValue = (key: string, e: unknown) => {
+-        if (!hasEventTarget(e)) return e;
++    const getTargetValue = (key, e) => {
++        if (!e.target) return e;
+ 
+-        if (e.target?.type === 'checkbox') {
++        if (e.target.type === 'checkbox') {
+             return !state.data[key];
+         }
+-        return e.target?.value;
++        return e.target.value;
+     };
+ 
+     /** Formats, validates, and stores a new value for a form field */
+-    const handleChangeFor = (key: string, mode: ValidatorMode) => {
+-        return (e: unknown) => {
++    const handleChangeFor = (key, mode) => {
++        return e => {
+             const value = getTargetValue(key, e);
+             dispatch({ type: 'updateField', key, value, mode });
+         };
+     };
+ 
+     /** Validates every field in the form OR just those in selectedSchema */
+-    const triggerValidation = useCallback((selectedSchema?: string[]) => {
++    const triggerValidation = useCallback((selectedSchema = null) => {
+         dispatch({ type: 'validateForm', selectedSchema });
+     }, []);
+ 
+-    const setErrors = useCallback((key: string, value: ValidationRuleResult | null) => dispatch({ type: 'setErrors', key, value }), []);
+-    const setValid = useCallback((key: string, value: boolean) => dispatch({ type: 'setValid', key, value }), []);
+-    const setData = useCallback((key: string, value: unknown) => dispatch({ type: 'setData', key, value }), []);
+-    const mergeData = useCallback((data: FormSchema) => dispatch({ type: 'mergeData', data }), []);
+-    const setSchema = useCallback((schema: string[]) => dispatch({ type: 'setSchema', schema, defaultData }), [state.schema]);
+-    const mergeForm = useCallback((formValue: FormState<FormSchema>) => dispatch({ type: 'mergeForm', formValue }), []);
+-    const setFieldProblems = useCallback(
+-        (fieldProblems: Record<string, string | null>) => dispatch({ type: 'setFieldProblems', fieldProblems }),
+-        [state.schema]
+-    );
++    const setErrors = useCallback((key, value) => dispatch({ type: 'setErrors', key, value }), []);
++    const setValid = useCallback((key, value) => dispatch({ type: 'setValid', key, value }), []);
++    const setData = useCallback((key, value) => dispatch({ type: 'setData', key, value }), []);
++    const mergeData = useCallback(data => dispatch({ type: 'mergeData', data }), []);
++    const setSchema = useCallback(schema => dispatch({ type: 'setSchema', schema, defaultData }), [state.schema]);
++    const mergeForm = useCallback(formValue => dispatch({ type: 'mergeForm', formValue }), []);
++    const setFieldProblems = useCallback(fieldProblems => dispatch({ type: 'setFieldProblems', fieldProblems }), [state.schema]);
+ 
+     // Set reducer fields problems if fieldProblems prop changes
+     useEffect(() => {
+diff --git a/packages/lib/src/utils/useForm/useFormWithA11y.ts b/packages/lib/src/utils/useForm/useFormWithA11y.ts
+index 5dbac20..042535d 100644
+--- a/packages/lib/src/utils/useForm/useFormWithA11y.ts
++++ b/packages/lib/src/utils/useForm/useFormWithA11y.ts
+@@ -21,7 +21,7 @@ export interface FormWithA11yProps extends FormProps {
+  * - Set `errorLive={true}` on the Field components inside the form so their error spans
+  *   announce changes via aria-live="polite".
+  */
+-function useFormWithA11y<FormSchema extends object>(props: FormWithA11yProps): Form<FormSchema> {
++function useFormWithA11y<FormSchema>(props: FormWithA11yProps): Form<FormSchema> {
+     const { formHolder, ...formProps } = props;
+     const form = useForm<FormSchema>(formProps);
+     const { focusFirstError } = useErrorFocus(formHolder);
+@@ -32,7 +32,7 @@ function useFormWithA11y<FormSchema extends object>(props: FormWithA11yProps): F
+     const isValidating = useRef(false);
+ 
+     const triggerValidation = useCallback(
+-        (selectedSchema?: string[]) => {
++        (selectedSchema = null) => {
+             isValidating.current = true;
+             form.triggerValidation(selectedSchema);
+         },

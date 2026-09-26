@@ -2,9 +2,13 @@
 title: "GitHub changelog: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
-date_updated: 2026-09-15
+date_updated: 2026-09-22
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/manifest.json"
+  - "github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-22-0d1e033-6cf5ddf4/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json"
   - "github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json"
@@ -21,7 +25,35 @@ tags: [adyen, checkout, web-sdk, changelog, github-repository]
 
 Chronological release synthesis for `Adyen/adyen-web`. Cumulative implementation knowledge belongs in [[source-github-adyen-web]] and the linked immutable snapshots.
 
+## `@adyen/adyen-web@6.45.2` (2026-09-21)
+
+`@adyen/adyen-web@6.45.1` -> `@adyen/adyen-web@6.45.2`; SHA `386715eebb31dd703168ecdecb1477b3311f85cf`; approved delta ingest.
+
+**Changes:** upstream reverts the BaseElement/UIElement refactor to fix payment-action mounting. Status props and earlier reference wiring return; form/type changes also roll back. The retained UIElement, Core, Card, Drop-in and DropinComponent implementations match 6.45.0. Review-page APIs remain, rather than being removed by the fix.
+
+**Net result versus 6.45.0:** six retained files still differ: two package manifests, formatting in Card/types.ts, ClickToPayHolder, ClickToPayWrapper and the Card story. Runtime dependencies are unchanged. This is not proof of whole-repository equality or a complete rollback of all 6.45.1 changes.
+
+**Impact and migration:** use the upstream replacement for the warned-against 6.45.1, then verify action mounting and integration type checks. Some TypeScript fields become required again; this restores the earlier type surface, not new server requirements. Preserve merchant-owned action/error cleanup. No runtime reproduction or upstream tests were performed.
+
+**Reading and pages:** all ten changed retained files, four supplements, complete diff/records and cumulative history read; 211 unchanged files and inventories checked mechanically. Updated source, review-page concept, company, provider index and logs without replacing older versions or changing source count.
+
+**Evidence:** [snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json), [supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/manifest.json), [release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.2/2026-09-22/manifest.json), [release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.2/2026-09-22/release-notes.md), [comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.1--6.45.2/comparison.json). Implementation links and excerpts: [[source-github-adyen-web]].
+
+## `@adyen/adyen-web@6.45.1` (2026-09-16)
+
+`@adyen/adyen-web@6.45.0` -> `@adyen/adyen-web@6.45.1`; SHA `0d1e03308389f42fdd880ca476aa463f7e4c7c62`; additive full ingest with user-approved focused reading.
+
+> [!warning] Do not use
+> Upstream warns that 6.45.1 contains a payment-action handling bug and directs users to 6.45.2.
+
+**Changes:** BaseElement/UIElement and useForm refactoring includes runtime ref-wiring and status-prop changes, not only types. Card/UIElement status methods lose their second parameter. Link styling changes and the address-lookup story switches to an errorMessage object. Runtime dependency versions remain unchanged.
+
+**Impact and migration:** preserve this release for regression history, not deployment guidance. The exact causal mechanism was not reproduced. User-approved full mode reflects the public signature change; 14 changed retained files, four supplements, complete diff and prior wiki history were read, while 207 unchanged files and inventories were hash-checked. Updated cumulative source, review-page warning, company, index and logs; older history and source count retained. No runtime tests executed.
+
+**Evidence:** [snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json), [supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-0d1e033-6cf5ddf4/manifest.json), [release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/manifest.json), [release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/release-notes.md), [comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.0--6.45.1/comparison.json). Exact implementation links: [[source-github-adyen-web]].
+
 ## `@adyen/adyen-web@6.45.0` (2026-09-10)
+
 
 | Package | From | To | SHA | Ingest mode |
 | --- | --- | --- | --- | --- |

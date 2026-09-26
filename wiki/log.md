@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-09-22] ingest | Adyen Web `6.45.2`
+
+- Delta-ingested the payment-action rollback fix after completing 6.45.1; preserved its do-not-use warning and all older history. Details: [[adyen-log]], [[source-github-adyen-web]] and [[changelog-github-adyen-web]]. No runtime tests or commit/push.
+
+## [2026-09-22] ingest | Adyen Web `6.45.1`
+
+- Additive full ingest with approved focused reading; preserved the payment-action do-not-use warning and all older history. Details: [[adyen-log]] and [[changelog-github-adyen-web]].
+
 ## [2026-09-21] ingest | Stripe Node `22.6.2`
 
 - Approved focused-reading delta: missing webhook secret guards and example configuration handling; older history preserved. Details: [[stripe-log]] and [[changelog-github-stripe-node]].

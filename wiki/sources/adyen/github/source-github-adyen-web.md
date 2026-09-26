@@ -2,9 +2,13 @@
 title: "GitHub: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
-date_updated: 2026-09-15
+date_updated: 2026-09-22
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/manifest.json"
+  - "github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-09-22-0d1e033-6cf5ddf4/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json"
   - "github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-14-f10995d/manifest.json"
@@ -19,13 +23,18 @@ tags: [adyen, checkout, web-sdk, cards, 3d-secure, github-repository]
 
 ## Overview
 
-`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and currently runs through `@adyen/adyen-web@6.45.0` at exact SHA `b29934f6cf5de6e1912039f669b48ae45b75d3fd`.
+`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and records history through `@adyen/adyen-web@6.45.2` at exact SHA `386715eebb31dd703168ecdecb1477b3311f85cf`, preserving the 6.45.1 do-not-use warning and subsequent fix.
 
 Repository: <https://github.com/Adyen/adyen-web>
 
 ## Evidence boundary
 
-- The ingested snapshots and supplements cover implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.45.0`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
+The newest ingested release is `@adyen/adyen-web@6.45.2`, SHA `386715eebb31dd703168ecdecb1477b3311f85cf`. The architecture baseline through 6.45.0 and the 6.45.1 regression history below remain preserved.
+
+> [!warning] Do not use 6.45.1
+> The collected upstream release notes warn of a payment-action handling bug and direct users to 6.45.2. Recording this release preserves evidence; it is not an upgrade recommendation.
+
+- The ingested snapshots and supplements cover version-qualified implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.45.2`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
 - Drop-in and Components are presentation and client-orchestration surfaces. Payment-method availability still comes from backend responses, merchant configuration, shopper context, and regional or product eligibility.
 - Stories are retained as intended integration scenarios. Tests were excluded by collection policy, so test-only behavior is outside this capsule.
 - PayPal Fastlane support in this repository depends on `@paypal/paypal-js`; these snapshots describe Adyen's adapter and configuration surface, not the delegated PayPal runtime.
@@ -268,6 +277,56 @@ The [review stories](../../../../raw/github/adyen/adyen-web/supplements/2026-09-
 
 No upstream tests, browser, screen-reader, payment, or delegated wallet runtime were executed. Diff test excerpts are source evidence, not executed proof. Full ingestion covers the assigned packet and supplement, not the entire upstream tree.
 
+## `6.45.1` regression and internal refactor
+
+Released 2026-09-16; additive full ingest against 6.45.0. Manual review overrides the generated delta recommendation because public Card/UIElement status-method signatures lose their second argument. The user approved focused reading of all 14 changed retained files, the complete comparison, four exact-SHA supplements and existing wiki history; 207 unchanged files and manifest inventories were checked mechanically. No older knowledge was replaced.
+
+- **Action regression:** upstream explicitly marks this release do not use. In the [UIElement supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-0d1e033-6cf5ddf4/files/packages/lib/src/components/internal/UIElement/UIElement.tsx), `setElementStatus(status)` and `setStatus(status)` stop forwarding the prior `props` argument. [Card](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/Card.tsx) does likewise. Drop-in introduces an `elementRef` declaration and its own status-forwarding override, while its action handler still supplies `{ component: paymentAction }`. These are observed changes, not proof of the precise runtime cause. The base mount algorithm and UIElement action-response routing remain unchanged in the diff.
+- **Not type-only:** the complete diff also changes component-reference wiring and form guards. The useForm supplement narrows reducer/action types and changes event-target detection; initial null-default normalization from 6.44.0 remains. No new payment method or replacement for the 6.45.0 review lifecycle is established.
+- **Address lookup story:** the rejection example now uses `actions.reject({ errorMessage: 'Something went wrong, try adding manually.' })` rather than a string. Its catch still falls through to `actions.resolve(formattedData)`, so it is not a production-complete error-recovery template. See the [Card story](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/stories/Card.stories.tsx).
+- **Presentation and maintenance:** release notes report updated link styles; diff hunks show underlining, hover weight and highlight-token changes. Click to Pay wrapper props are reorganized and typed. Runtime dependencies stay at PayPal JS 10.1.0, Preact 10.29.8 and Google Pay types 0.7.12; development dependencies change. Diff-only component/style evidence is not a complete audit of those excluded implementations.
+
+### 6.45.1 grounding
+
+> `DO NOT USE THIS VERSION: Contains a bug with handling payment actions. Upgrade to 6.45.2`
+>
+> [Release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/release-notes.md)
+
+> `public setStatus(status: UIElementStatus): this {`
+>
+> [Card](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/files/packages/lib/src/components/Card/Card.tsx)
+
+> `this.elementRef?.setStatus?.(status);`
+>
+> [UIElement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-0d1e033-6cf5ddf4/files/packages/lib/src/components/internal/UIElement/UIElement.tsx)
+
+**Migration and limits:** follow the upstream warning rather than adapting a production integration to this bad release. No browser, payment-action reproduction, upstream tests or delegated runtime verification was performed. See [[adyen-review-page-checkout]] for preserved lifecycle responsibilities.
+
+## `6.45.2` payment-action rollback fix
+
+Released 2026-09-21; delta-ingested against 6.45.1 after complete reading of ten changed retained files, the complete comparison, four exact-SHA supplemental implementations and cumulative history. The 211 unchanged retained files and manifest inventories were checked mechanically. Delta records a bounded restoration of the established baseline, not a claim that all public types remained compatible with the intervening bad release.
+
+- **Action/status restoration:** [UIElement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/files/packages/lib/src/components/internal/UIElement/UIElement.tsx) restores `setElementStatus(status, props?)` and `setStatus(status, props?)` forwarding. [Card](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-386715e/files/packages/lib/src/components/Card/Card.tsx) again forwards props to its primary component while passing only status to Click to Pay. [Drop-in](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-386715e/files/packages/lib/src/components/Dropin/Dropin.tsx) removes the new `elementRef` declaration and override; its action handler still supplies the created component through status props. Upstream calls this a fix for payment-action mounting; no single-line root cause or runtime reproduction is established here.
+- **Review lifecycle preserved:** the complete UIElement supplement and retained Core, Card, Drop-in and DropinComponent implementations match the 6.45.0 evidence byte-for-byte. `onReview`, `onAction` and Sessions `processPayment` remain; the merchant responsibilities in [[adyen-review-page-checkout]] still apply.
+- **Types and form behavior roll back too:** `PaymentData.clientStateDataIndicator` and the `OnChangeData.errors` entry's `error`/`rootNode` fields become required again in TypeScript, and the fingerprint result type returns to its earlier shape. These are not newly mandated server request fields. The useForm event-target guard and reducer optional-access changes are reverted, while null initial-default normalization remains. Integrations adapted specifically to 6.45.1 types should rerun their type checks.
+- **Not a complete release rollback:** comparing all 221 retained files directly with 6.45.0 leaves six differing files: root and library package manifests, Card/types.ts (formatting only), ClickToPayHolder, ClickToPayWrapper and Card.stories. The latter three preserve the already-read 6.45.1 changes, including object-shaped address rejection and its catch/resolve caveat. This inventory comparison does not establish equality of excluded upstream files. Runtime dependency versions remain unchanged; library package exports and dependencies are also unchanged versus 6.45.1.
+
+### 6.45.2 grounding
+
+> `Fixed: revert internal changes to remove implicit and explicit any from BaseElement and UIElement to fix issue with payment actions mounting`
+>
+> [Release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.2/2026-09-22/release-notes.md)
+
+> `this.elementRef?.setStatus(status, props);`
+>
+> [UIElement status forwarding](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/files/packages/lib/src/components/internal/UIElement/UIElement.tsx)
+
+> `this.setStatus(paymentAction.props.statusType, { component: paymentAction });`
+>
+> [Drop-in action handling](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-386715e/files/packages/lib/src/components/Dropin/Dropin.tsx)
+
+**Migration and limits:** 6.45.2 is the replacement named by the collected 6.45.1 warning. Recheck action mounting, additional-details completion, custom status handling and TypeScript compilation. No upstream build, tests, browser, payment or delegated runtime execution was performed. Older knowledge remains available and the 6.45.1 warning is not removed.
+
 ## `6.41.0` release findings
 
 The release propagates the `healthcare` field to `onBinLookup`, validates the 3DS2 challenge notification domain, and replaces deprecated `keypress` events. It removes several explicit `any` types, prevents misleading component-level installments in Sessions, and fixes Drop-in checked-state accessibility.
@@ -283,6 +342,18 @@ These are patch findings. The broader architecture above is the accumulated sour
 - [[source-github-paypal-js]] — independent evidence for the delegated PayPal JS dependency
 
 ## Raw sources
+
+- [6.45.2 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json)
+- [6.45.2 supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/manifest.json)
+- [6.45.2 release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.2/2026-09-22/manifest.json)
+- [6.45.2 release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.2/2026-09-22/release-notes.md)
+- [6.45.1 to 6.45.2 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.1--6.45.2/comparison.json)
+
+- [6.45.1 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json)
+- [6.45.1 supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-0d1e033-6cf5ddf4/manifest.json)
+- [6.45.1 release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/manifest.json)
+- [6.45.1 release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/release-notes.md)
+- [6.45.0 to 6.45.1 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.0--6.45.1/comparison.json)
 
 - [6.45.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-14-b29934f/manifest.json)
 - [6.45.0 supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-14-b29934f-d296b082/manifest.json)
