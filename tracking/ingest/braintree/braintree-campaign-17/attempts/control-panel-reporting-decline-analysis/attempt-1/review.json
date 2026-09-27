@@ -1,0 +1,22 @@
+{
+  "job_id": "control-panel-reporting-decline-analysis",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full first-attempt review of the complete 63-line pinned raw found that the candidate accurately preserves the Control Panel processor-declined transaction search, adjustable date range and CSV download; the separate verification-search boundary for expected card-verification declines; processor-response and BIN-based analysis views; repeated-same-payment-method skew; the Fraud Tools route for declines attributed to fraudulent transactions; and the absence of transaction-retry eligibility, timing or advice. It does not import retry rules, settlement/funding behavior or processor-response meanings from linked pages, and its 2026-09-16 snapshot warning is appropriate. The canonical URL, raw path, source target and SHA-256 match the trusted input and manifest; candidate.md is byte-equal to receipt.source_page; suggestions.json is semantically equal to receipt.suggestions; the source target is absent; the fully read raw link resolves; both concept targets and `## Sources` anchors exist; and all five submitted quotes are byte-exact, unique and correctly located. Two bounded defects block approval. First, the candidate retains the data-volume/cardholder-name-and-email qualification from raw line 41 and the fraudulent-transaction/Fraud Tools statement from raw line 62, but none of the five submitted excerpts covers either passage. Concrete queries are `What customer data does this article say can make decline analysis more useful?` and `What does this article suggest for reducing declines due to fraudulent transactions?`; the candidate answers both affirmatively without the required submitted quote grounding. Second, the payment-reconciliation-reporting suggestion says `duplicate-attempt limits`. Raw line 48 states only that repeated attempts with the same payment method can skew decline rates and that duplicate CSV values can be removed for a clearer view; it states no attempt cap, retry prohibition or retry rule. Concrete query: `Does Braintree limit duplicate or repeated transaction attempts?`; the proposed concept route can misleadingly imply that it does before the reader reaches the accurate source. The blocker-completeness pass found no additional candidate, warning, locator, provenance, raw/source-link, reciprocal-placement or discovered-conflict defect requiring correction.",
+  "required_changes": [
+    "Rebalance the existing five byte-exact excerpts so the retained line-41 data-volume/cardholder-name-and-email qualification and line-62 Fraud Tools statement are directly grounded. A bounded correction can expand quote index 3 to cover raw lines 41-48 and quote index 4 to cover raw lines 53-62, preserving three-to-five excerpts and exact verified locations; alternatively remove those two retained assertions and their detail locators. Keep all suggestion quote_indexes aligned with the corrected excerpts.",
+    "In update `control-panel-reporting-decline-analysis-reporting-route`, replace `verification-search and duplicate-attempt limits` with wording that states the actual evidence, such as `separate verification-search and repeated-attempt skew boundaries`. Preserve the explicit `not settlement, reconciliation, or retry-policy evidence` boundary and do not add an attempt cap, retry eligibility, retry timing or retry advice. No other source-prose, warning, raw-link or concept-route change is required."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "control-panel-reporting-decline-analysis-braintree-control-panel-route",
+    {
+      "update_id": "control-panel-reporting-decline-analysis-reporting-route",
+      "verdict": "rejected",
+      "reason": "The payment-reconciliation-reporting target, Sources anchor, operational-decline-analysis route, verification-search boundary, repeated-attempt skew warning and explicit non-reconciliation/non-retry-policy boundary are relevant and supported, but `duplicate-attempt limits` can imply an attempt or retry limit absent from the raw. Resubmit the same route with wording limited to repeated-attempt skew and with quote coverage aligned to retained claims."
+    }
+  ],
+  "reviewer_identity": "bt17-r-decline",
+  "reviewer_model": "gpt-5.6-sol"
+}

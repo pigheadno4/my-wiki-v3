@@ -1,0 +1,75 @@
+{
+  "job_id": "control-panel-webhooks",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Control Panel Webhooks\"\ntype: source\ndate_ingested: 2026-09-26\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/webhooks\"\nraw_files:\n  - \"braintree/articles/control-panel/webhooks-2026-09-16.md\"\ntags: [braintree, control-panel, webhooks, notifications, permissions]\n---\n\n## Overview\n\nThis collected Braintree Control Panel article explains how a permitted user creates and tests gateway webhooks. It frames webhooks as push notifications to a designated destination and separates Control Panel configuration from the server-side parsing required after creation. The 2026-09-16 snapshot is collected evidence, not confirmation of current behavior or availability.\n\n## Key takeaways\n\n- The page describes webhooks as automated gateway-event notifications pushed to a designated destination instead of information that the merchant must pull through the API. It lists subscription-status, disbursement, transaction-dispute, Braintree Marketplace sub-merchant-account-status, and Grant API payment-method-status event families.\n- Configuring a webhook requires the Control Panel user's role to include the exact **Manage Webhooks** permission. The documented creation flow uses the Control Panel's **API** area and **Webhooks** tab, then asks for a destination URL and notification selections.\n- Creating the Control Panel configuration does not complete the integration: the merchant must separately configure its server to parse received webhooks. The linked parsing guide owns those implementation details and is navigation-only evidence for this source.\n- The **Check URL** action can send a test webhook for an existing configuration. The article warns that testing in production can cause unexpected behavior when handling code does not inspect the webhook kind it receives; the linked testing guide owns notification details.\n- This article does not state transport security requirements, delivery timing, ordering, retry, duplicate-delivery, signing, acknowledgement, replay, or failure-recovery semantics. It also does not identify Audit Webhook event kinds or establish that these general Control Panel steps apply to the separate select-partner Audit Webhooks feature.\n\n## Detail locators\n\n- Push-versus-pull purpose and merchant response workflow: introductory paragraphs, lines 16-18.\n- Supported notification families: `## Types of webhooks`, lines 21-30.\n- Required Control Panel role permission: `## Creating webhooks`, line 35.\n- Control Panel destination and notification selection plus separate server parsing: `## Creating webhooks`, lines 37-48.\n- Test action and production-handler warning: `## Testing webhooks`, lines 51-66.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n- Supporting concept: [[braintree-control-panel]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/users-roles/role-permissions-2026-09-16|Braintree Control Panel role permissions]] - navigation-only route for the linked Manage Webhooks permission detail\n- [[raw/braintree/docs/guides/webhooks/create/node-2026-09-16|Braintree Node.js webhook creation guide]] - navigation-only route for destination and notification-selection details\n- [[raw/braintree/docs/guides/webhooks/parse/node-2026-09-16|Braintree Node.js webhook parsing guide]] - navigation-only route for server-side parsing behavior\n- [[raw/braintree/docs/guides/webhooks/testing-go-live/node-2026-09-16|Braintree Node.js webhook testing and go-live guide]] - navigation-only route for test-notification details\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/webhooks-2026-09-16|Braintree Control Panel Webhooks]] - complete collected article covering webhook purpose, event families, configuration permission, creation flow and testing warning\n",
+  "quotes": [
+    {
+      "text": "Webhooks are a system of automated notifications indicating that an event has occurred in your gateway. Rather than requiring you to pull information via our API, webhooks push information to your designated destination when important events occur.",
+      "location": "Introductory paragraph, line 16"
+    },
+    {
+      "text": "- Subscription status changes\n- Disbursements to your account\n- Disputes on transactions\n- Braintree Marketplace sub-merchant account status changes\n- Grant API payment method status changes",
+      "location": "## Types of webhooks, lines 26-30"
+    },
+    {
+      "text": "In order to configure webhooks, your user\u2019s role must include the Manage Webhooks [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-manage-webhooks-addeditdelete).",
+      "location": "## Creating webhooks, line 35"
+    },
+    {
+      "text": "- Provide your[destination URL](/braintree/docs/guides/webhooks/create#destination-url)and make your[notification selections](/braintree/docs/guides/webhooks/create#notification-kinds)\n- Click the**Create Webhook**button\n\nAfter creating the webhook in the Control Panel, you'll need to set up your server to parse the webhook. [See our developer docs for details.](/braintree/docs/guides/webhooks/parse)",
+      "location": "## Creating webhooks, lines 45-48"
+    },
+    {
+      "text": "Be careful when testing webhooks in your production environment \u2013 if your webhook handling code doesn\u2019t look for the [kind of webhooks](/braintree/docs/reference/general/webhooks/overview#notification-kinds) it receives, it could lead to unexpected behavior.",
+      "location": "## Testing webhooks, NOTE, lines 65-66"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-webhooks-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-webhooks]] - Control Panel webhook purpose and event-family overview, exact Manage Webhooks permission, destination and notification-selection setup, separate server-parsing boundary, and production test-kind warning",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the 2026-09-16 raw as collected evidence, not proof of current availability or behavior.",
+          "Do not infer HTTPS, delivery timing, ordering, retry, duplicate-delivery, signing, acknowledgement, replay, or failure-recovery semantics from this article.",
+          "Do not treat the general Control Panel configuration steps or Manage Webhooks permission as evidence for the separate select-partner Audit Webhooks feature.",
+          "Preserve the production testing warning and the distinction between Control Panel configuration and server-side parsing."
+        ]
+      },
+      {
+        "update_id": "control-panel-webhooks-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-webhooks]] - role-gated Control Panel webhook creation and testing route, including destination and notification selection, separate server parsing, and the production test-kind caution",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not broaden the exact Manage Webhooks permission into unrelated Control Panel permissions.",
+          "Do not present Check URL testing as proof of production delivery, handler correctness, or notification-kind coverage.",
+          "Keep this general Control Panel administration route distinct from the separate Audit Webhooks event catalog."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/webhooks-2026-09-16.md",
+  "raw_sha256": "e97c79baf2c2fcad3571a0b074f467e1416daeeb62a2cccb97d8876889b3afb8",
+  "status": "candidate_ready"
+}

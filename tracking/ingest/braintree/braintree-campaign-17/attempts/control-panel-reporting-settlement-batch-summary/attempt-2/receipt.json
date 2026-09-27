@@ -1,0 +1,72 @@
+{
+  "job_id": "control-panel-reporting-settlement-batch-summary",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Control Panel Settlement Batch Summary\"\ntype: source\ndate_ingested: 2026-09-26\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/reporting/settlement-batch-summary\"\nraw_files:\n  - \"braintree/articles/control-panel/reporting/settlement-batch-summary-2026-09-16.md\"\ntags: [braintree, control-panel, reporting, settlement, reconciliation]\n---\n\n## Overview\n\nThis Braintree Control Panel article documents the Settlement Batch Summary report for processor settlement batches. The report displays total sales and credits per batch and can be scoped by date range, merchant account, and payment-type exclusions; it is a reporting view, not evidence of an API response or completed bank funding.\n\n## Key takeaways\n\n- Braintree describes settlement batches as groups of transactions submitted for settlement and sent to processors. The report totals sales and credits for each batch; its controls can narrow results by date range, merchant account, and excluded payment types.\n- Access requires the Create, Run, and Download Reports role permission. Settlement Batch Summaries are unavailable for marketplace sub-merchant accounts, and CSV downloads are limited to 40,000 rows.\n- PayPal transactions can be excluded to better reconcile this report with Braintree disbursements. For merchants using their own American Express account, excluding Amex may help because those funds are not included in Braintree deposits. These statements distinguish report reconciliation from proof that a batch or transaction has funded.\n- The cutoff deciding which transactions enter a batch depends on the account setup and cannot be changed. The article does not provide a universal cutoff time or document individual transaction settlement-state transitions.\n- A Control Panel user can opt into a daily Settlement Batch Summary email and optionally include a card-type breakdown. A user with Manage Users permission can enable the daily email for another user.\n\n> [!warning] Report, API, and funding boundaries\n> This page documents a Control Panel report and email delivery settings. It does not document the Node.js Settlement Batch Summary API response, settlement submission, final transaction status, or a ledger of deposits arriving at a merchant's bank.\n\n## Detail locators\n\n- Batch meaning, totals, and report-scope controls: `# Settlement Batch Summary`, line 16.\n- Required report permission and Control Panel run/download steps: `## Running a Settlement Batch Summary`, lines 21-31.\n- Marketplace sub-merchant unavailability: `## Running a Settlement Batch Summary > NOTE`, lines 34-35.\n- PayPal-disbursement and own-Amex-account deposit reconciliation boundaries: `### Excluding PayPal or American Express transactions`, lines 40-42.\n- Account-dependent, unchangeable batch cutoff: `### Settlement batch cutoff times`, lines 45-47.\n- Per-user daily email, optional card-type breakdown, and Manage Users administration: `## Emailing Settlement Batch Summaries`, lines 50-72.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- Supporting concept: [[payment-reconciliation-reporting]]\n- Separate Node.js API reporting route: [[source-braintree-settlement-batch-summary-generate-node]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/reporting/settlement-batch-summary-2026-09-16|Braintree Control Panel Settlement Batch Summary article]] - complete collected page covering batch totals, report access and filters, exclusions, cutoff behavior, availability, and daily email settings\n",
+  "quotes": [
+    {
+      "text": "Transactions that have been [submitted for settlement](/braintree/articles/get-started/transaction-lifecycle#submitted-for-settlement) are sent to processors in groups known as settlement batches. The Settlement Batch Summary displays the total sales and credits for each batch. You can limit the scope of your Settlement Batch Summary by setting a date range, selecting specific merchant accounts, and excluding certain payment types.",
+      "location": "# Settlement Batch Summary, line 16"
+    },
+    {
+      "text": "Only users with the Create, Run, and Download Reports [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-create-run-and-download-reports) can access the Settlement Batch Summary. To run a Settlement Batch Summary:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on**Reports**in the navigation bar\n- Next to**Settlement Batch Summary**, click the**Run Report**button\n- If necessary, specify a[merchant account](/braintree/articles/control-panel/important-gateway-credentials#merchant-account-id)\n- Select your desired date range\n- Select any desired payment method exclusions (if applicable);[learn more](#excluding-paypal-or-american-express-transactions)\n- Click the**Run Settlement Batch Summary**button\n- Click the**Download**button if you'd like to export your results as a CSV (maximum 40,000 rows)\n\n\n**NOTE**\n Settlement Batch Summaries are not available for marketplace sub-merchant accounts.",
+      "location": "## Running a Settlement Batch Summary, lines 21-35"
+    },
+    {
+      "text": "Each user in your Control Panel can opt to receive daily Settlement Batch Summary emails to keep up with transaction activity. To enable this feature:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on your user icon in the top right corner\n- Click**My User**from the drop-down menu\n- Scroll to the**Notifications**section\n- Check the box next toEmail Daily Settlement Batch Summary\n- To include a breakdown of transactions by card type, check the box next toInclude payment type details\n- Click the**Save**button\n\nIf your user has the Manage Users [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-manage-users-addeditdeletereset-password), you can enable this for others. To do so:",
+      "location": "## Emailing Settlement Batch Summaries, lines 52-63"
+    },
+    {
+      "text": "If you are set up to accept PayPal transactions, you can better reconcile Settlement Batch Summaries with your Braintree disbursements by excluding PayPal from this report. Similarly, if you use your own Amex account, it may be helpful to exclude Amex transactions, because Amex funds won\u2019t be included in Braintree deposits.",
+      "location": "### Excluding PayPal or American Express transactions, line 42"
+    },
+    {
+      "text": "The cutoff time that determines which transactions are included in each settlement batch depends on your account setup and can\u2019t be changed. [Contact us](/braintree/help) if you have any questions about your specific setup.",
+      "location": "### Settlement batch cutoff times, line 47"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-reporting-settlement-batch-summary-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-reporting-settlement-batch-summary]] \u2014 Control Panel settlement-batch totals, report access and marketplace limits, account-specific cutoff behavior, funding-reconciliation exclusions, and daily email settings",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route scoped to the Control Panel report; do not merge it with the separate Node.js Settlement Batch Summary generate operation.",
+          "Do not treat submitted-for-settlement inclusion, report totals, disbursement reconciliation, or Braintree-deposit wording as proof of final transaction status or bank funding.",
+          "Preserve the marketplace sub-merchant exclusion and the account-dependent, unchangeable cutoff qualification."
+        ]
+      },
+      {
+        "update_id": "control-panel-reporting-settlement-batch-summary-reconciliation-route",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-reporting-settlement-batch-summary]] \u2014 Braintree Control Panel totals for processor settlement batches, with date/account/payment-type filters and explicit PayPal-disbursement and own-Amex-account deposit reconciliation boundaries",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat this as a report route, not an API response or funding ledger.",
+          "The page gives no universal batch cutoff time; the cutoff depends on account setup and cannot be changed."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/reporting/settlement-batch-summary-2026-09-16.md",
+  "raw_sha256": "90f350f4cbbb9408c809b1e7ddd10d33dfe64bcee7667d2a1470e0072caf9502",
+  "status": "candidate_ready"
+}

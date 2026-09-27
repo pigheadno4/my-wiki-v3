@@ -12,6 +12,17 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+- [[source-braintree-control-panel-reporting-overview]] - Control Panel report categories, account/location qualifications and dedicated report routes
+- [[source-braintree-control-panel-reporting-settlement-batch-summary]] - processor settlement-batch totals, access, exclusions, cutoff and email settings; not funding proof
+- [[source-braintree-control-panel-reporting-transaction-level-fee-report]] - pricing-model fee report, country-eligibility conflict, timing and reconciliation limits
+- [[source-braintree-control-panel-reporting-transaction-summary]] - current-status trend report, explicitly unsuitable for reconciliation
+- [[source-braintree-control-panel-reporting-decline-analysis]] - decline-rate views and repeated-attempt data-skew boundaries, not retry rules
+- [[source-braintree-control-panel-reporting-expiring-cards]] - expiring Vault cards and report-versus-card-update boundary
+- [[source-braintree-control-panel-reporting-1099-k]] - qualified 1099-K form availability, access and processor distinctions in the collected snapshot
+- [[source-braintree-control-panel-reporting-grant-api-report]] - beta Grant API recipient count and volume report with visibility limits
+- [[source-braintree-control-panel-webhooks]] - Control Panel webhook permission, configuration, testing and production caution
+- [[source-braintree-control-panel-audit-webhooks]] - select-partner authentication/admin events, distinct from transaction notifications
+
 - [[source-braintree-control-panel-managing-authorizations]] - authorization-management options, qualification and conflicting regional statements
 - [[source-braintree-control-panel-email-receipts]] - gateway receipts, signer activation, Control Panel settings and custom/manual distinctions
 - [[source-braintree-control-panel-bank-identification-numbers]] - BIN lookup routes, six-digit data scope and dated PCI warnings

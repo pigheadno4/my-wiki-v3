@@ -90,6 +90,7 @@ See platform-specific concept pages for integration details:
 - What are typical involuntary churn rates by payment method?
 
 ## Sources
+- [[source-braintree-control-panel-reporting-expiring-cards]] - Braintree report route for identifying expired or soon-to-expire cards to support recurring-billing follow-up, distinct from merchant reminder outreach and the separately enabled, account-qualified Account Updater option
 
 - [[source-braintree-authorization-responses]] - Braintree processor-decline categories and retry restrictions, including recurring-ECI limits and same-payment-information restrictions
 

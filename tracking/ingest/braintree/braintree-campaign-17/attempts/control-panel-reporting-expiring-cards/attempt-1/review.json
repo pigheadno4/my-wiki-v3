@@ -1,0 +1,21 @@
+{
+  "job_id": "control-panel-reporting-expiring-cards",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full first-attempt review of the complete 34-line pinned raw found that the source candidate accurately identifies the Control Panel report as listing expired and soon-to-expire cards for a selected time frame, preserves the custom-date-range and View All Expired routes, and presents recurring billing only as a use case. It also keeps the required action boundaries explicit: reminder email is a merchant follow-up, and Account Updater is a separate option whose availability depends on account setup and is qualified to most Braintree Direct merchants domiciled in the US or transacting primarily with US customers; running the report is not described as updating cards, contacting customers, enabling Account Updater or guaranteeing updated details. The canonical URL, raw path, source target and SHA-256 match the trusted input and manifest; the source target is absent; candidate.md is byte-equal to receipt.source_page; suggestions.json is semantically equal to receipt.suggestions; the company, concept, related-raw and path-qualified Raw Sources links resolve; both concept targets contain the proposed Sources anchor; and all four submitted quotes are byte-exact and correctly located. One bounded shared-update defect blocks approval: the recurring-payments proposal says the report identifies expired or soon-to-expire `cards used in recurring billing`. The raw says the report lists all cards that have expired or will expire in a time frame and says this can be especially helpful for recurring billing; it does not establish that the report identifies whether a listed card is used in recurring billing or filters the list to recurring-billing cards. Concrete query: `Which of my recurring-billing cards will expire soon?`; the proposed route can misleadingly imply that the report itself establishes the recurring-use association before the reader reaches the accurate source. The braintree-control-panel reciprocal route is accurate, purpose-fit and non-duplicative. The blocker-completeness pass found no additional retained-claim, warning, quote, locator, provenance, raw/source-link, reciprocal-placement or discovered-conflict defect requiring correction.",
+  "required_changes": [
+    "In update `control-panel-reporting-expiring-cards-recurring-payments-route`, replace `for identifying expired or soon-to-expire cards used in recurring billing` with wording that preserves recurring billing as a use case rather than an attribute established by the report, such as `for identifying expired or soon-to-expire cards to support recurring-billing follow-up`. Preserve the existing distinction from merchant reminder outreach and the separately enabled, account-qualified Account Updater option. No source-candidate, quote, locator, raw-link or braintree-control-panel-route change is required."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "control-panel-reporting-expiring-cards-braintree-control-panel-route",
+    {
+      "update_id": "control-panel-reporting-expiring-cards-recurring-payments-route",
+      "verdict": "rejected",
+      "reason": "The recurring-payments target, Sources anchor, reminder boundary and separate Account Updater boundary are relevant and supported, but `cards used in recurring billing` can imply the report identifies a card's recurring-use association. The raw establishes an all-cards expiry report and gives recurring billing as a use case, not as a documented filter or card attribute. Resubmit the same route with recurring billing framed as follow-up or usefulness."
+    }
+  ],
+  "reviewer_identity": "bt17-r-expiring",
+  "reviewer_model": "gpt-5.6-sol"
+}

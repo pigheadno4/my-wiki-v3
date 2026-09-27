@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 131
+source_count: 141
 ---
 
 ## Overview
@@ -11,9 +11,20 @@ Braintree is represented in this wiki by sixteen independently tracked repositor
 
 ## Website Documentation
 
-One hundred fifteen independently reviewed website sources complement the sixteen repository
+One hundred twenty-five independently reviewed website sources complement the sixteen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-control-panel-reporting-overview]] - Control Panel report categories and account/location qualifications, with dedicated report pages for eligibility detail
+- [[source-braintree-control-panel-reporting-settlement-batch-summary]] - processor batch totals, report access, exclusions, cutoff and email settings without funding proof
+- [[source-braintree-control-panel-reporting-transaction-level-fee-report]] - pricing-model fee report, country-eligibility conflict, post-disbursement availability and reconciliation limits
+- [[source-braintree-control-panel-reporting-transaction-summary]] - current-status trend report that must not be used for reconciliation
+- [[source-braintree-control-panel-reporting-decline-analysis]] - decline-rate views and data-skew boundaries, not a retry policy
+- [[source-braintree-control-panel-reporting-expiring-cards]] - Vault expiry report and separate card-update/action boundary
+- [[source-braintree-control-panel-reporting-1099-k]] - qualified 1099-K access, timing and processor-specific form boundaries in the collected page
+- [[source-braintree-control-panel-reporting-grant-api-report]] - beta Grant API recipient count and volume report with limited visibility
+- [[source-braintree-control-panel-webhooks]] - Control Panel webhook configuration, permission, test and production-caution routes
+- [[source-braintree-control-panel-audit-webhooks]] - select-partner authentication/admin notification catalog distinct from transaction webhooks
 
 - [[source-braintree-control-panel-managing-authorizations]] - verify/store versus repeated authorization, qualified amount adjustments, and conflicting region availability in the collected page
 - [[source-braintree-control-panel-email-receipts]] - transaction/refund email-receipt activation, configuration, manual generation and custom-receipt boundaries
@@ -250,7 +261,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested website-document sources: 105 (Braintree C01–C15; raw snapshots collected 2026-09-16)
+- Ingested website-document sources: 125 (Braintree C01–C17; raw snapshots collected 2026-09-16)
 - Ingested cumulative GitHub repository sources: 16
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`

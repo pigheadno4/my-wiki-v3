@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-27] ingest | Braintree website C17
+
+- Ten collected Control Panel pages were independently read, reviewed and promoted: eight Reporting articles plus general Webhooks and select-partner Audit Webhooks. The company and provider index now route to 141 sources = 125 website + 16 GitHub, excluding changelogs.
+- Five initial full reviews requested bounded corrections; five targeted retry reviews approved them. A separate Webhooks worker handoff used an invalid status value, was rejected by the runtime, and succeeded on its second attempt before its first full semantic review. No failed page was silently promoted.
+- Fixed query audit: 20/20 questions pass across five groups. Groups A/B exposed a same-collection country-eligibility contradiction between Reporting Overview and the dedicated Transaction-Level Fee Report. A narrow independent review approved reciprocal warnings and opposing-raw provenance on both sources; neither snapshot is treated as current eligibility. See `tracking/ingest/braintree/braintree-campaign-17/quality-audit.md` and `retrospective.md`.
+- The campaign crossed a model-usage-limit interruption, so wall-clock elapsed time is not a throughput benchmark. C17 did not edit raw, collect pages, ingest GitHub work, change code/rules, commit or push.
+
 ## [2026-09-23] ingest | Braintree website C16
 
 - Ten collected website pages independently read, reviewed and promoted: Transaction Lifecycle and nine Control Panel transaction articles covering Managing Authorizations, Email Receipts, BINs, Duplicate Checking, Create, Clone, Gateway Rejections, Transaction Issues and Descriptors.

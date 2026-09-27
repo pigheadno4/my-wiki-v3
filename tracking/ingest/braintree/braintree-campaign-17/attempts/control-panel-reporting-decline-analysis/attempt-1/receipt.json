@@ -1,0 +1,75 @@
+{
+  "job_id": "control-panel-reporting-decline-analysis",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel Decline Analysis\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/reporting/decline-analysis\"\nraw_files:\n  - \"braintree/articles/control-panel/reporting/decline-analysis-2026-09-16.md\"\ntags: [braintree, control-panel, reporting, decline-analysis, transaction-search, processor-declines]\n---\n\n## Overview\n\nThis collected Braintree article describes a Control Panel workflow for finding processor-declined transactions and analyzing downloaded search results. Its two main analysis views group decline data by processor response or by the card's bank identification number (BIN); it is not a source of transaction-retry rules.\n\n## Key takeaways\n\n- Braintree says it monitors decline rates and may notify a merchant of unusual activity, while merchants can proactively run an advanced search for declined transactions and analyze the results.\n- The documented search selects `Processor Declined`, allows a date-range adjustment, and can download the results as CSV. If expected declines are absent and card verification is in use, the article directs the reader to a separate verification search.\n- For a processor-response view, the article suggests a pivot table filtered by `Processor Response Text` and routes response meanings to separate developer documentation. Repeated attempts with the same payment method can skew the observed decline rate, so the article suggests removing duplicate CSV values to view unique declines more clearly.\n- For a BIN view, the article suggests a pivot table filtered by `First Six of Credit Card`, followed by BIN lookup to investigate patterns by card type, location, possible prohibited transactions, or issuing bank.\n- More customer-transaction data can make the analysis more useful; the page gives cardholder names and email addresses as examples. It separately points fraudulent-transaction decline reduction to Braintree Fraud Tools, but does not define retry eligibility, timing, or advice.\n\n## Detail locators\n\n- Monitoring and proactive decline-analysis purpose: `# Decline Analysis`, line 16.\n- Processor-declined search, date range, and CSV download: `## Running a decline search`, lines 21-30.\n- Card-verification search boundary: `## Running a decline search`, lines 33-34.\n- Data-volume and customer-data qualification: `## Analyzing the results`, line 41.\n- Processor-response pivot view and separate response-meaning route: `### Processor responses`, line 46.\n- Duplicate-attempt skew and unique-decline cleanup: `### Processor responses`, line 48.\n- BIN trend view and possible pattern categories: `### Bank identification numbers`, lines 53-57.\n- Fraud-tools route: `## Reducing declines`, lines 60-62.\n\n## Evidence boundary\n\n> [!warning] Analysis workflow, not retry guidance\n> This page describes how to search and inspect decline data. It does not say whether, when, or how a declined transaction should be retried. Card-verification declines may require the separate verification search, and repeated attempts with one payment method can distort the decline-rate view. Treat the 2026-09-16 raw as collected evidence rather than proof of current Control Panel behavior.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- Supporting concept: [[payment-reconciliation-reporting]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/reporting/decline-analysis-2026-09-16|Braintree Control Panel Decline Analysis]] - complete collected article covering the processor-declined search, processor-response and BIN analysis views, and their stated limits\n",
+  "quotes": [
+    {
+      "text": "While we monitor your decline rates and will notify you if we see anything unusual, you can also proactively keep an eye on these rates. You can do this by first running an advanced search for all declined transactions, and then analyzing the results.",
+      "location": "line 16, # Decline Analysis"
+    },
+    {
+      "text": "- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on**Transactions**in the navigation bar\n- Scroll to the**Transaction Search**section\n- Under**Status**, leave only the box next toProcessor Declinedchecked\n- Adjust the date range as needed\n- Click the**Search**button\n- If you'd like to download a CSV file, click the**Download**button",
+      "location": "lines 24-30, ## Running a decline search"
+    },
+    {
+      "text": "If you aren\u2019t finding the declines you expected and you\u2019re using card verification, try running a [verification search](/braintree/articles/control-panel/search#verifications) instead.",
+      "location": "line 34, ## Running a decline search NOTE"
+    },
+    {
+      "text": "We find the easiest way to spot trends in your downloaded search results is to organize the data by processor response. You can do this by generating a [pivot table](http://office.microsoft.com/en-001/excel-help/quick-start-create-a-pivottable-report-HA010359471.aspx) filtered by Processor Response Text. For more information about what each processor response indicates, [see our developer docs](/braintree/docs/reference/general/processor-responses/authorization-responses#declines).\n\nKeep in mind that repeated transaction attempts with the same payment method can skew your decline rates. You can [remove duplicate values](http://office.microsoft.com/en-us/excel-help/filter-for-unique-values-or-remove-duplicate-values-HP010073943.aspx) from your CSV to get a clearer picture of unique declines.",
+      "location": "lines 46-48, ### Processor responses"
+    },
+    {
+      "text": "Generate a [pivot table](http://office.microsoft.com/en-001/excel-help/quick-start-create-a-pivottable-report-HA010359471.aspx) of your decline data, filtered by First Six of Credit Card. You can then look up the BINs in a [BIN database](/braintree/articles/control-panel/transactions/bank-identification-numbers#bin-databases) to see where they\u2019re coming from. From there, you may be able to pinpoint whether the declines are specific to a card type, location, or possible [prohibited transactions](/braintree/articles/risk-and-security/compliance/prohibited-transactions).\n\nFor example, if you find that 40% of your declines are coming from BINs connected to the same bank, you could contact the bank to see if they have had any processing issues that would explain the declines.",
+      "location": "lines 55-57, ### Bank identification numbers"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-reporting-decline-analysis-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-reporting-decline-analysis]] - Control Panel processor-decline search and CSV analysis by processor response or BIN, with separate verification-search and repeated-attempt skew boundaries and no imported retry policy",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not convert the article's decline-analysis workflow into retry eligibility, timing, or advice.",
+          "Keep processor-declined transaction search distinct from the separate card-verification search.",
+          "Do not infer current Control Panel behavior from the 2026-09-16 snapshot."
+        ]
+      },
+      {
+        "update_id": "control-panel-reporting-decline-analysis-reporting-route",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-reporting-decline-analysis]] - Braintree operational reporting route for processor-declined transaction searches and CSV trend analysis by processor response or BIN, with verification-search and duplicate-attempt limits; not settlement, reconciliation, or retry-policy evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat this as operational decline analysis, not proof of settlement, funding, or reconciliation completeness.",
+          "Repeated attempts with the same payment method can skew decline rates; retain that limitation in retrieval wording.",
+          "Do not import retry rules from the linked processor-response documentation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/reporting/decline-analysis-2026-09-16.md",
+  "raw_sha256": "5e38f313311dcdef1b603582c9639a92855df4e2366c84268b9a6da2181a0756",
+  "status": "candidate_ready"
+}
