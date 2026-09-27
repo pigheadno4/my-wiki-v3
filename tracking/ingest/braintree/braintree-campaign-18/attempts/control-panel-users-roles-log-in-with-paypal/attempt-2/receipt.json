@@ -1,0 +1,56 @@
+{
+  "job_id": "control-panel-users-roles-log-in-with-paypal",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Control Panel Log In with PayPal\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/users-roles/log-in-with-paypal\"\nraw_files:\n  - \"braintree/articles/control-panel/users-roles/log-in-with-paypal-2026-09-16.md\"\ntags: [braintree, control-panel, authentication, paypal, users, account-security]\n---\n\n## Overview\n\nThis collected Braintree article documents an account-login option that lets a user with an established PayPal account use PayPal credentials to access the Braintree Sandbox or Production Control Panel. It is a credential convenience for two separate accounts: it neither links the PayPal and Braintree accounts nor configures PayPal payment acceptance through the Braintree gateway.\n\n## Key takeaways\n\n- An existing Braintree user enables the option from **My User**, confirms the current Braintree user password, authenticates with PayPal and agrees to the change. After enablement, the user's Braintree credentials are no longer valid; disabling the option switches the user back by confirming the Braintree username and setting a new password.\n- Existing Braintree-user two-factor authentication settings do not transfer to the PayPal login. The page directs a user who wants 2FA after switching to set up a PayPal Security Key.\n- The article separately states that a user with **User Management** permission can suspend or delete users. Suspension can be reversed, deletion is permanent, and deleting or suspending a user whose API credentials are used by an integration can break the Braintree connection and cause failed transactions; the page recommends a dedicated API user for integration keys.\n\n## Evidence boundary\n\n> [!warning] Login is not PayPal payment integration\n> Log In with PayPal changes how a user authenticates to the Braintree Control Panel. The collected page explicitly says that it does not link the PayPal and Braintree accounts and does not enable PayPal as a Braintree gateway payment method. Payment acceptance requires separate PayPal configuration. Treat the 2026-09-16 snapshot as collected account-access evidence, not proof of current support or payment eligibility.\n\n## Detail locators\n\n- PayPal-credential login, Sandbox and Production destinations, and separate-account boundary: `# Log In with PayPal > ## Log In with PayPal`, line 19.\n- Separate PayPal-payment-method setup boundary: note under `## Log In with PayPal`, lines 22-23.\n- Existing-account enablement steps and Braintree-credential invalidation: `### Enabling Log In with PayPal on an existing account`, lines 28-47.\n- Non-transfer of Braintree-user 2FA and the PayPal Security Key route: `### Two-Factor Authentication with Log In with PayPal`, lines 52-54.\n- Disablement route and new-password requirements: `### Disabling Log In with PayPal`, lines 57-74.\n- Suspend/delete permission, reversibility and API-credential integration warning: `## Deleting or suspending users`, lines 77-91.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/guides/payment-methods/paypal/setup-guide-2026-09-16|Braintree PayPal payment-method setup guide]] - unread navigation-only route linked for separately configuring PayPal payment acceptance; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/users-roles/log-in-with-paypal-2026-09-16|Braintree Control Panel Log In with PayPal]] - complete collected article covering PayPal-credential login, account separation, credential and 2FA transitions, disablement and the user-administration warning\n",
+  "quotes": [
+    {
+      "text": "If you already have an established PayPal account, you can choose to use your PayPal username and password to log into the Braintree [sandbox](https://sandbox.braintreegateway.com/login) or [production](https://www.braintreegateway.com/login) environments. While this does not link your PayPal and Braintree accounts in any way, it does allow you the convenience of using only one set of login credentials for two separate accounts.",
+      "location": "line 19, # Log In with PayPal > ## Log In with PayPal"
+    },
+    {
+      "text": "Enabling Log In with PayPal does not automatically set up your Braintree account to accept PayPal as a payment method. If you would like to accept PayPal via the Braintree gateway, you\u2019ll need to [configure PayPal](/braintree/articles/guides/payment-methods/paypal/setup-guide) separately.",
+      "location": "line 23, note under # Log In with PayPal > ## Log In with PayPal"
+    },
+    {
+      "text": "Once you\u2019ve enabled Log In with PayPal on your account, your Braintree credentials will no longer be valid. If you would like to switch back, you can do so at any time by [disabling log in with PayPal](#disabling-log-in-with-paypal).",
+      "location": "line 47, note under ### Enabling Log In with PayPal on an existing account"
+    },
+    {
+      "text": "If you have 2FA set up for your Braintree user and you switch to Log In with PayPal, your 2FA settings will not transfer. If you would like 2FA, you\u2019ll need to set up a [PayPal Security Key](https://www.paypal.com/webapps/mpp/security/security-protections).",
+      "location": "line 54, ### Two-Factor Authentication with Log In with PayPal"
+    },
+    {
+      "text": "Be cautious when deleting or suspending users whose API credentials may be included in your integration \u2013 this could break your connection to Braintree and result in failed transactions. To avoid potential issues, we recommend [creating an API user](/braintree/docs/start/go-live#create-an-api-user) for the sole purpose of using their API keys for your integration.",
+      "location": "line 91, IMPORTANT under ## Deleting or suspending users"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-users-roles-log-in-with-paypal-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-users-roles-log-in-with-paypal]] - PayPal-credential login for separate Braintree Sandbox or Production accounts, with Braintree-credential and 2FA transition warnings and an explicit boundary from PayPal payment-method setup",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep this route under Braintree Control Panel account access; do not conflate it with the standalone PayPal Log in with PayPal identity product or the Braintree PayPal gateway payment integration.",
+          "Preserve that PayPal and Braintree remain separate accounts and that PayPal payment acceptance requires separate configuration.",
+          "Do not infer that the same user identity, role, permissions or environment data transfers between Sandbox and Production merely because both login destinations are named.",
+          "Treat the separately linked PayPal payment-method setup guide and API-user guidance as navigation only unless each authority is fully read for a retained claim."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/users-roles/log-in-with-paypal-2026-09-16.md",
+  "raw_sha256": "91e4f48fe49f616d750bf763095de02538bac27523fccb2a4ad86c45bd469d4a",
+  "status": "candidate_ready"
+}

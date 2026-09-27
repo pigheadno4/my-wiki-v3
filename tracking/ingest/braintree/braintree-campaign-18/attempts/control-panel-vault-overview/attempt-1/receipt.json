@@ -1,0 +1,58 @@
+{
+  "job_id": "control-panel-vault-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel Vault Overview\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/vault/overview\"\nraw_files:\n  - \"braintree/articles/control-panel/vault/overview-2026-09-16.md\"\ntags: [braintree, control-panel, vault, customers, payment-methods, tokenization]\n---\n\n## Overview\n\nThis collected Braintree article introduces the Vault as storage for customer and payment-method information used for recurring or non-recurring transactions. It describes encrypted payment-method storage, token-based transaction creation, high-level customer-record administration, Control Panel exports and a statement-label caveat; it is not a procedural guide for creating or updating customers or for card verification.\n\n## Key takeaways\n\n- Braintree presents the Vault as a way to keep customers and their payment-method information on file. The page says Vault records can support recurring billing and non-recurring transactions without requiring customers to re-enter their information for each purchase.\n- When a payment method is stored, the gateway encrypts its information and associates it with a unique payment-method token that can be used to create transactions. The page also says a stored customer Vault record can be updated, deleted or searched, but it does not document those procedures, their permissions or their outcomes.\n- Braintree says it never stores a customer's CVV in the Vault because card associations prohibit that storage. The token and PCI wording on this collected page must not be broadened into a general compliance guarantee.\n- From the Control Panel's **Reports** area, the article routes exports for customers, customers with payment-method tokens, and customers with addresses. Vault exports are limited to 40,000 rows, and the page warns that opening the download in Excel or another spreadsheet program can omit rows because of that program's limitations.\n- A transaction created from a Vault record may sometimes be passed with a recurring ecommerce indicator because CVV cannot accompany that transaction. The article says a bank may display that indicator on a customer statement, but it does not necessarily mean the customer was enrolled in future recurring payments.\n\n> [!warning] Overview and collected-snapshot boundary\n> This article establishes overview-level Vault purpose, tokenization, export and statement-label facts only. It does not establish the steps, prerequisites, supported payment methods or outcomes for the separately documented Create New Customers, Update Customer Information or Card Verification actions. Treat the 2026-09-16 snapshot as collected evidence, not confirmation of current product support, permissions or behavior.\n\n## Detail locators\n\n- Vault purpose and recurring versus non-recurring use: `# Overview`, lines 16-18.\n- Encryption, unique payment-method token, transaction creation and high-level update/delete/search scope: `## How it works`, lines 23-25.\n- Never-store-CVV warning: note under `## How it works`, lines 28-29.\n- Exported record categories and Control Panel Reports route: `## Exporting Vault records`, lines 36-51.\n- Export row limit and spreadsheet omission warning: note under `## Exporting Vault records`, lines 54-55.\n- Recurring ECI statement display and no-future-enrollment clarification: `## Charge shows as recurring on customer statement`, lines 60-62.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- Related concept: [[recurring-payments]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/vault/create-2026-09-16|Braintree Control Panel Create New Customers article]] - unread navigation-only route for customer-record creation; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/vault/update-2026-09-16|Braintree Control Panel Update Customer Information article]] - unread navigation-only route for customer, payment-method and address update details; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/vault/card-verification-2026-09-16|Braintree Control Panel Card Verification article]] - unread navigation-only route for verification purpose, access and outcomes; not used as factual evidence here\n- [[raw/braintree/articles/guides/recurring-billing/overview-2026-09-16|Braintree Recurring Billing overview]] - unread navigation-only route linked by the article; not used as factual evidence here\n- [[raw/braintree/articles/risk-and-security/compliance/pci-compliance-2026-09-16|Braintree PCI Compliance article]] - unread navigation-only route linked by the article; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/vault/overview-2026-09-16|Braintree Control Panel Vault Overview article]] - complete collected page covering Vault purpose, encrypted tokenized storage, high-level record administration, exports, CVV non-retention and the recurring-indicator statement caveat\n",
+  "quotes": [
+    {
+      "text": "Our Braintree Vault securely stores customer information \u2013 including payment method information \u2013 so you can safely keep customers on file.\n\nThe Vault is used to process payments with our [recurring billing feature](/braintree/articles/guides/recurring-billing/overview), and can also be used for non-recurring transactions so your customers don't need to re-enter their information each time they make a purchase from you.",
+      "location": "lines 16-18, # Overview"
+    },
+    {
+      "text": "When a payment method is stored in the Vault, the information is encrypted by the Braintree gateway and associated with a unique payment method token. This token can be used to create transactions without the [PCI compliance burden](/braintree/articles/risk-and-security/compliance/pci-compliance) that comes with handling unencrypted data.\n\nWhen a customer logs into their account on your site or mobile app, their payment information will already be stored in their account. You can also update, delete, and search for a customer's Vault record once it's stored.\n\n\n**NOTE**\n We will never store your customer's CVV in the Vault because it is expressly prohibited by card associations (e.g. Visa, Mastercard).",
+      "location": "lines 23-29, ## How it works"
+    },
+    {
+      "text": "This feature allows you to export the following Vault information into a CSV file:\n\n\n- Customers\n- Customers and payment method tokens\n- Customers and addresses\n\nIf you'd like to export any Vault records, you can do so in the Control Panel:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on**Reports**in the navigation bar\n- Scroll to the**Vault**section\n- Next to the option you'd like to export, click the**Export**button\n- Select your desired date range\n- Click the**Filter And Download**button",
+      "location": "lines 36-51, ## Exporting Vault records"
+    },
+    {
+      "text": "**NOTE**\n Vault exports are limited to 40,000 rows. Some rows may be omitted if the downloaded file is opened in Excel or other spreadsheet programs due to the program's limitations.",
+      "location": "lines 54-55, ## Exporting Vault records"
+    },
+    {
+      "text": "Transactions created from the Vault are occasionally passed with an ecommerce indicator (ECI) of recurring, which some banks will display on their customers\u2019 statements \u2013 causing confusion for some customers. This indicator doesn\u2019t necessarily mean that the customer will be billed on a recurring basis; it just tells the customer\u2019s bank that a CVV can't be passed with the transaction because it was created from a Vault record. If a customer contacts you with this concern, you can assure them they have not been enrolled in future recurring payments.",
+      "location": "line 62, ## Charge shows as recurring on customer statement"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-vault-overview-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-vault-overview]] - Vault purpose, encrypted tokenized payment-method storage, high-level record administration, Control Panel exports, CVV non-retention and the recurring-statement-indicator caveat, with create, update and verification procedures left to dedicated pages",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as an overview route; do not import procedural, permission, eligibility or outcome facts from the unread Create New Customers, Update Customer Information or Card Verification pages.",
+          "Do not broaden the linked PCI wording into a general compliance guarantee, and preserve the page's explicit never-store-CVV warning.",
+          "Preserve that the recurring ecommerce indicator can appear on a statement without establishing enrollment in future recurring payments.",
+          "Preserve the 40,000-row export limit and the separate warning that spreadsheet software may omit rows when opening the download.",
+          "Treat linked and adjacent raw pages as navigation only unless they are separately read in full."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/vault/overview-2026-09-16.md",
+  "raw_sha256": "501e30bad2711922aea41216e74b1740bcf9052ac18f0b865252ac340850ed77",
+  "status": "candidate_ready"
+}

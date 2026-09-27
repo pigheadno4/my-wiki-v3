@@ -1,0 +1,57 @@
+{
+  "job_id": "control-panel-vault-create",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel: Create New Customers\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/vault/create\"\nraw_files:\n  - \"braintree/articles/control-panel/vault/create-2026-09-16.md\"\ntags: [braintree, control-panel, vault, customers, payment-methods, card-verification]\n---\n\n## Overview\n\nThis collected Braintree article documents creating a new customer Vault record through the Control Panel, either with or without a payment method. It identifies transaction-time and direct Vault creation routes, the Control Panel's credit-card-only payment-method boundary, and the separate API route; it does not document adding a payment method to an existing customer or the authorization and settlement behavior of a transaction.\n\n## Key takeaways\n\n- A Control Panel user can create a Vault record by selecting `Store in Vault` while creating a transaction or by navigating to `Vault` and choosing `New Customer`. The article also links to a separate API route for customer creation; these navigation choices do not establish equivalent API and Control Panel behavior.\n- Direct Control Panel creation lets the user save a customer with or without a payment method. If a payment method is included, the article requires a credit-card number and expiration date. At the collected snapshot, only credit-card payment methods can be stored through the Control Panel; other payment methods must use the separate API route.\n- Braintree recommends collecting additional customer details even when no payment method is included, and presents fraud mitigation, processing cost, customer service and chargeback-dispute benefits as reasons. These are recommendations and possible uses, not guaranteed outcomes.\n- When saving a credit or debit card with the new Vault record, the article recommends card verification. If card verification is enabled and the account has multiple merchant accounts, the user can select the merchant account used for verification. This page does not establish that verification succeeded or that a purchase was authorized.\n- Depending on account setup, CVV may also be required during record creation, but Braintree says it never stores that value. An optional billing address is used for applicable configured AVS rules; the page recommends storing street address and ZIP code.\n\n> [!warning] Customer, payment-method and transaction boundaries\n> This page creates a new Vault customer record, optionally with one credit card at creation. Do not treat customer creation without a payment method as stored-payment-method creation, or treat the transaction-time `Store in Vault` route or recommended card verification as evidence of a successful payment authorization or settlement. The page does not document adding a payment method later to an existing customer. Preserve the credit-card-only Control Panel boundary and the statement that CVV is never stored.\n\n## Detail locators\n\n- Control Panel transaction-time and `Vault` > `New Customer` routes plus the separate API route: `# Create New Customers`, lines 14-22.\n- With-versus-without-payment-method choice and required card number and expiration date: `## New record requirements`, lines 25-33.\n- Recommended customer details and the stated reasons for collecting more information: `## New record requirements` and `## Customer details`, lines 33-50.\n- Control Panel credit-card-only boundary, verification recommendation, merchant-account selection and conditional-but-never-stored CVV: `## Payment method details`, lines 53-71.\n- Optional billing address, applicable configured AVS rules and recommended address fields: `## Billing address`, lines 76-83.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- API customer-creation context: [[source-braintree-customer-create-node]]\n- Control Panel context: [[source-braintree-control-panel-transaction-create]], [[source-braintree-control-panel-vault-card-verification]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/transactions/create-2026-09-16|Braintree Control Panel Create a Transaction article]] - unread navigation-only destination for the transaction-time `Store in Vault` route; not used as factual evidence here\n- [[raw/braintree/docs/reference/request/customer/create/node-2026-09-16|Braintree Node.js customer-create request reference]] - unread navigation-only collected API route for separate customer creation; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/vault/card-verification-2026-09-16|Braintree Control Panel Card Verification article]] - unread navigation-only destination for the verification recommendation; not used as factual evidence here\n- [[raw/braintree/articles/guides/fraud-tools/basic/avs-cvv-rules-2026-09-16|Braintree AVS and CVV Rules article]] - unread navigation-only authority for configured address-verification rules; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/vault/create-2026-09-16|Braintree Control Panel Create New Customers article]] - complete collected page covering new Vault customer creation with or without a card, card and CVV boundaries, verification guidance and optional billing-address use\n",
+  "quotes": [
+    {
+      "text": "There are a couple of different ways you can create a Vault record in the [Control Panel](https://www.braintreegateway.com/login) :\n\n\n- By checking the box next toStore in Vaultwhen[creating a transaction](/braintree/articles/control-panel/transactions/create)\n- By selecting**Vault**in the navigation bar and clicking the**New Customer**button\n\nYou can also add customers to the Vault [via the API](/braintree/docs/guides/customers#create).",
+      "location": "lines 16-22, # Create New Customers"
+    },
+    {
+      "text": "When creating a new Vault record in the Control Panel, you will select whether you want to save the customer with a payment method or without one. If you do include a payment method, you are required to provide the following information:\n\n\n- Credit card number\n- Expiration date",
+      "location": "lines 27-32, ## New record requirements"
+    },
+    {
+      "text": "**NOTE**\n At this time, only credit card payment methods can be stored in the Vault via the Control Panel. Other payment methods must be stored [via the API](/braintree/docs/reference/request/customer/create).",
+      "location": "lines 56-57, ## Payment method details"
+    },
+    {
+      "text": "We recommend also [verifying the card](/braintree/articles/control-panel/vault/card-verification) when saving a credit or debit card with the Vault record. If you have more than one merchant account and have card verification enabled, you can select which merchant account will verify the card in this section.\n\n\n**NOTE**\n Depending on your account setup, you may also be required to include a card's CVV when you create a new Vault record. While the CVV may be required to create the Vault record, we will never store this value.",
+      "location": "lines 67-71, ## Payment method details"
+    },
+    {
+      "text": "To add an address to the customer record, check the box next to Create a New Address under **Billing Address Details**. This address will be used for any applicable [Address Verification (AVS)](/braintree/articles/guides/fraud-tools/basic/avs-cvv-rules) rules you have configured. We recommend storing the following:\n\n\n- Street address\n- Zip code",
+      "location": "lines 78-82, ## Billing address"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-vault-create-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-vault-create]] - Control Panel creation of a new Vault customer with or without a credit card, with separate transaction-time and API routes, verification guidance, and the credit-card-only, conditional-CVV and never-store-CVV boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep creation of the Vault customer distinct from optionally storing a credit card with that customer; the page also permits creation without a payment method.",
+          "Do not turn the transaction-time Store in Vault route or the card-verification recommendation into evidence of transaction authorization, settlement or successful verification.",
+          "Preserve that the collected Control Panel route stores only credit-card payment methods, while other payment methods are routed to the separate API.",
+          "Preserve that CVV may be required depending on account setup but is never stored, and do not generalize the optional billing address beyond applicable configured AVS rules.",
+          "Treat the linked transaction, API, verification and AVS pages as navigation only unless separately read."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/vault/create-2026-09-16.md",
+  "raw_sha256": "39914aaf63788285104f2afd14e4b68281c619505a1e45269f3ecde01626ced6",
+  "status": "candidate_ready"
+}

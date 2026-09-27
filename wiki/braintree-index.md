@@ -12,6 +12,17 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+- [[source-braintree-control-panel-important-gateway-credentials]] - gateway credentials, environment and merchant-account ID routes with security boundaries
+- [[source-braintree-control-panel-search]] - Control Panel basic/advanced searches, object limits, indexing delays and CSV routes
+- [[source-braintree-control-panel-users-roles-managing-users-roles]] - user/role management, activation and password-reset safety
+- [[source-braintree-control-panel-vault-update]] - Vault customer/payment-method/address updates and consequential boundaries
+- [[source-braintree-control-panel-vault-card-verification]] - Control Panel card verification, separate from payment authorization
+- [[source-braintree-control-panel-custom-fields]] - custom-field configuration, visibility and permission routes
+- [[source-braintree-control-panel-users-roles-log-in-with-paypal]] - PayPal-credential Control Panel login, not payment integration
+- [[source-braintree-control-panel-vault-create]] - Vault customer creation and distinct card/CVV/authorization routes
+- [[source-braintree-control-panel-users-roles-role-permissions]] - permission/action table and Account Admin/Forward API scope tension
+- [[source-braintree-control-panel-vault-overview]] - Vault administration, exports, CVV limits and dedicated operation routes
+
 - [[source-braintree-control-panel-reporting-overview]] - Control Panel report categories, account/location qualifications and dedicated report routes
 - [[source-braintree-control-panel-reporting-settlement-batch-summary]] - processor settlement-batch totals, access, exclusions, cutoff and email settings; not funding proof
 - [[source-braintree-control-panel-reporting-transaction-level-fee-report]] - pricing-model fee report, country-eligibility conflict, timing and reconciliation limits

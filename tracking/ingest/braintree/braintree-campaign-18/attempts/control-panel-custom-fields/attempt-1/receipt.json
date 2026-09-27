@@ -1,0 +1,57 @@
+{
+  "job_id": "control-panel-custom-fields",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel Custom Fields\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/custom-fields\"\nraw_files:\n  - \"braintree/articles/control-panel/custom-fields-2026-09-16.md\"\ntags: [braintree, control-panel, custom-fields, api, fraud-protection]\n---\n\n## Overview\n\nThis collected Braintree article documents how custom fields are configured and surfaced across the Control Panel and API. It distinguishes Pass Thru from Store and Pass Back fields, identifies who can create, edit or delete the configuration, and records separate visibility behavior for Fraud Protection Advanced fields.\n\n## Key takeaways\n\n- Braintree describes two custom-field types. Pass Thru fields carry checkout values through the API for a merchant's server to handle; although their definitions are configured in the Control Panel, the fields can only be used to pass data through the API.\n- Store and Pass Back values are stored in the Control Panel, returned on the transaction response object, and downloadable through Transaction or Vault Search. Search applies to the passed value, not the custom-field name.\n- New custom-field definitions can be configured only in the Control Panel, not through the API, and the configuring user's role must have **Add/Edit Processing Options** permission. The creation flow assigns an API name used in code and a display name shown in transaction history and Vault records; exact naming constraints and steps remain at the raw locator.\n- A permitted user can edit a field's display name or switch its type between Store and Pass Back and Pass Thru. Deletion has an additional eligibility boundary: the field must never have been used to collect customer or transaction data.\n- Fraud Protection Advanced custom fields follow a separate setup route: they must be added through the Fraud Protection Advanced Dashboard. The final Control Panel view is described as showing all **ACTIVE** custom fields added through that Dashboard.\n- The page also routes custom-field use to transaction creation, Vault customer creation or update, and 3D Secure authentication. Those linked API and guide authorities own the operation-specific request and response behavior; this article documents configuration and visibility rather than an API operation.\n\n## Detail locators\n\n- Custom-field purpose and linked use cases: introductory text and list, lines 16-24.\n- Pass Thru versus Store and Pass Back identity and Control Panel/API placement: `## Custom field types`, lines 27-41.\n- Store-and-pass-back response, download and value-versus-name search behavior: `### Store and Pass Back fields`, line 41.\n- Control-Panel-only creation and required role permission: `## Creating a custom field`, line 46.\n- API-name and display-name setup, naming limits, and transaction-history/Vault visibility: `## Creating a custom field`, lines 48-66.\n- Editable properties and required role permission: `## Editing a custom field`, lines 69-85.\n- Never-used deletion eligibility, permission and removal path: `## Deleting a custom field`, lines 88-105.\n- Fraud Protection Advanced setup owner and ACTIVE-field Control Panel visibility: `## Viewing the custom fields created through Fraud Protection Advanced`, lines 108-122.\n\n## Evidence boundary\n\n> [!warning] Control Panel configuration is not an API setup operation\n> This page says custom-field definitions cannot be created through the API even though configured fields can carry or return data through API operations. Preserve the role-permission requirement, the never-used deletion condition, and the separate Fraud Protection Advanced Dashboard/ACTIVE-field visibility wording. The 2026-09-16 snapshot is collected evidence, not proof of current support or account eligibility.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- API/SDK context: [[braintree-server-sdk]]\n- Parent overview: [[source-braintree-control-panel-overview]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/users-roles/role-permissions-2026-09-16|Braintree Control Panel role permissions]] - navigation-only route for the linked Add/Edit Processing Options permission detail\n- [[raw/braintree/articles/control-panel/search-2026-09-16|Braintree Control Panel search]] - navigation-only route for the linked Transaction and Vault Search behavior\n- [[raw/braintree/articles/guides/fraud-tools/premium/fraud-protection-advanced-2026-09-16|Braintree Fraud Protection Advanced]] - navigation-only route for the linked fraud-tool behavior and Dashboard context\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Braintree Node.js transaction sale request]] - navigation-only route for transaction custom-field use\n- [[raw/braintree/docs/reference/request/customer/create/node-2026-09-16|Braintree Node.js customer create request]] - navigation-only route for Vault customer custom-field use\n- [[raw/braintree/docs/reference/request/customer/update/node-2026-09-16|Braintree Node.js customer update request]] - navigation-only route for Vault customer custom-field updates\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/custom-fields-2026-09-16|Braintree Control Panel Custom Fields]] - complete collected article covering custom-field types, Control Panel configuration permissions, deletion eligibility, API visibility, and Fraud Protection Advanced field visibility\n",
+  "quotes": [
+    {
+      "text": "There are two types of custom fields: Pass Thru fields and Store and Pass Back fields.\n\n\n### Pass Thru fields\n\nPass Thru fields are designed to pass a value from your checkout form to your servers, where you can either store or respond to the data. For example, if you have a checkbox for \"Join Mailing List\" on your checkout form and you pass this data through as a custom field, your servers can respond by adding the customer to your mailing list.\n\nWhile Pass Thru custom fields are [configured in the Control Panel](#creating-a-custom-field), they can only be used to pass data via the API.",
+      "location": "## Custom field types > ### Pass Thru fields, lines 29-36"
+    },
+    {
+      "text": "The data passed by Store and Pass Back fields is stored in the Control Panel and returned via the API [on the transaction response object](/braintree/docs/reference/response/transaction#custom_fields). It's also available for download via a [Transaction or Vault Search](/braintree/articles/control-panel/search#advanced-search-options). Keep in mind that you can only search for the data passed within a Store and Pass Back field; you won\u2019t be able to search for the field name itself.",
+      "location": "### Store and Pass Back fields, line 41"
+    },
+    {
+      "text": "Custom fields can only be configured directly in the Control Panel by users with the Add/Edit Processing Options [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-addedit-processing-options-including-avscvv). There isn\u2019t a way to set up new custom fields via the API.",
+      "location": "## Creating a custom field, line 46"
+    },
+    {
+      "text": "**NOTE**\n You can only delete custom fields that have never been used to collect customer or transaction data.",
+      "location": "## Deleting a custom field > NOTE, lines 91-92"
+    },
+    {
+      "text": "If you are using Fraud Protection Advanced, you can add a specific set of custom fields that pertain to your business in certain filter conditions to mitigate fraud. For more information, see [Fraud Protection Advanced](/braintree/articles/guides/fraud-tools/premium/fraud-protection-advanced).\n\nTo use these custom fields, you will need to add them via the Fraud Protection Advanced Dashboard. After new fields are added in the Dashboard, you will also see these fields in the Control Panel.\n\nTo find these custom fields in the Control Panel:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on the gear icon in the top right corner\n- Click**Account Settings**from the drop-down menu\n- Scroll to the**Transactions**section\n- Next to**Custom Fields**, click the**Options**link\n- From here, you can see all your**ACTIVE**custom fields added through the Fraud Protection Advanced dashboard",
+      "location": "## Viewing the custom fields created through Fraud Protection Advanced, lines 110-122"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-custom-fields-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-custom-fields]] - Control Panel custom-field configuration route covering Pass Thru versus Store and Pass Back visibility, Add/Edit Processing Options permission, API-setup exclusion, never-used deletion eligibility, and the documented view of ACTIVE Fraud Protection Advanced fields",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not conflate configuring a custom-field definition in the Control Panel with passing or returning its data through an API operation.",
+          "Preserve the Add/Edit Processing Options permission and the condition that only never-used fields can be deleted.",
+          "Fraud Protection Advanced fields are added in its Dashboard; the Control Panel route says the final view shows all ACTIVE fields added there and does not define inactive-field behavior.",
+          "Treat the 2026-09-16 raw as collected evidence rather than proof of current support or eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/custom-fields-2026-09-16.md",
+  "raw_sha256": "2e37acb3ac5badffd8f33635daa77a9cc3639e11a2fd45fae04e55ca016311b1",
+  "status": "candidate_ready"
+}

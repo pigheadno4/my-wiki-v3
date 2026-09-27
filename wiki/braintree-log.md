@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-27] ingest | Braintree website C18
+
+- Ten collected Control Panel administration and Vault pages were fully read, independently reviewed and promoted. The company and provider index now route to 151 sources = 135 website + 16 GitHub, excluding changelogs.
+- Five initial reviews requested bounded corrections; five targeted retries passed on unchanged raw hashes. The fixed five-group query audit answered 20/20 navigation/detail questions. Group C exposed different collected password minimums (14 characters in general user management, 7 in the Log In with PayPal disablement flow); an independent narrow review approved paired unresolved-conflict warnings and reciprocal raw provenance on both sources.
+- No raw pages, GitHub work items, code or rules were changed by C18. See `tracking/ingest/braintree/braintree-campaign-18/quality-audit.md` and `query-audit-a.md` through `query-audit-e.md` for closure evidence. C18 execution itself does not authorize a commit, push or next campaign.
+
 ## [2026-09-27] ingest | braintree-web `3.146.0`
 
 - Full additive ingest at `893d4e786f4161c3b96c5d34425752c5b63ff84d`, with the user's one-time focused-reading exception. Preserved all `3.143.0` through `3.145.0` knowledge.

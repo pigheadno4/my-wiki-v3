@@ -1,0 +1,57 @@
+{
+  "job_id": "control-panel-vault-update",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Control Panel: Update Customer Information\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/vault/update\"\nraw_files:\n  - \"braintree/articles/control-panel/vault/update-2026-09-16.md\"\ntags: [braintree, control-panel, vault, customers, payment-methods, addresses]\n---\n\n## Overview\n\nThis collected Braintree article documents updating an existing customer record in the Control Panel Vault. It covers customer details, payment methods and addresses, while routing high-volume customer updates to the API; it does not document an API or SDK update operation.\n\n## Key takeaways\n\n- After customer information has been stored in the Vault, a Control Panel user can find the customer through search, open the customer ID, and edit customer details, payment methods or addresses. The article describes the Control Panel as practical for one or two customers and recommends the API when many customers need updates.\n- Updating credit-card numbers in the Control Panel may affect the business's PCI-compliance scope. Braintree also strongly recommends selecting `Verify card` during a payment-method update; this collected guidance does not determine a merchant's actual compliance scope or prove a successful verification.\n- Adding a new payment method to a Vault record does not automatically change existing subscriptions. The article directs the user to update the subscription itself, keeping the Vault payment-method update distinct from subscription mutation.\n- A customer Vault record can contain up to 50 addresses. Billing addresses are stored with the record and associated with one or more payment methods, while shipping addresses are selected per transaction. The article provides separate Control Panel routes for editing an associated billing address, adding one for an existing payment method, or selecting another saved address.\n- Those billing-address actions do not trigger the gateway's AVS rules; verifying a new billing address requires re-verifying the stored card with the new billing information. Updating an existing customer address is reflected in payment methods already using it as their billing address.\n- A shipping address on a specific transaction cannot be updated after that transaction is created. Customer addresses may still be added or updated for use as shipping addresses on future transactions.\n\n> [!warning] Collected Control Panel and lifecycle boundaries\n> This 2026-09-16 snapshot documents Control Panel actions, not equivalent API behavior or current availability. Preserve the page's qualified PCI warning, do not treat `Verify card` selection as proof of verification success, and keep Vault payment-method changes, existing-subscription updates, AVS checks and transaction-specific shipping addresses as separate effects.\n\n## Detail locators\n\n- Editable customer-information categories and API recommendation for high-volume updates: `# Update Customer Information`, lines 16-23.\n- Payment-method PCI warning, existing-subscription boundary and card-verification recommendation: `## Payment methods`, lines 26-34.\n- Per-customer address limit and billing-versus-shipping identity: `## Addresses`, lines 39-45.\n- Billing-address update categories and the no-AVS/re-verification boundary: `### Billing address`, lines 48-54; `#### Editing a billing address` through `#### Selecting a different billing address`, lines 59-106.\n- Shared existing-address propagation: `### Billing address > NOTE`, lines 109-110.\n- Shipping-address choices and existing-transaction versus future-transaction boundary: `### Shipping address`, lines 115-126.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- API/SDK context: [[braintree-server-sdk]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/search-2026-09-16|Braintree Control Panel Search]] - unread navigation-only route for finding the Vault customer; not used as factual evidence here\n- [[raw/braintree/docs/guides/customers/node-2026-09-16|Braintree Customers guide for Node.js]] - unread navigation-only route for the recommended high-volume API approach; not used as factual evidence here\n- [[raw/braintree/articles/risk-and-security/compliance/pci-compliance-2026-09-16|Braintree PCI Compliance article]] - unread navigation-only authority for the qualified PCI-scope warning; not used as factual evidence here\n- [[raw/braintree/articles/guides/recurring-billing/subscriptions-2026-09-16|Braintree Subscriptions article]] - unread navigation-only route for updating a subscription's payment method; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/vault/card-verification-2026-09-16|Braintree Control Panel Card Verification article]] - unread navigation-only route for re-verifying a card with new billing information; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/vault/update-2026-09-16|Braintree Control Panel Update Customer Information article]] - complete collected page covering Vault customer, payment-method and address updates plus PCI, subscription, AVS and transaction-shipping boundaries\n",
+  "quotes": [
+    {
+      "text": "You can update a customer's information, including their payment method, after you've stored their information in the Vault. Just [search for the customer](/braintree/articles/control-panel/search#vault) and click on the **ID** link. You can edit:\n\n\n- Customer Details\n- Payment Methods\n- Addresses\n\nEditing information for one or two customers in the Control Panel is pretty easy, but if you need to update information for a lot of customers, it\u2019s best to handle this [via the API instead](/braintree/docs/guides/customers#update).",
+      "location": "# Update Customer Information, lines 16-23"
+    },
+    {
+      "text": "Before updating any payment methods in the Control Panel, you should be aware that updating credit card numbers in the Control Panel may affect the [PCI compliance](/braintree/articles/risk-and-security/compliance/pci-compliance) scope for your business. Make sure you're aware of the risk before proceeding.\n\nIf you're using our recurring billing feature, it's important to note that adding a new payment method to a Vault record doesn\u2019t automatically update existing subscriptions. You'll need to [update the subscription directly](/braintree/articles/guides/recurring-billing/subscriptions#subscription-payment-method).\n\n\n**NOTE**\n Braintree strongly recommends verifying all credit cards by selecting the **Verify card** checkbox when performing a payment method update.",
+      "location": "## Payment methods, lines 28-34"
+    },
+    {
+      "text": "Each customer Vault record can contain up to 50 addresses. There are two types of addresses that can be stored with a Vault record:\n\n\n- [**Billing addresses**](#billing-address): stored in the Vault and associated with one or more payment methods\n- [**Shipping addresses**](#shipping-address): stored in the Vault and designated on a per-transaction basis",
+      "location": "## Addresses, lines 41-45"
+    },
+    {
+      "text": "None of these methods will trigger your gateway\u2019s Address Verification (AVS) rules. To verify a new billing address you'll need to [re-verify the card on file](/braintree/articles/control-panel/vault/card-verification) with the new billing information.",
+      "location": "### Billing address > NOTE, line 54"
+    },
+    {
+      "text": "You can\u2019t update the shipping address associated with a specific transaction after the transaction has been created. However, you can add or update customer addresses that will be available to use as a shipping address on future transactions.",
+      "location": "### Shipping address > NOTE, line 126"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-vault-update-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-vault-update]] - Control Panel Vault customer, payment-method and address updates, with the high-volume API route and collected PCI, subscription, AVS and transaction-shipping boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this Control Panel workflow distinct from existing customer, payment-method and address API or SDK update sources.",
+          "Preserve that adding a Vault payment method does not automatically update existing subscriptions.",
+          "Do not turn the qualified PCI-scope warning or Verify card recommendation into a compliance or verification-success guarantee.",
+          "Preserve that the documented billing-address actions do not trigger AVS and that a specific transaction's shipping address cannot be changed after creation.",
+          "Do not infer current availability or unchanged limits from the 2026-09-16 collected snapshot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/vault/update-2026-09-16.md",
+  "raw_sha256": "baeae87ce3a127978ad4f539fef9d2dff278b07da916d3f5533f3ce6177ca0cf",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "control-panel-users-roles-managing-users-roles",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Control Panel Managing Users and Roles\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/users-roles/managing-users-roles\"\nraw_files:\n  - \"braintree/articles/control-panel/users-roles/managing-users-roles-2026-09-16.md\"\ntags: [braintree, control-panel, users, roles, access-control, account-security]\n---\n\n## Overview\n\nThis collected Braintree article documents Control Panel administration for users, roles and password resets. Roles grant or restrict access to gateway information and functions, while unique credentials let the merchant track which user interacted with certain transactions; the page also records account-activation, editing and security boundaries.\n\n## Key takeaways\n\n- The page says each person who needs Control Panel access must have a separate user and recommends enabling two-factor authentication for every user. It attributes the separate-user requirement to the PCI Security Standards Council.\n- Each user must have at least one role. When several roles are assigned, the role with the greatest permissions prevails. Roles can be created or edited, but the maximum-permission **Account Admin** role cannot be edited or renamed.\n- Creating a user includes specifying an email address, whether the user should have API access, a Control Panel role and accessible merchant accounts. Braintree then emails the user to complete account information and credentials; the Control Panel status changes from **Pending** to **Active** after the user logs in.\n- Most user information and permissions can be changed after creation, but the username cannot. Changing the Name or Email fields requires continued access to the original email account for confirmation; otherwise the page instructs the administrator to create a new user.\n- Anyone can initiate their own reset from the sign-in page, while resetting another user's password in the Control Panel requires the **Manage Users** role permission. The Control Panel requires a password reset after six failed login attempts, and a user with an associated phone number must also authenticate the reset with a texted code. If an unrequested password-reset email arrives, the page warns that it may be phishing and instructs the user to avoid the suspect email link and sign in directly to reset the password.\n\n## Detail locators\n\n- User/role purpose, support-information effect, separate-user requirement and 2FA recommendation: `# Managing Users and Roles`, lines 16-22.\n- Role assignment, greatest-permission precedence, create/edit route and fixed Account Admin role: `## Creating and editing roles`, lines 27-41.\n- New-user fields, merchant-account access, activation email and Pending-to-Active transition: `## Creating users`, lines 44-62.\n- Editable user data, immutable username and original-email confirmation prerequisite: `## Editing users`, lines 65-82.\n- Suspicious reset-email warning, failed-attempt threshold, self-service versus Manage Users reset routes and phone-code requirement: `## Password safety` and `### Resetting user passwords`, lines 87-125.\n- Password composition and history rules: `### Password requirements`, lines 130-137.\n\n## Evidence boundary\n\n> [!warning] Control Panel administration scope\n> This page documents Control Panel actions and does not establish an API user-management contract. It does not state whether a described action applies to Sandbox, Production or both, and its links to the full role-permission catalog and Log In with PayPal are navigation only here. Treat the 2026-09-16 raw as collected evidence rather than proof of current behavior.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/users-roles/role-permissions-2026-09-16|Braintree Control Panel role permissions]] - unread navigation-only permission catalog; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/users-roles/log-in-with-paypal-2026-09-16|Braintree Control Panel Log In with PayPal]] - unread navigation-only account-login detail; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/users-roles/managing-users-roles-2026-09-16|Braintree Control Panel Managing Users and Roles]] - complete collected article covering user and role administration, activation, editing and password-reset boundaries\n",
+  "quotes": [
+    {
+      "text": "Creating users allows you to manage who can access your Control Panel. You can also create different roles that restrict or grant user access to certain information and gateway functionalities. For example, you might have a member of your team that only needs to look at customer information in the Control Panel but should never be able to create a transaction. The role assigned to a user will also determine what information we can provide should that individual contact us via phone or email.\n\nThe [PCI security standards council](https://www.pcisecuritystandards.org/) requires that you create a separate user for every person who needs access to the Control Panel. Since each user will have unique login credentials, you can track which user interacted with certain transactions.\n\n\n**NOTE**\n For security, we recommend that all users of your Control Panel enable [two-factor authentication (2FA)](/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication).",
+      "location": "lines 16-22, # Managing Users and Roles"
+    },
+    {
+      "text": "You must assign at least one role to each user, with specific [role permissions](/braintree/articles/control-panel/users-roles/role-permissions) granted to each role. If a user has multiple roles, the role with the greatest permissions trumps any others assigned.",
+      "location": "line 29, ## Creating and editing roles"
+    },
+    {
+      "text": "The **Account Admin** role has the maximum permissions possible and can't be edited or renamed.",
+      "location": "line 41, ## Creating and editing roles"
+    },
+    {
+      "text": "- Specify the user's details, including:\n- Their email address.\n- Whether they should have API access.\n- Their Control Panel role.\n- Which[merchant account(s)](/braintree/articles/control-panel/important-gateway-credentials#merchant-account-id)they should have access to.\n\n\n- Select the**Create User**button.\n\nOnce you\u2019ve finished these steps, we will send an email prompting the new user to activate their account by completing the user information form. Here they will fill in their full name, create a username and password, and log into the Control Panel. After logging in, their status in the Control Panel will officially change from Pending to Active, and the Username and Name fields will be populated.\n\n\n## Editing users\n\nAfter you\u2019ve created a user, you can change most of their information and permissions. While you can't edit the username associated with a user, you can change the Name and Email fields, as long as the user still has access to the original email account in order to confirm the update. If they no longer have access to the original email account, you\u2019ll need to create a new user.",
+      "location": "lines 53-67, ## Creating users through first paragraph of ## Editing users"
+    },
+    {
+      "text": "**NOTE**\n The Control Panel allows 6 failed login attempts before requiring a password reset.\n\n \n\nAnyone can reset their password by selecting the **Forgot** link on the [sign-in page](https://www.braintreegateway.com/login). Alternatively, users with the Manage Users [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-manage-users-addeditdeletereset-password) can change passwords in the Control Panel. To reset a user's password:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login).\n- Select the gear icon in the top right corner.\n- Select**Team**from the drop-down menu.\n- Locate the user you'd like to make changes to.\n- Select the link in theUsername,Name, orEmailcolumn.\n- Scroll to the**Authentication**section.\n- Select the**Change Login**button.\n- Select**Yes**to confirm the change.\n\nThe user will then receive an email to either reset their password or [log in using their PayPal credentials](#log-in-with-paypal).\n\n\n**IMPORTANT**\n If there is a phone number associated with the user (listed in the **Details** section), they will also be required to authenticate the password reset with a code sent via text to their mobile device.",
+      "location": "lines 104-125, ### Resetting user passwords"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-users-roles-managing-users-roles-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-users-roles-managing-users-roles]] - Control Panel user and role creation/editing, role precedence, account activation, immutable usernames and permission-gated password-reset administration, with separate-user and account-security boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer Sandbox or Production scope from this page; it names neither environment.",
+          "Keep the linked role-permission catalog and Log In with PayPal page navigation-only unless each is read independently.",
+          "Do not generalize these Control Panel actions into API behavior or current support guarantees."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/users-roles/managing-users-roles-2026-09-16.md",
+  "raw_sha256": "345b30dc089017638603bc44e5c000eb2d8423387e1f3866c712aaf1a34b4d64",
+  "status": "candidate_ready"
+}

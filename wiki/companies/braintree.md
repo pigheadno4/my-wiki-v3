@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 141
+source_count: 151
 ---
 
 ## Overview
@@ -11,9 +11,20 @@ Braintree is represented in this wiki by sixteen independently tracked repositor
 
 ## Website Documentation
 
-One hundred twenty-five independently reviewed website sources complement the sixteen repository
+One hundred thirty-five independently reviewed website sources complement the sixteen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-control-panel-important-gateway-credentials]] - environment-specific gateway credentials and merchant-account identifiers with role and private-key security boundaries
+- [[source-braintree-control-panel-search]] - basic and advanced Control Panel searches with object-specific results, indexing delays and CSV limits
+- [[source-braintree-control-panel-users-roles-managing-users-roles]] - user and role administration, account activation and password-reset safety boundaries
+- [[source-braintree-control-panel-vault-update]] - Vault customer, payment-method and address updates with PCI, subscription, AVS and shipping boundaries
+- [[source-braintree-control-panel-vault-card-verification]] - card-verification purpose and outcomes, distinct from payment authorization and customer identity
+- [[source-braintree-control-panel-custom-fields]] - custom-field configuration, visibility and permission boundaries
+- [[source-braintree-control-panel-users-roles-log-in-with-paypal]] - PayPal-credential access to Braintree Control Panel, distinct from PayPal payment setup
+- [[source-braintree-control-panel-vault-create]] - Control Panel Vault customer creation, card and CVV boundaries, distinct from payment authorization
+- [[source-braintree-control-panel-users-roles-role-permissions]] - role-permission action scopes and the preserved Account Admin versus Forward API scope tension
+- [[source-braintree-control-panel-vault-overview]] - Vault administration, export and CVV boundaries with routes to dedicated operation pages
 
 - [[source-braintree-control-panel-reporting-overview]] - Control Panel report categories and account/location qualifications, with dedicated report pages for eligibility detail
 - [[source-braintree-control-panel-reporting-settlement-batch-summary]] - processor batch totals, report access, exclusions, cutoff and email settings without funding proof
