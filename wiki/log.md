@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-27] analysis | PayPal v5/v6 returning-buyer frontend gap
+
+- Filed approved [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]]: PayPal-wallet-specific v5 customer-token rendering is documented; equivalent direct v6 UI remains unverified, distinct from saving, backend token reuse, and Braintree editing. Linked both indexes. No raw collection, source ingest, runtime testing, commit, or push.
+
 ## [2026-09-27] ingest | Braintree Web `3.146.0`
 
 - Approved full additive ingest with focused reading and an exact-SHA helper supplement: v6 saved-payment editing, token/demo safety boundaries, presentation forwarding and model/frame hardening. Historical knowledge preserved. Details: [[braintree-log]] and [[changelog-github-braintree-web]].

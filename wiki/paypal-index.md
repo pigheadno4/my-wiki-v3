@@ -230,6 +230,8 @@ Operations history: [[paypal-log]]
 
 ## Analyses
 
+- [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]] - customer-aware saved-wallet frontend migration gap, checked 2026-09-27
+
 - [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages iOS vs Android: released baselines, Braintree-only untagged policy, platform risks, and rollout recommendation
 - [[analysis-paypal-react-apple-pay-10-3-to-10-4-migration]] — React Apple Pay 10.3→10.4 migration: core 11 dependency, native `ApplePaySession`, `@types/applepayjs`, prebuilt button integration, and server boundaries
 
