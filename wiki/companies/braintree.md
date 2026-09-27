@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 151
+source_count: 161
 ---
 
 ## Overview
@@ -11,9 +11,20 @@ Braintree is represented in this wiki by sixteen independently tracked repositor
 
 ## Website Documentation
 
-One hundred thirty-five independently reviewed website sources complement the sixteen repository
+One hundred forty-five independently reviewed website sources complement the sixteen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-get-started-overview]] - merchant/gateway roles, Direct/Extend/Auth orientation and Control Panel/API interaction routes
+- [[source-braintree-get-started-explore]] - getting-started navigation map without importing linked-guide behavior
+- [[source-braintree-get-started-try-it-out]] - Sandbox versus Production testing, isolation and non-transfer boundaries
+- [[source-braintree-get-started-get-paid]] - post-settlement funding guidance distinct from payment acceptance and deposit proof
+- [[source-braintree-get-started-payment-methods]] - collected method categories, eligibility limits and unresolved SRC support-status conflict
+- [[source-braintree-get-started-currencies]] - presentment/settlement currencies and qualified multi-currency setup
+- [[source-braintree-get-started-data-migration-overview]] - import/export orientation and migration scope limits
+- [[source-braintree-get-started-data-migration-imports]] - inbound secure transfer, identifier mapping and two-import limit
+- [[source-braintree-get-started-data-migration-exports]] - outbound Vault export, PCI/key prerequisites and two-export limit
+- [[source-braintree-get-started-data-migration-public-key]] - public-key encryption route with current-key acquisition boundary
 
 - [[source-braintree-control-panel-important-gateway-credentials]] - environment-specific gateway credentials and merchant-account identifiers with role and private-key security boundaries
 - [[source-braintree-control-panel-search]] - basic and advanced Control Panel searches with object-specific results, indexing delays and CSV limits

@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-27] ingest | Braintree website C19
+
+- Ten collected Getting Started and Data Migration pages were fully read, independently reviewed and promoted. Braintree now routes to 161 sources = 145 website + 16 GitHub, excluding changelogs.
+- Seven first reviews approved; three requested bounded quote/route corrections and were approved by targeted re-review on unchanged raw hashes. The fixed five-group query audit answered 20/20 navigation/detail questions. Payment Methods preserves its own Visa Click to Pay/SRC support-status conflict; data-migration pages remain distinct inbound, outbound and public-key routes.
+- No raw pages, GitHub work items, code or rules were changed by C19. See `tracking/ingest/braintree/braintree-campaign-19/quality-audit.md` and `query-audit-a.md` through `query-audit-e.md` for close evidence. C19 execution itself does not authorize commit, push or C20.
+
 ## [2026-09-27] ingest | Braintree website C18
 
 - Ten collected Control Panel administration and Vault pages were fully read, independently reviewed and promoted. The company and provider index now route to 151 sources = 135 website + 16 GitHub, excluding changelogs.

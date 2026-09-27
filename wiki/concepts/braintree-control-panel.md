@@ -16,6 +16,8 @@ The Dashboard provides sales and transaction volume, totals, averages, and route
 Sandbox and Production use mutually exclusive Control Panel environments that do not interact and may have different login credentials. Use the dedicated reporting documentation for reconciliation and the specific administration guides for task-level behavior. [[source-braintree-control-panel-overview]]
 
 ## Sources
+- [[source-braintree-get-started-try-it-out]] - Sandbox testing purpose, country-qualified behavior, material Sandbox-versus-Production differences, non-transfer of objects and settings, separate credentials and the delegated production-integration route
+- [[source-braintree-get-started-overview]] - high-level route distinguishing manual Control Panel administration from API-based automation and customized gateway interaction
 - [[source-braintree-control-panel-vault-overview]] - Vault purpose, encrypted tokenized payment-method storage, high-level record administration, Control Panel exports, CVV non-retention and the recurring-statement-indicator caveat, with create, update and verification procedures left to dedicated pages
 - [[source-braintree-control-panel-users-roles-role-permissions]] - Control Panel permission categories and action scopes, including the Account Admin gate for granting user/role management, specialized Forward API and OAuth eligibility, broad connected-OAuth consent scope, and the collected Account Admin scope tension
 - [[source-braintree-control-panel-vault-create]] - Control Panel creation of a new Vault customer with or without a credit card, with separate transaction-time and API routes, verification guidance, and the credit-card-only, conditional-CVV and never-store-CVV boundaries

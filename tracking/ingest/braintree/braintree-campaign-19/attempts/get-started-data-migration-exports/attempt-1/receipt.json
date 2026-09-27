@@ -1,0 +1,57 @@
+{
+  "job_id": "get-started-data-migration-exports",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Data Migration Exports\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/get-started/data-migration/exports\"\nraw_files:\n  - \"braintree/articles/get-started/data-migration/exports-2026-09-16.md\"\ntags: [braintree, data-migration, vault, exports, pci-dss]\n---\n\n## Overview\n\nThis collected Braintree guide documents exporting Vault customer and saved-card data when moving to another payment gateway. It routes readers through the receiving gateway's PCI-attestation and public-key prerequisites, encrypted transfer, export selection and fixed file format; the detailed CSV headers remain in the raw page.\n\n## Key takeaways\n\n- Braintree says a migration must use no more than two exports: one for the bulk of customers and one for customers created while processing is switched over. It explicitly does not provide periodic exports for backup or failover.\n- Before an export to another gateway, the merchant must provide Braintree an attestation of that gateway's PCI compliance from a qualified provider. Braintree then requests a public encryption key from the receiving service provider, verifies that key, encrypts the sensitive data and transmits it via SFTP, SCP or FTP over SSL; protecting the corresponding private key under PCI DSS remains the receiving provider's responsibility.\n- Export selection is either the entire Vault, covering all saved customers and credit cards, or a merchant-supplied list of customer IDs.\n- The output is a GPG-encrypted CSV whose format cannot be modified. Each card receives its own row with its customer and address; a customer without cards receives a customer-only row with empty card and address fields.\n\n> [!warning] Migration and backup boundary\n> This page documents a bounded gateway-migration export, not a periodic backup or failover service. It does not identify a self-service initiation route, delivery timing, pricing or an eligibility decision, and its 2026-09-16 collection date does not establish current availability.\n\n## Detail locators\n\n- Two-export maximum and no periodic backup/failover exports: `# Exports > NOTE`, lines 17-18.\n- PCI attestation, receiving-provider public key, encrypted transfer, private-key responsibility and key verification: `# Exports`, lines 22-26.\n- Entire-Vault versus customer-ID selection: `## Export types`, lines 29-35.\n- Fixed GPG-encrypted CSV format and row structure: `## Export format`, lines 38-50.\n- Complete CSV header names, descriptions and examples: `## Export format > ### File headers`, lines 53-147.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-data-migration]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/get-started/data-migration/exports-2026-09-16|Braintree Data Migration Exports article]] - complete collected page covering outbound Vault migration prerequisites, encrypted transfer, export selection, fixed CSV format and header details\n",
+  "quotes": [
+    {
+      "text": "You must migrate your data from Braintree with no more than two exports: one to export the bulk of your customers, and another to export any new customers created while your processing was switched over. We will not run any periodic exports for backup or failover \u2014 you will need to handle this on your side.",
+      "location": "# Exports > NOTE, lines 17-18"
+    },
+    {
+      "text": "If you need to move your data to another payment gateway, you'll first need to provide us with an attestation of their PCI compliance from a qualified provider. Once we have that, we'll request a public encryption key from the receiving service provider.",
+      "location": "# Exports, line 22"
+    },
+    {
+      "text": "We'll then use the public key to encrypt the sensitive data and transmit it via SFTP, SCP, or FTP over SSL.",
+      "location": "# Exports, line 24"
+    },
+    {
+      "text": "It is the responsibility of the receiving service provider to protect their private key file in accordance with the PCI DSS. We will verify the authenticity of the public key before using it for encryption.",
+      "location": "# Exports, line 26"
+    },
+    {
+      "text": "No modifications to this format can be made.",
+      "location": "## Export format > NOTE, lines 41-42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-braintree-data-migration-concept-from-exports",
+        "target_path": "wiki/concepts/braintree-data-migration.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree Data Migration\"\ntype: concept\ncategory: technology\ntags: [braintree, data-migration, vault, exports, pci-dss]\n---\n\n## Braintree Data Migration\n\nBraintree's collected outbound-migration guide documents exporting Vault customer and saved-card data to another payment gateway. Before that export, the merchant must provide an attestation of the receiving gateway's PCI compliance from a qualified provider; Braintree requests and verifies the receiving provider's public key, encrypts the sensitive data and sends it through an encrypted transfer route. [[source-braintree-get-started-data-migration-exports]]\n\n## Outbound export boundaries\n\nThe guide permits no more than two migration exports: one bulk export and one for customers created during the processing switch. It explicitly excludes periodic backup or failover exports. Selection is either the entire Vault or a merchant-supplied customer-ID list, and the output is a fixed-format GPG-encrypted CSV. The receiving provider remains responsible for protecting its private key under PCI DSS. Use the source's raw-detail locators for the complete file-header table and do not treat the collected snapshot as proof of current availability.\n\n## Sources\n\n- [[source-braintree-get-started-data-migration-exports]] - outbound Vault migration purpose, PCI and key prerequisites, encrypted transfer, two-export limit, export selection and fixed-format route\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this concept limited to facts established by the outbound export page; do not infer import behavior or public-key generation steps from this source.",
+          "Preserve the two-export maximum and the explicit exclusion of periodic backup or failover exports.",
+          "Do not turn the collected 2026-09-16 snapshot into a claim of current support, timing, pricing or eligibility.",
+          "Do not conflate this gateway-migration export with separately documented Control Panel report exports without fully read authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/get-started/data-migration/exports-2026-09-16.md",
+  "raw_sha256": "1b3b3bdb24829dc6fa17110482074e85e516bc57d28ee1b50da948b782906a76",
+  "status": "candidate_ready"
+}

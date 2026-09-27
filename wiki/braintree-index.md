@@ -12,6 +12,17 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+- [[source-braintree-get-started-overview]] - business/merchant/gateway roles, Direct/Extend/Auth orientation and Control Panel/API routes
+- [[source-braintree-get-started-explore]] - getting-started navigation map; linked guides remain separate evidence
+- [[source-braintree-get-started-try-it-out]] - Sandbox testing and Production isolation, credentials, capacity and non-transfer boundaries
+- [[source-braintree-get-started-get-paid]] - post-settlement merchant-account funding route, not proof of an individual bank deposit
+- [[source-braintree-get-started-payment-methods]] - payment-method and eligibility overview with unresolved SRC support-status tension
+- [[source-braintree-get-started-currencies]] - presentment versus settlement currencies and multi-currency setup qualifications
+- [[source-braintree-get-started-data-migration-overview]] - import/export orientation, fee and timing scope, non-migratable data and method exclusions
+- [[source-braintree-get-started-data-migration-imports]] - inbound customer/payment-method transfer, mapping and two-import boundary
+- [[source-braintree-get-started-data-migration-exports]] - outbound Vault export, PCI/key prerequisites and two-export boundary
+- [[source-braintree-get-started-data-migration-public-key]] - migration-file encryption-key route; obtain current operational key from official guide
+
 - [[source-braintree-control-panel-important-gateway-credentials]] - gateway credentials, environment and merchant-account ID routes with security boundaries
 - [[source-braintree-control-panel-search]] - Control Panel basic/advanced searches, object limits, indexing delays and CSV routes
 - [[source-braintree-control-panel-users-roles-managing-users-roles]] - user/role management, activation and password-reset safety
@@ -193,6 +204,11 @@ Operations history: [[braintree-log]]
 - [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger beginning at `5.3.0` (github-repo, 2026-08-27)
 
 ## Concepts
+
+- [[braintree-payment-platform]] - merchant/gateway roles, product orientation, interaction channels and separate funding route
+- [[braintree-payment-methods]] - provider-wide method eligibility and collected deprecation conflict
+- [[braintree-currencies]] - presentment/settlement distinction and qualified multi-currency setup
+- [[braintree-data-migration]] - inbound versus outbound migration routes, not backup or failover
 
 - [[braintree-webhooks]] — gateway notification purpose, setup routes, permissions, and volume boundaries
 - [[braintree-control-panel]] — gateway administration, Dashboard limits, and separate environments

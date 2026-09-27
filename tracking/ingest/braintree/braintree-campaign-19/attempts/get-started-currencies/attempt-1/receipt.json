@@ -1,0 +1,57 @@
+{
+  "job_id": "get-started-currencies",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Currencies\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/get-started/currencies\"\nraw_files:\n  - \"braintree/articles/get-started/currencies-2026-09-16.md\"\ntags: [braintree, currencies, presentment, settlement, multi-currency, merchant-accounts]\n---\n\n## Overview\n\nThis collected Braintree guide distinguishes presentment currency, which relates to what a customer sees and is charged, from settlement currency, which is deposited into the merchant's business bank account. It routes merchants through single- and multi-currency account choices, approval and integration prerequisites, merchant-account selection, conversion effects and sandbox testing without replacing the dedicated currency reference.\n\n## Key takeaways\n\n- Presentment currency is customer-facing: it can be the currency displayed by the website or app and the currency charged. Braintree's page states support for more than 130 local currencies in 44 countries, but it does not enumerate or map them; the linked dedicated currency reference is the route for that detail.\n- Settlement currency is the currency deposited into the business bank account. Whether a merchant can settle only in its home currency or in multiple currencies depends on account setup, and the page says available settlement currencies are typically limited to major currencies in the merchant's region.\n- The default single-currency setup presents and settles in the merchant's home currency. The page warns against displaying a converted price while charging in the home currency because rate movement can make the charged amount differ from the displayed amount; exchange-rate movement can likewise make an international customer's refund differ from the original amount paid.\n- A multi-currency setup is not automatic. Presenting or settling in multiple currencies is subject to relevant banking-partner approval and successful integration of the required multi-currency accounts. Additional presentment currencies use additional merchant accounts, and when presentment and settlement currencies differ, the transaction amount is converted before deposit. Depending on the bank and location, separate bank accounts may be needed for settlement currencies.\n- After an additional currency is configured, the integration must specify its merchant account ID. Before live processing, the merchant should create sandbox test transactions; unless onboarding choices, relevant banking approval and the required account integration are all complete, the page says live transactions process only in the home currency regardless of checkout pricing.\n\n> [!warning] Account, geography and live-processing boundaries\n> The page's currency choices are account-, banking-partner- and region-qualified. Its statement of more than 130 local currencies in 44 countries does not identify which currency is available in which country or prove an individual merchant's eligibility. Sandbox processing does not establish live multi-currency configuration, and the 2026-09-16 collection date does not establish current support.\n\n## Detail locators\n\n- Presentment definition and the page's aggregate currency/country statement: `## Presentment currency`, lines 19-23.\n- Settlement definition and account/region qualifications: `## Settlement currency`, lines 26-28.\n- Single- versus multi-currency routing, home-currency default and displayed-price warning: `## Currency setups` through `### Single currency setups > NOTE`, lines 31-44.\n- Refund exchange-rate mismatch warning: `### Single currency setups > #### Refunds`, lines 49-51.\n- Multi-currency approval and account-integration prerequisites: `### Multi-currency setups` through `IMPORTANT`, lines 54-60.\n- Additional presentment merchant accounts, conversion before deposit and settlement bank-account qualification: `### Multi-currency setups > #### Presentment` through `#### Settlement`, lines 65-72.\n- Merchant-account-ID integration, sandbox confirmation and live home-currency fallback: `### Multi-currency setups > #### Integrating with multiple currencies`, lines 75-81.\n- Sandbox merchant-account testing route: `## Testing currencies`, lines 86-88.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-currencies]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/general/currencies-2026-09-16|Braintree supported currencies reference]] - unread navigation-only page linked for the detailed currency list; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/get-started/currencies-2026-09-16|Braintree Currencies article]] - complete collected page covering presentment and settlement definitions, single- and multi-currency setups, prerequisites, conversion effects, integration and testing boundaries\n",
+  "quotes": [
+    {
+      "text": "Your presentment currency is the currency that relates to your customer when they purchase from you. It can be the currency you show on your website or mobile app, and the currency that your customer is charged in. Depending on your account setup, you may be able to present in more than one currency.",
+      "location": "## Presentment currency, line 21"
+    },
+    {
+      "text": "We support more than [130 local currencies](/braintree/docs/reference/general/currencies) in 44 countries.",
+      "location": "## Presentment currency, line 23"
+    },
+    {
+      "text": "Your settlement currency is the currency in which your funds will be deposited into your business bank account. Depending on your account setup, you may only be able to settle in your home currency, or you may have the option to settle in multiple currencies. Typically, available settlement currencies are limited to the major currencies in your region.",
+      "location": "## Settlement currency, line 28"
+    },
+    {
+      "text": "Your account is not automatically configured to accept multiple currencies. By default, your merchant account will only be set up in your home currency. We will discuss your options for presentment and settlement currencies during our onboarding process, and it is your responsibility to ensure that you have received approval from any relevant banking partners and have successfully completed integration of the required multi-currency accounts before accepting multiple currencies.",
+      "location": "### Multi-currency setups > IMPORTANT, line 60"
+    },
+    {
+      "text": "Before processing live transactions with a multi-currency setup, it is important to confirm that all of your desired currencies have been correctly configured by creating test transactions in the sandbox. Unless you have clearly specified during your onboarding process and in your integration, have received approval from any relevant banking partners, and have successfully completed integration of the required multi-currency accounts, live transactions will process only in your home currency, regardless of the pricing you present to your customers in your checkout flow.",
+      "location": "### Multi-currency setups > #### Integrating with multiple currencies > IMPORTANT, line 81"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-braintree-currencies-concept",
+        "target_path": "wiki/concepts/braintree-currencies.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree Currencies\"\ntype: concept\ncategory: technology\ntags: [braintree, currencies, presentment, settlement, multi-currency, merchant-accounts]\n---\n\n## Braintree Currencies\n\nBraintree's collected currency guide distinguishes presentment currency, which relates to the currency displayed to and charged to a customer, from settlement currency, which is deposited into the merchant's business bank account. Account setup determines whether either context can use multiple currencies, and available settlement currencies are typically limited to major currencies in the merchant's region. [[source-braintree-get-started-currencies]]\n\n## Setup and live-processing boundary\n\nSingle-currency accounts present and settle in the merchant's home currency by default. Multi-currency acceptance is not automatic: it is subject to relevant banking-partner approval and successful integration of the required multi-currency accounts. Additional presentment currencies use additional merchant accounts; after an additional currency is configured, the integration must specify its merchant account ID. The guide recommends sandbox transactions to confirm configuration and says that, without the documented onboarding choices, approvals and integration, live transactions process only in the home currency regardless of checkout pricing.\n\nThe page states support for more than 130 local currencies in 44 countries but does not enumerate or map them. It also warns that displaying a converted price while charging in the home currency can produce a charged amount different from the display as rates move, and that exchange-rate movement can make an international customer's refund differ from the original amount paid. Treat the collected snapshot as a retrieval route, not proof of current currency coverage or merchant eligibility.\n\n## Sources\n\n- [[source-braintree-get-started-currencies]] - presentment and settlement definitions, single- and multi-currency setup choices, account and approval prerequisites, conversion effects, live-processing fallback and exact raw-detail routes\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not convert the aggregate more-than-130-currencies-in-44-countries statement into a country-to-currency mapping or individual merchant eligibility claim.",
+          "Preserve the banking-partner approval, multi-currency-account integration and merchant-account-ID requirements for live multi-currency use.",
+          "Do not treat sandbox processing as proof that live multi-currency transactions are configured.",
+          "Do not infer current availability from the 2026-09-16 collected snapshot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/get-started/currencies-2026-09-16.md",
+  "raw_sha256": "c829f94a16b9ce52b9862bc157cb416324675c5efc2653c2a4bf0785d842addf",
+  "status": "candidate_ready"
+}

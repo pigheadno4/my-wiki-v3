@@ -1,0 +1,29 @@
+# C19 fixed retrieval audit — Group E
+
+## Evidence integrity
+
+- **PASS — complete reads:** read `raw/braintree/articles/get-started/data-migration/exports-2026-09-16.md` in full (lines 1–148) and `raw/braintree/articles/get-started/data-migration/public-key-2026-09-16.md` in full (lines 1–82).
+- **PASS — manifest pins:** Exports computes `1b3b3bdb24829dc6fa17110482074e85e516bc57d28ee1b50da948b782906a76`; Public Key computes `97754030eca221b8517d96d19363650095c3cfddec0925c0d86057bf359e1814`. Both equal the C19 manifest, whose raw paths, source targets and canonical URLs also match the promoted sources and embedded raw URLs.
+
+## Actual route — Data Migration Exports
+
+`wiki/index.md` → `wiki/braintree-index.md` → `wiki/concepts/braintree-data-migration.md` → `wiki/sources/braintree/source-braintree-get-started-data-migration-exports.md` → `raw/braintree/articles/get-started/data-migration/exports-2026-09-16.md`
+
+1. **Where is Braintree data export documented? — PASS.** Object/action match: this is the outbound Braintree Vault migration-export page, not the inbound import guide, Control Panel export, or periodic backup route. Direct answer: the route above reaches the collected Braintree **Exports** article for moving Vault data to another payment gateway. Exact raw locator: embedded canonical URL and slug, lines 1 and 6–9; `# Exports`, lines 14–18.
+2. **What export purpose, prerequisites, process and consequential boundaries does the collected page document? — PASS.** Object/action match: the reached raw documents outbound customer/saved-card migration and does not substitute import or reporting behavior. Direct answer: to move data to another gateway, the merchant first supplies qualified-provider attestation of that gateway's PCI compliance; Braintree requests and verifies the receiving provider's public encryption key, encrypts the sensitive data and sends it by SFTP, SCP, or FTP over SSL, while the receiver protects its private key under PCI DSS. Selection is the entire Vault or a merchant-supplied customer-ID list. Output is a fixed, non-modifiable GPG-encrypted CSV: each card has its own customer/address row, and customers without cards have customer-only rows with empty card/address fields. The migration is capped at two exports—bulk plus switch-over customers—and is not a periodic backup or failover service; the page does not document self-service initiation, delivery timing, pricing, eligibility, or current availability. Exact raw locators: two-export/backup boundary, lines 17–18; prerequisite, encryption, transport and key handling, lines 22–26; selection, lines 29–35; fixed format and row semantics, lines 38–50; header schema, lines 53–147.
+
+## Actual route — Data Migration Public Key
+
+`wiki/index.md` → `wiki/braintree-index.md` → `wiki/concepts/braintree-data-migration.md` → `wiki/sources/braintree/source-braintree-get-started-data-migration-public-key.md` → `raw/braintree/articles/get-started/data-migration/public-key-2026-09-16.md`
+
+3. **Where is the data-migration public-key guide? — PASS.** Object/action match: this is Braintree's public key for encrypting inbound migration files containing customer data, not a merchant API credential, the Forward API key, or the receiving provider's outbound-export key. Direct answer: the route above reaches the collected **Braintree Public Key** migration guide. Exact raw locator: embedded canonical URL and slug, lines 1 and 6–9; `# Braintree Public Key`, lines 14–16.
+4. **What is the key's documented role and what handling boundaries are stated? — PASS.** Object/action match: the requested key encrypts files sent **to Braintree**; it is directionally distinct from the receiving provider's key that Braintree obtains for an export. Direct answer: the collected page requires Braintree's public key to encrypt every file sent with customer data and identifies the migration key as a 4,096-bit RSA public key, with the PGP public-key block present in the raw. It does not document the wider import process, transmission route, current-key verification, rotation, expiry, revocation, or private-key handling. The raw is a 2026-09-16 historical snapshot: its included key material is evidence of what that collected page published, not proof of the current operational key. For a live migration, obtain the current key from the current official canonical guide or Braintree's migration team and follow their current verification process; do not copy the snapshot's key material from the wiki summary or this audit. Exact raw locators: encryption role, line 16; key identity and metadata, lines 19–25; historical published key block, lines 28–82.
+
+## Shared checks
+
+- **PASS — bounded gap sweep:** filename and phrase searches found the dedicated migration overview/import guide, gateway API-credential pages and a separate Forward API PGP key. Exact-canonical-URL search found only the two pinned snapshots. Neither audited source has a `Related raw API references` section. No extra full read was needed: the two selected raws answer all four fixed questions directly, and adjacent pages either route to them or concern a different direction/key object. No conflict was found; current operational key validity remains deliberately unclaimed.
+- **PASS — reciprocal and catalog links:** the root index routes to `braintree-index`; the provider index has one entry for `braintree-data-migration` and one entry for each audited source; the concept links to both sources; each source links back to the concept and to its exact path-qualified pinned raw. Both `raw_files` entries match the manifest paths.
+
+## Verdict
+
+**PASS — 4/4 fixed questions.** Retrieval, object/action identity, direct raw-grounded answers, manifest hashes, exact locators, bounded gap sweep and reciprocal links all pass. **Concrete repair: none required.**

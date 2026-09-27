@@ -1,0 +1,56 @@
+{
+  "job_id": "get-started-data-migration-imports",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Data Migration Imports\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/get-started/data-migration/imports\"\nraw_files:\n  - \"braintree/articles/get-started/data-migration/imports-2026-09-16.md\"\ntags: [braintree, data-migration, imports, vault, payment-methods]\n---\n\n## Overview\n\nThis collected Braintree article documents a managed process for importing customers and payment methods from another processor into the Braintree gateway. It covers the export and secure-transfer prerequisites, Braintree's preferred PGP-and-SFTP transfer flow, identifier mapping, supported data categories, and consequential import limits; it is not an export procedure, backup service, failover mechanism, or guarantee that imported wallet payment methods will transact successfully.\n\n## Key takeaways\n\n- The page limits a migration to no more than two imports: one bulk import and one import for customers created during the processing switch. Braintree says it will not perform periodic imports for backup or failover, leaving that responsibility to the merchant.\n- To begin, the merchant must request a data export from its current or former processor and ask that processor to transfer the data to Braintree over a secure connection. Braintree describes a preferred process in which it obtains the processor's PGP public key, sends encrypted SFTP credentials, receives data encrypted with Braintree's public key, and performs the import. Encryption with Braintree's public key is stated as required before transmission.\n- After completion, Braintree says it provides a logfile containing the customer IDs and payment-method tokens created in the gateway. For mapping, Braintree can generate those identifiers or use supplied values; supplied identifiers should be checked against existing Vault customers to prevent collisions.\n- CSV with UTF-8 encoding is preferred, and other formats may delay the import. Detailed credit-card, optional customer and billing-address, custom-field, wallet, and US ACH fields remain in the raw locators below rather than being duplicated here.\n- The page documents imports for credit cards, PayPal Billing Agreements, Apple Pay cards, Google Pay cards and network tokens, and US ACH. Payment-method-specific conditions matter: the PayPal Business Account used for the billing agreements must match the account linked to the Braintree gateway; Apple Pay and Google Pay data require processor-separated files; and the issuer ultimately determines transaction success for imported Apple Pay and Google Pay methods, which may need to be re-added after consistent declines.\n\n> [!warning] Collected import boundaries\n> Treat the two-import cap, required public-key encryption, collision check, account-match requirement, separate wallet files, and issuer-controlled wallet transaction outcomes as material boundaries of this collected page. The 2026-09-16 snapshot does not establish current import availability, processor participation, timing, acceptance, transaction success, backup coverage, or failover coverage.\n\n## Detail locators\n\n- Two-import maximum and no periodic backup or failover imports: `# Imports > **NOTE**`, lines 17-18.\n- Import purpose and export/secure-transfer prerequisites: `# Imports`, line 22.\n- Preferred PGP, credential, SFTP and import process plus output logfile: `## Data transfer process`, lines 25-35.\n- Required encryption with Braintree's public key: `## Data transfer process > **IMPORTANT**`, lines 38-39.\n- Preferred CSV/UTF-8 format and delay qualification: `## Data format`, lines 44-46.\n- Identifier generation or reuse and collision check: `## Mapping the data`, lines 49-55.\n- Credit-card minimum and optional data categories: `## Required credit card fields` through `## Optional fields`, lines 60-151.\n- Vault custom-field mapping route: `## Custom fields`, lines 154-156.\n- PayPal Billing Agreement inputs and Business Account match: `## Importing PayPal Billing Agreements`, lines 159-165.\n- Apple Pay separate-file, field-category and issuer-success boundaries: `## Importing Apple Pay cards`, lines 170-181.\n- Google Pay separate-file, card/network-token category and issuer-success boundaries: `## Importing Google Pay Cards and Google Pay Network Tokens`, lines 188-215.\n- US ACH input categories and ownership-type mapping: `## Importing US ACH` through `## Required Fields:`, lines 222-263.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-data-migration]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/get-started/data-migration/public-key-2026-09-16|Braintree data-migration public-key guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/articles/control-panel/custom-fields-2026-09-16|Braintree Control Panel custom-fields article]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/articles/get-started/data-migration/imports-2026-09-16|Braintree Data Migration Imports article]] - complete collected page covering import purpose, prerequisites, preferred transfer process, mapping, supported data categories, and consequential limits\n",
+  "quotes": [
+    {
+      "text": "You must migrate your data into Braintree with no more than two imports: one to import the bulk of your customers, and another to import any new customers created while your processing was switched over. We will not run any periodic imports for backup or failover \u2014 you will need to handle this on your side.",
+      "location": "# Imports > **NOTE**, line 18"
+    },
+    {
+      "text": "We're happy to import your customers and payment methods from any other processor. To start the process, you'll need to request a data export from your current or former processor and ask them to transfer the data to us via a secure connection.",
+      "location": "# Imports, line 22"
+    },
+    {
+      "text": "- We'll obtain your processor's PGP public key (if we don't already have the key, we will request it from you)\n- We'll send your old processor an encrypted set of credentials they can use to log into our SFTP server\n- Your old processor will encrypt your data with[our public key](/braintree/articles/get-started/data-migration/public-key), then load the data onto our SFTP server\n- We'll pull the data down and perform the import\n\nOnce the import is complete, we will provide you with a logfile containing the customer IDs and payment method tokens that we created in your Braintree gateway. Each customer will be on its own row, and each card will be on its own row below the corresponding customer.",
+      "location": "## Data transfer process, lines 30-35"
+    },
+    {
+      "text": "We require that all files be encrypted using [our public key](/braintree/articles/get-started/data-migration/public-key) before being transmitted to us.",
+      "location": "## Data transfer process > **IMPORTANT**, line 39"
+    },
+    {
+      "text": "We can import PayPal Billing Agreements as a payment method in your Vault. If you'd like us to import your PayPal Billing Agreements, please provide us with a list of the Billing Agreement IDs and the associated customer email addresses.\n\n\n**IMPORTANT**\n The PayPal Business Account used to create your billing agreements must match the PayPal Business Account linked to your Braintree gateway.",
+      "location": "## Importing PayPal Billing Agreements, lines 161-165"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-braintree-data-migration-concept",
+        "target_path": "wiki/concepts/braintree-data-migration.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree Data Migration\"\ntype: concept\ncategory: technology\ntags: [braintree, data-migration, vault, payment-methods, secure-transfer]\n---\n\n## Braintree Data Migration\n\nBraintree's collected import guide documents a managed route for moving customer and payment-method data from another processor into a Braintree gateway. The merchant first requests an export from the current or former processor and asks that processor to transfer it securely; Braintree's preferred flow uses PGP keys, encrypted SFTP credentials, files encrypted with Braintree's public key, and a Braintree-performed import. [[source-braintree-get-started-data-migration-imports]]\n\n## Import boundaries\n\nThe guide limits a migration to a bulk import plus one follow-up import for customers created during the processing switch, and it excludes periodic imports for backup or failover. After import, Braintree says it returns a logfile of created customer IDs and payment-method tokens. Supplied mapping identifiers should be checked against existing Vault customers to prevent collisions.\n\nThe page covers credit cards, PayPal Billing Agreements, Apple Pay, Google Pay and US ACH, with method-specific inputs and conditions in the raw source. The PayPal Business Account used for imported billing agreements must match the account linked to the Braintree gateway. Imported Apple Pay and Google Pay methods do not guarantee successful transactions because final acceptance remains with the cardholder's bank or issuer. Treat the snapshot as collected evidence rather than proof of current import availability or processor participation. [[source-braintree-get-started-data-migration-imports]]\n\n## Sources\n\n- [[source-braintree-get-started-data-migration-imports]] - customer and payment-method import purpose, prerequisites, preferred secure-transfer process, mapping, supported categories and consequential limits\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep data import distinct from Braintree data export and public-key handling procedures; those dedicated pages require their own complete reads.",
+          "Do not infer current import availability, processor participation, timing, transaction success, backup coverage, or failover coverage from the collected snapshot.",
+          "Preserve the two-import maximum, required Braintree-public-key encryption, mapping-collision check, PayPal Business Account match, and issuer-controlled Apple Pay and Google Pay transaction outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/get-started/data-migration/imports-2026-09-16.md",
+  "raw_sha256": "09b75f999833e3ab809dc1bef17fdeb27172f3c47ddfa121aec60865dc02e359",
+  "status": "candidate_ready"
+}
