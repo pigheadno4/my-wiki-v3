@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-27] ingest | Checkout Components `5.0.435`
+
+- Approved focused-reading delta: iframe-title regression coverage and generated scoped-style ID changes, with no authored runtime change. Earlier history preserved. Details: [[paypal-log]] and [[changelog-github-paypal-checkout-components]].
+
 ## [2026-09-26] ingest | PayPal JS `11.1.1` and React `10.5.1`
 
 - Approved shared-SHA delta: loader option hardening, 11-method LPM field-forwarding changes, 54-file Storybook supplement, and Pix README mismatch. All older knowledge retained. Details: [[paypal-log]], [[source-github-paypal-js]], and [[changelog-github-paypal-js]].

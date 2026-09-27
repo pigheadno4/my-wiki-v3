@@ -19,7 +19,7 @@ Standard e-commerce integration that renders PayPal, Venmo, and Debit/Credit Car
 
 The September 23 patches, `@paypal/paypal-js@11.1.1` and `@paypal/react-paypal-js@10.5.1`, harden selected loader option reads and align session-field forwarding for 11 local methods. The 50 generated/reworked Storybook wrappers illustrate existing methods, not new merchant eligibility. The unchanged Pix README example does not match the new prop-selection list; see [[source-github-paypal-js]], [[changelog-github-paypal-js]], and [[paypal-apm]] for the version-specific warning and preserved history.
 
-The latest ingested Checkout Components release is `@paypal/checkout-components@5.0.434`: it observes checkout-child `window.name` assignments and logs names outside the expected Zoid shape. This is monitoring, not a blocking or authentication control; logged values are truncated, not redacted. No merchant API migration is documented or browser behavior independently tested. The `5.0.433` iframe aria-label revert remains; earlier accessibility changes are preserved as version-specific history. See [[source-github-paypal-checkout-components]].
+The latest ingested Checkout Components release is `@paypal/checkout-components@5.0.435`: it adds regression tests for existing iframe titles without authored runtime changes. The `5.0.434` checkout-child window-name monitoring remains: it is not a blocking or authentication control, and logged values are truncated, not redacted. The `5.0.433` iframe aria-label revert also remains. No merchant API migration or independently tested browser/screen-reader outcome is established; earlier history is preserved in [[source-github-paypal-checkout-components]].
 
 The v6 sample repository at `default-branch@bb23e7c` (September 17, 2026) adds [[paypal-ach|ACH Wallet]] HTML orchestration, optional cardholder-name fields in HTML/React, and auto presentation for 46 local-method HTML examples. It declares React wrapper `^10.5.0` and Server SDK `^2.5.0`. Consent storage is logging-only, ACH eligibility/order amounts differ, and the React save-card example omits the final payment-token exchange. These sample limitations and earlier history remain in [[source-github-v6-web-sdk-sample-integration]] and [[changelog-github-v6-web-sdk-sample-integration]].
 
@@ -283,8 +283,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
 - [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; v8 baselines through core `11.1.1` and React `10.5.1`
 - [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `11.0.1` and React `10.4.1`, with impact, migration action, contradictions, and immutable raw links
-- [[source-github-paypal-checkout-components]] — cumulative checkout runtime through `5.0.434`, including child window-name monitoring and preserved accessibility history
-- [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.434`
+- [[source-github-paypal-checkout-components]] — cumulative checkout runtime through `5.0.435`, including iframe-title regression coverage, child window-name monitoring and preserved accessibility history
+- [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.435`
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` component bill of materials and release/deployment workflow
 - [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger
 - [[source-github-paypal-messaging-components]] — web messaging through `1.97.0`: page-type migration, inline disclosures, ES/IT warnings and v2 defaults; earlier releases preserved

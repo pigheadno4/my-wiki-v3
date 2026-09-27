@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-27] ingest | Checkout Components `5.0.435`
+
+- Delta-ingested `github-b87716491900a0da3802`, `@paypal/checkout-components@5.0.434` to `5.0.435`, SHA `1f668d5ebfba91a6e636f2453aeaba36d65cb5c7`, with approved focused reading.
+- Added iframe-title regression coverage; no authored runtime change. Verified both complete generated bundle diffs differ only by seven scoped-style IDs; 213 prior and 214 current snapshot hashes pass, with 211 unchanged files. Prior changelog history and version-only package change verified mechanically.
+- Concept updated first, then source/changelog, company, provider index and logs. All earlier knowledge preserved; source count remains 177. No new comparison or runtime/payment tests. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-b8771649.md`.
+- Sources: [[source-github-paypal-checkout-components]], [[changelog-github-paypal-checkout-components]]. No commit/push.
+
 ## [2026-09-26] ingest | PayPal JS `11.1.1` and React `10.5.1`
 
 - Delta-ingested the single approved SHA work item `github-16ddfb4cd25d5895e633`, `dfd184b6abc9384d07a95f92db4be517d8c22c86`, from core `11.1.0` / React `10.5.0`. Releases are dated September 23; evidence collected September 26.

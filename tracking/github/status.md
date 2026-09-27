@@ -2185,6 +2185,31 @@
   To SHA: `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089`
   Comparison: [manifest](repos/braintree/restricted-input/comparisons/default-branch/79053ef--8dcc6ea/comparison.json)
 
+## `github-b87716491900a0da3802`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `1f668d5ebfba91a6e636f2453aeaba36d65cb5c7`
+- Collection date: `2026-09-27`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-b87716491900a0da3802/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.435` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.435/2026-09-27/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.434--5.0.435/comparison.json)
+
 ## `github-b8f0d09e7fd89635c59f`
 
 - Repository: `adyen/adyen-3ds2-ios`

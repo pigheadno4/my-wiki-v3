@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-09-20
+date_updated: 2026-09-27
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/manifest.json"
@@ -22,6 +23,22 @@ tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-checkout-components`. Cumulative implementation knowledge belongs in [[source-github-paypal-checkout-components]] and the linked immutable snapshots.
+
+## `@paypal/checkout-components@5.0.435` (2026-09-21)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/checkout-components` | `5.0.434` | `5.0.435` | `1f668d5ebfba91a6e636f2453aeaba36d65cb5c7` | Delta, approved focused reading |
+
+**Finding:** Adds tests for the existing plain PayPal iframe title and funding-qualified `PayPal-venmo` title. No authored runtime changes; package changes only its version. Both generated bundles differ only in seven scoped-style identifiers under mechanical normalization.
+
+**Impact:** Regression coverage, not a new screen-reader fix, merchant API migration, eligibility change, or hosted deployment proof. The tests inspect captured component configuration and were not run here. Preserve the `5.0.433` aria-label revert and `5.0.434` monitoring behavior.
+
+**Evidence boundary:** 213 prior and 214 current files hash-verified; 211 unchanged. Prior changelog is an identical suffix. Bundle "addition" is a capsule-selection difference, not an upstream new file. Focused-reading approval covers mechanical generated/history checks; no full semantic-read claim for the bundles. Separate release notes unavailable. Test text is retained in the comparison patch, not the raw capsule.
+
+**Updated areas:** cumulative source, Checkout concept, company, provider index and logs. Earlier history preserved; source count unchanged. Work item: `github-b87716491900a0da3802`.
+
+**Evidence:** [snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json), [release](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.435/2026-09-27/manifest.json), [comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.434--5.0.435/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.434--5.0.435/diff.patch), [review](../../../../tracking/github/repos/paypal/paypal-checkout-components/ingest-review-b8771649.md).
 
 ## `@paypal/checkout-components@5.0.434` (2026-09-09)
 

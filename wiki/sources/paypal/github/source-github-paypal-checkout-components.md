@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-09-20
+date_updated: 2026-09-27
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e4c6f20/manifest.json"
@@ -21,7 +22,7 @@ tags: [paypal, checkout, javascript-sdk, github-repository, venmo, pay-later]
 
 ## Overview
 
-`paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends ingested history through `@paypal/checkout-components@5.0.434` at exact SHA `79fa938be54dd364bb251e5b5caa49c7c809030a`. This release adds checkout-child window-name monitoring. The iframe aria-label addition in `5.0.432` and revert in `5.0.433` remain documented.
+`paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends ingested history through `@paypal/checkout-components@5.0.435` at exact SHA `1f668d5ebfba91a6e636f2453aeaba36d65cb5c7`. The latest patch adds iframe-title regression tests, not authored runtime changes. The `5.0.434` checkout-child window-name monitoring, iframe aria-label addition in `5.0.432`, and revert in `5.0.433` remain documented.
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
 
@@ -276,6 +277,18 @@ The upstream comparison changes only `CHANGELOG.md`, `package.json` and `src/zoi
 
 Grounding under `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/files/`: `CHANGELOG.md` records "observe window name"; the checkout component defines `WINDOW_NAME_LOG_TRUNCATION_LENGTH = 50`, the Zoid-name regex, `Object.defineProperty(window, "name", ...)`, and both named log events. Separate upstream release notes are unavailable; motivation beyond the named observation change is undocumented.
 
+## Version 5.0.435 iframe-title regression coverage
+
+Released September 21, 2026; collected and delta-ingested September 27 as `github-b87716491900a0da3802`. The upstream change adds two tests of the existing Buttons iframe attributes: no funding source yields `FUNDING_BRAND_LABEL.PAYPAL`, while `fundingSource: "venmo"` yields that label plus `-venmo`. The test mocks Zoid's `create()` to capture the real component configuration. It checks configuration output, not rendered browser or screen-reader behavior, and was not executed here.
+
+No authored runtime implementation changes. Package JSON changes only the version; dependency ranges and public exports are unchanged. The prior changelog is an identical suffix below the new entry. Both generated bundle diffs become byte-identical after consistent normalization of seven `data-v-xxxxxxxx` scoped-style identifiers. This narrow mechanical result is not a runtime, visual, or hosted-deployment test.
+
+The existing `5.0.433` aria-label revert and `5.0.434` window-name monitoring therefore remain the relevant authored-source history. This release does not restore `PayPal Payment Buttons` or add a new accessibility fix. No merchant API migration is documented.
+
+**Evidence scope:** user-approved focused reading of the package, new changelog entry, authored test diff, comparison and complete cumulative wiki history; snapshot hashes, unchanged files, old changelog history and generated bundles checked mechanically. All 213 prior and 214 current retained file hashes passed; 211 files are unchanged. The packet calls `dist/button.js` added because it was absent from the prior capsule, but the upstream comparison records it as modified, not newly introduced. Tests remain excluded from raw capsules; their exact added text is preserved in the comparison patch. Separate upstream release notes are unavailable. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-b8771649.md`.
+
+**Grounding:** current raw `files/CHANGELOG.md:3` says "chore: add test for button iframe title"; `files/package.json:3` declares `"version": "5.0.435"`; the comparison's added `src/zoid/buttons/component.test.js` says "uses the plain PayPal label when no funding source is set" and "appends the funding source to the label when one is set".
+
 ## Public and security boundary
 
 The browser-facing `Buttons` component is public on merchant pages. Lower-level checkout controls remain PayPal-domain-only. The iframe helper is therefore not a merchant escape hatch for forcing an unsupported presentation mode.
@@ -292,6 +305,11 @@ The exact snapshot also shows that layout, platform, remembered funding, and ser
 - [[source-paypal-pay-with-venmo]] — current product documentation for mobile app switch and desktop QR
 
 ## Raw sources
+
+- [Snapshot 5.0.435](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json)
+- [Release 5.0.435](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.435/2026-09-27/manifest.json)
+- [Package](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/files/package.json) and [changelog](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/files/CHANGELOG.md) (new entry read; history checked mechanically)
+- [Comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.434--5.0.435/comparison.json) and [patch containing the added test](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.434--5.0.435/diff.patch)
 
 - Snapshot (`5.0.434`): `raw/github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json`
 - Release (`5.0.434`): `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.434/2026-09-20/manifest.json`
