@@ -1,0 +1,211 @@
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index ebc03f7..313a351 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,13 @@
+ # Changelog
+ 
++## 10.5.1
++
++### Patch Changes
++
++- 419f4ac: Align v6 Local Payment Method session-field metadata with the core Web SDK.
++- Updated dependencies [934c705]
++  - @paypal/paypal-js@11.1.1
++
+ ## 10.5.0
+ 
+ ### Minor Changes
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index e7b2fec..4c7979b 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "10.5.0",
++  "version": "10.5.1",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+@@ -66,7 +66,7 @@
+   },
+   "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
+   "dependencies": {
+-    "@paypal/paypal-js": "^11.1.0",
++    "@paypal/paypal-js": "^11.1.1",
+     "@paypal/sdk-constants": "^1.0.122",
+     "server-only": "^0.0.1"
+   },
+diff --git a/packages/react-paypal-js/src/v6/config/lpmRegistry.test.ts b/packages/react-paypal-js/src/v6/config/lpmRegistry.test.ts
+index 3936d3d..28bd266 100644
+--- a/packages/react-paypal-js/src/v6/config/lpmRegistry.test.ts
++++ b/packages/react-paypal-js/src/v6/config/lpmRegistry.test.ts
+@@ -76,7 +76,7 @@ describe("LPM_REGISTRY", () => {
+     ).not.toBe(LPM_REGISTRY.fiuu.buttonTag);
+   });
+ 
+-  test("LPMs with sessionFields have correct types", () => {
++  test("session fields match the corresponding core SDK payment sessions", () => {
+     const validSessionFieldTypes = new Set([
+       "phone",
+       "billingAddress",
+@@ -84,27 +84,40 @@ describe("LPM_REGISTRY", () => {
+       "expiryDate",
+       "dateOfBirth",
+       "numberOfInstallments",
+-      "bic",
+-      "identification",
+     ]);
+ 
++    const expectedSessionFields = {
++      afterpay: ["billingAddress"],
++      alfamart: ["phone"],
++      bancomatPay: ["phone"],
++      boletobancario: ["billingAddress", "taxInfo", "expiryDate"],
++      doku: ["phone"],
++      dragonpay: ["phone"],
++      floa: ["dateOfBirth", "numberOfInstallments"],
++      gopay: ["phone"],
++      indomaret: ["phone"],
++      indonesiaBanks: ["phone"],
++      jeniuspay: ["phone"],
++      klarna: ["phone", "billingAddress"],
++      kredivo: ["phone"],
++      linkaja: ["phone"],
++      mbway: ["phone"],
++      ovo: ["phone"],
++      oxxopay: ["expiryDate"],
++      pixInternational: ["taxInfo"],
++      scalapay: ["phone"],
++      zip: ["phone", "billingAddress"],
++    } as const;
++
+     for (const [lpmKey, config] of Object.entries(LPM_REGISTRY)) {
+       for (const field of config.sessionFields) {
+         expect(validSessionFieldTypes.has(field)).toBe(true);
+-        // Verify the documented fields match registry entries
+-        if (lpmKey === "mbway") {
+-          expect(config.sessionFields).toContain("phone");
+-        }
+-        if (lpmKey === "pixInternational") {
+-          expect(config.sessionFields).toContain("phone");
+-          expect(config.sessionFields).toContain("billingAddress");
+-          expect(config.sessionFields).toContain("taxInfo");
+-        }
+-        if (lpmKey === "floa") {
+-          expect(config.sessionFields).toContain("dateOfBirth");
+-          expect(config.sessionFields).toContain("numberOfInstallments");
+-        }
+       }
++
++      expect(config.sessionFields).toEqual(
++        expectedSessionFields[lpmKey as keyof typeof expectedSessionFields] ??
++          [],
++      );
+     }
+   });
+ });
+diff --git a/packages/react-paypal-js/src/v6/config/lpmRegistry.ts b/packages/react-paypal-js/src/v6/config/lpmRegistry.ts
+index 824e9fd..5416f3e 100644
+--- a/packages/react-paypal-js/src/v6/config/lpmRegistry.ts
++++ b/packages/react-paypal-js/src/v6/config/lpmRegistry.ts
+@@ -198,7 +198,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createPixInternationalOneTimePaymentSession",
+     displayName: "Pix",
+     fields: ["name", "email"],
+-    sessionFields: ["phone", "billingAddress", "taxInfo"],
++    sessionFields: ["taxInfo"],
+     testBuyerCountry: "BR",
+   },
+   sepa: {
+@@ -261,7 +261,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createKredivoOneTimePaymentSession",
+     displayName: "Kredivo",
+     fields: ["name", "email"],
+-    sessionFields: ["phone", "taxInfo"],
++    sessionFields: ["phone"],
+     testBuyerCountry: "ID",
+   },
+   linkaja: {
+@@ -315,7 +315,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createBancomatPayOneTimePaymentSession",
+     displayName: "Bancomat Pay",
+     fields: ["name"],
+-    sessionFields: ["phone", "taxInfo"],
++    sessionFields: ["phone"],
+     testBuyerCountry: "IT",
+   },
+   jeniuspay: {
+@@ -333,7 +333,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createKlarnaOneTimePaymentSession",
+     displayName: "Klarna",
+     fields: ["name", "email"],
+-    sessionFields: [],
++    sessionFields: ["phone", "billingAddress"],
+     testBuyerCountry: "SE",
+   },
+   afterpay: {
+@@ -342,7 +342,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createAfterpayOneTimePaymentSession",
+     displayName: "Afterpay",
+     fields: ["name", "email"],
+-    sessionFields: [],
++    sessionFields: ["billingAddress"],
+     testBuyerCountry: "AU",
+   },
+   oxxopay: {
+@@ -351,7 +351,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createOxxopayOneTimePaymentSession",
+     displayName: "OXXO",
+     fields: ["name", "email"],
+-    sessionFields: [],
++    sessionFields: ["expiryDate"],
+     testBuyerCountry: "MX",
+   },
+   boletobancario: {
+@@ -360,7 +360,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createBoletobancarioOneTimePaymentSession",
+     displayName: "Boleto Bancário",
+     fields: ["name", "email"],
+-    sessionFields: ["taxInfo"],
++    sessionFields: ["billingAddress", "taxInfo", "expiryDate"],
+     testBuyerCountry: "BR",
+   },
+   paysafecard: {
+@@ -378,7 +378,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createScalapayOneTimePaymentSession",
+     displayName: "Scalapay",
+     fields: ["name", "email"],
+-    sessionFields: [],
++    sessionFields: ["phone"],
+     testBuyerCountry: "IT",
+   },
+   crypto: {
+@@ -396,7 +396,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createDragonpayOneTimePaymentSession",
+     displayName: "Dragonpay",
+     fields: ["name", "email"],
+-    sessionFields: [],
++    sessionFields: ["phone"],
+     testBuyerCountry: "PH",
+   },
+   fpx: {
+@@ -414,7 +414,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createIndomaretOneTimePaymentSession",
+     displayName: "Indomaret",
+     fields: ["name", "email"],
+-    sessionFields: [],
++    sessionFields: ["phone"],
+     testBuyerCountry: "ID",
+   },
+   thailandBanks: {
+@@ -432,7 +432,7 @@ export const LPM_REGISTRY = {
+     sessionMethod: "createAlfamartOneTimePaymentSession",
+     displayName: "Alfamart",
+     fields: ["name", "email"],
+-    sessionFields: [],
++    sessionFields: ["phone"],
+     testBuyerCountry: "ID",
+   },
+   zip: {

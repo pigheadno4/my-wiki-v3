@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-26] ingest | PayPal JS `11.1.1` and React `10.5.1`
+
+- Approved shared-SHA delta: loader option hardening, 11-method LPM field-forwarding changes, 54-file Storybook supplement, and Pix README mismatch. All older knowledge retained. Details: [[paypal-log]], [[source-github-paypal-js]], and [[changelog-github-paypal-js]].
+
 ## [2026-09-22] ingest | Adyen Web `6.45.2`
 
 - Delta-ingested the payment-action rollback fix after completing 6.45.1; preserved its do-not-use warning and all older history. Details: [[adyen-log]], [[source-github-adyen-web]] and [[changelog-github-adyen-web]]. No runtime tests or commit/push.

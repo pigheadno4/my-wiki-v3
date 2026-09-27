@@ -95,6 +95,10 @@ These transports are version-specific. The iOS README lists PayPal SDK v5 as sup
 - **Web components**: `<paypal-button>`, `<paypal-pay-later-button>`, `<paypal-credit-button>`
 - **Security**: NEVER pass item total from browser; validate order on server before capture
 
+### Loader 11.1.1 and React 10.5.1 Patch Boundary
+
+The September 23, 2026 core patch centralizes own-property reads and extends them to selected legacy/custom/v6 loader options, so inherited configuration values are not accepted at those reads. Explicit own `environment` remains required for v6. This is bounded loader hardening, not evidence of a new payment feature or a complete security guarantee. React 10.5.1 depends on core `^11.1.1` and changes session-field forwarding for 11 local methods; see [[paypal-apm]] for the Pix documentation mismatch and [[source-github-paypal-js]] / [[changelog-github-paypal-js]] for implementation and retained earlier versions.
+
 ### Historical v6 sample baseline at `b5f2df2`
 
 The `paypal-examples/v6-web-sdk-sample-integration` baseline combines static JavaScript, React/TypeScript, and Node.js examples. The standard PayPal flow fetches a server-owned client ID, checks PayPal, Pay Later, and Credit eligibility separately, starts the selected session with an unresolved create-order promise to preserve browser transient activation, and captures on approval.

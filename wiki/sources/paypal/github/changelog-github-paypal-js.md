@@ -2,9 +2,11 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-19
+date_updated: 2026-09-26
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json"
+  - "github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json"
   - "github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json"
@@ -25,6 +27,36 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `dfd184b` (2026-09-23)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `11.1.0` | `11.1.1` | 2026-09-23 | `dfd184b6abc9384d07a95f92db4be517d8c22c86` | Delta |
+| `@paypal/react-paypal-js` | `10.5.0` | `10.5.1` | 2026-09-23 | `dfd184b6abc9384d07a95f92db4be517d8c22c86` | Delta |
+
+Package-qualified releases `@paypal/paypal-js@11.1.1` and `@paypal/react-paypal-js@10.5.1` were collected September 26 and ingested together as approved work item `github-16ddfb4cd25d5895e633`, with the separately approved 54-file Storybook supplement.
+
+**Core impact:** centralized own-property helper, existing environment/base-URL guards retained, and selected custom/legacy/v6 loader reads hardened against inherited values. Use own configuration properties; v6 still requires a valid explicit environment. This is bounded hardening, not an exhaustive security guarantee.
+
+**React impact:** core dependency becomes `^11.1.1`; 11 LPM session-field lists change. Klarna adds phone/address forwarding, Afterpay address, OXXO expiry, Boleto address/expiry alongside tax information, and four methods add phone forwarding. Pix drops phone/address from this selection step; Kredivo and Bancomat Pay drop tax information. The unchanged hook merges defined selected values after the order result before `session.start()`. Full table and a React fragment are in [[source-github-paypal-js]].
+
+**Examples:** 50 generated/reworked wrappers for existing LPMs, shared eligibility-gated popup factory and currency/funding-source mappings, plus generation/check scripts. This is example coverage, not evidence of 50 newly available methods.
+
+**Migration:** review the field props supplied by integrations with affected methods. The registry neither enforces required-field presence nor establishes merchant eligibility; finalization and error handling remain merchant responsibilities.
+
+> [!warning] Contradiction - Pix example
+> The unchanged retained README still passes phone/address/tax information for Pix; React 10.5.1 selects only tax information from props for the start-payment data promise. Preserve the older example as history, but use the version-specific registry/hook for this forwarding claim. See [[source-github-paypal-js]] and [[paypal-apm]].
+
+**Updated knowledge:** core 11.1.1 and React 10.5.1 source sections, package status, [[paypal-checkout]], [[paypal-apm]], company and catalog. All earlier release sections remain.
+
+### Evidence boundary
+
+Complete assigned delta evidence and all 54 supplemental files were read. The current snapshot has 155 files; eight retained files changed, 147 are unchanged, and the prior README/rollup configuration are no longer selected, not upstream-deleted. No upstream test suite, generator, browser story, or payment flow was executed.
+
+Evidence: [snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json), [Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json), [core release](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.1/2026-09-26/manifest.json), [React release](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.1/2026-09-26/manifest.json), [core comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.1.0--11.1.1/comparison.json), [React comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.0--10.5.1/comparison.json).
 
 ## Repository change set: `abc4c83` (2026-09-15)
 
@@ -467,6 +499,9 @@ The same SHA contains `@paypal/paypal-js@9.0.0`, matching React 8.9.2's declared
 The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is recorded in this change set because the approved work item contains only `@paypal/paypal-js@8.4.2`. A future React release ingest will add its own package-qualified timeline entry.
 
 ## Raw Sources
+
+- [September 23 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json) and [Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json)
+- [Core 11.1.1 notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.1/2026-09-26/release-notes.md) and [React 10.5.1 notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.1/2026-09-26/release-notes.md)
 
 - [September 15 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json)
 - [Same-SHA Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/manifest.json)

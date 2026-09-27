@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-26] ingest | PayPal JS `11.1.1` and React `10.5.1`
+
+- Delta-ingested the single approved SHA work item `github-16ddfb4cd25d5895e633`, `dfd184b6abc9384d07a95f92db4be517d8c22c86`, from core `11.1.0` / React `10.5.0`. Releases are dated September 23; evidence collected September 26.
+- Read the assigned delta evidence, cumulative wiki history, and all 54 approved Storybook supplemental files. Standard snapshot: 155 files, eight modified and 147 unchanged versus the prior capsule; README/rollup omissions are selection differences, not upstream deletions. No focused-reading exception was needed.
+- Recorded selected own-property loader guards, all 11 LPM session-field changes, the merge/undefined-value boundary, a Klarna React fragment, and example-only eligibility-gated popup stories. Mirrored the Pix README mismatch in source, changelog, and APM concept.
+- Updated concepts first, then cumulative source/changelog, company, provider index and logs. Preserved all earlier versions; source_count remains 177; no new comparison page. No upstream runtime/payment tests, commit, or push.
+- Sources: [[source-github-paypal-js]] and [[changelog-github-paypal-js]].
+
 ## [2026-09-21] ingest | TypeScript Server SDK `2.5.0`
 
 - Delta-ingested `github-2d232d73cb3e8d105629`, `@paypal/paypal-server-sdk@2.4.0` to `2.5.0`, SHA `790be9be9b694be08157e1cd5d50321c72727a76`.

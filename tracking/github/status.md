@@ -200,6 +200,35 @@
   Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.145.0/2026-09-15/manifest.json)
   Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.144.0--3.145.0/comparison.json)
 
+## `github-16ddfb4cd25d5895e633`
+
+- Repository: `paypal/paypal-js`
+- SHA: `dfd184b6abc9384d07a95f92db4be517d8c22c86`
+- Collection date: `2026-09-26`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-16ddfb4cd25d5895e633/packet.md)
+- Evidence attachment: [manifest](repos/paypal/paypal-js/evidence-attachments/github-16ddfb4cd25d5895e633/attachment.json)
+- Review priority: `high`
+- Required reading: `80` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-js@11.1.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.1/2026-09-26/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/11.1.0--11.1.1/comparison.json)
+- `@paypal/react-paypal-js@10.5.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.1/2026-09-26/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.0--10.5.1/comparison.json)
+
 ## `github-1ab2662d292502a53058`
 
 - Repository: `braintree/braintree-web`

@@ -60,6 +60,15 @@ Keep three boundaries separate: load the method's component, check eligibility f
 
 The hook exposes `handleValidate()`, but its click handler does not explicitly call it. `isPending` represents SDK initialization, not transaction-level duplicate-submit protection. Example capture helpers do not validate HTTP or final capture status, so their success display is not settlement evidence. The existing method-specific completion distinctions above remain in force. See [[changelog-github-paypal-js]] for the release boundary and [[source-github-paypal-js]] for React snippets.
 
+## React 10.5.1 Session-Field Alignment
+
+The September 23, 2026 patch changes which component props the shared LPM hook selects for the payment-data promise passed to `session.start()`. Klarna now selects `phone` and `billingAddress`; Afterpay selects `billingAddress`; OXXO selects `expiryDate`; Boleto selects `billingAddress`, `taxInfo`, and `expiryDate`; Scalapay, Dragonpay, Indomaret, and Alfamart select `phone`. Pix International now selects only `taxInfo`, while Kredivo and Bancomat Pay select only `phone`. These are changes from React 10.5.0, not new payment methods or merchant-eligibility guarantees. Source and complete before/after table: [[source-github-paypal-js]]; history: [[changelog-github-paypal-js]].
+
+The unchanged hook skips undefined values and merges selected values after the `createOrder()` result. It does not validate that every selected field is supplied, and removing a field from this list is not a general sanitizer of callback results. The 50 generated/reworked Storybook wrappers explicitly check eligibility, use `popup`, and map registry names to funding-source identifiers; their sample values do not establish production requirements.
+
+> [!warning] Contradiction - Pix README versus React 10.5.1 forwarding
+> The retained React README still passes Pix phone, billing address, and tax information. In 10.5.1 only `taxInfo` is selected from props for the second `session.start()` argument. Do not infer phone/address forwarding from that older example, or infer that these fields can never reach the SDK through another route. The README has no upstream change in this comparison; the version-specific registry and hook establish this narrow forwarding behavior. The same warning is recorded in [[source-github-paypal-js]].
+
 ## Swish (Sweden) — Added Nov 2025
 
 > [!info] Not in APM overview table

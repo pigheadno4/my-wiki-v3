@@ -2,9 +2,11 @@
 title: "GitHub: paypal/paypal-js"
 type: source
 date_ingested: 2026-04-13
-date_updated: 2026-09-19
+date_updated: 2026-09-26
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json"
+  - "github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json"
   - "github/paypal/paypal-js/supplements/2026-09-19-abc4c83-f8243778/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-13-b304434/manifest.json"
@@ -25,7 +27,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 ## Overview
 
-Latest ingested releases: `@paypal/paypal-js@11.1.0` and `@paypal/react-paypal-js@10.5.0` (September 15, 2026; collected September 19). These add required funding-source approval data, React LPM wrappers, an optional v6 card name field, and a temporary Venmo sandbox flag. Earlier package-qualified knowledge remains below.
+Latest ingested releases: `@paypal/paypal-js@11.1.1` and `@paypal/react-paypal-js@10.5.1` (September 23, 2026; collected September 26). These harden selected loader option reads and align React session-field forwarding for 11 local methods. The attached Storybook evidence adds/reworks examples for all 50 existing LPM registry entries. Earlier package-qualified knowledge remains below.
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
@@ -43,6 +45,26 @@ Repository: <https://github.com/paypal/paypal-js>
 - September 15 work item `github-961c3611b36c6341ad56` was approved as full additive ingest with an explicit item-specific focused reading scope: all 24 changed retained files, relevant dependencies, complete release/comparison records and wiki history, and all six attached Storybook files. The entire capsule remains immutable; unchanged unrelated files and generated schemas were not reread. This does not change the registry's default full-reading policy or claim a whole-repository review.
 
 ## Grounding excerpts
+
+### September 23 patch grounding
+
+> `return Object.prototype.hasOwnProperty.call(options, key)`
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/paypal-js/src/utils.ts:177`
+
+> `sessionFields: ["phone", "billingAddress"],`
+>
+> Klarna: `raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/react-paypal-js/src/v6/config/lpmRegistry.ts:336`
+
+> `).then((result) => ({ ...result, ...sessionFieldValues }));`
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.ts:179`
+
+> `if (!eligiblePaymentMethods?.isEligible(storyConfig.fundingSource)) {`
+>
+> `raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/files/packages/react-paypal-js-storybook/v6/src/shared/lpm/storyFactory.tsx:90`
+
+### Earlier grounding retained
 
 > "This is a collection of libraries intended to help developers more easily integrate with PayPal's JS SDK"
 >
@@ -270,8 +292,8 @@ Repository: <https://github.com/paypal/paypal-js>
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `11.1.0` | Full additive ingest with approved focused reading; v8 through 11.0.1 history retained |
-| `@paypal/react-paypal-js` | `10.5.0` | Same shared-SHA ingest; v8 through 10.4.1 history retained |
+| `@paypal/paypal-js` | `11.1.1` | Delta ingest; v8 through 11.1.0 history retained |
+| `@paypal/react-paypal-js` | `10.5.1` | Same shared-SHA delta with 54-file Storybook supplement; v8 through 10.5.0 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -453,6 +475,18 @@ const approved: OnApproveDataOneTimePayments = {
 ```
 
 The full-mode override reflects the required public member missed by the automated API scan. It does not rewrite the immutable packet's original delta recommendation.
+
+#### `@paypal/paypal-js@11.1.1`
+
+Released September 23 at `dfd184b6abc9384d07a95f92db4be517d8c22c86`, compared with `11.1.0`. The new internal `getOwnProperty()` helper returns a value only when `Object.prototype.hasOwnProperty.call(options, key)` succeeds. It consolidates existing `environment`/`sdkBaseUrl` guards and applies own-property reads to selected additional configuration paths:
+
+- Legacy loader: processed `data-namespace` and `data-js-sdk-library` attributes; `merchant-id` before comma-separated wildcard handling.
+- Custom loader: `url` and `attributes`; an inherited URL alone now fails URL validation instead of supplying the script URL.
+- v6 loader: `environment`, `debug`, `dataNamespace`, and `dataSdkIntegrationSource`, including namespace/integration-source validation.
+
+Use explicit own configuration properties. v6 still requires an explicit valid environment; this patch does not restore a default. These are bounded hardening changes, not a claim that all prototype-related risks are eliminated or a new merchant-facing payment feature. No upstream tests or hosted checkout were run for this ingest.
+
+Implementation: [utils](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/paypal-js/src/utils.ts), [legacy/custom loaders](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/paypal-js/src/load-script.ts), and [v6 loader](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/paypal-js/src/v6/index.ts).
 
 ## `@paypal/react-paypal-js`
 
@@ -801,6 +835,57 @@ import { PayPalCardNameField } from "@paypal/react-paypal-js/sdk-v6";
 
 **Example limitations:** the attached iDEAL/BLIK stories and shared Card Fields code await capture helpers that parse JSON without verifying `response.ok` or final capture status. Their success logs/UI do not prove capture. A card vault setup token likewise is not independently verified durable vault completion. No payment runtime, native integration, published-package compiler, or merchant-eligibility test was run; hosted behavior remains outside this source capsule.
 
+#### `@paypal/react-paypal-js@10.5.1`
+
+Released at the same September 23 SHA, compared with `10.5.0`; the core dependency becomes `^11.1.1`. The [registry](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/react-paypal-js/src/v6/config/lpmRegistry.ts) changes 11 `sessionFields` lists:
+
+| Registry key | 10.5.0 selected props | 10.5.1 selected props |
+| --- | --- | --- |
+| `pixInternational` | `phone`, `billingAddress`, `taxInfo` | `taxInfo` |
+| `kredivo` | `phone`, `taxInfo` | `phone` |
+| `bancomatPay` | `phone`, `taxInfo` | `phone` |
+| `klarna` | None | `phone`, `billingAddress` |
+| `afterpay` | None | `billingAddress` |
+| `oxxopay` | None | `expiryDate` |
+| `boletobancario` | `taxInfo` | `billingAddress`, `taxInfo`, `expiryDate` |
+| `scalapay` | None | `phone` |
+| `dragonpay` | None | `phone` |
+| `indomaret` | None | `phone` |
+| `alfamart` | None | `phone` |
+
+This metadata affects execution: the unchanged [LPM hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/react-paypal-js/src/v6/hooks/useLPMOneTimePaymentSession.ts) selects defined values from props and merges them after the `createOrder()` result into the promise passed as the second `session.start()` argument. Selected prop values therefore override same-key values returned by `createOrder()`. Undefined values are skipped; the hook does not check required-field completeness. Removing a field from this list only stops this particular selection step, not every possible route into the SDK: callback props and the order result are also spread elsewhere in the hook.
+
+For example, within an already configured and eligibility-gated Klarna integration, the same JSX now forwards the two supplied values through that selection step:
+
+```tsx
+// Inside PayPalProvider with klarna-payments and a successful eligibility check.
+// buyerPhone, buyerBillingAddress and callbacks are supplied by the merchant app.
+<KlarnaOneTimePaymentButton
+  presentationMode="popup"
+  phone={buyerPhone}
+  billingAddress={buyerBillingAddress}
+  createOrder={createMerchantOrder}
+  onApprove={handleMerchantApproval}
+/>
+// 10.5.0 selected session fields: none.
+// 10.5.1: { ...createOrderResult, phone, billingAddress }.
+```
+
+This illustrative fragment is not a complete or runtime-tested checkout. Import the named button from `@paypal/react-paypal-js/sdk-v6`; merchant callbacks must create/finalize the payment on the server and handle errors. Session-field lists do not establish eligibility or universal required fields.
+
+> [!warning] Contradiction - Pix README versus React 10.5.1 forwarding
+> The [retained README](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/files/packages/react-paypal-js/README.md) still supplies Pix phone, billing address, and tax information. The 10.5.1 registry selects only `taxInfo` from props for the payment-data promise passed to `session.start()`. Do not use that older example to infer phone/address forwarding through this step, or claim those fields can never reach the SDK through another route. The upstream comparison does not change this README. The same warning is recorded in [[paypal-apm]].
+
+##### Storybook evidence at this SHA
+
+The approved [54-file supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json) contains 50 story wrappers (48 new, iDEAL and BLIK reworked), shared configuration/factory, generator, and package scripts. The [factory](../../../../raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/files/packages/react-paypal-js-storybook/v6/src/shared/lpm/storyFactory.tsx) checks loading/error/eligibility, requests `popup`, supplies configured session values, and delegates to shared order/approval callbacks. The [configuration](../../../../raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/files/packages/react-paypal-js-storybook/v6/src/shared/lpm/config.ts) explicitly maps currencies and funding-source names, which need not equal registry keys (for example, `pixInternational` versus `pix_international`). Sample buyer values are demonstration data, not production requirements.
+
+The generator reads the actual LPM registry and emits static Storybook titles, with `generate:lpm-stories` and `check:lpm-stories` scripts. Those scripts and the browser stories were not executed here. Fifty examples do not mean fifty newly launched or merchant-enabled methods.
+
+##### Delta evidence boundary
+
+Work item `github-16ddfb4cd25d5895e633` was ingested as one approved delta after reading assigned records, complete changed retained files, cumulative wiki history, and all 54 supplemental files. The snapshot contains 155 files; the retained comparison reports eight modified, 147 unchanged, and two no longer selected. The latter are the prior React README and rollup configuration, not upstream deletions. Older knowledge and raw evidence remain intact. This is not a full upstream-repository review or hosted/runtime proof.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -824,6 +909,12 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 - Sources: [[source-paypal-javascript-sdk-reference]], [[source-paypal-js-sdk-v6-setup]]
 
 ## Raw Sources
+
+- [September 23 snapshot, collected September 26](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json)
+- [September 23 Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json) and [work-item attachment](../../../../tracking/github/repos/paypal/paypal-js/evidence-attachments/github-16ddfb4cd25d5895e633/attachment.json)
+- [Core 11.1.1 record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.1/2026-09-26/manifest.json) and [release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.1/2026-09-26/release-notes.md)
+- [React 10.5.1 record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.1/2026-09-26/manifest.json) and [release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.1/2026-09-26/release-notes.md)
+- [Core 11.1.0 to 11.1.1 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.1.0--11.1.1/comparison.json) and [React 10.5.0 to 10.5.1 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.0--10.5.1/comparison.json)
 
 - [September 15 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json)
 - [Core 11.1.0 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.0/2026-09-19/manifest.json) and [release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.0/2026-09-19/release-notes.md)
