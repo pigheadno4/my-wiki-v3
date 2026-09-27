@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-27] ingest | braintree-web `3.146.0`
+
+- Full additive ingest at `893d4e786f4161c3b96c5d34425752c5b63ff84d`, with the user's one-time focused-reading exception. Preserved all `3.143.0` through `3.145.0` knowledge.
+- Reviewed changed implementation/content, prior behavior and affected dependencies; verified 665 snapshot file hashes, 320 unchanged files and unchanged older changelog history. Added and fully read the immutable exact-SHA `.storybook/utils/sdk-config.ts` supplement and canonical work-item attachment.
+- Recorded v6 View/Edit Saved Payment, preferred-token/nonce/GraphQL-field distinctions, sandbox credential/static-token caveats, presentation forwarding, Hosted Fields guard and frame-target changes. Updated existing concepts, source/changelog, company and index; source count is unchanged.
+- No upstream tests or live payment flow executed. No commit/push. Details: [[source-github-braintree-web]] and [[changelog-github-braintree-web]].
+
 ## [2026-09-27] ingest | Braintree website C17
 
 - Ten collected Control Panel pages were independently read, reviewed and promoted: eight Reporting articles plus general Webhooks and select-partner Audit Webhooks. The company and provider index now route to 141 sources = 125 website + 16 GitHub, excluding changelogs.

@@ -54,7 +54,7 @@ Venmo component creation now treats failed incognito detection as an unknown, no
 
 ## Versioned Evidence
 
-The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. Release `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7` adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback. The latest retained release is `3.145.0` at SHA `732ed094354d650605e678d98246ce6332952ad3`; both earlier baselines remain in the cumulative source and changelog.
+The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. Release `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7` adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback. Release `3.145.0` at SHA `732ed094354d650605e678d98246ce6332952ad3` adds the checkout/recovery changes below. The latest retained release is `3.146.0` at SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d`; all earlier baselines remain in the cumulative source and changelog.
 
 ## Checkout and Recovery Changes in 3.145.0
 
@@ -64,6 +64,12 @@ The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143
 - FraudNet load failures become observable in analytics; Fastlane preserves underlying error detail. Dependencies change to `@braintree/asset-loader@2.1.0` and add `qrcode@1.5.4`.
 
 These are changes in the Braintree adapter and retained browser implementation, not proof of changes in independently hosted PayPal/Fastlane runtimes. Source: [[source-github-braintree-web]]; release comparison: [[changelog-github-braintree-web]].
+
+## Saved-Payment Editing and Hardening in 3.146.0
+
+`braintree-web@3.146.0` adds v6 `createEditSavedPaymentSession()` for viewing/changing the funding instrument behind an existing PayPal Billing Agreement during checkout. This is distinct from the already-retained vault-initiated repeat-purchase flow and the non-v6 Edit FI path introduced in `3.144.0`. It requires a client token carrying the preferred vaulted payment-method context, a fresh client/adapter instance, and `<paypal-saved-payment-methods>` present before SDK loading. Approval still produces a nonce through tokenization, not a completed payment. See [[paypal-braintree-integration]] and [[source-github-braintree-web]].
+
+The release also forwards `autoRedirect` and `fullPageOverlay` session-start options, blocks three dangerous property-path keys in Hosted Fields' EventedModel, and adds explicit frame targets to Payment Request, 3DS completion, and UnionPay. Payment Request adds domain verification; `framebus` changes from `6.1.0` to `6.2.0`. These are implementation changes, not proof of comprehensive security or browser acceptance. This latest retained release preserves all earlier versioned evidence above. [[changelog-github-braintree-web]]
 
 ## Related
 

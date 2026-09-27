@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-27] ingest | Braintree Web `3.146.0`
+
+- Approved full additive ingest with focused reading and an exact-SHA helper supplement: v6 saved-payment editing, token/demo safety boundaries, presentation forwarding and model/frame hardening. Historical knowledge preserved. Details: [[braintree-log]] and [[changelog-github-braintree-web]].
+
 ## [2026-09-27] ingest | Checkout Components `5.0.435`
 
 - Approved focused-reading delta: iframe-title regression coverage and generated scoped-style ID changes, with no authored runtime change. Earlier history preserved. Details: [[paypal-log]] and [[changelog-github-paypal-checkout-components]].

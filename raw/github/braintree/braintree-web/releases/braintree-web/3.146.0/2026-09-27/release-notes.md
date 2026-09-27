@@ -1,0 +1,5 @@
+- PayPal Checkout v6
+  - Add support for View/Edit FI
+  - Pass `autoRedirect` and `fullPageOverlay` start options through to the PayPal SDK
+- Hosted Fields
+  - Add prototype pollution guard to `EventedModel` `get()` and `set()` methods

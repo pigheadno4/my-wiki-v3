@@ -22,7 +22,7 @@ Generated: `2026-09-27`
 | adyen | `adyen/release-automation-action` | tier3 | commit / commit-tree-v1 | on-demand | 2026-08-28 | ingested | - | `wait` |
 | braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-13 | ingested | 2026-08-20 | `collect-baseline` |
 | braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-13 | ingested | 2026-08-20 | `collect-baseline` |
-| braintree | `braintree/braintree-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-09-15 | ingested | 2026-09-22 | `collect-baseline` |
+| braintree | `braintree/braintree-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-09-27 | ingested | 2026-10-04 | `wait` |
 | braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-09-20 | ingested | 2026-09-27 | `collect-baseline` |
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
 | braintree | `braintree/braintree_ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |

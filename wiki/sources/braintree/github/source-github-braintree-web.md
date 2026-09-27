@@ -2,9 +2,11 @@
 title: "GitHub: braintree/braintree-web"
 type: source
 date_ingested: 2026-07-28
-date_updated: 2026-09-16
+date_updated: 2026-09-27
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/manifest.json"
+  - "github/braintree/braintree-web/supplements/2026-09-27-893d4e7-1540eb0a/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-09-15-732ed09/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-07-28-41460fb/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-07-27-bae582d/manifest.json"
@@ -13,15 +15,15 @@ tags: [braintree, javascript-sdk, checkout, hosted-fields, venmo, paypal, 3d-sec
 
 ## Overview
 
-`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest retained release is `braintree-web@3.145.0` at exact SHA `732ed094354d650605e678d98246ce6332952ad3`. The `3.143.0` baseline and `3.144.0` additions remain preserved below.
+`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest ingested release is `braintree-web@3.146.0` at exact SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d`. All earlier version findings remain preserved below.
 
 Repository: <https://github.com/braintree/braintree-web>
 
 ## Evidence Boundary
 
-- The snapshots prove implementation present in the retained `braintree-web@3.143.0`, `3.144.0`, and `3.145.0` releases. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
+- The snapshots prove implementation present in the retained `braintree-web@3.143.0` through `3.146.0` releases. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
 - The package exposes SDK components, not Braintree Web Drop-in. Drop-in is a separately versioned repository.
-- The latest snapshot retains 28 stories that show intended integration scenarios. Tests, fixtures, and mocks are excluded, so test-only behavior is outside this capsule.
+- The `3.146.0` snapshot adds the Edit Saved Payment story to the earlier 28 stories. Tests, fixtures, and mocks remain excluded; the approved helper supplement does not change future collection policy.
 - PayPal Checkout v6 and Fastlane delegate runtime behavior to PayPal SDKs. This source covers the Braintree adapters and nonce boundary, not the complete delegated runtimes.
 - Legacy modules retained in source, including Masterpass and Visa Checkout, are implementation history rather than evidence that merchants should start new integrations with them.
 
@@ -136,6 +138,38 @@ The v6 SDK-loading path now uses the shared asset loader with `forceScriptReload
 
 The SDK exchanges the client token's `paymentMethodIdJwt` for a billing-agreement JWT and supplies it to the PayPal SDK as `data-user-id-token`, unless the merchant explicitly supplied that data attribute. The edit flag adds `editBillingAgreementJwt` only to the `checkout` flow, not the vault flow. If the JWT exchange fails, initialization continues without the generated token, so the release does not guarantee that Edit FI will be available for every returning buyer.
 
+### v6 View/Edit Saved Payment in 3.146.0
+
+`createEditSavedPaymentSession()` extends Edit FI to the v6 adapter. This is not the first returning-buyer support: vault-initiated checkout already exists in the retained `3.143.0` baseline. It is also separate from the non-v6 `3.144.0` path above.
+
+1. Resolve the authenticated buyer's existing vaulted PayPal payment-method token. For a new buyer, the story first creates a billing agreement, tokenizes approval, and calls its vault helper to obtain the persistent `legacyId`. An existing returning buyer skips that setup; a one-time nonce is not the preferred vaulted token.
+2. Generate a client token with the preferred payment-method context, then create a fresh Braintree client and `paypalCheckoutV6` instance. The sample helper's `preferredPaymentMethodToken` maps to GraphQL `input.clientToken.paymentMethodId`.
+3. Place `<paypal-saved-payment-methods>` in the DOM before `loadPayPalSDK()`. Create the edit session with `amount`, `currency`, and `onApprove`; defaults are `intent: "authorize"`, `commit: false`, and presentation mode `auto`.
+4. The adapter lazily exchanges `paymentMethodIdJwt` for a billing-agreement JWT, initializes the `paypal-saved-payment-methods` component, and eagerly creates the delegated edit session so the saved-method iframe can render before a click. It passes the resulting JWT as `billingAgreementIdToken`.
+5. On buyer interaction, call `session.start()`. The adapter creates a checkout payment resource and passes its order promise to the delegated session. The payment resource's `editBillingAgreementJwt` field uses the original `paymentMethodIdJwt`, not the exchanged display JWT.
+6. On approval, call `tokenizePayment({ orderId, payerId })` and send the nonce to the merchant server. Approval, display, and tokenization are not transaction authorization or settlement. This is a checkout-bound edit flow, not evidence for standalone vault-management or direct PayPal Orders API processing.
+
+**Failure boundaries:** absent payment-method JWT throws `PAYPAL_CHECKOUT_V6_EDIT_SAVED_PAYMENT_NOT_SUPPORTED`. Billing-agreement JWT exchange failure logs a warning and allows the edit attempt to continue; a successful setup call does not establish successful iframe authentication. Session creation/start and tokenization need their own error handling. The amount/currency/onApprove guard checks truthiness, not complete input validity.
+
+**Demo safety:** the fully retained helper is sandbox tooling, not a production backend. It performs Basic-authenticated GraphQL requests in the browser using environment-supplied credentials, and may fall back to a static token when generation fails. Keep these requests, authenticated-buyer ownership checks, and trusted amount calculation server-side in production. A static fallback does not guarantee the preferred-method context. Do not copy the story's raw nonce/error display into production.
+
+**Presentation forwarding:** one-time, Pay Later, checkout-with-vault, billing-agreement, and edit session paths now pass `autoRedirect` and `fullPageOverlay` through to the hosted SDK. Start-level options take precedence through a truthy fallback; this is not evidence that all presentation modes or arbitrary nested options are supported.
+
+**Package boundary:** the new adapter method is in `braintree-web@3.146.0`. The independently retained PayPal JS core `11.1.1` / React `10.5.1` declarations and v6 React surface do not expose a dedicated typed edit API/wrapper. This does not establish absence in the remotely hosted PayPal runtime. See [[source-github-paypal-js]].
+
+### 3.146.0 Grounding Excerpts
+
+- `Requires the client token to have been generated with a` followed by `preferredPaymentMethodToken` in `files/src/paypal-checkout-v6/paypal-checkout-v6.js:2177` (JSDoc).
+- `billingAgreementIdToken: self._billingAgreementJwt,` in the same file, delegated edit-session options.
+- `variables.input.clientToken.paymentMethodId = preferredPaymentMethodToken;` in the supplemental `.storybook/utils/sdk-config.ts`.
+- `var DANGEROUS_KEYS = ["__proto__", "constructor", "prototype"];` in `files/src/hosted-fields/internal/models/evented-model.js:5`.
+
+## Hardening in 3.146.0
+
+Hosted Fields' EventedModel `get()` and `set()` reject path segments named `__proto__`, `constructor`, or `prototype`, including the terminal setter key. This is a bounded property-path guard, not proof of universal prototype-pollution protection.
+
+Payment Request configures `verifyDomain: isVerifiedDomain`, initially empty target frames, and adds its internal iframe after creation. The existing verifier requires HTTPS and an allowed PayPal/Braintree base hostname. Payment Request internal messaging, 3DS authentication completion, and UnionPay internal messaging explicitly target `window.parent`. `framebus` changes from `6.1.0` to `6.2.0`; dependency internals and hosted-browser acceptance were not tested in this ingest.
+
 ## Venmo
 
 The standalone Venmo component tokenizes through mobile app switch and optional fallback experiences. Browser support is configuration-sensitive: merchants can restrict new tabs and webviews, allow non-default browsers, choose iOS redirect/manual-return handling, and control cancellation when the buyer returns early.
@@ -191,6 +225,12 @@ The `2026-08-24` release fixes PayPal v6 checkout-with-vault tokenization, exten
 
 The approved high-priority delta compares `3.144.0` to `3.145.0`: two retained files added, 27 modified, and 303 byte-identical. Every changed retained file and its patch was read fully. The user approved mechanical disposition checking for excluded upstream test/lockfile/tooling changes for this item only. Snapshot integrity and all 47 upstream dispositions were checked; this is not a claim to have read the entire upstream repository or run its payment flows.
 
+## `3.146.0` Release Findings and Reading Scope
+
+Released 2026-09-15 and collected 2026-09-27. The user approved full additive ingest for the new payment flow, overriding the script's delta recommendation, with a one-time focused-reading exception. The comparison has one added and twelve modified retained files and 320 unchanged files. Changed implementation/content, the complete new story and helper, affected local dependencies, and prior behavior were reviewed; unchanged snapshot files and cumulative changelog history were checked mechanically. All 665 file hashes across the two snapshots matched. Older source/changelog history remains intact. This is not a claim to have reread the complete repository, run its tests, or executed payment flows.
+
+The helper is an immutable exact-SHA supplement linked through work item `github-9eb53b57a85a75efdb3e`. The original snapshot and collection-time packet remain unchanged.
+
 ## Related
 
 - [[changelog-github-braintree-web]] — package-qualified release ledger
@@ -200,6 +240,14 @@ The approved high-priority delta compares `3.144.0` to `3.145.0`: two retained f
 - [[paypal-fastlane]] — delegated Fastlane product concept
 
 ## Raw Sources
+
+- [3.146.0 snapshot manifest](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/manifest.json)
+- [3.146.0 release manifest](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.146.0/2026-09-27/manifest.json) and [release notes](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.146.0/2026-09-27/release-notes.md)
+- [3.145.0 to 3.146.0 comparison](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.145.0--3.146.0/comparison.md)
+- [v6 adapter](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/files/src/paypal-checkout-v6/paypal-checkout-v6.js) and [complete edit demo](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/files/.storybook/stories/PayPalCheckoutV6/EditSavedPayment.stories.ts)
+- [Helper supplement manifest](../../../../raw/github/braintree/braintree-web/supplements/2026-09-27-893d4e7-1540eb0a/manifest.json) and [complete sandbox helper](../../../../raw/github/braintree/braintree-web/supplements/2026-09-27-893d4e7-1540eb0a/files/.storybook/utils/sdk-config.ts)
+- [Canonical evidence attachment](../../../../tracking/github/repos/braintree/braintree-web/evidence-attachments/github-9eb53b57a85a75efdb3e/attachment.json)
+- [Hosted Fields guard](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/files/src/hosted-fields/internal/models/evented-model.js) and [Payment Request frame configuration](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/files/src/payment-request/external/payment-request.js)
 
 - [3.145.0 snapshot manifest](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-15-732ed09/manifest.json)
 - [3.145.0 release manifest](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.145.0/2026-09-15/manifest.json)

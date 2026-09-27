@@ -88,6 +88,16 @@ In `braintree-web@3.145.0`, v6 `tokenizePayment()` recognizes `billingToken` plu
 
 The earlier React-flow table records the independently evidenced wrapper versions, not the complete tokenization input for this newer Braintree SDK. Integrators must verify that their wrapper forwards the billing token; upgrading Braintree alone cannot prove that another package does so. The nonce-to-Braintree-server boundary remains unchanged. Source: [[source-github-braintree-web]].
 
+## Braintree Web 3.146.0 View/Edit Saved Payment
+
+`createEditSavedPaymentSession()` adds a v6 checkout experience for viewing and changing the funding instrument behind an existing vaulted PayPal agreement. Returning-buyer vault-initiated checkout already exists in the retained `3.143.0` baseline; non-v6 Edit FI is evidenced separately in `3.144.0`.
+
+The integration sequence is: resolve the authenticated buyer's persistent vaulted token on the server; generate a client token with the preferred payment-method context; create a fresh Braintree client and v6 adapter; place `<paypal-saved-payment-methods>` before `loadPayPalSDK()`; create the edit session with amount, currency, and approval callback; start on buyer interaction; tokenize approval and send the nonce to the merchant server. Defaults are `intent: "authorize"` and `commit: false`. Editing is tied to a checkout order, not evidenced here as a standalone vault-management API. [[source-github-braintree-web]]
+
+The exact-SHA Storybook helper maps its `preferredPaymentMethodToken` option to GraphQL `input.clientToken.paymentMethodId`. Its vault helper returns `paymentMethod.legacyId`, not the original one-time nonce. The sample makes credential-bearing sandbox requests in the browser and can fall back to a static token: production integrations must keep credentials and token ownership checks server-side, and must not assume a fallback token contains the correct saved-method context. The SDK separately exchanges the client-token payment-method JWT for a billing-agreement JWT; exchange failure is nonfatal to setup and does not establish a working saved-payment display.
+
+The independently collected PayPal JS versions (`@paypal/paypal-js@11.1.1` and `@paypal/react-paypal-js@10.5.1`) do not provide a dedicated typed edit-session API or React wrapper for this new Braintree method. Do not infer delegated runtime availability from wrapper declarations or assume upgrading the wrapper alone adds the Braintree adapter API. See [[source-github-paypal-js]] for that separate package history.
+
 ## WebView Popup Transport
 
 The independently versioned `PopupBridge@3.1.0` iOS library lets a Braintree or compatible PayPal web checkout embedded in `WKWebView` open popup authentication through `ASWebAuthenticationSession` and return the callback payload to JavaScript. Its Venmo path can advertise a merchant-registered deep-link scheme when the Venmo app is installed.

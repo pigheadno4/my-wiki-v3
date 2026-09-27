@@ -1822,6 +1822,32 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.43.0/2026-09-14/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.42.0--6.43.0/comparison.json)
 
+## `github-9eb53b57a85a75efdb3e`
+
+- Repository: `braintree/braintree-web`
+- SHA: `893d4e786f4161c3b96c5d34425752c5b63ff84d`
+- Collection date: `2026-09-27`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-web/ingest-packets/github-9eb53b57a85a75efdb3e/packet.md)
+- Evidence attachment: [manifest](repos/braintree/braintree-web/evidence-attachments/github-9eb53b57a85a75efdb3e/attachment.json)
+- Review priority: `high`
+- Required reading: `25` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-web@3.146.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.146.0/2026-09-27/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.145.0--3.146.0/comparison.json)
+
 ## `github-9f56dfbe62e4e84b03c7`
 
 - Repository: `adyen/adyen-web`
