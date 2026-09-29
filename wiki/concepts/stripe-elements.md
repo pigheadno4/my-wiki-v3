@@ -148,6 +148,8 @@ const error = await actions.confirm();
 
 ### Retained React package baseline
 
+The `@stripe/react-stripe-js@6.11.0` delta separates Checkout SDK context from session state and memoizes checkout hook results. Session-only changes no longer propagate through the SDK-only context, while checkout hooks still refresh with session state. Identical option references now bypass recursive comparison; use immutable option updates. Peer ranges and entrypoints remain unchanged. See [[source-github-react-stripe-js]].
+
 The approved `@stripe/react-stripe-js@6.10.0` delta adds beta `LinkSignupElement` exports to the root and `/checkout` entrypoints and raises the Stripe JS peer floor to `>=9.16.0 <10.0.0`. Use standard `Elements` for the root integration or `CheckoutElementsProvider` for the Checkout integration, not `CheckoutFormProvider`. Props expose readiness, focus/blur, escape and loading callbacks, but no typed `onChange`. `onReady` receives the underlying Element. Existing lifecycle code skips option updates when the Element has no `update` method; a changed options prop does not recreate it. This is separately collected React binding evidence, not proof of beta eligibility or hosted signup behavior. See [[source-github-react-stripe-js]] and [[stripe-link]].
 
 The approved `@stripe/react-stripe-js@6.9.0` delta raises the Stripe JS peer minimum to `>=9.10.0 <10.0.0`; React and React DOM remain `>=16.8.0 <20.0.0`. Its retained component/provider implementation is unchanged from 6.8.2. Consumers resolving Stripe JS 9.5.x through 9.9.x must update that dependency to satisfy the new contract. The 6.8.0 requirements below remain historical. See [[changelog-github-react-stripe-js]].

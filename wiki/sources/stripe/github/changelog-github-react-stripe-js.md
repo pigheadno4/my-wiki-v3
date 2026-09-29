@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/react-stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-15
+date_updated: 2026-09-29
 original_format: github-repo
 raw_files:
+  - "github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/manifest.json"
+  - "github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-15-d1750b0/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-15-d270c7e/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/manifest.json"
@@ -17,6 +19,38 @@ tags: [stripe, react, stripe-js, elements, checkout, changelog, github-repositor
 ## Overview
 
 Chronological release synthesis for `stripe/react-stripe-js`. Cumulative implementation knowledge belongs in [[source-github-react-stripe-js]] and the linked immutable evidence.
+
+## `@stripe/react-stripe-js@6.12.0` - Change Set `fd7981c` (2026-09-23)
+
+Approved delta from `6.11.0` to `6.12.0`, exact SHA `fd7981cbe61020b3cebd29157d098950e4e7cfdf`, ingested 2026-09-29.
+
+**Change:** root `TreasuryDisclosure` export and standalone Financial Accounts disclosure wrapper. Own Stripe prop, optional business name/link, and load/error callbacks; dependency ranges and checkout source remain unchanged.
+
+**Limits:** returned errors invoke `onError`, but promise rejections are not caught. Disclosure creation lacks post-await unmount and stale-request guards; callback identity changes can rerun creation. Static evidence only, not tested runtime failures or verified eligibility/compliance. No replacement of existing disclosure components is inferred.
+
+**Scope:** one retained file added, two modified, 58 unchanged; all four upstream paths classified. Added test patch read, not executed. Created the narrow [[stripe-financial-account-disclosures]] concept first; updated source, company, provider index and logs while preserving history and source count. No cross-company comparison or contradiction.
+
+- [Snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/manifest.json)
+- [Release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.12.0/2026-09-27/manifest.json)
+- [Release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.12.0/2026-09-27/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.11.0--6.12.0/comparison.json)
+- [[source-github-react-stripe-js]] - exact-code grounding and lifecycle caveats.
+
+## `@stripe/react-stripe-js@6.11.0` - Change Set `1a31984` (2026-09-21)
+
+Approved delta from `6.10.0` to `6.11.0`, exact SHA `1a3198458d1c0d6d0b4f54ad3fe4eed5425e7723`, ingested 2026-09-27.
+
+**Changes:** Checkout providers surface asynchronous Stripe validation/rejection and synchronous SDK initialization failures; StrictMode observes discarded derived promises. Separate SDK/session contexts, memoized checkout hook results and reference-equality shortcuts reduce unnecessary work. Public entrypoints and peer ranges remain unchanged.
+
+**Migration and limits:** handle hook loading/error states, retain stable initialization inputs and immutable option updates. Invalid synchronous Stripe props still throw during render. No automatic retry or new payment capability is established. Test patches were read but not executed; hosted runtime remains unverified.
+
+**Updated:** existing Elements/Checkout concepts first, cumulative source, company, index and logs. Six retained files modified, 54 unchanged, all 13 upstream paths classified; prior history and source count preserved.
+
+- [Snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/manifest.json)
+- [Release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.11.0/2026-09-27/manifest.json)
+- [Release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.11.0/2026-09-27/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.10.0--6.11.0/comparison.json)
+- [[source-github-react-stripe-js]] - implementation details, qualifications and raw grounding.
 
 ## `@stripe/react-stripe-js@6.10.0` - Change Set `d1750b0` (2026-09-10)
 

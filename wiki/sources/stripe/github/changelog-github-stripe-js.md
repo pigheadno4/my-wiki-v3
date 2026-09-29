@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-15
+date_updated: 2026-09-27
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json"
@@ -17,6 +18,24 @@ tags: [stripe, stripe-js, javascript, typescript, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-js`. Cumulative implementation knowledge belongs in [[source-github-stripe-js]] and the linked immutable snapshots.
+
+## `@stripe/stripe-js@9.17.0` - Change Set `ad7bd52` (2026-09-21)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@stripe/stripe-js` | `9.16.0` | `9.17.0` | 2026-09-21 | `ad7bd52fd1d38edd60968874b1c9546c0134c798` | Delta |
+
+**Change:** optional beta `preCollectedConsent` on four Financial Connections/bank-account collection methods. Required consent ID comes from the merchant's server; required acceptance timestamp is Unix seconds. Server eligibility and validation remain mandatory, and omission of the consent pane is not guaranteed.
+
+**Impact:** additive declaration support, not hosted-runtime implementation. No loader, dependency, engine or train change; no mandatory migration for existing calls. Do not pass this as a general `confirmPayment` option or equate it with an ACH mandate.
+
+**Evidence:** all assigned files read in full, four modified retained files and 76 unchanged; all eight upstream changes classified. Test/CI changes are comparison-only policy exclusions and were not executed. Release notes retain empty template headings. Updated cumulative source, ACH concept, company, provider index and logs; older knowledge and source count preserved.
+
+- [Snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/manifest.json)
+- [Release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.17.0/2026-09-27/manifest.json)
+- [Release notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.17.0/2026-09-27/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.16.0--9.17.0/comparison.json)
+- [[source-github-stripe-js]] - exact declarations, grounding and limits
 
 ## `@stripe/stripe-js@9.16.0` - Change Set `e03ec56` (2026-09-09)
 

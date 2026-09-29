@@ -138,7 +138,17 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 | Payment Links | Stripe (no-code) |
 | Subscriptions/Invoicing | Developer + Stripe |
 
+### Stripe.js 9.17.0 Consent Types
+
+`@stripe/stripe-js@9.17.0` adds optional beta pre-collected consent evidence to four Financial Connections/bank-account collection methods. It does not guarantee skipping the consent pane, establish an ACH mandate, or change the loader. See [[source-github-stripe-js]] and [[stripe-ach-direct-debit]].
+
+## React Stripe.js 6.11.0 Update
+
+React binding update: `@stripe/react-stripe-js@6.11.0` improves Checkout initialization-error reporting and separates SDK context from session changes, with memoized hook results. Peer ranges remain unchanged; no automatic retry or new payment capability is added. Earlier release history is retained in [[source-github-react-stripe-js]].
+
 ## Sources
+
+The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` for Financial Accounts, with unchanged checkout code and dependencies. Returned-error callbacks do not cover rejected promises, and the wrapper lacks post-await unmount/race guards. This is not eligibility or compliance proof. See [[stripe-financial-account-disclosures]] and [[source-github-react-stripe-js]].
 
 - [[source-github-stripe-js]] — cumulative `stripe/stripe-js` v8.11.0 through v9.16.0 loader, Elements, Checkout, and public TypeScript history
 - [[changelog-github-stripe-js]] — package-qualified Stripe JS release history

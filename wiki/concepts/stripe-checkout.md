@@ -86,6 +86,10 @@ Version `6.8.2` strengthens that example without changing the runtime surface. T
 
 The separately retained `@stripe/react-stripe-js@6.10.0` adds the beta `/checkout` `LinkSignupElement` wrapper with `StripeCheckoutLinkSignupElementOptions`. It requires `CheckoutElementsProvider`; the creation branch checks for `createLinkSignupElement` and throws an explicit error when absent, documenting Checkout Form as unsupported. This supplies React binding evidence beyond the Stripe.js 9.16.0 declaration record above. Its peer range is `@stripe/stripe-js >=9.16.0 <10.0.0`; beta access and hosted runtime behavior remain unverified. See [[source-github-react-stripe-js]] and [[stripe-link]].
 
+### React Stripe.js 6.11.0 initialization handling
+
+Both Checkout providers now surface rejected Stripe promises, invalid asynchronously resolved Stripe objects, and synchronous SDK initialization/loadActions exceptions through their hook error state. Invalid synchronous Stripe props still throw during render. StrictMode observes discarded derived promises, but the release adds no automatic retry. SDK-only consumers are separated from session updates; checkout hooks retain loading/error/success semantics. See [[source-github-react-stripe-js]].
+
 ## Checkout Sessions vs Payment Intents (for Elements)
 
 Both integrate with Elements + Appearance API. **Use Checkout Sessions for most integrations** — it handles the same payment flows as Payment Intents with significantly less code.

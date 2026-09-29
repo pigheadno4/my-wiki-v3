@@ -2,9 +2,11 @@
 title: "GitHub: stripe/react-stripe-js"
 type: source
 date_ingested: 2026-05-08
-date_updated: 2026-09-15
+date_updated: 2026-09-29
 original_format: github-repo
 raw_files:
+  - "github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/manifest.json"
+  - "github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-15-d1750b0/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-15-d270c7e/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/manifest.json"
@@ -16,7 +18,7 @@ tags: [stripe, react, stripe-js, elements, checkout, typescript, github-reposito
 
 ## Overview
 
-`stripe/react-stripe-js` publishes `@stripe/react-stripe-js`, the official React component and hook layer for Stripe.js and Elements. This cumulative page preserves the legacy `6.3.0` manual capsule, the approved `6.8.0` baseline, and approved deltas through `@stripe/react-stripe-js@6.10.0` at commit `d1750b056f363f9a44fd70ecbe8d0a1bba3e3f4d`.
+`stripe/react-stripe-js` publishes `@stripe/react-stripe-js`, the official React component and hook layer for Stripe.js and Elements. This cumulative page preserves the legacy `6.3.0` manual capsule, the approved `6.8.0` baseline, and approved deltas through `@stripe/react-stripe-js@6.12.0` at commit `fd7981cbe61020b3cebd29157d098950e4e7cfdf`.
 
 Repository: <https://github.com/stripe/react-stripe-js>
 
@@ -61,7 +63,7 @@ Repository: <https://github.com/stripe/react-stripe-js>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/react-stripe-js` | `6.10.0` | `d1750b056f363f9a44fd70ecbe8d0a1bba3e3f4d` | Approved delta; `6.8.0` full baseline and prior history retained |
+| `@stripe/react-stripe-js` | `6.12.0` | `fd7981cbe61020b3cebd29157d098950e4e7cfdf` | Approved delta; `6.8.0` full baseline and prior history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -92,7 +94,7 @@ The root entrypoint exports:
 - five Issuing components for card number, CVC, expiry, PIN, and copy-button rendering;
 - beta-gated `TermsElement` and, from 6.10.0, `LinkSignupElement`;
 - `EmbeddedCheckoutProvider` and `EmbeddedCheckout`; and
-- Financial Account and Issuing disclosure components.
+- Financial Account and Issuing disclosure components, plus `TreasuryDisclosure` from 6.12.0.
 
 `createElementComponent()` owns the shared lifecycle. It creates the appropriate underlying Element, attaches only requested event callbacks, updates mutable options, mounts once, and destroys the Element during cleanup. On the server it renders only the wrapper element after validating provider context.
 
@@ -132,6 +134,64 @@ Billing and shipping wrappers inject their fixed address mode. Unsupported Eleme
 Standard and Checkout providers also allow a `null` Stripe value for server rendering. This is an initialization allowance, not permission to swap between populated Stripe instances later.
 
 ## Version History
+
+### `@stripe/react-stripe-js@6.12.0`
+
+Released 2026-09-23; delta-ingested 2026-09-29 against 6.11.0. Adds `TreasuryDisclosure.tsx` and its root export; package.json changes only the version. One retained file added, two modified and 58 unchanged. All four upstream paths are classified; the added test is comparison-only evidence. Peer ranges remain Stripe JS `>=9.16.0 <10.0.0` and React/React DOM `>=16.8.0 <20.0.0`.
+
+**Contract:** this standalone wrapper receives its own `stripe` object/promise or null, optional `options.businessName` and `options.learnMoreLink`, and `onLoad`/`onError`. Comments describe account-derived business-name fallback. It does not consume an Elements provider. The effect calls `(stripeState as any).createTreasuryDisclosure(...)`, clears the container, appends the returned HTML element and calls `onLoad`. This is a Financial Accounts disclosure surface, not a checkout integration or replacement of the existing FinancialAccountDisclosure. See [[stripe-financial-account-disclosures]].
+
+**Error and lifecycle boundaries:** `onError` handles a returned error object only. Neither the async Stripe resolution nor disclosure creation catches rejections; synchronous creation throws also become unhandled async failures. The disclosure effect checks the container before awaiting but not afterward and has no cleanup/cancellation or request-generation guard. Completion after unmount can dereference null; overlapping requests can display stale content. Changed callback identities also rerun creation. These are static findings, not reproduced live failures. Invalid synchronous Stripe props throw during parsing; changing an established Stripe prop is documented as unsupported and warns, rather than being a hard rejection.
+
+**Evidence limits:** the added mock tests cover basic rendering, options and returned-error/success callbacks, not rejection, unmount or racing-request behavior. They were read but not executed. The `any` call does not establish public Stripe.js typing, runtime availability, account eligibility, legal wording or compliance. Existing checkout implementations are unchanged. The packet's empty public-API-change array does not negate the new root export found by source review.
+
+#### 6.12.0 grounding
+
+> `export {TreasuryDisclosure} from './components/TreasuryDisclosure';`
+>
+> [Root exports](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/files/src/index.ts).
+
+> `onError?: (error: StripeError) => void;`
+>
+> [Component props](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/files/src/components/TreasuryDisclosure.tsx).
+
+> `if (error && onError) {`
+>
+> [Returned-error branch](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/files/src/components/TreasuryDisclosure.tsx).
+
+> `container.appendChild(disclosureContent);`
+>
+> [DOM insertion after await](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/files/src/components/TreasuryDisclosure.tsx).
+
+### `@stripe/react-stripe-js@6.11.0`
+
+Released 2026-09-21; delta-ingested 2026-09-27 against 6.10.0. Six retained files changed, 54 unchanged. All 13 upstream paths have dispositions; tests and CI remain comparison-only policy exclusions. Public entrypoints and dependency ranges are unchanged, including Stripe JS `>=9.16.0 <10.0.0`.
+
+**Initialization:** both Checkout providers catch rejected Stripe promises (including validation failures from asynchronously resolved objects), synchronous SDK initialization and `loadActions()` throws, and rejected action loading. Hook consumers receive error state. A no-op rejection observer covers derived promises discarded by StrictMode, while the retained effect still reports errors. Invalid synchronous Stripe props are validated during render and still throw; this is not universal error capture. The initialization guard is not reset, so no automatic retry is introduced.
+
+**Context and identity:** `CheckoutSdkContext` holds Stripe/SDK references separately from session state. Element wrappers and `useStripe()` consume SDK context; session-only changes no longer propagate through that context. Checkout hooks memoize results by state identity and refresh on SDK session events, including reused session objects because the provider creates a new state object. Parent-driven renders remain possible. Elements can still mount before action loading completes; after initialization failure the SDK context becomes null while Stripe remains available. This does not imply existing Elements are automatically destroyed on failure.
+
+**Options:** `isEqual()` returns immediately for identical references, including shared subtrees. Use immutable option updates; this does not add in-place mutation detection. Existing component option/callback updates and provider restrictions remain intact.
+
+**Evidence boundary:** added test patches cover StrictMode, failure paths, hook identity, session updates, early mounting, SSR and mixed providers. They were read, not executed. CI actions are pinned to commit SHAs. No hosted checkout or payment behavior was tested. No new concept, cross-company comparison or contradiction is needed; older history is preserved.
+
+#### 6.11.0 grounding
+
+> `result.stripePromise.catch(() => {});`
+>
+> [Checkout Elements provider](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/files/src/checkout/components/CheckoutElementsProvider.tsx) - StrictMode rejection observation.
+
+> `setState({type: 'error', error});`
+>
+> [Checkout Form provider](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/files/src/checkout/components/CheckoutFormProvider.tsx) - initialization error handler.
+
+> `// Element wrappers and useStripe need SDK references, not session updates.`
+>
+> [Checkout context](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/files/src/checkout/components/CheckoutContext.tsx).
+
+> `if (left === right) {`
+>
+> [Option comparison](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/files/src/utils/isEqual.ts) - immediate equality return.
 
 ### `@stripe/react-stripe-js@6.10.0`
 
@@ -253,6 +313,19 @@ The `6.8.0` baseline preserves these responsibilities while adding later public 
 - History: [[changelog-github-react-stripe-js]]
 
 ## Raw Sources
+
+- [6.12.0 snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/manifest.json)
+- [6.12.0 release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.12.0/2026-09-27/manifest.json)
+- [6.12.0 release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.12.0/2026-09-27/release-notes.md)
+- [6.11.0 to 6.12.0 comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.11.0--6.12.0/comparison.json)
+- [6.12.0 exact patch](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.11.0--6.12.0/diff.patch)
+
+- [6.11.0 snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/manifest.json)
+- [6.11.0 release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.11.0/2026-09-27/manifest.json)
+- [6.11.0 release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.11.0/2026-09-27/release-notes.md)
+- [6.10.0 to 6.11.0 comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.10.0--6.11.0/comparison.json)
+- [6.11.0 exact patch](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.10.0--6.11.0/diff.patch)
+- [6.11.0 component factory](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/files/src/components/createElementComponent.tsx)
 
 - [6.10.0 snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-15-d1750b0/manifest.json)
 - [6.10.0 release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.10.0/2026-09-15/manifest.json)

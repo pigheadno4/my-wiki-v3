@@ -6,6 +6,21 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-29] ingest | React Stripe.js `6.12.0`
+
+- Approved delta `github-efa92d3092d7b5e29446`, exact SHA `fd7981cbe61020b3cebd29157d098950e4e7cfdf`, from 6.11.0. Required reading completed; one retained file added, two modified, 58 unchanged; all four upstream paths classified.
+- Created scoped Financial Accounts disclosures concept first, then updated source/changelog, company, index and logs. Recorded returned-error versus rejection handling, unmount/race risks and callback-driven recreation. No upstream tests or hosted rendering executed; eligibility/compliance unverified. Older knowledge and source count retained; no contradiction or comparison.
+
+## [2026-09-27] ingest | React Stripe.js `6.11.0`
+
+- Approved delta `github-5816fc8745a2a9c210ad`, exact SHA `1a3198458d1c0d6d0b4f54ad3fe4eed5425e7723`, from 6.10.0. Required packet/context/evidence reading completed; six retained files modified, 54 unchanged, all 13 upstream paths classified.
+- Updated existing Elements and Checkout concepts first, source/changelog, company, provider index and logs. Preserved older history and source count; no new contradiction or comparison. Recorded initialization failure boundaries, no automatic retry, SDK/session context separation and memoization. Upstream tests and hosted runtime not executed. 6.12.0 remains queued.
+
+## [2026-09-27] ingest | Stripe.js `9.17.0`
+
+- Approved delta `github-5bcc04b6e283f4b89e2b`, `9.16.0` to `9.17.0`, exact SHA `ad7bd52fd1d38edd60968874b1c9546c0134c798`. All 13 required evidence/context paths read; four retained files modified, 76 unchanged; eight upstream changes classified.
+- Updated ACH concept first, cumulative source/changelog, company and index. Recorded four collection APIs, consent ID and seconds timestamp, beta/server validation, and no guaranteed consent-pane omission. Preserved all older knowledge and source count. No new contradiction or cross-company comparison; no upstream tests or payment runtime execution.
+
 ## [2026-09-21] ingest | Stripe Node `22.6.2`
 
 - Delta-ingested `github-c5fa7a0352b6764a7481` with approved focused reading, exact SHA `d9d092737b4a891f0beaf47c26c222972a4c7b0f`. Both 68-file snapshots verified; 11 modified, 57 unchanged. Older changelog identical; version-only core/package changes mechanically checked.

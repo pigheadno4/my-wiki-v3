@@ -32,6 +32,12 @@ Custom payment forms must display mandate text. Stripe emails mandate confirmati
 - **Financial Connections** (instant): customer logs into bank
 - **Microdeposits** (delayed): 10-day window to verify; reverts to new payment method if not completed
 
+## Financial Connections Pre-Collected Consent (Stripe.js 9.17.0)
+
+`@stripe/stripe-js@9.17.0` adds optional `preCollectedConsent` to `collectBankAccountForPayment`, `collectBankAccountForSetup`, `collectFinancialConnectionsAccounts`, and `collectBankAccountToken`. Its required fields are `consent` (the server-returned Financial Connections consent object ID) and `collectedAt` (Unix seconds when the customer affirmatively accepted the complete consent text).
+
+This requires beta access and server-side eligibility/validation. Supplying it does not guarantee omission of Stripe's consent pane. It is not a general `confirmPayment` option, proof of an ACH debit mandate, or a replacement for payment/setup confirmation. The package adds declarations, not the hosted Stripe.js implementation. Source: [[source-github-stripe-js]].
+
 ## Disputes
 
 - **Personal accounts**: up to 60 calendar days

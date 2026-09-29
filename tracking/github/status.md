@@ -764,6 +764,31 @@
   To SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
   Comparison: Not applicable
 
+## `github-5816fc8745a2a9c210ad`
+
+- Repository: `stripe/react-stripe-js`
+- SHA: `1a3198458d1c0d6d0b4f54ad3fe4eed5425e7723`
+- Collection date: `2026-09-27`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/manifest.json)
+- Packet: [review packet](repos/stripe/react-stripe-js/ingest-packets/github-5816fc8745a2a9c210ad/packet.md)
+- Review priority: `high`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/react-stripe-js@6.11.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.11.0/2026-09-27/manifest.json)
+  Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.10.0--6.11.0/comparison.json)
+
 ## `github-5aefbb37c742b17a51ab`
 
 - Repository: `braintree/popup-bridge-ios`
@@ -815,6 +840,31 @@
   From SHA: `baseline`
   To SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
   Comparison: Not applicable
+
+## `github-5bcc04b6e283f4b89e2b`
+
+- Repository: `stripe/stripe-js`
+- SHA: `ad7bd52fd1d38edd60968874b1c9546c0134c798`
+- Collection date: `2026-09-27`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-js/ingest-packets/github-5bcc04b6e283f4b89e2b/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@9.17.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/9.17.0/2026-09-27/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.16.0--9.17.0/comparison.json)
 
 ## `github-5c8c7287ce91fe6f34c2`
 
@@ -2955,6 +3005,31 @@
 - `@paypal/paypal-server-sdk@2.3.0` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.3.0/2026-08-10/manifest.json)
   Comparison: Not applicable
+
+## `github-efa92d3092d7b5e29446`
+
+- Repository: `stripe/react-stripe-js`
+- SHA: `fd7981cbe61020b3cebd29157d098950e4e7cfdf`
+- Collection date: `2026-09-27`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/manifest.json)
+- Packet: [review packet](repos/stripe/react-stripe-js/ingest-packets/github-efa92d3092d7b5e29446/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/react-stripe-js@6.12.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.12.0/2026-09-27/manifest.json)
+  Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.11.0--6.12.0/comparison.json)
 
 ## `github-f4acbaae53defd3b2074`
 

@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-09-29] ingest | React Stripe.js `6.12.0`
+
+- Approved serial delta: TreasuryDisclosure contract and static error/lifecycle caveats, with earlier history preserved. Details: [[stripe-log]] and [[changelog-github-react-stripe-js]].
+
+## [2026-09-27] ingest | React Stripe.js `6.11.0`
+
+- Approved serial delta: Checkout initialization errors, SDK/session context separation and memoization; prior history retained. Details: [[stripe-log]] and [[changelog-github-react-stripe-js]].
+
+## [2026-09-27] ingest | Stripe.js `9.17.0`
+
+- Approved full-reading delta for beta pre-collected Financial Connections consent declarations; preserved older history and runtime/mandate limits. Details: [[stripe-log]] and [[changelog-github-stripe-js]].
+
 ## [2026-09-27] analysis | PayPal v5/v6 returning-buyer frontend gap
 
 - Filed approved [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]]: PayPal-wallet-specific v5 customer-token rendering is documented; equivalent direct v6 UI remains unverified, distinct from saving, backend token reuse, and Braintree editing. Linked both indexes. No raw collection, source ingest, runtime testing, commit, or push.

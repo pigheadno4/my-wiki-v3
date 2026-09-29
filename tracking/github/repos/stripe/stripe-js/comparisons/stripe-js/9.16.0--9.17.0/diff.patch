@@ -1,0 +1,214 @@
+diff --git a/.github/workflows/stale.yml b/.github/workflows/stale.yml
+index dbfa33a..aaad857 100644
+--- a/.github/workflows/stale.yml
++++ b/.github/workflows/stale.yml
+@@ -10,7 +10,7 @@ jobs:
+       issues: write
+       pull-requests: write
+     steps:
+-      - uses: actions/stale@v9
++      - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
+         with:
+           # Number of days of inactivity before an issue becomes stale
+           days-before-stale: 20
+diff --git a/.github/workflows/test.yml b/.github/workflows/test.yml
+index 8107103..0f668ff 100644
+--- a/.github/workflows/test.yml
++++ b/.github/workflows/test.yml
+@@ -8,8 +8,8 @@ jobs:
+   test:
+     runs-on: ubuntu-latest
+     steps:
+-    - uses: actions/checkout@v2
+-    - uses: actions/setup-node@v1
++    - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
++    - uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # v1.4.6
+       with:
+         node-version: 20.x
+     - run: yarn install --frozen-lockfile
+diff --git a/package.json b/package.json
+index d4d0964..c26b6da 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-js",
+-  "version": "9.16.0",
++  "version": "9.17.0",
+   "description": "Stripe.js loading utility",
+   "repository": "github:stripe/stripe-js",
+   "main": "lib/index.js",
+diff --git a/tests/types/src/invalid.ts b/tests/types/src/invalid.ts
+index 7dc76ce..adfb14b 100644
+--- a/tests/types/src/invalid.ts
++++ b/tests/types/src/invalid.ts
+@@ -9,6 +9,7 @@ import {
+   StripeCurrencySelectorElement,
+   StripeLinkSignupElement,
+   ReleaseTrain,
++  PreCollectedConsent,
+ } from '../../../types';
+ import {ApplePayUpdateOption} from '../../../types/stripe-js/elements/apple-pay';
+ 
+@@ -862,3 +863,30 @@ checkoutFormSdk.loadActions().then((loadActionsResult) => {
+ 
+ // @ts-expect-error: Type '"clover"' is not assignable to type '"dahlia"'.
+ const releaseTrain: ReleaseTrain = 'clover';
++
++// @ts-expect-error: consent is required
++const missingConsent: PreCollectedConsent = {collectedAt: 1788397200};
++
++const invalidConsent: PreCollectedConsent = {
++  // @ts-expect-error: consent must be a string
++  consent: 123,
++  collectedAt: 1788397200,
++};
++
++// @ts-expect-error: collectedAt is required
++const missingCollectedAt: PreCollectedConsent = {consent: 'fccons_123'};
++
++const invalidCollectedAt: PreCollectedConsent = {
++  consent: 'fccons_123',
++  // @ts-expect-error: collectedAt must be a number
++  collectedAt: '1788397200',
++};
++
++stripe.confirmPayment({
++  clientSecret: '',
++  // @ts-expect-error: preCollectedConsent is only supported by Financial Connections launch methods
++  preCollectedConsent: {
++    consent: 'fccons_123',
++    collectedAt: 1788397200,
++  },
++});
+diff --git a/tests/types/src/valid.ts b/tests/types/src/valid.ts
+index c7de468..5ee57dc 100644
+--- a/tests/types/src/valid.ts
++++ b/tests/types/src/valid.ts
+@@ -2603,6 +2603,10 @@ stripe
+ stripe
+   .collectBankAccountForPayment({
+     clientSecret: '',
++    preCollectedConsent: {
++      consent: 'fccons_123',
++      collectedAt: 1788397200,
++    },
+     params: {
+       payment_method_type: '',
+       payment_method_data: {
+@@ -3053,6 +3057,10 @@ stripe
+ stripe
+   .collectBankAccountForSetup({
+     clientSecret: '',
++    preCollectedConsent: {
++      consent: 'fccons_123',
++      collectedAt: 1788397200,
++    },
+     params: {
+       payment_method_type: '',
+       payment_method_data: {
+@@ -3358,6 +3366,10 @@ stripe.retrieveOrder('{ORDER_CLIENT_SECRET}').then((res) => {
+ stripe
+   .collectFinancialConnectionsAccounts({
+     clientSecret: '{FINANCIAL_CONNECTIONS_CLIENT_SECRET}',
++    preCollectedConsent: {
++      consent: 'fccons_123',
++      collectedAt: 1788397200,
++    },
+   })
+   .then((result) => {
+     if (result.error) {
+@@ -3431,6 +3443,10 @@ stripe
+ stripe
+   .collectBankAccountToken({
+     clientSecret: '{FINANCIAL_CONNECTIONS_CLIENT_SECRET}',
++    preCollectedConsent: {
++      consent: 'fccons_123',
++      collectedAt: 1788397200,
++    },
+   })
+   .then((result) => {
+     if (result.error) {
+diff --git a/types/stripe-js/financial-connections.d.ts b/types/stripe-js/financial-connections.d.ts
+index e0c91ad..8b804f0 100644
+--- a/types/stripe-js/financial-connections.d.ts
++++ b/types/stripe-js/financial-connections.d.ts
+@@ -1,3 +1,22 @@
++/**
++ * Requires beta access:
++ * Contact [Stripe support](https://support.stripe.com/) for more information.
++ *
++ * Evidence is subject to server-side eligibility and validation. Providing it
++ * does not guarantee that Stripe.js will omit its consent pane.
++ */
++export interface PreCollectedConsent {
++  /**
++   * ID of a financial_connections.consent object returned by the merchant's server.
++   */
++  consent: string;
++
++  /**
++   * Unix timestamp in seconds when the customer affirmatively accepted the complete consent text.
++   */
++  collectedAt: number;
++}
++
+ /**
+  * Data to be sent with a `stripe.collectFinancialConnectionsAccounts` request.
+  */
+@@ -6,6 +25,8 @@ export interface CollectFinancialConnectionsAccountsOptions {
+    * The client secret of the [Financial Connections Session](https://stripe.com/docs/api/financial_connections/session).
+    */
+   clientSecret: string;
++
++  preCollectedConsent?: PreCollectedConsent;
+ }
+ 
+ /**
+@@ -16,4 +37,6 @@ export interface CollectBankAccountTokenOptions {
+    * The client secret of the [Financial Connections Session](https://stripe.com/docs/api/financial_connections/session).
+    */
+   clientSecret: string;
++
++  preCollectedConsent?: PreCollectedConsent;
+ }
+diff --git a/types/stripe-js/payment-intents.d.ts b/types/stripe-js/payment-intents.d.ts
+index a3034b2..122cb97 100644
+--- a/types/stripe-js/payment-intents.d.ts
++++ b/types/stripe-js/payment-intents.d.ts
+@@ -6,6 +6,7 @@ import {
+   StripeAuBankAccountElement,
+ } from './elements';
+ import {PaymentMethodCreateParams, PaymentIntentConfirmParams} from '../api';
++import {PreCollectedConsent} from './financial-connections';
+ import {Omit} from '../utils';
+ 
+ export type CreatePaymentMethodData =
+@@ -1638,6 +1639,8 @@ export interface CollectBankAccountForPaymentOptions {
+    */
+   clientSecret: string;
+ 
++  preCollectedConsent?: PreCollectedConsent;
++
+   params: CollectBankAccountParams;
+ 
+   /**
+diff --git a/types/stripe-js/setup-intents.d.ts b/types/stripe-js/setup-intents.d.ts
+index 632e2d6..f7212e8 100644
+--- a/types/stripe-js/setup-intents.d.ts
++++ b/types/stripe-js/setup-intents.d.ts
+@@ -1,4 +1,5 @@
+ import {PaymentMethodCreateParams, SetupIntentConfirmParams} from '../api';
++import {PreCollectedConsent} from './financial-connections';
+ 
+ import {
+   CreatePaymentMethodAcssDebitData,
+@@ -323,6 +324,8 @@ export interface CollectBankAccountForSetupOptions {
+    */
+   clientSecret: string;
+ 
++  preCollectedConsent?: PreCollectedConsent;
++
+   params: CollectBankAccountParams;
+ 
+   /**

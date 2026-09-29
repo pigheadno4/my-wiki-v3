@@ -2,9 +2,10 @@
 title: "GitHub: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-15
+date_updated: 2026-09-27
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json"
@@ -17,6 +18,8 @@ tags: [stripe, stripe-js, javascript, typescript, elements, checkout, github-rep
 ## Overview
 
 `stripe/stripe-js` publishes `@stripe/stripe-js`, the CommonJS and ES module loader plus TypeScript declarations for Stripe.js. This cumulative page preserves the approved `@stripe/stripe-js@8.11.0` baseline, the full major-version transition to `@stripe/stripe-js@9.12.1`, and approved declaration deltas through `9.16.0` at commit `e03ec565455178cd2b236f6b495ddc952397c3f0`.
+
+The latest additive delta is `9.17.0` at `ad7bd52fd1d38edd60968874b1c9546c0134c798`; the preceding baseline and all earlier sections remain retained.
 
 Repository: <https://github.com/stripe/stripe-js>
 
@@ -115,7 +118,7 @@ Repository: <https://github.com/stripe/stripe-js>
 
 | Package | Latest ingested release | Stripe.js train | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/stripe-js` | `9.16.0` | `dahlia` | Approved 9.16 declaration delta; prior v9 and v8 retained |
+| `@stripe/stripe-js` | `9.17.0` | `dahlia` | Approved 9.17 consent declaration delta; prior v9 and v8 retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -336,6 +339,31 @@ Each `StripeCheckoutTierBreakdown` has nullable `upTo`, `unitAmount`, `unitAmoun
 
 **Evidence limits:** this is declaration evidence, not runtime or merchant-eligibility proof. No payment, browser or upstream type tests were run. No new contradiction with version-qualified prior knowledge was found. The documentation's seven-Element overview is not an exhaustive beta export catalog, and absence of a prebuilt Checkout Elements summary does not mean absence of summary data.
 
+### `@stripe/stripe-js@9.17.0`: Pre-Collected Consent
+
+Released 2026-09-21, delta-ingested 2026-09-27 at `ad7bd52fd1d38edd60968874b1c9546c0134c798`. Compared with `9.16.0`, four retained files change and 76 remain unchanged. The loader, release train, dependency ranges, engines and entrypoints do not change.
+
+The exported `PreCollectedConsent` interface contains required `consent: string` and `collectedAt: number`. The former identifies a `financial_connections.consent` object returned by the merchant's server; the latter is Unix time in seconds when the customer affirmatively accepted the complete consent text. An optional `preCollectedConsent` property is added to the options for:
+
+- `collectFinancialConnectionsAccounts`
+- `collectBankAccountToken`
+- `collectBankAccountForPayment`
+- `collectBankAccountForSetup`
+
+Beta access and server-side eligibility/validation are explicit. Passing the object does not guarantee that Stripe.js omits its consent pane. This is not a `confirmPayment` option, evidence of an ACH debit mandate, or proof that the payment/setup completed. See [[stripe-ach-direct-debit]]. No change to existing integrations is required merely because this optional field is available.
+
+Grounding from [Financial Connections declarations](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/files/types/stripe-js/financial-connections.d.ts):
+
+> "Requires beta access:" (line 2)
+
+> "does not guarantee that Stripe.js will omit its consent pane." (line 6)
+
+> "ID of a financial_connections.consent object returned by the merchant's server." (line 10)
+
+> "Unix timestamp in seconds when the customer affirmatively accepted the complete consent text." (line 15)
+
+The comparison also retains upstream type-test changes accepting this object on the four collection methods and rejecting it on `confirmPayment`, plus GitHub Actions SHA pinning. Tests and CI files remain intentional capsule exclusions; their patch was read, not executed. All eight upstream changed paths have dispositions. The package proves the typed contract, not hosted-runtime rollout or consent-object creation behavior. Full assigned evidence was read; no new contradiction or cross-company comparison was warranted.
+
 ## Compatibility and Operational Notes
 
 - Stripe.js must be loaded from `js.stripe.com` for the documented PCI boundary.
@@ -357,6 +385,15 @@ Each `StripeCheckoutTierBreakdown` has nullable `upTo`, `unitAmount`, `unitAmoun
 - History: [[changelog-github-stripe-js]]
 
 ## Raw Sources
+
+- [9.17.0 snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/manifest.json)
+- [9.17.0 release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.17.0/2026-09-27/manifest.json)
+- [9.17.0 release notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.17.0/2026-09-27/release-notes.md)
+- [9.16.0 to 9.17.0 comparison](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.16.0--9.17.0/comparison.json)
+- [9.17.0 exact patch](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.16.0--9.17.0/diff.patch)
+- [Financial Connections options](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/files/types/stripe-js/financial-connections.d.ts)
+- [PaymentIntent collection options](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/files/types/stripe-js/payment-intents.d.ts)
+- [SetupIntent collection options](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/files/types/stripe-js/setup-intents.d.ts)
 
 - [9.16.0 snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json)
 - [9.16.0 release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.16.0/2026-09-15/manifest.json)

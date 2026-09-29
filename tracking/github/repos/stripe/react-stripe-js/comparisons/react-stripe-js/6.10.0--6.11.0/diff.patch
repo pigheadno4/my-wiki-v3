@@ -1,0 +1,1335 @@
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index f2104a9..1cf6086 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -10,8 +10,8 @@ jobs:
+   test:
+     runs-on: ubuntu-latest
+     steps:
+-    - uses: actions/checkout@v2
+-    - uses: actions/setup-node@v4
++    - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
++    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+       with:
+         node-version: 24.x
+     - run: yarn install --frozen-lockfile
+@@ -27,8 +27,8 @@ jobs:
+     # stripe-js peer dependency if this test fails.
+     runs-on: ubuntu-latest
+     steps:
+-    - uses: actions/checkout@v2
+-    - uses: actions/setup-node@v4
++    - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
++    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+       with:
+         node-version: 24.x
+     - run: yarn install --frozen-lockfile
+diff --git a/.github/workflows/stale.yml b/.github/workflows/stale.yml
+index ae91681..ce6ca20 100644
+--- a/.github/workflows/stale.yml
++++ b/.github/workflows/stale.yml
+@@ -10,7 +10,7 @@ jobs:
+       issues: write
+       pull-requests: write
+     steps:
+-      - uses: actions/stale@v9
++      - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
+         with:
+           # Number of days of inactivity before an issue becomes stale
+           days-before-stale: 20
+diff --git a/package.json b/package.json
+index b76acf8..f77fb24 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/react-stripe-js",
+-  "version": "6.10.0",
++  "version": "6.11.0",
+   "description": "React components for Stripe.js and Stripe Elements",
+   "main": "dist/react-stripe.js",
+   "module": "dist/react-stripe.esm.mjs",
+diff --git a/src/checkout/components/CheckoutContext.test.tsx b/src/checkout/components/CheckoutContext.test.tsx
+new file mode 100644
+index 0000000..9547b55
+--- /dev/null
++++ b/src/checkout/components/CheckoutContext.test.tsx
+@@ -0,0 +1,209 @@
++import React from 'react';
++import {act, render} from '@testing-library/react';
++import {renderHook} from '@testing-library/react-hooks';
++
++import {
++  CheckoutContext,
++  CheckoutState,
++  useCheckout,
++  useCheckoutElements,
++  useCheckoutForm,
++} from './CheckoutContext';
++import {CheckoutElementsProvider} from './CheckoutElementsProvider';
++import {CheckoutFormProvider} from './CheckoutFormProvider';
++import * as mocks from '../../../test/mocks';
++import makeDeferred from '../../../test/makeDeferred';
++
++const wrapper = ({
++  state,
++  children,
++}: React.PropsWithChildren<{state: CheckoutState}>) => (
++  <CheckoutContext.Provider value={{checkoutState: state}}>
++    {children}
++  </CheckoutContext.Provider>
++);
++
++const hookCases = [
++  {name: 'useCheckoutForm', useHook: useCheckoutForm, sdkKind: 'form' as const},
++  {
++    name: 'useCheckoutElements',
++    useHook: useCheckoutElements,
++    sdkKind: 'elements' as const,
++  },
++  {name: 'useCheckout (form)', useHook: useCheckout, sdkKind: 'form' as const},
++  {
++    name: 'useCheckout (elements)',
++    useHook: useCheckout,
++    sdkKind: 'elements' as const,
++  },
++];
++
++hookCases.forEach(({name, useHook, sdkKind}) => {
++  describe(name, () => {
++    const makeSuccessState = () =>
++      ({
++        type: 'success',
++        sdkKind,
++        sdk: mocks.mockCheckoutSdk(),
++        checkoutActions: mocks.mockCheckoutActions(),
++        session: mocks.mockCheckoutSession(),
++      } as unknown as Extract<CheckoutState, {type: 'success'}>);
++
++    it.each(['loading', 'success', 'error'])(
++      'keeps the %s result stable on unrelated renders',
++      (type) => {
++        const state: CheckoutState =
++          type === 'success'
++            ? makeSuccessState()
++            : type === 'loading'
++            ? {type: 'loading', sdk: null}
++            : {type: 'error', error: {message: 'Unable to load checkout'}};
++        const onResultChange = jest.fn();
++        const {result, rerender} = renderHook(
++          () => {
++            const checkoutResult = useHook();
++            React.useEffect(() => {
++              onResultChange(checkoutResult);
++            }, [checkoutResult]);
++            return checkoutResult;
++          },
++          {wrapper, initialProps: {state}}
++        );
++        const initialResult = result.current;
++
++        // The wrapper creates a new context value, but checkout state is unchanged.
++        rerender({state});
++
++        expect(result.current).toBe(initialResult);
++        if (
++          result.current.type === 'success' &&
++          initialResult.type === 'success'
++        ) {
++          expect(result.current.checkout).toBe(initialResult.checkout);
++        }
++        expect(onResultChange).toHaveBeenCalledTimes(1);
++      }
++    );
++
++    it('updates the result on state transitions and session changes', () => {
++      const initialState: CheckoutState = {type: 'loading', sdk: null};
++      const {result, rerender} = renderHook(() => useHook(), {
++        wrapper,
++        initialProps: {state: initialState as CheckoutState},
++      });
++      expect(result.current).toEqual({type: 'loading'});
++
++      const successState = makeSuccessState();
++      rerender({state: successState});
++      const initialSuccess = result.current;
++      if (initialSuccess.type !== 'success') {
++        throw new Error('Expected checkout to finish loading');
++      }
++      expect(initialSuccess.checkout.currency).toBe('usd');
++
++      const updatedState = {
++        ...successState,
++        session: {...successState.session, currency: 'eur'},
++      };
++      rerender({state: updatedState});
++      const updatedSuccess = result.current;
++      if (updatedSuccess.type !== 'success') {
++        throw new Error('Expected checkout to remain successful');
++      }
++      expect(updatedSuccess).not.toBe(initialSuccess);
++      expect(updatedSuccess.checkout).not.toBe(initialSuccess.checkout);
++      expect(updatedSuccess.checkout.currency).toBe('eur');
++      expect(updatedSuccess.checkout.confirm).toBe(
++        initialSuccess.checkout.confirm
++      );
++
++      rerender({state: updatedState});
++      expect(result.current).toBe(updatedSuccess);
++
++      const error = {message: 'Unable to update checkout'};
++      rerender({state: {type: 'error', error}});
++      expect(result.current).toEqual({type: 'error', error});
++    });
++  });
++});
++
++const providerCases = [
++  {
++    name: 'CheckoutFormProvider',
++    Provider: CheckoutFormProvider,
++    useHook: useCheckoutForm,
++    initMethod: 'initCheckoutFormSdk' as const,
++  },
++  {
++    name: 'CheckoutElementsProvider',
++    Provider: CheckoutElementsProvider,
++    useHook: useCheckoutElements,
++    initMethod: 'initCheckoutElementsSdk' as const,
++  },
++];
++
++providerCases.forEach(({name, Provider, useHook, initMethod}) => {
++  it(`${name} preserves hook identity across parent renders and refreshes it on SDK changes`, async () => {
++    const stripe: any = mocks.mockStripe();
++    const sdk = mocks.mockCheckoutSdk();
++    const actions = mocks.mockCheckoutActions();
++    const session = mocks.mockCheckoutSession();
++    const loadActions = makeDeferred();
++    stripe[initMethod].mockReturnValue(sdk);
++    sdk.loadActions.mockReturnValue(loadActions.promise);
++    actions.getSession.mockReturnValue(session);
++
++    let onChange: (nextSession: typeof session) => void = () => {
++      throw new Error('The SDK change listener has not been attached');
++    };
++    sdk.on.mockImplementation((event, listener) => {
++      if (event === 'change') {
++        onChange = listener;
++      }
++    });
++
++    let latestResult!: ReturnType<typeof useHook>;
++    const Consumer = () => {
++      latestResult = useHook();
++      return (
++        <div>
++          {latestResult.type === 'success'
++            ? latestResult.checkout.currency
++            : latestResult.type}
++        </div>
++      );
++    };
++    const App = () => (
++      <Provider stripe={stripe} options={{clientSecret: 'cs_123'}}>
++        <Consumer />
++      </Provider>
++    );
++
++    const view = render(<App />);
++    await act(() => loadActions.resolve({type: 'success', actions}));
++    expect(view.getByText('usd')).toBeInTheDocument();
++    const initialResult = latestResult;
++    if (initialResult.type !== 'success') {
++      throw new Error('Expected checkout to finish loading');
++    }
++
++    view.rerender(<App />);
++    expect(latestResult).toBe(initialResult);
++
++    act(() => {
++      // An SDK change must invalidate the cache even if it reuses the session.
++      session.currency = 'eur';
++      onChange(session);
++    });
++    expect(view.getByText('eur')).toBeInTheDocument();
++    const updatedResult = latestResult;
++    if (updatedResult.type !== 'success') {
++      throw new Error('Expected checkout to remain successful');
++    }
++    expect(updatedResult).not.toBe(initialResult);
++    expect(updatedResult.checkout).not.toBe(initialResult.checkout);
++
++    view.rerender(<App />);
++    expect(latestResult).toBe(updatedResult);
++  });
++});
+diff --git a/src/checkout/components/CheckoutContext.tsx b/src/checkout/components/CheckoutContext.tsx
+index b1d0a09..8ae209e 100644
+--- a/src/checkout/components/CheckoutContext.tsx
++++ b/src/checkout/components/CheckoutContext.tsx
+@@ -44,7 +44,6 @@ export type CheckoutState =
+   | {type: 'error'; error: {message: string}};
+ 
+ export type CheckoutContextValue = {
+-  stripe: stripeJs.Stripe | null;
+   checkoutState: CheckoutState;
+ };
+ 
+@@ -53,6 +52,17 @@ export const CheckoutContext = React.createContext<CheckoutContextValue | null>(
+ );
+ CheckoutContext.displayName = 'CheckoutContext';
+ 
++export type CheckoutSdkContextValue = {
++  stripe: stripeJs.Stripe | null;
++  checkoutSdk: CheckoutSdk | null;
++};
++
++// Element wrappers and useStripe need SDK references, not session updates.
++// A non-null value also identifies a checkout provider before initialization.
++export const CheckoutSdkContext =
++  React.createContext<CheckoutSdkContextValue | null>(null);
++CheckoutSdkContext.displayName = 'CheckoutSdkContext';
++
+ export const validateCheckoutContext = (
+   ctx: CheckoutContextValue | null,
+   useCase: string
+@@ -67,8 +77,8 @@ export const validateCheckoutContext = (
+ 
+ export const useElementsOrCheckoutContextWithUseCase = (
+   useCaseString: string
+-): CheckoutContextValue | ElementsContextValue => {
+-  const checkout = React.useContext(CheckoutContext);
++): CheckoutSdkContextValue | ElementsContextValue => {
++  const checkout = React.useContext(CheckoutSdkContext);
+   const elements = React.useContext(ElementsContext);
+ 
+   if (checkout) {
+@@ -173,7 +183,10 @@ const mapStateToCheckoutResult = <
+ export const useCheckout = (): StripeUseCheckoutResult => {
+   const ctx = React.useContext(CheckoutContext);
+   const {checkoutState} = validateCheckoutContext(ctx, 'calls useCheckout()');
+-  return mapStateToCheckoutResult<StripeCheckoutElementsValue>(checkoutState);
++  return React.useMemo(
++    () => mapStateToCheckoutResult<StripeCheckoutElementsValue>(checkoutState),
++    [checkoutState]
++  );
+ };
+ 
+ export const useCheckoutElements = (): StripeUseCheckoutElementsResult => {
+@@ -190,7 +203,10 @@ export const useCheckoutElements = (): StripeUseCheckoutElementsResult => {
+       'useCheckoutElements() must be used inside <CheckoutElementsProvider>. Inside <CheckoutFormProvider>, use useCheckoutForm() instead.'
+     );
+   }
+-  return mapStateToCheckoutResult<StripeCheckoutElementsValue>(checkoutState);
++  return React.useMemo(
++    () => mapStateToCheckoutResult<StripeCheckoutElementsValue>(checkoutState),
++    [checkoutState]
++  );
+ };
+ 
+ export const useCheckoutForm = (): StripeUseCheckoutFormResult => {
+@@ -204,5 +220,8 @@ export const useCheckoutForm = (): StripeUseCheckoutFormResult => {
+       'useCheckoutForm() must be used inside <CheckoutFormProvider>. Inside <CheckoutElementsProvider>, use useCheckoutElements() instead.'
+     );
+   }
+-  return mapStateToCheckoutResult<StripeCheckoutFormValue>(checkoutState);
++  return React.useMemo(
++    () => mapStateToCheckoutResult<StripeCheckoutFormValue>(checkoutState),
++    [checkoutState]
++  );
+ };
+diff --git a/src/checkout/components/CheckoutElementsProvider.test.tsx b/src/checkout/components/CheckoutElementsProvider.test.tsx
+index 718ebc0..1f64b70 100644
+--- a/src/checkout/components/CheckoutElementsProvider.test.tsx
++++ b/src/checkout/components/CheckoutElementsProvider.test.tsx
+@@ -56,33 +56,152 @@ describe('CheckoutElementsProvider', () => {
+     </CheckoutElementsProvider>
+   );
+ 
++  describe.each([false, true])(
++    'initialization errors (StrictMode: %s)',
++    (strictMode) => {
++      const renderProvider = (stripe: any) => {
++        const TestComponent = () => {
++          const checkout = useCheckoutElements();
++          return (
++            <div>
++              {checkout.type === 'error'
++                ? checkout.error.message
++                : checkout.type}
++            </div>
++          );
++        };
++        const provider = (
++          <CheckoutElementsProvider
++            stripe={stripe}
++            options={{clientSecret: fakeClientSecret}}
++          >
++            <TestComponent />
++          </CheckoutElementsProvider>
++        );
++        return render(
++          strictMode ? <StrictMode>{provider}</StrictMode> : provider
++        );
++      };
++
++      it('exposes a rejected Stripe promise through useCheckoutElements', async () => {
++        const deferred = makeDeferred();
++        const error = new Error('Failed to load Stripe.js');
++        const result = renderProvider(deferred.promise);
++
++        expect(result.getByText('loading')).toBeInTheDocument();
++        await act(() => deferred.reject(error));
++
++        expect(result.getByText(error.message)).toBeInTheDocument();
++      });
++
++      it('exposes validation errors from a resolved Stripe promise', async () => {
++        const deferred = makeDeferred();
++        const result = renderProvider(deferred.promise);
++
++        await act(() => deferred.resolve({}));
++
++        expect(
++          result.getByText(
++            /Invalid prop `stripe` supplied to `CheckoutElementsProvider`/
++          )
++        ).toBeInTheDocument();
++      });
++
++      describe.each(['sync', 'async'])(
++        'with a %s Stripe prop',
++        (stripeType) => {
++          it.each(['initCheckoutElementsSdk', 'loadActions'])(
++            'exposes a synchronous exception from %s',
++            async (method) => {
++              const error = new Error(`${method} failed`);
++              const target =
++                method === 'initCheckoutElementsSdk'
++                  ? mockStripe
++                  : mockCheckoutSdk;
++              target[method].mockImplementation(() => {
++                throw error;
++              });
++
++              const result = renderProvider(
++                stripeType === 'sync' ? mockStripe : mockStripePromise
++              );
++
++              await waitFor(() =>
++                expect(result.getByText(error.message)).toBeInTheDocument()
++              );
++              expect(mockStripe.initCheckoutElementsSdk).toHaveBeenCalledTimes(
++                1
++              );
++            }
++          );
++        }
++      );
++
++      it('still exposes a rejected loadActions promise', async () => {
++        const deferred = makeDeferred();
++        const error = new Error('Failed to load actions');
++        mockCheckoutSdk.loadActions.mockReturnValue(deferred.promise);
++        const result = renderProvider(mockStripe);
++
++        await act(() => deferred.reject(error));
++
++        expect(result.getByText(error.message)).toBeInTheDocument();
++      });
++
++      it.each(['stripe', 'loadActions'])(
++        'handles a rejected %s promise after unmount',
++        async (source) => {
++          const deferred = makeDeferred();
++          if (source === 'loadActions') {
++            mockCheckoutSdk.loadActions.mockReturnValue(deferred.promise);
++          }
++          const result = renderProvider(
++            source === 'stripe' ? deferred.promise : mockStripe
++          );
++
++          result.unmount();
++          await act(() => deferred.reject(new Error('Initialization failed')));
++
++          expect(consoleError).not.toHaveBeenCalled();
++        }
++      );
++    }
++  );
++
+   describe('interaction with useStripe()', () => {
+     it('works with a Stripe instance', async () => {
+-      const {result, waitForNextUpdate} = renderHook(() => useStripe(), {
++      const deferred = makeDeferred();
++      mockCheckoutSdk.loadActions.mockReturnValue(deferred.promise);
++      const {result} = renderHook(() => useStripe(), {
+         wrapper,
+         initialProps: {stripe: mockStripe},
+       });
+ 
+       expect(result.current).toBe(mockStripe);
+ 
+-      await waitForNextUpdate();
++      await act(() =>
++        deferred.resolve({type: 'success', actions: mockCheckoutActions})
++      );
+ 
+       expect(result.current).toBe(mockStripe);
+     });
+ 
+     it('works when updating null to a Stripe instance', async () => {
+-      const {result, rerender, waitForNextUpdate} = renderHook(
+-        () => useStripe(),
+-        {
+-          wrapper,
+-          initialProps: {stripe: null},
+-        }
+-      );
++      const deferred = makeDeferred();
++      mockCheckoutSdk.loadActions.mockReturnValue(deferred.promise);
++      const {result, rerender} = renderHook(() => useStripe(), {
++        wrapper,
++        initialProps: {stripe: null},
++      });
+ 
+       expect(result.current).toBe(null);
+ 
+       rerender({stripe: mockStripe});
+-      await waitForNextUpdate();
++      expect(result.current).toBe(mockStripe);
++
++      await act(() =>
++        deferred.resolve({type: 'success', actions: mockCheckoutActions})
++      );
+ 
+       expect(result.current).toBe(mockStripe);
+     });
+diff --git a/src/checkout/components/CheckoutElementsProvider.tsx b/src/checkout/components/CheckoutElementsProvider.tsx
+index 3cd02d3..579d8c0 100644
+--- a/src/checkout/components/CheckoutElementsProvider.tsx
++++ b/src/checkout/components/CheckoutElementsProvider.tsx
+@@ -8,7 +8,11 @@ import {parseStripeProp} from '../../utils/parseStripeProp';
+ import {usePrevious} from '../../utils/usePrevious';
+ import {isEqual} from '../../utils/isEqual';
+ import {registerWithStripeJs} from '../../utils/registerWithStripeJs';
+-import {CheckoutContext, CheckoutState} from './CheckoutContext';
++import {
++  CheckoutContext,
++  CheckoutSdkContext,
++  CheckoutState,
++} from './CheckoutContext';
+ 
+ interface CheckoutElementsProviderProps {
+   /**
+@@ -47,10 +51,16 @@ export const CheckoutElementsProvider: FunctionComponent<
+   options,
+   children,
+ }: PrivateCheckoutElementsProviderProps) => {
+-  const parsed = React.useMemo(
+-    () => parseStripeProp(rawStripeProp, INVALID_STRIPE_ERROR),
+-    [rawStripeProp]
+-  );
++  const parsed = React.useMemo(() => {
++    const result = parseStripeProp(rawStripeProp, INVALID_STRIPE_ERROR);
++    if (result.tag === 'async') {
++      // StrictMode can create two derived promises; only one reaches the effect.
++      // Observe both so the discarded promise cannot reject unhandled. The
++      // retained promise still rejects into the effect's error handler.
++      result.stripePromise.catch(() => {});
++    }
++    return result;
++  }, [rawStripeProp]);
+ 
+   const [state, setState] = React.useState<CheckoutState>({
+     type: 'loading',
+@@ -64,6 +74,13 @@ export const CheckoutElementsProvider: FunctionComponent<
+   React.useEffect(() => {
+     let isMounted = true;
+ 
++    const handleError = (error: any) => {
++      // Do not gate this on the per-effect isMounted flag: StrictMode may clean
++      // up the effect that owns initialization, while initCalledRef prevents
++      // the next effect from starting another initialization.
++      setState({type: 'error', error});
++    };
++
+     const init = ({stripe}: {stripe: stripeJs.Stripe}) => {
+       if (stripe && isMounted && !initCalledRef.current) {
+         // Only update context if the component is still mounted
+@@ -115,19 +132,22 @@ export const CheckoutElementsProvider: FunctionComponent<
+     };
+ 
+     if (parsed.tag === 'async') {
+-      parsed.stripePromise.then((stripe) => {
+-        setStripe(stripe);
+-        if (stripe) {
+-          init({stripe});
+-        } else {
+-          // Only update context if the component is still mounted
+-          // and stripe is not null. We allow stripe to be null to make
+-          // handling SSR easier.
+-        }
+-      });
++      parsed.stripePromise
++        .then((stripe) => {
++          setStripe(stripe);
++          // Allow a null Stripe instance for SSR; initialize only when set.
++          if (stripe) {
++            init({stripe});
++          }
++        })
++        .catch(handleError);
+     } else if (parsed.tag === 'sync') {
+       setStripe(parsed.stripe);
+-      init({stripe: parsed.stripe});
++      try {
++        init({stripe: parsed.stripe});
++      } catch (error) {
++        handleError(error);
++      }
+     }
+ 
+     return () => {
+@@ -184,15 +204,21 @@ export const CheckoutElementsProvider: FunctionComponent<
+   // when the context value object reference changes but the actual values haven't
+   const contextValue = React.useMemo(
+     () => ({
+-      stripe,
+       checkoutState: state,
+     }),
+-    [stripe, state]
++    [state]
++  );
++
++  const sdkContextValue = React.useMemo(
++    () => ({stripe, checkoutSdk: sdk}),
++    [stripe, sdk]
+   );
+ 
+   return (
+     <CheckoutContext.Provider value={contextValue}>
+-      {children}
++      <CheckoutSdkContext.Provider value={sdkContextValue}>
++        {children}
++      </CheckoutSdkContext.Provider>
+     </CheckoutContext.Provider>
+   );
+ }) as FunctionComponent<PropsWithChildren<CheckoutElementsProviderProps>>;
+diff --git a/src/checkout/components/CheckoutFormProvider.test.tsx b/src/checkout/components/CheckoutFormProvider.test.tsx
+index 065a6e1..c5bd7e9 100644
+--- a/src/checkout/components/CheckoutFormProvider.test.tsx
++++ b/src/checkout/components/CheckoutFormProvider.test.tsx
+@@ -3,6 +3,7 @@ import {render, act, waitFor} from '@testing-library/react';
+ import {renderHook} from '@testing-library/react-hooks';
+ 
+ import {CheckoutFormProvider} from './CheckoutFormProvider';
++import createElementComponent from '../../components/createElementComponent';
+ import {
+   useCheckout,
+   useCheckoutElements,
+@@ -43,6 +44,33 @@ describe('CheckoutFormProvider', () => {
+   const fakeClientSecret = 'cs_123';
+ 
+   describe('calls initCheckoutFormSdk (not initCheckoutElementsSdk)', () => {
++    it('mounts the form before loadActions resolves', async () => {
++      const deferred = makeDeferred();
++      mockCheckoutSdk.loadActions.mockReturnValue(deferred.promise);
++      const CheckoutForm = createElementComponent('paymentForm', false);
++
++      render(
++        <CheckoutFormProvider
++          stripe={mockStripe}
++          options={{clientSecret: fakeClientSecret}}
++        >
++          <CheckoutForm />
++        </CheckoutFormProvider>
++      );
++
++      const form = mockCheckoutSdk.getForm();
++      expect(form.mount).toHaveBeenCalledTimes(1);
++
++      await act(() =>
++        deferred.resolve({
++          type: 'success',
++          actions: mocks.mockCheckoutActions(),
++        })
++      );
++
++      expect(form.mount).toHaveBeenCalledTimes(1);
++    });
++
+     it('calls initCheckoutFormSdk with the provided options', async () => {
+       render(
+         <CheckoutFormProvider
+@@ -111,6 +139,114 @@ describe('CheckoutFormProvider', () => {
+     });
+   });
+ 
++  describe.each([false, true])(
++    'initialization errors (StrictMode: %s)',
++    (strictMode) => {
++      const renderProvider = (stripe: any) => {
++        const TestComponent = () => {
++          const checkout = useCheckoutForm();
++          return (
++            <div>
++              {checkout.type === 'error'
++                ? checkout.error.message
++                : checkout.type}
++            </div>
++          );
++        };
++        const provider = (
++          <CheckoutFormProvider
++            stripe={stripe}
++            options={{clientSecret: fakeClientSecret}}
++          >
++            <TestComponent />
++          </CheckoutFormProvider>
++        );
++        return render(
++          strictMode ? <StrictMode>{provider}</StrictMode> : provider
++        );
++      };
++
++      it('exposes a rejected Stripe promise through useCheckoutForm', async () => {
++        const deferred = makeDeferred();
++        const error = new Error('Failed to load Stripe.js');
++        const result = renderProvider(deferred.promise);
++
++        expect(result.getByText('loading')).toBeInTheDocument();
++        await act(() => deferred.reject(error));
++
++        expect(result.getByText(error.message)).toBeInTheDocument();
++      });
++
++      it('exposes validation errors from a resolved Stripe promise', async () => {
++        const deferred = makeDeferred();
++        const result = renderProvider(deferred.promise);
++
++        await act(() => deferred.resolve({}));
++
++        expect(
++          result.getByText(
++            /Invalid prop `stripe` supplied to `CheckoutFormProvider`/
++          )
++        ).toBeInTheDocument();
++      });
++
++      describe.each(['sync', 'async'])(
++        'with a %s Stripe prop',
++        (stripeType) => {
++          it.each(['initCheckoutFormSdk', 'loadActions'])(
++            'exposes a synchronous exception from %s',
++            async (method) => {
++              const error = new Error(`${method} failed`);
++              const target =
++                method === 'initCheckoutFormSdk' ? mockStripe : mockCheckoutSdk;
++              target[method].mockImplementation(() => {
++                throw error;
++              });
++
++              const result = renderProvider(
++                stripeType === 'sync' ? mockStripe : mockStripePromise
++              );
++
++              await waitFor(() =>
++                expect(result.getByText(error.message)).toBeInTheDocument()
++              );
++              expect(mockStripe.initCheckoutFormSdk).toHaveBeenCalledTimes(1);
++            }
++          );
++        }
++      );
++
++      it('still exposes a rejected loadActions promise', async () => {
++        const deferred = makeDeferred();
++        const error = new Error('Failed to load actions');
++        mockCheckoutSdk.loadActions.mockReturnValue(deferred.promise);
++        const result = renderProvider(mockStripe);
++
++        await act(() => deferred.reject(error));
++
++        expect(result.getByText(error.message)).toBeInTheDocument();
++      });
++
++      it.each(['stripe', 'loadActions'])(
++        'handles a rejected %s promise after unmount',
++        async (source) => {
++          const deferred = makeDeferred();
++          if (source === 'loadActions') {
++            mockCheckoutSdk.loadActions.mockReturnValue(deferred.promise);
++          }
++          const result = renderProvider(
++            source === 'stripe' ? deferred.promise : mockStripe
++          );
++
++          result.unmount();
++          await act(() => deferred.reject(new Error('Initialization failed')));
++
++          expect(consoleError).not.toHaveBeenCalled();
++        }
++      );
++    }
++  );
++
+   describe('useCheckout() works within CheckoutFormProvider', () => {
+     it('provides checkout state through shared context', async () => {
+       const stripe: any = mocks.mockStripe();
+diff --git a/src/checkout/components/CheckoutFormProvider.tsx b/src/checkout/components/CheckoutFormProvider.tsx
+index 54cefdd..698daf4 100644
+--- a/src/checkout/components/CheckoutFormProvider.tsx
++++ b/src/checkout/components/CheckoutFormProvider.tsx
+@@ -8,7 +8,11 @@ import {parseStripeProp} from '../../utils/parseStripeProp';
+ import {usePrevious} from '../../utils/usePrevious';
+ import {isEqual} from '../../utils/isEqual';
+ import {registerWithStripeJs} from '../../utils/registerWithStripeJs';
+-import {CheckoutContext, CheckoutState} from './CheckoutContext';
++import {
++  CheckoutContext,
++  CheckoutSdkContext,
++  CheckoutState,
++} from './CheckoutContext';
+ 
+ type CheckoutFormProviderOptions = stripeJs.StripeCheckoutFormSdkOptions;
+ 
+@@ -40,10 +44,16 @@ export const CheckoutFormProvider: FunctionComponent<
+   options,
+   children,
+ }: PrivateCheckoutFormProviderProps) => {
+-  const parsed = React.useMemo(
+-    () => parseStripeProp(rawStripeProp, INVALID_STRIPE_ERROR),
+-    [rawStripeProp]
+-  );
++  const parsed = React.useMemo(() => {
++    const result = parseStripeProp(rawStripeProp, INVALID_STRIPE_ERROR);
++    if (result.tag === 'async') {
++      // StrictMode can create two derived promises; only one reaches the effect.
++      // Observe both so the discarded promise cannot reject unhandled. The
++      // retained promise still rejects into the effect's error handler.
++      result.stripePromise.catch(() => {});
++    }
++    return result;
++  }, [rawStripeProp]);
+ 
+   const [state, setState] = React.useState<CheckoutState>({
+     type: 'loading',
+@@ -57,6 +67,13 @@ export const CheckoutFormProvider: FunctionComponent<
+   React.useEffect(() => {
+     let isMounted = true;
+ 
++    const handleError = (error: any) => {
++      // Do not gate this on the per-effect isMounted flag: StrictMode may clean
++      // up the effect that owns initialization, while initCalledRef prevents
++      // the next effect from starting another initialization.
++      setState({type: 'error', error});
++    };
++
+     const init = ({stripe}: {stripe: stripeJs.Stripe}) => {
+       if (stripe && isMounted && !initCalledRef.current) {
+         // Only update context if the component is still mounted
+@@ -108,19 +125,22 @@ export const CheckoutFormProvider: FunctionComponent<
+     };
+ 
+     if (parsed.tag === 'async') {
+-      parsed.stripePromise.then((stripe) => {
+-        setStripe(stripe);
+-        if (stripe) {
+-          init({stripe});
+-        } else {
+-          // Only update context if the component is still mounted
+-          // and stripe is not null. We allow stripe to be null to make
+-          // handling SSR easier.
+-        }
+-      });
++      parsed.stripePromise
++        .then((stripe) => {
++          setStripe(stripe);
++          // Allow a null Stripe instance for SSR; initialize only when set.
++          if (stripe) {
++            init({stripe});
++          }
++        })
++        .catch(handleError);
+     } else if (parsed.tag === 'sync') {
+       setStripe(parsed.stripe);
+-      init({stripe: parsed.stripe});
++      try {
++        init({stripe: parsed.stripe});
++      } catch (error) {
++        handleError(error);
++      }
+     }
+ 
+     return () => {
+@@ -179,15 +199,21 @@ export const CheckoutFormProvider: FunctionComponent<
+   // when the context value object reference changes but the actual values haven't
+   const contextValue = React.useMemo(
+     () => ({
+-      stripe,
+       checkoutState: state,
+     }),
+-    [stripe, state]
++    [state]
++  );
++
++  const sdkContextValue = React.useMemo(
++    () => ({stripe, checkoutSdk: sdk}),
++    [stripe, sdk]
+   );
+ 
+   return (
+     <CheckoutContext.Provider value={contextValue}>
+-      {children}
++      <CheckoutSdkContext.Provider value={sdkContextValue}>
++        {children}
++      </CheckoutSdkContext.Provider>
+     </CheckoutContext.Provider>
+   );
+ }) as FunctionComponent<PropsWithChildren<CheckoutFormProviderProps>>;
+diff --git a/src/checkout/components/CheckoutSdkContext.test.tsx b/src/checkout/components/CheckoutSdkContext.test.tsx
+new file mode 100644
+index 0000000..2818c29
+--- /dev/null
++++ b/src/checkout/components/CheckoutSdkContext.test.tsx
+@@ -0,0 +1,319 @@
++import React from 'react';
++import {act, render} from '@testing-library/react';
++import {renderToString} from 'react-dom/server';
++
++import * as CheckoutContextModule from './CheckoutContext';
++import {CheckoutFormProvider} from './CheckoutFormProvider';
++import {CheckoutElementsProvider} from './CheckoutElementsProvider';
++import createElementComponent from '../../components/createElementComponent';
++import {Elements} from '../../components/Elements';
++import {useStripe} from '../../components/useStripe';
++import {CheckoutFormProps, PaymentElementProps} from '../../types';
++import * as mocks from '../../../test/mocks';
++import makeDeferred from '../../../test/makeDeferred';
++
++const providerCases = [
++  {
++    name: 'CheckoutFormProvider',
++    Provider: CheckoutFormProvider,
++    useCheckout: CheckoutContextModule.useCheckoutForm,
++    initMethod: 'initCheckoutFormSdk' as const,
++    createMethod: 'createForm' as const,
++    elementType: 'paymentForm' as const,
++    initialOptions: {layout: 'expanded' as const},
++    updatedOptions: {layout: 'compact' as const},
++  },
++  {
++    name: 'CheckoutElementsProvider',
++    Provider: CheckoutElementsProvider,
++    useCheckout: CheckoutContextModule.useCheckoutElements,
++    initMethod: 'initCheckoutElementsSdk' as const,
++    createMethod: 'createPaymentElement' as const,
++    elementType: 'payment' as const,
++    initialOptions: {layout: 'tabs' as const},
++    updatedOptions: {layout: 'accordion' as const},
++  },
++];
++
++providerCases.forEach(
++  ({
++    name,
++    Provider,
++    useCheckout,
++    initMethod,
++    createMethod,
++    elementType,
++    initialOptions,
++    updatedOptions,
++  }) => {
++    describe(name, () => {
++      // Element and StripeConsumer are memoized to exclude parent-driven renders;
++      // context updates still propagate through React.memo.
++      const Element = React.memo(
++        createElementComponent(elementType, false) as React.FunctionComponent<{
++          options?:
++            | CheckoutFormProps['options']
++            | PaymentElementProps['options'];
++          onChange?: (event: unknown) => void;
++        }>
++      );
++      const providerOptions = {clientSecret: 'cs_123'};
++
++      const setup = () => {
++        const stripe: any = mocks.mockStripe();
++        const sdk = mocks.mockCheckoutSdk();
++        const element = {...mocks.mockElement(), off: jest.fn()};
++        const actions = mocks.mockCheckoutActions();
++        const session = mocks.mockCheckoutSession();
++        const loadActions = makeDeferred();
++        stripe[initMethod].mockReturnValue(sdk);
++        sdk[createMethod].mockReturnValue(element);
++        sdk.loadActions.mockReturnValue(loadActions.promise);
++        actions.getSession.mockReturnValue(session);
++
++        let onChange: (nextSession: typeof session) => void = () => {
++          throw new Error('The SDK change listener has not been attached');
++        };
++        sdk.on.mockImplementation((event, listener) => {
++          if (event === 'change') {
++            onChange = listener;
++          }
++        });
++
++        return {
++          stripe,
++          sdk,
++          element,
++          session,
++          loadActions,
++          finishLoading: () => loadActions.resolve({type: 'success', actions}),
++          changeSession: () => onChange(session),
++        };
++      };
++
++      afterEach(() => {
++        jest.restoreAllMocks();
++      });
++
++      describe.each([false, true])('StrictMode: %s', (strictMode) => {
++        const Wrapper = strictMode ? React.StrictMode : React.Fragment;
++
++        it.each(['sync', 'async'])(
++          'skips SDK-only renders on session updates with %s Stripe',
++          async (stripeMode) => {
++            const {
++              stripe,
++              sdk,
++              element,
++              session,
++              finishLoading,
++              changeSession,
++            } = setup();
++            const stripePromise = makeDeferred();
++            // This spy relies on ts-jest's CommonJS import property lookups.
++            // Native ESM tests would need a different render probe.
++            const contextHook = jest.spyOn(
++              CheckoutContextModule,
++              'useElementsOrCheckoutContextWithUseCase'
++            );
++            // Count actual Element renders, not just its parent's renders.
++            const elementRenderCount = () =>
++              contextHook.mock.calls.filter(([useCase]) =>
++                useCase.startsWith('mounts ')
++              ).length;
++            const stripeRender = jest.fn();
++            const StripeConsumer = React.memo(() => {
++              stripeRender(useStripe());
++              return null;
++            });
++            StripeConsumer.displayName = 'StripeConsumer';
++            const SessionConsumer = () => {
++              const result = useCheckout();
++              const legacyResult = CheckoutContextModule.useCheckout();
++              return (
++                <>
++                  <span data-testid="session">
++                    {result.type === 'success'
++                      ? result.checkout.currency
++                      : result.type}
++                  </span>
++                  <span data-testid="legacy-session">
++                    {legacyResult.type === 'success'
++                      ? legacyResult.checkout.currency
++                      : legacyResult.type}
++                  </span>
++                </>
++              );
++            };
++
++            const view = render(
++              <Wrapper>
++                <Provider
++                  stripe={
++                    stripeMode === 'sync' ? stripe : stripePromise.promise
++                  }
++                  options={providerOptions}
++                >
++                  <Element />
++                  <StripeConsumer />
++                  <SessionConsumer />
++                </Provider>
++              </Wrapper>
++            );
++
++            if (stripeMode === 'async') {
++              expect(stripeRender).toHaveBeenLastCalledWith(null);
++              expect(element.mount).not.toHaveBeenCalled();
++              await act(() => stripePromise.resolve(stripe));
++            }
++
++            // The Element must mount as soon as the SDK exists, without waiting
++            // for loadActions to publish the first session.
++            expect(element.mount).toHaveBeenCalledTimes(1);
++            expect(stripeRender).toHaveBeenLastCalledWith(stripe);
++            expect(view.getByTestId('session')).toHaveTextContent('loading');
++            const initialElementRenders = elementRenderCount();
++            const initialStripeRenders = stripeRender.mock.calls.length;
++
++            await act(finishLoading);
++            expect(view.getByTestId('session')).toHaveTextContent('usd');
++            expect(view.getByTestId('legacy-session')).toHaveTextContent('usd');
++            expect(elementRenderCount()).toBe(initialElementRenders);
++            expect(stripeRender).toHaveBeenCalledTimes(initialStripeRenders);
++
++            act(() => {
++              // Session consumers must update even when the SDK reuses the object.
++              session.currency = 'eur';
++              changeSession();
++            });
++            expect(view.getByTestId('session')).toHaveTextContent('eur');
++            expect(view.getByTestId('legacy-session')).toHaveTextContent('eur');
++            expect(elementRenderCount()).toBe(initialElementRenders);
++            expect(stripeRender).toHaveBeenCalledTimes(initialStripeRenders);
++            expect(sdk[createMethod]).toHaveBeenCalledTimes(1);
++            expect(element.mount).toHaveBeenCalledTimes(1);
++            expect(element.update).not.toHaveBeenCalled();
++
++            view.unmount();
++            expect(element.destroy).toHaveBeenCalledTimes(1);
++          }
++        );
++
++        it('still updates Element options and callbacks after a session change', async () => {
++          const {stripe, element, finishLoading, changeSession} = setup();
++          const onChange = jest.fn();
++          const nextOnChange = jest.fn();
++          let onElementChange: (event: unknown) => void = () => {
++            throw new Error(
++              'The Element change listener has not been attached'
++            );
++          };
++          element.on.mockImplementation((event, listener) => {
++            if (event === 'change') {
++              onElementChange = listener;
++            }
++          });
++          const tree = (
++            options: typeof initialOptions | typeof updatedOptions,
++            callback: typeof onChange
++          ) => (
++            <Wrapper>
++              <Provider stripe={stripe} options={providerOptions}>
++                <Element options={options} onChange={callback} />
++              </Provider>
++            </Wrapper>
++          );
++          const view = render(tree(initialOptions, onChange));
++          await act(finishLoading);
++          act(changeSession);
++
++          const initialSubscriptions = element.on.mock.calls.length;
++          act(() => onElementChange({complete: false}));
++          expect(onChange).toHaveBeenCalledWith({complete: false});
++
++          view.rerender(tree(updatedOptions, nextOnChange));
++          expect(element.update).toHaveBeenCalledWith(updatedOptions);
++          act(() => onElementChange({complete: true}));
++          expect(nextOnChange).toHaveBeenCalledWith({complete: true});
++          expect(onChange).toHaveBeenCalledTimes(1);
++          expect(element.on).toHaveBeenCalledTimes(initialSubscriptions);
++          expect(element.off).not.toHaveBeenCalled();
++          expect(element.mount).toHaveBeenCalledTimes(1);
++        });
++
++        it('keeps Stripe available but does not create new Elements after an initialization error', async () => {
++          const {stripe, sdk, element, loadActions} = setup();
++          const stripeRender = jest.fn();
++          const StripeConsumer = () => {
++            stripeRender(useStripe());
++            return null;
++          };
++          const SessionConsumer = () => <span>{useCheckout().type}</span>;
++          const tree = (showConsumers: boolean) => (
++            <Wrapper>
++              <Provider stripe={stripe} options={providerOptions}>
++                <SessionConsumer />
++                {showConsumers && (
++                  <>
++                    <StripeConsumer />
++                    <Element />
++                  </>
++                )}
++              </Provider>
++            </Wrapper>
++          );
++          const view = render(tree(false));
++          await act(() =>
++            loadActions.reject(new Error('Unable to load checkout'))
++          );
++          expect(view.getByText('error')).toBeInTheDocument();
++
++          view.rerender(tree(true));
++          expect(stripeRender).toHaveBeenLastCalledWith(stripe);
++          expect(sdk[createMethod]).not.toHaveBeenCalled();
++          expect(element.mount).not.toHaveBeenCalled();
++        });
++      });
++
++      it('renders the server wrapper without initializing a supplied Stripe instance', () => {
++        const {stripe} = setup();
++        const ServerElement = createElementComponent(elementType, true);
++        const stripeRender = jest.fn();
++        const StripeConsumer = () => {
++          stripeRender(useStripe());
++          return null;
++        };
++        expect(
++          renderToString(
++            <Provider stripe={stripe} options={providerOptions}>
++              <ServerElement id="checkout-element" />
++              <StripeConsumer />
++            </Provider>
++          )
++        ).toContain('<div id="checkout-element"></div>');
++        expect(stripeRender).toHaveBeenLastCalledWith(null);
++        expect(stripe[initMethod]).not.toHaveBeenCalled();
++      });
++
++      it.each(['stripe', 'element'])(
++        'rejects mixed providers for %s consumers even before initialization',
++        (consumer) => {
++          jest.spyOn(console, 'error').mockImplementation(() => {});
++          const StripeConsumer = () => {
++            useStripe();
++            return null;
++          };
++          expect(() =>
++            render(
++              <Elements stripe={null}>
++                <Provider stripe={null} options={providerOptions}>
++                  {consumer === 'stripe' ? <StripeConsumer /> : <Element />}
++                </Provider>
++              </Elements>
++            )
++          ).toThrow('in both a checkout provider and <Elements> provider');
++        }
++      );
++    });
++  }
++);
+diff --git a/src/components/createElementComponent.tsx b/src/components/createElementComponent.tsx
+index 2d395ac..e414f71 100644
+--- a/src/components/createElementComponent.tsx
++++ b/src/components/createElementComponent.tsx
+@@ -73,11 +73,7 @@ const createElementComponent = (
+       `mounts <${displayName}>`
+     );
+     const elements = 'elements' in ctx ? ctx.elements : null;
+-    const checkoutState = 'checkoutState' in ctx ? ctx.checkoutState : null;
+-    const checkoutSdk =
+-      checkoutState?.type === 'success' || checkoutState?.type === 'loading'
+-        ? checkoutState.sdk
+-        : null;
++    const checkoutSdk = 'checkoutSdk' in ctx ? ctx.checkoutSdk : null;
+     const [element, setElement] = React.useState<stripeJs.StripeElement | null>(
+       null
+     );
+diff --git a/src/utils/isEqual.test.ts b/src/utils/isEqual.test.ts
+index 8204289..1051728 100644
+--- a/src/utils/isEqual.test.ts
++++ b/src/utils/isEqual.test.ts
+@@ -1,6 +1,56 @@
+ import {isEqual} from './isEqual';
+ 
+ describe('isEqual', () => {
++  it.each(['object', 'array'])(
++    'does not traverse identical %s references',
++    (type) => {
++      const ownKeys = jest.fn(Reflect.ownKeys);
++      const get = jest.fn(Reflect.get);
++      const value = new Proxy(
++        type === 'object' ? {theme: 'stripe'} : ['font'],
++        {
++          ownKeys,
++          get,
++        }
++      );
++
++      expect(isEqual(value, value)).toBe(true);
++      expect(ownKeys).not.toHaveBeenCalled();
++      expect(get).not.toHaveBeenCalled();
++    }
++  );
++
++  it('skips shared subtrees while still comparing distinct parent objects', () => {
++    const ownKeys = jest.fn(Reflect.ownKeys);
++    const get = jest.fn(Reflect.get);
++    const appearance = new Proxy({theme: 'stripe'}, {ownKeys, get});
++
++    expect(
++      isEqual({appearance, loader: 'auto'}, {appearance, loader: 'auto'})
++    ).toBe(true);
++    expect(
++      isEqual({appearance, loader: 'auto'}, {appearance, loader: 'never'})
++    ).toBe(false);
++    expect(ownKeys).not.toHaveBeenCalled();
++    expect(get).not.toHaveBeenCalled();
++  });
++
++  it('treats identical references as equal even when a property is NaN', () => {
++    const value = {number: NaN};
++
++    expect(isEqual(value, value)).toBe(true);
++    expect(isEqual(value, {number: NaN})).toBe(false);
++  });
++
++  it('keeps primitive NaN unequal to itself', () => {
++    expect(isEqual(NaN, NaN)).toBe(false);
++  });
++
++  it('treats positive and negative zero as equal', () => {
++    expect(isEqual(0, -0)).toBe(true);
++    expect(isEqual(-0, 0)).toBe(true);
++  });
++
+   [
+     ['a', 'a'],
+     [100, 100],
+@@ -22,7 +72,7 @@ describe('isEqual', () => {
+     ],
+     [{a: {nested: {more: [1, 2, 3]}}}, {a: {nested: {more: [1, 2, 3]}}}],
+   ].forEach(([left, right]) => {
+-    it(`should should return true for isEqual(${JSON.stringify(
++    it(`should return true for isEqual(${JSON.stringify(
+       left
+     )}, ${JSON.stringify(right)})`, () => {
+       expect(isEqual(left, right)).toBe(true);
+@@ -41,6 +91,7 @@ describe('isEqual', () => {
+     [/foo/, /foo/],
+     [new Date(1), new Date(1)],
+     [{a: 10}, {a: 11}],
++    [{appearance: {theme: 'stripe'}}, {appearance: {theme: 'night'}}],
+     [
+       ['a', 'b', 'c'],
+       ['a', 'b', 'c', 'd'],
+@@ -55,7 +106,7 @@ describe('isEqual', () => {
+     ],
+     [{a: {nested: {more: [1, 2, 3]}}}, {b: {nested: {more: [1, 2, 3]}}}],
+   ].forEach(([left, right]) => {
+-    it(`should should return false for isEqual(${JSON.stringify(
++    it(`should return false for isEqual(${JSON.stringify(
+       left
+     )}, ${JSON.stringify(right)})`, () => {
+       expect(isEqual(left, right)).toBe(false);
+diff --git a/src/utils/isEqual.ts b/src/utils/isEqual.ts
+index d30ee31..c6a1e81 100644
+--- a/src/utils/isEqual.ts
++++ b/src/utils/isEqual.ts
+@@ -3,6 +3,10 @@ import {isUnknownObject} from './guards';
+ const PLAIN_OBJECT_STR = '[object Object]';
+ 
+ export const isEqual = (left: unknown, right: unknown): boolean => {
++  if (left === right) {
++    return true;
++  }
++
+   if (!isUnknownObject(left) || !isUnknownObject(right)) {
+     return left === right;
+   }
