@@ -328,6 +328,9 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 - [[stripe]] — Stripe disputes handled via Dashboard, webhooks, and API
 
 ## Sources
+- [[source-braintree-fraud-tools-premium-effortless-chargeback-protection]] - Braintree Effortless Chargeback Protection purpose, country and card-transaction scope, transaction and chargeback eligibility, reason-code-specific evidence treatment, and non-waived acquiring-bank or card-network fee boundary
+- [[source-braintree-fraud-tools-premium-chargeback-protection]] - Braintree's Chargeback Protection and Effortless Chargeback Protection tools, with eligible-transaction and evidence conditions, real-time decline behavior, bypass service-payment consequence and unresolved indemnity direction, and account, region, payment and processor limits
+- [[source-braintree-fraud-tools-3d-secure]] - Braintree 3DS authentication and conditional fraud-chargeback liability shift, including the warning that a shift does not always trigger automatic representation and merchants must still monitor and act on chargebacks
 
 - [[source-braintree-transactions-guide-node]] - Braintree Node.js transaction-level route to account-qualified dispute details on the transaction response, disputed-transaction search by dispute date, and banking-partner-dependent handling
 

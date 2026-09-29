@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 161
+source_count: 171
 ---
 
 ## Overview
@@ -11,9 +11,20 @@ Braintree is represented in this wiki by sixteen independently tracked repositor
 
 ## Website Documentation
 
-One hundred forty-five independently reviewed website sources complement the sixteen repository
+One hundred fifty-five independently reviewed website sources complement the sixteen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-control-panel-security-two-factor-authentication]] - Control Panel 2FA requirement, method order and account-recovery boundaries, not payment authentication
+- [[source-braintree-control-panel-security-rotating-api-keys]] - API-key exposure response and safe overlapping-validity cutover
+- [[source-braintree-fraud-tools-basic-risk-threshold-rules]] - velocity-check configuration, supported methods, required submitted fields and override limit
+- [[source-braintree-fraud-tools-basic-avs-cvv-rules]] - credit-card AVS/CVV post-approval gateway rejection and Vault/international qualifications
+- [[source-braintree-fraud-tools-3d-secure]] - cardholder authentication, enrollment and conditional liability shift, not authorization proof
+- [[source-braintree-fraud-tools-premium-fraud-protection]] - named Fraud Protection approve/decline decision route, distinct from Advanced
+- [[source-braintree-fraud-tools-premium-fraud-protection-advanced]] - Advanced eligibility, review flow and Not Evaluated fallback
+- [[source-braintree-fraud-tools-premium-kount-custom]] - Kount risk-decision handoff, finality/discrepancy and responsibility split
+- [[source-braintree-fraud-tools-premium-chargeback-protection]] - two named tools, conditional protection and eligibility, unresolved bypass support conflict and indemnity direction
+- [[source-braintree-fraud-tools-premium-effortless-chargeback-protection]] - reason-code-specific evidence, conditional fee/amount waiver and non-waived fee limits
 
 - [[source-braintree-get-started-overview]] - merchant/gateway roles, Direct/Extend/Auth orientation and Control Panel/API interaction routes
 - [[source-braintree-get-started-explore]] - getting-started navigation map without importing linked-guide behavior
@@ -340,6 +351,13 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Related
 
+- [[braintree-fraud-tools]] - Basic velocity and AVS/CVV controls
+- [[braintree-3d-secure]] - cardholder authentication and conditional liability shift
+- [[braintree-fraud-protection]] - named Fraud Protection risk decisions
+- [[braintree-fraud-protection-advanced]] - Advanced review and risk-decision route
+- [[braintree-kount-custom]] - Kount decision handoff and finality
+- [[braintree-chargeback-protection]] - conditional protection-tool and eligibility route
+- [[braintree-effortless-chargeback-protection]] - Effortless evidence and fee boundaries
 - [[braintree-webhooks]] — website-document notification entry
 - [[braintree-control-panel]] — website-document administration entry
 - [[braintree-index]] — Braintree catalog and operations links

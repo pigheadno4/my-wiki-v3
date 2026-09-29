@@ -1,0 +1,75 @@
+{
+  "job_id": "fraud-tools-basic-risk-threshold-rules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Risk Threshold Rules\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/fraud-tools/basic/risk-threshold-rules\"\nraw_files:\n  - \"braintree/articles/guides/fraud-tools/basic/risk-threshold-rules-2026-09-16.md\"\ntags: [braintree, fraud-tools, risk-threshold-rules, velocity-checks, carding]\n---\n\n## Overview\n\nThis collected Braintree guide documents risk threshold rules, also called velocity checks, for detecting and preventing carding attacks by reacting when specified customer information passes through the gateway repeatedly within a designated period. The documented actions are email notification or automatic rejection of the triggering verifications or transactions.\n\n## Key takeaways\n\n- The page limits these rules to credit-card and certain Google Pay transactions; it does not establish applicability to other payment methods.\n- A custom rule is created in the Control Panel under **Fraud Management** > **Risk Thresholds** and is defined by five criteria: Action, Threshold, Operation, Field, and Window. The collected page describes repeated-value counters and time windows, not a numeric risk score or a risk-score cutoff.\n- The selected Field must be present in submitted transactions for a rule that relies on it to work properly, because many listed Fields are not otherwise required by the gateway.\n- The page says the only override is to temporarily disable risk threshold rules in the Control Panel and says that doing so is typically not recommended. This is a configuration-level exception route, not evidence of per-transaction approval, fraud immunity, chargeback protection, or liability shift.\n\n## Configuration and decision boundaries\n\nThe raw guide contains the exact Control Panel creation and enable/disable steps, an Email-first testing recommendation, alert-frequency and purchase-frequency guidance, and the complete rule-field catalog. Use those locators for configuration detail rather than treating one worked example or one threshold as a general default.\n\nThe rule criteria and action descriptions are under `### Rule criteria`: use `#### Action` for email and gateway-reject behavior, `#### Threshold` for trigger counting, `#### Operation` for transaction-versus-verification monitoring, `#### Window (minutes)` for reset timing, and `#### Fields` for the complete monitored-value list and one-field-per-rule boundary.\n\n## Detail locators\n\n- Availability boundary: `# Risk Threshold Rules > **AVAILABILITY**`, lines 17-18.\n- Carding/velocity-check purpose and email-versus-rejection outcome: `# Risk Threshold Rules`, line 22.\n- Control Panel custom-rule creation: `## Creating custom rules`, lines 31-44.\n- Worked notification example: `## Creating custom rules > ### Example`, lines 47-55.\n- Enable/disable route and recommended testing/setup guidance: `## Enabling existing risk threshold rules`, lines 58-93.\n- Required criteria, action outcomes, threshold semantics, operation scope, window behavior, complete field catalog and supporting-data prerequisite: `### Rule criteria`, lines 96-156.\n- Only documented override: `## Overriding rejections`, lines 161-163.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-fraud-tools]]\n- Supporting concept: [[braintree-control-panel]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/fraud-tools/basic/risk-threshold-rules-2026-09-16|Braintree Risk Threshold Rules guide]] - complete collected page covering availability, purpose, Control Panel configuration, rule criteria, recommendations, field-data prerequisite and override boundary\n",
+  "quotes": [
+    {
+      "text": "**AVAILABILITY**\n Risk threshold rules only apply to credit card and [certain Google Pay](/braintree/articles/guides/payment-methods/google-pay#fraud-tools) transactions.\n\n \n\nRisk threshold rules \u2013 often referred to as velocity checks \u2013 are designed to detect and prevent carding attacks. The rules trigger different actions when specified customer information passes through the gateway multiple times within a designated time period. The gateway can either send you an email or automatically reject the verifications or transactions that trigger your risk threshold rules.",
+      "location": "# Risk Threshold Rules > **AVAILABILITY** through purpose paragraph, lines 17-22"
+    },
+    {
+      "text": "To create and enable your own custom risk threshold rules:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on the gear icon in the top right corner\n- Click**Fraud Management**from the drop-down menu\n- Next to**Risk Thresholds**, click the**Options**link\n- Click**+ New Rule**in the**Custom Rules**section\n- Fill in the fields with your desired criteria\n- Click the**Create**button",
+      "location": "## Creating custom rules, lines 33-42"
+    },
+    {
+      "text": "#### Test your rules\n\nBefore rejecting transactions based on your rules, we recommend you start off by setting your rule\u2019s [Action](#action) to **Email**. This will allow you to monitor activity on your account without impacting your customers, as the Braintree gateway won't take action on the risk threshold rule's response.\n\nWhen you receive an email notification, we encourage you to look up the details of the transaction or verification in the Control Panel. If you believe that it might be fraudulent, you can then [void or refund](/braintree/articles/control-panel/transactions/refunds-voids-credits) the request. It's usually best to follow your instincts in these cases.\n\nOnce you have verified that the rule works as intended, you can change the Action to **Gateway Reject**, blocking any transactions that trigger your rule.",
+      "location": "### Recommended setup options > #### Test your rules, lines 75-81"
+    },
+    {
+      "text": "You must define the following rule criteria for each risk threshold rule:\n\n\n- Action\n- Threshold\n- Operation\n- Field\n- Window",
+      "location": "### Rule criteria, lines 98-105"
+    },
+    {
+      "text": "**NOTE**\n Many of the Fields above are not required in the Braintree gateway. To make sure your risk threshold rules work properly, be sure your transactions include all the Fields your rules rely on.\n\n \n\n\n## Overriding rejections\n\nThe only way to override your risk threshold rules is to temporarily disable them in the Control Panel. We typically don\u2019t recommend doing this, but it is possible if you believe an exception should be made for a customer.",
+      "location": "### Rule criteria > **NOTE** through ## Overriding rejections, lines 155-163"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-braintree-fraud-tools-concept-risk-thresholds",
+        "target_path": "wiki/concepts/braintree-fraud-tools.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree Fraud Tools\"\ntype: concept\ncategory: technology\ntags: [braintree, fraud-tools, risk-management, carding, velocity-checks]\n---\n\n## Braintree Fraud Tools\n\nBraintree's collected risk-threshold guide documents one basic fraud-control mechanism: risk threshold rules, also called velocity checks, detect and help prevent carding attacks by reacting when specified customer information passes through the gateway repeatedly within a designated period. Their documented actions are email notification or automatic rejection of the triggering verifications or transactions. The page limits these rules to credit-card and certain Google Pay transactions. [[source-braintree-fraud-tools-basic-risk-threshold-rules]]\n\n## Risk threshold rules\n\nA custom rule is created under **Fraud Management** > **Risk Thresholds** in the Control Panel and has five criteria: Action, Threshold, Operation, Field, and Window. This page describes repeated-value counters and time windows rather than a numeric risk score. Many listed Fields are not otherwise required by the gateway, so submitted transactions must include every Field on which their configured rules rely. The only documented override is temporarily disabling the rules in the Control Panel, which the guide says is typically not recommended. [[source-braintree-fraud-tools-basic-risk-threshold-rules]]\n\n## Scope boundary\n\nThis collected source establishes only the risk-threshold mechanism and its own availability, configuration and decision boundaries. It does not establish AVS/CVV rules, 3D Secure authentication, premium fraud-product behavior, chargeback protection, per-transaction liability shift, or current support beyond the collected snapshot.\n\n## Sources\n\n- [[source-braintree-fraud-tools-basic-risk-threshold-rules]] - carding-oriented velocity checks, payment-method availability, Control Panel configuration, five rule criteria, supporting-field prerequisite and override boundary\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep risk threshold rules distinct from AVS/CVV rules, 3D Secure, premium fraud products, chargeback protection and general Control Panel security.",
+          "Do not infer a numeric risk score, risk-score cutoff, per-transaction approval path, fraud immunity, chargeback protection or liability shift from this page.",
+          "Preserve the credit-card and certain-Google-Pay availability qualification and the supporting-field prerequisite.",
+          "Do not infer current support from the 2026-09-16 collection date."
+        ]
+      },
+      {
+        "update_id": "risk-threshold-rules-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-fraud-tools-basic-risk-threshold-rules]] - Control Panel creation, criteria and enable/disable routes for credit-card and certain-Google-Pay velocity checks, with supporting-field and temporary-disable boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is a Control Panel administration route for risk threshold rules, not evidence about AVS/CVV, 3DS, premium fraud products, chargeback protection or Control Panel login security.",
+          "Preserve that the page limits rule applicability to credit-card and certain Google Pay transactions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/fraud-tools/basic/risk-threshold-rules-2026-09-16.md",
+  "raw_sha256": "faeacd502314ac2fc2b597a47bb01987099e72c9ff56a46cdaab76088f5bdcb4",
+  "status": "candidate_ready"
+}

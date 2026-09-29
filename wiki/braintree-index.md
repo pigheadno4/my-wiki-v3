@@ -12,6 +12,17 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+- [[source-braintree-control-panel-security-two-factor-authentication]] - Control Panel 2FA methods, factor fallback, Account Admin recovery and self-service reset boundaries
+- [[source-braintree-control-panel-security-rotating-api-keys]] - exposure-driven API-key rotation with overlapping old/new validity and confirmation-before-deletion order
+- [[source-braintree-fraud-tools-basic-risk-threshold-rules]] - carding-oriented velocity rules, supporting-field prerequisite and temporary-disable boundary
+- [[source-braintree-fraud-tools-basic-avs-cvv-rules]] - credit-card AVS/CVV rules, post-issuer-approval gateway rejection, void and Vault/international qualifications
+- [[source-braintree-fraud-tools-3d-secure]] - cardholder authentication, enrollment route and conditional fraud-chargeback liability shift
+- [[source-braintree-fraud-tools-premium-fraud-protection]] - named Fraud Protection product with approve/decline risk decisions, distinct from Advanced
+- [[source-braintree-fraud-tools-premium-fraud-protection-advanced]] - Advanced eligibility, rules, review and Not Evaluated gateway-decision boundaries
+- [[source-braintree-fraud-tools-premium-kount-custom]] - Kount decision handoff, fixed gateway actions and post-window discrepancy boundary
+- [[source-braintree-fraud-tools-premium-chargeback-protection]] - two named chargeback tools, conditional waiver and evidence, bypass ambiguity and eligibility limits
+- [[source-braintree-fraud-tools-premium-effortless-chargeback-protection]] - Effortless reason-code-specific evidence, conditional protection and non-waived fee limits
+
 - [[source-braintree-get-started-overview]] - business/merchant/gateway roles, Direct/Extend/Auth orientation and Control Panel/API routes
 - [[source-braintree-get-started-explore]] - getting-started navigation map; linked guides remain separate evidence
 - [[source-braintree-get-started-try-it-out]] - Sandbox testing and Production isolation, credentials, capacity and non-transfer boundaries
@@ -204,6 +215,14 @@ Operations history: [[braintree-log]]
 - [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger beginning at `5.3.0` (github-repo, 2026-08-27)
 
 ## Concepts
+
+- [[braintree-fraud-tools]] - Basic Fraud Tools risk-threshold and AVS/CVV routes, not 3DS or premium product evidence
+- [[braintree-3d-secure]] - cardholder authentication, enrollment and conditional liability-shift boundaries
+- [[braintree-fraud-protection]] - named Fraud Protection gateway-decision route, distinct from Advanced
+- [[braintree-fraud-protection-advanced]] - Advanced risk-score, review and Not Evaluated routes
+- [[braintree-kount-custom]] - Kount Custom decision handoff, finality and responsibility split
+- [[braintree-chargeback-protection]] - chargeback-tool distinction, conditional waiver, eligibility boundaries and unresolved source conflict over bypass support
+- [[braintree-effortless-chargeback-protection]] - Effortless reason-code evidence and non-waived fee boundaries
 
 - [[braintree-payment-platform]] - merchant/gateway roles, product orientation, interaction channels and separate funding route
 - [[braintree-payment-methods]] - provider-wide method eligibility and collected deprecation conflict

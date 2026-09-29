@@ -1,0 +1,46 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "avs-cvv-rules-braintree-fraud-tools-durable-fact",
+      "target_path": "wiki/concepts/braintree-fraud-tools.md",
+      "update_kind": "durable_fact",
+      "anchor": "Replace `## Scope boundary` through `## Sources`",
+      "proposed_markdown": "## AVS and CVV rules\n\nBraintree's collected AVS/CVV guide documents a separate Basic Fraud Tools mechanism limited to credit cards: issuing banks return numeric address and CVV match results after an approval response, and merchant-configured rules can then cause Braintree to gateway-reject a transaction or verification and send a void request. A bank may not recognize the void immediately. These checks and rule outcomes therefore must remain distinct from processor authorization. [[source-braintree-fraud-tools-basic-avs-cvv-rules]]\n\nRules are configured under **Fraud Management** in the Control Panel and can apply to all transactions or selected card types, amounts, or merchant accounts. By default they apply only to first-time transactions, not recurring or vaulted-card transactions; card verification must be enabled to check a card before vaulting, and CVV must be recollected because Braintree says it does not store CVVs. Default AVS country scope and the documented Global AVS false-rejection warning remain material setup boundaries. [[source-braintree-fraud-tools-basic-avs-cvv-rules]]\n\n## Scope boundary\n\nThese collected sources establish only the documented risk-threshold and credit-card AVS/CVV mechanisms and their own availability, configuration and gateway-decision boundaries. They do not establish 3D Secure authentication, premium fraud-product behavior, chargeback protection, per-transaction liability shift, settlement, funding or current support beyond the collected snapshots; AVS/CVV match checks and rule outcomes do not replace processor authorization.\n\n## Sources\n\n- [[source-braintree-fraud-tools-basic-risk-threshold-rules]] - carding-oriented velocity checks, payment-method availability, Control Panel configuration, five rule criteria, supporting-field prerequisite and override boundary\n- [[source-braintree-fraud-tools-basic-avs-cvv-rules]] - credit-card AVS/CVV checks, Control Panel rule configuration, post-approval gateway-rejection and void behavior, Vault defaults and international AVS warning\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep AVS/CVV rule checks distinct from processor authorization, 3D Secure authentication, risk-threshold rules, premium fraud products, chargeback protection and general Control Panel security.",
+        "Replace the current scope paragraph that says the concept does not establish AVS/CVV rules; leaving it unchanged after adding this source would create an internal contradiction.",
+        "Do not turn address/CVV match results or the page's authorized-user marketing language into an identity, fraud-prevention, approval, settlement, funding, liability-shift or chargeback-protection guarantee.",
+        "Preserve the credit-card-only, first-time/Vault, CVV non-retention, post-approval void and Global AVS false-rejection qualifications.",
+        "Do not infer current support from the 2026-09-16 collection date."
+      ]
+    },
+    {
+      "update_id": "avs-cvv-rules-braintree-control-panel-route",
+      "target_path": "wiki/concepts/braintree-control-panel.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-braintree-fraud-tools-basic-avs-cvv-rules]] - Control Panel configuration for credit-card AVS/CVV rules, including transaction scoping, post-issuer-approval gateway rejection and void behavior, Vault defaults and international AVS false-rejection boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This is a Control Panel administration route for Basic Fraud Tools, not evidence that AVS/CVV checks are processor authorization, 3D Secure, a premium fraud product, chargeback protection or Control Panel login security.",
+        "Preserve that enabled rules can act after issuer approval and that void recognition may be delayed."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

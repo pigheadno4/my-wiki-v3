@@ -1,0 +1,52 @@
+{
+  "job_id": "control-panel-security-rotating-api-keys",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel Rotating API Keys\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/risk-and-security/control-panel-security/rotating-api-keys\"\nraw_files:\n  - \"braintree/articles/risk-and-security/control-panel-security/rotating-api-keys-2026-09-16.md\"\ntags: [braintree, control-panel, api-keys, credential-rotation, account-security]\n---\n\n## Overview\n\nThis collected Braintree article is a retrieval guide for rotating a Control Panel user's API keys after possible exposure or compromise. It documents the overlapping-validity cutover, the page's per-user Control Panel generation route and the required confirmation before old keys are deleted; it concerns API credential handling, not customer payment authentication.\n\n## Key takeaways\n\n- The page compares API keys to a username and password and recommends generating new keys whenever there is any chance of exposure or compromise, including after a developer leaves or keys are sent in email.\n- Generating new keys does not revoke the old ones: the old keys continue to work until they are deleted. The article presents that overlap as the way to rotate without customer downtime.\n- The guide says the new key set is \"for your user\" and routes generation through the Control Panel's **API Keys** section. It does not state which Control Panel roles or permissions can perform the action.\n- After generation, the documented sequence is to update the code with the new values, confirm the new keys work as expected and only then delete the old keys.\n\n## Evidence boundary\n\n> [!warning] Replacement is not revocation\n> Do not treat new-key generation as disabling the previous keys: this page says the old keys remain usable until deletion. Do not delete them until the new values have been updated in code and confirmed working. This collected page does not disclose credential values or document role eligibility, Control Panel login authentication, payment authentication, 3D Secure or transaction fraud screening.\n\n## Detail locators\n\n- Credential sensitivity and rotation triggers: `# Rotating API Keys`, line 16.\n- Overlapping old/new key validity and stated no-downtime purpose: `# Rotating API Keys`, line 18.\n- Do-not-delete-before-confirmation warning: `# Rotating API Keys > IMPORTANT`, lines 21-22.\n- Per-user Control Panel generation route: `# Rotating API Keys`, lines 26-33.\n- Code update, confirmation and old-key deletion sequence: `# Rotating API Keys`, line 35.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- Related credential inventory: [[source-braintree-control-panel-important-gateway-credentials]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/important-gateway-credentials-2026-09-16|Braintree Important Gateway Credentials]] - navigation-only credential inventory linked by this article; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/risk-and-security/control-panel-security/rotating-api-keys-2026-09-16|Braintree Control Panel Rotating API Keys]] - complete collected article covering exposure-driven rotation, overlapping key validity, the per-user Control Panel route and safe deletion order\n",
+  "quotes": [
+    {
+      "text": "Your [API keys](/braintree/articles/control-panel/important-gateway-credentials#api-credentials) are like a username and password. You should generate new ones if there\u2019s any chance they\u2019ve been exposed or compromised (e.g. if one of your developers leaves the company or if you send the keys in an email). Developers often refer to this as **rotating your API keys**.",
+      "location": "# Rotating API Keys, line 16"
+    },
+    {
+      "text": "If you generate new API keys, your old API keys will continue to work until you delete them. This allows you to rotate your keys without customers experiencing any downtime.",
+      "location": "# Rotating API Keys, line 18"
+    },
+    {
+      "text": "**Do not** delete your old API keys until you have confirmed the new keys work as expected.",
+      "location": "# Rotating API Keys > IMPORTANT, line 22"
+    },
+    {
+      "text": "To generate a new set of API keys for your user:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on the gear icon in the top right corner\n- Click**API**from the drop-down menu\n- Scroll to the**API Keys**section\n- Click the**Generate New API Key**button\n\nAfter you've generated your new keys, you'll need to [update your code with the new values](/braintree/docs/start/go-live#update-live-server-configuration). Once you've updated your code and confirmed that your new keys are working, you can delete the old ones.",
+      "location": "# Rotating API Keys, lines 26-35"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-security-rotating-api-keys-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-security-rotating-api-keys]] - exposure-driven API-key rotation, overlapping old/new key validity, per-user Control Panel generation and confirmation-before-deletion safety boundary, kept distinct from login and payment authentication",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep API credential rotation distinct from Control Panel login credentials, two-factor authentication, 3D Secure, payment authentication and transaction fraud screening.",
+          "Do not describe new-key generation as automatic revocation; the page says old keys continue working until they are deleted.",
+          "Preserve the required order: update code, confirm the new keys work and only then delete the old keys.",
+          "Do not infer a Control Panel role or permission requirement from this page; it states that the new key set is for the user but does not define role eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/risk-and-security/control-panel-security/rotating-api-keys-2026-09-16.md",
+  "raw_sha256": "670283bdca303091e58b43700fd1e8506c47fc0495522cd7e55b7b667c5f34b1",
+  "status": "candidate_ready"
+}

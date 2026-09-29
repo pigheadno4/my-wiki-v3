@@ -1,0 +1,57 @@
+{
+  "job_id": "control-panel-security-two-factor-authentication",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Control Panel Two-Factor Authentication\"\ntype: source\ndate_ingested: 2026-09-27\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication\"\nraw_files:\n  - \"braintree/articles/risk-and-security/control-panel-security/two-factor-authentication-2026-09-16.md\"\ntags: [braintree, control-panel, two-factor-authentication, account-security, webauthn]\n---\n\n## Overview\n\nThis collected Braintree article documents two-factor authentication for user access to the Braintree Control Panel. It covers the page's stated access requirement, available second-factor routes, sign-in fallback order, administrator-assisted lockout recovery and user-initiated reset boundary.\n\n## Key takeaways\n\n- The page says that, starting in September 2023, every Braintree user must enable 2FA to access the Control Panel. An enabled user signs in with a normal password and a separate code received from an authenticator application or by SMS.\n- After 2FA is enabled, a user can register a WebAuthn U2F-compatible hardware security key. At sign-in, the page orders available factors as a registered hardware key, a registered authenticator app and then SMS; it also documents fallback from an unavailable preferred method and routes a user with no working option to an Account Admin or, when that is unavailable, Braintree support.\n- For a locked-out user or one without access to their mobile device, the page assigns temporary 2FA disablement to the Braintree Account Admin and says the user will be prompted to set up 2FA at the next login. It separately says users cannot disable 2FA for themselves; their self-service reset is intended for changing a phone number or authenticator app, and an incomplete reset requires setup again.\n\n## Evidence boundary\n\n> [!warning] Collected Control Panel access evidence\n> This page concerns authentication to the Braintree Control Panel, not payment authentication, transaction fraud screening or 3D Secure. The September 2023 statements are preserved as wording in the 2026-09-16 collected snapshot; immutable collection does not by itself prove current behavior, method availability or browser compatibility. Use the exact raw sections for procedural steps and compatibility lists.\n\n## Detail locators\n\n- Purpose, stated access requirement, password-plus-code flow and app/SMS choices: `# Two-Factor Authentication`, lines 14-18.\n- Automatic setup assistant and manual enablement procedure: `## How to enable 2FA`, lines 21-37.\n- Hardware-key registration and WebAuthn browser prerequisite: `## Setting up a Hardware Security Key`, lines 40-55.\n- Sign-in factor order, method fallback and admin/support recovery route: `## Signing in with 2FA`, lines 60-77.\n- Hardware-key management procedure: `## Managing a Web Authentication (WebAuthn) Security Key`, lines 82-91.\n- Temporary administrator disablement and role boundary: `## How to Temporarily Disable 2FA for a user`, lines 94-113.\n- Self-service reset purpose, procedure and incomplete-setup consequence: `## How to reset 2FA`, lines 116-131.\n- TOTP application and hardware-key compatibility lists: `## Compatibility`, lines 134-165.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- Related account-administration source: [[source-braintree-control-panel-users-roles-managing-users-roles]]\n- Separate PayPal-credential login source: [[source-braintree-control-panel-users-roles-log-in-with-paypal]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication-2026-09-16|Braintree Control Panel Two-Factor Authentication]] - complete collected article covering Control Panel 2FA access, setup, factors, fallback, recovery, reset and compatibility\n",
+  "quotes": [
+    {
+      "text": "Two-factor authentication (2FA) is an extra layer of security that can be added to a user in the Control Panel, making it more difficult for unauthorized users to access your gateway. **Starting in September 2023, 2FA is required for all Braintree users, and each user must enable 2FA to access Control Panel.**\n\nWhen 2FA is enabled on a Control Panel user's account, the user will be required to enter both their normal password and a different code each time they sign in. Users can choose to receive this code via an application on their smartphone or a text message (SMS) to their mobile device.",
+      "location": "# Two-Factor Authentication, lines 16-18"
+    },
+    {
+      "text": "When 2FA is enabled on a user's account, they can then register a WebAuthn U2F compatible security key with their account:",
+      "location": "## Setting up a Hardware Security Key, line 42"
+    },
+    {
+      "text": "Once 2FA is enabled on a user account, every time they sign into the Control Panel they'll be prompted for their second factor in the following order:\n\n\n- Hardware Security Key (if registered)\n- [Authenticator App](#compatibility)(if registered)\n- SMS Code\n\nIf a user that selected the app as their preferred method is unable to access the app at the time of login, they can have a code sent to their mobile device via SMS by selecting **Text a code instead**.\n\nIf a user that selected the Hardware Security Key as their preferred method is unable to access the app at the time of login, they can fall back to the Authenticator App or have a code sent to their mobile device via SMS by selecting **Text a code instead**.\n\nIf none of the above options work, please ask the account admin to [disable 2FA for the user](https://developer.paypal.com/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication#how-to-disable-2fa), so that the user can set up 2FA once again upon log in. If an account admin is unavailable to assist or if the user in question is the only admin account within the organization, [please get help from our support team](https://developer.paypal.com/braintree/help/PasswordResetHelp).",
+      "location": "## Signing in with 2FA, lines 62-73"
+    },
+    {
+      "text": "If one of your users is locked out of the Control Panel, or is unable to access their mobile device at the time of login, your Braintree Account Admin will need to disable 2FA for that user's account. The user will be prompted to set up 2FA the next time they log in:",
+      "location": "## How to Temporarily Disable 2FA for a user, line 96"
+    },
+    {
+      "text": "Starting in September 2023, the users won't be able to disable 2FA for themselves. Instead, there will be the option to reset 2FA within **My User** from the drop-down menu. Users should only perform a 2FA reset if they plan to change their phone number or their authenticator app.\n\nTo reset 2FA, users can follow these steps:\n\n\n- Log into the Control Panel\n- Select your user icon in the top right corner\n- Select**My User**from the drop-down menu\n- Scroll to the**Two-Factor Authentication**section\n- Select**Reset 2FA**(If you see**Enable**button instead, you have not enabled 2FA yet. Please see****[How to enable 2FA](https://developer.paypal.com/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication#how-to-enable-2fa)for information on enabling 2FA)\n- Enter your password when prompted to confirm reset\n- Follow the steps to set up your new 2FA configuration*\n\n*If you confirm 2FA reset but do not successfully complete the steps, you will need to enable 2FA from **My User** or set up 2FA once again the next time you log in.",
+      "location": "## How to reset 2FA, lines 118-131"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "control-panel-security-two-factor-authentication-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-control-panel-security-two-factor-authentication]] - Control Panel 2FA access requirement, app/SMS and WebAuthn security-key routes, factor fallback, Account Admin-assisted lockout recovery and self-service reset limits, kept distinct from payment authentication and fraud tools",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route under Control Panel account access; do not conflate it with 3D Secure, transaction fraud screening or payment-method authentication.",
+          "Preserve the difference between Account Admin temporary disablement for another user and a user's self-service reset; the page says users cannot disable 2FA for themselves.",
+          "Treat the September 2023 requirement and method compatibility as claims in the 2026-09-16 collected snapshot, not independently verified current support.",
+          "Do not generalize the page's Control Panel-user scope to API credentials, PayPal-credential login or customer authentication."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication-2026-09-16.md",
+  "raw_sha256": "401662db8100f94b16ada64a19b38abb3f6561de93f6e7df8797dd4f62a15e86",
+  "status": "candidate_ready"
+}
