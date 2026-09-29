@@ -1,0 +1,37 @@
+name: "Validate Scripts"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: "Validate scripts compile and dist/ is up to date"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: "Setup Node Environment"
+        uses: braintree/web-sdk-github-actions/actions/setup-node@d08e2700fb9ffdfe87200621e25ad63e47014941
+        with:
+          cache: npm
+
+      - run: npm ci
+
+      - name: "Type-check"
+        run: npm run typecheck
+
+      - name: "Build"
+        run: npm run build
+
+      - name: "Verify dist/ matches src/"
+        run: |
+          if [ -n "$(git status --porcelain dist/)" ]; then
+            echo "::error::dist/ is out of sync with src/. Run 'npm run build' locally and commit the result."
+            git status --short dist/
+            exit 1
+          fi

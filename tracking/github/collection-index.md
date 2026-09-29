@@ -36,7 +36,7 @@ Generated: `2026-09-29`
 | braintree | `braintree/popup-bridge-ios` | tier3 | semver-tags / tagged-tree-v1 | monthly | 2026-08-27 | ingested | 2026-09-27 | `collect-baseline` |
 | braintree | `braintree/restricted-input` | tier3 | commit / commit-tree-v1 | monthly | 2026-08-30 | ingested | 2026-09-30 | `wait` |
 | braintree | `braintree/uuid` | tier3 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-31 | ingested | 2026-09-30 | `wait` |
-| braintree | `braintree/web-sdk-github-actions` | tier3 | commit | on-demand | - | - | - | `disabled` |
+| braintree | `braintree/web-sdk-github-actions` | tier3 | commit / commit-tree-v1 | on-demand | 2026-09-29 | ingested | - | `wait` |
 | metronome | `metronome-industries/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | metronome | `metronome-industries/metronome-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `collect-baseline` |
 | metronome | `metronome-industries/mintlify-docs` | tier2 | commit | monthly | - | - | - | `disabled` |

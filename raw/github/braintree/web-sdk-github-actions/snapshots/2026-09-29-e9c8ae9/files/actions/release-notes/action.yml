@@ -1,0 +1,46 @@
+name: "Create Release Notes"
+description: "Extract release notes from CHANGELOG.md and create a GitHub release"
+
+inputs:
+  github-token:
+    description: "GitHub token for creating releases"
+    required: true
+  dry-run:
+    description: "Skip creating the GitHub release (extract and log notes only)"
+    required: false
+    default: "false"
+
+outputs:
+  version:
+    description: "The release version"
+    value: ${{ steps.version.outputs.latest_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup Node Environment"
+      uses: braintree/web-sdk-github-actions/actions/setup-node@d08e2700fb9ffdfe87200621e25ad63e47014941
+      with:
+        cache: npm
+
+    - name: "Get version"
+      id: version
+      run: |
+        latest_version=$(npm pkg get version --workspaces=false | tr -d '"')
+        echo "latest_version=$latest_version" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: "Extract release notes from CHANGELOG"
+      id: notes
+      run: node '${{ github.action_path }}/../../dist/extract-release-notes.js'
+      shell: bash
+
+    - name: "Create GitHub release"
+      if: ${{ inputs.dry-run != 'true' }}
+      run: |
+        gh release create "v${{ steps.version.outputs.latest_version }}" \
+          --title "v${{ steps.version.outputs.latest_version }}" \
+          --notes "${{ steps.notes.outputs.release_details }}"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      shell: bash

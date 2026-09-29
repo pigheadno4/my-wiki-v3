@@ -1,0 +1,50 @@
+name: "CI"
+
+on:
+  workflow_call:
+    inputs:
+      lint-command:
+        description: "Lint command to run (set to empty string to skip)"
+        required: false
+        type: string
+        default: "npx eslint . --ext .js,.ts"
+      test-command:
+        description: "Test command to run"
+        required: false
+        type: string
+        default: "npm test"
+      runs-on:
+        description: "Runner label"
+        required: false
+        type: string
+        default: "ubuntu-latest"
+      node-version-file:
+        description: "Path to node version file"
+        required: false
+        type: string
+        default: ".nvmrc"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: "CI"
+    runs-on: ${{ inputs.runs-on }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: "Setup Node Environment"
+        uses: braintree/web-sdk-github-actions/actions/setup-node@d08e2700fb9ffdfe87200621e25ad63e47014941
+        with:
+          cache: npm
+          node-version-file: ${{ inputs.node-version-file }}
+
+      - name: "Lint"
+        if: inputs.lint-command != ''
+        run: ${{ inputs.lint-command }}
+
+      - name: "Test"
+        if: inputs.test-command != ''
+        run: ${{ inputs.test-command }}

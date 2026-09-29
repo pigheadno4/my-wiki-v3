@@ -737,6 +737,34 @@
   Release: [manifest](../../raw/github/metronome/terraform-provider-metronome/releases/terraform-provider-metronome/0.1.0-alpha.3/2026-08-15/manifest.json)
   Comparison: Not applicable
 
+## `github-4776aefdf1eeb1056827`
+
+- Repository: `braintree/web-sdk-github-actions`
+- SHA: `e9c8ae99ae5365f91f8e5372ae2d9d2dc7a427e0`
+- Collection date: `2026-09-29`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/web-sdk-github-actions/snapshots/2026-09-29-e9c8ae9/manifest.json)
+- Packet: [review packet](repos/braintree/web-sdk-github-actions/ingest-packets/github-4776aefdf1eeb1056827/packet.md)
+- Evidence attachment: [manifest](repos/braintree/web-sdk-github-actions/evidence-attachments/github-4776aefdf1eeb1056827/attachment.json)
+- Review priority: `normal`
+- Required reading: `35` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@e9c8ae9` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `e9c8ae99ae5365f91f8e5372ae2d9d2dc7a427e0`
+  Comparison: Not applicable
+
 ## `github-523453a8a9fad6afdf6f`
 
 - Repository: `paypal-examples/paypal-ios-sdk-demo-app`

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-29] ingest | Braintree web SDK GitHub Actions `default-branch@e9c8ae9`
+
+- Approved full baseline with root-log-only focused context: release-automation contracts, README contradictions, shell syntax failure and dry-run/delegated-runtime caveats. Details: [[braintree-log]], [[source-github-web-sdk-github-actions]] and [[changelog-github-web-sdk-github-actions]]. No commit or push.
+
 ## [2026-09-29] ingest | React Stripe.js `6.12.0`
 
 - Approved serial delta: TreasuryDisclosure contract and static error/lifecycle caveats, with earlier history preserved. Details: [[stripe-log]] and [[changelog-github-react-stripe-js]].

@@ -1,0 +1,74 @@
+name: "Release package"
+run-name: Deploy ${{ github.repository }} to npmjs by @${{ github.actor }}
+description: "Runs CI, bumps version, publishes to NPM, and generates Github release notes"
+
+on:
+  workflow_call:
+    inputs:
+      version-type:
+        description: "Version bump type (major, minor, patch)"
+        required: true
+        type: string
+      lint-command:
+        description: "Lint command for CI step (set to empty string to skip)"
+        required: false
+        type: string
+        default: "npx eslint . --ext .js,.ts"
+      test-command:
+        description: "Test command for CI step"
+        required: false
+        type: string
+        default: "npm test"
+      base-branch:
+        description: "Branch to target for the release PR (default: main)"
+        required: false
+        type: string
+        default: "main"
+      runs-on:
+        description: "Runner label"
+        required: false
+        type: string
+        default: "ubuntu-latest"
+      dry-run:
+        description: "Simulate the release without publishing to npm or creating a GitHub release"
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      npm-token:
+        description: "npm access token (e.g. BRAINTREE_NPM_ACCESS_TOKEN)"
+        required: true
+
+permissions: {}
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+    with:
+      lint-command: ${{ inputs.lint-command }}
+      test-command: ${{ inputs.test-command }}
+      runs-on: ${{ inputs.runs-on }}
+
+  bump-version:
+    needs: ci
+    runs-on: ${{ inputs.runs-on }}
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: "Bump version"
+        id: bump
+        uses: braintree/web-sdk-github-actions/actions/version-bump@d08e2700fb9ffdfe87200621e25ad63e47014941
+        with:
+          version-type: ${{ inputs.version-type }}
+          base-branch: ${{ inputs.base-branch }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dry-run: ${{ inputs.dry-run }}

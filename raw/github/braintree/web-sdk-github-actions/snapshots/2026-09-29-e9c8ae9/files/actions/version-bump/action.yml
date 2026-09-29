@@ -1,0 +1,82 @@
+name: "Version Bump"
+description: "Bump version + CHANGELOG on a throwaway branch and open a release PR into the base branch"
+
+inputs:
+  version-type:
+    description: "Version bump type (major, minor, patch, beta, alpha, rc)"
+    required: true
+  github-token:
+    description: "GitHub token for creating/merging PRs"
+    required: true
+  base-branch:
+    description: "Branch to target for the release PR"
+    required: false
+    default: "main"
+  feature-tag:
+    description: "Optional feature tag for pre-releases; e.g. `3ds` produces `3.135.0-beta-3ds.1`"
+    required: false
+  prerelease-level:
+    description: "Optional semver level for pre-releases (premajor, preminor, prepatch, prerelease). Only valid with a prerelease version-type (alpha, beta, rc). Defaults to auto: `prerelease` if the current version is already a prerelease, otherwise `preminor`. Use `premajor` to start a new major prerelease line (e.g. 3.136.0 -> 4.0.0-alpha.0)."
+    required: false
+  dry-run:
+    description: "Simulate the version bump without making any changes"
+    required: false
+    default: "false"
+  create-pr:
+    description: "Whether to open the release PR automatically. Set to \"false\" in orgs that disable 'Allow GitHub Actions to create and approve pull requests'; the bump branch is still pushed so a human can open the PR manually."
+    required: false
+    default: "true"
+
+outputs:
+  new-version:
+    description: "The new version number (without v prefix)"
+    value: ${{ steps.bump.outputs.new_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: braintree/web-sdk-github-actions/actions/setup-git@d08e2700fb9ffdfe87200621e25ad63e47014941
+
+    - name: "Setup Node.js"
+      uses: braintree/web-sdk-github-actions/actions/setup-node@d08e2700fb9ffdfe87200621e25ad63e47014941
+      with:
+        cache: npm
+
+    - name: "Check out base on a bump branch"
+      shell: bash
+      env:
+        BASE_BRANCH: ${{ inputs.base-branch }}
+      run: |
+        # Callers check out shallow (depth 1), but the bump commit needs real history.
+        git fetch --prune --unshallow origin 2>/dev/null || git fetch --prune origin
+
+        # Throwaway branch for this release PR. The squash-merge lands the bump on
+        # base and GitHub deletes the branch after merge.
+        git checkout -B "release-bump-$GITHUB_RUN_ID" "origin/$BASE_BRANCH"
+
+    - name: "Validate CHANGELOG"
+      run: node '${{ github.action_path }}/../../dist/validate-changelog.js'
+      shell: bash
+
+    - name: "Bump version and update CHANGELOG"
+      id: bump
+      run: node '${{ github.action_path }}/../../dist/bump-version.js'
+      shell: bash
+      env:
+        VERSION_TYPE: ${{ inputs.version-type }}
+        FEATURE_TAG: ${{ inputs.feature-tag }}
+        PRERELEASE_LEVEL: ${{ inputs.prerelease-level }}
+        BASE_BRANCH: ${{ inputs.base-branch }}
+        DRY_RUN: ${{ inputs.dry-run }}
+
+    - name: "Open the release PR"
+      if: ${{ inputs.dry-run != 'true' }}
+      run: node '${{ github.action_path }}/../../dist/release-pr.js'
+      shell: bash
+      env:
+        NEW_VERSION: ${{ steps.bump.outputs.new_version }}
+        BASE_BRANCH: ${{ inputs.base-branch }}
+        BUMP_BRANCH: release-bump-${{ github.run_id }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        CREATE_PR: ${{ inputs.create-pr }}

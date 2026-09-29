@@ -1,0 +1,78 @@
+name: "Validate PR"
+
+on:
+  workflow_call:
+    inputs:
+      jira-url-pattern:
+        description: "Regex pattern for Jira ticket URLs in PR body. Leave blank to skip ticket check."
+        required: false
+        default: 'https://paypal\.atlassian\.net/browse/[A-Z]+-[0-9]+'
+        type: string
+      conventional-commit-types:
+        description: "Newline-separated list of allowed conventional commit types"
+        required: false
+        type: string
+        default: |
+          feat
+          fix
+          docs
+          style
+          refactor
+          perf
+          test
+          build
+          ci
+          chore
+          revert
+      conventional-commit-scopes:
+        description: "Newline-separated list of allowed scopes (empty = any scope allowed)"
+        required: false
+        type: string
+        default: ""
+      runs-on:
+        description: "Runner label"
+        required: false
+        type: string
+        default: "ubuntu-latest"
+      ignore-labels:
+        description: "Newline-delimited labels that will skip conventional-commit title validation"
+        required: false
+        type: string
+        default: ""
+    secrets:
+      github-token:
+        required: true
+
+jobs:
+  pr-validation:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
+        with:
+          types: ${{ inputs.conventional-commit-types }}
+          scopes: ${{ inputs.conventional-commit-scopes }}
+          ignoreLabels: ${{ inputs.ignore-labels }}
+
+  jira-reference-check:
+    permissions:
+      pull-requests: read
+      contents: read
+    name: "Check for Jira ticket reference"
+    if: "!contains(github.actor, '[bot]') &&
+      !contains(github.event.pull_request.labels.*.name, 'no-jira') &&
+      github.event.pull_request.draft == false &&
+      inputs.jira-url-pattern != ''"
+    runs-on: gh-2-core-ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: braintree/web-sdk-github-actions
+          ref: main
+          path: .web-sdk-github-actions
+      - run: node '.web-sdk-github-actions/dist/check-jira-reference.js'
+        shell: bash
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          JIRA_PATTERN: ${{ inputs.jira-url-pattern }}
