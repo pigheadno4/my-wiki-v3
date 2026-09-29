@@ -1,0 +1,7 @@
+# Braintree C21 execution notes
+
+Status: COMPLETE. Runtime started `2026-09-29T14:12:24Z` and completed `2026-09-29T15:00:39Z`: **48m15s wall clock**. The exact ten-page manifest held 1,174 raw file lines. Worker, reviewer, promotion and query-audit windows overlapped; journal events do not support invented per-stage durations.
+
+Seven initial reviews passed. Venmo needed narrower use-case wording and quote coverage; Apple Pay needed advisory consent wording kept distinct from capability plus quote coverage; Google Pay needed processing and terms quote coverage. Each passed one targeted re-review on an unchanged raw hash, with no extra full-source retry. Five fixed query groups passed 20/20. Two small coordinator close repairs corrected a stale company website-source count and one Apple Pay audit-answer modality; neither changed an approved source. Contradictory ACH, SRC and UnionPay snapshot statements remained visible rather than being reconciled by inference.
+
+C21 took **2m10s longer** than C20's 46m05s, with one additional targeted review. This record establishes overall elapsed time, not a causal breakdown. The useful next optimization remains a tighter first-pass quote/modality checklist at worker handoff, especially for conditionals and warnings; do not add a new validator or reporting layer based on this one campaign. No commit, push or next campaign follows from this closure.

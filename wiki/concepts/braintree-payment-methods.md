@@ -20,4 +20,24 @@ Card scope also varies by account and use case: the page distinguishes US from m
 
 ## Sources
 
+- [[source-braintree-payment-methods-sepa-direct-debit]] - pilot-only SEPA Direct Debit availability, mandate and linked-PayPal setup prerequisites, customer-confirmation funding statement, post-disbursement return exposure, and supported vaulting and recurring transactions
+
+- [[source-braintree-payment-methods-paypal-pay-later-offers]] - Braintree PayPal Pay Later route for country-dependent offer identity, merchant-versus-customer eligibility, Checkout with Vault enablement, and messaging/button and promotional-content boundaries
+
+- [[source-braintree-payment-methods-unionpay]] - UnionPay-specific deprecation and limited-release tension; European-merchant, SDK-version and settlement-currency conditions; SMS verification and vaulted-card behavior; processing, chargeback-fee and CVV/AVS-bypass boundaries
+
+- [[source-braintree-payment-methods-paypal-credit]] - deprecated PayPal Credit guide covering the legacy reusable credit-line identity, US/UK currency and regulatory qualifications, customer credit approval, named financing options and existing-PayPal-setup boundary, with a separate Pay Later offers redirect
+
+- [[source-braintree-payment-methods-secure-remote-commerce]] - SRC/Click to Pay identity, limited-release merchant and SDK prerequisites, credit-card-like processing routes, and the guide's unresolved January 2026 end-of-support versus current-tense availability conflict
+
+- [[source-braintree-payment-methods-google-pay]] - dedicated Google Pay route for Android and web setup, merchant-versus-customer availability, card-or-account distinctions, method-specific fraud-tool and vaulting boundaries, and Google production approval
+
+- [[source-braintree-payment-methods-local-payment-methods]] - regional bank, wallet and other local-method scope; eligible-merchant and PayPal-account prerequisites; locality-based display; euro presentment and primary-currency PayPal settlement; redirect-qualified Payment Context visibility; and unsupported dispute, vaulting and recurring-transaction boundaries
+
+- [[source-braintree-payment-methods-apple-pay]] - dedicated Braintree Apple Pay route for conditional merchant and customer availability, mobile/web platform requirements, DPAN processing, vaulting consent guidance, integration roles and certificate renewal
+
+- [[source-braintree-payment-methods-venmo]] - Venmo checkout and vaulting route with unsupported-business-model, US-entity, SDK-version, customer-version, production-profile and 180-day refund qualifications from the collected guide
+
+- [[source-braintree-payment-methods-ach]] - ACH Direct Debit merchant eligibility, required bank-account verification, delayed batch settlement and late-return exposure, conflicting void guidance, and bank-account vaulting versus recurring-billing boundary
+
 - [[source-braintree-get-started-payment-methods]] - provider-wide payment-method categories, merchant and customer qualifications, card scope, and collected deprecation boundaries

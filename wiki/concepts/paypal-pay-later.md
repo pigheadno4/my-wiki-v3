@@ -115,6 +115,8 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 - [[paypal]] — PayPal company overview
 
 ## Sources
+- [[source-braintree-payment-methods-paypal-pay-later-offers]] - Braintree-specific Pay Later retrieval route for country-dependent offers, merchant and customer eligibility, Checkout with Vault enablement, and messaging presentation restrictions
+
 
 - [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 Messages typing and v10.2.0 Braintree Messages hook behavior

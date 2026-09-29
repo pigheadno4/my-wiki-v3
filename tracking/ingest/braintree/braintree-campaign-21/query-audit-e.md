@@ -1,0 +1,42 @@
+# Braintree C21 fixed-query audit — Group E
+
+Scope: the four predetermined questions for Secure Remote Commerce and PayPal Pay Later Offers. Evidence is limited to the two C21-pinned payment-method articles; the 2026-09-16 snapshots are not proof of current support, offer terms, pricing, merchant enablement, or buyer eligibility.
+
+## Secure Remote Commerce
+
+Route: `wiki/index.md` → `wiki/braintree-index.md` → `wiki/concepts/braintree-payment-methods.md` → `wiki/sources/braintree/source-braintree-payment-methods-secure-remote-commerce.md` → `raw/braintree/articles/guides/payment-methods/secure-remote-commerce-2026-09-16.md` (canonical URL `https://developer.paypal.com/braintree/articles/guides/payment-methods/secure-remote-commerce`; pinned SHA-256 `f13e089a82aabd9c2ec10ae681e959595813c009a5449a172b980cf0a9e66e18`, verified).
+
+1. **Navigation question — Where is Secure Remote Commerce documented?**
+   - **Object/action match:** Yes — the route selects the Braintree Secure Remote Commerce payment-method guide and locates its evidence; it does not assert current SRC availability.
+   - **Direct answer:** It is documented by the canonical source page `wiki/sources/braintree/source-braintree-payment-methods-secure-remote-commerce.md`, backed by the pinned raw article at `raw/braintree/articles/guides/payment-methods/secure-remote-commerce-2026-09-16.md` and the canonical URL above.
+   - **Exact raw locator:** source URL metadata, line 1; `# Secure Remote Commerce` and first `## Availability`, lines 18–25.
+   - **Verdict:** **PASS**
+
+2. **Detail question — What purpose, prerequisites and limitations does this page itself state?**
+   - **Object/action match:** Yes — the answer concerns SRC/Click to Pay purpose, prerequisites, and limits stated by this pinned guide itself, not a general wallet or current-support claim.
+   - **Direct answer:** The page presents Secure Remote Commerce, experienced by customers as Click to Pay, as Visa's single-sign-in digital wallet for storing major debit and credit cards and using them on websites or mobile apps; it also says SRC replaced Amex Express Checkout, Masterpass, and Visa Checkout, with no integration change required for prior Visa Checkout users. Its current-tense prerequisites say the merchant must be based in Australia, Canada, France, Hong Kong, Ireland, Malaysia, New Zealand, Poland, Singapore, Spain, the UK, or the US, be eligible, use iOS v4 or JavaScript v3, and contact Braintree for limited-release access. Customer wallets are limited on this page to Visa, Mastercard, American Express, Discover, and UnionPay. Materially, the page is internally unresolved: its opening notice says Visa Click to Pay/SRC would no longer be supported effective January 20, 2026 and later attempts would receive `Payment method not supported` and risk decline, while the availability and setup sections still call SRC a current limited release and invite access requests. Both statements must stand; the snapshot does not establish current support. The page also states credit-card-like processing, settlement, pricing and dispute handling, named fraud-tool compatibility, and vaulting/recurring use, but these statements do not resolve that support-status conflict.
+   - **Exact raw locator:** opening `**NOTE**`, lines 14–15; first `## Availability`, lines 21–25; second `## Availability`, lines 28–48; `## Customer availability`, lines 51–60; `## Processing` through `### Recurring billing and vaulting`, lines 63–85; `## Setup`, lines 88–90.
+   - **Verdict:** **PASS**
+
+## PayPal Pay Later Offers
+
+Route: `wiki/index.md` → `wiki/braintree-index.md` → `wiki/concepts/braintree-payment-methods.md` → `wiki/sources/braintree/source-braintree-payment-methods-paypal-pay-later-offers.md` → `raw/braintree/articles/guides/payment-methods/paypal-pay-later-offers-2026-09-16.md` (canonical URL `https://developer.paypal.com/braintree/articles/guides/payment-methods/paypal-pay-later-offers`; pinned SHA-256 `7641e593d6bab4bca4aca6e98d9c7fdb8a64850df3a66734a257b3796042e309`, verified).
+
+3. **Navigation question — Where are PayPal Pay Later offers documented in Braintree?**
+   - **Object/action match:** Yes — the route selects Braintree's PayPal Pay Later Offers guide, distinct from the separate PayPal Credit guide and from generic PayPal Checkout setup.
+   - **Direct answer:** They are documented by the canonical source page `wiki/sources/braintree/source-braintree-payment-methods-paypal-pay-later-offers.md`, backed by the pinned raw article at `raw/braintree/articles/guides/payment-methods/paypal-pay-later-offers-2026-09-16.md` and the canonical URL above.
+   - **Exact raw locator:** source URL metadata, line 1; `# PayPal Pay Later Offers`, lines 14–18.
+   - **Verdict:** **PASS**
+
+4. **Detail question — What offer identity, eligibility and presentation boundaries does this page itself state?**
+   - **Object/action match:** Yes — the answer concerns the country-dependent Pay Later offers, eligibility, and presentation constraints stated by this pinned Braintree page; it does not substitute PayPal Credit or generic checkout behavior.
+   - **Direct answer:** The page identifies Pay Later as short-term interest-free payments, longer-term monthly installments, and other special financing used with PayPal Checkout while merchants are paid up front. Offer identity is customer-country-specific: US has Pay in 4 and Pay Monthly; UK has Pay in 3 and PayPal Credit; France has Pay in 4X; Australia has Pay in 4; Germany has PayPal Ratenzahlung and PayPal Pay in 30; Italy and Spain have PayPal Pay in 3 instalments. The table's amount, schedule, approval, legal, and coexistence qualifications belong to their own rows and must not be generalized across countries; notably, the UK row says merchants offering PayPal Credit Instalments cannot also offer Pay in 3. The page says Pay Later is included with PayPal Checkout at no additional cost except in the US, but gives no US merchant price, so no US cost can be inferred. It says consumers in the listed countries are eligible across most integrations, while merchant eligibility varies by merchant location and integration; Checkout with Vault enablement requires contacting the PayPal account manager or support. Customers select **Pay Later**, after which eligibility is determined in seconds—selection or messaging is not approval. Dynamic messaging is purchase-dependent; if messaging is shown, the Pay Later button must also be shown, and the merchant must not create additional wording, marketing, or other promotional material encouraging use. These are snapshot statements, not proof that any offer, country, customer, merchant, cart, or integration is currently eligible.
+   - **Exact raw locator:** offer identity and unresolved US cost exception, line 16; country/offer table and row-specific qualifications, lines 18–28; `## Availability`, lines 31–35; `### Customer availability`, lines 38–40; `## Setup`, lines 43–45; `### Pay Later messaging`, lines 48–56.
+   - **Verdict:** **PASS**
+
+## Shared gap sweep, extra reads and reciprocal links
+
+- **Bounded filename/content sweep:** Searched `raw/braintree/` for filenames matching SRC/Click to Pay and PayPal Pay Later/PayPal Credit, then for the exact topic phrases `Visa Click to Pay`, `Secure Remote Commerce`, `Pay Later offers`, `Pay Monthly`, and `Pay in 4`. The sweep found the two pinned articles plus separate overview, implementation, messaging, Checkout with Vault, PayPal Credit, accepted-method, and predecessor-wallet raws. Those are sibling/navigation authorities and were not needed for questions explicitly asking what each pinned page itself states. The SRC contradiction is within its pinned raw; the Pay Later country/offer qualifications and unstated US cost are within its pinned raw.
+- **Extra full reads:** None. Both pinned raws were read completely; no missing answer or unresolved cross-source dependency required another full raw read.
+- **Reciprocal links:** **PASS.** `wiki/concepts/braintree-payment-methods.md` links to both source pages, and both source pages link back to `[[braintree-payment-methods]]`. The Pay Later source also links to `[[paypal-pay-later]]`, whose Sources section links back. `wiki/braintree-index.md` catalogs both sources, and both actual routes begin at `wiki/index.md` and `wiki/braintree-index.md`.
+- **Group verdict:** **PASS — 4/4 questions.**

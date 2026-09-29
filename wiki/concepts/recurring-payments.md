@@ -77,6 +77,8 @@ See platform-specific concept pages for integration details:
 
 ## Platform-Specific Implementation
 
+- **Braintree Apple Pay**: the collected payment-method guide says Apple Pay cards can be vaulted and used for recurring billing and split shipment transactions. Separately, it says vaulting should only be used when the customer consents during checkout to future merchant-initiated transactions. It warns not to reuse that vaulted card for a future transaction when the customer is present and can authorize the payment, saying that use results in declines. This establishes the page's consent and use guidance, not a subscription scheduler or complete later-charge lifecycle. See [[source-braintree-payment-methods-apple-pay]].
+
 - **Braintree subscription management**: [[source-braintree-recurring-billing-manage-node]] routes status-qualified updates, mid-cycle proration and failed-proration behavior, past-due balance and retry handling, manual-retry settlement boundaries, and transaction-based refunds. Canceled and Expired subscriptions cannot be changed; Past Due updates are limited to non-price fields. A refund does not itself cancel future subscription billing.
 
 - **Stripe**: See [[stripe-subscriptions]] for full Subscriptions API, Checkout integration, customer portal, flexible billing mode, and provisioning pattern
@@ -90,6 +92,14 @@ See platform-specific concept pages for integration details:
 - What are typical involuntary churn rates by payment method?
 
 ## Sources
+- [[source-braintree-payment-methods-sepa-direct-debit]] - Braintree guide stating that vaulting payment methods and creating recurring transactions are supported for SEPA Direct Debit, with pilot-only availability and linked-PayPal setup qualifications
+
+- [[source-braintree-payment-methods-unionpay]] - Braintree guide stating that vaulted UnionPay cards do not require SMS verification after initial verification, while preserving the guide's deprecated-integration and limited-release tension
+
+- [[source-braintree-payment-methods-local-payment-methods]] - Braintree guide stating that vaulting payment methods and creating recurring transactions are currently unsupported for Local Payment Methods
+
+- [[source-braintree-payment-methods-ach]] - Braintree ACH bank-account vaulting with the page's explicit boundary that Braintree recurring billing does not support repeat payments with bank accounts
+
 - [[source-braintree-control-panel-reporting-expiring-cards]] - Braintree report route for identifying expired or soon-to-expire cards to support recurring-billing follow-up, distinct from merchant reminder outreach and the separately enabled, account-qualified Account Updater option
 
 - [[source-braintree-authorization-responses]] - Braintree processor-decline categories and retry restrictions, including recurring-ECI limits and same-payment-information restrictions

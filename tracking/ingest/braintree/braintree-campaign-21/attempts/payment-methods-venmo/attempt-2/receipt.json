@@ -1,0 +1,56 @@
+{
+  "job_id": "payment-methods-venmo",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Venmo Payment Method\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/payment-methods/venmo\"\nraw_files:\n  - \"braintree/articles/guides/payment-methods/venmo-2026-09-16.md\"\ntags: [braintree, venmo, payment-methods, digital-wallets, vaulting]\n---\n\n## Overview\n\nThis collected Braintree guide documents Venmo as a merchant-checkout payment method for mobile apps, mobile websites and desktop websites. Its retrieval value is the boundary between the Venmo checkout and vaulting flow, merchant and customer prerequisites, production-profile setup, and operational limitations such as unsupported business models and the refund window.\n\n## Key takeaways\n\n- Customers can pay at merchant checkout from a Venmo account using their Venmo balance or a saved payment method. The guide also describes connecting a Venmo wallet to the merchant's app or website and vaulting the payment method token so future transactions can proceed without another Venmo-app authorization or app switch.\n- The page says the merchant product is available only for certain business models. It excludes in-person goods or services, receiving payment for goods or services through the Venmo app, and peer-to-peer transactions between Venmo users. A use case outside those exclusions must also use a US business entity and one of the page's listed SDK lines: Android v5, iOS v6 or JavaScript v3.\n- The customer-side requirements in this snapshot are Venmo app 9.1.0 or later for iOS apps, 9.13.0 or later for Android apps, 7.5.0 or later for iOS/Android mobile browsers, and 8.12.0 or later for desktop browsers; mobile devices require Android 6.0 or later or iOS 12.0 or later. These are collected page statements, not current compatibility verification.\n- The page says Venmo transactions process and settle like credit-card transactions and are identified by a Venmo payment-type logo in the Control Panel. It allows voids and full or partial refunds through the Control Panel or Braintree API, but requires refunds within 180 days of the initial sale.\n- Sandbox setup requires accepting Venmo's terms in the Sandbox Control Panel. For production, the page routes the merchant through a Control Panel application for a Venmo Profile; one gateway can have separate profiles for multiple apps or websites so the intended business identity is shown during Venmo checkout.\n\n> [!warning] Snapshot and product boundary\n> The collected guide does not prove that Venmo is currently available, enabled or approved for a particular merchant or customer, or that its listed SDK, app and OS versions remain current. Its Braintree Venmo checkout route is distinct from in-person collection, peer-to-peer transfers and receiving payment for goods or services through the Venmo app. Setup or application steps do not establish approval, tokenization, authorization, settlement or refund success.\n\n## Detail locators\n\n- Checkout purpose, funding choices and future-use wallet connection: `# Venmo`, lines 16-18.\n- Unsupported business models, US-business-entity requirement and compatible SDK lines: `## Availability`, lines 23-49.\n- Venmo app/browser and mobile OS requirements: `## Customer availability`, lines 54-76.\n- Processing identity and pricing route: `## Processing`, lines 81-86.\n- Reporting and statement qualifications: `### Reconciliation`, lines 91-95.\n- Void, full/partial refund and 180-day refund boundary: `### Refunds and voids`, lines 100-102.\n- Stored-token future-use flow without a Venmo app switch: `## Vaulting`, lines 107-109.\n- Eligibility reminder, Sandbox enablement and developer-doc route: `## Setup`, lines 114-129.\n- Production application and Venmo Profile fields: `### Go live`, lines 135-155.\n- Per-app or per-website profile purpose and sub-merchant example: `### Multiple profiles`, lines 160-175.\n- Enriched Customer Data behavior, address collection, all-saved-profile scope and Control Panel toggle procedures: `### Enriched Customer Data`, lines 182-223.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/payment-methods/venmo-2026-09-16|Braintree Venmo payment-method guide]] - complete collected page covering merchant and customer availability, checkout processing, refunds, vaulting, setup, profiles and Enriched Customer Data\n",
+  "quotes": [
+    {
+      "text": "Grow your business by tapping into the Venmo consumer base when you offer Venmo as a payment option at checkout. Your customers will be able to use their Venmo accounts to make purchases, offering more convenience and flexibility. In addition, customers can can connect their Venmo wallet to your mobile app, mobile website, or desktop website to seamlessly pay for all future transactions via Venmo without having to reauthorize in the Venmo app (also known as [Vaulting](/braintree/articles/guides/payment-methods/venmo#vaulting) ).\n\nPaying with Venmo also gives customers the flexibility to fund transactions using their Venmo balance or any of their saved payment methods, while you enjoy your same low processing rate for all those transactions.\n\n\n## Availability\n\nThe current release of Venmo's payment product for merchants is only available for certain business models.\n\n\n##### Use cases that are not supported include:\n\n\n- Selling goods or services in person\n- Receiving payment for goods or services through the Venmo app\n- e.g., a mechanic or a plumber wants to charge a client after providing a service\n\n\n- Facilitating peer-to-peer transactions between two Venmo users\n\nYou can accept Venmo as a payment method if none of the above apply, and you meet all of the following criteria:\n\n\n- You process (or plan to process) transactions using a US business entity\n- You use (or plan to use) one of our compatible SDKs:\n- [Android v5 SDK](/braintree/docs/guides/client-sdk/setup/android/v5)\n- [iOS v6 SDK](/braintree/docs/guides/client-sdk/setup/ios/v6)\n- [JavaScript v3 SDK](/braintree/docs/guides/client-sdk/setup/javascript/v3)",
+      "location": "# Venmo through ## Availability compatible SDK list, lines 16-43"
+    },
+    {
+      "text": "Venmo payments are supported on the following Venmo app versions:\n\n\n- 9.1.0 or later for iOS apps\n- 9.13.0 or later for Android apps\n- 7.5.0 or later for iOS/Android mobile web browsers\n- 8.12.0 or later for desktop web browsers\n\nTo check the Venmo app version:\n\n\n- Log into the Venmo app\n- Click your profile icon on the bottom right corner\n- Click the**Settings**icon (top right corner)\n- Scroll to the very end of the Settings page to see the Venmo app version\n\nMinimum OS Requirements for mobile devices:\n\n\n- Android 6.0 or later\n- iOS 12.0 or later\n\nThe version number will be displayed at the bottom of the Settings page.\n\n\n## Processing\n\nVenmo transactions process and settle just like credit card transactions, but they can be easily identified by their own unique payment type logo in the [Control Panel](/braintree/articles/control-panel/overview).",
+      "location": "## Customer availability through ## Processing, lines 54-81"
+    },
+    {
+      "text": "Just like with other payment types, you can issue voids and full or partial refunds for Venmo transactions. You can do this in the Control Panel or via the Braintree API.\n\nVenmo requires that refunds are issued within 180 days of the initial sale.\n\n\n## Vaulting\n\nVenmo payment methods can be used for vaulting.\n\nFor a more seamless customer experience, you can store the payment method token on your servers (i.e. vaulting). This allows you to process future transactions without having to send the customer to the Venmo app, also known as an app switch.",
+      "location": "### Refunds and voids through ## Vaulting, lines 100-109"
+    },
+    {
+      "text": "You can enable Venmo in your Braintree sandbox to build and test your Venmo integration before going live.\n\n\n- Log into the[sandbox Control Panel](https://sandbox.braintreegateway.com/login)\n- Click on the gear icon in the top right corner\n- Click**Account Settings**from the drop-down menu\n- Scroll to the**Payment Methods**section\n- Next to**Venmo**, click the**Options**link\n- Click the**Accept**button to accept Venmo's terms of service",
+      "location": "### Testing, lines 119-127"
+    },
+    {
+      "text": "To apply for Venmo processing on your production account:\n\n\n- Log into the[production Control Panel](https://braintreegateway.com/login)\n- Click on the gear icon in the top right corner\n- Click**Processing**from the drop-down menu\n- Scroll to the**Payment Methods**section\n- Next to**Venmo**, click the**Enable**button\n- Create a new Venmo Profile, including:\n- A display name for your business (120 character limit)\n- An image for your business, preferably your app's icon (1024x1024 PNG)\n- Your company's phone, email, or URL to be included in customer purchase receipts; you can choose to provide one or all of these items\n- Anticipated annual Venmo volume\n\n\n- Click the**Save**button\n\n\n### Multiple profiles\n\nIf you run multiple apps or websites out of a single Braintree gateway, you can create a profile for each one to process Venmo payments individually. This will allow you to designate which business you would like presented to customers during checkout on the Venmo app.",
+      "location": "### Go live through ### Multiple profiles, lines 140-160"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payment-methods-venmo-braintree-payment-methods-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-venmo]] - Venmo checkout and vaulting route with unsupported-business-model, US-entity, SDK-version, customer-version, production-profile and 180-day refund qualifications from the collected guide",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this Braintree Venmo route distinct from PayPal checkout, in-person collection, peer-to-peer transfers and receiving payment for goods or services through the Venmo app.",
+          "Preserve page-scoped SDK, app, OS and eligibility wording; the 2026-09-16 collection snapshot does not prove current support, customer eligibility or merchant enablement.",
+          "Do not turn Sandbox setup or a production-profile application into approval, tokenization, authorization, settlement or refund-success evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/payment-methods/venmo-2026-09-16.md",
+  "raw_sha256": "58020f72e90bd97b154f4436f162485eb83a5b4cfe6f79e082d5f56fe4cef3cb",
+  "status": "candidate_ready"
+}

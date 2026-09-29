@@ -1,0 +1,71 @@
+{
+  "job_id": "payment-methods-ach",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree ACH Direct Debit\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/payment-methods/ach\"\nraw_files:\n  - \"braintree/articles/guides/payment-methods/ach-2026-09-16.md\"\ntags: [braintree, ach, direct-debit, bank-accounts, payment-methods]\n---\n\n## Overview\n\nThis collected Braintree guide documents ACH Direct Debit as a US banking-network payment method that debits a customer's bank account rather than processing through a card brand. It is a retrieval route for the page's merchant-availability criteria, required account verification, delayed batch lifecycle, return and dispute exposure, setup boundary and bank-account recurring-use limit; the 2026-09-16 snapshot does not itself confirm current merchant eligibility or enablement.\n\n## Key takeaways\n\n- The page limits availability to US merchants transacting in USD through Braintree Direct, in good standing, and able to build a custom client-side JavaScript v3 integration. It explicitly says ACH is not available in Drop-in UI. Qualifying merchants are directed to contact Braintree to enable ACH Direct Debit in sandbox.\n- A bank account must be verified before money is collected. The guide offers instant verification, network check, micro-transfers and independent check, and recommends a backup method; method-specific fees, timing, customer actions and risk qualifications remain at the raw locators below.\n- ACH processing is batch based and does not use card-style authorization or capture. The page describes a three-business-day return wait before disbursement, two additional business days for funds to reach the merchant bank, and the possibility of later returns being deducted from a subsequent disbursement. A displayed `Settled` status therefore does not establish irreversibility.\n- The guide says refunds are limited to transactions with `Settled` status. Its void guidance is internally unresolved: one passage says ACH transactions cannot be voided at any lifecycle point, while the next says merchants can contact support to enable voiding and that timing depends on the transaction circumstances.\n- Bank accounts can be vaulted, but the page says Braintree recurring billing does not support repeat payments with bank accounts. Setup requires application-code changes and ACH Direct Debit enablement in the Control Panel.\n\n## Evidence boundaries\n\n> [!warning] Delayed and reversible outcome\n> Do not treat submission, the three-business-day checkpoint, `Settled` status or disbursement as proof that an ACH debit is final. The page documents returns after the ordinary window, bank-account blocking for specified return codes, standard unauthorized-dispute windows and longer warranty-claim periods; use the exact raw sections before designing fulfillment, retry, dispute or reinitiation behavior.\n\n> [!warning] Conflicting void guidance\n> Preserve both page statements rather than converting either into a universal rule: the guide first says ACH transactions cannot be voided at any lifecycle point, then says support can enable the ability to void in circumstances whose timeline varies. Verify the applicable account and transaction behavior with Braintree before relying on a void path.\n\n## Detail locators\n\n- ACH identity and merchant eligibility: `# ACH Direct Debit`, line 16, and `## Availability`, lines 21-33.\n- Required verification and the four method routes: `## Verification methods`, lines 38-76; account-ownership and debit-block return risks: lines 79-92.\n- Batch-processing boundary, settlement/funding timeline and status meanings: `## Processing`, lines 97-118; day-by-day lifecycle: lines 120-153.\n- Fees and conflicting void/refund guidance: `### Fees`, lines 156-158, and `### Voids and Refunds`, lines 161-169.\n- Late returns, return-code handling and blocked-account scope: `### Returns`, lines 172-216.\n- Unauthorized-dispute windows, extended claims and authorization-evidence route: `### Disputes`, lines 223-263.\n- Vaulting, recurring-billing limit and setup route: lines 267-272.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Recurring-use boundary: [[recurring-payments]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/payment-methods/ach-2026-09-16|Braintree ACH Direct Debit guide]] - complete collected page covering availability, verification, delayed processing, returns, disputes, vaulting, recurring-use limits and setup\n",
+  "quotes": [
+    {
+      "text": "ACH Direct Debit is available for merchants who:\n\n\n- Are located in the United States\n- Transact in the US in USD\n- Are processing with Braintree Direct\n- Are in good standing (i.e. not on a chargeback program)\n- Can implement a custom client-side integration using our[JavaScript v3 SDK](/braintree/docs/guides/client-sdk/setup/javascript/v3)\n- ACH is currently not available in our Drop-in UI",
+      "location": "## Availability, lines 21-29"
+    },
+    {
+      "text": "For ACH Direct Debit, you're required to verify a bank account before collecting money from it. Verifications provide a way for you to check the validity of a bank account before attempting to process a transaction \u2013 helping you protect yourself against fraudulent or erroneous transactions.\n\nBraintree offers 4 different verification methods. You can use just one, but we recommend implementing at least one backup method in case the first method fails.",
+      "location": "## Verification methods, lines 38-40"
+    },
+    {
+      "text": "ACH is a batch-based system, meaning that transactions do not take place in real-time, and authorizations or captures do not exist as they do with credit card transactions. This makes it more difficult to verify whether funds will be available in the account at the time the transaction takes place. As a result, debit entries can be returned by the customer's bank for insufficient funds or a variety of other reasons. Because of this, the settlement and funding timeline is different from standard credit cards.\n\n\n### Settlement and funding timeline\n\nBefore we disburse funds to your account, we wait for 3 business days for any returns that the customer's bank sends through the ACH network. If we are notified in that timeframe that the transaction has been returned and can't be processed, the transaction is declined and the funds will not be disbursed. It will be up to you to follow-up with your customer for payment. If the transaction is not returned to us in 3 business days, we assume the transaction is valid and will disburse funds to your bank account which takes 2 additional business days, totaling 5 business days. Returns can be received after the 3 business day timeframe; in those cases, we deduct the amount from the next business day's disbursement.",
+      "location": "## Processing and ### Settlement and funding timeline, lines 97-102"
+    },
+    {
+      "text": "ACH transactions can't be voided at any point in the transaction lifecycle. Refunds can be processed, but only on transactions with the Settled status. If you want to cancel a transaction, you'll need to wait for the transaction to settle and then issue a refund. If you issue a full refund, we will return the fees from the original transaction.\n\n\n\nIf you would like to enable the ability to void transactions, contact support. The void timeline will depend on the specific circumstances of the transaction.",
+      "location": "### Voids and Refunds, lines 163-167"
+    },
+    {
+      "text": "Recurring billing and vaultingBank accounts can be vaulted. However, Braintree's recurring billing currently does not support repeat payments with bank accounts.\n\n\n## Setup\n\nTo add ACH Direct Debit to your Braintree integration, you'll need to update your application code and make sure ACH Direct Debit is enabled in your Control Panel. [See our developer docs for full details](/braintree/docs/guides/ach/overview).",
+      "location": "Recurring billing and vaulting and ## Setup, lines 267-272"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payment-methods-ach-braintree-payment-methods-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-ach]] - ACH Direct Debit merchant eligibility, required bank-account verification, delayed batch settlement and late-return exposure, conflicting void guidance, and bank-account vaulting versus recurring-billing boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the 2026-09-16 page as collected snapshot evidence, not confirmation of current availability, merchant enablement or buyer eligibility.",
+          "Preserve the internal void-guidance conflict: the page says ACH cannot be voided, then says support can enable voiding in circumstances with a variable timeline.",
+          "Do not treat Settled status or disbursement as irreversible; the page documents returns after the ordinary three-business-day window.",
+          "Keep ACH Direct Debit distinct from SEPA Direct Debit, cards, wallets and sibling bank-payment methods."
+        ]
+      },
+      {
+        "update_id": "payment-methods-ach-recurring-payments-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-ach]] - Braintree ACH bank-account vaulting with the page's explicit boundary that Braintree recurring billing does not support repeat payments with bank accounts",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Keep this limitation scoped to Braintree recurring billing and the collected ACH guide; do not generalize it to all bank-account payment products or external recurring-payment systems.",
+          "Do not infer current support or future roadmap from the collected page's current-tense wording."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/payment-methods/ach-2026-09-16.md",
+  "raw_sha256": "5967d30ef0518afb85565acc120b415e7039e6745afd29e55824f3366ed48862",
+  "status": "candidate_ready"
+}

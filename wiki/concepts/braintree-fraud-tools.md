@@ -24,6 +24,8 @@ Rules are configured under **Fraud Management** in the Control Panel and can app
 These collected sources establish only the documented risk-threshold and credit-card AVS/CVV mechanisms and their own availability, configuration and gateway-decision boundaries. They do not establish 3D Secure authentication, premium fraud-product behavior, chargeback protection, per-transaction liability shift, settlement, funding or current support beyond the collected snapshots; AVS/CVV match checks and rule outcomes do not replace processor authorization.
 
 ## Sources
+- [[source-braintree-payment-methods-unionpay]] - UnionPay-specific route for certain cards without CVV, rarely collected postal codes and Braintree's stated bypass of CVV and AVS rules for certain UnionPay transactions
+
 
 - [[source-braintree-fraud-tools-basic-risk-threshold-rules]] - carding-oriented velocity checks, payment-method availability, Control Panel configuration, five rule criteria, supporting-field prerequisite and override boundary
 - [[source-braintree-fraud-tools-basic-avs-cvv-rules]] - credit-card AVS/CVV checks, Control Panel rule configuration, post-approval gateway-rejection and void behavior, Vault defaults and international AVS warning

@@ -2,18 +2,29 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 171
+source_count: 182
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by sixteen independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, separately versioned Android and iOS Drop-in UIs, independent Android and iOS PopupBridge WebView transports, the standalone `credit-card-type` detector, the `restricted-input` formatter, the shared `@braintree/uuid` utility, and mobile SDK review tooling. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations; PopupBridge only transports browser popup results; `credit-card-type` infers likely card brands; `restricted-input` formats browser input; `@braintree/uuid` generates internal identifiers; and mobile SDK tooling only coordinates engineering review. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+Braintree is represented in this wiki by seventeen independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, separately versioned Android and iOS Drop-in UIs, independent Android and iOS PopupBridge WebView transports, the standalone `credit-card-type` detector, the `restricted-input` formatter, the shared `@braintree/uuid` utility, mobile SDK review tooling, and web SDK release automation. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations; PopupBridge only transports browser popup results; `credit-card-type` infers likely card brands; `restricted-input` formats browser input; `@braintree/uuid` generates internal identifiers; and SDK tooling concerns engineering operations. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
 
 ## Website Documentation
 
-One hundred fifty-five independently reviewed website sources complement the sixteen repository
+One hundred sixty-five independently reviewed website sources complement the seventeen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+- [[source-braintree-payment-methods-ach]] - ACH verification, delayed/reversible settlement, returns and internally conflicting void guidance
+- [[source-braintree-payment-methods-venmo]] - Venmo checkout/vaulting, merchant and customer eligibility, profile setup and refund window
+- [[source-braintree-payment-methods-apple-pay]] - conditional Apple Pay platform scope, DPAN model, consent guidance and certificate setup
+- [[source-braintree-payment-methods-google-pay]] - Android/web eligibility and method-specific card, fraud and vaulting boundaries
+- [[source-braintree-payment-methods-local-payment-methods]] - regional methods, PayPal-account prerequisite, redirect contexts and unsupported recurring/dispute routes
+- [[source-braintree-payment-methods-secure-remote-commerce]] - Click to Pay guide with unresolved end-of-support versus limited-release conflict
+- [[source-braintree-payment-methods-paypal-credit]] - deprecated credit-line guide and separate Pay Later successor route
+- [[source-braintree-payment-methods-unionpay]] - dedicated integration deprecation/limited-release tension, SMS verification and qualified card behavior
+- [[source-braintree-payment-methods-paypal-pay-later-offers]] - country-qualified offers, Checkout with Vault enablement and messaging restrictions
+- [[source-braintree-payment-methods-sepa-direct-debit]] - pilot-only mandate/setup, post-disbursement returns and recurring support
 
 - [[source-braintree-control-panel-security-two-factor-authentication]] - Control Panel 2FA requirement, method order and account-recovery boundaries, not payment authentication
 - [[source-braintree-control-panel-security-rotating-api-keys]] - API-key exposure response and safe overlapping-validity cutover
@@ -286,6 +297,10 @@ The retained Android README and migration guides conflict with the exact runtime
 
 This is engineering-operations evidence only. It does not establish SDK implementation behavior, release readiness, merchant eligibility, or payment processing. Its current limitations include a 100-open-pull-request cap per repository, manual daylight-saving cron maintenance, individual-only CODEOWNER extraction, and Ubuntu/GNU shell assumptions.
 
+## Web SDK Release Automation
+
+`braintree/web-sdk-github-actions` at `default-branch@e9c8ae9` retains CI, version/changelog preparation, branch/PR creation, publication, release-note and cleanup wiring. It is engineering tooling, not a payment SDK. README full-pipeline claims exceed the retained implementation; change detection has a confirmed shell syntax error, and dry-release jobs do not transfer the bumped artifact. Older pinned actions and excluded generated bundles remain unverified. See [[source-github-web-sdk-github-actions]], [[changelog-github-web-sdk-github-actions]] and [[braintree-sdk-release-automation]].
+
 ## Versioned Implementation Knowledge
 
 The retained history begins with `braintree-web@3.143.0` and currently reaches `3.146.0` at exact SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d`. Version 3.144.0 added non-v6 PayPal View/Edit Funding Instrument, expanded PayPal Checkout v6 session options, and prevented failed incognito detection from aborting Venmo creation. Version 3.145.0 fixes v6 checkout-with-vault tokenization, adds ECD-gated Venmo desktop address requests and QR rescan UI, and improves client loading and popup recovery. Version 3.146.0 adds v6 View/Edit Saved Payment with a preferred vaulted-token client context, presentation-option forwarding, and Hosted Fields/frame-message hardening. The supplemental sandbox helper is not production credential-handling guidance. Recovery analytics and approval do not prove payment success; delegated SDK and gateway behavior remain outside the retained implementation evidence. See [[source-github-braintree-web]] and [[changelog-github-braintree-web]].
@@ -294,8 +309,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested website-document sources: 125 (Braintree C01–C17; raw snapshots collected 2026-09-16)
-- Ingested cumulative GitHub repository sources: 16
+- Ingested website-document sources: 165 (Braintree C01–C21; raw snapshots collected 2026-09-16)
+- Ingested cumulative GitHub repository sources: 17
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
@@ -313,9 +328,12 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest retained iOS PopupBridge release: `PopupBridge@3.1.0` at `00256b4b8c58367287fe35a442a33cd7c010a94f`
 - Latest retained Android PopupBridge release: `popup-bridge@5.3.0` at `f30654168b997ea1dd95ebc61901582ae00bebb0`
 - Latest retained mobile SDK tooling ref: `default-branch@a3b0ffe` at `a3b0ffe7931cde179f8b0dfdd5162979adf81683`
+- Latest retained web SDK automation ref: `default-branch@e9c8ae9` at `e9c8ae99ae5365f91f8e5372ae2d9d2dc7a427e0`
 
 ## Sources
 
+- [[source-github-web-sdk-github-actions]] - web SDK release-automation contracts and caveats
+- [[changelog-github-web-sdk-github-actions]] - commit-qualified automation history
 - [[source-github-graphql-api]] - commit-qualified GraphQL API contract
 - [[changelog-github-graphql-api]] - GraphQL schema history
 - [[source-github-braintree-node]] - cumulative Node.js server SDK implementation baseline
@@ -351,6 +369,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Related
 
+- [[braintree-sdk-release-automation]] - release preparation, publication and evidence boundaries
 - [[braintree-fraud-tools]] - Basic velocity and AVS/CVV controls
 - [[braintree-3d-secure]] - cardholder authentication and conditional liability shift
 - [[braintree-fraud-protection]] - named Fraud Protection risk decisions

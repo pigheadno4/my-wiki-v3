@@ -12,6 +12,17 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+- [[source-braintree-payment-methods-ach]] - US/USD ACH eligibility, verification methods, delayed settlement, returns and unresolved void guidance
+- [[source-braintree-payment-methods-venmo]] - merchant Venmo checkout/vaulting, SDK and customer conditions, profile setup and refund limit
+- [[source-braintree-payment-methods-apple-pay]] - conditional Apple Pay availability, device/browser scope, DPAN, vaulting consent and setup
+- [[source-braintree-payment-methods-google-pay]] - Android/web eligibility, account-versus-device cards, fraud and vaulting distinctions
+- [[source-braintree-payment-methods-local-payment-methods]] - local methods, PayPal prerequisite, euro/currency flow, redirect contexts and unsupported lifecycle paths
+- [[source-braintree-payment-methods-secure-remote-commerce]] - Click to Pay identity and unresolved January 2026 support-status conflict
+- [[source-braintree-payment-methods-paypal-credit]] - deprecated credit-line guide, US/UK qualifications and separate Pay Later redirect
+- [[source-braintree-payment-methods-unionpay]] - deprecation versus limited-release tension, merchant/card scope, SMS, fees and fraud-rule exceptions
+- [[source-braintree-payment-methods-paypal-pay-later-offers]] - country-specific offers, eligibility, Checkout with Vault enablement and messaging restrictions
+- [[source-braintree-payment-methods-sepa-direct-debit]] - pilot-only bank debit, mandate/PayPal setup, later returns and recurring-use scope
+
 - [[source-braintree-control-panel-security-two-factor-authentication]] - Control Panel 2FA methods, factor fallback, Account Admin recovery and self-service reset boundaries
 - [[source-braintree-control-panel-security-rotating-api-keys]] - exposure-driven API-key rotation with overlapping old/new validity and confirmation-before-deletion order
 - [[source-braintree-fraud-tools-basic-risk-threshold-rules]] - carding-oriented velocity rules, supporting-field prerequisite and temporary-disable boundary
@@ -181,6 +192,8 @@ Operations history: [[braintree-log]]
 
 ### Versioned GitHub implementation evidence
 
+- [[source-github-web-sdk-github-actions]] - CI/release preparation, publication and cleanup wiring with syntax, dry-run and delegated-runtime caveats at `default-branch@e9c8ae9` (github-repo, 2026-09-29)
+- [[changelog-github-web-sdk-github-actions]] - commit-qualified automation history beginning at `default-branch@e9c8ae9` (github-repo, 2026-09-29)
 - [[source-github-mobile-sdk-tooling]] - shared mobile SDK pull-request review digest, GitHub App authentication, CODEOWNER-aware review reduction, Slack routing, and operational limits at `default-branch@a3b0ffe` (github-repo, 2026-08-27)
 - [[changelog-github-mobile-sdk-tooling]] - commit-qualified mobile SDK tooling history beginning at `default-branch@a3b0ffe` (github-repo, 2026-08-27)
 - [[source-github-graphql-api]] - commit-qualified GraphQL contract for transactions, vaulting, PayPal, Venmo, 3DS, recurring billing, and broader API inventory at `default-branch@3a89f42` (github-repo, 2026-08-11)
@@ -216,6 +229,7 @@ Operations history: [[braintree-log]]
 
 ## Concepts
 
+- [[braintree-sdk-release-automation]] - engineering release workflow and evidence boundaries, not payment functionality
 - [[braintree-fraud-tools]] - Basic Fraud Tools risk-threshold and AVS/CVV routes, not 3DS or premium product evidence
 - [[braintree-3d-secure]] - cardholder authentication, enrollment and conditional liability-shift boundaries
 - [[braintree-fraud-protection]] - named Fraud Protection gateway-decision route, distinct from Advanced
@@ -226,6 +240,7 @@ Operations history: [[braintree-log]]
 
 - [[braintree-payment-platform]] - merchant/gateway roles, product orientation, interaction channels and separate funding route
 - [[braintree-payment-methods]] - provider-wide method eligibility and collected deprecation conflict
+- [[braintree-apple-pay]] - Braintree-specific Apple Pay availability, device/browser scope, DPAN, consent and certificate routes
 - [[braintree-currencies]] - presentment/settlement distinction and qualified multi-currency setup
 - [[braintree-data-migration]] - inbound versus outbound migration routes, not backup or failover
 

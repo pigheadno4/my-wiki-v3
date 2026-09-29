@@ -6,6 +6,19 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-29] ingest | braintree/web-sdk-github-actions `default-branch@e9c8ae9`
+
+- User-approved full baseline, work item `github-4776aefdf1eeb1056827`, exact SHA `e9c8ae99ae5365f91f8e5372ae2d9d2dc7a427e0`. Read all 28 retained files (76,720 bytes), manifests and attachment; read Braintree context fully and root-log relevant history/insertion area under the explicitly approved focused-context exception.
+- Added cumulative source, separate commit changelog and provider release-automation concept. Recorded preparation/publication separation, prerelease controls, PR behavior, CI/Jira/cleanup/Confluence contracts, README contradictions, confirmed change-check shell syntax error and dry-release artifact mismatch.
+- Preserved immutable raw, excluded-bundle/older-pinned-action limits and independent SDK histories. No upstream workflow, installation, build, release or payment flow executed. Syntax-only `bash -n` failed on the retained malformed block as recorded; this is not a collection failure.
+- Company and index now cover 182 sources: 165 website plus 17 GitHub summaries, excluding changelogs. Existing website campaign and unrelated session changes were preserved. No commit or push performed.
+
+## [2026-09-29] ingest | Braintree website C21
+
+- Ten collected payment-method guides were fully read, independently reviewed and promoted: ACH, Venmo, Apple Pay, Google Pay, Local Payment Methods, Secure Remote Commerce, PayPal Credit, UnionPay, PayPal Pay Later Offers and SEPA Direct Debit. Braintree now routes to 181 sources = 165 website + 16 GitHub, excluding changelogs.
+- Seven first reviews approved; three requested bounded quote or modality corrections and passed targeted review on unchanged pinned raw hashes. Five fixed query groups passed 20/20 navigation/detail questions. The sources preserve the ACH voiding, SRC support-status and UnionPay deprecation/limited-release tensions; these snapshots do not establish current support or eligibility. The C21 audit record is in `tracking/ingest/braintree/braintree-campaign-21/quality-audit.md` and `query-audit-a.md` through `query-audit-e.md`.
+- No raw pages, GitHub work items, code, rules, root index or root log were changed by C21. Campaign approval did not authorize commit, push or another campaign.
+
 ## [2026-09-27] ingest | Braintree website C20
 
 - Ten collected fraud-tool and Control Panel security pages were fully read, independently reviewed and promoted. Braintree now routes to 171 sources = 155 website + 16 GitHub, excluding changelogs.

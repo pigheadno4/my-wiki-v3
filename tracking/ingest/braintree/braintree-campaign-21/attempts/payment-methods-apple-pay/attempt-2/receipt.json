@@ -1,0 +1,89 @@
+{
+  "job_id": "payment-methods-apple-pay",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Apple Pay\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/payment-methods/apple-pay\"\nraw_files:\n  - \"braintree/articles/guides/payment-methods/apple-pay-2026-09-16.md\"\ntags: [braintree, apple-pay, digital-wallets, mobile-payments, web-payments, vaulting]\n---\n\n## Overview\n\nThis collected Braintree guide describes Apple Pay for mobile and web purchases, including its device-specific tokenization model, merchant and customer availability boundaries, vaulting guidance, and integration setup. It is a retrieval route to the exact collected requirements rather than proof that a particular merchant, buyer, device, browser, card, or transaction is currently eligible.\n\n## Key takeaways\n\n- Apple Pay uses a card associated with a supported Apple mobile device. The guide says Braintree can accept it on newer iOS and Safari versions and describes Apple replacing the card number with an encrypted, device-specific DPAN that Braintree and processing banks use for transactions.\n- Merchant availability depends on business location and processing settings. The page separately says eligible merchants can accept customers from Apple Pay-supported countries and regions, but warns that the merchant must be domiciled where Braintree onboarding and Apple Pay compatibility both apply. Card-brand and American Express-account qualifications remain at the raw locator.\n- For desktop web purchases, the page requires an iPhone, iPad, Apple Watch, or Mac that can authorize the payment, macOS Sierra 10.12 or later, and Safari; it also says the latest Apple Pay SDK enables non-Safari browsers. In-app, mobile-web, iframe, and exact device requirements remain at the raw locators below.\n- The page says Apple Pay cards can be vaulted and used for recurring billing and split shipment transactions. Separately, it says vaulting Apple Pay cards should only be used when the customer consents during checkout to future merchant-initiated transactions. It warns against using a vaulted Apple Pay card for a future transaction when the customer is present and able to authorize the payment, saying that use results in declines.\n- Setup requires work with Braintree and Apple on Apple Pay certificates and Merchant IDs, followed by an iOS and/or JavaScript v3 client integration plus a server integration. For Braintree's iOS client SDK, the guide says the Apple Pay certificate expires after 25 months and must remain current to avoid processing disruption.\n\n> [!warning] Collected availability and compatibility are conditional\n> The page's current-tense support statements are a 2026-09-16 collection snapshot. Confirm current merchant onboarding, processing settings, Apple platform and browser requirements, card eligibility, and certificate state before relying on them.\n\n## Detail locators\n\n- Payment-method purpose, mobile/web scope and DPAN tokenization: `# Apple Pay`, lines 16-18.\n- Merchant regions, processor-setting qualification, card brands and own-American-Express-account condition: `## Availability`, lines 23-35.\n- In-app and mobile-web device requirements: `## Availability > ### Customer availability > #### Device requirements`, lines 41-55.\n- Desktop authorization-device, macOS, Safari and latest-Apple-Pay-SDK browser scope: `## Availability > ### Customer availability > #### Device requirements`, lines 57-62.\n- iframe requirements: `## Availability > ### Customer availability > #### iframe support`, lines 65-71.\n- Customer-country scope versus merchant domicile and onboarding qualification: `## Availability > ### Customer availability > #### Location requirements`, lines 74-80.\n- Credit-card-like processing, pricing and dispute handling: `## Processing`, lines 85-97.\n- Network- and iOS-qualified liability-shift statements: `## Processing > ### Liability Shift`, lines 100-106.\n- Basic/Premium fraud-tool compatibility and billing-postal-code recommendation: `## Processing > ### Fraud tools`, lines 109-115.\n- Vaulting, recurring billing, split shipments and consent/present-customer guidance: `## Processing > ### Recurring billing and vaulting`, lines 118-122.\n- Certificate, Merchant ID, client/server integration and 25-month iOS certificate-renewal boundary: `## Setup`, lines 125-132.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-apple-pay]]\n- Related concepts: [[braintree-payment-methods]], [[recurring-payments]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/apple-pay/overview-2026-09-16|Braintree Apple Pay developer overview]] - unread navigation-only implementation route linked by this guide\n- [[raw/braintree/docs/guides/apple-pay/configuration/javascript/v3-2026-09-16|Braintree Apple Pay JavaScript v3 configuration]] - unread navigation-only web-configuration route\n- [[raw/braintree/docs/guides/apple-pay/configuration/ios/v7-2026-09-16|Braintree Apple Pay iOS v7 configuration]] - unread navigation-only iOS-configuration and certificate-renewal route\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/payment-methods/apple-pay-2026-09-16|Braintree Apple Pay payment-method guide]] - complete collected article covering identity, availability, platform requirements, vaulting guidance and setup\n",
+  "quotes": [
+    {
+      "text": "Apple Pay allows customers to make secure purchases using a credit or debit card associated with a supported Apple mobile device. Businesses can accept Apple Pay on newer versions of iOS and Safari, making it quick and easy for customers to buy on both mobile and the web.\n\nBehind the scenes, Apple uses a tokenization service and encrypts the customer's card number, assigning it a device-specific identifier called a DPAN. Braintree and the processing banks then use this DPAN in place of the real card number to securely handle transactions.",
+      "location": "# Apple Pay, lines 16-18"
+    },
+    {
+      "text": "Where your business is located dictates your ability to accept Apple Pay. Most merchants based in the following regions \u2013 contingent on their processing settings \u2013 can accept Apple Pay transactions from [eligible customers](#customer-availability) with the indicated card types:\n\n\n- APAC - Visa, Mastercard, American Express*\n- Australia - Visa, Mastercard, American Express*\n- Canada - Visa, Mastercard, American Express*\n- Europe - Visa, Mastercard, American Express*\n- New Zealand - Visa, Mastercard, American Express*\n- United States - Visa, Mastercard, American Express, Discover\n\n*To be eligible to accept Apple Pay with American Express in this region, you must be processing with your own Amex account.\n\nIf you are unsure of your setup, [contact us](/braintree/help/acceptPaymentTypes) for assistance.",
+      "location": "## Availability, lines 23-35"
+    },
+    {
+      "text": "For desktop web purchases:\n\n\n- An iPhone, iPad, Apple Watch, or Mac that can authorize the payment\n- macOS Sierra 10.12+\n- Safari.With the[latest Apple Pay SDK](http://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js), customers can also pay using non-Safari browsers.",
+      "location": "## Availability > ### Customer availability > #### Device requirements, lines 57-62"
+    },
+    {
+      "text": "At this time, our eligible merchants can accept Apple Pay from customers in all countries and regions supported by Apple Pay. For a complete list of locations where customers can pay with Apple Pay, [see Apple's documentation](https://www.apple.com/ios/feature-availability/#apple-pay).\n\n\n**IMPORTANT**\n Apple's documentation only identifies the countries where customers can pay with this payment method. To accept Apple Pay, merchants must be domiciled in a country that is [eligible to onboard with Braintree](https://www.braintreepayments.com/country-selection) and [compatible with Apple Pay](#availability).",
+      "location": "## Availability > ### Customer availability > #### Location requirements, lines 76-80"
+    },
+    {
+      "text": "Apple Pay cards can be vaulted and used for [recurring billing](/braintree/articles/guides/recurring-billing/overview) and split shipment transactions.\n\nVaulting Apple Pay cards should only be used when the customer consents to future merchant-initiated transactions during checkout. It should not be used for future transactions where the customer is present and available to authorize payments during the time of transaction; doing so will result in declines and is not recommended.\n\n\n## Setup\n\nBefore getting started, you'll need to work with us and Apple to configure your Apple Pay certificates and Merchant IDs. Then you can complete your client (iOS and/or JavaScript v3) and server integrations. Full instructions are available in our [developer docs](/braintree/docs/guides/apple-pay/overview).\n\n\n### Certificate renewal\n\nIf you integrate with Apple Pay using our iOS client SDK, you will be required to configure an Apple Pay certificate before completing your integration. This certificate expires after 25 months and must be kept up-to-date to avoid any disruptions in your processing. For full instructions on how to generate a new certificate and upload it to the Control Panel, see our [developer docs](/braintree/docs/guides/apple-pay/configuration/#certificate-renewal).",
+      "location": "## Processing > ### Recurring billing and vaulting through ## Setup > ### Certificate renewal, lines 120-132"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-braintree-apple-pay-concept",
+        "target_path": "wiki/concepts/braintree-apple-pay.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree Apple Pay\"\ntype: concept\ncategory: technology\ntags: [braintree, apple-pay, digital-wallets, mobile-payments, web-payments, vaulting]\n---\n\n## Braintree Apple Pay\n\nBraintree's collected payment-method guide describes Apple Pay for mobile and web purchases using a credit or debit card associated with a supported Apple mobile device. Apple replaces the card number with an encrypted device-specific DPAN that Braintree and processing banks use for transactions. This is a Braintree-specific retrieval route; keep it distinct from [[paypal-apple-pay]] and from exact-version SDK implementation evidence. [[source-braintree-payment-methods-apple-pay]]\n\n## Availability and platform boundary\n\nThe guide makes merchant availability conditional on business location and processing settings, with separate card-brand and American Express-account qualifications. It says eligible merchants can accept customers from Apple Pay-supported countries and regions, but the merchant must also be domiciled where Braintree onboarding and Apple Pay compatibility apply. For desktop web, its collected requirements include an iPhone, iPad, Apple Watch, or Mac that can authorize the payment, macOS Sierra 10.12 or later, and Safari; it also describes the latest Apple Pay SDK as enabling non-Safari browsers. Treat these as page-scoped snapshot statements, not proof of current merchant, customer, device, browser or card eligibility. [[source-braintree-payment-methods-apple-pay]]\n\n## Vaulting and setup boundary\n\nThe page says Apple Pay cards can be vaulted and used for recurring billing and split shipment transactions. Separately, it says vaulting Apple Pay cards should only be used when the customer consents during checkout to future merchant-initiated transactions. It warns against using the vaulted card for a future transaction when the customer is present and can authorize the payment, saying that use results in declines. Setup requires Apple Pay certificates and Merchant IDs configured with Braintree and Apple, an iOS and/or JavaScript v3 client integration, and a server integration. For Braintree's iOS client SDK, the page gives the Apple Pay certificate a 25-month expiry and requires keeping it current. Exact device, iframe, processing, liability, fraud-tool and renewal details remain in the source's raw locators. [[source-braintree-payment-methods-apple-pay]]\n\n## Sources\n\n- [[source-braintree-payment-methods-apple-pay]] - Braintree Apple Pay identity and DPAN model, conditional availability and platform scope, vaulting consent guidance, integration roles and certificate renewal\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer current merchant, buyer, card, device or browser eligibility from the collected snapshot.",
+          "Keep this Braintree website guide distinct from PayPal Apple Pay and versioned Braintree SDK implementation evidence.",
+          "Preserve the page's should-only consent guidance separately from the stated capability to vault and use Apple Pay cards for recurring billing and split shipments.",
+          "Treat linked developer pages as navigation unless separately read in full."
+        ]
+      },
+      {
+        "update_id": "braintree-apple-pay-payment-methods-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-apple-pay]] - dedicated Braintree Apple Pay route for conditional merchant and customer availability, mobile/web platform requirements, DPAN processing, vaulting consent guidance, integration roles and certificate renewal",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not replace the provider-wide payment-method overview with this method-specific guide.",
+          "Keep current eligibility and exact platform requirements qualified to the collected page and raw locators."
+        ]
+      },
+      {
+        "update_id": "braintree-apple-pay-recurring-boundary",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Platform-Specific Implementation",
+        "proposed_markdown": "- **Braintree Apple Pay**: the collected payment-method guide says Apple Pay cards can be vaulted and used for recurring billing and split shipment transactions. Separately, it says vaulting should only be used when the customer consents during checkout to future merchant-initiated transactions. It warns not to reuse that vaulted card for a future transaction when the customer is present and can authorize the payment, saying that use results in declines. This establishes the page's consent and use guidance, not a subscription scheduler or complete later-charge lifecycle. See [[source-braintree-payment-methods-apple-pay]].",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not generalize vaultability into a complete recurring-billing engine or proof of merchant eligibility.",
+          "Preserve the should-only consent guidance separately from the stated vaulting and recurring/split-shipment capability, and retain the future customer-present reauthorization warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/payment-methods/apple-pay-2026-09-16.md",
+  "raw_sha256": "c7761ef9c0f22613c16fa7516c273291028775d1e6c86f960606cfeb98820ba3",
+  "status": "candidate_ready"
+}

@@ -328,6 +328,10 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 - [[stripe]] — Stripe disputes handled via Dashboard, webhooks, and API
 
 ## Sources
+- [[source-braintree-payment-methods-unionpay]] - Braintree guide stating a UnionPay standard chargeback fee of USD 25 or settlement-currency equivalent, non-refundable regardless of outcome and inclusive of pre-arbitrations
+
+- [[source-braintree-payment-methods-local-payment-methods]] - Braintree guide stating that disputes are currently unsupported for Local Payment Methods and customers must work directly with their bank
+
 - [[source-braintree-fraud-tools-premium-effortless-chargeback-protection]] - Braintree Effortless Chargeback Protection purpose, country and card-transaction scope, transaction and chargeback eligibility, reason-code-specific evidence treatment, and non-waived acquiring-bank or card-network fee boundary
 - [[source-braintree-fraud-tools-premium-chargeback-protection]] - Braintree's Chargeback Protection and Effortless Chargeback Protection tools, with eligible-transaction and evidence conditions, real-time decline behavior, bypass service-payment consequence and unresolved indemnity direction, and account, region, payment and processor limits
 - [[source-braintree-fraud-tools-3d-secure]] - Braintree 3DS authentication and conditional fraud-chargeback liability shift, including the warning that a shift does not always trigger automatic representation and merchants must still monitor and act on chargebacks
