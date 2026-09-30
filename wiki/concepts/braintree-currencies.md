@@ -16,5 +16,6 @@ Single-currency accounts present and settle in the merchant's home currency by d
 The page states support for more than 130 local currencies in 44 countries but does not enumerate or map them. It also warns that displaying a converted price while charging in the home currency can produce a charged amount different from the display as rates move, and that exchange-rate movement can make an international customer's refund differ from the original amount paid. Treat the collected snapshot as a retrieval route, not proof of current currency coverage or merchant eligibility.
 
 ## Sources
+- [[source-braintree-payment-methods-paypal-setup-guide]] - PayPal-specific multi-currency setup route requiring a Braintree merchant account per accepted currency, PayPal foreign-currency configuration and merchant-account selection during processing, with blocking and fee tradeoffs
 
 - [[source-braintree-get-started-currencies]] - presentment and settlement definitions, single- and multi-currency setup choices, account and approval prerequisites, conversion effects, live-processing fallback and exact raw-detail routes

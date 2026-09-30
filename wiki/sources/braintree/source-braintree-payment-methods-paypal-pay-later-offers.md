@@ -26,6 +26,9 @@ This collected Braintree guide describes PayPal Pay Later offers used with PayPa
 > [!warning] Snapshot and country scope
 > Do not generalize one country's offer, amount range, installment schedule, credit qualification or regulatory note to another country, and do not treat collection success as current availability. Use the country table at lines 18-28 for the collected terms, then verify current terms and individual merchant eligibility through the linked authority.
 
+> [!warning] Conflicting same-date offer tables
+> This broad payment-method article lists US Pay Monthly from $199 with 6, 12 or 24 monthly payments and Australian Pay in 4 up to $1,500, while the separately collected [[source-braintree-paypal-pay-later-offers-javascript-v3]] guide lists US Pay Monthly from $49 with 3, 6, 12 or 24 payments and Australian Pay in 4 up to $2,000. Both were collected 2026-09-16; neither establishes current terms. Keep the broad offer table and JavaScript v3 setup/presentation route distinct, and verify current country terms through the product authority.
+
 > [!warning] Product and checkout scope
 > Pay Later offers are presented through PayPal Checkout, but this page does not document generic PayPal Checkout setup or payment execution. Its UK row mentions PayPal Credit with separate coexistence and regulatory conditions; do not collapse PayPal Credit into the broader Pay Later offer identity.
 

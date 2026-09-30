@@ -1,0 +1,88 @@
+{
+  "job_id": "paypal-best-practices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Best Practices\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/payment-methods/paypal/best-practices\"\nraw_files:\n  - \"braintree/articles/guides/payment-methods/paypal/best-practices-2026-09-16.md\"\ntags: [braintree, paypal, checkout, vaulting, recurring-payments, user-experience]\n---\n\n## Overview\n\nThis collected Braintree article organizes Pay with PayPal experience guidance into One-Time Checkout, Vaulted Payments and Recurring Payments. It is a retrieval route for choosing among those page-defined use cases, presenting the PayPal button and review page, handling upstream shipping choices, and finding the article's vaulting and recurring-review qualifications; routine integration steps remain in the raw locators and linked implementation guides.\n\n## Key takeaways\n\n- The page assigns One-Time Checkout to most purchases, Vaulted Payments to stored-PayPal repeat use for fast, low-value purchases, and Recurring Payments to subscriptions and automated billing. These are article-level use-case recommendations, not proof that an account, SDK or buyer is currently eligible.\n- For one-time payments, the article recommends PayPal button placement on cart and product-detail surfaces as an upstream shortcut and separately describes placement after merchant-collected details during checkout. It says the PayPal button should be the buyer's final checkout action, with the buyer redirected to an order-success page after approval.\n- The article attributes a distinct presentation requirement to the PayPal User Agreement: PayPal and Venmo must be treated equally with other payment methods for logo placement, flow and fees, shown prominently, and not placed later than another payment method. Do not generalize the article's other \"best practices\" into contractual requirements.\n- In upstream flows where the buyer has not supplied an address or delivery choice, the shipping-address callback lets PayPal show price including shipping and tax, while the shipping-options callback lets the buyer select delivery and updates the cart amount. The page says the address callback may be unnecessary when shipping fees do not change or do not apply, but says to use the options callback for physical goods even when only one delivery method exists.\n- The Vaulted Payments section recommends that flow only for business models with average transactions below $40 and recommends One-Time Payments for the vast majority of business models. It frames vaulting around mobile-first, high-frequency, low-average-value online-to-offline services; its Native SDK, PopUp Bridge and future JavaScript App Switch statements are snapshot-scoped routes, not current compatibility proof.\n- The Recurring Payments section covers regularly initiated merchant payments such as subscriptions, automatic bills, auto-reloads and installments. Its review-page guidance says the order card should display plan information and a recurring indicator before the buyer accepts the terms; the article does not define the full recurring billing, token, charge or cancellation lifecycle.\n\n## Evidence boundaries\n\n> [!warning] Requirement, recommendation and snapshot scope\n> Preserve the article's modal language. The presentation standards are stated as User Agreement requirements; many placement and implementation items are recommendations or examples. The immutable 2026-09-16 collection does not establish current product availability, merchant approval, SDK compatibility, App Switch support, conversion results or buyer eligibility.\n\n> [!warning] Keep the three flows distinct\n> One-Time Checkout, Vaulted Payments and Recurring Payments have different stated use cases. Storing PayPal for repeat purchases is not itself a recurring-billing engine, and the recurring review page is not evidence of later-charge execution or lifecycle behavior.\n\n## Detail locators\n\n- Three Pay with PayPal use cases and their intended roles: `### Pay with PayPal use cases`, lines 25-48.\n- One-Time Payment purpose and audience: `## Pay with PayPal for One-Time Payments > ### Overview`, lines 51-66.\n- Upstream button presentation, User Agreement standards, Pay Later placement and JavaScript `data-page-type` route: `### Presenting the PayPal button > #### Upstream presentment`, lines 74-117.\n- Shipping-address callback effect, upstream condition and fixed-or-inapplicable-fee exception: `#### Enable shipping address callback`, lines 120-132.\n- Shipping-options callback effect, physical-goods guidance and upstream condition: `#### Enable shipping options callback`, lines 137-151.\n- Merchant-checkout ordering, final-action guidance, server-side buyer-data route, review-page setup, shipping and line-item categories: `#### Checkout presentment` through `#### Optimize your buyer's PayPal Checkout experience`, lines 154-193.\n- Vaulted Payments low-value recommendation, O2O audience, onboarding categories and platform-specific login routes: `## Pay with PayPal for Vaulted Payments`, lines 196-240.\n- Recurring-payment identity, intended audience and review-page plan-information guidance: `## Pay with PayPal for Recurring Payments`, lines 243-264.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Checkout context: [[paypal-checkout]]\n- Recurring-payment context: [[recurring-payments]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/paypal/checkout-with-paypal/javascript/v3-2026-09-16|Braintree PayPal One-Time Payments JavaScript v3 guide]] - unread navigation-only implementation route; not used as factual evidence here\n- [[raw/braintree/docs/guides/paypal/pay-later-offers/javascript/v3-2026-09-16|Braintree Pay Later Offers JavaScript v3 guide]] - unread navigation-only route linked for messaging placement; not used as factual evidence here\n- [[raw/braintree/docs/guides/paypal/recurring-payments/javascript/v3-2026-09-16|Braintree PayPal Recurring Payments JavaScript v3 guide]] - unread navigation-only implementation route; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/payment-methods/paypal/best-practices-2026-09-16|Braintree PayPal Best Practices article]] - complete collected page covering one-time, vaulted and recurring Pay with PayPal experience guidance\n",
+  "quotes": [
+    {
+      "text": "Depending on your use case, you can implement **One-Time Checkout** for most purchases, **Vaulted Payments** to securely store PayPal as a payment method for fast, frictionless, low-value future payments, or **Recurring Payments** for subscriptions and automated billing.",
+      "location": "### Pay with PayPal use cases, line 27"
+    },
+    {
+      "text": "**NOTE**\n Per our User Agreement, you are required to follow certain standards when presenting PayPal or Venmo payment methods. You must treat PayPal and Venmo payment methods equally to other payment methods at your points of sale, including logo placement, payment flow, and fees. You need to show the PayPal and Venmo services prominently in the checkout experience, and don't present any other payment methods earlier in the checkout flow.\n\n \n\n**Best practices**\n\nPlace checkout buttons on your cart and product details pages so buyers can start checkout whenever they're ready.\n\n\n- Ensure that the PayPal button shows up earlier in the checkout experience, ahead of any other merchant-provided checkout flows that require data entry from the user.\n- Place PayPal Pay Later messaging close to the order total so buyers can see it clearly as a financing option. See[Message placement](https://developer.paypal.com/braintree/docs/guides/paypal/pay-later-offers/javascript/v3/#pay-later-messaging)for more information.\n- Be sure to pass the data-page-type through the JavaScript SDK to indicate the type of page where you place the button. The data-page-type parameter helps PayPal optimize button behavior based on page types. See the[JavaScript SDK script configuration](/sdk/js/configuration/#link-datapagetype)page for more information.",
+      "location": "#### Upstream presentment, NOTE and Best practices, lines 99-111"
+    },
+    {
+      "text": "The shipping address callback helps PayPal to show the accurate price, including shipping fees and taxes, when a buyer provides or updates their address.\n\nIf you don't integrate the shipping address callback, PayPal can't display accurate shipping costs. The buyer must return to the merchant site to see the final price and complete the payment. Use the shipping address callback to save buyers this extra step.\n\nThis callback applies to upstream flows where the buyer has not already provided their address to the merchant, such as when the user clicks the PayPal button on the merchant cart page.\n\nSee the **Integrating Shipping Module** section in the [One-Time Payments](/braintree/docs/guides/paypal/checkout-with-paypal) guide for more information.\n\n\n**NOTE**\n The callback may not be necessary when shipping fees don't change or aren't applicable.\n\n \n\n\n#### Enable shipping options callback\n\nAllow buyers to choose a delivery method during checkout. Use the shipping options callback to update the cart amount based on the selected shipping option.\n\nIf you don't integrate shipping options, PayPal can't display your delivery options. The buyer must return to the site to select delivery options before completing the payment.\n\nSee the **Integrating Shipping Module** section in the [One-Time Payments](/braintree/docs/guides/paypal/checkout-with-paypal) guide for more information.\n\n\n\n Use the shipping options callback for physical goods even when only one delivery method is available.\n\n \n\nThis callback applies to upstream flows where the buyer has not already selected a shipping method for their order, such as when the user clicks the PayPal button on the merchant cart page.",
+      "location": "#### Enable shipping address callback through #### Enable shipping options callback, lines 120-151"
+    },
+    {
+      "text": "Pay with PayPal's Vaulted Payments flow provides a seamless checkout experience by storing payment methods for high-frequency and low average-order-value services such as rides, meal pickups, and other quick purchases.\n\nThis flow is recommended **only** for business models where the average transaction size is less than $40. For the vast majority of business models, it is recommended to go with the [One-Time Payments](/braintree/docs/guides/paypal/checkout-with-paypal) integration.\n\n![Screenshot,showing,a,sample,integration,of,onboarding,a,customer,for,Vaulted,Payments](https://www.paypalobjects.com/devdoc/best-practices/screenshot_vault-onboarding_combined.png)\n### Overview\n\n\n#### Purpose\n\nThis guide provides best practices for merchants who want to store PayPal as a payment method and streamline repeat payments in mobile-first scenarios such as ordering food or taking a ride.\n\nUsing these tips to support online-to-offline (O2O) use cases makes it easier for your customers to confidently save, manage, and use PayPal for frictionless repeat payments.\n\n\n#### Who is this section for?\n\nThis guide is for developers, designers, and product managers building mobile payment flows for businesses providing O2O services such as ride-hailing, food delivery, and quick-service dining. Customers typically use their phones to start a payment on a merchant's app and then complete the payment using the PayPal app.",
+      "location": "## Pay with PayPal for Vaulted Payments through #### Who is this section for?, lines 196-215"
+    },
+    {
+      "text": "## Pay with PayPal for Recurring Payments\n\nPayPal Checkout offers recurring payments to support merchant-initiated payments initiated at regular intervals, such as meal kit delivery subscriptions, automatic bill payments, auto-reloads, and installments.\n\n\n### Purpose\n\nThis guide provides best practices for creating a seamless experience for customers who want to set up automatic payments with PayPal Checkout. By following these guidelines, you can simplify the process of subscribing to a service, trying it out, or automatically reloading an account, making it easier for customers to manage their payments.\n\n\n### Who is this section for?\n\nUse this documentation if you are a digital service provider or a member of a technical team managing recurring billing services. Examples include digital media platforms, content subscriptions, and other SaaS companies. Typically, the buyer has an existing account and shipping address on file with the merchant.\n\n\n## Best practices for implementing Recurring Payments review page\n\nPayPal offers a recurring payment review page to show customers information about recurring payments for their subscriptions or other purchases. Correctly setting up this review page can streamline recurring payments, simplify subscription management, and reduce disputes.\n\n\n- Ensure that the order card shows plan information and a recurring indicator for greater transparency. The buyer can review this information on the payment review page before accepting the terms. See the[Recurring Payment Module](/braintree/docs/guides/paypal/recurring-payments)guide for more information.\n- If you have the buyer's email address, pass it during order creation. See the**Integrating Pass Buyer Identifier**section in the[One-Time Payments](/braintree/docs/guides/paypal/checkout-with-paypal)guide for more information.",
+      "location": "## Pay with PayPal for Recurring Payments through review-page best practices, lines 243-264"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypal-best-practices-braintree-payment-methods-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-best-practices]] - Braintree Pay with PayPal experience route distinguishing One-Time Checkout, sub-$40 mobile-first Vaulted Payments and Recurring Payments review-page guidance, with User Agreement presentation requirements and upstream shipping-callback qualifications",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the distinction between User Agreement requirements and the article's recommendations or examples.",
+          "Keep One-Time Checkout, Vaulted Payments and Recurring Payments distinct; vaulting alone does not establish a recurring-billing engine.",
+          "Retain the Vaulted Payments recommendation only for business models with average transactions below $40 and the article's One-Time Payments recommendation for the vast majority of business models.",
+          "Treat platform and App Switch statements as 2026-09-16 snapshot evidence, not proof of current SDK compatibility, availability or enablement."
+        ]
+      },
+      {
+        "update_id": "paypal-best-practices-paypal-checkout-route",
+        "target_path": "wiki/concepts/paypal-checkout.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-best-practices]] - Braintree-specific PayPal experience guidance for upstream versus merchant-checkout button placement, User Agreement presentation standards, shipping callbacks and the PayPal review page",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Keep this Braintree article separate from direct PayPal Orders and JavaScript SDK authority.",
+          "Do not convert recommended button placement, callbacks or conversion statements into contractual requirements or guaranteed outcomes.",
+          "The User Agreement presentation paragraph is the article's explicit requirement and must retain its PayPal-and-Venmo and equal-treatment scope."
+        ]
+      },
+      {
+        "update_id": "paypal-best-practices-recurring-payments-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-best-practices]] - Braintree PayPal recurring-experience route for the review page's plan information and recurring indicator, distinct from token storage, scheduled charge execution and subscription lifecycle evidence",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not treat the recurring review page as a complete recurring-billing, consent, token, charge, retry or cancellation contract.",
+          "Keep this Braintree PayPal experience guidance distinct from direct PayPal Subscriptions and Payment Method Tokens implementations."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/payment-methods/paypal/best-practices-2026-09-16.md",
+  "raw_sha256": "d932c4585fb3232befc347d904701660a0033407060e214a5501ed125521d2a9",
+  "status": "candidate_ready"
+}

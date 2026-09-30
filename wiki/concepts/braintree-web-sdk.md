@@ -72,6 +72,8 @@ These are changes in the Braintree adapter and retained browser implementation, 
 The release also forwards `autoRedirect` and `fullPageOverlay` session-start options, blocks three dangerous property-path keys in Hosted Fields' EventedModel, and adds explicit frame targets to Payment Request, 3DS completion, and UnionPay. Payment Request adds domain verification; `framebus` changes from `6.1.0` to `6.2.0`. These are implementation changes, not proof of comprehensive security or browser acceptance. This latest retained release preserves all earlier versioned evidence above. [[changelog-github-braintree-web]]
 
 ## Related
+- [[source-braintree-paypal-checkout-with-vault-javascript-v3]] - JavaScript v3 Checkout with Vault guide covering request-mode matching, client tokenization, server `Transaction.sale`, the implicit vaulted token and the returning-customer One-time Payments path
+- [[source-braintree-paypal-pay-later-offers-javascript-v3]] - JavaScript v3 Pay Later presentation guide covering the PayPal client-side prerequisite, messaging component and amount container, standalone Pay Later funding configuration, and per-button eligibility check
 
 - [[source-braintree-upgrade]] - historical browser-integration routes from Transparent Redirect and old Braintree.js toward Drop-in or client SDK tokenization plus a server-side payment-method nonce handoff, with current lifecycle and availability left to current evidence
 

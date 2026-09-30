@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 182
+source_count: 192
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Braintree is represented in this wiki by seventeen independently tracked reposit
 
 ## Website Documentation
 
-One hundred sixty-five independently reviewed website sources complement the seventeen repository
+One hundred seventy-five independently reviewed website sources complement the seventeen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
 
@@ -25,6 +25,17 @@ implementation evidence:
 - [[source-braintree-payment-methods-unionpay]] - dedicated integration deprecation/limited-release tension, SMS verification and qualified card behavior
 - [[source-braintree-payment-methods-paypal-pay-later-offers]] - country-qualified offers, Checkout with Vault enablement and messaging restrictions
 - [[source-braintree-payment-methods-sepa-direct-debit]] - pilot-only mandate/setup, post-disbursement returns and recurring support
+
+- [[source-braintree-payment-methods-paypal-best-practices]] - PayPal integration practices and their qualified platform, checkout and vaulting boundaries
+- [[source-braintree-payment-methods-paypal-disputes]] - PayPal-specific dispute access, deadlines and evidence routes distinct from card disputes
+- [[source-braintree-paypal-pay-later-offers-javascript-v3]] - JavaScript v3 Pay Later presentation and setup route with conflicting same-date offer-table warning
+- [[source-braintree-payment-methods-paypal-setup-guide]] - PayPal Business Account and Braintree production setup sequence and prerequisites
+- [[source-braintree-paypal-checkout-with-vault-javascript-v3]] - JavaScript v3 checkout-plus-vault consent, token handoff and returning-customer distinction
+- [[source-braintree-payment-methods-paypal-processing]] - PayPal authorization, capture, settlement transition, partial-settlement and legacy-vault boundaries
+- [[source-braintree-payment-methods-paypal-funding-reconciliation]] - PayPal funding and Settlement Withdrawal route separate from reconciliation and deposit proof
+- [[source-braintree-payment-methods-paypal-overview]] - PayPal payment-method orientation, availability and One-Time/Vaulted/Recurring routes
+- [[source-braintree-payment-methods-paypal-shared-data]] - PayPal account creation/linking data-sharing categories and consent boundary
+- [[source-braintree-paypal-messaging-javascript-v3]] - JavaScript v3 URL whose captured body covers native iOS/Android Pay Later Messaging eligibility and Drop-in exclusion
 
 - [[source-braintree-control-panel-security-two-factor-authentication]] - Control Panel 2FA requirement, method order and account-recovery boundaries, not payment authentication
 - [[source-braintree-control-panel-security-rotating-api-keys]] - API-key exposure response and safe overlapping-validity cutover

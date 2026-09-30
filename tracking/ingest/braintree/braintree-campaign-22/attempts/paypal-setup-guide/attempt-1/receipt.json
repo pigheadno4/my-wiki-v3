@@ -1,0 +1,85 @@
+{
+  "job_id": "paypal-setup-guide",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Setup Guide\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/payment-methods/paypal/setup-guide\"\nraw_files:\n  - \"braintree/articles/guides/payment-methods/paypal/setup-guide-2026-09-16.md\"\ntags: [braintree, paypal, payment-methods, setup, control-panel, currencies]\n---\n\n## Overview\n\nThis collected Braintree article is the setup route for adding PayPal after confirming that the merchant account is eligible to accept PayPal transactions. It separates the required account-linking sequence from recommended dispute, funding, eCheck and foreign-currency settings; it is not a general PayPal account-configuration guide or an SDK implementation specification.\n\n## Key takeaways\n\n- The article's required sequence is to obtain a verified PayPal Business Account, enter that account's credentials in the Braintree Control Panel, and then add PayPal through the linked Braintree developer guide. Eligibility confirmation comes before this sequence.\n- Linking PayPal credentials in the Braintree Control Panel enables the payment method in production, and the article states that only one PayPal account can be linked to a Braintree gateway. Newly approved Braintree accounts may take a few business days to expose the credential option.\n- A REST API app may be created in the PayPal Apps Control Panel after linking. The article says Braintree uses it to interact with the PayPal API, PayPal transactions cannot be processed through the Braintree account without it, and recommends never deleting it.\n- The article says Braintree does not support eCheck transactions: an attempted eCheck authorization may succeed, but the associated transaction will be automatically voided. It recommends blocking eChecks before authorization in PayPal payment-receiving preferences.\n- PayPal multi-currency acceptance requires a Braintree merchant account for each accepted currency, PayPal account configuration for foreign-currency payments, and selection of the applicable Braintree merchant account during processing. PayPal may assess conversion and cross-border fees depending on account setup.\n\n## Evidence boundaries\n\n> [!warning] Required versus recommended setup\n> The verified PayPal Business Account, Braintree Control Panel credential link and integration step are the article's required sequence. PayPal-dispute enablement and Settlement Withdrawal are recommendations, not stated prerequisites. Use `## Required steps` and `## Recommended setup options` in the raw page to keep that distinction intact.\n\n> [!warning] Account-link and REST app dependency\n> The one-PayPal-account-per-gateway statement is scoped to the Braintree gateway described by this article. Do not delete the generated REST API app: the article says PayPal transactions through the Braintree account cannot be processed without it.\n\n> [!warning] eCheck and foreign-currency tradeoffs\n> A successful eCheck authorization does not mean Braintree supports the resulting transaction; the article says it will be automatically voided. Blocking all foreign-currency payments can avoid additional fees but also prevents sales to customers who do not use the account currency, and PayPal may still assess conversion and cross-border fees depending on account setup.\n\n## Detail locators\n\n- Eligibility-first setup sequence: `# Setup Guide`, lines 16-21.\n- PayPal Business Account creation or upgrade and required personal-information verification: `### Sign up for a PayPal Business Account`, lines 27-38.\n- Production credential link, one-account-per-gateway limit and Control Panel navigation: `### Enter your PayPal credentials in the Braintree Control Panel`, lines 43-59.\n- Generated REST API app purpose and do-not-delete warning: `#### REST API app`, lines 64-66.\n- Recommended dispute and Settlement Withdrawal options: `## Recommended setup options`, lines 69-79.\n- Unsupported eCheck result and recommended pre-authorization blocking: `### eCheck payments`, lines 82-86.\n- PayPal multi-currency prerequisites, merchant-account selection, blocking tradeoff and possible fees: `### Foreign currencies` through `#### Avoiding conversion and cross border fees`, lines 89-106.\n- Account-change and support-contact routes: `## Contacting PayPal support`, lines 111-115.\n\n## Related\n\n- Company: [[braintree]]\n- Main payment-method route: [[braintree-payment-methods]]\n- Control Panel administration: [[braintree-control-panel]]\n- Currency setup context: [[braintree-currencies]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/payment-methods/paypal/setup-guide-2026-09-16|Braintree PayPal Setup Guide]] - complete collected article covering the eligibility-first setup sequence, account linking, REST app dependency and optional settings\n",
+  "quotes": [
+    {
+      "text": "Once you have confirmed that your merchant account is [eligible to accept PayPal transactions](/braintree/articles/guides/payment-methods/paypal/overview#availability), you must complete the following steps to add this payment method to your Braintree integration:\n\n\n- Sign up for a free, verified PayPal Business Account\n- Enter your PayPal credentials in the Braintree Control Panel\n- Add PayPal as a payment method using our[PayPal guide in the developer docs](/braintree/docs/guides/paypal/overview)",
+      "location": "# Setup Guide, lines 16-21"
+    },
+    {
+      "text": "In order to use PayPal with Braintree, you'll need a PayPal Business Account. You can either sign up for a new account on [PayPal's website](https://www.paypal.com/webapps/mpp/referral/paypal-business-account), or upgrade an existing [PayPal Premier account](https://www.paypal.com/cgi-bin/webscr?cmd=p/gen/personal_vs_business-outside) by completing the following steps:\n\n\n- Go to the[Settings page](https://www.paypal.com/myaccount/settings/)in your PayPal account\n- Click**Upgrade to a Business account**\n- Enter your business information and follow the remaining prompts\n\n\n**NOTE**\n After setting up your new PayPal Business Account, you will need to verify specific personal information, such as your bank account details. Navigate to your profile in the [PayPal console](https://www.paypal.com/login) and follow the prompts to complete the verification process. If you are having trouble, [contact PayPal support](#contacting-paypal-support).",
+      "location": "### Sign up for a PayPal Business Account, lines 29-38"
+    },
+    {
+      "text": "You must enter your PayPal Business Account credentials in the Braintree Control Panel to enable this payment method in production. You can only link one PayPal account to your Braintree gateway. To complete your PayPal setup:",
+      "location": "### Enter your PayPal credentials in the Braintree Control Panel, line 45"
+    },
+    {
+      "text": "Once you have successfully linked your PayPal Business Account to your Braintree Control Panel, you may notice that a REST API app has been created in your [PayPal Apps Control Panel](https://developer.paypal.com/developer/applications). This app allows Braintree to interact with the PayPal API on your behalf; without it, you will be unable to process PayPal transactions through your Braintree account. We recommend that you do not delete the REST API app at any time.\n\n\n## Recommended setup options\n\n\n### Managing disputes in the Braintree Control Panel\n\nTo keep your transaction management in a centralized location, we recommend enabling PayPal disputes in your Braintree Control Panel. [Learn more in our PayPal disputes support article.](/braintree/articles/guides/payment-methods/paypal/disputes#setup)\n\n\n### Settlement Withdrawal\n\nTo keep funding as simple as possible, we recommend that you enable Settlement Withdrawal on your account by [contacting PayPal](#contacting-paypal-support). [Read more about Settlement Withdrawal, funding, and reconciliation.](/braintree/articles/guides/payment-methods/paypal/funding-reconciliation)",
+      "location": "#### REST API app and ## Recommended setup options, lines 64-79"
+    },
+    {
+      "text": "An eCheck, or electronic check, is a payment sent directly from your customer's bank account. **Braintree does not support these transactions at this time**. If your PayPal Business Account allows for eCheck payment attempts, attempted eCheck authorizations may be successful, but the associated transactions will be automatically [voided](/braintree/articles/control-panel/transactions/refunds-voids-credits#voids).\n\nTo provide a better experience for your customers, we recommend blocking eCheck payments before the authorization. You can do so by [adjusting your payment receiving preferences](https://www.paypal.com/selfhelp/article/FAQ2406/1) within your PayPal account settings.\n\n\n### Foreign currencies\n\nTo accept PayPal payments in multiple currencies, you must first complete the following steps:\n\n\n- Confirm that you have a Braintree merchant account for each currency you'd like to accept \u2013[contact us](/braintree/help/acceptCurrencies)if you need assistance\n- Set up your PayPal account to allow payments in foreign currencies \u2013[learn more in PayPal's developer docs](https://developer.paypal.com/api/nvp-soap/paypal-payments-standard/admin/setup-account/#handle-multiple-currencies)\n\nOnce you're set up, you will [specify a Braintree merchant account](/braintree/docs/reference/request/transaction/sale/ruby#specify-merchant-account-id) when processing PayPal transactions in order to present different currencies to your customers.\n\n\n#### Avoiding conversion and cross border fees\n\nYou can [adjust your payment receiving preferences](https://developer.paypal.com/api/nvp-soap/paypal-payments-standard/admin/setup-account/#accept-or-deny-cross-currency-payments) to block all payments in foreign currencies. While doing so will allow you to avoid additional fees, it will also prevent you from selling to customers who don't use your account currency.\n\n\n**IMPORTANT**\n Depending on your account setup, PayPal may assess conversion and cross border fees when processing transaction in foreign currencies. If you had previously adjusted your payment receiving preferences, check the toggle setting on your PayPal Business Account to make sure that it reflects how you wish to handle payments in foreign currencies.",
+      "location": "### eCheck payments through #### Avoiding conversion and cross border fees, lines 82-106"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypal-setup-guide-braintree-payment-methods-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-setup-guide]] - Braintree PayPal setup route for eligibility-first prerequisites, verified Business Account and production Control Panel linking, the generated REST app dependency, unsupported eChecks and PayPal multi-currency setup",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep required setup distinct from the article's recommended dispute and Settlement Withdrawal options.",
+          "Do not generalize the one-PayPal-account statement beyond the Braintree gateway scope stated by the article.",
+          "Preserve the REST API app do-not-delete warning and the unsupported-eCheck automatic-void consequence."
+        ]
+      },
+      {
+        "update_id": "paypal-setup-guide-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-setup-guide]] - PayPal production enablement route through Business Account credential linking in the Braintree Control Panel, including the one-account-per-gateway boundary and generated REST API app dependency",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "This route concerns PayPal payment-method setup, not PayPal-credential login to the Braintree Control Panel.",
+          "Retain the article's Braintree-gateway scope for the one-linked-account statement."
+        ]
+      },
+      {
+        "update_id": "paypal-setup-guide-braintree-currencies-route",
+        "target_path": "wiki/concepts/braintree-currencies.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-setup-guide]] - PayPal-specific multi-currency setup route requiring a Braintree merchant account per accepted currency, PayPal foreign-currency configuration and merchant-account selection during processing, with blocking and fee tradeoffs",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not present foreign-currency blocking as universally preferable; the article says it prevents sales to customers who do not use the account currency.",
+          "Treat possible conversion and cross-border fees as account-setup-dependent."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/payment-methods/paypal/setup-guide-2026-09-16.md",
+  "raw_sha256": "69980445d420179aaabc20e5e0889cd8be08cf7b59752404ae5c9c8ae85f1d93",
+  "status": "candidate_ready"
+}

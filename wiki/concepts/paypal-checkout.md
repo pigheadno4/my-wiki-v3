@@ -223,6 +223,7 @@ React `10.5.0` depends on core `^11.1.0`, adds the v6 LPM wrappers described in 
 See [[source-paypal-payment-failures]] for the full 19 error codes and recovery patterns.
 
 ## Sources
+- [[source-braintree-payment-methods-paypal-best-practices]] - Braintree-specific PayPal experience guidance for upstream versus merchant-checkout button placement, User Agreement presentation standards, shipping callbacks, the PayPal review page and the conditional full-height/no-iframe web-view best practice
 
 - [[source-paypal-checkout-getting-started]] — Official getting started guide
 - [[source-paypal-checkout-integrate-one-time-payment]] — Full integration guide with frontend + backend code

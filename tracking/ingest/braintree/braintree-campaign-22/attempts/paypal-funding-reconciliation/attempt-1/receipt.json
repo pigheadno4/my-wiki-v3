@@ -1,0 +1,79 @@
+{
+  "job_id": "paypal-funding-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Funding and Reconciliation\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/payment-methods/paypal/funding-reconciliation\"\nraw_files:\n  - \"braintree/articles/guides/payment-methods/paypal/funding-reconciliation-2026-09-16.md\"\ntags: [braintree, paypal, funding, reconciliation, reporting, control-panel]\n---\n\n## Overview\n\nThis pinned Braintree article distinguishes where PayPal transaction funds go from the reports and identifiers used to reconcile them. It is a retrieval route for the PayPal Business Account balance, optional bank withdrawal paths, report selection and the PayPal-to-Braintree transaction-ID crosswalk; it does not establish that a gateway transaction status proves an individual withdrawal or bank deposit.\n\n## Key takeaways\n\n- Using PayPal does not change the funding process for credit-card transactions. By default, PayPal funds PayPal transactions to the merchant's PayPal Business Account balance, from which the merchant can withdraw manually or ask PayPal to configure Settlement Withdrawal.\n- The article says Settlement Withdrawal automatically sends the previous day's transactions to the merchant's bank within 2-3 business days and provides a daily PayPal-console report for the transactions included in each withdrawal. This page-level timing is not proof that a specific transaction funded or that a bank received a deposit.\n- For reconciliation, the article points larger merchants to PayPal Transaction Details and Settlement reports, smaller and medium merchants to the PayPal Monthly Financial Summary, and merchants of any size to using those reports with Braintree's Settlement Batch Summary. The linked reports retain their own scope and authority.\n- For a specific PayPal transaction, the article recommends the PayPal console because it exposes details such as assessed fees and net deposit amount that are absent from the Braintree Control Panel. Searches can use the customer's PayPal email address or PayPal Transaction ID.\n- The PayPal Transaction ID maps to Braintree's Authorization Unique Transaction ID and is distinct from the Braintree transaction ID. The article also links to Braintree transaction search as an alternative lookup route without claiming that search results prove funding.\n\n## Evidence boundaries\n\n> [!warning] Processing status, report records and funding proof are distinct\n> A Braintree transaction ID or gateway lifecycle status is not the PayPal Transaction ID, and neither a transaction record nor a settlement-batch report alone proves that an individual PayPal withdrawal reached a bank account. Preserve the article's PayPal Business Account, Settlement Withdrawal, report and identifier boundaries when investigating money movement.\n\n> [!warning] Snapshot and linked-authority boundary\n> The 2026-09-16 snapshot records the article's stated 2-3-business-day Settlement Withdrawal timing and report recommendations. It does not establish present merchant eligibility, current report behavior or a guaranteed deposit time; follow the linked PayPal and Braintree authorities for operational details.\n\n## Detail locators\n\n- Credit-card funding non-effect: `## Funding > NOTE`, lines 20-21.\n- Default PayPal Business Account balance, manual withdrawal, Settlement Withdrawal setup, previous-day transfer timing and daily withdrawal report: `## Funding`, lines 25-31.\n- Merchant-size report recommendations and use with Braintree Settlement Batch Summary: `## Reconciliation`, lines 34-38.\n- PayPal-console-only fee and net-deposit detail, search keys and identifier crosswalk: `### Searching for specific transactions`, lines 41-45.\n- Braintree Control Panel lookup steps and alternative API transaction-search route: `### Searching for specific transactions`, lines 47-58.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n- Funding context: [[braintree-payment-platform]]\n- Control Panel context: [[braintree-control-panel]]\n- Separate Braintree batch-report route: [[source-braintree-control-panel-reporting-settlement-batch-summary]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/guides/payment-methods/paypal/setup-guide-2026-09-16|Braintree PayPal Setup Guide article]] - unread navigation-only route for contacting PayPal to configure Settlement Withdrawal; not used as factual evidence here\n- [[raw/braintree/articles/control-panel/reporting/settlement-batch-summary-2026-09-16|Braintree Settlement Batch Summary article]] - unread navigation-only report route; not used as factual evidence here\n- [[raw/braintree/docs/reference/request/transaction/search/node-2026-09-16|Braintree Node.js transaction search reference]] - unread navigation-only API lookup route; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/payment-methods/paypal/funding-reconciliation-2026-09-16|Braintree PayPal Funding and Reconciliation article]] - complete collected page covering PayPal funding destination and withdrawal options, reconciliation report selection, transaction lookup and identifier mapping\n",
+  "quotes": [
+    {
+      "text": "Using PayPal **will not** affect your funding process for credit card transactions.",
+      "location": "## Funding > NOTE, line 21"
+    },
+    {
+      "text": "By default, PayPal transactions are funded by PayPal to your PayPal Business Account\u2019s balance. If you\u2019d like to deposit these funds into your bank account, you have two options:\n\n\n- Manually withdraw the funds using your[PayPal console](https://www.paypal.com/login)\n- [Contact PayPal](/braintree/articles/guides/payment-methods/paypal/setup-guide#contacting-paypal-support)to set up Settlement Withdrawal\n\nSettlement Withdrawal automatically sends the previous day's transactions to your bank within 2-3 business days. With this feature enabled, you\u2019ll be able to go to your PayPal console and download a daily report of the transactions that were included in each withdrawal.",
+      "location": "## Funding, lines 25-31"
+    },
+    {
+      "text": "PayPal has [many reports](https://www.paypal.com/cgi-bin/webscr?cmd=p/xcl/rec/reports-products-outside) available to reconcile your account. For larger merchants, the PayPal Transaction Details and PayPal Settlement Report are both popular reconciliation options. For small to medium merchants, PayPal recommends using the PayPal Monthly Financial Summary report.\n\nRegardless of your business's size, all of these reports can be used in conjunction with Braintree's [Settlement Batch Summary](/braintree/articles/control-panel/reporting/settlement-batch-summary) report in order to reconcile your account.",
+      "location": "## Reconciliation, lines 34-38"
+    },
+    {
+      "text": "When reconciling PayPal transactions, we recommend looking up the transaction details in the PayPal console; there you will find additional details that aren\u2019t available in the Braintree Control Panel (e.g. fees assessed, net deposit amount). You can locate specific transactions in the PayPal console by searching for either the customer\u2019s PayPal email address or the Transaction ID.\n\nThe Transaction ID in the PayPal console is a unique identifier for an individual transaction set by PayPal; within the Braintree Control Panel, we refer to this value as the Authorization Unique Transaction ID. It\u2019s important to note that this value is different from the Braintree transaction ID.",
+      "location": "### Searching for specific transactions, lines 43-45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypal-funding-reconciliation-generic-route",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-funding-reconciliation]] - PayPal-through-Braintree route distinguishing the PayPal Business Account funding destination and optional Settlement Withdrawal from reconciliation reports, with merchant-size report recommendations and the PayPal Transaction ID to Braintree Authorization Unique Transaction ID crosswalk",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not treat a transaction or Settlement Batch Summary record as proof that an individual withdrawal reached the merchant's bank.",
+          "Preserve the article's stated 2-3-business-day Settlement Withdrawal timing as snapshot-scoped rather than guaranteed current timing.",
+          "Keep the PayPal Transaction ID and Braintree transaction ID distinct."
+        ]
+      },
+      {
+        "update_id": "paypal-funding-reconciliation-platform-flow",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Post-settlement funding route",
+        "proposed_markdown": "PayPal transactions follow a separate collected funding route: by default PayPal funds them to the merchant's PayPal Business Account balance, after which the merchant can withdraw manually or have PayPal configure Settlement Withdrawal. The article says that feature sends the previous day's transactions to the bank within 2-3 business days and exposes a daily report for each withdrawal; this snapshot-scoped route is not evidence that an individual transaction funded or that a deposit arrived. [[source-braintree-payment-methods-paypal-funding-reconciliation]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Keep this PayPal route separate from the general credit-card funding process and Braintree Direct timing.",
+          "Do not convert the article's stated timing into a guaranteed current deposit time or individual funding proof."
+        ]
+      },
+      {
+        "update_id": "paypal-funding-reconciliation-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-funding-reconciliation]] - PayPal reconciliation route for details available in the PayPal console but not the Braintree Control Panel, plus the mapping from PayPal Transaction ID to Authorization Unique Transaction ID and its distinction from the Braintree transaction ID",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not imply that Braintree Control Panel transaction status or its transaction ID proves PayPal funding.",
+          "Preserve the exact identifier mapping and the separate Braintree transaction ID boundary."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/payment-methods/paypal/funding-reconciliation-2026-09-16.md",
+  "raw_sha256": "c5e4d26483768cdf25b254e2bddab7bfdf4d69c829bfd11d84a19deadc0e019c",
+  "status": "candidate_ready"
+}

@@ -23,6 +23,17 @@ Operations history: [[braintree-log]]
 - [[source-braintree-payment-methods-paypal-pay-later-offers]] - country-specific offers, eligibility, Checkout with Vault enablement and messaging restrictions
 - [[source-braintree-payment-methods-sepa-direct-debit]] - pilot-only bank debit, mandate/PayPal setup, later returns and recurring-use scope
 
+- [[source-braintree-payment-methods-paypal-best-practices]] - PayPal integration practices with qualified platform, checkout and vaulting boundaries
+- [[source-braintree-payment-methods-paypal-disputes]] - PayPal-specific dispute access, stages, deadlines and evidence routes
+- [[source-braintree-paypal-pay-later-offers-javascript-v3]] - JavaScript v3 Pay Later presentation route and conflicting same-date offer terms
+- [[source-braintree-payment-methods-paypal-setup-guide]] - PayPal Business Account and Braintree production setup prerequisites
+- [[source-braintree-paypal-checkout-with-vault-javascript-v3]] - JavaScript v3 checkout-plus-vault consent, tokens and returning-customer flow
+- [[source-braintree-payment-methods-paypal-processing]] - PayPal authorization, capture, settlement and qualified partial-settlement route
+- [[source-braintree-payment-methods-paypal-funding-reconciliation]] - PayPal funding and reconciliation distinction without individual deposit proof
+- [[source-braintree-payment-methods-paypal-overview]] - PayPal method orientation and One-Time/Vaulted/Recurring navigation
+- [[source-braintree-payment-methods-paypal-shared-data]] - PayPal account creation/linking data-sharing categories and consent scope
+- [[source-braintree-paypal-messaging-javascript-v3]] - JavaScript v3 URL with native iOS/Android Messaging body and Drop-in exclusion
+
 - [[source-braintree-control-panel-security-two-factor-authentication]] - Control Panel 2FA methods, factor fallback, Account Admin recovery and self-service reset boundaries
 - [[source-braintree-control-panel-security-rotating-api-keys]] - exposure-driven API-key rotation with overlapping old/new validity and confirmation-before-deletion order
 - [[source-braintree-fraud-tools-basic-risk-threshold-rules]] - carding-oriented velocity rules, supporting-field prerequisite and temporary-disable boundary

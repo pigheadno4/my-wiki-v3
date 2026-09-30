@@ -1,0 +1,38 @@
+# Braintree C22 fixed-query audit — Group E
+
+Scope: independent read-only audit of the two C22 pinned pages and their four predetermined questions. The two pinned SHA-256 values match `manifest.json`. Claims below are limited to the collected 2026-09-16 snapshots; no current-support inference is made.
+
+## paypal-pay-later-offers-javascript-v3
+
+Complete pinned-raw read: `raw/braintree/docs/guides/paypal/pay-later-offers/javascript/v3-2026-09-16.md` (lines 1-145; SHA-256 `32cc6a3fbf856971612582cdfa14adeec2dd2b34f909d06177477a8d0d35b3a9`).
+
+Actual route: `[[index]]` -> `[[braintree-index]]` -> `[[braintree-web-sdk]]` -> `[[source-braintree-paypal-pay-later-offers-javascript-v3]]` -> `[[raw/braintree/docs/guides/paypal/pay-later-offers/javascript/v3-2026-09-16]]`.
+
+1. **Navigation question — Where is the Braintree Pay Later JavaScript v3 guide? — PASS.** Object/action match: the request is for the JavaScript v3 Pay Later offer guide, and the reached source/raw pair has that exact versioned object, canonical URL, and setup/presentation purpose. Direct answer: the curated entry is `wiki/sources/braintree/source-braintree-paypal-pay-later-offers-javascript-v3.md`; its exact evidence is the pinned raw above at canonical URL `https://developer.paypal.com/braintree/docs/guides/paypal/pay-later-offers/javascript/v3`. Locator: raw source header and frontmatter, lines 1-9; page title, line 14.
+
+2. **Detail question — What version-scoped offer setup and presentation boundaries does this page itself state? — PASS.** Object/action match: the answer concerns this JavaScript v3 page's offer setup and presentation rules, not generic Pay Later availability or current country terms. Direct answer: the snapshot first routes merchants to the broad support article and requires completion of the PayPal client-side JavaScript v3 integration. Its messaging is purchase-dependent; presenting it requires a Pay Later button, forbids merchant-created additional promotional content, requires the PayPal messaging component, and uses a message container with the product/cart amount. Its standalone button uses `paypal.FUNDING.PAYLATER`; Checkout with PayPal in UK, AU, FR, DE, ES, or IT additionally uses `enable-funding=paylater`; an amount is required when loading the SDK for the button to render; and every existing standalone PayPal button must be checked with `isEligible()` before rendering. These are collected setup/presentation statements, not proof of merchant enablement, buyer approval, payment completion, or current offer terms. Locators: prerequisite/routes, lines 31-35; messaging and promotion limits, lines 38-44; component examples, lines 45-61; amount-driven message container, lines 62-73; funding, regional query parameter, amount, and button separation, lines 74-76; per-button eligibility check and examples, lines 77-145.
+
+Conflict check: **PASS.** The C22 source warns that its same-date table says US Pay Monthly starts at $49 with 3/6/12/24 payments and AU Pay in 4 reaches $2,000, while the C21 broad source says $199 with 6/12/24 payments and $1,500 respectively. The C21 source carries the reciprocal warning. The raw conflict is confirmed at C22 lines 16-24 (especially 18 and 21) versus `raw/braintree/articles/guides/payment-methods/paypal-pay-later-offers-2026-09-16.md` lines 18-28 (especially 22 and 25). Both warnings say the snapshots do not resolve current terms.
+
+## paypal-messaging-javascript-v3
+
+Complete pinned-raw read: `raw/braintree/docs/guides/paypal/messaging/javascript/v3-2026-09-16.md` (displayed lines 1-40; SHA-256 `9bff40f76300da9d28365a5ce4ee52aae404a2f15c24ccd66a6aea5f488a354d`).
+
+Actual route: `[[index]]` -> `[[braintree-index]]` -> `[[braintree-payment-methods]]` -> `[[source-braintree-paypal-messaging-javascript-v3]]` -> `[[raw/braintree/docs/guides/paypal/messaging/javascript/v3-2026-09-16]]`. The source additionally routes to `[[braintree-ios-sdk]]` and `[[braintree-android-sdk]]`; both native concepts reciprocally route back to this source.
+
+1. **Navigation question — Where is the Braintree PayPal Messaging JavaScript v3 guide? — PASS.** Object/action match: the requested object is the page at the JavaScript v3 Messaging URL, while the reached evidence is explicitly marked as a URL/body mismatch rather than silently treated as a web guide. Direct answer: the curated entry is `wiki/sources/braintree/source-braintree-paypal-messaging-javascript-v3.md`; its exact evidence is the pinned raw above at canonical URL `https://developer.paypal.com/braintree/docs/guides/paypal/messaging/javascript/v3`. Locator: raw source header and frontmatter, lines 1-9; page title, line 14.
+
+2. **Detail question — What version-scoped messaging setup and presentation boundary does this page itself state? — PASS.** Object/action match: the page body concerns native iOS/Android Pay Later Messaging eligibility and presentation restrictions, not JavaScript component setup. Direct answer: the snapshot says Messaging is available for merchants using the latest iOS and Android SDKs and unavailable through Drop-in. It lists US, GB, DE, FR, IT, ES, and AU, then conditions integration on being a current Braintree merchant using the latest Braintree integration, building native iOS/Android apps, and having a one-time-payment integration where Pay Later is available through PayPal Checkout. It also requires compliance with the PayPal Acceptable Use Policy, forbids editing messages or adding promotional material, gives Real Money Gaming as an ineligible category, and warns that other categories may later be excluded. The body contains no JavaScript v3 component-loading, rendering, callback, or other web-setup instruction, so none is claimed. Locators: native SDK availability and Drop-in exclusion, lines 17-18; country list, lines 23-24; merchant/integration/native-app/one-time-payment/policy/content conditions, lines 26-34; category restriction, line 36.
+
+URL/body mismatch check: **PASS.** The provider index describes the JavaScript v3 URL with native iOS/Android body and Drop-in exclusion; the source explicitly warns not to reconstruct web behavior from the URL; its related routes point to both native SDK concepts; and both native concepts reciprocally point to the source. `[[braintree-web-sdk]]` does not use this mismatch page as web-capability evidence.
+
+## Bounded group-E gap sweep
+
+- Searched `raw/braintree/` by Pay Later/Messaging filenames and content, and inspected the two source pages' evidence/navigation sections plus reciprocal concept links.
+- Extra complete read selected because the audit exposed a material same-date conflict: `raw/braintree/articles/guides/payment-methods/paypal-pay-later-offers-2026-09-16.md` (lines 1-59), the C21 broad Pay Later authority. It confirms the exact table disagreement and the C21 source target from the C21 manifest.
+- Native iOS/Android Messaging and Pay Later raw pages were discovered but not selected as evidence: neither exact question asks for those separate pages' implementation details, and the pinned mismatch page itself is sufficient for the native-scope/Drop-in/presentation answer. No fact above is derived from those unread pages.
+- Reciprocal-link check: both audited sources are reachable from provider-listed concepts and link to their exact pinned raws. The Messaging source/native SDK concept links are reciprocal. The C21 and C22 Pay Later sources cross-link their contradiction warnings.
+
+## Group verdict
+
+**PASS — 4/4 exact questions.** No actionable retrieval, object/action, locator, conflict-warning, SDK-routing, or unsupported-web-claim gap found.

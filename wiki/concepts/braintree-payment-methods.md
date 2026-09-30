@@ -19,6 +19,13 @@ Card scope also varies by account and use case: the page distinguishes US from m
 > The page's opening note equates Visa Click to Pay with Secure Remote Commerce and gives a January 20, 2026 end-of-support date, while its final section calls Secure Remote Commerce a current limited release for eligible merchants. The snapshot does not resolve the conflict; use the source and raw locators rather than inferring current support.
 
 ## Sources
+- [[source-braintree-paypal-messaging-javascript-v3]] - Braintree Pay Later Messaging route preserving the captured native iOS/Android eligibility, Drop-in exclusion and promotional-content restrictions while flagging the absence of JavaScript v3 setup content
+- [[source-braintree-payment-methods-paypal-shared-data]] - Braintree PayPal account creation/linking data-sharing route covering the article's contact, business-entity, credential, consent and approved-volume categories plus its TLS/SSL transport statement
+- [[source-braintree-payment-methods-paypal-overview]] - Braintree PayPal overview route for One-Time, Vaulted and Recurring Payments selection, Braintree Direct and qualified availability boundaries, PayPal-owned pricing, dispute-management options and sandbox-testing paths
+- [[source-braintree-payment-methods-paypal-processing]] - Braintree PayPal processing route for separate authorization/capture, PayPal's non-batch settlement transition, PayPal-and-Venmo partial settlements, refund timing and the article's legacy Vault warning
+- [[source-braintree-payment-methods-paypal-setup-guide]] - Braintree PayPal setup route for eligibility-first prerequisites, verified Business Account and production Control Panel linking, the generated REST app dependency, unsupported eChecks and PayPal multi-currency setup
+- [[source-braintree-payment-methods-paypal-best-practices]] - Braintree Pay with PayPal experience route distinguishing One-Time Checkout, sub-$40 mobile-first Vaulted Payments and Recurring Payments review-page guidance, with User Agreement presentation requirements and upstream shipping-callback qualifications
+- [[source-braintree-paypal-pay-later-offers-javascript-v3]] - JavaScript v3 Pay Later route for the existing PayPal client-side prerequisite, dynamic messaging restrictions, amount-driven message rendering, standalone-button funding configuration and per-button eligibility checks
 
 - [[source-braintree-payment-methods-sepa-direct-debit]] - pilot-only SEPA Direct Debit availability, mandate and linked-PayPal setup prerequisites, customer-confirmation funding statement, post-disbursement return exposure, and supported vaulting and recurring transactions
 

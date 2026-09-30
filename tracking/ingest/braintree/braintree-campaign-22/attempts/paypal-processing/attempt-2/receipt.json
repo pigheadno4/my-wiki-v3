@@ -1,0 +1,74 @@
+{
+  "job_id": "paypal-processing",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree PayPal Processing\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/payment-methods/paypal/processing\"\nraw_files:\n  - \"braintree/articles/guides/payment-methods/paypal/processing-2026-09-16.md\"\ntags: [braintree, paypal, payment-processing, authorization, capture, settlement, refunds, vaulting]\n---\n\n## Overview\n\nThis collected Braintree article is the PayPal-specific processing and transaction-lifecycle route for One-Time Payments, Vaulted Payments and Recurring Payments. It explains PayPal authorization and capture, settlement, multiple partial settlements, refunds and voids, dispute navigation, Seller Protection qualifications and the article's legacy Vault flow; it does not establish the same behavior for cards, every Braintree payment method or every PayPal integration.\n\n## Key takeaways\n\n- The article supports either authorizing and submitting for settlement together or separating authorization from capture. It permits a capture attempt for up to 29 days after successful authorization, but says to capture sooner because PayPal does not ensure that all authorized funds remain available throughout that period; capture can also be blocked if the customer's account is restricted or locked, or if the merchant's account has a high restriction level.\n- PayPal transactions in this article are not batch-settled: funds are captured after each transaction is submitted for settlement. On successful settlement, the processor response is `Settling`, and the article says those transactions transition to `Settled` within two hours; other cases can produce declined or pending responses, with the outcome also depending on whether multiple partial settlements are used.\n- Multiple partial settlements are stated as available for PayPal and Venmo transactions and allow multiple amounts to be settled against a single authorization. For delayed fulfillment or multiple shipments, the article presents a full-order parent authorization with separate per-portion child transactions as an available model, not a requirement for every multiple partial settlement.\n- The article allows voids and full or partial refunds for PayPal transactions and recommends the Braintree Control Panel or API so status remains accurate in both PayPal and Braintree. It states that PayPal refunds must be issued within 180 days of the initial sale.\n- The described Vault flow is explicitly labeled a legacy integration. Its agreement is tied to the PayPal Business Account credentials configured in the Braintree Control Panel, so changing that account requires customers to authenticate again and accept a new agreement; the article also says some integrations may need additional per-transaction information for vaulted PayPal payments.\n\n## Evidence boundaries\n\n> [!warning] PayPal-specific lifecycle\n> Keep the authorization, settlement, refund and Vault statements scoped to PayPal transactions and to this collected article. The partial-settlement paragraph separately names PayPal and Venmo; it does not establish the same capability for cards or all Braintree methods.\n\n> [!warning] Authorization and settlement qualifications\n> A 29-day capture-attempt window is not a guarantee that the full authorized amount remains available. Capture can also be blocked if the customer's account is restricted or locked, or if the merchant's account has a high restriction level; settlement above the authorization is conditional on industry and processor support for settlement adjustment.\n\n> [!warning] Legacy Vault flow\n> The article itself labels its described Vault flow legacy. Do not use it as current cross-SDK setup authority; follow the linked Vaulted Payments route for implementation details and preserve the PayPal Business Account change consequence.\n\n## Detail locators\n\n- Pay with PayPal scope across one-time, vaulted and recurring payments: `# Processing`, line 16.\n- Combined versus separate authorization/capture, 29-day attempt window, availability warning, restriction conditions and settlement-adjustment qualification: `### Authorization`, lines 24-42.\n- Immediate per-transaction capture, `Settling` to `Settled` timing and declined-or-pending outcomes: `### Settlement`, lines 45-49.\n- Multiple amounts against one authorization and the article's available full-order parent/per-portion child example for PayPal and Venmo partial settlements: `#### Multiple partial settlements`, lines 52-54.\n- PayPal void, full/partial-refund and 180-day refund guidance: `## Refunds and voids`, lines 57-61.\n- Dispute-management route: `## Disputes`, lines 64-66.\n- Seller Protection scope and shipping-address/PayPal-requirement qualifications: `### Seller Protection`, lines 69-75.\n- Legacy Vault label, agreement behavior, account-change consequence and possible per-transaction additional information: `## Storing in the Vault`, lines 78-92.\n\n## Related\n\n- Company: [[braintree]]\n- Main payment-method route: [[braintree-payment-methods]]\n- Braintree-to-PayPal processing boundary: [[paypal-braintree-integration]]\n- Dispute context: [[disputes]]\n- Recurring-payment context: [[recurring-payments]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/get-started/transaction-lifecycle-2026-09-16|Braintree transaction lifecycle]] - unread navigation-only general lifecycle route; not used to generalize this article's PayPal-specific statements\n- [[raw/braintree/docs/reference/request/transaction/submit-for-partial-settlement/node-2026-09-16|Submit for partial settlement - Node.js]] - unread navigation-only implementation route; no SDK behavior is inferred here\n- [[raw/braintree/articles/guides/payment-methods/paypal/disputes-2026-09-16|Braintree PayPal Disputes article]] - unread navigation-only dispute route; no dispute lifecycle detail is inferred here\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/payment-methods/paypal/processing-2026-09-16|Braintree PayPal Processing article]] - complete collected article covering PayPal-specific authorization, capture, settlement, refund and legacy Vault boundaries\n",
+  "quotes": [
+    {
+      "text": "The streamlined Pay with PayPal payment experience accelerates the buyer's checkout journey for [One-Time Payments](/braintree/docs/guides/paypal/checkout-with-paypal), [Vaulted Payments](/braintree/docs/guides/paypal/vault), and [Recurring Payments](/braintree/docs/guides/paypal/recurring-payments).",
+      "location": "# Processing, line 16"
+    },
+    {
+      "text": "The simplest approach when processing a transaction is to authorize and submit for settlement at the same time. That being said, Braintree and PayPal do support separate authorization and capture. This option can be helpful if you have a delayed order fulfillment process and prefer to wait to capture funds until you\u2019re ready to provide your goods or services.\n\nYou can attempt to capture funds for up to 29 days after a successful authorization, but we recommend capturing sooner rather than later \u2013 PayPal can't ensure that 100% of the authorized funds will be available during that entire 29-day period.\n\n\n**NOTE**\n \n- PayPal will not allow you to capture funds if your customer's account is restricted or locked, or if your account has a high restriction level.\n\n\n- You can't settle more than the authorized amount unless your industry and processor support settlement adjustment (settling a certain percentage over the authorized amount); [contact us](/braintree/help) for details.",
+      "location": "### Authorization, lines 26-36"
+    },
+    {
+      "text": "Unlike other payment methods, PayPal transactions are not settled [in batches](/braintree/articles/control-panel/reporting/settlement-batch-summary) ; instead, funds are captured right after you submit each transaction for settlement. This allows us to instantly inform you when a settlement is successful, so you can confidently ship your goods or provide your services immediately.\n\nWhen settlement is successful, you'll receive a [processor settlement response](/braintree/docs/reference/general/processor-responses/settlement-responses) of Settling. Within two hours, Settling PayPal transactions transition to Settled. Otherwise, you\u2019ll receive a declined or pending response, depending on the situation and whether you\u2019re using multiple partial settlements. [See our transaction status reference for more info.](/braintree/docs/reference/general/statuses#transaction)\n\n\n#### Multiple partial settlements\n\nMultiple partial settlements are available for PayPal and Venmo transactions, and allow you to settle multiple amounts against a single authorization. This method can be helpful if you have a delayed order fulfillment process or if you send physical goods to customers in multiple shipments. You can create a parent authorization for the entire order amount, and when you\u2019re ready to send each portion of the order, you will charge the customer for that portion in a separate child transaction. [Learn more in our developer documentation.](/braintree/docs/reference/request/transaction/submit-for-partial-settlement)",
+      "location": "### Settlement through #### Multiple partial settlements, lines 47-54"
+    },
+    {
+      "text": "Just like with other payment types, you can issue voids and full or partial refunds for PayPal transactions. We recommend that you do this in the Control Panel or via the Braintree API to ensure the transaction status is accurate in both your PayPal console and the Braintree Control Panel.\n\nPayPal requires that refunds are issued within 180 days of the initial sale.",
+      "location": "## Refunds and voids, lines 59-61"
+    },
+    {
+      "text": "If you are using our Vault flow, PayPal customers will be prompted to enter their PayPal credentials and accept an agreement that will let you [store their information in the Braintree Vault](/braintree/docs/guides/customers) for future use.\n\n\n**NOTE**\n This is a legacy integration. [Learn more about Vaulted Payments.](/braintree/docs/guides/paypal/vault)\n\n \n\n![new_vault_flow](https://www.paypalobjects.com/btdevdoc/braintree/img/developers/pay-with-paypal/new_vault_flow.png)\n\nYour customer can cancel or change the payment method associated with this agreement at any time in their [PayPal Account Profile](https://www.paypal.com/signin). This agreement is associated with the PayPal Business Account credentials that you [entered in the Control Panel](/braintree/articles/guides/payment-methods/paypal/setup-guide#enter-your-paypal-credentials-in-the-braintree-control-panel) ; if you change which PayPal Business Account you use with Braintree, customers will have to re-enter their PayPal credentials and accept a new agreement.",
+      "location": "## Storing in the Vault, lines 80-90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypal-processing-braintree-payment-methods-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-processing]] - Braintree PayPal processing route for separate authorization/capture, PayPal's non-batch settlement transition, PayPal-and-Venmo partial settlements, refund timing and the article's legacy Vault warning",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep lifecycle claims scoped to PayPal; only the multiple-partial-settlement paragraph also names Venmo.",
+          "Do not turn the 29-day capture-attempt window into a funds-availability guarantee, and preserve the capture-restriction and settlement-adjustment qualifications.",
+          "Preserve the article's explicit legacy label for the described Vault flow and the PayPal Business Account change consequence."
+        ]
+      },
+      {
+        "update_id": "paypal-processing-paypal-braintree-integration-route",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- Source: [[source-braintree-payment-methods-paypal-processing]] - Braintree article-level route for PayPal authorization/capture, non-batch per-transaction processing with immediate capture after settlement submission and a later `Settling`-to-`Settled` transition within two hours, partial-settlement structure, refunds and the legacy vaulted-agreement boundary",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this website article separate from the concept's versioned SDK and GitHub implementation evidence.",
+          "Do not generalize this PayPal processing lifecycle to standard PayPal Orders API integrations, cards or all Braintree payment methods.",
+          "The described Vault flow is labeled legacy and is navigation context, not current cross-SDK setup authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/payment-methods/paypal/processing-2026-09-16.md",
+  "raw_sha256": "783aca00e407f807e770bd5c0da24e8e449f688ff65d18734d0784b96c722fe7",
+  "status": "candidate_ready"
+}

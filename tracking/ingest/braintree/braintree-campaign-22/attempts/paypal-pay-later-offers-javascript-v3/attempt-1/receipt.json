@@ -1,0 +1,93 @@
+{
+  "job_id": "paypal-pay-later-offers-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Pay Later Offers - JavaScript v3\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/pay-later-offers/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/paypal/pay-later-offers/javascript/v3-2026-09-16.md\"\ntags: [braintree, paypal, pay-later, javascript-v3, messaging, checkout]\n---\n\n## Overview\n\nThis Braintree guide is the JavaScript v3 implementation route for presenting PayPal Pay Later messaging and a standalone Pay Later button through an existing PayPal client-side integration. It preserves the version-scoped component, amount, funding-source and eligibility-check boundaries while leaving country offer terms and general availability to the separate broad Pay Later Offers support guide. It is not a generic PayPal Checkout setup guide, proof of current offer availability or evidence that messaging completes a payment.\n\n## Key takeaways\n\n- Before using this page, the merchant is directed to complete Braintree's PayPal client-side integration for JavaScript v3; the page separately routes full availability and benefit details to the broad Pay Later Offers support article.\n- Pay Later messaging is dynamic based on what the customer is buying. The page requires the Pay Later button whenever that messaging is presented, prohibits merchant-created additional promotional content, and requires the PayPal messaging component plus a message container whose amount reflects the product price or cart amount.\n- The standalone Pay Later button provides access to Pay Later offers in PayPal Checkout. The page specifies the Pay Later funding source, requires an amount when loading the PayPal SDK for the button to render, and adds an `enable-funding` query parameter for the named UK, AU, FR, DE, ES and IT Checkout with PayPal cases.\n- Existing standalone PayPal buttons must each pass `isEligible()` before rendering. That client-side rendering check is not a promise of merchant enablement, buyer approval, authorization, tokenization or settlement.\n\n## Evidence boundaries\n\n> [!warning] JavaScript v3 and prerequisite scope\n> Keep these instructions scoped to Braintree's JavaScript v3 PayPal client-side integration. Do not generalize the component-loading, button-rendering or callback/Promise examples to another SDK or treat the setup example as general Pay Later support.\n\n> [!warning] Messaging and checkout are distinct\n> Promotional messaging does not itself approve a buyer or complete a payment. Preserve the required Pay Later button, amount-driven messaging and the prohibition on merchant-created promotional material when routing presentation questions.\n\n> [!warning] Conflicting same-date offer tables\n> This JavaScript v3 snapshot lists different US Pay Monthly and Australian Pay in 4 ranges from the separately collected broad support article at [[source-braintree-payment-methods-paypal-pay-later-offers]]. Neither page resolves which terms are current. Use this source for JavaScript v3 setup and presentation boundaries, and verify current country terms and eligibility through the applicable product authority.\n\n## Detail locators\n\n- Page-level country table and merchant-versus-consumer availability context: `# Pay Later Offers`, lines 16-28.\n- Broad support-article route and required JavaScript v3 PayPal client-side prerequisite: `## Before you get started`, lines 31-35.\n- Dynamic messaging, required Pay Later button and prohibition on additional merchant-created promotion: `## Pay Later messaging`, lines 38-44.\n- Messaging component callback and Promise setup examples: `### Callback` and `### Promise`, lines 45-61.\n- Message container and amount-driven rendering example: `### HTML`, lines 62-73.\n- Standalone button funding source, region-qualified `enable-funding`, amount requirement and customization routes: `## Pay Later button`, line 76.\n- Per-button eligibility check plus callback and Promise examples: `## Pay Later button`, IMPORTANT notice and examples, lines 77-145.\n\n## Related\n\n- Company: [[braintree]]\n- Main payment-method route: [[braintree-payment-methods]]\n- Product concept: [[paypal-pay-later]]\n- SDK concept: [[braintree-web-sdk]]\n- Separate broad offer and availability guide: [[source-braintree-payment-methods-paypal-pay-later-offers]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/pay-later-offers/javascript/v3-2026-09-16|Braintree PayPal Pay Later Offers - JavaScript v3]] - complete collected page covering the JavaScript v3 messaging and standalone-button integration\n",
+  "quotes": [
+    {
+      "text": "## Before you get started\n\n\n- [See our PayPal Pay Later offers support article](/braintree/articles/guides/payment-methods/paypal-pay-later-offers)for full details on the availability and benefits of this feature\n- Complete your[PayPal client-side integration](/braintree/docs/guides/paypal/client-side/javascript/v3/)",
+      "location": "## Before you get started, lines 31-35"
+    },
+    {
+      "text": "Let your customers know they can buy now and pay later. With dynamic messaging, we'll show them the right offer for what they're buying - from short-term, interest-free payments, longer-term, monthly installments, to other special financing options. You must show the Pay Later button if you present Pay Later messaging.\n**IMPORTANT**\nPlease note that, while this option provides messaging that can be displayed on your website to help promote this feature to your customers, no additional content, wording, marketing or other material should be created by you to encourage use of this product. PayPal reserves the right to take action in accordance with the User Agreement.\n\nTo present this messaging, you must include the PayPal messaging component on your page.",
+      "location": "## Pay Later messaging, lines 38-44"
+    },
+    {
+      "text": "You must also include adivanywhere on the page that you want to render a message. Include the product price or cart amount for thedata-pp-amountso that PayPal renders the most relevant message:\n### HTML\n```html\n<!-- In your code, dynamically update data-pp-amount with the price or cart amount. For example, data-pp-amount=\"89.99\" for $89.99 product -->\n<div data-pp-message \n     data-pp-layout=\"text\"\n     data-pp-text-color=\"black\"\n     data-pp-logo-type=\"inline\"\n     data-pp-amount=\"ENTER_VALUE_HERE\">\n</div>\n```",
+      "location": "## Pay Later messaging > ### HTML, lines 62-72"
+    },
+    {
+      "text": "The Pay Later button provides direct access to Pay Later offers in PayPal Checkout. See the[Pay Later button documentation](https://developer.paypal.com/docs/business/pay-later)for information on what the Pay Later button is called in your region. Specify thefundingSource: paypal.FUNDING.PAYLATERoption when rendering the standalone Pay Later button. If you are rendering the Pay Later button in UK, AU, FR, DE, ES or IT for Checkout with PayPal, you need to additionally pass'enable-funding': 'paylater'as a query param in the PayPal SDK. You can render both PayPal and Pay Later buttons on your page as two separate[standalone buttons](https://developer.paypal.com/docs/checkout/integration-features/standalone-buttons/). Review the[PayPal button customization documentation](https://developer.paypal.com/docs/business/checkout/pay-later-messaging/customize/customize-the-buttons/)for the full list of UI customizations and rendering options. PassingdataAttributes.amountwhen callingloadPayPalSDKis required for the Pay Later button to render.",
+      "location": "## Pay Later button, line 76"
+    },
+    {
+      "text": "**IMPORTANT**\nIf you have existing standalone PayPal buttons on your page, be sure to also call isEligible() before rendering each button as in the example below.",
+      "location": "## Pay Later button, IMPORTANT notice, lines 77-78"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypal-pay-later-offers-javascript-v3-braintree-payment-methods-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-paypal-pay-later-offers-javascript-v3]] - JavaScript v3 Pay Later route for the existing PayPal client-side prerequisite, dynamic messaging restrictions, amount-driven message rendering, standalone-button funding configuration and per-button eligibility checks",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route scoped to Braintree JavaScript v3; it does not establish behavior for another SDK.",
+          "Use the separate broad Pay Later Offers source for offer identity and availability rather than duplicating its role here.",
+          "The JavaScript v3 and broad support snapshots contain conflicting US Pay Monthly and Australian Pay in 4 ranges; neither establishes current terms."
+        ]
+      },
+      {
+        "update_id": "paypal-pay-later-offers-javascript-v3-paypal-pay-later-route",
+        "target_path": "wiki/concepts/paypal-pay-later.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-paypal-pay-later-offers-javascript-v3]] - Braintree JavaScript v3 implementation route for Pay Later messaging, standalone-button rendering, amount and funding configuration, and eligibility-check boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat messaging as promotional presentation, not buyer approval or payment completion.",
+          "Preserve the required Pay Later button and prohibition on additional merchant-created promotional content.",
+          "Do not use this dated implementation snapshot to overwrite broader or current country offer terms."
+        ]
+      },
+      {
+        "update_id": "paypal-pay-later-offers-javascript-v3-braintree-web-sdk-route",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-paypal-pay-later-offers-javascript-v3]] - JavaScript v3 Pay Later presentation guide covering the PayPal client-side prerequisite, messaging component and amount container, standalone Pay Later funding configuration, and per-button eligibility check",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This website guide is version-scoped integration evidence and remains separate from package-qualified Braintree Web implementation history.",
+          "An `isEligible()` rendering check does not prove merchant enablement, buyer approval, tokenization or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/pay-later-offers/javascript/v3-2026-09-16.md",
+  "raw_sha256": "32cc6a3fbf856971612582cdfa14adeec2dd2b34f909d06177477a8d0d35b3a9",
+  "status": "candidate_ready"
+}

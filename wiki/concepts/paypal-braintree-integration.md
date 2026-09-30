@@ -107,6 +107,11 @@ The independent Android `popup-bridge@5.3.0` library provides the corresponding 
 PopupBridge does not create a Braintree payment session or nonce and does not establish merchant eligibility. The Braintree Web or PayPal web integration remains responsible for checkout behavior, and the merchant server remains responsible for processing the resulting Braintree nonce or approved payment state. See [[source-github-popup-bridge-ios]] and [[source-github-popup-bridge-android]] for the independent platform implementations.
 
 ## Related
+- Source: [[source-braintree-payment-methods-paypal-shared-data]] - Braintree article-level route to the contact, business-entity, PayPal-credential, legal-agreement-consent and approved-volume categories it says are shared with PayPal to create and/or link a merchant PayPal account, with TLS/SSL transport and explicit consent-authority boundaries
+- Source: [[source-braintree-payment-methods-paypal-overview]] - article-level orientation for Braintree PayPal checkout, One-Time/Vaulted/Recurring route selection, Braintree Direct eligibility, merchant-account currency scope, fee ownership, dispute routes and sandbox choices
+- Source: [[source-braintree-payment-methods-paypal-processing]] - Braintree article-level route for PayPal authorization/capture, non-batch per-transaction processing with immediate capture after settlement submission and a later `Settling`-to-`Settled` transition within two hours, partial-settlement structure, refunds and the legacy vaulted-agreement boundary
+- Source: [[source-braintree-paypal-checkout-with-vault-javascript-v3]] - Braintree JavaScript v3 Checkout with Vault route for the one-time checkout plus Billing Agreement consent, single-use-token-to-`Transaction.sale` handoff, implicit vaulted token and distinct returning-customer flow
+- Source: [[source-braintree-payment-methods-paypal-setup-guide]] - Braintree production account-linking route for eligibility-first setup, a verified PayPal Business Account, the Braintree Control Panel credential link and the generated REST API app processing dependency
 
 - Companies: [[paypal]], [[braintree]]
 - Concepts: [[paypal-checkout]], [[paypal-vault]], [[braintree-web-sdk]], [[braintree-server-sdk]], [[braintree-ios-sdk]], [[braintree-popup-bridge]]

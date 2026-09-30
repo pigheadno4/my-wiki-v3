@@ -1,0 +1,23 @@
+{
+  "job_id": "paypal-processing",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The complete pinned raw matches the trusted SHA-256 and supports the candidate's PayPal-specific authorization/capture, 29-day attempt-without-funds-guarantee, non-batch settlement, PayPal-and-Venmo multiple-partial-settlement availability, refund, Seller Protection navigation, and legacy Vault/account-change boundaries. All five quotes are verbatim and correctly located; canonical/raw provenance, candidate/receipt equality, suggestion equality, target absence, and required links are consistent. Three bounded wording defects remain: the candidate turns the article's optional full-order parent/child shipment example into the universal partial-settlement model, its account-restriction warning broadens the merchant condition by dropping the stated high-restriction-level threshold, and the paypal-braintree-integration route says immediate settlement even though the raw distinguishes immediate capture on submission from the later Settling-to-Settled transition.",
+  "required_changes": [
+    "In candidate.md under ## Key takeaways, change the multiple-partial-settlement sentence so it first states the durable rule that PayPal and Venmo can settle multiple amounts against a single authorization, then presents the full-order parent authorization and per-portion child transactions as the article's available multi-shipment example rather than the universal model. Make the corresponding ## Detail locators wording say example or available model. This blocks the concrete query 'Must every PayPal or Venmo multiple partial settlement use a parent authorization for the entire order and one child per shipment?' because the current 'They use' wording answers yes while raw line 54 says merchants can use that pattern.",
+    "In candidate.md's authorization takeaway and warning, preserve the raw's two exact capture-blocking conditions: the customer's account is restricted or locked, or the merchant's account has a high restriction level. Do not summarize the second condition as generic merchant-account restrictions. This blocks the concrete query 'Can any merchant-account restriction prevent capture?' because the current warning implies yes while raw line 33 states the narrower high-restriction-level condition. Keep the 29-day attempt-without-availability-guarantee and conditional settlement-adjustment wording unchanged.",
+    "In update paypal-processing-paypal-braintree-integration-route, replace 'immediate per-transaction settlement' with wording that distinguishes non-batch per-transaction processing and immediate capture after settlement submission from the later Settling-to-Settled transition within two hours. This blocks the concrete query 'Does a submitted PayPal transaction become Settled immediately?' because the current route can answer yes while raw lines 47-49 separate immediate capture from final settlement status timing. Keep the reciprocal placement, website-versus-SDK boundary, refunds, partial-settlement route, and legacy vaulted-agreement boundary unchanged."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "paypal-processing-braintree-payment-methods-route",
+    {
+      "update_id": "paypal-processing-paypal-braintree-integration-route",
+      "verdict": "rejected",
+      "reason": "The reciprocal placement and remaining scope are relevant and supported, but 'immediate per-transaction settlement' conflates immediate capture after submission with the separate Settling-to-Settled transition; approve after that bounded wording correction."
+    }
+  ],
+  "reviewer_identity": "c22-r-processing",
+  "reviewer_model": "gpt-5.6-sol"
+}

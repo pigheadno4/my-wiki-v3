@@ -1,0 +1,7 @@
+# Braintree C22 retrospective
+
+Ten PayPal-related pages were ingested through three dynamic worker/reviewer slots. First-review approval was **3/10**; seven bounded corrections received targeted re-review, and the fixed query audit passed **20/20**. Runtime wall-clock time was **54m 28s** (`2026-09-29T15:17:26Z` to `16:11:54Z`), including dispatch, review, promotion and close audit. The runtime does not record reliable per-stage durations, so this report does not assign precise worker, reviewer or coordinator time.
+
+The recurring first-pass issues were source-claim precision (conditional fees, settlement/capture timing, optional partial-settlement pattern, recommendation versus requirement), quote/locator coverage, and missing reciprocal routes. The final Messaging correction was particularly valuable: the JavaScript v3 URL's captured body concerns native iOS/Android eligibility and excludes Drop-in, so native SDK concept links were needed without making a web capability claim. The Pay Later pages' different same-date US/Australian offer tables are left unresolved with warnings on both sources.
+
+For the next separately approved campaign, keep the same concise source and bounded targeted-review contract. At worker handoff, make one specific subject/condition/action check and one primary-concept reverse-route check; do not introduce another report, reviewer layer or test suite. The low first-pass rate, not the 20-question audit, is the clearest remaining speed opportunity.

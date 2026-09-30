@@ -1,0 +1,76 @@
+{
+  "job_id": "paypal-disputes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Disputes\"\ntype: source\ndate_ingested: 2026-09-29\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/payment-methods/paypal/disputes\"\nraw_files:\n  - \"braintree/articles/guides/payment-methods/paypal/disputes-2026-09-16.md\"\ntags: [braintree, paypal, disputes, chargebacks, control-panel]\n---\n\n## Overview\n\nThis pinned Braintree article explains how merchants manage PayPal disputes through the Braintree Control Panel. It is a PayPal-specific retrieval route for account setup, PayPal dispute stages, deadlines, fees, Control Panel actions and status interpretation; it is not a general guide to Braintree credit-card disputes or Braintree's server-side dispute APIs.\n\n## Key takeaways\n\n- PayPal dispute actions and uploaded evidence can be managed in either the Braintree Control Panel or PayPal Resolution Center, with actions reflected across both. The article itself focuses on the Control Panel path.\n- Control Panel management requires a full PayPal integration through Braintree, linked Braintree and PayPal accounts, explicit enablement, and a user role with the Add/Edit Processing Options permission.\n- The article distinguishes Retrieval, Claim and Chargeback stages: the customer starts a retrieval, PayPal decides an escalated claim, and the customer's bank decides a chargeback. A retrieval places the disputed amount on temporary hold; each case has a reply-by date whose midnight cutoff uses the Control Panel's configured time zone.\n- Retrievals and claims resolved through PayPal or the Braintree gateway do not incur dispute fees, while issuer or bank-account-provider fees can apply when a case becomes a chargeback or starts directly with that provider. PayPal Seller Protection may separately affect movement of money.\n- The Braintree Control Panel labels PayPal's Dispute stage as Retrieval. The article recommends resolving retrievals directly with customers and escalating to PayPal only as a final resort; escalation closes the retrieval and opens a linked dispute.\n\n## Evidence boundaries\n\n> [!warning] PayPal-specific workflow\n> The stages, labels, fees, account-linking prerequisites and cross-platform synchronization here are stated for PayPal disputes. Do not generalize them to Braintree credit-card disputes, other payment methods or server-SDK dispute operations. The article says that credit-card disputes not managed in the Control Panel must continue through the merchant's normal workflow.\n\n> [!warning] Deadlines, funds and status interpretation\n> Missing the reply-by cutoff removes the opportunity to act. Accepting a claim or chargeback returns funds to the customer, while a Braintree `Disputed` status can mean either submitted evidence is under evaluation or PayPal has placed a case Under Review without requiring evidence; the latter may return to `Open` if PayPal later requires evidence.\n\n## Detail locators\n\n- Control Panel and Resolution Center synchronization and article scope: opening paragraphs, lines 16-18.\n- Full PayPal integration, linked-account, enablement and role-permission prerequisites: `## Setup`, lines 21-34.\n- Retrieval, Claim and Chargeback roles; temporary hold; reply-by cutoff; fund release and Seller Protection qualification: `## Dispute stages` through `## Timeline`, lines 37-57.\n- Notification recipients and permission behavior: `## Notifications`, lines 62-95.\n- PayPal dispute fee boundary: `## Fees`, lines 98-102.\n- PayPal versus credit-card Control Panel workflow and current/legacy UI routes: `## Managing in the Braintree Control Panel`, lines 105-139.\n- Braintree Retrieval label, merchant actions and escalation effect: `### Retrievals` through `#### Escalating to PayPal`, lines 144-172.\n- Acceptance effect and evidence examples: `### Accepting` through `#### Uploading evidence`, lines 175-210.\n- Status meanings and PayPal Under Review ambiguity: `## Statuses` through `### A note on Disputed statuses`, lines 213-235.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n- Provider route: [[braintree-control-panel]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/payment-methods/paypal/disputes-2026-09-16|Braintree PayPal Disputes article]] - complete collected article covering PayPal-specific Control Panel setup, stages, deadlines, notifications, fees, actions, evidence and statuses\n",
+  "quotes": [
+    {
+      "text": "PayPal disputes can be managed in either your Braintree Control Panel or your PayPal Resolution Center. Action taken on either of these platforms will be reflected across the other \u2013 including any uploaded evidence against disputed transactions.\n\nThis article covers how to manage your PayPal disputes via the Braintree Control Panel. Learn more about how to manage this process via the PayPal Resolution Center in [PayPal's documentation](https://www.paypal.com/us/webapps/mpp/security/resolve-disputes).",
+      "location": "opening paragraphs, lines 16-18"
+    },
+    {
+      "text": "In order to manage your PayPal disputes via the Braintree Control Panel, you'll need to have a full PayPal integration with Braintree. If you're not already processing PayPal transactions through Braintree, head back to our [PayPal Overview](/braintree/articles/guides/payment-methods/paypal/overview) to get started.\n\nOnce you have added PayPal to your integration and linked your Braintree and PayPal accounts, you can then enable PayPal disputes in the Control Panel. In order to do so, your user's role must include the Add/Edit Processing Options [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-addedit-processing-options-including-avscvv). To enable PayPal disputes:",
+      "location": "## Setup, lines 23-25"
+    },
+    {
+      "text": "Disputed PayPal transactions have 3 stages:\n\n\n- [**Retrieval**](#retrievals): The customer initiates a dispute through PayPal, and you have the opportunity to resolve the issue with the customer directly\n- **Claim**: The retrieval has been escalated, and PayPal will step in to investigate the case and determine the outcome\n- **Chargeback**: The customer disagrees with the outcome of the claim and escalates the dispute to their bank; PayPal is now a facilitator, and the customer's bank will determine the outcome\n\n\n## Timeline\n\nOnce your customer initiates a retrieval, the disputed transaction amount will be placed on a temporary hold. If you or your customer escalate to PayPal, the retrieval will be closed out and a new PayPal dispute will be opened in your Braintree Control Panel.\n\nEvery dispute has a reply-by date listed in the Control Panel. At 12am on this date, you will lose the opportunity to take action. The time zone for your Control Panel \u2013 and this cutoff \u2013 was established during the Braintree application process; to view your current time zone settings, click on the gear icon in the top right corner, click **Business** from the drop-down menu, and scroll to the **Time Zone** section.\n\nOnce an outcome has been determined, PayPal will release the funds to the winning party.\n\n\n**NOTE**\n PayPal's Seller Protection may affect the movement of money in the event of a dispute.",
+      "location": "## Dispute stages through ## Timeline, lines 39-57"
+    },
+    {
+      "text": "How a PayPal dispute is initiated, and whether or not it is escalated to the customer's bank or credit card issuer, will determine which fees you incur.\n\nRetrievals and claims initiated and resolved through PayPal or your Braintree gateway do not incur dispute fees. However, you will be subject to any fees assessed by the issuer or bank account provider if the dispute is escalated to a chargeback or the customer initiates a claim directly through the issuer or bank account provider.\n\n\n## Managing in the Braintree Control Panel\n\nYou can locate your PayPal disputes in the Control Panel alongside your credit card disputes. If your credit card disputes are not currently managed in the Control Panel, then only your PayPal disputes will be listed here, and you will need to continue managing your credit card disputes through your normal workflow. [Contact us](/braintree/help) with any questions.",
+      "location": "## Fees through ## Managing in the Braintree Control Panel, lines 100-107"
+    },
+    {
+      "text": "In the PayPal Resolution Center, dispute stages are labeled as **Dispute**, **Claim**, and **Chargeback**. In order to keep your Braintree dispute experience consistent, we label the **Dispute** stage as **Retrievals** in your Braintree Control Panel.\n\n \n\nWith each retrieval, you have 3 options for action:\n\n\n- Message with the customer\n- Send or accept an offer\n- Escalate to PayPal\n\nTo take action on a retrieval, click the button under the Disputed Date column in the Control Panel. If there is a response waiting for you from a customer, the button will say **Respond**. Otherwise, the button should say **View**.\n\nFrom there, you can view the retrieval details, send messages, view your message history, accept offers, extend counter offers, or escalate the retrieval to PayPal.\n\n\n#### Escalating to PayPal\n\n\n**NOTE**\n In general, it's best to attempt to resolve retrievals with your customers directly; we only recommend escalating to PayPal as a final resort.\n\n \n\nIf a retrieval can't be resolved, either you or the customer can escalate the dispute to a claim \u2013 making PayPal the decider in the case. To escalate the retrieval yourself, click the **Escalate to PayPal** link in the **Dispute Details** section of the Braintree Control Panel. The original retrieval will be closed, a new dispute will be opened, and the two will be automatically linked together for your reference.",
+      "location": "### Retrievals through #### Escalating to PayPal, lines 147-172"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypal-disputes-generic-disputes-route",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-disputes]] - PayPal-specific Braintree Control Panel dispute route covering linked-account setup, Retrieval/Claim/Chargeback roles, reply-by cutoff, fee boundary, customer-resolution-first guidance and status interpretation; not general Braintree dispute/API behavior",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep PayPal's stages, labels, fees, setup and cross-platform behavior distinct from general Braintree credit-card disputes and server-SDK dispute operations.",
+          "Preserve the reply-by cutoff and configured-time-zone qualification.",
+          "Preserve the separate credit-card-dispute workflow boundary and do not imply that every Braintree dispute can be managed in the Control Panel.",
+          "Do not infer current product support or merchant enablement from the immutable 2026-09-16 snapshot."
+        ]
+      },
+      {
+        "update_id": "paypal-disputes-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-payment-methods-paypal-disputes]] - PayPal-specific Control Panel dispute management with full-integration and linked-account prerequisites, Add/Edit Processing Options permission, stage and deadline handling, retrieval actions, evidence routes and a separate credit-card-dispute workflow boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This route is specific to PayPal disputes and does not establish the Control Panel workflow for credit-card or other payment-method disputes.",
+          "Retain the account-linking, enablement and role-permission prerequisites when describing Control Panel availability.",
+          "Do not generalize Control Panel actions into server-side API or SDK capabilities."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/payment-methods/paypal/disputes-2026-09-16.md",
+  "raw_sha256": "6e1660fabc6729d95408924505b859435c60a0b817dbfe9df7b7ae5c84f90ab0",
+  "status": "candidate_ready"
+}

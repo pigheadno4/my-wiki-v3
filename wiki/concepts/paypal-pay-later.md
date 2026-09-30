@@ -115,6 +115,8 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 - [[paypal]] — PayPal company overview
 
 ## Sources
+- [[source-braintree-paypal-messaging-javascript-v3]] - collected JavaScript v3 documentation route whose retained body instead records native iOS/Android Pay Later Messaging eligibility, Drop-in exclusion, one-time-payment and PayPal-checkout conditions, no-edit rules and category restrictions
+- [[source-braintree-paypal-pay-later-offers-javascript-v3]] - Braintree JavaScript v3 implementation route for Pay Later messaging, standalone-button rendering, amount and funding configuration, and eligibility-check boundaries
 - [[source-braintree-payment-methods-paypal-pay-later-offers]] - Braintree-specific Pay Later retrieval route for country-dependent offers, merchant and customer eligibility, Checkout with Vault enablement, and messaging presentation restrictions
 
 

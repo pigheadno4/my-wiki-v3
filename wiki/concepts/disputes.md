@@ -328,6 +328,7 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 - [[stripe]] — Stripe disputes handled via Dashboard, webhooks, and API
 
 ## Sources
+- [[source-braintree-payment-methods-paypal-disputes]] - PayPal-specific Braintree Control Panel dispute route covering linked-account setup, Retrieval/Claim/Chargeback roles, reply-by cutoff, fee boundary, customer-resolution-first guidance and status interpretation; its Control Panel labels are not PayPal Disputes API lifecycle-stage enum authority, which remains with the existing PayPal API evidence on this concept
 - [[source-braintree-payment-methods-unionpay]] - Braintree guide stating a UnionPay standard chargeback fee of USD 25 or settlement-currency equivalent, non-refundable regardless of outcome and inclusive of pre-arbitrations
 
 - [[source-braintree-payment-methods-local-payment-methods]] - Braintree guide stating that disputes are currently unsupported for Local Payment Methods and customers must work directly with their bank

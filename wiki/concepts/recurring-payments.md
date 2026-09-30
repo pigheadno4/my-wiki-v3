@@ -92,6 +92,7 @@ See platform-specific concept pages for integration details:
 - What are typical involuntary churn rates by payment method?
 
 ## Sources
+- [[source-braintree-payment-methods-paypal-best-practices]] - Braintree PayPal recurring-experience route for the review page's plan information and recurring indicator, distinct from token storage, scheduled charge execution and subscription lifecycle evidence
 - [[source-braintree-payment-methods-sepa-direct-debit]] - Braintree guide stating that vaulting payment methods and creating recurring transactions are supported for SEPA Direct Debit, with pilot-only availability and linked-PayPal setup qualifications
 
 - [[source-braintree-payment-methods-unionpay]] - Braintree guide stating that vaulted UnionPay cards do not require SMS verification after initial verification, while preserving the guide's deprecated-integration and limited-release tension

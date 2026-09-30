@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-30] ingest | Braintree website C22
+
+- Ten collected PayPal article/JavaScript-v3 guide pages were fully read, independently reviewed and promoted. The Braintree capsule now routes to 192 sources: 175 website plus 17 GitHub, excluding changelogs.
+- Three initial reviews approved; seven requested bounded corrections and passed targeted review on unchanged pinned raw hashes. The sources keep PayPal disputes, setup, processing, funding, vaulting, data sharing, Pay Later and messaging in separate retrieval routes.
+- Two Pay Later pages collected on the same date give different US/Australian offer tables; reciprocal warnings preserve both without choosing current terms. The Messaging JavaScript v3 URL's retained body discusses native iOS/Android applicability and Drop-in exclusion, not a JavaScript v3 implementation procedure.
+- No raw collection, GitHub ingest, code/rule changes, commit or push were authorized by C22. Closure evidence is in `tracking/ingest/braintree/braintree-campaign-22/quality-audit.md` and `retrospective.md`.
+
 ## [2026-09-29] ingest | braintree/web-sdk-github-actions `default-branch@e9c8ae9`
 
 - User-approved full baseline, work item `github-4776aefdf1eeb1056827`, exact SHA `e9c8ae99ae5365f91f8e5372ae2d9d2dc7a427e0`. Read all 28 retained files (76,720 bytes), manifests and attachment; read Braintree context fully and root-log relevant history/insertion area under the explicitly approved focused-context exception.

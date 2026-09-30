@@ -21,6 +21,8 @@ The article separates the Control Panel's manual gateway-administration function
 
 Braintree's collected Get Paid guide starts after a transaction has settled. It says funds then pass through the merchant account to the bank account provided during application, with funding managed by the merchant-account provider; Braintree Direct is the page's Braintree-managed case. Payment method and account type affect how and when funds are paid, and the page treats its 2–5-business-day card and aggregated-Amex timing as typical or expected rather than guaranteed. This route is general funding guidance, not documentation of payment acceptance, evidence that an individual transaction settled, or proof that a deposit arrived. [[source-braintree-get-started-get-paid]]
 
+PayPal transactions follow a separate collected funding route: by default PayPal funds them to the merchant's PayPal Business Account balance, after which the merchant can withdraw manually or have PayPal configure Settlement Withdrawal. The article says that feature sends the previous day's transactions to the bank within 2-3 business days and exposes a daily report for each withdrawal; this snapshot-scoped route is not evidence that an individual transaction funded or that a deposit arrived. [[source-braintree-payment-methods-paypal-funding-reconciliation]]
+
 ## Sources
 
 - [[source-braintree-get-started-explore]] - collected navigation map with brief orientations for fraud tools, PCI compliance, Control Panel administration, recurring billing, chargebacks and retrievals, PayPal, reporting, and risk/security

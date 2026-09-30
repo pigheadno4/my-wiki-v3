@@ -322,6 +322,7 @@ A distinct vault path that uses the Orders v2 API rather than the setup token fl
 The `customer.id` is a PayPal-generated identifier — store it against the payer in your system. On return visits, pass it via `target_customer_id` in the token request; the SDK renders saved methods as one-click buttons automatically.
 
 ## Sources
+- [[source-braintree-paypal-checkout-with-vault-javascript-v3]] - Braintree JavaScript v3 one-time checkout plus Billing Agreement consent, with distinct single-use and implicitly vaulted tokens, server-side customer association, and a returning-customer switch to One-time Payments
 
 - [[source-paypal-checkout-recurring-payment]] — Full recurring payments integration guide
 - [[source-paypal-save-payment-methods]] — Save payment methods overview: two vault modes, 34-country eligibility, Venmo vault limitation, integration path table; JS SDK PayPal vault flow (`data-user-id-token`, `target_customer_id`, Create Order payload, APPROVED/VAULTED); Venmo vault (US-only, no sandbox, incompatible callbacks, `user_name` response field)
