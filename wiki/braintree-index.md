@@ -12,6 +12,21 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+#### Marketplace
+
+- [[source-braintree-marketplace-article-overview]] - article-level product model, scope and eligibility qualifications
+- [[source-braintree-marketplace-guide-overview]] - developer-guide orientation, conditions and operation routes
+- [[source-braintree-marketplace-article-onboarding]] - article-level applicant, business and verification roles
+- [[source-braintree-marketplace-guide-onboarding-node]] - Node sub-merchant creation, conditional information and pending result
+- [[source-braintree-marketplace-guide-confirmation-node]] - Node post-verification approval/decline webhook confirmation
+- [[source-braintree-marketplace-guide-create-node]] - Node sub-merchant transaction creation and service fees
+- [[source-braintree-marketplace-article-processing]] - service fees, escrow, refunds and chargeback responsibility
+- [[source-braintree-marketplace-article-funding]] - disbursement, escrow and failure-notification boundaries
+- [[source-braintree-marketplace-guide-update-node]] - Node account updates and unchanged omitted attributes
+- [[source-braintree-marketplace-guide-testing-go-live-node]] - sandbox simulations, production transition and real-payment cautions
+
+#### Other website documentation
+
 - [[source-braintree-payment-methods-ach]] - US/USD ACH eligibility, verification methods, delayed settlement, returns and unresolved void guidance
 - [[source-braintree-payment-methods-venmo]] - merchant Venmo checkout/vaulting, SDK and customer conditions, profile setup and refund limit
 - [[source-braintree-payment-methods-apple-pay]] - conditional Apple Pay availability, device/browser scope, DPAN, vaulting consent and setup
@@ -240,6 +255,7 @@ Operations history: [[braintree-log]]
 
 ## Concepts
 
+- [[braintree-marketplace]] - provider-specific sub-merchant onboarding, transaction, funding and testing routes with unresolved recurring-billing conflict
 - [[braintree-sdk-release-automation]] - engineering release workflow and evidence boundaries, not payment functionality
 - [[braintree-fraud-tools]] - Basic Fraud Tools risk-threshold and AVS/CVV routes, not 3DS or premium product evidence
 - [[braintree-3d-secure]] - cardholder authentication, enrollment and conditional liability-shift boundaries

@@ -1,0 +1,57 @@
+{
+  "job_id": "marketplace-article-funding",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Marketplace Funding\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/braintree-marketplace/funding\"\nraw_files:\n  - \"braintree/articles/guides/braintree-marketplace/funding-2026-09-16.md\"\ntags: [braintree, marketplace, funding, sub-merchants, disbursements, escrow]\n---\n\n## Overview\n\nThis collected Braintree Marketplace article describes funding routes for a master merchant and its sub-merchants after a transaction settles. It covers expected disbursement timing, escrow and funding-destination conditions, statement descriptors, and failure notification, but it does not prove that an individual bank deposit arrived or that Marketplace or any funding destination is currently available to a particular merchant.\n\n## Key takeaways\n\n- The article says settled Marketplace transactions should be disbursed to the master merchant's bank account and the sub-merchant's funding source within 1-3 business days unless the funds are held in escrow. It also says each party receives at most one deposit per day regardless of transaction count; these statements are not confirmation of any individual deposit.\n- Escrow applies to the entire transaction, including service fees. A master merchant that needs partial disbursements, such as one part immediately and another upon delivery, must create separate transactions.\n- The bank-account route uses details collected during onboarding and accepts only checking accounts; savings, deposit-only, and prepaid debit accounts are not accepted. The article also explains master-merchant and sub-merchant statement descriptors, with exact formats in the raw page.\n- Venmo funding destinations are stated as no longer supported for new merchants. For the legacy flow described, an unmatched recipient had 30 days to create an account; otherwise the recipient would not receive funds, and Braintree says no disbursement-exception webhook was sent for that case.\n- Disbursement-exception webhooks report failed sub-merchant disbursements. Banks and Venmo do not send confirmation of successful disbursements, so absence of this webhook is not proof that funds reached a bank or Venmo account.\n\n> [!warning] Availability and funding evidence boundary\n> New merchants seeking a marketplace solution are directed to Braintree Sales, and Venmo funding destinations are expressly unavailable to new merchants in this snapshot. Expected timing, descriptors, and failure-only webhooks do not establish current support, merchant eligibility, settlement of a particular transaction, or arrival of an individual deposit.\n\n## Detail locators\n\n- New-merchant Marketplace Sales route: opening `AVAILABILITY`, lines 17-18.\n- Expected post-settlement timing, daily deposit maximum, and master-merchant descriptor: `## Master merchant funding`, lines 23-31.\n- Whole-transaction escrow requirement and separate-transaction rule for partial disbursements: `## Sub-merchant funding > IMPORTANT`, lines 34-38.\n- Bank onboarding route, checking-account-only condition, and sub-merchant descriptor construction: `### To a bank account`, lines 43-57.\n- New-merchant Venmo unavailability, legacy matching/invitation flow, 30-day deadline, and missing-webhook exception: `### To a Venmo account`, lines 60-74.\n- Venmo message and payment-ID details: `#### Venmo funding descriptor`, lines 79-85.\n- Failure-only notification boundary and exception-code inventory: `### Disbursement exception webhook`, lines 88-99.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-marketplace]]\n- Webhook context: [[braintree-webhooks]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/braintree-marketplace/onboarding/node-2026-09-16|Braintree Marketplace onboarding guide - Node.js]] - unread navigation-only route for collecting sub-merchant funding details; no onboarding behavior is imported here\n- [[raw/braintree/docs/reference/general/webhooks/disbursement/node-2026-09-16|Braintree disbursement webhook reference - Node.js]] - unread navigation-only event reference; no additional trigger or payload behavior is imported here\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/braintree-marketplace/funding-2026-09-16|Braintree Marketplace funding article]] - complete collected article covering master/sub-merchant post-settlement funding, escrow, bank and legacy Venmo routes, descriptors, and failure-only notification boundaries\n",
+  "quotes": [
+    {
+      "text": "If you're a new merchant looking for a marketplace solution, [contact our Sales team](mailto:sales@braintreepayments.com).",
+      "location": "opening AVAILABILITY, lines 17-18"
+    },
+    {
+      "text": "Transactions should be disbursed to your bank account and your sub-merchant\u2019s funding source within 1-3 business days after the transaction has settled in the Braintree gateway (unless you hold the funds in [escrow](/braintree/articles/guides/braintree-marketplace/processing#escrow) ). Regardless of the number of transactions processed, both you and your sub-merchant will receive a maximum of one deposit per day.",
+      "location": "## Master merchant funding, line 25"
+    },
+    {
+      "text": "When using [escrow](/braintree/articles/guides/braintree-marketplace/processing#escrow), you are required to hold and release entire transactions, including any service fees. If you need to break up transactions into partial disbursements (e.g. 50% immediately and 50% upon delivery of a product), you must create two separate transactions.",
+      "location": "## Sub-merchant funding > IMPORTANT, lines 37-38"
+    },
+    {
+      "text": "If a sub-merchant is prompted to create a Venmo account, they have 30 days to do so. **If they do not take action, they will not receive their funds.** We do not send [disbursement exception webhooks](#disbursement-exception-webhook) in these cases, so manual follow-up will be required.",
+      "location": "### To a Venmo account > IMPORTANT, lines 73-74"
+    },
+    {
+      "text": "The disbursement exception [webhook](/braintree/docs/guides/webhooks/overview) will notify you if any disbursements to your sub-merchants fail. When it comes to this webhook, no news is good news. Banks and Venmo don\u2019t send confirmation of successful disbursements, so you will only receive a webhook if there's a problem.\n\nEach disbursement exception webhook includes one of the following codes:\n\n\n- **bank_rejected**: The bank or account information provided was not correct\n- **insufficient_funds**: There are not enough funds in the master merchant account to cover any fees, chargebacks, and/or refunds\n- **account_not_authorized**: The bank or Venmo had a problem with the disbursement (e.g. account was closed or suspended)\n\nThese webhooks are the only way you will be notified of problems with disbursements to your sub-merchants, so it is vital that you integrate them into your Braintree Marketplace workflow.",
+      "location": "### Disbursement exception webhook, lines 88-99"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplace-article-funding-flow-and-failure-boundaries",
+        "target_path": "wiki/concepts/braintree-marketplace.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Marketplace funding",
+        "proposed_markdown": "## Marketplace funding\n\nThe collected funding article says Marketplace transactions should disburse to the master merchant's bank account and the sub-merchant's funding source within 1-3 business days after gateway settlement unless held in escrow, with each party receiving at most one deposit per day. Escrow requires holding and releasing the entire transaction, including service fees; partial disbursements require separate transactions. The bank route accepts only checking accounts. Venmo funding destinations are no longer supported for new merchants, while the described legacy flow gives an unmatched recipient 30 days to create an account and sends no disbursement-exception webhook if the recipient does not act. Disbursement-exception webhooks report failures only because banks and Venmo do not confirm successful disbursements; therefore timing, descriptors, and absence of an exception webhook are not proof that an individual deposit arrived. New merchants seeking a marketplace solution are directed to Sales, so this snapshot does not prove current availability or eligibility. [[source-braintree-marketplace-article-funding]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Merge this section into the braintree-marketplace concept proposed by other approved C23 jobs; do not create a competing funding or generic platform concept.",
+          "Do not infer current Marketplace or Venmo-funding support, merchant eligibility, transaction settlement, or successful bank/Venmo deposit from this collected article.",
+          "Preserve the whole-transaction escrow rule, checking-account restriction, legacy Venmo 30-day/no-webhook exception, and failure-only webhook boundary.",
+          "Keep this article-level funding authority distinct from unread Node onboarding and webhook references and from general Braintree funding guidance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/braintree-marketplace/funding-2026-09-16.md",
+  "raw_sha256": "b424113be6033b396d3a8e62eb4c58eee088c9601a177a9e7dbd5134e606ab4a",
+  "status": "candidate_ready"
+}

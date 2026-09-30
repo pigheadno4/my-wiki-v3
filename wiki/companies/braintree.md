@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 192
+source_count: 202
 ---
 
 ## Overview
@@ -11,9 +11,26 @@ Braintree is represented in this wiki by seventeen independently tracked reposit
 
 ## Website Documentation
 
-One hundred seventy-five independently reviewed website sources complement the seventeen repository
+One hundred eighty-five independently reviewed website sources complement the seventeen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+### Marketplace documentation
+
+- [[source-braintree-marketplace-article-overview]] - article-level Marketplace model, scope and eligibility qualifications
+- [[source-braintree-marketplace-guide-overview]] - developer-guide orientation, constraints and operation routes
+- [[source-braintree-marketplace-article-onboarding]] - applicant, business and verification roles distinct from Node procedure
+- [[source-braintree-marketplace-guide-onboarding-node]] - Node sub-merchant account creation, conditional information and pending result
+- [[source-braintree-marketplace-guide-confirmation-node]] - Node post-verification approval/decline webhook confirmation
+- [[source-braintree-marketplace-guide-create-node]] - Node sub-merchant transaction creation and service-fee route
+- [[source-braintree-marketplace-article-processing]] - article-level service fees, escrow, refunds and chargeback responsibility
+- [[source-braintree-marketplace-article-funding]] - article-level disbursement, escrow and exception-notification boundaries
+- [[source-braintree-marketplace-guide-update-node]] - Node sub-merchant account updates and unchanged omitted attributes
+- [[source-braintree-marketplace-guide-testing-go-live-node]] - sandbox simulations, production transition and real-payment cautions
+
+The collected Marketplace overviews and recurring-billing overview state incompatibility, while the testing/go-live guide discusses recreating recurring-billing settings. The sources retain this unresolved conflict; none proves current Marketplace support or recurring-billing compatibility. See [[braintree-marketplace]].
+
+### Other website documentation
 
 - [[source-braintree-payment-methods-ach]] - ACH verification, delayed/reversible settlement, returns and internally conflicting void guidance
 - [[source-braintree-payment-methods-venmo]] - Venmo checkout/vaulting, merchant and customer eligibility, profile setup and refund window
@@ -320,7 +337,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested website-document sources: 165 (Braintree C01–C21; raw snapshots collected 2026-09-16)
+- Ingested website-document sources: 185 (Braintree C01–C23; raw snapshots collected 2026-09-16)
 - Ingested cumulative GitHub repository sources: 17
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`

@@ -35,6 +35,9 @@ This Braintree guide introduces recurring billing as automatic customer charging
 > [!warning] Availability and lifecycle boundary
 > This page makes Braintree recurring billing unavailable with Braintree Marketplace and describes monthly-increment billing. It does not establish a Marketplace substitute, a complete request schema, exact retry configuration, transaction settlement finality, or behavior beyond the stated subscription-status transitions.
 
+> [!warning] Contradiction
+> This collected overview says recurring billing is not compatible with Braintree Marketplace. The collected [[source-braintree-marketplace-guide-testing-go-live-node]] nevertheless tells applicable Marketplace integrations to recreate recurring-billing plans or settings when moving to production. The documents do not resolve the difference; do not infer Marketplace recurring-billing support.
+
 ## Related
 
 - Company: [[braintree]]

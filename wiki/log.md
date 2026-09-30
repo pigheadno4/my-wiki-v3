@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-09-30] ingest | Braintree Marketplace website C23
+
+- Ten article and developer-guide sources were independently reviewed and added to the Braintree capsule; the fixed query audit passed 20/20. The recurring-billing compatibility conflict remains explicitly unresolved. Details: [[braintree-log]], [[braintree-index]] and [[braintree-marketplace]]. Commit and push were approved separately after campaign close.
+
 ## [2026-09-29] ingest | Braintree web SDK GitHub Actions `default-branch@e9c8ae9`
 
 - Approved full baseline with root-log-only focused context: release-automation contracts, README contradictions, shell syntax failure and dry-run/delegated-runtime caveats. Details: [[braintree-log]], [[source-github-web-sdk-github-actions]] and [[changelog-github-web-sdk-github-actions]]. No commit or push.

@@ -1,0 +1,57 @@
+{
+  "job_id": "marketplace-article-processing",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Marketplace Processing\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/braintree-marketplace/processing\"\nraw_files:\n  - \"braintree/articles/guides/braintree-marketplace/processing-2026-09-16.md\"\ntags: [braintree, marketplace, processing, service-fees, escrow, refunds, disputes]\n---\n\n## Overview\n\nThis collected Braintree Marketplace article describes Marketplace-specific transaction handling: allocating service fees between a master merchant and sub-merchant, holding and releasing whole transactions in escrow, and assigning refund and dispute costs. It is not a generic Braintree processing guide, and the collected snapshot does not prove current Marketplace availability or merchant eligibility.\n\n## Key takeaways\n\n- A service fee routes part of a sub-merchant transaction's revenue to the master merchant account, with the remainder disbursed to the sub-merchant. If the Braintree transaction fee exceeds the service fee, Braintree says it first uses settled funds in the master merchant account and then debits the master merchant's bank account for any remainder.\n- The master merchant must request an escrow hold through the API either when creating the transaction or before submitting it for settlement. Escrow holds the transaction until an API release, and the entire transaction, including its service fee, must be held and released together; partial disbursements require separate transactions. Braintree recommends not holding funds in escrow for longer than 30 days.\n- While funds are in escrow, a refund pulls the full transaction amount from escrow and partial refunds are unavailable until release. Outside escrow, full and partial refunds are available, but the article says the refund is deducted from the master merchant bank account rather than the sub-merchant funding source.\n- Chargebacks or retrievals against sub-merchant transactions, including associated fees, are likewise deducted from the master merchant bank account. The article routes recoupment approaches to its final section; those suggestions do not change who Braintree says it debits.\n\n> [!warning] Availability and scope boundary\n> New merchants seeking a marketplace solution are directed to Braintree Sales. This collected article documents Marketplace-specific allocation, escrow, refund, and dispute behavior; it does not establish current support, eligibility, settlement of a particular transaction, or a generic Braintree processing model.\n\n## Detail locators\n\n- New-merchant Marketplace Sales route: opening `AVAILABILITY`, lines 17-18.\n- Service-fee purpose, transaction-creation routes, worked allocation example, and fee-shortfall funding order: `## Service fees`, lines 23-31.\n- Escrow purpose, hold and release timing, whole-transaction rule, partial-disbursement workaround, funding-timeline route, and 30-day recommendation: `## Escrow`, lines 36-46.\n- Escrow-sensitive full and partial refund behavior and master-merchant debit responsibility: `## Refunds`, lines 51-55.\n- Chargeback/retrieval notification and debit responsibility: `## Disputes`, lines 58-60.\n- Suggested recoupment approaches, including integration logic and Vault storage: `## Collecting funds from your sub-merchants`, lines 63-70.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-marketplace]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/braintree-marketplace/create/node-2026-09-16|Braintree Marketplace transaction creation guide - Node.js]] - unread navigation-only route for API creation details; no Node-specific behavior is imported here\n- [[raw/braintree/docs/reference/request/transaction/release-from-escrow/node-2026-09-16|Braintree release-from-escrow reference - Node.js]] - unread navigation-only operation reference; no additional release behavior is imported here\n- [[raw/braintree/articles/risk-and-security/chargebacks-retrievals/overview-2026-09-16|Braintree chargebacks and retrievals overview]] - unread navigation-only risk reference; no broader dispute behavior is imported here\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/braintree-marketplace/processing-2026-09-16|Braintree Marketplace processing article]] - complete collected article covering service fees, escrow, refunds, disputes, and master-merchant recoupment suggestions\n",
+  "quotes": [
+    {
+      "text": "If you're a new merchant looking for a marketplace solution, [contact our Sales team](mailto:sales@braintreepayments.com).",
+      "location": "opening AVAILABILITY, lines 17-18"
+    },
+    {
+      "text": "A service fee allows you to take a portion of your sub-merchant's transaction revenue and route those funds to your master merchant account. The remainder will be disbursed to your sub-merchant. You can specify a service fee when creating a transaction either [via the Control Panel](/braintree/articles/control-panel/transactions/create) or [via the API](/braintree/docs/guides/braintree-marketplace/create).",
+      "location": "## Service fees, line 25"
+    },
+    {
+      "text": "If the Braintree transaction fee is greater than your service fee, we\u2019ll first pull funds from the settled amount on your master merchant account; this amount includes all collected service fees and any income from transactions processed directly through your master merchant account. If these settled funds are not sufficient, we will then debit your bank account for the remaining balance.",
+      "location": "## Service fees > NOTE, lines 30-31"
+    },
+    {
+      "text": "You must indicate that you would like to hold funds in escrow [via the API](/braintree/docs/guides/braintree-marketplace/create#holding-funds-in-escrow) \u2014 either upon transaction creation, or anytime before submitting the transaction for settlement. We will hold the funds in escrow until you make an API call to release them.\n\nWhen using escrow, you are required to hold and release entire transactions, including any service fees. If you need to break up transactions into partial disbursements (e.g. 50% immediately and 50% upon delivery of a product), you must create two separate transactions. When you [release funds from escrow](/braintree/docs/reference/request/transaction/release-from-escrow), disbursement will follow the [standard Braintree Marketplace funding timeline](/braintree/articles/guides/braintree-marketplace/funding#master-merchant-funding).\n\n\n**NOTE**\n We recommend that you don\u2019t hold funds in escrow for longer than 30 days. [Contact us](/braintree/help) for more information.",
+      "location": "## Escrow, lines 40-46"
+    },
+    {
+      "text": "Refunds work a little differently depending on whether or not the funds are being held in escrow. If they are in escrow, the full amount of the transaction will be **pulled from escrow** and returned to the customer. Partial refunds are not supported until the funds are released from escrow.\n\nIf the funds are not in escrow, you can issue both full and partial refunds. Either way, the amount will be **deducted from your master merchant bank account**, not your sub-merchant\u2019s funding source. For some suggestions on recouping these funds, [learn more about collecting funds from your sub-merchants](#collecting-funds-from-your-sub-merchants).\n\n\n## Disputes\n\nWe will contact you if a [chargeback or retrieval](/braintree/articles/risk-and-security/chargebacks-retrievals/overview) is issued against one of your sub-merchant\u2019s transactions. Funds for the chargeback, along with any associated fees, will be deducted from your master merchant bank account.",
+      "location": "## Refunds and ## Disputes, lines 51-60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplace-article-processing-reciprocal-route",
+        "target_path": "wiki/concepts/braintree-marketplace.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "before `## Sandbox and production testing`, add a new `## Marketplace transaction processing` section",
+        "proposed_markdown": "## Marketplace transaction processing\n\n- [[source-braintree-marketplace-article-processing]] - article-level route for service-fee allocation, whole-transaction escrow and 30-day guidance, escrow-sensitive refund limits, and master-merchant refund and chargeback responsibility; distinct from generic transaction processing and not evidence of current Marketplace availability or eligibility.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a minimal reciprocal route on the existing braintree-marketplace concept; do not create a competing generic processing or escrow concept.",
+          "Do not infer current Marketplace support, merchant eligibility, settlement of a particular transaction, or generic Braintree processing behavior from this collected article.",
+          "Preserve the whole-transaction escrow condition, 30-day recommendation, escrow-sensitive refund limit, and master-merchant refund and chargeback debit responsibility.",
+          "Keep article-level processing authority distinct from unread Node transaction-creation and release-from-escrow references."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/braintree-marketplace/processing-2026-09-16.md",
+  "raw_sha256": "0328c7abb5ae27a531cc6e5bb120c5247684852e7f371ded2457061cce2c557c",
+  "status": "candidate_ready"
+}

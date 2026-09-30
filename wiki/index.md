@@ -8,7 +8,7 @@
 - [[paypal-index]] — PayPal sources, company page, and `paypal-*` concepts
 - [[metronome-index]] — Metronome sources, company page, and `metronome-*` concepts
 - [[adyen-index]] — Adyen sources, company page, and versioned GitHub implementation knowledge
-- [[braintree-index]] — Braintree website documentation, transaction sale, webhooks, Control Panel, SDK integration boundaries, and separate versioned GitHub implementation history
+- [[braintree-index]] — Braintree website documentation, Marketplace sub-merchant routes, transaction sale, webhooks, Control Panel, SDK integration boundaries, and separate versioned GitHub implementation history
 
 ## Overview
 

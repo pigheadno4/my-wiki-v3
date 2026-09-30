@@ -1,0 +1,56 @@
+{
+  "job_id": "marketplace-guide-update-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Marketplace: Updating Sub-merchants (Node.js)\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-marketplace/update/node\"\nraw_files:\n  - \"braintree/docs/guides/braintree-marketplace/update/node-2026-09-16.md\"\ntags: [braintree, marketplace, node-js, sub-merchants, merchant-accounts, updates]\n---\n\n## Overview\n\nThis collected Braintree Marketplace guide documents the Node.js route for updating an existing sub-merchant through `gateway.merchantAccount.update()`. The call identifies the sub-merchant account and supplies only the attributes to change; omitted attributes remain unchanged.\n\n## Key takeaways\n\n- The update requires the merchant account ID together with the changed attributes. If the merchant account cannot be found, the guide routes the failure to Braintree's Node.js `notFoundError`.\n- The guide groups updateable sub-merchant details under `individual`, `business`, and `funding`. Every sub-merchant must retain individual details; business details apply to a registered business and are optional in addition to those individual details. The funding section controls where Braintree disburses settled funds.\n- Successful individual and funding examples return only the last four digits of the SSN and bank account number, respectively, because those fields contain sensitive data.\n\n> [!warning] Availability and lifecycle boundary\n> The page directs new merchants seeking a marketplace solution to Braintree Sales. This collected guide does not establish current Marketplace availability, eligibility, approval, activation, validation outcomes, or when an update affects later processing or disbursement. A successful update response is not evidence that settled funds were disbursed.\n\n## Detail locators\n\n- New-merchant Marketplace availability route: `# Updating Sub-merchants > AVAILABILITY`, lines 17-18.\n- Required merchant-account identifier, changed-attribute input and unchanged omitted attributes: `# Updating Sub-merchants`, lines 20-21.\n- Node.js update invocation and callback success check: `# Updating Sub-merchants > ### Node`, lines 22-31.\n- Missing-account error route and the three update categories: `# Updating Sub-merchants`, lines 33-38.\n- Required individual details and the individual-update example: `## Individual details`, lines 41-67.\n- SSN output masking after success: `## Individual details`, lines 68-69.\n- Registered-business qualification, optional business details and required-individual relationship: `## Business details`, lines 70-93.\n- Funding purpose and update example: `## Funding details`, lines 94-113.\n- Bank-account-number output masking after success: `## Funding details`, lines 114-115.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-marketplace]]\n- General Node.js merchant-account update reference: [[source-braintree-merchant-account-update-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-marketplace/update/node-2026-09-16|Braintree Marketplace Node.js sub-merchant update guide]] - complete collected page covering update identity, unchanged omitted attributes, update categories, availability, missing-account and sensitive-output boundaries\n",
+  "quotes": [
+    {
+      "text": "If you're a new merchant looking for a marketplace solution, [contact our Sales team](mailto:sales@braintreepayments.com) .",
+      "location": "# Updating Sub-merchants > AVAILABILITY, lines 17-18"
+    },
+    {
+      "text": "To update a sub-merchant, you must specify themerchant_account_idalong with the\nattributes to be changed. Any attributes not passed in the update call will remain unchanged.",
+      "location": "# Updating Sub-merchants, lines 20-21"
+    },
+    {
+      "text": "If the merchant account can't be found, it will return a\n[`notFoundError`](/braintree/docs/reference/general/exceptions/node#not-found-error). You can update\nthe sub-merchant details that fall under these 3 attributes:\n- individual\n- business\n- funding",
+      "location": "# Updating Sub-merchants, lines 33-38"
+    },
+    {
+      "text": "Note that thebusinessdetails are optional and arein additionto theindividualdetails that are always required. See[Onboarding Sub-merchants](/braintree/docs/guides/braintree-marketplace/onboarding/node#business-parameters)for more information.",
+      "location": "## Business details, line 93"
+    },
+    {
+      "text": "Only the last 4 digits of the account number will be returned after a successful update since the\nfield contains sensitive data.",
+      "location": "## Funding details, lines 114-115"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplace-guide-update-node-marketplace-account-maintenance",
+        "target_path": "wiki/concepts/braintree-marketplace.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Sub-merchant account maintenance",
+        "proposed_markdown": "## Sub-merchant account maintenance\n\nThe collected Node.js update guide uses `gateway.merchantAccount.update()` to identify an existing sub-merchant account and submit only the `individual`, `business`, or `funding` attributes being changed; omitted attributes remain unchanged, and a missing account routes to `notFoundError`. Individual details remain required for every sub-merchant, while business details are optional additional information for registered businesses. The funding section controls where Braintree disburses settled funds, but update success does not prove that funds were disbursed. The guide masks sensitive output by returning only the last four digits of SSNs and bank account numbers after successful updates. New merchants seeking a marketplace solution are directed to Sales, so this snapshot does not prove current availability or eligibility. [[source-braintree-marketplace-guide-update-node]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is a genuine platform-concept gap: multiple existing Braintree Marketplace sources are currently split across braintree-server-sdk and braintree-webhooks, while no braintree-marketplace concept exists; the coordinator should merge this section with other approved C23 Marketplace suggestions when creating the concept.",
+          "Keep this Node.js Marketplace sub-merchant guide distinct from the general merchant-account update reference and from onboarding, approval, activation, processing, escrow, or funding-completion authority.",
+          "Preserve the Sales availability route and do not infer current Marketplace support, merchant eligibility, validation success, propagation timing, or disbursement from the collected update example."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-marketplace/update/node-2026-09-16.md",
+  "raw_sha256": "fbe228192377a47814f11dbfe44b7082420432103c18c152beb68412b7d62e91",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "marketplace-guide-confirmation-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Marketplace: Confirming Sub-merchant Onboarding (Node.js)\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-marketplace/confirmation/node\"\nraw_files:\n  - \"braintree/docs/guides/braintree-marketplace/confirmation/node-2026-09-16.md\"\ntags: [braintree, marketplace, node-js, sub-merchants, onboarding, webhooks]\n---\n\n## Overview\n\nThis collected Braintree Marketplace Node.js guide documents the confirmation step for a sub-merchant account after the sub-merchant's information has been verified with third-party services. It distinguishes approved and declined webhook paths and routes readers to webhook setup, parsing, and validation-error details; it does not document account creation or a complete onboarding workflow.\n\n## Key takeaways\n\n- New merchants seeking a marketplace solution are directed to Braintree Sales. This collected snapshot does not establish current Marketplace availability or merchant eligibility.\n- The confirmation webhook is triggered after the sub-merchant's information has been verified with several third-party services. The merchant must have a webhook endpoint configured, and the Node examples parse the `bt_signature` and `bt_payload` parameters received in the webhook POST request.\n- For approval, the Node example checks `SubMerchantAccountApproved` and shows the returned merchant account with `active` status, its ID, and its master merchant account. The guide says transactions can begin on the sub-merchant account once successful onboarding has been confirmed.\n- For decline, the Node example checks `SubMerchantAccountDeclined` and exposes a message and errors. The guide says the webhook contains validation errors explaining the decline, gives several possible reason categories, and directs the merchant to gather more information and contact Customer Success with the sub-merchant's first and last name.\n\n> [!warning] Confirmation is not account creation or complete onboarding proof\n> This page covers the post-verification approval-or-decline webhook step. It does not create the merchant account, define the full verification process or decision timing, or establish that a collected notification alone proves every onboarding, funding, processing, or current-availability requirement has been satisfied.\n\n## Detail locators\n\n- New-merchant Marketplace availability route: `# Confirming Sub-merchant Onboarding > AVAILABILITY`, lines 17-18.\n- Confirmation purpose, post-verification trigger and webhook-configuration prerequisite: `# Confirming Sub-merchant Onboarding`, lines 20-24.\n- Webhook POST parameters and parsing route: `# Confirming Sub-merchant Onboarding > NOTE`, lines 25-26.\n- Approved notification kind, returned account state and IDs, and transaction boundary: `## Sub-merchant approved > ### Node`, lines 31-43.\n- Declined notification kind, message, errors and reason categories: `## Sub-merchant declined > ### Node`, lines 46-60.\n- Validation-error route and follow-up instruction: `## Sub-merchant declined`, lines 62-64.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-marketplace]]\n- Webhook integration context: [[braintree-webhooks]]\n- Separate event-kind and payload reference: [[source-braintree-webhooks-sub-merchant-account-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/webhooks/overview-2026-09-16|Braintree webhook overview]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/webhooks/parse/node-2026-09-16|Braintree Node.js webhook parsing guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/validation-errors/all/node-2026-09-16|Braintree Node.js validation-error reference]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-marketplace/confirmation/node-2026-09-16|Braintree Marketplace sub-merchant onboarding confirmation guide for Node.js]] - complete collected page covering the post-verification approval and decline webhook paths, returned state examples, validation-error routing, and follow-up boundary\n",
+  "quotes": [
+    {
+      "text": "**AVAILABILITY**\nIf you're a new merchant looking for a marketplace solution, [contact our Sales team](mailto:sales@braintreepayments.com) .",
+      "location": "# Confirming Sub-merchant Onboarding > AVAILABILITY, lines 17-18"
+    },
+    {
+      "text": "As part of the sub-merchant onboarding process for Braintree Marketplace, you can confirm the\ncreation of a merchant account as either approved or declined via a webhook. The webhook is\ntriggered after the sub-merchant's information has been verified with several third-party services.\nWebhooks allow Braintree to push messages to your servers when you configure a webhook endpoint URL.\nIf you are not using webhooks already, you will need to[follow the webhooks guide](/braintree/docs/guides/webhooks/overview)to get started.",
+      "location": "# Confirming Sub-merchant Onboarding, lines 20-24"
+    },
+    {
+      "text": "Once you have webhooks configured, you can listen for aSubMerchantAccountApprovedwebhook that looks like this:\n### Node\n```javascript\ngateway.webhookNotification.parse(btSignature, btPayload, function (err, webhookNotification) {\n    webhookNotification.kind === braintree.WebhookNotification.Kind.SubMerchantAccountApproved; // true\n    webhookNotification.merchantAccount.status; // \"active\"\n    webhookNotification.merchantAccount.id; // \"blueLaddersStore\"\n    webhookNotification.merchantAccount.masterMerchantAccount.id; // \"14laddersMarketplace\"\n    notification.merchantAccount.masterMerchantAccount.status; // \"active\"\n});\n```\nOnce you've confirmed that the new sub-merchant has been successfully onboarded, you can start to\nrun transactions on their account.",
+      "location": "## Sub-merchant approved > ### Node, lines 31-43"
+    },
+    {
+      "text": "You can also listen for aSubMerchantAccountDeclinedwebhook that looks like this:\n### Node\n```javascript\ngateway.webhookNotification.parse(btSignature, btPayload, function (err, webhookNotification) {\n    webhookNotification.kind === braintree.WebhookNotification.Kind.SubMerchantAccountDeclined; // true\n    webhookNotification.message; // \"Credit score is too low\"\n    webhookNotification.errors; // { ... }\n});\n```\nIf it isDeclined, the webhook will contain[validation errors](/braintree/docs/reference/general/validation-errors/overview)indicating why the sub-merchant was declined. There are several reasons this can occur:\n- Failed OFAC\n- Failed Mastercard MATCH\n- Failed KYC\n- SSN invalid\n- SSN matches deceased person",
+      "location": "## Sub-merchant declined > ### Node, lines 46-60"
+    },
+    {
+      "text": "See[merchant account validations](/braintree/docs/reference/general/validation-errors/all#braintree-marketplace)for specific errors. In this case, we'll need to gather more information about the sub-merchant in\norder to approve them. Please contact our[Customer Success team](/braintree/help)with\nthe sub-merchant's first and last name and we'll be happy to assist.",
+      "location": "## Sub-merchant declined, lines 62-64"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplace-guide-confirmation-node-braintree-marketplace-route",
+        "target_path": "wiki/concepts/braintree-marketplace.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Model and onboarding",
+        "proposed_markdown": "- [[source-braintree-marketplace-guide-confirmation-node]] - Node.js route for the post-verification approval-or-decline webhook confirmation step, returned account-state examples, validation-error navigation, and follow-up boundary; not account-creation, complete-onboarding, or current-availability proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this guide distinct from the separate webhook event-kind and payload reference, and do not recast the notification as the operation that creates or decides the merchant account.",
+          "Preserve the after-third-party-verification trigger and approved-versus-declined state boundary; do not infer complete onboarding, funding readiness, transaction acceptance, decision timing, current Marketplace support, or merchant eligibility from this collected snapshot.",
+          "The collected approval snippet parses into `webhookNotification` but its final master-merchant status access uses `notification`; do not silently normalize or rely on that final variable access without separate authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-marketplace/confirmation/node-2026-09-16.md",
+  "raw_sha256": "6c57394a87f446dfd7532c33c6d597752c8ac3488a86475fa0b21561b5009e06",
+  "status": "candidate_ready"
+}

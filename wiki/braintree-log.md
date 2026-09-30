@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-30] ingest | Braintree website C23
+
+- Ten pinned Marketplace article and developer-guide pages were fully read, independently reviewed and promoted as separate retrieval sources. The Braintree capsule now routes to 202 sources: 185 website plus 17 GitHub, excluding changelogs. See [[braintree-marketplace]] and [[braintree-index]].
+- Five initial reviews approved; five requested bounded corrections and passed targeted review on unchanged raw hashes. The corrections preserved registered-business requiredness, funding follow-up and webhook warnings, and the unresolved recurring-billing conflict across the Marketplace and recurring-billing pages.
+- The fixed five-group query audit passed 20/20 navigation and detail questions. Local closure evidence is under `tracking/ingest/braintree/braintree-campaign-23/`; no raw collection, GitHub ingest, or code/rule changes were authorized. Commit and push were approved separately after campaign close.
+
 ## [2026-09-30] ingest | Braintree website C22
 
 - Ten collected PayPal article/JavaScript-v3 guide pages were fully read, independently reviewed and promoted. The Braintree capsule now routes to 192 sources: 175 website plus 17 GitHub, excluding changelogs.

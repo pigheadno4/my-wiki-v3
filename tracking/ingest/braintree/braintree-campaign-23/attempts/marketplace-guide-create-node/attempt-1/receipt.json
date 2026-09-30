@@ -1,0 +1,56 @@
+{
+  "job_id": "marketplace-guide-create-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Marketplace: Creating Transactions with Service Fees (Node.js)\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-marketplace/create/node\"\nraw_files:\n  - \"braintree/docs/guides/braintree-marketplace/create/node-2026-09-16.md\"\ntags: [braintree, marketplace, node-js, transactions, service-fees, sub-merchants, escrow]\n---\n\n## Overview\n\nThis collected Braintree Marketplace guide documents the Node.js route for a master merchant to create a transaction attributed to a successfully onboarded sub-merchant and collect a service fee through `gateway.transaction.sale()`. It preserves the account-attribution, device-data, fee, escrow, refund, verification and charge-responsibility conditions needed to use the route safely; the snapshot does not establish current Marketplace availability or merchant eligibility.\n\n## Key takeaways\n\n- The guide places transaction creation after successful sub-merchant onboarding. For each transaction, it calls correct `merchantAccountId` selection critical because that value determines the sub-merchant to which the transaction is attributed; it also instructs the merchant to collect client device data and include it in the transaction.\n- The Node.js example submits `merchantAccountId`, amount, payment-method nonce, device data and `serviceFeeAmount` through `gateway.transaction.sale()`. The page says the service fee is required, cannot be empty, and may range from zero through the total transaction amount.\n- The service fee is deducted from the final amount disbursed to the sub-merchant and sent to the master merchant. This is a fee-allocation statement, not evidence that the transaction succeeded, settled or was disbursed.\n- Although the guide says Braintree does not escrow funds, it describes an optional Marketplace hold on a sub-merchant's transaction funds until a separate release call, available at or after transaction creation. A full refund while funds are held pulls the full amount from the hold and returns it to the customer; partial refunds are unsupported until release.\n- Credit-card verification must use the master merchant account or a merchant-of-record account; using a sub-merchant account as `verification_merchant_account_id` produces a validation error. The guide also assigns transaction processing fees, chargebacks, chargeback fees and, unless funds are being held, refunds to the master merchant account.\n\n## Evidence boundaries\n\n> [!warning] Availability and onboarding boundary\n> New merchants seeking a marketplace solution are directed to Braintree Sales. Collection of this guide does not prove current Marketplace availability, eligibility or enablement, and the transaction route applies only after the sub-merchant has been successfully onboarded.\n\n> [!warning] Attribution and device-data prerequisites\n> Preserve the page's sub-merchant account attribution and client device-data instructions. Do not generalize the example into a transaction for the master account or treat the displayed callback as proof of authorization, settlement or disbursement.\n\n> [!warning] Held-funds and refund limitation\n> The guide's own terminology says Braintree does not escrow funds while describing a Marketplace hold until a separate release call. Do not omit the full-refund effect or imply that partial refunds are supported before release.\n\n## Detail locators\n\n- New-merchant Sales route and successful-onboarding prerequisite: opening `**AVAILABILITY**` and introductory feature list, lines 17-24.\n- Correct sub-merchant account attribution and client device-data instructions: `## Creating transactions without escrow`, lines 27-30.\n- Node.js `gateway.transaction.sale()` example and displayed request categories: `## Creating transactions without escrow > ### Node`, lines 31-42.\n- Required, nonempty service-fee range, disbursement allocation and dynamic-descriptor route: `## Creating transactions without escrow`, lines 43-45.\n- Optional hold, separate release call, hold timing and processing-article route: `## Holding funds in escrow`, lines 46-51.\n- Full-refund effect and no partial refunds before release: `## Holding funds in escrow > ### Refunds`, lines 52-56.\n- Master-or-merchant-of-record verification account requirement and sub-merchant validation error: `## Verifications`, lines 57-60.\n- Charges and fees deducted from the master merchant account: `## Other charges and fees`, lines 61-69.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-marketplace]]\n- Node gateway context: [[braintree-server-sdk]]\n- Separate hold operation: [[source-braintree-transaction-hold-in-escrow-node]]\n- Separate release operation: [[source-braintree-transaction-release-from-escrow-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Braintree Transaction Sale reference - Node.js]] - unread navigation-only route for the dedicated sale request and Marketplace options; no additional behavior is imported here\n- [[raw/braintree/docs/reference/request/transaction/hold-in-escrow/node-2026-09-16|Braintree Hold in Escrow reference - Node.js]] - unread navigation-only route for the separate post-creation hold call; no additional behavior is imported here\n- [[raw/braintree/docs/reference/request/transaction/release-from-escrow/node-2026-09-16|Braintree Release from Escrow reference - Node.js]] - unread navigation-only route for the separate release call; no additional behavior is imported here\n- [[raw/braintree/articles/guides/braintree-marketplace/processing-2026-09-16|Braintree Marketplace processing article]] - unread navigation-only article route; no processing or funding behavior is imported here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-marketplace/create/node-2026-09-16|Braintree Marketplace create guide - Node.js]] - complete collected guide covering sub-merchant transaction attribution, service-fee allocation, device-data instructions, held-funds and refund constraints, verification-account scope, and master-merchant charges\n",
+  "quotes": [
+    {
+      "text": "If you're a new merchant looking for a marketplace solution, [contact our Sales team](mailto:sales@braintreepayments.com) .",
+      "location": "# Creating Transactions with Service Fees > AVAILABILITY, lines 17-18"
+    },
+    {
+      "text": "As the master merchant, once you have successfully onboarded a sub-merchant, you can begin to\nleverage several transaction features:\n- Creating transactions with service fees\n- [Holding funds in escrow](#holding-funds-in-escrow)\n- [Releasing escrowed funds](/braintree/docs/reference/request/transaction/release-from-escrow)",
+      "location": "# Creating Transactions with Service Fees, lines 20-24"
+    },
+    {
+      "text": "Because many sub-merchants will be nested under your master merchant account,it's**critical**that you specify the correct 'merchant_account_id' for each transaction, as this defines to which sub-merchant the transaction is attributed.[Collect device data](/braintree/docs/guides/premium-fraud-management-tools/client-side)from the client and include thedevice_data_from_the_clientin the transaction. Here's\nan example of creating a sub-merchant transaction with a service fee:",
+      "location": "## Creating transactions without escrow, lines 29-30"
+    },
+    {
+      "text": "service_fee_amountis a required field and can be any value from zero up to the total\ntransaction amount. It can't be empty. This fee will be subtracted from the final amount disbursed\nto the sub-merchant and sent to the master merchant instead.",
+      "location": "## Creating transactions without escrow, lines 43-45"
+    },
+    {
+      "text": "If a transaction is refunded in full while its funds are being held in escrow, then the full amount\nof the transaction will be pulled from escrow and returned to the customer. Partial refunds are not\nsupported until the funds are released from escrow.",
+      "location": "## Holding funds in escrow > ### Refunds, lines 54-56"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplace-guide-create-node-transaction-route",
+        "target_path": "wiki/concepts/braintree-marketplace.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "add a new `## Transaction creation with service fees` section near the other Marketplace transaction-flow routes",
+        "proposed_markdown": "## Transaction creation with service fees\n\n- [[source-braintree-marketplace-guide-create-node]] - Node.js route for creating a transaction attributed to a successfully onboarded sub-merchant, allocating a required service fee to the master merchant, and locating the guide's device-data, held-funds, refund, verification-account and master-account charge constraints; the collected snapshot does not prove current Marketplace availability or merchant eligibility.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this create-action route distinct from the broader Marketplace onboarding, confirmation, processing and funding authorities.",
+          "Do not infer current Marketplace support or eligibility from collection, and retain the successful-onboarding prerequisite.",
+          "Preserve correct sub-merchant account attribution, device-data instructions, service-fee allocation, held-funds refund limitation and verification-account scope in the source route rather than copying their field-level detail into the concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-marketplace/create/node-2026-09-16.md",
+  "raw_sha256": "f2e4ee7ecbb43f75a73ada40509ad32745dfbce2edec7f806b46c1f0496d81cf",
+  "status": "candidate_ready"
+}
