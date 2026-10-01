@@ -1,0 +1,28 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-braintree-recurring-billing-concept",
+      "target_path": "wiki/concepts/braintree-recurring-billing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Create new concept page",
+      "proposed_markdown": "---\ntitle: \"Braintree Recurring Billing\"\ntype: concept\ncategory: technology\ntags: [braintree, recurring-billing, subscriptions, retries, proration]\n---\n\n## Overview\n\nBraintree recurring billing has provider-specific Control Panel settings for failed-transaction retries and for proration when a subscription price changes mid-cycle. This concept is a retrieval route to those settings and their consequential balance, charge and credit effects; routine setup steps, the complete decline-code table and worked calculations remain in the source's exact raw locators. [[source-braintree-recurring-article-advanced-settings]]\n\n## Automatic retries\n\nThe advanced-settings article distinguishes three built-in retries before `Past Due` for a transaction with status `FAILED` from immediate `Past Due` handling for transactions rendered as `PROCESSOR*DECLINED` or `GATEWAY_REJECTED` in the collected page. After `Past Due`, the configured final-failure choice can cancel the subscription, continue retries, or leave it past due. Leaving it past due accrues the balance without further attempts; continued retries occur once per later billing cycle on the ordinary billing date. A failed manual retry does not consume an automatic attempt, while a successful manual retry reduces the subscription balance to zero regardless of its amount. Not every processor decline is retried. [[source-braintree-recurring-article-advanced-settings]]\n\n## Proration\n\nWhen enabled, proration applies a day-based immediate charge or credit to a mid-cycle subscription price change; otherwise the change begins next cycle. Applying add-ons or discounts mid-cycle can affect both the current partial cycle and the configured subsequent cycles. A failed upgrade-proration charge can either leave the subscription unchanged or retain the update and add the failed amount to its balance, depending on the Control Panel setting. Downgrade proration credits the subscription balance rather than refunding the payment method. [[source-braintree-recurring-article-advanced-settings]]\n\n> [!warning] Scope\n> These retry settings do not guarantee that every decline is retried or that collection succeeds. This article does not establish Braintree Marketplace compatibility or current merchant enablement; use the applicable provider and availability routes before relying on it for a specific account.\n\n## Sources\n\n- [[source-braintree-recurring-article-advanced-settings]] - Control Panel retry and proration settings, conditions, balance effects and consequential warnings\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep this provider-specific route distinct from the generic recurring-payments concept and from Node.js request or response references.",
+        "Preserve transaction-status and billing-cycle conditions; do not generalize the retry sequence to every failure or decline.",
+        "Do not treat retry configuration as an eventual-collection guarantee.",
+        "Keep downgrade subscription-balance credit distinct from a payment-method refund, and preserve the separate-transaction requirement for a refund.",
+        "Do not infer Braintree Marketplace compatibility or current merchant enablement from this article."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

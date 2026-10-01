@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 202
+source_count: 212
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Braintree is represented in this wiki by seventeen independently tracked reposit
 
 ## Website Documentation
 
-One hundred eighty-five independently reviewed website sources complement the seventeen repository
+One hundred ninety-five independently reviewed website sources complement the seventeen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
 
@@ -29,6 +29,20 @@ implementation evidence:
 - [[source-braintree-marketplace-guide-testing-go-live-node]] - sandbox simulations, production transition and real-payment cautions
 
 The collected Marketplace overviews and recurring-billing overview state incompatibility, while the testing/go-live guide discusses recreating recurring-billing settings. The sources retain this unresolved conflict; none proves current Marketplace support or recurring-billing compatibility. See [[braintree-marketplace]].
+
+### Recurring billing articles and response reference
+
+- [[braintree-recurring-billing]] - provider-specific retrieval hub separating articles, Node guides and API references
+- [[source-braintree-recurring-article-overview]] - article-level monthly billing model and prerequisites
+- [[source-braintree-recurring-article-plans]] - Control Panel plan lifecycle and notice boundaries
+- [[source-braintree-recurring-article-billing-cycles]] - monthly cycle anchoring and date/duration routes
+- [[source-braintree-recurring-article-trial-periods]] - trial charge timing and customer-notice risk
+- [[source-braintree-recurring-article-subscriptions]] - Control Panel subscription administration and consequential limits
+- [[source-braintree-recurring-article-advanced-settings]] - retry, Past Due balance and proration conditions
+- [[source-braintree-recurring-article-email-notifications]] - customer email triggers and activation scope
+- [[source-braintree-recurring-article-add-ons-discounts]] - add-on and discount association and override routes
+- [[source-braintree-recurring-article-mastercard-requirements]] - Mastercard-specific recurring-billing conditions
+- [[source-braintree-subscription-response-node]] - Node response-history object values and evidence limits
 
 ### Other website documentation
 

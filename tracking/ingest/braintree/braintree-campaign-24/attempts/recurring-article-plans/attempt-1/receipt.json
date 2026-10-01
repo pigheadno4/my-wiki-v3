@@ -1,0 +1,57 @@
+{
+  "job_id": "recurring-article-plans",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Recurring Billing Plans (Article)\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/recurring-billing/plans\"\nraw_files:\n  - \"braintree/articles/guides/recurring-billing/plans-2026-09-16.md\"\ntags: [braintree, recurring-billing, plans, subscriptions, control-panel]\n---\n\n## Overview\n\nThis collected Braintree article is the article-level route for creating, updating, and deleting recurring-billing plans in the Control Panel. It defines a plan as a subscription template that populates information such as amount, currency, and billing cycle when a new subscription is created; it is distinct from the existing Node.js plan guide and dedicated Plan API references.\n\n## Key takeaways\n\n- A plan must be created before subscriptions. The article's Control Panel setup route includes billing date, number of billing cycles, add-ons or discounts, and trial periods; it explicitly directs merchants adding a trial period to read the linked risks and requirements first.\n- The billing cycle cannot be modified on an existing plan, although the article says other plan elements can be changed through its Control Panel update flow.\n- Changes to a plan apply only to new subscriptions. Existing subscriptions are not updated automatically.\n- For merchants operating in the European Union, the article requires four weeks' customer notice before changing a recurring plan's price and also before billing when at least six months have elapsed since the customer's last payment. It says those notices are not required outside the EU, while calling them good practice.\n- A plan can be deleted only in the Control Panel, and deletion is unavailable when any former or current subscription is associated with the plan.\n\n## Evidence boundaries\n\n> [!warning] Article and implementation scopes are separate\n> This article documents the Control Panel-oriented plan lifecycle and its stated constraints. Use the separate Node.js guide and dedicated Plan API references for SDK operations, request fields, response objects, and API-specific behavior; this article does not replace them.\n\n> [!warning] Marketplace compatibility remains unresolved elsewhere\n> This plans article does not state whether Braintree recurring billing is compatible with Braintree Marketplace, so it cannot resolve the conflict already routed through [[source-braintree-recurring-billing-overview]] and [[source-braintree-marketplace-guide-testing-go-live-node]]. Do not infer Marketplace compatibility from the existence of the plan workflow.\n\n## Detail locators\n\n- Plan prerequisite, template role, and populated information categories: `# Plans`, line 16.\n- Control Panel creation steps and setup categories: `## Creating a plan`, lines 21-38.\n- Trial-period risks-and-requirements warning: `## Creating a plan > **IMPORTANT**`, lines 41-42.\n- Existing-plan billing-cycle restriction and Control Panel update route: `## Updating a plan`, lines 47-57.\n- New-subscription-only effect and no automatic update to existing subscriptions: `## Updating a plan`, line 59.\n- EU price-change and six-month-dormancy notice conditions: `## Updating a plan > **IMPORTANT**`, lines 62-63.\n- Control-Panel-only deletion and former-or-current-subscription restriction: `## Deleting a plan`, lines 68-77.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-recurring-billing]]\n- Generic concept: [[recurring-payments]]\n- Node.js recurring-billing plan guide: [[source-braintree-recurring-billing-plans-node]]\n- Node.js plan creation reference: [[source-braintree-plan-create-node]]\n- Node.js plan update reference: [[source-braintree-plan-update-node]]\n- Node.js plan collection reference: [[source-braintree-plan-all-node]]\n- Node.js single-plan lookup reference: [[source-braintree-plan-find-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/recurring-billing/plans/node-2026-09-16|Braintree Node.js recurring-billing plans guide]] - unread navigation-only implementation guide; no SDK behavior is imported here\n- [[raw/braintree/docs/reference/request/plan/create/node-2026-09-16|Braintree Node.js Plan Create reference]] - unread navigation-only API reference; no request or response behavior is imported here\n- [[raw/braintree/docs/reference/request/plan/update/node-2026-09-16|Braintree Node.js Plan Update reference]] - unread navigation-only API reference; no request or response behavior is imported here\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/recurring-billing/plans-2026-09-16|Braintree recurring-billing plans article]] - complete collected article covering Control Panel plan creation, update and deletion constraints, subscription propagation, trial-risk routing, and EU notice conditions\n",
+  "quotes": [
+    {
+      "text": "Before creating subscriptions, you must create a plan. A plan is a template for your subscriptions: when you create a plan, it will be used to populate information such as amount, currency, and billing cycle when a new subscription is created.",
+      "location": "# Plans, line 16"
+    },
+    {
+      "text": "If you are adding a trial period to a plan, read the trial period [risks and requirements](/braintree/articles/guides/recurring-billing/trial-periods#risks-and-requirements) first.",
+      "location": "## Creating a plan > **IMPORTANT**, line 42"
+    },
+    {
+      "text": "You can update a plan in the Control Panel. The billing cycle can't be modified on an existing plan, but you can change all other elements.\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on**Subscriptions**in the navigation bar\n- Click the**Plans**tab\n- Click the**Edit**link located to the right of the plan you'd like to update\n- Make any desired changes\n- Click the**Save**button\n\nIf you update the details of a plan, those changes will only apply to new subscriptions \u2013 [existing subscriptions will**not**be updated automatically](/braintree/articles/guides/recurring-billing/subscriptions#subscription-price).",
+      "location": "## Updating a plan, lines 47-59"
+    },
+    {
+      "text": "Merchants operating in the European Union must give customers 4 weeks\u2019 notice before changing the price of their recurring billing plan; 4 weeks\u2019 notice is also required before billing customers if it has been 6+ months since their last payment. If you don\u2019t operate in the EU, these notices aren't required (but they're still good practice).",
+      "location": "## Updating a plan > **IMPORTANT**, line 63"
+    },
+    {
+      "text": "You can only delete a plan in the Control Panel. A plan can't be deleted if it has any former or current subscriptions associated with it.",
+      "location": "## Deleting a plan, line 70"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-braintree-recurring-billing-concept-from-plans-article",
+        "target_path": "wiki/concepts/braintree-recurring-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree Recurring Billing\"\ntype: concept\ncategory: technology\ntags: [braintree, recurring-billing, subscriptions, plans]\n---\n\n## Overview\n\nRetrieval route for Braintree-specific recurring-billing documentation. Keep article-level product guidance, SDK implementation guides, and API request or response references as distinct evidence owners; collected pages do not by themselves prove current merchant enablement or resolve the recorded Braintree Marketplace compatibility conflict.\n\n## Plans\n\n- [[source-braintree-recurring-article-plans]] - article-level Control Panel route for creating, updating, and deleting plan templates, including trial-risk navigation, the immutable existing-plan billing cycle, new-subscription-only propagation, EU notice conditions, and the former-or-current-subscription deletion restriction; distinct from Node.js guides and Plan API references\n\n## Related routes\n\n- [[recurring-payments]] - generic recurring-payments mechanics and cross-platform context\n- [[source-braintree-recurring-billing-plans-node]] - separate Node.js recurring-billing plans guide\n- [[source-braintree-plan-create-node]] - separate Node.js Plan Create request reference\n- [[source-braintree-plan-update-node]] - separate Node.js Plan Update request reference\n\n## Sources\n\n- [[source-braintree-recurring-article-plans]] - Braintree article-level plan setup and lifecycle constraints\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this provider concept separate from the generic recurring-payments concept and use it as the main Braintree recurring-billing route.",
+          "Do not merge article-level Control Panel guidance with Node.js guide or API request/response semantics.",
+          "Do not infer Braintree Marketplace compatibility or resolve the existing conflict from this plans article, which does not address Marketplace.",
+          "Preserve the trial-risk route, new-subscription-only propagation, EU notice qualifications, and deletion restriction when consolidating overlapping C24 suggestions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/recurring-billing/plans-2026-09-16.md",
+  "raw_sha256": "a3eafcc71ca5f7a0db2824c1026dcfbc2b4aabbd7a5ac8c6d09363b6ca332062",
+  "status": "candidate_ready"
+}

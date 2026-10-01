@@ -25,6 +25,19 @@ Operations history: [[braintree-log]]
 - [[source-braintree-marketplace-guide-update-node]] - Node account updates and unchanged omitted attributes
 - [[source-braintree-marketplace-guide-testing-go-live-node]] - sandbox simulations, production transition and real-payment cautions
 
+#### Recurring billing articles and response reference
+
+- [[source-braintree-recurring-article-overview]] - article-level monthly billing model and plan, Vault and subscription prerequisites
+- [[source-braintree-recurring-article-plans]] - Control Panel plan lifecycle, propagation, EU notices and deletion boundaries
+- [[source-braintree-recurring-article-billing-cycles]] - monthly cycle anchoring, processing dates and finite-duration routes
+- [[source-braintree-recurring-article-trial-periods]] - first-charge timing, payment-method prerequisite and customer-notice risk
+- [[source-braintree-recurring-article-subscriptions]] - Control Panel subscription administration and consequential update, refund and cancellation limits
+- [[source-braintree-recurring-article-advanced-settings]] - automatic retries, Past Due balance and mid-cycle proration conditions
+- [[source-braintree-recurring-article-email-notifications]] - decline, retry and Past Due customer-email triggers and activation
+- [[source-braintree-recurring-article-add-ons-discounts]] - subscription add-on and discount association, override and deletion routes
+- [[source-braintree-recurring-article-mastercard-requirements]] - Mastercard-specific trial, disclosure, cancellation and notice conditions
+- [[source-braintree-subscription-response-node]] - Node subscription response-history fields, statuses and event-source values
+
 #### Other website documentation
 
 - [[source-braintree-payment-methods-ach]] - US/USD ACH eligibility, verification methods, delayed settlement, returns and unresolved void guidance
@@ -255,6 +268,7 @@ Operations history: [[braintree-log]]
 
 ## Concepts
 
+- [[braintree-recurring-billing]] - Braintree-specific article, Node guide and API-reference routes with unresolved Marketplace compatibility
 - [[braintree-marketplace]] - provider-specific sub-merchant onboarding, transaction, funding and testing routes with unresolved recurring-billing conflict
 - [[braintree-sdk-release-automation]] - engineering release workflow and evidence boundaries, not payment functionality
 - [[braintree-fraud-tools]] - Basic Fraud Tools risk-threshold and AVS/CVV routes, not 3DS or premium product evidence

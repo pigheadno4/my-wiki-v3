@@ -1,0 +1,57 @@
+{
+  "job_id": "recurring-article-email-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Recurring Billing Email Notifications\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/recurring-billing/email-notifications\"\nraw_files:\n  - \"braintree/articles/guides/recurring-billing/email-notifications-2026-09-16.md\"\ntags: [braintree, recurring-billing, email-notifications, subscriptions, past-due]\n---\n\n## Overview\n\nThis Braintree article documents customer email notifications for recurring-billing charge failures and retries. These Control Panel-configured emails are limited to events that leave a subscription in the `Past Due` state; the article is not an API or webhook notification reference, and it routes successful sale or refund receipts to separate documentation.\n\n## Key takeaways\n\n- Braintree lists four configurable recurring-billing email events: **First Decline** after the first unsuccessful recurring-cycle charge attempt, **First Retry** after an automatic retry following that failure, **Second Retry** after the next attempt when the first retry failed, and **Past Due** a configurable number of days after the first decline.\n- Braintree sends these emails only for events that leave the subscription `Past Due`. If retry logic cancels a subscription after the second retry, the article's example says the customer receives only **First Decline** and **First Retry** emails: there is no **Second Retry** email and no automatic cancellation notification.\n- The account's authorized signer must contact Support to request feature activation. After Support confirms activation, the article instructs the merchant to enable \"email receipts\" in the Control Panel and configure the recurring plan and send options under **Subscriptions** > **Email Notifications**.\n- The authorized signer is not the same as the Control Panel's Account Admin role and cannot be managed in the Control Panel.\n- Emails for every successful sale transaction or refund belong to the separate Email Receipts route, not this recurring-billing notification route.\n\n## Detail locators\n\n- Separate successful-sale and refund Email Receipts route: `# Email Notifications > NOTE`, lines 17-18.\n- First Decline, First Retry, Second Retry and Past Due triggers: `# Email Notifications`, lines 22-28.\n- `Past Due`-state condition and cancellation example: `# Email Notifications`, line 30.\n- Support activation prerequisite and Control Panel setup path: `## Configuring email notifications`, lines 33-43.\n- Sender, subject, plain-text body and send-option configuration categories: `### Configuration options`, lines 46-63.\n- Authorized-signer identity and Account Admin distinction: `#### Authorized signer`, lines 66-70.\n\n> [!warning] Customer email scope\n> This article documents customer emails configured through the Control Panel. It does not establish webhook event kinds, payloads, delivery behavior or API request/response semantics. Keep those routes separate, and do not generalize these emails beyond recurring-billing events that leave the subscription `Past Due`.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-recurring-billing]]\n- Recurring-billing status and retry context: [[source-braintree-recurring-billing-overview]]\n- Separate subscription webhook reference: [[source-braintree-webhooks-subscription-node]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/guides/recurring-billing/recurring-advanced-settings-2026-09-16|Braintree recurring-billing advanced settings article]] - navigation only for automatic retries and retry logic; not read as factual evidence for this source\n- [[raw/braintree/articles/control-panel/transactions/email-receipts-2026-09-16|Braintree Email Receipts article]] - navigation only for successful sale and refund receipts; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/recurring-billing/email-notifications-2026-09-16|Braintree recurring-billing email notifications article]] - complete collected page covering customer-email triggers, the `Past Due` condition, cancellation example, activation prerequisite and Control Panel configuration route\n",
+  "quotes": [
+    {
+      "text": "**NOTE**\n If you want to send email receipts to your customers for every successful sale transaction or refund, see [Email Receipts](/braintree/articles/control-panel/transactions/email-receipts) instead.",
+      "location": "# Email Notifications > NOTE, lines 17-18"
+    },
+    {
+      "text": "We can send email notifications to your customers for the following recurring billing events:\n\n\n- **First Decline**: Sent after the first unsuccessful attempt to charge a customer on a recurring billing cycle\n- **First Retry**: Sent after an[automatic attempt](/braintree/articles/guides/recurring-billing/recurring-advanced-settings#automatic-retries)to charge a customer if the initial transaction was unsuccessful\n- **Second Retry**: Sent after the next attempt to charge a customer if the first retry was unsuccessful\n- **Past Due**: Sent x days after the first decline. You can define x when you configure the**Send options**for your notifications.",
+      "location": "# Email Notifications, lines 22-28"
+    },
+    {
+      "text": "We will only send email notifications to your customers for events that leave a subscription in the **Past Due** state. For example, if your account's [retry logic](/braintree/articles/guides/recurring-billing/recurring-advanced-settings#setting-up-retry-logic) is set to cancel subscriptions after the second retry, your customer will only receive a **First Decline** and a **First Retry** email notification - we will not send a **Second Retry** email or any automatic notification when the subscription has been canceled.",
+      "location": "# Email Notifications, line 30"
+    },
+    {
+      "text": "Have the authorized signer on your account contact Support to request activation of this feature. After receiving confirmation from Support, enable email receipts in the Control Panel:\n\n\n- Log into the[Control Panel](https://www.braintreegateway.com/login)\n- Click on**Subscriptions**in the navigation bar\n- Click the**Email Notifications**tab\n- Click the**Create An Email Notification**button\n- Select the recurring billing plan and any[additional options](#configuration-options)\n- Click the**Create**button",
+      "location": "## Configuring email notifications, lines 35-43"
+    },
+    {
+      "text": "The authorized signer for your Braintree account is the only person who can request access or make changes to sensitive account information, such as transaction details, bank account information, or statement descriptors. This individual and their associated authorized email address were determined during the application process.\n\nAuthorized signers are not the same as the Account Admin [user role](/braintree/articles/control-panel/users-roles/managing-users-roles) in the Control Panel, and can't be managed via the Control Panel; to change your authorized signer or add additional signers, [contact us](/braintree/help/updateBusinessDetails).",
+      "location": "#### Authorized signer, lines 66-70"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "recurring-article-email-notifications-braintree-recurring-billing-route",
+        "target_path": "wiki/concepts/braintree-recurring-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Customer email notifications",
+        "proposed_markdown": "- [[source-braintree-recurring-article-email-notifications]] - article-level customer email route for First Decline, automatic First Retry, Second Retry and configurable Past Due timing, limited to events that leave the subscription `Past Due`; includes authorized-signer Support activation and Control Panel configuration, and remains distinct from sale/refund receipts and subscription webhooks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the condition that emails are sent only for events leaving the subscription in `Past Due`; do not present every listed event as unconditionally generating an email.",
+          "Preserve the cancellation example: cancellation after the second retry yields no Second Retry email and no automatic cancellation notification in the article's stated scenario.",
+          "Keep transaction/refund Email Receipts, recurring-billing customer emails and subscription webhooks as separate evidence routes; this article establishes no API or webhook behavior.",
+          "Retain the authorized-signer Support activation prerequisite and do not substitute the Control Panel Account Admin role."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/recurring-billing/email-notifications-2026-09-16.md",
+  "raw_sha256": "9667aaa73cecf8205c1edb5b451876c1366dd21711bdbb1cfe614673bb2cf215",
+  "status": "candidate_ready"
+}

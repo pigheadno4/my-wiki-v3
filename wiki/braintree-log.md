@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | Braintree website C24
+
+- Ten pinned recurring-billing pages (nine articles and one Node subscription response reference) were fully read, independently reviewed, and promoted as separate retrieval sources. The Braintree capsule now routes to 212 sources: 195 website plus 17 GitHub, excluding changelogs. See [[braintree-recurring-billing]] and [[braintree-index]].
+- All ten first reviews approved. The fixed five-group query audit passed 20/20 navigation and detail questions. One coordinator-only duplicate concept route was removed during mechanical close; no source fact was changed.
+- Article guidance, Node implementation guides and request/response references remain distinct. The existing Marketplace/recurring-billing compatibility conflict remains unresolved; collected documentation does not establish current merchant enablement. Closure evidence is under `tracking/ingest/braintree/braintree-campaign-24/`. The campaign spanned an interruption, so wall-clock elapsed time is not an ingestion-throughput benchmark. No raw collection, GitHub ingest, code/rule changes, commit or push were authorized by C24 execution.
+
 ## [2026-09-30] ingest | Braintree website C23
 
 - Ten pinned Marketplace article and developer-guide pages were fully read, independently reviewed and promoted as separate retrieval sources. The Braintree capsule now routes to 202 sources: 185 website plus 17 GitHub, excluding changelogs. See [[braintree-marketplace]] and [[braintree-index]].

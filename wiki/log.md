@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-02] ingest | Braintree recurring-billing website C24
+
+- Ten article/response sources were independently reviewed and added to the Braintree capsule; fixed query audit passed 20/20. Article, Node guide and API-reference authority remain separate, and the Marketplace compatibility conflict remains unresolved. Details: [[braintree-log]], [[braintree-index]] and [[braintree-recurring-billing]]. No commit or push was authorized by C24 execution.
+
 ## [2026-09-30] ingest | Braintree Marketplace website C23
 
 - Ten article and developer-guide sources were independently reviewed and added to the Braintree capsule; the fixed query audit passed 20/20. The recurring-billing compatibility conflict remains explicitly unresolved. Details: [[braintree-log]], [[braintree-index]] and [[braintree-marketplace]]. Commit and push were approved separately after campaign close.

@@ -1,0 +1,55 @@
+{
+  "job_id": "recurring-response-subscription-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Subscription Response History (Node.js)\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/response/subscription/node\"\nraw_files:\n  - \"braintree/docs/reference/response/subscription/node-2026-09-16.md\"\ntags: [braintree, node-js, subscriptions, recurring-billing, response-objects]\n---\n\n## Overview\n\nThis Braintree Node.js response reference documents the history objects returned on a subscription. It is a narrow response-object route for locating recorded balance, price, status and event-source detail; it is distinct from recurring-billing articles, Node.js subscription guides and request references, and it does not define the broader subscription lifecycle.\n\n## Key takeaways\n\n- Each subscription history object returned on a subscription includes balance, price, status and subscription-event source information. The exact field inventory remains at the raw locator below.\n- The history object's documented status values are `Active`, `Canceled`, `Expired`, `PastDue` and `Pending`. This page names those states but does not define their transitions, billing consequences or lifecycle semantics.\n- The documented `subscription_source` values are `api`, `control_panel` and `recurring`, described as where the subscription event was created. The page does not further define those origins or state that they identify the original subscription-creation channel.\n- The callback and Promise examples retrieve a subscription with `gateway.subscription.find()` and access the first history entry's balance through `subscription.statusHistory[0].balance`. They illustrate reading returned history, not creating or updating a subscription and not guaranteeing that every returned subscription has a first history entry.\n- The page states that results are limited according to the linked PayPal Data Protection Addendum for Card Processing Products policy. Because that external policy is not part of this source, this entry preserves the limitation notice without interpreting which results or fields are limited.\n\n## Detail locators\n\n- Results-limitation notice: `# Subscription`, lines 17-18.\n- Subscription-history object scope and exact field table: `## Subscription history`, lines 21-36.\n- Documented history status values: `## Subscription history > status`, lines 27-32.\n- Documented event-source values: `## Subscription history > subscription_source`, lines 33-36.\n- Callback and Promise access examples: `## Subscription history > ### Callbacks`, lines 38-46, and `### Promises`, lines 48-55.\n\n## Evidence boundaries\n\n> [!warning] History values are not lifecycle definitions\n> This response reference lists history status and event-source values but does not explain status transitions, billing effects, retry behavior, cancellation timing or other lifecycle meaning. Use the separate recurring-billing articles and guides for those topics, and do not treat this page as a request schema or subscription action guide.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-recurring-billing]]\n- Node.js SDK context: [[braintree-server-sdk]]\n- Distinct article-level subscription administration: [[source-braintree-recurring-article-subscriptions]]\n- Distinct single-subscription lookup request: [[source-braintree-subscription-find-node]]\n- Distinct subscription-search request: [[source-braintree-subscription-search-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/response/subscription/node-2026-09-16|Braintree Subscription response reference - Node.js]] - complete collected page covering subscription-history field categories, documented status and event-source values, callback and Promise history access examples, and the results-limitation notice\n",
+  "quotes": [
+    {
+      "text": "Results are limited according to the [PayPal Data Protection Addendum For Card Processing Products policy](https://www.paypal.com/us/legalhub/braintree/data-protection-addendum) .",
+      "location": "# Subscription > NOTE, lines 17-18"
+    },
+    {
+      "text": "Each subscription history object returned on a subscription includes the following details:",
+      "location": "## Subscription history, line 23 before the field table"
+    },
+    {
+      "text": "| `status` | The subscription status. Possible values: \n- Active\n- Canceled\n- Expired\n- PastDue\n- Pending |",
+      "location": "## Subscription history > status table row, lines 27-32"
+    },
+    {
+      "text": "| `subscription_source` | Where the subscription event was created. Possible values: \n- api\n- control_panel\n- recurring |",
+      "location": "## Subscription history > subscription_source table row, lines 33-36"
+    },
+    {
+      "text": "gateway.subscription.find(\"a_subscription_id\", function(err, subscription) {\n  subscription.statusHistory[0].balance;\n  // \"12.34\"\n});",
+      "location": "## Subscription history > ### Callbacks code block, lines 41-44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "recurring-response-subscription-node-history-route",
+        "target_path": "wiki/concepts/braintree-recurring-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "add under `## Related routes` after the existing Node.js recurring-billing guides and before unrelated reporting sources",
+        "proposed_markdown": "- [[source-braintree-subscription-response-node]] - Node.js Subscription response-history route for the documented history field categories, named status and event-source values, and callback/Promise access examples; distinct from recurring-billing articles, subscription action guides and request references, and not a definition of lifecycle transitions or billing consequences.\n",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this response-object route distinct from article-level administration, Node.js recurring-billing guides and subscription request references.",
+          "The raw lists status and event-source values but does not define status transitions, billing consequences, retry behavior or cancellation timing.",
+          "Do not infer Marketplace compatibility, current merchant enablement or a complete Subscription response schema from this page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/response/subscription/node-2026-09-16.md",
+  "raw_sha256": "e839df3c281f22c44835d8ab8bc2c313b01d3f928fb3f92ad35bf5158cc659da",
+  "status": "candidate_ready"
+}

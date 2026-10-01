@@ -1,0 +1,57 @@
+{
+  "job_id": "recurring-article-billing-cycles",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Billing Cycles (Recurring Billing Article)\"\ntype: source\ndate_ingested: 2026-09-30\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/recurring-billing/billing-cycles\"\nraw_files:\n  - \"braintree/articles/guides/recurring-billing/billing-cycles-2026-09-16.md\"\ntags: [braintree, recurring-billing, billing-cycles, subscriptions]\n---\n\n## Overview\n\nThis collected Braintree article is the article-level route for recurring-billing cycle length, billing dates, and finite or indefinite subscription duration. It also documents chosen-date processing timing and billing-date lifecycle constraints; it is distinct from existing Node.js recurring-billing guides and dedicated subscription API references.\n\n## Key takeaways\n\n- Braintree recurring billing lets a plan or subscription specify cycle length, billing date, and number of cycles. Cycle length is measured in monthly increments and is the same for each subscription within a plan.\n- On a subscription billing date, Braintree says it begins charging payment methods at 9am UTC. Because the recurring-billing system runs a couple of times each day, subscriptions may not all be processed simultaneously.\n- The article says recurring-billing transactions are submitted for settlement on the chosen billing date and funds are collected immediately regardless of weekends or holidays. For a declined payment method, retry logic can be configured in the Control Panel.\n- A new plan can begin billing immediately or on a future date. Immediate billing anchors the cycle to the signup calendar date rather than a number of elapsed days; starts on the 29th, 30th, or 31st default to the last day of the first month in a billing cycle, so the article recommends choosing a future date present in every month for consistency.\n- On a subscription's final cycle, the Control Panel's `Next Bill Date` is the subscription's final date. A new subscription can override its plan's billing date, but that date cannot be changed after creation; the article recommends canceling and creating a new subscription when a change is needed.\n- The number of billing cycles determines when a plan or subscription expires. `Never expires` provides an indefinite option, and a new subscription can override the plan's cycle count at creation.\n\n## Consequential qualifications\n\n> [!warning] Billing-date processing is not simultaneous\n> The 9am UTC statement marks when charging begins, not when every subscription finishes processing. The article says recurring billing runs a couple of times each day, so subscriptions may be processed at different times.\n\n> [!warning] An existing subscription's billing date is immutable\n> The article does not provide an in-place billing-date change after subscription creation; it recommends canceling the subscription and creating a new one.\n\n## Detail locators\n\n- Configurable cycle dimensions, charging start time, multiple daily runs, chosen-date settlement, weekends and holidays, and retry-logic route: `# Billing Cycles`, lines 16-20.\n- Monthly cycle increments and plan-wide consistency: `## How it works > ### Billing cycle length`, line 35.\n- Immediate or future start, calendar-date anchoring, and 29th-31st end-of-month handling: `## How it works > ### Billing date`, lines 40-44.\n- Final-cycle `Next Bill Date` meaning: `## How it works > ### Billing date > #### Identifying the next billing date`, lines 49-60.\n- Creation-time billing-date override and post-creation immutability: `## How it works > ### Billing date > #### Changing the billing date`, lines 67-69.\n- Finite cycle count, `Never expires`, and creation-time cycle-count override: `## How it works > ### Number of billing cycles`, lines 74-76.\n\n## Evidence boundaries\n\n> [!warning] Article and implementation scopes are separate\n> This article establishes its stated billing-cycle timing and lifecycle guidance. Use the separate Node.js guides and dedicated subscription request or response references for SDK operations, field schemas, and API-specific behavior. The article does not address Braintree Marketplace compatibility and therefore does not resolve the existing compatibility conflict.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-recurring-billing]]\n- Generic concept: [[recurring-payments]]\n- Article-level plan setup and lifecycle: [[source-braintree-recurring-article-plans]]\n- Node.js recurring-billing creation guide: [[source-braintree-recurring-billing-create-node]]\n- Node.js subscription creation reference: [[source-braintree-subscription-create-node]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/recurring-billing/billing-cycles-2026-09-16|Braintree recurring-billing billing-cycles article]] - complete collected article covering cycle length, billing-date processing and anchoring, next-date interpretation, post-creation date immutability, and finite or indefinite duration\n",
+  "quotes": [
+    {
+      "text": "Our recurring billing feature allows you to specify the length of a billing cycle, the billing date for a plan or subscription, and the number of billing cycles a subscription will last.\n\nWhen the subscription billing date arrives, we\u2019ll begin charging customers\u2019 payment methods at 9am UTC. We run the recurring billing system a couple of times each day to balance the load on our servers, so it's possible that not all of your subscriptions will be processed simultaneously.\n\nAll recurring billing transactions are submitted for settlement on the chosen billing date, so funds will be collected immediately \u2014 regardless of weekends and holidays. If a customer\u2019s payment method is declined and you want it to be retried, you can set up retry logic in the Control Panel.",
+      "location": "# Billing Cycles, lines 16-20"
+    },
+    {
+      "text": "The length of a billing cycle is the number of months between billing dates for a subscription plan. If a billing cycle is 3 months long, for example, then a customer on that subscription will only be charged 4 times a year, on the specified billing date. Billing cycles must be defined in monthly increments and will be the same for each subscription within a plan.",
+      "location": "## How it works > ### Billing cycle length, line 35"
+    },
+    {
+      "text": "You can choose to have the billing cycle of a new plan start immediately when the customer signs up, or on a future date.\n\nWe set subscriptions to bill on specific dates, rather than billing after a certain number of days. This means that if you opt to begin the billing cycle immediately, the cycle will be based off of the date the customer signed up (e.g. if you create the subscription on the 3rd of the month and choose to bill immediately, the customer will always be billed on the 3rd day of the first month in a billing cycle).\n\nIf you select to have billing begin immediately, and it\u2019s the 29th, 30th, or 31st of the month, our system will default to bill on the last day of the first month in a billing cycle. Since the last day of the month can vary, we recommend starting the subscription on a future date that every month has for consistency.",
+      "location": "## How it works > ### Billing date, lines 40-44"
+    },
+    {
+      "text": "When a subscription reaches its final [billing cycle](#number-of-billing-cycles), the date listed under **Next Bill Date** will be the final date of the subscription.\n\n \n\n\n#### Changing the billing date\n\nWhen creating a new subscription in a plan, you can override the plan\u2019s billing date and specify a different one.\n\nThe billing date can't be changed after a subscription has been created. If you need to change the billing date, it\u2019s best to cancel the subscription and create a new one.",
+      "location": "## How it works > ### Billing date, lines 59-69"
+    },
+    {
+      "text": "You can set the length of a plan or subscription by selecting the number of billing cycles before expiration. For example, if a plan's billing cycle is 3 months long, and the number of billing cycles specified is 4, then the plan will expire after one year. If you prefer for a subscription to continue indefinitely, you can select Never expires in this field.\n\nLike the [billing date](#changing-the-billing-date), you can override a plan's specified number of billing cycles when creating a new subscription.",
+      "location": "## How it works > ### Number of billing cycles, lines 74-76"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "recurring-article-billing-cycles-braintree-recurring-billing-route",
+        "target_path": "wiki/concepts/braintree-recurring-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Insert a new `## Billing cycles` section before `## Related routes`",
+        "proposed_markdown": "## Billing cycles\n\n- [[source-braintree-recurring-article-billing-cycles]] - article-level route for monthly cycle increments, calendar-date anchoring and end-of-month handling, chosen-date processing timing, final-date interpretation, immutable post-creation billing dates, and finite or `Never expires` duration; distinct from Node.js guides and subscription API references",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve that charging begins at 9am UTC but subscriptions may not be processed simultaneously because the recurring-billing system runs a couple of times each day.",
+          "Preserve the article's cancel-and-recreate guidance when a billing date must change after subscription creation.",
+          "Keep this as an article-level retrieval route; do not import Node.js SDK or subscription request/response semantics.",
+          "Do not infer or resolve Braintree Marketplace compatibility; this billing-cycles article does not address Marketplace."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/recurring-billing/billing-cycles-2026-09-16.md",
+  "raw_sha256": "36d4a0ad2b8ba52dc7b3ccd06bb175c24a455df0768f4a38aef6874c81b9def9",
+  "status": "candidate_ready"
+}
