@@ -780,6 +780,7 @@ def _validate_packets(
                         document.get("wiki_context"),
                         document.get("expected_wiki_targets"),
                         stored_policy_hash,
+                        format_version=document.get("format_version"),
                     )
             except (OSError, TypeError, ValueError) as error:
                 errors.append(label + ": packet rebuild failed: " + _bounded(error))

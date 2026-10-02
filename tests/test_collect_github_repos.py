@@ -396,6 +396,15 @@ class CollectGitHubReposTests(unittest.TestCase):
                 ),
             ),
         )
+        run_git(self.remote, "tag", "26.4.0", prior_sha)
+        baseline = collect_one(
+            self.root, config, release="stripe-ios@26.4.0",
+            clone_source=self.remote, collection_date="2026-07-21",
+            release_notes_fetcher=lambda config, candidate: ReleaseNotesEvidence(
+                "https://api.github.test/26.4.0", "2026-07-21T12:00:00Z", b"Baseline.\n"
+            ),
+        )
+        self.assertEqual("awaiting_approval", baseline.state, baseline.errors)
         history = {
             "stripe-ios": [
                 _RetainedRelease(
@@ -871,7 +880,8 @@ class CollectGitHubReposTests(unittest.TestCase):
     def test_next_ingest_claims_oldest_approved_item(self):
         self.collect()
         item = load_work_items(self.root / "tracking/github/work-items.json")[0]
-        approve_one(self.root, item.work_item_id, "full")
+        with mock.patch("collect_github_repos.load_registry", return_value=(self.config,)):
+            approve_one(self.root, item.work_item_id, "full")
 
         selected = next_ingest(self.root)
         claimed = load_work_items(self.root / "tracking/github/work-items.json")[0]
@@ -922,14 +932,17 @@ class CollectGitHubReposTests(unittest.TestCase):
             status,
         )
 
-        approve_one(self.root, linked.work_item_id, "full")
         output = io.StringIO()
-        with mock.patch("collect_github_repos.PROJECT_ROOT", self.root), redirect_stdout(output):
+        with mock.patch("collect_github_repos.load_registry", return_value=(self.config,)):
+            approve_one(self.root, linked.work_item_id, "full")
+        with mock.patch("collect_github_repos.PROJECT_ROOT", self.root), mock.patch(
+            "collect_github_repos.load_registry", return_value=(self.config,)
+        ), redirect_stdout(output):
             self.assertEqual(0, main(["next-ingest"]))
         payload = json.loads(output.getvalue())
 
         self.assertEqual("ingesting", payload["state"])
-        self.assertEqual(
+        self.assertCountEqual(
             packet["required_reading"] + list(attachment.required_reading),
             payload["required_reading"],
         )

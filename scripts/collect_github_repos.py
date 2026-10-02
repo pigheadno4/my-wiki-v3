@@ -37,6 +37,7 @@ from github_git import (
 from github_git_tree import GitObjectReadError, GitTree
 from github_npm_workspace import WorkspacePackage
 from github_ingest_packets import (
+    _load_snapshot,
     PackagePacketInput,
     RefPacketInput,
     build_ingest_packet,
@@ -1228,12 +1229,15 @@ def _prepare_group(
             exports_changed = False
         else:
             prior_tree = GitTree(clone_path, prior.sha, config.max_file_bytes)
-            prior_workspace = resolve_capsule_workspace(
-                prior_tree,
-                capsule,
-                {candidate.package: prior.version},
-            )
-            prior_package = _workspace_package(prior_workspace.packages, candidate.package)
+            if capsule.adapter == TAGGED_TREE_ADAPTER:
+                prior_package = _retained_tagged_package(root, config, prior, prior_tree)
+            else:
+                prior_workspace = resolve_capsule_workspace(
+                    prior_tree,
+                    capsule,
+                    {candidate.package: prior.version},
+                )
+                prior_package = _workspace_package(prior_workspace.packages, candidate.package)
             if capsule.adapter == TAGGED_TREE_ADAPTER:
                 changed_paths = _tagged_changed_paths(
                     clone_path,
@@ -1607,7 +1611,7 @@ def approve_one(root: Path, work_item_id: str, mode: str) -> WorkItem:
     )
     if current is None:
         raise WorkItemStateError("work item was not found")
-    ingest_required_reading(root, current)
+    ingest_required_reading(root, current, mode=mode)
     items = transition_work_item(
         root / WORK_ITEMS_PATH,
         work_item_id,
@@ -1626,12 +1630,20 @@ def next_ingest(root: Path) -> WorkItem:
     return selected
 
 
-def ingest_required_reading(root: Path, item: WorkItem) -> Tuple[str, ...]:
+def ingest_required_reading(
+    root: Path, item: WorkItem, *, mode: Optional[str] = None
+) -> Tuple[str, ...]:
     """Return the packet and attached evidence required for serial ingest."""
     if not item.ingest_packet:
         raise ValueError("ingest item has no packet")
+    mode = mode or item.approved_mode or "delta"
+    config = None
+    if mode == "full":
+        config = next((repo for repo in load_registry(
+            root / "tracking/github/repo-registry.toml"
+        ) if repo.id == item.repo_id), None)
     reading = (
-        *load_packet_required_reading(root, item.ingest_packet),
+        *load_packet_required_reading(root, item.ingest_packet, mode=mode, config=config),
         *evidence_attachment_required_reading(root, item),
     )
     if len(reading) != len(set(reading)):
@@ -1700,14 +1712,18 @@ def compare_one(
             effective, clone_path, ("tag:" + prior.tag, "tag:" + current.tag)
         )
         capsule = _one_capsule(config)
-        prior_package = _workspace_package(
-            resolve_capsule_workspace(
-                GitTree(clone_path, prior.sha, config.max_file_bytes),
-                capsule,
-                {package: from_version},
-            ).packages,
-            package,
-        )
+        prior_tree = GitTree(clone_path, prior.sha, config.max_file_bytes)
+        if capsule.adapter == TAGGED_TREE_ADAPTER:
+            prior_package = _retained_tagged_package(Path(root).resolve(), config, prior, prior_tree)
+        else:
+            prior_package = _workspace_package(
+                resolve_capsule_workspace(
+                    prior_tree,
+                    capsule,
+                    {package: from_version},
+                ).packages,
+                package,
+            )
         current_package = _workspace_package(
             resolve_capsule_workspace(
                 GitTree(clone_path, current.sha, config.max_file_bytes),
@@ -2062,6 +2078,32 @@ def _package_pathspecs(package: WorkspacePackage) -> Tuple[str, ...]:
     if not roots:
         raise CollectionUsageError("root package has no bounded comparison paths")
     return tuple(roots)
+
+
+def _retained_tagged_package(
+    root: Path, config: RepoConfig, release: _RetainedRelease, tree: GitTree
+) -> WorkspacePackage:
+    # A new capsule policy must not retroactively require files in an old tag.
+    root = Path(root).resolve()
+    snapshot = _load_snapshot(
+        root, _snapshot_manifest_for_sha(root, config, release.sha), config.id
+    )
+    blobs = {blob.path: blob for blob in tree.blobs()}
+    paths = []
+    for path, row in snapshot.files.items():
+        if row.get("package") != release.package:
+            continue
+        blob = blobs.get(path)
+        if (blob is None or blob.oid != row.get("git_blob_oid")
+                or blob.mode != row.get("git_mode")):
+            raise CollectionUsageError("retained snapshot does not match Git tree: " + path)
+        paths.append(path)
+    if not paths:
+        raise CollectionUsageError("retained snapshot has no package evidence")
+    return WorkspacePackage(
+        name=release.package, path="", version=release.version,
+        reason="focus", owned_paths=tuple(sorted(paths)),
+    )
 
 
 def _tagged_changed_paths(

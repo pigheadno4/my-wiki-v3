@@ -1,5 +1,30 @@
 # GitHub repository ingest status
 
+## `github-024fc77b5961ca8ac047`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `a1ea788163dee511239e2cfefe27cad576f045d3`
+- Collection date: `2026-09-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-29-a1ea788/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-024fc77b5961ca8ac047/packet.md)
+- Review priority: `high`
+- Required reading: `31` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.5.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.5.0/2026-09-29/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.4.1--26.5.0/comparison.json)
+
 ## `github-06ee06345a65e7231cb5`
 
 - Repository: `paypal/paypal-checkout-components`
@@ -404,6 +429,57 @@
   Release: [manifest](../../raw/github/paypal/paypal-php-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-24/manifest.json)
   Comparison: Not applicable
 
+## `github-266fd96ba1fdc3d98b71`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `70378192e4b345bd4283511e1f6a3151591ebecf`
+- Collection date: `2026-09-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-266fd96ba1fdc3d98b71/packet.md)
+- Evidence attachment: [manifest](repos/stripe/stripe-ios/evidence-attachments/github-266fd96ba1fdc3d98b71/attachment.json)
+- Review priority: `high`
+- Required reading: `33` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.11.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.11.0/2026-09-30/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.10.0--26.11.0/comparison.json)
+
+## `github-27c39776069e90865f25`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `3410ff0853b66e5ade3e8763e99f3ddb5dd77bc3`
+- Collection date: `2026-09-29`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-30-3410ff0/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-27c39776069e90865f25/packet.md)
+- Review priority: `high`
+- Required reading: `92` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.6.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.6.0/2026-09-30/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.5.0--26.6.0/comparison.json)
+
 ## `github-28afa4b70001aa3c42da`
 
 - Repository: `paypal/postman-collections`
@@ -764,6 +840,32 @@
   From SHA: `baseline`
   To SHA: `e9c8ae99ae5365f91f8e5372ae2d9d2dc7a427e0`
   Comparison: Not applicable
+
+## `github-4ef7ad96d01f40cfff58`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `844404116961cb66eb8d67253386b4d564c66e87`
+- Collection date: `2026-09-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-4ef7ad96d01f40cfff58/packet.md)
+- Evidence attachment: [manifest](repos/stripe/stripe-ios/evidence-attachments/github-4ef7ad96d01f40cfff58/attachment.json)
+- Review priority: `high`
+- Required reading: `44` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.8.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.8.0/2026-09-30/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.7.0--26.8.0/comparison.json)
 
 ## `github-523453a8a9fad6afdf6f`
 
@@ -1203,6 +1305,32 @@
   To SHA: `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`
   Comparison: Not applicable
 
+## `github-722f2ffc82b5d6e5375c`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `9f0d5aa20e6a690ff4d78b35c307f0fb88d6f36c`
+- Collection date: `2026-09-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-30-9f0d5aa/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-722f2ffc82b5d6e5375c/packet.md)
+- Evidence attachment: [manifest](repos/stripe/stripe-ios/evidence-attachments/github-722f2ffc82b5d6e5375c/attachment.json)
+- Review priority: `high`
+- Required reading: `37` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.12.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.12.1/2026-09-30/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.12.0--26.12.1/comparison.json)
+
 ## `github-763f3bed066811458a49`
 
 - Repository: `paypal/paypal-messaging-components`
@@ -1277,6 +1405,31 @@
 - `@paypal/checkout-components@5.0.428` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.428/2026-09-01/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.427--5.0.428/comparison.json)
+
+## `github-78ba61fe5193c202d74a`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `62c2070c57f20b4d632b25fc62780841f8883cc8`
+- Collection date: `2026-09-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-30-62c2070/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-78ba61fe5193c202d74a/packet.md)
+- Review priority: `high`
+- Required reading: `90` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.7.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.7.0/2026-09-30/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.6.0--26.7.0/comparison.json)
 
 ## `github-7afbbbad6ed794ece5d5`
 
@@ -1582,6 +1735,31 @@
 - `@stripe/stripe-react-native@0.74.0` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.74.0/2026-09-01/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.73.0--0.74.0/comparison.json)
+
+## `github-8cad25b1ab7e98991d4c`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `bc51b3323a06c029c561474547910bff0db82fc8`
+- Collection date: `2026-09-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-8cad25b1ab7e98991d4c/packet.md)
+- Review priority: `high`
+- Required reading: `25` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.12.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.12.0/2026-09-30/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.11.0--26.12.0/comparison.json)
 
 ## `github-8cb8ce44195e817fa27b`
 
@@ -2363,6 +2541,57 @@
 - `paypal-messages-ios@1.2.0` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/1.2.0/2026-08-12/manifest.json)
   Comparison: Not applicable
+
+## `github-ba869d68806557302f00`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `e5778f68b39a298c4fcf920d2587e54bb020d8e4`
+- Collection date: `2026-09-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-30-e5778f6/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-ba869d68806557302f00/packet.md)
+- Review priority: `high`
+- Required reading: `25` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.10.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.10.0/2026-09-30/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.9.0--26.10.0/comparison.json)
+
+## `github-bbbff15398aa9f59171d`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `841b697a9c45a97a36ade02d9184c7d11b927e82`
+- Collection date: `2026-09-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-09-30-841b697/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-bbbff15398aa9f59171d/packet.md)
+- Evidence attachment: [manifest](repos/stripe/stripe-ios/evidence-attachments/github-bbbff15398aa9f59171d/attachment.json)
+- Review priority: `high`
+- Required reading: `54` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.9.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.9.0/2026-09-30/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.8.0--26.9.0/comparison.json)
 
 ## `github-bd7fe849961b5c6b9964`
 

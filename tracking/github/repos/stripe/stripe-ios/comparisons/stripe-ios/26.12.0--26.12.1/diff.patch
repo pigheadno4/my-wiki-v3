@@ -1,0 +1,665 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ce80cdd..67050dd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,13 +3,26 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.12.1 2026-09-28
++### Financial Connections
++* [Fixed] Preserved `no_eligible_accounts` in `onEvent` error callbacks instead of reporting it as `unexpected_error`.
++* [Fixed] Recorded native `onEvent` emissions with the session context for diagnostics.
++
++### Payments
++* [Added] Added API bindings for Pix.
++
++### PaymentSheet
++* [Added] Added support for Pix payments.
++
+ ## 26.12.0 2026-09-21
+ ### CryptoOnramp (Alpha)
+ * [Removed] Removed public exposure of `StripeCryptoOnramp.Image`, including `Image.linkIconSquare`.
+ * [Added] Added `CryptoOnrampCoordinator.presentTermsAndConditionsIfNeeded(from:)` and `presentTermsOfServiceIfNeeded(from:)` to present and record acceptance of current partner terms when required. Both methods return `PartnerTermsResult`.
++* [Fixed] Preserved PaymentIntent error codes, decline codes, and types in checkout errors after authentication.
+ 
+ ### StripeCore
+ * [Added] Added `additionalHeaders` support to the `STPAPIClient` GET, POST, and DELETE APIs exposed through the `STP` SPI.
++* [Added] Added `uploadFile(at:purpose:authorizationSecret:progress:)` and associated error type `FileUploadError`, exposed through the `STP` SPI.
+ 
+ ### PaymentSheet
+ * [Fixed] Fixed card funding warnings not appearing after scanning a card.
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index 281f41e..37259c8 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.12.0'
++  s.version                        = '26.12.1'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index 7f2d0ae..8e32d64 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.12.0'
++  s.version                        = '26.12.1'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index d192c20..8851f8f 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.12.0'
++  s.version                        = '26.12.1'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift b/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
+index a245d69..89fc61a 100644
+--- a/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
++++ b/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
+@@ -938,7 +938,12 @@ private extension CryptoOnrampCoordinator {
+                 case .canceled:
+                     continuation.resume(returning: .canceled)
+                 case .failed:
+-                    continuation.resume(throwing: error ?? CheckoutError.paymentFailed)
++                    continuation.resume(
++                        throwing: Self.checkoutError(
++                            error,
++                            paymentIntent: paymentIntent
++                        )
++                    )
+                 @unknown default:
+                     continuation.resume(throwing: CheckoutError.unexpectedError)
+                 }
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index 67c7d20..8e6383f 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.12.0'
++    s.version                        = '26.12.1'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift b/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift
+index c43e06f..c8e107d 100644
+--- a/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift
++++ b/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift
+@@ -130,6 +130,10 @@ final public class FinancialConnectionsSheet {
+     /// Whether the Link Account Session requests merchant data permissions.
+     @_spi(STP) public var hasRequestedDataPermissions: Bool = false
+ 
++    /// Evidence that the customer already accepted Financial Connections consent text
++    /// collected by the merchant's own UI.
++    var preCollectedConsent: FinancialConnectionsPreCollectedConsent?
++
+     /// Analytics client to use for logging analytics
+     @_spi(STP) public let analyticsClient: STPAnalyticsClientProtocol
+ 
+@@ -194,6 +198,20 @@ final public class FinancialConnectionsSheet {
+         }
+     }
+ 
++    /// Presents a sheet for a customer to connect their financial account. This API surfaces details on the connected bank account token.
++    /// - Parameters:
++    ///   - presentingViewController: The view controller to present the financial connections sheet.
++    ///   - preCollectedConsent: Evidence that the customer already accepted Financial Connections consent text collected by your own UI. When provided, Financial Connections may skip its own consent pane.
++    ///   - completion: The result of the financial connections session after the financial connections sheet is dismissed, along with the bank account token.
++    public func presentForToken(
++        from presentingViewController: UIViewController,
++        preCollectedConsent: FinancialConnectionsPreCollectedConsent?,
++        completion: @escaping (TokenResult) -> Void
++    ) {
++        self.preCollectedConsent = preCollectedConsent
++        presentForToken(from: presentingViewController, completion: completion)
++    }
++
+     /// Presents a sheet for a customer to connect their financial account. This API surfaces details on the connected bank account token.
+     /// - Parameter presentingViewController: The view controller to present the financial connections sheet.
+     /// - Returns: The result of the financial connections session after the financial connections sheet is dismissed, along with the bank account token.
+@@ -206,6 +224,20 @@ final public class FinancialConnectionsSheet {
+         }
+     }
+ 
++    /// Presents a sheet for a customer to connect their financial account. This API surfaces details on the connected bank account token.
++    /// - Parameters:
++    ///   - presentingViewController: The view controller to present the financial connections sheet.
++    ///   - preCollectedConsent: Evidence that the customer already accepted Financial Connections consent text collected by your own UI. When provided, Financial Connections may skip its own consent pane.
++    /// - Returns: The result of the financial connections session after the financial connections sheet is dismissed, along with the bank account token.
++    @MainActor
++    public func presentForToken(
++        from presentingViewController: UIViewController,
++        preCollectedConsent: FinancialConnectionsPreCollectedConsent?
++    ) async -> TokenResult {
++        self.preCollectedConsent = preCollectedConsent
++        return await presentForToken(from: presentingViewController)
++    }
++
+     /**
+      Presents a sheet for a customer to connect their financial account.
+      - Parameters:
+@@ -276,6 +308,22 @@ final public class FinancialConnectionsSheet {
+         )
+     }
+ 
++    /**
++     Presents a sheet for a customer to connect their financial account.
++     - Parameters:
++       - presentingViewController: The view controller to present the financial connections sheet.
++       - preCollectedConsent: Evidence that the customer already accepted Financial Connections consent text collected by your own UI. When provided, Financial Connections may skip its own consent pane.
++       - completion: Called with the result of the financial connections session after the financial connections sheet is dismissed.
++     */
++    public func present(
++        from presentingViewController: UIViewController,
++        preCollectedConsent: FinancialConnectionsPreCollectedConsent?,
++        completion: @escaping (Result) -> Void
++    ) {
++        self.preCollectedConsent = preCollectedConsent
++        present(from: presentingViewController, completion: completion)
++    }
++
+     /// Presents a sheet for a customer to connect their financial account.
+     /// - Parameter presentingViewController: The view controller to present the financial connections sheet.
+     /// - Returns: The result of the financial connections session after the financial connections sheet is dismissed.
+@@ -288,6 +336,20 @@ final public class FinancialConnectionsSheet {
+         }
+     }
+ 
++    /// Presents a sheet for a customer to connect their financial account.
++    /// - Parameters:
++    ///   - presentingViewController: The view controller to present the financial connections sheet.
++    ///   - preCollectedConsent: Evidence that the customer already accepted Financial Connections consent text collected by your own UI. When provided, Financial Connections may skip its own consent pane.
++    /// - Returns: The result of the financial connections session after the financial connections sheet is dismissed.
++    @MainActor
++    public func present(
++        from presentingViewController: UIViewController,
++        preCollectedConsent: FinancialConnectionsPreCollectedConsent?
++    ) async -> Result {
++        self.preCollectedConsent = preCollectedConsent
++        return await present(from: presentingViewController)
++    }
++
+     @_spi(STP) public func present(
+         from presentingViewController: UIViewController,
+         completion: @escaping (HostControllerResult) -> Void
+@@ -361,6 +423,7 @@ final public class FinancialConnectionsSheet {
+             returnURL: returnURL,
+             configuration: configuration,
+             elementsSessionContext: elementsSessionContext,
++            preCollectedConsent: preCollectedConsent,
+             publishableKey: apiClient.publishableKey,
+             stripeAccount: apiClient.stripeAccount
+         )
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index 080f7cf..f17f925 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.12.0'
++  s.version                        = '26.12.1'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index 1a7def2..ba41028 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.12.0'
++  s.version                        = '26.12.1'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index 66465bb..8b85aee 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.12.0'
++  s.version                        = '26.12.1'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+index cafa9d2..c3e6fc0 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+@@ -242,7 +242,8 @@ extension CheckoutController {
+                             intent: .checkout(self.session),
+                             elementsSession: self.session.elementsSession
+                         ),
+-                        // TODO: Remove this once no-PM confirmation can use the Checkout Session's fixed email without `customer_data`.
++                        // Due to legacy reasons, in the no-PM case /confirm requires customerData be sent with at least email
++                        // TODO: Remove this once no-PM confirmation can use the Checkout Session's server email without `customer_data`.
+                         customerData: self.session.email.map { ["email": $0] }
+                     )
+                     result = await Self.confirmCheckoutSession(
+@@ -386,11 +387,6 @@ extension CheckoutController {
+             confirmParams.paymentMethodParams.radarOptions = await confirmationChallenge?.makeRadarOptions(for: confirmParams.paymentMethodParams.type)
+             // TODO: Why set client attribution metadata here and also in /confirm request?
+             confirmParams.paymentMethodParams.clientAttributionMetadata = clientAttributionMetadata
+-            // Ensure email is set on the payment method — fall back to the Checkout Session's customer email.
+-            if confirmParams.paymentMethodParams.billingDetails?.email == nil,
+-               let customerEmail = checkoutSession.email {
+-                confirmParams.paymentMethodParams.nonnil_billingDetails.email = customerEmail
+-            }
+             // TODO: Stop creating a PaymentMethod and send payment_method_data directly to /confirm.
+             let paymentMethod = try await configuration.apiClient.createPaymentMethod(
+                 with: confirmParams.paymentMethodParams
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+index 749e95c..aab02ce 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+@@ -818,7 +818,7 @@ extension PaymentSheetAuthenticationContextViewController: PaymentSheetAuthentic
+         }
+     }
+ 
+-    func presentPollingVCForAction(action: StripePayments.STPPaymentHandlerPaymentIntentActionParams, type: StripePayments.STPPaymentMethodType, safariViewController: SFSafariViewController?) {
++    func presentPollingVCForAction(action: StripePayments.STPPaymentHandlerActionParams, type: StripePayments.STPPaymentMethodType, safariViewController: SFSafariViewController?) {
+         // Initialize the polling view controller and flag it for presentation
+         self.pollingVC = PollingViewController(currentAction: action, viewModel: PollingViewModel(paymentMethodType: type),
+                                                       appearance: self.appearance, safariViewController: safariViewController)
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+index af2aaa0..05bfa12 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+@@ -1085,7 +1085,7 @@ class AuthenticationContext: NSObject, PaymentSheetAuthenticationContext {
+         presentingViewController.present(authenticationViewController, animated: true, completion: nil)
+     }
+ 
+-    func presentPollingVCForAction(action: STPPaymentHandlerPaymentIntentActionParams, type: STPPaymentMethodType, safariViewController: SFSafariViewController?) {
++    func presentPollingVCForAction(action: STPPaymentHandlerActionParams, type: STPPaymentMethodType, safariViewController: SFSafariViewController?) {
+         let pollingVC = PollingViewController(currentAction: action, viewModel: PollingViewModel(paymentMethodType: type),
+                                               appearance: self.appearance, safariViewController: safariViewController)
+         presentingViewController.present(pollingVC, animated: true, completion: nil)
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index f36fd93..380c4a6 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.12.0'
++  s.version                        = '26.12.1'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift
+index 1e6c26e..bd1fe30 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift	
+@@ -149,6 +149,9 @@ public class STPPaymentIntentConfirmParams: NSObject {
+             guard let paymentMethodType = paymentMethodType else {
+                 return nil
+             }
++            if paymentMethodType == .pix, setupFutureUsage == .offSession {
++                return .makeWithInferredValues()
++            }
+             return Self.mandateDataIfRequired(for: paymentMethodType)
+         }
+         set {
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift
+index 91fb4ce..324d340 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
+@@ -114,6 +114,8 @@ import Foundation
+     case sequra
+     /// A Scalapay payment method
+     case scalapay
++    /// A Pix payment method
++    case pix
+     /// An unknown type.
+     case unknown
+ 
+@@ -226,6 +228,8 @@ import Foundation
+             return "SeQura"
+         case .scalapay:
+             return "Scalapay"
++        case .pix:
++            return "Pix"
+         case .cardPresent,
+             .unknown:
+             return STPLocalizedString("Unknown", "Default missing source type label")
+@@ -341,6 +345,8 @@ import Foundation
+             return "sequra"
+         case .scalapay:
+             return "scalapay"
++        case .pix:
++            return "pix"
+         }
+     }
+ 
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift
+index 157cf74..1a77703 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift	
+@@ -1419,7 +1419,7 @@ extension STPPaymentMethodParams {
+             sequra = STPPaymentMethodSequraParams()
+         case .scalapay:
+             scalapay = STPPaymentMethodScalapayParams()
+-        case .cardPresent, .paynow, .zip, .konbini, .promptPay, .mbWay, .bizum:
++        case .cardPresent, .paynow, .zip, .konbini, .promptPay, .mbWay, .bizum, .pix:
+             // These payment methods don't have any params
+             break
+         case .unknown:
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift
+index f0941df..3430c96 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift	
+@@ -211,7 +211,7 @@ public class STPSetupIntentConfirmParams: NSObject, NSCopying, STPFormEncodable
+     @_spi(STP) public static func mandateDataIfRequired(for paymentMethodType: STPPaymentMethodType) -> STPMandateDataParams? {
+         switch paymentMethodType {
+         case .AUBECSDebit, .alipay, .bacsDebit, .bancontact, .iDEAL, .SEPADebit, .EPS, .link, .USBankAccount,
+-             .cashApp, .payPal, .revolutPay, .klarna, .amazonPay, .twint, .kakaoPay, .krCard, .naverPay:
++             .cashApp, .payPal, .revolutPay, .klarna, .amazonPay, .twint, .kakaoPay, .krCard, .naverPay, .pix:
+             return .makeWithInferredValues()
+         default:
+             return nil
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift b/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift
+index 6cdbe03..87608a3 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift	
+@@ -64,6 +64,9 @@ import Foundation
+     /// Contains details for displaying the QR code required for PromptPay.
+     case promptpayDisplayQrCode
+ 
++    /// Contains details for displaying the QR code required for Pix.
++    case pixDisplayQrCode
++
+     /// Contains details for redirecting to the Swish app.
+     case swishHandleRedirect
+ 
+@@ -107,6 +110,8 @@ import Foundation
+             self = .konbiniDisplayDetails
+         case "promptpay_display_qr_code":
+             self = .promptpayDisplayQrCode
++        case "pix_display_qr_code":
++            self = .pixDisplayQrCode
+         case "swish_handle_redirect_or_display_qr_code":
+             self = .swishHandleRedirect
+         case "multibanco_display_details":
+@@ -149,6 +154,8 @@ import Foundation
+             return "paynow_display_qr_code"
+         case .promptpayDisplayQrCode:
+             return "promptpay_display_qr_code"
++        case .pixDisplayQrCode:
++            return "pix_display_qr_code"
+         case .swishHandleRedirect:
+             return "swish_handle_redirect_or_display_qr_code"
+         case .multibancoDisplayDetails:
+@@ -207,6 +214,9 @@ public class STPIntentAction: NSObject {
+     /// Contains details for displaying the QR code required for PromptPay.
+     @objc public let promptPayDisplayQrCode: STPIntentActionPromptPayDisplayQrCode?
+ 
++    /// Contains details for displaying the QR code required for Pix.
++    @objc public let pixDisplayQrCode: STPIntentActionPixDisplayQrCode?
++
+     /// Contains details for redirecting to the Swish app.
+     @objc public let swishHandleRedirect: STPIntentActionSwishHandleRedirect?
+ 
+@@ -279,6 +289,10 @@ public class STPIntentAction: NSObject {
+             if let promptPayDisplayQrCode = promptPayDisplayQrCode {
+                 props.append("promptpayDisplayQrCode = \(promptPayDisplayQrCode)")
+             }
++        case .pixDisplayQrCode:
++            if let pixDisplayQrCode {
++                props.append("pixDisplayQrCode = \(pixDisplayQrCode)")
++            }
+         case .swishHandleRedirect:
+             if let swishHandleRedirect = swishHandleRedirect {
+                 props.append("swishHandleRedirect = \(swishHandleRedirect)")
+@@ -308,6 +322,7 @@ public class STPIntentAction: NSObject {
+         payNowDisplayQrCode: STPIntentActionPayNowDisplayQrCode?,
+         konbiniDisplayDetails: STPIntentActionKonbiniDisplayDetails?,
+         promptPayDisplayQrCode: STPIntentActionPromptPayDisplayQrCode?,
++        pixDisplayQrCode: STPIntentActionPixDisplayQrCode? = nil,
+         swishHandleRedirect: STPIntentActionSwishHandleRedirect?,
+         multibancoDisplayDetails: STPIntentActionMultibancoDisplayDetails?,
+         allResponseFields: [AnyHashable: Any]
+@@ -324,6 +339,7 @@ public class STPIntentAction: NSObject {
+         self.payNowDisplayQrCode = payNowDisplayQrCode
+         self.konbiniDisplayDetails = konbiniDisplayDetails
+         self.promptPayDisplayQrCode = promptPayDisplayQrCode
++        self.pixDisplayQrCode = pixDisplayQrCode
+         self.swishHandleRedirect = swishHandleRedirect
+         self.multibancoDisplayDetails = multibancoDisplayDetails
+         self.allResponseFields = allResponseFields
+@@ -357,6 +373,7 @@ extension STPIntentAction: STPAPIResponseDecodable {
+         var payNowDisplayQrCode: STPIntentActionPayNowDisplayQrCode?
+         var konbiniDisplayDetails: STPIntentActionKonbiniDisplayDetails?
+         var promptPayDisplayQrCode: STPIntentActionPromptPayDisplayQrCode?
++        var pixDisplayQrCode: STPIntentActionPixDisplayQrCode?
+         var swishHandleRedirect: STPIntentActionSwishHandleRedirect?
+         var multibancoDisplayDetails: STPIntentActionMultibancoDisplayDetails?
+ 
+@@ -446,6 +463,13 @@ extension STPIntentAction: STPAPIResponseDecodable {
+             if promptPayDisplayQrCode == nil {
+                 type = .unknown
+             }
++        case .pixDisplayQrCode:
++            pixDisplayQrCode = STPIntentActionPixDisplayQrCode.decodedObject(
++                fromAPIResponse: dict["pix_display_qr_code"] as? [AnyHashable: Any]
++            )
++            if pixDisplayQrCode == nil {
++                type = .unknown
++            }
+         case .swishHandleRedirect:
+             swishHandleRedirect = STPIntentActionSwishHandleRedirect.decodedObject(
+                 fromAPIResponse: dict["swish_handle_redirect_or_display_qr_code"] as? [AnyHashable: Any]
+@@ -475,6 +499,7 @@ extension STPIntentAction: STPAPIResponseDecodable {
+             payNowDisplayQrCode: payNowDisplayQrCode,
+             konbiniDisplayDetails: konbiniDisplayDetails,
+             promptPayDisplayQrCode: promptPayDisplayQrCode,
++            pixDisplayQrCode: pixDisplayQrCode,
+             swishHandleRedirect: swishHandleRedirect,
+             multibancoDisplayDetails: multibancoDisplayDetails,
+             allResponseFields: dict
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionPixDisplayQrCode.swift b/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionPixDisplayQrCode.swift
+new file mode 100644
+index 0000000..c92b3e9
+--- /dev/null
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionPixDisplayQrCode.swift	
+@@ -0,0 +1,90 @@
++//
++//  STPIntentActionPixDisplayQrCode.swift
++//  StripePayments
++//
++
++import Foundation
++
++/// Contains the QR code and hosted instructions required to complete a Pix payment.
++/// You cannot directly instantiate an `STPIntentActionPixDisplayQrCode`.
++public class STPIntentActionPixDisplayQrCode: NSObject {
++
++    /// The Pix copy-and-paste string represented by the QR code.
++    @objc public let data: String?
++
++    /// A PNG image containing the Pix QR code.
++    @objc public let imageURLPNG: URL?
++
++    /// An SVG image containing the Pix QR code.
++    @objc public let imageURLSVG: URL?
++
++    /// The time at which the Pix QR code expires.
++    @objc public let expiresAt: Date?
++
++    /// The URL to open which contains instructions on how to complete the payment.
++    @objc public let hostedInstructionsURL: URL?
++
++    /// :nodoc:
++    @objc public let allResponseFields: [AnyHashable: Any]
++
++    /// :nodoc:
++    @objc public override var description: String {
++        let props: [String] = [
++            String(
++                format: "%@: %p",
++                NSStringFromClass(STPIntentActionPixDisplayQrCode.self),
++                self
++            ),
++            "data = \(data != nil ? "<redacted>" : "nil")",
++            "imageURLPNG = \(String(describing: imageURLPNG))",
++            "imageURLSVG = \(String(describing: imageURLSVG))",
++            "expiresAt = \(String(describing: expiresAt))",
++            "hostedInstructionsURL = \(String(describing: hostedInstructionsURL))",
++        ]
++
++        return "<\(props.joined(separator: "; "))>"
++    }
++
++    internal init(
++        data: String?,
++        imageURLPNG: URL?,
++        imageURLSVG: URL?,
++        expiresAt: Date?,
++        hostedInstructionsURL: URL,
++        allResponseFields: [AnyHashable: Any]
++    ) {
++        self.data = data
++        self.imageURLPNG = imageURLPNG
++        self.imageURLSVG = imageURLSVG
++        self.expiresAt = expiresAt
++        self.hostedInstructionsURL = hostedInstructionsURL
++        self.allResponseFields = allResponseFields
++        super.init()
++    }
++}
++
++// MARK: - STPAPIResponseDecodable
++extension STPIntentActionPixDisplayQrCode: STPAPIResponseDecodable {
++
++    @objc
++    public class func decodedObject(fromAPIResponse response: [AnyHashable: Any]?) -> Self? {
++        guard let dict = response,
++              let hostedInstructionsURLString = dict["hosted_instructions_url"] as? String,
++              let hostedInstructionsURL = URL(string: hostedInstructionsURLString)
++        else {
++            return nil
++        }
++
++        let expiresAt = (dict["expires_at"] as? NSNumber).map {
++            Date(timeIntervalSince1970: $0.doubleValue)
++        }
++        return STPIntentActionPixDisplayQrCode(
++            data: dict["data"] as? String,
++            imageURLPNG: (dict["image_url_png"] as? String).flatMap(URL.init(string:)),
++            imageURLSVG: (dict["image_url_svg"] as? String).flatMap(URL.init(string:)),
++            expiresAt: expiresAt,
++            hostedInstructionsURL: hostedInstructionsURL,
++            allResponseFields: dict
++        ) as? Self
++    }
++}
+diff --git a/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Payments.swift b/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Payments.swift
+index 4484acb..f9209d7 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Payments.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Payments.swift	
+@@ -227,7 +227,8 @@ extension StripeFile.Purpose {
+             return .identityDocument
+         case .disputeEvidence:
+             return .disputeEvidence
+-        case .identityPrivate,
++        case .cryptoOnrampKYCDocument,
++            .identityPrivate,
+             .unparsable:
+             return .unknown
+         }
+diff --git a/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift b/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
+index 0427c7c..5baef76 100644
+--- a/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
++++ b/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
+@@ -873,7 +873,8 @@ public class STPPaymentHandler: NSObject {
+             .naverPay,
+             .payco,
+             .sequra,
+-            .scalapay:
++            .scalapay,
++            .pix:
+             return false
+ 
+         case .unknown:
+@@ -1503,6 +1504,21 @@ public class STPPaymentHandler: NSObject {
+                 // Present the polling view controller behind the web view so we can start polling right away
+                 presentingVC.presentPollingVCForAction(action: currentAction, type: .promptPay, safariViewController: safariViewController)
+             }
++        case .pixDisplayQrCode:
++            let returnURL = currentAction.returnURLString.flatMap(URL.init(string:))
++            guard let hostedInstructionsURL = authenticationAction.pixDisplayQrCode?.hostedInstructionsURL else {
++                failCurrentActionWithMissingNextActionDetails()
++                return
++            }
++            guard let presentingVC = currentAction.authenticationContext as? PaymentSheetAuthenticationContext else {
++                assertionFailure("Pix is not supported outside of PaymentSheet.")
++                currentAction.complete(with: .failed, error: _error(for: .unsupportedAuthenticationErrorCode, loggingSafeErrorMessage: "Pix is not supported outside of PaymentSheet."))
++                return
++            }
++            _handleRedirect(to: hostedInstructionsURL, fallbackURL: hostedInstructionsURL, return: returnURL, useWebAuthSession: false) { safariViewController in
++                // Present the polling view controller behind the web view so polling begins immediately.
++                presentingVC.presentPollingVCForAction(action: currentAction, type: .pix, safariViewController: safariViewController)
++            }
+         case .swishHandleRedirect:
+             guard let returnURL = URL(string: currentAction.returnURLString ?? "") else {
+                 assertionFailure(missingReturnURLErrorMessage)
+@@ -2100,6 +2116,7 @@ public class STPPaymentHandler: NSObject {
+                 .cashAppRedirectToApp,
+                 .payNowDisplayQrCode,
+                 .promptpayDisplayQrCode,
++                .pixDisplayQrCode,
+                 .swishHandleRedirect:
+                 return false
+             case .OXXODisplayDetails,
+@@ -2136,7 +2153,7 @@ public class STPPaymentHandler: NSObject {
+             .weChatPayRedirectToApp, .boletoDisplayDetails, .verifyWithMicrodeposits,
+             .cashAppRedirectToApp, .konbiniDisplayDetails, .payNowDisplayQrCode,
+             .promptpayDisplayQrCode, .swishHandleRedirect, .multibancoDisplayDetails,
+-            .mbWayAwaitAuthorization, .awaitAuthorization:
++            .mbWayAwaitAuthorization, .awaitAuthorization, .pixDisplayQrCode:
+             break
+         }
+ 
+@@ -2741,7 +2758,7 @@ extension STPPaymentHandler {
+ @_spi(STP) public protocol PaymentSheetAuthenticationContext: STPAuthenticationContext {
+     func present(_ authenticationViewController: UIViewController, completion: @escaping () -> Void)
+     func dismiss(_ authenticationViewController: UIViewController, completion: (() -> Void)?)
+-    func presentPollingVCForAction(action: STPPaymentHandlerPaymentIntentActionParams, type: STPPaymentMethodType, safariViewController: SFSafariViewController?)
++    func presentPollingVCForAction(action: STPPaymentHandlerActionParams, type: STPPaymentMethodType, safariViewController: SFSafariViewController?)
+ }
+ 
+ // MARK: - Deprecated public funcs
+diff --git a/VERSION b/VERSION
+index b06eb5e..52e831a 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.12.0
+\ No newline at end of file
++26.12.1
+\ No newline at end of file

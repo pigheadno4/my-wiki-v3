@@ -1,0 +1,3505 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1693aa5..ceb2996 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,9 +3,19 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.7.0 2026-08-17
++### PaymentSheet
++* [Added] StripePaymentSheet now depends on `StripeFinancialConnectionsLite` to support lightweight bank payment flows. If you use StripePaymentSheet with Carthage or by manually embedding the .xcframeworks, [you must also embed StripeFinancialConnectionsLite.xcframework](https://github.com/stripe/stripe-ios/blob/master/MIGRATING.md#migrating-from-versions--2670) in your app. No action is required for CocoaPods or Swift Package Manager users.
++* [Changed] Address autocomplete results sourced from internal service.
++* [Added] Added `PaymentSheet.LinkConfiguration.Display.walletButtonHidden`, which keeps Link enabled but hides its button from the payment element UI.
++
++### AddressElement
++* [Changed] Address autocomplete results sourced from internal service.
++
+ ## 26.6.0 2026-08-10
+ ### PaymentSheet
+ * [Fixed] LinkController (private preview) now returns an error when no funding sources are available for a Link session, rather than silently falling back to card.
++* [Added] Added public `STPAPIClient.betas` support for merchant-supplied beta headers. To use Vipps in PaymentSheet beta, set `vipps_preview=v1` on the `STPAPIClient` instance that you pass into PaymentSheet or Checkout, for example `Set(["vipps_preview=v1"])`.
+ 
+ ### CryptoOnramp (Alpha)
+ * [Added] Added `CryptoOnrampCoordinator.deleteWalletAddress(walletId:)` to delete a registered wallet address.
+@@ -22,6 +32,11 @@ PATCH
+ * [Added] Added `billingDetailsCollectionConfiguration` to `LinkConfiguration`, allowing `LinkControllerPreview` consumers to configure billing details collection in the Link sheet (private preview).
+ * [Added] `LinkController` now supports appearance customization via `LinkAppearance` (private preview).
+ 
++### AddressElement
++* [Changed] No longer supports swipe-to-dismiss.
++* [Changed] Now treats the 'X' button as a true cancel button that discards changes.
++* [Changed] If a customer taps the 'X' button with unsaved changes, now presents a dialog to confirm the cancellation.
++
+ ## 26.4.1 2026-07-23
+ ### Payments
+ * [Fixed] Fixed an issue where some Alipay payments incorrectly reported failure after succeeding.
+diff --git a/MIGRATING.md b/MIGRATING.md
+index 9a6fb8e..6be942c 100644
+--- a/MIGRATING.md
++++ b/MIGRATING.md
+@@ -1,4 +1,7 @@
+ ## Migration Guides
++### Migrating from versions < 26.7.0
++* StripePaymentSheet now depends on `StripeFinancialConnectionsLite`. If you manually link StripePaymentSheet or use Carthage, you must also embed `StripeFinancialConnectionsLite.xcframework` in your app. No action is required for CocoaPods or Swift Package Manager users.
++
+ ### Migrating from versions < 26.0.0
+ * [Changed] The minimum iOS version is now 15.0, as Xcode 27 no longer supports building for iOS 13 or iOS 14. If you'd like to deploy for iOS versions below iOS 15, please use Stripe SDK 25.17.0.
+ 
+diff --git a/Package.swift b/Package.swift
+index 43710ce..399ee70 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -44,6 +44,10 @@ let package = Package(
+             name: "StripeFinancialConnections",
+             targets: ["StripeFinancialConnections"]
+         ),
++        .library(
++            name: "StripeFinancialConnectionsLite",
++            targets: ["StripeFinancialConnectionsLite"]
++        ),
+         .library(
+             name: "StripeConnect",
+             targets: ["StripeConnect"]
+@@ -154,7 +158,7 @@ let package = Package(
+         ),
+         .target(
+             name: "StripePaymentSheet",
+-            dependencies: ["StripePaymentsUI", "StripeApplePay", "StripePayments", "StripeCore", "StripeUICore"],
++            dependencies: ["StripePaymentsUI", "StripeApplePay", "StripePayments", "StripeCore", "StripeUICore", "StripeFinancialConnectionsLite"],
+             path: "StripePaymentSheet/StripePaymentSheet",
+             exclude: ["Info.plist"],
+             resources: [
+@@ -162,6 +166,12 @@ let package = Package(
+                 .process("PrivacyInfo.xcprivacy")
+             ]
+         ),
++        .target(
++            name: "StripeFinancialConnectionsLite",
++            dependencies: ["StripeCore"],
++            path: "StripeFinancialConnectionsLite/StripeFinancialConnectionsLite",
++            exclude: ["Info.plist"]
++        ),
+         .target(
+             name: "StripeFinancialConnections",
+             dependencies: ["StripeCore", "StripeUICore"],
+diff --git a/README.md b/README.md
+index 29989b0..8fb150d 100644
+--- a/README.md
++++ b/README.md
+@@ -92,6 +92,7 @@ For the `Stripe` module, link the following frameworks:
+ - `StripeApplePay.xcframework`
+ - `StripePayments.xcframework`
+ - `StripePaymentsUI.xcframework`
++- `StripeFinancialConnectionsLite.xcframework`
+ - `StripeIssuing.xcframework`
+ - `StripeCore.xcframework`
+ - `StripeUICore.xcframework`
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index 43f28b5..0067a0e 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.6.0'
++  s.version                        = '26.7.0'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index 6f35d1f..0b4688a 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.6.0'
++  s.version                        = '26.7.0'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index 29a79c4..cffdfd4 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.6.0'
++  s.version                        = '26.7.0'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index 3868beb..5f03b4f 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.6.0'
++    s.version                        = '26.7.0'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index bc024af..6811819 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.6.0'
++  s.version                        = '26.7.0'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index 5d09e72..e67ce5c 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.6.0'
++  s.version                        = '26.7.0'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index 50de18d..3028f75 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.6.0'
++  s.version                        = '26.7.0'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+@@ -23,4 +23,5 @@ Pod::Spec.new do |s|
+   s.dependency                       'StripePayments', s.version.to_s
+   s.dependency                       'StripePaymentsUI', s.version.to_s
+   s.dependency                       'StripeApplePay', s.version.to_s
++  s.dependency                       'StripeFinancialConnectionsLite', s.version.to_s
+ end
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Customer.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Customer.swift
+index becabcf..00ea99f 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Customer.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Customer.swift	
+@@ -9,43 +9,50 @@
+ import Foundation
+ @_spi(STP) import StripePayments
+ 
+-/// Customer data from a CheckoutSession response.
+-struct STPCheckoutSessionCustomer {
+-    /// The customer ID.
+-    let id: String
+-
+-    /// Saved payment methods for this customer.
+-    let paymentMethods: [STPPaymentMethod]
+-
+-    /// Whether the customer can detach saved payment methods via payment pages.
+-    let canDetachPaymentMethod: Bool
+-
+-    /// Customer email address.
+-    let email: String?
+-
+-    /// Customer name.
+-    let name: String?
+-
+-    /// Customer phone number.
+-    let phone: String?
+-
+-    static func decodedObject(from dict: [AnyHashable: Any]?) -> STPCheckoutSessionCustomer? {
+-        guard let dict = dict,
+-              let id = dict["id"] as? String else {
+-            return nil
++extension PaymentPagesAPIResponse {
++    /// Customer data from a Checkout Session response.
++    struct Customer: Decodable {
++        /// The customer ID.
++        let id: String
++
++        /// Saved payment methods for this customer.
++        let paymentMethods: [STPPaymentMethod]
++
++        /// Whether the customer can detach saved payment methods via Payment Pages.
++        let canDetachPaymentMethod: Bool
++
++        /// Customer email address.
++        let email: String?
++
++        /// Customer name.
++        let name: String?
++
++        /// Customer phone number.
++        let phone: String?
++
++        private enum CodingKeys: String, CodingKey {
++            case id
++            case paymentMethods
++            case canDetachPaymentMethod
++            case email
++            case name
++            case phone
+         }
+ 
+-        // Parse payment methods array
+-        let paymentMethods: [STPPaymentMethod] = (dict["payment_methods"] as? [[AnyHashable: Any]])?
+-            .compactMap { STPPaymentMethod.decodedObject(fromAPIResponse: $0) } ?? []
+-
+-        return STPCheckoutSessionCustomer(
+-            id: id,
+-            paymentMethods: paymentMethods,
+-            canDetachPaymentMethod: dict["can_detach_payment_method"] as? Bool ?? false,
+-            email: dict["email"] as? String,
+-            name: dict["name"] as? String,
+-            phone: dict["phone"] as? String
+-        )
++        init(from decoder: Decoder) throws {
++            let container = try decoder.container(keyedBy: CodingKeys.self)
++            id = try container.decode(String.self, forKey: .id)
++            paymentMethods = try container.decodeIfPresent(
++                [LegacyDecoded<STPPaymentMethod>].self,
++                forKey: .paymentMethods
++            )?.map(\.value) ?? []
++            canDetachPaymentMethod = try container.decodeIfPresent(
++                Bool.self,
++                forKey: .canDetachPaymentMethod
++            ) ?? false
++            email = try container.decodeIfPresent(String.self, forKey: .email)
++            name = try container.decodeIfPresent(String.self, forKey: .name)
++            phone = try container.decodeIfPresent(String.self, forKey: .phone)
++        }
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+ExchangeRateMeta.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+ExchangeRateMeta.swift
+index 158917f..c53e9d2 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+ExchangeRateMeta.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+ExchangeRateMeta.swift	
+@@ -24,50 +24,4 @@ struct STPCheckoutSessionExchangeRateMeta: Equatable {
+     public let localizedCurrency: String
+     /// The conversion markup in basis points (e.g. 400).
+     public let conversionMarkupBps: Int
+-
+-    static func decodedObject(from dict: [AnyHashable: Any]?) -> STPCheckoutSessionExchangeRateMeta? {
+-        guard let adaptivePricingInfo = dict?["adaptive_pricing_info"] as? [AnyHashable: Any],
+-              let activePresentmentCurrency = adaptivePricingInfo["active_presentment_currency"] as? String,
+-              let sellCurrency = adaptivePricingInfo["integration_currency"] as? String,
+-              let localCurrencyOptions = adaptivePricingInfo["local_currency_options"] as? [[AnyHashable: Any]] else {
+-            return nil
+-        }
+-
+-        let selectedOption: [AnyHashable: Any]? =
+-            localCurrencyOptions.first(where: { ($0["currency"] as? String)?.lowercased() == activePresentmentCurrency.lowercased() })
+-            ?? localCurrencyOptions.first
+-        guard let selectedOption else {
+-            return nil
+-        }
+-
+-        let buyCurrency = (selectedOption["currency"] as? String) ?? activePresentmentCurrency
+-
+-        return decode(
+-            buyCurrency: buyCurrency,
+-            sellCurrency: sellCurrency,
+-            localCurrencyOption: selectedOption
+-        )
+-    }
+-
+-    private static func decode(
+-        buyCurrency: String,
+-        sellCurrency: String,
+-        localCurrencyOption: [AnyHashable: Any]
+-    ) -> STPCheckoutSessionExchangeRateMeta? {
+-        guard let localizedCurrency = localCurrencyOption["currency"] as? String,
+-              let exchangeRate = localCurrencyOption["presentment_exchange_rate"] as? String,
+-              let conversionMarkupBps = localCurrencyOption["conversion_markup_bps"] as? Int else {
+-            return nil
+-        }
+-        let id = "\(sellCurrency.lowercased())_to_\(buyCurrency.lowercased())"
+-        return STPCheckoutSessionExchangeRateMeta(
+-            id: id,
+-            buyCurrency: buyCurrency,
+-            sellCurrency: sellCurrency,
+-            exchangeRate: exchangeRate,
+-            integrationCurrency: sellCurrency,
+-            localizedCurrency: localizedCurrency,
+-            conversionMarkupBps: conversionMarkupBps
+-        )
+-    }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+LocalizedPriceMeta.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+LocalizedPriceMeta.swift
+index d5b547d..51b026c 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+LocalizedPriceMeta.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+LocalizedPriceMeta.swift	
+@@ -16,37 +16,4 @@ struct STPCheckoutSessionLocalizedPriceMeta: Equatable {
+     public let currency: String
+     /// The total amount in the smallest currency unit (e.g. 12000 for $120.00).
+     public let total: Int
+-
+-    static func localizedPricesMetas(from dict: [AnyHashable: Any]?) -> [STPCheckoutSessionLocalizedPriceMeta] {
+-        guard let adaptivePricingInfo = dict?["adaptive_pricing_info"] as? [AnyHashable: Any],
+-              let localCurrencyOptions = adaptivePricingInfo["local_currency_options"] as? [[AnyHashable: Any]] else {
+-            return []
+-        }
+-        var metas = localCurrencyOptions.compactMap { decode(from: $0) }
+-
+-        // Always include the integration currency as an option
+-        if let integrationCurrency = adaptivePricingInfo["integration_currency"] as? String,
+-           let integrationAmount = adaptivePricingInfo["integration_amount"] as? Int {
+-            let integrationMeta = STPCheckoutSessionLocalizedPriceMeta(
+-                id: integrationCurrency,
+-                currency: integrationCurrency,
+-                total: integrationAmount
+-            )
+-            // Only add if it's not already in the list (in case local_currency_options somehow includes it)
+-            if !metas.contains(where: { $0.currency.lowercased() == integrationCurrency.lowercased() }) {
+-                metas.append(integrationMeta)
+-            }
+-        }
+-
+-        return metas
+-    }
+-
+-    private static func decode(from dict: [AnyHashable: Any]) -> STPCheckoutSessionLocalizedPriceMeta? {
+-        guard let currency = dict["currency"] as? String,
+-              let amount = dict["amount"] as? Int else {
+-            return nil
+-        }
+-        // local_currency_options no longer includes a dedicated id, so currency is the stable identifier.
+-        return STPCheckoutSessionLocalizedPriceMeta(id: currency, currency: currency, total: amount)
+-    }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+SavedPaymentMethodsOfferSave.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+SavedPaymentMethodsOfferSave.swift
+index c37d840..4075149 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+SavedPaymentMethodsOfferSave.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+SavedPaymentMethodsOfferSave.swift	
+@@ -26,19 +26,4 @@ struct STPCheckoutSessionSavedPaymentMethodsOfferSave {
+         /// Checkbox should be unchecked by default.
+         case notAccepted
+     }
+-
+-    static func decodedObject(from dict: [AnyHashable: Any]?) -> STPCheckoutSessionSavedPaymentMethodsOfferSave? {
+-        guard let dict = dict else {
+-            return nil
+-        }
+-
+-        let enabled = dict["enabled"] as? Bool ?? false
+-        let statusString = dict["status"] as? String
+-        let status: Status = (statusString == "accepted") ? .accepted : .notAccepted
+-
+-        return STPCheckoutSessionSavedPaymentMethodsOfferSave(
+-            enabled: enabled,
+-            status: status
+-        )
+-    }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift
+index b080521..8096832 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift	
+@@ -9,43 +9,408 @@ import Foundation
+ @_spi(STP) import StripePayments
+ 
+ extension PaymentPagesAPIResponse {
+-    var minorUnitsAmountDivisor: Int? {
+-        guard let currency else { return nil }
+-        let oneMinorUnitInMajor = NSDecimalNumber.stp_decimalNumber(withAmount: 1, currency: currency)
+-        return Int(truncating: NSDecimalNumber(value: 1).dividing(by: oneMinorUnitInMajor))
+-    }
+-
+     /// Builds a public, read-only ``Checkout.Session`` snapshot from this API response object.
+     func makePublicSession() -> Checkout.Session {
++        let elementsSessionValue = elementsSession.value
++        let publicDiscountAmounts = Self.makeDiscountAmounts(
++            from: recurringDetails?.totalDiscountAmounts ?? [],
++            currency: currency
++        )
++        let publicTaxAmounts = Self.makeTaxAmounts(
++            from: recurringDetails?.totalTaxAmounts ?? [],
++            currency: currency
++        )
++        let publicOrderSummaryItems = Self.makeOrderSummaryItems(
++            from: checkoutItems,
++            defaultCurrency: currency,
++            locale: .autoupdatingCurrent
++        )
++        let publicTotals = Self.makeTotals(from: checkoutItems, currency: currency)
++        let publicTax = Checkout.Tax(
++            status: Self.makeTaxStatus(taxMeta: taxMeta, taxContext: taxContext),
++            taxAmounts: publicTaxAmounts.isEmpty ? nil : publicTaxAmounts
++        )
++        let localizedPricesMetas = Self.makeLocalizedPricesMetas(from: adaptivePricingInfo)
++        let exchangeRateMeta = Self.makeExchangeRateMeta(from: adaptivePricingInfo)
++        let automaticTaxEnabled = taxContext?.automaticTaxEnabled ?? false
++        let automaticTaxAddressSource = Self.makeAutomaticTaxAddressSource(
++            from: taxContext?.automaticTaxAddressSource
++        )
++        if automaticTaxEnabled && automaticTaxAddressSource == "billing" {
++            elementsSessionValue.disableLinkForAutomaticTaxBilling = true
++        }
++
+         return Checkout.Session(
+-            id: id,
+-            businessName: businessName,
++            id: sessionId,
++            businessName: elementsSession.businessName,
+             currency: currency,
+-            currencyOptions: currencyOptions,
+-            discountAmounts: discountAmounts,
+-            email: email,
+-            lineItems: lineItems,
++            currencyOptions: Self.makeCurrencyOptions(
++                from: localizedPricesMetas,
++                exchangeRateMeta: exchangeRateMeta
++            ),
++            discountAmounts: publicDiscountAmounts,
++            email: customerEmail ?? customer?.email,
++            orderSummaryItems: publicOrderSummaryItems,
+             livemode: livemode,
+-            minorUnitsAmountDivisor: minorUnitsAmountDivisor,
++            minorUnitsAmountDivisor: Self.makeMinorUnitsAmountDivisor(currency: currency),
+             paymentOption: nil,
+             shippingAddress: nil,
+             status: status,
+-            tax: tax,
+-            total: total,
++            tax: publicTax,
++            totals: publicTotals,
+             paymentStatus: paymentStatus,
+             paymentMethodOptions: paymentMethodOptions,
+             customer: customer,
+-            savedPaymentMethodsOfferSave: savedPaymentMethodsOfferSave,
++            savedPaymentMethodsOfferSave: Self.makeSavedPaymentMethodsOfferSave(from: savedPaymentMethodsOfferSave),
+             setupFutureUsage: setupFutureUsage,
+-            setupFutureUsageForPaymentMethodType: setupFutureUsageForPaymentMethodType,
+-            allowedShippingCountries: allowedShippingCountries,
++            setupFutureUsageForPaymentMethodType: setupFutureUsageForPaymentMethodType ?? [:],
++            allowedShippingCountries: shippingAddressCollection?.allowedCountries,
+             localizedPricesMetas: localizedPricesMetas,
+             exchangeRateMeta: exchangeRateMeta,
+-            adaptivePricingActive: adaptivePricingActive,
+-            billingAddressCollection: billingAddressCollection,
++            adaptivePricingActive: developerToolContext?.adaptivePricing?.active ?? false,
++            billingAddressCollection: billingAddressCollection.flatMap(Checkout.Session.BillingAddressCollection.init(rawValue:)) ?? .automatic,
+             automaticTaxEnabled: automaticTaxEnabled,
+             automaticTaxAddressSource: automaticTaxAddressSource,
+-            elementsSession: elementsSession
++            elementsSession: elementsSessionValue
++        )
++    }
++}
++
++// MARK: - Public model conversion
++
++extension PaymentPagesAPIResponse {
++    static func makeAmount(_ minorUnitsAmount: Int, currency: String) -> Checkout.Session.Amount {
++        return makeAmount(Double(minorUnitsAmount), currency: currency, locale: .autoupdatingCurrent)
++    }
++
++    // TODO: Have Payment Pages return Session.Amount-shaped values so clients don't duplicate
++    // minor-to-major conversion and locale-aware currency formatting.
++    private static func makeAmount(
++        _ minorUnitsAmount: Double,
++        currency: String,
++        locale: Locale,
++        supportsSubcentPrecision: Bool = false
++    ) -> Checkout.Session.Amount {
++        let minorUnitValueInMajorUnits = NSDecimalNumber.stp_decimalNumber(withAmount: 1, currency: currency) // e.g. USD: 0.01
++        let decimalizedAmount = NSDecimalNumber(value: minorUnitsAmount).multiplying(by: minorUnitValueInMajorUnits) // e.g. 49,900 × 0.01 = 499.00
++        let formatter = NumberFormatter()
++        formatter.numberStyle = .currency
++        formatter.usesGroupingSeparator = true
++        formatter.locale = locale
++        formatter.currencyCode = currency
++        if supportsSubcentPrecision {
++            // Match EwCS and preserve the API's supported 12 decimal places beyond the
++            // currency's normal precision (e.g. up to 14 fraction digits for USD).
++            formatter.maximumFractionDigits += 12
++        }
++        let formatted = formatter.string(from: decimalizedAmount)
++            ?? "\(formatter.currencySymbol ?? "")\(decimalizedAmount)"
++        return Checkout.Session.Amount(
++            amount: formatted,
++            minorUnitsAmount: minorUnitsAmount
++        )
++    }
++
++    private static func makeMinorUnitsAmountDivisor(currency: String) -> Int {
++        let oneMinorUnitInMajor = NSDecimalNumber.stp_decimalNumber(withAmount: 1, currency: currency)
++        return Int(truncating: NSDecimalNumber(value: 1).dividing(by: oneMinorUnitInMajor))
++    }
++
++    private static func makeOrderSummaryItems(
++        from checkoutItems: [CheckoutItem],
++        defaultCurrency: String,
++        locale: Locale
++    ) -> [Checkout.Session.OrderSummaryItem] {
++        checkoutItems.map { item in
++            let oneTimePrice = item.oneTimePrice
++            let publicItems: [Checkout.Session.OrderSummaryItem.OneTimePrice.Item] =
++                oneTimePrice.items.map { item in
++                    let price = item.price
++                    let product = price.product
++                    let currency = price.currency
++                    let unitAmount = item.unitAmount ?? price.unitAmount ?? 0
++                    let adjustableQuantity: Checkout.Session.AdjustableQuantity?
++                    if let rawAdjustableQuantity = item.adjustableQuantity,
++                       rawAdjustableQuantity.enabled {
++                        // TODO: Payment Pages currently models these bounds as optional, although enabled
++                        // adjustable quantity is normally populated with server defaults of 0 and 99.
++                        // Once the response contract requires both bounds when enabled, reject missing
++                        // values during decoding and remove these client-side fallbacks.
++                        adjustableQuantity = Checkout.Session.AdjustableQuantity(
++                            enabled: true,
++                            maximum: rawAdjustableQuantity.maximum ?? 99,
++                            minimum: rawAdjustableQuantity.minimum ?? 0
++                        )
++                    } else {
++                        adjustableQuantity = nil
++                    }
++                    return Checkout.Session.OrderSummaryItem.OneTimePrice.Item(
++                        key: price.id,
++                        displayName: product.name,
++                        images: product.images,
++                        unitAmount: makeAmount(
++                            Double(unitAmount),
++                            currency: currency,
++                            locale: locale
++                        ),
++                        unitAmountDecimal: item.unitAmountDecimal.map {
++                            makeAmount(
++                                $0,
++                                currency: currency,
++                                locale: locale,
++                                supportsSubcentPrecision: true
++                            )
++                        },
++                        unitLabel: item.unitLabel,
++                        quantity: item.quantity,
++                        adjustableQuantity: adjustableQuantity
++                    )
++                }
++
++            let taxAmounts = oneTimePrice.items.flatMap(\.taxAmounts).map {
++                makeSessionTaxAmount(from: $0, currency: defaultCurrency, locale: locale)
++            }
++            let taxInclusive = oneTimePrice.items.reduce(0) { $0 + $1.taxInclusive }
++            let taxExclusive = oneTimePrice.items.reduce(0) { $0 + $1.taxExclusive }
++            let amountDetails = Checkout.Session.OrderSummaryItem.OneTimePrice.AmountDetails(
++                total: makeAmount(Double(oneTimePrice.total), currency: defaultCurrency, locale: locale),
++                subtotal: makeAmount(
++                    Double(oneTimePrice.subtotal),
++                    currency: defaultCurrency,
++                    locale: locale
++                ),
++                taxAmounts: taxAmounts.isEmpty ? nil : taxAmounts,
++                discount: makeAmount(0, currency: defaultCurrency, locale: locale),
++                taxInclusive: makeAmount(
++                    Double(taxInclusive),
++                    currency: defaultCurrency,
++                    locale: locale
++                ),
++                taxExclusive: makeAmount(
++                    Double(taxExclusive),
++                    currency: defaultCurrency,
++                    locale: locale
++                )
++            )
++            return .oneTimePrice(
++                Checkout.Session.OrderSummaryItem.OneTimePrice(
++                    key: item.key,
++                    description: nil,
++                    items: publicItems,
++                    amountDetails: amountDetails
++                )
++            )
++        }
++    }
++
++    private static func makeSessionTaxAmount(
++        from taxAmount: TaxAmount,
++        currency: String,
++        locale: Locale
++    ) -> Checkout.Session.TaxAmount {
++        let publicAmount = makeAmount(Double(taxAmount.amount), currency: currency, locale: locale)
++        return Checkout.Session.TaxAmount(
++            amount: publicAmount.amount,
++            minorUnitsAmount: publicAmount.minorUnitsAmount,
++            inclusive: taxAmount.inclusive,
++            displayName: taxAmount.taxRate.displayName,
++            percentage: taxAmount.taxRate.rateType == "flat_amount"
++                ? nil
++                : taxAmount.taxRate.percentage
++        )
++    }
++
++    private static func makeDiscountAmounts(
++        from discountAmounts: [DiscountAmount],
++        currency: String
++    ) -> [Checkout.DiscountAmount] {
++        discountAmounts.compactMap { discount in
++            guard let amount = discount.amount, amount > 0 else { return nil }
++            return Checkout.DiscountAmount(
++                amount: makeAmount(amount, currency: currency),
++                displayName: discount.displayName
++                    ?? discount.coupon?.name
++                    ?? discount.coupon?.id
++                    ?? String.Localized.discount,
++                promotionCode: discount.promotionCode?.code
++            )
++        }
++    }
++
++    private static func makeTaxAmounts(
++        from taxAmounts: [TaxAmount],
++        currency: String
++    ) -> [Checkout.TaxAmount] {
++        taxAmounts.map { taxAmount in
++            return Checkout.TaxAmount(
++                amount: makeAmount(taxAmount.amount, currency: currency),
++                inclusive: taxAmount.inclusive,
++                displayName: taxAmount.taxRate.displayName
++            )
++        }
++    }
++
++    private static func makeTotals(
++        from checkoutItems: [CheckoutItem],
++        currency: String
++    ) -> Checkout.Session.Totals {
++        var subtotal = 0
++        var taxExclusive = 0
++        var taxInclusive = 0
++        var total = 0
++        for checkoutItem in checkoutItems {
++            let oneTimePrice = checkoutItem.oneTimePrice
++            subtotal += oneTimePrice.subtotal
++            taxExclusive += oneTimePrice.items.reduce(0) { $0 + $1.taxExclusive }
++            taxInclusive += oneTimePrice.items.reduce(0) { $0 + $1.taxInclusive }
++            total += oneTimePrice.total
++        }
++        return Checkout.Session.Totals(
++            subtotal: makeAmount(subtotal, currency: currency),
++            taxExclusive: makeAmount(taxExclusive, currency: currency),
++            taxInclusive: makeAmount(taxInclusive, currency: currency),
++            // Discounts are not currently supported in unified mode.
++            discount: makeAmount(0, currency: currency),
++            total: makeAmount(total, currency: currency)
+         )
+     }
++
++    private static func makeTaxStatus(
++        taxMeta: TaxMeta?,
++        taxContext: TaxContext?
++    ) -> Checkout.TaxStatus {
++        guard taxMeta?.computationType == "automatic" else { return .ready }
++        switch taxMeta?.status {
++        case "complete":
++            return .ready
++        case "requires_location_inputs":
++            return taxContext?.automaticTaxAddressSource == "session.shipping"
++                ? .requiresShippingAddress
++                : .requiresBillingAddress
++        case "failed":
++            return .unknown
++        default:
++            return .ready
++        }
++    }
++
++    private static func makeAutomaticTaxAddressSource(from value: String?) -> String? {
++        guard let value else { return nil }
++        return value.hasPrefix("session.") ? String(value.dropFirst("session.".count)) : value
++    }
++
++    private static func makeSavedPaymentMethodsOfferSave(
++        from value: SavedPaymentMethodsOfferSave?
++    ) -> STPCheckoutSessionSavedPaymentMethodsOfferSave? {
++        guard let value else { return nil }
++        return STPCheckoutSessionSavedPaymentMethodsOfferSave(
++            enabled: value.enabled ?? false,
++            status: value.status == "accepted" ? .accepted : .notAccepted
++        )
++    }
++
++    private static func makeLocalizedPricesMetas(
++        from adaptivePricingInfo: AdaptivePricingInfo?
++    ) -> [STPCheckoutSessionLocalizedPriceMeta] {
++        guard let adaptivePricingInfo,
++              let localCurrencyOptions = adaptivePricingInfo.localCurrencyOptions else {
++            return []
++        }
++        var metas: [STPCheckoutSessionLocalizedPriceMeta] = localCurrencyOptions.compactMap { option in
++            guard let currency = option.currency,
++                  let amount = option.amount else {
++                return nil
++            }
++            // Local currency options no longer include a dedicated ID, so currency is stable.
++            return STPCheckoutSessionLocalizedPriceMeta(
++                id: currency,
++                currency: currency,
++                total: amount
++            )
++        }
++
++        // Always include the integration currency as an option.
++        if let integrationCurrency = adaptivePricingInfo.integrationCurrency,
++           let integrationAmount = adaptivePricingInfo.integrationAmount,
++           !metas.contains(where: { $0.currency.lowercased() == integrationCurrency.lowercased() }) {
++            metas.append(
++                STPCheckoutSessionLocalizedPriceMeta(
++                    id: integrationCurrency,
++                    currency: integrationCurrency,
++                    total: integrationAmount
++                )
++            )
++        }
++
++        return metas
++    }
++
++    private static func makeExchangeRateMeta(
++        from adaptivePricingInfo: AdaptivePricingInfo?
++    ) -> STPCheckoutSessionExchangeRateMeta? {
++        guard let adaptivePricingInfo,
++              let activePresentmentCurrency = adaptivePricingInfo.activePresentmentCurrency,
++              let integrationCurrency = adaptivePricingInfo.integrationCurrency,
++              let localCurrencyOptions = adaptivePricingInfo.localCurrencyOptions,
++              let selectedOption = localCurrencyOptions.first(where: {
++                  $0.currency?.lowercased() == activePresentmentCurrency.lowercased()
++              }) ?? localCurrencyOptions.first,
++              let localizedCurrency = selectedOption.currency,
++              let exchangeRate = selectedOption.presentmentExchangeRate,
++              let conversionMarkupBps = selectedOption.conversionMarkupBps else {
++            return nil
++        }
++
++        return STPCheckoutSessionExchangeRateMeta(
++            id: "\(integrationCurrency.lowercased())_to_\(localizedCurrency.lowercased())",
++            buyCurrency: localizedCurrency,
++            sellCurrency: integrationCurrency,
++            exchangeRate: exchangeRate,
++            integrationCurrency: integrationCurrency,
++            localizedCurrency: localizedCurrency,
++            conversionMarkupBps: conversionMarkupBps
++        )
++    }
++
++    static func makeCurrencyOptions(
++        from metas: [STPCheckoutSessionLocalizedPriceMeta],
++        exchangeRateMeta: STPCheckoutSessionExchangeRateMeta?
++    ) -> [Checkout.CurrencyOption] {
++        metas.map { meta in
++            let conversion: Checkout.CurrencyConversion? = exchangeRateMeta.flatMap { rate in
++                guard meta.currency.lowercased() == rate.localizedCurrency.lowercased() else { return nil }
++                return Checkout.CurrencyConversion(fxRate: rate.exchangeRate, sourceCurrency: rate.sellCurrency)
++            }
++            return Checkout.CurrencyOption(
++                amount: makeAmount(meta.total, currency: meta.currency),
++                currency: meta.currency,
++                currencyConversion: conversion
++            )
++        }
++    }
++}
++
++extension Checkout.Session.Status {
++    static func status(
++        from string: String,
++        paymentStatus: Checkout.Session.Status.PaymentStatus
++    ) -> Checkout.Session.Status? {
++        switch string.lowercased() {
++        case "open": return .open
++        case "complete": return .complete(paymentStatus)
++        case "expired": return .expired
++        default: return nil
++        }
++    }
++}
++
++extension Checkout.Session.Status.PaymentStatus {
++    static func paymentStatus(from string: String) -> Checkout.Session.Status.PaymentStatus? {
++        switch string.lowercased() {
++        case "paid": return .paid
++        case "unpaid": return .unpaid
++        case "no_payment_required": return .noPaymentRequired
++        default: return nil
++        }
++    }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift
+index a28c1a4..859f57d 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift	
+@@ -10,119 +10,39 @@ import Foundation
+ @_spi(STP) import StripeCore
+ @_spi(STP) import StripePayments
+ 
+-/// Internal response model for the mobile Payment Pages API endpoints.
++/// Internal response model for the Payment Pages API endpoints.
+ ///
+-/// These endpoints return Checkout Session state plus mobile-specific fields such as
+-/// `elements_session`.
+-class PaymentPagesAPIResponse: NSObject {
++/// Properties in this model mirror the API payload. Conversion to the public Checkout
++/// representation belongs in `makePublicSession()`.
++struct PaymentPagesAPIResponse: UnknownFieldsDecodable, CustomStringConvertible {
++    var _allResponseFieldsStorage: NonEncodableParameters?
+ 
+-    // MARK: - Identifiers
+-
+-    /// The Stripe ID of the CheckoutSession.
+-    let id: String
+-
+-    /// The client secret of the CheckoutSession. Used for embedded or custom UI modes.
++    let sessionId: String
+     let clientSecret: String?
+-
+-    /// The business name configured in the Business Public Details settings of your account.
+-    let businessName: String?
+-
+-    /// Three-letter ISO currency code, in lowercase.
+-    let currency: String?
+-
+-    /// Currency options available when adaptive pricing is active. Empty when not active.
+-    let currencyOptions: [Checkout.CurrencyOption]
+-
+-    /// Aggregate discount amounts calculated per discount for all line items.
+-    let discountAmounts: [Checkout.DiscountAmount]
+-
+-    /// The customer's email address.
+-    let email: String?
+-
+-    /// The line items associated with this session.
+-    let lineItems: [Checkout.LineItem]
+-
+-    /// Whether or not this CheckoutSession was created in livemode.
+-    let livemode: Bool
+-
+-    /// Payment methods attached to the customer.
+-    let savedPaymentMethods: [STPPaymentMethod]
+-
+-    /// Status of the session (status type + payment status).
+-    let status: Checkout.Status?
+-
+-    /// Tax computation status and aggregate tax amounts.
+-    let tax: Checkout.Tax
+-
+-    /// Tax and discount details for the computed total amount.
+-    let total: Checkout.Total?
+-
+-    // MARK: - Internal SDK-only fields
+-
+-    /// The top-level payment status.
+-    let paymentStatus: Checkout.PaymentStatus
+-
+-    /// The ID of the PaymentIntent for Checkout Sessions in payment mode.
+     let paymentIntentId: String?
+-
+-    /// The ID of the SetupIntent for Checkout Sessions in setup mode.
+-    let setupIntentId: String?
+-
+-    /// The expanded PaymentIntent for this session, if in `payment` or `subscription` mode.
+     let paymentIntent: STPPaymentIntent?
+-
+-    /// The expanded SetupIntent for this session, if in `setup` mode.
++    let setupIntentId: String?
+     let setupIntent: STPSetupIntent?
+-
+-    /// Payment-method-specific configuration for this CheckoutSession.
+-    let paymentMethodOptions: STPPaymentMethodOptions?
+-
+-    /// Customer data including saved payment methods.
+-    let customer: STPCheckoutSessionCustomer?
+-
+-    /// The URL to the Checkout Session (for hosted UI mode).
+-    let url: URL?
+-
+-    /// The URL to redirect to after authentication or payment completion.
+-    let returnUrl: String?
+-
+-    /// Server-side flag controlling the "Save for future use" checkbox.
+-    let savedPaymentMethodsOfferSave: STPCheckoutSessionSavedPaymentMethodsOfferSave?
+-
+-    /// Top-level setup_future_usage for payment-mode checkout sessions.
++    let currency: String
++    let checkoutItems: [CheckoutItem]
++    let livemode: Bool
++    let status: Checkout.Session.Status
++    let paymentStatus: Checkout.Session.Status.PaymentStatus
++    let customerEmail: String?
++    let url: String?
++    let savedPaymentMethodsOfferSave: SavedPaymentMethodsOfferSave?
+     let setupFutureUsage: String?
+-
+-    /// Per-payment-method setup_future_usage overrides for payment-mode checkout sessions.
+-    let setupFutureUsageForPaymentMethodType: [String: String]
+-
+-    /// Billing address collection behavior for this session.
+-    let billingAddressCollection: Checkout.Session.BillingAddressCollection
+-
+-    /// The allowed countries for shipping address collection, or `nil` if shipping
+-    /// address collection is not configured.
+-    let allowedShippingCountries: [String]?
+-
+-    /// The localized price options for adaptive pricing (internal decoder used by the
+-    /// adaptive-pricing UI; the public surface is ``currencyOptions``).
+-    let localizedPricesMetas: [STPCheckoutSessionLocalizedPriceMeta]
+-
+-    /// Exchange rate metadata for adaptive pricing, if available.
+-    let exchangeRateMeta: STPCheckoutSessionExchangeRateMeta?
+-
+-    /// Whether adaptive pricing is active for this session.
+-    let adaptivePricingActive: Bool
+-
+-    /// Whether automatic tax calculation is enabled for this session.
+-    let automaticTaxEnabled: Bool
+-
+-    /// The address source used for automatic tax calculation (e.g. `"billing"` or `"shipping"`).
+-    let automaticTaxAddressSource: String?
+-
+-    /// The elements session embedded in this checkout session.
+-    let elementsSession: STPElementsSession
+-
+-    /// The raw API response used to create this object.
+-    let allResponseFields: [AnyHashable: Any]
++    let setupFutureUsageForPaymentMethodType: [String: String]?
++    let billingAddressCollection: String?
++    let shippingAddressCollection: ShippingAddressCollection?
++    let recurringDetails: RecurringDetails?
++    let adaptivePricingInfo: AdaptivePricingInfo?
++    let developerToolContext: DeveloperToolContext?
++    let taxContext: TaxContext?
++    let taxMeta: TaxMeta?
++    let paymentMethodOptions: STPPaymentMethodOptions?
++    let customer: Customer?
++    let elementsSession: ElementsSession
+ 
+     /// Extracts the client secret from whichever expanded intent is present in the response.
+     func intentClientSecret() throws -> String {
+@@ -136,516 +56,444 @@ class PaymentPagesAPIResponse: NSObject {
+         )
+     }
+ 
+-    /// :nodoc:
+-    override var description: String {
++    var description: String {
+         let props: [String] = [
+-            String(format: "%@: %p", NSStringFromClass(PaymentPagesAPIResponse.self), self),
+-            "id = \(id)",
+-            "total = \(String(describing: total))",
++            "PaymentPagesAPIResponse",
++            "sessionId = \(sessionId)",
+             "clientSecret = <redacted>",
+-            "currency = \(String(describing: currency))",
++            "currency = \(currency)",
+             "mode = \(String(describing: allResponseFields["mode"]))",
+-            "status = \(String(describing: status))",
++            "status = \(status)",
+             "paymentIntentId = \(String(describing: paymentIntentId))",
+             "setupIntentId = \(String(describing: setupIntentId))",
+-            "paymentIntent = \(String(describing: paymentIntent))",
+-            "setupIntent = \(String(describing: setupIntent))",
+             "paymentMethodTypes = \(String(describing: allResponseFields["payment_method_types"]))",
+             "livemode = \(livemode)",
+             "customerId = \(String(describing: customer?.id))",
+-            "email = \(String(describing: email))",
++            "customerEmail = \(String(describing: customerEmail))",
+             "url = \(String(describing: url))",
+-            "returnUrl = \(String(describing: returnUrl))",
+-            "discountAmounts = \(discountAmounts)",
+             "savedPaymentMethodsOfferSave = \(String(describing: savedPaymentMethodsOfferSave))",
+         ]
+-
+         return "<\(props.joined(separator: "; "))>"
+     }
+ 
+-    private init(
+-        id: String,
+-        clientSecret: String?,
+-        businessName: String?,
+-        currency: String?,
+-        currencyOptions: [Checkout.CurrencyOption],
+-        discountAmounts: [Checkout.DiscountAmount],
+-        email: String?,
+-        lineItems: [Checkout.LineItem],
+-        livemode: Bool,
+-        savedPaymentMethods: [STPPaymentMethod],
+-        status: Checkout.Status?,
+-        tax: Checkout.Tax,
+-        total: Checkout.Total?,
+-        paymentStatus: Checkout.PaymentStatus,
+-        paymentIntentId: String?,
+-        setupIntentId: String?,
+-        paymentIntent: STPPaymentIntent?,
+-        setupIntent: STPSetupIntent?,
+-        paymentMethodOptions: STPPaymentMethodOptions?,
+-        customer: STPCheckoutSessionCustomer?,
+-        url: URL?,
+-        returnUrl: String?,
+-        savedPaymentMethodsOfferSave: STPCheckoutSessionSavedPaymentMethodsOfferSave?,
+-        setupFutureUsage: String?,
+-        setupFutureUsageForPaymentMethodType: [String: String],
+-        billingAddressCollection: Checkout.Session.BillingAddressCollection,
+-        allowedShippingCountries: [String]?,
+-        localizedPricesMetas: [STPCheckoutSessionLocalizedPriceMeta],
+-        exchangeRateMeta: STPCheckoutSessionExchangeRateMeta?,
+-        adaptivePricingActive: Bool,
+-        automaticTaxEnabled: Bool,
+-        automaticTaxAddressSource: String?,
+-        elementsSession: STPElementsSession,
+-        allResponseFields: [AnyHashable: Any]
+-    ) {
+-        self.id = id
+-        self.clientSecret = clientSecret
+-        self.businessName = businessName
+-        self.currency = currency
+-        self.currencyOptions = currencyOptions
+-        self.discountAmounts = discountAmounts
+-        self.email = email
+-        self.lineItems = lineItems
+-        self.livemode = livemode
+-        self.savedPaymentMethods = savedPaymentMethods
+-        self.status = status
+-        self.tax = tax
+-        self.total = total
+-        self.paymentStatus = paymentStatus
+-        self.paymentIntentId = paymentIntentId
+-        self.setupIntentId = setupIntentId
+-        self.paymentIntent = paymentIntent
+-        self.setupIntent = setupIntent
+-        self.paymentMethodOptions = paymentMethodOptions
+-        self.customer = customer
+-        self.url = url
+-        self.returnUrl = returnUrl
+-        self.savedPaymentMethodsOfferSave = savedPaymentMethodsOfferSave
+-        self.setupFutureUsage = setupFutureUsage
+-        self.setupFutureUsageForPaymentMethodType = setupFutureUsageForPaymentMethodType
+-        self.billingAddressCollection = billingAddressCollection
+-        self.allowedShippingCountries = allowedShippingCountries
+-        self.localizedPricesMetas = localizedPricesMetas
+-        self.exchangeRateMeta = exchangeRateMeta
+-        self.adaptivePricingActive = adaptivePricingActive
+-        self.automaticTaxEnabled = automaticTaxEnabled
+-        self.automaticTaxAddressSource = automaticTaxAddressSource
+-        self.elementsSession = elementsSession
+-        self.allResponseFields = allResponseFields
+-        super.init()
++    private enum CodingKeys: String, CodingKey {
++        case sessionId
++        case clientSecret
++        case paymentIntent
++        case setupIntent
++        case currency
++        case checkoutItems
++        case livemode
++        case mode
++        case status
++        case paymentStatus
++        case paymentMethodTypes
++        case customerEmail
++        case url
++        case savedPaymentMethodsOfferSave = "customer_managed_saved_payment_methods_offer_save"
++        case setupFutureUsage
++        case setupFutureUsageForPaymentMethodType
++        case billingAddressCollection
++        case shippingAddressCollection
++        case recurringDetails
++        case adaptivePricingInfo
++        case developerToolContext
++        case taxContext
++        case taxMeta
++        case paymentMethodOptions
++        case customer
++        case elementsSession
+     }
+-}
+ 
+-// MARK: - STPAPIResponseDecodable
+-
+-extension PaymentPagesAPIResponse: STPAPIResponseDecodable {
+-
+-    @objc
+-    class func decodedObject(fromAPIResponse response: [AnyHashable: Any]?) -> Self? {
+-        guard let dict = response,
+-              let id = dict["session_id"] as? String,
+-              let livemode = dict["livemode"] as? Bool,
+-              let rawPaymentStatus = dict["payment_status"] as? String,
+-              (dict["payment_method_types"] as? [String]) != nil
+-        else {
+-            return nil
++    init(from decoder: Decoder) throws {
++        let container = try decoder.container(keyedBy: CodingKeys.self)
++        sessionId = try container.decode(String.self, forKey: .sessionId)
++        clientSecret = try container.decodeIfPresent(String.self, forKey: .clientSecret)
++        let decodedPaymentIntent = try container.decodeIfPresent(
++            LegacyExpandable<STPPaymentIntent>.self,
++            forKey: .paymentIntent
++        )
++        paymentIntentId = decodedPaymentIntent?.id
++        paymentIntent = decodedPaymentIntent?.expandedObject
++        let decodedSetupIntent = try container.decodeIfPresent(
++            LegacyExpandable<STPSetupIntent>.self,
++            forKey: .setupIntent
++        )
++        setupIntentId = decodedSetupIntent?.id
++        setupIntent = decodedSetupIntent?.expandedObject
++        let decodedCurrency = try container.decode(String.self, forKey: .currency)
++        guard !decodedCurrency.isEmpty else {
++            throw decoder.dataCorrupted("currency must not be empty")
+         }
++        currency = decodedCurrency
+ 
+-        // Optional / nullable fields
+-        let clientSecret = dict["client_secret"] as? String
+-        let currency = dict["currency"] as? String
+-        let urlString = dict["url"] as? String
+-
+-        // Customer (object or string ID for backwards compatibility)
+-        let customer: STPCheckoutSessionCustomer?
+-        if let customerDict = dict["customer"] as? [AnyHashable: Any] {
+-            customer = STPCheckoutSessionCustomer.decodedObject(from: customerDict)
+-        } else {
+-            customer = nil
++        let mode = try container.decode(String.self, forKey: .mode)
++        guard mode == "modeless" else {
++            throw decoder.dataCorrupted("Only modeless Checkout Sessions are supported")
+         }
+ 
+-        // Status (type + payment status)
+-        let paymentStatus = Checkout.PaymentStatus.paymentStatus(from: rawPaymentStatus)
+-        let status: Checkout.Status? = {
+-            guard let rawStatus = dict["status"] as? String else { return nil }
+-            return Checkout.Status(
+-                type: Checkout.StatusType.statusType(from: rawStatus),
+-                paymentStatus: paymentStatus
+-            )
+-        }()
+-
+-        // Collections
+-        let publicTaxAmounts = Self.parseSessionTaxAmounts(from: dict, currency: currency)
+-
+-        let discountAmounts = Self.parseDiscountAmounts(from: dict, currency: currency)
+-        let lineItems = Self.parseLineItems(from: dict, defaultCurrency: currency)
++        let decodedCheckoutItems = try container.decode([CheckoutItem].self, forKey: .checkoutItems)
++        guard !decodedCheckoutItems.isEmpty else {
++            throw decoder.dataCorrupted("checkout_items must not be empty")
++        }
++        guard decodedCheckoutItems.allSatisfy({ checkoutItem in
++            checkoutItem.oneTimePrice.items.allSatisfy { $0.price.currency == decodedCurrency }
++        }) else {
++            throw decoder.dataCorrupted("Every Checkout item currency must match currency")
++        }
++        checkoutItems = decodedCheckoutItems
++
++        livemode = try container.decode(Bool.self, forKey: .livemode)
++        let decodedPaymentStatus = try container.decode(String.self, forKey: .paymentStatus)
++        guard let paymentStatus = Checkout.Session.Status.PaymentStatus.paymentStatus(
++            from: decodedPaymentStatus
++        ) else {
++            throw decoder.dataCorrupted("Unsupported payment_status: \(decodedPaymentStatus)")
++        }
++        self.paymentStatus = paymentStatus
+ 
+-        // Total
+-        let total: Checkout.Total? = {
+-            guard let summary = dict["total_summary"] as? [AnyHashable: Any],
+-                  let subtotal = summary["subtotal"] as? Int,
+-                  let totalValue = summary["total"] as? Int else {
+-                return nil
+-            }
+-            let taxInclusiveValue = publicTaxAmounts.filter { $0.inclusive }.reduce(0) { $0 + $1.amount.minorUnitsAmount }
+-            let taxExclusiveValue = publicTaxAmounts.filter { !$0.inclusive }.reduce(0) { $0 + $1.amount.minorUnitsAmount }
+-            let shippingValue = Self.parseShippingRateAmount(from: dict)
+-            let discountValue = discountAmounts.reduce(0) { $0 + $1.amount.minorUnitsAmount }
+-            let appliedBalanceValue = (summary["applied_balance"] as? Int) ?? 0
+-            let balanceAppliedToNextInvoice = (summary["balance_applied_to_next_invoice"] as? Bool) ?? false
+-
+-            return Checkout.Total(
+-                subtotal: makeAmount(subtotal, currency: currency),
+-                taxExclusive: makeAmount(taxExclusiveValue, currency: currency),
+-                taxInclusive: makeAmount(taxInclusiveValue, currency: currency),
+-                shippingRate: makeAmount(shippingValue, currency: currency),
+-                discount: makeAmount(discountValue, currency: currency),
+-                total: makeAmount(totalValue, currency: currency),
+-                appliedBalance: makeAmount(appliedBalanceValue, currency: currency),
+-                balanceAppliedToNextInvoice: balanceAppliedToNextInvoice
+-            )
+-        }()
+-
+-        // Tax
+-        let taxStatus: Checkout.TaxStatus = {
+-            let taxMeta = dict["tax_meta"] as? [String: Any]
+-            let computationType = taxMeta?["computation_type"] as? String
+-            guard computationType == "automatic" else {
+-                return .ready
+-            }
++        let decodedStatus = try container.decode(String.self, forKey: .status)
++        guard let status = Checkout.Session.Status.status(
++            from: decodedStatus,
++            paymentStatus: paymentStatus
++        ) else {
++            throw decoder.dataCorrupted("Unsupported Checkout Session status: \(decodedStatus)")
++        }
++        self.status = status
++        _ = try container.decode([String].self, forKey: .paymentMethodTypes)
+ 
+-            let status = taxMeta?["status"] as? String
+-            switch status {
+-            case "complete":
+-                return .ready
+-            case "requires_location_inputs":
+-                let taxContext = dict["tax_context"] as? [String: Any]
+-                let addressSource = taxContext?["automatic_tax_address_source"] as? String
+-                return addressSource == "session.shipping" ? .requiresShippingAddress : .requiresBillingAddress
+-            case "failed":
+-                return .unknown
+-            default:
+-                return .ready
+-            }
+-        }()
+-        let tax = Checkout.Tax(
+-            status: taxStatus,
+-            taxAmounts: publicTaxAmounts.isEmpty ? nil : publicTaxAmounts
++        customerEmail = try container.decodeIfPresent(String.self, forKey: .customerEmail)
++        url = try container.decodeIfPresent(String.self, forKey: .url)
++        savedPaymentMethodsOfferSave = try container.decodeIfPresent(
++            SavedPaymentMethodsOfferSave.self,
++            forKey: .savedPaymentMethodsOfferSave
+         )
+-
+-        // Saved payment methods offer save / setup_future_usage
+-        let savedPaymentMethodsOfferSave = STPCheckoutSessionSavedPaymentMethodsOfferSave.decodedObject(
+-            from: dict["customer_managed_saved_payment_methods_offer_save"] as? [AnyHashable: Any]
++        setupFutureUsage = try container.decodeIfPresent(String.self, forKey: .setupFutureUsage)
++        setupFutureUsageForPaymentMethodType = try container.decodeIfPresent(
++            [String: String].self,
++            forKey: .setupFutureUsageForPaymentMethodType
+         )
+-        let setupFutureUsage = dict["setup_future_usage"] as? String
+-        let setupFutureUsageForPaymentMethodType = dict["setup_future_usage_for_payment_method_type"] as? [String: String] ?? [:]
+-
+-        // Address collection settings
+-        let billingAddressCollectionRawValue = dict["billing_address_collection"] as? String
+-        let billingAddressCollection = billingAddressCollectionRawValue.flatMap {
+-            Checkout.Session.BillingAddressCollection(rawValue: $0)
+-        } ?? .automatic
+-        let allowedShippingCountries: [String]? = {
+-            guard let shippingCollection = dict["shipping_address_collection"] as? [String: Any],
+-                  let countries = shippingCollection["allowed_countries"] as? [String]
+-            else { return nil }
+-            return countries
+-        }()
+-
+-        // Adaptive pricing data (internal decoders + public CurrencyOption mapping)
+-        let localizedPricesMetas = STPCheckoutSessionLocalizedPriceMeta.localizedPricesMetas(from: dict)
+-        let exchangeRateMeta = STPCheckoutSessionExchangeRateMeta.decodedObject(from: dict)
+-        let adaptivePricingActive: Bool = {
+-            guard let devToolContext = dict["developer_tool_context"] as? [String: Any],
+-                  let adaptivePricing = devToolContext["adaptive_pricing"] as? [String: Any],
+-                  let active = adaptivePricing["active"] as? Bool else {
+-                return false
+-            }
+-            return active
+-        }()
+-        let currencyOptions = Self.makeCurrencyOptions(
+-            from: localizedPricesMetas,
+-            exchangeRateMeta: exchangeRateMeta
++        billingAddressCollection = try container.decodeIfPresent(
++            String.self,
++            forKey: .billingAddressCollection
++        )
++        shippingAddressCollection = try container.decodeIfPresent(
++            ShippingAddressCollection.self,
++            forKey: .shippingAddressCollection
++        )
++        recurringDetails = try container.decodeIfPresent(RecurringDetails.self, forKey: .recurringDetails)
++        adaptivePricingInfo = try container.decodeIfPresent(
++            AdaptivePricingInfo.self,
++            forKey: .adaptivePricingInfo
++        )
++        developerToolContext = try container.decodeIfPresent(
++            DeveloperToolContext.self,
++            forKey: .developerToolContext
+         )
++        taxContext = try container.decodeIfPresent(TaxContext.self, forKey: .taxContext)
++        taxMeta = try container.decodeIfPresent(TaxMeta.self, forKey: .taxMeta)
++        paymentMethodOptions = try container.decodeIfPresent(
++            LegacyDecoded<STPPaymentMethodOptions>.self,
++            forKey: .paymentMethodOptions
++        )?.value
++        customer = try container.decodeIfPresent(Customer.self, forKey: .customer)
++        elementsSession = try container.decode(ElementsSession.self, forKey: .elementsSession)
++    }
++}
+ 
+-        // Tax context for automatic-tax address source.
+-        let taxContext = dict["tax_context"] as? [String: Any]
+-        let automaticTaxEnabled = taxContext?["automatic_tax_enabled"] as? Bool ?? false
+-        let automaticTaxAddressSource: String? = {
+-            guard let raw = taxContext?["automatic_tax_address_source"] as? String else { return nil }
+-            return raw.hasPrefix("session.") ? String(raw.dropFirst("session.".count)) : raw
+-        }()
+-
+-        // payment_intent / setup_intent (string ID or expanded dictionary)
+-        let paymentIntent: STPPaymentIntent?
+-        let paymentIntentId: String?
+-        if let piDict = dict["payment_intent"] as? [AnyHashable: Any] {
+-            paymentIntent = STPPaymentIntent.decodedObject(fromAPIResponse: piDict)
+-            paymentIntentId = paymentIntent?.stripeId
+-        } else {
+-            paymentIntent = nil
+-            paymentIntentId = dict["payment_intent"] as? String
+-        }
+-        let setupIntent: STPSetupIntent?
+-        let setupIntentId: String?
+-        if let siDict = dict["setup_intent"] as? [AnyHashable: Any] {
+-            setupIntent = STPSetupIntent.decodedObject(fromAPIResponse: siDict)
+-            setupIntentId = setupIntent?.stripeID
+-        } else {
+-            setupIntent = nil
+-            setupIntentId = dict["setup_intent"] as? String
++extension PaymentPagesAPIResponse {
++    /// Adapts a dictionary-backed API model to `Decodable` while it is migrated.
++    struct LegacyDecoded<Value: STPAPIResponseDecodable>: Decodable {
++        let value: Value
++
++        init(from decoder: Decoder) throws {
++            let dictionary = try decoder.stripeJSONDictionary
++            guard let value = Value.decodedObject(fromAPIResponse: dictionary) else {
++                throw DecodingError.dataCorrupted(
++                    .init(
++                        codingPath: decoder.codingPath,
++                        debugDescription: "Could not decode \(Value.self) using its legacy parser"
++                    )
++                )
++            }
++            self.value = value
+         }
++    }
+ 
+-        let savedPaymentMethods: [STPPaymentMethod] = customer?.paymentMethods ?? []
+-
+-        let businessName = (dict["elements_session"] as? [String: Any])?["business_name"] as? String
++    private struct LegacyExpandable<Value: STPAPIResponseDecodable>: Decodable {
++        let id: String
++        let expandedObject: Value?
+ 
+-        guard let elementsSessionDict = dict["elements_session"] as? [AnyHashable: Any],
+-              let elementsSession = STPElementsSession.decodedObject(fromAPIResponse: elementsSessionDict)
+-        else { return nil }
+-        if automaticTaxEnabled && automaticTaxAddressSource == "billing" {
+-            elementsSession.disableLinkForAutomaticTaxBilling = true
++        private enum CodingKeys: String, CodingKey {
++            case id
+         }
+ 
+-        let email = (dict["customer_email"] as? String) ?? customer?.email
+-
+-        return PaymentPagesAPIResponse(
+-            id: id,
+-            clientSecret: clientSecret,
+-            businessName: businessName,
+-            currency: currency,
+-            currencyOptions: currencyOptions,
+-            discountAmounts: discountAmounts,
+-            email: email,
+-            lineItems: lineItems,
+-            livemode: livemode,
+-            savedPaymentMethods: savedPaymentMethods,
+-            status: status,
+-            tax: tax,
+-            total: total,
+-            paymentStatus: paymentStatus,
+-            paymentIntentId: paymentIntentId,
+-            setupIntentId: setupIntentId,
+-            paymentIntent: paymentIntent,
+-            setupIntent: setupIntent,
+-            paymentMethodOptions: STPPaymentMethodOptions.decodedObject(
+-                fromAPIResponse: dict["payment_method_options"] as? [AnyHashable: Any]
+-            ),
+-            customer: customer,
+-            url: urlString.flatMap { URL(string: $0) },
+-            returnUrl: dict["return_url"] as? String ?? dict["success_url"] as? String,
+-            savedPaymentMethodsOfferSave: savedPaymentMethodsOfferSave,
+-            setupFutureUsage: setupFutureUsage,
+-            setupFutureUsageForPaymentMethodType: setupFutureUsageForPaymentMethodType,
+-            billingAddressCollection: billingAddressCollection,
+-            allowedShippingCountries: allowedShippingCountries,
+-            localizedPricesMetas: localizedPricesMetas,
+-            exchangeRateMeta: exchangeRateMeta,
+-            adaptivePricingActive: adaptivePricingActive,
+-            automaticTaxEnabled: automaticTaxEnabled,
+-            automaticTaxAddressSource: automaticTaxAddressSource,
+-            elementsSession: elementsSession,
+-            allResponseFields: dict
+-        ) as? Self
++        init(from decoder: Decoder) throws {
++            let container = try decoder.singleValueContainer()
++            if let id = try? container.decode(String.self) {
++                self.id = id
++                self.expandedObject = nil
++                return
++            }
++
++            let expandedObject = try LegacyDecoded<Value>(from: decoder).value
++            guard let id = expandedObject.allResponseFields["id"] as? String else {
++                throw DecodingError.keyNotFound(
++                    CodingKeys.id,
++                    .init(
++                        codingPath: decoder.codingPath,
++                        debugDescription: "Expanded \(Value.self) is missing id"
++                    )
++                )
++            }
++            self.id = id
++            self.expandedObject = expandedObject
++        }
+     }
+ }
+ 
+-// MARK: - Parsing helpers
++// MARK: - API-shaped nested models
+ 
+ extension PaymentPagesAPIResponse {
++    struct CheckoutItem: Decodable {
++        let key: String
++        let oneTimePrice: OneTimePrice
++
++        private enum CodingKeys: String, CodingKey {
++            case key
++            case type
++            case oneTimePrice
++        }
+ 
+-    // MARK: Amounts
+-
+-    /// Builds a ``Checkout/Amount`` from a minor-unit value plus the session currency.
+-    static func makeAmount(_ minorUnitsAmount: Int, currency: String?) -> Checkout.Amount {
+-        let formatted: String
+-        if let currency, !currency.isEmpty {
+-            formatted = String.localizedAmountDisplayString(for: minorUnitsAmount, currency: currency)
+-        } else {
+-            formatted = "\(minorUnitsAmount)"
++        init(from decoder: Decoder) throws {
++            let container = try decoder.container(keyedBy: CodingKeys.self)
++            key = try container.decode(String.self, forKey: .key)
++            let type = try container.decode(String.self, forKey: .type)
++            guard type == "one_time_price" else {
++                throw decoder.dataCorrupted("Unsupported Checkout item type: \(type)")
++            }
++            oneTimePrice = try container.decode(OneTimePrice.self, forKey: .oneTimePrice)
+         }
+-        return Checkout.Amount(amount: formatted, minorUnitsAmount: minorUnitsAmount)
+     }
+ 
+-    // MARK: Line Items
++    struct OneTimePrice: Decodable {
++        let items: [OneTimePriceItem]
++        let subtotal: Int
++        let total: Int
++    }
+ 
+-    static func parseLineItems(from dict: [AnyHashable: Any], defaultCurrency: String?) -> [Checkout.LineItem] {
+-        guard let checkoutItems = dict["checkout_items"] as? [[AnyHashable: Any]] else {
+-            return []
++    struct OneTimePriceItem: Decodable {
++        let price: Price
++        let quantity: Int
++        let unitAmount: Int?
++        let unitAmountDecimal: Double?
++        let unitLabel: String?
++        let taxAmounts: [TaxAmount]
++        let taxInclusive: Int
++        let taxExclusive: Int
++        let adjustableQuantity: AdjustableQuantity?
++
++        private enum CodingKeys: String, CodingKey {
++            case innerItemKey
++            case price
++            case quantity
++            case subtotal
++            case total
++            case unitAmount
++            case unitAmountDecimal
++            case unitLabel
++            case taxAmounts
++            case taxInclusive
++            case taxExclusive
++            case adjustableQuantity
+         }
+-        return checkoutItems.compactMap {
+-            parseLineItem(from: $0, defaultCurrency: defaultCurrency)
++
++        init(from decoder: Decoder) throws {
++            let container = try decoder.container(keyedBy: CodingKeys.self)
++            _ = try container.decode(String.self, forKey: .innerItemKey)
++            price = try container.decode(Price.self, forKey: .price)
++            quantity = try container.decode(Int.self, forKey: .quantity)
++            guard quantity >= 0 else {
++                throw decoder.dataCorrupted("quantity must not be negative")
++            }
++            _ = try container.decode(Int.self, forKey: .subtotal)
++            _ = try container.decode(Int.self, forKey: .total)
++            unitAmount = try container.decodeIfPresent(Int.self, forKey: .unitAmount)
++
++            if let rawUnitAmountDecimal = try container.decodeIfPresent(
++                String.self,
++                forKey: .unitAmountDecimal
++            ) {
++                guard let parsedUnitAmountDecimal = Double(rawUnitAmountDecimal),
++                      parsedUnitAmountDecimal.isFinite else {
++                    throw decoder.dataCorrupted("unit_amount_decimal must be a finite number")
++                }
++                unitAmountDecimal = parsedUnitAmountDecimal
++            } else {
++                unitAmountDecimal = nil
++            }
++
++            guard unitAmount != nil || price.unitAmount != nil || unitAmountDecimal != nil else {
++                throw decoder.dataCorrupted("A one-time Price item must have a unit amount")
++            }
++
++            unitLabel = try container.decodeIfPresent(String.self, forKey: .unitLabel)
++            taxAmounts = try container.decode([TaxAmount].self, forKey: .taxAmounts)
++            taxInclusive = try container.decode(Int.self, forKey: .taxInclusive)
++            taxExclusive = try container.decode(Int.self, forKey: .taxExclusive)
++            adjustableQuantity = try container.decodeIfPresent(
++                AdjustableQuantity.self,
++                forKey: .adjustableQuantity
++            )
+         }
+     }
+ 
+-    /// Parses the one-time price item shape used by `checkout_items`.
+-    private static func parseLineItem(
+-        from dict: [AnyHashable: Any],
+-        defaultCurrency: String?
+-    ) -> Checkout.LineItem? {
+-        guard dict["type"] as? String == "one_time_price_item",
+-              let key = dict["key"] as? String,
+-              let oneTimePriceItem = dict["one_time_price_item"] as? [AnyHashable: Any],
+-              let quantity = oneTimePriceItem["quantity"] as? Int,
+-              let price = oneTimePriceItem["price"] as? [AnyHashable: Any],
+-              let product = price["product"] as? [AnyHashable: Any],
+-              let name = product["name"] as? String else {
+-            return nil
++    struct Price: Decodable {
++        let id: String
++        let currency: String
++        let unitAmount: Int?
++        let product: Product
++
++        init(from decoder: Decoder) throws {
++            let container = try decoder.container(keyedBy: CodingKeys.self)
++            id = try container.decode(String.self, forKey: .id)
++            currency = try container.decode(String.self, forKey: .currency)
++            guard !currency.isEmpty else {
++                throw decoder.dataCorrupted("Price currency must not be empty")
++            }
++            unitAmount = try container.decodeIfPresent(Int.self, forKey: .unitAmount)
++            product = try container.decode(Product.self, forKey: .product)
+         }
+ 
+-        let currency = (price["currency"] as? String) ?? defaultCurrency
+-        let unitAmount = (price["unit_amount"] as? Int).map {
+-            makeAmount($0, currency: currency)
++        private enum CodingKeys: String, CodingKey {
++            case id
++            case currency
++            case unitAmount
++            case product
+         }
+-        let unitAmountDecimal = parseDecimalAmount(
+-            price["unit_amount_decimal"] as? String,
+-            currency: currency
+-        )
++    }
+ 
+-        return Checkout.LineItem(
+-            id: key,
+-            name: name,
+-            description: product["description"] as? String,
+-            images: product["images"] as? [String] ?? [],
+-            quantity: quantity,
+-            unitAmount: unitAmount,
+-            unitAmountDecimal: unitAmountDecimal,
+-            subtotal: nil,
+-            discount: nil,
+-            taxExclusive: nil,
+-            taxInclusive: nil,
+-            total: nil,
+-            discountAmounts: [],
+-            taxAmounts: [],
+-            adjustableQuantity: nil
+-        )
++    struct Product: Decodable {
++        let name: String
++        let images: [String]
+     }
+ 
+-    private static func parseDecimalAmount(_ value: String?, currency: String?) -> Checkout.DecimalAmount? {
+-        guard let value, let decimal = Decimal(string: value) else { return nil }
+-        let intValue = NSDecimalNumber(decimal: decimal).intValue
+-        return Checkout.DecimalAmount(
+-            amount: makeAmount(intValue, currency: currency).amount,
+-            minorUnitsAmount: decimal
+-        )
++    struct RecurringDetails: Decodable {
++        let totalDiscountAmounts: [DiscountAmount]?
++        let totalTaxAmounts: [TaxAmount]?
+     }
+ 
+-    static func parseShippingRateAmount(from dict: [AnyHashable: Any]) -> Int {
+-        if let shippingRate = dict["shipping_rate"] as? [AnyHashable: Any],
+-           let amount = shippingRate["amount"] as? Int {
+-            return amount
+-        }
+-        return 0
++    struct DiscountAmount: Decodable {
++        let amount: Int?
++        let displayName: String?
++        let coupon: Coupon?
++        let promotionCode: PromotionCode?
+     }
+ 
+-    /// Reads an aggregate array from `recurring_details`. Despite its name, `recurring_details`
+-    /// also contains one-time order totals.
+-    private static func aggregateArray(
+-        from dict: [AnyHashable: Any],
+-        recurringDetailsKey: String
+-    ) -> [[AnyHashable: Any]] {
+-        (dict["recurring_details"] as? [AnyHashable: Any])?[recurringDetailsKey] as? [[AnyHashable: Any]] ?? []
++    struct Coupon: Decodable {
++        let id: String?
++        let name: String?
+     }
+ 
+-    // MARK: Discounts
++    struct PromotionCode: Decodable {
++        let code: String?
++    }
+ 
+-    static func parseDiscountAmounts(from dict: [AnyHashable: Any], currency: String?) -> [Checkout.DiscountAmount] {
+-        let discountAmounts = aggregateArray(from: dict, recurringDetailsKey: "total_discount_amounts")
+-        return discountAmounts.compactMap { discount in
+-            parseDiscountAmount(from: discount, currency: currency)
++    struct TaxAmount: Decodable {
++        let amount: Int
++        let inclusive: Bool
++        let taxRate: TaxRate
++    }
++
++    struct TaxRate: Decodable {
++        let displayName: String
++        let percentage: Double
++        let rateType: String?
++
++        init(from decoder: Decoder) throws {
++            let container = try decoder.container(keyedBy: CodingKeys.self)
++            displayName = try container.decode(String.self, forKey: .displayName)
++            percentage = try container.decode(Double.self, forKey: .percentage)
++            rateType = try container.decodeIfPresent(String.self, forKey: .rateType)
++            guard rateType == nil || rateType == "flat_amount" || rateType == "percentage" else {
++                throw decoder.dataCorrupted("Unsupported tax rate type: \(rateType!)")
++            }
++        }
++
++        private enum CodingKeys: String, CodingKey {
++            case displayName
++            case percentage
++            case rateType
+         }
+     }
+ 
+-    private static func parseDiscountAmount(
+-        from dict: [AnyHashable: Any],
+-        currency: String?
+-    ) -> Checkout.DiscountAmount? {
+-        let amountValue = dict["amount"] as? Int ?? 0
+-        guard amountValue > 0 else { return nil }
+-        let couponDict = dict["coupon"] as? [AnyHashable: Any]
+-        let promotionCodeDict = dict["promotion_code"] as? [AnyHashable: Any]
+-        let displayName = (dict["display_name"] as? String)
+-            ?? (couponDict?["name"] as? String)
+-            ?? (couponDict?["id"] as? String)
+-            ?? String.Localized.discount
+-        return Checkout.DiscountAmount(
+-            amount: makeAmount(amountValue, currency: currency),
+-            displayName: displayName,
+-            promotionCode: promotionCodeDict?["code"] as? String
+-        )
++    struct AdjustableQuantity: Decodable {
++        let enabled: Bool
++        let maximum: Int?
++        let minimum: Int?
+     }
+ 
+-    // MARK: Tax Amounts
++    struct ShippingAddressCollection: Decodable {
++        let allowedCountries: [String]?
++    }
+ 
+-    private static func parseSessionTaxAmounts(
+-        from dict: [AnyHashable: Any],
+-        currency: String?
+-    ) -> [Checkout.TaxAmount] {
+-        let taxAmounts = aggregateArray(from: dict, recurringDetailsKey: "total_tax_amounts")
+-        return parseLineTaxAmounts(from: taxAmounts, currency: currency)
++    struct AdaptivePricingInfo: Decodable {
++        let activePresentmentCurrency: String?
++        let integrationAmount: Int?
++        let integrationCurrency: String?
++        let localCurrencyOptions: [LocalCurrencyOption]?
+     }
+ 
+-    private static func parseLineTaxAmounts(
+-        from array: [[AnyHashable: Any]],
+-        currency: String?
+-    ) -> [Checkout.TaxAmount] {
+-        return array.compactMap { dict in
+-            guard let amountInt = dict["amount"] as? Int,
+-                  let inclusive = dict["inclusive"] as? Bool else { return nil }
+-            let displayName = (dict["display_name"] as? String)
+-                ?? ((dict["tax_rate"] as? [AnyHashable: Any])?["display_name"] as? String)
+-                ?? String.Localized.tax
+-            return Checkout.TaxAmount(
+-                amount: makeAmount(amountInt, currency: currency),
+-                inclusive: inclusive,
+-                displayName: displayName
+-            )
+-        }
++    struct LocalCurrencyOption: Decodable {
++        let amount: Int?
++        let conversionMarkupBps: Int?
++        let currency: String?
++        let presentmentExchangeRate: String?
+     }
+ 
+-    // MARK: Currency Options
+-
+-    static func makeCurrencyOptions(
+-        from metas: [STPCheckoutSessionLocalizedPriceMeta],
+-        exchangeRateMeta: STPCheckoutSessionExchangeRateMeta?
+-    ) -> [Checkout.CurrencyOption] {
+-        return metas.map { meta -> Checkout.CurrencyOption in
+-            // Conversion details are only attached to the converted (localized) currency option.
+-            let conversion: Checkout.CurrencyConversion? = exchangeRateMeta.flatMap { rate in
+-                guard meta.currency.lowercased() == rate.localizedCurrency.lowercased() else { return nil }
+-                return Checkout.CurrencyConversion(fxRate: rate.exchangeRate, sourceCurrency: rate.sellCurrency)
+-            }
+-            return Checkout.CurrencyOption(
+-                amount: makeAmount(meta.total, currency: meta.currency),
+-                currency: meta.currency,
+-                currencyConversion: conversion
+-            )
++    struct DeveloperToolContext: Decodable {
++        let adaptivePricing: AdaptivePricing?
++
++        struct AdaptivePricing: Decodable {
++            let active: Bool?
+         }
+     }
+ 
+-}
++    struct TaxContext: Decodable {
++        let automaticTaxEnabled: Bool?
++        let automaticTaxAddressSource: String?
++    }
++
++    struct TaxMeta: Decodable {
++        let computationType: String?
++        let status: String?
++    }
++
++    struct SavedPaymentMethodsOfferSave: Decodable {
++        let enabled: Bool?
++        let status: String?
++    }
+ 
+-// MARK: - Status / TaxStatus parsing helpers
++    struct ElementsSession: Decodable {
++        let businessName: String?
++        let value: STPElementsSession
+ 
+-extension Checkout.StatusType {
+-    static func statusType(from string: String) -> Checkout.StatusType {
+-        switch string.lowercased() {
+-        case "open": return .open
+-        case "complete": return .complete
+-        case "expired": return .expired
+-        default: return .unknown
++        private enum CodingKeys: String, CodingKey {
++            case businessName
++        }
++
++        init(from decoder: Decoder) throws {
++            let container = try decoder.container(keyedBy: CodingKeys.self)
++            businessName = try container.decodeIfPresent(String.self, forKey: .businessName)
++            value = try LegacyDecoded<STPElementsSession>(from: decoder).value
+         }
+     }
+ }
+ 
+-extension Checkout.PaymentStatus {
+-    static func paymentStatus(from string: String) -> Checkout.PaymentStatus {
+-        switch string.lowercased() {
+-        case "paid": return .paid
+-        case "unpaid": return .unpaid
+-        case "no_payment_required": return .noPaymentRequired
+-        default: return .unknown
+-        }
++private extension Decoder {
++    func dataCorrupted(_ description: String) -> DecodingError {
++        return DecodingError.dataCorrupted(
++            .init(codingPath: codingPath, debugDescription: description)
++        )
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Amount.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Amount.swift
+deleted file mode 100644
+index 31c07f6..0000000
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Amount.swift
++++ /dev/null
+@@ -1,44 +0,0 @@
+-//
+-//  Checkout+Amount.swift
+-//  StripePaymentSheet
+-//
+-//  Created by Nick Porter on 5/7/2026.
+-//
+-
+-import Foundation
+-
+-@_spi(STP)
+-@_spi(ReactNativeSDK)
+-extension Checkout {
+-    /// A monetary amount with both a localized display string and a value in the
+-    /// smallest currency unit (e.g. cents).
+-    public struct Amount: Sendable, Hashable {
+-        /// A localized, formatted string representation including currency symbols (e.g. `"$10.00"`).
+-        public let amount: String
+-        /// The amount in the smallest currency unit
+-        /// (e.g. `1000` for `$10.00`, or `100` for `¥100` since JPY is zero-decimal).
+-        public let minorUnitsAmount: Int
+-
+-        public init(amount: String, minorUnitsAmount: Int) {
+-            self.amount = amount
+-            self.minorUnitsAmount = minorUnitsAmount
+-        }
+-    }
+-
+-    /// A monetary amount supporting sub-minor-unit precision.
+-    ///
+-    /// Use this for sub-cent pricing (for example, usage-based billing) where rounding to
+-    /// the nearest minor unit would lose precision.
+-    public struct DecimalAmount: Sendable, Hashable {
+-        /// A localized, formatted string representation including currency symbols.
+-        public let amount: String
+-        /// The amount in the smallest currency unit, supporting decimal precision
+-        /// (for example, `0.5` for half a cent).
+-        public let minorUnitsAmount: Decimal
+-
+-        public init(amount: String, minorUnitsAmount: Decimal) {
+-            self.amount = amount
+-            self.minorUnitsAmount = minorUnitsAmount
+-        }
+-    }
+-}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Analytic.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Analytic.swift
+index 46779d6..a8d522f 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Analytic.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Analytic.swift
+@@ -6,11 +6,16 @@
+ //
+ 
+ @_spi(STP) import StripeCore
++@_spi(STP) import StripePayments
+ 
+ struct UnexpectedCheckoutElementsErrorAnalytic: Analytic {
+     enum ErrorCode: String {
+         case paymentElementPresentingViewControllerUnavailable =
+             "payment_element_presenting_view_controller_unavailable"
++        case shippingAddressElementPresentingViewControllerUnavailable =
++            "shipping_address_element_presenting_view_controller_unavailable"
++        case paymentPagesResponseParsingFailed =
++            "payment_pages_response_parsing_failed"
+     }
+ 
+     let errorCode: ErrorCode
+@@ -27,3 +32,19 @@ struct UnexpectedCheckoutElementsErrorAnalytic: Analytic {
+         ]
+     }
+ }
++
++func reportUnexpectedPaymentPagesParsingError(
++    _ error: Error,
++    apiClient: STPAPIClient,
++    analyticsClient: STPAnalyticsClientProtocol = STPAnalyticsClient.sharedClient
++) {
++    let errorMessage = "Failed to parse Payment Pages response: \(String(describing: error))"
++    stpAssertionFailure(errorMessage)
++    analyticsClient.log(
++        analytic: UnexpectedCheckoutElementsErrorAnalytic(
++            errorCode: .paymentPagesResponseParsingFailed,
++            errorMessage: errorMessage
++        ),
++        apiClient: apiClient
++    )
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+CurrencyOption.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+CurrencyOption.swift
+index ca3895c..19b2575 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+CurrencyOption.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+CurrencyOption.swift
+@@ -13,14 +13,14 @@ extension Checkout {
+     /// A currency option available on a checkout session when adaptive pricing is active.
+     public struct CurrencyOption: Sendable, Hashable {
+         /// The total amount in this currency.
+-        public let amount: Amount
++        public let amount: Session.Amount
+         /// Three-letter ISO 4217 currency code in lowercase.
+         public let currency: String
+         /// Currency conversion details, present only for the customer's local currency.
+         public let currencyConversion: CurrencyConversion?
+ 
+         public init(
+-            amount: Amount,
++            amount: Session.Amount,
+             currency: String,
+             currencyConversion: CurrencyConversion? = nil
+         ) {
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Discount.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Discount.swift
+index 4f1df0b..371ec4b 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Discount.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Discount.swift
+@@ -13,13 +13,13 @@ extension Checkout {
+     /// A discount applied to a checkout session or line item.
+     public struct DiscountAmount: Sendable, Hashable {
+         /// The discount amount. A positive number reduces the amount to be paid.
+-        public let amount: Amount
++        public let amount: Session.Amount
+         /// A user-facing description of the discount.
+         public let displayName: String
+         /// The customer-facing promotion code used to apply this discount, if any.
+         public let promotionCode: String?
+ 
+-        public init(amount: Amount, displayName: String, promotionCode: String? = nil) {
++        public init(amount: Session.Amount, displayName: String, promotionCode: String? = nil) {
+             self.amount = amount
+             self.displayName = displayName
+             self.promotionCode = promotionCode
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift
+index b90e842..885bf2b 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift
+@@ -11,6 +11,7 @@ import Foundation
+ 
+ extension Checkout: ExpressCheckoutElementDelegate {}
+ extension Checkout: CurrencySelectorElementDelegate {}
++extension Checkout: ShippingAddressElementDelegate {}
+ 
+ extension Checkout {
+ 
+@@ -26,7 +27,9 @@ extension Checkout {
+     // MARK: - Payment Option
+ 
+     func setPaymentOption(_ paymentOption: Session.PaymentOptionDisplayData?) {
+-        dangerouslySetSessionDirectly(session.makeCopyOverriding(paymentOption: .newValue(paymentOption)))
++        dangerouslySetSessionDirectly(
++            session.makeCopyOverriding(paymentOption: .newValue(paymentOption))
++        )
+     }
+ 
+     // MARK: - Session Updates
+@@ -120,11 +123,11 @@ extension Checkout {
+     ///
+     /// - Parameters:
+     ///   - update: The API mutation to perform, or nil for a local-only update.
+-    ///   - localMutation: A local change to the session to apply after the API call (or on its own).
++    ///   - shippingAddress: A local shipping-address change to apply after the API call (or on its own).
+     ///   - canUpdateWhileSheetPresented: Bypasses the sheet-presented guard (e.g. billing sync on dismiss).
+     func performUpdate(
+         _ update: SessionUpdate? = nil,
+-        applying localMutation: (@MainActor @Sendable (Session) -> Session)? = nil,
++        shippingAddress: SessionFieldUpdate<Session.ShippingAddress> = .keepOldValue,
+         canUpdateWhileSheetPresented: Bool = false
+     ) async throws {
+         try await enqueueSessionUpdate {
+@@ -146,16 +149,19 @@ extension Checkout {
+                 // Errors from here should still get wrapped in API errors since the only way
+                 //  local session application throws is if the API returned a session state that
+                 //  the UI can't handle.
+-                try await self.commitSession(updatedSessionAPIResponse, applying: localMutation)
++                try await self.commitSession(
++                    updatedSessionAPIResponse,
++                    shippingAddress: shippingAddress
++                )
+             } catch {
+                 throw CheckoutError.apiError(message: error.nonGenericDescription)
+             }
+         }
+     }
+ 
+-    /// True if the session is still actionable (open or no status yet).
++    /// True if the session is still actionable.
+     var sessionIsOpen: Bool {
+-        session.status?.type == .open || session.status?.type == nil
++        session.status == .open
+     }
+ 
+     // MARK: - Validation
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+LineItem.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+LineItem.swift
+deleted file mode 100644
+index 7f7b54f..0000000
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+LineItem.swift
++++ /dev/null
+@@ -1,94 +0,0 @@
+-//
+-//  Checkout+LineItem.swift
+-//  StripePaymentSheet
+-//
+-//  Created by Nick Porter on 5/7/2026.
+-//
+-
+-import Foundation
+-
+-@_spi(STP)
+-@_spi(ReactNativeSDK)
+-extension Checkout {
+-    /// A line item in a checkout session.
+-    public struct LineItem: Sendable, Hashable, Identifiable {
+-        /// Unique identifier for this line item.
+-        public let id: String
+-        /// The item's display name.
+-        public let name: String
+-        /// An optional, merchant-supplied description.
+-        public let description: String?
+-        /// Image URLs configured on the underlying Product.
+-        public let images: [String]
+-        /// The quantity of items being purchased.
+-        public let quantity: Int
+-        /// The cost of a single unit of the item.
+-        public let unitAmount: Amount?
+-        /// The unit amount with sub-cent precision. Use this instead of ``unitAmount`` when
+-        /// dealing with sub-cent pricing (for example, usage-based billing).
+-        public let unitAmountDecimal: DecimalAmount?
+-        /// Total before any discounts or exclusive taxes are applied.
+-        public let subtotal: Amount?
+-        /// Total discount amount. A positive number reduces the amount to be paid.
+-        public let discount: Amount?
+-        /// Total amount of exclusive tax (tax collected in addition to the subtotal).
+-        public let taxExclusive: Amount?
+-        /// Total amount of inclusive tax (tax already included in the subtotal).
+-        public let taxInclusive: Amount?
+-        /// Total amount for this line item, including discounts and tax.
+-        public let total: Amount?
+-        /// The discount amounts calculated per discount for this line item.
+-        public let discountAmounts: [DiscountAmount]
+-        /// The tax amounts calculated per tax rate for this line item.
+-        public let taxAmounts: [TaxAmount]
+-        /// Configuration for this item's quantity to be adjusted by the customer during checkout.
+-        public let adjustableQuantity: AdjustableQuantity?
+-
+-        public init(
+-            id: String,
+-            name: String,
+-            description: String? = nil,
+-            images: [String] = [],
+-            quantity: Int,
+-            unitAmount: Amount? = nil,
+-            unitAmountDecimal: DecimalAmount? = nil,
+-            subtotal: Amount? = nil,
+-            discount: Amount? = nil,
+-            taxExclusive: Amount? = nil,
+-            taxInclusive: Amount? = nil,
+-            total: Amount? = nil,
+-            discountAmounts: [DiscountAmount] = [],
+-            taxAmounts: [TaxAmount] = [],
+-            adjustableQuantity: AdjustableQuantity? = nil
+-        ) {
+-            self.id = id
+-            self.name = name
+-            self.description = description
+-            self.images = images
+-            self.quantity = quantity
+-            self.unitAmount = unitAmount
+-            self.unitAmountDecimal = unitAmountDecimal
+-            self.subtotal = subtotal
+-            self.discount = discount
+-            self.taxExclusive = taxExclusive
+-            self.taxInclusive = taxInclusive
+-            self.total = total
+-            self.discountAmounts = discountAmounts
+-            self.taxAmounts = taxAmounts
+-            self.adjustableQuantity = adjustableQuantity
+-        }
+-    }
+-
+-    /// Configuration for a customer-adjustable line item quantity.
+-    public struct AdjustableQuantity: Sendable, Hashable {
+-        /// The minimum quantity the customer can purchase.
+-        public let minimum: Int
+-        /// The maximum quantity the customer can purchase.
+-        public let maximum: Int
+-
+-        public init(minimum: Int, maximum: Int) {
+-            self.minimum = minimum
+-            self.maximum = maximum
+-        }
+-    }
+-}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift
+index ff67686..caa4547 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift
+@@ -65,11 +65,7 @@ extension Checkout.Session {
+     /// Returns the expected amount for payment-style sessions and `nil` for setup-style sessions.
+     func expectedAmount() -> Int? {
+         guard !noPaymentRequired else { return nil }
+-        guard let total = total?.total.minorUnitsAmount else {
+-            stpAssertionFailure("Missing expected amount from checkout session")
+-            return nil
+-        }
+-        return total
++        return Int(totals.total.minorUnitsAmount)
+     }
+ 
+     func merchantWillSavePaymentMethod(_ paymentMethodType: STPPaymentMethodType) -> Bool {
+@@ -127,14 +123,14 @@ extension Checkout.Session {
+             currencyOptions: currencyOptions,
+             discountAmounts: discountAmounts,
+             email: email,
+-            lineItems: lineItems,
++            orderSummaryItems: orderSummaryItems,
+             livemode: livemode,
+             minorUnitsAmountDivisor: minorUnitsAmountDivisor,
+             paymentOption: paymentOption.resolved(currentValue: self.paymentOption),
+             shippingAddress: shippingAddress.resolved(currentValue: self.shippingAddress),
+             status: status,
+             tax: tax,
+-            total: total,
++            totals: totals,
+             paymentStatus: paymentStatus,
+             paymentMethodOptions: paymentMethodOptions,
+             customer: customer,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift
+index 35021e9..79ac2d4 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift
+@@ -39,8 +39,8 @@ extension Checkout {
+         /// The customer's email address.
+         public let email: String?
+ 
+-        /// The line items the customer is purchasing.
+-        public let lineItems: [Checkout.LineItem]
++        /// The items included in the order summary.
++        public let orderSummaryItems: [OrderSummaryItem]
+ 
+         /// `true` if this object exists in live mode, `false` for test mode.
+         public let livemode: Bool
+@@ -56,22 +56,19 @@ extension Checkout {
+         public let shippingAddress: ShippingAddress?
+ 
+         /// Status of the Checkout Session.
+-        ///
+-        /// `nil` if the server did not return a status. When non-nil, ``Status.paymentStatus``
+-        /// is populated from the top-level payment status.
+-        public let status: Checkout.Status?
++        public let status: Status
+ 
+         /// Details about the tax computation status and aggregated tax amounts.
+         public let tax: Checkout.Tax
+ 
+-        /// Tax and discount details for the computed total amount.
+-        public let total: Checkout.Total?
++        /// Aggregate subtotal, tax, discount, and total amounts for the Checkout Session.
++        public let totals: Checkout.Session.Totals
+ 
+         // MARK: - Internal Properties
+ 
+-        let paymentStatus: Checkout.PaymentStatus
++        let paymentStatus: Status.PaymentStatus
+         let paymentMethodOptions: STPPaymentMethodOptions?
+-        let customer: STPCheckoutSessionCustomer?
++        let customer: PaymentPagesAPIResponse.Customer?
+         let savedPaymentMethodsOfferSave: STPCheckoutSessionSavedPaymentMethodsOfferSave?
+         let setupFutureUsage: String?
+         let setupFutureUsageForPaymentMethodType: [String: String]
+@@ -92,6 +89,124 @@ extension Checkout {
+ }
+ 
+ extension Checkout.Session {
++    /// An item included in the order summary.
++    @frozen
++    public enum OrderSummaryItem: Sendable, Hashable {
++        /// A group of one-time Prices.
++        case oneTimePrice(OneTimePrice)
++
++        /// A group of one-time Prices and their aggregated amounts.
++        public struct OneTimePrice: Sendable, Hashable {
++            /// A stable key that uniquely identifies this item within the Checkout Session.
++            public let key: String
++
++            /// A description of the one-time Price group.
++            public let description: String?
++
++            /// The one-time Prices included in this group.
++            public let items: [Item]
++
++            /// Amounts aggregated across all one-time Prices in this group.
++            public let amountDetails: AmountDetails
++
++            /// A one-time Price included in the group.
++            public struct Item: Sendable, Hashable {
++                /// A stable key that identifies this item.
++                public let key: String
++
++                /// The customer-facing name of the product.
++                public let displayName: String
++
++                /// URLs of images for the product.
++                public let images: [String]
++
++                /// The unit amount for the Price.
++                public let unitAmount: Amount
++
++                /// The unit amount with additional decimal precision, if available.
++                public let unitAmountDecimal: Amount?
++
++                /// The label that describes how units of the product are named.
++                public let unitLabel: String?
++
++                /// The quantity of the Price included in the Checkout Session.
++                public let quantity: Int
++
++                /// The allowed quantity range when the customer can adjust the quantity.
++                public let adjustableQuantity: AdjustableQuantity?
++            }
++
++            /// Amounts aggregated across all one-time Prices in the group.
++            public struct AmountDetails: Sendable, Hashable {
++                /// The total amount for the group.
++                public let total: Amount
++
++                /// The subtotal amount for the group before discounts and exclusive tax.
++                public let subtotal: Amount
++
++                /// The tax amounts applied to the group, or `nil` when no tax was applied.
++                public let taxAmounts: [TaxAmount]?
++
++                /// The discount applied to the group.
++                public let discount: Amount
++
++                /// The tax amount included in the prices.
++                public let taxInclusive: Amount
++
++                /// The tax amount added to the prices.
++                public let taxExclusive: Amount
++            }
++        }
++    }
++
++    /// A monetary amount with a localized display string and a value in minor units.
++    public struct Amount: Sendable, Hashable {
++        /// The localized, formatted representation of the amount.
++        ///
++        /// For example, an amount of `1000` in `usd` is formatted as `"$10.00"`.
++        public let amount: String
++
++        /// The numeric, unformatted representation of the amount in minor units.
++        ///
++        /// For example, `"$10.00"` is represented as `1000`.
++        public let minorUnitsAmount: Double
++
++        public init(amount: String, minorUnitsAmount: Double) {
++            self.amount = amount
++            self.minorUnitsAmount = minorUnitsAmount
++        }
++    }
++
++    /// A tax amount included in an order summary item.
++    public struct TaxAmount: Sendable, Hashable {
++        /// The localized, formatted representation of the tax amount.
++        public let amount: String
++
++        /// The numeric, unformatted representation of the tax amount in minor units.
++        public let minorUnitsAmount: Double
++
++        /// Whether the tax amount is included in the price.
++        public let inclusive: Bool
++
++        /// The customer-facing name of the tax rate.
++        public let displayName: String
++
++        /// The tax rate percentage, or `nil` for a flat tax amount.
++        public let percentage: Double?
++    }
++
++    /// The allowed range for a customer-adjustable quantity.
++    public struct AdjustableQuantity: Sendable, Hashable {
++        /// Whether the customer can adjust the quantity.
++        public let enabled: Bool
++
++        /// The maximum quantity the customer can select.
++        public let maximum: Int
++
++        /// The minimum quantity the customer can select.
++        public let minimum: Int
++    }
++
+     /// Display data for the currently selected payment option.
+     public struct PaymentOptionDisplayData: Equatable {
+         /// An image representing a payment method, such as the Apple Pay logo or a card brand.
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift
+index 8f8b610..719e75e 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift
+@@ -9,51 +9,25 @@ import Foundation
+ 
+ @_spi(STP)
+ @_spi(ReactNativeSDK)
+-extension Checkout {
++extension Checkout.Session {
+     /// The status of a checkout session.
+-    public struct Status: Sendable, Hashable {
+-        /// The type of status (open, expired, or complete).
+-        public let type: StatusType
+-        /// The payment status. Only meaningful when ``type`` is ``StatusType.complete``.
+-        public let paymentStatus: PaymentStatus?
+-
+-        public init(type: StatusType, paymentStatus: PaymentStatus?) {
+-            self.type = type
+-            self.paymentStatus = paymentStatus
+-        }
+-    }
+-
+-    /// The lifecycle status of a checkout session.
+-    public enum StatusType: Sendable, Hashable {
+-        /// A status not recognized by this version of the SDK.
+-        case unknown
++    public enum Status: Sendable, Hashable {
+         /// The checkout session is still in progress. Payment processing has not started.
+         case open
+-        /// The checkout session is complete. Payment processing may still be in progress.
+-        case complete
+         /// The checkout session has expired. No further processing will occur.
+         case expired
+-    }
++        /// The checkout session is complete. Payment processing may still be in progress.
++        case complete(PaymentStatus)
+ 
+-    /// The payment status of a checkout session.
+-    public enum PaymentStatus: Sendable, Hashable {
+-        /// A payment status not recognized by this version of the SDK.
+-        case unknown
+-        /// The payment funds are available in your account.
+-        case paid
+-        /// The payment funds are not yet available in your account.
+-        case unpaid
+-        /// The payment is delayed to a future date, or the session is in setup mode
+-        /// and doesn't require a payment at this time.
+-        case noPaymentRequired
++        /// The payment status of a completed checkout session.
++        public enum PaymentStatus: Sendable, Hashable {
++            /// The payment funds are available in your account.
++            case paid
++            /// The payment funds are not yet available in your account.
++            case unpaid
++            /// The payment is delayed to a future date, or the session is in setup mode
++            /// and doesn't require a payment at this time.
++            case noPaymentRequired
++        }
+     }
+ }
+-
+-// TODO: Change these types to match the proposed API
+-extension Checkout.Session {
+-    public typealias Status = Checkout.Status
+-}
+-
+-extension Checkout.Status {
+-    public typealias PaymentStatus = Checkout.PaymentStatus
+-}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Tax.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Tax.swift
+index e7aca59..c39c2ae 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Tax.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Tax.swift
+@@ -39,14 +39,14 @@ extension Checkout {
+     /// A tax amount calculated for a line item, shipping option, or aggregate session total.
+     public struct TaxAmount: Sendable, Hashable {
+         /// The tax amount.
+-        public let amount: Amount
++        public let amount: Session.Amount
+         /// Whether this tax amount is inclusive (already included in the subtotal) or
+         /// exclusive (collected in addition to the subtotal).
+         public let inclusive: Bool
+         /// A user-facing description of the tax (e.g. `"Sales Tax"` or `"VAT 20%"`).
+         public let displayName: String
+ 
+-        public init(amount: Amount, inclusive: Bool, displayName: String) {
++        public init(amount: Session.Amount, inclusive: Bool, displayName: String) {
+             self.amount = amount
+             self.inclusive = inclusive
+             self.displayName = displayName
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Total.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Total.swift
+deleted file mode 100644
+index 8d64734..0000000
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Total.swift
++++ /dev/null
+@@ -1,57 +0,0 @@
+-//
+-//  Checkout+Total.swift
+-//  StripePaymentSheet
+-//
+-//  Created by Nick Porter on 5/7/2026.
+-//
+-
+-import Foundation
+-
+-@_spi(STP)
+-@_spi(ReactNativeSDK)
+-extension Checkout {
+-    /// Tax and discount details for the computed total amount of a checkout session.
+-    ///
+-    /// Use this to render an amount breakdown to your customer in an order summary.
+-    public struct Total: Sendable, Hashable {
+-        /// The total of all line items, excluding tax, discounts, and shipping.
+-        public let subtotal: Amount
+-        /// The sum of all exclusive tax amounts (tax collected in addition to the subtotal).
+-        public let taxExclusive: Amount
+-        /// The sum of all inclusive tax amounts (tax already included in the subtotal).
+-        public let taxInclusive: Amount
+-        /// The sum of all shipping amounts.
+-        public let shippingRate: Amount
+-        /// The sum of all discounts. A positive number reduces the amount to be paid.
+-        public let discount: Amount
+-        /// The grand total, including discounts and tax.
+-        public let total: Amount
+-        /// The amount of customer credit balance applied to the payment.
+-        ///
+-        /// A positive number increases the amount to be paid; a negative number decreases it.
+-        public let appliedBalance: Amount
+-        /// When `true`, no payment is collected immediately and the amount due is added to
+-        /// the customer's next invoice. Used for deferred billing of small amounts.
+-        public let balanceAppliedToNextInvoice: Bool
+-
+-        public init(
+-            subtotal: Amount,
+-            taxExclusive: Amount,
+-            taxInclusive: Amount,
+-            shippingRate: Amount,
+-            discount: Amount,
+-            total: Amount,
+-            appliedBalance: Amount,
+-            balanceAppliedToNextInvoice: Bool
+-        ) {
+-            self.subtotal = subtotal
+-            self.taxExclusive = taxExclusive
+-            self.taxInclusive = taxInclusive
+-            self.shippingRate = shippingRate
+-            self.discount = discount
+-            self.total = total
+-            self.appliedBalance = appliedBalance
+-            self.balanceAppliedToNextInvoice = balanceAppliedToNextInvoice
+-        }
+-    }
+-}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift
+index 4d6fa00..308e4aa 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift
+@@ -133,35 +133,37 @@ public final class Checkout: ObservableObject {
+             self.session = loadedSession
+             self.nonisolatedSession = loadedSession // temporary hack
+ 
+-            let defaultShippingAddress: Session.ShippingAddress?
+-            if let shippingDetails = configuration.defaults.shippingDetails,
+-               let address = shippingDetails.address {
+-                defaultShippingAddress = Session.ShippingAddress(
+-                    name: shippingDetails.name,
+-                    address: address
+-                )
+-            } else {
+-                defaultShippingAddress = nil
+-            }
++            // Element initialization is intentionally sequential:
+ 
+-            self.shippingAddressElement = ShippingAddressElement(
+-                configuration: configuration.shippingAddressElement,
+-                initialShippingAddress: defaultShippingAddress ?? loadedSession.shippingAddress,
+-                allowedCountries: loadedSession.allowedShippingCountries,
+-                apiClient: configuration.apiClient,
+-                useAutocompleteEndpoints: loadedSession.elementsSession.shouldUseAutocompleteProxyEndpoints
++            // 1. Initialize SAE so that its form can normalize the raw default shipping address before it is applied to the session
++            let (shippingAddressElement, normalizedDefaultShippingAddress) = await Self.makeShippingAddressElement(
++                configuration: configuration,
++                session: loadedSession
+             )
++            self.shippingAddressElement = shippingAddressElement
++            self.shippingAddressElement.delegate = self
+ 
+-            try await applyDefaults()
++            try await applyDefaults(shippingAddress: normalizedDefaultShippingAddress)
+ 
+-            // Load remaining elements
++            // 2.
++            // PaymentElement reads from the session during initialization, then updates it with the
++            // initial payment option and may sync its billing address to recalculate tax. It must finish
++            // before creating the session source so the remaining elements receive the resulting session
++            // as their initial value.
+             self.paymentElement = try await PaymentElement(checkout: self)
++
++            // Create the session source that we can pass to the reaminign elements, which do not need to mutate the session.
++            // Elements past this point can be initialized in any order since they do not mutate the session.
+             let sessionSource = CheckoutSessionSource(initialSession: session, sessionPublisher: $session)
++
++            // 3. ECE
+             self.expressCheckoutElement = ExpressCheckoutElement(
+                 sessionSource: sessionSource,
+                 configuration: configuration,
+                 delegate: self
+             )
++
++            // 4. CSE
+             if configuration.adaptivePricing.allowed {
+                 self.currencySelectorElement = await CurrencySelectorElement(
+                     sessionSource: sessionSource,
+@@ -169,12 +171,44 @@ public final class Checkout: ObservableObject {
+                     delegate: self
+                 )
+             }
+-
+         } catch {
+             throw CheckoutError.apiError(message: error.nonGenericDescription)
+         }
+     }
+ 
++    private static func makeShippingAddressElement(
++        configuration: Configuration,
++        session: Session
++    ) async -> (ShippingAddressElement, Session.ShippingAddress?) {
++        let defaultShippingAddress: Session.ShippingAddress?
++        if let shippingDetails = configuration.defaults.shippingDetails,
++           let address = shippingDetails.address {
++            defaultShippingAddress = Session.ShippingAddress(
++                name: shippingDetails.name,
++                address: address
++            )
++        } else {
++            defaultShippingAddress = nil
++        }
++
++        // Initialize the SAE with the raw default so its form can normalize the address.
++        let shippingAddressElement = ShippingAddressElement(
++            configuration: configuration.shippingAddressElement,
++            initialShippingAddress: defaultShippingAddress ?? session.shippingAddress,
++            allowedCountries: session.allowedShippingCountries,
++            apiClient: configuration.apiClient,
++            useAutocompleteEndpoints: session.elementsSession.shouldUseAutocompleteProxyEndpoints
++        )
++        let normalizedDefaultShippingAddress: Session.ShippingAddress?
++        if defaultShippingAddress != nil {
++            normalizedDefaultShippingAddress = await shippingAddressElement.normalizedInitialShippingAddress()
++        } else {
++            normalizedDefaultShippingAddress = nil
++        }
++
++        return (shippingAddressElement, normalizedDefaultShippingAddress)
++    }
++
+     // MARK: - Promotion Codes
+ 
+     /// Applies a promotion code to the session.
+@@ -242,13 +276,12 @@ public final class Checkout: ObservableObject {
+         let shippingAddress = Session.ShippingAddress(name: name, address: address)
+         guard session.shippingAddress != shippingAddress else { return }
+         if session.shouldSendTaxRegion(for: "shipping") {
+-            try await performUpdate(.setTaxRegion(address), applying: { session in
+-                session.makeCopyOverriding(shippingAddress: .newValue(shippingAddress))
+-            })
++            try await performUpdate(
++                .setTaxRegion(address),
++                shippingAddress: .newValue(shippingAddress)
++            )
+         } else {
+-            try await performUpdate(applying: { session in
+-                session.makeCopyOverriding(shippingAddress: .newValue(shippingAddress))
+-            })
++            try await performUpdate(shippingAddress: .newValue(shippingAddress))
+         }
+     }
+ 
+@@ -379,7 +412,7 @@ public final class Checkout: ObservableObject {
+ // MARK: - Defaults
+ 
+ extension Checkout {
+-    func applyDefaults() async throws {
++    func applyDefaults(shippingAddress: Session.ShippingAddress?) async throws {
+         let defaults = configuration.defaults
+ 
+         if let billingDetails = defaults.billingDetails,
+@@ -387,12 +420,11 @@ extension Checkout {
+             try await updateBillingTaxRegionIfNecessary(address: address)
+         }
+ 
+-        if let shippingDetails = defaults.shippingDetails,
+-           let address = shippingDetails.address {
++        if let shippingAddress {
+             do {
+                 try await updateShippingAddress(
+-                    name: shippingDetails.name,
+-                    address: address
++                    name: shippingAddress.name,
++                    address: shippingAddress.address
+                 )
+             } catch CheckoutError.invalidShippingCountry {
+                 // Treat a default address with a disallowed country as nil.
+@@ -406,28 +438,24 @@ extension Checkout {
+ // These exist here because `session` is private(set) to enforce that session can only be mutated through these sanctioned paths.
+ // Setting the session should generally only be done via `commitSession` to avoid putting us into an inconsistent state e.g. without using commitSession, MPE is not aware of the updated session.
+ extension Checkout {
+-    /// Replaces the current session from an API response, applies client-side mutations, and updates Checkout elements.
++    /// Replaces the current session from an API response, applies local state, and updates Checkout elements.
+     ///
+-    /// Client-side address overrides are copied from the current session to the new one
+-    /// automatically. To update an address, pass a `localMutation` closure.
++    /// Existing local state is preserved unless explicitly replaced.
+     func commitSession(
+         _ apiResponse: PaymentPagesAPIResponse? = nil,
+-        applying localMutation: (@MainActor @Sendable (Session) -> Session)? = nil,
++        shippingAddress: SessionFieldUpdate<Session.ShippingAddress> = .keepOldValue,
++        paymentOption: SessionFieldUpdate<Session.PaymentOptionDisplayData> = .keepOldValue
+     ) async throws {
+-        // === Update the session ===
+-        // Generate a new session from the API response, or fall back to the current session.
+         let newSession = apiResponse?.makePublicSession() ?? session
+-
+-        // Preserve client-side address overrides on the new session.
+-        let sessionWithLocalAddress = newSession.makeCopyOverriding(
+-            shippingAddress: .newValue(session.shippingAddress),
+-            paymentOption: .newValue(session.paymentOption)
++        session = newSession.makeCopyOverriding(
++            shippingAddress: .newValue(
++                shippingAddress.resolved(currentValue: session.shippingAddress)
++            ),
++            paymentOption: .newValue(
++                paymentOption.resolved(currentValue: session.paymentOption)
++            )
+         )
+ 
+-        // Apply any additional local mutations to the session.
+-        let finalSession = localMutation?(sessionWithLocalAddress) ?? sessionWithLocalAddress
+-        session = finalSession
+-
+         // === Update Payment Element and all other asynchronously updated elements ==
+         try await paymentElement?.update(checkout: self)
+     }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionBillingAddressUpdater.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionBillingAddressUpdater.swift
+index f82b6a1..62baef7 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionBillingAddressUpdater.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionBillingAddressUpdater.swift
+@@ -13,10 +13,7 @@
+ @MainActor
+ protocol CheckoutSessionBillingAddressUpdater: AnyObject {
+     // TODO: Delete this when CheckoutSession confirmation no longer uses `PaymentSheet.confirm`.
+-    func commitSession(
+-        _ apiResponse: PaymentPagesAPIResponse?,
+-        applying localMutation: (@MainActor @Sendable (Checkout.Session) -> Checkout.Session)?
+-    ) async throws
++    func commitSession(_ apiResponse: PaymentPagesAPIResponse) async throws
+ 
+     func updateBillingTaxRegionIfNecessaryForPaymentSheet(
+         address: Checkout.Address,
+@@ -24,13 +21,15 @@ protocol CheckoutSessionBillingAddressUpdater: AnyObject {
+     ) async throws -> Checkout.Session
+ }
+ 
+-extension CheckoutSessionBillingAddressUpdater {
++extension Checkout: CheckoutSessionBillingAddressUpdater {
+     func commitSession(_ apiResponse: PaymentPagesAPIResponse) async throws {
+-        try await commitSession(apiResponse, applying: nil)
++        try await commitSession(
++            apiResponse,
++            shippingAddress: .keepOldValue,
++            paymentOption: .keepOldValue
++        )
+     }
+-}
+ 
+-extension Checkout: CheckoutSessionBillingAddressUpdater {
+     func updateBillingTaxRegionIfNecessaryForPaymentSheet(
+         address: Address,
+         canUpdateWhileSheetPresented: Bool
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElement.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElement.swift
+index 5f407a0..a823fb3 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElement.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElement.swift	
+@@ -32,16 +32,18 @@ public final class CurrencySelectorElement {
+ 
+     // MARK: - Internal Methods
+ 
+-    init(
++    init?(
+         sessionSource: CheckoutSessionSource,
+         configuration: Configuration,
+         delegate: CurrencySelectorElementDelegate
+     ) async {
+-        let uiView = await CurrencySelectorElementUIView(
++        guard let uiView = await CurrencySelectorElementUIView(
+             session: sessionSource.initialSession,
+             delegate: delegate,
+             appearance: configuration.appearance
+-        )
++        ) else {
++            return nil
++        }
+         let viewModel = CurrencySelectorElementViewModel(
+             sessionSource: sessionSource,
+             uiView: uiView,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementUIView.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementUIView.swift
+index 6da4458..d280c7a 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementUIView.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementUIView.swift	
+@@ -16,11 +16,10 @@ import UIKit
+ @MainActor
+ public final class CurrencySelectorElementUIView: UIView {
+ 
+-    /// Whether the selector is enabled for user interaction.
+-    public var isEnabled: Bool = true {
+-        didSet {
+-            selectorView?.setEnabled(isEnabled)
+-        }
++    /// Updates interaction and disabled styling while retaining UIKit's native state as the source of truth.
++    func setEnabled(_ enabled: Bool) {
++        isUserInteractionEnabled = enabled
++        selectorView?.setEnabled(enabled)
+     }
+ 
+     private weak var delegate: CurrencySelectorElementDelegate?
+@@ -39,11 +38,14 @@ public final class CurrencySelectorElementUIView: UIView {
+         return label
+     }()
+ 
+-    init(
++    init?(
+         session: Checkout.Session,
+         delegate: CurrencySelectorElementDelegate,
+         appearance: CurrencySelectorElement.Appearance
+     ) async {
++        guard let (_, exchangeRateMeta, rawCurrency) = CurrencySelectorUtilities.adaptivePricingData(from: session) else {
++            return nil
++        }
+         self.delegate = delegate
+         self.appearance = appearance
+         self.checkoutSessionId = session.id
+@@ -51,7 +53,10 @@ public final class CurrencySelectorElementUIView: UIView {
+ 
+         await flagImageManager.prefetchFlagImages(for: session)
+         setupContainerStackView()
+-        update(with: session)
++        let currency = CurrencySelectorUtilities.CurrencyCode(rawCurrency)
++        buildSelectorView(session: session, exchangeRateMeta: exchangeRateMeta, currency: currency)
++        lastSelectedCurrency = currency.apiValue
++        updateCaption(currency: currency, exchangeRateMeta: exchangeRateMeta)
+     }
+ 
+     @available(*, unavailable)
+@@ -60,9 +65,6 @@ public final class CurrencySelectorElementUIView: UIView {
+     }
+ 
+     override public var intrinsicContentSize: CGSize {
+-        guard !isHidden, selectorView != nil else {
+-            return .zero
+-        }
+         return containerStackView.systemLayoutSizeFitting(
+             CGSize(width: bounds.width, height: UIView.layoutFittingCompressedSize.height),
+             withHorizontalFittingPriority: .required,
+@@ -88,19 +90,13 @@ public final class CurrencySelectorElementUIView: UIView {
+         guard let (_, exchangeRateMeta, rawCurrency) =
+                 CurrencySelectorUtilities.adaptivePricingData(from: session)
+         else {
+-            tearDown()
++            assertionFailure("Adaptive Pricing data unexpectedly became unavailable")
+             return
+         }
+ 
+         let currency = CurrencySelectorUtilities.CurrencyCode(rawCurrency)
+         clearError()
+-
+-        if selectorView == nil {
+-            buildSelectorView(session: session, exchangeRateMeta: exchangeRateMeta, currency: currency)
+-        } else {
+-            updateSelectorItems(session: session, exchangeRateMeta: exchangeRateMeta)
+-        }
+-
++        updateSelectorItems(session: session, exchangeRateMeta: exchangeRateMeta)
+         lastSelectedCurrency = currency.apiValue
+         updateCaption(currency: currency, exchangeRateMeta: exchangeRateMeta)
+     }
+@@ -154,8 +150,7 @@ public final class CurrencySelectorElementUIView: UIView {
+         containerStackView.insertArrangedSubview(newSelector, at: 0)
+ 
+         selectorView = newSelector
+-        newSelector.setEnabled(isEnabled)
+-        isHidden = false
++        newSelector.setEnabled(isUserInteractionEnabled)
+         invalidateIntrinsicContentSize()
+     }
+ 
+@@ -171,14 +166,6 @@ public final class CurrencySelectorElementUIView: UIView {
+         selectorView?.updateCaption(caption, detailText: detailText)
+     }
+ 
+-    private func tearDown() {
+-        selectorView?.removeFromSuperview()
+-        selectorView = nil
+-        clearError()
+-        isHidden = true
+-        invalidateIntrinsicContentSize()
+-    }
+-
+     func showError(_ message: String) {
+         errorLabel.text = message
+         errorLabel.setHiddenIfNecessary(false)
+@@ -225,7 +212,7 @@ extension CurrencySelectorElementUIView: TwoOptionSelectorViewDelegate {
+                 )
+                 showError(error.localizedDescription)
+             }
+-            selectorView?.setEnabled(isEnabled)
++            selectorView?.setEnabled(isUserInteractionEnabled)
+         }
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementView.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementView.swift
+index 2397861..eed8a87 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementView.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementView.swift	
+@@ -12,7 +12,7 @@ import SwiftUI
+ @_spi(STP)
+ @_spi(ReactNativeSDK)
+ public struct CurrencySelectorElementView: View {
+-    @ObservedObject private var viewModel: CurrencySelectorElementViewModel
++    private let viewModel: CurrencySelectorElementViewModel
+ 
+     @MainActor
+     init(viewModel: CurrencySelectorElementViewModel) {
+@@ -20,18 +20,15 @@ public struct CurrencySelectorElementView: View {
+     }
+ 
+     public var body: some View {
+-        if viewModel.isAvailable {
+-            CurrencySelectorElementUIViewRepresentable(viewModel: viewModel)
+-                .fixedSize(horizontal: false, vertical: true)
+-        }
++        CurrencySelectorElementUIViewRepresentable(viewModel: viewModel)
++            .fixedSize(horizontal: false, vertical: true)
+     }
+ }
+ 
+ /// Bridges CurrencySelectorElement's UIKit state into SwiftUI without retaining Checkout.
+ @MainActor
+-final class CurrencySelectorElementViewModel: ObservableObject {
++final class CurrencySelectorElementViewModel {
+     let uiView: CurrencySelectorElementUIView
+-    @Published var isAvailable: Bool
+ 
+     private var sessionCancellable: AnyCancellable?
+ 
+@@ -40,13 +37,11 @@ final class CurrencySelectorElementViewModel: ObservableObject {
+         uiView: CurrencySelectorElementUIView
+     ) {
+         self.uiView = uiView
+-        self.isAvailable = CurrencySelectorUtilities.adaptivePricingData(from: sessionSource.initialSession) != nil
+         sessionCancellable = sessionSource.sessionPublisher
+             .dropFirst()
+             .receive(on: DispatchQueue.main)
+             .sink { [weak self] session in
+                 self?.uiView.update(with: session)
+-                self?.isAvailable = CurrencySelectorUtilities.adaptivePricingData(from: session) != nil
+             }
+     }
+ }
+@@ -55,11 +50,11 @@ private struct CurrencySelectorElementUIViewRepresentable: UIViewRepresentable {
+     let viewModel: CurrencySelectorElementViewModel
+ 
+     func makeUIView(context: Context) -> CurrencySelectorElementUIView {
+-        viewModel.uiView.isEnabled = context.environment.isEnabled
++        viewModel.uiView.setEnabled(context.environment.isEnabled)
+         return viewModel.uiView
+     }
+ 
+     func updateUIView(_ uiView: CurrencySelectorElementUIView, context: Context) {
+-        uiView.isEnabled = context.environment.isEnabled
++        uiView.setEnabled(context.environment.isEnabled)
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift
+index 8d0a542..9e2a0ed 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift	
+@@ -10,8 +10,7 @@ extension ShippingAddressElement.Configuration {
+     func makeAddressViewControllerConfiguration(
+         shippingAddress: Checkout.Session.ShippingAddress?,
+         allowedCountries: [String]?,
+-        apiClient: STPAPIClient,
+-        useAutocompleteEndpoints: Bool
++        apiClient: STPAPIClient
+     ) -> AddressViewController.Configuration {
+         let allowedCountries = allowedCountries ?? []
+         let defaultValues: AddressViewController.Configuration.DefaultAddressDetails
+@@ -40,7 +39,6 @@ extension ShippingAddressElement.Configuration {
+             title: title
+         )
+         configuration.apiClient = apiClient
+-        configuration.useAutocompleteEndpoints = useAutocompleteEndpoints
+         return configuration
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift
+index 210f111..6baf9c6 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift	
+@@ -5,6 +5,15 @@
+ //  Created by George Birch on 8/4/26.
+ 
+ @_spi(STP) import StripeCore
++@_spi(STP) import StripeUICore
++import UIKit
++
++/// Handles Checkout mutations requested by a ShippingAddressElement.
++@MainActor
++protocol ShippingAddressElementDelegate: AnyObject {
++    /// Sets the customer's shipping address.
++    func updateShippingAddress(name: String?, address: Checkout.Address) async throws
++}
+ 
+ /// A shipping address form backed by a Checkout Session.
+ @MainActor
+@@ -13,6 +22,9 @@
+ public final class ShippingAddressElement {
+ 
+     private(set) var addressViewController: AddressViewController!
++    private var isPresenting = false
++    private var presentationCompletion: (() -> Void)?
++    weak var delegate: ShippingAddressElementDelegate?
+ 
+     init(
+         configuration: Configuration,
+@@ -24,12 +36,101 @@ public final class ShippingAddressElement {
+         let addressViewControllerConfiguration = configuration.makeAddressViewControllerConfiguration(
+             shippingAddress: initialShippingAddress,
+             allowedCountries: allowedCountries,
+-            apiClient: apiClient,
+-            useAutocompleteEndpoints: useAutocompleteEndpoints
++            apiClient: apiClient
+         )
+         addressViewController = AddressViewController(
++            addressSpecProvider: .shared,
+             configuration: addressViewControllerConfiguration,
+-            delegate: self
++            delegate: self,
++            integrationDelegate: self,
++            useAutocompleteEndpoints: useAutocompleteEndpoints
++        )
++    }
++
++    func normalizedInitialShippingAddress() async -> Checkout.Session.ShippingAddress? {
++        // Read the address back from the form to include its validation and normalization.
++        guard let addressDetails = await addressViewController.initialAddressDetails() else {
++            return nil
++        }
++        return Checkout.Session.ShippingAddress(
++            name: addressDetails.name,
++            address: Checkout.Address(
++                country: addressDetails.address.country,
++                line1: addressDetails.address.line1,
++                line2: addressDetails.address.line2,
++                city: addressDetails.address.city,
++                state: addressDetails.address.state,
++                postalCode: addressDetails.address.postalCode
++            )
++        )
++    }
++
++    /// Presents a sheet that collects the customer's shipping address.
++    /// - Parameter from: The view controller that presents the sheet. If you're using SwiftUI, you may pass nil and it will use the topmost UIViewController from the key window.
++    /// Returns when the sheet is dismissed.
++    public func present(from presentingViewController: UIViewController? = nil) async {
++        await withCheckedContinuation { continuation in
++            present(from: presentingViewController) {
++                continuation.resume()
++            }
++        }
++    }
++
++    /// Presents a sheet that collects the customer's shipping address.
++    /// - Parameter from: The view controller that presents the sheet. If you're using SwiftUI, you may pass nil and it will use the topmost UIViewController from the key window.
++    /// - Parameter completion: Called when the sheet is dismissed.
++    public func present(
++        from presentingViewController: UIViewController? = nil,
++        completion: (() -> Void)? = nil
++    ) {
++        guard !isPresenting else {
++            assertionFailure("ShippingAddressElement is already presenting")
++            completion?()
++            return
++        }
++
++        guard let presentingViewController = presentingViewController ?? UIWindow.visibleViewController else {
++            let errorMessage = "ShippingAddressElement.present(from:) could not find a presenting view controller."
++            assertionFailure(errorMessage)
++            let analytic = UnexpectedCheckoutElementsErrorAnalytic(
++                errorCode: .shippingAddressElementPresentingViewControllerUnavailable,
++                errorMessage: errorMessage
++            )
++            STPAnalyticsClient.sharedClient.log(analytic: analytic)
++            completion?()
++            return
++        }
++
++        guard presentingViewController.presentedViewController == nil else {
++            assertionFailure("presentingViewController is already presenting a view controller")
++            completion?()
++            return
++        }
++
++        let navigationController = UINavigationController(rootViewController: addressViewController)
++        isPresenting = true
++        presentationCompletion = completion
++        presentingViewController.present(navigationController, animated: true)
++    }
++}
++
++extension ShippingAddressElement: AddressViewController.IntegrationDelegate {
++    func save(addressDetails: AddressViewController.AddressDetails) async throws {
++        guard let delegate else {
++            stpAssertionFailure("ShippingAddressElement does not have a delegate.")
++            return
++        }
++
++        try await delegate.updateShippingAddress(
++            name: addressDetails.name,
++            address: Checkout.Address(
++                country: addressDetails.address.country,
++                line1: addressDetails.address.line1.nonEmpty,
++                line2: addressDetails.address.line2,
++                city: addressDetails.address.city,
++                state: addressDetails.address.state,
++                postalCode: addressDetails.address.postalCode
++            )
+         )
+     }
+ }
+@@ -39,6 +140,11 @@ extension ShippingAddressElement: AddressViewControllerDelegate {
+         _ addressViewController: AddressViewController,
+         with address: AddressViewController.AddressDetails?
+     ) {
+-        // TODO(gbirch): populate when implementing presentation
++        addressViewController.dismiss(animated: true) {
++            let completion = self.presentationCompletion
++            self.presentationCompletion = nil
++            self.isPresenting = false
++            completion?()
++        }
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
+index 53eb398..f80596b 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
+@@ -297,14 +297,14 @@ class CustomerAddPaymentMethodViewController: UIViewController {
+             appearance: configuration.appearance
+         )
+         addressConfiguration.apiClient = configuration.apiClient
+-        addressConfiguration.useAutocompleteEndpoints = useAutocompleteEndpoints
+ 
+         let autoCompleteViewController = AutoCompleteViewController(
+             configuration: addressConfiguration,
+             initialLine1Text: addressSectionElement.line1?.text,
+             selectedCountry: addressSectionElement.selectedCountryCode,
+             addressSpecProvider: AddressSpecProvider.shared,
+-            verticalOffset: PaymentSheetUI.navBarPadding(appearance: configuration.appearance)
++            verticalOffset: PaymentSheetUI.navBarPadding(appearance: configuration.appearance),
++            useAutocompleteEndpoints: useAutocompleteEndpoints
+         )
+         autoCompleteViewController.delegate = self
+ 
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift
+index be711f2..603ffe0 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift
+@@ -199,7 +199,7 @@ public class CustomerSheet {
+                              paymentMethodSyncDefault: paymentMethodSyncDefault,
+                              allowsRemovalOfLastSavedPaymentMethod: allowsRemovalOfLastSavedPaymentMethod,
+                              cbcEligible: elementsSession.cardBrandChoice?.eligible ?? false,
+-                             useAutocompleteEndpoints: self.configuration.useAutocompleteEndpoints && elementsSession.shouldUseAutocompleteProxyEndpoints,
++                             useAutocompleteEndpoints: elementsSession.shouldUseAutocompleteProxyEndpoints,
+                              elementsSessionConfigId: elementsSession.configID)
+                 var params: [String: Any] = [:]
+                 if elementsSession.customer?.customerSession != nil {
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift
+index 89903fe..1e85f1a 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift
+@@ -85,9 +85,6 @@ extension CustomerSheet {
+         /// If true, the card form will instead initialize with the card scanner already open.
+         public var opensCardScannerAutomatically: Bool = false
+ 
+-        /// When true, uses the Stripe autocomplete endpoints for billing address autocomplete instead of Apple MapKit.
+-        @_spi(STP) public var useAutocompleteEndpoints: Bool = false
+-
+         public init () {
+         }
+     }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+index ebe9939..cb00583 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+@@ -33,7 +33,7 @@ extension EmbeddedPaymentElement {
+         // - Only restored if the previous input resulted in a completed form i.e. partial or invalid input is still discarded
+ 
+         let shouldShowApplePay = PaymentSheet.isApplePayEnabled(elementsSession: loadResult.elementsSession, configuration: configuration)
+-        let shouldShowLink = PaymentSheet.isLinkEnabled(elementsSession: loadResult.elementsSession, configuration: configuration)
++        let shouldShowLink = PaymentSheet.shouldShowLinkButton(elementsSession: loadResult.elementsSession, configuration: configuration)
+         let savedPaymentMethodAccessoryType = RowButton.RightAccessoryButton.getAccessoryButtonType(
+             savedPaymentMethodsCount: loadResult.savedPaymentMethods.count,
+             isFirstCardCoBranded: loadResult.savedPaymentMethods.first?.isCoBrandedCard ?? false,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
+index 871c912..5aff710 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
+@@ -237,7 +237,7 @@ public final class EmbeddedPaymentElement {
+                 case .applePay:
+                     return PaymentSheet.isApplePayEnabled(elementsSession: loadResult.elementsSession, configuration: configuration)
+                 case .link:
+-                    return PaymentSheet.isLinkEnabled(elementsSession: loadResult.elementsSession, configuration: configuration)
++                    return PaymentSheet.shouldShowLinkButton(elementsSession: loadResult.elementsSession, configuration: configuration)
+                 case .saved(paymentMethod: let paymentMethod, confirmParams: _):
+                     return loadResult.savedPaymentMethods.contains(paymentMethod)
+                 case .new(confirmParams: let confirmParams):
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift
+index a2f86f9..59a9ab0 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift
+@@ -148,9 +148,6 @@ extension EmbeddedPaymentElement {
+         /// If true, the card form will instead initialize with the card scanner already open.
+         public var opensCardScannerAutomatically: Bool = false
+ 
+-        /// When true, uses the Stripe autocomplete endpoints for billing address autocomplete instead of Apple MapKit.
+-        @_spi(STP) public var useAutocompleteEndpoints: Bool = false
+-
+         /// A map for specifying when legal agreements are displayed for each payment method type.
+         /// If the payment method is not specified in the list, the TermsDisplay value will default to `.automatic`.
+         /// Valid payment method types include:
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift
+index 94e868a..8de76bb 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift
+@@ -44,7 +44,6 @@ protocol PaymentElementConfiguration: PaymentMethodRequirementProvider {
+     var disableWalletPaymentMethodFiltering: Bool { get set }
+     var linkPaymentMethodsOnly: Bool { get set }
+     var opensCardScannerAutomatically: Bool { get set }
+-    var useAutocompleteEndpoints: Bool { get set }
+     var termsDisplay: [STPPaymentMethodType: PaymentSheet.TermsDisplay] { get }
+     func resolveLayout(elementsSession: STPElementsSession, paymentMethodTypes: [PaymentSheet.PaymentMethodType]) -> PaymentSheet.PaymentMethodLayout.ResolvedLayout
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
+index d60f862..d0e628a 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
+@@ -251,9 +251,6 @@ extension PaymentSheet {
+         /// If true, the card form will instead initialize with the card scanner already open.
+         public var opensCardScannerAutomatically: Bool = false
+ 
+-        /// When true, uses the Stripe autocomplete endpoints for billing address autocomplete instead of Apple MapKit.
+-        @_spi(STP) public var useAutocompleteEndpoints: Bool = false
+-
+         /// Set to `true` if using a wallet buttons view. This changes a few behaviors of PaymentSheet (for example, wallet buttons will never be selected by default).
+         @_spi(STP) public var willUseWalletButtonsView = false
+ 
+@@ -517,15 +514,25 @@ extension PaymentSheet {
+             case automatic
+             /// Link will never be displayed.
+             case never
++            /// Link remains enabled (e.g. for automatic Link verification, Instant Bank Payments, Link Card Brand, and inline signup)
++            /// but its button/row will not be shown in the payment element UI.
++            case walletButtonHidden
+         }
+ 
+         var shouldDisplay: Bool {
+             switch display {
+-            case .automatic: true
++            case .automatic, .walletButtonHidden: true
+             case .never: false
+             }
+         }
+ 
++        var shouldShowButton: Bool {
++            switch display {
++            case .automatic: true
++            case .walletButtonHidden, .never: false
++            }
++        }
++
+         /// Initializes a LinkConfiguration
+         public init(
+             display: Display = .automatic
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index e77a1e9..06cf53f 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.6.0'
++  s.version                        = '26.7.0'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift
+index 46d713f..87372af 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift	
+@@ -92,6 +92,8 @@ public class STPPaymentMethod: NSObject, STPAPIResponseDecodable {
+     @objc private(set) public var multibanco: STPPaymentMethodMultibanco?
+     /// If this is a MobilePay PaymentMethod (i.e. `self.type == STPPaymentMethodTypeMobilePay`), this contains additional details.
+     @objc private(set) public var mobilePay: STPPaymentMethodMobilePay?
++    /// If this is a Vipps PaymentMethod (i.e. `self.type == STPPaymentMethodTypeVipps`), this contains additional details.
++    @objc private(set) public var vipps: STPPaymentMethodVipps?
+     /// If this is a PayPay PaymentMethod (i.e. `self.type == STPPaymentMethodTypePayPay`), this contains additional details.
+     @objc private(set) public var payPay: STPPaymentMethodPayPay?
+     /// If this is a TWINT PaymentMethod (i.e. `self.type == STPPaymentMethodTypeTwint`), this contains additional details.
+@@ -171,6 +173,7 @@ public class STPPaymentMethod: NSObject, STPAPIResponseDecodable {
+             "crypto = \(String(describing: crypto))",
+             "multibanco = \(String(describing: multibanco))",
+             "mobilePay = \(String(describing: mobilePay))",
++            "vipps = \(String(describing: vipps))",
+             "twint = \(String(describing: twint))",
+             "wero = \(String(describing: wero))",
+             "payByBank = \(String(describing: payByBank))",
+@@ -363,6 +366,9 @@ public class STPPaymentMethod: NSObject, STPAPIResponseDecodable {
+         paymentMethod.mobilePay = STPPaymentMethodMobilePay.decodedObject(
+             fromAPIResponse: dict.stp_dictionary(forKey: "mobilepay")
+         )
++        paymentMethod.vipps = STPPaymentMethodVipps.decodedObject(
++            fromAPIResponse: dict.stp_dictionary(forKey: "vipps")
++        )
+         paymentMethod.payPay = STPPaymentMethodPayPay.decodedObject(
+             fromAPIResponse: dict.stp_dictionary(forKey: "paypay")
+         )
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift
+index edab25b..93f64c4 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
+@@ -80,6 +80,8 @@ import Foundation
+     case crypto
+     /// A MobilePay payment method
+     case mobilePay
++    /// A Vipps payment method
++    case vipps
+     /// A Konbini payment method
+     case konbini
+     /// A PromptPay payment method
+@@ -178,6 +180,8 @@ import Foundation
+             return "Crypto"
+         case .mobilePay:
+             return "MobilePay"
++        case .vipps:
++            return "Vipps"
+         case .konbini:
+             return STPLocalizedString("Konbini", "Payment Method type brand name")
+         case .promptPay:
+@@ -279,6 +283,8 @@ import Foundation
+             return "crypto"
+         case .mobilePay:
+             return "mobilepay"
++        case .vipps:
++            return "vipps"
+         case .konbini:
+             return "konbini"
+         case .promptPay:
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift
+index 6435d51..6f1e747 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift	
+@@ -91,6 +91,8 @@ public class STPPaymentMethodParams: NSObject, STPFormEncodable {
+     @objc public var swish: STPPaymentMethodSwishParams?
+     /// If this is a MobilePay PaymentMethod, this contains additional details.
+     @objc public var mobilePay: STPPaymentMethodMobilePayParams?
++    /// If this is a Vipps PaymentMethod, this contains additional details.
++    @objc public var vipps: STPPaymentMethodVippsParams?
+     /// If this is a AmazonPay PaymentMethod, this contains additional details.
+     @objc public var amazonPay: STPPaymentMethodAmazonPayParams?
+     /// If this is a Alma PaymentMethod, this contains additional details.
+@@ -571,6 +573,24 @@ public class STPPaymentMethodParams: NSObject, STPFormEncodable {
+         self.metadata = metadata
+     }
+ 
++    /// Creates params for a Vipps PaymentMethod.
++    /// - Parameters:
++    ///   - vipps:               An object containing additional Vipps details.
++    ///   - billingDetails:      An object containing the user's billing details.
++    ///   - metadata:            Additional information to attach to the PaymentMethod.
++    @objc
++    public convenience init(
++        vipps: STPPaymentMethodVippsParams,
++        billingDetails: STPPaymentMethodBillingDetails?,
++        metadata: [String: String]?
++    ) {
++        self.init()
++        self.type = .vipps
++        self.vipps = vipps
++        self.billingDetails = billingDetails
++        self.metadata = metadata
++    }
++
+     /// Creates params for a AmazonPay PaymentMethod.
+     /// - Parameters:
+     ///   - amazonPay:           An object containing additional AmazonPay details.
+@@ -800,6 +820,7 @@ public class STPPaymentMethodParams: NSObject, STPFormEncodable {
+             NSStringFromSelector(#selector(getter: revolutPay)): "revolut_pay",
+             NSStringFromSelector(#selector(getter: swish)): "swish",
+             NSStringFromSelector(#selector(getter: mobilePay)): "mobilepay",
++            NSStringFromSelector(#selector(getter: vipps)): "vipps",
+             NSStringFromSelector(#selector(getter: amazonPay)): "amazon_pay",
+             NSStringFromSelector(#selector(getter: alma)): "alma",
+             NSStringFromSelector(#selector(getter: sunbit)): "sunbit",
+@@ -1236,6 +1257,8 @@ extension STPPaymentMethodParams {
+             swish = STPPaymentMethodSwishParams()
+         case .mobilePay:
+             mobilePay = STPPaymentMethodMobilePayParams()
++        case .vipps:
++            vipps = STPPaymentMethodVippsParams()
+         case .amazonPay:
+             amazonPay = STPPaymentMethodAmazonPayParams()
+         case .alma:
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVipps.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVipps.swift
+new file mode 100644
+index 0000000..d60532a
+--- /dev/null
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVipps.swift	
+@@ -0,0 +1,39 @@
++//
++//  STPPaymentMethodVipps.swift
++//  StripePayments
++//
++
++import Foundation
++
++/// The Vipps Payment Method.
++/// - seealso: https://stripe.com/docs/api/payment_methods/object#payment_method_object-vipps
++public class STPPaymentMethodVipps: NSObject, STPAPIResponseDecodable {
++    /// :nodoc:
++    @objc private(set) public var allResponseFields: [AnyHashable: Any] = [:]
++
++    // MARK: - Description
++    /// :nodoc:
++    @objc public override var description: String {
++        let props = [
++            String(format: "%@: %p", NSStringFromClass(STPPaymentMethodVipps.self), self)
++        ]
++
++        return "<\(props.joined(separator: "; "))>"
++    }
++
++    // MARK: - STPAPIResponseDecodeable
++    @objc
++    /// :nodoc:
++    public static func decodedObject(fromAPIResponse response: [AnyHashable: Any]?) -> Self? {
++        guard let response = response else {
++            return nil
++        }
++
++        return self.init(dictionary: response)
++    }
++
++    required init?(dictionary dict: [AnyHashable: Any]) {
++        super.init()
++        allResponseFields = dict
++    }
++}
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVippsParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVippsParams.swift
+new file mode 100644
+index 0000000..84bbbf2
+--- /dev/null
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVippsParams.swift	
+@@ -0,0 +1,22 @@
++//
++//  STPPaymentMethodVippsParams.swift
++//  StripePayments
++//
++
++import Foundation
++
++/// An object representing parameters used to create a Vipps Payment Method
++public class STPPaymentMethodVippsParams: NSObject, STPFormEncodable {
++    @objc public var additionalAPIParameters: [AnyHashable: Any] = [:]
++
++    // MARK: - STPFormEncodable
++    @objc
++    public class func rootObjectName() -> String? {
++        return "vipps"
++    }
++
++    @objc
++    public class func propertyNamesToFormFieldNamesMapping() -> [String: String] {
++        return [:]
++    }
++}
+diff --git a/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift b/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
+index a58d87c..34a846d 100644
+--- a/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
++++ b/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
+@@ -851,6 +851,7 @@ public class STPPaymentHandler: NSObject {
+             .zip,
+             .revolutPay,
+             .mobilePay,
++            .vipps,
+             .amazonPay,
+             .alma,
+             .sunbit,
+diff --git a/VERSION b/VERSION
+index c1a9318..19edf91 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.6.0
+\ No newline at end of file
++26.7.0
+\ No newline at end of file
+diff --git a/modules.yaml b/modules.yaml
+index 68d1f2d..3426ca1 100644
+--- a/modules.yaml
++++ b/modules.yaml
+@@ -184,6 +184,11 @@ modules:
+     readme: StripeCardScan/README.md
+   localization_dir: StripeCardScan/StripeCardScan
+ 
++- podspec: StripeFinancialConnectionsLite.podspec
++  scheme: StripeFinancialConnectionsLite
++  framework_name: StripeFinancialConnectionsLite
++  supports_catalyst: true
++
+ - podspec: StripeFinancialConnections.podspec
+   scheme: StripeFinancialConnections
+   framework_name: StripeFinancialConnections
+@@ -235,6 +240,7 @@ modules:
+ pod_push_order:
+ - StripeCore.podspec
+ - StripeUICore.podspec
++- StripeFinancialConnectionsLite.podspec
+ - StripeCameraCore.podspec
+ - StripeApplePay.podspec
+ - StripePayments.podspec

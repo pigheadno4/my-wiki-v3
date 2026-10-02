@@ -423,7 +423,8 @@ class CommitPilotEndToEndTests(unittest.TestCase):
             self.assertEqual("awaiting_approval", result.state)
             self.assertEqual(sha, item.sha)
             self.assertEqual((), item.package_changes)
-            approve_one(wiki, item.work_item_id, "full")
+            with mock.patch("collect_github_repos.load_registry", return_value=(config,)):
+                approve_one(wiki, item.work_item_id, "full")
             claimed = next_ingest(wiki)
             self.assertEqual(item.work_item_id, claimed.work_item_id)
             self.assertEqual("ingesting", claimed.state)

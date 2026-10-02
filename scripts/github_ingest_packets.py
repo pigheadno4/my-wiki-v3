@@ -213,9 +213,12 @@ def build_ingest_packet(
     wiki_context_override: Optional[Sequence[str]] = None,
     expected_wiki_targets_override: Optional[Sequence[str]] = None,
     capsule_policy_sha256_override: Optional[str] = None,
+    format_version: int = 2,
 ) -> IngestPacket:
     """Build one canonical packet without publishing or changing queue state."""
     root = Path(root).resolve()
+    if type(format_version) is not int or format_version not in (1, 2):
+        raise PacketBuildError("unsupported release packet format")
     _validate_config(config)
     if packet_kind not in ("queued", "ad-hoc"):
         raise PacketBuildError("packet kind must be queued or ad-hoc")
@@ -249,6 +252,7 @@ def build_ingest_packet(
             current,
             item,
             policy_hash,
+            format_version,
         )
         package_documents.append(package_document)
         all_required.update(package_document["required_reading"])
@@ -292,7 +296,7 @@ def build_ingest_packet(
         "collection_date": str(current.manifest["collected_date"]),
         "evidence_gaps": [],
         "expected_wiki_targets": list(expected_targets),
-        "format_version": 1,
+        "format_version": format_version,
         "markdown_sha256": "",
         "packet_kind": packet_kind,
         "packages": package_documents,
@@ -625,9 +629,12 @@ def load_packet_summary(root: Path, packet_path: str) -> PacketSummary:
 
 
 def load_packet_required_reading(
-    root: Path, packet_path: str
+    root: Path, packet_path: str, *, mode: str = "delta",
+    config: Optional[RepoConfig] = None,
 ) -> Tuple[str, ...]:
-    """Load the canonical packet's safe, unique serial-reading paths."""
+    """Expand full-mode reading without rewriting the collection-time packet."""
+    if mode not in ("full", "delta"):
+        raise PacketBuildError("invalid ingest reading mode")
     _, document, content = _load_json(Path(root).resolve(), packet_path)
     if canonical_json_bytes(document) + b"\n" != content:
         raise PacketBuildError("packet JSON is not canonical")
@@ -638,7 +645,36 @@ def load_packet_required_reading(
         or len(required) != len(set(required))
     ):
         raise PacketBuildError("packet required reading is invalid")
-    return tuple(required)
+    if mode == "delta":
+        return tuple(required)
+    if config is None or config.id != document.get("repository"):
+        raise PacketBuildError("full reading requires matching repository policy")
+    current = _load_snapshot(Path(root).resolve(), document["snapshot_manifest"], config.id)
+    if (current.manifest["sha"] != document.get("to_sha")
+            or current.manifest_sha256 != document.get("snapshot_sha256")):
+        raise PacketBuildError("full reading snapshot SHA mismatch")
+    roots = ("",)
+    if config.version_strategy != "commit":
+        roots = tuple(sorted({
+            path
+            for package in document["packages"]
+            for path in _package_roots(
+                package["package"], None, current, config.capsules[0].adapter
+            )
+        }))
+    selectors = config.ingest_required_paths
+    for selected in selectors:
+        if not any(_matches_ingest_path(path, roots, selected) for path in current.files):
+            raise PacketBuildError("ingest required path matches no retained evidence: " + selected)
+    current_root = PurePosixPath(current.relative_path).parent / "files"
+    expanded = set(required)
+    expanded.update(
+        str(current_root / path) for path in current.files
+        if not selectors or any(_matches_ingest_path(path, roots, selected) for selected in selectors)
+    )
+    for path in expanded:
+        _resolve_file(Path(root).resolve(), path)
+    return tuple(sorted(expanded))
 
 
 def _packet_bytes(
@@ -719,6 +755,7 @@ def _build_package(
     current: _LoadedSnapshot,
     item: PackagePacketInput,
     policy_hash: str,
+    format_version: int,
 ) -> dict:
     _validate_package_input(item, config.id, current.manifest["sha"])
     release = _load_release(root, item.release_manifest, config.id, item)
@@ -737,7 +774,8 @@ def _build_package(
     if item.from_version and prior is not None and comparison is None and not item.release_notes_revision:
         raise PacketBuildError("non-baseline packet requires comparison evidence")
 
-    retained = _retained_diff(prior, current, item.upstream_changes)
+    retained = _retained_diff(prior, current, item.upstream_changes,
+                              report_scope=format_version >= 2)
     if item.package not in capsule.focus_packages:
         raise PacketBuildError("packet package is outside capsule focus")
     package_paths = _package_roots(
@@ -753,6 +791,7 @@ def _build_package(
         capsule,
         package_paths,
         item.package,
+        report_scope=format_version >= 2,
     )
     changed_rows = [
         row for row in retained["files"] if row["status"] != "unchanged"
@@ -1050,6 +1089,7 @@ def _retained_diff(
     prior: Optional[_LoadedSnapshot],
     current: _LoadedSnapshot,
     upstream_changes: Sequence[UpstreamChange],
+    *, report_scope: bool = False,
 ) -> dict:
     if prior is None:
         files = [
@@ -1106,7 +1146,18 @@ def _retained_diff(
         else:
             status = "modified"
             classification = _classify_file(path, new)
-        rows.append(_retained_row(path, status, old, new, classification))
+        row = _retained_row(path, status, old, new, classification)
+        if status == "removed" and report_scope:
+            upstream_status = next(
+                (change.status for change in upstream_changes if change.old_path == path),
+                "not-listed",
+            )
+            row["upstream_status"] = upstream_status
+            row["removal_reason"] = (
+                "upstream-deletion" if upstream_status == "deleted"
+                else "not-retained-in-current-snapshot"
+            )
+        rows.append(row)
     rows.sort(key=lambda row: row["path"])
     counts = {
         status: sum(row["status"] == status for row in rows)
@@ -1300,11 +1351,10 @@ def _upstream_dispositions(
     capsule: CapsuleConfig,
     package_roots: Sequence[str],
     package: str,
+    *, report_scope: bool = True,
 ) -> Tuple[List[dict], List[dict]]:
     prior_files = prior.files if prior else {}
     prior_excluded = prior.excluded if prior else {}
-    excluded = dict(prior_excluded)
-    excluded.update(current.excluded)
     rows = []
     gaps = []
     for change in sorted(
@@ -1312,8 +1362,19 @@ def _upstream_dispositions(
         key=lambda item: (item.new_path or item.old_path, item.old_path, item.status),
     ):
         paths = tuple(path for path in (change.old_path, change.new_path) if path)
-        retained = any(path in prior_files or path in current.files for path in paths)
-        exclusion = next((excluded[path] for path in paths if path in excluded), "")
+        # Deleted paths need old evidence; all other changes need the new version.
+        deleted = change.status == "deleted"
+        evidence_path = change.old_path if deleted else change.new_path
+        evidence_files = prior_files if deleted else current.files
+        excluded = prior_excluded if deleted else current.excluded
+        retained = evidence_path in evidence_files
+        exclusion = excluded.get(evidence_path, "")
+        # Format 1 is replayed only to validate historical packet bytes.
+        if not report_scope:
+            retained = any(path in prior_files or path in current.files for path in paths)
+            legacy_excluded = {**prior_excluded, **current.excluded}
+            exclusion = next((legacy_excluded[path] for path in paths
+                              if path in legacy_excluded), "")
         if retained:
             disposition = "retained-evidence"
             reason = "snapshot-file"
@@ -1329,7 +1390,11 @@ def _upstream_dispositions(
             gaps.append({"path": change.new_path or change.old_path, "reason": reason})
         else:
             disposition = "intentional-policy-exclusion"
-            reason = "outside-capsule-policy"
+            reason = (
+                "prior-only-outside-current-policy"
+                if report_scope and not deleted and any(path in prior_files for path in paths)
+                else "outside-capsule-policy"
+            )
         rows.append(
             {
                 "affected_areas": list(
@@ -1880,6 +1945,16 @@ def _render_markdown(document: dict) -> bytes:
             ]
         )
         lines.extend("- `" + path + "`" for path in package["required_reading"])
+        removed = [row for row in package["retained_evidence"]["files"]
+                   if row["status"] == "removed"]
+        if removed and document["format_version"] >= 2:
+            lines.extend(["", "### Files absent from current snapshot", "",
+                          "Snapshot absence is not proof of upstream deletion. `not-listed` refers only to the supplied upstream change inventory.", ""])
+            lines.extend(
+                "- `" + row["path"] + "`: `" + row["removal_reason"]
+                + "`; upstream: `" + row["upstream_status"] + "`"
+                for row in removed
+            )
         lines.extend(["", "### Upstream changes", ""])
         if package["upstream_changes"]:
             for row in package["upstream_changes"]:
@@ -1892,6 +1967,7 @@ def _render_markdown(document: dict) -> bytes:
                     + "`: `"
                     + row["disposition"]
                     + "`"
+                    + (" (" + row["reason"] + ")" if document["format_version"] >= 2 else "")
                 )
         else:
             lines.append("- None")

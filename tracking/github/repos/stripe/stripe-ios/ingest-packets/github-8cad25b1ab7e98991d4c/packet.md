@@ -1,0 +1,258 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-ios`
+- Work item: `github-8cad25b1ab7e98991d4c`
+- Snapshot: `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `stripe-ios`
+
+- Version: `26.11.0` -> `26.12.0`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `259`
+
+### Required reading
+
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.12.0/2026-09-30/manifest.json`
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.12.0/2026-09-30/release-notes.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/manifest.json`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/Package.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripeApplePay.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripeConnect.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripeCryptoOnramp.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripeFinancialConnections.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripeIdentity.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripeIssuing.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripePaymentSheet.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/StripePayments.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/files/VERSION`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/manifest.json`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.11.0--26.12.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.11.0--26.12.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.11.0--26.12.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `BuildConfigurations/Version.xcconfig`: `intentional-policy-exclusion`
+- `modified` `CHANGELOG.md`: `retained-evidence`
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example/CryptoOnrampExampleView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example/CryptoOnrampFlowCoordinator.swift`: `intentional-policy-exclusion`
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example/KYCResidence.swift`: `intentional-policy-exclusion`
+- `added` `Example/CryptoOnramp Example/CryptoOnramp Example/TermsOfServicePresentingView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/CryptoOnramp Example/CryptoOnrampExampleUITests/CryptoOnrampExampleUITests.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheetUITest/CheckoutElementsUITests.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheetUITest/CustomerSheetUITest.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheetUITest/PaymentSheetDefaultSPMUITests.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheetUITest/PaymentSheetUITestCase+Helpers.swift`: `intentional-policy-exclusion`
+- `modified` `Package.swift`: `retained-evidence`
+- `modified` `Stripe.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeApplePay.podspec`: `retained-evidence`
+- `modified` `StripeCameraCore.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeCardScan.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeConnect.podspec`: `retained-evidence`
+- `modified` `StripeCore.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeCore/StripeCore/Source/API Bindings/STPAPIClient.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCore/StripeCore/Source/API Bindings/StripeAPIConfiguration+Version.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCore/StripeCoreTests/API Bindings/STPAPIClientTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp.podspec`: `retained-evidence`
+- `modified` `StripeCryptoOnramp/README.md`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/bg-BG.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/ca-ES.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/cs-CZ.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/da.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/de.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/el-GR.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/en-GB.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/en.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/es-419.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/es.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/et-EE.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/fi.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/fil.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/fr-CA.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/fr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/hr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/hu.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/id.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/it.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/ja.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/ko.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/lt-LT.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/lv-LV.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/ms-MY.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/mt.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/nb.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/nl.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/pl-PL.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/pt-BR.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/pt-PT.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/ro-RO.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/ru.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/sk-SK.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/sl-SI.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/sv.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/th.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/tr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/vi.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/zh-HK.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/zh-Hans.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/Localizations/zh-Hant.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_check.imageset/Contents.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_check.imageset/check.svg`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_clock.imageset/Contents.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_clock.imageset/clock.svg`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_close.imageset/Contents.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_close.imageset/close-x.svg`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_exclamation_circle.imageset/Contents.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_exclamation_circle.imageset/error-template.svg`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_location_pin.imageset/Contents.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_location_pin.imageset/location-pin.svg`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_wallet.imageset/Contents.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Resources/StripeCryptoOnramp.xcassets/icon_wallet.imageset/bi-fold-wallet.svg`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/Compliance/PartnerTermsResult.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`: `retained-evidence`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/AdditionalKYCDocumentRequirement.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/AdditionalKYCFulfillmentQuestionnaire.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/AdditionalKYCQuestionnaire.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/AdditionalKYCRequirement.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/FulfillAdditionalKYCRequirementRequest.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/FulfillAdditionalKYCRequirementResponse.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/RetrieveKYCRequirementsResponse.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/ConfirmPartnerTermsRequest.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/PartnerDeclarationType.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/PartnerTerms.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/RetrievePartnerTermsRequest.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/STPAPIClient+CryptoOnramp.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/UI/Components/CloseToolbarItem.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/UI/Components/PrimaryActionButton.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/UI/Views/MessageView.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/CryptoOnrampAnalyticsEvent.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/Image.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/LinkAppearance+CryptoOnramp.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/String+Localized.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/Typography.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/UIColor+CryptoOnramp.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnrampTests/Helpers/CryptoOnrampMockData.swift`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/ConfirmPartnerTermsResponse_200.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/FulfillAdditionalKYCRequirementResponse_200.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/RetrieveKYCRequirementsResponse_PartnerReview_200.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/RetrieveKYCRequirementsResponse_SourceOfFundsWithQuestionnaire_200.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/RetrieveKYCRequirementsResponse_UnknownActionParty_200.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/RetrievePartnerTermsResponse_NotRequired_200.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/RetrievePartnerTermsResponse_TOSRequired_200.json`: `intentional-policy-exclusion`
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/RetrievePartnerTermsResponse_TermsAndConditionsRequired_200.json`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp/StripeCryptoOnrampTests/Unit/STPAPIClient+CryptoOnrampTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripeFinancialConnections.podspec`: `retained-evidence`
+- `modified` `StripeFinancialConnections/StripeFinancialConnections/Source/Helpers/FinancialConnectionsAppearance.swift`: `intentional-policy-exclusion`
+- `modified` `StripeFinancialConnectionsLite.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeIdentity.podspec`: `retained-evidence`
+- `modified` `StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift`: `retained-evidence`
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/Coordinators/VerificationSheetFlowController.swift`: `intentional-policy-exclusion`
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/ViewControllers/IdentityFlowViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/Views/IdentityFlowView.swift`: `intentional-policy-exclusion`
+- `modified` `StripeIdentity/StripeIdentityTests/Helpers/VerificationSheetFlowControllerMock.swift`: `intentional-policy-exclusion`
+- `modified` `StripeIdentity/StripeIdentityTests/Unit/NativeComponents/ViewControllers/BiometricConsentViewControllerTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripeIdentity/StripeIdentityTests/Unit/NativeComponents/ViewControllers/IdentityFlowViewControllerTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripeIssuing.podspec`: `retained-evidence`
+- `modified` `StripePaymentSheet.podspec`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/bg-BG.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ca-ES.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/cs-CZ.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/da.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/de.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/el-GR.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/en-GB.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/en.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/es-419.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/es.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/et-EE.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fi.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fil.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fr-CA.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/hr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/hu.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/id.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/it.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ja.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ko.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/lt-LT.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/lv-LV.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ms-MY.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/mt.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/nb.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/nl.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pl-PL.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pt-BR.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pt-PT.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ro-RO.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ru.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sk-SK.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sl-SI.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sv.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/th.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/tr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/vi.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-HK.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-Hans.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-Hant.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Categories/STPPaymentMethod+PaymentSheet.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Categories/String+Localized.swift`: `intentional-policy-exclusion`
+- `renamed` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/HTML Confirmation/HTMLConfirmationContentViewController.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/HTML Confirmation/HTMLConfirmationResult.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/HTML Confirmation/HTMLConfirmationViewController.swift`: `intentional-policy-exclusion`
+- `deleted` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/User Attestation/UserAttestationViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionBillingAddressUpdater.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElement.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementUIView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Elements/CardSection/CardSectionElement.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Elements/ExpandableDetailView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Elements/TwoOptionSelectorView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/SavedPaymentMethodFormFactory/SavedPaymentMethodFormFactory+Card.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Main Screen/RowButton.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Main Screen/VerticalPaymentMethodListViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Saved Payment Method Screen/SavedPaymentMethodRowButton.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/CardSectionElementTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutAddressMergingTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutApplePayContextTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutConfirmationStubbedTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutCurrencySelectorElementSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutCurrencySelectorViewTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutPendingOperationsTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutTestHelpers.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutUnitTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CurrencySelectorElementViewTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetLPMConfirmFlowTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/STPPaymentMethod+PaymentSheetTests.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/SavedPaymentMethodFormFactoryCardTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/SavedPaymentMethodRowButtonTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/VerticalPaymentMethodListViewControllerTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePayments.podspec`: `retained-evidence`
+- `modified` `StripePaymentsUI.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeUICore.podspec`: `intentional-policy-exclusion`
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.CheckoutCurrencySelectorElementSnapshotTests/testDarkModeWithCompletionHandler_@3x.png`: `intentional-policy-exclusion`
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.CheckoutCurrencySelectorElementSnapshotTests/testDarkModeWithCompletionHandler__iOS26@3x.png`: `intentional-policy-exclusion`
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.CheckoutCurrencySelectorElementSnapshotTests/testDefaultAppearanceWithCompletionHandler_@3x.png`: `intentional-policy-exclusion`
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.CheckoutCurrencySelectorElementSnapshotTests/testDefaultAppearanceWithCompletionHandler__iOS26@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.CheckoutCurrencySelectorElementSnapshotTests/testDetailExpandedWithCompletionHandler_@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.CheckoutCurrencySelectorElementSnapshotTests/testDetailExpandedWithCompletionHandler__iOS26@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.CheckoutCurrencySelectorElementSnapshotTests/testDetailExpanded_darkModeWithCompletionHandler_@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.CheckoutCurrencySelectorElementSnapshotTests/testDetailExpanded_darkModeWithCompletionHandler__iOS26@3x.png`: `intentional-policy-exclusion`
+- `modified` `VERSION`: `retained-evidence`

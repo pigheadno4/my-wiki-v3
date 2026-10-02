@@ -81,6 +81,12 @@ For every ingest, read the complete cumulative source page first. Then read ever
 
 For `full`, read every current-snapshot path assigned by the packet and relevant prior history. This is the complete snapshot by default, or the reviewed `ingest_required_paths` subset when configured. Add the new baseline or major knowledge to the cumulative page; do not replace validated older-version knowledge. Unassigned retained files remain available for later query-time deep dives or an approved supplement ingest.
 
+The collection-time packet remains unchanged after a mode override. The effective
+`required_reading` returned by `next-ingest` expands it for approved `full` mode
+using the current snapshot and registry reading selectors, retaining all original
+packet and attachment paths. Read this effective list, not only the packet's
+collection-time list. Snapshot identity and file hashes are checked on expansion.
+
 For `delta`, read every changed retained file and linked comparison/history section in full. Update affected knowledge and append history. Unchanged historical raw files need not be reread.
 
 Follow `rules/ingest.md` for concept audit, contradiction checks, indexes, logs, and focused validation. Do not begin another work item until the current item reaches a terminal ingest state.

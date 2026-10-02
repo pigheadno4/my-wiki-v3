@@ -1,0 +1,3517 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index cee6fdd..1693aa5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,17 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.6.0 2026-08-10
++### PaymentSheet
++* [Fixed] LinkController (private preview) now returns an error when no funding sources are available for a Link session, rather than silently falling back to card.
++
++### CryptoOnramp (Alpha)
++* [Added] Added `CryptoOnrampCoordinator.deleteWalletAddress(walletId:)` to delete a registered wallet address.
++
++### PaymentSheet
++* [Added] Added support for MB WAY payments.
++* [Added] Added support for Bizum payments.
++
+ ## 26.5.0 2026-08-03
+ ### CryptoOnramp (Alpha)
+ * [Added] Added support for registering wallet addresses on the Tempo network.
+diff --git a/Package.swift b/Package.swift
+index 36c8484..43710ce 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -159,7 +159,6 @@ let package = Package(
+             exclude: ["Info.plist"],
+             resources: [
+                 .process("Resources/StripePaymentSheet.xcassets"),
+-                .process("Resources/JSON"),
+                 .process("PrivacyInfo.xcprivacy")
+             ]
+         ),
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index a631f34..43f28b5 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.5.0'
++  s.version                        = '26.6.0'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index 4f67c1b..6f35d1f 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.5.0'
++  s.version                        = '26.6.0'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index 5ad3b87..29a79c4 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.5.0'
++  s.version                        = '26.6.0'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift b/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
+index 40d0ade..053a27d 100644
+--- a/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
++++ b/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
+@@ -135,6 +135,13 @@ protocol CryptoOnrampCoordinatorProtocol {
+     /// Throws if an authenticated Link user is not available, or an API error occurs.
+     func registerWalletAddress(walletAddress: String, network: CryptoNetwork) async throws
+ 
++    /// Deletes the given crypto wallet from the current Link account.
++    /// Requires an authenticated Link user.
++    ///
++    /// - Parameter walletId: The ID of the crypto wallet to delete.
++    /// Throws if an authenticated Link user is not available, or an API error occurs.
++    func deleteWalletAddress(walletId: String) async throws
++
+     /// Creates a short-lived server-issued challenge for a registered wallet.
+     /// Requires an authenticated Link user.
+     ///
+@@ -381,7 +388,11 @@ public final class CryptoOnrampCoordinator: NSObject, CryptoOnrampCoordinatorPro
+             if let stripeError = error as? StripeError,
+                case let .apiError(stripeAPIError) = stripeError,
+                stripeAPIError.code == "link_auth_token_invalid" || stripeAPIError.code == "resource_missing" {
+-                analyticsClient.log(.errorOccurred(during: .authenticateUserWithAuthToken, errorMessage: stripeAPIError.message ?? error.localizedDescription))
++                analyticsClient.log(.errorOccurred(
++                    during: .authenticateUserWithAuthToken,
++                    errorMessage: stripeAPIError.message ?? error.localizedDescription,
++                    requestID: stripeAPIError.requestID
++                ))
+                 throw CryptoOnrampCoordinator.Error.seamlessSignInTokenInvalid(reason: stripeAPIError.message)
+             } else {
+                 try logAndThrow(error, during: .authenticateUserWithAuthToken)
+@@ -553,6 +564,18 @@ public final class CryptoOnrampCoordinator: NSObject, CryptoOnrampCoordinatorPro
+         }
+     }
+ 
++    public func deleteWalletAddress(walletId: String) async throws {
++        do {
++            try await apiClient.deleteWalletAddress(
++                walletId: walletId,
++                linkAccountInfo: linkAccountInfo
++            )
++            analyticsClient.log(.walletDeleted)
++        } catch {
++            try logAndThrow(error, during: .deleteWalletAddress)
++        }
++    }
++
+     public func getWalletOwnershipChallenge(walletAddress: String, network: CryptoNetwork) async throws -> WalletOwnershipChallenge {
+         do {
+             let challenge = try await apiClient.getWalletOwnershipChallenge(
+@@ -955,7 +978,12 @@ private extension CryptoOnrampCoordinator {
+             additionalSDKVersions: additionalSDKVersions
+         )
+         let errorMessage = (mappedError as? StripeCryptoOnrampError)?.developerMessage ?? mappedError.localizedDescription
+-        analyticsClient.log(.errorOccurred(during: operation, errorMessage: errorMessage))
++        let requestID = (mappedError as? StripeCryptoOnrampAPIError)?.requestID
++        analyticsClient.log(.errorOccurred(
++            during: operation,
++            errorMessage: errorMessage,
++            requestID: requestID
++        ))
+ 
+         #if DEBUG
+         print("[Stripe SDK] CryptoOnrampCoordinator error: \(errorMessage)")
+@@ -970,7 +998,11 @@ private extension CryptoOnrampCoordinator {
+            stripeAPIError.type == .invalidRequestError,
+            let message = stripeAPIError.message,
+            message.hasPrefix("There was an issue parsing the phone number") {
+-            analyticsClient.log(.errorOccurred(during: operation, errorMessage: "Invalid phone number format"))
++            analyticsClient.log(.errorOccurred(
++                during: operation,
++                errorMessage: "Invalid phone number format",
++                requestID: stripeAPIError.requestID
++            ))
+             throw Error.invalidPhoneFormat
+         } else {
+             try logAndThrow(error, during: operation)
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index c68831e..3868beb 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.5.0'
++    s.version                        = '26.6.0'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index 9ffd998..bc024af 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.5.0'
++  s.version                        = '26.6.0'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index 2d51bb3..5d09e72 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.5.0'
++  s.version                        = '26.6.0'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index d30b335..50de18d 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.5.0'
++  s.version                        = '26.6.0'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift
+index 90f3a96..b080521 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift	
+@@ -28,10 +28,7 @@ extension PaymentPagesAPIResponse {
+             livemode: livemode,
+             minorUnitsAmountDivisor: minorUnitsAmountDivisor,
+             paymentOption: nil,
+-            savedPaymentMethods: savedPaymentMethods,
+-            shipping: shipping,
+             shippingAddress: nil,
+-            shippingOptions: shippingOptions,
+             status: status,
+             tax: tax,
+             total: total,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift
+index ff34751..a28c1a4 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift	
+@@ -48,12 +48,6 @@ class PaymentPagesAPIResponse: NSObject {
+     /// Payment methods attached to the customer.
+     let savedPaymentMethods: [STPPaymentMethod]
+ 
+-    /// The selected shipping option, if any.
+-    let shipping: Checkout.SelectedShipping?
+-
+-    /// Available shipping options for this session.
+-    let shippingOptions: [Checkout.ShippingOption]
+-
+     /// Status of the session (status type + payment status).
+     let status: Checkout.Status?
+ 
+@@ -180,8 +174,6 @@ class PaymentPagesAPIResponse: NSObject {
+         lineItems: [Checkout.LineItem],
+         livemode: Bool,
+         savedPaymentMethods: [STPPaymentMethod],
+-        shipping: Checkout.SelectedShipping?,
+-        shippingOptions: [Checkout.ShippingOption],
+         status: Checkout.Status?,
+         tax: Checkout.Tax,
+         total: Checkout.Total?,
+@@ -217,8 +209,6 @@ class PaymentPagesAPIResponse: NSObject {
+         self.lineItems = lineItems
+         self.livemode = livemode
+         self.savedPaymentMethods = savedPaymentMethods
+-        self.shipping = shipping
+-        self.shippingOptions = shippingOptions
+         self.status = status
+         self.tax = tax
+         self.total = total
+@@ -290,7 +280,6 @@ extension PaymentPagesAPIResponse: STPAPIResponseDecodable {
+ 
+         let discountAmounts = Self.parseDiscountAmounts(from: dict, currency: currency)
+         let lineItems = Self.parseLineItems(from: dict, defaultCurrency: currency)
+-        let shippingOptions = Self.parseShippingOptions(from: dict, defaultCurrency: currency)
+ 
+         // Total
+         let total: Checkout.Total? = {
+@@ -301,7 +290,7 @@ extension PaymentPagesAPIResponse: STPAPIResponseDecodable {
+             }
+             let taxInclusiveValue = publicTaxAmounts.filter { $0.inclusive }.reduce(0) { $0 + $1.amount.minorUnitsAmount }
+             let taxExclusiveValue = publicTaxAmounts.filter { !$0.inclusive }.reduce(0) { $0 + $1.amount.minorUnitsAmount }
+-            let shippingValue = Self.parseSelectedShippingAmount(from: dict)
++            let shippingValue = Self.parseShippingRateAmount(from: dict)
+             let discountValue = discountAmounts.reduce(0) { $0 + $1.amount.minorUnitsAmount }
+             let appliedBalanceValue = (summary["applied_balance"] as? Int) ?? 0
+             let balanceAppliedToNextInvoice = (summary["balance_applied_to_next_invoice"] as? Bool) ?? false
+@@ -408,13 +397,6 @@ extension PaymentPagesAPIResponse: STPAPIResponseDecodable {
+             setupIntentId = dict["setup_intent"] as? String
+         }
+ 
+-        // Selected shipping
+-        let shipping = Self.parseSelectedShipping(
+-            from: dict,
+-            shippingOptions: shippingOptions,
+-            currency: currency
+-        )
+-
+         let savedPaymentMethods: [STPPaymentMethod] = customer?.paymentMethods ?? []
+ 
+         let businessName = (dict["elements_session"] as? [String: Any])?["business_name"] as? String
+@@ -439,8 +421,6 @@ extension PaymentPagesAPIResponse: STPAPIResponseDecodable {
+             lineItems: lineItems,
+             livemode: livemode,
+             savedPaymentMethods: savedPaymentMethods,
+-            shipping: shipping,
+-            shippingOptions: shippingOptions,
+             status: status,
+             tax: tax,
+             total: total,
+@@ -491,60 +471,54 @@ extension PaymentPagesAPIResponse {
+     // MARK: Line Items
+ 
+     static func parseLineItems(from dict: [AnyHashable: Any], defaultCurrency: String?) -> [Checkout.LineItem] {
+-        guard let lineItemGroup = dict["line_item_group"] as? [AnyHashable: Any],
+-              let lineItems = lineItemGroup["line_items"] as? [[AnyHashable: Any]] else {
++        guard let checkoutItems = dict["checkout_items"] as? [[AnyHashable: Any]] else {
+             return []
+         }
+-        return lineItems.compactMap { parseLineItem(from: $0, defaultCurrency: defaultCurrency) }
++        return checkoutItems.compactMap {
++            parseLineItem(from: $0, defaultCurrency: defaultCurrency)
++        }
+     }
+ 
+-    private static func parseLineItem(from dict: [AnyHashable: Any], defaultCurrency: String?) -> Checkout.LineItem? {
+-        guard let id = dict["id"] as? String,
+-              let quantity = dict["quantity"] as? Int,
+-              let name = dict["name"] as? String else {
++    /// Parses the one-time price item shape used by `checkout_items`.
++    private static func parseLineItem(
++        from dict: [AnyHashable: Any],
++        defaultCurrency: String?
++    ) -> Checkout.LineItem? {
++        guard dict["type"] as? String == "one_time_price_item",
++              let key = dict["key"] as? String,
++              let oneTimePriceItem = dict["one_time_price_item"] as? [AnyHashable: Any],
++              let quantity = oneTimePriceItem["quantity"] as? Int,
++              let price = oneTimePriceItem["price"] as? [AnyHashable: Any],
++              let product = price["product"] as? [AnyHashable: Any],
++              let name = product["name"] as? String else {
+             return nil
+         }
+-        let price = dict["price"] as? [AnyHashable: Any]
+-        let currency = (price?["currency"] as? String) ?? defaultCurrency
+ 
+-        let unitAmount: Checkout.Amount? = (price?["unit_amount"] as? Int).map {
++        let currency = (price["currency"] as? String) ?? defaultCurrency
++        let unitAmount = (price["unit_amount"] as? Int).map {
+             makeAmount($0, currency: currency)
+         }
+         let unitAmountDecimal = parseDecimalAmount(
+-            price?["unit_amount_decimal"] as? String,
+-            currency: currency
+-        )
+-        let subtotal = makeOptionalAmount(dict["subtotal"], currency: currency)
+-        let discount = makeOptionalAmount(dict["discount"], currency: currency)
+-        let taxExclusive = makeOptionalAmount(dict["tax_exclusive"], currency: currency)
+-        let taxInclusive = makeOptionalAmount(dict["tax_inclusive"], currency: currency)
+-        let total = makeOptionalAmount(dict["total"], currency: currency)
+-        let lineDiscountAmounts = parseLineDiscountAmounts(
+-            from: dict["discount_amounts"] as? [[AnyHashable: Any]] ?? [],
++            price["unit_amount_decimal"] as? String,
+             currency: currency
+         )
+-        let lineTaxAmounts = parseLineTaxAmounts(
+-            from: dict["tax_amounts"] as? [[AnyHashable: Any]] ?? [],
+-            currency: currency
+-        )
+-        let adjustableQuantity = parseAdjustableQuantity(from: dict["adjustable_quantity"] as? [AnyHashable: Any])
+ 
+         return Checkout.LineItem(
+-            id: id,
++            id: key,
+             name: name,
+-            description: dict["description"] as? String,
+-            images: dict["images"] as? [String] ?? [],
++            description: product["description"] as? String,
++            images: product["images"] as? [String] ?? [],
+             quantity: quantity,
+             unitAmount: unitAmount,
+             unitAmountDecimal: unitAmountDecimal,
+-            subtotal: subtotal,
+-            discount: discount,
+-            taxExclusive: taxExclusive,
+-            taxInclusive: taxInclusive,
+-            total: total,
+-            discountAmounts: lineDiscountAmounts,
+-            taxAmounts: lineTaxAmounts,
+-            adjustableQuantity: adjustableQuantity
++            subtotal: nil,
++            discount: nil,
++            taxExclusive: nil,
++            taxInclusive: nil,
++            total: nil,
++            discountAmounts: [],
++            taxAmounts: [],
++            adjustableQuantity: nil
+         )
+     }
+ 
+@@ -557,106 +531,27 @@ extension PaymentPagesAPIResponse {
+         )
+     }
+ 
+-    private static func makeOptionalAmount(_ value: Any?, currency: String?) -> Checkout.Amount? {
+-        guard let amount = value as? Int else { return nil }
+-        return makeAmount(amount, currency: currency)
+-    }
+-
+-    private static func parseAdjustableQuantity(from dict: [AnyHashable: Any]?) -> Checkout.AdjustableQuantity? {
+-        guard let dict,
+-              let minimum = dict["minimum"] as? Int,
+-              let maximum = dict["maximum"] as? Int else { return nil }
+-        return Checkout.AdjustableQuantity(minimum: minimum, maximum: maximum)
+-    }
+-
+-    // MARK: Shipping Options / Selected Shipping
+-
+-    static func parseShippingOptions(from dict: [AnyHashable: Any], defaultCurrency: String?) -> [Checkout.ShippingOption] {
+-        guard let options = dict["shipping_options"] as? [[AnyHashable: Any]] else {
+-            return []
+-        }
+-        return options.compactMap { parseShippingOption(from: $0, defaultCurrency: defaultCurrency) }
+-    }
+-
+-    static func parseSelectedShippingAmount(from dict: [AnyHashable: Any]) -> Int {
+-        if let lineItemGroup = dict["line_item_group"] as? [AnyHashable: Any],
+-           let shippingRate = lineItemGroup["shipping_rate"] as? [AnyHashable: Any],
++    static func parseShippingRateAmount(from dict: [AnyHashable: Any]) -> Int {
++        if let shippingRate = dict["shipping_rate"] as? [AnyHashable: Any],
+            let amount = shippingRate["amount"] as? Int {
+             return amount
+         }
+         return 0
+     }
+ 
+-    static func parseSelectedShipping(
++    /// Reads an aggregate array from `recurring_details`. Despite its name, `recurring_details`
++    /// also contains one-time order totals.
++    private static func aggregateArray(
+         from dict: [AnyHashable: Any],
+-        shippingOptions: [Checkout.ShippingOption],
+-        currency: String?
+-    ) -> Checkout.SelectedShipping? {
+-        guard let lineItemGroup = dict["line_item_group"] as? [AnyHashable: Any],
+-              let shippingRate = lineItemGroup["shipping_rate"] as? [AnyHashable: Any],
+-              let id = shippingRate["id"] as? String else {
+-            return nil
+-        }
+-        let resolvedOption = shippingOptions.first(where: { $0.id == id })
+-            ?? parseShippingOption(from: ["shipping_rate": shippingRate], defaultCurrency: currency)
+-        guard let option = resolvedOption else { return nil }
+-
+-        let taxAmounts = parseLineTaxAmounts(
+-            from: lineItemGroup["shipping_tax_amounts"] as? [[AnyHashable: Any]] ?? [],
+-            currency: currency
+-        )
+-        return Checkout.SelectedShipping(shippingOption: option, taxAmounts: taxAmounts)
+-    }
+-
+-    private static func parseShippingOption(from dict: [AnyHashable: Any], defaultCurrency: String?) -> Checkout.ShippingOption? {
+-        if let shippingRate = dict["shipping_rate"] as? [AnyHashable: Any] {
+-            guard let id = shippingRate["id"] as? String,
+-                  let amountInt = shippingRate["amount"] as? Int else {
+-                return nil
+-            }
+-            let currency = (shippingRate["currency"] as? String) ?? defaultCurrency ?? "usd"
+-            let displayName = shippingRate["display_name"] as? String
+-            let deliveryEstimate = parseDeliveryEstimate(shippingRate["delivery_estimate"] as? [AnyHashable: Any])
+-            return Checkout.ShippingOption(
+-                id: id,
+-                displayName: displayName,
+-                amount: makeAmount(amountInt, currency: currency),
+-                currency: currency,
+-                deliveryEstimate: deliveryEstimate
+-            )
+-        }
+-        return nil
+-    }
+-
+-    private static func parseDeliveryEstimate(_ dict: [AnyHashable: Any]?) -> Checkout.DeliveryEstimate? {
+-        guard let dict else { return nil }
+-        let minimum = parseDeliveryBound(dict["minimum"] as? [AnyHashable: Any])
+-        let maximum = parseDeliveryBound(dict["maximum"] as? [AnyHashable: Any])
+-        // If neither bound parsed, there's nothing useful to show — don't hand back an empty estimate.
+-        guard minimum != nil || maximum != nil else { return nil }
+-        return Checkout.DeliveryEstimate(minimum: minimum, maximum: maximum)
+-    }
+-
+-    private static func parseDeliveryBound(_ dict: [AnyHashable: Any]?) -> Checkout.DeliveryEstimate.Bound? {
+-        guard let dict,
+-              let value = dict["value"] as? Int else { return nil }
+-        let unit: Checkout.DeliveryEstimate.Bound.Unit
+-        switch (dict["unit"] as? String)?.lowercased() {
+-        case "hour": unit = .hour
+-        case "day": unit = .day
+-        case "business_day": unit = .businessDay
+-        case "week": unit = .week
+-        case "month": unit = .month
+-        default: unit = .unknown
+-        }
+-        return Checkout.DeliveryEstimate.Bound(unit: unit, value: value)
++        recurringDetailsKey: String
++    ) -> [[AnyHashable: Any]] {
++        (dict["recurring_details"] as? [AnyHashable: Any])?[recurringDetailsKey] as? [[AnyHashable: Any]] ?? []
+     }
+ 
+     // MARK: Discounts
+ 
+     static func parseDiscountAmounts(from dict: [AnyHashable: Any], currency: String?) -> [Checkout.DiscountAmount] {
+-        let lineItemGroup = dict["line_item_group"] as? [AnyHashable: Any]
+-        let discountAmounts = lineItemGroup?["discount_amounts"] as? [[AnyHashable: Any]] ?? []
++        let discountAmounts = aggregateArray(from: dict, recurringDetailsKey: "total_discount_amounts")
+         return discountAmounts.compactMap { discount in
+             parseDiscountAmount(from: discount, currency: currency)
+         }
+@@ -681,26 +576,14 @@ extension PaymentPagesAPIResponse {
+         )
+     }
+ 
+-    private static func parseLineDiscountAmounts(
+-        from array: [[AnyHashable: Any]],
+-        currency: String?
+-    ) -> [Checkout.DiscountAmount] {
+-        return array.compactMap { parseDiscountAmount(from: $0, currency: currency) }
+-    }
+-
+     // MARK: Tax Amounts
+ 
+     private static func parseSessionTaxAmounts(
+         from dict: [AnyHashable: Any],
+         currency: String?
+     ) -> [Checkout.TaxAmount] {
+-        guard let lineItemGroup = dict["line_item_group"] as? [AnyHashable: Any] else {
+-            return []
+-        }
+-        return parseLineTaxAmounts(
+-            from: lineItemGroup["tax_amounts"] as? [[AnyHashable: Any]] ?? [],
+-            currency: currency
+-        )
++        let taxAmounts = aggregateArray(from: dict, recurringDetailsKey: "total_tax_amounts")
++        return parseLineTaxAmounts(from: taxAmounts, currency: currency)
+     }
+ 
+     private static func parseLineTaxAmounts(
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Configuration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Configuration.swift
+index 86a38d4..0cc5adb 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Configuration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Configuration.swift
+@@ -11,6 +11,8 @@ import Foundation
+ @_spi(STP)
+ @_spi(ReactNativeSDK)
+ extension Checkout {
++    public typealias UserInterfaceStyle = PaymentSheet.UserInterfaceStyle
++
+     /// Configuration options for a ``Checkout`` instance.
+     ///
+     /// Supply a configuration when creating a ``Checkout`` to customize behavior:
+@@ -57,15 +59,22 @@ extension Checkout {
+         /// Configuration for ExpressCheckoutElement.
+         public var expressCheckoutElement: ExpressCheckoutElement.Configuration = .init()
+ 
++        /// Configuration for the Adaptive Pricing currency selector returned by
++        /// ``Checkout.getCurrencySelectorElement()``.
++        public var currencySelectorElement: CurrencySelectorElement.Configuration = .init()
++
++        /// Configuration for the shipping address form returned by
++        /// ``Checkout.getShippingAddressElement()``.
++        public var shippingAddressElement: ShippingAddressElement.Configuration = .init()
++
+         /// Apple Pay configuration.
+         public var applePayConfiguration: ApplePayConfiguration?
+ 
+         /// Link configuration.
+         public var linkConfiguration: LinkConfiguration?
+ 
+-        /// Configuration for the Adaptive Pricing currency selector returned by
+-        /// ``Checkout.getCurrencySelectorElement()``.
+-        public var currencySelectorElement: CurrencySelectorElement.Configuration = .init()
++        /// The color styling to use for Checkout UI.
++        public var userInterfaceStyle: UserInterfaceStyle = .automatic
+ 
+         /// Creates a configuration.
+         /// - Parameter clientSecret: The client secret for your Checkout Session.
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift
+new file mode 100644
+index 0000000..bad77db
+--- /dev/null
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift
+@@ -0,0 +1,157 @@
++//
++//  Checkout+Confirm+Link.swift
++//  StripePaymentSheet
++//
++//  Created by Yuki Tokuhiro on 7/30/26.
++//
++
++@_spi(STP) import StripeCore
++@_spi(STP) import StripePayments
++
++extension Checkout {
++    static func confirmLink(
++        checkoutSession: Session,
++        confirmationContext: ConfirmationContext,
++        authenticationContext: STPAuthenticationContext,
++        clientAttributionMetadata: STPClientAttributionMetadata,
++        paymentHandler: STPPaymentHandler
++    ) async -> InternalConfirmResult {
++        guard case .link(let confirmOption) = confirmationContext.paymentOption else {
++            stpAssertionFailure("confirmLink called with a non-Link payment option.")
++            return .init(paymentSheetResult: .failed(error: PaymentSheetError.confirmingWithInvalidPaymentOption))
++        }
++
++        let elementsSession = checkoutSession.elementsSession
++        let configuration = confirmationContext.configuration
++        let confirmationChallenge = confirmationContext.confirmationChallenge
++        let isSettingUp: (STPPaymentMethodType) -> Bool = { paymentMethodType in
++            checkoutSession.merchantWillSavePaymentMethod(paymentMethodType)
++        }
++        let setAllowRedisplay: (IntentConfirmParams, STPPaymentMethodType) -> Void = { confirmParams, paymentMethodType in
++            confirmParams.setAllowRedisplayForCheckoutSession(
++                merchantWillSavePaymentMethod: checkoutSession.merchantWillSavePaymentMethod(paymentMethodType)
++            )
++        }
++
++        return await withCheckedContinuation { (continuation: CheckedContinuation<InternalConfirmResult, Never>) in
++            let completion: (InternalConfirmResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void = { result, _ in
++                continuation.resume(returning: result)
++            }
++            var linkCompletionResult: InternalConfirmResult?
++
++            // Called when Link produces raw payment method params, including signup fallback/direct confirm paths.
++            func confirmWithPaymentMethodParams(
++                paymentMethodParams: STPPaymentMethodParams,
++                linkAccount: PaymentSheetLinkAccount?,
++                saveForFutureUseCheckboxState: IntentConfirmParams.SaveForFutureUseCheckboxState
++            ) {
++                Task { @MainActor in
++                    paymentMethodParams.radarOptions = await confirmationChallenge?.makeRadarOptions(for: paymentMethodParams.type)
++                    paymentMethodParams.clientAttributionMetadata = clientAttributionMetadata
++                    let result = await Self.handleCheckoutSessionConfirmation(
++                        checkoutSession: checkoutSession,
++                        confirmType: .new(
++                            params: paymentMethodParams,
++                            paymentOptions: STPConfirmPaymentMethodOptions(),
++                            saveForFutureUseCheckboxState: saveForFutureUseCheckboxState
++                        ),
++                        configuration: configuration,
++                        authenticationContext: authenticationContext,
++                        paymentHandler: paymentHandler,
++                        elementsSession: elementsSession
++                    )
++                    if PaymentSheet.shouldLogOutOfLink(result: result.paymentSheetResult, elementsSession: elementsSession) {
++                        linkAccount?.logout()
++                    }
++                    await confirmationChallenge?.complete()
++                    completion(result, nil)
++                }
++            }
++
++            // Called when Link produces an existing/shared payment method, including Link web and passthrough share success.
++            func confirmWithPaymentMethod(
++                paymentMethod: STPPaymentMethod,
++                linkAccount: PaymentSheetLinkAccount?,
++                saveForFutureUseCheckboxState: IntentConfirmParams.SaveForFutureUseCheckboxState,
++                linkClientAttributionMetadata: STPClientAttributionMetadata?
++            ) {
++                Task { @MainActor in
++                    let radarOptions = await confirmationChallenge?.makeRadarOptions(for: paymentMethod.type)
++                    let result = await Self.handleCheckoutSessionConfirmation(
++                        checkoutSession: checkoutSession,
++                        confirmType: .saved(
++                            paymentMethod,
++                            paymentOptions: nil,
++                            clientAttributionMetadata: linkClientAttributionMetadata,
++                            radarOptions: radarOptions
++                        ),
++                        configuration: configuration,
++                        authenticationContext: authenticationContext,
++                        paymentHandler: paymentHandler,
++                        elementsSession: elementsSession
++                    )
++                    if PaymentSheet.shouldLogOutOfLink(result: result.paymentSheetResult, elementsSession: elementsSession) {
++                        linkAccount?.logout()
++                    }
++                    await confirmationChallenge?.complete()
++                    completion(result, nil)
++                }
++            }
++
++            // Called when Link UI returns a payment option that Checkout should confirm recursively.
++            func confirmHandler(
++                linkAuthenticationContext: STPAuthenticationContext,
++                intent: Intent,
++                elementsSession: STPElementsSession,
++                linkPaymentOption: PaymentOption,
++                linkCompletion: @escaping (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void
++            ) {
++                Task { @MainActor in
++                    let linkConfirmationContext = Checkout.ConfirmationContext(
++                        paymentOption: linkPaymentOption,
++                        configuration: configuration,
++                        integrationShape: confirmationContext.integrationShape,
++                        confirmationChallenge: confirmationChallenge,
++                        analyticsHelper: confirmationContext.analyticsHelper
++                    )
++                    let result = await Self.confirmPaymentOption(
++                        checkoutSession: checkoutSession,
++                        confirmationContext: linkConfirmationContext,
++                        authenticationContext: linkAuthenticationContext,
++                        intentConfirmParamsForDeferredIntent: nil,
++                        paymentHandler: paymentHandler
++                    )
++                    linkCompletionResult = result
++                    linkCompletion(result.paymentSheetResult, nil)
++                }
++            }
++
++            PaymentSheet.confirmLinkPaymentOption(
++                confirmOption: confirmOption,
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                intent: .checkout(checkoutSession),
++                elementsSession: elementsSession,
++                analyticsHelper: confirmationContext.analyticsHelper,
++                confirmationChallenge: confirmationChallenge,
++                clientAttributionMetadata: clientAttributionMetadata,
++                isSettingUp: isSettingUp,
++                setAllowRedisplay: setAllowRedisplay,
++                confirmWithPaymentMethodParams: confirmWithPaymentMethodParams(paymentMethodParams:linkAccount:saveForFutureUseCheckboxState:),
++                confirmWithPaymentMethod: confirmWithPaymentMethod(paymentMethod:linkAccount:saveForFutureUseCheckboxState:linkClientAttributionMetadata:),
++                confirmHandler: confirmHandler(linkAuthenticationContext:intent:elementsSession:linkPaymentOption:linkCompletion:),
++                paymentHandlerCompletion: { status, error in
++                    completion(.init(paymentSheetResult: PaymentSheet.makePaymentSheetResult(for: status, error: error)), nil)
++                },
++                completion: { result, confirmationType in
++                    if let internalResult = linkCompletionResult {
++                        completion(internalResult, confirmationType)
++                    } else {
++                        completion(.init(paymentSheetResult: result), confirmationType)
++                    }
++                }
++            )
++        }
++    }
++
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+new file mode 100644
+index 0000000..c1a8168
+--- /dev/null
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+@@ -0,0 +1,325 @@
++@_spi(STP) import StripeApplePay
++@_spi(STP) import StripeCore
++@_spi(STP) import StripePayments
++
++// MARK: - Confirm
++
++extension Checkout {
++    /// Convenience bag of params needed for confirmation
++    struct ConfirmationContext {
++        let paymentOption: PaymentOption
++        let configuration: PaymentElementConfiguration
++        let integrationShape: PaymentSheet.IntegrationShape
++        let confirmationChallenge: ConfirmationChallenge?
++        let analyticsHelper: PaymentSheetAnalyticsHelper
++    }
++
++    struct InternalConfirmResult {
++        let paymentSheetResult: PaymentSheetResult
++        let checkoutSessionResponse: PaymentPagesAPIResponse?
++
++        init(
++            paymentSheetResult: PaymentSheetResult,
++            checkoutSessionResponse: PaymentPagesAPIResponse? = nil
++        ) {
++            self.paymentSheetResult = paymentSheetResult
++            self.checkoutSessionResponse = checkoutSessionResponse
++        }
++    }
++
++    func confirmationContext(for paymentElement: PaymentElement) -> ConfirmationContext? {
++        if paymentElement.paymentOptionSourceOfTruthIsFlowController {
++            guard let paymentOption = paymentElement.paymentSheetFlowController.internalPaymentOption else {
++                return nil
++            }
++            return ConfirmationContext(
++                paymentOption: paymentOption,
++                configuration: paymentElement.paymentSheetFlowController.configuration,
++                integrationShape: .flowController,
++                confirmationChallenge: paymentElement.paymentSheetFlowController.confirmationChallenge,
++                analyticsHelper: paymentElement.paymentSheetFlowController.analyticsHelper
++            )
++        }
++
++        guard let paymentOption = paymentElement.embeddedPaymentElement._paymentOption else {
++            return nil
++        }
++        return ConfirmationContext(
++            paymentOption: paymentOption,
++            configuration: paymentElement.embeddedPaymentElement.configuration,
++            integrationShape: .embedded,
++            confirmationChallenge: paymentElement.embeddedPaymentElement.confirmationChallenge,
++            analyticsHelper: paymentElement.embeddedPaymentElement.analyticsHelper
++        )
++    }
++
++    static func confirm(
++        checkoutSession: Session,
++        confirmationContext: ConfirmationContext,
++        authenticationContext: STPAuthenticationContext,
++        paymentHandler: STPPaymentHandler
++    ) async -> InternalConfirmResult {
++        // 1. Handle pre-confirm actions, such as Bacs mandate acceptance or saved-card CVC recollection.
++        let preconfirmActionsResult = await PaymentSheet.handlePreconfirmActionsIfNecessary(
++            configuration: confirmationContext.configuration,
++            authenticationContext: authenticationContext,
++            intent: .checkout(checkoutSession),
++            paymentOption: confirmationContext.paymentOption,
++            paymentHandler: paymentHandler,
++            integrationShape: confirmationContext.integrationShape
++        )
++
++        let intentConfirmParams: IntentConfirmParams?
++        switch preconfirmActionsResult {
++        case .succeeded(let params):
++            intentConfirmParams = params
++        case .canceled:
++            return .init(paymentSheetResult: .canceled)
++        case .failed(let error):
++            return .init(paymentSheetResult: .failed(error: error))
++        }
++
++        // 2. Confirm the Checkout Session using the selected payment option.
++        return await confirmPaymentOption(
++            checkoutSession: checkoutSession,
++            confirmationContext: confirmationContext,
++            authenticationContext: authenticationContext,
++            intentConfirmParamsForDeferredIntent: intentConfirmParams,
++            paymentHandler: paymentHandler
++        )
++    }
++
++    static func confirmPaymentOption(
++        checkoutSession: Session,
++        confirmationContext: ConfirmationContext,
++        authenticationContext: STPAuthenticationContext,
++        intentConfirmParamsForDeferredIntent: IntentConfirmParams?,
++        paymentHandler: STPPaymentHandler
++    ) async -> InternalConfirmResult {
++        let paymentOption = confirmationContext.paymentOption
++        let elementsSession = checkoutSession.elementsSession
++        let configuration = confirmationContext.configuration
++        let confirmationChallenge = confirmationContext.confirmationChallenge
++        let clientAttributionMetadata = STPClientAttributionMetadata.makeClientAttributionMetadata(
++            intent: .checkout(checkoutSession),
++            elementsSession: elementsSession
++        )
++
++        switch paymentOption {
++        case .applePay:
++            // MARK: - Apple Pay
++            // TODO: Make a new STPApplePayContext-wrapping thing.
++            return .init(paymentSheetResult: .canceled)
++
++        case .new(let confirmParams):
++            // MARK: - New PM
++            let paymentMethodType: STPPaymentMethodType = {
++                switch paymentOption.paymentMethodType {
++                case .stripe(let paymentMethodType):
++                    return paymentMethodType
++                default:
++                    return .unknown
++                }
++            }()
++            confirmParams.setAllowRedisplayForCheckoutSession(
++                merchantWillSavePaymentMethod: checkoutSession.merchantWillSavePaymentMethod(paymentMethodType)
++            )
++            confirmParams.paymentMethodParams.radarOptions = await confirmationChallenge?.makeRadarOptions(for: confirmParams.paymentMethodParams.type)
++            confirmParams.paymentMethodParams.clientAttributionMetadata = clientAttributionMetadata
++            let result = await Self.handleCheckoutSessionConfirmation(
++                checkoutSession: checkoutSession,
++                confirmType: .new(
++                    params: confirmParams.paymentMethodParams,
++                    paymentOptions: confirmParams.confirmPaymentMethodOptions,
++                    saveForFutureUseCheckboxState: confirmParams.saveForFutureUseCheckboxState,
++                    shouldSetAsDefaultPM: confirmParams.setAsDefaultPM
++                ),
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                paymentHandler: paymentHandler,
++                elementsSession: elementsSession
++            )
++            await confirmationChallenge?.complete()
++            return result
++
++        case .saved(let paymentMethod, let confirmParams):
++            // MARK: - Saved PM
++            let paymentOptions = intentConfirmParamsForDeferredIntent?.confirmPaymentMethodOptions != nil
++            ? intentConfirmParamsForDeferredIntent?.confirmPaymentMethodOptions
++            : confirmParams?.confirmPaymentMethodOptions
++            let result = await Self.handleCheckoutSessionConfirmation(
++                checkoutSession: checkoutSession,
++                confirmType: .saved(
++                    paymentMethod,
++                    paymentOptions: paymentOptions,
++                    clientAttributionMetadata: clientAttributionMetadata,
++                    radarOptions: nil
++                ),
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                paymentHandler: paymentHandler,
++                elementsSession: elementsSession
++            )
++            return result
++
++        case .external:
++            // MARK: - External PM
++            stpAssertionFailure("External payment methods not supported.")
++            return .init(paymentSheetResult: .failed(error: PaymentSheetError.confirmingWithInvalidPaymentOption))
++
++        case .link:
++            // MARK: - Link
++            return await confirmLink(
++                checkoutSession: checkoutSession,
++                confirmationContext: confirmationContext,
++                authenticationContext: authenticationContext,
++                clientAttributionMetadata: clientAttributionMetadata,
++                paymentHandler: paymentHandler
++            )
++        }
++    }
++
++    /// Confirms a checkout session with a new payment method
++    @MainActor
++    static func handleCheckoutSessionConfirmation(
++        checkoutSession: Checkout.Session,
++        confirmType: PaymentSheet.ConfirmPaymentMethodType,
++        configuration: PaymentElementConfiguration,
++        authenticationContext: STPAuthenticationContext,
++        paymentHandler: STPPaymentHandler,
++        elementsSession: STPElementsSession
++    ) async -> InternalConfirmResult {
++        do {
++            let clientAttributionMetadata = STPClientAttributionMetadata.makeClientAttributionMetadata(
++                intent: .checkout(checkoutSession),
++                elementsSession: elementsSession
++            )
++
++            // 1. Get or create payment method
++            let paymentMethod: STPPaymentMethod
++            let paymentMethodType: STPPaymentMethodType
++            let paymentMethodOptions: STPConfirmPaymentMethodOptions?
++            switch confirmType {
++            case let .new(params, paymentOptions, newPaymentMethod, _, _):
++                if let newPaymentMethod {
++                    let errorAnalytic = ErrorAnalytic(event: .unexpectedPaymentSheetConfirmationError,
++                                                      error: PaymentSheetError.unexpectedNewPaymentMethod,
++                                                      additionalNonPIIParams: ["payment_method_type": newPaymentMethod.type])
++                    STPAnalyticsClient.sharedClient.log(analytic: errorAnalytic)
++                }
++                stpAssert(newPaymentMethod == nil, "newPaymentMethod should be nil when confirming with a new payment method; the payment method is created from params.")
++                paymentMethodType = params.type
++                paymentMethodOptions = paymentOptions
++                params.clientAttributionMetadata = clientAttributionMetadata
++                // Ensure email is set on the payment method — fall back to the checkout session's customer email
++                if params.billingDetails?.email == nil, let customerEmail = checkoutSession.email {
++                    params.nonnil_billingDetails.email = customerEmail
++                }
++                paymentMethod = try await configuration.apiClient.createPaymentMethod(with: params)
++            case let .saved(savedPaymentMethod, paymentOptions, _, _):
++                paymentMethod = savedPaymentMethod
++                paymentMethodType = paymentMethod.type
++                paymentMethodOptions = paymentOptions
++            }
++
++            // 2. Get expected amount and save_payment_method from checkout session
++            let expectedAmount = checkoutSession.expectedAmount()
++            let savePaymentMethod: Bool? = {
++                guard !checkoutSession.noPaymentRequired else { return nil }
++                return confirmType.savePaymentMethodForCheckoutSession
++            }()
++
++            // 3. Call confirm API
++            let response = try await configuration.apiClient.confirmCheckoutSession(
++                sessionId: checkoutSession.id,
++                paymentMethod: paymentMethod.stripeId,
++                expectedAmount: expectedAmount,
++                expectedPaymentMethodType: paymentMethodType.identifier,
++                savePaymentMethod: savePaymentMethod,
++                returnURL: configuration.returnURL,
++                shipping: makeCheckoutSessionShippingParams(configuration: configuration),
++                paymentMethodOptions: paymentMethodOptions,
++                clientAttributionMetadata: clientAttributionMetadata
++            )
++
++            // 4. Handle the intent returned by the confirm response.
++            let paymentSheetResult = try await handleCheckoutSessionConfirmResponse(
++                response: response,
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                paymentHandler: paymentHandler
++            )
++            return .init(paymentSheetResult: paymentSheetResult, checkoutSessionResponse: response)
++        } catch {
++            return .init(paymentSheetResult: .failed(error: error))
++        }
++    }
++
++    @MainActor
++    private static func handleCheckoutSessionConfirmResponse(
++        response: PaymentPagesAPIResponse,
++        configuration: PaymentElementConfiguration,
++        authenticationContext: STPAuthenticationContext,
++        paymentHandler: STPPaymentHandler
++    ) async throws -> PaymentSheetResult {
++        if let setupIntent = response.setupIntent {
++            return await handleCheckoutSessionSetupIntentResponse(
++                setupIntent: setupIntent,
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                paymentHandler: paymentHandler
++            )
++        } else if let paymentIntent = response.paymentIntent {
++            return await handleCheckoutSessionPaymentIntentResponse(
++                paymentIntent: paymentIntent,
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                paymentHandler: paymentHandler
++            )
++        } else {
++            throw PaymentSheetError.unknown(
++                debugDescription: "Checkout session confirm response contained neither a PaymentIntent nor a SetupIntent"
++            )
++        }
++    }
++
++    @MainActor
++    private static func handleCheckoutSessionPaymentIntentResponse(
++        paymentIntent: STPPaymentIntent,
++        configuration: PaymentElementConfiguration,
++        authenticationContext: STPAuthenticationContext,
++        paymentHandler: STPPaymentHandler
++    ) async -> PaymentSheetResult {
++        return await withCheckedContinuation { continuation in
++            paymentHandler.handleNextAction(
++                for: paymentIntent,
++                with: authenticationContext,
++                returnURL: configuration.returnURL
++            ) { status, _, error in
++                continuation.resume(returning: PaymentSheet.makePaymentSheetResult(for: status, error: error))
++            }
++        }
++    }
++
++    @MainActor
++    private static func handleCheckoutSessionSetupIntentResponse(
++        setupIntent: STPSetupIntent,
++        configuration: PaymentElementConfiguration,
++        authenticationContext: STPAuthenticationContext,
++        paymentHandler: STPPaymentHandler
++    ) async -> PaymentSheetResult {
++        return await withCheckedContinuation { continuation in
++            paymentHandler.handleNextAction(
++                for: setupIntent,
++                with: authenticationContext,
++                returnURL: configuration.returnURL
++            ) { status, _, error in
++                continuation.resume(returning: PaymentSheet.makePaymentSheetResult(for: status, error: error))
++            }
++        }
++    }
++
++    private static func makeCheckoutSessionShippingParams(configuration: PaymentElementConfiguration) -> STPPaymentIntentShippingDetailsParams? {
++        return STPPaymentIntentShippingDetailsParams(paymentSheetConfiguration: configuration)
++    }
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift
+index 466a633..b90e842 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift
+@@ -116,8 +116,7 @@ extension Checkout {
+     ///
+     /// - If `update` is non-nil, the side effect (if any) is applied first, then the
+     ///   API mutation is performed and the session is updated from the response.
+-    /// - If `update` is nil, the side effect is applied locally and delegates are
+-    ///   notified without making a network request.
++    /// - If `update` is nil, the side effect is applied locally without making a network request.
+     ///
+     /// - Parameters:
+     ///   - update: The API mutation to perform, or nil for a local-only update.
+@@ -145,7 +144,7 @@ extension Checkout {
+                 }
+ 
+                 // Errors from here should still get wrapped in API errors since the only way
+-                //  the integration delegate throws is if the API returned a session state that
++                //  local session application throws is if the API returned a session state that
+                 //  the UI can't handle.
+                 try await self.commitSession(updatedSessionAPIResponse, applying: localMutation)
+             } catch {
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift
+index 83692d4..ff67686 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift
+@@ -131,10 +131,7 @@ extension Checkout.Session {
+             livemode: livemode,
+             minorUnitsAmountDivisor: minorUnitsAmountDivisor,
+             paymentOption: paymentOption.resolved(currentValue: self.paymentOption),
+-            savedPaymentMethods: savedPaymentMethods,
+-            shipping: shipping,
+             shippingAddress: shippingAddress.resolved(currentValue: self.shippingAddress),
+-            shippingOptions: shippingOptions,
+             status: status,
+             tax: tax,
+             total: total,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift
+index 0b0128d..35021e9 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift
+@@ -52,18 +52,9 @@ extension Checkout {
+         /// The currently selected payment option.
+         public let paymentOption: PaymentOptionDisplayData?
+ 
+-        /// Payment methods attached to the customer.
+-        public let savedPaymentMethods: [STPPaymentMethod]
+-
+-        /// The selected shipping option, if any.
+-        public let shipping: Checkout.SelectedShipping?
+-
+         /// Shipping address of the customer.
+         public let shippingAddress: ShippingAddress?
+ 
+-        /// The list of shipping options that can be selected.
+-        public let shippingOptions: [Checkout.ShippingOption]
+-
+         /// Status of the Checkout Session.
+         ///
+         /// `nil` if the server did not return a status. When non-nil, ``Status.paymentStatus``
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+ShippingOption.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+ShippingOption.swift
+deleted file mode 100644
+index bd92f6a..0000000
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+ShippingOption.swift
++++ /dev/null
+@@ -1,89 +0,0 @@
+-//
+-//  Checkout+ShippingOption.swift
+-//  StripePaymentSheet
+-//
+-//  Created by Nick Porter on 5/7/2026.
+-//
+-
+-import Foundation
+-
+-@_spi(STP)
+-@_spi(ReactNativeSDK)
+-extension Checkout {
+-    /// A shipping option available in a checkout session.
+-    public struct ShippingOption: Sendable, Hashable, Identifiable {
+-        /// The shipping rate ID.
+-        public let id: String
+-        /// A user-facing description of the shipping option.
+-        public let displayName: String?
+-        /// The shipping cost.
+-        public let amount: Amount
+-        /// Three-letter ISO 4217 currency code in lowercase.
+-        public let currency: String
+-        /// The estimated range for how long shipping will take.
+-        public let deliveryEstimate: DeliveryEstimate?
+-
+-        public init(
+-            id: String,
+-            displayName: String?,
+-            amount: Amount,
+-            currency: String,
+-            deliveryEstimate: DeliveryEstimate? = nil
+-        ) {
+-            self.id = id
+-            self.displayName = displayName
+-            self.amount = amount
+-            self.currency = currency
+-            self.deliveryEstimate = deliveryEstimate
+-        }
+-    }
+-
+-    /// The estimated delivery range for a shipping option.
+-    public struct DeliveryEstimate: Sendable, Hashable {
+-        /// A bound (minimum or maximum) of a delivery estimate.
+-        public struct Bound: Sendable, Hashable {
+-            /// The unit of time for a delivery estimate.
+-            public enum Unit: Sendable, Hashable {
+-                case unknown
+-                case hour
+-                case day
+-                case businessDay
+-                case week
+-                case month
+-            }
+-
+-            /// The unit of time.
+-            public let unit: Unit
+-            /// The number of units.
+-            public let value: Int
+-
+-            public init(unit: Unit, value: Int) {
+-                self.unit = unit
+-                self.value = value
+-            }
+-        }
+-
+-        /// The lower bound of the delivery estimate.
+-        public let minimum: Bound?
+-        /// The upper bound of the delivery estimate.
+-        public let maximum: Bound?
+-
+-        public init(minimum: Bound?, maximum: Bound?) {
+-            self.minimum = minimum
+-            self.maximum = maximum
+-        }
+-    }
+-
+-    /// The shipping option selected for a checkout session, plus any computed shipping tax.
+-    public struct SelectedShipping: Sendable, Hashable {
+-        /// The selected shipping option.
+-        public let shippingOption: ShippingOption
+-        /// Tax amounts calculated for the shipping cost.
+-        public let taxAmounts: [TaxAmount]
+-
+-        public init(shippingOption: ShippingOption, taxAmounts: [TaxAmount] = []) {
+-            self.shippingOption = shippingOption
+-            self.taxAmounts = taxAmounts
+-        }
+-    }
+-}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift
+index de13dca..8f8b610 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift
+@@ -48,3 +48,12 @@ extension Checkout {
+         case noPaymentRequired
+     }
+ }
++
++// TODO: Change these types to match the proposed API
++extension Checkout.Session {
++    public typealias Status = Checkout.Status
++}
++
++extension Checkout.Status {
++    public typealias PaymentStatus = Checkout.PaymentStatus
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift
+index d034ee3..4d6fa00 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift
+@@ -8,8 +8,10 @@
+ 
+ import Combine
+ import Foundation
++@_spi(STP) import StripeApplePay
+ @_spi(STP) import StripeCore
+ @_spi(STP) import StripePayments
++import UIKit
+ 
+ /// Manages a Checkout Session lifecycle.
+ ///
+@@ -20,8 +22,8 @@ import Foundation
+ ///
+ /// The async initializer loads the session from Stripe before returning.
+ ///
+-/// Observe loading state and session changes with SwiftUI by using ``isLoading`` and ``session``
+-/// (published via `ObservableObject`), or in UIKit by setting a ``delegate``.
++/// Observe loading state and session changes with ``isLoading`` and ``session``
++/// (published via `ObservableObject`).
+ @_spi(STP)
+ @_spi(ReactNativeSDK)
+ @MainActor
+@@ -32,28 +34,20 @@ public final class Checkout: ObservableObject {
+     ///
+     /// After initialization this is always ``false``. It transitions to ``true``
+     /// while a mutation is in flight.
+-    @Published public internal(set) var isLoading: Bool = false {
+-        didSet {
+-            isLoading ? delegate?.checkoutDidBeginLoading(self) : delegate?.checkoutDidFinishLoading(self)
+-        }
+-    }
++    @Published public internal(set) var isLoading: Bool = false
+ 
+     /// The Checkout Session, updated from Stripe after every mutation.
+     @Published public private(set) var session: Session {
+         didSet {
+             nonisolatedSession = session
+-            // Just some notes: Setting session causes publisher+delegate to fire even when it didn't change.
++            // Just some notes: Setting session causes the publisher to fire even when it didn't change.
+             // AFAICT that's okay, deduping sees like a minor optimization to slightly reduce the amount of UI updates.
+-            delegate?.checkoutDidUpdateSession(self, session: session)
+         }
+     }
+ 
+     /// The configuration supplied at initialization.
+     public let configuration: Configuration
+ 
+-    /// A delegate notified when session data changes.
+-    public weak var delegate: CheckoutDelegate?
+-
+     // MARK: - Internal Properties
+ 
+     /// The PaymentElement for this Checkout instance.
+@@ -65,6 +59,9 @@ public final class Checkout: ObservableObject {
+     /// The CurrencySelectorElement for this Checkout instance, when Adaptive Pricing is available.
+     private var currencySelectorElement: CurrencySelectorElement?
+ 
++    /// The ShippingAddressElement for this Checkout instance.
++    private let shippingAddressElement: ShippingAddressElement
++
+     // TODO(gbirch) TODO(porter) remove this nonisolatedSession
+     //  once MPE is properly MainActor isolated
+     /// A snapshot of the current ``session`` accessible from non-MainActor contexts.
+@@ -77,6 +74,7 @@ public final class Checkout: ObservableObject {
+ 
+     let clientSecret: String
+     let apiClient: STPAPIClient
++    lazy var paymentHandler: STPPaymentHandler = STPPaymentHandler(apiClient: apiClient)
+     var effectiveMerchantDisplayName: String {
+         configuration.merchantDisplayName ?? session.businessName ?? Bundle.displayName ?? ""
+     }
+@@ -86,7 +84,7 @@ public final class Checkout: ObservableObject {
+         didSet {
+             // If the queue has gone from empty to non-empty, we set
+             //  isLoading to true. We avoid setting it if the queue
+-            //  was already non-empty to prevent duplicate delegate calls
++            //  was already non-empty to prevent duplicate loading emissions.
+             if !pendingOperations.isEmpty && !isLoading {
+                 isLoading = true
+             }
+@@ -133,11 +131,30 @@ public final class Checkout: ObservableObject {
+             )
+             let loadedSession = apiResponse.makePublicSession()
+             self.session = loadedSession
+-            self.nonisolatedSession = session // temporary hack
++            self.nonisolatedSession = loadedSession // temporary hack
++
++            let defaultShippingAddress: Session.ShippingAddress?
++            if let shippingDetails = configuration.defaults.shippingDetails,
++               let address = shippingDetails.address {
++                defaultShippingAddress = Session.ShippingAddress(
++                    name: shippingDetails.name,
++                    address: address
++                )
++            } else {
++                defaultShippingAddress = nil
++            }
++
++            self.shippingAddressElement = ShippingAddressElement(
++                configuration: configuration.shippingAddressElement,
++                initialShippingAddress: defaultShippingAddress ?? loadedSession.shippingAddress,
++                allowedCountries: loadedSession.allowedShippingCountries,
++                apiClient: configuration.apiClient,
++                useAutocompleteEndpoints: loadedSession.elementsSession.shouldUseAutocompleteProxyEndpoints
++            )
+ 
+             try await applyDefaults()
+ 
+-            // Load elements
++            // Load remaining elements
+             self.paymentElement = try await PaymentElement(checkout: self)
+             let sessionSource = CheckoutSessionSource(initialSession: session, sessionPublisher: $session)
+             self.expressCheckoutElement = ExpressCheckoutElement(
+@@ -291,6 +308,72 @@ public final class Checkout: ObservableObject {
+     public func getCurrencySelectorElement() -> CurrencySelectorElement? {
+         return currencySelectorElement
+     }
++
++    /// Returns the ShippingAddressElement for this Checkout instance.
++    public func getShippingAddressElement() -> ShippingAddressElement {
++        return shippingAddressElement
++    }
++
++    // MARK: - Confirm
++
++    /// Use this method to confirm the Checkout Session.
++    /// - Parameter presentingViewController: The view controller used to present any view controllers required e.g. to authenticate the customer. If you're using SwiftUI, you may pass nil and it will use the topmost UIViewController from the key window (not compatible with multi-scene apps).
++    /// - Returns: A `ConfirmResult` enum - either succeeded, canceled, or failed.
++    public func confirm(from presentingViewController: UIViewController? = nil) async -> ConfirmResult {
++        guard let presentingViewController = presentingViewController ?? UIWindow.visibleViewController else {
++            let errorMessage = "Checkout.confirm(from:) could not find a presenting view controller."
++            assertionFailure(errorMessage)
++            return .failed(PaymentSheetError.integrationError(nonPIIDebugDescription: errorMessage))
++        }
++
++        guard sessionIsOpen else {
++            return .failed(PaymentSheetError.integrationError(nonPIIDebugDescription: "Checkout.confirm(from:) cannot confirm a Checkout Session that is no longer open."))
++        }
++
++        guard pendingOperations.isEmpty else {
++            return .failed(PaymentSheetError.integrationError(nonPIIDebugDescription: "Checkout.confirm(from:) was called while the Checkout Session is still loading. Wait until Checkout.isLoading is false."))
++        }
++
++        guard let confirmationContext = confirmationContext(for: paymentElement) else {
++            return .failed(PaymentSheetError.confirmingWithInvalidPaymentOption)
++        }
++        let authenticationContext = AuthenticationContext(
++            presentingViewController: presentingViewController,
++            appearance: confirmationContext.configuration.appearance
++        )
++
++        do {
++            let confirmResult = try await enqueueSessionUpdate {
++                let result = await Self.confirm(
++                    checkoutSession: self.session,
++                    confirmationContext: confirmationContext,
++                    authenticationContext: authenticationContext,
++                    paymentHandler: self.paymentHandler
++                )
++                if let checkoutSessionResponse = result.checkoutSessionResponse {
++                    try await self.commitSession(checkoutSessionResponse)
++                }
++                return result
++            }
++            _ = confirmResult
++            // TODO: Map the internal confirm result into `ConfirmResult`.
++            return .canceled
++        } catch {
++            return .failed(error)
++        }
++    }
++
++    /// The result of an attempt to confirm a Checkout Session.
++    /// This is a convenience abstraction over the underlying Checkout Session's status and paymentStatus properties.
++    public enum ConfirmResult {
++        /// The Checkout Session succeeded.
++        /// - Parameter paymentStatus: The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
++        case succeeded(paymentStatus: Session.Status.PaymentStatus)
++        /// The customer canceled the confirmation attempt.
++        case canceled
++        /// Confirmation failed with an error.
++        case failed(Error)
++    }
+ }
+ 
+ // MARK: - Defaults
+@@ -303,12 +386,19 @@ extension Checkout {
+            let address = billingDetails.address {
+             try await updateBillingTaxRegionIfNecessary(address: address)
+         }
++
+         if let shippingDetails = defaults.shippingDetails,
+            let address = shippingDetails.address {
+-            try await updateShippingAddress(
+-                name: shippingDetails.name,
+-                address: address
+-            )
++            do {
++                try await updateShippingAddress(
++                    name: shippingDetails.name,
++                    address: address
++                )
++            } catch CheckoutError.invalidShippingCountry {
++                // Treat a default address with a disallowed country as nil.
++            } catch {
++                throw error
++            }
+         }
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutDelegate.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutDelegate.swift
+deleted file mode 100644
+index 00cbc5d..0000000
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutDelegate.swift
++++ /dev/null
+@@ -1,52 +0,0 @@
+-//
+-//  CheckoutDelegate.swift
+-//  StripePaymentSheet
+-//
+-//  Created by Nick Porter on 2/25/26.
+-//  Copyright © 2026 Stripe, Inc. All rights reserved.
+-//
+-
+-import Foundation
+-
+-/// Receives updates when the ``Checkout`` loading state or session data changes.
+-///
+-/// Note if multiple updates are called on the ``Checkout`` in rapid succession,
+-/// ``checkoutDidBeginLoading`` and ``checkoutDidFinishLoading``
+-/// may only be called once. Accordingly, use these only to track whether the ``Checkout``
+-/// is in a loading state or not and listen to ``checkoutDidUpdateSession`` to
+-/// be notified of every update completion and the resulting session data.
+-@_spi(STP)
+-@_spi(ReactNativeSDK)
+-@MainActor
+-public protocol CheckoutDelegate: AnyObject {
+-    /// Tells the delegate that a mutation or refresh of the Checkout Session is in progress.
+-    /// - Parameters:
+-    ///   - checkout: The instance that began loading.
+-    func checkoutDidBeginLoading(_ checkout: Checkout)
+-
+-    /// Tells the delegate that all mutations or refreshes of the Checkout Session have completed.
+-    /// - Parameters:
+-    ///   - checkout: The instance that finished loading.
+-    func checkoutDidFinishLoading(_ checkout: Checkout)
+-
+-    /// Tells the delegate that the Checkout Session has updated.
+-    /// - Parameters:
+-    ///   - checkout: The instance that received new Checkout Session data.
+-    ///   - session: The updated Checkout Session from Stripe.
+-    func checkoutDidUpdateSession(_ checkout: Checkout, session: Checkout.Session)
+-}
+-
+-/// Default no-op implementations.
+-@_spi(STP)
+-@_spi(ReactNativeSDK)
+-public extension CheckoutDelegate {
+-    func checkoutDidBeginLoading(_ checkout: Checkout) {
+-        // Default empty implementation
+-    }
+-    func checkoutDidFinishLoading(_ checkout: Checkout) {
+-        // Default empty implementation
+-    }
+-    func checkoutDidUpdateSession(_ checkout: Checkout, session: Checkout.Session) {
+-        // Default empty implementation
+-    }
+-}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement+Configuration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement+Configuration.swift
+index 34b1d2e..fdb98a8 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement+Configuration.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement+Configuration.swift	
+@@ -129,11 +129,13 @@ extension PaymentElement {
+         func makeEmbeddedConfiguration(
+             apiClient: STPAPIClient,
+             defaults: Checkout.Configuration.Defaults,
+-            merchantDisplayName: String
++            merchantDisplayName: String,
++            userInterfaceStyle: Checkout.UserInterfaceStyle
+         ) -> EmbeddedPaymentElement.Configuration {
+             var configuration = embeddedConfiguration
+             configuration.apiClient = apiClient
+             configuration.merchantDisplayName = merchantDisplayName
++            configuration.style = userInterfaceStyle
+             configuration.billingDetailsCollectionConfiguration = billingDetailsCollectionConfiguration.paymentSheetConfiguration()
+             if let billingDetails = defaults.billingDetails {
+                 configuration.defaultBillingDetails.set(billingDetails)
+@@ -144,11 +146,13 @@ extension PaymentElement {
+         func makePaymentSheetConfiguration(
+             apiClient: STPAPIClient,
+             defaults: Checkout.Configuration.Defaults,
+-            merchantDisplayName: String
++            merchantDisplayName: String,
++            userInterfaceStyle: Checkout.UserInterfaceStyle
+         ) -> PaymentSheet.Configuration {
+             var configuration = paymentSheetConfiguration
+             configuration.apiClient = apiClient
+             configuration.merchantDisplayName = merchantDisplayName
++            configuration.style = userInterfaceStyle
+             configuration.billingDetailsCollectionConfiguration = billingDetailsCollectionConfiguration.paymentSheetConfiguration()
+             if let billingDetails = defaults.billingDetails {
+                 configuration.defaultBillingDetails.set(billingDetails)
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement.swift
+index 3db0648..279c90c 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement.swift	
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement.swift	
+@@ -75,7 +75,8 @@ public final class PaymentElement {
+         let paymentSheetConfiguration = configuration.makePaymentSheetConfiguration(
+             apiClient: checkout.apiClient,
+             defaults: checkout.configuration.defaults,
+-            merchantDisplayName: checkout.effectiveMerchantDisplayName
++            merchantDisplayName: checkout.effectiveMerchantDisplayName,
++            userInterfaceStyle: checkout.configuration.userInterfaceStyle
+         )
+         self.paymentSheetFlowController = try await PaymentSheet.FlowController.create(
+             checkout: checkout,
+@@ -85,7 +86,8 @@ public final class PaymentElement {
+         let embeddedConfiguration = configuration.makeEmbeddedConfiguration(
+             apiClient: checkout.apiClient,
+             defaults: checkout.configuration.defaults,
+-            merchantDisplayName: checkout.effectiveMerchantDisplayName
++            merchantDisplayName: checkout.effectiveMerchantDisplayName,
++            userInterfaceStyle: checkout.configuration.userInterfaceStyle
+         )
+         self.embeddedPaymentElement = try await EmbeddedPaymentElement.create(
+             checkout: checkout,
+@@ -138,12 +140,14 @@ extension PaymentElement {
+         paymentSheetFlowController.configuration = configuration.makePaymentSheetConfiguration(
+             apiClient: checkout.apiClient,
+             defaults: checkout.configuration.defaults,
+-            merchantDisplayName: checkout.effectiveMerchantDisplayName
++            merchantDisplayName: checkout.effectiveMerchantDisplayName,
++            userInterfaceStyle: checkout.configuration.userInterfaceStyle
+         )
+         embeddedPaymentElement.configuration = configuration.makeEmbeddedConfiguration(
+             apiClient: checkout.apiClient,
+             defaults: checkout.configuration.defaults,
+-            merchantDisplayName: checkout.effectiveMerchantDisplayName
++            merchantDisplayName: checkout.effectiveMerchantDisplayName,
++            userInterfaceStyle: checkout.configuration.userInterfaceStyle
+         )
+ 
+         // Update FlowController
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/STPPaymentMethodAddress+Checkout.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/STPPaymentMethodAddress+Checkout.swift
+new file mode 100644
+index 0000000..935e1ec
+--- /dev/null
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/STPPaymentMethodAddress+Checkout.swift
+@@ -0,0 +1,28 @@
++//
++//  STPPaymentMethodAddress+Checkout.swift
++//  StripePaymentSheet
++//
++//  Created by Nick Porter on 7/30/26.
++//
++
++import Foundation
++@_spi(STP) import StripePayments
++
++extension STPPaymentMethodAddress {
++    /// Converts to a `Checkout.Address`, used for Checkout tax region calculation.
++    ///
++    /// Returns `nil` if there's no country, since that's the only field Checkout requires.
++    var checkoutAddress: Checkout.Address? {
++        guard let country = country?.nonEmpty else {
++            return nil
++        }
++        return Checkout.Address(
++            country: country,
++            line1: line1?.nonEmpty,
++            line2: line2?.nonEmpty,
++            city: city?.nonEmpty,
++            state: state?.nonEmpty,
++            postalCode: postalCode?.nonEmpty
++        )
++    }
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift
+new file mode 100644
+index 0000000..8d0a542
+--- /dev/null
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift	
+@@ -0,0 +1,97 @@
++//
++//  ShippingAddressElement+AddressViewController.swift
++//  StripePaymentSheet
++//
++//  Created by George Birch on 8/4/26.
++
++@_spi(STP) import StripeCore
++
++extension ShippingAddressElement.Configuration {
++    func makeAddressViewControllerConfiguration(
++        shippingAddress: Checkout.Session.ShippingAddress?,
++        allowedCountries: [String]?,
++        apiClient: STPAPIClient,
++        useAutocompleteEndpoints: Bool
++    ) -> AddressViewController.Configuration {
++        let allowedCountries = allowedCountries ?? []
++        let defaultValues: AddressViewController.Configuration.DefaultAddressDetails
++        if let shippingAddress,
++           allowedCountries.isEmpty || allowedCountries.contains(shippingAddress.address.country) {
++            defaultValues = .init(
++                address: .init(
++                    city: shippingAddress.address.city,
++                    country: shippingAddress.address.country,
++                    line1: shippingAddress.address.line1,
++                    line2: shippingAddress.address.line2,
++                    postalCode: shippingAddress.address.postalCode,
++                    state: shippingAddress.address.state
++                ),
++                name: shippingAddress.name
++            )
++        } else {
++            defaultValues = .init()
++        }
++
++        var configuration = AddressViewController.Configuration(
++            defaultValues: defaultValues,
++            allowedCountries: allowedCountries,
++            appearance: appearance.makePaymentSheetAppearance(),
++            buttonTitle: buttonTitle,
++            title: title
++        )
++        configuration.apiClient = apiClient
++        configuration.useAutocompleteEndpoints = useAutocompleteEndpoints
++        return configuration
++    }
++}
++
++extension ShippingAddressElement.Appearance {
++    func makePaymentSheetAppearance() -> PaymentSheet.Appearance {
++        var appearance = PaymentSheet.Appearance()
++        appearance.font.sizeScaleFactor = font.sizeScaleFactor
++        appearance.font.base = font.base
++        appearance.font.custom.headline = font.custom.headline
++
++        appearance.colors.primary = colors.primary
++        appearance.colors.background = colors.background
++        appearance.colors.componentBackground = colors.componentBackground
++        appearance.colors.componentBorder = colors.componentBorder
++        appearance.colors.componentDivider = colors.componentDivider
++        appearance.colors.text = colors.text
++        appearance.colors.textSecondary = colors.textSecondary
++        appearance.colors.componentText = colors.componentText
++        appearance.colors.componentPlaceholderText = colors.componentPlaceholderText
++        appearance.colors.icon = colors.icon
++        appearance.colors.danger = colors.danger
++
++        appearance.primaryButton.backgroundColor = primaryButton.backgroundColor
++        appearance.primaryButton.textColor = primaryButton.textColor
++        appearance.primaryButton.disabledBackgroundColor = primaryButton.disabledBackgroundColor
++        appearance.primaryButton.disabledTextColor = primaryButton.disabledTextColor
++        appearance.primaryButton.cornerRadius = primaryButton.cornerRadius
++        appearance.primaryButton.borderColor = primaryButton.borderColor
++        appearance.primaryButton.borderWidth = primaryButton.borderWidth
++        appearance.primaryButton.font = primaryButton.font
++        if let shadow = primaryButton.shadow {
++            appearance.primaryButton.shadow = .init(
++                color: shadow.color,
++                opacity: shadow.opacity,
++                offset: shadow.offset,
++                radius: shadow.radius
++            )
++        }
++        appearance.primaryButton.height = primaryButton.height
++
++        appearance.cornerRadius = cornerRadius
++        appearance.borderWidth = borderWidth
++        appearance.shadow = .init(
++            color: shadow.color,
++            opacity: shadow.opacity,
++            offset: shadow.offset,
++            radius: shadow.radius
++        )
++        appearance.textFieldInsets = textFieldInsets
++        appearance.formInsets = formInsets
++        return appearance
++    }
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+Appearance.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+Appearance.swift
+new file mode 100644
+index 0000000..92a83de
+--- /dev/null
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+Appearance.swift	
+@@ -0,0 +1,189 @@
++//
++//  ShippingAddressElement+Appearance.swift
++//  StripePaymentSheet
++//
++//  Created by George Birch on 8/4/26.
++
++@_spi(STP) import StripeUICore
++import UIKit
++
++@_spi(STP)
++@_spi(ReactNativeSDK)
++extension ShippingAddressElement {
++    /// Appearance configuration for ``ShippingAddressElement``.
++    public struct Appearance: Equatable {
++        /// Describes the appearance of fonts in the shipping address form.
++        public var font: Font = .init()
++
++        /// Describes the colors in the shipping address form.
++        public var colors: Colors = .init()
++
++        /// Describes the appearance of the primary button.
++        public var primaryButton: PrimaryButton = .init()
++
++        /// The corner radius used for inputs and, by default, the primary button.
++        /// If `nil`, the platform default is used.
++        public var cornerRadius: CGFloat? = PaymentSheet.Appearance.defaultCornerRadius
++
++        /// The border width used for inputs and divider lines.
++        public var borderWidth: CGFloat = PaymentSheet.Appearance.defaultBorderWidth
++
++        /// The shadow used for address inputs and, by default, the primary button.
++        public var shadow: Shadow = .init()
++
++        /// The insets between the content and edges of address inputs.
++        public var textFieldInsets: NSDirectionalEdgeInsets = PaymentSheet.Appearance.defaultTextFieldInsets
++
++        /// The insets around the shipping address form and primary button.
++        public var formInsets: NSDirectionalEdgeInsets = PaymentSheet.Appearance.defaultFormInsets
++
++        /// Creates an appearance with default values.
++        public init() {}
++
++        /// Describes the appearance of fonts in the shipping address form.
++        public struct Font: Equatable {
++            /// The scale factor for all generated font sizes in the shipping address form.
++            /// Must be greater than zero. Default is `1`.
++            public var sizeScaleFactor: CGFloat = 1 {
++                didSet {
++                    if sizeScaleFactor <= 0 {
++                        assertionFailure("sizeScaleFactor must be a value greater than zero")
++                        sizeScaleFactor = 1
++                    }
++                }
++            }
++
++            /// The font family used throughout the shipping address form.
++            /// The font's size and weight are ignored.
++            public var base: UIFont = .systemFont(ofSize: UIFont.labelFontSize)
++
++            /// Custom font configuration for specific text styles.
++            public var custom: Custom = .init()
++
++            /// Creates a font appearance with default values.
++            public init() {}
++
++            /// Describes custom fonts for specific text styles.
++            public struct Custom: Equatable {
++                /// The font used for the title of the shipping address form.
++                /// If `nil`, a bold font derived from ``Font/base`` and ``Font/sizeScaleFactor`` is used.
++                /// ``Font/sizeScaleFactor`` does not affect this font.
++                public var headline: UIFont?
++
++                /// Creates a custom font appearance with default values.
++                public init() {}
++            }
++        }
++
++        /// Describes the colors in the shipping address form.
++        public struct Colors: Equatable {
++            /// The accent color used for interactive controls.
++            public var primary: UIColor = .systemBlue
++
++            /// The background color of the shipping address form.
++            public var background: UIColor = .systemBackground
++
++            /// The background color of address inputs.
++            public var componentBackground: UIColor = .dynamic(
++                light: .systemBackground,
++                dark: .secondarySystemBackground
++            )
++
++            /// The border color of address inputs.
++            public var componentBorder: UIColor = .systemGray3
++
++            /// The color of divider lines between address inputs.
++            public var componentDivider: UIColor = .systemGray3
++
++            /// The color used for primary text.
++            public var text: UIColor = .label
++
++            /// The color used for secondary text.
++            public var textSecondary: UIColor = .secondaryLabel
++
++            /// The text color of address inputs.
++            public var componentText: UIColor = .label
++
++            /// The color of placeholder text in address inputs.
++            public var componentPlaceholderText: UIColor = .secondaryLabel
++
++            /// The color used for navigation icons.
++            public var icon: UIColor = .secondaryLabel
++
++            /// The color used for errors and destructive actions.
++            public var danger: UIColor = .systemRed
++
++            /// Creates a color appearance with default values.
++            public init() {}
++        }
++
++        /// Appearance configuration for a shadow.
++        public struct Shadow: Equatable {
++            /// The shadow color.
++            public var color: UIColor = .black
++
++            /// The shadow opacity.
++            public var opacity: CGFloat = 0.05
++
++            /// The shadow offset.
++            public var offset: CGSize = .init(width: 0, height: 2)
++
++            /// The shadow blur radius.
++            public var radius: CGFloat = 4
++
++            /// Creates a shadow appearance with default values.
++            public init() {}
++        }
++
++        /// Appearance configuration for the primary button.
++        public struct PrimaryButton: Equatable {
++            /// The background color of the primary button.
++            /// If `nil`, ``Appearance/colors`` ``Colors/primary`` is used.
++            public var backgroundColor: UIColor?
++
++            /// The text color of the primary button.
++            /// If `nil`, a contrasting color is derived from the background color.
++            public var textColor: UIColor?
++
++            /// The background color of the primary button when disabled.
++            /// If `nil`, the enabled background color is used.
++            public var disabledBackgroundColor: UIColor?
++
++            /// The text color of the primary button when disabled.
++            /// If `nil`, the enabled text color is used with reduced opacity.
++            public var disabledTextColor: UIColor?
++
++            /// The corner radius of the primary button.
++            /// If `nil`, ``Appearance/cornerRadius`` is used.
++            public var cornerRadius: CGFloat?
++
++            /// The border color of the primary button.
++            public var borderColor: UIColor = .quaternaryLabel
++
++            /// The border width of the primary button.
++            public var borderWidth: CGFloat = PaymentSheet.Appearance.defaultBorderWidth
++
++            /// The font of the primary button.
++            /// If `nil`, a font derived from ``Appearance/font`` is used.
++            /// ``Font/sizeScaleFactor`` does not affect this font.
++            public var font: UIFont?
++
++            /// The shadow of the primary button.
++            /// If `nil`, ``Appearance/shadow`` is used.
++            public var shadow: Shadow?
++
++            /// The height of the primary button. Default is `44`.
++            public var height: CGFloat = 44 {
++                didSet {
++                    if height <= 0 {
++                        assertionFailure("height must be a value greater than zero")
++                        height = 44
++                    }
++                }
++            }
++
++            /// Creates a primary button appearance with default values.
++            public init() {}
++        }
++    }
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+Configuration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+Configuration.swift
+new file mode 100644
+index 0000000..436e6b2
+--- /dev/null
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+Configuration.swift	
+@@ -0,0 +1,28 @@
++//
++//  ShippingAddressElement+Configuration.swift
++//  StripePaymentSheet
++//
++//  Created by George Birch on 8/4/26.
++
++@_spi(STP) import StripePaymentsUI
++
++@_spi(STP)
++@_spi(ReactNativeSDK)
++extension ShippingAddressElement {
++    /// Configuration for ``ShippingAddressElement``.
++    public struct Configuration {
++        /// The title displayed above the shipping address form.
++        /// Defaults to the localized "Shipping address".
++        public var title: String = .Localized.shipping_address
++
++        /// The title of the primary button.
++        /// Defaults to the localized "Save address".
++        public var buttonTitle: String = .Localized.save_address
++
++        /// Describes the appearance of the shipping address form.
++        public var appearance: Appearance = .init()
++
++        /// Creates a configuration with default values.
++        public init() {}
++    }
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift
+new file mode 100644
+index 0000000..210f111
+--- /dev/null
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift	
+@@ -0,0 +1,44 @@
++//
++//  ShippingAddressElement.swift
++//  StripePaymentSheet
++//
++//  Created by George Birch on 8/4/26.
++
++@_spi(STP) import StripeCore
++
++/// A shipping address form backed by a Checkout Session.
++@MainActor
++@_spi(STP)
++@_spi(ReactNativeSDK)
++public final class ShippingAddressElement {
++
++    private(set) var addressViewController: AddressViewController!
++
++    init(
++        configuration: Configuration,
++        initialShippingAddress: Checkout.Session.ShippingAddress?,
++        allowedCountries: [String]?,
++        apiClient: STPAPIClient,
++        useAutocompleteEndpoints: Bool
++    ) {
++        let addressViewControllerConfiguration = configuration.makeAddressViewControllerConfiguration(
++            shippingAddress: initialShippingAddress,
++            allowedCountries: allowedCountries,
++            apiClient: apiClient,
++            useAutocompleteEndpoints: useAutocompleteEndpoints
++        )
++        addressViewController = AddressViewController(
++            configuration: addressViewControllerConfiguration,
++            delegate: self
++        )
++    }
++}
++
++extension ShippingAddressElement: AddressViewControllerDelegate {
++    public func addressViewControllerDidFinish(
++        _ addressViewController: AddressViewController,
++        with address: AddressViewController.AddressDetails?
++    ) {
++        // TODO(gbirch): populate when implementing presentation
++    }
++}
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift
+index 84a4afc..3c6de1e 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift
+@@ -39,15 +39,10 @@ class CustomerSheetDataSource {
+                 let fetchSessionsTask = Task { try await customerSessionAdapter.elementsSessionWithCustomerSessionClientSecret() }
+                 defer { fetchSessionsTask.cancel() }
+ 
+-                // Ensure local specs are loaded prior to the ones from elementSession
+-                await loadFormSpecs()
+                 let (elementSession, customerSessionClientSecret) = try await fetchSessionsTask.value
+                 let customerId = customerSessionClientSecret.customerId
+                 let paymentOption = customerSessionAdapter.fetchSelectedPaymentOption(for: customerId, elementsSession: elementSession)
+ 
+-                // Override with specs from elementSession
+-                _ = FormSpecProvider.shared.loadFrom(elementSession.paymentMethodSpecs as Any)
+-
+                 let savedPaymentMethods = elementSession.customer?.paymentMethods.filter({ paymentMethod in
+                     guard let card = paymentMethod.card else { return true }
+                     return configuration.cardBrandFilter.isAccepted(cardBrand: card.preferredDisplayBrand)
+@@ -78,9 +73,6 @@ class CustomerSheetDataSource {
+                     elementsSessionTask.cancel()
+                 }
+ 
+-                // Ensure local specs are loaded prior to the ones from elementSession
+-                await loadFormSpecs()
+-
+                 let paymentMethods = try await paymentMethodsTask.value.filter({ paymentMethod in
+                     guard let card = paymentMethod.card else { return true }
+                     return configuration.cardBrandFilter.isAccepted(cardBrand: card.preferredDisplayBrand)
+@@ -88,25 +80,12 @@ class CustomerSheetDataSource {
+                 let selectedPaymentMethod = try await selectedPaymentMethodTask.value
+                 let elementSession = try await elementsSessionTask.value
+ 
+-                // Override with specs from elementSession
+-                _ = FormSpecProvider.shared.loadFrom(elementSession.paymentMethodSpecs as Any)
+-
+                 completion(.success((paymentMethods, selectedPaymentMethod, elementSession)))
+             } catch {
+                 completion(.failure(error))
+             }
+         }
+     }
+-
+-    func loadFormSpecs() async {
+-        await withCheckedContinuation { continuation in
+-            Task {
+-                FormSpecProvider.shared.load { _ in
+-                    continuation.resume()
+-                }
+-            }
+-        }
+-    }
+ }
+ 
+ extension CustomerSheetDataSource {
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+index caec69e..ebe9939 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+@@ -333,6 +333,7 @@ extension EmbeddedPaymentElement: EmbeddedPaymentMethodsViewDelegate {
+         let verticalSavedPaymentMethodsViewController = VerticalSavedPaymentMethodsViewController(
+             configuration: configuration,
+             intent: intent,
++            checkout: checkout,
+             selectedPaymentMethod: selectedSavedPaymentMethod,
+             paymentMethods: savedPaymentMethods,
+             elementsSession: elementsSession,
+@@ -705,8 +706,7 @@ extension EmbeddedPaymentElement {
+                 paymentHandler: self.paymentHandler,
+                 integrationShape: .embedded,
+                 confirmationChallenge: self.confirmationChallenge,
+-                analyticsHelper: self.analyticsHelper,
+-                checkout: self.checkout
++                analyticsHelper: self.analyticsHelper
+             )
+         }
+ 
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
+index 3e27696..4988798 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
+@@ -519,7 +519,7 @@ import UIKit
+             linkAppearance: appearance,
+             linkConfiguration: configuration,
+             canContinueWithoutLink: false
+-        ) { [weak self] confirmOption, shouldClearSelection in
++        ) { [weak self] confirmOption, shouldClearSelection, _ in
+             guard let confirmOption else {
+                 if shouldClearSelection {
+                     self?.internalPaymentOption = nil
+@@ -577,8 +577,12 @@ import UIKit
+                 linkAppearance: self.appearance,
+                 linkConfiguration: self.configuration,
+                 canContinueWithoutLink: false
+-            ) { [weak self] confirmOption, _ in
++            ) { [weak self] confirmOption, _, error in
+                 guard let self else { return }
++                if let error {
++                    completion(.failure(error))
++                    return
++                }
+                 guard let confirmOption else {
+                     completion(.success(.canceled))
+                     return
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift
+index fded2d0..d3342d8 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift
+@@ -25,12 +25,11 @@ extension UIViewController {
+         intent: Intent,
+         elementsSession: STPElementsSession,
+         analyticsHelper: PaymentSheetAnalyticsHelper,
+-        checkout: CheckoutSessionBillingAddressUpdater? = nil,
+         supportedPaymentMethodTypes: [LinkPaymentMethodType]? = nil,
+         linkAppearance: LinkAppearance? = nil,
+         linkConfiguration: LinkConfiguration? = nil,
+         canContinueWithoutLink: Bool = true,
+-        callback: @escaping (_ confirmOption: PaymentSheet.LinkConfirmOption?, _ shouldReturnToPaymentSheet: Bool) -> Void
++        callback: @escaping (_ confirmOption: PaymentSheet.LinkConfirmOption?, _ shouldReturnToPaymentSheet: Bool, _ error: Error?) -> Void
+     ) {
+         let payWithLinkController = PayWithNativeLinkController(
+             mode: .paymentMethodSelection,
+@@ -41,15 +40,15 @@ extension UIViewController {
+             analyticsHelper: analyticsHelper,
+             supportedPaymentMethodTypes: supportedPaymentMethodTypes,
+             linkAppearance: linkAppearance,
+-            linkConfiguration: linkConfiguration,
+-            checkout: checkout
++            linkConfiguration: linkConfiguration
+         )
+ 
+         payWithLinkController.presentForPaymentMethodSelection(
+             from: self,
+             initiallySelectedPaymentDetailsID: selectedPaymentDetailsID,
+-            canContinueWithoutLink: canContinueWithoutLink,
+-            completion: callback
+-        )
++            canContinueWithoutLink: canContinueWithoutLink
++        ) { confirmOption, shouldReturnToPaymentSheet, error in
++            callback(confirmOption, shouldReturnToPaymentSheet, error)
++        }
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift
+index 757ef80..f827c6e 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift
+@@ -15,6 +15,7 @@ import UIKit
+ final class PayWithLinkController {
+ 
+     typealias CompletionBlock = ((PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void)
++    typealias ConfirmHandler = (STPAuthenticationContext, Intent, STPElementsSession, PaymentOption, @escaping CompletionBlock) -> Void
+ 
+     private let paymentHandler: STPPaymentHandler
+ 
+@@ -27,16 +28,24 @@ final class PayWithLinkController {
+     let configuration: PaymentElementConfiguration
+     let analyticsHelper: PaymentSheetAnalyticsHelper
+     private let confirmationChallenge: ConfirmationChallenge?
+-    private weak var checkout: CheckoutSessionBillingAddressUpdater?
++    // If you pass a confirmHandler, it's used to confirm the payment. Otherwise, PaymentSheet.confirm is used.
++    private let confirmHandler: ConfirmHandler?
+ 
+-    init(intent: Intent, elementsSession: STPElementsSession, configuration: PaymentElementConfiguration, analyticsHelper: PaymentSheetAnalyticsHelper, checkout: CheckoutSessionBillingAddressUpdater? = nil, confirmationChallenge: ConfirmationChallenge?) {
++    init(
++        intent: Intent,
++        elementsSession: STPElementsSession,
++        configuration: PaymentElementConfiguration,
++        analyticsHelper: PaymentSheetAnalyticsHelper,
++        confirmationChallenge: ConfirmationChallenge?,
++        confirmHandler: ConfirmHandler? = nil
++    ) {
+         self.intent = intent
+         self.elementsSession = elementsSession
+         self.configuration = configuration
+         self.paymentHandler = .init(apiClient: configuration.apiClient)
+         self.analyticsHelper = analyticsHelper
+-        self.checkout = checkout
+         self.confirmationChallenge = confirmationChallenge
++        self.confirmHandler = confirmHandler
+     }
+ 
+     func present(
+@@ -68,6 +77,15 @@ extension PayWithLinkController: PayWithLinkWebControllerDelegate {
+         elementsSession: STPElementsSession,
+         with paymentOption: PaymentOption
+     ) {
++        // If you pass a confirmHandler, it's used to confirm the payment. Otherwise, PaymentSheet.confirm is used.
++        if let confirmHandler {
++            confirmHandler(payWithLinkWebController, intent, elementsSession, paymentOption) { result, deferredIntentConfirmationType in
++                self.completion?(result, deferredIntentConfirmationType)
++                self.selfRetainer = nil
++            }
++            return
++        }
++
+         PaymentSheet.confirm(
+             configuration: configuration,
+             authenticationContext: payWithLinkWebController,
+@@ -76,7 +94,6 @@ extension PayWithLinkController: PayWithLinkWebControllerDelegate {
+             paymentOption: paymentOption,
+             paymentHandler: paymentHandler,
+             integrationShape: .complete,
+-            checkout: checkout,
+             confirmationChallenge: confirmationChallenge,
+             analyticsHelper: analyticsHelper
+         ) { result, deferredIntentConfirmationType in
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift
+index a124029..11beef8 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift
+@@ -15,6 +15,7 @@ import UIKit
+ @available(iOSApplicationExtension, unavailable)
+ @available(macCatalystApplicationExtension, unavailable)
+ final class PayWithNativeLinkController {
++    typealias ConfirmHandler = (STPAuthenticationContext, Intent, STPElementsSession, PaymentOption, @escaping (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void) -> Void
+ 
+     enum Mode {
+         case full
+@@ -59,7 +60,8 @@ final class PayWithNativeLinkController {
+     private let linkAppearance: LinkAppearance?
+     private let linkConfiguration: LinkConfiguration?
+     private let confirmationChallenge: ConfirmationChallenge?
+-    private weak var checkout: CheckoutSessionBillingAddressUpdater?
++    // If you pass a confirmHandler, it's used to confirm the payment. Otherwise, PaymentSheet.confirm is used.
++    private let confirmHandler: ConfirmHandler?
+ 
+     init(
+         mode: Mode,
+@@ -71,8 +73,8 @@ final class PayWithNativeLinkController {
+         supportedPaymentMethodTypes: [LinkPaymentMethodType]? = nil,
+         linkAppearance: LinkAppearance? = nil,
+         linkConfiguration: LinkConfiguration? = nil,
+-        checkout: CheckoutSessionBillingAddressUpdater? = nil,
+-        confirmationChallenge: ConfirmationChallenge? = nil
++        confirmationChallenge: ConfirmationChallenge? = nil,
++        confirmHandler: ConfirmHandler? = nil
+     ) {
+         self.mode = mode
+         self.intent = intent
+@@ -84,8 +86,8 @@ final class PayWithNativeLinkController {
+         self.paymentHandler = .init(apiClient: configuration.apiClient)
+         self.linkAppearance = linkAppearance
+         self.linkConfiguration = linkConfiguration
+-        self.checkout = checkout
+         self.confirmationChallenge = confirmationChallenge
++        self.confirmHandler = confirmHandler
+     }
+ 
+     func presentAsBottomSheet(
+@@ -113,7 +115,7 @@ final class PayWithNativeLinkController {
+         from presentingController: UIViewController,
+         initiallySelectedPaymentDetailsID: String?,
+         canContinueWithoutLink: Bool = true,
+-        completion: @escaping (_ confirmOption: PaymentSheet.LinkConfirmOption?, _ shouldReturnToPaymentSheet: Bool) -> Void
++        completion: @escaping (_ confirmOption: PaymentSheet.LinkConfirmOption?, _ shouldReturnToPaymentSheet: Bool, _ error: Error?) -> Void
+     ) {
+         presentAsBottomSheetInternal(
+             from: presentingController,
+@@ -125,11 +127,14 @@ final class PayWithNativeLinkController {
+             shouldFinishOnClose: false,
+             canContinueWithoutLink: canContinueWithoutLink
+         ) { completionResult in
+-            guard case .paymentMethodSelection(let confirmOption, let shouldReturnToPaymentSheet) = completionResult else {
+-                return
++            switch completionResult {
++            case .paymentMethodSelection(let confirmOption, let shouldReturnToPaymentSheet):
++                completion(confirmOption, shouldReturnToPaymentSheet, nil)
++            case .full(let result, _, _):
++                if case .failed(let error) = result {
++                    completion(nil, false, error)
++                }
+             }
+-
+-            completion(confirmOption, shouldReturnToPaymentSheet)
+         }
+     }
+ 
+@@ -220,6 +225,19 @@ extension PayWithNativeLinkController: PayWithLinkViewControllerDelegate {
+         with paymentOption: PaymentOption,
+         completion: @escaping (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void
+     ) {
++        let wrappedCompletion: (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void = { result, confirmationType in
++            if self.logPayment {
++                self.analyticsHelper.logPayment(paymentOption: paymentOption, result: result, deferredIntentConfirmationType: confirmationType)
++            }
++            completion(result, confirmationType)
++        }
++
++        // If you pass a confirmHandler, it's used to confirm the payment. Otherwise, PaymentSheet.confirm is used.
++        if let confirmHandler {
++            confirmHandler(payWithLinkViewController, intent, elementsSession, paymentOption, wrappedCompletion)
++            return
++        }
++
+         PaymentSheet.confirm(
+             configuration: configuration,
+             authenticationContext: payWithLinkViewController,
+@@ -227,7 +245,6 @@ extension PayWithNativeLinkController: PayWithLinkViewControllerDelegate {
+             elementsSession: elementsSession,
+             paymentOption: paymentOption,
+             paymentHandler: paymentHandler,
+-            checkout: checkout,
+             confirmationChallenge: confirmationChallenge,
+             analyticsHelper: analyticsHelper,
+             completion: { result, confirmationType in
+@@ -277,6 +294,15 @@ extension PayWithNativeLinkController: PayWithLinkWebControllerDelegate {
+         elementsSession: STPElementsSession,
+         with paymentOption: PaymentOption
+     ) {
++        // If you pass a confirmHandler, it's used to confirm the payment. Otherwise, PaymentSheet.confirm is used.
++        if let confirmHandler {
++            confirmHandler(payWithLinkWebController, intent, elementsSession, paymentOption) { result, deferredIntentConfirmationType in
++                self.completion?(.full(result: result, deferredIntentConfirmationType: deferredIntentConfirmationType, didFinish: true))
++                self.selfRetainer = nil
++            }
++            return
++        }
++
+         PaymentSheet.confirm(
+             configuration: configuration,
+             authenticationContext: payWithLinkWebController,
+@@ -285,7 +311,6 @@ extension PayWithNativeLinkController: PayWithLinkWebControllerDelegate {
+             paymentOption: paymentOption,
+             paymentHandler: paymentHandler,
+             integrationShape: .complete,
+-            checkout: checkout,
+             confirmationChallenge: confirmationChallenge,
+             analyticsHelper: analyticsHelper
+         ) { result, deferredIntentConfirmationType in
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift
+index 6ff2577..6a94eda 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift
+@@ -32,6 +32,12 @@ extension PaymentSheet {
+         }
+     }
+ 
++    enum PreconfirmActionsResult {
++        case succeeded(intentConfirmParams: IntentConfirmParams?)
++        case canceled
++        case failed(Error)
++    }
++
+     /// Confirms a PaymentIntent with the given PaymentOption and returns a PaymentResult
+     static func confirm(
+         configuration: PaymentElementConfiguration,
+@@ -42,37 +48,95 @@ extension PaymentSheet {
+         paymentHandler: STPPaymentHandler,
+         integrationShape: IntegrationShape = .complete,
+         paymentMethodID: String? = nil,
+-        checkout: CheckoutSessionBillingAddressUpdater? = nil,
+         confirmationChallenge: ConfirmationChallenge? = nil,
+         analyticsHelper: PaymentSheetAnalyticsHelper,
+         completion: @escaping (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void
+     ) {
++        if case .checkout = intent {
++            let message = "Checkout Session confirmation must go through Checkout.confirm, not PaymentSheet.confirm."
++            stpAssertionFailure(message)
++            completion(.failed(error: PaymentSheetError.unknown(debugDescription: message)), nil)
++            return
++        }
++
++        Task { @MainActor in
++            let preconfirmActionsResult = await handlePreconfirmActionsIfNecessary(
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                intent: intent,
++                paymentOption: paymentOption,
++                paymentHandler: paymentHandler,
++                integrationShape: integrationShape
++            )
++
++            let intentConfirmParams: IntentConfirmParams?
++            switch preconfirmActionsResult {
++            case .succeeded(let params):
++                intentConfirmParams = params
++            case .canceled:
++                completion(.canceled, nil)
++                return
++            case .failed(let error):
++                completion(.failed(error: error), nil)
++                return
++            }
++
++            confirmAfterHandlingLocalActions(
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                intent: intent,
++                elementsSession: elementsSession,
++                paymentOption: paymentOption,
++                // TODO: intentConfirmParamsForDeferredIntent is bad:
++                // - The name says "DeferredIntent", but this is also used for PaymentIntent and not used for SetupIntent.
++                // - The type is IntentConfirmParams, but downstream only consumes confirmPaymentMethodOptions.
++                // - The real contract is "saved-card CVC recollection may override payment options", which should be represented directly by a narrower type.
++                intentConfirmParamsForDeferredIntent: intentConfirmParams,
++                paymentHandler: paymentHandler,
++                confirmationChallenge: confirmationChallenge,
++                analyticsHelper: analyticsHelper,
++                completion: completion
++            )
++        }
++    }
++
++    @MainActor
++    static func handlePreconfirmActionsIfNecessary(
++        configuration: PaymentElementConfiguration,
++        authenticationContext: STPAuthenticationContext,
++        intent: Intent,
++        paymentOption: PaymentOption,
++        paymentHandler: STPPaymentHandler,
++        integrationShape: IntegrationShape
++    ) async -> PreconfirmActionsResult {
+         // Perform PaymentSheet-specific local actions before confirming.
+         // These actions are not represented in the PaymentIntent state and are specific to
+         // Payment Element (not the API bindings), so we need to handle them here.
+         // First, handle any client-side required actions:
+         if case let .new(confirmParams) = paymentOption,
+            confirmParams.paymentMethodType == .stripe(.bacsDebit) {
+-            // MARK: - Bacs Debit
+-            // Display the Bacs Debit mandate view
+-            let mandateView = BacsDDMandateView(email: confirmParams.paymentMethodParams.billingDetails?.email ?? "",
+-                                                name: confirmParams.paymentMethodParams.billingDetails?.name ?? "",
+-                                                sortCode: confirmParams.paymentMethodParams.bacsDebit?.sortCode ?? "",
+-                                                accountNumber: confirmParams.paymentMethodParams.bacsDebit?.accountNumber ?? "",
+-                                                confirmAction: {
+-                // If confirmed, dismiss the MandateView and complete the transaction:
+-                authenticationContext.authenticationPresentingViewController().dismiss(animated: true)
+-                confirmAfterHandlingLocalActions(configuration: configuration, authenticationContext: authenticationContext, intent: intent, elementsSession: elementsSession, paymentOption: paymentOption, intentConfirmParamsForDeferredIntent: nil, paymentHandler: paymentHandler, checkout: checkout, confirmationChallenge: confirmationChallenge, analyticsHelper: analyticsHelper, completion: completion)
+-            }, cancelAction: {
+-                // Dismiss the MandateView and return to PaymentSheet
+-                authenticationContext.authenticationPresentingViewController().dismiss(animated: true)
+-                completion(.canceled, nil)
+-            })
++            return await withCheckedContinuation { (continuation: CheckedContinuation<PreconfirmActionsResult, Never>) in
++                // MARK: - Bacs Debit
++                // Display the Bacs Debit mandate view
++                let mandateView = BacsDDMandateView(email: confirmParams.paymentMethodParams.billingDetails?.email ?? "",
++                                                    name: confirmParams.paymentMethodParams.billingDetails?.name ?? "",
++                                                    sortCode: confirmParams.paymentMethodParams.bacsDebit?.sortCode ?? "",
++                                                    accountNumber: confirmParams.paymentMethodParams.bacsDebit?.accountNumber ?? "",
++                                                    confirmAction: {
++                    // If confirmed, dismiss the MandateView and complete the transaction:
++                    authenticationContext.authenticationPresentingViewController().dismiss(animated: true)
++                    continuation.resume(returning: .succeeded(intentConfirmParams: nil))
++                }, cancelAction: {
++                    // Dismiss the MandateView and return to PaymentSheet
++                    authenticationContext.authenticationPresentingViewController().dismiss(animated: true)
++                    continuation.resume(returning: .canceled)
++                })
+ 
+-            let hostingController = UIHostingController(rootView: mandateView)
+-            hostingController.isModalInPresentation = true
+-            authenticationContext.authenticationPresentingViewController().present(hostingController, animated: true)
+-            _preconfirmShim?(hostingController)
++                let hostingController = UIHostingController(rootView: mandateView)
++                hostingController.isModalInPresentation = true
++                authenticationContext.authenticationPresentingViewController().present(hostingController, animated: true)
++                _preconfirmShim?(hostingController)
++            }
+         } else if case let .saved(paymentMethod, _) = paymentOption,
+                   paymentMethod.type == .card,
+                   integrationShape.requiresInterstitialForCVC,
+@@ -82,35 +146,37 @@ extension PaymentSheet {
+ 
+             guard presentingViewController.presentedViewController == nil else {
+                 assertionFailure("presentingViewController is already presenting a view controller")
+-                completion(.failed(error: PaymentSheetError.alreadyPresented), nil)
+-                return
++                return .failed(PaymentSheetError.alreadyPresented)
+             }
+-            let preConfirmationViewController = CVCReconfirmationViewController(
+-                paymentMethod: paymentMethod,
+-                intent: intent,
+-                configuration: configuration,
+-                onCompletion: { vc, intentConfirmParams in
+-                    vc.dismiss(animated: true)
+-                    confirmAfterHandlingLocalActions(configuration: configuration, authenticationContext: authenticationContext, intent: intent, elementsSession: elementsSession, paymentOption: paymentOption, intentConfirmParamsForDeferredIntent: intentConfirmParams, paymentHandler: paymentHandler, checkout: checkout, confirmationChallenge: confirmationChallenge, analyticsHelper: analyticsHelper, completion: completion)
+-                },
+-                onCancel: { vc in
+-                    vc.dismiss(animated: true)
+-                    completion(.canceled, nil)
+-                }
+-            )
+ 
+-            // Present CVC VC
+-            let bottomSheetVC = FlowController.makeBottomSheetViewController(
+-                preConfirmationViewController,
+-                configuration: configuration,
+-                didCancelNative3DS2: {
+-                    paymentHandler.cancel3DS2ChallengeFlow()
+-                }
+-            )
+-            presentingViewController.presentAsBottomSheet(bottomSheetVC, appearance: configuration.appearance)
++            return await withCheckedContinuation { (continuation: CheckedContinuation<PreconfirmActionsResult, Never>) in
++                let preConfirmationViewController = CVCReconfirmationViewController(
++                    paymentMethod: paymentMethod,
++                    intent: intent,
++                    configuration: configuration,
++                    onCompletion: { vc, intentConfirmParams in
++                        vc.dismiss(animated: true)
++                        continuation.resume(returning: .succeeded(intentConfirmParams: intentConfirmParams))
++                    },
++                    onCancel: { vc in
++                        vc.dismiss(animated: true)
++                        continuation.resume(returning: .canceled)
++                    }
++                )
++
++                // Present CVC VC
++                let bottomSheetVC = FlowController.makeBottomSheetViewController(
++                    preConfirmationViewController,
++                    configuration: configuration,
++                    didCancelNative3DS2: {
++                        paymentHandler.cancel3DS2ChallengeFlow()
++                    }
++                )
++                presentingViewController.presentAsBottomSheet(bottomSheetVC, appearance: configuration.appearance)
++            }
+         } else {
+             // MARK: - No local actions
+-            confirmAfterHandlingLocalActions(configuration: configuration, authenticationContext: authenticationContext, intent: intent, elementsSession: elementsSession, paymentOption: paymentOption, intentConfirmParamsForDeferredIntent: nil, paymentHandler: paymentHandler, checkout: checkout, confirmationChallenge: confirmationChallenge, analyticsHelper: analyticsHelper, completion: completion)
++            return .succeeded(intentConfirmParams: nil)
+         }
+     }
+ 
+@@ -124,8 +190,7 @@ extension PaymentSheet {
+         integrationShape: IntegrationShape = .complete,
+         confirmationChallenge: ConfirmationChallenge? = nil,
+         analyticsHelper: PaymentSheetAnalyticsHelper,
+-        paymentMethodID: String? = nil,
+-        checkout: CheckoutSessionBillingAddressUpdater? = nil
++        paymentMethodID: String? = nil
+     ) async -> (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) {
+         await withCheckedContinuation { continuation in
+             Task { @MainActor in
+@@ -138,7 +203,6 @@ extension PaymentSheet {
+                     paymentHandler: paymentHandler,
+                     integrationShape: integrationShape,
+                     paymentMethodID: paymentMethodID,
+-                    checkout: checkout,
+                     confirmationChallenge: confirmationChallenge,
+                     analyticsHelper: analyticsHelper
+                 ) { result, deferredType in
+@@ -158,7 +222,6 @@ extension PaymentSheet {
+         paymentHandler: STPPaymentHandler,
+         isFlowController: Bool = false,
+         paymentMethodID: String? = nil,
+-        checkout: CheckoutSessionBillingAddressUpdater? = nil,
+         confirmationChallenge: ConfirmationChallenge?,
+         analyticsHelper: PaymentSheetAnalyticsHelper,
+         completion: @escaping (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void
+@@ -169,26 +232,15 @@ extension PaymentSheet {
+         }
+ 
+         let clientAttributionMetadata = STPClientAttributionMetadata.makeClientAttributionMetadata(intent: intent, elementsSession: elementsSession)
+-        let missingCheckoutControllerResult: () -> PaymentSheetResult = {
+-            let message = "Missing Checkout controller for CheckoutSession confirmation."
+-            stpAssertionFailure(message)
+-            return .failed(error: PaymentSheetError.unknown(debugDescription: message))
+-        }
+ 
+         let isSettingUp: (STPPaymentMethodType) -> Bool = { paymentMethodType in
+             intent.isSetupFutureUsageSet(for: paymentMethodType) || elementsSession.forceSaveFutureUseBehaviorAndNewMandateText
+         }
+         let setAllowRedisplay: (IntentConfirmParams, STPPaymentMethodType) -> Void = { confirmParams, paymentMethodType in
+-            if case .checkout(let session) = intent {
+-                confirmParams.setAllowRedisplayForCheckoutSession(
+-                    merchantWillSavePaymentMethod: session.merchantWillSavePaymentMethod(paymentMethodType)
+-                )
+-            } else {
+-                confirmParams.setAllowRedisplay(
+-                    mobilePaymentElementFeatures: elementsSession.customerSessionMobilePaymentElementFeatures,
+-                    isSettingUp: isSettingUp(paymentMethodType)
+-                )
+-            }
++            confirmParams.setAllowRedisplay(
++                mobilePaymentElementFeatures: elementsSession.customerSessionMobilePaymentElementFeatures,
++                isSettingUp: isSettingUp(paymentMethodType)
++            )
+         }
+ 
+         switch paymentOption {
+@@ -200,7 +252,6 @@ extension PaymentSheet {
+                     elementsSession: elementsSession,
+                     configuration: configuration,
+                     clientAttributionMetadata: clientAttributionMetadata,
+-                    checkout: checkout,
+                     completion: completion
+                 )
+             else {
+@@ -294,32 +345,8 @@ extension PaymentSheet {
+                         await confirmationChallenge?.complete()
+                         completion(result.result, result.deferredIntentConfirmationType)
+                     }
+-                    // MARK: ↪ Checkout
+-                case .checkout(let checkoutSession):
+-                    Task { @MainActor in
+-                        guard let checkout else {
+-                            let result = missingCheckoutControllerResult()
+-                            await confirmationChallenge?.complete()
+-                            completion(result, nil)
+-                            return
+-                        }
+-                        let result = await handleCheckoutSessionConfirmation(
+-                            checkout: checkout,
+-                            checkoutSession: checkoutSession,
+-                            confirmType: .new(
+-                                params: confirmParams.paymentMethodParams,
+-                                paymentOptions: confirmParams.confirmPaymentMethodOptions,
+-                                saveForFutureUseCheckboxState: confirmParams.saveForFutureUseCheckboxState,
+-                                shouldSetAsDefaultPM: confirmParams.setAsDefaultPM
+-                            ),
+-                            configuration: configuration,
+-                            authenticationContext: authenticationContext,
+-                            paymentHandler: paymentHandler,
+-                            elementsSession: elementsSession
+-                        )
+-                        await confirmationChallenge?.complete()
+-                        completion(result, nil)
+-                    }
++                case .checkout:
++                    stpAssertionFailure()
+                 }
+             }
+ 
+@@ -376,40 +403,17 @@ extension PaymentSheet {
+                     )
+                     completion(result.result, result.deferredIntentConfirmationType)
+                 }
+-                // MARK: ↪ Checkout
+-            case .checkout(let checkoutSession):
+-                Task { @MainActor in
+-                    guard let checkout else {
+-                        completion(missingCheckoutControllerResult(), nil)
+-                        return
+-                    }
+-                    let paymentOptions = intentConfirmParamsForDeferredIntent?.confirmPaymentMethodOptions != nil
+-                    // Flow controller and embedded collects CVC using interstitial:
+-                    ? intentConfirmParamsForDeferredIntent?.confirmPaymentMethodOptions
+-                    // PaymentSheet collects CVC in sheet:
+-                    : intentConfirmParamsFromSavedPaymentMethod?.confirmPaymentMethodOptions
+-                    let result = await handleCheckoutSessionConfirmation(
+-                        checkout: checkout,
+-                        checkoutSession: checkoutSession,
+-                        confirmType: .saved(paymentMethod,
+-                                            paymentOptions: paymentOptions,
+-                                            clientAttributionMetadata: clientAttributionMetadata,
+-                                            radarOptions: nil),
+-                        configuration: configuration,
+-                        authenticationContext: authenticationContext,
+-                        paymentHandler: paymentHandler,
+-                        elementsSession: elementsSession
+-                    )
+-                    completion(result, nil)
+-                }
++            case .checkout:
++                stpAssertionFailure()
+             }
+         // MARK: - Link
+         case .link(let confirmOption):
+-            // This is called when the customer pays in the sheet (as opposed to the Link webview) and agreed to sign up for Link
+-            // Parameters:
+-            // - paymentMethodParams: The params to use for the payment.
+-            // - linkAccount: The Link account used for payment. Will be logged out if present after payment completes, whether it was successful or not.
+-            let confirmWithPaymentMethodParams: (STPPaymentMethodParams, PaymentSheetLinkAccount?, IntentConfirmParams.SaveForFutureUseCheckboxState) -> Void = { paymentMethodParams, linkAccount, saveForFutureUseCheckboxState in
++            // Called when Link produces raw payment method params, including signup fallback/direct confirm paths.
++            func confirmWithPaymentMethodParams(
++                _ paymentMethodParams: STPPaymentMethodParams,
++                _ linkAccount: PaymentSheetLinkAccount?,
++                _ saveForFutureUseCheckboxState: IntentConfirmParams.SaveForFutureUseCheckboxState
++            ) {
+                 Task { @MainActor in
+                     let radarOptions = await confirmationChallenge?.makeRadarOptions(for: paymentMethodParams.type)
+                     paymentMethodParams.radarOptions = radarOptions
+@@ -454,55 +458,37 @@ extension PaymentSheet {
+                             }
+                         )
+                     case .deferredIntent(let intentConfig):
+-                        Task { @MainActor in
+-                            let result = await routeDeferredIntentConfirmation(
+-                                confirmType: .new(
+-                                    params: paymentMethodParams,
+-                                    paymentOptions: STPConfirmPaymentMethodOptions(),
+-                                    saveForFutureUseCheckboxState: saveForFutureUseCheckboxState
+-                                ),
+-                                configuration: configuration,
+-                                intentConfig: intentConfig,
+-                                authenticationContext: authenticationContext,
+-                                paymentHandler: paymentHandler,
+-                                isFlowController: isFlowController,
+-                                elementsSession: elementsSession
+-                            )
+-                            if shouldLogOutOfLink(result: result.result, elementsSession: elementsSession) {
+-                                linkAccount?.logout()
+-                            }
+-                            await confirmationChallenge?.complete()
+-                            completion(result.result, result.deferredIntentConfirmationType)
+-                        }
+-                    case .checkout(let checkoutSession):
+-                        guard let checkout else {
+-                            let result = missingCheckoutControllerResult()
+-                            await confirmationChallenge?.complete()
+-                            completion(result, nil)
+-                            return
+-                        }
+-                        let result = await handleCheckoutSessionConfirmation(
+-                            checkout: checkout,
+-                            checkoutSession: checkoutSession,
++                        let result = await routeDeferredIntentConfirmation(
+                             confirmType: .new(
+                                 params: paymentMethodParams,
+                                 paymentOptions: STPConfirmPaymentMethodOptions(),
+                                 saveForFutureUseCheckboxState: saveForFutureUseCheckboxState
+                             ),
+                             configuration: configuration,
++                            intentConfig: intentConfig,
+                             authenticationContext: authenticationContext,
+                             paymentHandler: paymentHandler,
++                            isFlowController: isFlowController,
+                             elementsSession: elementsSession
+                         )
+-                        if shouldLogOutOfLink(result: result, elementsSession: elementsSession) {
++                        if shouldLogOutOfLink(result: result.result, elementsSession: elementsSession) {
+                             linkAccount?.logout()
+                         }
+                         await confirmationChallenge?.complete()
+-                        completion(result, nil)
++                        completion(result.result, result.deferredIntentConfirmationType)
++                    case .checkout:
++                        stpAssertionFailure()
+                     }
+                 }
+             }
+-            let confirmWithPaymentMethod: (STPPaymentMethod, PaymentSheetLinkAccount?, IntentConfirmParams.SaveForFutureUseCheckboxState, STPClientAttributionMetadata?) -> Void = { paymentMethod, linkAccount, saveForFutureUseCheckboxState, clientAttributionMetadata in
++
++            // Called when Link produces an existing/shared payment method, including Link web and passthrough share success.
++            func confirmWithPaymentMethod(
++                _ paymentMethod: STPPaymentMethod,
++                _ linkAccount: PaymentSheetLinkAccount?,
++                _ saveForFutureUseCheckboxState: IntentConfirmParams.SaveForFutureUseCheckboxState,
++                _ clientAttributionMetadata: STPClientAttributionMetadata?
++            ) {
+                 Task { @MainActor in
+                     let radarOptions = await confirmationChallenge?.makeRadarOptions(for: paymentMethod.type)
+                     let mandateCustomerAcceptanceParams = STPMandateCustomerAcceptanceParams()
+@@ -556,206 +542,259 @@ extension PaymentSheet {
+                             }
+                         )
+                     case .deferredIntent(let intentConfig):
+-                        Task { @MainActor in
+-                            let result = await routeDeferredIntentConfirmation(
+-                                confirmType: .saved(paymentMethod, paymentOptions: nil, clientAttributionMetadata: clientAttributionMetadata, radarOptions: radarOptions),
+-                                configuration: configuration,
+-                                intentConfig: intentConfig,
+-                                authenticationContext: authenticationContext,
+-                                paymentHandler: paymentHandler,
+-                                isFlowController: isFlowController,
+-                                elementsSession: elementsSession,
+-                                isFromLink: true
+-                            )
+-                            if shouldLogOutOfLink(result: result.result, elementsSession: elementsSession) {
+-                                linkAccount?.logout()
+-                            }
+-                            await confirmationChallenge?.complete()
+-                            completion(result.result, result.deferredIntentConfirmationType)
+-                        }
+-                    case .checkout(let checkoutSession):
+-                        guard let checkout else {
+-                            let result = missingCheckoutControllerResult()
+-                            await confirmationChallenge?.complete()
+-                            completion(result, nil)
+-                            return
+-                        }
+-                        let result = await handleCheckoutSessionConfirmation(
+-                            checkout: checkout,
+-                            checkoutSession: checkoutSession,
++                        let result = await routeDeferredIntentConfirmation(
+                             confirmType: .saved(paymentMethod, paymentOptions: nil, clientAttributionMetadata: clientAttributionMetadata, radarOptions: radarOptions),
+                             configuration: configuration,
++                            intentConfig: intentConfig,
+                             authenticationContext: authenticationContext,
+                             paymentHandler: paymentHandler,
+-                            elementsSession: elementsSession
++                            isFlowController: isFlowController,
++                            elementsSession: elementsSession,
++                            isFromLink: true
+                         )
+-                        if shouldLogOutOfLink(result: result, elementsSession: elementsSession) {
++                        if shouldLogOutOfLink(result: result.result, elementsSession: elementsSession) {
+                             linkAccount?.logout()
+                         }
+                         await confirmationChallenge?.complete()
+-                        completion(result, nil)
++                        completion(result.result, result.deferredIntentConfirmationType)
++                    case .checkout:
++                        stpAssertionFailure()
+                     }
+                 }
+             }
+ 
+-            let confirmWithPaymentDetails:
+-                (
+-                    PaymentSheetLinkAccount,
+-                    ConsumerPaymentDetails,
+-                    String?, // cvc
+-                    String?, // phone number
+-                    IntentConfirmParams.SaveForFutureUseCheckboxState,
+-                    STPPaymentMethodAllowRedisplay?
+-                ) -> Void = { linkAccount, paymentDetails, cvc, billingPhoneNumber, saveForFutureUseCheckboxState, allowRedisplay in
+-                    guard let paymentMethodParams = linkAccount.makePaymentMethodParams(
+-                        from: paymentDetails,
+-                        cvc: cvc,
+-                        billingPhoneNumber: billingPhoneNumber,
+-                        allowRedisplay: allowRedisplay
+-                    ) else {
+-                        let error = PaymentSheetError.payingWithoutValidLinkSession
+-                        completion(.failed(error: error), nil)
+-                        return
+-                    }
++            // Called when Link UI returns a payment option that PaymentSheet should confirm recursively.
++            func confirmReturnedLinkPaymentOption(
++                linkAuthenticationContext: STPAuthenticationContext,
++                linkIntent: Intent,
++                linkElementsSession: STPElementsSession,
++                linkPaymentOption: PaymentOption,
++                linkCompletion: @escaping (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void
++            ) {
++                PaymentSheet.confirm(
++                    configuration: configuration,
++                    authenticationContext: linkAuthenticationContext,
++                    intent: linkIntent,
++                    elementsSession: linkElementsSession,
++                    paymentOption: linkPaymentOption,
++                    paymentHandler: paymentHandler,
++                    integrationShape: .complete,
++                    confirmationChallenge: confirmationChallenge,
++                    analyticsHelper: analyticsHelper,
++                    completion: linkCompletion
++                )
++            }
+ 
+-                    confirmWithPaymentMethodParams(paymentMethodParams, linkAccount, saveForFutureUseCheckboxState)
++            confirmLinkPaymentOption(
++                confirmOption: confirmOption,
++                configuration: configuration,
++                authenticationContext: authenticationContext,
++                intent: intent,
++                elementsSession: elementsSession,
++                analyticsHelper: analyticsHelper,
++                confirmationChallenge: confirmationChallenge,
++                clientAttributionMetadata: clientAttributionMetadata,
++                isSettingUp: isSettingUp,
++                setAllowRedisplay: setAllowRedisplay,
++                confirmWithPaymentMethodParams: confirmWithPaymentMethodParams,
++                confirmWithPaymentMethod: confirmWithPaymentMethod,
++                confirmHandler: confirmReturnedLinkPaymentOption(linkAuthenticationContext:linkIntent:linkElementsSession:linkPaymentOption:linkCompletion:),
++                paymentHandlerCompletion: paymentHandlerCompletion,
++                completion: completion
++            )
++        case let .external(externalPaymentOption, billingDetails):
++            Task { @MainActor in
++                // Call confirmHandler so that the merchant completes the payment
++                let result = await externalPaymentOption.confirm(billingDetails: billingDetails)
++                completion(result, nil)
++            }
++        }
++    }
++
++    static func confirmLinkPaymentOption(
++        confirmOption: LinkConfirmOption,
++        configuration: PaymentElementConfiguration,
++        authenticationContext: STPAuthenticationContext,
++        intent: Intent,
++        elementsSession: STPElementsSession,
++        analyticsHelper: PaymentSheetAnalyticsHelper,
++        confirmationChallenge: ConfirmationChallenge?,
++        clientAttributionMetadata: STPClientAttributionMetadata,
++        isSettingUp: @escaping (STPPaymentMethodType) -> Bool,
++        setAllowRedisplay: @escaping (IntentConfirmParams, STPPaymentMethodType) -> Void,
++        confirmWithPaymentMethodParams: @escaping (STPPaymentMethodParams, PaymentSheetLinkAccount?, IntentConfirmParams.SaveForFutureUseCheckboxState) -> Void,
++        confirmWithPaymentMethod: @escaping (STPPaymentMethod, PaymentSheetLinkAccount?, IntentConfirmParams.SaveForFutureUseCheckboxState, STPClientAttributionMetadata?) -> Void,
++        confirmHandler: @escaping (STPAuthenticationContext, Intent, STPElementsSession, PaymentOption, @escaping (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void) -> Void,
++        paymentHandlerCompletion: @escaping (STPPaymentHandlerActionStatus, NSError?) -> Void,
++        completion: @escaping (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) -> Void
++    ) {
++        // This is called when the customer pays in the sheet (as opposed to the Link webview) and agreed to sign up for Link.
++        let confirmWithPaymentDetails:
++            (
++                PaymentSheetLinkAccount,
++                ConsumerPaymentDetails,
++                String?, // cvc
++                String?, // phone number
++                IntentConfirmParams.SaveForFutureUseCheckboxState,
++                STPPaymentMethodAllowRedisplay?
++            ) -> Void = { linkAccount, paymentDetails, cvc, billingPhoneNumber, saveForFutureUseCheckboxState, allowRedisplay in
++                guard let paymentMethodParams = linkAccount.makePaymentMethodParams(
++                    from: paymentDetails,
++                    cvc: cvc,
++                    billingPhoneNumber: billingPhoneNumber,
++                    allowRedisplay: allowRedisplay
++                ) else {
++                    let error = PaymentSheetError.payingWithoutValidLinkSession
++                    completion(.failed(error: error), nil)
++                    return
+                 }
+ 
+-            let createPaymentDetailsAndConfirm:
+-                (
+-                    PaymentSheetLinkAccount,
+-                    STPPaymentMethodParams,
+-                    IntentConfirmParams.SaveForFutureUseCheckboxState
+-                ) -> Void = { linkAccount, paymentMethodParams, saveForFutureUseCheckboxState in
+-                    paymentMethodParams.clientAttributionMetadata = clientAttributionMetadata
+-                    guard linkAccount.sessionState == .verified else {
+-                        // We don't support 2FA in the native mobile Link flow, so if 2FA is required then this is a no-op.
+-                        // Just fall through and don't save the card details to Link.
+-                        STPAnalyticsClient.sharedClient.logLinkPopupSkipped()
++                confirmWithPaymentMethodParams(paymentMethodParams, linkAccount, saveForFutureUseCheckboxState)
++            }
+ 
+-                        // Attempt to confirm directly with params
+-                        confirmWithPaymentMethodParams(paymentMethodParams, linkAccount, saveForFutureUseCheckboxState)
+-                        return
+-                    }
++        let createPaymentDetailsAndConfirm:
++            (
++                PaymentSheetLinkAccount,
++                STPPaymentMethodParams,
++                IntentConfirmParams.SaveForFutureUseCheckboxState
++            ) -> Void = { linkAccount, paymentMethodParams, saveForFutureUseCheckboxState in
++                paymentMethodParams.clientAttributionMetadata = clientAttributionMetadata
++                guard linkAccount.sessionState == .verified else {
++                    // We don't support 2FA in the native mobile Link flow, so if 2FA is required then this is a no-op.
++                    // Just fall through and don't save the card details to Link.
++                    STPAnalyticsClient.sharedClient.logLinkPopupSkipped()
++
++                    // Attempt to confirm directly with params
++                    confirmWithPaymentMethodParams(paymentMethodParams, linkAccount, saveForFutureUseCheckboxState)
++                    return
++                }
+ 
+-                    linkAccount.createPaymentDetails(with: paymentMethodParams, isDefault: false) { result in
+-                        switch result {
+-                        case .success(let paymentDetails):
+-                            // We need to explicitly pass the billing phone number to the share and payment method endpoints,
+-                            // since it's not part of the consumer payment details.
+-                            let billingPhoneNumber = paymentMethodParams.billingDetails?.phone
++                linkAccount.createPaymentDetails(with: paymentMethodParams, isDefault: false) { result in
++                    switch result {
++                    case .success(let paymentDetails):
++                        // We need to explicitly pass the billing phone number to the share and payment method endpoints,
++                        // since it's not part of the consumer payment details.
++                        let billingPhoneNumber = paymentMethodParams.billingDetails?.phone
+ 
+-                            if elementsSession.linkPassthroughModeEnabled {
+-                                // If passthrough mode, share payment details
+-                                linkAccount.sharePaymentDetails(
+-                                    id: paymentDetails.stripeID,
+-                                    cvc: paymentMethodParams.card?.cvc,
+-                                    allowRedisplay: paymentMethodParams.allowRedisplay,
+-                                    expectedPaymentMethodType: paymentDetails.expectedPaymentMethodTypeForPassthroughMode(elementsSession),
+-                                    billingPhoneNumber: billingPhoneNumber,
+-                                    clientAttributionMetadata: clientAttributionMetadata
+-                                ) { result in
+-                                    switch result {
+-                                    case .success(let paymentDetailsShareResponse):
+-                                        confirmWithPaymentMethod(paymentDetailsShareResponse.paymentMethod, linkAccount, saveForFutureUseCheckboxState, clientAttributionMetadata)
+-                                    case .failure(let error):
+-                                        STPAnalyticsClient.sharedClient.logLinkSharePaymentDetailsFailure(error: error)
+-                                        // If this fails, confirm directly
+-                                        confirmWithPaymentMethodParams(paymentMethodParams, linkAccount, saveForFutureUseCheckboxState)
+-                                    }
++                        if elementsSession.linkPassthroughModeEnabled {
++                            // If passthrough mode, share payment details
++                            linkAccount.sharePaymentDetails(
++                                id: paymentDetails.stripeID,
++                                cvc: paymentMethodParams.card?.cvc,
++                                allowRedisplay: paymentMethodParams.allowRedisplay,
++                                expectedPaymentMethodType: paymentDetails.expectedPaymentMethodTypeForPassthroughMode(elementsSession),
++                                billingPhoneNumber: billingPhoneNumber,
++                                clientAttributionMetadata: clientAttributionMetadata
++                            ) { result in
++                                switch result {
++                                case .success(let paymentDetailsShareResponse):
++                                    confirmWithPaymentMethod(paymentDetailsShareResponse.paymentMethod, linkAccount, saveForFutureUseCheckboxState, clientAttributionMetadata)
++                                case .failure(let error):
++                                    STPAnalyticsClient.sharedClient.logLinkSharePaymentDetailsFailure(error: error)
++                                    // If this fails, confirm directly
++                                    confirmWithPaymentMethodParams(paymentMethodParams, linkAccount, saveForFutureUseCheckboxState)
+                                 }
+-                            } else {
+-                                // If not passthrough mode, confirm details directly
+-                                confirmWithPaymentDetails(linkAccount, paymentDetails, paymentMethodParams.card?.cvc, billingPhoneNumber, saveForFutureUseCheckboxState, paymentMethodParams.allowRedisplay)
+                             }
+-                        case .failure(let error):
+-                            STPAnalyticsClient.sharedClient.logLinkCreatePaymentDetailsFailure(error: error)
+-                            // Attempt to confirm directly with params
+-                            confirmWithPaymentMethodParams(paymentMethodParams, linkAccount, saveForFutureUseCheckboxState)
++                        } else {
++                            // If not passthrough mode, confirm details directly
++                            confirmWithPaymentDetails(linkAccount, paymentDetails, paymentMethodParams.card?.cvc, billingPhoneNumber, saveForFutureUseCheckboxState, paymentMethodParams.allowRedisplay)
+                         }
++                    case .failure(let error):
++                        STPAnalyticsClient.sharedClient.logLinkCreatePaymentDetailsFailure(error: error)
++                        // Attempt to confirm directly
++                        confirmWithPaymentMethodParams(paymentMethodParams, linkAccount, saveForFutureUseCheckboxState)
+                     }
+                 }
++            }
+ 
+-            switch confirmOption {
+-            case .wallet:
+-                let useNativeLink = deviceCanUseNativeLink(elementsSession: elementsSession, configuration: configuration)
+-                if useNativeLink {
+-                    // logPayment is false because callers of PaymentSheet.confirm() are responsible for logging the payment result.
+-                    let linkController = PayWithNativeLinkController(mode: .full, intent: intent, elementsSession: elementsSession, configuration: configuration, logPayment: false, analyticsHelper: analyticsHelper, checkout: checkout, confirmationChallenge: confirmationChallenge)
+-                    linkController.presentAsBottomSheet(from: authenticationContext.authenticationPresentingViewController(), shouldOfferApplePay: false, shouldFinishOnClose: false, completion: { result, confirmationType, _ in
+-                        completion(result, confirmationType)
+-                    })
+-                } else {
+-                    let linkController = PayWithLinkController(intent: intent, elementsSession: elementsSession, configuration: configuration, analyticsHelper: analyticsHelper, checkout: checkout, confirmationChallenge: confirmationChallenge)
+-                    linkController.present(from: authenticationContext.authenticationPresentingViewController(),
+-                                           completion: completion)
+-                }
+-            case .signUp(_, let linkAccount, let phoneNumberFromSignup, let consentAction, let legalName, let intentConfirmParams):
+-                let billingDetails = intentConfirmParams.paymentMethodParams.billingDetails
+-                let countryCode = billingDetails?.address?.country ?? elementsSession.countryCode
++        switch confirmOption {
++        case .wallet:
++            let useNativeLink = deviceCanUseNativeLink(elementsSession: elementsSession, configuration: configuration)
++            if useNativeLink {
++                // logPayment is false because callers of PaymentSheet.confirm() are responsible for logging the payment result.
++                let linkController = PayWithNativeLinkController(
++                    mode: .full,
++                    intent: intent,
++                    elementsSession: elementsSession,
++                    configuration: configuration,
++                    logPayment: false,
++                    analyticsHelper: analyticsHelper,
++                    confirmationChallenge: confirmationChallenge,
++                    confirmHandler: confirmHandler
++                )
++                linkController.presentAsBottomSheet(from: authenticationContext.authenticationPresentingViewController(), shouldOfferApplePay: false, shouldFinishOnClose: false, completion: { result, confirmationType, _ in
++                    completion(result, confirmationType)
++                })
++            } else {
++                let linkController = PayWithLinkController(
++                    intent: intent,
++                    elementsSession: elementsSession,
++                    configuration: configuration,
++                    analyticsHelper: analyticsHelper,
++                    confirmationChallenge: confirmationChallenge,
++                    confirmHandler: confirmHandler
++                )
++                linkController.present(from: authenticationContext.authenticationPresentingViewController(), completion: completion)
++            }
++        case .signUp(_, let linkAccount, let phoneNumberFromSignup, let consentAction, let legalName, let intentConfirmParams):
++            let billingDetails = intentConfirmParams.paymentMethodParams.billingDetails
++            let countryCode = billingDetails?.address?.country ?? elementsSession.countryCode
+ 
+-                let phoneNumber = if elementsSession.linkSignupOptInFeatureEnabled {
+-                    billingDetails?.phone.flatMap { PhoneNumber.fromE164($0) }
+-                } else {
+-                    phoneNumberFromSignup
++            let phoneNumber = if elementsSession.linkSignupOptInFeatureEnabled {
++                billingDetails?.phone.flatMap { PhoneNumber.fromE164($0) }
++            } else {
++                phoneNumberFromSignup
++            }
++
++            linkAccount.signUp(
++                with: phoneNumber,
++                legalName: legalName,
++                countryCode: countryCode,
++                consentAction: consentAction
++            ) { result in
++                UserDefaults.standard.markLinkAsUsed()
++                switch result {
++                case .success:
++                    STPAnalyticsClient.sharedClient.logLinkSignupComplete()
++                    let linkPaymentMethodType: STPPaymentMethodType = elementsSession.linkPassthroughModeEnabled ? intentConfirmParams.paymentMethodParams.type : .link
++                    // Set allow_redisplay on params
++                    setAllowRedisplay(intentConfirmParams, linkPaymentMethodType)
++                    createPaymentDetailsAndConfirm(linkAccount, intentConfirmParams.paymentMethodParams, intentConfirmParams.saveForFutureUseCheckboxState)
++                case .failure(let error as NSError):
++                    STPAnalyticsClient.sharedClient.logLinkSignupFailure(error: error)
++                    // Attempt to confirm directly with params as a fallback.
++                    setAllowRedisplay(intentConfirmParams, intentConfirmParams.paymentMethodParams.type)
++                    confirmWithPaymentMethodParams(intentConfirmParams.paymentMethodParams, linkAccount, intentConfirmParams.saveForFutureUseCheckboxState)
+                 }
++            }
++        case .withPaymentMethod(_, let paymentMethod):
++            confirmWithPaymentMethod(paymentMethod, nil, .hidden, clientAttributionMetadata) // from Link web controller
++        case .withPaymentDetails(_, let linkAccount, let paymentDetails, let confirmationExtras, _):
++            let saveForFutureUseCheckboxState: IntentConfirmParams.SaveForFutureUseCheckboxState = .hidden // we don't show a save-to-merchant checkbox in Link VC
++            let allowRedisplay = paymentDetails.computeAllowRedisplay(
++                elementsSession: elementsSession,
++                isSettingUp: isSettingUp
++            )
+ 
+-                linkAccount.signUp(
+-                    with: phoneNumber,
+-                    legalName: legalName,
+-                    countryCode: countryCode,
+-                    consentAction: consentAction
++            if elementsSession.linkPassthroughModeEnabled {
++                linkAccount.sharePaymentDetails(
++                    id: paymentDetails.stripeID,
++                    cvc: paymentDetails.cvc,
++                    allowRedisplay: allowRedisplay,
++                    expectedPaymentMethodType: paymentDetails.expectedPaymentMethodTypeForPassthroughMode(elementsSession),
++                    billingPhoneNumber: confirmationExtras?.billingPhoneNumber,
++                    clientAttributionMetadata: clientAttributionMetadata
+                 ) { result in
+-                    UserDefaults.standard.markLinkAsUsed()
+                     switch result {
+-                    case .success:
+-                        STPAnalyticsClient.sharedClient.logLinkSignupComplete()
+-                        let linkPaymentMethodType: STPPaymentMethodType = elementsSession.linkPassthroughModeEnabled ? intentConfirmParams.paymentMethodParams.type : .link
+-                        // Set allow_redisplay on params
+-                        setAllowRedisplay(intentConfirmParams, linkPaymentMethodType)
+-                        createPaymentDetailsAndConfirm(linkAccount, intentConfirmParams.paymentMethodParams, intentConfirmParams.saveForFutureUseCheckboxState)
+-                    case .failure(let error as NSError):
+-                        STPAnalyticsClient.sharedClient.logLinkSignupFailure(error: error)
+-                        // Attempt to confirm directly with params as a fallback.
+-                        setAllowRedisplay(intentConfirmParams, intentConfirmParams.paymentMethodParams.type)
+-                        confirmWithPaymentMethodParams(intentConfirmParams.paymentMethodParams, linkAccount, intentConfirmParams.saveForFutureUseCheckboxState)
++                    case .success(let paymentDetailsShareResponse):
++                        confirmWithPaymentMethod(paymentDetailsShareResponse.paymentMethod, linkAccount, saveForFutureUseCheckboxState, clientAttributionMetadata)
++                    case .failure(let error):
++                        STPAnalyticsClient.sharedClient.logLinkSharePaymentDetailsFailure(error: error)
++                        paymentHandlerCompletion(.failed, error as NSError)
+                     }
+                 }
+-            case .withPaymentMethod(_, let paymentMethod):
+-                confirmWithPaymentMethod(paymentMethod, nil, .hidden, clientAttributionMetadata) // from Link web controller
+-            case .withPaymentDetails(_, let linkAccount, let paymentDetails, let confirmationExtras, _):
+-                let saveForFutureUseCheckboxState: IntentConfirmParams.SaveForFutureUseCheckboxState = .hidden // we don't show a save-to-merchant checkbox in Link VC
+-                let allowRedisplay = paymentDetails.computeAllowRedisplay(
+-                    elementsSession: elementsSession,
+-                    isSettingUp: isSettingUp
+-                )
+-
+-                if elementsSession.linkPassthroughModeEnabled {
+-                    linkAccount.sharePaymentDetails(
+-                        id: paymentDetails.stripeID,
+-                        cvc: paymentDetails.cvc,
+-                        allowRedisplay: allowRedisplay,
+-                        expectedPaymentMethodType: paymentDetails.expectedPaymentMethodTypeForPassthroughMode(elementsSession),
+-                        billingPhoneNumber: confirmationExtras?.billingPhoneNumber,
+-                        clientAttributionMetadata: clientAttributionMetadata
+-                    ) { result in
+-                        switch result {
+-                        case .success(let paymentDetailsShareResponse):
+-                            confirmWithPaymentMethod(paymentDetailsShareResponse.paymentMethod, linkAccount, saveForFutureUseCheckboxState, clientAttributionMetadata)
+-                        case .failure(let error):
+-                            STPAnalyticsClient.sharedClient.logLinkSharePaymentDetailsFailure(error: error)
+-                            paymentHandlerCompletion(.failed, error as NSError)
+-                        }
+-                    }
+-                } else {
+-                    confirmWithPaymentDetails(linkAccount, paymentDetails, paymentDetails.cvc, confirmationExtras?.billingPhoneNumber, saveForFutureUseCheckboxState, allowRedisplay)
+-                }
+-            }
+-        case let .external(externalPaymentOption, billingDetails):
+-            Task { @MainActor in
+-                // Call confirmHandler so that the merchant completes the payment
+-                let result = await externalPaymentOption.confirm(billingDetails: billingDetails)
+-                completion(result, nil)
++            } else {
++                confirmWithPaymentDetails(linkAccount, paymentDetails, paymentDetails.cvc, confirmationExtras?.billingPhoneNumber, saveForFutureUseCheckboxState, allowRedisplay)
+             }
+         }
+     }
+@@ -955,7 +994,7 @@ extension PaymentSheet {
+         return params
+     }
+ 
+-    private static func shouldLogOutOfLink(
++    static func shouldLogOutOfLink(
+         result: PaymentSheetResult,
+         elementsSession: STPElementsSession
+     ) -> Bool {
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
+index 259d0e7..a7d9291 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
+@@ -59,15 +59,6 @@ public class PaymentSheet {
+             }
+         }
+ 
+-        var checkout: Checkout? {
+-            switch self {
+-            case .checkout(let checkout):
+-                return checkout
+-            case .paymentIntentClientSecret, .setupIntentClientSecret, .deferredIntent:
+-                return nil
+-            }
+-        }
+-
+         var isDeferred: Bool {
+             if case .deferredIntent = self {
+                 return true
+@@ -373,7 +364,6 @@ extension PaymentSheet: PaymentSheetViewControllerDelegate {
+                 paymentOption: paymentOption,
+                 paymentHandler: self.paymentHandler,
+                 integrationShape: .complete,
+-                checkout: self.mode.checkout,
+                 confirmationChallenge: self.confirmationChallenge,
+                 analyticsHelper: self.analyticsHelper
+             ) { result, deferredIntentConfirmationType in
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetAppearance.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetAppearance.swift
+index 35d3594..106848a 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetAppearance.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetAppearance.swift
+@@ -40,7 +40,7 @@ public extension PaymentSheet {
+         /// The border used for inputs and tabs in PaymentSheet
+         /// - Note: The thickness of divider lines between input fields also uses `borderWidth` for consistency, with a minimum thickness of 0.5.
+         /// - Note: The behavior of this property is consistent with the behavior of border width on `CALayer`
+-        public var borderWidth: CGFloat = 1.0
++        public var borderWidth: CGFloat = defaultBorderWidth
+ 
+         /// The border width used for selected buttons and tabs in PaymentSheet
+         /// - Note: If `nil`, defaults to  `borderWidth * 1.5`
+@@ -61,10 +61,10 @@ public extension PaymentSheet {
+ 
+         /// The insets used for all input fields (e.g. textfields, dropdowns) in PaymentSheet.
+         @_spi(AppearanceAPIAdditionsPreview)
+-        public var textFieldInsets: NSDirectionalEdgeInsets = NSDirectionalEdgeInsets(top: 4, leading: 11, bottom: 4, trailing: 11)
++        public var textFieldInsets: NSDirectionalEdgeInsets = defaultTextFieldInsets
+ 
+         /// Describes the padding used for all forms
+-        public var formInsets: NSDirectionalEdgeInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 40, trailing: 20)
++        public var formInsets: NSDirectionalEdgeInsets = defaultFormInsets
+ 
+         /// Controls the vertical spacing between distinct sections in the form (e.g., between payment fields and billing address).
+         /// - Note: This spacing is applied between different conceptual sections of the form, not between individual input fields within a section.
+@@ -291,7 +291,7 @@ public extension PaymentSheet {
+ 
+             /// The border width of the primary button
+             /// - Note: The behavior of this property is consistent with the behavior of border width on `CALayer`
+-            public var borderWidth: CGFloat = 1.0
++            public var borderWidth: CGFloat = Appearance.defaultBorderWidth
+ 
+             /// The font used for the text of the primary button
+             /// - Note: If `nil`, `appearance.font.base` will be used as the primary button font
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+index 62f2dbb..1ada222 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+@@ -281,7 +281,7 @@ extension PaymentSheet {
+         }
+ 
+         /// The desired, valid (ie passed client-side checks) payment option from the underlying payment options VC.
+-        private var internalPaymentOption: PaymentOption? {
++        var internalPaymentOption: PaymentOption? {
+             guard viewController.error == nil else {
+                 return nil
+             }
+@@ -339,7 +339,7 @@ extension PaymentSheet {
+         private var isPresented = false
+         private var pendingPresentTask: Task<Void, Never>?
+         private(set) var didPresentAndContinue: Bool = false
+-        private var confirmationChallenge: ConfirmationChallenge?
++        var confirmationChallenge: ConfirmationChallenge?
+         let analyticsHelper: PaymentSheetAnalyticsHelper
+         private var linkAccountObserver: LinkAccountContextObserver?
+ 
+@@ -572,6 +572,7 @@ extension PaymentSheet {
+                 let bottomSheetVC = Self.makeBottomSheetViewController(
+                     self.viewController,
+                     configuration: self.configuration,
++                    // TODO(MOBILESDK-864): didCancelNative3DS2 is not used in FlowController
+                     didCancelNative3DS2: { [weak self] in
+                         self?.paymentHandler.cancel3DS2ChallengeFlow()
+                     }
+@@ -609,6 +610,7 @@ extension PaymentSheet {
+             let bottomSheetVC = Self.makeBottomSheetViewController(
+                 loadingVC,
+                 configuration: configuration,
++                // TODO(MOBILESDK-864): didCancelNative3DS2 is not used in FlowController
+                 didCancelNative3DS2: { [weak self] in
+                     self?.paymentHandler.cancel3DS2ChallengeFlow()
+                 }
+@@ -650,7 +652,7 @@ extension PaymentSheet {
+             selectedPaymentDetailsID: String? = nil,
+             returnToPaymentSheet: @escaping () -> Void
+         ) {
+-            let completionCallback: (PaymentSheet.LinkConfirmOption?, Bool) -> Void = { [weak self] confirmOption, shouldReturnToPaymentSheet in
++            let completionCallback: (PaymentSheet.LinkConfirmOption?, Bool, Error?) -> Void = { [weak self] confirmOption, shouldReturnToPaymentSheet, _ in
+                 guard let self else { return }
+ 
+                 if let confirmOption {
+@@ -680,7 +682,6 @@ extension PaymentSheet {
+                 intent: intent,
+                 elementsSession: elementsSession,
+                 analyticsHelper: analyticsHelper,
+-                checkout: checkout,
+                 callback: completionCallback
+             )
+         }
+@@ -749,7 +750,6 @@ extension PaymentSheet {
+                         paymentOption: paymentOption,
+                         paymentHandler: self.paymentHandler,
+                         integrationShape: .flowController,
+-                        checkout: self.checkout,
+                         confirmationChallenge: self.confirmationChallenge,
+                         analyticsHelper: self.analyticsHelper
+                     ) { result, deferredIntentConfirmationType in
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index 36a5bfb..e77a1e9 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.5.0'
++  s.version                        = '26.6.0'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift
+index e687fa8..edab25b 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
+@@ -96,6 +96,10 @@ import Foundation
+     case wero
+     /// A Pay by Bank payment method
+     case payByBank
++    /// An MB WAY payment method
++    case mbWay
++    /// A Bizum payment method
++    case bizum
+     /// An unknown type.
+     case unknown
+ 
+@@ -190,6 +194,10 @@ import Foundation
+             return "Wero"
+         case .payByBank:
+             return "Pay by Bank"
++        case .mbWay:
++            return "MB WAY"
++        case .bizum:
++            return "Bizum"
+         case .cardPresent,
+             .unknown:
+             return STPLocalizedString("Unknown", "Default missing source type label")
+@@ -287,6 +295,10 @@ import Foundation
+             return "wero"
+         case .payByBank:
+             return "pay_by_bank"
++        case .mbWay:
++            return "mb_way"
++        case .bizum:
++            return "bizum"
+         }
+     }
+ 
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift
+index 4d97d26..6435d51 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift	
+@@ -1258,7 +1258,7 @@ extension STPPaymentMethodParams {
+             wero = STPPaymentMethodWeroParams()
+         case .payByBank:
+             payByBank = STPPaymentMethodPayByBankParams()
+-        case .cardPresent, .paynow, .zip, .konbini, .promptPay:
++        case .cardPresent, .paynow, .zip, .konbini, .promptPay, .mbWay, .bizum:
+             // These payment methods don't have any params
+             break
+         case .unknown:
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift b/StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift
+index b5d2353..cc87c8d 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift	
+@@ -50,6 +50,8 @@ import Foundation
+     case unknown
+ }
+ 
++@_spi(STP) extension STPFPXBankBrand: CaseIterable {}
++
+ /// Convenience methods for using FPX bank brands.
+ public class STPFPXBank: NSObject {
+     /// Returns a string representation for the provided bank brand;
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift b/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift
+index 98cfa65..6cdbe03 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift	
+@@ -70,6 +70,12 @@ import Foundation
+     /// The action type is Multibanco payment. We provide `STPPaymentHandler` to display the Multibanco voucher.
+     case multibancoDisplayDetails
+ 
++    /// The action type for MB WAY. The customer must authorize the payment in the MB WAY app.
++    case mbWayAwaitAuthorization
++
++    /// The customer must authorize the payment out of band, such as in their mobile banking app.
++    case awaitAuthorization
++
+     /// Parse the string and return the correct `STPIntentActionType`,
+     /// or `STPIntentActionTypeUnknown` if it's unrecognized by this version of the SDK.
+     /// - Parameter string: the NSString with the `next_action.type`
+@@ -105,6 +111,10 @@ import Foundation
+             self = .swishHandleRedirect
+         case "multibanco_display_details":
+             self = .multibancoDisplayDetails
++        case "mb_way_await_authorization":
++            self = .mbWayAwaitAuthorization
++        case "await_authorization":
++            self = .awaitAuthorization
+         default:
+             self = .unknown
+         }
+@@ -143,6 +153,10 @@ import Foundation
+             return "swish_handle_redirect_or_display_qr_code"
+         case .multibancoDisplayDetails:
+             return "multibanco_display_details"
++        case .mbWayAwaitAuthorization:
++            return "mb_way_await_authorization"
++        case .awaitAuthorization:
++            return "await_authorization"
+         case .unknown:
+             break
+         }
+@@ -241,6 +255,10 @@ public class STPIntentAction: NSObject {
+             }
+         case .BLIKAuthorize:
+             break  // no additional details
++        case .mbWayAwaitAuthorization:
++            break  // no additional details
++        case .awaitAuthorization:
++            break  // no additional details
+         case .verifyWithMicrodeposits:
+             if let verifyWithMicrodeposits = verifyWithMicrodeposits {
+                 props.append("verifyWithMicrodeposits = \(verifyWithMicrodeposits)")
+@@ -389,6 +407,10 @@ extension STPIntentAction: STPAPIResponseDecodable {
+             }
+         case .BLIKAuthorize:
+             break  // no additional details
++        case .mbWayAwaitAuthorization:
++            break  // no additional details
++        case .awaitAuthorization:
++            break  // no additional details
+         case .verifyWithMicrodeposits:
+             verifyWithMicrodeposits = STPIntentActionVerifyWithMicrodeposits.decodedObject(
+                 fromAPIResponse: dict["verify_with_microdeposits"] as? [AnyHashable: Any]
+diff --git a/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift b/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
+index 8054f7a..a58d87c 100644
+--- a/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
++++ b/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
+@@ -864,7 +864,9 @@ public class STPPaymentHandler: NSObject {
+             .multibanco,
+             .payPay,
+             .wero,
+-            .payByBank:
++            .payByBank,
++            .mbWay,
++            .bizum:
+             return false
+ 
+         case .unknown:
+@@ -1403,6 +1405,28 @@ public class STPPaymentHandler: NSObject {
+                 // The merchant integration should spin and poll their backend or Stripe to determine success
+                 currentAction.complete(with: .succeeded, error: nil)
+             }
++        case .mbWayAwaitAuthorization:
++            guard let presentingVC = currentAction.authenticationContext as? PaymentSheetAuthenticationContext else {
++                assertionFailure("MB WAY is not supported outside of PaymentSheet.")
++                currentAction.complete(with: .failed, error: _error(for: .unsupportedAuthenticationErrorCode, loggingSafeErrorMessage: "MB WAY is not supported outside of PaymentSheet."))
++                return
++            }
++            guard let currentAction = currentAction as? STPPaymentHandlerPaymentIntentActionParams else {
++                currentAction.complete(with: .failed, error: _error(for: .unexpectedErrorCode, loggingSafeErrorMessage: "Handling mbWayAwaitAuthorization next action with SetupIntent is not supported"))
++                return
++            }
++            presentingVC.presentPollingVCForAction(action: currentAction, type: .mbWay, safariViewController: nil)
++        case .awaitAuthorization:
++            guard let presentingVC = currentAction.authenticationContext as? PaymentSheetAuthenticationContext else {
++                assertionFailure("Bizum is not supported outside of PaymentSheet.")
++                currentAction.complete(with: .failed, error: _error(for: .unsupportedAuthenticationErrorCode, loggingSafeErrorMessage: "Bizum is not supported outside of PaymentSheet."))
++                return
++            }
++            guard let currentAction = currentAction as? STPPaymentHandlerPaymentIntentActionParams else {
++                currentAction.complete(with: .failed, error: _error(for: .unexpectedErrorCode, loggingSafeErrorMessage: "Handling awaitAuthorization next action with SetupIntent is not supported"))
++                return
++            }
++            presentingVC.presentPollingVCForAction(action: currentAction, type: .bizum, safariViewController: nil)
+         case .verifyWithMicrodeposits:
+             // The customer must authorize after the microdeposits appear in their bank account
+             // which may take 1-2 business days
+@@ -2076,6 +2100,8 @@ public class STPPaymentHandler: NSObject {
+                 .konbiniDisplayDetails,
+                 .verifyWithMicrodeposits,
+                 .BLIKAuthorize,
++                .mbWayAwaitAuthorization,
++                .awaitAuthorization,
+                 .multibancoDisplayDetails:
+                 return true
+             }
+@@ -2102,7 +2128,8 @@ public class STPPaymentHandler: NSObject {
+         case .OXXODisplayDetails, .alipayHandleRedirect, .unknown, .BLIKAuthorize,
+             .weChatPayRedirectToApp, .boletoDisplayDetails, .verifyWithMicrodeposits,
+             .cashAppRedirectToApp, .konbiniDisplayDetails, .payNowDisplayQrCode,
+-            .promptpayDisplayQrCode, .swishHandleRedirect, .multibancoDisplayDetails:
++            .promptpayDisplayQrCode, .swishHandleRedirect, .multibancoDisplayDetails,
++            .mbWayAwaitAuthorization, .awaitAuthorization:
+             break
+         }
+ 
+diff --git a/VERSION b/VERSION
+index 1f17334..c1a9318 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.5.0
+\ No newline at end of file
++26.6.0
+\ No newline at end of file

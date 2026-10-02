@@ -1,0 +1,592 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8cc5e7c..38bc378 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,16 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.11.0 2026-09-14
++### General
++* [Added] Added support for Welsh.
++
++### Payments
++* [Added] Added API bindings for Scalapay.
++
++### PaymentSheet
++* [Added] Added support for Scalapay.
++
+ ## 26.10.0 2026-09-08
+ ### General
+ * [Added] Added support for Arabic (Saudi Arabia).
+@@ -11,6 +21,7 @@ PATCH
+ * [Added] Added Canada SIN, Colombia NIT, and Philippines TIN values to `IdType`, and added `idType` to the `KycInfo` initializer.
+ 
+ ### PaymentSheet
++* [Added] Added support for Kakao Pay.
+ * [Added] Added support for Naver Pay.
+ * [Added] Added support for Korean cards.
+ * [Added] Added support for PAYCO.
+diff --git a/README.md b/README.md
+index 163a6e3..57953a0 100644
+--- a/README.md
++++ b/README.md
+@@ -48,7 +48,7 @@ Table of contents
+ 
+ **App Clips**: The `StripeApplePay` module provides a [lightweight SDK for offering Apple Pay in an App Clip](https://stripe.com/docs/apple-pay#app-clips).
+ 
+-**Localized**: We support the following localizations: Arabic (Saudi Arabia), Bulgarian, Catalan, Chinese (Hong Kong), Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English (US), English (United Kingdom), Estonian, Filipino, Finnish, French, French (Canada), German, Greek, Hungarian, Indonesian, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Maltese, Norwegian Bokmål, Norwegian Nynorsk (Norway), Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Slovenian, Spanish, Spanish (Latin America), Swedish, Turkish, Thai and Vietnamese.
++**Localized**: We support the following localizations: Arabic (Saudi Arabia), Bulgarian, Catalan, Chinese (Hong Kong), Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English (US), English (United Kingdom), Estonian, Filipino, Finnish, French, French (Canada), German, Greek, Hungarian, Indonesian, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Maltese, Norwegian Bokmål, Norwegian Nynorsk (Norway), Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Slovenian, Spanish, Spanish (Latin America), Swedish, Turkish, Thai, Vietnamese and Welsh.
+ 
+ **Identity**: Learn about our [Stripe Identity iOS SDK](StripeIdentity/README.md) to verify the identity of your users.
+ 
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index 4a5567b..a224d11 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.10.0'
++  s.version                        = '26.11.0'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index d87d9c1..59247d1 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.10.0'
++  s.version                        = '26.11.0'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index 0b9170a..8a95a62 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.10.0'
++  s.version                        = '26.11.0'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index 580e3d3..2e41d65 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.10.0'
++    s.version                        = '26.11.0'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index d718f5d..e238dfb 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.10.0'
++  s.version                        = '26.11.0'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift b/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
+index 6ba30c1..2cf9947 100644
+--- a/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
++++ b/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
+@@ -25,6 +25,15 @@ final public class IdentityVerificationSheet {
+ 
+     /// Configuration for an IdentityVerificationSheet
+     public struct Configuration {
++        /// The appearance of primary action buttons throughout the native verification flow.
++        @_spi(STP) public enum PrimaryButtonStyle {
++            /// Uses the app's tint color.
++            case `default`
++            /// Uses the supplied background and text colors.
++            /// Provide dynamic colors to support different colors in light and dark mode.
++            case custom(backgroundColor: UIColor, textColor: UIColor)
++        }
++
+         /// Configuration for the biometric consent screen's header.
+         @_spi(STP) public struct BiometricConsentConfiguration {
+             /// Whether to hide the branding header above the consent title.
+@@ -47,6 +56,10 @@ final public class IdentityVerificationSheet {
+         /// dynamic UIImage to support different images in light vs dark mode.
+         public var brandLogo: UIImage
+ 
++        /// The style of primary action buttons throughout the native verification flow.
++        /// Disabled buttons retain the default disabled appearance. Secondary buttons are unaffected.
++        @_spi(STP) public var primaryButtonStyle: PrimaryButtonStyle = .default
++
+         /// Configuration for the biometric consent screen's header.
+         ///
+         /// When `nil`, the biometric consent screen uses the default header.
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index d36f8e3..09ead5f 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.10.0'
++  s.version                        = '26.11.0'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index 3030095..ba6aa96 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.10.0'
++  s.version                        = '26.11.0'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+index 12aa1d1..cafa9d2 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+@@ -16,6 +16,7 @@ extension CheckoutController {
+         case applePay(ApplePayConfirmationParameters)
+         case link(LinkConfirmationParameters)
+         case paymentMethod(PaymentMethodConfirmationParameters, preconfirmIntegrationShape: PaymentSheet.IntegrationShape)
++        case withoutPaymentMethod(STPAuthenticationContext)
+     }
+ 
+     /// The parameters needed to confirm a Checkout Session with Apple Pay.
+@@ -29,7 +30,6 @@ extension CheckoutController {
+         let returnURL: String
+         let merchantDisplayName: String
+         let shippingAddressRequired: Bool
+-        let billingDetailsCollectionConfiguration: PaymentSheet.BillingDetailsCollectionConfiguration
+         let defaultBillingDetails: Configuration.Defaults.BillingDetails?
+         let presentationWindow: UIWindow?
+         // TODO: This should probably live with the other methods that delegate to CheckoutController
+@@ -91,9 +91,25 @@ extension CheckoutController {
+     // MARK: - Flow Construction
+ 
+     func makeConfirmationFlow(
+-        for paymentElement: PaymentElement,
++        for paymentElement: PaymentElement?,
+         presentingViewController: UIViewController
+     ) -> CheckoutConfirmationFlow? {
++        let authenticationContext = AuthenticationContext(
++            presentingViewController: presentingViewController,
++            appearance: configuration.paymentElement?.appearance ?? .default
++        )
++        if session.paymentOption == nil {
++            return .withoutPaymentMethod(authenticationContext)
++        }
++
++        guard let paymentElement else {
++            logUnexpectedCheckoutElementsErrorAndAssert(
++                "Checkout Session has a payment option without a PaymentElement.",
++                apiClient: apiClient
++            )
++            return nil
++        }
++
+         let paymentOption: PaymentOption
+         let configuration: PaymentElementConfiguration
+         let integrationShape: PaymentSheet.IntegrationShape
+@@ -101,6 +117,10 @@ extension CheckoutController {
+ 
+         if paymentElement.paymentOptionSourceOfTruthIsFlowController {
+             guard let resolvedPaymentOption = paymentElement.paymentSheetFlowController.internalPaymentOption else {
++                logUnexpectedCheckoutElementsErrorAndAssert(
++                    "Checkout Session payment option and FlowController payment option are out of sync.",
++                    apiClient: apiClient
++                )
+                 return nil
+             }
+             paymentOption = resolvedPaymentOption
+@@ -109,6 +129,10 @@ extension CheckoutController {
+             confirmationChallenge = paymentElement.paymentSheetFlowController.confirmationChallenge
+         } else {
+             guard let resolvedPaymentOption = paymentElement.embeddedPaymentElement._paymentOption else {
++                logUnexpectedCheckoutElementsErrorAndAssert(
++                    "Checkout Session payment option and EmbeddedPaymentElement payment option are out of sync.",
++                    apiClient: apiClient
++                )
+                 return nil
+             }
+             paymentOption = resolvedPaymentOption
+@@ -117,11 +141,6 @@ extension CheckoutController {
+             confirmationChallenge = paymentElement.embeddedPaymentElement.confirmationChallenge
+         }
+ 
+-        let authenticationContext = AuthenticationContext(
+-            presentingViewController: presentingViewController,
+-            appearance: configuration.appearance
+-        )
+-
+         // Normalize Payment Element state here, then build the corresponding confirmation flow.
+         switch paymentOption {
+         case .applePay:
+@@ -135,7 +154,6 @@ extension CheckoutController {
+                 returnURL: self.configuration.returnURL,
+                 merchantDisplayName: effectiveMerchantDisplayName,
+                 shippingAddressRequired: false,
+-                billingDetailsCollectionConfiguration: configuration.billingDetailsCollectionConfiguration,
+                 defaultBillingDetails: self.configuration.defaults.billingDetails,
+                 presentationWindow: presentingViewController.view.window,
+                 confirmationHandler: { [apiClient, paymentHandler] requestParameters in
+@@ -213,6 +231,26 @@ extension CheckoutController {
+                 // Switch based on the confirmation flow
+                 let result: InternalConfirmResult
+                 switch flow {
++                case .withoutPaymentMethod(let authenticationContext):
++                    let requestParameters = CheckoutSessionConfirmationRequestParameters(
++                        sessionId: self.session.id,
++                        paymentMethodId: nil,
++                        expectedAmount: self.session.amount,
++                        expectedPaymentMethodType: nil,
++                        returnURL: self.configuration.returnURL,
++                        clientAttributionMetadata: STPClientAttributionMetadata.makeClientAttributionMetadata(
++                            intent: .checkout(self.session),
++                            elementsSession: self.session.elementsSession
++                        ),
++                        // TODO: Remove this once no-PM confirmation can use the Checkout Session's fixed email without `customer_data`.
++                        customerData: self.session.email.map { ["email": $0] }
++                    )
++                    result = await Self.confirmCheckoutSession(
++                        with: requestParameters,
++                        apiClient: self.apiClient,
++                        authenticationContext: authenticationContext,
++                        paymentHandler: self.paymentHandler
++                    )
+                 case .applePay(let parameters):
+                     result = await self.confirmApplePay(checkoutSession: self.session, parameters: parameters)
+                 case .link(let parameters):
+@@ -432,7 +470,7 @@ extension CheckoutController {
+         }
+ 
+         // 2. Handle any next action required by the Intent.
+-        let clientCompletedIntent: PaymentOrSetupIntent
++        let clientCompletedIntent: PaymentOrSetupIntent?
+         if let paymentIntent = response.paymentIntent {
+             let result: (STPPaymentHandlerActionStatus, STPPaymentIntent?, Error?) = await withCheckedContinuation { continuation in
+                 paymentHandler.handleNextAction(
+@@ -486,17 +524,19 @@ extension CheckoutController {
+                 return .failed(error, sessionResponse: response)
+             }
+         } else {
+-            let error = CheckoutError.unknown(debugDescription: "Checkout Session confirm response contained neither a PaymentIntent nor a SetupIntent.")
+-            return .failed(error, sessionResponse: response)
++            clientCompletedIntent = nil
+         }
+ 
+         // 3. Poll if the Checkout Session is still in progress.
++        var didPollToCompletion = false
+         switch response.status {
+         case .open:
+             let pollOutcome = await poller.poll(checkoutSessionId: response.sessionId)
+             switch pollOutcome {
+-            case .completed,
+-                 .timedOut:
++            case .completed:
++                didPollToCompletion = true
++                // Continue to step 4.
++            case .timedOut:
+                 // Continue to step 4.
+                 break
+             case .requiresPaymentMethod,
+@@ -543,6 +583,10 @@ extension CheckoutController {
+             // PaymentHandler already verified that the Intent is client-complete. Only update
+             // Session fields we can derive from the newer Intent; otherwise preserve `/confirm`.
+             switch clientCompletedIntent {
++            case nil:
++                if didPollToCompletion {
++                    responseFields["status"] = "complete"
++                }
+             case .paymentIntent(let paymentIntent):
+                 responseFields["payment_intent"] = paymentIntent.allResponseFields
+                 switch paymentIntent.status {
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
+index 67c4eb4..6f965e5 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
+@@ -514,8 +514,8 @@ extension PaymentSheet {
+             case automatic
+             /// Link will never be displayed.
+             case never
+-            /// Link remains enabled (e.g. for automatic Link verification, Instant Bank Payments, Link Card Brand, and inline signup)
+-            /// but its button/row will not be shown in the payment element UI.
++            /// Link remains enabled (e.g. for automatic Link verification, Instant Bank Payments, Link Card Brand, and inline signup).
++            /// Its button/row is shown when an existing Link user is detected and hidden otherwise.
+             case walletButtonHidden
+         }
+ 
+@@ -526,13 +526,6 @@ extension PaymentSheet {
+             }
+         }
+ 
+-        var shouldShowButton: Bool {
+-            switch display {
+-            case .automatic: true
+-            case .walletButtonHidden, .never: false
+-            }
+-        }
+-
+         /// Initializes a LinkConfiguration
+         public init(
+             display: Display = .automatic
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index d815cf6..bdbb4e7 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.10.0'
++  s.version                        = '26.11.0'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift
+index b2c95b7..1e6c26e 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift	
+@@ -313,7 +313,7 @@ extension STPPaymentIntentConfirmParams: NSCopying {
+     /// - Returns: STPMandateDataParams with inferred values if mandate is required for the payment method type, nil otherwise
+     @_spi(STP) public static func mandateDataIfRequired(for paymentMethodType: STPPaymentMethodType) -> STPMandateDataParams? {
+         switch paymentMethodType {
+-        case .AUBECSDebit, .bacsDebit, .bancontact, .iDEAL, .SEPADebit, .EPS, .link, .USBankAccount, .kakaoPay:
++        case .AUBECSDebit, .bacsDebit, .bancontact, .iDEAL, .SEPADebit, .EPS, .link, .USBankAccount:
+             return .makeWithInferredValues()
+         default:
+             return nil
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift
+index 2e65242..dd1701f 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift	
+@@ -112,6 +112,8 @@ public class STPPaymentMethod: NSObject, STPAPIResponseDecodable {
+     @objc private(set) public var payco: STPPaymentMethodPayco?
+     /// If this is a SeQura PaymentMethod (i.e. `self.type == STPPaymentMethodTypeSequra`), this contains additional details.
+     @objc private(set) public var sequra: STPPaymentMethodSequra?
++    /// If this is a Scalapay PaymentMethod (i.e. `self.type == STPPaymentMethodTypeScalapay`), this contains additional details.
++    @objc private(set) public var scalapay: STPPaymentMethodScalapay?
+ 
+     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow
+     @objc private(set) public var allowRedisplay: STPPaymentMethodAllowRedisplay
+@@ -192,6 +194,7 @@ public class STPPaymentMethod: NSObject, STPAPIResponseDecodable {
+             "naverPay = \(String(describing: naverPay))",
+             "payco = \(String(describing: payco))",
+             "sequra = \(String(describing: sequra))",
++            "scalapay = \(String(describing: scalapay))",
+             "liveMode = \(liveMode ? "YES" : "NO")",
+             "allowRedisplay = \(allResponseFields["allow_redisplay"] as? String ?? "")",
+             "type = \(allResponseFields["type"] as? String ?? "")",
+@@ -411,6 +414,9 @@ public class STPPaymentMethod: NSObject, STPAPIResponseDecodable {
+         paymentMethod.sequra = STPPaymentMethodSequra.decodedObject(
+             fromAPIResponse: dict.stp_dictionary(forKey: "sequra")
+         )
++        paymentMethod.scalapay = STPPaymentMethodScalapay.decodedObject(
++            fromAPIResponse: dict.stp_dictionary(forKey: "scalapay")
++        )
+         return paymentMethod
+     }
+ }
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift
+index 7bd1cf6..91fb4ce 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
+@@ -112,6 +112,8 @@ import Foundation
+     case payco
+     /// A SeQura payment method
+     case sequra
++    /// A Scalapay payment method
++    case scalapay
+     /// An unknown type.
+     case unknown
+ 
+@@ -222,6 +224,8 @@ import Foundation
+             return "PAYCO"
+         case .sequra:
+             return "SeQura"
++        case .scalapay:
++            return "Scalapay"
+         case .cardPresent,
+             .unknown:
+             return STPLocalizedString("Unknown", "Default missing source type label")
+@@ -335,6 +339,8 @@ import Foundation
+             return "payco"
+         case .sequra:
+             return "sequra"
++        case .scalapay:
++            return "scalapay"
+         }
+     }
+ 
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift
+index cfd4931..157cf74 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift	
+@@ -125,6 +125,8 @@ public class STPPaymentMethodParams: NSObject, STPFormEncodable {
+     @objc public var payco: STPPaymentMethodPaycoParams?
+     /// If this is a SeQura PaymentMethod, this contains additional details.
+     @objc public var sequra: STPPaymentMethodSequraParams?
++    /// If this is a Scalapay PaymentMethod, this contains additional details.
++    @objc public var scalapay: STPPaymentMethodScalapayParams?
+ 
+     /// Radar options that may contain HCaptcha token
+     @objc @_spi(STP) public var radarOptions: STPRadarOptions?
+@@ -886,6 +888,24 @@ public class STPPaymentMethodParams: NSObject, STPFormEncodable {
+         self.metadata = metadata
+     }
+ 
++    /// Creates params for a Scalapay PaymentMethod.
++    /// - Parameters:
++    ///   - scalapay:       An object containing additional Scalapay details.
++    ///   - billingDetails: Billing information associated with the PaymentMethod.
++    ///   - metadata:       Additional information to attach to the PaymentMethod.
++    @objc
++    public convenience init(
++        scalapay: STPPaymentMethodScalapayParams,
++        billingDetails: STPPaymentMethodBillingDetails?,
++        metadata: [String: String]?
++    ) {
++        self.init()
++        self.type = .scalapay
++        self.scalapay = scalapay
++        self.billingDetails = billingDetails
++        self.metadata = metadata
++    }
++
+     // MARK: - STPFormEncodable
+     @objc
+     public class func rootObjectName() -> String? {
+@@ -937,6 +957,7 @@ public class STPPaymentMethodParams: NSObject, STPFormEncodable {
+             NSStringFromSelector(#selector(getter: naverPay)): "naver_pay",
+             NSStringFromSelector(#selector(getter: payco)): "payco",
+             NSStringFromSelector(#selector(getter: sequra)): "sequra",
++            NSStringFromSelector(#selector(getter: scalapay)): "scalapay",
+             NSStringFromSelector(#selector(getter: link)): "link",
+             NSStringFromSelector(#selector(getter: radarOptions)): "radar_options",
+             NSStringFromSelector(#selector(getter: metadata)): "metadata",
+@@ -1396,6 +1417,8 @@ extension STPPaymentMethodParams {
+             payco = STPPaymentMethodPaycoParams()
+         case .sequra:
+             sequra = STPPaymentMethodSequraParams()
++        case .scalapay:
++            scalapay = STPPaymentMethodScalapayParams()
+         case .cardPresent, .paynow, .zip, .konbini, .promptPay, .mbWay, .bizum:
+             // These payment methods don't have any params
+             break
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapay.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapay.swift
+new file mode 100644
+index 0000000..9cdb931
+--- /dev/null
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapay.swift	
+@@ -0,0 +1,38 @@
++//
++//  STPPaymentMethodScalapay.swift
++//  StripePayments
++//
++//  Created by Nick Porter on 9/8/26.
++//  Copyright © 2026 Stripe, Inc. All rights reserved.
++//
++
++import Foundation
++@_spi(STP) import StripeCore
++
++/// A Scalapay Payment Method.
++/// - seealso: https://docs.stripe.com/payments/scalapay/accept-a-payment?payment-ui=direct-api
++public class STPPaymentMethodScalapay: NSObject, STPAPIResponseDecodable {
++    /// :nodoc:
++    @objc private(set) public var allResponseFields: [AnyHashable: Any] = [:]
++
++    /// :nodoc:
++    @objc public override var description: String {
++        let props = [
++            String(format: "%@: %p", NSStringFromClass(STPPaymentMethodScalapay.self), self)
++        ]
++        return "<\(props.joined(separator: "; "))>"
++    }
++
++    /// :nodoc:
++    @objc public class func decodedObject(fromAPIResponse response: [AnyHashable: Any]?) -> Self? {
++        guard let response else {
++            return nil
++        }
++        return self.init(dictionary: response)
++    }
++
++    required init(dictionary: [AnyHashable: Any]) {
++        super.init()
++        allResponseFields = dictionary
++    }
++}
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapayParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapayParams.swift
+new file mode 100644
+index 0000000..372b74c
+--- /dev/null
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapayParams.swift	
+@@ -0,0 +1,23 @@
++//
++//  STPPaymentMethodScalapayParams.swift
++//  StripePayments
++//
++//  Created by Nick Porter on 9/8/26.
++//  Copyright © 2026 Stripe, Inc. All rights reserved.
++//
++
++import Foundation
++@_spi(STP) import StripeCore
++
++/// An object representing parameters used to create a Scalapay Payment Method.
++public class STPPaymentMethodScalapayParams: NSObject, STPFormEncodable {
++    @objc public var additionalAPIParameters: [AnyHashable: Any] = [:]
++
++    @objc public class func rootObjectName() -> String? {
++        return "scalapay"
++    }
++
++    @objc public class func propertyNamesToFormFieldNamesMapping() -> [String: String] {
++        return [:]
++    }
++}
+diff --git a/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift b/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
+index 07b02f6..0427c7c 100644
+--- a/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
++++ b/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift
+@@ -872,7 +872,8 @@ public class STPPaymentHandler: NSObject {
+             .krCard,
+             .naverPay,
+             .payco,
+-            .sequra:
++            .sequra,
++            .scalapay:
+             return false
+ 
+         case .unknown:
+diff --git a/VERSION b/VERSION
+index cdf9da5..2398bc0 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.10.0
+\ No newline at end of file
++26.11.0
+\ No newline at end of file

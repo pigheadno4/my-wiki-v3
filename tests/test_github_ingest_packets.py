@@ -21,6 +21,7 @@ from github_ingest_packets import (  # noqa: E402
     RefPacketInput,
     build_ingest_packet,
     build_ref_ingest_packet,
+    load_packet_required_reading,
     publish_queued_packet,
     publish_review_packet,
 )
@@ -30,6 +31,50 @@ from tests.github_test_support import write_canonical_json  # noqa: E402
 
 
 class GitHubIngestPacketTests(unittest.TestCase):
+    def test_full_reading_expands_unchanged_files_without_rewriting_packet(self):
+        files = {"package.json": self.manifest_content("10.0.0"),
+                 "src/index.ts": "export const value = 1;\n",
+                 "docs/guide.md": "Guide\n"}
+        packet = self.build(files, {**files, "package.json": self.manifest_content("10.0.1")},
+                            (UpstreamChange("modified", "package.json", "package.json"),))
+        path = self.root / "packet.json"
+        write_canonical_json(path, packet.document)
+        before = path.read_bytes()
+        delta = load_packet_required_reading(self.root, "packet.json")
+        full = load_packet_required_reading(self.root, "packet.json", mode="full", config=self.config)
+        current = str(PurePosixPath(packet.document["snapshot_manifest"]).parent / "files")
+        self.assertNotIn(current + "/src/index.ts", delta)
+        self.assertIn(current + "/src/index.ts", full)
+        self.assertIn(current + "/docs/guide.md", full)
+        self.assertTrue(set(delta).issubset(full))
+        self.assertEqual(before, path.read_bytes())
+        from collect_github_repos import ingest_required_reading
+        from github_work_items import WorkItem
+
+        item = WorkItem(
+            work_item_id=packet.document["work_item_id"], repo_id=self.config.id,
+            sha=self.current_sha, collection_date="2026-07-28", package_changes=(),
+            snapshot_manifest=packet.document["snapshot_manifest"],
+            recommended_mode="delta", approved_mode="full", ingest_packet="packet.json",
+        )
+        with mock.patch("collect_github_repos.load_registry", return_value=(self.config,)):
+            self.assertEqual(full, ingest_required_reading(self.root, item))
+            self.assertEqual(full, ingest_required_reading(
+                self.root, replace(item, approved_mode=None), mode="full"))
+        self.assertEqual(delta, ingest_required_reading(self.root, item, mode="delta"))
+        narrowed = load_packet_required_reading(
+            self.root, "packet.json", mode="full",
+            config=replace(self.config, ingest_required_paths=("src",)))
+        self.assertIn(current + "/src/index.ts", narrowed)
+        self.assertNotIn(current + "/docs/guide.md", narrowed)
+        with self.assertRaisesRegex(PacketBuildError, "matches no retained"):
+            load_packet_required_reading(
+                self.root, "packet.json", mode="full",
+                config=replace(self.config, ingest_required_paths=("missing",)))
+        (self.root / current / "src/index.ts").write_text("tampered\n")
+        with self.assertRaisesRegex(PacketBuildError, "hash mismatch"):
+            load_packet_required_reading(self.root, "packet.json", mode="full", config=self.config)
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
@@ -2381,6 +2426,77 @@ class GitHubIngestPacketTests(unittest.TestCase):
         row = packet.document["packages"][0]["upstream_changes"][0]
         self.assertEqual("intentional-policy-exclusion", row["disposition"])
         self.assertEqual("excluded-category:fixtures", row["reason"])
+
+    def test_prior_only_modified_source_cannot_satisfy_current_required_evidence(self):
+        prior = {"package.json": self.manifest_content("10.0.0"),
+                 "src/index.ts": "old implementation\n"}
+        current = {"package.json": self.manifest_content("10.0.1")}
+        with self.assertRaisesRegex(PacketBuildError, "blocking evidence gap"):
+            self.build(prior, current,
+                       (UpstreamChange("modified", "src/index.ts", "src/index.ts"),))
+
+    def test_scope_loss_is_not_upstream_deletion_or_current_evidence(self):
+        prior = {"package.json": self.manifest_content("10.0.0"),
+                 "src/index.ts": "stable\n",
+                 "legacy/changed.ts": "old\n",
+                 "legacy/unlisted.ts": "old\n",
+                 "legacy/deleted.ts": "old\n"}
+        current = {"package.json": self.manifest_content("10.0.1"),
+                   "src/index.ts": "stable\n"}
+        packet = self.build(prior, current, (
+            UpstreamChange("modified", "legacy/changed.ts", "legacy/changed.ts"),
+            UpstreamChange("deleted", "legacy/deleted.ts", ""),
+        ))
+        package = packet.document["packages"][0]
+        upstream = {row["old_path"]: row for row in package["upstream_changes"]}
+        self.assertEqual("intentional-policy-exclusion", upstream["legacy/changed.ts"]["disposition"])
+        self.assertEqual("prior-only-outside-current-policy", upstream["legacy/changed.ts"]["reason"])
+        self.assertEqual("retained-evidence", upstream["legacy/deleted.ts"]["disposition"])
+        rows = {row["path"]: row for row in package["retained_evidence"]["files"]}
+        self.assertEqual("upstream-deletion", rows["legacy/deleted.ts"]["removal_reason"])
+        for path in ("legacy/changed.ts", "legacy/unlisted.ts"):
+            self.assertEqual("not-retained-in-current-snapshot", rows[path]["removal_reason"])
+        self.assertEqual("modified", rows["legacy/changed.ts"]["upstream_status"])
+        self.assertEqual("not-listed", rows["legacy/unlisted.ts"]["upstream_status"])
+        self.assertIn(b"prior-only-outside-current-policy", packet.markdown)
+        self.assertIn(b"not-retained-in-current-snapshot", packet.markdown)
+
+    def test_renamed_source_requires_destination_evidence(self):
+        prior = {"package.json": self.manifest_content("10.0.0"),
+                 "src/old.ts": "implementation\n"}
+        current = {"package.json": self.manifest_content("10.0.1")}
+        change = UpstreamChange("renamed", "src/old.ts", "src/new.ts")
+        with self.assertRaisesRegex(PacketBuildError, "blocking evidence gap"):
+            self.build(prior, current, (change,))
+        current["src/new.ts"] = "implementation\n"
+        packet = self.build(prior, current, (change,))
+        self.assertEqual("retained-evidence",
+                         packet.document["packages"][0]["upstream_changes"][0]["disposition"])
+
+    def test_legacy_packet_replay_preserves_old_format_without_scope_annotations(self):
+        from github_validation import _packet_inputs
+
+        prior = {"package.json": self.manifest_content("10.0.0"),
+                 "src/index.ts": "stable\n", "legacy/changed.ts": "old\n"}
+        current = {"package.json": self.manifest_content("10.0.1"),
+                   "src/index.ts": "stable\n"}
+        packet = self.build(prior, current,
+                            (UpstreamChange("modified", "legacy/changed.ts", "legacy/changed.ts"),))
+        document = packet.document
+        legacy = build_ingest_packet(
+            self.root, self.config, document["work_item_id"],
+            document["snapshot_manifest"], _packet_inputs(document), "queued", format_version=1)
+        self.assertEqual(2, document["format_version"])
+        self.assertEqual(1, legacy.document["format_version"])
+        package = legacy.document["packages"][0]
+        self.assertEqual("retained-evidence", package["upstream_changes"][0]["disposition"])
+        removed = next(row for row in package["retained_evidence"]["files"] if row["status"] == "removed")
+        self.assertNotIn("removal_reason", removed)
+        self.assertNotIn(b"Files absent from current snapshot", legacy.markdown)
+        with self.assertRaisesRegex(PacketBuildError, "unsupported release packet format"):
+            build_ingest_packet(self.root, self.config, document["work_item_id"],
+                                document["snapshot_manifest"], _packet_inputs(document),
+                                "queued", format_version=3)
 
     def test_missing_required_source_and_unclassified_retained_file_block_packet(self):
         prior = {

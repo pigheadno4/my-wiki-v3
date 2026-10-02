@@ -65,6 +65,12 @@ Customer can revoke in their banking app at any time → Stripe fires `mandate.u
 - In sandbox: "Simulate scan" → test approval/expiry page
 - Email controls behavior: `succeed_immediately@test.com`, `expire_immediately@test.com`, etc. (6 email patterns)
 
+## Native iOS evidence
+
+`stripe-ios@26.12.1` adds Pix bindings and announces PaymentSheet support. Retained code opens hosted instructions and uses polling; it does not establish every native SetupIntent, recurring-payment or merchant-eligibility scenario. Do not transfer the web subscription recipe above to native iOS solely from these bindings.
+
+Failed/non-success polling deadlines report canceled. The redirect-return path can also cancel a still-pending Pix Intent; this is a code-path risk, not device-tested behavior or proof that no bank payment occurred. See [[stripe-ios-sdk]], [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]] for version-qualified behavior and server-verification boundaries.
+
 ## Sources
 
 - [[source-stripe-subscriptions-pix]] — Stripe docs: Pix subscription guide (Checkout + SetupIntents + Subscriptions API, Pix Automático, 6 test email patterns)

@@ -1,0 +1,490 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-ios`
+- Work item: `github-4ef7ad96d01f40cfff58`
+- Snapshot: `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `stripe-ios`
+
+- Version: `26.7.0` -> `26.8.0`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `232`
+
+### Required reading
+
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.8.0/2026-09-30/manifest.json`
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.8.0/2026-09-30/release-notes.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-62c2070/manifest.json`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/README.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripeApplePay.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripeConnect.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripeCryptoOnramp.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripeFinancialConnections.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripeIdentity.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripeIssuing.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+SwiftUI.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/MandateTextProvider.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController+AsyncPublicAPIs.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePayments.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmAlipayOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmKlarnaOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmPaymentMethodOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/LinkSettings.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/files/VERSION`
+- `raw/github/stripe/stripe-ios/snapshots/2026-09-30-8444041/manifest.json`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.7.0--26.8.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.7.0--26.8.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.7.0--26.8.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `.github/workflows/check-translations.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/close-resolved-issues.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/find-dead-code.yml`: `intentional-policy-exclusion`
+- `modified` `.github/workflows/verify-public-interface.yml`: `intentional-policy-exclusion`
+- `added` `.swiftlint-sha256`: `intentional-policy-exclusion`
+- `added` `.swiftlint-version`: `intentional-policy-exclusion`
+- `modified` `AGENTS.md`: `intentional-policy-exclusion`
+- `modified` `BuildConfigurations/Version.xcconfig`: `intentional-policy-exclusion`
+- `modified` `CHANGELOG.md`: `retained-evidence`
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example.xcodeproj/project.pbxproj`: `intentional-policy-exclusion`
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example/CryptoOnrampExampleView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example/LogInSignUpView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example/SeamlessSignInView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/FinancialConnections Example/FinancialConnections Example.xcodeproj/project.pbxproj`: `intentional-policy-exclusion`
+- `modified` `Example/Non-Card Payment Examples/Non-Card Payment Examples.xcodeproj/project.pbxproj`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example.xcodeproj/project.pbxproj`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Appearance+Codable.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutCartContentView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutCartEmbeddedPaymentView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutCartPaymentButton.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutCartView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutCartViewController.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutPlaygroundSections.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutPlaygroundTypes.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutPlaygroundView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutPlaygroundViewModel.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutSessionDetailsComponents.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutSessionDetailsView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/EmbeddedPlaygroundViewController.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/ExampleLinkControllerPreviewView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/LinkControllerDemoConfiguration.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/LinkControllerDemoView.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/PlaygroundController.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheetUITest/EmbeddedUITests.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheetUITest/PaymentSheetLinkUITests.swift`: `intentional-policy-exclusion`
+- `modified` `Example/PaymentSheet Example/PaymentSheetUITest/PaymentSheetVerticalUITests.swift`: `intentional-policy-exclusion`
+- `modified` `README.md`: `retained-evidence`
+- `modified` `Stripe.podspec`: `intentional-policy-exclusion`
+- `modified` `Stripe/StripeiOSTests/STPAPIClientStubbedTest.swift`: `intentional-policy-exclusion`
+- `modified` `Stripe/StripeiOSTests/STPConfirmPaymentMethodOptionsTest.swift`: `intentional-policy-exclusion`
+- `modified` `Stripe/StripeiOSTests/STPFPXBankBrandTest.swift`: `intentional-policy-exclusion`
+- `modified` `Stripe/StripeiOSTests/STPPaymentHandlerTests.swift`: `intentional-policy-exclusion`
+- `modified` `Stripe/StripeiOSTests/STPPaymentIntentConfirmParamsTest.swift`: `intentional-policy-exclusion`
+- `modified` `Stripe/StripeiOSTests/STPPaymentIntentFunctionalTest.swift`: `intentional-policy-exclusion`
+- `modified` `Stripe/StripeiOSTests/STPSetupIntentConfirmParamsTest.swift`: `intentional-policy-exclusion`
+- `modified` `Stripe/StripeiOSTests/STPStringUtilsTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripeApplePay.podspec`: `retained-evidence`
+- `modified` `StripeCameraCore.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeCardScan.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeConnect.podspec`: `retained-evidence`
+- `modified` `StripeCore.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeCore/StripeCore/Source/API Bindings/StripeAPIConfiguration+Version.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCore/StripeCore/Source/Analytics/STPAnalyticEvent.swift`: `intentional-policy-exclusion`
+- `modified` `StripeCryptoOnramp.podspec`: `retained-evidence`
+- `modified` `StripeFinancialConnections.podspec`: `retained-evidence`
+- `modified` `StripeFinancialConnections/StripeFinancialConnections/Source/Native/Shared/CloseConfirmationViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripeFinancialConnections/StripeFinancialConnections/Source/Native/Shared/RoundedIconView.swift`: `intentional-policy-exclusion`
+- `modified` `StripeFinancialConnectionsLite.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeIdentity.podspec`: `retained-evidence`
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/Views/IdentityHTMLView/HTMLViewWithIconLabels.swift`: `intentional-policy-exclusion`
+- `modified` `StripeIssuing.podspec`: `retained-evidence`
+- `modified` `StripePaymentSheet.podspec`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/bg-BG.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ca-ES.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/cs-CZ.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/da.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/de.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/el-GR.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/en-GB.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/en.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/es-419.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/es.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/et-EE.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fi.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fil.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fr-CA.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/hr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/hu.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/id.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/it.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ja.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ko.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/lt-LT.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/lv-LV.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ms-MY.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/mt.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/nb.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/nl.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pl-PL.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pt-BR.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pt-PT.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ro-RO.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ru.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sk-SK.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sl-SI.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sv.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/th.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/tr.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/vi.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-HK.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-Hans.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-Hant.lproj/Localizable.strings`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Analytics/STPAnalyticsClient+Address.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Categories/String+Localized.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Helpers/PaymentSheetLinkAccount.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Helpers/STPStringUtils.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Helpers/SavedPaymentMethodManager.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/API Bindings/CheckoutPaymentMethodUpdateTypes.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/API Bindings/Link/ConsumerSession.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/API Bindings/Link/STPAPIClient+Link.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/API Bindings/STPAPIClient+CheckoutSession.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/API Bindings/STPAPIClient+PaymentSheet.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/Controllers/PayWithLinkViewController-WalletViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/Controllers/PayWithLinkViewController-WalletViewModel.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/Controllers/PayWithLinkViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/Controllers/PayWithLinkWebController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/Extensions/Intent+Link.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/Utils/LinkBillingDetailsValidator.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/AddressViewController/AddressViewController.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagePollResponse.swift`: `intentional-policy-exclusion`
+- `deleted` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+ExchangeRateMeta.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+LocalizedPriceMeta.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/AdaptivePricingFlagImageManager.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Address.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+ApplePayConfiguration.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+BillingAddress.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Configuration.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+ApplePay.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift`: `retained-evidence`
+- `deleted` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+CurrencyOption.swift`: `intentional-policy-exclusion`
+- `deleted` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Discount.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+LinkConfiguration.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+PresentmentDetails.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+AddressMerging.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+DebugDescription.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+DiscountAmount.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+ExchangeRateMeta.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+ShippingAddress.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Totals.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Tax.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutApplePayContext.swift`: `intentional-policy-exclusion`
+- `renamed` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutError.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionBillingAddressUpdater.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionUpdate.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CheckoutSessionSource.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementUIView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CurrencySelectorUtilities.swift`: `intentional-policy-exclusion`
+- `deleted` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressButton.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElement+Configuration.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElement+PaymentMethod.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElement.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElementUIView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElementUtilities.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElementView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement+Configuration.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/PaymentOption+Checkout.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/STPPaymentMethodAddress+Checkout.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+SwiftUI.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/MandateTextProvider.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Intent.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentMethodMessagingPromotionsHelper.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentMethodType.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+PaymentMethodAvailability.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController+AsyncPublicAPIs.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`: `retained-evidence`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFormFactory/PaymentSheetFormFactory+BankDebits.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFormFactory/PaymentSheetFormFactory+Card.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFormFactory/PaymentSheetFormFactory+Mandates.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFormFactory/PaymentSheetFormFactory.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetIntentConfiguration.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/STPApplePayContext+CheckoutSession.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/STPApplePayContext+PaymentSheet.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/SavedPaymentMethodFormFactory/SavedPaymentMethodFormFactory.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Main Screen/PaymentSheetVerticalViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Main Screen/RowButtonFlatWithDisclosure.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Saved Payment Method Screen/VerticalSavedPaymentMethodsViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/ViewControllers/PaymentMethodFormViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/ViewControllers/PaymentSheetFlowControllerViewController.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Views/ConfirmButton.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/WalletButtonsView/WalletButtonsView.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/AddPaymentMethodViewControllerSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/AddressViewController/AddressViewControllerSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/AddressViewController/AddressViewControllerTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/CardBrandChoiceElementSnapshotTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/CardSectionElementTest.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/Checkout+AdaptivePricingTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutAddressMergingTests.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutApplePayContextFunctionalTest.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutApplePayContextTests.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutConfirmationTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutCurrencySelectorElementSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutCurrencySelectorViewSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutCurrencySelectorViewTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutDefaultsInitializationTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutPendingOperationsTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutTestHelpers.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutUnitTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CurrencySelectorElementViewTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/ExpressCheckoutElementViewTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentElementTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentElementViewTests.swift`: `intentional-policy-exclusion`
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentPagePollResponseTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentPagesAPIResponse+DiscountTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentPagesAPIResponse+SavedPaymentMethodsOfferSaveTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentPagesAPIResponseTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/ShippingAddressElementConfigurationTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/ShippingAddressElementPresentationTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/EmbeddedFormViewControllerSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/EmbeddedPaymentElementSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/EmbeddedPaymentElementTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/EmbeddedPaymentMethodsViewSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/ExpectedFormHierarchies.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/FormMandateProviderTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/LinkControllerPreviewAPITests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/LinkURLGeneratorTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/PayWithLinkNewPaymentViewControllerSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/PayWithLinkTestHelpers.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/PayWithLinkViewController-WalletViewModelTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/WalletViewControllerSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/WalletViewControllerTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentMethodAvailabilityTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentMethodFormViewControllerTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentMethodMessagingPromotionsHelperTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentMethodRowButtonSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheet+APIMockTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheet+APITest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheet+ConfirmationTokenTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheet+DeferredAPITest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetAnalyticsExperimentsTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetAnalyticsHelperTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetFlowControllerTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetFlowControllerViewControllerSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetFormFactory+CardEmailPhoneFieldsTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetFormFactorySnapshotTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetFormFactoryTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetLPMConfirmFlowTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetLinkAccountTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetLoaderTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetPaymentMethodTypeTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetVerticalViewControllerSnapshotTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetVerticalViewControllerTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetViewControllerSnapshotTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/RowButtonTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/STPAPIClient+CheckoutSessionTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/STPAPIClient+PaymentSheetTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/STPApplePayContext+PaymentSheetTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/STPElementsSessionTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/STPFixtures+PaymentSheet.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/SavedPaymentMethodBillingSyncTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/TextFieldElement+CardTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/USBankAccountPaymentMethodElementTest.swift`: `intentional-policy-exclusion`
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/WalletButtonsViewTests.swift`: `intentional-policy-exclusion`
+- `modified` `StripePayments.podspec`: `retained-evidence`
+- `modified` `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmAlipayOptions.swift`: `retained-evidence`
+- `added` `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmKlarnaOptions.swift`: `retained-evidence`
+- `modified` `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmPaymentMethodOptions.swift`: `retained-evidence`
+- `modified` `StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift`: `retained-evidence`
+- `modified` `StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift`: `retained-evidence`
+- `modified` `StripePayments/StripePayments/Source/API Bindings/Models/Shared/LinkSettings.swift`: `retained-evidence`
+- `modified` `StripePayments/StripePayments/Source/Categories/Enums+CustomStringConvertible.swift`: `intentional-policy-exclusion`
+- `modified` `StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`: `retained-evidence`
+- `modified` `StripePayments/StripePaymentsObjcTestUtils/Resources/Mock Files/CheckoutSession.json`: `intentional-policy-exclusion`
+- `modified` `StripePayments/StripePaymentsObjcTestUtils/Resources/Mock Files/CheckoutSessionConfirmed.json`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0000_post_create_checkout_session_unified.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0001_post_v1_payment_pages_cs_test_a1ZofwsGVC7jykF9SIQHj4EKmtGnox6qfAMhB9r53WxDPXu7FK9VzdQDuN_init.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0002_post_v1_consumers_sessions_lookup.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0003_post_v1_consumers_sessions_lookup.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0004_get_cdn-cgi_image_format=auto,height=16,dpr=3_https:__b.stripecdn.com_ocs-mobile_assets_flags_EU.png.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0005_get_cdn-cgi_image_format=auto,height=16,dpr=3_https:__b.stripecdn.com_ocs-mobile_assets_flags_US.png.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0006_post_v1_payment_pages_cs_test_a1ZofwsGVC7jykF9SIQHj4EKmtGnox6qfAMhB9r53WxDPXu7FK9VzdQDuN.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0007_post_v1_consumers_sessions_lookup.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutAdaptivePricingTests/testAdaptivePricingUsesIntegrationAndPresentmentCurrencies/0008_post_v1_consumers_sessions_lookup.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCancelAfterConfirmStillSucceeds/0000_post_create_checkout_session_unified.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCancelAfterConfirmStillSucceeds/0001_post_v1_payment_pages_cs_test_a1j9HsR4mea9j7FaaJc2FWl9hQHDQpht7LUwbuboRLszDoyevrBGRA5zsP_init.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCancelAfterConfirmStillSucceeds/0002_post_v1_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCancelAfterConfirmStillSucceeds/0003_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCancelAfterConfirmStillSucceeds/0004_post_v1_payment_pages_cs_test_a1j9HsR4mea9j7FaaJc2FWl9hQHDQpht7LUwbuboRLszDoyevrBGRA5zsP_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCompletesPayment/0000_post_create_checkout_session_unified.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCompletesPayment/0001_post_v1_payment_pages_cs_test_a1pZnV6SqMJlBK59Hg4T87klIgYoYUBkQSU4euOg4jRKnhgFnBeyr1ou5g_init.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCompletesPayment/0002_post_v1_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCompletesPayment/0003_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutApplePayContextFunctionalTest/testCompletesPayment/0004_post_v1_payment_pages_cs_test_a1pZnV6SqMJlBK59Hg4T87klIgYoYUBkQSU4euOg4jRKnhgFnBeyr1ou5g_confirm.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutTests/testAdaptivePricingActiveForUnifiedModeCheckoutSession/0000_post_create_checkout_session_unified.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutTests/testAdaptivePricingActiveForUnifiedModeCheckoutSession/0002_post_v1_consumers_sessions_lookup.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutTests/testAdaptivePricingActiveForUnifiedModeCheckoutSession/0003_post_v1_consumers_sessions_lookup.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutTests/testSelectCurrency/0000_post_create_checkout_session_unified.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutTests/testSelectCurrency/0004_get_cdn-cgi_image_format=auto,height=16,dpr=3_https:__b.stripecdn.com_ocs-mobile_assets_flags_EU.png.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/CheckoutTests/testSelectCurrency/0005_get_cdn-cgi_image_format=auto,height=16,dpr=3_https:__b.stripecdn.com_ocs-mobile_assets_flags_US.png.tail`: `intentional-policy-exclusion`
+- `modified` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0000_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0001_get_v1_payment_intents_pi_3U4JCsFY0qyl6XeW0fjqXJVO.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0002_post_create_checkout_session.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0002_post_v1_payment_intents_pi_3U4JCsFY0qyl6XeW0fjqXJVO_confirm.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0003_get_v1_payment_intents_pi_3U4JCsFY0qyl6XeW0fjqXJVO.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0004_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0005_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0006_get_v1_payment_intents_pi_3U4JCvFY0qyl6XeW1K8ZkNXT.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0007_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0007_post_v1_payment_intents_pi_3U4JCvFY0qyl6XeW1K8ZkNXT_confirm.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0008_get_v1_payment_intents_pi_3U4JCvFY0qyl6XeW1K8ZkNXT.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0009_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0010_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0011_get_v1_payment_intents_pi_3U4JCyFY0qyl6XeW0pBWdpE8.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0012_get_v1_payment_intents_pi_3U4JCyFY0qyl6XeW0pBWdpE8.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0013_get_v1_payment_intents_pi_3ToMoKFY0qyl6XeW1at7B277.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0013_post_v1_confirmation_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0014_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0015_get_v1_payment_intents_pi_3U4JD0FY0qyl6XeW170CMJR8.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0015_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0016_post_v1_payment_intents_pi_3U4JD0FY0qyl6XeW170CMJR8_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0017_get_v1_payment_intents_pi_3U4JD0FY0qyl6XeW170CMJR8.tail`: `intentional-policy-exclusion`
+- `modified` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0018_post_v1_confirmation_tokens.tail`: `intentional-policy-exclusion`
+- `modified` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0019_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0020_get_v1_payment_intents_pi_3U4JD2FY0qyl6XeW0WpuIxEO.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0021_get_v1_payment_intents_pi_3U4JD2FY0qyl6XeW0WpuIxEO.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0022_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0023_get_v1_payment_intents_pi_3U4JD3FY0qyl6XeW1KK4ZwGj.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0024_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0024_post_v1_payment_intents_pi_3U4JD3FY0qyl6XeW1KK4ZwGj_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0025_get_v1_payment_intents_pi_3U4JD3FY0qyl6XeW1KK4ZwGj.tail`: `intentional-policy-exclusion`
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0026_get_v1_payment_intents_pi_3ToMoRFY0qyl6XeW0Q9W3O3T.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0026_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0027_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0028_get_v1_payment_intents_pi_3U4JD9FY0qyl6XeW07hwCMEB.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0029_post_v1_payment_intents_pi_3U4JD9FY0qyl6XeW07hwCMEB_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0030_get_v1_payment_intents_pi_3U4JD9FY0qyl6XeW07hwCMEB.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0031_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0032_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0033_get_v1_payment_intents_pi_3U4JDDFY0qyl6XeW051Sm53o.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0034_get_v1_payment_intents_pi_3U4JDDFY0qyl6XeW051Sm53o.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0035_post_v1_confirmation_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0036_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0037_get_v1_payment_intents_pi_3U4JDEFY0qyl6XeW0UlVRf9x.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0038_post_v1_payment_intents_pi_3U4JDEFY0qyl6XeW0UlVRf9x_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0039_get_v1_payment_intents_pi_3U4JDEFY0qyl6XeW0UlVRf9x.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0040_post_v1_confirmation_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0041_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0042_get_v1_payment_intents_pi_3U4JDHFY0qyl6XeW0qz1BJ2H.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0043_get_v1_payment_intents_pi_3U4JDHFY0qyl6XeW0qz1BJ2H.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0044_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0045_get_v1_payment_intents_pi_3U4JDIFY0qyl6XeW1Nom5hch.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0046_post_v1_payment_intents_pi_3U4JDIFY0qyl6XeW1Nom5hch_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0047_get_v1_payment_intents_pi_3U4JDIFY0qyl6XeW1Nom5hch.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0048_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0049_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0050_get_v1_payment_intents_pi_3U4JDKFY0qyl6XeW1TfakYXA.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0051_post_v1_payment_intents_pi_3U4JDKFY0qyl6XeW1TfakYXA_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0052_get_v1_payment_intents_pi_3U4JDKFY0qyl6XeW1TfakYXA.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0053_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0054_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0055_get_v1_payment_intents_pi_3U4JDPFY0qyl6XeW1YnikLX5.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0056_get_v1_payment_intents_pi_3U4JDPFY0qyl6XeW1YnikLX5.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0057_post_v1_confirmation_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0058_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0059_get_v1_payment_intents_pi_3U4JDRFY0qyl6XeW1Xg3X1bl.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0060_post_v1_payment_intents_pi_3U4JDRFY0qyl6XeW1Xg3X1bl_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0061_get_v1_payment_intents_pi_3U4JDRFY0qyl6XeW1Xg3X1bl.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0062_post_v1_confirmation_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0063_post_create_payment_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0064_get_v1_payment_intents_pi_3U4JDTFY0qyl6XeW0ys496cs.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0065_get_v1_payment_intents_pi_3U4JDTFY0qyl6XeW0ys496cs.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0066_post_create_setup_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0067_get_v1_setup_intents_seti_1U4JDVFY0qyl6XeWs6l5qAJt.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0068_post_v1_setup_intents_seti_1U4JDVFY0qyl6XeWs6l5qAJt_confirm.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0069_get_v1_setup_intents_seti_1U4JDVFY0qyl6XeWs6l5qAJt.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0070_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0071_post_create_setup_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0072_get_v1_setup_intents_seti_1U4JDXFY0qyl6XeWfStdOFAC.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0073_post_v1_setup_intents_seti_1U4JDXFY0qyl6XeWfStdOFAC_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0074_get_v1_setup_intents_seti_1U4JDXFY0qyl6XeWfStdOFAC.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0075_post_v1_payment_methods.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0076_post_create_setup_intent.tail`: `intentional-policy-exclusion`
+- `renamed` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0077_get_v1_setup_intents_seti_1U4JDZFY0qyl6XeWEzfvE6rd.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0078_get_v1_setup_intents_seti_1U4JDZFY0qyl6XeWEzfvE6rd.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0079_post_v1_confirmation_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0080_post_create_setup_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0081_get_v1_setup_intents_seti_1U4JDbFY0qyl6XeWXhm9Ef5a.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0082_post_v1_setup_intents_seti_1U4JDbFY0qyl6XeWXhm9Ef5a_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0083_get_v1_setup_intents_seti_1U4JDbFY0qyl6XeWXhm9Ef5a.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0084_post_v1_confirmation_tokens.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0085_post_create_setup_intent.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0086_get_v1_setup_intents_seti_1U4JDiFY0qyl6XeWyn47rckR.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetLPMConfirmFlowTests/testAlipayConfirmFlows/0087_get_v1_setup_intents_seti_1U4JDiFY0qyl6XeWyn47rckR.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPAPIClientCheckoutSessionTest/testPollCheckoutSession/0000_post_create_checkout_session_unified.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPAPIClientCheckoutSessionTest/testPollCheckoutSession/0001_post_v1_payment_pages_cs_test_a1TTJqAdGFe287l2yLReMf1h3Hnp13OEDosDfPnqkVxkit5V9VZF2De7Zg_init.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPAPIClientCheckoutSessionTest/testPollCheckoutSession/0002_get_v1_payment_pages_cs_test_a1TTJqAdGFe287l2yLReMf1h3Hnp13OEDosDfPnqkVxkit5V9VZF2De7Zg_poll.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPAPIClientCheckoutSessionTest/testRetrieveCheckoutSession/0000_post_create_checkout_session_unified.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPAPIClientCheckoutSessionTest/testRetrieveCheckoutSession/0001_post_v1_payment_pages_cs_test_a1Xfb4gg2xt8eVJ50T7ry3EZQ1MYcRIfvaP1iGQnNPN5DrFb7koaQVFSd4_init.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPAPIClientCheckoutSessionTest/testRetrieveCheckoutSession/0002_get_v1_payment_pages_cs_test_a1Xfb4gg2xt8eVJ50T7ry3EZQ1MYcRIfvaP1iGQnNPN5DrFb7koaQVFSd4.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPPaymentIntentFunctionalTest/testConfirmKlarnaPaymentIntentWithInteroperabilityToken/0000_post_checkout.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPPaymentIntentFunctionalTest/testConfirmKlarnaPaymentIntentWithInteroperabilityToken/0001_post_v1_payment_intents_pi_3U3mowLu5o3P18Zp0c9ah3nC_confirm.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPPaymentIntentFunctionalTest/testConfirmKlarnaPaymentIntentWithPartnerConfirmationToken/0000_post_checkout.tail`: `intentional-policy-exclusion`
+- `added` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/STPPaymentIntentFunctionalTest/testConfirmKlarnaPaymentIntentWithPartnerConfirmationToken/0001_post_v1_payment_intents_pi_3U3mtTLu5o3P18Zp0KhygKxI_confirm.tail`: `intentional-policy-exclusion`
+- `modified` `StripePaymentsUI.podspec`: `intentional-policy-exclusion`
+- `modified` `StripeUICore.podspec`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedFormViewControllerSnapshotTests/testDisplaysErrorAndMandateRightToLeft@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedPaymentElementSnapshotTests/testRightToLeftDynamicTypeWithCompletionHandler_@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedPaymentElementSnapshotTests/testRightToLeftIPadWithCompletionHandler_@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedPaymentElementSnapshotTests/testRightToLeftLandscapeWithCompletionHandler_@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedPaymentElementSnapshotTests/testRightToLeftWithCompletionHandler_@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedPaymentMethodsViewSnapshotTests/testEmbeddedPaymentMethodsView_flatRadioRightToLeft@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedPaymentMethodsViewSnapshotTests/testEmbeddedPaymentMethodsView_flatWithCheckmarkRightToLeft@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedPaymentMethodsViewSnapshotTests/testEmbeddedPaymentMethodsView_flatWithDisclosureRightToLeft@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.EmbeddedPaymentMethodsViewSnapshotTests/testEmbeddedPaymentMethodsView_floatingRightToLeft@3x.png`: `intentional-policy-exclusion`
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.PaymentSheetSnapshotTests/testPaymentSheet_deferredIntent@3x.png`: `intentional-policy-exclusion`
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.PaymentSheetSnapshotTests/testPaymentSheet_disableTerms_deferredIntent@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.WalletViewControllerSnapshotTests/testWithBankAccountDataConsent@3x.png`: `intentional-policy-exclusion`
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.WalletViewControllerSnapshotTests/testWithBankAccountDataConsent_iOS26@3x.png`: `intentional-policy-exclusion`
+- `modified` `VERSION`: `retained-evidence`
+- `modified` `bitrise.yml`: `intentional-policy-exclusion`
+- `added` `ci_scripts/ensure_swiftlint.sh`: `intentional-policy-exclusion`
+- `modified` `ci_scripts/format_modified_files.sh`: `intentional-policy-exclusion`
+- `modified` `ci_scripts/lint_modified_files.sh`: `intentional-policy-exclusion`

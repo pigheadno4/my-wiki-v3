@@ -6,6 +6,60 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | Stripe iOS `26.12.1`
+
+- Approved serial full additive ingest `github-722f2ffc82b5d6e5375c`, from `stripe-ios@26.12.0` to `stripe-ios@26.12.1`, SHA `9f0d5aa20e6a690ff4d78b35c307f0fb88d6f36c`. Full overrides generated delta for incompatible STP polling parameters. Approved focused reading covers changed content, affected prior code and three supplemental files; unchanged history/inventories checked mechanically. Capsule: 276 files, one added, 22 modified, 253 unchanged; effective full list: 290 paths.
+- Updated existing iOS/Pix concepts first, source/changelog, company catalog, provider index and logs. Preserved older knowledge/source count; separated later historical annotations. Recorded Pix polling and redirect cancellation risk, consent timestamp/reuse semantics and scoped email changes. No cross-company comparison or future policy expansion.
+- No SDK/device/payment testing, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-722f2ffc82b5d6e5375c.md`. Next: review and commit the pending Stripe iOS work separately, excluding unrelated session changes.
+
+## [2026-10-02] ingest | Stripe iOS `26.12.0`
+
+- Approved serial full additive ingest `github-8cad25b1ab7e98991d4c`, from `stripe-ios@26.11.0` to `stripe-ios@26.12.0`, SHA `bc51b3323a06c029c561474547910bff0db82fc8`. Approved focused reading covers changed retained content and affected prior code; unchanged history/inventories checked mechanically. Capsule: 275 files, 16 modified, 259 unchanged; effective full list: 284 paths.
+- Updated existing iOS concept first, source/changelog, company catalog, provider index and logs. Preserved older knowledge, source count, retrospective card-program-name attribution and implementation gaps. Recorded partner-terms callback ordering, scoped confirmation cleanup and announced alpha API removal. No cross-company comparison.
+- No SDK/device/payment testing, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-8cad25b1ab7e98991d4c.md`. Next candidate: `26.12.1`, requiring separate review and approval.
+
+## [2026-10-02] ingest | Stripe iOS `26.11.0`
+
+- Approved serial full additive ingest `github-266fd96ba1fdc3d98b71`, from `stripe-ios@26.10.0` to `stripe-ios@26.11.0`, SHA `70378192e4b345bd4283511e1f6a3151591ebecf`. Focused reading covered changed content, affected prior code and the approved current controller supplement; unchanged history/inventories checked mechanically. Capsule: 275 files, two added, 19 modified, 254 unchanged.
+- Updated the existing iOS concept first, source, changelog, company and provider index. Recorded no-method/missing-Intent confirmation semantics and the open-session timeout warning, Scalapay, Link documentation, mandate inference and retrospective Kakao Pay annotation. Older knowledge and source count preserved; no cross-company comparison.
+- No SDK/device/payment testing, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-266fd96ba1fdc3d98b71.md`. Next candidate: `26.12.0`, requiring separate review and approval.
+
+## [2026-10-02] ingest | Stripe iOS `26.10.0`
+
+- Approved serial bounded delta `github-ba869d68806557302f00`, from `stripe-ios@26.9.0` to `stripe-ios@26.10.0`, SHA `e5778f68b39a298c4fcf920d2587e54bb020d8e4`. Release-specific focused reading covered changed retained content and affected prior code; unchanged history/inventories checked mechanically. Capsule: 273 files, 16 modified, 257 unchanged.
+- Updated existing concept first, source/changelog, company catalog, provider index and logs. Added PaymentSheet announcements, PaymentIntent-only mandate inference, branding/Identity/Embedded changes and bounded Apple Pay caller evidence. Older history and source count preserved; no cross-company comparison. Excluded delegated implementation remains explicit.
+- No SDK/device/payment testing, additional collection, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-ba869d68806557302f00.md`. Next candidate: `26.11.0`, requiring separate review and approval.
+
+## [2026-10-02] ingest | Stripe iOS `26.9.0`
+
+- Approved serial full additive ingest `github-bbbff15398aa9f59171d`, from `stripe-ios@26.8.0` to `stripe-ios@26.9.0`, SHA `841b697a9c45a97a36ade02d9184c7d11b927e82`, using the release-specific focused-reading exception. All changed/new retained implementation and two supplemental files read fully; affected prior code compared; unchanged history/inventories checked mechanically. Capsule: 273 files, ten additions, 31 modifications, 232 unchanged; effective full list 286 paths.
+- Updated existing concept first, cumulative source/changelog, company catalog, provider index and logs. Added five API bindings, Checkout polling/result/visibility changes and bounded permission/Apple Pay helper findings. Historical versions, source count and evidence limits preserved; no new comparison page.
+- No SDK/runtime/payment or eligibility testing, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-bbbff15398aa9f59171d.md`. Next candidate: `26.10.0`, requiring its own review and approval.
+
+## [2026-09-30] ingest | Stripe iOS `26.8.0`
+
+- Approved serial full additive ingest `github-4ef7ad96d01f40cfff58`, from `stripe-ios@26.7.0` to `stripe-ios@26.8.0`, SHA `844404116961cb66eb8d67253386b4d564c66e87`, with the approved focused-reading exception. Changed retained content and affected prior code reviewed; inventories and unchanged history checked mechanically. Capsule: 263 files, 30 modified, one added, 232 unchanged; two approved supplemental files included.
+- Updated existing concept first, source/changelog, company, provider index and logs. Added CheckoutController SPI result mapping, FPX, decline-text fix, preview Link permissions and low-level Alipay/Klarna findings. Preserved historical knowledge and retrospective labels; no new source count or comparison page. Excluded Apple Pay context remains an evidence gap.
+- No SDK/runtime/payment or eligibility testing, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-4ef7ad96d01f40cfff58.md`. Next candidate: `26.9.0`, requiring its own review and approval.
+
+## [2026-09-30] ingest | Stripe iOS `26.7.0`
+
+- Approved serial delta `github-78ba61fe5193c202d74a`, from `stripe-ios@26.6.0` to `stripe-ios@26.7.0`, SHA `62c2070c57f20b4d632b25fc62780841f8883cc8`, using approved focused reading. Changed retained implementation read fully; prior affected code compared; unchanged history/manifests checked mechanically. Snapshot hashes verified for 313 prior and 262 current files.
+- Updated existing concept first, then source/changelog, company, provider index and logs. Added Lite migration, Link button visibility, autocomplete and typed Vipps findings. Preserved historical annotations and older versions; no new source count or cross-company comparison. Missing current Checkout coverage does not prove deletion or carry forward the 26.6.0 limitation.
+- No SDK/runtime/payment or eligibility testing, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-78ba61fe5193c202d74a.md`. Next candidate: `26.8.0`, requiring separate review and approval.
+
+## [2026-09-30] ingest | Stripe iOS `26.6.0`
+
+- Approved serial full additive ingest `github-27c39776069e90865f25`, from `stripe-ios@26.5.0` to `stripe-ios@26.6.0`, SHA `3410ff0853b66e5ade3e8763e99f3ddb5dd77bc3`, using the approved focused-reading exception. Changed/newly retained implementation reviewed fully; unchanged evidence/history checked mechanically. Current capsule: 313 files; 55 added, 27 modified, one removed, 231 unchanged relative to prior capsule.
+- Updated existing iOS concept first, then cumulative source/changelog, company, provider index and logs. Recorded MB WAY/Bizum, preview Link errors, alpha deletion, and explicit unfinished Checkout SPI limits. Distinguished upstream changes from scope expansion. Preserved older versions and source count; no new cross-company comparison. Qualified older general Checkout wording without deleting historical findings.
+- No SDK build, runtime payment or eligibility verification, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-27c39776069e90865f25.md`. Next candidate: `26.7.0`, requiring its own review and approval.
+
+## [2026-09-30] ingest | Stripe iOS `26.5.0`
+
+- Approved serial delta `github-024fc77b5961ca8ac047`, `stripe-ios@26.4.1` to `stripe-ios@26.5.0`, exact SHA `a1ea788163dee511239e2cfefe27cad576f045d3`. Approved focused reading covered changed code/content; both 259-file snapshots verified, 22 modified and 237 unchanged; unchanged cumulative changelog segments checked mechanically.
+- Updated the existing iOS concept first, then cumulative source/changelog, company, provider index and logs. Recorded private-preview Link controls, billing initializer, selection/sync/presentation behavior, and internal confirmation boundaries. Preserved retrospective upstream annotations without rewriting old SHA evidence. No new contradiction or cross-company comparison; source count and older history unchanged.
+- Excluded delegated helpers and Tempo implementation remain explicit evidence limits. No SDK/runtime/payment testing, commit or push. Review: `tracking/github/repos/stripe/stripe-ios/reviews/github-024fc77b5961ca8ac047.md`. Next candidate is `26.6.0`; not started.
+
 ## [2026-09-29] ingest | React Stripe.js `6.12.0`
 
 - Approved delta `github-efa92d3092d7b5e29446`, exact SHA `fd7981cbe61020b3cebd29157d098950e4e7cfdf`, from 6.11.0. Required reading completed; one retained file added, two modified, 58 unchanged; all four upstream paths classified.

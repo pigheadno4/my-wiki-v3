@@ -1,0 +1,306 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b405511..8cc5e7c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,19 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.10.0 2026-09-08
++### General
++* [Added] Added support for Arabic (Saudi Arabia).
++
++### CryptoOnramp (Alpha)
++* [Added] Added Canada SIN, Colombia NIT, and Philippines TIN values to `IdType`, and added `idType` to the `KycInfo` initializer.
++
++### PaymentSheet
++* [Added] Added support for Naver Pay.
++* [Added] Added support for Korean cards.
++* [Added] Added support for PAYCO.
++* [Added] Added support for SeQura.
++
+ ## 26.9.0 2026-08-31
+ ### Payments
+ * [Added] Added API bindings for Kakao Pay, SeQura, Korean cards, Naver Pay, and PAYCO.
+diff --git a/README.md b/README.md
+index d6db79d..163a6e3 100644
+--- a/README.md
++++ b/README.md
+@@ -48,7 +48,7 @@ Table of contents
+ 
+ **App Clips**: The `StripeApplePay` module provides a [lightweight SDK for offering Apple Pay in an App Clip](https://stripe.com/docs/apple-pay#app-clips).
+ 
+-**Localized**: We support the following localizations: Bulgarian, Catalan, Chinese (Hong Kong), Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English (US), English (United Kingdom), Estonian, Filipino, Finnish, French, French (Canada), German, Greek, Hungarian, Indonesian, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Maltese, Norwegian Bokmål, Norwegian Nynorsk (Norway), Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Slovenian, Spanish, Spanish (Latin America), Swedish, Turkish, Thai and Vietnamese.
++**Localized**: We support the following localizations: Arabic (Saudi Arabia), Bulgarian, Catalan, Chinese (Hong Kong), Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English (US), English (United Kingdom), Estonian, Filipino, Finnish, French, French (Canada), German, Greek, Hungarian, Indonesian, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Maltese, Norwegian Bokmål, Norwegian Nynorsk (Norway), Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Slovenian, Spanish, Spanish (Latin America), Swedish, Turkish, Thai and Vietnamese.
+ 
+ **Identity**: Learn about our [Stripe Identity iOS SDK](StripeIdentity/README.md) to verify the identity of your users.
+ 
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index 148c319..4a5567b 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.9.0'
++  s.version                        = '26.10.0'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index 55e47c5..d87d9c1 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.9.0'
++  s.version                        = '26.10.0'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index 75afcc9..0b9170a 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.9.0'
++  s.version                        = '26.10.0'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index 4f6f8f5..580e3d3 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.9.0'
++    s.version                        = '26.10.0'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index 5fc934b..d718f5d 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.9.0'
++  s.version                        = '26.10.0'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift b/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
+index 610837f..6ba30c1 100644
+--- a/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
++++ b/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
+@@ -25,6 +25,21 @@ final public class IdentityVerificationSheet {
+ 
+     /// Configuration for an IdentityVerificationSheet
+     public struct Configuration {
++        /// Configuration for the biometric consent screen's header.
++        @_spi(STP) public struct BiometricConsentConfiguration {
++            /// Whether to hide the branding header above the consent title.
++            public var hideBrandingHeader: Bool
++
++            /// Initializes a biometric consent header configuration.
++            /// - Parameters:
++            ///   - hideBrandingHeader: Whether to hide the branding header above the consent title.
++            public init(
++                hideBrandingHeader: Bool
++            ) {
++                self.hideBrandingHeader = hideBrandingHeader
++            }
++        }
++
+         /// An image of your customer-facing business logo.
+         ///
+         /// - Note: The recommended image size is 32 x 32 points. The image will be
+@@ -32,6 +47,11 @@ final public class IdentityVerificationSheet {
+         /// dynamic UIImage to support different images in light vs dark mode.
+         public var brandLogo: UIImage
+ 
++        /// Configuration for the biometric consent screen's header.
++        ///
++        /// When `nil`, the biometric consent screen uses the default header.
++        @_spi(STP) public var biometricConsent: BiometricConsentConfiguration?
++
+         /// Initializes a Configuration.
+         /// - Parameters:
+         ///   - brandLogo: An image of your customer-facing business logo.
+@@ -41,6 +61,7 @@ final public class IdentityVerificationSheet {
+             brandLogo: UIImage
+         ) {
+             self.brandLogo = brandLogo
++            self.biometricConsent = nil
+         }
+     }
+ 
+@@ -91,7 +112,7 @@ final public class IdentityVerificationSheet {
+                     ephemeralKeySecret: ephemeralKeySecret
+                 ),
+                 flowController: VerificationSheetFlowController(
+-                    brandLogo: configuration.brandLogo
++                    configuration: configuration
+                 ),
+                 mlModelLoader: IdentityMLModelLoader(),
+                 analyticsClient: IdentityAnalyticsClient(
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index 5ae4264..d36f8e3 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.9.0'
++  s.version                        = '26.10.0'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index 38e6dc0..3030095 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.9.0'
++  s.version                        = '26.10.0'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+index ebabe1d..12aa1d1 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+@@ -28,6 +28,7 @@ extension CheckoutController {
+         let apiClient: STPAPIClient
+         let returnURL: String
+         let merchantDisplayName: String
++        let shippingAddressRequired: Bool
+         let billingDetailsCollectionConfiguration: PaymentSheet.BillingDetailsCollectionConfiguration
+         let defaultBillingDetails: Configuration.Defaults.BillingDetails?
+         let presentationWindow: UIWindow?
+@@ -133,6 +134,7 @@ extension CheckoutController {
+                 apiClient: apiClient,
+                 returnURL: self.configuration.returnURL,
+                 merchantDisplayName: effectiveMerchantDisplayName,
++                shippingAddressRequired: false,
+                 billingDetailsCollectionConfiguration: configuration.billingDetailsCollectionConfiguration,
+                 defaultBillingDetails: self.configuration.defaults.billingDetails,
+                 presentationWindow: presentingViewController.view.window,
+@@ -212,7 +214,7 @@ extension CheckoutController {
+                 let result: InternalConfirmResult
+                 switch flow {
+                 case .applePay(let parameters):
+-                    result = await Self.confirmApplePay(checkoutSession: self.session, parameters: parameters, checkoutWalletUpdater: self)
++                    result = await self.confirmApplePay(checkoutSession: self.session, parameters: parameters)
+                 case .link(let parameters):
+                     result = await Self.confirmLink(checkoutSession: self.session, parameters: parameters)
+                 case .paymentMethod(let paymentMethodParameters, let integrationShape):
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift
+index 802308f..e35e518 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift
+@@ -215,8 +215,8 @@ class EmbeddedPaymentMethodsView: UIView {
+             if let initialSelectedRowChangeButtonState {
+                 selectedRowChangeButtonState = initialSelectedRowChangeButtonState
+                 if initialSelectedRowChangeButtonState.shouldShowChangeButton {
+-                    rowButtonMatchingInitialSelection.addChangeButton()
+-                    rowButtonMatchingInitialSelection.setSublabel(text: initialSelectedRowChangeButtonState.sublabel)
++                    rowButtonMatchingInitialSelection.addChangeButton(animated: false)
++                    rowButtonMatchingInitialSelection.setSublabel(text: initialSelectedRowChangeButtonState.sublabel, animated: false)
+                 }
+             }
+             self.selectedRowButton = rowButtonMatchingInitialSelection
+@@ -600,16 +600,20 @@ extension Array where Element == STPPaymentMethod {
+ }
+ 
+ extension RowButton {
+-    func addChangeButton() {
++    func addChangeButton(animated: Bool = true) {
+         // Hack: We assume the accessory view is "Change >"
+         self.accessoryView?.isHidden = false
++        makeSameHeightAsOtherRowButtonsIfNecessary()
++        guard animated else {
++            self.accessoryView?.alpha = 1
++            return
++        }
+         self.setNeedsLayout()
+         self.layoutIfNeeded()
+         self.accessoryView?.alpha = 0
+         UIView.animate(withDuration: 0.2) {
+             self.accessoryView?.alpha = 1
+         }
+-        makeSameHeightAsOtherRowButtonsIfNecessary()
+     }
+ 
+     func removeChangeButton(shouldClearSublabel: Bool) {
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift
+index c4448c4..af0d1f4 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift
+@@ -56,6 +56,16 @@ extension PaymentElementConfiguration {
+         return linkAccount?.linkBrand ?? elementsSession.linkBrand ?? .link
+     }
+ 
++    var financialConnectionsLinkBrandOverride: LinkBrand? {
++        // Only Onelink should be treated as an explicit client override for Financial Connections.
++        // Link should behave like no override so backend and authenticated consumer updates can still win.
++        return link.brand == .onelink ? .onelink : nil
++    }
++
++    func financialConnectionsLinkBrandOverride(linkAccount: PaymentSheetLinkAccount?) -> LinkBrand? {
++        return financialConnectionsLinkBrandOverride ?? (linkAccount?.linkBrand == .onelink ? .onelink : nil)
++    }
++
+     /// Returns `true` if the merchant requires the collection of _any_ billing detail fields - name, phone, email, address.
+     func requiresBillingDetailCollection() -> Bool {
+         return billingDetailsCollectionConfiguration.name == .always
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index c4f9c17..d815cf6 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.9.0'
++  s.version                        = '26.10.0'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift
+index 7d60d00..b2c95b7 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift	
+@@ -313,7 +313,7 @@ extension STPPaymentIntentConfirmParams: NSCopying {
+     /// - Returns: STPMandateDataParams with inferred values if mandate is required for the payment method type, nil otherwise
+     @_spi(STP) public static func mandateDataIfRequired(for paymentMethodType: STPPaymentMethodType) -> STPMandateDataParams? {
+         switch paymentMethodType {
+-        case .AUBECSDebit, .bacsDebit, .bancontact, .iDEAL, .SEPADebit, .EPS, .link, .USBankAccount, .kakaoPay, .krCard, .naverPay:
++        case .AUBECSDebit, .bacsDebit, .bancontact, .iDEAL, .SEPADebit, .EPS, .link, .USBankAccount, .kakaoPay:
+             return .makeWithInferredValues()
+         default:
+             return nil
+diff --git a/VERSION b/VERSION
+index 47221ec..cdf9da5 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.9.0
+\ No newline at end of file
++26.10.0
+\ No newline at end of file

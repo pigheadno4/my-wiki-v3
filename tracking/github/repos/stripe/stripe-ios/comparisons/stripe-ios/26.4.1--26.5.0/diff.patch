@@ -1,0 +1,1103 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f629fee..cee6fdd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,14 +3,28 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.5.0 2026-08-03
++### CryptoOnramp (Alpha)
++* [Added] Added support for registering wallet addresses on the Tempo network.
++
++### PaymentSheet
++* [Added] Added `billingDetailsCollectionConfiguration` to `LinkConfiguration`, allowing `LinkControllerPreview` consumers to configure billing details collection in the Link sheet (private preview).
++* [Added] `LinkController` now supports appearance customization via `LinkAppearance` (private preview).
++
+ ## 26.4.1 2026-07-23
+ ### Payments
+ * [Fixed] Fixed an issue where some Alipay payments incorrectly reported failure after succeeding.
+ 
++### PaymentSheet
++* [Fixed] Fixed SwiftUI `EmbeddedPaymentElement` presentation in multi-scene apps.
++* [Fixed] FlowController now defaults to Link when it was the last selected payment option even when it is displayed as a wallet button instead of in the list of payment methods.
++
+ ## 26.4.0 2026-07-20
+ ### StripeCore
+ * [Added] `STPAPIClient.betas` is now public, allowing merchants to opt in to beta features that require a preview flag on the `Stripe-Version` header.
+ 
++### StripeConnect
++* [Fixed] Fixed `AccountOnboardingControllerDelegate.accountOnboardingDidExit(_:)` not being called on the first automatic dismissal after onboarding completion.
+ ### PaymentSheet
+ * [Changed] Refactored `LinkController` SetupIntent confirmation into a separate `confirmSetupIntent` step (private preview).
+ 
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index cbd772e..a631f34 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.4.1'
++  s.version                        = '26.5.0'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index 6cdb925..4f67c1b 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.4.1'
++  s.version                        = '26.5.0'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index df4ca6b..5ad3b87 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.4.1'
++  s.version                        = '26.5.0'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index 685e1cb..c68831e 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.4.1'
++    s.version                        = '26.5.0'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index 766a4af..9ffd998 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.4.1'
++  s.version                        = '26.5.0'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index 5ec1124..2d51bb3 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.4.1'
++  s.version                        = '26.5.0'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index 1854812..d30b335 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.4.1'
++  s.version                        = '26.5.0'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
+index d031f22..53eb398 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
+@@ -255,6 +255,7 @@ class CustomerAddPaymentMethodViewController: UIViewController {
+             accountService: nil,
+             cardBrandChoiceEligible: cbcEligible,
+             isPaymentIntent: false,
++            collectsTaxFromBillingAddress: false,
+             isSettingUp: true,
+             countryCode: nil,
+             savePaymentMethodConsentBehavior: savePaymentMethodConsentBehavior,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift
+index 7aec0e3..918ce71 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift
+@@ -92,8 +92,8 @@ class EmbeddedFormViewController: UIViewController {
+     private weak var checkout: Checkout?
+     private var error: Swift.Error?
+     private var isPaymentInFlight: Bool = false
+-    /// Previous customer input - in the `update` flow, this is the customer input prior to `update`, used so we can restore their state in this VC.
+-    private(set) var previousPaymentOption: PaymentOption?
++    /// The payment option to restore if the customer cancels this form.
++    private(set) var paymentOptionToRestoreOnCancellation: PaymentOption?
+ 
+     // MARK: - UI properties
+ 
+@@ -124,13 +124,7 @@ class EmbeddedFormViewController: UIViewController {
+     }()
+ 
+     private lazy var paymentMethodFormViewController: PaymentMethodFormViewController = {
+-        let previousCustomerInput: IntentConfirmParams? = {
+-            if case let .new(confirmParams: confirmParams) = previousPaymentOption {
+-                return confirmParams
+-            } else {
+-                return nil
+-            }
+-        }()
++        let previousCustomerInput = paymentOptionToRestoreOnCancellation?.formConfirmParamsForCancellationRestoration
+ 
+         let headerView = FormHeaderView(
+             paymentMethodType: paymentMethodType,
+@@ -179,7 +173,7 @@ class EmbeddedFormViewController: UIViewController {
+         self.elementsSession = elementsSession
+         self.shouldUseNewCardNewCardHeader = shouldUseNewCardNewCardHeader
+         self.configuration = configuration
+-        self.previousPaymentOption = previousPaymentOption
++        self.paymentOptionToRestoreOnCancellation = previousPaymentOption
+         self.analyticsHelper = analyticsHelper
+         self.paymentMethodMessagingPromotionsHelper = paymentMethodMessagingPromotionsHelper
+         self.checkout = checkout
+@@ -270,6 +264,11 @@ class EmbeddedFormViewController: UIViewController {
+         }
+     }
+ 
++    /// Captures the valid form state accepted by Continue so later canceled edits can restore it.
++    func capturePaymentOptionForCancellationRestoration() {
++        paymentOptionToRestoreOnCancellation = selectedPaymentOption
++    }
++
+     required init?(coder: NSCoder) {
+         fatalError("init(coder:) has not been implemented")
+     }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+index 6ff9f95..caec69e 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+@@ -12,6 +12,12 @@ import SafariServices
+ import UIKit
+ 
+ extension EmbeddedPaymentElement {
++    struct PendingBillingAddressSyncSelection {
++        let paymentMethod: STPPaymentMethod
++        let previousSelection: RowButtonType?
++        let previousPaymentOption: PaymentOption?
++    }
++
+     @MainActor
+     static func makeView(
+         configuration: Configuration,
+@@ -76,7 +82,6 @@ extension EmbeddedPaymentElement {
+             mandateProvider: mandateProvider,
+             shouldShowMandate: configuration.embeddedViewDisplaysMandateText,
+             savedPaymentMethods: loadResult.savedPaymentMethods,
+-            customer: configuration.customer,
+             currency: loadResult.intent.currency,
+             incentive: loadResult.elementsSession.incentive,
+             paymentMethodMessagingPromotionsHelper: loadResult.paymentMethodMessagingPromotionsHelper,
+@@ -87,6 +92,9 @@ extension EmbeddedPaymentElement {
+ 
+     /// Helper method to inform delegate only if the payment option changed
+     func informDelegateIfPaymentOptionUpdated() {
++        // Checkout rebuilds EPE while applying the billing update. Don't publish the tapped
++        // payment method until that update finishes and the refreshed view restores its selection.
++        guard pendingBillingAddressSyncSelection == nil else { return }
+         if lastUpdatedPaymentOption != paymentOption {
+             delegate?.embeddedPaymentElementDidUpdatePaymentOption(embeddedPaymentElement: self)
+             lastUpdatedPaymentOption = paymentOption
+@@ -141,12 +149,27 @@ extension EmbeddedPaymentElement: EmbeddedPaymentMethodsViewDelegate {
+         delegate?.embeddedPaymentElementDidUpdateHeight(embeddedPaymentElement: self)
+     }
+ 
++    func embeddedPaymentMethodsViewWillSelect(_ rowButtonType: RowButtonType) {
++        guard checkout != nil,
++              case .saved(let paymentMethod) = rowButtonType else {
++            persistDefaultPaymentMethodSelection(rowButtonType)
++            return
++        }
++        // Save the current selection now; the tap callback uses it after the selected row changes.
++        pendingBillingAddressSyncSelection = .init(
++            paymentMethod: paymentMethod,
++            previousSelection: embeddedPaymentMethodsView.selectedRowButton?.type,
++            previousPaymentOption: _paymentOption
++        )
++    }
++
+     func embeddedPaymentMethodsViewDidUpdateSelection() {
+         // 1. Update the currently selection's form VC to match the selection.
+         // Note `paymentOption` derives from this property
+         self.selectedFormViewController = Self.makeFormViewControllerIfNecessary(
+             selection: embeddedPaymentMethodsView.selectedRowButton?.type,
+-            previousPaymentOption: selectedFormViewController?.previousPaymentOption,
++            // Carry the accepted option into the next form so cancel can restore the previous row.
++            previousPaymentOption: selectedFormViewController?.paymentOptionToRestoreOnCancellation,
+             configuration: configuration,
+             intent: intent,
+             elementsSession: elementsSession,
+@@ -167,10 +190,7 @@ extension EmbeddedPaymentElement: EmbeddedPaymentMethodsViewDelegate {
+     func embeddedPaymentMethodsViewDidTapPaymentMethodRow() {
+         // 😓 Note: This method depends on `embeddedPaymentMethodsViewDidUpdateSelection` being called *before* this method is called when a row is tapped.
+         guard let selectedFormViewController else {
+-            // If the current selection has no form VC, simply alert the merchant of the selection if they are using immediateAction
+-            if case .immediateAction(let didSelectPaymentOption) = configuration.rowSelectionBehavior {
+-                didSelectPaymentOption()
+-            }
++            handleSelectionWithoutForm()
+             return
+         }
+         // Present the current selection's form VC
+@@ -182,6 +202,107 @@ extension EmbeddedPaymentElement: EmbeddedPaymentMethodsViewDelegate {
+         presentingViewController?.presentAsBottomSheet(bottomSheet, appearance: configuration.appearance)
+     }
+ 
++    private func handleSelectionWithoutForm() {
++        // We aren't in Checkout, or this selection doesn't need a billing sync.
++        guard let pendingSelection = pendingBillingAddressSyncSelection,
++              let checkout else {
++            pendingBillingAddressSyncSelection = nil
++            persistDefaultPaymentMethodSelection(embeddedPaymentMethodsView.selectedRowButton?.type)
++            informDelegateIfPaymentOptionUpdated()
++            completeImmediateRowSelectionIfNeeded()
++            return
++        }
++        embeddedPaymentMethodsView.isUserInteractionEnabled = false
++        let loadingRow = embeddedPaymentMethodsView.selectedRowButton
++        loadingRow?.setLoading(true)
++
++        Task { @MainActor [weak self, weak loadingRow] in
++            guard let self else { return }
++            do {
++                try await checkout.syncBillingAddress(from: pendingSelection.paymentMethod.billingDetails)
++                self.finishSelectionAfterBillingAddressSync(
++                    for: pendingSelection,
++                    loadingRow: loadingRow
++                )
++            } catch {
++                self.restoreSelectionAfterBillingSyncFailure(
++                    error,
++                    pendingSelection: pendingSelection,
++                    loadingRow: loadingRow
++                )
++            }
++        }
++    }
++
++    private func finishSelectionAfterBillingAddressSync(
++        for pendingSelection: PendingBillingAddressSyncSelection,
++        loadingRow: RowButton?
++    ) {
++        let didReselectPaymentMethod = embeddedPaymentMethodsView.selectSavedPaymentMethod(
++            withStripeId: pendingSelection.paymentMethod.stripeId
++        )
++        let selectedRow = embeddedPaymentMethodsView.selectedRowButton
++        loadingRow?.setLoading(false, animated: loadingRow === selectedRow)
++        selectedRow?.setLoading(false)
++        pendingBillingAddressSyncSelection = nil
++        embeddedPaymentMethodsView.isUserInteractionEnabled = true
++
++        guard didReselectPaymentMethod else {
++            informDelegateIfPaymentOptionUpdated()
++            return
++        }
++        persistDefaultPaymentMethodSelection(selectedRow?.type)
++        informDelegateIfPaymentOptionUpdated()
++        completeImmediateRowSelectionIfNeeded()
++    }
++
++    private func restoreSelectionAfterBillingSyncFailure(
++        _ error: Error,
++        pendingSelection: PendingBillingAddressSyncSelection,
++        loadingRow: RowButton?
++    ) {
++        loadingRow?.setLoading(false)
++        embeddedPaymentMethodsView.resetSelectionToLastSelection()
++        _ = restoreAcceptedForm(
++            from: pendingSelection.previousPaymentOption,
++            for: pendingSelection.previousSelection
++        )
++        if let restoredSelection = embeddedPaymentMethodsView.selectedRowButton?.type {
++            updateChangeButtonAndSublabelState(for: restoredSelection)
++        }
++        pendingBillingAddressSyncSelection = nil
++        embeddedPaymentMethodsView.isUserInteractionEnabled = true
++        informDelegateIfPaymentOptionUpdated()
++        embeddedPaymentMethodsView.setError(error)
++#if !os(visionOS)
++        UINotificationFeedbackGenerator().notificationOccurred(.error)
++#endif
++    }
++
++    private func completeImmediateRowSelectionIfNeeded() {
++        if case .immediateAction(let didSelectPaymentOption) = configuration.rowSelectionBehavior {
++            didSelectPaymentOption()
++        }
++    }
++
++    private func persistDefaultPaymentMethodSelection(_ rowButtonType: RowButtonType?) {
++        let paymentOption: CustomerPaymentOption
++        switch rowButtonType {
++        case .applePay:
++            paymentOption = .applePay
++        case .link:
++            paymentOption = .link
++        case .saved(let paymentMethod):
++            paymentOption = .stripeId(paymentMethod.stripeId)
++        case .new, nil:
++            return
++        }
++        CustomerPaymentOption.setDefaultPaymentMethod(
++            paymentOption,
++            forCustomer: configuration.customer?.id
++        )
++    }
++
+     func embeddedPaymentMethodsViewDidTapViewMoreSavedPaymentMethods(selectedSavedPaymentMethod: STPPaymentMethod?) {
+         // Special case, only 1 card remaining, skip showing the list and show update view controller
+         if savedPaymentMethods.count == 1,
+@@ -427,25 +548,53 @@ extension EmbeddedPaymentElement: EmbeddedFormViewControllerDelegate {
+         }
+     }
+ 
++    private func restoreAcceptedForm(
++        from paymentOption: PaymentOption?,
++        for selection: RowButtonType?
++    ) -> Bool {
++        guard case let .new(paymentMethodType) = selection,
++              let paymentOption,
++              paymentOption.formConfirmParamsForCancellationRestoration?.paymentMethodType == paymentMethodType else {
++            return false
++        }
++
++        // The cached form contains the canceled edits. Rebuild it from the last accepted option.
++        formCache[paymentMethodType] = nil
++        selectedFormViewController = Self.makeFormViewControllerIfNecessary(
++            selection: selection,
++            previousPaymentOption: paymentOption,
++            configuration: configuration,
++            intent: intent,
++            elementsSession: elementsSession,
++            savedPaymentMethods: savedPaymentMethods,
++            analyticsHelper: analyticsHelper,
++            paymentMethodMessagingPromotionsHelper: loadResult.paymentMethodMessagingPromotionsHelper,
++            checkout: checkout,
++            formCache: formCache,
++            delegate: self
++        )
++        return selectedFormViewController != nil
++    }
++
+     func embeddedFormViewControllerDidCancel(_ embeddedFormViewController: EmbeddedFormViewController) {
+-        let lastSelection = embeddedPaymentMethodsView.previousSelectedRowButton?.type
+-        let currentlySelectedType = embeddedPaymentMethodsView.selectedRowButton?.type
+-
+-        // If the user re-selects a valid payment option w/ form, then modifies it, then hits close, we clear selection
+-        // Ideally we would revert back to the valid payment option that existed when the form was presented rather than totally clear selection
+-        // To restore to the previous payment option we need to restore the previous form VC that contained the previous payment option
+-        // TODO (https://jira.corp.stripe.com/browse/MOBILESDK-3361): Consider restoring the form VC and form cache to revert to the last valid payment option
+-        if lastSelection == currentlySelectedType,
+-           lastUpdatedPaymentOption != paymentOption {
+-            embeddedPaymentMethodsView.resetSelection()
++        let previousSelection = embeddedPaymentMethodsView.previousSelectedRowButton?.type
++        let currentSelection = embeddedPaymentMethodsView.selectedRowButton?.type
++        let paymentOptionToRestore = embeddedFormViewController.paymentOptionToRestoreOnCancellation
++
++        if previousSelection == currentSelection {
++            // Re-selecting the same row doesn't rebuild its form, so restore it explicitly.
++            if !restoreAcceptedForm(from: paymentOptionToRestore, for: currentSelection),
++               lastUpdatedPaymentOption != paymentOption {
++                embeddedPaymentMethodsView.resetSelection()
++            }
+         } else {
+-            // Go back to the previous selection if there was one
++            // Changing rows rebuilds the previous form from `paymentOptionToRestoreOnCancellation`.
+             embeddedPaymentMethodsView.resetSelectionToLastSelection()
+         }
+ 
+         // Show change button if the newly selected row needs it
+-        if let currentlySelectedType = embeddedPaymentMethodsView.selectedRowButton?.type{
+-            updateChangeButtonAndSublabelState(for: currentlySelectedType)
++        if let currentSelection = embeddedPaymentMethodsView.selectedRowButton?.type {
++            updateChangeButtonAndSublabelState(for: currentSelection)
+         }
+ 
+         embeddedFormViewController.dismiss(animated: true) {
+@@ -456,6 +605,8 @@ extension EmbeddedPaymentElement: EmbeddedFormViewControllerDelegate {
+     }
+ 
+     func embeddedFormViewControllerDidContinue(_ embeddedFormViewController: EmbeddedFormViewController) {
++        embeddedFormViewController.capturePaymentOptionForCancellationRestoration()
++
+         // Show change button if the selected row needs it
+         if let newSelectedType = embeddedPaymentMethodsView.selectedRowButton?.type {
+             updateChangeButtonAndSublabelState(for: newSelectedType)
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
+index f63ce98..871c912 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
+@@ -280,6 +280,11 @@ public final class EmbeddedPaymentElement {
+                 previousSelectedRowChangeButtonState: shouldSelectPreviousRow ? previousSelectedRowChangeButtonState : nil,
+                 delegate: self
+             )
++            // Keep the rebuilt view loading while the billing sync finishes.
++            if self.pendingBillingAddressSyncSelection != nil {
++                self.embeddedPaymentMethodsView.isUserInteractionEnabled = false
++                self.embeddedPaymentMethodsView.selectedRowButton?.setLoading(true, animated: false)
++            }
+             self.containerView.updateEmbeddedPaymentMethodsView(embeddedPaymentMethodsView)
+             informDelegateIfPaymentOptionUpdated()
+             return .succeeded
+@@ -299,7 +304,8 @@ public final class EmbeddedPaymentElement {
+         if case .succeeded = updateResult {
+             clearPaymentOptionIfNeeded()
+         }
+-        embeddedPaymentMethodsView.isUserInteractionEnabled = true
++        // A billing sync may still be running when this update finishes.
++        embeddedPaymentMethodsView.isUserInteractionEnabled = pendingBillingAddressSyncSelection == nil
+         analyticsHelper.logEmbeddedUpdateFinished(result: updateResult, duration: Date().timeIntervalSince(startTime))
+         return updateResult
+     }
+@@ -382,6 +388,8 @@ public final class EmbeddedPaymentElement {
+     internal private(set) var formCache: PaymentMethodFormCache = .init()
+     /// The form view controller for the currently selected payment method.
+     internal var selectedFormViewController: EmbeddedFormViewController?
++    /// The saved payment method waiting for its billing address to sync to Checkout.
++    internal var pendingBillingAddressSyncSelection: PendingBillingAddressSyncSelection?
+     /// Indicates if a payment has been successfully completed.
+     internal var hasConfirmedIntent = false
+     /// Tracks info about the currently in-flight or most recent update attempt.
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift
+index 27a283f..802308f 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift
+@@ -14,6 +14,9 @@ import UIKit
+ protocol EmbeddedPaymentMethodsViewDelegate: AnyObject {
+     func embeddedPaymentMethodsViewDidUpdateHeight()
+ 
++    /// Called before the view changes its selected row.
++    func embeddedPaymentMethodsViewWillSelect(_ rowButtonType: RowButtonType)
++
+     /// Called whenever a payment method row is tapped, after `didUpdateSelection`.
+     func embeddedPaymentMethodsViewDidTapPaymentMethodRow()
+ 
+@@ -38,7 +41,6 @@ class EmbeddedPaymentMethodsView: UIView {
+     }
+ 
+     private let appearance: PaymentSheet.Appearance
+-    private let customer: PaymentSheet.CustomerConfiguration?
+     private let currency: String?
+     private let paymentMethodMessagingPromotionsHelper: PaymentMethodMessagingPromotionsHelper?
+     private(set) var previousSelectedRowButton: RowButton? {
+@@ -101,6 +103,16 @@ class EmbeddedPaymentMethodsView: UIView {
+         mandateView.directionalLayoutMargins.top = 12
+         return mandateView
+     }()
++    lazy var errorLabel = ElementsUI.makeErrorLabel(theme: appearance.asElementsTheme)
++    private lazy var errorContainerView: UIView = {
++        let view = UIView()
++        view.addAndPinSubview(
++            errorLabel,
++            directionalLayoutMargins: .init(top: 12, leading: 0, bottom: 0, trailing: 0)
++        )
++        view.setHiddenIfNecessary(true)
++        return view
++    }()
+     private var savedPaymentMethodButton: RowButton?
+     private(set) var rowButtons: [RowButton]
+     weak var delegate: EmbeddedPaymentMethodsViewDelegate?
+@@ -122,7 +134,6 @@ class EmbeddedPaymentMethodsView: UIView {
+         mandateProvider: MandateTextProvider,
+         shouldShowMandate: Bool = true,
+         savedPaymentMethods: [STPPaymentMethod] = [],
+-        customer: PaymentSheet.CustomerConfiguration? = nil,
+         currency: String? = nil,
+         incentive: PaymentMethodIncentive? = nil,
+         paymentMethodMessagingPromotionsHelper: PaymentMethodMessagingPromotionsHelper? = nil,
+@@ -132,7 +143,6 @@ class EmbeddedPaymentMethodsView: UIView {
+         self.appearance = appearance
+         self.mandateProvider = mandateProvider
+         self.shouldShowMandate = shouldShowMandate
+-        self.customer = customer
+         self.currency = currency
+         self.paymentMethodMessagingPromotionsHelper = paymentMethodMessagingPromotionsHelper
+         self.analyticsHelper = analyticsHelper
+@@ -165,7 +175,6 @@ class EmbeddedPaymentMethodsView: UIView {
+             let applePayRowButton = RowButton.makeForApplePay(appearance: appearance,
+                                                               isEmbedded: true,
+                                                               didTap: { [weak self] rowButton in
+-                CustomerPaymentOption.setDefaultPaymentMethod(.applePay, forCustomer: customer?.id)
+                 self?.didTap(rowButton: rowButton)
+             })
+             rowButtons.append(applePayRowButton)
+@@ -173,7 +182,6 @@ class EmbeddedPaymentMethodsView: UIView {
+ 
+         if shouldShowLink {
+             let linkRowButton = RowButton.makeForLink(appearance: appearance, linkBrand: linkBrand, isEmbedded: true) { [weak self] rowButton in
+-                CustomerPaymentOption.setDefaultPaymentMethod(.link, forCustomer: customer?.id)
+                 self?.didTap(rowButton: rowButton)
+             }
+             rowButtons.append(linkRowButton)
+@@ -217,6 +225,7 @@ class EmbeddedPaymentMethodsView: UIView {
+         // Set up mandate
+         stackView.addArrangedSubview(mandateView)
+         updateMandate(animated: false)
++        stackView.addArrangedSubview(errorContainerView)
+ 
+         // Our content should respect `directionalLayoutMargins`. The default margins is `.zero`.
+         addAndPinSubview(stackView, directionalLayoutMargins: .zero)
+@@ -300,6 +309,35 @@ class EmbeddedPaymentMethodsView: UIView {
+         selectedRowButton = nil
+     }
+ 
++    /// Displays an error below the payment method rows, or clears it when `error` is nil.
++    func setError(_ error: Error?, animated: Bool = true) {
++        let message = error?.nonGenericDescription
++        guard message != errorLabel.text else { return }
++        errorLabel.text = message
++        let updates = {
++            self.errorContainerView.setHiddenIfNecessary(message == nil)
++            self.setNeedsLayout()
++            self.layoutIfNeeded()
++        }
++        if animated {
++            UIView.animate(withDuration: PaymentSheetUI.defaultAnimationDuration, animations: updates)
++        } else {
++            updates()
++        }
++        if message != nil {
++            UIAccessibility.post(notification: .layoutChanged, argument: errorLabel)
++        }
++    }
++
++    /// Selects the saved payment method if it is still displayed.
++    func selectSavedPaymentMethod(withStripeId stripeId: String) -> Bool {
++        guard let rowButton = rowButtons.first(where: {
++            $0.type.savedPaymentMethod?.stripeId == stripeId
++        }) else { return false }
++        selectedRowButton = rowButton
++        return true
++    }
++
+     @objc
+     func onLinkAccountChange(_ notification: Notification) {
+         DispatchQueue.main.async { [weak self] in
+@@ -310,6 +348,8 @@ class EmbeddedPaymentMethodsView: UIView {
+ 
+     // MARK: Tap handling
+     func didTap(rowButton: RowButton) {
++        setError(nil)
++        delegate?.embeddedPaymentMethodsViewWillSelect(rowButton.type)
+         self.selectedRowButton = rowButton
+         delegate?.embeddedPaymentMethodsViewDidTapPaymentMethodRow()
+         analyticsHelper.logNewPaymentMethodSelected(paymentMethodTypeIdentifier: rowButton.type.analyticsIdentifier)
+@@ -317,6 +357,7 @@ class EmbeddedPaymentMethodsView: UIView {
+     }
+ 
+     func didTapViewMoreSavedPaymentMethods() {
++        setError(nil)
+         delegate?.embeddedPaymentMethodsViewDidTapViewMoreSavedPaymentMethods(selectedSavedPaymentMethod: selectedRowButton?.type.savedPaymentMethod)
+     }
+ 
+@@ -505,10 +546,6 @@ class EmbeddedPaymentMethodsView: UIView {
+             isEmbedded: true,
+             linkBrand: linkBrand,
+             didTap: { [weak self] rowButton in
+-                CustomerPaymentOption.setDefaultPaymentMethod(
+-                    .stripeId(savedPaymentMethod.stripeId),
+-                    forCustomer: self?.customer?.id
+-                )
+                 self?.didTap(rowButton: rowButton)
+             }
+         )
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift
+index 150d06e..c89164e 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift
+@@ -13,15 +13,19 @@ struct EmbeddedViewRepresentable: UIViewRepresentable {
+     @ObservedObject var viewModel: EmbeddedPaymentElementViewModel
+ 
+     public func makeUIView(context: Context) -> UIView {
+-        let containerView = UIView()
++        let containerView = EmbeddedViewContainerView()
+         containerView.backgroundColor = .clear
+         containerView.layoutMargins = .zero
++        containerView.didMoveToWindowHandler = {
++            DispatchQueue.main.async {
++                viewModel.objectWillChange.send()
++            }
++        }
+ 
+         guard let embeddedPaymentElement = viewModel.embeddedPaymentElement else {
+             stpAssertionFailure("embeddedPaymentElement was nil in EmbeddedViewRepresentable.makeUIView(). Ensure you do not show the EmbeddedPaymentElementView before isLoaded is true on the EmbeddedPaymentElementViewModel.")
+             return containerView
+         }
+-        embeddedPaymentElement.presentingViewController = UIWindow.visibleViewController
+ 
+         let paymentElementView = embeddedPaymentElement.view
+         paymentElementView.translatesAutoresizingMaskIntoConstraints = false
+@@ -37,7 +41,7 @@ struct EmbeddedViewRepresentable: UIViewRepresentable {
+     }
+ 
+     public func updateUIView(_ uiView: UIView, context: Context) {
+-        guard let visibleVC = UIWindow.visibleViewController else { return }
++        guard let visibleVC = visibleViewController(for: uiView) else { return }
+ 
+         // If visibleVC in the process of dismissing, skip for now and retry shortly.
+         // updateUIView can be trigged by a view controller (such as a form) being dismissed
+@@ -53,6 +57,19 @@ struct EmbeddedViewRepresentable: UIViewRepresentable {
+             viewModel.embeddedPaymentElement?.presentingViewController = visibleVC
+         }
+     }
++
++    private func visibleViewController(for uiView: UIView) -> UIViewController? {
++        return uiView.window?.rootViewController?.findTopMostPresentedViewController()
++    }
++}
++
++private final class EmbeddedViewContainerView: UIView {
++    var didMoveToWindowHandler: (() -> Void)?
++
++    override func didMoveToWindow() {
++        super.didMoveToWindow()
++        didMoveToWindowHandler?()
++    }
+ }
+ 
+ // MARK: UIWindow and UIViewController helpers
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkAppearance.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkAppearance.swift
+index b39242e..d56314e 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkAppearance.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkAppearance.swift
+@@ -8,7 +8,7 @@
+ import UIKit
+ 
+ // Customizable appearance-related configuration for Stripe-provided Link UI.
+-@_spi(CryptoOnrampAlpha)
++@_spi(CryptoOnrampAlpha) @_spi(LinkControllerPreview)
+ public struct LinkAppearance {
+ 
+     /// Configuration values for the primary button.
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift
+index 67ca380..27b1482 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift
+@@ -28,6 +28,10 @@ public struct LinkConfiguration {
+     /// If `nil`, defaults to the host app's `CFBundleDisplayName` / `CFBundleName`.
+     @_spi(LinkControllerPreview) public let merchantDisplayName: String?
+ 
++    /// Configures billing details collection in the Link sheet.
++    /// If `nil`, uses the billing details collection configuration from the `PaymentElementConfiguration` passed at init.
++    @_spi(LinkControllerPreview) public let billingDetailsCollectionConfiguration: PaymentSheet.BillingDetailsCollectionConfiguration?
++
+     /// Creates a new instance of `LinkConfiguration`.
+     /// - Parameters:
+     ///   - hintMessage: Custom hint message to display in the wallet view. If `nil`, no hint will be shown.
+@@ -41,6 +45,7 @@ public struct LinkConfiguration {
+         self.supportedPaymentMethodTypes = nil
+         self.paymentMethodTypes = nil
+         self.merchantDisplayName = nil
++        self.billingDetailsCollectionConfiguration = nil
+     }
+ 
+     /// Creates a new instance of `LinkConfiguration`.
+@@ -49,16 +54,19 @@ public struct LinkConfiguration {
+     ///   - paymentMethodTypes: The payment method types to use when creating the setup intent. If `nil`, the payment method types used will be chosen automatically.
+     ///   - allowLogout: Whether to allow the user to log out. When `false`, the logout menu button will be hidden. Defaults to `true`.
+     ///   - merchantDisplayName: The merchant name displayed in Link UI. If `nil`, defaults to the app's `CFBundleDisplayName`.
++    ///   - billingDetailsCollectionConfiguration: Configures billing details collection in the Link sheet. If `nil`, uses the billing details collection configuration from the `PaymentElementConfiguration` passed at init.
+     @_spi(LinkControllerPreview) public init(
+         supportedPaymentMethodTypes: [LinkPaymentMethodType]? = nil,
+         paymentMethodTypes: [String]? = nil,
+         allowLogout: Bool = true,
+-        merchantDisplayName: String? = nil
++        merchantDisplayName: String? = nil,
++        billingDetailsCollectionConfiguration: PaymentSheet.BillingDetailsCollectionConfiguration? = nil
+     ) {
+         self.hintMessage = nil
+         self.allowLogout = allowLogout
+         self.supportedPaymentMethodTypes = supportedPaymentMethodTypes
+         self.paymentMethodTypes = paymentMethodTypes
+         self.merchantDisplayName = merchantDisplayName
++        self.billingDetailsCollectionConfiguration = billingDetailsCollectionConfiguration
+     }
+ }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
+index 0924cf0..3e27696 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
+@@ -497,6 +497,9 @@ import UIKit
+         var paymentElementConfiguration = self.paymentElementConfiguration
+         paymentElementConfiguration.defaultBillingDetails.email = email
+ 
++        if let billingConfig = configuration?.billingDetailsCollectionConfiguration {
++            paymentElementConfiguration.billingDetailsCollectionConfiguration = billingConfig
++        }
+         if collectName {
+             paymentElementConfiguration.billingDetailsCollectionConfiguration.name = .always
+         }
+@@ -560,6 +563,9 @@ import UIKit
+             if let phoneNumber {
+                 paymentElementConfiguration.defaultBillingDetails.phone = phoneNumber
+             }
++            if let billingConfig = self.configuration?.billingDetailsCollectionConfiguration {
++                paymentElementConfiguration.billingDetailsCollectionConfiguration = billingConfig
++            }
+ 
+             presentingViewController.presentNativeLink(
+                 selectedPaymentDetailsID: nil,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+CheckoutSessionAPI.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+CheckoutSessionAPI.swift
+index cd45ef9..8e3b8e2 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+CheckoutSessionAPI.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+CheckoutSessionAPI.swift
+@@ -58,16 +58,8 @@ extension PaymentSheet {
+             // 2. Get expected amount and save_payment_method from checkout session
+             let expectedAmount = checkoutSession.expectedAmount()
+             let savePaymentMethod: Bool? = {
+-                switch checkoutSession.mode {
+-                case .setup:
+-                    // setup mode does not send the save_payment_method param
+-                    return nil
+-                case .payment:
+-                    return confirmType.savePaymentMethodForCheckoutSession
+-                case .subscription, .unknown:
+-                    stpAssertionFailure("Only payment and setup mode implemented")
+-                    return nil
+-                }
++                guard !checkoutSession.noPaymentRequired else { return nil }
++                return confirmType.savePaymentMethodForCheckoutSession
+             }()
+ 
+             // 3. Call confirm API
+@@ -86,10 +78,9 @@ extension PaymentSheet {
+             // Update the Checkout instance with the confirmed session response
+             try await checkout.commitSession(response)
+ 
+-            // 4. Handle response based on checkout session mode
++            // 4. Handle the intent returned by the confirm response.
+             return try await handleCheckoutSessionConfirmResponse(
+                 response: response,
+-                checkoutSession: checkoutSession,
+                 configuration: configuration,
+                 authenticationContext: authenticationContext,
+                 paymentHandler: paymentHandler
+@@ -102,33 +93,28 @@ extension PaymentSheet {
+     @MainActor
+     private static func handleCheckoutSessionConfirmResponse(
+         response: PaymentPagesAPIResponse,
+-        checkoutSession: Checkout.Session,
+         configuration: PaymentElementConfiguration,
+         authenticationContext: STPAuthenticationContext,
+         paymentHandler: STPPaymentHandler
+     ) async throws -> PaymentSheetResult {
+-        if checkoutSession.mode == .setup {
+-            // Setup mode - handle SetupIntent
+-            guard let setupIntent = response.setupIntent else {
+-                throw PaymentSheetError.unknown(debugDescription: "Missing setup intent in confirm response")
+-            }
++        if let setupIntent = response.setupIntent {
+             return await handleCheckoutSessionSetupIntentResponse(
+                 setupIntent: setupIntent,
+                 configuration: configuration,
+                 authenticationContext: authenticationContext,
+                 paymentHandler: paymentHandler
+             )
+-        } else {
+-            // Payment/Subscription mode - handle PaymentIntent
+-            guard let paymentIntent = response.paymentIntent else {
+-                throw PaymentSheetError.unknown(debugDescription: "Missing payment intent in confirm response")
+-            }
++        } else if let paymentIntent = response.paymentIntent {
+             return await handleCheckoutSessionPaymentIntentResponse(
+                 paymentIntent: paymentIntent,
+                 configuration: configuration,
+                 authenticationContext: authenticationContext,
+                 paymentHandler: paymentHandler
+             )
++        } else {
++            throw PaymentSheetError.unknown(
++                debugDescription: "Checkout session confirm response contained neither a PaymentIntent nor a SetupIntent"
++            )
+         }
+     }
+ 
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
+index 3bfd60e..d60f862 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift
+@@ -682,6 +682,22 @@ extension PaymentSheet {
+                 allowedCountries = Set(allowedCountries.map { $0.uppercased() })
+             }
+         }
++
++        public init(
++            name: CollectionMode = .automatic,
++            phone: CollectionMode = .automatic,
++            email: CollectionMode = .automatic,
++            address: AddressCollectionMode = .automatic,
++            attachDefaultsToPaymentMethod: Bool = false,
++            allowedCountries: Set<String> = []
++        ) {
++            self.name = name
++            self.phone = phone
++            self.email = email
++            self.address = address
++            self.attachDefaultsToPaymentMethod = attachDefaultsToPaymentMethod
++            self.allowedCountries = allowedCountries
++        }
+     }
+ 
+     /// Configuration for external payment methods
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+index 087df86..62f2dbb 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+@@ -56,6 +56,24 @@ extension PaymentSheet {
+             }
+         }
+ 
++        /// Returns completed form input needed to rebuild FlowController after payment-options
++        /// cancellation. Unlike `newConfirmParams`, this includes form-backed saved methods and
++        /// Link signup.
++        var formConfirmParamsForCancellationRestoration: IntentConfirmParams? {
++            switch self {
++            case .saved(_, let confirmParams):
++                // Linked banks are represented as `.saved` but rebuilt through their Instant
++                // Debits or Link Card Brand form. Other saved methods restore from savedPaymentMethods.
++                return confirmParams?.instantDebitsLinkedBank != nil ? confirmParams : nil
++            case .new, .external:
++                return newConfirmParams
++            case .link(let confirmOption):
++                return confirmOption.signupConfirmParams
++            case .applePay:
++                return nil
++            }
++        }
++
+         var savedPaymentMethod: STPPaymentMethod? {
+             switch self {
+             case .applePay, .link, .new, .external:
+@@ -251,6 +269,7 @@ extension PaymentSheet {
+         var viewController: FlowControllerViewControllerProtocol
+ 
+         private var presentPaymentOptionsCompletionWithResult: ((Bool) -> Void)?
++        private var selectionSnapshotBeforePresentation: FlowControllerSelectionSnapshot?
+         private var didDismissLinkVerificationDialog: Bool = false
+ 
+         // If a WalletButtonsView is currently visible
+@@ -282,7 +301,21 @@ extension PaymentSheet {
+                 return false
+             }
+ 
+-            return internalPaymentOption?.canLaunchLink ?? false
++            guard let internalPaymentOption, internalPaymentOption.canLaunchLink else {
++                return false
++            }
++
++            // Link can be the payment option when it's the customer default and rendered as
++            // the only wallet header. In that case, for whatever reason, a test asserts
++            // that opening payment options shows FlowController instead of immediately
++            // launching the Link payment-method selection flow. Preserve that behavior here
++            // and only launch Link in place of FlowController after the customer has
++            // continued from FlowController at least once.
++            if case .link(.wallet) = internalPaymentOption {
++                return didPresentAndContinue
++            }
++
++            return true
+         }
+ 
+         // Stores the state of the most recent call to the update API
+@@ -503,8 +536,17 @@ extension PaymentSheet {
+                 return
+             }
+ 
++            // Capture the accepted selection before presenting payment options.
++            selectionSnapshotBeforePresentation = FlowControllerSelectionSnapshot(
++                viewController: viewController,
++                customerID: configuration.customer?.id
++            )
++
+             // Overwrite completion closure to retain self until called
+             let wrappedCompletion: (Bool) -> Void = { didCancel in
++                // The snapshot is no longer needed on completion
++                self.selectionSnapshotBeforePresentation = nil
++
+                 self.updatePaymentOption()
+                 completion?(didCancel)
+                 self.presentPaymentOptionsCompletionWithResult = nil
+@@ -824,7 +866,7 @@ extension PaymentSheet {
+                         analyticsHelper: analyticsHelper,
+                         walletButtonsViewState: walletButtonsViewState,
+                         checkout: self.checkout,
+-                        previousPaymentOption: self.internalPaymentOption
++                        initialState: .preservingFormInput(from: self.internalPaymentOption)
+                     )
+                     self.viewController.flowControllerDelegate = self
+                     self.confirmationChallenge = confirmationChallenge
+@@ -843,25 +885,63 @@ extension PaymentSheet {
+         }
+ 
+         func updateForWalletButtonsView() {
+-            // Recreate the view controller
+-            // Use the original load result, but w/ updated saved PMs to avoid e.g. deleting PMs, then having this method be called and showing the deleted PMs again.
+-            let updatedLoadResult = PaymentSheetLoader.LoadResult(
++            // Rebuild with the current saved methods so deleted methods don't reappear.
++            self.viewController = Self.makeViewController(
++                configuration: self.configuration,
++                loadResult: makeLoadResultWithCurrentSavedPaymentMethods(),
++                analyticsHelper: analyticsHelper,
++                walletButtonsViewState: self.walletButtonsViewState,
++                initialState: .preservingFormInput(from: internalPaymentOption)
++            )
++            self.viewController.flowControllerDelegate = self
++            updatePaymentOption()
++        }
++
++        private func makeLoadResultWithCurrentSavedPaymentMethods(
++            prioritizing paymentOption: PaymentOption? = nil
++        ) -> PaymentSheetLoader.LoadResult {
++            var savedPaymentMethods = viewController.savedPaymentMethods
++            // Move the prioritized payment option to the front of the saved payment methods if present
++            if viewController.loadResult.paymentMethodOrientation == .vertical,
++               case let .saved(paymentMethod, _) = paymentOption,
++               let index = savedPaymentMethods.firstIndex(where: { $0.stripeId == paymentMethod.stripeId }) {
++                savedPaymentMethods.insert(savedPaymentMethods.remove(at: index), at: 0)
++            }
++            return PaymentSheetLoader.LoadResult(
+                 intent: viewController.loadResult.intent,
+                 elementsSession: viewController.loadResult.elementsSession,
+-                savedPaymentMethods: viewController.savedPaymentMethods, // Note: not using load result!
++                savedPaymentMethods: savedPaymentMethods,
+                 paymentMethodTypes: viewController.loadResult.paymentMethodTypes,
+                 paymentMethodMessagingPromotionsHelper: viewController.loadResult.paymentMethodMessagingPromotionsHelper,
+                 paymentMethodOrientation: viewController.loadResult.paymentMethodOrientation
+             )
++        }
++
++        private func revertSelectionAfterCancellation() {
++            guard let snapshot = selectionSnapshotBeforePresentation else {
++                return
++            }
++
++            snapshot.revertPersistedSelection(
++                using: viewController.savedPaymentMethods
++            )
++
++            guard let selection = snapshot.selectionForRebuilding(
++                using: viewController
++            ) else {
++                return
++            }
++
+             self.viewController = Self.makeViewController(
+-                configuration: self.configuration,
+-                loadResult: updatedLoadResult,
++                configuration: configuration,
++                loadResult: makeLoadResultWithCurrentSavedPaymentMethods(
++                    prioritizing: selection.paymentOption
++                ),
+                 analyticsHelper: analyticsHelper,
+-                walletButtonsViewState: self.walletButtonsViewState,
+-                previousPaymentOption: self.internalPaymentOption
++                walletButtonsViewState: walletButtonsViewState,
++                initialState: .restoringAfterCancellation(selection)
+             )
+             self.viewController.flowControllerDelegate = self
+-            updatePaymentOption()
+         }
+ 
+         /// Updates the published paymentOption property based on the current state
+@@ -910,7 +990,7 @@ extension PaymentSheet {
+             analyticsHelper: PaymentSheetAnalyticsHelper,
+             walletButtonsViewState: PaymentSheet.WalletButtonsViewState,
+             checkout: Checkout? = nil,
+-            previousPaymentOption: PaymentOption? = nil
++            initialState: FlowControllerViewControllerInitialState = .preservingFormInput(from: nil)
+         ) -> FlowControllerViewControllerProtocol {
+             let controller: FlowControllerViewControllerProtocol
+             switch loadResult.paymentMethodOrientation {
+@@ -920,7 +1000,7 @@ extension PaymentSheet {
+                     loadResult: loadResult,
+                     analyticsHelper: analyticsHelper,
+                     checkout: checkout,
+-                    previousPaymentOption: previousPaymentOption
++                    initialState: initialState
+                 )
+             case .vertical:
+                 controller = PaymentSheetVerticalViewController(
+@@ -930,7 +1010,7 @@ extension PaymentSheet {
+                     analyticsHelper: analyticsHelper,
+                     walletButtonsViewState: walletButtonsViewState,
+                     checkout: checkout,
+-                    previousPaymentOption: previousPaymentOption
++                    previousPaymentOption: initialState.paymentOption
+                 )
+             }
+             return controller
+@@ -984,8 +1064,8 @@ extension PaymentSheet.FlowController: LoadingViewControllerDelegate {
+         pendingPresentTask?.cancel()
+         pendingPresentTask = nil
+         loadingViewController.dismiss(animated: true) {
++            self.isPresented = false
+             self.presentPaymentOptionsCompletionWithResult?(true)
+-            self.updatePaymentOption()
+         }
+     }
+ }
+@@ -1006,8 +1086,10 @@ extension PaymentSheet.FlowController: FlowControllerViewControllerDelegate {
+             self.didPresentAndContinue = true
+         }
+         flowControllerViewController.dismiss(animated: true) {
++            if didCancel {
++                self.revertSelectionAfterCancellation()
++            }
+             self.presentPaymentOptionsCompletionWithResult?(didCancel)
+-            self.updatePaymentOption()
+             self.isPresented = false
+         }
+     }
+@@ -1062,6 +1144,8 @@ internal protocol FlowControllerViewControllerProtocol: BottomSheetContentViewCo
+     var savedPaymentMethods: [STPPaymentMethod] { get }
+     var linkConfirmOption: PaymentSheet.LinkConfirmOption? { get set }
+     var selectedPaymentOption: PaymentOption? { get }
++    /// Completed form input needed if cancellation rebuilds this view controller.
++    var formConfirmParamsForCancellationRestoration: IntentConfirmParams? { get }
+     /// The type of the Stripe payment method that's currently selected in the UI for new and saved PMs. Returns nil Apple Pay and .stripe(.link) for Link.
+     /// Note that, unlike selectedPaymentOption, this is non-nil even if the PM form is invalid.
+     var selectedPaymentMethodType: PaymentSheet.PaymentMethodType? { get }
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index 98a43ee..36a5bfb 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.4.1'
++  s.version                        = '26.5.0'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/VERSION b/VERSION
+index f053121..1f17334 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.4.1
+\ No newline at end of file
++26.5.0
+\ No newline at end of file

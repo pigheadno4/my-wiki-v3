@@ -1,12 +1,48 @@
 # Wiki Log
 
+## [2026-10-02] ingest | Stripe iOS `26.12.1`
+
+- Approved full additive ingest with focused reading and three supplemental files: Pix polling/redirect cancellation caveat, consent evidence/reuse, incompatible STP polling signature and scoped Checkout email change. Older knowledge and retrospective annotations preserved. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.
+
 ## [2026-10-02] ingest | Braintree recurring-billing website C24
 
 - Ten article/response sources were independently reviewed and added to the Braintree capsule; fixed query audit passed 20/20. Article, Node guide and API-reference authority remain separate, and the Marketplace compatibility conflict remains unresolved. Details: [[braintree-log]], [[braintree-index]] and [[braintree-recurring-billing]]. No commit or push was authorized by C24 execution.
 
+## [2026-10-02] ingest | Stripe iOS `26.12.0`
+
+- Approved full additive ingest with focused reading: alpha partner terms, announced Image API removal, scoped confirmation cleanup and Identity styling. Older history and retrospective annotations preserved. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe iOS `26.11.0`
+
+- Approved full additive ingest with focused reading and a current controller supplement: Checkout SPI confirmation changes and timeout warning, Scalapay, revised Link documentation and retrospective Kakao Pay annotation. Older history preserved. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe iOS `26.10.0`
+
+- Approved bounded delta with focused reading: PaymentSheet announcements, PaymentIntent-only mandate inference and scoped branding/Identity/rendering changes. Older history and delegated implementation gaps preserved. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe iOS `26.9.0`
+
+- Approved full additive ingest with focused reading and a controller/poller supplement: five payment-method API bindings and Checkout polling/SPI changes. Older history retained; completion is not settlement, and current delegated internals remain evidence gaps. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.
+
+## [2026-09-30] ingest | Stripe iOS `26.8.0`
+
+- Approved full additive ingest with focused reading and a two-file supplement: CheckoutController SPI confirmation, FPX additions, decline-text fix and preview options. Older history and Apple Pay evidence gaps preserved. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.
+
+## [2026-09-30] ingest | Stripe iOS `26.7.0`
+
+- Approved focused-reading delta: Lite embedding migration, Link button hiding, autocomplete flag changes and typed Vipps. Older history, retrospective annotations and current Checkout evidence gaps preserved. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.
+
 ## [2026-09-30] ingest | Braintree Marketplace website C23
 
 - Ten article and developer-guide sources were independently reviewed and added to the Braintree capsule; the fixed query audit passed 20/20. The recurring-billing compatibility conflict remains explicitly unresolved. Details: [[braintree-log]], [[braintree-index]] and [[braintree-marketplace]]. Commit and push were approved separately after campaign close.
+
+## [2026-09-30] ingest | Stripe iOS `26.6.0`
+
+- Approved full additive ingest with focused reading: MB WAY/Bizum, preview Link errors, alpha wallet deletion, and explicit unfinished Checkout SPI limits. Older knowledge retained and collection-scope additions distinguished from new features. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.
+
+## [2026-09-30] ingest | Stripe iOS `26.5.0`
+
+- Approved focused-reading delta: private-preview Link configuration, selection/presentation and internal Checkout changes; older knowledge and retrospective version-attribution limits preserved. Details: [[stripe-log]], [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]]. No commit or push.
 
 ## [2026-09-29] ingest | Braintree web SDK GitHub Actions `default-branch@e9c8ae9`
 

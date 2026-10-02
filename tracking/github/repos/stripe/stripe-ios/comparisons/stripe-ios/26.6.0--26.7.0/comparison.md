@@ -1,0 +1,117 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-ios`
+- Package: `stripe-ios`
+- From: `26.6.0` (`3410ff0853b66e5ade3e8763e99f3ddb5dd77bc3`)
+- To: `26.7.0` (`62c2070c57f20b4d632b25fc62780841f8883cc8`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `MIGRATING.md`
+- `Package.swift`
+- `README.md`
+- `StripeApplePay.podspec`
+- `StripeConnect.podspec`
+- `StripeCryptoOnramp.podspec`
+- `StripeFinancialConnections.podspec`
+- `StripeIdentity.podspec`
+- `StripeIssuing.podspec`
+- `StripePaymentSheet.podspec`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Customer.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+ExchangeRateMeta.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+LocalizedPriceMeta.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+SavedPaymentMethodsOfferSave.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Amount.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Analytic.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+CurrencyOption.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Discount.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+LineItem.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Tax.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Total.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionBillingAddressUpdater.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElement.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementUIView.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementView.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift`
+- `StripePayments.podspec`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVipps.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVippsParams.swift`
+- `StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`
+- `VERSION`
+- `modules.yaml`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `MIGRATING.md`
+- `modified`: `Package.swift`
+- `modified`: `README.md`
+- `modified`: `StripeApplePay.podspec`
+- `modified`: `StripeConnect.podspec`
+- `modified`: `StripeCryptoOnramp.podspec`
+- `modified`: `StripeFinancialConnections.podspec`
+- `modified`: `StripeIdentity.podspec`
+- `modified`: `StripeIssuing.podspec`
+- `modified`: `StripePaymentSheet.podspec`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Customer.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+ExchangeRateMeta.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+LocalizedPriceMeta.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+SavedPaymentMethodsOfferSave.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse+Session.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift`
+- `deleted`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Amount.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Analytic.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+CurrencyOption.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Discount.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift`
+- `deleted`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+LineItem.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+Internal.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Status.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Tax.swift`
+- `deleted`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Total.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutSessionBillingAddressUpdater.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElement.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementUIView.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Currency Selector Element/CurrencySelectorElementView.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement+AddressViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Shipping Address Element/ShippingAddressElement.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift`
+- `modified`: `StripePayments.podspec`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVipps.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodVippsParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`
+- `modified`: `VERSION`
+- `modified`: `modules.yaml`

@@ -1,0 +1,592 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 38bc378..ce80cdd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,17 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.12.0 2026-09-21
++### CryptoOnramp (Alpha)
++* [Removed] Removed public exposure of `StripeCryptoOnramp.Image`, including `Image.linkIconSquare`.
++* [Added] Added `CryptoOnrampCoordinator.presentTermsAndConditionsIfNeeded(from:)` and `presentTermsOfServiceIfNeeded(from:)` to present and record acceptance of current partner terms when required. Both methods return `PartnerTermsResult`.
++
++### StripeCore
++* [Added] Added `additionalHeaders` support to the `STPAPIClient` GET, POST, and DELETE APIs exposed through the `STP` SPI.
++
++### PaymentSheet
++* [Fixed] Fixed card funding warnings not appearing after scanning a card.
++
+ ## 26.11.0 2026-09-14
+ ### General
+ * [Added] Added support for Welsh.
+@@ -12,6 +23,7 @@ PATCH
+ 
+ ### PaymentSheet
+ * [Added] Added support for Scalapay.
++* [Added] Added support for Card program name for saved payment methods when using CustomerSessions
+ 
+ ## 26.10.0 2026-09-08
+ ### General
+diff --git a/Package.swift b/Package.swift
+index 399ee70..441f065 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -193,7 +193,8 @@ let package = Package(
+             path: "StripeCryptoOnramp/StripeCryptoOnramp",
+             exclude: ["StripeCryptoOnramp.h"],
+             resources: [
+-                .process("Resources/StripeCryptoOnramp.xcassets")
++                .process("Resources/StripeCryptoOnramp.xcassets"),
++                .process("Resources/Localizations")
+             ]
+         )
+     ]
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index a224d11..281f41e 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.11.0'
++  s.version                        = '26.12.0'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index 59247d1..7f2d0ae 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.11.0'
++  s.version                        = '26.12.0'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index 8a95a62..d192c20 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.11.0'
++  s.version                        = '26.12.0'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift b/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
+index 053a27d..a245d69 100644
+--- a/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
++++ b/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
+@@ -107,6 +107,24 @@ protocol CryptoOnrampCoordinatorProtocol {
+     @MainActor
+     func presentUserAttestation(from viewController: UIViewController) async throws -> UserAttestationResult
+ 
++    /// Presents the current terms and conditions when acceptance is required.
++    /// Requires an authenticated Link user.
++    ///
++    /// - Parameter viewController: The view controller from which to present the terms and conditions.
++    /// - Returns: A `PartnerTermsResult` indicating whether the user accepted, canceled, or no presentation was required.
++    /// Throws if an authenticated Link user is not available or an API error occurs.
++    @MainActor
++    func presentTermsAndConditionsIfNeeded(from viewController: UIViewController) async throws -> PartnerTermsResult
++
++    /// Presents the current terms of service when acceptance is required.
++    /// Requires an authenticated Link user.
++    ///
++    /// - Parameter viewController: The view controller from which to present the terms of service.
++    /// - Returns: A `PartnerTermsResult` indicating whether the user accepted, canceled, or no presentation was required.
++    /// Throws if an authenticated Link user is not available or an API error occurs.
++    @MainActor
++    func presentTermsOfServiceIfNeeded(from viewController: UIViewController) async throws -> PartnerTermsResult
++
+     /// Initiates the KYC verification flow, which displays the user’s currently collected KYC information with the ability to confirm or update the displayed address.
+     ///
+     /// - Parameters:
+@@ -481,6 +499,40 @@ public final class CryptoOnrampCoordinator: NSObject, CryptoOnrampCoordinatorPro
+         }
+     }
+ 
++    @MainActor
++    public func presentTermsAndConditionsIfNeeded(from viewController: UIViewController) async throws -> PartnerTermsResult {
++        analyticsClient.log(.termsAndConditionsStarted)
++        do {
++            let result = try await presentPartnerTermsIfNeeded(
++                declarationType: .transactionTerms,
++                from: viewController
++            )
++            if result == .accepted {
++                analyticsClient.log(.termsAndConditionsCompleted)
++            }
++            return result
++        } catch {
++            try logAndThrow(error, during: .presentTermsAndConditionsIfNeeded)
++        }
++    }
++
++    @MainActor
++    public func presentTermsOfServiceIfNeeded(from viewController: UIViewController) async throws -> PartnerTermsResult {
++        analyticsClient.log(.termsOfServiceStarted)
++        do {
++            let result = try await presentPartnerTermsIfNeeded(
++                declarationType: .termsOfService,
++                from: viewController
++            )
++            if result == .accepted {
++                analyticsClient.log(.termsOfServiceCompleted)
++            }
++            return result
++        } catch {
++            try logAndThrow(error, during: .presentTermsOfServiceIfNeeded)
++        }
++    }
++
+     public func verifyKYCInfo(updatedAddress: Address? = nil, from viewController: UIViewController) async throws -> VerifyKYCResult {
+         analyticsClient.log(.kycInfoVerificationStarted)
+         do {
+@@ -894,6 +946,59 @@ private extension CryptoOnrampCoordinator {
+         }
+     }
+ 
++    @MainActor
++    private func presentPartnerTermsIfNeeded(
++        declarationType: PartnerDeclarationType,
++        from viewController: UIViewController
++    ) async throws -> PartnerTermsResult {
++        let linkAccountInfo = try await self.linkAccountInfo
++        let terms = try await apiClient.retrievePartnerTerms(
++            declarationType: declarationType,
++            linkAccountInfo: linkAccountInfo
++        )
++
++        switch terms {
++        case .notRequired:
++            return .notRequired
++        case let .required(_, declaration):
++            let onAccept: () async throws -> Void = { [apiClient] in
++                _ = try await apiClient.confirmPartnerTerms(
++                    declarationId: declaration.id,
++                    linkAccountInfo: linkAccountInfo
++                )
++            }
++
++            switch declarationType {
++            case .transactionTerms:
++                let result = try await linkController.presentTermsAndConditions(
++                    html: declaration.html,
++                    appearance: appearance,
++                    from: viewController,
++                    onAccept: onAccept
++                )
++                switch result {
++                case .accepted:
++                    return .accepted
++                case .canceled:
++                    return .canceled
++                }
++            case .termsOfService:
++                let result = try await linkController.presentTermsOfService(
++                    html: declaration.html,
++                    appearance: appearance,
++                    from: viewController,
++                    onAccept: onAccept
++                )
++                switch result {
++                case .accepted:
++                    return .accepted
++                case .canceled:
++                    return .canceled
++                }
++            }
++        }
++    }
++
+     /// Returns a dedicated API client configured with the platform publishable key.
+     /// Caches the API client after first creation to avoid repeated API calls.
+     private func getPlatformApiClient() async throws -> STPAPIClient {
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index 2e41d65..67c7d20 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.11.0'
++    s.version                        = '26.12.0'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index e238dfb..080f7cf 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.11.0'
++  s.version                        = '26.12.0'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift b/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
+index 2cf9947..e46d900 100644
+--- a/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
++++ b/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift
+@@ -34,6 +34,15 @@ final public class IdentityVerificationSheet {
+             case custom(backgroundColor: UIColor, textColor: UIColor)
+         }
+ 
++        /// The appearance of secondary action buttons throughout the native verification flow.
++        @_spi(STP) public enum SecondaryButtonStyle {
++            /// Uses the default secondary button appearance.
++            case `default`
++            /// Uses the supplied background and text colors.
++            /// Provide dynamic colors to support different colors in light and dark mode.
++            case custom(backgroundColor: UIColor, textColor: UIColor)
++        }
++
+         /// Configuration for the biometric consent screen's header.
+         @_spi(STP) public struct BiometricConsentConfiguration {
+             /// Whether to hide the branding header above the consent title.
+@@ -60,6 +69,10 @@ final public class IdentityVerificationSheet {
+         /// Disabled buttons retain the default disabled appearance. Secondary buttons are unaffected.
+         @_spi(STP) public var primaryButtonStyle: PrimaryButtonStyle = .default
+ 
++        /// The style of secondary action buttons throughout the native verification flow.
++        /// Disabled buttons retain the default disabled appearance. Primary buttons are unaffected.
++        @_spi(STP) public var secondaryButtonStyle: SecondaryButtonStyle = .default
++
+         /// Configuration for the biometric consent screen's header.
+         ///
+         /// When `nil`, the biometric consent screen uses the default header.
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index 09ead5f..1a7def2 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.11.0'
++  s.version                        = '26.12.0'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index ba6aa96..66465bb 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.11.0'
++  s.version                        = '26.12.0'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+index bc33f62..749e95c 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+@@ -696,35 +696,17 @@ extension EmbeddedPaymentElement {
+ 
+         embeddedPaymentMethodsView.isUserInteractionEnabled = false
+ 
+-        let confirmBlock: () async -> (PaymentSheetResult, STPAnalyticsClient.DeferredIntentConfirmationType?) = {
+-            await PaymentSheet.confirm(
+-                configuration: self.configuration,
+-                authenticationContext: authContext,
+-                intent: self.intent,
+-                elementsSession: self.elementsSession,
+-                paymentOption: paymentOption,
+-                paymentHandler: self.paymentHandler,
+-                integrationShape: .embedded,
+-                confirmationChallenge: self.confirmationChallenge,
+-                analyticsHelper: self.analyticsHelper
+-            )
+-        }
+-
+-        let result: PaymentSheetResult
+-        let deferredIntentConfirmationType: STPAnalyticsClient.DeferredIntentConfirmationType?
+-
+-        if let checkout {
+-            if !checkout.pendingOperations.isEmpty {
+-                let errorMessage = "confirm was called while the Checkout session is still loading. Wait until CheckoutController.isUpdating is false."
+-                let error = PaymentSheetError.integrationError(nonPIIDebugDescription: errorMessage)
+-                return (.failed(error: error), nil)
+-            }
+-            (result, deferredIntentConfirmationType) = await checkout.enqueueSessionUpdate {
+-                await confirmBlock()
+-            }
+-        } else {
+-            (result, deferredIntentConfirmationType) = await confirmBlock()
+-        }
++        let (result, deferredIntentConfirmationType) = await PaymentSheet.confirm(
++            configuration: configuration,
++            authenticationContext: authContext,
++            intent: intent,
++            elementsSession: elementsSession,
++            paymentOption: paymentOption,
++            paymentHandler: paymentHandler,
++            integrationShape: .embedded,
++            confirmationChallenge: confirmationChallenge,
++            analyticsHelper: analyticsHelper
++        )
+ 
+         analyticsHelper.logPayment(
+             paymentOption: paymentOption,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
+index 8c3fbdd..f56921d 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
+@@ -73,6 +73,13 @@ import UIKit
+         case canceled
+     }
+ 
++    @frozen @_spi(STP) public enum PartnerTermsResult {
++        /// The user accepted the partner terms.
++        case accepted
++        /// The user dismissed the partner terms without accepting.
++        case canceled
++    }
++
+     /// Errors specific incorrect integrations with LinkController
+     @_spi(STP) public enum IntegrationError: LocalizedError {
+         case noPaymentMethodSelected
+@@ -868,18 +875,115 @@ import UIKit
+         from viewController: UIViewController,
+         onConfirm: @escaping (() async throws -> Void)
+     ) async throws -> UserAttestationResult {
++        let result = try await presentHTMLConfirmation(
++            heading: String.Localized.user_attestation,
++            html: html,
++            confirmationButtonTitle: String.Localized.accept,
++            appearance: appearance,
++            from: viewController,
++            onConfirm: onConfirm
++        )
++
++        switch result {
++        case .confirmed:
++            return .confirmed
++        case .canceled:
++            return .canceled
++        }
++    }
++
++    /// Presents terms and conditions to the user.
++    ///
++    /// This method presents a bottom sheet displaying the provided terms and conditions HTML for user review.
++    /// The user can accept the terms and conditions or cancel.
++    ///
++    /// - Parameters:
++    ///   - html: The terms and conditions HTML to display to the user.
++    ///   - appearance: Appearance configuration for the terms and conditions UI.
++    ///   - viewController: The view controller from which to present the terms and conditions.
++    ///   - onAccept: An async closure called when the user accepts. This is called *before* dismissal, allowing the caller to complete any async operations before the sheet is dismissed.
++    /// - Returns: A `PartnerTermsResult` indicating whether the user accepted or canceled.
++    /// Throws any error thrown by the `onAccept` handler.
++    @_spi(STP) public func presentTermsAndConditions(
++        html: String,
++        appearance: LinkAppearance,
++        from viewController: UIViewController,
++        onAccept: @escaping (() async throws -> Void)
++    ) async throws -> PartnerTermsResult {
++        let result = try await presentHTMLConfirmation(
++            heading: String.Localized.terms_and_conditions,
++            html: html,
++            confirmationButtonTitle: String.Localized.accept,
++            appearance: appearance,
++            from: viewController,
++            onConfirm: onAccept
++        )
++
++        switch result {
++        case .confirmed:
++            return .accepted
++        case .canceled:
++            return .canceled
++        }
++    }
++
++    /// Presents terms of service to the user.
++    ///
++    /// This method presents a bottom sheet displaying the provided terms of service HTML for user review.
++    /// The user can accept the terms of service or cancel.
++    ///
++    /// - Parameters:
++    ///   - html: The terms of service HTML to display to the user.
++    ///   - appearance: Appearance configuration for the terms of service UI.
++    ///   - viewController: The view controller from which to present the terms of service.
++    ///   - onAccept: An async closure called when the user accepts. This is called *before* dismissal, allowing the caller to complete any async operations before the sheet is dismissed.
++    /// - Returns: A `PartnerTermsResult` indicating whether the user accepted or canceled.
++    /// Throws any error thrown by the `onAccept` handler.
++    @_spi(STP) public func presentTermsOfService(
++        html: String,
++        appearance: LinkAppearance,
++        from viewController: UIViewController,
++        onAccept: @escaping (() async throws -> Void)
++    ) async throws -> PartnerTermsResult {
++        let result = try await presentHTMLConfirmation(
++            heading: String.Localized.terms_of_service,
++            html: html,
++            confirmationButtonTitle: String.Localized.accept,
++            appearance: appearance,
++            from: viewController,
++            onConfirm: onAccept
++        )
++
++        switch result {
++        case .confirmed:
++            return .accepted
++        case .canceled:
++            return .canceled
++        }
++    }
++
++    private func presentHTMLConfirmation(
++        heading: String,
++        html: String,
++        confirmationButtonTitle: String,
++        appearance: LinkAppearance,
++        from viewController: UIViewController,
++        onConfirm: @escaping (() async throws -> Void)
++    ) async throws -> HTMLConfirmationResult {
+         return try await withCheckedThrowingContinuation { continuation in
+             Task { @MainActor in
+-                let attestationViewController = UserAttestationViewController(
++                let confirmationViewController = HTMLConfirmationViewController(
++                    heading: heading,
+                     html: html,
++                    confirmationButtonTitle: confirmationButtonTitle,
+                     appearance: appearance,
+                     brand: resolvedLinkBrand
+                 )
+-                attestationViewController.onResult = { [weak attestationViewController] result in
+-                    attestationViewController?.onResult = nil
++                confirmationViewController.onResult = { [weak confirmationViewController] result in
++                    confirmationViewController?.onResult = nil
+ 
+-                    let dismissAndResumeWithResult = { continuationResult in
+-                        attestationViewController?.dismiss(animated: true) {
++                    let dismissAndResumeWithResult: (Result<HTMLConfirmationResult, Swift.Error>) -> Void = { continuationResult in
++                        confirmationViewController?.dismiss(animated: true) {
+                             continuation.resume(with: continuationResult)
+                         }
+                     }
+@@ -899,7 +1003,7 @@ import UIKit
+                     }
+                 }
+ 
+-                viewController.presentAsBottomSheet(attestationViewController, appearance: .init())
++                viewController.presentAsBottomSheet(confirmationViewController, appearance: .init())
+             }
+         }
+     }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+index cf510d7..af2aaa0 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+@@ -739,51 +739,28 @@ extension PaymentSheet {
+             }
+ 
+             func confirm() {
+-                let confirmBlock = { [self] in
+-                    PaymentSheet.confirm(
+-                        configuration: self.configuration,
+-                        authenticationContext: authenticationContext,
+-                        intent: self.intent,
+-                        elementsSession: self.elementsSession,
++                PaymentSheet.confirm(
++                    configuration: self.configuration,
++                    authenticationContext: authenticationContext,
++                    intent: self.intent,
++                    elementsSession: self.elementsSession,
++                    paymentOption: paymentOption,
++                    paymentHandler: self.paymentHandler,
++                    integrationShape: .flowController,
++                    confirmationChallenge: self.confirmationChallenge,
++                    analyticsHelper: self.analyticsHelper
++                ) { result, deferredIntentConfirmationType in
++                    self.analyticsHelper.logPayment(
+                         paymentOption: paymentOption,
+-                        paymentHandler: self.paymentHandler,
+-                        integrationShape: .flowController,
+-                        confirmationChallenge: self.confirmationChallenge,
+-                        analyticsHelper: self.analyticsHelper
+-                    ) { result, deferredIntentConfirmationType in
+-                        self.analyticsHelper.logPayment(
+-                            paymentOption: paymentOption,
+-                            result: result,
+-                            deferredIntentConfirmationType: deferredIntentConfirmationType
+-                        )
+-                        if case .completed = result, case .link = paymentOption {
+-                            // Remember Link as default payment method for users who just created an account.
+-                            CustomerPaymentOption.setDefaultPaymentMethod(.link, forCustomer: self.configuration.customer?.id)
+-                        }
+-
+-                        completion(result)
++                        result: result,
++                        deferredIntentConfirmationType: deferredIntentConfirmationType
++                    )
++                    if case .completed = result, case .link = paymentOption {
++                        // Remember Link as default payment method for users who just created an account.
++                        CustomerPaymentOption.setDefaultPaymentMethod(.link, forCustomer: self.configuration.customer?.id)
+                     }
+-                }
+ 
+-                if let checkout {
+-                    // TODO(porter): Remove assumeIsolated once confirm is @MainActor (blocked on new FC API designs)
+-                    if MainActor.assumeIsolated({ !checkout.pendingOperations.isEmpty }) {
+-                        stpAssertionFailure("`confirm` should not be called while the Checkout session is loading.")
+-                        let error = PaymentSheetError.flowControllerConfirmFailed(
+-                            message: "confirmPayment was called while the Checkout session is still loading. Wait until CheckoutController.isUpdating is false."
+-                        )
+-                        completion(.failed(error: error))
+-                        return
+-                    }
+-                    // We don't need to await this Task, just kick it off, because confirmBlock uses a completion.
+-                    // We do need to open a task to use `Checkout`'s `enqueueSessionUpdate`, which uses Swift concurrency.
+-                    Task { @MainActor in
+-                        await checkout.enqueueSessionUpdate {
+-                            confirmBlock()
+-                        }
+-                    }
+-                } else {
+-                    confirmBlock()
++                    completion(result)
+                 }
+             }
+         }
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index bdbb4e7..f36fd93 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.11.0'
++  s.version                        = '26.12.0'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/VERSION b/VERSION
+index 2398bc0..b06eb5e 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.11.0
+\ No newline at end of file
++26.12.0
+\ No newline at end of file
