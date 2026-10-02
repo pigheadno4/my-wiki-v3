@@ -1,0 +1,255 @@
+import { Component, h } from 'preact';
+import DoFingerprint3DS2 from './DoFingerprint3DS2';
+import { createFingerprintResolveData, isErrorObject, prepareFingerPrintData } from '../utils';
+import { PrepareFingerprint3DS2Props, PrepareFingerprint3DS2State } from './types';
+import { FingerPrintData, ResultObject, ErrorCodeObject, FingerprintResolveData } from '../../types';
+import { ErrorObject } from '../../../../core/Errors/types';
+import { isValidHttpUrl } from '../../../../utils/isValidURL';
+import { THREEDS2_FINGERPRINT, THREEDS2_FINGERPRINT_ERROR, THREEDS2_NUM, MISSING_TOKEN_IN_ACTION_MSG, TIMEOUT } from '../../constants';
+import { AnalyticsLogEvent, LogEventSubtype, LogEventType } from '../../../../core/Analytics/events/AnalyticsLogEvent';
+import { AbstractAnalyticsEvent } from '../../../../core/Analytics/events/AbstractAnalyticsEvent';
+import { AnalyticsErrorEvent, ErrorEventCode, ErrorEventType } from '../../../../core/Analytics/events/AnalyticsErrorEvent';
+
+class PrepareFingerprint3DS2 extends Component<PrepareFingerprint3DS2Props, PrepareFingerprint3DS2State> {
+    public static readonly type = 'scheme';
+
+    public static readonly defaultProps = {
+        onComplete: () => {},
+        onError: () => {},
+        paymentData: '',
+        showSpinner: true,
+        isMDFlow: false
+    };
+
+    constructor(props) {
+        super(props);
+        const { token, notificationURL } = this.props; // See comments on prepareFingerPrintData regarding notificationURL
+
+        if (token) {
+            const fingerPrintData: FingerPrintData | ErrorObject = prepareFingerPrintData({ token, notificationURL });
+
+            this.state = {
+                status: 'init',
+                fingerPrintData
+            };
+        } else {
+            // Will be picked up in componentDidMount
+            this.state = { fingerPrintData: { success: false, error: MISSING_TOKEN_IN_ACTION_MSG } };
+
+            console.debug(`${THREEDS2_FINGERPRINT_ERROR}: ${MISSING_TOKEN_IN_ACTION_MSG}`);
+        }
+    }
+
+    public onFormSubmit = (msg: string) => {
+        const event = new AnalyticsLogEvent({
+            component: this.props.type,
+            type: LogEventType.threeDS2,
+            subType: LogEventSubtype.fingerprintDataSentWeb,
+            message: msg
+        });
+
+        this.props.onSubmitAnalytics(event);
+    };
+
+    componentDidMount() {
+        const hasFingerPrintData = !isErrorObject(this.state.fingerPrintData);
+
+        if (hasFingerPrintData) {
+            const shouldAllowHttpDomains =
+                /** Allow http urls if in development and testing against localhost:8080 */
+                (process.env.NODE_ENV === 'development' && process.env.__CLIENT_ENV__?.includes('localhost:8080')) ||
+                /**
+                 * Allows the checkoutshopper demo on localhost:8080 to work -
+                 *  requires a configuration in localhost of environment: 'test', _environmentUrls: {api: 'http://localhost:8080/'}
+                 */
+                (this.props.environment === 'test' && this.props._environmentUrls?.api?.includes('http://localhost:8080'));
+
+            /**
+             * Check the structure of the created fingerPrintData
+             */
+            const { threeDSMethodURL, threeDSMethodNotificationURL, postMessageDomain, threeDSServerTransID } = this.state
+                .fingerPrintData as FingerPrintData;
+
+            const hasValid3DSMethodURL = isValidHttpUrl(threeDSMethodURL, shouldAllowHttpDomains);
+
+            // Only render component if we have a threeDSMethodURL. Otherwise, exit with threeDSCompInd: 'U'
+            if (!hasValid3DSMethodURL) {
+                this.setStatusComplete(
+                    { threeDSCompInd: 'U' },
+                    {
+                        errorCode: ErrorEventCode.THREEDS2_TOKEN_IS_MISSING_THREEDSMETHODURL,
+                        message: `${THREEDS2_FINGERPRINT_ERROR}: Decoded token is missing a valid threeDSMethodURL property`
+                    }
+                );
+
+                /**
+                 * NOTE: we can now use this.props.isMDFlow to decide if we want to send any of these errors to the onError handler
+                 *  - this is problematic in the regular flow since merchants tend to treat any calls to their onError handler as 'fatal',
+                 *   but in the MDFlow we control what the onError handler does.
+                 */
+                // if (this.props.isMDFlow) {}
+
+                console.debug('### PrepareFingerprint3DS2::exiting:: no valid threeDSMethodURL');
+                return;
+            }
+
+            const hasValid3DSMethodNotificationURL = isValidHttpUrl(threeDSMethodNotificationURL, shouldAllowHttpDomains);
+            const hasValidPostMessageDomain = isValidHttpUrl(postMessageDomain, shouldAllowHttpDomains);
+            const hasTransServerID = threeDSServerTransID?.length;
+
+            if (!hasValid3DSMethodNotificationURL || !hasValidPostMessageDomain || !hasTransServerID) {
+                /**
+                 * NOTE: EMVCo_3DS_CoreSpec_v2.3.1_20220831.pdf states that we should return: threeDSCompInd: 'N'
+                 * when the fingerprinting process "Did not run or did not successfully complete"
+                 */
+                this.setStatusComplete(
+                    { threeDSCompInd: 'N' },
+                    {
+                        errorCode: ErrorEventCode.THREEDS2_TOKEN_IS_MISSING_OTHER_PROPS,
+                        message: `${THREEDS2_FINGERPRINT_ERROR}: Decoded token is missing one or more of the following properties (threeDSMethodNotificationURL | postMessageDomain | threeDSServerTransID)`
+                    }
+                );
+
+                console.debug(
+                    '### PrepareFingerprint3DS2::exiting:: Decoded token is missing one or more of the following properties (threeDSMethodNotificationURL | postMessageDomain | threeDSServerTransID)'
+                );
+
+                return;
+            }
+
+            // Proceed to allow component to render
+            this.setState({ status: 'retrievingFingerPrint' });
+            //
+        } else {
+            // Only render component if we have fingerPrintData. Otherwise, complete with threeDSCompInd: 'N'
+
+            const errorMsg: string = (this.state.fingerPrintData as ErrorObject).error;
+
+            const errorCode = errorMsg.includes(MISSING_TOKEN_IN_ACTION_MSG)
+                ? ErrorEventCode.THREEDS2_ACTION_IS_MISSING_TOKEN
+                : ErrorEventCode.THREEDS2_TOKEN_DECODE_OR_PARSING_FAILED;
+
+            this.setStatusComplete(
+                { threeDSCompInd: 'N' },
+                {
+                    errorCode,
+                    message: `${THREEDS2_FINGERPRINT_ERROR}: ${errorMsg}` // can be: 'Missing "token" property from threeDS2 action', 'not base64', 'malformed URI sequence' or 'Could not JSON parse token'
+                }
+            );
+
+            console.debug('### PrepareFingerprint3DS2:: token does not exist or could not be base64 decoded &/or JSON.parsed');
+        }
+    }
+
+    setStatusComplete(resultObj: ResultObject, errorCodeObject: ErrorCodeObject = null) {
+        this.setState({ status: 'complete' }, () => {
+            const data: FingerprintResolveData = createFingerprintResolveData(this.props.dataKey, resultObj, this.props.paymentData);
+
+            let event: AbstractAnalyticsEvent;
+
+            /** Are we in an error scenario? If so, submit analytics about it */
+            const finalResObject = errorCodeObject ? errorCodeObject : resultObj;
+            if (finalResObject.errorCode) {
+                const errorTypeAndCode = {
+                    code: finalResObject.errorCode === TIMEOUT ? ErrorEventCode.THREEDS2_TIMEOUT : finalResObject.errorCode,
+                    errorType: ErrorEventType.threeDS2
+                };
+
+                /**
+                 * Timeout or data parsing problems:
+                 *
+                 * (threeDSCompInd:"U"):
+                 *   - Decoded token is missing a valid threeDSMethodURL property,
+                 *  or, (threeDSCompInd:"N"):
+                 *   - Fingerprint process has timed out,
+                 *  also, (threeDSCompInd:"N"):
+                 *   - Missing "token" property from threeDS2 action
+                 *   - or, decoded token is missing one or more of the following properties (threeDSMethodNotificationURL | postMessageDomain | threeDSServerTransID)
+                 *   - or, token could not be base64 decoded &/or JSON.parsed
+                 */
+
+                event = new AnalyticsErrorEvent({
+                    component: this.props.type,
+                    message: (finalResObject as ErrorCodeObject).message,
+                    ...errorTypeAndCode
+                });
+
+                // Send error to analytics endpoint
+                this.props.onSubmitAnalytics(event);
+            }
+
+            /** Calculate "result" for analytics */
+            let result: string;
+
+            switch (resultObj?.threeDSCompInd) {
+                case 'Y':
+                    result = 'success';
+                    break;
+                case 'N': {
+                    if (!errorCodeObject) {
+                        result = 'failed'; // 'failed' is the result returned from the threeDSMethodURL
+                    } else {
+                        result = errorCodeObject.errorCode === TIMEOUT ? TIMEOUT : 'failedInternal'; // timed-out; or, 'failed' as a result of internal checks
+                    }
+                    break;
+                }
+                case 'U':
+                    result = 'noThreeDSMethodURL';
+                    break;
+                default:
+            }
+
+            /**
+             * The fingerprint process is completed, one way or another.
+             * The resultObj will be {threeDSCompInd:"Y"} in the case of success,
+             * else {threeDSCompInd:"U"} or {threeDSCompInd:"N"} - if we've had some kind of timeout or data parsing problem (as described above)
+             */
+
+            event = new AnalyticsLogEvent({
+                component: this.props.type,
+                type: LogEventType.threeDS2,
+                subType: LogEventSubtype.fingerprintCompleted,
+                message: `${THREEDS2_NUM} fingerprinting has completed`,
+                result
+            });
+            // Send log to analytics endpoint
+            this.props.onSubmitAnalytics(event);
+
+            /**
+             * Equals call to callSubmit3DS2Fingerprint (except for in 3DS2InMDFlow)
+             */
+            this.props.onComplete(data);
+        });
+    }
+
+    render({ showSpinner }, { status, fingerPrintData }) {
+        if (status === 'retrievingFingerPrint') {
+            return (
+                <DoFingerprint3DS2
+                    onCompleteFingerprint={fingerprint => {
+                        this.setStatusComplete(fingerprint.result);
+                    }}
+                    onErrorFingerprint={fingerprint => {
+                        /**
+                         * Called when fingerprint times-out (which is still a valid scenario)...
+                         */
+                        const timeoutObject: ErrorCodeObject = {
+                            errorCode: fingerprint.errorCode, // 'timeout'
+                            message: `${THREEDS2_FINGERPRINT}: ${fingerprint.errorCode}`
+                        };
+
+                        this.setStatusComplete(fingerprint.result, timeoutObject); // fingerprint.result = threeDSCompInd: 'N'
+                    }}
+                    showSpinner={showSpinner}
+                    {...fingerPrintData}
+                    onActionHandled={this.props.onActionHandled}
+                    onFormSubmit={this.onFormSubmit}
+                />
+            );
+        }
+
+        return null;
+    }
+}
+
+export default PrepareFingerprint3DS2;

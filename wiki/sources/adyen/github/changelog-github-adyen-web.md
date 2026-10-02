@@ -2,9 +2,11 @@
 title: "GitHub changelog: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
-date_updated: 2026-09-22
+date_updated: 2026-10-02
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json"
   - "github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json"
@@ -24,6 +26,20 @@ tags: [adyen, checkout, web-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `Adyen/adyen-web`. Cumulative implementation knowledge belongs in [[source-github-adyen-web]] and the linked immutable snapshots.
+
+## `@adyen/adyen-web@6.46.0` (2026-09-28)
+
+`@adyen/adyen-web@6.45.2` -> `@adyen/adyen-web@6.46.0`; SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`; approved additive full ingest with a one-item focused-reading exception, overriding generated delta for a public status signature change.
+
+**Changes:** disclaimer configuration moves from Card field wrappers to the shared PayButton/UIElement surface. Ordered placeholder/link arrays, plain-text fallbacks, button description association and disclaimer preservation with hidden SDK buttons are code-grounded. Branded express/wallet buttons are explicitly excluded. Card/UIElement status methods drop their second props argument; Drop-in retains explicit two-argument overrides and action-component forwarding. Upstream reports the inherited-property initialization fix; it was not reproduced in a browser.
+
+**Other implementation findings:** structured core/action/callback/error types; encoded risk getter renamed to `riskData`, returning null before validity; guarded analytics config serialization. HTTP's temporary typed promise still permits undefined on 204/non-fatal runtime paths. PayPal JS dependency changes 10.1.0 -> 11.0.0; delegated runtime is not verified. Japan localized address/Prefecture and gift-card balance-check loading are release-note announcements only, not complete code-reviewed flows.
+
+**Migration:** review two-argument Card/status calls and additional-details typing, internal risk getter/sentinel use, custom disclaimer positioning and custom-button accessibility. Keep payment-method-specific configuration, review/action cleanup and backend responsibilities. Preserve the 6.45.1 warning without assuming it automatically describes 6.46.0.
+
+**Reading and pages:** all 30 changed retained files and seven exact-SHA supplemental files fully read; retained diffs and affected prior reference/status context reviewed. All 443 prior/current retained file hashes and seven supplemental hashes verified. The 192 unchanged current files and large manifest/comparison inventories were checked mechanically. This is not a semantic read of the entire 7,415-line upstream patch or whole repository. Added [[adyen-web-disclaimers]], updated [[adyen-review-page-checkout]], cumulative source, company, index and logs; older history and source count preserved. No build, upstream tests, payment, browser or accessibility execution.
+
+**Evidence:** [snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json), [supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json), [release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.46.0/2026-10-02/manifest.json), [release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.46.0/2026-10-02/release-notes.md), [comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.2--6.46.0/comparison.json). Implementation links and five grounding excerpts: [[source-github-adyen-web]].
 
 ## `@adyen/adyen-web@6.45.2` (2026-09-21)
 

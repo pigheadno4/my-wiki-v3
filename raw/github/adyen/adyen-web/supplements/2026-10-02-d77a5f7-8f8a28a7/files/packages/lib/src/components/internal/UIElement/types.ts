@@ -1,0 +1,131 @@
+import { h } from 'preact';
+import Session from '../../../core/CheckoutSession';
+import Language from '../../../language';
+import UIElement from './UIElement';
+import type { PaymentAction, PaymentAmount } from '../../../types/global-types';
+import type { CoreConfiguration, CreateFromActionOptions } from '../../../core/types';
+import type { BaseElementProps, BaseElementState } from '../BaseElement/types';
+import { PayButtonProps } from '../PayButton/PayButton';
+import type { DisclaimerMsgObject } from '../DisclaimerMessage';
+
+type CoreCallbacks = Pick<
+    CoreConfiguration,
+    | 'beforeRedirect'
+    | 'beforeSubmit'
+    | 'onSubmit'
+    | 'onReview'
+    | 'onAdditionalDetails'
+    | 'onPaymentFailed'
+    | 'onPaymentCompleted'
+    | 'onOrderUpdated'
+    | 'onPaymentMethodsRequest'
+    | 'onChange'
+    | 'onActionHandled'
+    | 'onError'
+    | 'onEnterKeyPressed'
+    | 'donation'
+>;
+
+export type StatusFromAction = 'redirect' | 'loading' | 'custom';
+
+export type UIElementProps = {
+    paymentMethodId?: string;
+    storedPaymentMethodId?: string;
+} & BaseElementProps &
+    CoreCallbacks & {
+        environment?: string;
+        session?: Session;
+
+        onComplete?: (state: BaseElementState, element: UIElement) => void;
+
+        isInstantPayment?: boolean;
+
+        /**
+         * Flags if the element is Stored payment method
+         * @internal
+         */
+        isStoredPaymentMethod?: boolean;
+
+        /**
+         * Flag if the element is Stored payment method.
+         * Perhaps can be deprecated and we use the one above?
+         * @internal
+         */
+        oneClick?: boolean;
+
+        /**
+         * Stored payment method id
+         * @internal
+         */
+        storedPaymentMethodId?: string;
+
+        /**
+         * Status set when creating the Component from action
+         * @internal
+         */
+        statusType?: StatusFromAction;
+
+        type?: string;
+        name?: string;
+        icon?: string;
+        amount?: PaymentAmount;
+        secondaryAmount?: PaymentAmount;
+
+        /**
+         * Show/Hide pay button
+         * @defaultValue true
+         */
+        showPayButton?: boolean;
+
+        /**
+         * Disclaimer message displayed above the pay button
+         *
+         * Not supported by express/wallet components (PayPal, Apple Pay, Google Pay, Amazon Pay, Cash App Pay),
+         * which render their own branded button instead of the SDK pay button.
+         */
+        disclaimerMessage?: DisclaimerMsgObject;
+
+        /** @internal */
+        payButton?: (options: PayButtonProps) => h.JSX.Element;
+
+        /** @internal */
+        loadingContext?: string;
+
+        /** @internal */
+        createFromAction?: (action: PaymentAction, props: CreateFromActionOptions) => UIElement;
+
+        /** @internal */
+        clientKey?: string;
+
+        /** @internal */
+        elementRef?: UIElement;
+
+        /** @internal */
+        i18n?: Language;
+
+        /**
+         * The shopper’s issuer account label. It can be available for stored payment method
+         * @internal
+         */
+        label?: string;
+
+        /**
+         * Returned after the payments call, when an action is returned. It represents the payment method tx variant
+         * that was used for the payment
+         * @internal
+         */
+        paymentMethodType?: string;
+
+        /**
+         * Reference to the action object found in a /payments response. This, in most cases, is passed on to the onActionHandled callback
+         */
+        originalAction?: PaymentAction;
+    };
+
+export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
+
+// An interface for the members exposed by a component to its parent UIElement
+export interface ComponentMethodsRef {
+    showValidation?: () => void;
+    setStatus?(status: UIElementStatus): void;
+}

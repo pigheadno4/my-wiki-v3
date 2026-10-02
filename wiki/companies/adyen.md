@@ -19,7 +19,9 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Versioned implementation knowledge
 
-Newest ingested Web release: `@adyen/adyen-web@6.45.2`. It reverts the BaseElement/UIElement refactor to fix payment-action mounting, restoring earlier status forwarding while preserving review-page checkout. **Do not use 6.45.1:** its upstream payment-action warning remains in the historical record. No browser/payment reproduction was performed; see [[source-github-adyen-web]] and [[changelog-github-adyen-web]].
+Newest ingested Web release: `@adyen/adyen-web@6.46.0`. It adds shared SDK-button disclaimers with ordered links and presentation/accessibility boundaries; Card/UIElement status signatures narrow while Drop-in explicitly retains action props forwarding. PayPal JS becomes 11.0.0; delegated runtime is not verified. Japan address localization and gift-card loading remain release-note-qualified. See [[adyen-web-disclaimers]], [[source-github-adyen-web]] and [[changelog-github-adyen-web]].
+
+The preserved 6.45.2 rollback fixes payment-action mounting and restores earlier status forwarding. **Do not use 6.45.1:** its upstream warning remains historical, not automatically applied to 6.46.0. No browser/payment reproduction was performed.
 
 The preserved `@adyen/adyen-web@6.45.0` baseline adds opt-in review-page checkout with Sessions `processPayment`, merchant-owned action presentation, donation amount fallback, Google Pay CSP nonce forwarding, address validation changes, and Drop-in rendering fixes. See [[adyen-review-page-checkout]] for payment-method exceptions and three retained ADR/code discrepancies. PayPal JS becomes 10.1.0 and Preact 10.29.8; delegated runtime behavior is not verified. Earlier architecture and release findings remain preserved: 6.44.0 adds shared keydown dispatch, Amex CVC resolution, null defaults, country normalization, screen-reader lifecycle fixes and Secured Fields constant 6.3.0; 6.43.0 adds Select tags and click handling. See [[source-github-adyen-web]] and [[changelog-github-adyen-web]].
 
@@ -105,13 +107,13 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 ## Knowledge status
 
-- Latest ingested Web update: `@adyen/adyen-web@6.45.2` (2026-09-22), delta after the additive 6.45.1 full ingest; bad-release warning and older history retained; source count unchanged.
+- Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
 - Ingested cumulative GitHub repository sources: 14
-- Ingested package releases: 18
+- Ingested package releases: 19
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
-- Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`.
-- Latest ingest: `adyen/adyen-web` at `@adyen/adyen-web@6.45.2`, exact SHA `386715eebb31dd703168ecdecb1477b3311f85cf`
+- Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`, `@adyen/adyen-web@6.46.0`.
+- Latest ingest: `adyen/adyen-web` at `@adyen/adyen-web@6.46.0`, exact SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`
 
 ## Sources
 
@@ -146,6 +148,7 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 ## Related
 
+- [[adyen-web-disclaimers]] - shared SDK Pay-button configuration and method boundaries
 - [[adyen-review-page-checkout]] - version-qualified review and final-payment lifecycle
 - [[adyen-index]] — Adyen catalog and operations links
 - [[adyen-log]] — collection and ingest history

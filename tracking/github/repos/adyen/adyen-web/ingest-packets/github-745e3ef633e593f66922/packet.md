@@ -1,0 +1,280 @@
+# GitHub ingest packet
+
+- Repository: `adyen/adyen-web`
+- Work item: `github-745e3ef633e593f66922`
+- Snapshot: `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `@adyen/adyen-web`
+
+- Version: `6.45.2` -> `6.46.0`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `192`
+
+### Required reading
+
+- `raw/github/adyen/adyen-web/releases/adyen-web/6.46.0/2026-10-02/manifest.json`
+- `raw/github/adyen/adyen-web/releases/adyen-web/6.46.0/2026-10-02/release-notes.md`
+- `raw/github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/package.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/package.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/Card.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/components/CardInput/CardInput.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/components/CardInput/components/CardFieldsWrapper.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/components/CardInput/components/StoredCardFieldsWrapper.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/components/CardInput/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/components/CardInput/utils.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/stories/Card.stories.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Dropin/Dropin.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Dropin/components/DropinComponent.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/ThreeDS2/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/AGENTS.md`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/Analytics/events/AnalyticsInfoEvent.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/CheckoutSession/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/Errors/AdyenCheckoutError.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/Errors/SRPanelProvider.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/Errors/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/RiskModule/RiskModule.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/RiskModule/components/DeviceFingerprint/GetDeviceFingerprint.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/Services/get-dataset.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/Services/http.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/config.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/core.registry.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/core.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/utils.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/types/global-types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.2--6.46.0/comparison.json`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.2--6.46.0/comparison.md`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.2--6.46.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `.github/workflows/release-snapshot.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.windsurf/rules/code-guide.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
+- `added` `packages/e2e-playwright/AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/e2e-playwright/models/address.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/e2e-playwright/tests/automated/visual/__screenshots__/linux/chromium/components-cards--with-disclaimer.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/e2e-playwright/tests/e2e/card/avs.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/e2e-playwright/tests/e2e/dropin/sessions/giftcard.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/e2e-playwright/tsconfig.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/.size-limit.cjs`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/CHANGELOG.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/config/rollup.plugins.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/config/testMocks/setup-core-mock.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/eslint-rules/strict-null-checks.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/eslint.config.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/package.json`: `retained-evidence` (snapshot-file)
+- `added` `packages/lib/src/components/AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/ANCV/ANCV.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/ANCV/components/ANCVInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Ach/Ach.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Ach/components/AchComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Ach/components/useSRPanelForACHErrors.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/AmazonPay/AmazonPay.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/AmazonPay/AmazonPay.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/AmazonPay/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/ApplePay/ApplePay.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/ApplePay/ApplePay.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/ApplePay/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/BacsDD/BacsDD.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/BacsDD/BacsDD.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/BacsDD/components/BacsInput.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/BacsDD/components/BacsInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/BacsDD/components/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/BankTransfer/BankTransfer.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/BankTransfer/components/BankTransferInput/BankTransferInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Blik/Blik.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Blik/components/BlikInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Boleto/components/BoletoInput/BoletoInput.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Boleto/components/BoletoInput/BoletoInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Card/Card.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Card/components/CardInput/CardInput.dualBrandUI.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Card/components/CardInput/CardInput.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Card/components/CardInput/CardInput.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Card/components/CardInput/components/CardFieldsWrapper.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Card/components/CardInput/components/StoredCardFieldsWrapper.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Card/components/CardInput/types.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Card/components/CardInput/utils.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Card/stories/Card.stories.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Card/types.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/CashAppPay/CashAppPay.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/CustomCard/CustomCard.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/CustomCard/CustomCardInput/index.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Doku/components/DokuInput/DokuInput.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Doku/components/DokuInput/DokuInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Donation/Donation.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Donation/components/DonationComponent.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Donation/components/DonationComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Donation/components/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Dragonpay/Dragonpay.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Dragonpay/components/DragonpayInput/DragonpayInput.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Dragonpay/components/DragonpayInput/DragonpayInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Dragonpay/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Dropin/Dropin.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Dropin/Dropin.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Dropin/components/DropinComponent.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Econtext/Econtext.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Econtext/components/EcontextInput/EcontextInput.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Econtext/components/EcontextInput/EcontextInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Giftcard/Giftcard.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/Giftcard/Giftcard.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Giftcard/components/GiftcardResult.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Giropay/Giropay.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Iris/Iris.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Iris/components/IrisComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Iris/components/IrisGenerateQRCode.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Klarna/KlarnaPayments.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Klarna/components/KlarnaContainer/KlarnaContainer.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/MBWay/MBWay.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/MBWay/components/MBWayInput/MBWayInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Multibanco/Multibanco.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Oxxo/Oxxo.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayByBankPix/PayByBankPix.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/PayByBankPix/PayByBankPix.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayByBankPix/components/Enrollment/Enrollment.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayByBankUS/PayByBankUS.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayPal/Paypal.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayPal/utils/format-paypal-order-contact-to-adyen-format.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/PayPalFastlane/Fastlane.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayPalFastlane/components/FastlaneComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayPalFastlane/stories/components/GuestShopperForm.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayTo/PayTo.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayTo/components/BSBInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayTo/components/PayToComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayTo/components/PayToNameFields.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PayTo/components/PayToPhone.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Pix/Pix.scss`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Pix/Pix.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Pix/components/PixInput/PixInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Pix/components/PixInput/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PreAuthorizedDebitCanada/PreAuthorizedDebitCanada.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/PreAuthorizedDebitCanada/components/PreAuthorizedDebitCanadaComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Redirect/Redirect.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Sepa/Sepa.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Sepa/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/ThreeDS2/ThreeDS2DeviceFingerprint.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/ThreeDS2/components/utils.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/ThreeDS2/types.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Trustly/Trustly.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/UPI/UPI.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/UPI/components/UPIComponent/UPIComponent.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/UPI/components/UPIComponent/UPIComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/helpers/IssuerListContainer/IssuerListContainer.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/helpers/QRLoaderContainer/QRLoaderContainer.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/lib/src/components/internal/AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Address/Address.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/Address/Specifications.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/Address/components/CountryField.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Address/components/FieldContainer.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Address/components/StateField.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Address/constants.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Address/validate.formats.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/Address/validate.formats.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Address/validate.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/Address/validate.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/BaseElement/BaseElement.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/BaseElement/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Button/Button.scss`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/DisclaimerMessage/DisclaimerMessage.scss`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/DisclaimerMessage/DisclaimerMessage.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/DisclaimerMessage/DisclaimerMessage.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/DisclaimerMessage/index.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/lib/src/components/internal/DisclaimerMessage/utils.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `packages/lib/src/components/internal/DisclaimerMessage/utils.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/IbanInput/IbanInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/IbanInput/validate.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/IbanInput/validate.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/IssuerList/IssuerList.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/IssuerList/IssuerList.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/IssuerList/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/OpenInvoice/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/OpenInvoice/useSRPanelForOpenInvoiceErrors.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/PayButton/PayButton.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/PayButton/PayButton.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/PersonalDetails/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/PhoneInput/PhoneInputForm.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/PhoneInput/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/PhoneInput/usePhonePrefixes.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/RedirectButton/RedirectButton.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/UIElement/UIElement.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/UIElement/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/UIElement/utils.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/lib/src/core/AGENTS.md`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/Analytics/events/AnalyticsInfoEvent.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/CheckoutSession/types.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/Errors/AdyenCheckoutError.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/Errors/SRPanelProvider.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/Errors/types.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/ProcessResponse/PaymentAction/PaymentAction.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/core/RiskModule/RiskModule.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/RiskModule/components/DeviceFingerprint/GetDeviceFingerprint.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/Services/get-dataset.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/Services/http.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/config.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/core.registry.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/core.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/core/core.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/types.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/utils.ts`: `retained-evidence` (snapshot-file)
+- `added` `packages/lib/src/language/AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/lib/src/styles/AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/styles/mixins.scss`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/types/global-types.ts`: `retained-evidence` (snapshot-file)
+- `added` `packages/lib/src/utils/AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/utils/Validator/Validator.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/utils/useForm/reducer.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/utils/useForm/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/utils/useForm/useForm.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/utils/useForm/useFormWithA11y.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/tsconfig.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/playground/AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/playground/package.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/playground/src/pages/CustomCards/CustomCards.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/ar.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/bg-BG.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/ca-ES.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/cs-CZ.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/da-DK.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/de-DE.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/el-GR.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/en-US.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/es-ES.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/et-EE.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/fi-FI.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/fr-FR.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/hr-HR.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/hu-HU.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/is-IS.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/it-IT.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/ja-JP.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/ko-KR.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/lt-LT.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/lv-LV.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/nl-NL.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/no-NO.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/pl-PL.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/pt-BR.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/pt-PT.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/ro-RO.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/ru-RU.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/sk-SK.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/sl-SI.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/sv-SE.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/zh-CN.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/translations/zh-TW.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `renovate.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `yarn.lock`: `intentional-policy-exclusion` (outside-capsule-policy)

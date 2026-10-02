@@ -6,6 +6,12 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | adyen/adyen-web `@adyen/adyen-web@6.46.0`
+
+- Approved additive full ingest of `github-745e3ef633e593f66922`, exact SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`, with one-item focused reading: 30 changed retained files and seven approved supplements fully read; affected prior context reviewed; 192 unchanged files and inventories checked mechanically. All 443 prior/current retained hashes and seven supplemental hashes match.
+- Recorded shared disclaimers and wallet/custom-button boundaries, Card/UIElement status migration versus explicit Drop-in forwarding, risk/type changes and PayPal JS 11.0.0 dependency. Japan address and gift-card loading remain announcement-qualified; no whole-repository or whole-patch semantic reading claim.
+- Concepts updated first, then cumulative source/changelog, company, index and logs; old history and source count preserved. No SDK build, upstream tests, browser or payment execution. Commit/push remain separate.
+
 ## [2026-09-22] ingest | adyen/adyen-web `@adyen/adyen-web@6.45.2`
 
 - Serial delta ingest of `github-929e37b8057fae0c095e` after 6.45.1 completed: ten changed retained files, four complete supplements, complete comparison/records and cumulative wiki history read; 211 unchanged files and inventories checked mechanically.

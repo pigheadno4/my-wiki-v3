@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-02] ingest | Adyen Web `6.46.0`
+
+- Approved additive full ingest with focused reading and seven exact-SHA supplements: shared disclaimer configuration, Card/status/type migration, preserved Drop-in action forwarding and PayPal JS dependency update. Older history retained; Japan/gift-card fixes announcement-qualified. Details: [[adyen-log]], [[source-github-adyen-web]], [[changelog-github-adyen-web]]. No commit or push.
+
 ## [2026-10-02] ingest | Stripe Android `23.21.0`
 
 - Approved additive full mode with focused reading: host-scoped callbacks, Embedded credential preview, Financial Connections consent contracts and experimental Onramp terms. Preserved older knowledge and retrospective changelog movements. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.

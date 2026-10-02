@@ -1406,6 +1406,32 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.12.1/2026-09-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.12.0--26.12.1/comparison.json)
 
+## `github-745e3ef633e593f66922`
+
+- Repository: `adyen/adyen-web`
+- SHA: `d77a5f76b7e37edcd785aa8f98a837ff081954b1`
+- Collection date: `2026-10-02`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-745e3ef633e593f66922/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-745e3ef633e593f66922/attachment.json)
+- Review priority: `normal`
+- Required reading: `48` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.46.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.46.0/2026-10-02/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.45.2--6.46.0/comparison.json)
+
 ## `github-763f3bed066811458a49`
 
 - Repository: `paypal/paypal-messaging-components`

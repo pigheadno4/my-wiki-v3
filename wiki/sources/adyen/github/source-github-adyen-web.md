@@ -2,9 +2,11 @@
 title: "GitHub: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
-date_updated: 2026-09-22
+date_updated: 2026-10-02
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json"
   - "github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-22-0d1e033/manifest.json"
@@ -23,18 +25,18 @@ tags: [adyen, checkout, web-sdk, cards, 3d-secure, github-repository]
 
 ## Overview
 
-`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and records history through `@adyen/adyen-web@6.45.2` at exact SHA `386715eebb31dd703168ecdecb1477b3311f85cf`, preserving the 6.45.1 do-not-use warning and subsequent fix.
+`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and records history through `@adyen/adyen-web@6.46.0` at exact SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`, preserving the 6.45.1 do-not-use warning and subsequent fix.
 
 Repository: <https://github.com/Adyen/adyen-web>
 
 ## Evidence boundary
 
-The newest ingested release is `@adyen/adyen-web@6.45.2`, SHA `386715eebb31dd703168ecdecb1477b3311f85cf`. The architecture baseline through 6.45.0 and the 6.45.1 regression history below remain preserved.
+The newest ingested release is `@adyen/adyen-web@6.46.0`, SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`. This additive full ingest uses the explicitly approved focused-reading exception: all 30 changed retained files and seven supplemental files read fully, affected prior context reviewed, and 192 unchanged current files plus manifest inventories checked mechanically. It does not claim a complete upstream repository or whole-patch semantic read. Older architecture, regression and rollback history remains preserved.
 
 > [!warning] Do not use 6.45.1
 > The collected upstream release notes warn of a payment-action handling bug and direct users to 6.45.2. Recording this release preserves evidence; it is not an upgrade recommendation.
 
-- The ingested snapshots and supplements cover version-qualified implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.45.2`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
+- The ingested snapshots and supplements cover version-qualified implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.46.0`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
 - Drop-in and Components are presentation and client-orchestration surfaces. Payment-method availability still comes from backend responses, merchant configuration, shopper context, and regional or product eligibility.
 - Stories are retained as intended integration scenarios. Tests were excluded by collection policy, so test-only behavior is outside this capsule.
 - PayPal Fastlane support in this repository depends on `@paypal/paypal-js`; these snapshots describe Adyen's adapter and configuration surface, not the delegated PayPal runtime.
@@ -341,7 +343,84 @@ These are patch findings. The broader architecture above is the accumulated sour
 - [[co-badged-cards]] — cross-provider card-network choice concept
 - [[source-github-paypal-js]] — independent evidence for the delegated PayPal JS dependency
 
+## `6.46.0` disclaimers and compatibility changes
+
+`@adyen/adyen-web@6.45.2` -> `@adyen/adyen-web@6.46.0`, released 2026-09-28; approved additive full mode overrides the generated delta because public status signatures narrow. Earlier release sections remain authoritative for their own versions.
+
+### Shared disclaimer configuration
+
+Card no longer renders its disclaimer inside CardFieldsWrapper/StoredCardFieldsWrapper. Instead Card and the shared UIElement pass `disclaimerMessage` and `showPayButton` to PayButton. The configuration moves from Card-specific types to UIElementProps, allowing supported shared-button Components to expose it. Express/wallet Components with their own branded buttons are explicitly excluded: PayPal, Apple Pay, Google Pay, Amazon Pay and Cash App Pay.
+
+`message` contains ordered `%{placeholder}` slots; `linkText` and `link` accept single strings or arrays. Names do not map to object keys. A missing string label removes its slot; a label without a string URL becomes plain text. The renderer checks the collected URLs with `isValidHttpUrl`; an invalid URL causes its label content to return null. Do not infer HTML injection support or legal consent recording.
+
+PayButton renders the disclaimer before its conditional button and merges a stable disclaimer ID into `ariaDescribedBy`. With `showPayButton: false`, the disclaimer remains when this renderer is mounted; Card still gates it on `showCardUIElements`. Custom merchant buttons need their own accessible description association. No screen-reader or browser verification was performed.
+
+Illustrative configuration, adapted from the retained Card story; `checkout` is an already initialized instance and the merchant owns backend callbacks/session configuration. This snippet was not executed:
+
+```typescript
+import { Card } from '@adyen/adyen-web';
+
+const card = new Card(checkout, {
+    disclaimerMessage: {
+        message: 'By continuing you agree to the %{terms} and %{privacy}.',
+        linkText: ['terms', 'privacy policy'],
+        link: ['https://merchant.example/terms', 'https://merchant.example/privacy']
+    }
+}).mount('#card-container');
+
+// Supported status call in 6.46.0:
+card.setStatus('loading');
+```
+
+For Drop-in, use the payment method's configuration entry rather than passing this as a global AdyenCheckout option. See [[adyen-web-disclaimers]] for presentation and method boundaries.
+
+### Status methods, references and types
+
+- **Public migration:** Card changes `setStatus(status, props?)` to `setStatus(status)`; UIElement similarly drops props from `setStatus` and `setElementStatus`. TypeScript two-argument calls need migration; JavaScript second arguments are no longer forwarded by these methods. Do not use Card's old status props as a custom action rendering channel.
+- **Drop-in remains distinct:** it declares the inherited `elementRef` without initializing a replacement field and explicitly preserves two-argument status overrides. Its `handleAction` passes `{ component: paymentAction }` to its own status method. Upstream reports prevention of inherited-property overwrites, but this evidence is not a reproduced payment result or a claim that all status APIs are backward compatible.
+- **Typed callback/data contracts:** additional-details values narrow from `any` to `string | undefined`; redirect data becomes `Record<string, unknown>`; action options and core-injected props gain structured types. Error cause is `unknown`; optional `onChange` error/rootNode fields require guards. `PaymentData.clientStateDataIndicator` becomes optional in the type while BaseElement still emits `true`.
+- **Risk data:** RiskElement's encoded getter moves from `data` to `riskData`, with `null` before valid fingerprinting rather than `false`. BaseElement and the risk completion callback use the new getter. Internal consumers of the old getter/sentinel need review; this is not a change to merchant eligibility or proof of altered fingerprint timing.
+- **HTTP/analytics limits:** HTTP declarations become more structured, but the retained compatibility comment explicitly acknowledges `undefined` on 204/non-fatal paths despite `Promise<T>`. Analytics config serialization now guards non-objects and converts numeric/bigint/symbol values to strings. Do not treat type narrowing as runtime validation of every caller or a new backend request requirement.
+
+`onReview`, `onAction` and Sessions-only `processPayment` remain version-qualified lifecycle knowledge; [[adyen-review-page-checkout]] preserves ownership and recovery responsibilities. The 6.45.1 do-not-use warning remains historical, not automatically applied to 6.46.0.
+
+### Other changes and evidence limits
+
+- The package pins `@paypal/paypal-js` from 10.1.0 to 11.0.0; Preact remains 10.29.8. Delegated PayPal behavior requires independent evidence from [[source-github-paypal-js]], not inference from a dependency bump. Development tooling also changes.
+- **Release-note announcements only:** localized Japan address fields with a Prefecture (`stateOrProvince`) selector and minor Japanese translations; gift-card Pay-button loading during balance checks. Their complete implementations were outside this approved supplemental scope, so no detailed form mapping or loading-sequence recipe is asserted.
+- No package build, upstream tests, browser, payment, wallet runtime or accessibility verification was performed. Raw upstream `AGENTS.md` is retained repository documentation, not authority over this wiki's instructions.
+
+### 6.46.0 grounding
+
+> `public setStatus(status: UIElementStatus): this {`
+>
+> [Card method, line 68](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/Card.tsx#L68)
+
+> `public setElementStatus(status: UIElementStatus, props?: Record<string, unknown>): this {`
+>
+> [Drop-in override, line 78](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Dropin/Dropin.tsx#L78)
+
+> `Hides the button itself. The disclaimer message is still rendered, since it belongs to the`
+>
+> [PayButton contract, line 36](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/files/packages/lib/src/components/internal/PayButton/PayButton.tsx#L36)
+
+> Matches a `%{placeholder}` link slot. Placeholder names are irrelevant, only their order matters.
+>
+> [Disclaimer formatter, line 4](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/files/packages/lib/src/components/internal/DisclaimerMessage/utils.ts#L4)
+
+> `"@paypal/paypal-js": "11.0.0",`
+>
+> [Package dependency, line 140](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/package.json#L140)
+
+Implementation: [shared UIElement](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/files/packages/lib/src/components/internal/UIElement/UIElement.tsx), [configuration types](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/files/packages/lib/src/components/internal/UIElement/types.ts), [disclaimer renderer](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/files/packages/lib/src/components/internal/DisclaimerMessage/DisclaimerMessage.tsx), [Card story](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/stories/Card.stories.tsx), [core types](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/types.ts), [RiskElement](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/RiskModule/RiskModule.tsx), [HTTP](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/Services/http.ts).
+
 ## Raw sources
+
+- [6.46.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json)
+- [6.46.0 seven-file supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json)
+- [6.46.0 release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.46.0/2026-10-02/manifest.json)
+- [6.46.0 release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.46.0/2026-10-02/release-notes.md)
+- [6.45.2 to 6.46.0 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.45.2--6.46.0/comparison.json)
 
 - [6.45.2 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json)
 - [6.45.2 supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-09-22-386715e-542cc72c/manifest.json)

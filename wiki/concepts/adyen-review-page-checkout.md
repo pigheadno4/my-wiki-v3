@@ -23,6 +23,12 @@ The retained 6.45.2 release reports a payment-action mounting fix by reverting t
 
 `processPayment` does not repeat Component validity checks or `beforeSubmit` transformations, and has no local in-flight submission guard. Preserve those responsibilities deliberately, handle stale data, disable duplicate confirmation, and implement error/partial-payment recovery. This is not evidence that server-side idempotency is absent.
 
+## 6.46.0 compatibility boundary
+
+The retained 6.46.0 UIElement preserves the opt-in review submit branch and Sessions/advanced flow distinction. Card and the shared UIElement status methods now take only `status`, no longer forwarding a second props argument. Drop-in explicitly overrides both status methods to keep props forwarding and passes the created action Component through its action status. This differs from treating the earlier 6.45.1 regression as automatically recurring; no runtime action-mounting test was performed. Recheck custom status calls and TypeScript integrations against the version-qualified evidence in [[source-github-adyen-web]].
+
+The new shared payment disclaimer in [[adyen-web-disclaimers]] can accompany supported SDK button paths, including the review presentation. It does not alter who owns final confirmation, action cleanup, duplicate prevention, or backend payment calls.
+
 ## Payment-method boundaries
 
 - Card, Bacs Direct Debit, stored PayByBankUS, stored PayTo, and Twint wire the internal review button presentation. The primary label becomes Continue; this is not a universal public `showReview` option.
