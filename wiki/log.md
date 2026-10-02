@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-02] ingest | Braintree v6 sample `06bc2de`
+
+- Approved additive full ingest with focused reading: static View/Edit Saved Payment, server-side preferred-token context and nonce/token sale submission. Preserved earlier commit history; unchanged React example and unchecked captured-label/ownership limitations remain explicit. Details: [[paypal-log]], [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]], [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]]. No runtime/payment test, commit or push.
+
 ## [2026-10-02] ingest | Braintree website C27
 
 - Ten mobile SDK/authorization and credit-card website sources independently reviewed and promoted; first pass 8/10, ten full plus two targeted reviews, fixed query audit 20/20. Catalog: 242 sources (225 website + 17 GitHub). Preserved cross-source PayPal replacement wording and Card Fields platform/version qualifications. Details: [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-27/`. No commit or push of C27.

@@ -2,8 +2,11 @@
 title: "GitHub changelog: paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration"
 type: source
 date_ingested: 2026-08-17
+date_updated: 2026-10-02
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-10-02-06bc2de/manifest.json"
+  - "github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/supplements/2026-10-02-06bc2de-9592883c/manifest.json"
   - "github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/manifest.json"
   - "github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/supplements/2026-08-16-f1c7123-dd2b315d/manifest.json"
 tags: [paypal, braintree, web-sdk-v6, samples, changelog, github-repository]
@@ -12,6 +15,36 @@ tags: [paypal, braintree, web-sdk-v6, samples, changelog, github-repository]
 ## Overview
 
 Commit-qualified history for `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration`. Durable architecture and implementation guidance belongs in [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]].
+
+## `default-branch@06bc2de` - Additive Full Ingest (2026-10-01)
+
+| Ref | Prior accepted SHA | Current SHA | Ingest mode |
+| --- | --- | --- | --- |
+| `main` | `f1c712374f674ce6f0b2683f105871dcb969d2d7` | `06bc2de96264a29f33ff7b6eb0d566c1cd162b0a` | Full, approved focused reading |
+
+Collected and ingested October 2. Current snapshot: 68 files, 137,194 bytes; approved saved-payment frontend supplement: two files, 10,784 bytes. The retained inventory reports eight added/modified paths and 60 unchanged. Five paths are actual upstream changes within the comparison pathspec; React `index.html`, React `utils.ts` and Node `.nvmrc` are newly retained but identical to the prior supplement. Do not report those three as new functionality. The supplemented frontend lies outside the unchanged collection policy.
+
+### Changes and integration impact
+
+- Static navigation adds View/Edit Saved Payment. The billing-agreement example exposes the newly vaulted token and customer ID for demo setup.
+- Token generation accepts a preferred token or customer lookup and introduces a server-side sandbox GraphQL helper using `input.clientToken.paymentMethodId`.
+- The supplemented frontend loads Braintree Web `3.146.0`, creates a fresh v6 edit session with authorize intent and commit false, tokenizes approval, and separately submits an edited nonce or the existing vault token.
+- The transaction route expands the earlier nonce-only contract to exactly one truthy nonce/token and still requests settlement submission.
+- Existing React source and dependency declarations remain unchanged; this commit is not a React edit wrapper or an independently versioned PayPal JS release.
+
+### Migration and limits
+
+Resolve saved-method ownership from authenticated server-side identity; do not copy the sample's trusted-browser identifier inputs or browser-controlled amount. Keep GraphQL credentials on the server. Check the Braintree result and persist authoritative payment state. The unconditional frontend "captured" message conflicts with its unchecked result and is mirrored in the source and concept; neither tokenization nor submission proves settlement or durable default-funding-instrument mutation. No runtime/payment test was performed.
+
+Full mode was approved because token generation and payment submission change together. The focused-reading exception covered complete changed retained files, both supplemental frontend files and affected prior/dependency code; unchanged evidence and inventories were verified by hash. All prior history below remains.
+
+**Updated wiki areas:** cumulative source's `default-branch@06bc2de` section; [[paypal-braintree-integration]]; PayPal company, provider index and logs.
+
+**Evidence:** [current snapshot](../../../../raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-10-02-06bc2de/manifest.json), [frontend supplement](../../../../raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/supplements/2026-10-02-06bc2de-9592883c/manifest.json), [comparison](../../../../tracking/github/repos/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/comparisons/default-branch/f1c7123--06bc2de/comparison.md).
+
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-10-02-06bc2de/manifest.json` - root-qualified immutable commit evidence
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/supplements/2026-10-02-06bc2de-9592883c/manifest.json` - approved supplemental frontend evidence
+- `tracking/github/repos/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/comparisons/default-branch/f1c7123--06bc2de/comparison.json` - exact-SHA comparison identity and content hashes
 
 ## `default-branch@f1c7123` - Full Baseline (2026-06-25)
 

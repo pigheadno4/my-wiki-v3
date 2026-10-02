@@ -1,0 +1,209 @@
+diff --git a/client/index.html b/client/index.html
+index 45b2022..af09bbc 100644
+--- a/client/index.html
++++ b/client/index.html
+@@ -87,6 +87,11 @@
+               </li>
+             </ul>
+           </li>
++          <li>
++            <a href="/client/paypalEditSavedPayment/src/index.html"
++              >Edit Saved Payment (Edit FI)</a
++            >
++          </li>
+         </ul>
+       </li>
+     </ul>
+diff --git a/client/paypalBillingAgreements/basic/src/app.js b/client/paypalBillingAgreements/basic/src/app.js
+index 6bc0c07..4d3be04 100644
+--- a/client/paypalBillingAgreements/basic/src/app.js
++++ b/client/paypalBillingAgreements/basic/src/app.js
+@@ -27,9 +27,10 @@ async function setupPayPalButton(paypalCheckoutV6Instance) {
+         console.log("onApprove", data);
+         const { nonce } = await paypalCheckoutV6Instance.tokenizePayment(data);
+         const paymentMethodData = await vaultPaymentMethod(nonce);
++        const { token: vaultId, customerId } = paymentMethodData.paymentMethod;
+         renderAlert({
+           type: "success",
+-          message: `Payment method successfully vaulted: ${JSON.stringify(data)}`,
++          message: `Vaulted! Use these for the Edit Saved Payment flow — customerId: ${customerId} | vaultId: ${vaultId}`,
+         });
+         console.log("Vault result", paymentMethodData);
+       },
+diff --git a/server/node/src/braintreeGraphQlClient.ts b/server/node/src/braintreeGraphQlClient.ts
+new file mode 100644
+index 0000000..eca2cc8
+--- /dev/null
++++ b/server/node/src/braintreeGraphQlClient.ts
+@@ -0,0 +1,73 @@
++const {
++  BRAINTREE_SANDBOX_MERCHANT_PUBLIC_KEY,
++  BRAINTREE_SANDBOX_MERCHANT_PRIVATE_KEY,
++} = process.env;
++
++if (
++  !BRAINTREE_SANDBOX_MERCHANT_PUBLIC_KEY ||
++  !BRAINTREE_SANDBOX_MERCHANT_PRIVATE_KEY
++) {
++  throw new Error("Missing Braintree credentials");
++}
++
++const GRAPHQL_ENDPOINT = "https://payments.sandbox.braintree-api.com/graphql";
++
++interface ICreateClientTokenResponse {
++  data?: {
++    createClientToken: {
++      clientToken: string;
++    };
++  };
++  errors?: Array<{ message: string }>;
++}
++
++/**
++ * Embeds a `preferredPaymentMethodToken` (used by PayPal Checkout V6's Edit
++ * Saved Payment flow) into a client token. The REST `client_token` endpoint
++ * used by the Braintree Node SDK has no equivalent option, so this calls the
++ * GraphQL API directly, where the field is named `paymentMethodId`.
++ */
++export async function generateClientTokenWithPreferredPaymentMethod(
++  preferredPaymentMethodToken: string,
++): Promise<string> {
++  const authorization = Buffer.from(
++    `${BRAINTREE_SANDBOX_MERCHANT_PUBLIC_KEY}:${BRAINTREE_SANDBOX_MERCHANT_PRIVATE_KEY}`,
++  ).toString("base64");
++
++  const response = await fetch(GRAPHQL_ENDPOINT, {
++    method: "POST",
++    headers: {
++      Authorization: `Basic ${authorization}`,
++      "Braintree-Version": "2023-07-03",
++      "Content-Type": "application/json",
++    },
++    body: JSON.stringify({
++      query:
++        "mutation CreateClientToken($input: CreateClientTokenInput!) { createClientToken(input: $input) { clientToken } }",
++      variables: {
++        input: {
++          clientToken: {
++            paymentMethodId: preferredPaymentMethodToken,
++          },
++        },
++      },
++    }),
++  });
++
++  const result = (await response.json()) as ICreateClientTokenResponse;
++  const clientToken = result.data?.createClientToken?.clientToken;
++
++  if (!clientToken) {
++    const graphQLErrorMessage = result.errors
++      ?.map((error) => error.message)
++      .join("; ");
++
++    throw new Error(
++      graphQLErrorMessage
++        ? `Failed to generate client token: ${graphQLErrorMessage}`
++        : "Failed to generate client token",
++    );
++  }
++
++  return clientToken;
++}
+diff --git a/server/node/src/routes/authRouteHandler.ts b/server/node/src/routes/authRouteHandler.ts
+index 77132b4..a304504 100644
+--- a/server/node/src/routes/authRouteHandler.ts
++++ b/server/node/src/routes/authRouteHandler.ts
+@@ -1,14 +1,58 @@
+ import type { Request, Response } from "express";
++import { z } from "zod/v4";
+ 
+ import { client } from "../braintreeServerSdkClient";
++import { generateClientTokenWithPreferredPaymentMethod } from "../braintreeGraphQlClient";
+ 
+ export async function clientTokenRouteHandler(
+-  _request: Request,
++  request: Request,
+   response: Response,
+ ) {
++  const { preferredPaymentMethodToken, customerId } = z
++    .object({
++      preferredPaymentMethodToken: z.string().optional(),
++      customerId: z.string().optional(),
++    })
++    .parse(request.query);
++
++  const resolvedPreferredPaymentMethodToken =
++    preferredPaymentMethodToken ||
++    (customerId
++      ? await findPayPalAccountTokenForCustomer(customerId)
++      : undefined);
++
++  if (resolvedPreferredPaymentMethodToken) {
++    const clientToken = await generateClientTokenWithPreferredPaymentMethod(
++      resolvedPreferredPaymentMethodToken,
++    );
++
++    response.json({
++      clientToken,
++      preferredPaymentMethodToken: resolvedPreferredPaymentMethodToken,
++    });
++    return;
++  }
++
+   const { clientToken } = await client.clientToken.generate({});
+ 
+   response.json({
+     clientToken,
+   });
+ }
++
++async function findPayPalAccountTokenForCustomer(
++  customerId: string,
++): Promise<string> {
++  const customer = await client.customer.find(customerId);
++  const paypalAccount =
++    customer.paypalAccounts?.find((account) => account.default) ??
++    customer.paypalAccounts?.[0];
++
++  if (!paypalAccount) {
++    throw new Error(
++      `No vaulted PayPal account found for customerId: ${customerId}`,
++    );
++  }
++
++  return paypalAccount.token;
++}
+diff --git a/server/node/src/routes/transactionRouteHandler.ts b/server/node/src/routes/transactionRouteHandler.ts
+index 8ccec87..b492e42 100644
+--- a/server/node/src/routes/transactionRouteHandler.ts
++++ b/server/node/src/routes/transactionRouteHandler.ts
+@@ -7,17 +7,26 @@ export async function transactionSaleRouteHandler(
+   request: Request,
+   response: Response,
+ ) {
+-  const { amount, paymentMethodNonce, options } = z
++  const { amount, paymentMethodNonce, paymentMethodToken, options } = z
+     .object({
+       amount: z.string(),
+-      paymentMethodNonce: z.string(),
++      paymentMethodNonce: z.string().optional(),
++      paymentMethodToken: z.string().optional(),
+       options: z.object({ storeInVaultOnSuccess: z.boolean() }).optional(),
+     })
++    .refine(
++      (data) =>
++        Boolean(data.paymentMethodNonce) !== Boolean(data.paymentMethodToken),
++      {
++        message:
++          "Provide exactly one of paymentMethodNonce or paymentMethodToken",
++      },
++    )
+     .parse(request.body);
+ 
+   const transactionSaleResponse = await client.transaction.sale({
+     amount,
+-    paymentMethodNonce,
++    ...(paymentMethodNonce ? { paymentMethodNonce } : { paymentMethodToken }),
+     options: {
+       submitForSettlement: true,
+       storeInVaultOnSuccess: options?.storeInVaultOnSuccess,

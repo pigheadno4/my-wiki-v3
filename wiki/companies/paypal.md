@@ -17,6 +17,8 @@ Standard e-commerce integration that renders PayPal, Venmo, and Debit/Credit Car
 
 ### PayPal JS SDK
 
+The separate Braintree v6 sample at `default-branch@06bc2de` (October 1, 2026) adds a static View/Edit Saved Payment path using Braintree Web `3.146.0`, server-side preferred-token GraphQL generation, and nonce-or-vault-token transaction submission. Its React entry remains on Braintree `3.142.0`; this is not a new PayPal JS React wrapper. Browser-supplied identity/amount and unchecked "captured" output remain demo limitations, not production or payment proof. See [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] and [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]].
+
 The September 23 patches, `@paypal/paypal-js@11.1.1` and `@paypal/react-paypal-js@10.5.1`, harden selected loader option reads and align session-field forwarding for 11 local methods. The 50 generated/reworked Storybook wrappers illustrate existing methods, not new merchant eligibility. The unchanged Pix README example does not match the new prop-selection list; see [[source-github-paypal-js]], [[changelog-github-paypal-js]], and [[paypal-apm]] for the version-specific warning and preserved history.
 
 The latest ingested Checkout Components release is `@paypal/checkout-components@5.0.435`: it adds regression tests for existing iframe titles without authored runtime changes. The `5.0.434` checkout-child window-name monitoring remains: it is not a blocking or authentication control, and logged values are truncated, not redacted. The `5.0.433` iframe aria-label revert also remains. No merchant API migration or independently tested browser/screen-reader outcome is established; earlier history is preserved in [[source-github-paypal-checkout-components]].
@@ -222,8 +224,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-disputes-overview]] — Disputes overview: internal (180-day window, 20-day amicable, 10-day PayPal adjudication) vs external (chargeback + ACH return); pre-chargeback alert 20-hour refund window; 6 buyer issue types; 2 flow diagrams
 - [[source-github-v6-web-sdk-sample-integration]] — cumulative GitHub v6 sample evidence through `bb23e7c`: ACH Wallet, card name, automatic LPM presentation; preserves earlier Apple Pay and baseline history
 - [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified expansion history through `bb23e7c`, sample limitations and documentation/code discrepancies
-- [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree-merchant v6 sample at `f1c7123`: nonce-based checkout, vault, billing agreements, Pay Later/Credit, Messages, React, and Node boundaries
-- [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — commit-qualified history for the first `f1c7123` Braintree v6 sample baseline
+- [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree-merchant v6 sample through `06bc2de`: static saved-payment editing, server token context and nonce/token submission; earlier checkout, vault, React and Node baseline preserved
+- [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — commit-qualified `f1c7123` to `06bc2de` history, focused-reading scope and production limitations
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample for Orders, partners, Hosted Fields, shipping, and Subscriptions
 - [[changelog-github-paypal-sdk-server-side-integration]] — commit-qualified `5409a3b` baseline, migration boundary, and retained sample defects
 - [[source-github-paypal-android-sdk-demo-app]] — Jetpack Compose Android SDK `2.3.0` checkout and hosted Payment Link reference

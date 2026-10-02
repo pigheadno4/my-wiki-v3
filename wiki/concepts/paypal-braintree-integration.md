@@ -98,6 +98,20 @@ The exact-SHA Storybook helper maps its `preferredPaymentMethodToken` option to 
 
 The independently collected PayPal JS versions (`@paypal/paypal-js@11.1.1` and `@paypal/react-paypal-js@10.5.1`) do not provide a dedicated typed edit-session API or React wrapper for this new Braintree method. Do not infer delegated runtime availability from wrapper declarations or assume upgrading the wrapper alone adds the Braintree adapter API. See [[source-github-paypal-js]] for that separate package history.
 
+## Returning-Buyer Sample at `06bc2de`
+
+The independent Braintree v6 sample adds a static View/Edit Saved Payment page at `default-branch@06bc2de` (October 1, 2026). That page loads Braintree Web `3.146.0`; its unchanged React entry still loads `3.142.0` and declares `@paypal/react-paypal-js@^10.1.0`. This sample update does not add a React edit component or update the independently versioned PayPal JS packages. [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]]
+
+The browser requests a token using a vaulted payment-method token or customer ID. The sample server prefers an explicit token; otherwise it looks up the customer's default PayPal account, falling back to the first account. A new server-side GraphQL helper maps the resolved token to `input.clientToken.paymentMethodId`. Unlike the SDK's browser-only Storybook helper, this sample keeps Braintree API credentials on the Node server.
+
+The saved-payment element exists before SDK loading. A fresh client and v6 adapter create an edit session with `intent: "authorize"`, `commit: false`, amount and currency. Buyer approval is tokenized from `orderId`/`payerId`. A separate Submit Order action uses the approved nonce, or the existing vaulted token if no edit was approved. The sale route requires exactly one truthy nonce/token and requests `submitForSettlement: true`. This remains Braintree processing, not direct PayPal Orders API capture.
+
+> [!warning] Sample ownership boundary
+> The retained routes do not authenticate ownership of browser-supplied customer IDs or vault tokens. Production must resolve the permitted token from authenticated server-side buyer identity, derive trusted amounts, and reconcile authoritative transaction state. A customer lookup alone is not an ownership check.
+
+> [!warning] Contradiction
+> The sample displays "Order successfully captured!" after JSON completion without checking HTTP status, the Braintree result's `success`, or transaction state. The code establishes tokenization and a settlement-submission request, not successful capture or settlement. It also does not prove a durable update to the default vaulted funding instrument. The same discrepancy is recorded in [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]].
+
 ## WebView Popup Transport
 
 The independently versioned `PopupBridge@3.1.0` iOS library lets a Braintree or compatible PayPal web checkout embedded in `WKWebView` open popup authentication through `ASWebAuthenticationSession` and return the callback payload to JavaScript. Its Venmo path can advertise a merchant-registered deep-link scheme when the Venmo app is installed.

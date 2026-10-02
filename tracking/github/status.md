@@ -608,6 +608,34 @@
   Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.9.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-2b0edf0d1bdbb692d15d`
+
+- Repository: `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration`
+- SHA: `06bc2de96264a29f33ff7b6eb0d566c1cd162b0a`
+- Collection date: `2026-10-02`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-10-02-06bc2de/manifest.json)
+- Packet: [review packet](repos/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/ingest-packets/github-2b0edf0d1bdbb692d15d/packet.md)
+- Evidence attachment: [manifest](repos/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration/evidence-attachments/github-2b0edf0d1bdbb692d15d/attachment.json)
+- Review priority: `high`
+- Required reading: `147` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@06bc2de` (recommended `full`)
+  Ref: `main`
+  From SHA: `f1c712374f674ce6f0b2683f105871dcb969d2d7`
+  To SHA: `06bc2de96264a29f33ff7b6eb0d566c1cd162b0a`
+  Comparison: [manifest](repos/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/comparisons/default-branch/f1c7123--06bc2de/comparison.json)
+
 ## `github-2d232d73cb3e8d105629`
 
 - Repository: `paypal/paypal-typescript-server-sdk`

@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | Braintree v6 sample `06bc2de`
+
+- Additive full-ingested `github-2b0edf0d1bdbb692d15d`, `f1c712374f674ce6f0b2683f105871dcb969d2d7` to `06bc2de96264a29f33ff7b6eb0d566c1cd162b0a`, with the approved focused-reading exception and two exact-SHA frontend supplements.
+- Read changed retained files, supplemental frontend and affected prior/dependency code completely; verified all 64 prior and 68 current snapshot file hashes, three prior linked supplement files and two current supplement files. Sixty retained paths unchanged; three newly retained paths match prior supplemental evidence rather than new upstream features.
+- Recorded static Braintree `3.146.0` edit flow, server-side GraphQL token context, nonce/token sale contract, unchanged React `3.142.0` entry, ownership/amount gaps and unchecked captured-label contradiction. Updated concept first, then cumulative source/changelog, company, provider index and logs. All old history preserved; source_count remains 177; no new comparison page.
+- Sources: [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]], [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]]. Receipt: `tracking/github/repos/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/reviews/github-2b0edf0d1bdbb692d15d.md`. No build, runtime/payment test, commit or push.
+
 ## [2026-09-27] ingest | Checkout Components `5.0.435`
 
 - Delta-ingested `github-b87716491900a0da3802`, `@paypal/checkout-components@5.0.434` to `5.0.435`, SHA `1f668d5ebfba91a6e636f2453aeaba36d65cb5c7`, with approved focused reading.
