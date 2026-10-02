@@ -1,0 +1,56 @@
+{
+  "job_id": "3ds-rules-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree 3D Secure Rules Manager \u2014 Android v5 route\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/3d-secure/rules-manager/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/3d-secure/rules-manager/android/v5-2026-09-16.md\"\ntags: [braintree, 3d-secure, rules-manager, android, authentication]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot is the Android v5-routed Braintree guide to 3D Secure Rules Manager. It documents merchant policy configured in the Braintree Control Panel\u2014rulesets, priorities, criteria, actions and merchant-account assignment\u2014and Android request data used when `verifyCard()` evaluates that policy. The Android v5 route and Java/Kotlin examples do not establish a merchant's installed SDK version or move ruleset administration into the client.\n\nRules Manager controls when and how 3DS authentication is requested. It does not authorize, capture or settle a payment, guarantee issuer approval or replace the separate transaction-sale step. See [[braintree-3d-secure]] for the authentication and conditional-liability-shift boundary.\n\n## Key takeaways\n\n- Merchants create business-specific 3DS invocation rules in the Control Panel. The page says no developer work is required to set up Rules Manager only **once Braintree 3DS 2 is already integrated**.\n- The page says Rules Manager is automatically enabled in Sandbox and Production, but that statement is about the manager, not proof that an individual account is currently eligible, compatibly configured or enrolled for 3DS. The existing collected 3DS authority says production accounts outside the EEA are not automatically enrolled.\n- A ruleset can contain multiple prioritized rules and can be assigned to multiple merchant accounts, while each merchant account can have only one ruleset. The assigned ruleset is evaluated when `verifyCard()` is called. If multiple rules match, only the higher-priority rule applies; request parameters `challenge_requested` or `requested_exemption_type` override a matched rule.\n- Rules Manager actions have consequential limits: requesting a challenge does not guarantee that the issuer will present one; granted low-value or Transaction Risk Analysis exemptions do not provide liability shift; TRA requires qualification; \u201cSkip 3DS wherever applicable\u201d has no effect in a PSD2-regulated market and forfeits 3DS benefits where skipping occurs; Data Only 3DS does not provide liability shift. These are authentication-policy outcomes, not payment authorization or settlement outcomes.\n- Custom fields are defined and selected in the Control Panel, while matching field values are passed in `verifyCard()`. The Java and Kotlin snippets are examples of that Android client handoff, not universal required field names or guaranteed business outcomes.\n- The page recommends grouping rulesets by geographical region and monitoring and adjusting rules over time. Those are operational recommendations, not stated platform requirements.\n\n## Detail locators\n\n- Product purpose, Control Panel ownership and the Braintree 3DS 2 integration condition: `## Introducing the 3D Secure Rules Manager`, lines 17-31.\n- Automatic-enable statement, ruleset cardinality and `verifyCard()` evaluation: `## How 3D Secure Rules Manager Works`, lines 57-61.\n- Ruleset creation and geography-grouping recommendation: `### Rulesets`, lines 73-89.\n- Rule priority, monitoring advice and request-parameter override: `### Rules`, lines 92-113.\n- Criteria, action semantics, exemption/liability limits, issuer-owned challenge decision and platform condition: `#### Rule Criteria` through `#### Conditions`, lines 128-160.\n- Control Panel custom-field setup, Android Java/Kotlin request examples and example-only retry/travel scenarios: `### Custom Fields`, lines 163-280.\n- Merchant-account assignment workflow: `### Assigning Merchant Accounts to Rulesets`, lines 283-293.\n- Illustrative business-objective rulesets and continuing-maintenance advice: `### Example 3D Secure Rulesets for Business Objectives` through `### Maintaining your Rules`, lines 296-343.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-3d-secure]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/custom-fields-2026-09-16|Braintree Control Panel custom fields article]] - unread navigation-only route linked by this guide\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/3d-secure/rules-manager/android/v5-2026-09-16|Braintree 3D Secure Rules Manager \u2014 Android v5 route]] - fully read snapshot covering Control Panel rule policy, `verifyCard()` evaluation and Android custom-field examples\n",
+  "quotes": [
+    {
+      "text": "To further enhance 3DS2, Braintree now offers merchants 3D Secure Rules Manager, a built-in offering that enables deep customization of when and how to invoke 3DS. With 3D Secure Rules Manager, merchants can create business specific rules for when and how 3DS is invoked directly from the Braintree Control Panel.",
+      "location": "line 19, under `## Introducing the 3D Secure Rules Manager`"
+    },
+    {
+      "text": "3D Secure Rules Manager does not require any developer work to set up once integrated with Braintree 3DS 2.",
+      "location": "line 29, under `## Introducing the 3D Secure Rules Manager`"
+    },
+    {
+      "text": "Merchants can create rulesets with multiple rules, then assign priority to each rule. A ruleset may be associated with one or more merchant accounts. Each merchant account can be associated with only one ruleset. The merchant accounts associated 3D Secure Ruleset will be automatically evaluated when verifyCard() is called.",
+      "location": "line 61, under `## How 3D Secure Rules Manager Works`"
+    },
+    {
+      "text": "If multiple rules are matched for a given transaction, the higher priority rule will be applied, and other rules will be ignored. We recommend that merchants consistently monitor and adjust their rules based on transaction activity, performance, and industry trends.\n\nIf the request parameters challenge_requested or requested_exemption_type are provided during verifyCard() then it will override any matched rule.",
+      "location": "lines 111-113, under `### Rules`"
+    },
+    {
+      "text": "**Apply 3DS and request a challenge:**Always trigger 3DS authentication and request an 3DS challenge. The act of requesting a challenge does not guarantee that the customer will actually get it, as the decision to present a challenge is controlled by the issuing bank.",
+      "location": "line 146, under `#### Available Actions`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c29-3ds-rules-android-v5-reciprocal",
+        "target_path": "wiki/concepts/braintree-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-3d-secure-rules-manager-android-v5]] - Android v5-routed Rules Manager guide for Control Panel ruleset policy, `verifyCard()` evaluation and Android custom-field handoff; 3DS authentication remains distinct from payment authorization, capture and settlement",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page's statement that Rules Manager is automatically enabled in Sandbox and Production must not be presented as proof that an individual merchant is enrolled in or compatibly configured for 3DS; existing collected authority says production accounts outside the EEA are not enrolled automatically.",
+          "Keep Control Panel policy configuration separate from Android client execution: `verifyCard()` evaluates the assigned ruleset and can carry overriding parameters or matching custom-field values.",
+          "Do not describe 3DS authentication or a Rules Manager action as payment authorization, processor approval, capture, settlement or guaranteed liability shift."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/3d-secure/rules-manager/android/v5-2026-09-16.md",
+  "raw_sha256": "bfeba437865be45da72e8065c673eb4ce5d8622724f9449d4736944c331128f4",
+  "status": "candidate_ready"
+}

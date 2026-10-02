@@ -6,6 +6,18 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | Braintree website C29
+
+- Ten pinned 3DS overview/advanced-options/Rules Manager and checkout UI/Hosted Fields website pages fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 262 sources (245 website + 17 GitHub). See [[braintree-index]], [[braintree-3d-secure]], [[braintree-web-sdk]] and [[braintree-web-drop-in]].
+- First full-review pass 8/10; ten initial full reviews plus two bounded targeted reviews, no repeated full review. Both corrections added the consequential fraud-liability warning for advanced-info risk assessments. Fixed five-group query audit passed 20/20 questions.
+- Preserved authentication-versus-payment boundaries, conditional liability, issuer discretion, platform/version and policy/client execution distinctions, sparse upgrade route/body conflict and flattened checkout table limits. Raw unchanged; coordinator owns canonical/shared/state writes. Closure and comparative timing: `tracking/ingest/braintree/braintree-campaign-29/`. No collection, GitHub ingest, new scheduler/schema/validator, commit or push.
+
+## [2026-10-02] ingest | Braintree website C28
+
+- Ten pinned card-server/testing/partial-settlement, native/browser Drop-in and Hosted Fields website pages were fully read, independently reviewed and promoted. The catalog now contains 252 sources (235 website + 17 GitHub), with retrieval routes through the existing provider concepts and [[braintree-index]].
+- First-review pass 9/10; ten initial full reviews plus one targeted review, no repeated full review. The five fixed query groups passed 20/20 questions. Partial settlement required a bounded correction to preserve the guide-versus-request refund-authority conflict and link the new guide without replacing the older request reference.
+- Preserved browser Drop-in lifecycle disagreement, native Drop-in/modular SDK version boundaries, recurring Vault Manager warning, fraud-tool coordination, iOS v7 unsupported/alternative-route notices and snapshot-only evidence. Raw is unchanged. Existing timing and closure artifacts are under `tracking/ingest/braintree/braintree-campaign-28/`; a transient pending-init thread reduced available capacity before reuse for an approved query audit. No collection, GitHub ingest, code/rule change, commit or push of C28.
+
 ## [2026-10-02] ingest | Braintree website C27
 
 - Ten pinned website sources were fully read, independently reviewed and promoted: Android/iOS client-SDK migration and setup, two mobile tokenization-key variants, credit-card overview/configuration and two native credit-card client guides. The catalog now contains 242 sources (225 website + 17 GitHub), with routes through [[braintree-android-sdk]], [[braintree-ios-sdk]], [[braintree-payment-methods]], [[braintree-payment-platform]] and [[braintree-index]].

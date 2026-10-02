@@ -1,0 +1,55 @@
+{
+  "job_id": "3ds-advanced-javascript-v3",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree 3D Secure Advanced Options for JavaScript v3\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/3d-secure/advanced-options/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/3d-secure/advanced-options/javascript/v3-2026-09-16.md\"\ntags: [braintree, 3d-secure, javascript, sca, liability-shift]\n---\n\n## Overview\n\nThis version-routed Braintree JavaScript v3 guide covers advanced `verifyCard()` behavior and related server-side reporting: liability-shift outcomes, optional device-data collection, vaulted-card verification, requested challenges, Brazil combo-card account selection, Google Pay eligibility, SCA exemptions, data-only 3DS and Visa DAF. The `/javascript/v3` route identifies the documentation surface; it does not establish the exact `braintree-web` package version installed by a merchant or prove current account eligibility.\n\n## Key takeaways\n\n- `verifyCard()` returns a new nonce plus `liabilityShifted` and `liabilityShiftPossible`. A shifted result can mean authentication succeeded or that the issuer does not support 3DS while the payment method does. A failed authentication does not make transaction creation technically impossible: the guide says card brands recommend another payment method, while a merchant with a permitting server-side risk process may use the new nonce if the server integration sets `required` to `false`. The recommendation and the configuration condition are distinct.\n- The guide says advanced authentication-request parameters pass through the client first and are for UI flow only; they must not be trusted as server-side risk-assessment inputs. The guide separately warns that making risk assessments from the exposed advanced authentication information may result in accepting liability for fraudulent transactions. American Express SafeKey can later revoke a reported liability shift based on merchant behavior and fraud rate.\n- 3DS authentication and its liability indicators are not transaction authorization, gateway acceptance, capture or settlement. The guide describes creating a transaction with the new nonce as a subsequent action, and separately describes reporting from payment-method single-use tokens and created transactions.\n- Optional controls have qualified effects: collecting device data may reduce rejections or challenges; `challengeRequested: true` requests that the cardholder's bank issue a challenge but does not guarantee one; and domestic Brazilian combo-card handling calls for presenting account-type choice and carrying it into both 3DS and the corresponding API call.\n- For a vaulted card, the server first creates a nonce from the stored payment-method token, the client passes that nonce to `verifyCard()`, and the client token should include `customer_id`. Google Pay 3DS is limited here to non-network-tokenized cards; network-tokenized cards using a DPAN cannot use 3DS.\n- SCA exemptions are issuer-discretionary and never guaranteed. Even when granted, liability remains with the merchant. A `Transaction.sale()` exemption does not override normal 3DS logic after 3DS authentication; `requestedExemptionType` during `verifyCard()` requests a no-challenge path only when conditions are met, otherwise standard authentication is attempted.\n- Data-only 3DS is frictionless and grants no liability shift. The captured guide limits it to Mastercard (including Maestro) and Visa on select processors, excludes PSD2-regulated countries, and directs merchants to the Control Panel to confirm account support. `dataOnlyRequested` can fall back to a standard lookup when unsupported, and `verifyCard()` remains required even when Rules Manager flags the transaction as data-only.\n- Visa DAF is an eligibility-qualified, region-qualified credential route. The page says subsequent same-instrument, same-merchant transactions should be frictionless with full liability shift for up to two years, requires an acquirer TRA exemption for PSD2 transactions, and directs merchants to their acquiring bank to confirm eligibility. Treat the captured region list and program conditions as snapshot guidance, not a guarantee for a merchant or transaction.\n\n> [!warning] Keep authentication, risk advice and payment processing separate\n> Client-returned 3DS data is not trusted server risk evidence, and a successful authentication or reported liability shift does not itself authorize, capture or settle a transaction. Failed-authentication handling includes both card-brand advice to request another payment method and a qualified merchant choice to proceed; do not convert the advice into a universal prohibition or the qualified option into an approval guarantee.\n\n## Detail locators\n\n- Client-side trust boundary and callback/Promise outcome fields: `## Liability shift`, lines 17-54.\n- Outcome meanings, failed-authentication recommendation versus `required: false` condition, ineligible-card path and American Express revocation warning: `## Liability shift`, lines 57-65.\n- Server-side single-use-token and transaction reporting examples: `## Liability shift`, lines 65-259.\n- Optional device attributes and qualified benefit: `## Collecting Device Data`, lines 261-274.\n- Vaulted-card nonce sequence and `customer_id`: `## Verifying a vaulted card`, lines 277-331.\n- Issuer-challenge request: `## Requesting a cardholder challenge`, lines 334-336.\n- Domestic Brazil combo-card account-type UI and API propagation: `## Selecting an account type for combo cards in Brazil`, lines 339-375.\n- Google Pay non-network-tokenized versus DPAN eligibility and Drop-in/custom UI routes: `## Verify Google Pay card using 3DS`, lines 377-401.\n- Exemption discretion, low-value and TRA conditions, `Transaction.sale()` interaction and `requestedExemptionType`: `## SCA Exemptions`, lines 403-435.\n- Data-only liability, processor/card/region support, Control Panel check, fallback and Rules Manager route: `## Data Only`, lines 438-454.\n- Visa DAF credential duration, PSD2 TRA condition, captured regions and acquiring-bank eligibility check: `## Visa Digital Authentication Framework`, lines 457-463.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-3d-secure]]\n- Related source: [[source-braintree-fraud-tools-3d-secure]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/3d-secure/advanced-options/javascript/v3-2026-09-16|Braintree 3D Secure Advanced Options for JavaScript v3]] - complete captured guide for advanced authentication controls, outcome handling, qualified liability paths and server-reporting examples\n",
+  "quotes": [
+    {
+      "text": "These parameters pass through the client-side first and should not be trusted for your server-side risk assessment. They should be used for UI flow only.",
+      "location": "## Liability shift, line 21"
+    },
+    {
+      "text": "liabilityShiftPossibleindicates that the payment method was eligible for 3D Secure. IfliabilityShiftedisfalse, then the user failed 3D Secure authentication. In this situation, the card brands recommend asking the user for another form of payment. However, if you have server-side risk assessment processes that allow for it, you can still use the new nonce to create a transaction. If you want to use a nonce that did not pass 3D Secure authentication, you need to set therequiredoption tofalsein your server integration.",
+      "location": "## Liability shift, line 58 (captured rendering omits spaces around field names)"
+    },
+    {
+      "text": "For American Express SafeKey, liabilityShifted may be returned as true but American Express may later revoke the liability shift for the transaction based on your merchant behavior and fraud rate.",
+      "location": "## Liability shift > IMPORTANT, line 63"
+    },
+    {
+      "text": "Merchants can request an exemption from SCA requirements on certain transactions. Exemptions are granted completely at the discretion of the issuer, and are never guaranteed. If an exemption is requested and subsequently granted by the issuer, then SCA will not be required, however the liability remains with the merchant and is not shifted to the issuer.",
+      "location": "## SCA Exemptions, line 405"
+    },
+    {
+      "text": "A data-only 3D Secure call is entirely frictionless, but no liability shift is granted.",
+      "location": "## Data Only, line 440"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c29-3ds-advanced-js-v3-concept-source",
+        "target_path": "wiki/concepts/braintree-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-3d-secure-advanced-options-javascript-v3]] - JavaScript v3 advanced-options route for liability outcomes, client/UI trust boundaries, vaulted cards, Google Pay, SCA exemptions, data-only 3DS and Visa DAF",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this version-routed JavaScript v3 guide distinct from exact braintree-web package-version evidence.",
+          "Do not treat 3DS authentication or liability-shift output as transaction authorization, capture or settlement evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/3d-secure/advanced-options/javascript/v3-2026-09-16.md",
+  "raw_sha256": "fe35b723f87caaea48e061b685789cb93317832397b2eb10f26ea682386b208b",
+  "status": "candidate_ready"
+}

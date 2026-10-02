@@ -1,0 +1,59 @@
+{
+  "job_id": "3ds-rules-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree 3D Secure Rules Manager (JavaScript v3)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/3d-secure/rules-manager/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/3d-secure/rules-manager/javascript/v3-2026-09-16.md\"\ntags: [braintree, 3d-secure, rules-manager, javascript-v3, sca, control-panel]\n---\n\n## Overview\n\nThis JavaScript v3-routed Braintree guide documents 3D Secure Rules Manager: Control Panel rulesets that determine when and how 3DS is requested when `verifyCard()` runs. The collected snapshot covers merchant-account assignment, rule priority and client-request overrides, action and liability-shift limits, custom-field matching, and illustrative business-objective rulesets.\n\n## Key takeaways\n\n- The snapshot says Rules Manager is automatically enabled for all merchants in Sandbox and Production. A ruleset can contain multiple prioritized rules and can be assigned to multiple merchant accounts, while each merchant account can have only one ruleset; the associated ruleset is evaluated when `verifyCard()` is called. Treat this as collected page scope, not proof of a particular merchant's current eligibility, configuration, or production behavior.\n- When multiple rules match, only the higher-priority rule is applied. Supplying `challenge_requested` or `requested_exemption_type` in the `verifyCard()` request overrides any matched rule. This separates Control Panel policy from per-request JavaScript execution; it does not say the client creates or edits the ruleset.\n- The actions include applying 3DS, requesting a challenge, requesting Low Value or Transaction Risk Analysis exemptions, skipping 3DS where applicable, and Data Only 3DS. Requesting a challenge does not guarantee that an issuer will present one. Granted exemptions, skipped 3DS, and Data Only 3DS do not provide liability shift under the stated conditions, and TRA requires qualification.\n- `Skip 3DS wherever applicable` is described as applying outside the PSD2 region; in a regulated PSD2 market it has no effect and 3DS still occurs. A `skipped_due_to_rule` result from `verifyCard()` is an authentication-policy outcome before the separate transaction-sale step, not proof of authorization, processor approval, gateway acceptance, capture, settlement, or funding.\n- Custom-field rules depend on values passed to `verifyCard()` matching fields defined in Rules Manager. The retry example passes `retry_transaction` but then describes a rule for `retryTransaction`; the snapshot does not reconcile those names, so copy neither spelling as an assured working contract without clarification.\n- The geographical grouping, monitoring, maintenance, retry, travel, vaulting, and business-objective material is recommendation or example content. Its labeled expected outcomes are not guarantees of conversion, authorization, liability shift, compliance, or chargeback protection.\n\n> [!warning] Authentication and rule evaluation are not payment completion\n> Rules Manager controls how 3DS authentication or exemptions are requested when `verifyCard()` runs. Neither a rule match nor a 3DS result establishes transaction authorization, processor approval, gateway acceptance, capture, settlement, funding, or guaranteed chargeback protection.\n\n> [!warning] Version, platform, and current-state scope\n> This is a JavaScript v3-routed documentation snapshot. Its rule criteria name iOS, Android, and Web as client platforms, but the page does not establish native SDK versions or behavioral parity. The snapshot's broad enablement statement is not live account evidence, and its recommendations and examples are not mandatory configuration requirements.\n\n## Detail locators\n\n- Rules Manager purpose and the pre-existing Braintree 3DS 2 integration qualification: `## Introducing the 3D Secure Rules Manager`, lines 17-31.\n- Collected Sandbox/Production enablement statement, ruleset assignment cardinality, and evaluation on `verifyCard()`: `## How 3D Secure Rules Manager Works`, lines 57-61.\n- Geographical grouping as a recommendation rather than the only grouping method: `### Rulesets`, line 75.\n- Higher-priority-rule behavior, monitoring recommendation, and `verifyCard()` request-parameter override: `### Rules > #### Creating Rules`, lines 97-111.\n- Rule criteria, action semantics, issuer-controlled challenge, exemption and TRA conditions, PSD2 skip limit, `skipped_due_to_rule`, and Data Only liability boundary: `#### Rule Criteria` through `#### Available Actions`, lines 126-148.\n- Client-platform conditions: `#### Conditions`, lines 151-158.\n- Custom-field match condition and Control Panel setup: `### Custom Fields`, lines 161-198.\n- JavaScript custom-field shape, retry/travel examples, and the unresolved `retry_transaction` versus `retryTransaction` naming mismatch: `#### Trigger a Rule with custom fields via API`, lines 201-237.\n- Merchant-account assignment procedure: `### Assigning Merchant Accounts to Rulesets`, lines 240-250.\n- Illustrative rulesets and provider-labeled expected outcomes: `### Example 3D Secure Rulesets for Business Objectives`, lines 253-313.\n- Rule-monitoring recommendation: `### Maintaining your Rules`, lines 316-318.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-3d-secure]]\n- Related concept: [[braintree-control-panel]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/3d-secure/rules-manager/javascript/v3-2026-09-16|Braintree 3D Secure Rules Manager JavaScript v3 guide]] - complete collected page covering rulesets, rule priority and overrides, actions and conditions, custom fields, merchant-account assignment, examples, and maintenance advice\n",
+  "quotes": [
+    {
+      "text": "To further enhance 3DS2, Braintree now offers merchants 3D Secure Rules Manager, a built-in offering that enables deep customization of when and how to invoke 3DS. With 3D Secure Rules Manager, merchants can create business specific rules for when and how 3DS is invoked directly from the Braintree Control Panel.",
+      "location": "line 19, ## Introducing the 3D Secure Rules Manager"
+    },
+    {
+      "text": "3D Secure Rules Manager is automatically enabled for all merchants in both Sandbox and Production.\n\nMerchants can create rulesets with multiple rules, then assign priority to each rule. A ruleset may be associated with one or more merchant accounts. Each merchant account can be associated with only one ruleset. The merchant accounts associated 3D Secure Ruleset will be automatically evaluated when verifyCard() is called.",
+      "location": "lines 59-61, ## How 3D Secure Rules Manager Works"
+    },
+    {
+      "text": "If multiple rules are matched for a given transaction, the higher priority rule will be applied, and other rules will be ignored. We recommend that merchants consistently monitor and adjust their rules based on transaction activity, performance, and industry trends.\n\nIf the request parameters challenge_requested or requested_exemption_type are provided during verifyCard() then it will override any matched rule.",
+      "location": "lines 109-111, ### Rules > #### Creating Rules"
+    },
+    {
+      "text": "- **Apply 3DS and request a challenge:**Always trigger 3DS authentication and request an 3DS challenge. The act of requesting a challenge does not guarantee that the customer will actually get it, as the decision to present a challenge is controlled by the issuing bank.\n- **Apply Low Value exemption:**Request to bypass 3DS for low-value transactions (transactions below 30 EUR or GBP). Merchants will not get a liability shift if the exemption is granted.\n- **Apply Transaction Risk Analysis exemption:**Request to bypass 3DS with TRA exemption. Merchants will not get a liability shift if the exemption is granted. Note: Merchants must qualify with TRA. Contact us for more details.\n- **Skip 3DS wherever applicable:**Does not apply 3DS authentication for transactions outside of PSD2 region. In a regulated market (PSD2), this setting has no effect and 3DS will still occur. When 3DS is skipped, the merchant will not get the benefits of 3DS such as liability shift. If the 3DS is skipped,verifyCard()will return the statusskipped_due_to_ruleand the merchant can proceed to transaction sale as normal.If a merchant wants to only apply 3D Secure when a rule is matched thenthe ruleset should end with a rule with action \"Skip 3DS wherever applicable\".\n- **Apply Data only 3DS:**3DS Data Only facilitates a transaction process wherein merchants can share data with the issuer through EMV 3DS. It influences approval outcomes without any friction for the cardholder. However, merchants will not get a liability shift.",
+      "location": "lines 144-148, #### Available Actions"
+    },
+    {
+      "text": "3D Secure Rules Manager provides several fields that can be used to build conditional filters. However, you may have a specific set of fields pertaining to your business that you want to use in certain scenarios to optimize 3D Secure. Using Custom Fields, you can add such specific fields to the tool and then use them in building filter conditions.\n\n3D Secure Rules Manager allows you to set 3D Secure Rules on your predefined custom fields within the Braintree Control Panel. When the fields you pass in the verifyCard() call match with the custom fields defined in the 3D Secure Rules manager, the rules will be triggered.",
+      "location": "lines 163-165, ### Custom Fields"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "3ds-rules-javascript-v3-braintree-3d-secure-route",
+        "target_path": "wiki/concepts/braintree-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-3d-secure-rules-manager-javascript-v3]] - JavaScript v3-routed Rules Manager guide for Control Panel rulesets evaluated during `verifyCard()`, including client-parameter overrides, action and liability-shift limits, and custom-field matching",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Control Panel rule authoring and assignment distinct from JavaScript verifyCard execution; request parameters can override matched policy but do not create or edit rulesets.",
+          "Do not treat 3DS authentication, a rule match, skipped_due_to_rule, or a liability-shift statement as payment authorization, processor approval, gateway acceptance, capture, settlement, funding, or guaranteed chargeback protection.",
+          "Preserve the issuer-controlled challenge boundary, the no-liability-shift conditions for granted exemptions, skipped 3DS, and Data Only, the PSD2 limit on skipping, and the TRA qualification requirement.",
+          "This is a JavaScript v3-routed snapshot; the named iOS, Android, and Web criteria do not establish native SDK versions or behavioral parity, and the broad enablement statement is not live account evidence.",
+          "Treat geographical grouping and monitoring as recommendations and business-objective rulesets as examples, not mandatory configuration or guaranteed outcomes.",
+          "The retry example uses retry_transaction in JavaScript but retryTransaction in the following prose; preserve that unresolved naming mismatch rather than selecting one as assured contract behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/3d-secure/rules-manager/javascript/v3-2026-09-16.md",
+  "raw_sha256": "b69abb682f53e143db064f252fe5900ab0635096024bfb45ff25a0691333efd9",
+  "status": "candidate_ready"
+}

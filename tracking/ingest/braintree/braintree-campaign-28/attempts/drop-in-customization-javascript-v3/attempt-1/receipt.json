@@ -1,0 +1,55 @@
+{
+  "job_id": "drop-in-customization-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Drop-in Customization: JavaScript v3\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/drop-in/customization/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/drop-in/customization/javascript/v3-2026-09-16.md\"\ntags: [braintree, drop-in, javascript-v3, vault-manager, events, customization]\n---\n\n## Overview\n\nThis Braintree JavaScript v3 guide is a customization reference for the prebuilt browser Drop-in UI. It covers customer-scoped saved-method presentation, selection clearing and deletion, card-form options, coordinated fraud-device-data setup, event-driven submission state, and CSS or field/button styling. These are client integration and presentation routes; the fraud section separately requires server-side device-data forwarding, and the snapshot does not prove current SDK support, merchant enablement, buyer eligibility, successful tokenization, or payment processing.\n\n## Key takeaways\n\n- A client token generated with `customer_id` makes Drop-in show that customer's saved payment methods and automatically add newly entered methods to the Vault record. The page says Venmo, Google Pay, and Apple Pay are not automatically vaulted on the client.\n- `clearSelectedPaymentMethod` returns the customer to other saved methods or new entry after a failure; it does not delete the method from the Vault. Deletion is a separate, opt-in Vault Manager capability available when Drop-in is authorized with a customer-scoped client token. Braintree warns against enabling Vault Manager with recurring billing because customers could delete methods associated with subscriptions.\n- Premium Fraud Management Tools require Control Panel enablement, client-side device-data collection, and server-side device-data submission to be completed together; the page warns that a delay between enablement and code changes makes the integration malfunction. Automatically vaulted new methods are verified without device data at vault time, although later transactions can still submit it.\n- Drop-in events expose whether a payment method is requestable and support submit-button state. For cards, `paymentMethodRequestable` can fire after minimum client-side validation and before the buyer finishes entering a postal code; the page recommends checking `event.paymentMethodIsSelected` before automatic retrieval, while preserving manual submission otherwise. External payment flows fire the event after their flow completes.\n- UI customization includes stable-looking `data-braintree-id` selectors, Hosted Fields-compatible card `overrides` for field options and styles, and a PayPal `buttonStyle` option. Braintree says to recheck custom CSS when upgrading and advises against Braintree class-name selectors because those names can change between versions; the field example also states that custom web fonts are unsupported.\n\n> [!warning] Source-specific Drop-in lifecycle dates\n> This snapshot says deprecation begins October 1, 2026, updates and fixes stop after that date, payment processing remains supported until October 1, 2027, and unsupported status begins October 1, 2027, after which support ends and processing may be suspended. The retained `braintree-web-drop-in@1.47.0` and `1.48.0` repository evidence instead gives September 1, 2026 and September 1, 2027 milestones. Treat both schedules as snapshot-specific, do not infer current support from either, and verify current official status before migration planning. [[source-github-braintree-web-drop-in]]\n\n## Detail locators\n\n- `Display a saved payment method`, `De-select a payment method`, and `Delete a saved payment method` cover customer-scoped client-token behavior, callback/Promise examples, Vault Manager, and the recurring-billing deletion warning.\n- `Collect cardholder name` shows optional-versus-required configuration.\n- `Premium Fraud Management Tools` lists the coordinated Control Panel, client, and server changes and the automatic-vault verification qualification.\n- `Events` defines requestability, option-selection behavior, submit-button examples, and guarded automatic nonce retrieval. A nonce must still be sent to the merchant server; this page does not establish transaction completion.\n- `Customize your UI` covers CSS selectors, card field overrides and styles, and PayPal button styling. Linked reference pages are navigation unless independently read.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-web-drop-in]]\n- Related exact-version implementation evidence: [[source-github-braintree-web-drop-in]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/drop-in/customization/javascript/v3-2026-09-16|Braintree JavaScript v3 Drop-in customization guide]] - complete captured page, including lifecycle, Vault, fraud, events, and UI sections\n",
+  "quotes": [
+    {
+      "text": "**Starting October 1, 2026**, the Drop-in SDK will be [**deprecated**](/braintree/docs/guides/client-sdk/deprecation-policy/javascript/v3/#status-categories). No new features, improvements, or bug fixes will be released after this date. Payment processing will continue to be supported until **October 1, 2027**, but we strongly recommend migrating to the Braintree SDK as soon as possible to avoid future disruption.",
+      "location": "lines 17-18, IMPORTANT lifecycle notice"
+    },
+    {
+      "text": "If you pass a [customer_id](/braintree/docs/reference/request/client-token/generate#customer_id) when [generating a client token](/braintree/docs/start/hello-server#generate-a-client-token), Drop-in will display that customer's saved payment methods and automatically add any newly-entered payment methods to their Vault record. If vaulted payment methods exist, this is how they will appear in Drop-in.",
+      "location": "line 29, Display a saved payment method"
+    },
+    {
+      "text": "We do not recommend enabling Vault Manager if you are using Braintree's [recurring billing](/braintree/docs/guides/recurring-billing/overview) ; doing so would give your customers the ability to delete payment methods associated with subscriptions.",
+      "location": "lines 98-99, IMPORTANT under Delete a saved payment method"
+    },
+    {
+      "text": "To use Premium Fraud Management Tools for your Drop-in form, you'll need to complete these 3 steps at the same time:",
+      "location": "line 139, Premium Fraud Management Tools"
+    },
+    {
+      "text": "For credit cards, this event emits when all the fields meet minimum client side validation. If your Drop-in integration has the postal code field, it will be considered valid after 3 characters (some international postal codes are 3 characters in length). This may cause the event to emit before a customer is finished entering their postal code. We recommend using the [event.paymentMethodIsSelected](https://braintree.github.io/braintree-web-drop-in/docs/current/Dropin.html#~paymentMethodRequestablePayload) property to determine if it is safe to automatically request the payment method. Otherwise, the customer should be allowed to submit payment information manually.",
+      "location": "lines 163-164, IMPORTANT under Events"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-dropin-js-customization-reciprocal",
+        "target_path": "wiki/concepts/braintree-web-drop-in.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-drop-in-customization-javascript-v3]] - Braintree JavaScript v3 Drop-in customization guide for saved-method, event, fraud-tool, and UI configuration routes; its October lifecycle dates conflict with the retained exact-version repository's September dates and do not establish current support",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the October website lifecycle dates source-specific: retained braintree-web-drop-in@1.47.0 and 1.48.0 evidence gives September 1 milestones.",
+          "Do not merge this browser JavaScript v3 Drop-in guide with independently versioned native Android or iOS Drop-in products."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/drop-in/customization/javascript/v3-2026-09-16.md",
+  "raw_sha256": "7e06bc6a9fd4faa64d01a57a41aad35556ca7abd392de8f9edf2d149557a08f8",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "3ds-advanced-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree 3D Secure Advanced Options \u2014 iOS v7\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/3d-secure/advanced-options/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/3d-secure/advanced-options/ios/v7-2026-09-16.md\"\ntags: [braintree, 3d-secure, ios, sca, liability-shift]\n---\n\n## Overview\n\nThis iOS v7-routed Braintree guide snapshot collects advanced 3D Secure options and their boundaries: interpreting liability-shift information, verifying a vaulted card, requesting a cardholder challenge, handling Brazilian combo-card account type, requesting SCA exemptions, using data-only authentication, and requesting Visa DAF. It is a platform- and version-qualified documentation snapshot, not proof of current merchant eligibility, successful authentication, payment authorization, settlement, or payment completion. See [[braintree]], [[braintree-3d-secure]], and [[braintree-ios-sdk]].\n\n## Key takeaways\n\n- The liability fields pass through the client first. The guide limits them to UI-flow use and says not to trust them for server-side risk assessment; choosing to make such assessments can leave the merchant accepting fraud liability.\n- `liabilityShifted` and `liabilityShiftPossible` describe authentication and liability conditions, not downstream payment completion. After failed authentication, asking for another payment method is presented as a card-brand recommendation; the guide separately says a merchant with supporting server-side risk assessment can still create a transaction with the new nonce when the server-side `required` option is `false`. An ineligible card can also continue without liability shift. For American Express SafeKey, a returned `liabilityShifted = true` can later be revoked based on merchant behavior and fraud rate.\n- SCA exemptions are requests subject to issuer discretion, never guaranteed. Even when granted, the guide says liability remains with the merchant. A `Transaction.sale()` exemption request does not override normal 3DS logic when 3DS authentication was performed; an unmet exemption request during 3DS falls back to a standard authentication attempt.\n- Data-only 3DS is frictionless but grants no liability shift. The captured guide limits it to named card brands and select processors, excludes PSD2-regulated countries, requires checking merchant-account support, and says unsupported card-brand or processor combinations fall back to a standard lookup. Using Rules Manager as the flagging route does not remove the need to call `verifyCard()`.\n\n## Detail locators\n\n- **Liability result interpretation, client/server trust boundary, American Express warning, and server reporting examples:** `## Liability shift` (raw lines 17\u2013229).\n- **Vaulted-card nonce creation and client handoff:** `## Verifying a vaulted card` (raw lines 231\u2013276).\n- **Challenge request:** `## Requesting a cardholder challenge` (raw lines 277\u2013279). The option requests that the cardholder's bank issue a challenge; the snapshot does not state that a challenge is guaranteed.\n- **Brazilian domestic combo-card account-type UI and API placement:** `## Selecting an account type for combo cards in Brazil` (raw lines 280\u2013290).\n- **Exemption types and the distinct `Transaction.sale()` versus 3DS request paths:** `## SCA Exemptions` (raw lines 292\u2013312).\n- **Data-only purpose, support checks, fallback, Rules Manager alternative, and DCAP data routes:** `## Data Only` (raw lines 313\u2013329).\n- **Credential duration, PSD2/TRA condition, captured regional list, request field, and acquiring-bank eligibility route:** `## Visa Digital Authentication Framework` (raw lines 332\u2013334).\n\n## Related\n\n- [[braintree-3d-secure]] \u2014 authentication, eligibility, and conditional liability-shift boundaries.\n- [[braintree-ios-sdk]] \u2014 separately versioned native iOS SDK context; this website snapshot does not establish current package support.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/3d-secure/advanced-options/ios/v7-2026-09-16|Braintree 3D Secure advanced options \u2014 iOS v7 (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "We expose additional information about the authentication request that you can use for more advanced UI flows or risk assessment. You should be aware that making such assessments may result in accepting the liability for fraudulent transactions. These parameters pass through the client-side first and should not be trusted for your server-side risk assessment. They should be used for UI flow only.",
+      "location": "raw line 19, under ## Liability shift"
+    },
+    {
+      "text": "liabilityShiftPossibleindicates that the payment method was eligible for 3D Secure. IfliabilityShiftedisfalse, then the user failed 3D Secure authentication. In this situation, the card brands recommend asking the user for another form of payment. However, if you have server-side risk assessment processes that allow for it, you can still use the new nonce to create a transaction. If you want to use a nonce that did not pass 3D Secure authentication, you need to set therequiredoption tofalsein your server integration.",
+      "location": "raw line 35, second bullet under ## Liability shift"
+    },
+    {
+      "text": "For American Express SafeKey, liabilityShifted may be returned as true but American Express may later revoke the liability shift for the transaction based on your merchant behavior and fraud rate.",
+      "location": "raw line 40, IMPORTANT notice under ## Liability shift"
+    },
+    {
+      "text": "Merchants can request an exemption from SCA requirements on certain transactions. Exemptions are granted completely at the discretion of the issuer, and are never guaranteed. If an exemption is requested and subsequently granted by the issuer, then SCA will not be required, however the liability remains with the merchant and is not shifted to the issuer. There are a few different exemption types and each has its own set of conditions to determine whether they are applicable.",
+      "location": "raw line 294, opening paragraph under ## SCA Exemptions"
+    },
+    {
+      "text": "A data-only 3D Secure call is entirely frictionless, but no liability shift is granted. This variant of 3D Secure is used as a way to seek an improvement in authorization rates from issuing banks, without increasing the risk to issuers via fraud liability shift. The MasterCard protocol name is \"Identity Check Insights\".",
+      "location": "raw line 315, opening paragraph under ## Data Only"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c29-3ds-advanced-ios-v7-reciprocal",
+        "target_path": "wiki/concepts/braintree-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-3d-secure-advanced-options-ios-v7]] - iOS v7-routed advanced-options guide for liability-shift handling, vaulted-card verification, SCA exemption requests, data-only authentication, and other option routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is a 2026-09-16 iOS v7-routed snapshot and does not establish current SDK support, merchant eligibility, or account enablement.",
+          "3D Secure authentication and liability indicators are not evidence of payment authorization, settlement, or completion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/3d-secure/advanced-options/ios/v7-2026-09-16.md",
+  "raw_sha256": "746fa3d198848248261a89e39bbcb213c83888118ff25e927d384dab76560d28",
+  "status": "candidate_ready"
+}

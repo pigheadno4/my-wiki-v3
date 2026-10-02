@@ -1,0 +1,68 @@
+{
+  "job_id": "drop-in-customization-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Android Drop-in Customization (v5)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/drop-in/customization/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/drop-in/customization/android/v5-2026-09-16.md\"\ntags: [braintree, android, drop-in, customization, vault-manager, fraud-tools]\n---\n\n## Overview\n\nThis historical Braintree Android v5-routed guide describes customization of the prebuilt Drop-in UI: customer-scoped saved-method display and vaulting, saved-method deletion through Vault Manager, cardholder-name collection, and Premium Fraud Management Tools coordination. It is configuration guidance from a website snapshot, not proof of the Android Drop-in package version, compatibility with the modular Android v5 SDK, current support, merchant enablement, buyer eligibility, successful tokenization, or payment processing.\n\n## Key takeaways\n\n- A client token generated with `customer_id` makes Drop-in display that customer's saved payment methods and automatically add newly entered methods to the customer's Vault record. Google Pay is explicitly excluded from automatic client-side vaulting.\n- Customer-scoped client tokens can also enable removal of saved methods through Vault Manager. Braintree warns against enabling Vault Manager with recurring billing because customers could delete payment methods associated with subscriptions.\n- The credit-card form can collect cardholder name and mark the field optional or required. The retained body establishes the option but does not retain a rendered configuration example.\n- Premium Fraud Management Tools require three coordinated changes: enablement in the Control Panel, client-side device-data collection, and server-side device-data submission on transaction and verification requests. The page says delaying the code changes after enablement makes the integration malfunction.\n- When a new payment method is automatically vaulted, its verification is evaluated without device data by Premium Fraud Management Tools; later transactions can still pass device data. This qualification does not establish whether a fraud product is enabled for a particular merchant.\n\n> [!warning] Source-specific Drop-in lifecycle\n> The snapshot says the Drop-in SDK becomes deprecated on October 1, 2026, after which it receives no new features, improvements, or bug fixes; payment processing remains supported until October 1, 2027. It says unsupported status begins October 1, 2027, after which Braintree support ends and payment processing may be suspended at any time, and it directs migration to the Braintree Android SDK. Treat this as the page's dated schedule and recheck current official status before operational planning.\n\n> [!warning] Package-version, rendering, and certificate boundaries\n> The `/android/v5` URL and retained body do not identify the Android Drop-in artifact version or prove compatibility with the independently retained modular `braintree-android@5.30.0` baseline. The separate exact-version [[source-github-braintree-android-drop-in]] retains `drop-in@6.17.0` pinned to Braintree Android `4.50.0`. The missing rendered configuration after the Vault Manager label does not show that a separate API or supported integration route is absent. Separately, [[source-braintree-client-sdk-setup-android-v5]] preserves a historical March 30, 2026 mobile-certificate notice with Android SDK `4.45.0+` or `5.0.0+` upgrade targets; that notice is not present in this raw and must not be projected onto an unidentified Drop-in dependency or treated as observed current traffic failure.\n\n## Detail locators\n\n- Drop-in deprecation, unsupported date, processing qualification, and Braintree Android SDK migration direction: `# Customization > IMPORTANT`, raw lines 17\u201322.\n- Customer-scoped saved-method display, automatic vaulting, and the Google Pay exception: `## Display a saved payment method`, raw lines 27\u201331.\n- Vault Manager enablement, missing rendered configuration boundary, and recurring-billing deletion warning: `## Delete a saved payment method`, raw lines 36\u201346.\n- Optional or required cardholder-name field: `## Collect cardholder name`, raw lines 51\u201353.\n- Coordinated Control Panel, client-side, and server-side Premium Fraud Management Tools steps plus the delay warning: `## Premium Fraud Management Tools`, raw lines 56\u201365.\n- Automatic-vault verification device-data exclusion and subsequent-transaction alternative: `## Premium Fraud Management Tools > NOTE`, raw lines 68\u201369.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-android-sdk]]\n- [[source-braintree-drop-in-setup-and-integration-android-v5]] - separate Android v5-routed Drop-in setup and integration snapshot; not package-version or current-support evidence\n- [[source-github-braintree-android-drop-in]] - independently versioned Android Drop-in implementation evidence\n- [[source-braintree-client-sdk-setup-android-v5]] - separate modular Android v5 setup snapshot preserving the dated mobile-certificate qualification\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/drop-in/customization/android/v5-2026-09-16|Braintree Android Drop-in Customization (v5)]] - complete collected website snapshot for saved methods, Vault Manager, cardholder-name collection, fraud-tool coordination, and the source-specific lifecycle notice\n",
+  "quotes": [
+    {
+      "text": "**Starting October 1, 2026**, the Drop-in SDK will be [**deprecated**](/braintree/docs/guides/client-sdk/deprecation-policy/android/v5#status-categories). No new features, improvements, or bug fixes will be released after this date. Payment processing will continue to be supported until **October 1, 2027**, but we strongly recommend migrating to the Braintree SDK as soon as possible to avoid future disruption.",
+      "location": "# Customization > IMPORTANT, raw line 18"
+    },
+    {
+      "text": "If you pass a [customer_id](/braintree/docs/reference/request/client-token/generate#customer_id) when [generating a client token](/braintree/docs/start/hello-server#generate-a-client-token), Drop-in will display that customer's saved payment methods and automatically add any newly-entered payment methods to their Vault record.",
+      "location": "## Display a saved payment method, raw line 29"
+    },
+    {
+      "text": "We do not recommend enabling Vault Manager if you are using Braintree's [recurring billing](/braintree/docs/guides/recurring-billing/overview) ; doing so would give your customers the ability to delete payment methods associated with subscriptions.",
+      "location": "## Delete a saved payment method > IMPORTANT, raw line 46"
+    },
+    {
+      "text": "If there is any delay between enabling in the Control Panel and making the code changes, the integration will not work properly. See the [Premium Fraud Management Tools guide](/braintree/docs/guides/premium-fraud-management-tools/configuration) for more details.",
+      "location": "## Premium Fraud Management Tools, raw line 65"
+    },
+    {
+      "text": "If you choose to [automatically vault a customer's new payment method](/braintree/docs/start/hello-server#generate-a-client-token), verifications for those payment methods will not include device data when they are evaluated by our Premium Fraud Management Tools. Subsequent transactions can still pass device data.",
+      "location": "## Premium Fraud Management Tools > NOTE, raw line 69"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-drop-in-customization-android-v5-recurring-warning",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Drop-in Boundary",
+        "proposed_markdown": "Website customization guidance warns against enabling Vault Manager for recurring-billing integrations because customers could delete payment methods associated with subscriptions. This is a Drop-in configuration warning, not evidence of subscription cancellation behavior or exact package compatibility.",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "Keep this warning inside the separately versioned Drop-in boundary; do not attribute it to modular braintree-android@5.30.0 behavior."
+        ]
+      },
+      {
+        "update_id": "c28-drop-in-customization-android-v5-reciprocal",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-drop-in-customization-android-v5]] - Android v5-routed Drop-in customization guide for saved-method, Vault Manager, card-form, and fraud-tool configuration; source-specific lifecycle and package-version boundaries apply",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The /android/v5 route does not identify the Android Drop-in artifact version or establish compatibility with the modular Android v5 SDK.",
+          "Retain the concept's drop-in@6.17.0 versus braintree-android@5.30.0 boundary and treat the March 30, 2026 certificate notice as separate historical setup evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/drop-in/customization/android/v5-2026-09-16.md",
+  "raw_sha256": "08b5d1e04b45b50cbac60377f57f096c3978e52788a966e2bd770a5d315aac98",
+  "status": "candidate_ready"
+}

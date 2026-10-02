@@ -13,8 +13,9 @@ auditors, or the coordinator. It grants no campaign execution authority itself.
 - Handle one pinned raw per source. Raw is immutable. Verify its SHA-256 and
   fully read it before initial drafting or initial independent review.
 - Follow trusted job/attempt/path/URL/target values and assigned model/role.
-  The first reviewer must be different from the worker. Use at most the
-  campaign's three dynamic child slots, bounded by actual host capacity.
+  The first reviewer must be different from the worker. Use only the approved
+  campaign's shared dynamic child-slot budget, bounded by actual host capacity.
+  Workers, reviewers and auditors share that budget; the coordinator is excluded.
 - Repository is read-only for delegated roles. Write only assigned external
   handoff artifacts using apply_patch. Coordinator owns canonical pages,
   shared files, runtime transitions and commits. No worktrees are required.

@@ -30,6 +30,8 @@ Venmo is not a PayPal funding-source enum in this SDK. This Braintree Venmo path
 
 ## Drop-in Boundary
 
+Website customization guidance warns against enabling Vault Manager for recurring-billing integrations because customers could delete payment methods associated with subscriptions. This is a Drop-in configuration warning, not evidence of subscription cancellation behavior or exact package compatibility. [[source-braintree-drop-in-customization-android-v5]]
+
 `drop-in@6.17.0` is a separately versioned prebuilt UI pinned to Braintree Android `4.50.0`, not the retained modular `5.30.0` source. It presents eligible cards, PayPal, Venmo, and Google Pay and returns a nonce plus device data for server processing.
 
 At this Drop-in baseline, PayPal defaults to vaulting, Venmo defaults to single use, and Venmo visibility requires remote enablement plus an available Venmo app switch. Saved-method retrieval and deletion require a customer-scoped client token. These statements must not be replaced with newer modular-SDK behavior without a compatible Drop-in release.
@@ -39,6 +41,10 @@ At this Drop-in baseline, PayPal defaults to vaulting, Venmo defaults to single 
 Release `5.30.0` makes the principal Kotlin suspend functions public, removes the unsupported Visa Checkout module, deprecates its remaining configuration fields, targets Android API 37 for compilation, and fixes PayPal/Venmo button sizing. Historical migration and removal notes remain context until their exact versions are separately retained.
 
 ## Related
+- [[source-braintree-3d-secure-advanced-options-android-v5]] - Android v5-routed advanced 3DS webpage snapshot for client liability-result handling and specialized verification options; its embedded Drop-in lifecycle notice is not modular SDK package-compatibility evidence
+- [[source-braintree-drop-in-customization-android-v5]] - Android v5-routed Drop-in customization guide for saved-method, Vault Manager, card-form, and fraud-tool configuration; source-specific lifecycle and package-version boundaries apply
+- [[source-braintree-drop-in-setup-and-integration-android-v5]] - Android v5-routed Drop-in setup snapshot for client authorization, method-specific prerequisites, customer-scoped saved-method lookup, browser-switch overrides, and its source-specific 2026/2027 lifecycle notice; not proof of modular v5 package compatibility or current support
+
 - [[source-braintree-credit-cards-client-side-android-v5]] - Android v5 website guide to standard Card Fields UI ownership, SDK 5.29.0-or-higher `ui-components` prerequisite, client authorization, tokenization and nonce handoff; not current package-support or execution evidence
 - [[source-braintree-authorization-tokenization-key-android-v5]] - historical Android v5 client-authorization guide for static reduced-privilege tokenization keys, their lifecycle, environment binding, and capability limits; not current SDK-support evidence
 - [[source-braintree-client-sdk-setup-android-v5]] - historical Android client SDK v5 setup snapshot for captured environment requirements, modular dependencies, return routing, authorization choices, and the dated mobile-certificate warning; not current package support

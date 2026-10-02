@@ -19,6 +19,7 @@ Card scope also varies by account and use case: the page distinguishes US from m
 > The page's opening note equates Visa Click to Pay with Secure Remote Commerce and gives a January 20, 2026 end-of-support date, while its final section calls Secure Remote Commerce a current limited release for eligible merchants. The snapshot does not resolve the conflict; use the source and raw locators rather than inferring current support.
 
 ## Sources
+- [[source-braintree-credit-cards-server-side-node]] - collected Node.js-routed website guide for server-side card transaction and pre-Vault verification routes, with snapshot, package-version and execution-evidence boundaries
 - [[source-braintree-credit-cards-client-side-ios-v7]] - website iOS v7 Card Fields guide for client-side card collection and tokenization, merchant-owned submission, server nonce handoff and sandbox testing
 - [[source-braintree-credit-cards-client-side-android-v5]] - Android v5 website guide to Card Fields card-data collection and tokenization, merchant-owned surrounding checkout controls, authorization prerequisites and nonce return for server processing
 - [[source-braintree-credit-cards-overview]] - unversioned website overview of the Card Fields card-entry description, client-token prerequisite and nonce handoff, with platform/version selection routed to the retained JavaScript v3 boundary

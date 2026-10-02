@@ -1,0 +1,68 @@
+{
+  "job_id": "cards-server-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Credit Cards: Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/credit-cards/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/credit-cards/server-side/node-2026-09-16.md\"\ntags: [braintree, node-js, credit-cards, transactions, card-verification, vault]\n---\n\n## Overview\n\nThis [[braintree]] website-guide snapshot, collected 2026-09-16 and routed to Node.js, documents server-side credit-card transaction creation and card verification. The server receives a payment-method nonce from the client, supplies the transaction amount and can request immediate settlement submission; the page separately covers verification before storing or updating a card in the Vault. The captured body does not identify an exact Node SDK package version.\n\n## Key takeaways\n\n- The page calls `Transaction:Sale` the simplest credit-card transaction route. Its example combines a server-supplied amount with a client-relayed payment-method nonce and sets `submitForSettlement: true`; it also directs the integration to collect device data on the client and include it in the transaction. These are documented callback and Promise examples, not proof of authorization, settlement or funding.\n- The successful-transaction Vault option can create a new customer when no `customer_id` is included. Use the exact request reference linked from the raw page for field behavior rather than generalizing the example.\n- Card verification checks whether credit- or debit-card data matches a valid, open account before Vault storage or update. Braintree strongly recommends verification before cards are stored; the documented gateway check uses a $0 or $1 authorization and automatically voids it, unless a different verification amount is specified. An authorization and automatic void can still be consequential and are distinct from a purchase.\n- When Premium Fraud Management Tools are used, the page strongly recommends sending device data for every verification. Successful verification is returned within the payment-method response, while the page routes unsuccessful `processor_declined` or `gateway_rejected` verification results and their reason fields separately.\n- The collected guide says Braintree Marketplace verifications cannot use sub-merchant accounts. This is a scope limitation in the snapshot, not evidence of current Marketplace availability or merchant eligibility.\n\n## Evidence limitations\n\n> [!warning] Snapshot, version and execution boundaries\n> This retained webpage is Node.js-routed but does not state an exact SDK package version. Its examples do not establish current SDK support, merchant configuration, card eligibility, successful authorization, settlement, funding or a completed payment. Client collection of a nonce or device data and server-side use of those values are separate responsibilities.\n\n## Detail locators\n\n- GraphQL alternative navigation: `# Server-Side Implementation`, lines 17-18.\n- Sale purpose, amount plus client-relayed nonce, device-data direction and callback/Promise examples: `## Creating transactions`, lines 21-64.\n- Successful-transaction Vault option and new-customer side effect when no customer ID is included: `## Creating transactions`, line 65.\n- Verification purpose, default enablement guidance, one-time request routes, $0/$1 authorization with automatic void and custom amount: `## Card verification`, lines 66-86.\n- Callback and Promise verification examples: `## Card verification`, lines 87-113.\n- Premium Fraud Management Tools device-data recommendation: `## Card verification`, lines 115-116.\n- Successful and unsuccessful result placement, decline/rejection statuses and reason-field routes: `### Verification results`, lines 119-185.\n- Marketplace sub-merchant-account restriction: `### Verifications on sub-merchant accounts`, lines 187-189.\n- Transaction, customer, payment-method, verification and Hosted Fields navigation: `## See Also`, lines 190-197.\n\n## Related\n\n- Company: [[braintree]]\n- Concepts: [[braintree-server-sdk]], [[braintree-payment-methods]]\n- Client-side responsibility route: [[source-braintree-credit-cards-overview]]\n- Transaction lifecycle context: [[source-braintree-transaction-lifecycle]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Transaction Sale request for Node.js]] - unread navigation-only request reference\n- [[raw/braintree/docs/reference/request/payment-method/create/node-2026-09-16|Payment Method Create request for Node.js]] - unread navigation-only verification and Vault reference\n- [[raw/braintree/docs/reference/response/credit-card-verification/node-2026-09-16|Credit Card Verification response for Node.js]] - unread navigation-only status and reason-field reference\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16|Premium Fraud Management Tools server-side guide for Node.js]] - unread navigation-only device-data reference\n- [[raw/braintree/docs/guides/braintree-marketplace/create/node-2026-09-16|Braintree Marketplace create guide for Node.js]] - unread navigation-only Marketplace verification reference\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/credit-cards/server-side/node-2026-09-16|Braintree Node.js server-side credit-card implementation]] - fully read pinned website snapshot covering transaction creation, Vault storage and card verification\n",
+  "quotes": [
+    {
+      "text": "Using [`Transaction:Sale`](/braintree/docs/reference/request/transaction/sale) is the simplest way to create a credit card transaction.\n\nYou can create a transaction with just an [`amount`](/braintree/docs/reference/request/transaction/sale/node#amount) and a [`payment_method_nonce`](/braintree/docs/reference/request/transaction/sale/node#payment_method_nonce) relayed from your client and immediately submit it for settlement.",
+      "location": "lines 23-25 under ## Creating transactions"
+    },
+    {
+      "text": "If you want to[create a new payment method in the Vault upon a successful transaction](/braintree/docs/reference/request/transaction/sale/node#storing-in-vault), use the[`options.store_in_vault_on_success`](/braintree/docs/reference/request/transaction/sale/node#options-store_in_vault_on_success)option. If a`customer_id`is not included, a new customer will be created.",
+      "location": "line 65 under ## Creating transactions"
+    },
+    {
+      "text": "When a payment method is a credit or debit card, you can use card verification to verify that the card data matches a valid, open account before storing or updating it in the Vault.",
+      "location": "line 68 under ## Card verification"
+    },
+    {
+      "text": "In both cases, the gateway verifies cards by running either a $0 or $1 authorization and then automatically voiding it. If you'd like, you can specify a different[`options.verification_amount`](/braintree/docs/reference/request/payment-method/create/node#options-verification_amount)to use for the authorization.",
+      "location": "line 86 under ## Card verification"
+    },
+    {
+      "text": "For those using[Braintree Marketplace](/braintree/docs/guides/braintree-marketplace/overview), verifications can't be done using sub-merchant accounts. See[Braintree Marketplace Verifications](/braintree/docs/guides/braintree-marketplace/create/node#verifications)for more details.",
+      "location": "line 189 under ### Verifications on sub-merchant accounts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cards-server-node-server-sdk-source-link",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-credit-cards-server-side-node]] - collected Node.js-routed website guide for server-side credit-card transaction creation and card verification; the captured body states no exact SDK package version and is not current-support or payment-execution proof",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep this reciprocal entry as document type/version scope and purpose; operation details remain in the source and pinned raw."
+        ]
+      },
+      {
+        "update_id": "cards-server-node-payment-methods-source-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-credit-cards-server-side-node]] - collected Node.js-routed website guide for server-side card transaction and pre-Vault verification routes, with snapshot, package-version and execution-evidence boundaries",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer current card support, merchant eligibility, Marketplace availability or successful payment execution from this snapshot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/credit-cards/server-side/node-2026-09-16.md",
+  "raw_sha256": "29f6431702881285c103ea470c047343aa14d6b9ff88e61d90cb73b857859116",
+  "status": "candidate_ready"
+}

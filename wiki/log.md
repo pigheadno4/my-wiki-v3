@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-02] ingest | Braintree website C29
+
+- Ten website sources independently reviewed and promoted using five shared rolling child slots; first pass 8/10, ten full plus two targeted reviews, fixed query audit 20/20. Catalog: 262 sources (245 website + 17 GitHub). Details: [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-29/`. Raw unchanged; no commit or push.
+
+## [2026-10-02] ingest | Braintree website C28
+
+- Ten card integration, Drop-in and Hosted Fields website sources independently reviewed and promoted; first pass 9/10, ten full plus one targeted review, fixed query audit 20/20. Catalog: 252 sources (235 website + 17 GitHub). Preserved source/version conflicts, native Drop-in routing and consequential configuration warnings. Details: [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-28/`. No commit or push of C28.
+
 ## [2026-10-02] ingest | PayPal JS core `11.2.0` and React `10.5.2`
 
 - Approved shared-SHA delta with full reading of all assigned files: bounded v6 loader retries, selected React configuration guards, retry-documentation contradiction and preserved history. Details: [[paypal-log]], [[source-github-paypal-js]], [[changelog-github-paypal-js]]. No browser/payment test, commit or push.

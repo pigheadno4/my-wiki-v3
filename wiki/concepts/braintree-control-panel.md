@@ -16,6 +16,7 @@ The Dashboard provides sales and transaction volume, totals, averages, and route
 Sandbox and Production use mutually exclusive Control Panel environments that do not interact and may have different login credentials. Use the dedicated reporting documentation for reconciliation and the specific administration guides for task-level behavior. [[source-braintree-control-panel-overview]]
 
 ## Sources
+- [[source-braintree-credit-cards-testing-go-live-node]] - collected Node.js credit-card testing and go-live guide covering Sandbox response controls, isolated Production credentials and settings, the server/client responsibility split, and limited real-payment Production-test cautions
 
 - [[source-braintree-auth-configuration]] - closed-beta platform OAuth application configuration in the environment-specific Control Panel, including merchant-facing metadata, registered redirects and server-held client credentials
 - [[source-braintree-payment-methods-paypal-funding-reconciliation]] - PayPal reconciliation route for details available in the PayPal console but not the Braintree Control Panel, plus the mapping from PayPal Transaction ID to Authorization Unique Transaction ID and its distinction from the Braintree transaction ID

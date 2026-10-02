@@ -50,10 +50,42 @@ Operations history: [[braintree-log]]
 
 #### Credit-card integration website guides
 
+- [[source-braintree-credit-cards-server-side-node]] - Node.js website guide for server-side card transactions and verification
+- [[source-braintree-credit-cards-testing-go-live-node]] - Node.js-routed sandbox testing and production-transition guide
+- [[source-braintree-credit-cards-submit-for-partial-settlement-node]] - limited-release Node.js credit-card partial-settlement guide with unresolved eligibility and refund-authority conflicts
 - [[source-braintree-credit-cards-overview]] - unversioned card-integration overview with version-specific Card Fields/Hosted Fields qualification
 - [[source-braintree-credit-cards-configuration]] - card configuration guide and qualified account/fraud-tool routes
 - [[source-braintree-credit-cards-client-side-android-v5]] - Android v5 client card-entry and tokenization guide
 - [[source-braintree-credit-cards-client-side-ios-v7]] - iOS v7 client card-entry and tokenization guide
+
+#### Drop-in setup and customization website guides
+
+- [[source-braintree-drop-in-customization-javascript-v3]] - JavaScript v3 customization guide with source-qualified lifecycle conflict
+- [[source-braintree-drop-in-setup-and-integration-android-v5]] - Android v5-routed native Drop-in setup guide; not modular SDK compatibility proof
+- [[source-braintree-drop-in-customization-android-v5]] - Android v5-routed native Drop-in customization guide and consequential configuration cautions
+- [[source-braintree-drop-in-setup-and-integration-ios-v7]] - iOS v7-routed setup notice with unsupported Drop-in and v5 alternative-route qualification
+- [[source-braintree-drop-in-customization-ios-v7]] - iOS v7-routed customization notice with unsupported Drop-in and v5 alternative-route qualification
+
+#### Hosted Fields FAQ and styling website guides
+
+- [[source-braintree-hosted-fields-faq-javascript-v3]] - JavaScript v3 Hosted Fields FAQ and integration-boundary guide
+- [[source-braintree-hosted-fields-styling-javascript-v3]] - JavaScript v3 Hosted Fields styling responsibilities and limitations
+
+#### 3D Secure advanced options and Rules Manager website guides
+
+- [[source-braintree-3d-secure-overview]] - unversioned authentication overview with conditional liability and integration boundaries
+- [[source-braintree-3d-secure-advanced-options-javascript-v3]] - JavaScript v3 advanced options, risk warnings and qualified authentication routes
+- [[source-braintree-3d-secure-advanced-options-android-v5]] - Android v5 advanced options, liability qualifications and captured native lifecycle notice
+- [[source-braintree-3d-secure-advanced-options-ios-v7]] - iOS v7 advanced authentication options and qualified option routes
+- [[source-braintree-3d-secure-rules-manager-android-v5]] - Android v5-routed Control Panel rules policy and client verification boundary
+- [[source-braintree-3d-secure-rules-manager-javascript-v3]] - JavaScript v3-routed Rules Manager policy, overrides and custom-field routes
+
+#### Checkout UI and Hosted Fields orientation website guides
+
+- [[source-braintree-start-checkout-ui-comparison]] - UI-selection comparison with captured table-association limits
+- [[source-braintree-start-hosted-fields]] - Hosted Fields start guide, merchant/Braintree responsibilities and integration routes
+- [[source-braintree-hosted-fields-examples-javascript-v3]] - JavaScript v3 examples navigation, not verified example execution
+- [[source-braintree-hosted-fields-upgrading-from-custom-javascript-v3]] - v3-routed legacy v2-only availability notice, not a captured migration procedure
 
 #### Marketplace
 

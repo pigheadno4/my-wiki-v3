@@ -30,8 +30,14 @@ come from its approved manifest/selection, not the historical C01 count below.
 
 This is a provider-specific authorization for the parallel-review exception
 once the exact manifest is approved and the runtime blocker is resolved.
-Use Sol medium workers and different Sol high initial reviewers, at most three
-dynamic child slots in total, and coordinator-only repository writes. Keep
+Use Sol medium workers and different Sol high initial reviewers, and
+coordinator-only repository writes. Completed campaigns retain their original
+slot budgets. Future exact-manifest-approved Braintree campaigns may use up to
+five shared dynamic child slots, bounded by actual host capacity. This explicitly
+overrides the adopted Metronome contract's three-slot budget for those campaigns
+only; worker, reviewer and auditor roles share the pool and the coordinator is
+excluded. Keep rolling review-first allocation with the existing worker reserve,
+without a batch barrier or changes to the scheduler. Keep
 complete raw reads, three-to-five located quotes, per-source approval, bounded
 targeted corrections, maximum three attempts, and incremental promotion of
 individually approved concept updates followed by their source candidates.

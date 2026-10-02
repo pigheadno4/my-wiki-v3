@@ -37,6 +37,8 @@ Both retained SDKs support merchant API-key credentials and OAuth access tokens 
 The Node and PHP baselines expose `preferredPaymentMethodToken` during client-token generation; the Ruby `4.40.0` client-token signature does not. All three warn that legacy Venmo SDK parameters are unsupported in favor of Pay with Venmo. This confirms the broad gateway contract while also demonstrating why optional fields must remain package-qualified. Current enablement and client experience still require client-SDK and product documentation evidence.
 
 ## Related
+- [[source-braintree-credit-cards-submit-for-partial-settlement-node]] - captured Braintree Node.js credit-card guide for limited-release partial settlement against a parent authorization, consequential amount, payment-method, lifecycle, refund and void limits, and unresolved availability and refund-authority conflicts
+- [[source-braintree-credit-cards-server-side-node]] - collected Node.js-routed website guide for server-side credit-card transaction creation and card verification; the captured body states no exact SDK package version and is not current-support or payment-execution proof
 
 - [[source-braintree-auth-oauth-flow-node]] - closed-beta Braintree Auth Node.js route for exchanging a connected merchant's authorization code with platform client credentials, using the resulting merchant-scoped access token, refreshing credentials and separately revoking access
 - [[source-braintree-transaction-lifecycle]] - provider-level transaction-status route distinguishing authorization holds, settlement submission, processor settling, settled merchant-account movement, and separate bank-account funding timing

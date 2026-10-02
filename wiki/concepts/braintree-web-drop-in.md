@@ -35,6 +35,8 @@ The repository schedules deprecated status for 2026-09-01 and unsupported status
 `braintree-web-drop-in@1.48.0` adds numeric conversion, first-four-character truncation, and zero-padding to the card `lastFour` display. It preserves `0012` and `0000`, but malformed text produces `0NaN`; this is output normalization, not strict card-data validation. The payment-method template still uses `innerHTML`. PayPal email and Venmo username escaping are unchanged, as are the pinned `braintree-web@3.123.2` and `@braintree/uuid@1.0.1` dependencies. No new wallet or nonce behavior is established by this delta. [[source-github-braintree-web-drop-in]] [[changelog-github-braintree-web-drop-in]]
 
 ## Related
+- [[source-braintree-start-checkout-ui-comparison]] - 2026-09-16 website snapshot comparing ready-made Drop-in with custom checkout UI across platform, customization, qualified SAQ A, translation, payment-method and fraud-tool dimensions; selection guidance only, with current Drop-in lifecycle status requiring separate verification
+- [[source-braintree-drop-in-customization-javascript-v3]] - Braintree JavaScript v3 Drop-in customization guide for saved-method, event, fraud-tool, and UI configuration routes; its October lifecycle dates conflict with the retained exact-version repository's September dates and do not establish current support
 
 - [[source-braintree-upgrade]] - historical guidance that routes Transparent Redirect to Drop-in and changes the server handoff from redirect confirmation to a payment-method nonce; consult the separately retained lifecycle evidence before current migration planning
 
