@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-02] maintenance | Delegated-ingest handoff clarification
+
+- Clarified the existing `warnings` string-array requirement and default reciprocal concept descriptions to document type/version plus purpose. Material source warnings and necessary durable concept facts remain required. Guidance-only follow-up to Braintree C26; no schema coercion, new validation layer, historical-output changes, commit or push.
+
+## [2026-10-02] ingest | Braintree website C26
+
+- Ten Auth client-side/branding and client-SDK policy/migration sources independently reviewed; first pass 8/10, ten full plus two targeted reviews, fixed query audit 20/20. Braintree now catalogs 232 sources (215 website + 17 GitHub). Preserved historical/security/variant boundaries; details: [[braintree-log]] and [[braintree-index]], with stage observations under `tracking/ingest/braintree/braintree-campaign-26/`. No commit or push performed.
+
 ## [2026-10-02] maintenance | Website-ingest role and handoff simplification
 
 - Added the authoritative 955-word delegated worker/reviewer entry `rules/ingest-roles.md`; coordinator retains general/provider governance reading and supplies concise scope notes. Mandatory complete raw reads, independent first review, per-source approval and reciprocal evidence routes remain intact. Updated reading routers and runtime preflight to remove stale provider instructions and the wrong handoff filename.

@@ -25,6 +25,16 @@ The reference routes new-account field pre-population, existing-merchant-only lo
 
 ## Sources
 
+- [[source-braintree-auth-client-side-javascript-v3]] - closed-beta JavaScript v3 browser-side Connect-button route using `braintree-oauth-connect.js` and a server-generated `connect_url`, with parameter locators and a Finish Later denial-return boundary but no modal, parity, current-eligibility or payment-authorization inference
+
+- [[source-braintree-auth-client-side-android-v5]] - closed-beta Android v5 client-side Connect route using a server-supplied `connect_url`, Android `Intent` and `IntentFilter`, with server-owned OAuth exchange and snapshot-preserved mobile SDK certificate qualifications
+- [[source-braintree-auth-branding-ios-v7]] - closed-beta iOS v7 branding snapshot for PayPal powered by Braintree identity, dashboard and marketing presentation, payment marks, recommended transaction-versus-link-only explanatory copy, and an iOS Connect button asset without current-support, modal-behavior or cross-variant parity inference
+
+- [[source-braintree-auth-branding-javascript-v3]] - closed-beta JavaScript v3 branding route for PayPal powered by Braintree identity, transaction versus account-linking copy variants, Connect button presentation, redirect via a server-generated `connect_url` and post-authorization display condition
+
+- [[source-braintree-auth-client-side-ios-v7]] - closed-beta iOS v7 client-side Connect route from a server-provided Connect URL through Braintree-hosted merchant authorization, server-side OAuth exchange and custom-URL return, with interception and dated SDK-certificate warnings
+- [[source-braintree-auth-branding-android-v5]] - closed-beta Android v5 branding snapshot for platform and dashboard presentation, recommended logo, payment-mark and explanatory-copy routes, and an Android Connect button asset without current-support or cross-variant parity inference
+
 - [[source-braintree-auth-overview]] - closed-beta product overview for ecommerce-platform and merchant-service-provider connections to Braintree merchants, authorized-action purpose, service and payment use cases, and dedicated Shared Vault and Grant API routes
 
 - [[source-braintree-auth-connect]] - closed-beta merchant-facing Connect route from a platform button through hosted login or signup, OAuth authorization and return redirect, with login-only and Finish Later boundaries

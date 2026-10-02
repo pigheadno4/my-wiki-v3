@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | Braintree website C26
+
+- Ten pinned website pages were fully read, independently reviewed and promoted: six Braintree Auth client-side/branding variants, three client-SDK deprecation-policy variants and the JavaScript v3 migration guide. The capsule now catalogs 232 sources: 215 website plus 17 GitHub. See [[braintree-auth]], [[braintree-web-sdk]], [[braintree-ios-sdk]], [[braintree-android-sdk]] and [[braintree-index]].
+- Eight initial reviews approved; two bounded corrections passed targeted review. Ten full and two targeted reviews, with no repeated full semantic review. The fixed five-group query audit passed 20/20 questions. Initial roles used the concise shared role entry; a warnings string-array handoff defect was repaired before acceptance without reanalysis. No eligible list-format repair was needed, so this campaign does not establish its live time saving.
+- Closed in 31m29s; 16 touched typed pages validated, exact approved-candidate equality and immutable raw hashes preserved, complete catalog/reciprocal/count checks passed. Zero canonical coordinator repairs. C25 took 46m56s but had different pages and an interruption, so the observed 33% reduction is not a strict A/B attribution.
+- Preserved the iOS callback trusted-source prose/code conflict, historical mobile certificate notices, client/server and SDK variant boundaries, required-versus-recommended branding conditions, JavaScript/iOS lifecycle policy and Android capture's missing category definitions. Website snapshots do not establish current support or GitHub implementation parity. Timing and closure evidence: `tracking/ingest/braintree/braintree-campaign-26/`. No raw collection, GitHub ingest, code/rule change, commit or push was authorized by this execution.
+
 ## [2026-10-02] ingest | Braintree website C25
 
 - Ten pinned Braintree Auth core guides were fully read, independently reviewed and promoted as separate retrieval sources. The capsule now routes to 222 sources: 205 website plus 17 GitHub, excluding changelogs. See [[braintree-auth]] and [[braintree-index]].

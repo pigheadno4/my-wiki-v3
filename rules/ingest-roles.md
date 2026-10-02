@@ -41,7 +41,9 @@ than listing hypothetical unknowns. No hard word limit applies.
 
 Find the main concept through root index → provider index. Read its relevant
 section and enough context to detect overlap/conflict. Default to a reciprocal
-source route with one-line purpose. Change concept prose only for a changed
+source route with a one-line document type/version and purpose, not a restatement
+of detailed flow or behavior. Preserve material qualifications/conflicts in the
+source or necessary durable concept facts. Change concept prose only for a changed
 definition, principal flow or important existing fact. Propose a new concept
 only for a genuine topic gap. Generic concepts route to provider concepts.
 
@@ -76,7 +78,8 @@ Status is `candidate_ready`; `source_page` is the complete Markdown string.
 Quotes have only `text` and `location`. Suggestions have arrays `company,
 concepts, index, log`; leave company/index/log empty. Each concept suggestion
 has `update_id, target_path, update_kind, anchor, proposed_markdown,
-quote_indexes, warnings`. Kinds are `durable_fact` or `reciprocal_source_link`;
+quote_indexes, warnings`. `warnings` must be an array of strings (`[]` when none),
+never a single string. Kinds are `durable_fact` or `reciprocal_source_link`;
 express contradictions in text/warnings. Keep IDs unique and quote indexes
 valid. Return artifact path and concise uncertainty; timing notes go in the
 message, not new JSON keys.

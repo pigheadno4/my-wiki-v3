@@ -52,6 +52,10 @@ The `paypalCheckoutV6` session path adds optional locale, landing-page type, use
 
 Venmo component creation now treats failed incognito detection as an unknown, non-private result and continues setup. This avoids a detection failure becoming a checkout initialization failure; it does not establish private-browsing support.
 
+## Historical Website SDK Lifecycle Policy
+
+The collected 2026-09-16 JavaScript v3 deprecation-policy snapshot distinguishes four client-SDK states: one Active major is current, fully supported, and receives features; Inactive begins when a deprecation date is assigned and receives security updates only; Deprecated receives no updates while processing is stated to remain supported for one year after the deprecation date; and Unsupported receives neither developer nor Braintree Support support, with processing subject to suspension at any time. Braintree also reserves possible exceptions. The snapshot does not assign these states or dates to a particular retained `braintree-web` release and does not establish current browser or SDK support; keep the separately retained exact-version GitHub evidence independent. [[source-braintree-client-sdk-deprecation-policy-javascript-v3]]
+
 ## Versioned Evidence
 
 The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. Release `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7` adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback. Release `3.145.0` at SHA `732ed094354d650605e678d98246ce6332952ad3` adds the checkout/recovery changes below. The latest retained release is `3.146.0` at SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d`; all earlier baselines remain in the cumulative source and changelog.
@@ -72,6 +76,7 @@ These are changes in the Braintree adapter and retained browser implementation, 
 The release also forwards `autoRedirect` and `fullPageOverlay` session-start options, blocks three dangerous property-path keys in Hosted Fields' EventedModel, and adds explicit frame targets to Payment Request, 3DS completion, and UnionPay. Payment Request adds domain verification; `framebus` changes from `6.1.0` to `6.2.0`. These are implementation changes, not proof of comprehensive security or browser acceptance. This latest retained release preserves all earlier versioned evidence above. [[changelog-github-braintree-web]]
 
 ## Related
+- [[source-braintree-client-sdk-migration-javascript-v3]] - historical JavaScript SDK v2-to-v3 migration route covering the breaking API change, modular client/component model, explicit Hosted Fields tokenization, and Kount Custom pre-migration warning; not current-support or exact-version implementation evidence
 - [[source-braintree-paypal-checkout-with-vault-javascript-v3]] - JavaScript v3 Checkout with Vault guide covering request-mode matching, client tokenization, server `Transaction.sale`, the implicit vaulted token and the returning-customer One-time Payments path
 - [[source-braintree-paypal-pay-later-offers-javascript-v3]] - JavaScript v3 Pay Later presentation guide covering the PayPal client-side prerequisite, messaging component and amount container, standalone Pay Later funding configuration, and per-button eligibility check
 

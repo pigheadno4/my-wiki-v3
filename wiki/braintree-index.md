@@ -24,6 +24,19 @@ Operations history: [[braintree-log]]
 - [[source-braintree-auth-reference-node]] - Node signup/login controls, scope catalog inconsistency, merchant identity and credential safety
 - [[source-braintree-auth-webhooks-node]] - Node connected-merchant events, disputes, OAuth revocation and notification boundaries
 - [[source-braintree-auth-testing-go-live-node]] - Node sandbox/production testing, underwriting, credit-check and device-data prerequisites
+- [[source-braintree-auth-client-side-ios-v7]] - iOS v7 Connect client route, custom-scheme security conflict and historical certificate notice
+- [[source-braintree-auth-client-side-android-v5]] - Android v5 Connect client route, server-owned OAuth and historical certificate conditions
+- [[source-braintree-auth-client-side-javascript-v3]] - JavaScript v3 Connect button, server-generated URL and Finish Later return
+- [[source-braintree-auth-branding-ios-v7]] - iOS-routed branding guidance and Connect button asset, not SDK or modal behavior
+- [[source-braintree-auth-branding-android-v5]] - Android-routed branding guidance and Connect button asset, not SDK or modal behavior
+- [[source-braintree-auth-branding-javascript-v3]] - JavaScript branding, copy variants, modal/redirect distinctions and post-authorization display
+
+#### Client SDK website policy and migration
+
+- [[source-braintree-client-sdk-migration-javascript-v3]] - historical v2-to-v3 migration, modular components, explicit tokenization and Kount Custom condition
+- [[source-braintree-client-sdk-deprecation-policy-javascript-v3]] - historical JavaScript browser and lifecycle policy; not current package support
+- [[source-braintree-client-sdk-deprecation-policy-ios-v7]] - historical iOS platform/lifecycle policy and version-status lookup; not current v7 status
+- [[source-braintree-client-sdk-deprecation-policy-android-v5]] - historical Android platform/version policy and missing captured category definitions
 
 #### Marketplace
 

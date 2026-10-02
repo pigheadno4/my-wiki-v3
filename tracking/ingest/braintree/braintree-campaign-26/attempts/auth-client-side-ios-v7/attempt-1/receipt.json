@@ -1,0 +1,55 @@
+{
+  "job_id": "auth-client-side-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Auth Client-side Connect Flow for iOS v7\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-auth/client-side/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/braintree-auth/client-side/ios/v7-2026-09-16.md\"\ntags: [braintree, braintree-auth, ios, oauth, client-side]\n---\n\n## Overview\n\nThis collected Braintree guide documents a closed-beta iOS v7 client-side Connect route for a platform to send a merchant through Braintree authorization without exposing the platform's `client_secret` in the app. It is a [[braintree-auth]] merchant-connection flow, not payment-transaction authorization: the iOS app presents the hosted authorization and handles the return, while the platform server supplies the Connect URL and performs the OAuth exchange.\n\n## Key takeaways\n\n- The merchant starts from a Connect button in the iOS app, which presents a server-provided `connect_url` in `SFSafariViewController`. After Braintree returns the merchant to the configured redirect URI, the server performs the OAuth exchange and redirects to a custom URL scheme captured by the app.\n- The app-side example registers a notification observer, dismisses the Safari view after the return event, and configures `CFBundleURLTypes` plus an application-delegate handler for the custom URL. These are implementation examples in the collected guide, not evidence of a completed connection or current account eligibility.\n- The guide warns that the server must not put sensitive information in the custom return URL because other iOS apps can intercept custom URL schemes.\n- The collected page states that Braintree Auth is in closed beta. It also carries a dated Mobile SDK certificate warning: certificates were set to expire on March 30, 2026, it named iOS SDK 6.17.0+ as the upgrade floor, and it warned that traffic on affected older app versions would fail. Preserve that notice as snapshot evidence rather than inferring present availability or reconciling it with the page's v7 route.\n\n## Detail locators\n\n- Closed-beta availability and the Mobile SDK certificate warning: raw lines 17-24.\n- End-to-end app, Braintree and server responsibility split: raw lines 26-33.\n- Connect button asset and controller setup: `Button`, raw lines 36-42.\n- `SFSafariViewController` setup using the server-provided Connect URL: `Send the merchant to Braintree`, raw lines 45-67.\n- Notification observer and Safari dismissal example: `Prepare for the merchant's return`, raw lines 69-102.\n- Custom URL scheme and application-delegate example: `Capturing the custom URL`, raw lines 104-140.\n- Sensitive-data interception warning and return completion: raw lines 142-145.\n\n## Related\n\n- [[braintree]] - provider overview.\n- [[braintree-auth]] - provider-specific OAuth connection hub and security boundaries.\n- [[source-braintree-auth-server-side-node]] - server-side Connect URL and state-handling route.\n- [[source-braintree-auth-oauth-flow-node]] - authorization-code exchange and token-lifecycle route.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-auth/client-side/ios/v7-2026-09-16|Braintree Auth client-side Connect flow for iOS v7 (collected 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "**AVAILABILITY**\nBraintree Auth is in closed beta. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest.",
+      "location": "lines 17-18"
+    },
+    {
+      "text": "The following Connect flow will guide merchants through authorization in your iOS app without exposing your**client_secret**:",
+      "location": "line 26"
+    },
+    {
+      "text": "- The merchant taps the**Connect with Braintree**button in your app\n- Your app sends the merchant to Braintree for authorization using an[SFSafariViewController](https://developer.apple.com/library/ios/documentation/SafariServices/Reference/SFSafariViewController_Ref)\n- Once the merchant has authorized, Braintree redirects them to the[redirect_uri](/braintree/docs/guides/braintree-auth/server-side/ruby#redirect-uri)specified by theconnect_url\n- Your server performs the OAuth[exchange](/braintree/docs/guides/braintree-auth/oauth-flow)\n- Your server redirects the merchant to a URL that is captured by a[Custom URL Scheme](https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Inter-AppCommunication/Inter-AppCommunication.html#//apple_ref/doc/uid/TP40007072-CH6-SW1)in your mobile app",
+      "location": "lines 29-33"
+    },
+    {
+      "text": "Your server should not send sensitive information to the client via the custom URL, since multiple iOS apps are able to intercept custom URL schemes.",
+      "location": "line 143"
+    },
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the iOS SDK\u202fto version 6.17.0+ for the new SSL certifications. \n\n If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "lines 22-24"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "auth-client-side-ios-v7-reciprocal-braintree-auth",
+        "target_path": "wiki/concepts/braintree-auth.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-auth-client-side-ios-v7]] - closed-beta iOS v7 client-side Connect route from a server-provided Connect URL through Braintree-hosted merchant authorization, server-side OAuth exchange and custom-URL return, with interception and dated SDK-certificate warnings",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Snapshot evidence only; do not infer current beta availability, account eligibility or successful authorization.",
+          "The page's dated certificate notice names iOS SDK 6.17.0+ even though the route is versioned v7; preserve it without inferring parity or reconciling the versions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-auth/client-side/ios/v7-2026-09-16.md",
+  "raw_sha256": "12d4e8844845bcb67ee7675b6a32bad55c3191b3676b97671cfdac9744236207",
+  "status": "candidate_ready"
+}
