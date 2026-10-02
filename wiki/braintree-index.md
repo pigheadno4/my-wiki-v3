@@ -38,6 +38,23 @@ Operations history: [[braintree-log]]
 - [[source-braintree-client-sdk-deprecation-policy-ios-v7]] - historical iOS platform/lifecycle policy and version-status lookup; not current v7 status
 - [[source-braintree-client-sdk-deprecation-policy-android-v5]] - historical Android platform/version policy and missing captured category definitions
 
+- [[source-braintree-client-sdk-migration-android-v5]] - historical Android v4-to-v5 migration guide and consequential upgrade warnings
+- [[source-braintree-client-sdk-migration-ios-v7]] - historical iOS v6-to-v7 migration guide; website and exact-SHA PayPal replacement wording remain distinct
+- [[source-braintree-client-sdk-setup-android-v5]] - Android v5 setup guide, client authorization and dated certificate notice
+- [[source-braintree-client-sdk-setup-ios-v7]] - iOS v7 setup guide, universal-link return and location-permission qualifications
+
+#### Client authorization website guides
+
+- [[source-braintree-authorization-tokenization-key-android-v5]] - Android v5-routed tokenization-key guide; scope limits and historical certificate/version tension
+- [[source-braintree-authorization-tokenization-key-ios-v7]] - iOS v7-routed tokenization-key guide; scope limits and historical certificate/version tension
+
+#### Credit-card integration website guides
+
+- [[source-braintree-credit-cards-overview]] - unversioned card-integration overview with version-specific Card Fields/Hosted Fields qualification
+- [[source-braintree-credit-cards-configuration]] - card configuration guide and qualified account/fraud-tool routes
+- [[source-braintree-credit-cards-client-side-android-v5]] - Android v5 client card-entry and tokenization guide
+- [[source-braintree-credit-cards-client-side-ios-v7]] - iOS v7 client card-entry and tokenization guide
+
 #### Marketplace
 
 - [[source-braintree-marketplace-article-overview]] - article-level product model, scope and eligibility qualifications

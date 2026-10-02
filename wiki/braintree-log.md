@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | Braintree website C27
+
+- Ten pinned website sources were fully read, independently reviewed and promoted: Android/iOS client-SDK migration and setup, two mobile tokenization-key variants, credit-card overview/configuration and two native credit-card client guides. The catalog now contains 242 sources (225 website + 17 GitHub), with routes through [[braintree-android-sdk]], [[braintree-ios-sdk]], [[braintree-payment-methods]], [[braintree-payment-platform]] and [[braintree-index]].
+- First-review pass 8/10; ten initial full reviews plus two targeted reviews, no repeated full review. The fixed five-group query audit passed 20/20 questions. iOS migration preserved the separate exact-SHA PayPal (web) replacement authority rather than treating a lossy website label as disproof. Card overview retains the JavaScript v3 Card Fields/Hosted Fields boundary instead of generalizing unversioned guidance.
+- Preserved mobile certificate/version tensions, SDK/client-server scope and historical support qualifications. Default navigation remains purpose-fit rather than copied specification detail. Operational timing and close evidence are under `tracking/ingest/braintree/braintree-campaign-27/`; role windows overlap, and raw volume differs from C26. No raw collection, GitHub ingest, code/rule change, commit or push of C27.
+
 ## [2026-10-02] ingest | Braintree website C26
 
 - Ten pinned website pages were fully read, independently reviewed and promoted: six Braintree Auth client-side/branding variants, three client-SDK deprecation-policy variants and the JavaScript v3 migration guide. The capsule now catalogs 232 sources: 215 website plus 17 GitHub. See [[braintree-auth]], [[braintree-web-sdk]], [[braintree-ios-sdk]], [[braintree-android-sdk]] and [[braintree-index]].

@@ -56,6 +56,10 @@ The repository includes SwiftUI wrapper examples but does not officially support
 The v7 migration moves request properties into initializers, changes feature clients to direct authorization initializers, renames Local Payment and 3D Secure start methods, requires universal-link handling for Venmo, and removes PayPal Native Checkout. Exact release `7.9.0` only aligns the BraintreeUIComponents minimum deployment target with iOS 16; broader v7 behavior comes from the cumulative exact-SHA baseline.
 
 ## Related
+- [[source-braintree-credit-cards-client-side-ios-v7]] - website iOS v7 standard client-side guide to Card Fields setup, validity-driven merchant submission, nonce/error completion and server handoff
+- [[source-braintree-authorization-tokenization-key-ios-v7]] - iOS v7 website guide to static, reduced-privilege tokenization-key authorization and its environment, lifecycle, capability, and historical certificate boundaries
+- [[source-braintree-client-sdk-migration-ios-v7]] - website v6-to-v7 migration-guide snapshot for the native iOS SDK; not current package-support evidence
+- [[source-braintree-client-sdk-setup-ios-v7]] - collected iOS v7 client-SDK setup guide for platform requirements, installation routing, app-return setup and location-permission configuration, with dated certificate and security notices
 - [[source-braintree-client-sdk-deprecation-policy-ios-v7]] - historical iOS-routed website policy for relative OS support, client-SDK lifecycle categories and version-status lookup routes; not current v7 support evidence
 - [[source-braintree-paypal-messaging-javascript-v3]] - snapshot route whose retained body states Pay Later Messaging availability for merchants using the latest native iOS and Android SDKs, requires native-app integration eligibility and excludes Drop-in
 

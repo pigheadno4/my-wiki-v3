@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-02] ingest | Braintree website C27
+
+- Ten mobile SDK/authorization and credit-card website sources independently reviewed and promoted; first pass 8/10, ten full plus two targeted reviews, fixed query audit 20/20. Catalog: 242 sources (225 website + 17 GitHub). Preserved cross-source PayPal replacement wording and Card Fields platform/version qualifications. Details: [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-27/`. No commit or push of C27.
+
 ## [2026-10-02] ingest | Adyen Web `6.46.0`
 
 - Approved additive full ingest with focused reading and seven exact-SHA supplements: shared disclaimer configuration, Card/status/type migration, preserved Drop-in action forwarding and PayPal JS dependency update. Older history retained; Japan/gift-card fixes announcement-qualified. Details: [[adyen-log]], [[source-github-adyen-web]], [[changelog-github-adyen-web]]. No commit or push.

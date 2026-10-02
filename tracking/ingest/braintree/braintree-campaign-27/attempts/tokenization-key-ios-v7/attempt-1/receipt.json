@@ -1,0 +1,55 @@
+{
+  "job_id": "tokenization-key-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Tokenization Keys (iOS v7)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/authorization/tokenization-key/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/authorization/tokenization-key/ios/v7-2026-09-16.md\"\ntags: [braintree, ios-sdk, client-authorization, tokenization-key, payment-method-tokenization]\n---\n\n## Overview\n\nThis Braintree iOS v7 guide documents tokenization keys as static, reduced-privilege credentials that authorize client-side payment-information tokenization. This is Braintree client-SDK authorization, not Braintree Auth merchant OAuth, transaction authorization, or evidence of payment success.\n\n## Key takeaways\n\n- A tokenization key may be reused indefinitely across client apps. Multiple active keys can be labeled for separate purposes, and revoking a key deauthorizes every client using that key. The page also says an Account Admin role permission may be needed if key use produces an insufficient-privileges error.\n- The page lists credit cards, PayPal, Venmo, Apple Pay, and Google Pay as tokenizable with a tokenization key, but the credential authorizes only a subset of client API capabilities. Clients can only tokenize payment information: they cannot supply a customer ID, choose a merchant account ID, provide other configuration, retrieve a customer's saved methods in Drop-in, or create a 3D Secure transaction.\n- A tokenization key cannot save a payment method directly from the client into a customer's Vault. The page routes the resulting payment-method nonce to the merchant server for saving, or points to a customer-scoped client token as the alternative.\n- Reduced authorization makes tokenization keys publishable in client apps, but each key is bound to one environment. The page warns that a production key always communicates with Braintree's live environment regardless of environment variables or debug modes.\n- The initialization section says tokenization keys work with any Android or iOS SDK version, while the same captured page warns that older mobile SDK certificates would fail after March 30, 2026 and directs iOS integrations to version 6.17.0 or later. Preserve that snapshot tension; it does not establish current iOS v7 support or GitHub implementation parity.\n\n## Detail locators\n\n- Client-token comparison, Account Admin qualification, tokenizable methods, indefinite reuse, labeling, and revocation: `# Tokenization Keys`, lines 20-24; `### Static`, lines 27-33.\n- Reduced-privilege limits, Vault handoff alternatives, saved-method behavior, and 3D Secure restriction: `### Reduced privilege`, lines 36-45.\n- Control Panel retrieval and key generation: `## Obtaining a tokenization key`, lines 48-58.\n- Publishability, environment prefixes, and live-environment warning: `## Adding a tokenization key to your app`, lines 61-71.\n- SDK compatibility statement and Swift initialization example: `## Initializing the SDK`, lines 74-84.\n- Historical mobile-certificate notice and stated traffic-failure consequence: `# Tokenization Keys`, lines 17-18.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-ios-sdk]]\n- Related source: [[source-braintree-authorization-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/authorization/tokenization-key/ios/v7-2026-09-16|Braintree tokenization-key guide for iOS v7]] - complete captured guide covering credential purpose, reduced privileges, lifecycle, environment binding, setup, certificate warning, and Swift initialization\n",
+  "quotes": [
+    {
+      "text": "A tokenization key authorizes clients to tokenize payment information.",
+      "location": "# Tokenization Keys, line 20"
+    },
+    {
+      "text": "Unlike a client token, a tokenization key is both static and reduced privilege. It can be shipped with your apps without generating a new key for each session.",
+      "location": "# Tokenization Keys, line 22"
+    },
+    {
+      "text": "If you decide you no longer want a specific tokenization key to be used, it can be revoked. Doing so will deauthorize any clients using that key.",
+      "location": "### Static, line 33"
+    },
+    {
+      "text": "Payment methods can't be saved directly from the client to a customer in the Vault using a tokenization key. To save the payment method, you'll need to[pass the resulting payment method nonce to your server](/braintree/docs/start/hello-client#send-payment-method-nonce-to-server). Otherwise, generate a client token with a customer ID.",
+      "location": "### Reduced privilege, line 43"
+    },
+    {
+      "text": "Conversely, be mindful that a production tokenization key will always communicate with PayPal Braintree's live environment regardless of any environment variables or debug modes that may be set.",
+      "location": "## Adding a tokenization key to your app, line 71"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "tokenization-key-ios-v7-reciprocal-ios-sdk",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-authorization-tokenization-key-ios-v7]] - iOS v7 website guide to static, reduced-privilege tokenization-key authorization and its environment, lifecycle, capability, and historical certificate boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "This website snapshot does not establish current iOS v7 support or parity with the independently retained GitHub implementation baseline.",
+          "Tokenization-key client authorization is distinct from Braintree Auth merchant OAuth and from transaction authorization.",
+          "The captured page's any-version SDK statement is in tension with its dated certificate-expiry warning for older mobile SDK versions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/authorization/tokenization-key/ios/v7-2026-09-16.md",
+  "raw_sha256": "09e0ea24bc483079095e00be87edbfdc7093f198200e2f2e8552997b38b5fd83",
+  "status": "candidate_ready"
+}

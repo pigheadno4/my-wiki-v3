@@ -39,6 +39,10 @@ At this Drop-in baseline, PayPal defaults to vaulting, Venmo defaults to single 
 Release `5.30.0` makes the principal Kotlin suspend functions public, removes the unsupported Visa Checkout module, deprecates its remaining configuration fields, targets Android API 37 for compilation, and fixes PayPal/Venmo button sizing. Historical migration and removal notes remain context until their exact versions are separately retained.
 
 ## Related
+- [[source-braintree-credit-cards-client-side-android-v5]] - Android v5 website guide to standard Card Fields UI ownership, SDK 5.29.0-or-higher `ui-components` prerequisite, client authorization, tokenization and nonce handoff; not current package-support or execution evidence
+- [[source-braintree-authorization-tokenization-key-android-v5]] - historical Android v5 client-authorization guide for static reduced-privilege tokenization keys, their lifecycle, environment binding, and capability limits; not current SDK-support evidence
+- [[source-braintree-client-sdk-setup-android-v5]] - historical Android client SDK v5 setup snapshot for captured environment requirements, modular dependencies, return routing, authorization choices, and the dated mobile-certificate warning; not current package support
+- [[source-braintree-client-sdk-migration-android-v5]] - historical website guide for migrating Braintree Android SDK v4 integrations to v5; not current package-support evidence
 - [[source-braintree-client-sdk-deprecation-policy-android-v5]] - historical website-policy snapshot for Android client-SDK semantic versioning, release-time platform support, and status/deprecation-date lookup; current package support remains under separate GitHub evidence
 - [[source-braintree-paypal-messaging-javascript-v3]] - snapshot route whose retained body states Pay Later Messaging availability for merchants using the latest native iOS and Android SDKs, requires native-app integration eligibility and excludes Drop-in
 

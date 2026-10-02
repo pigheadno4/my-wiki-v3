@@ -1,0 +1,55 @@
+{
+  "job_id": "tokenization-key-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Tokenization Keys (Android v5)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/authorization/tokenization-key/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/authorization/tokenization-key/android/v5-2026-09-16.md\"\ntags: [braintree, android, client-sdk, client-authorization, tokenization-key, payment-method-tokenization]\n---\n\n## Overview\n\nThis historical Braintree Android v5 guide describes tokenization keys as static, reduced-privilege credentials that authorize client applications to tokenize payment information. It is client-SDK authorization, not Braintree Auth merchant OAuth, transaction authorization, current SDK-support evidence, or proof of a successful payment flow.\n\n## Key takeaways\n\n- A tokenization key may be shipped in client applications and reused across sessions and applications. Multiple active keys may be labeled by purpose; revoking one deauthorizes clients that use it. The page says an Account Admin role permission may be needed if key use produces an insufficient-privileges error.\n- The guide lists credit cards, PayPal, Venmo, Apple Pay, and Google Pay as tokenizable with a key, but the credential authorizes only a subset of client API capabilities. It cannot supply a customer ID, merchant account ID, or other configuration; retrieve a customer's saved methods in Drop-in; save a method directly from the client into a customer's Vault; or create a 3D Secure transaction.\n- For server-side vaulting, the page routes the resulting payment-method nonce to the merchant server. Its alternative is a customer-scoped client token. Tokenization itself is therefore not a completed server-side vault or transaction operation.\n- Each key is bound to one environment. The guide warns that a production key always communicates with Braintree's live environment regardless of environment variables or debug modes, so the key prefix and target environment must remain aligned.\n- The initialization section says to initialize the SDK with the key before displaying payment UI so the SDK can fetch Braintree configuration. Although the page also says tokenization keys can be used with any Android or iOS SDK version, that broad statement is qualified by the page's own historical mobile-certificate notice and is not current compatibility or package-support evidence.\n\n> [!warning] Historical mobile-certificate notice\n> The captured page says Braintree Mobile SDK SSL certificates were set to expire on March 30, 2026, names Android SDK 4.45.0+ or 5.0.0+ as upgrade targets, and conditionally warns of total customer-traffic failure for app versions retaining older certificates unless those versions were decommissioned or force-upgraded. Because this is a collected snapshot and the stated date has passed, preserve it as historical page evidence rather than a claim about present certificate status, current SDK support, or observed traffic.\n\n## Detail locators\n\n- Historical certificate-expiry date, Android upgrade targets, and conditional traffic-failure warning: `# Tokenization Keys > IMPORTANT`, lines 17-20.\n- Tokenization-key purpose, static reduced privilege, possible Account Admin permission, and listed payment-method categories: `# Tokenization Keys`, lines 24-28.\n- Reuse, multiple labeled keys, revocation, and client deauthorization: `### Static`, lines 31-37.\n- Client capability, configuration, Vault, saved-method retrieval, and 3D Secure restrictions: `### Reduced privilege`, lines 40-49.\n- Production and Sandbox Control Panel retrieval steps: `## Obtaining a tokenization key`, lines 52-62.\n- Publishability, environment prefixes, and live-environment warning: `## Adding a tokenization key to your app`, lines 65-77.\n- Cross-platform version statement and configuration-fetch initialization guidance: `## Initializing the SDK`, lines 82-86.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-android-sdk]]\n- Related source: [[source-braintree-authorization-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/authorization/tokenization-key/android/v5-2026-09-16|Braintree Tokenization Keys (Android v5)]] - complete collected guide covering static reduced-privilege client authorization, key lifecycle, capability limits, environment binding, initialization, and the historical certificate notice\n",
+  "quotes": [
+    {
+      "text": "A tokenization key authorizes clients to tokenize payment information.",
+      "location": "# Tokenization Keys, line 24"
+    },
+    {
+      "text": "Unlike a client token, a tokenization key is both static and reduced privilege. It can be shipped with your apps without generating a new key for each session.",
+      "location": "# Tokenization Keys, line 26"
+    },
+    {
+      "text": "When using a tokenization key, clients may only tokenize payment information.",
+      "location": "### Reduced privilege, line 45"
+    },
+    {
+      "text": "Conversely, be mindful that a production tokenization key will always communicate with PayPal Braintree's live environment regardless of any environment variables or debug modes that may be set.",
+      "location": "## Adding a tokenization key to your app, line 77"
+    },
+    {
+      "text": "If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "# Tokenization Keys > IMPORTANT, line 20"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-tokenization-key-android-v5-reciprocal-1",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-authorization-tokenization-key-android-v5]] - historical Android v5 client-authorization guide for static reduced-privilege tokenization keys, their lifecycle, environment binding, and capability limits; not current SDK-support evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this client-SDK authorization route distinct from Braintree Auth merchant OAuth.",
+          "Treat the fetched page as historical snapshot evidence, not current Android SDK support or observed payment-flow evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/authorization/tokenization-key/android/v5-2026-09-16.md",
+  "raw_sha256": "ac3ab39ca6e15cf76b30ccab94c1f6b9a0590a77b2f79a0e732601094bd9a355",
+  "status": "candidate_ready"
+}

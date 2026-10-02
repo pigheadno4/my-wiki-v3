@@ -24,6 +24,7 @@ Braintree's collected Get Paid guide starts after a transaction has settled. It 
 PayPal transactions follow a separate collected funding route: by default PayPal funds them to the merchant's PayPal Business Account balance, after which the merchant can withdraw manually or have PayPal configure Settlement Withdrawal. The article says that feature sends the previous day's transactions to the bank within 2-3 business days and exposes a daily report for each withdrawal; this snapshot-scoped route is not evidence that an individual transaction funded or that a deposit arrived. [[source-braintree-payment-methods-paypal-funding-reconciliation]]
 
 ## Sources
+- [[source-braintree-credit-cards-overview]] - unversioned website overview of the Card Fields client/server responsibility description and nonce handoff, with platform/version selection routed to the retained JavaScript v3 boundary
 
 - [[source-braintree-auth-reference-node]] - closed-beta Braintree Auth reference route for merchant signup/login controls, OAuth scopes, redirect-returned merchant identity, and downloadable-software credential and state-handling boundaries
 

@@ -1,0 +1,71 @@
+{
+  "job_id": "credit-cards-client-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Credit Cards: Android v5 Standard Client-Side Implementation\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/credit-cards/client-side/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/credit-cards/client-side/android/v5-2026-09-16.md\"\ntags: [braintree, android-sdk, credit-cards, card-fields, tokenization, payment-method-nonce]\n---\n\n## Overview\n\nThis Android v5 [[braintree]] website-guide snapshot, collected 2026-09-16, documents the standard client-side Card Fields integration. The component collects and tokenizes card number, expiration date and CVV data; the merchant app supplies the surrounding checkout UI and pay button, then sends the returned payment-method nonce to its server to complete the transaction.\n\n## Key takeaways\n\n- Card Fields provides the three card fields with formatting, validation, brand detection and tokenization. The merchant app remains responsible for non-card fields such as name or billing address and for its own pay button.\n- The guide requires base Braintree Android SDK setup and a tokenization key or client token. Its `ui-components` dependency requires Braintree Android SDK 5.29.0 or higher, and Card Fields is initialized with that authorization before accepting card input. The page's recommendation to use the latest SDK is historical snapshot guidance, not evidence of the current release.\n- The app listens for form-validity changes, enables its own pay button, registers a result callback and calls `submit()`. A successful result contains a nonce for server-side transaction creation; tokenization or nonce receipt alone does not prove authorization, settlement or funding.\n- The page directs merchants to test in sandbox before going live. This retained documentation snapshot records the instruction only; no app build, sandbox submission, transaction or production-readiness test was performed.\n\n## Evidence limitations\n\nThis version-qualified website snapshot does not establish current Android SDK support, dependency availability, merchant enablement, buyer or card eligibility, or parity with the separately retained exact-SHA GitHub baseline. Its examples and verification prompts are documentation, not evidence that an integration or payment was executed successfully.\n\n## Detail locators\n\n- Card Fields purpose, managed fields, validation and nonce-to-server outcome: `# Standard Client-Side Implementation`, line 16.\n- Base SDK, client-authorization and merchant-owned UI prerequisites: `## Before you begin`, lines 23-28.\n- `ui-components` dependency and Android SDK 5.29.0-or-higher qualification: `## Add the Card Fields dependency`, lines 31-49.\n- Authorization passed to `initialize`: `## Initialize Card Fields`, lines 76-98.\n- Form-validity listener and merchant-owned pay-button behavior: `## Enable your pay button when the form is valid`, lines 101-114.\n- Success/failure callback and nonce handoff: `## Handle the tokenization result`, lines 117-137.\n- Merchant button calling `submit()`: `## Trigger submission from your pay button`, lines 140-151.\n- Optional supplemental cardholder name and postal-code example: `## Optional: Add supplemental card data`, lines 154-168.\n- Sandbox-before-live instruction: `## Test your integration`, lines 171-173.\n\n## Related\n\n- Company: [[braintree]]\n- Android SDK concept: [[braintree-android-sdk]]\n- Payment-method concept: [[braintree-payment-methods]]\n- Platform distinction: [[source-braintree-credit-cards-client-javascript-v3]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/client-sdk/setup/android/v5-2026-09-16|Braintree Android v5 client SDK setup]] - prerequisite navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/authorization/overview-2026-09-16|Braintree client authorization overview]] - authorization navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/credit-cards/server-side/node-2026-09-16|Braintree Node server-side credit-card guide]] - server-side navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/credit-cards/testing-go-live/node-2026-09-16|Braintree Node credit-card testing and go-live guide]] - testing navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/credit-cards/client-side/android/v5-2026-09-16|Braintree Android v5 standard client-side credit-card implementation]] - fully read pinned website snapshot covering Card Fields responsibilities, prerequisites, tokenization and nonce handoff\n",
+  "quotes": [
+    {
+      "text": "Add the Card Fields component to your Android checkout screen to collect card number, expiration date, and CVV input with built-in formatting, validation, brand detection, and tokenization. When you finish this guide, your app renders the 3 card fields, enables your pay button once the form is valid, and returns a nonce you can send to your server to complete a transaction.",
+      "location": "# Standard Client-Side Implementation, line 16"
+    },
+    {
+      "text": "Before you add Card Fields, complete the following:\n\n\n- Set up the Braintree Android SDK. See[Setup](/braintree/docs/guides/client-sdk/setup/)for the base SDK installation.\n- Generate a tokenization key or client token. See[Client Authorization](/braintree/docs/guides/authorization/overview/)for the available authorization types.\n- Decide where Card Fields fits in your checkout screen. Card Fields renders the card number, expiration date, and CVV fields. You provide everything else, including any non-card fields, such as name or billing address, and your pay button.",
+      "location": "## Before you begin, lines 23-28"
+    },
+    {
+      "text": "In your build.gradle file, add the ui-components dependency. This requires Braintree Android SDK 5.29.0 or higher, the first release that includes ui-components. Use the latest available version.",
+      "location": "## Add the Card Fields dependency, line 33"
+    },
+    {
+      "text": "In your fragment or activity, get a reference to the CardFields view you added to your layout. Then call initialize on that reference, passing in the tokenization key or client token. This authorizes Card Fields to communicate with Braintree on your behalf and prepares the view to accept card input.",
+      "location": "## Initialize Card Fields, line 78"
+    },
+    {
+      "text": "Register a result callback before you call submit. Card Fields returns a nonce on success, or an error on failure.",
+      "location": "## Handle the tokenization result, line 119"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-credit-cards-client-android-v5-android-sdk-link",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-credit-cards-client-side-android-v5]] - Android v5 website guide to standard Card Fields UI ownership, SDK 5.29.0-or-higher `ui-components` prerequisite, client authorization, tokenization and nonce handoff; not current package-support or execution evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The website snapshot is Android v5 guidance and does not supersede the exact-SHA braintree-android@5.30.0 baseline or prove current package support.",
+          "The Android guide embeds an iOS-labelled screenshot at line 114; do not use that image as Android UI-rendering evidence."
+        ]
+      },
+      {
+        "update_id": "c27-credit-cards-client-android-v5-payment-methods-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-credit-cards-client-side-android-v5]] - Android v5 website guide to Card Fields card-data collection and tokenization, merchant-owned surrounding checkout controls, authorization prerequisites and nonce return for server processing",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize this Android v5 Card Fields route or its prerequisites to other platforms or versions, and do not treat nonce receipt as successful transaction execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/credit-cards/client-side/android/v5-2026-09-16.md",
+  "raw_sha256": "00220b2c81b18416ad0819a79ca86929cec5b1d01d263f39b7eb1d631227dd23",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,66 @@
+{
+  "job_id": "sdk-migration-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree iOS SDK v6-to-v7 migration\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/client-sdk/migration/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/client-sdk/migration/ios/v7-2026-09-16.md\"\ntags: [braintree, ios, sdk, migration, swift]\n---\n\n## Overview\n\nThis collected [[braintree]] webpage is a version-specific migration guide for moving a native integration from Braintree iOS SDK v6 to v7. It characterizes v7 as a major release with breaking changes, then routes implementers through the minimum toolchain and deployment target, installation paths, initializer changes, renamed methods, Venmo return handling, and removal of PayPal Native Checkout. It is client-migration guidance rather than a full payment-flow or server-processing specification; use [[braintree-ios-sdk]] for the broader authorization, nonce and merchant-server boundary.\n\n> [!warning] Snapshot and version boundary\n> This is a 2026-09-16 snapshot of the iOS v7 migration route. It preserves the requirements and changes stated on that page but does not establish current package support, current account or payment-method eligibility, successful app switching, or successful payment processing.\n\n## Key takeaways\n\n- The guide says v7 internalizes creation of `BTAPIClient`, moves necessary flow parameters into initializers, and updates for newer iOS and Xcode versions. Its stated minimums are Xcode 16.2+, Swift 5.10+, and iOS 16.0; Objective-C applications must enable modules.\n- The snapshot lists Swift Package Manager, CocoaPods and Carthage as installation routes. Its Carthage-specific requirement is v0.38.0+ with `carthage update --use-xcframeworks`; these are version-specific migration details, not proof of current installer support.\n- The required-code-change sections move request properties to initializers across Card, Venmo, SEPA Direct Debit, Local Payments, 3D Secure and PayPal. They also show feature-client initializers accepting client authorization. This page does not specify how the authorization is generated or how a returned payment method is processed on the merchant server.\n- For Venmo, the guide removes the `fallbackToWeb` request parameter: buyers with the Venmo app are sent to it, while buyers without it fall back to their default browser. It also requires a universal link when initializing `BTVenmoClient` for return from either path.\n- The guide renames the Local Payment and 3D Secure `startPaymentFlow(with:completion)` methods to `start(with:completion)`. These and the many initializer examples are retained as raw locators rather than reconstructed API specifications.\n- For PayPal app switch, the guide requires a simplified `paypal` URL query scheme in `Info.plist`. It separately says PayPal Native Checkout is no longer supported and instructs merchants to remove it and use the PayPal integration; the page does not call that replacement a web flow.\n\n## Detail locators\n\n- v7 rationale, internalized `BTAPIClient`, initializer pattern and changelog route: raw lines 17-29.\n- Minimum Xcode, Swift and iOS requirements plus Objective-C module setting: raw lines 32-36.\n- Supported installation routes and Carthage v0.38.0+ command: raw lines 39-55.\n- Card initializer-only properties and client initializer example: raw lines 58-64.\n- Venmo initializer-only properties, browser fallback behavior and required universal link: raw lines 67-77.\n- SEPA Direct Debit request and client initializer changes: raw lines 79-91.\n- Local Payment request/client changes and renamed start method: raw lines 93-109.\n- 3D Secure request/client changes and renamed start method: raw lines 111-129.\n- PayPal request/client changes, app-switch query scheme and PayPal Native Checkout removal: raw lines 131-147.\n- American Express, Apple Pay, Data Collector, Shopper Insights and PayPal Messaging client initializer examples: raw lines 149-185.\n\n## Related\n\n- [[braintree-ios-sdk]] - native iOS SDK architecture, exact-version evidence boundaries and independently versioned Drop-in distinction.\n- [[source-braintree-client-sdk-deprecation-policy-ios-v7]] - separate historical platform and lifecycle policy snapshot; not current v7 support evidence.\n- [[source-github-braintree-ios]] - separate cumulative exact-SHA implementation evidence; this website migration snapshot does not replace it.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/client-sdk/migration/ios/v7-2026-09-16|Braintree iOS SDK v6-to-v7 migration snapshot (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "While iOS v7 is a major version bump and contains breaking changes, we kept these changes to a minimum where possible.",
+      "location": "raw line 19 under Migrating from v6 to v7"
+    },
+    {
+      "text": "The Braintree iOS v7 SDK requires Xcode 16.2+, Swift 5.10+ and a minimum deployment target of iOS 16.0.",
+      "location": "raw line 34 under Minimum requirements"
+    },
+    {
+      "text": "The SDK now internalizes the creation of theBTAPIClient to allow merchants a streamlined integration pattern.",
+      "location": "raw line 25 under Why upgrade to v7; source rendering concatenates 'the' and 'BTAPIClient'"
+    },
+    {
+      "text": "Remove the fallbackToWeb boolean parameter from BTVenmoRequest. If a Buyer has the Venmo app installed and taps on \"Pay with Venmo\", they will automatically be switched to the Venmo app. If the Venmo app isn't installed, the Buyer will fallback to their default web browser to checkout.",
+      "location": "raw line 73 under Venmo"
+    },
+    {
+      "text": "The PayPal Native Checkout integration is no longer supported. Please remove it from your app and use thePayPalintegration.",
+      "location": "raw line 147 under PayPal Native Checkout; source rendering concatenates words around 'PayPal'"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-ios-v7-migration-braintree-ios-sdk-source-link",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-client-sdk-migration-ios-v7]] - website v6-to-v7 migration-guide snapshot for the native iOS SDK; not current package-support evidence",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Keep this website snapshot distinct from the exact-SHA GitHub baseline and from the independently versioned iOS Drop-in package.",
+          "Do not infer current SDK support, account eligibility, payment-method availability, successful app switching or payment processing from this migration page."
+        ]
+      },
+      {
+        "update_id": "c27-ios-v7-migration-paypal-native-wording-correction",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "durable_fact",
+        "anchor": "The removed PayPal Native Checkout module is not the replacement path.",
+        "proposed_markdown": "The removed PayPal Native Checkout module is not the replacement path. The v7 migration guide says to remove it and use the PayPal integration; it does not characterize that replacement as a web flow.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "This narrowly corrects the existing concept's unsupported phrase 'PayPal web flow'; the captured migration guide says only 'PayPal integration'.",
+          "Do not infer a specific transport, UI surface or app-switch mode from this sentence alone."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/client-sdk/migration/ios/v7-2026-09-16.md",
+  "raw_sha256": "24e6b0b8f87b276e114f27f83e50bfcc8406a9de1a024f2c91caa9bfad1e41b5",
+  "status": "candidate_ready"
+}
