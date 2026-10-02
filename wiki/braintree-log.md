@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | Braintree website C25
+
+- Ten pinned Braintree Auth core guides were fully read, independently reviewed and promoted as separate retrieval sources. The capsule now routes to 222 sources: 205 website plus 17 GitHub, excluding changelogs. See [[braintree-auth]] and [[braintree-index]].
+- Seven first full reviews approved; three jobs required bounded semantic corrections, and one of those needed an additional newline-format correction. Ten full reviews and four targeted reviews were accepted. The fixed five-group query audit passed 20/20 navigation and detail questions. One coordinator catalog-marker repair changed no source meaning.
+- Preserved the closed-beta snapshot scope, OAuth permissions and credential lifecycle, merchant/platform roles, test-versus-production and underwriting boundaries, scope-count inconsistency and Amex qualification. A session interruption required recovery of three outstanding roles from trusted orders; elapsed time is not uninterrupted throughput. Timing investigation and closure evidence are under `tracking/ingest/braintree/braintree-campaign-25/`. No raw collection, GitHub ingest, code/rule change, commit or push was performed.
+
 ## [2026-10-02] ingest | Braintree website C24
 
 - Ten pinned recurring-billing pages (nine articles and one Node subscription response reference) were fully read, independently reviewed, and promoted as separate retrieval sources. The Braintree capsule now routes to 212 sources: 195 website plus 17 GitHub, excluding changelogs. See [[braintree-recurring-billing]] and [[braintree-index]].

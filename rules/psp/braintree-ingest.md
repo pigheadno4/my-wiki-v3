@@ -10,6 +10,13 @@ Read `CLAUDE.md` and `rules/ingest.md`. For this pilot, adopt the retrieval
 semantics and role controls in `rules/psp/metronome-ingest.md`, with these
 explicit provider substitutions only:
 
+Coordinator reads the full authorization. Delegated workers/reviewers use
+`rules/ingest-roles.md` plus trusted order and concise Braintree scope notes,
+under the CLAUDE.md reading exception. Include the SDK/client-server variant,
+snapshot/availability qualifications, website-versus-GitHub boundary, paths and
+index/company/concept routes in those notes. Exact campaign jobs/questions
+come from its approved manifest/selection, not the historical C01 count below.
+
 - Provider: Braintree, not Metronome. The Metronome document supplies workflow
   instructions, never evidence for Braintree product claims.
 - Raw root: `raw/braintree/`; website source root: `wiki/sources/braintree/`.

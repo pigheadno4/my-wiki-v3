@@ -179,6 +179,36 @@ class CoordinatorTests(unittest.TestCase):
             "status": "candidate_ready",
         }), encoding="utf-8")
 
+    def test_handoff_repairs_only_broken_navigation_list_format(self):
+        self.start_five()
+        path = self.write_worker_result("job-1")
+        submitted = json.loads(path.read_text())
+        submitted["source_page"] += "\n## Related\n+- [[a]] — route\\n- [[b]] — route\n"
+        path.write_text(json.dumps(submitted))
+        run_once(self.root, self.campaign_id, worker_result_path=path,
+                 reviewer_assignments={"job-1": {"identity": "reviewer-a", "model": "Sol"}})
+        attempt = self.attempt("job-1", 1)
+        accepted = json.loads((attempt / "receipt.json").read_text())
+        self.assertIn("\n- [[a]] — route\n- [[b]] — route\n", accepted["source_page"])
+        self.assertEqual(json.loads((attempt / "submitted-receipt.json").read_text()), submitted)
+        self.assertEqual((attempt / "candidate.md").read_text(), accepted["source_page"])
+        self.assertTrue((attempt / "format-repair.diff").read_text().startswith("--- submitted/"))
+        self.assertEqual(accepted["quotes"], submitted["quotes"])
+        self.assertEqual(accepted["raw_sha256"], submitted["raw_sha256"])
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["attempt"], 1)
+
+    def test_handoff_preserves_literal_newlines_in_code_and_quoted_text(self):
+        self.start_five()
+        path = self.write_worker_result("job-1")
+        submitted = json.loads(path.read_text())
+        submitted["source_page"] += '\n```text\n+- [[a]]\\n- [[b]]\n```\n> - [[a]]\\n- [[b]]\n- [[a]] `\\n- [[b]]`\n- [[a]] "\\n- [[b]]"\n'
+        path.write_text(json.dumps(submitted))
+        run_once(self.root, self.campaign_id, worker_result_path=path,
+                 reviewer_assignments={"job-1": {"identity": "reviewer-a", "model": "Sol"}})
+        attempt = self.attempt("job-1", 1)
+        self.assertEqual((attempt / "candidate.md").read_text(), submitted["source_page"])
+        self.assertFalse((attempt / "format-repair.diff").exists())
+
     def test_valid_worker_result_persists_candidate_and_emits_review_order(self):
         self.start_five()
 

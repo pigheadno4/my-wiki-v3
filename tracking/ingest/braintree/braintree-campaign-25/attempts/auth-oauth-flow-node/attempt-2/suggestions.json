@@ -1,0 +1,45 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-braintree-auth-concept",
+      "target_path": "wiki/concepts/braintree-auth.md",
+      "update_kind": "durable_fact",
+      "anchor": "Create new concept page",
+      "proposed_markdown": "---\ntitle: \"Braintree Auth\"\ntype: concept\ncategory: technology\ntags: [braintree, braintree-auth, platforms, oauth-2, merchant-authorization]\n---\n\n## Braintree Auth\n\nBraintree Auth is a provider-specific platform integration model that this collected Node.js OAuth guide marks as closed beta. After a merchant completes the separate Connect flow, Braintree returns an authorization code to the platform's redirect URI; the platform exchanges that code using its Braintree Auth client ID and client secret, then uses the resulting access token for actions on that connected merchant's behalf subject to the OAuth permissions granted through the separate Connect configuration. This OAuth-flow source does not select or enumerate those scopes. [[source-braintree-auth-oauth-flow-node]]\n\n## OAuth credential lifecycle\n\nThe guide states that access tokens expire 24 hours after creation and initially issued refresh tokens expire after 180 days. A refresh returns a new access token and refresh token. Refreshing and revoking are distinct in the guide: the platform can explicitly revoke an access token, while a merchant can revoke OAuth access in the Control Panel; a revoked access token produces an authentication error when used through the Merchant API. [[source-braintree-auth-oauth-flow-node]]\n\n## Scope boundary\n\nKeep Braintree Auth distinct from generic transaction authorization, Braintree Direct merchant credentials and the ordinary payment client-token flow. This concept routes the platform-to-connected-merchant authorization model; exact scope selection remains in the dedicated server-side Connect guide, the scope catalog remains in the reference, and Merchant API operations, webhooks, merchant-account and multi-currency behavior remain in their dedicated sources. This OAuth-flow source does not select or enumerate scopes. The collected closed-beta statement does not establish current eligibility or enablement for an individual platform.\n\n## Sources\n\n- [[source-braintree-auth-oauth-flow-node]] - Node.js post-Connect authorization-code exchange, merchant-scoped access-token use, refresh lifetimes and platform/merchant revocation routes\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep Braintree Auth distinct from generic transaction authorization, Braintree Direct credentials and payment client tokens.",
+        "Preserve the collected closed-beta qualification and do not infer current platform eligibility or account enablement.",
+        "Do not imply that refreshing credentials automatically revokes the original access token; the guide presents revocation separately.",
+        "Treat the unread Connect, Merchant API, reference and webhook pages as navigation until each is read completely."
+      ]
+    },
+    {
+      "update_id": "auth-oauth-flow-node-braintree-server-sdk-route",
+      "target_path": "wiki/concepts/braintree-server-sdk.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Related",
+      "proposed_markdown": "- [[source-braintree-auth-oauth-flow-node]] - closed-beta Braintree Auth Node.js route for exchanging a connected merchant's authorization code with platform client credentials, using the resulting merchant-scoped access token, refreshing credentials and separately revoking access",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep this OAuth platform route separate from the ordinary merchant API-key and payment client-token flows.",
+        "Do not generalize the guide's closed-beta availability or token lifetimes beyond this collected Braintree Auth page.",
+        "Do not imply that refresh automatically revokes the original access token."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

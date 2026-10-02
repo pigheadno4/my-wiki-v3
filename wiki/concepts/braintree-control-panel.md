@@ -16,6 +16,8 @@ The Dashboard provides sales and transaction volume, totals, averages, and route
 Sandbox and Production use mutually exclusive Control Panel environments that do not interact and may have different login credentials. Use the dedicated reporting documentation for reconciliation and the specific administration guides for task-level behavior. [[source-braintree-control-panel-overview]]
 
 ## Sources
+
+- [[source-braintree-auth-configuration]] - closed-beta platform OAuth application configuration in the environment-specific Control Panel, including merchant-facing metadata, registered redirects and server-held client credentials
 - [[source-braintree-payment-methods-paypal-funding-reconciliation]] - PayPal reconciliation route for details available in the PayPal console but not the Braintree Control Panel, plus the mapping from PayPal Transaction ID to Authorization Unique Transaction ID and its distinction from the Braintree transaction ID
 - [[source-braintree-payment-methods-paypal-setup-guide]] - PayPal production enablement route through Business Account credential linking in the Braintree Control Panel, including the one-account-per-gateway boundary and generated REST API app dependency
 - [[source-braintree-payment-methods-paypal-disputes]] - PayPal-specific Control Panel dispute management with full-integration and linked-account prerequisites, Add/Edit Processing Options permission, stage and deadline handling, retrieval actions, evidence routes and a separate credit-card-dispute workflow boundary

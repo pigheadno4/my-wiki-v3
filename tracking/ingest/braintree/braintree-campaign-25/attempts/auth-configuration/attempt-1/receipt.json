@@ -1,0 +1,76 @@
+{
+  "job_id": "auth-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Auth Configuration\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-auth/configuration\"\nraw_files:\n  - \"braintree/docs/guides/braintree-auth/configuration-2026-09-16.md\"\ntags: [braintree, braintree-auth, oauth, control-panel, connected-merchants]\n---\n\n## Overview\n\nThis collected Braintree Auth configuration guide is a retrieval entry for a platform setting up its OAuth application in the Braintree Control Panel. It covers the platform's merchant-facing application identity and support information, registered redirect destinations, and environment-specific server credentials. The snapshot labels Braintree Auth closed beta; it does not establish current availability, acceptance into the beta, merchant connection, or live payment acceptance.\n\n## Key takeaways\n\n- The guide says Braintree Auth follows OAuth 2.0. After acceptance into the closed beta, the platform can create an OAuth application in the Control Panel; that application authenticates the platform and identifies it to merchants who connect.\n- OAuth application setup is environment-specific: the platform uses either the Production or Sandbox Control Panel for the environment it is configuring. The configured categories include merchant-facing display, website, logo and support information, plus redirect destinations and internal or partner tracking information; exact field requirements remain at the raw locator below.\n- Redirect URIs must be registered before they are passed while generating a Connect URL, or the redirect will not be authorized. The guide requires a full URI and says production redirects require HTTPS.\n- After creation, the OAuth application has a `client_id` and `client_secret` for Sandbox testing and Production. The platform must store them securely on its server; the guide routes their use to Braintree server SDK configuration and the separate Connect flow.\n\n> [!warning] Closed beta and setup ownership\n> This 2026-09-16 snapshot says Braintree Auth is in closed beta and directs interested platforms to contact Braintree. It documents configuration that the accepted platform performs; it does not show that a platform has been accepted, that a merchant has authorized the platform, or that either environment is ready for payments.\n\n## Detail locators\n\n- Closed-beta availability and interest route: `# Configuration > AVAILABILITY`, lines 16-17.\n- OAuth 2.0 basis, beta-acceptance prerequisite, platform identity and application purpose: `# Configuration`, line 19.\n- Production-versus-Sandbox Control Panel selection and the OAuth Apps setup route: `# Configuration`, lines 22-26.\n- Merchant-facing identity and support configuration categories and exact field requirements: `# Configuration`, lines 28-38.\n- Redirect allowlisting, full-URI form and production HTTPS requirement: `# Configuration`, line 41.\n- Environment-specific client credentials, server-storage ownership, SDK configuration and Connect-flow route: `# Configuration`, line 45.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-auth]]\n- Supporting concept: [[braintree-control-panel]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/braintree-auth/server-side/node-2026-09-16|Braintree Auth Server-side Connect Flow (Node.js)]] - navigation-only route for generating a Connect URL and passing a registered redirect URI; not used as factual evidence here\n- [[raw/braintree/docs/guides/braintree-auth/connect-2026-09-16|Braintree Auth Connect guide]] - navigation-only route for the merchant connection flow; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-auth/configuration-2026-09-16|Braintree Auth configuration guide]] - complete collected guide for closed-beta access, platform OAuth application setup, redirect registration and server-held credentials\n",
+  "quotes": [
+    {
+      "text": "Braintree Auth is in closed beta. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest.",
+      "location": "# Configuration > AVAILABILITY, line 17"
+    },
+    {
+      "text": "Braintree Auth follows the [OAuth 2.0](https://oauth.net/2/) specification. Once accepted into the Braintree Auth beta, you will be able to create an OAuth application in the Control Panel. You will use this OAuth application to authenticate with Braintree Auth, as well as identify your platform to connecting merchants. To create an OAuth application:",
+      "location": "# Configuration, line 19"
+    },
+    {
+      "text": "Log into either the[production Control Panel](https://www.braintreegateway.com/login)or the[sandbox Control Panel](https://sandbox.braintreegateway.com/login), depending on which environment you are working in",
+      "location": "# Configuration, line 22"
+    },
+    {
+      "text": "**Redirect URIs (required):**A list of allowed URIs that your merchant will be redirected to after they authorize your application or choose to save and finish later. The redirect URI passed when generating the[connect URL](/braintree/docs/guides/braintree-auth/server-side)must be in this list or we will not authorize the redirect. Please use a full URI, includinghttp. In production,httpsis required",
+      "location": "# Configuration, line 41"
+    },
+    {
+      "text": "Once created, your OAuth application will have a client_id and a client_secret for sandbox testing and production that must be securely stored on your server. You will use these values to configure the Braintree server SDKs to make API calls and facilitate the [Connect](/braintree/docs/guides/braintree-auth/connect) flow.",
+      "location": "# Configuration, line 45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "auth-configuration-braintree-auth-route",
+        "target_path": "wiki/concepts/braintree-auth.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "append under `## Sources`",
+        "proposed_markdown": "- [[source-braintree-auth-configuration]] - closed-beta OAuth application setup route for platform-owned Control Panel configuration, merchant-facing identity and support, allowlisted redirects, and environment-specific server-held credentials",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Braintree Auth distinct from generic payment-transaction authorization.",
+          "Preserve beta acceptance as a prerequisite and the platform as the OAuth application setup and credential-storage owner.",
+          "Do not infer current availability, platform acceptance, merchant authorization or payment readiness from this collected configuration guide.",
+          "Keep exact setup fields and their requirements in the raw source rather than expanding the concept into a configuration specification."
+        ]
+      },
+      {
+        "update_id": "auth-configuration-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "append under `## Sources`",
+        "proposed_markdown": "- [[source-braintree-auth-configuration]] - closed-beta platform OAuth application configuration in the environment-specific Control Panel, including merchant-facing metadata, registered redirects and server-held client credentials",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Route this as Braintree Auth application administration, not ordinary gateway API-key setup or payment authorization.",
+          "Preserve the closed-beta and beta-acceptance qualification and do not imply merchant connection or live readiness.",
+          "Leave exact configuration fields and requirements in the raw source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-auth/configuration-2026-09-16.md",
+  "raw_sha256": "68284611d58326ab4f489515399714e33c444469424e61f36b6b39889e4a1b29",
+  "status": "candidate_ready"
+}

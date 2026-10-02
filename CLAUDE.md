@@ -10,6 +10,17 @@ This root file holds the **always-needed reference**: directory layout, page-typ
 
 `AGENTS.md` is a thin pointer to this file, so there is a single source of truth and no drift.
 
+### Delegated website-ingest reading exception
+
+For an exact approved campaign, the coordinator reads this file, `rules/ingest.md`
+and the provider authorization. Its delegated workers/reviewers read only
+`rules/ingest-roles.md`, their trusted order and concise provider/scope notes
+supplied by the coordinator. That role entry is authoritative for their work;
+they do not reload general rules or historical campaign contracts. This changes
+instruction reading only, never the mandatory full raw read or independent
+initial review. Other workflows, including GitHub and query audits, retain their
+existing reading requirements.
+
 ## Directory structure
 
 ```text

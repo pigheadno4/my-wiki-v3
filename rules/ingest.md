@@ -42,6 +42,13 @@ even when the raw hash has not changed.
 
 ## Coordinator-controlled parallel-review campaign exception
 
+Coordinator setup remains below. Delegated website workers/reviewers use the
+consolidated `rules/ingest-roles.md` reading exception in CLAUDE.md. The coordinator
+supplies concise provider-specific scope notes; roles do not reread this general
+file or provider/history documents. The role entry also defines the two narrow
+mechanical list repairs performed before review, with original handoff and diff
+retained inside the attempt. Quotes and raw evidence are never normalized.
+
 The default above remains mandatory for ordinary ingest. A campaign may defer
 and reduce shared-file writes only when an exact, explicitly approved campaign
 manifest **and an explicit provider-specific authorization** provide all of

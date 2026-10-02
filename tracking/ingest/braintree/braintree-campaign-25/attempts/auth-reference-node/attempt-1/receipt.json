@@ -1,0 +1,75 @@
+{
+  "job_id": "auth-reference-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Auth Reference (Node.js)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-auth/reference/node\"\nraw_files:\n  - \"braintree/docs/guides/braintree-auth/reference/node-2026-09-16.md\"\ntags: [braintree, braintree-auth, oauth, merchant-onboarding, nodejs]\n---\n\n## Overview\n\nThis collected Node.js-route reference is a retrieval entry for Braintree Auth signup and login controls, OAuth scopes, merchant identity, and the special connection pattern for downloadable software. It documents a closed-beta Braintree Auth snapshot and is not authority for generic transaction authorization, current access, or the complete behavior of the linked Connect, OAuth, merchant-account, webhook, or multi-currency guides.\n\n## Key takeaways\n\n- Braintree Auth is described as closed beta. The page presents Braintree Auth and Connect with Braintree as one merchant experience in which a merchant can create an account or sign in through a Connect URL within an OAuth scope.\n- Platforms can pre-populate documented user and business fields during new-account signup, while `login_only` changes the landing page to accept only existing Braintree merchants. The exact field inventory and formats remain in the raw reference.\n- The reference makes standard OAuth scopes available alongside Braintree Auth-specific scope entries for dispute management, dispute webhooks, read-only access, and read-write control. Its prose says there are three additional scopes while the rendered table contains four entries, so use the table and dedicated OAuth guidance without inferring a reconciled count.\n- After a merchant completes Connect, the OAuth redirect returns `merchantId`; the page characterizes it as the account's unique Braintree identifier for support and for constructing Control Panel deep links.\n- For downloadable software, the page routes platform OAuth through an intermediary server so `client_id` and `client_secret` are not shipped inside the software. Its worked `state` example is explicitly insecure and must be replaced by the safe handling described in the server-side implementation guide.\n\n## Evidence boundaries and detail locators\n\n- Signup pre-population field categories and exact names: `## Signup form fields`, `### User`, lines 23-40, and `### Business`, lines 43-61.\n- Existing-merchant-only landing-page option: `## Login-only flow`, lines 64-67.\n- Scope names and meanings, including the prose/table count mismatch: `## OAuth scopes`, lines 70-77.\n- OAuth redirect merchant identifier and Control Panel deep-link use: `## Merchant ID`, lines 80-85.\n- Intermediary-server sequence and the insecure example-state warning: `## Downloadable software flow`, lines 86-101.\n- Braintree Auth merchant-account validation error catalog: `## Merchant account validation errors`, lines 104-188. The catalog is a raw-detail route, not a complete account-creation or recovery specification.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-auth]]\n- Broader product orientation: [[braintree-payment-platform]]\n- Related notification route: [[source-braintree-webhooks-braintree-auth-node]]\n- Related currency-account route: [[source-braintree-merchant-account-create-for-currency-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/braintree-auth/connect-2026-09-16|Braintree Auth Connect guide]] - unread navigation-only route for the merchant connection experience\n- [[raw/braintree/docs/guides/braintree-auth/oauth-flow/node-2026-09-16|Braintree Auth Node.js OAuth-flow guide]] - unread navigation-only route for the authorization sequence and redirect handling\n- [[raw/braintree/docs/guides/braintree-auth/server-side/node-2026-09-16|Braintree Auth Node.js server-side guide]] - unread navigation-only route for Connect URL generation and safe `state` handling\n- [[raw/braintree/docs/guides/braintree-auth/multi-currency/node-2026-09-16|Braintree Auth Node.js multi-currency guide]] - unread navigation-only route for merchant-account currency behavior\n- [[raw/braintree/docs/guides/braintree-auth/webhooks/node-2026-09-16|Braintree Auth Node.js webhooks guide]] - unread navigation-only route for Braintree Auth notification behavior\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-auth/reference/node-2026-09-16|Braintree Auth Node.js reference]] - complete collected reference covering signup and login controls, OAuth scopes, merchant identity, downloadable-software connection guidance, and Braintree Auth validation-error routes\n",
+  "quotes": [
+    {
+      "text": "**AVAILABILITY**\nBraintree Auth is in closed beta. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest.\n\nBraintree Auth and the Connect with Braintree flows are a unified PayPal and Braintree merchant\nexperience. Create a merchant account with Braintree Auth, or login through a connect URL within the\nOAuth scope to start using the features of PayPal powered by Braintree.",
+      "location": "# Reference > AVAILABILITY, lines 17-22"
+    },
+    {
+      "text": "If you would prefer that only existing Braintree merchants connect to your platform, you can set up\ntheconnect_urlto allow only logins.ParameterDescription| `login_only` | Only show the login form on the landing page (true/false). |",
+      "location": "## Login-only flow, lines 66-67"
+    },
+    {
+      "text": "There are currently three additional OAuth scopes available for Braintree Auth platforms when\nbuilding the[`connect_url`](/braintree/docs/guides/braintree-auth/server-side). All of the[standard OAuth scopes](/braintree/docs/guides/extend/oauth/reference)are\nalso available. To request multiple scopes, use a comma separated string, e.g.read_write,oauth_app_receive_dispute_webhooks.ParameterDescription| manage_disputes | Allows you to[manage disputes](/braintree/docs/guides/disputes/managing)for a connected merchant. |\n| oauth_app_receive_dispute_webhooks | Allows you to receive[Dispute webhooks](/braintree/docs/guides/braintree-auth/webhooks/node#disputes)for a connected merchant. |\n| read_only | Provides read-only access to the merchant's Braintree account. |\n| read_write | Provides full read-write control of the merchant's Braintree account. |",
+      "location": "## OAuth scopes, lines 72-77"
+    },
+    {
+      "text": "Themerchant_idis returned in the[OAuth redirect](/braintree/docs/guides/braintree-auth/oauth-flow/node#redirect-and-authorization-grant)in themerchantIdparam after the merchant has completed the[Connect](/braintree/docs/guides/braintree-auth/connect)flow. It is the unique\nidentifier for the account in Braintree's systems so it can help with support issues. Also, if you\nwish to deep link to the Braintree Control Panel from your dashboard you will need this ID to\nconstruct the URL. For example, to link to a transaction details page, the URL looks like this:https://braintreegateway.com/merchants/merchant_id/transactions/transaction_id",
+      "location": "## Merchant ID, lines 82-85"
+    },
+    {
+      "text": "If your product requires the merchant to download software (such as a downloadable shopping cart)\nyou will need to do a little extra work to prevent shipping software with yourclient_idand aclient_secretembedded, as they should always be kept\nsecret. One solution is to create an intermediary server that communicates with Braintree on behalf\nof the merchant:\n- When creating your OAuth application, register a redirect URI that points to your intermediary server:https://intermediaryserver.com/braintree-redirect\n- After the merchant downloads your software, the host URL (e.g.https://cartuser.com) makes a request to this intermediary server, including the URI where the merchant will be directed at the end of the authorization flow:https://cartuser.com/oauth/braintree\n- Your intermediary server returns the URI generated by your[server](/braintree/docs/guides/braintree-auth/server-side), passing an escaped version of the merchant's URI (typically as a URL or base 64 encoded string) in thestateparam:https://braintreegateway.com/oauth/connect?state=https%3A%2F%2Fcartuser.com%2Foauth%2Fbraintree\n- When the merchant clicks**Connect with Braintree**, the downloaded software redirects the merchant to the Braintreeconnect_urlreturned by your intermediary server in #3\n- On completing the OAuth flow the merchant is redirected to the intermediary server using the URI registered in #1:https://intermediaryeserver.com/braintree-redirect?refresh_token=test&state=https://cartuser.com/oauth/braintree\n- Your intermediary server inspects thestateparam of the redirect and uses it to redirect your merchant back to the URI given in the initiating request:https://cartuser.com/oauth/braintree?access_token=test\n\n\n**IMPORTANT**\nIn this example the state parameter is insecure. [See the notes in the server-side implementation section](/braintree/docs/guides/braintree-auth/server-side/node#state) to ensure that you are using it properly in your application.",
+      "location": "## Downloadable software flow, lines 88-101"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "auth-reference-node-create-braintree-auth-concept",
+        "target_path": "wiki/concepts/braintree-auth.md",
+        "update_kind": "durable_fact",
+        "anchor": "create the missing provider-specific concept, then merge other independently approved C25 routes into its Sources/navigation sections",
+        "proposed_markdown": "---\ntitle: \"Braintree Auth\"\ntype: concept\ncategory: technology\ntags: [braintree, braintree-auth, oauth, connected-merchants, merchant-onboarding]\n---\n\n## Braintree Auth\n\nBraintree Auth is Braintree's platform connection route for merchant signup or login through Connect with Braintree and OAuth-scoped access. The collected Node.js reference marks the product closed beta; this snapshot does not prove current access, merchant eligibility, or support, and Braintree Auth must remain distinct from generic transaction authorization. [[source-braintree-auth-reference-node]]\n\n## Reference and security boundaries\n\nThe reference routes new-account field pre-population, existing-merchant-only login, OAuth scope selection, the redirect-returned `merchantId`, and an intermediary-server pattern for downloadable software. It says platform `client_id` and `client_secret` values must remain secret and explicitly warns that its worked `state` example is insecure, directing implementers to the server-side guide for safe handling. Its OAuth prose says three additional scopes while the rendered table contains four entries; preserve that source inconsistency rather than inferring a corrected count. Exact fields, scope meanings, validation errors and the worked redirect sequence remain in the raw reference. [[source-braintree-auth-reference-node]]\n\n## Sources\n\n- [[source-braintree-auth-reference-node]] - closed-beta Node.js-route reference for signup/login controls, scopes, merchant identity, downloadable-software credential handling and exact raw-detail locators\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Create this concept only after coordinator reconciliation confirms the C25-wide gap and merges overlapping approved Auth suggestions once.",
+          "Do not merge Braintree Auth with generic transaction authorization or represent closed-beta snapshot wording as proof of current access.",
+          "Preserve the source's three-versus-four scope-entry inconsistency and the explicit insecure-state warning; do not silently normalize either.",
+          "Do not copy the signup field list, scope table, validation-error catalog, or redirect examples into the concept."
+        ]
+      },
+      {
+        "update_id": "auth-reference-node-payment-platform-route",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "append under `## Sources`",
+        "proposed_markdown": "- [[source-braintree-auth-reference-node]] - closed-beta Braintree Auth reference route for merchant signup/login controls, OAuth scopes, redirect-returned merchant identity, and downloadable-software credential and state-handling boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a reciprocal retrieval route; do not duplicate the reference's field, scope, error, or redirect inventories in the broader payment-platform concept.",
+          "Do not treat the closed-beta statement as proof of current availability or as a replacement for the existing source-specific US-merchant orientation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-auth/reference/node-2026-09-16.md",
+  "raw_sha256": "13eeb68df627137a621092f033a9b2047de64e240ae4024e8c985f6342ce2422",
+  "status": "candidate_ready"
+}

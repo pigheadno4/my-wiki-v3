@@ -1,0 +1,57 @@
+{
+  "job_id": "auth-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Auth Server-side Connect Flow (Node.js)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-auth/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/braintree-auth/server-side/node-2026-09-16.md\"\ntags: [braintree, braintree-auth, oauth, nodejs, connected-merchants]\n---\n\n## Overview\n\nThis collected Node.js guide is a retrieval entry for the server-side start of a Braintree Auth Connect flow: building the merchant Connect URL and configuring its return, OAuth scope and state controls. It documents a closed-beta Braintree Auth snapshot, not generic payment-transaction authorization, current availability, or the complete behavior of the linked Connect, OAuth-flow, configuration, reference or multi-currency guides.\n\n## Key takeaways\n\n- Braintree Auth is described as closed beta. For both signup-capable and login-only integrations, the guide says the first Connect step is a `connect_url` built by the Braintree server SDK; clicking **Connect with Braintree** sends the merchant to that URL and starts OAuth.\n- The redirect URI is where the merchant returns when OAuth completes or when the merchant chooses to finish later, and every redirect URI must be allowlisted in OAuth configuration.\n- The example's `transaction:sale` and `customer:create` scopes allow the integration to create transactions and customers for the connected merchant. The guide says to request only scopes needed by the integration's API operations and routes read-only and complete scope selection to corresponding resource scopes and the OAuth Reference.\n- The guide treats `state` as a CSRF control: submit a non-guessable value, verify that the returned value matches, and escape its contents, typically with base64 or URL encoding, before the browser redirect. It says Braintree returns the submitted value with the access code.\n\n## Evidence boundaries and detail locators\n\n- Server-built Connect URL and Node.js construction example: `# Server-side Connect Flow`, lines 20-46.\n- Redirect URI return behavior and allowlisting: `## Redirect URI`, lines 49-51.\n- OAuth scope selection and multiple-scope format: `## Scope`, lines 52-56.\n- CSRF purpose, return matching and escaping conditions for `state`: `## State`, lines 59-61.\n- Optional landing-page behavior and existing-merchant-only login: `## Landing page` and `## Supporting login-only`, lines 62-67.\n- Signup country/currency effects, payment-method defaults and restrictions, and form pre-population route: `## Supporting signups`, lines 68-79. Exact parameter values and field inventories remain in the raw guide.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-auth]]\n- Related reference route: [[source-braintree-auth-reference-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/braintree-auth/configuration-2026-09-16|Braintree Auth configuration guide]] - unread navigation-only route for OAuth application setup and redirect allowlisting\n- [[raw/braintree/docs/guides/braintree-auth/connect-2026-09-16|Braintree Auth Connect guide]] - unread navigation-only route for the merchant connection experience\n- [[raw/braintree/docs/guides/braintree-auth/oauth-flow/node-2026-09-16|Braintree Auth Node.js OAuth-flow guide]] - unread navigation-only route for authorization, grant exchange and redirect handling\n- [[raw/braintree/docs/guides/braintree-auth/reference/node-2026-09-16|Braintree Auth Node.js reference]] - unread navigation-only route for downloadable-software handling and exact Connect options\n- [[raw/braintree/docs/guides/braintree-auth/multi-currency/node-2026-09-16|Braintree Auth Node.js multi-currency guide]] - unread navigation-only route for adding merchant presentment currencies\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-auth/server-side/node-2026-09-16|Braintree Auth Node.js server-side Connect flow]] - complete collected guide for Connect URL generation, redirects, OAuth scopes, state security and signup/login options\n",
+  "quotes": [
+    {
+      "text": "**AVAILABILITY**\nBraintree Auth is in closed beta. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest.",
+      "location": "# Server-side Connect Flow > AVAILABILITY, lines 17-18"
+    },
+    {
+      "text": "Regardless of whether you support new signups or allow only logins, the first step in the Connect integration is to set up theconnect_url. This URL is where the merchant will be sent after clicking the**Connect with Braintree**button, starting the OAuth flow. It is built by the Braintree server SDK.",
+      "location": "# Server-side Connect Flow, line 20"
+    },
+    {
+      "text": "The redirect URI is where the merchant is returned when the OAuth flow is complete or if they chose to finish later. All redirect URIs must be allowlisted as part of your OAuth[configuration](/braintree/docs/guides/braintree-auth/configuration).",
+      "location": "## Redirect URI, line 51"
+    },
+    {
+      "text": "The transaction:sale and customer:create scopes shown in the example allow your integration to create transactions and customers for the connected merchant.Request only the scopes required for the API operations your integration performs. For read-only access, request the corresponding resource scopes, such as transaction:find or customer:find.\n\nTo request multiple scopes, pass them as a comma-separated string. See the [OAuth Reference](https://developer.paypal.com/braintree/docs/guides/extend/oauth/reference/) for all supported scopes.",
+      "location": "## Scope, lines 54-56"
+    },
+    {
+      "text": "Thestateparameter is part of the OAuth 2.0 specification and used to prevent Cross Site Request Forgery (CSRF) attacks. Braintree will always return the submittedstateverbatim along with the access code when redirecting back to the[redirect URI](/braintree/docs/guides/braintree-auth/oauth-flow#redirect-and-authorization-grant). You can verify the authenticity of the request to the redirect URI by submitting a non-guessablestateparameter when initiating the Connect flow and ensuring the value returned matches the value submitted. You should ensure that the contents of thestateparameter are properly escaped (typically via base 64 or URL encoding) to prevent them from being altered by a merchant's browser when redirecting at the end of the OAuth flow.",
+      "location": "## State, line 61"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "auth-server-side-node-braintree-auth-route",
+        "target_path": "wiki/concepts/braintree-auth.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "append under `## Sources`",
+        "proposed_markdown": "- [[source-braintree-auth-server-side-node]] - closed-beta Node.js route for server-built merchant Connect URLs, allowlisted OAuth returns, least-privilege scopes, and non-guessable, matched and escaped `state` handling",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Braintree Auth distinct from generic transaction authorization and preserve this guide's connected-merchant OAuth and Node.js server-side scope.",
+          "Do not present the collected closed-beta statement as proof of current availability, account eligibility or live payment acceptance.",
+          "Retain all three `state` conditions together: non-guessable submission, returned-value matching and proper escaping; do not reduce the route to a generic CSRF mention.",
+          "Keep exact option values, signup field inventories and linked-guide behavior in raw rather than expanding the concept into a replacement specification."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-auth/server-side/node-2026-09-16.md",
+  "raw_sha256": "c971b773b3263a01f32a5647be03b26d07f5e46e4571bceea3d1aafe9b942c4a",
+  "status": "candidate_ready"
+}

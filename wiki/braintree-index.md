@@ -12,6 +12,19 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+#### Braintree Auth
+
+- [[source-braintree-auth-overview]] - closed-beta product purpose, connected-merchant roles and service/payment use-case routes
+- [[source-braintree-auth-connect]] - hosted merchant login/signup, OAuth consent, return redirect and Finish Later boundaries
+- [[source-braintree-auth-configuration]] - platform OAuth application, merchant-facing metadata, redirects and environment-specific credentials
+- [[source-braintree-auth-oauth-flow-node]] - Node authorization-code exchange, granted permissions, token lifetimes, refresh and revocation
+- [[source-braintree-auth-server-side-node]] - Node Connect URL generation, least-privilege scopes and secure state handling
+- [[source-braintree-auth-merchant-api-node]] - Node merchant-scoped gateway, transaction/customer examples and revoked-access errors
+- [[source-braintree-auth-multi-currency-node]] - Auth-signup merchant currency creation/listing, payment-method and Amex qualifications
+- [[source-braintree-auth-reference-node]] - Node signup/login controls, scope catalog inconsistency, merchant identity and credential safety
+- [[source-braintree-auth-webhooks-node]] - Node connected-merchant events, disputes, OAuth revocation and notification boundaries
+- [[source-braintree-auth-testing-go-live-node]] - Node sandbox/production testing, underwriting, credit-check and device-data prerequisites
+
 #### Marketplace
 
 - [[source-braintree-marketplace-article-overview]] - article-level product model, scope and eligibility qualifications
@@ -267,6 +280,8 @@ Operations history: [[braintree-log]]
 - [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger beginning at `5.3.0` (github-repo, 2026-08-27)
 
 ## Concepts
+
+- [[braintree-auth]] - provider-specific OAuth connection, merchant-scoped actions, configuration, testing and security routes
 
 - [[braintree-recurring-billing]] - Braintree-specific article, Node guide and API-reference routes with unresolved Marketplace compatibility
 - [[braintree-marketplace]] - provider-specific sub-merchant onboarding, transaction, funding and testing routes with unresolved recurring-billing conflict

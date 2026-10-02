@@ -1,0 +1,57 @@
+{
+  "job_id": "auth-webhooks-node",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Auth Webhooks Guide (Node.js)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-auth/webhooks/node\"\nraw_files:\n  - \"braintree/docs/guides/braintree-auth/webhooks/node-2026-09-16.md\"\ntags: [braintree, braintree-auth, node-js, webhooks, connected-merchants, oauth, beta]\n---\n\n## Overview\n\nThis collected Node.js guide documents webhook handling for new Braintree merchant accounts connected through Braintree Auth. It covers connected-merchant underwriting or application events, PayPal account link-status changes, disputes, and OAuth access revocation; it is distinct from generic transaction authorization and from the separate event-reference pages.\n\nThe page labels Braintree Auth closed beta. Its examples parse notifications with the Node server SDK, but the page does not name an SDK version, establish current eligibility, or give a separate sandbox-versus-production availability rule.\n\n## Key takeaways\n\n- A Braintree Auth integration that supports new Braintree account signups can subscribe to four documented connected-merchant event areas: underwriting status or application submission, PayPal account linking status, disputes, and OAuth access revocation. Integrations not already using webhooks are routed to the general webhooks guide for configuration, while the page separately routes readers to parsing guidance; this page does not define delivery timing, ordering, retries, duplicate handling, or endpoint authentication.\n- The underwriting table makes consequential distinctions. `approved` says settled funds will be disbursed to the merchant's bank account; `denied` says all settled transactions will be refunded; `application_submitted` permits up to 25 transactions or $2,500 while withholding disbursement until approval; and `inactive` can include a trial merchant that did not apply within 30 days after its first payment. Use the exact table for all five status definitions.\n- For PayPal account status, `link` means the connected merchant has connected a PayPal account and can accept PayPal payments. After `unlink`, the page says the merchant cannot accept PayPal payments until another PayPal account is linked. The guide reports these changes; it does not document how linking or unlinking is performed.\n- A connected merchant's transaction dispute can trigger the dispute webhook only after the integration requests the `oauth_app_receive_dispute_webhooks` scope. The linked scope and dispute-reference pages own their detailed authority.\n- The OAuth access-revoked section reports when the connected merchant has revoked account access. Its callback and Promise examples parse `bt_signature` and `bt_payload`; they do not revoke access themselves or prove delivery.\n\n> [!warning] Closed-beta, connected-merchant scope\n> Keep this guide limited to new merchant accounts connected through Braintree Auth. Its unqualified closed-beta notice and sandbox-configured examples do not establish current support, merchant eligibility, production enablement, or a sandbox-only rule. Do not broaden these notifications into generic transaction-authorization or general Braintree webhook behavior.\n\n## Detail locators\n\n- Closed-beta availability: `# Webhooks > AVAILABILITY`, lines 17-18.\n- Connected-merchant signup scope and the four webhook areas: `# Webhooks`, lines 22-30.\n- General configuration route and webhook POST parsing parameters: `## Before you get started`, lines 33-39.\n- Underwriting/application trigger, Node parsing examples, and five status definitions: `## Connected merchant underwriting status`, lines 42-96.\n- PayPal link-status trigger, Node parsing examples, and link/unlink effects: `## PayPal account status changed`, lines 99-140.\n- Connected-merchant dispute trigger, required OAuth scope, Node parsing examples, and dispute-reference route: `## Disputes`, lines 143-181.\n- Connected-merchant account-access revocation and Node parsing examples: `## OAuth access revoked`, lines 184-221.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n- Separate Braintree Auth event and payload reference: [[source-braintree-webhooks-braintree-auth-node]]\n- Separate OAuth access-revocation event reference: [[source-braintree-webhooks-oauth-node]]\n- Separate dispute event reference: [[source-braintree-webhooks-dispute-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/webhooks/overview-2026-09-16|Braintree general webhooks overview]] - navigation-only setup route linked by this guide; not read or used as factual evidence here\n- [[raw/braintree/docs/guides/webhooks/parse/node-2026-09-16|Braintree Node.js webhook parsing guide]] - navigation-only parsing route linked by this guide; not read or used as factual evidence here\n- [[raw/braintree/docs/guides/braintree-auth/server-side/node-2026-09-16|Braintree Auth Node.js server-side guide]] - navigation-only authority for the dispute-webhook OAuth scope; not read or used as factual evidence here\n- [[raw/braintree/docs/reference/general/webhooks/braintree-auth/node-2026-09-16|Braintree Auth webhook reference for Node.js]] - navigation-only event-reference route; not read or used as factual evidence here\n- [[raw/braintree/docs/reference/general/webhooks/oauth/node-2026-09-16|Braintree OAuth webhook reference for Node.js]] - navigation-only OAuth event-reference route; not read or used as factual evidence here\n- [[raw/braintree/docs/reference/general/webhooks/dispute/node-2026-09-16|Braintree dispute webhook reference for Node.js]] - navigation-only dispute-object and event-reference route; not read or used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-auth/webhooks/node-2026-09-16|Braintree Auth webhooks guide for Node.js]] - complete collected page covering closed-beta availability, connected-merchant notification scope, consequential underwriting and PayPal-link boundaries, the dispute-scope prerequisite, OAuth access revocation, and Node parsing examples\n",
+  "quotes": [
+    {
+      "text": "Braintree Auth is in closed beta. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest.",
+      "location": "# Webhooks > AVAILABILITY, lines 17-18"
+    },
+    {
+      "text": "Webhooks allow Braintree to push messages to your servers when you configure a webhook endpoint URL. If you support new Braintree account signups in your [Braintree Auth](/braintree/docs/guides/braintree-auth/overview) integration, you can subscribe to webhooks that alert you to important events happening with the connected merchant's account.\n\nWe currently provide four webhooks for new Braintree merchant accounts created via Braintree Auth:\n\n\n- [Connected merchant underwriting status](#connected-merchant-underwriting-status)\n- [PayPal account linking status](#paypal-account-status-changed)\n- [Disputes](#disputes)\n- [OAuth access revoked](#oauth-access-revoked)",
+      "location": "# Webhooks, lines 22-30"
+    },
+    {
+      "text": "The following status transitions trigger a webhook:\n\n| Status | Description |\n| --- | --- |\n| approved | A merchant has been approved for a Braintree account. All funds from settled transctions will be disbursed to the merchant's bank account. |\n| denied | A merchant has been denied. All settled transactions will be refunded. |\n| application_submitted | A merchant has submitted their application to Braintree. The merchant can now accept payments to a limit - 25 transactions or up to $2500. Funds will not be disbursed until the merchant is approved. |\n| under_review | A merchant application is being reviewed. |\n| inactive | A merchant decided to not move forward with the underwriting process. This also occurs if a trial merchant has not submitted an application within 30 days of processing their first payment. |",
+      "location": "## Connected merchant underwriting status, lines 88-96"
+    },
+    {
+      "text": "The following linking actions trigger a webhook:\n\n| Action | Description |\n| --- | --- |\n| link | A connected merchant has connected a PayPal account to their gateway and can accept PayPal payments. |\n| unlink | A connected merchant has disconnected the PayPal account from their gateway. They can no longer accept PayPal payments until they link another PayPal account to their gateway. |",
+      "location": "## PayPal account status changed, lines 135-140"
+    },
+    {
+      "text": "This webhook notifies you when a connected merchant receives a [dispute](/braintree/docs/guides/disputes/overview) on a transaction.\n\n\n**IMPORTANT**\nYou must request the oauth_app_receive_dispute_webhooks  [scope](/braintree/docs/guides/braintree-auth/server-side/node#scope) before you can receive these webhooks.",
+      "location": "## Disputes, lines 143-149"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "auth-webhooks-node-braintree-webhooks-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-auth-webhooks-node]] - closed-beta Node.js Braintree Auth guide for new connected-merchant account events: underwriting or application changes, PayPal link status, scope-gated disputes, and OAuth access revocation, with consequential status boundaries and exact parsing/detail routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Braintree Auth connected-merchant notifications distinct from generic transaction authorization and general Braintree webhook behavior.",
+          "Preserve the unqualified closed-beta notice, new-account scope, dispute OAuth-scope prerequisite, underwriting transaction/disbursement/refund boundaries, and PayPal unlink acceptance boundary.",
+          "Do not infer current availability, merchant eligibility, delivery timing, ordering, retries, duplicate handling, endpoint authentication, or sandbox-only availability from collection, examples, or navigation links.",
+          "The existing Braintree Auth event-reference source remains a separate authority; this guide adds workflow, consequential status, prerequisite, and parsing routes rather than replacing that reference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-auth/webhooks/node-2026-09-16.md",
+  "raw_sha256": "8027be9d7ecfcf862b309e83ae182efe4c1911f6c3ab5bf7e9162af9c2a9f2cb",
+  "status": "candidate_ready"
+}

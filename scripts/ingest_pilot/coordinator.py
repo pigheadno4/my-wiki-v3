@@ -1,6 +1,8 @@
 """One-process dry-run transitions for the minimum ingest pilot."""
 
 import json
+import re
+from difflib import unified_diff
 from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence, Union
@@ -316,6 +318,51 @@ def init_campaign(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> Dict[
     return _campaign_payload(root, str(campaign_id))
 
 
+def _normalize_navigation_lists(result: dict) -> tuple[dict, str]:
+    """Repair two unambiguous list typos, preserving evidence and code."""
+    normalized = deepcopy(result)
+    diffs = []
+
+    def repair(text: str, label: str) -> str:
+        lines = text.splitlines(keepends=True)
+        output = []
+        frontmatter = bool(lines and lines[0].strip() == "---")
+        fence = None
+        for number, line in enumerate(lines):
+            if frontmatter:
+                output.append(line)
+                if number and line.strip() == "---":
+                    frontmatter = False
+                continue
+            marker = re.match(r"^ {0,3}(`{3,}|~{3,})", line)
+            if marker:
+                token = marker.group(1)
+                if fence is None:
+                    fence = token
+                elif token[0] == fence[0] and len(token) >= len(fence):
+                    fence = None
+                output.append(line)
+                continue
+            safe_list = re.match(r"^(?:\+- |- )\[\[", line)
+            if fence is None and safe_list and not any(char in line for char in "`\"'"):
+                if line.startswith("+- [["):
+                    line = line[1:]
+                line = re.sub(r"\\n(?=- \[\[)", "\n", line)
+            output.append(line)
+        repaired = "".join(output)
+        if repaired != text:
+            diffs.extend(unified_diff(text.splitlines(True), repaired.splitlines(True),
+                                      fromfile=f"submitted/{label}", tofile=f"accepted/{label}"))
+        return repaired
+
+    normalized["source_page"] = repair(result["source_page"], "source_page")
+    for category, suggestions in normalized["suggestions"].items():
+        for suggestion in suggestions:
+            label = f"suggestions/{category}/{suggestion['update_id']}"
+            suggestion["proposed_markdown"] = repair(suggestion["proposed_markdown"], label)
+    return normalized, "".join(diffs)
+
+
 def _apply_worker_result(
     root: Path,
     campaign_id: str,
@@ -335,6 +382,7 @@ def _apply_worker_result(
     )
     try:
         validated = validate_worker_result(root, job, result)
+        validated, format_diff = _normalize_navigation_lists(validated)
     except ValidationError as error:
         exhausted = job["attempt"] >= max_attempts
         job["state"] = "rejected" if exhausted else "failed"
@@ -369,6 +417,10 @@ def _apply_worker_result(
             (attempt_dir, "candidate.md", validated["source_page"].encode("utf-8")),
             (attempt_dir, "receipt.json", _json_bytes(validated)),
             (attempt_dir, "suggestions.json", _json_bytes(validated["suggestions"])),
+            *([
+                (attempt_dir, "submitted-receipt.json", result_path.read_bytes()),
+                (attempt_dir, "format-repair.diff", format_diff.encode("utf-8")),
+            ] if format_diff else []),
         ],
     )
 

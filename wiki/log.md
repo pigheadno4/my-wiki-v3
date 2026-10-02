@@ -1,5 +1,15 @@
 # Wiki Log
 
+## [2026-10-02] maintenance | Website-ingest role and handoff simplification
+
+- Added the authoritative 955-word delegated worker/reviewer entry `rules/ingest-roles.md`; coordinator retains general/provider governance reading and supplies concise scope notes. Mandatory complete raw reads, independent first review, per-source approval and reciprocal evidence routes remain intact. Updated reading routers and runtime preflight to remove stale provider instructions and the wrong handoff filename.
+- Existing handoff accepts two narrow navigation-list formatting repairs before review, retaining submitted receipt and diff without another attempt. Code, quotes, metadata and raw remain untouched. Verified navigation labels need no separate quote for every label. No new scheduler, registry, reviewer layer or campaign was introduced.
+
+## [2026-10-02] ingest | Braintree Auth website C25
+
+- Ten core-guide sources were independently reviewed and added; fixed query audit passed 20/20. Braintree now catalogs 222 sources (205 website plus 17 GitHub). OAuth roles, permissions, testing and snapshot qualifications remain scoped to their evidence. Timing investigation: `tracking/ingest/braintree/braintree-campaign-25/retrospective.md`; details: [[braintree-log]], [[braintree-index]] and [[braintree-auth]]. No commit or push performed.
+
+
 ## [2026-10-02] ingest | Stripe iOS `26.12.1`
 
 - Approved full additive ingest with focused reading and three supplemental files: Pix polling/redirect cancellation caveat, consent evidence/reuse, incompatible STP polling signature and scoped Checkout email change. Older knowledge and retrospective annotations preserved. Details: [[stripe-log]], [[source-github-stripe-ios]], [[changelog-github-stripe-ios]]. No commit or push.

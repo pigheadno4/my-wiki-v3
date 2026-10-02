@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 212
+source_count: 222
 ---
 
 ## Overview
@@ -11,9 +11,23 @@ Braintree is represented in this wiki by seventeen independently tracked reposit
 
 ## Website Documentation
 
-One hundred ninety-five independently reviewed website sources complement the seventeen repository
+Two hundred five independently reviewed website sources complement the seventeen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+### Braintree Auth documentation
+
+- [[braintree-auth]] - provider-specific connection and authorization retrieval hub
+- [[source-braintree-auth-overview]] - closed-beta product purpose, connected-merchant roles and service/payment use-case routes
+- [[source-braintree-auth-connect]] - hosted merchant login/signup, OAuth consent, return redirect and Finish Later boundaries
+- [[source-braintree-auth-configuration]] - platform OAuth application, merchant-facing metadata, redirects and environment-specific credentials
+- [[source-braintree-auth-oauth-flow-node]] - Node authorization-code exchange, granted permissions, token lifetimes, refresh and revocation
+- [[source-braintree-auth-server-side-node]] - Node Connect URL generation, least-privilege scopes and secure state handling
+- [[source-braintree-auth-merchant-api-node]] - Node merchant-scoped gateway, transaction/customer examples and revoked-access errors
+- [[source-braintree-auth-multi-currency-node]] - Auth-signup merchant currency creation/listing, payment-method and Amex qualifications
+- [[source-braintree-auth-reference-node]] - Node signup/login controls, scope catalog inconsistency, merchant identity and credential safety
+- [[source-braintree-auth-webhooks-node]] - Node connected-merchant events, disputes, OAuth revocation and notification boundaries
+- [[source-braintree-auth-testing-go-live-node]] - Node sandbox/production testing, underwriting, credit-check and device-data prerequisites
 
 ### Marketplace documentation
 

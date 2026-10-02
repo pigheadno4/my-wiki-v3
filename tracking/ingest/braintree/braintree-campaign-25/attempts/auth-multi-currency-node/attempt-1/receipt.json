@@ -1,0 +1,77 @@
+{
+  "job_id": "auth-multi-currency-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Auth Multi-Currency (Node.js)\"\ntype: source\ndate_ingested: 2026-10-02\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/braintree-auth/multi-currency/node\"\nraw_files:\n  - \"braintree/docs/guides/braintree-auth/multi-currency/node-2026-09-16.md\"\ntags: [braintree, braintree-auth, multi-currency, merchant-accounts, node-js]\n---\n\n## Overview\n\nThis collected closed-beta Braintree Auth Node.js guide covers adding and listing presentment currencies for a connected merchant when the platform supports new Braintree signups. Currency addition is limited to merchants whose Braintree account was created through Braintree Auth; connecting an existing non-OAuth account to an OAuth application does not satisfy that condition. The page also preserves payment-method currency-support conditions and an Amex-specific outcome that is not fully reconciled with its general rule.\n\n## Key takeaways\n\n- After the OAuth flow yields a merchant access token, the guide routes the platform to the Merchant API to add a currency. Its callback and Promise examples use `gateway.merchantAccount.createForCurrency()`, while listing the merchant's existing currency support uses `gateway.merchantAccount.all()`; exact example details remain at the raw locators below.\n- Adding a currency is supported only for merchants who signed up through Braintree Auth. The guide says an attempt for a merchant who instead connects an existing non-OAuth Braintree account to an OAuth application produces a validation error.\n- The page generally says all payment methods accepted by the merchant must support the new currency. It states that if any accepted payment method does not, a validation error is returned and no new merchant account is created.\n\n> [!warning] Closed-beta and account scope\n> This 2026-09-16 snapshot marks Braintree Auth as closed beta. Its multi-currency route applies to connected merchants who signed up through Braintree Auth and does not establish current product availability, platform or merchant eligibility, account enablement, or support for a particular currency.\n\n> [!warning] Amex-specific qualification versus the general rule\n> The guide's general text requires every accepted payment method to support the new currency and says failure prevents creation of a new merchant account. Its Amex note separately says an unsupported Amex currency can succeed for other cards while not enabling Amex presentment, and that a later Amex transaction produces a transaction validation error. The snapshot does not reconcile those statements; preserve both and use the exact raw locators rather than generalizing either outcome.\n\n## Detail locators\n\n- Closed-beta availability, platform support for new signups and eligible merchant-account origin: `# Multi-Currency`, lines 17-22.\n- OAuth/access-token prerequisite and callback/Promise currency-add examples: `## Adding a currency`, lines 27-54.\n- Unsupported accepted-payment-method validation and merchant-account creation outcome: `## Adding a currency`, line 55.\n- Merchant-account listing example and displayed `currencyIsoCode`: `## Adding a currency > ### Node`, lines 56-66.\n- General all-payment-method currency-support condition and dedicated support references: `## Currency support`, lines 68-72.\n- Amex currency subset, other-card success qualification and later Amex transaction validation error: `## Currency support > **NOTE**`, lines 75-76.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-auth]]\n- Supporting concept: [[braintree-currencies]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/braintree-auth/oauth-flow/node-2026-09-16|Braintree Auth OAuth Flow (Node.js)]] - navigation-only route for obtaining the merchant access token; not used as factual evidence here\n- [[raw/braintree/docs/guides/braintree-auth/reference/node-2026-09-16|Braintree Auth Node.js reference]] - navigation-only route for merchant-account validation errors; not used as factual evidence here\n- [[raw/braintree/docs/reference/request/merchant-account/create-for-currency/node-2026-09-16|Merchant Account: Create For Currency (Node.js)]] - navigation-only dedicated operation route; not used as factual evidence here\n- [[raw/braintree/docs/reference/request/merchant-account/all/node-2026-09-16|Merchant Account: All (Node.js)]] - navigation-only dedicated listing route; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/braintree-auth/multi-currency/node-2026-09-16|Braintree Auth Multi-Currency (Node.js)]] - complete collected guide covering eligible connected merchants, access-token-based currency creation and listing, payment-method support conditions and the Amex qualification\n",
+  "quotes": [
+    {
+      "text": "Braintree Auth is in closed beta. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest.\n\nIf you support new Braintree signups through your platform, Braintree Auth allows you to add and list presentment currencies for a connected merchant.\n**IMPORTANT**\nAdding currencies is only supported for merchants who sign up through Braintree Auth. Attempting to add a currency for a merchant who did not sign up for their Braintree account via Braintree Auth (i.e. a merchant connecting an existing non-OAuth account to an OAuth application) will result in a [validation error](/braintree/docs/guides/braintree-auth/reference/node#merchant-account-validation-errors) .",
+      "location": "# Multi-Currency > **AVAILABILITY** and **IMPORTANT**, lines 18-22"
+    },
+    {
+      "text": "Once you have completed the[OAuth Flow](/braintree/docs/guides/braintree-auth/oauth-flow)and received anaccess_tokenfor a merchant, you can use the merchant API to add a currency:",
+      "location": "## Adding a currency, line 27"
+    },
+    {
+      "text": "If any of the merchant'spayment_methods do not accept the providedcurrency, a[validation error](/braintree/docs/guides/braintree-auth/reference/node#merchant-account-validation-errors)is returned and a new merchant account will not be created. For more information see[currency support](#currency-support). You can view the supported currencies for a merchant by inspecting their merchant accounts:",
+      "location": "## Adding a currency, line 55"
+    },
+    {
+      "text": "To add a currency for a merchant through [Merchant Account: Create For Currency] (/braintree/docs/reference/request/merchant-account/create-for-currency), all of the payment methods the merchant accepts must support the new currency. For details on which currencies are supported for each payment method, see the following references:",
+      "location": "## Currency support, line 70"
+    },
+    {
+      "text": "American Express presentment is currently limited to a small subset of currencies (GBP, EUR, SEK, USD); attempts to add an unsupported currency for Amex will succeed for other cards but not allow Amex presentment. Running an Amex transaction against these merchant accounts will result in a [transaction validation error](/braintree/docs/reference/general/validation-errors/all#transaction) .",
+      "location": "## Currency support > **NOTE**, line 76"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "auth-multi-currency-node-braintree-auth-route",
+        "target_path": "wiki/concepts/braintree-auth.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-auth-multi-currency-node]] - closed-beta Node.js route for adding and listing presentment currencies for connected merchants who signed up through Braintree Auth, with access-token, payment-method support and Amex-specific qualifications",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Braintree Auth distinct from generic payment-transaction authorization and ordinary merchant-owned credentials.",
+          "Preserve the closed-beta, new-signup platform and Braintree-Auth-created merchant-account conditions.",
+          "Do not infer current product availability, platform or merchant eligibility, account enablement, or support for a particular currency.",
+          "Keep the Amex-specific other-card success and later validation-error statement visible beside the page's unreconciled general all-payment-method rule."
+        ]
+      },
+      {
+        "update_id": "auth-multi-currency-node-braintree-currencies-route",
+        "target_path": "wiki/concepts/braintree-currencies.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-auth-multi-currency-node]] - connected-merchant presentment-currency creation and listing route limited to Braintree Auth signups, with all-payment-method support conditions and a preserved Amex-specific qualification",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize this Braintree Auth route to merchants who connect existing non-OAuth Braintree accounts.",
+          "Treat currency creation and account listing as separate actions and leave exact Node.js example details in the source raw.",
+          "Preserve the internal tension between the general no-new-account outcome and the Amex-specific other-card success outcome.",
+          "Do not treat the four named Amex currencies as a complete or currently verified provider-wide currency catalog."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/braintree-auth/multi-currency/node-2026-09-16.md",
+  "raw_sha256": "9b11eca34743ff2f07beea0e4cfe50874645b8dbcf166ffd036d93ea631290ec",
+  "status": "candidate_ready"
+}

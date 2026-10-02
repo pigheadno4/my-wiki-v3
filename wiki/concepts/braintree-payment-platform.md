@@ -25,5 +25,7 @@ PayPal transactions follow a separate collected funding route: by default PayPal
 
 ## Sources
 
+- [[source-braintree-auth-reference-node]] - closed-beta Braintree Auth reference route for merchant signup/login controls, OAuth scopes, redirect-returned merchant identity, and downloadable-software credential and state-handling boundaries
+
 - [[source-braintree-get-started-explore]] - collected navigation map with brief orientations for fraud tools, PCI compliance, Control Panel administration, recurring billing, chargebacks and retrievals, PayPal, reporting, and risk/security
 - [[source-braintree-get-started-overview]] - business-bank-account, merchant-account and payment-gateway roles; Braintree Direct, Extend and Auth orientations; Control Panel/API interaction channels; and the partner-application route

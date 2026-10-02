@@ -23,6 +23,7 @@ The dedicated Node.js parsing guide documents parsing the `bt_signature` paramet
 - [[source-braintree-control-panel-transaction-issues]] — optional webhook delivery alongside email for transaction issue notifications, with linked preparation/setup routes and recipient-scope boundaries but no payload, delivery, retry, or investigation semantics
 
 - [[source-braintree-webhooks-braintree-auth-node]] - Closed-beta Node.js Braintree Auth notifications for connected-merchant underwriting/application and PayPal link-status events, with connected-merchant and OAuth-application payload routes
+- [[source-braintree-auth-webhooks-node]] - closed-beta Node.js Braintree Auth guide for new connected-merchant account events: underwriting or application changes, PayPal link status, scope-gated disputes, and OAuth access revocation, with consequential status boundaries and exact parsing/detail routes
 
 - [[source-braintree-webhooks-test-node]] - Node.js `check` test notification triggered in the Control Panel, with only notification kind and UTC trigger time documented and no business-object payload established
 

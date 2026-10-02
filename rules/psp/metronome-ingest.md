@@ -1,5 +1,11 @@
 # Metronome retrieval-oriented ingest contract
 
+Coordinator reference: delegated website workers/reviewers read the canonical
+`rules/ingest-roles.md` entry, trusted order and short provider/scope notes under
+the CLAUDE.md reading exception. Its role instructions supersede duplicated
+worker/reviewer descriptions below. Coordinator retains full governance and
+provider reading; initial complete raw reads and independent review are unchanged.
+
 This is the direct, consolidated entry for future exact-manifest-approved
 Metronome campaigns that explicitly adopt it. It consolidates the C37–C39
 retrieval workflow; it is not retrospective authorization for another campaign.
