@@ -1,0 +1,1578 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index 2af34db..b8763f6 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,15 @@
+ # Changelog
+ 
++## 11.2.0
++
++### Minor Changes
++
++- 5f61e1d: Updates the v6 script loader with the following changes:
++  - Adds retry logic so transient script load failures (network blips, CDN hiccups) are retried instead of immediately rejecting.
++  - Retries up to MAX_SCRIPT_LOAD_RETRIES (5) times with exponential backoff + jitter (RETRY_BASE_DELAY_MS 50ms, capped at RETRY_MAX_DELAY_MS 400ms), and adds a SCRIPT_LOAD_TIMEOUT_MS (10s) timeout so a hung script load also triggers a retry rather than waiting indefinitely.
++  - Each retry busts the cache via a paypal-sdk-retry query param so the browser doesn't just re-serve a failed response from cache.
++  - Concurrent calls to loadCoreSdkScript for the same namespace now share a single in-flight retry chain (inFlightScriptLoads map) instead of each independently creating duplicate script elements and retry loops.
++
+ ## 11.1.1
+ 
+ ### Patch Changes
+diff --git a/packages/paypal-js/e2e-tests/mocks.ts b/packages/paypal-js/e2e-tests/mocks.ts
+index 47a06c7..fbeac64 100644
+--- a/packages/paypal-js/e2e-tests/mocks.ts
++++ b/packages/paypal-js/e2e-tests/mocks.ts
+@@ -19,6 +19,15 @@ export function successfulSDKResponseMock() {
+     `.trim();
+ }
+ 
++export function successfulV6SDKResponseMock() {
++  return `
++    window.paypal = {
++        version: "6.0.0",
++        createInstance: () => Promise.resolve({}),
++    };
++    `.trim();
++}
++
+ export function validationErrorSDKResponseMock() {
+   return `
+     throw new Error("SDK Validation error: 'Expected client-id to be passed'" );
+diff --git a/packages/paypal-js/e2e-tests/v6/load-cached-script.html b/packages/paypal-js/e2e-tests/v6/load-cached-script.html
+new file mode 100644
+index 0000000..09ea4c6
+--- /dev/null
++++ b/packages/paypal-js/e2e-tests/v6/load-cached-script.html
+@@ -0,0 +1,56 @@
++<!doctype html>
++<html>
++  <head>
++    <meta charset="UTF-8" />
++    <title>Load Cached Script V6 | PayPal JS</title>
++  </head>
++  <body>
++    <h1>Load Cached Script V6</h1>
++
++    <script type="module">
++      import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
++
++      const options = {
++        environment: "sandbox",
++      };
++
++      let callCount = 0;
++      let requestCount = 0;
++
++      // count actual <script> insertions separately from loadCoreSdkScript()
++      // calls, since a cache hit resolves without inserting a new script
++      new MutationObserver((mutations) => {
++        for (const mutation of mutations) {
++          for (const node of mutation.addedNodes) {
++            if (
++              node instanceof HTMLScriptElement &&
++              node.src.includes("/web-sdk/v6/core")
++            ) {
++              requestCount++;
++              document.querySelector("#request-count").textContent =
++                requestCount;
++            }
++          }
++        }
++      }).observe(document.head, { childList: true });
++
++      function load() {
++        callCount++;
++        document.querySelector("#call-count").textContent = callCount;
++        loadCoreSdkScript(options);
++      }
++
++      // initial load
++      load();
++
++      document.querySelector("#btn-reload").addEventListener("click", () => {
++        // this should not reload the script since a v6 window.paypal namespace already exists
++        load();
++      });
++    </script>
++
++    <button id="btn-reload" type="button">Reload Script</button>
++    <p>loadCoreSdkScript() called <span id="call-count">0</span> time(s)</p>
++    <p>Network request made <span id="request-count">0</span> time(s)</p>
++  </body>
++</html>
+diff --git a/packages/paypal-js/e2e-tests/v6/load-cached-script.test.ts b/packages/paypal-js/e2e-tests/v6/load-cached-script.test.ts
+new file mode 100644
+index 0000000..c278f12
+--- /dev/null
++++ b/packages/paypal-js/e2e-tests/v6/load-cached-script.test.ts
+@@ -0,0 +1,33 @@
++import { test, expect } from "@playwright/test";
++import { successfulV6SDKResponseMock } from "../mocks";
++
++test("Load cached script (v6)", async ({ page }) => {
++  page.route("https://www.sandbox.paypal.com/web-sdk/v6/core**", (route) =>
++    route.fulfill({
++      status: 200,
++      body: successfulV6SDKResponseMock(),
++    }),
++  );
++
++  let sdkRequestCounter = 0;
++  await page.on("request", (request) => {
++    if (
++      request.url().startsWith("https://www.sandbox.paypal.com/web-sdk/v6/core")
++    ) {
++      sdkRequestCounter++;
++    }
++  });
++
++  await page.goto("/e2e-tests/v6/load-cached-script.html");
++  await expect(page).toHaveTitle("Load Cached Script V6 | PayPal JS");
++
++  // should not reload the script when the loadCoreSdkScript options have not changed
++  expect(sdkRequestCounter).toEqual(1);
++
++  await page.locator("#btn-reload").click();
++
++  // wait 1 second
++  await new Promise((resolve) => setTimeout(resolve, 1000));
++
++  expect(sdkRequestCounter).toEqual(1);
++});
+diff --git a/packages/paypal-js/e2e-tests/v6/retry-exhausted-script.html b/packages/paypal-js/e2e-tests/v6/retry-exhausted-script.html
+new file mode 100644
+index 0000000..77d8019
+--- /dev/null
++++ b/packages/paypal-js/e2e-tests/v6/retry-exhausted-script.html
+@@ -0,0 +1,25 @@
++<!doctype html>
++<html>
++  <head>
++    <meta charset="UTF-8" />
++    <title>Retry Exhausted Script V6 | PayPal JS</title>
++  </head>
++  <body>
++    <h1>Retry Exhausted Script V6</h1>
++
++    <div id="result"></div>
++    <p id="error-message"></p>
++
++    <script type="module">
++      import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
++
++      loadCoreSdkScript({ environment: "sandbox" })
++        .then(() => {
++          document.querySelector("#result").textContent = "loaded";
++        })
++        .catch((err) => {
++          document.querySelector("#error-message").textContent = err;
++        });
++    </script>
++  </body>
++</html>
+diff --git a/packages/paypal-js/e2e-tests/v6/retry-exhausted-script.test.ts b/packages/paypal-js/e2e-tests/v6/retry-exhausted-script.test.ts
+new file mode 100644
+index 0000000..f401936
+--- /dev/null
++++ b/packages/paypal-js/e2e-tests/v6/retry-exhausted-script.test.ts
+@@ -0,0 +1,45 @@
++import { test, expect } from "@playwright/test";
++import { MAX_SCRIPT_LOAD_ERROR_RETRIES } from "../../src/v6/constants";
++
++test("Reject with a descriptive error after exhausting retries (v6)", async ({
++  page,
++}) => {
++  let requestCount = 0;
++
++  await page.route(
++    "https://www.sandbox.paypal.com/web-sdk/v6/core**",
++    (route) => {
++      requestCount++;
++
++      // every attempt fails, forcing the loader to exhaust all its retries
++      return route.fulfill({
++        status: 500,
++        body: "Internal Server Error",
++      });
++    },
++  );
++
++  await page.goto("/e2e-tests/v6/retry-exhausted-script.html");
++  await expect(page).toHaveTitle("Retry Exhausted Script V6 | PayPal JS");
++
++  await page.waitForFunction(
++    'document.querySelector("#error-message").textContent.length > 0',
++  );
++
++  const totalAttempts = MAX_SCRIPT_LOAD_ERROR_RETRIES + 1;
++  const errorMessage = await page.locator("#error-message").innerText();
++
++  expect(errorMessage).toMatch(
++    new RegExp(
++      `^Error: The script "https://www\\.sandbox\\.paypal\\.com/web-sdk/v6/core" failed to load after ${totalAttempts} attempt\\(s\\) totaling \\d+ms\\. Check the HTTP status code and response body in DevTools to learn more\\.$`,
++    ),
++  );
++
++  expect(requestCount).toEqual(totalAttempts);
++
++  // no leftover script elements should remain registered as pending
++  const pendingScripts = page.locator(
++    'script[src*="/web-sdk/v6/core"][data-loading-state="pending"]',
++  );
++  await expect(pendingScripts).toHaveCount(0);
++});
+diff --git a/packages/paypal-js/e2e-tests/v6/retry-script.html b/packages/paypal-js/e2e-tests/v6/retry-script.html
+new file mode 100644
+index 0000000..03175f6
+--- /dev/null
++++ b/packages/paypal-js/e2e-tests/v6/retry-script.html
+@@ -0,0 +1,20 @@
++<!doctype html>
++<html>
++  <head>
++    <meta charset="UTF-8" />
++    <title>Retry Script V6 | PayPal JS</title>
++  </head>
++  <body>
++    <h1>Retry Script V6</h1>
++
++    <div id="result"></div>
++
++    <script type="module">
++      import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
++
++      loadCoreSdkScript({ environment: "sandbox" }).then(() => {
++        document.querySelector("#result").textContent = "loaded";
++      });
++    </script>
++  </body>
++</html>
+diff --git a/packages/paypal-js/e2e-tests/v6/retry-script.test.ts b/packages/paypal-js/e2e-tests/v6/retry-script.test.ts
+new file mode 100644
+index 0000000..b79dae3
+--- /dev/null
++++ b/packages/paypal-js/e2e-tests/v6/retry-script.test.ts
+@@ -0,0 +1,38 @@
++import { test, expect } from "@playwright/test";
++import { successfulV6SDKResponseMock } from "../mocks";
++
++test("Retry script (v6)", async ({ page }) => {
++  let requestCount = 0;
++  const retryParamValues: (string | null)[] = [];
++
++  await page.route(
++    "https://www.sandbox.paypal.com/web-sdk/v6/core**",
++    (route) => {
++      requestCount++;
++
++      const requestUrl = new URL(route.request().url());
++      retryParamValues.push(requestUrl.searchParams.get("paypal-sdk-retry"));
++
++      // fail the first two attempts, succeed on the third
++      if (requestCount < 3) {
++        return route.fulfill({
++          status: 500,
++          body: "Internal Server Error",
++        });
++      }
++
++      return route.fulfill({
++        status: 200,
++        body: successfulV6SDKResponseMock(),
++      });
++    },
++  );
++
++  await page.goto("/e2e-tests/v6/retry-script.html");
++  await expect(page).toHaveTitle("Retry Script V6 | PayPal JS");
++
++  await expect(page.locator("#result")).toHaveText("loaded");
++
++  expect(requestCount).toEqual(3);
++  expect(retryParamValues).toEqual([null, "1", "2"]);
++});
+diff --git a/packages/paypal-js/e2e-tests/v6/timeout-script.html b/packages/paypal-js/e2e-tests/v6/timeout-script.html
+new file mode 100644
+index 0000000..9b77603
+--- /dev/null
++++ b/packages/paypal-js/e2e-tests/v6/timeout-script.html
+@@ -0,0 +1,20 @@
++<!doctype html>
++<html>
++  <head>
++    <meta charset="UTF-8" />
++    <title>Timeout Script V6 | PayPal JS</title>
++  </head>
++  <body>
++    <h1>Timeout Script V6</h1>
++
++    <div id="result"></div>
++
++    <script type="module">
++      import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
++
++      loadCoreSdkScript({ environment: "sandbox" }).then(() => {
++        document.querySelector("#result").textContent = "loaded";
++      });
++    </script>
++  </body>
++</html>
+diff --git a/packages/paypal-js/e2e-tests/v6/timeout-script.test.ts b/packages/paypal-js/e2e-tests/v6/timeout-script.test.ts
+new file mode 100644
+index 0000000..a723d5f
+--- /dev/null
++++ b/packages/paypal-js/e2e-tests/v6/timeout-script.test.ts
+@@ -0,0 +1,80 @@
++import { test, expect } from "@playwright/test";
++import { successfulV6SDKResponseMock } from "../mocks";
++import { SCRIPT_LOAD_TIMEOUT_MS } from "../../src/v6/constants";
++
++// How long after the timed-out first request is abandoned that its delayed
++// response is finally delivered by the mocked route.
++const ABANDONED_RESPONSE_DELAY_MS = SCRIPT_LOAD_TIMEOUT_MS + 5_000;
++
++test("Retry script after a load timeout (v6)", async ({ page }) => {
++  test.setTimeout(
++    SCRIPT_LOAD_TIMEOUT_MS + ABANDONED_RESPONSE_DELAY_MS + 15_000,
++  );
++
++  let requestCount = 0;
++  const retryParamValues: (string | null)[] = [];
++
++  await page.route(
++    "https://www.sandbox.paypal.com/web-sdk/v6/core**",
++    (route) => {
++      requestCount++;
++
++      const requestUrl = new URL(route.request().url());
++      retryParamValues.push(requestUrl.searchParams.get("paypal-sdk-retry"));
++
++      // delay the first script response by more than SCRIPT_LOAD_TIMEOUT_MS
++      // to trigger a retry, then let it resolve after the retry has already
++      // succeeded to confirm the abandoned response is never acted upon
++      if (requestCount === 1) {
++        return setTimeout(() => {
++          route.fulfill({
++            status: 200,
++            body: successfulV6SDKResponseMock(),
++          });
++        }, ABANDONED_RESPONSE_DELAY_MS);
++      }
++
++      return route.fulfill({
++        status: 200,
++        body: successfulV6SDKResponseMock(),
++      });
++    },
++  );
++
++  await page.goto("/e2e-tests/v6/timeout-script.html");
++  await expect(page).toHaveTitle("Timeout Script V6 | PayPal JS");
++
++  await expect(page.locator("#result")).toHaveText("loaded", {
++    timeout: SCRIPT_LOAD_TIMEOUT_MS + 10_000,
++  });
++
++  expect(requestCount).toEqual(2);
++  expect(retryParamValues).toEqual([null, "1"]);
++
++  // The timed-out script element is removed from the DOM as soon as the
++  // retry is scheduled, well before its response arrives.
++  const scriptLocator = page.locator(
++    'script[src*="/web-sdk/v6/core"]:not([data-loading-state="resolved"])',
++  );
++  await expect(scriptLocator).toHaveCount(0);
++
++  // Note: a browser has no way to cancel a <script src> request once it has
++  // been sent, so the abandoned first request's body still gets evaluated
++  // whenever it eventually arrives - this is a platform limitation, not
++  // something the loader can prevent. What the loader *can* guarantee is
++  // that it never acts on that stale response: no extra request is fired,
++  // no second script element is left registered as "resolved", and the
++  // already-settled result is never disturbed. Wait past the point where
++  // the abandoned response is delivered and assert on exactly that.
++  await page.waitForTimeout(
++    ABANDONED_RESPONSE_DELAY_MS - SCRIPT_LOAD_TIMEOUT_MS + 2_000,
++  );
++
++  expect(requestCount).toEqual(2);
++  await expect(page.locator("#result")).toHaveText("loaded");
++
++  const resolvedScripts = page.locator(
++    'script[src*="/web-sdk/v6/core"][data-loading-state="resolved"]',
++  );
++  await expect(resolvedScripts).toHaveCount(1);
++});
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index 88e894b..3377d5c 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/paypal-js",
+-  "version": "11.1.1",
++  "version": "11.2.0",
+   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+   "main": "index.js",
+   "module": "dist/esm/paypal-js.js",
+diff --git a/packages/paypal-js/src/v6/constants.ts b/packages/paypal-js/src/v6/constants.ts
+new file mode 100644
+index 0000000..e5ec185
+--- /dev/null
++++ b/packages/paypal-js/src/v6/constants.ts
+@@ -0,0 +1,15 @@
++export const SCRIPT_LOADING_STATE = {
++  PENDING: "pending",
++  RESOLVED: "resolved",
++  REJECTED: "rejected",
++} as const;
++
++export const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
++
++export const MAX_SCRIPT_LOAD_ERROR_RETRIES = 2;
++export const MAX_SCRIPT_LOAD_TIMEOUT_RETRIES = 1;
++export const SCRIPT_LOAD_TIMEOUT_MS = 15_000;
++// Small base/cap so a full retry cycle adds at most a couple of seconds
++// of latency on top of a script that's already failing to load.
++export const RETRY_BASE_DELAY_MS = 50;
++export const RETRY_MAX_DELAY_MS = 400;
+diff --git a/packages/paypal-js/src/v6/dom.test.ts b/packages/paypal-js/src/v6/dom.test.ts
+new file mode 100644
+index 0000000..3c57411
+--- /dev/null
++++ b/packages/paypal-js/src/v6/dom.test.ts
+@@ -0,0 +1,82 @@
++import { beforeEach, describe, expect, test, vi } from "vitest";
++
++import { createScriptElement, getPayPalWindowNamespace } from "./dom";
++
++describe("getPayPalWindowNamespace()", () => {
++  beforeEach(() => {
++    vi.unstubAllGlobals();
++  });
++
++  test("should return undefined when the namespace is not set on window", () => {
++    expect(getPayPalWindowNamespace("paypal")).toBeUndefined();
++  });
++
++  test("should return the value at window[namespace]", () => {
++    const reference = { version: "6" };
++    vi.stubGlobal("paypal", reference);
++    expect(getPayPalWindowNamespace("paypal")).toBe(reference);
++  });
++
++  test("should support custom namespaces", () => {
++    const reference = { version: "6" };
++    vi.stubGlobal("myCustomNamespace", reference);
++    expect(getPayPalWindowNamespace("myCustomNamespace")).toBe(reference);
++  });
++});
++
++describe("createScriptElement()", () => {
++  beforeEach(() => {
++    document.head.innerHTML = "";
++  });
++
++  test("should create a script element with the given src", () => {
++    const scriptElement = createScriptElement({
++      url: "https://www.sandbox.paypal.com/web-sdk/v6/core",
++      attributes: {},
++    });
++
++    expect(scriptElement.tagName).toBe("SCRIPT");
++    expect(scriptElement.src).toBe(
++      "https://www.sandbox.paypal.com/web-sdk/v6/core",
++    );
++  });
++
++  test("should append the script element to document.head", () => {
++    const scriptElement = createScriptElement({
++      url: "https://www.sandbox.paypal.com/web-sdk/v6/core",
++      attributes: {},
++    });
++
++    expect(document.head.contains(scriptElement)).toBe(true);
++  });
++
++  test("should set the provided attributes on the script element", () => {
++    const scriptElement = createScriptElement({
++      url: "https://www.sandbox.paypal.com/web-sdk/v6/core",
++      attributes: {
++        "data-namespace": "myCustomNamespace",
++        "data-loading-state": "pending",
++      },
++    });
++
++    expect(scriptElement.getAttribute("data-namespace")).toBe(
++      "myCustomNamespace",
++    );
++    expect(scriptElement.getAttribute("data-loading-state")).toBe("pending");
++  });
++
++  test("should skip attributes with an undefined value", () => {
++    const scriptElement = createScriptElement({
++      url: "https://www.sandbox.paypal.com/web-sdk/v6/core",
++      attributes: {
++        "data-namespace": undefined,
++        "data-sdk-integration-source": undefined,
++      },
++    });
++
++    expect(scriptElement.hasAttribute("data-namespace")).toBe(false);
++    expect(scriptElement.hasAttribute("data-sdk-integration-source")).toBe(
++      false,
++    );
++  });
++});
+diff --git a/packages/paypal-js/src/v6/dom.ts b/packages/paypal-js/src/v6/dom.ts
+new file mode 100644
+index 0000000..6658064
+--- /dev/null
++++ b/packages/paypal-js/src/v6/dom.ts
+@@ -0,0 +1,28 @@
++import type { PayPalV6Namespace } from "../../types/v6/index";
++
++export function getPayPalWindowNamespace(
++  namespace: string,
++): PayPalV6Namespace | undefined {
++  // eslint-disable-next-line @typescript-eslint/no-explicit-any
++  return (window as any)[namespace];
++}
++
++export function createScriptElement({
++  url,
++  attributes,
++}: {
++  url: string;
++  attributes: Record<string, string | undefined>;
++}) {
++  const newScript = document.createElement("script");
++  newScript.src = url;
++
++  for (const [key, value] of Object.entries(attributes)) {
++    if (value !== undefined) {
++      newScript.setAttribute(key, value);
++    }
++  }
++
++  document.head.appendChild(newScript);
++  return newScript;
++}
+diff --git a/packages/paypal-js/src/v6/index.test.ts b/packages/paypal-js/src/v6/index.test.ts
+index 8222227..57c95b3 100644
+--- a/packages/paypal-js/src/v6/index.test.ts
++++ b/packages/paypal-js/src/v6/index.test.ts
+@@ -95,92 +95,55 @@ describe("loadCoreSdkScript()", () => {
+     expect(window.paypal).toBeDefined();
+   });
+ 
+-  test("should return reference to existing script when loading state is pending", async () => {
+-    document.head.innerHTML = `<script src="https://www.sandbox.paypal.com/web-sdk/v6/core" data-loading-state="pending"></script>`;
+-    const loadCoreSdkScriptReference = loadCoreSdkScript({
+-      environment: "sandbox",
+-    });
+-
+-    process.nextTick(() => {
+-      vi.stubGlobal("paypal", { version: "6" });
+-      document
+-        .querySelector('script[src*="/web-sdk/v6/core"]')!
+-        .dispatchEvent(new Event("load"));
++  test("should share a single retry chain across concurrent calls instead of inserting duplicate scripts on failure", async () => {
++    let appendCount = 0;
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
++      appendCount++;
++      if (appendCount === 1) {
++        process.nextTick(() => node.dispatchEvent(new Event("error")));
++      } else if (node instanceof HTMLScriptElement) {
++        vi.stubGlobal("paypal", { version: "6" });
++        process.nextTick(() => node.dispatchEvent(new Event("load")));
++      }
++      return node;
+     });
+ 
+-    const result = await loadCoreSdkScriptReference;
++    const [result1, result2] = await Promise.all([
++      loadCoreSdkScript({ environment: "sandbox" }),
++      loadCoreSdkScript({ environment: "sandbox" }),
++    ]);
+ 
+-    // should NOT insert the script since it already exists in the DOM in pending state
+-    expect(scriptAppendChildSpy).toHaveBeenCalledTimes(0);
+-    expect(
+-      document
+-        .querySelector('script[src*="/web-sdk/v6/core"]')!
+-        .getAttribute("data-loading-state"),
+-    ).toBe("resolved");
+-    expect(result).toBeDefined();
++    // one failed attempt + one successful retry, shared by both callers
++    expect(appendCount).toBe(2);
++    expect(result1).toBe(result2);
+     expect(window.paypal).toBeDefined();
+   });
+ 
+-  test("should reject when the script fails to load", async () => {
+-    vi.spyOn(document.head, "appendChild").mockImplementationOnce((node) => {
++  test("should allow a fresh load attempt after retries are exhausted", async () => {
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
+       process.nextTick(() => node.dispatchEvent(new Event("error")));
+       return node;
+     });
+ 
+-    await expect(async () => {
+-      await loadCoreSdkScript({ environment: "sandbox" });
+-    }).rejects.toThrow(
+-      'The script "https://www.sandbox.paypal.com/web-sdk/v6/core" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
+-    );
+-  });
+-
+-  test("should error due to unvalid input", async () => {
+-    await expect(async () => {
+-      // @ts-expect-error invalid arguments
+-      await loadCoreSdkScript(123);
+-    }).rejects.toThrow("Expected an options object");
+-
+-    await expect(async () => {
+-      // @ts-expect-error invalid arguments
+-      await loadCoreSdkScript({ environment: "bad_value" });
+-    }).rejects.toThrow(
+-      'The "environment" option is required and must be either "production" or "sandbox"',
+-    );
+-  });
+-
+-  test("should error when environment is omitted", async () => {
+-    await expect(async () => {
+-      // @ts-expect-error invalid arguments
+-      await loadCoreSdkScript({});
+-    }).rejects.toThrow(
+-      'The "environment" option is required and must be either "production" or "sandbox"',
+-    );
+-  });
++    await expect(
++      loadCoreSdkScript({ environment: "sandbox" }),
++    ).rejects.toThrow();
+ 
+-  test("should error when environment is explicitly undefined", async () => {
+-    await expect(async () => {
+-      // @ts-expect-error invalid arguments
+-      await loadCoreSdkScript({ environment: undefined });
+-    }).rejects.toThrow(
+-      'The "environment" option is required and must be either "production" or "sandbox"',
+-    );
+-  });
++    // a subsequent call must not reuse the exhausted/rejected retry chain
++    const appendChildSpy = vi
++      .spyOn(document.head, "appendChild")
++      .mockImplementation((node) => {
++        if (node instanceof HTMLScriptElement) {
++          vi.stubGlobal("paypal", { version: "6" });
++          process.nextTick(() => node.dispatchEvent(new Event("load")));
++        }
++        return node;
++      });
++    appendChildSpy.mockClear();
+ 
+-  test("should ignore a prototype-polluted environment and reject", async () => {
+-    // Simulate prototype pollution: without an own-property guard, the polluted
+-    // value would pass validation and silently load the sandbox SDK.
+-    (Object.prototype as Record<string, unknown>)["environment"] = "sandbox";
+-    try {
+-      await expect(async () => {
+-        // @ts-expect-error invalid arguments
+-        await loadCoreSdkScript({});
+-      }).rejects.toThrow(
+-        'The "environment" option is required and must be either "production" or "sandbox"',
+-      );
+-      expect(scriptAppendChildSpy).not.toHaveBeenCalled();
+-    } finally {
+-      delete (Object.prototype as Record<string, unknown>)["environment"];
+-    }
++    const result = await loadCoreSdkScript({ environment: "sandbox" });
++    expect(appendChildSpy).toHaveBeenCalledTimes(1);
++    expect(result).toBeDefined();
+   });
+ 
+   test("should ignore a prototype-polluted dataNamespace and use the default", async () => {
+@@ -223,25 +186,6 @@ describe("loadCoreSdkScript()", () => {
+       expect(result).toBeDefined();
+       expect(customNamespace in window).toBe(true);
+     });
+-
+-    test("should error when dataNamespace is an empty string", async () => {
+-      await expect(async () => {
+-        await loadCoreSdkScript({ environment: "sandbox", dataNamespace: "" });
+-      }).rejects.toThrow(
+-        'The "dataNamespace" option cannot be an empty string',
+-      );
+-    });
+-
+-    test("should error when dataNamespace is only whitespace", async () => {
+-      await expect(async () => {
+-        await loadCoreSdkScript({
+-          environment: "sandbox",
+-          dataNamespace: "   ",
+-        });
+-      }).rejects.toThrow(
+-        'The "dataNamespace" option cannot be an empty string',
+-      );
+-    });
+   });
+ 
+   describe("dataSdkIntegrationSource option", () => {
+@@ -266,27 +210,5 @@ describe("loadCoreSdkScript()", () => {
+       expect(result).toBeDefined();
+       expect(window.paypal).toBeDefined();
+     });
+-
+-    test("should error when dataSdkIntegrationSource is an empty string", async () => {
+-      await expect(async () => {
+-        await loadCoreSdkScript({
+-          environment: "sandbox",
+-          dataSdkIntegrationSource: "",
+-        });
+-      }).rejects.toThrow(
+-        'The "dataSdkIntegrationSource" option cannot be an empty string',
+-      );
+-    });
+-
+-    test("should error when dataSdkIntegrationSource is only whitespace", async () => {
+-      await expect(async () => {
+-        await loadCoreSdkScript({
+-          environment: "sandbox",
+-          dataSdkIntegrationSource: "   ",
+-        });
+-      }).rejects.toThrow(
+-        'The "dataSdkIntegrationSource" option cannot be an empty string',
+-      );
+-    });
+   });
+ });
+diff --git a/packages/paypal-js/src/v6/index.ts b/packages/paypal-js/src/v6/index.ts
+index 09170c4..4595176 100644
+--- a/packages/paypal-js/src/v6/index.ts
++++ b/packages/paypal-js/src/v6/index.ts
+@@ -3,16 +3,16 @@ import type {
+   PayPalV6Namespace,
+   LoadCoreSdkScriptOptions,
+ } from "../../types/v6/index";
++import { getPayPalWindowNamespace } from "./dom";
++import { loadScriptWithRetry } from "./load-script-with-retry";
++import { validateArguments } from "./validate-arguments";
+ 
+ const version = "__VERSION__";
+ 
+-const SCRIPT_LOADING_STATE = {
+-  PENDING: "pending",
+-  RESOLVED: "resolved",
+-  REJECTED: "rejected",
+-} as const;
+-
+-const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
++// Callers awaiting the same namespace share one retry chain, otherwise
++// concurrent calls would each independently retry the same failure and
++// insert duplicate script elements.
++const inFlightScriptLoads = new Map<string, Promise<PayPalV6Namespace>>();
+ 
+ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
+   validateArguments(options);
+@@ -35,6 +35,11 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
+     return Promise.resolve(paypalWindowReference);
+   }
+ 
++  const existingLoad = inFlightScriptLoads.get(namespace);
++  if (existingLoad) {
++    return existingLoad;
++  }
++
+   const baseURL =
+     environment === "production"
+       ? "https://www.paypal.com"
+@@ -45,119 +50,24 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
+     url.searchParams.append("debug", "true");
+   }
+ 
+-  const scriptElement =
+-    document.querySelector<HTMLScriptElement>(
+-      `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
+-    ) ??
+-    createScriptElement({
+-      url: url.toString(),
+-      attributes: {
+-        "data-namespace": dataNamespace,
+-        "data-sdk-integration-source": dataSdkIntegrationSource,
+-        [DATA_ATTRIBUTE_LOADING_STATE]: SCRIPT_LOADING_STATE.PENDING,
+-      },
+-    });
+-
+-  return new Promise<PayPalV6Namespace>((resolve, reject) => {
+-    scriptElement.addEventListener(
+-      "load",
+-      () => {
+-        const paypalWindowReference = getPayPalWindowNamespace(namespace);
+-
+-        if (!paypalWindowReference) {
+-          scriptElement.setAttribute(
+-            DATA_ATTRIBUTE_LOADING_STATE,
+-            SCRIPT_LOADING_STATE.REJECTED,
+-          );
+-
+-          return reject(
+-            `The window.${namespace} global variable is not available`,
+-          );
+-        }
+-        scriptElement.setAttribute(
+-          DATA_ATTRIBUTE_LOADING_STATE,
+-          SCRIPT_LOADING_STATE.RESOLVED,
+-        );
+-        return resolve(paypalWindowReference);
+-      },
+-      { once: true },
+-    );
+-
+-    scriptElement.addEventListener(
+-      "error",
+-      () => {
+-        const defaultError = new Error(
+-          `The script "${url.toString()}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
+-        );
+-
+-        scriptElement.setAttribute(
+-          DATA_ATTRIBUTE_LOADING_STATE,
+-          SCRIPT_LOADING_STATE.REJECTED,
+-        );
+-        return reject(defaultError);
+-      },
+-      { once: true },
+-    );
++  const loadPromise = loadScriptWithRetry({
++    url,
++    namespace,
++    dataNamespace,
++    dataSdkIntegrationSource,
+   });
+-}
+-function validateArguments(options: unknown) {
+-  if (typeof options !== "object" || options === null) {
+-    throw new Error("Expected an options object");
+-  }
+-  // Use getOwnProperty to avoid picking up prototype-polluted values.
+-  const guardedOptions = options as LoadCoreSdkScriptOptions;
+-  const environment = getOwnProperty(guardedOptions, "environment");
+-  const dataNamespace = getOwnProperty(guardedOptions, "dataNamespace");
+-  const dataSdkIntegrationSource = getOwnProperty(
+-    guardedOptions,
+-    "dataSdkIntegrationSource",
+-  );
+-
+-  if (environment !== "production" && environment !== "sandbox") {
+-    throw new Error(
+-      'The "environment" option is required and must be either "production" or "sandbox"',
+-    );
+-  }
+-
+-  if (dataNamespace !== undefined && dataNamespace.trim() === "") {
+-    throw new Error('The "dataNamespace" option cannot be an empty string');
+-  }
+-
+-  if (
+-    dataSdkIntegrationSource !== undefined &&
+-    dataSdkIntegrationSource.trim() === ""
+-  ) {
+-    throw new Error(
+-      'The "dataSdkIntegrationSource" option cannot be an empty string',
+-    );
+-  }
+-}
+-
+-function getPayPalWindowNamespace(
+-  namespace: string,
+-): PayPalV6Namespace | undefined {
+-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-  return (window as any)[namespace];
+-}
+-
+-function createScriptElement({
+-  url,
+-  attributes,
+-}: {
+-  url: string;
+-  attributes: Record<string, string | undefined>;
+-}) {
+-  const newScript = document.createElement("script");
+-  newScript.src = url;
+-
+-  for (const [key, value] of Object.entries(attributes)) {
+-    if (value !== undefined) {
+-      newScript.setAttribute(key, value);
++  inFlightScriptLoads.set(namespace, loadPromise);
++  const clearInFlightLoad = () => {
++    if (inFlightScriptLoads.get(namespace) === loadPromise) {
++      inFlightScriptLoads.delete(namespace);
+     }
+-  }
++  };
++  // Passing clearInFlightLoad as both the onFulfilled and onRejected handler
++  // runs it regardless of outcome, while also marking the rejection as
++  // handled here so a failed load doesn't surface as an unhandled rejection.
++  loadPromise.then(clearInFlightLoad, clearInFlightLoad);
+ 
+-  document.head.appendChild(newScript);
+-  return newScript;
++  return loadPromise;
+ }
+ 
+ export { loadCoreSdkScript, version };
+diff --git a/packages/paypal-js/src/v6/load-script-with-retry.test.ts b/packages/paypal-js/src/v6/load-script-with-retry.test.ts
+new file mode 100644
+index 0000000..673a1e1
+--- /dev/null
++++ b/packages/paypal-js/src/v6/load-script-with-retry.test.ts
+@@ -0,0 +1,287 @@
++import { beforeEach, describe, expect, test, vi } from "vitest";
++
++import {
++  MAX_SCRIPT_LOAD_ERROR_RETRIES,
++  MAX_SCRIPT_LOAD_TIMEOUT_RETRIES,
++  RETRY_BASE_DELAY_MS,
++  RETRY_MAX_DELAY_MS,
++  SCRIPT_LOAD_TIMEOUT_MS,
++} from "./constants";
++import { loadScriptWithRetry } from "./load-script-with-retry";
++
++const SCRIPT_URL = "https://www.sandbox.paypal.com/web-sdk/v6/core";
++
++function buildParams(overrides: Partial<Record<string, unknown>> = {}) {
++  return {
++    url: new URL(SCRIPT_URL),
++    namespace: "paypal",
++    dataNamespace: undefined,
++    dataSdkIntegrationSource: undefined,
++    ...overrides,
++  };
++}
++
++// Mirrors the (jitter-free) retry delay calculation in load-script-with-retry.ts,
++// so tests can assert on an exact expected duration once Math.random is mocked to 0.
++function expectedRetryDelayMs(retryCount: number): number {
++  return Math.min(
++    RETRY_BASE_DELAY_MS * 2 ** (retryCount - 1),
++    RETRY_MAX_DELAY_MS,
++  );
++}
++
++describe("loadScriptWithRetry()", () => {
++  beforeEach(() => {
++    document.head.innerHTML = "";
++    vi.clearAllMocks();
++    vi.unstubAllGlobals();
++    vi.restoreAllMocks();
++  });
++
++  test("should resolve with the window namespace reference once the script loads", async () => {
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
++      vi.stubGlobal("paypal", { version: "6" });
++      process.nextTick(() => node.dispatchEvent(new Event("load")));
++      return node;
++    });
++
++    const result = await loadScriptWithRetry(buildParams());
++
++    expect(result).toBe(window.paypal);
++  });
++
++  test("should reject when the window namespace is not available after the load event", async () => {
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
++      process.nextTick(() => node.dispatchEvent(new Event("load")));
++      return node;
++    });
++
++    await expect(loadScriptWithRetry(buildParams())).rejects.toBe(
++      "The window.paypal global variable is not available",
++    );
++  });
++
++  test("should reuse an existing pending script element instead of inserting a new one", async () => {
++    document.head.innerHTML = `<script src="${SCRIPT_URL}" data-loading-state="pending"></script>`;
++    const appendChildSpy = vi.spyOn(document.head, "appendChild");
++
++    process.nextTick(() => {
++      vi.stubGlobal("paypal", { version: "6" });
++      document
++        .querySelector('script[src*="/web-sdk/v6/core"]')!
++        .dispatchEvent(new Event("load"));
++    });
++
++    const result = await loadScriptWithRetry(buildParams());
++
++    expect(appendChildSpy).not.toHaveBeenCalled();
++    expect(result).toBeDefined();
++  });
++
++  test("should append a cache-busting query param on retry attempts", async () => {
++    const scriptElements: HTMLScriptElement[] = [];
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
++      if (node instanceof HTMLScriptElement) {
++        scriptElements.push(node);
++        if (scriptElements.length < 2) {
++          process.nextTick(() => node.dispatchEvent(new Event("error")));
++        } else {
++          vi.stubGlobal("paypal", { version: "6" });
++          process.nextTick(() => node.dispatchEvent(new Event("load")));
++        }
++      }
++      return node;
++    });
++
++    await loadScriptWithRetry(buildParams());
++
++    expect(scriptElements).toHaveLength(2);
++    expect(scriptElements[0].src).toBe(SCRIPT_URL);
++    expect(scriptElements[1].src).toBe(`${SCRIPT_URL}?paypal-sdk-retry=1`);
++  });
++
++  test("should remove the failed script element from the DOM before retrying", async () => {
++    let attempts = 0;
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
++      attempts++;
++      // actually attach the node so we can observe its removal on failure
++      Element.prototype.appendChild.call(document.head, node);
++      if (attempts < 2) {
++        process.nextTick(() => node.dispatchEvent(new Event("error")));
++      } else if (node instanceof HTMLScriptElement) {
++        vi.stubGlobal("paypal", { version: "6" });
++        process.nextTick(() => node.dispatchEvent(new Event("load")));
++      }
++      return node;
++    });
++
++    await loadScriptWithRetry(buildParams());
++
++    // only the successful (second) script should remain in the document
++    const remainingScripts = document.querySelectorAll(
++      'script[src*="/web-sdk/v6/core"]',
++    );
++    expect(remainingScripts).toHaveLength(1);
++    expect(remainingScripts[0].getAttribute("data-loading-state")).toBe(
++      "resolved",
++    );
++  });
++
++  test("should retry loading the script and resolve if a later attempt succeeds", async () => {
++    let attempts = 0;
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
++      attempts++;
++      if (attempts < 3) {
++        process.nextTick(() => node.dispatchEvent(new Event("error")));
++      } else if (node instanceof HTMLScriptElement) {
++        vi.stubGlobal("paypal", { version: "6" });
++        process.nextTick(() => node.dispatchEvent(new Event("load")));
++      }
++      return node;
++    });
++
++    const result = await loadScriptWithRetry(buildParams());
++
++    expect(attempts).toBe(3);
++    expect(result).toBeDefined();
++  });
++
++  test("should reject after exhausting all retries", async () => {
++    vi.spyOn(Math, "random").mockReturnValue(0);
++    const appendChildSpy = vi
++      .spyOn(document.head, "appendChild")
++      .mockImplementation((node) => {
++        process.nextTick(() => node.dispatchEvent(new Event("error")));
++        return node;
++      });
++
++    const retryDelaysMs = Array.from(
++      { length: MAX_SCRIPT_LOAD_ERROR_RETRIES },
++      (_, index) => expectedRetryDelayMs(index + 1),
++    );
++    const totalDurationMs = retryDelaysMs.reduce(
++      (sum, delay) => sum + delay,
++      0,
++    );
++
++    vi.useFakeTimers();
++    try {
++      const loadPromise = loadScriptWithRetry(buildParams());
++      const expectation = expect(loadPromise).rejects.toThrow(
++        `The script "${SCRIPT_URL}" failed to load after ${
++          MAX_SCRIPT_LOAD_ERROR_RETRIES + 1
++        } attempt(s) totaling ${totalDurationMs}ms. Check the HTTP status code and response body in DevTools to learn more.`,
++      );
++
++      for (const delay of retryDelaysMs) {
++        await vi.advanceTimersByTimeAsync(delay);
++      }
++
++      await expectation;
++      // 1 initial attempt + MAX_SCRIPT_LOAD_ERROR_RETRIES retries
++      expect(appendChildSpy).toHaveBeenCalledTimes(
++        MAX_SCRIPT_LOAD_ERROR_RETRIES + 1,
++      );
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++
++  test("should retry when the script neither loads nor errors within the timeout", async () => {
++    let attempts = 0;
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
++      attempts++;
++      if (attempts >= 2 && node instanceof HTMLScriptElement) {
++        vi.stubGlobal("paypal", { version: "6" });
++        process.nextTick(() => node.dispatchEvent(new Event("load")));
++      }
++      // the first attempt's script never fires load or error
++      return node;
++    });
++
++    vi.useFakeTimers();
++    try {
++      const loadPromise = loadScriptWithRetry(buildParams());
++
++      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
++      await vi.advanceTimersByTimeAsync(1_000);
++
++      const result = await loadPromise;
++      expect(attempts).toBe(2);
++      expect(result).toBeDefined();
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++
++  test("should resolve with the window namespace instead of retrying if it becomes available before the retry fires", async () => {
++    vi.spyOn(Math, "random").mockReturnValue(0);
++    const appendChildSpy = vi
++      .spyOn(document.head, "appendChild")
++      .mockImplementation((node) => {
++        process.nextTick(() => node.dispatchEvent(new Event("error")));
++        return node;
++      });
++
++    vi.useFakeTimers();
++    try {
++      const loadPromise = loadScriptWithRetry(buildParams());
++
++      // the first attempt errors, scheduling a retry; before that retry
++      // fires, something else (e.g. a concurrent load) sets the namespace
++      await vi.advanceTimersByTimeAsync(0);
++      vi.stubGlobal("paypal", { version: "6" });
++
++      await vi.advanceTimersByTimeAsync(expectedRetryDelayMs(1));
++
++      const result = await loadPromise;
++      expect(result).toBe(window.paypal);
++      expect(appendChildSpy).toHaveBeenCalledTimes(1);
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++
++  test("should reject after exhausting timeout retries without waiting for error retries", async () => {
++    vi.spyOn(Math, "random").mockReturnValue(0);
++    let attempts = 0;
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
++      attempts++;
++      // never fires load or error, only ever times out
++      return node;
++    });
++
++    const retryDelaysMs = Array.from(
++      { length: MAX_SCRIPT_LOAD_TIMEOUT_RETRIES },
++      (_, index) => expectedRetryDelayMs(index + 1),
++    );
++    const totalDurationMs =
++      SCRIPT_LOAD_TIMEOUT_MS * (MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1) +
++      retryDelaysMs.reduce((sum, delay) => sum + delay, 0);
++
++    vi.useFakeTimers();
++    try {
++      const loadPromise = loadScriptWithRetry(buildParams());
++      const expectation = expect(loadPromise).rejects.toThrow(
++        `The script "${SCRIPT_URL}" timed out after ${
++          MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1
++        } attempt(s) totaling ${totalDurationMs}ms, exceeding the ${SCRIPT_LOAD_TIMEOUT_MS}ms timeout on the final attempt.`,
++      );
++
++      for (const delay of retryDelaysMs) {
++        await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
++        await vi.advanceTimersByTimeAsync(delay);
++      }
++      // final attempt times out with no further retry scheduled
++      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
++
++      await expectation;
++      // 1 initial attempt + MAX_SCRIPT_LOAD_TIMEOUT_RETRIES retries, well
++      // short of MAX_SCRIPT_LOAD_ERROR_RETRIES which only applies to error retries
++      expect(attempts).toBe(MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1);
++      expect(attempts).toBeLessThan(MAX_SCRIPT_LOAD_ERROR_RETRIES + 1);
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++});
+diff --git a/packages/paypal-js/src/v6/load-script-with-retry.ts b/packages/paypal-js/src/v6/load-script-with-retry.ts
+new file mode 100644
+index 0000000..a2eb2a9
+--- /dev/null
++++ b/packages/paypal-js/src/v6/load-script-with-retry.ts
+@@ -0,0 +1,185 @@
++import type { PayPalV6Namespace } from "../../types/v6/index";
++import {
++  DATA_ATTRIBUTE_LOADING_STATE,
++  MAX_SCRIPT_LOAD_ERROR_RETRIES,
++  MAX_SCRIPT_LOAD_TIMEOUT_RETRIES,
++  RETRY_BASE_DELAY_MS,
++  RETRY_MAX_DELAY_MS,
++  SCRIPT_LOADING_STATE,
++  SCRIPT_LOAD_TIMEOUT_MS,
++} from "./constants";
++import { createScriptElement, getPayPalWindowNamespace } from "./dom";
++
++function getRetryDelayMs(retryCount: number): number {
++  const exponential = Math.min(
++    RETRY_BASE_DELAY_MS * 2 ** (retryCount - 1),
++    RETRY_MAX_DELAY_MS,
++  );
++  return exponential + Math.random() * exponential * 0.5;
++}
++
++function withCacheBustingParam(url: URL, attempt: number): URL {
++  const retryUrl = new URL(url.toString());
++  retryUrl.searchParams.set("paypal-sdk-retry", String(attempt));
++  return retryUrl;
++}
++
++export function loadScriptWithRetry({
++  url,
++  namespace,
++  dataNamespace,
++  dataSdkIntegrationSource,
++  attempt = 0,
++  timeoutRetryCount = 0,
++  startTime = Date.now(),
++}: {
++  url: URL;
++  namespace: string;
++  dataNamespace: string | undefined;
++  dataSdkIntegrationSource: string | undefined;
++  attempt?: number;
++  timeoutRetryCount?: number;
++  startTime?: number;
++}): Promise<PayPalV6Namespace> {
++  const isRetry = attempt > 0;
++  const scriptUrl = isRetry ? withCacheBustingParam(url, attempt) : url;
++
++  const scriptElement =
++    (!isRetry &&
++      document.querySelector<HTMLScriptElement>(
++        `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
++      )) ||
++    createScriptElement({
++      url: scriptUrl.toString(),
++      attributes: {
++        "data-namespace": dataNamespace,
++        "data-sdk-integration-source": dataSdkIntegrationSource,
++        [DATA_ATTRIBUTE_LOADING_STATE]: SCRIPT_LOADING_STATE.PENDING,
++      },
++    });
++
++  return new Promise<PayPalV6Namespace>((resolve, reject) => {
++    let settled = false;
++
++    const cleanup = () => {
++      clearTimeout(timeoutId);
++      scriptElement.removeEventListener("load", handleLoad);
++      scriptElement.removeEventListener("error", handleError);
++    };
++
++    const handleLoad = () => {
++      if (settled) {
++        return;
++      }
++      settled = true;
++      cleanup();
++
++      const paypalWindowReference = getPayPalWindowNamespace(namespace);
++
++      if (!paypalWindowReference) {
++        scriptElement.setAttribute(
++          DATA_ATTRIBUTE_LOADING_STATE,
++          SCRIPT_LOADING_STATE.REJECTED,
++        );
++
++        return reject(
++          `The window.${namespace} global variable is not available`,
++        );
++      }
++      scriptElement.setAttribute(
++        DATA_ATTRIBUTE_LOADING_STATE,
++        SCRIPT_LOADING_STATE.RESOLVED,
++      );
++      return resolve(paypalWindowReference);
++    };
++
++    const retry = (nextTimeoutRetryCount: number) => {
++      setTimeout(
++        () => {
++          // Another script tag (e.g. one already in the DOM before this
++          // attempt started) may have finished loading the namespace in the
++          // meantime, so avoid inserting a redundant script element.
++          const paypalWindowReference = getPayPalWindowNamespace(namespace);
++          if (paypalWindowReference) {
++            resolve(paypalWindowReference);
++            return;
++          }
++
++          resolve(
++            loadScriptWithRetry({
++              url,
++              namespace,
++              dataNamespace,
++              dataSdkIntegrationSource,
++              attempt: attempt + 1,
++              timeoutRetryCount: nextTimeoutRetryCount,
++              startTime,
++            }),
++          );
++        },
++        getRetryDelayMs(attempt + 1),
++      );
++    };
++
++    const failScript = () => {
++      scriptElement.setAttribute(
++        DATA_ATTRIBUTE_LOADING_STATE,
++        SCRIPT_LOADING_STATE.REJECTED,
++      );
++      scriptElement.remove();
++    };
++
++    const handleTimeout = () => {
++      if (settled) {
++        return;
++      }
++      settled = true;
++      cleanup();
++      failScript();
++
++      if (timeoutRetryCount < MAX_SCRIPT_LOAD_TIMEOUT_RETRIES) {
++        retry(timeoutRetryCount + 1);
++        return;
++      }
++
++      return reject(
++        new Error(
++          `The script "${url.toString()}" timed out after ${
++            timeoutRetryCount + 1
++          } attempt(s) totaling ${
++            Date.now() - startTime
++          }ms, exceeding the ${SCRIPT_LOAD_TIMEOUT_MS}ms timeout on the final attempt.`,
++        ),
++      );
++    };
++
++    const handleError = () => {
++      if (settled) {
++        return;
++      }
++      settled = true;
++      cleanup();
++      failScript();
++
++      if (attempt < MAX_SCRIPT_LOAD_ERROR_RETRIES) {
++        retry(timeoutRetryCount);
++        return;
++      }
++
++      return reject(
++        new Error(
++          `The script "${url.toString()}" failed to load after ${
++            attempt + 1
++          } attempt(s) totaling ${
++            Date.now() - startTime
++          }ms. Check the HTTP status code and response body in DevTools to learn more.`,
++        ),
++      );
++    };
++
++    const timeoutId = setTimeout(handleTimeout, SCRIPT_LOAD_TIMEOUT_MS);
++
++    scriptElement.addEventListener("load", handleLoad);
++    scriptElement.addEventListener("error", handleError);
++  });
++}
+diff --git a/packages/paypal-js/src/v6/validate-arguments.test.ts b/packages/paypal-js/src/v6/validate-arguments.test.ts
+new file mode 100644
+index 0000000..ef9c0ac
+--- /dev/null
++++ b/packages/paypal-js/src/v6/validate-arguments.test.ts
+@@ -0,0 +1,124 @@
++import { describe, expect, test } from "vitest";
++
++import { validateArguments } from "./validate-arguments";
++
++describe("validateArguments()", () => {
++  test("should throw when options is not an object", () => {
++    expect(() => validateArguments(123)).toThrow("Expected an options object");
++    expect(() => validateArguments(null)).toThrow("Expected an options object");
++  });
++
++  test("should throw when environment is missing", () => {
++    expect(() => validateArguments({})).toThrow(
++      'The "environment" option is required and must be either "production" or "sandbox"',
++    );
++  });
++
++  test("should throw when environment is explicitly undefined", () => {
++    expect(() => validateArguments({ environment: undefined })).toThrow(
++      'The "environment" option is required and must be either "production" or "sandbox"',
++    );
++  });
++
++  test("should throw when environment is an invalid value", () => {
++    expect(() => validateArguments({ environment: "bad_value" })).toThrow(
++      'The "environment" option is required and must be either "production" or "sandbox"',
++    );
++  });
++
++  test("should not throw for valid environment values", () => {
++    expect(() => validateArguments({ environment: "sandbox" })).not.toThrow();
++    expect(() =>
++      validateArguments({ environment: "production" }),
++    ).not.toThrow();
++  });
++
++  test("should throw when dataNamespace is an empty string", () => {
++    expect(() =>
++      validateArguments({ environment: "sandbox", dataNamespace: "" }),
++    ).toThrow('The "dataNamespace" option cannot be an empty string');
++  });
++
++  test("should throw when dataNamespace is only whitespace", () => {
++    expect(() =>
++      validateArguments({ environment: "sandbox", dataNamespace: "   " }),
++    ).toThrow('The "dataNamespace" option cannot be an empty string');
++  });
++
++  test("should not throw for a valid dataNamespace", () => {
++    expect(() =>
++      validateArguments({
++        environment: "sandbox",
++        dataNamespace: "myCustomNamespace",
++      }),
++    ).not.toThrow();
++  });
++
++  test("should throw when dataSdkIntegrationSource is an empty string", () => {
++    expect(() =>
++      validateArguments({
++        environment: "sandbox",
++        dataSdkIntegrationSource: "",
++      }),
++    ).toThrow(
++      'The "dataSdkIntegrationSource" option cannot be an empty string',
++    );
++  });
++
++  test("should throw when dataSdkIntegrationSource is only whitespace", () => {
++    expect(() =>
++      validateArguments({
++        environment: "sandbox",
++        dataSdkIntegrationSource: "   ",
++      }),
++    ).toThrow(
++      'The "dataSdkIntegrationSource" option cannot be an empty string',
++    );
++  });
++
++  test("should not throw for a valid dataSdkIntegrationSource", () => {
++    expect(() =>
++      validateArguments({
++        environment: "sandbox",
++        dataSdkIntegrationSource: "react-paypal-js",
++      }),
++    ).not.toThrow();
++  });
++
++  test("should ignore a prototype-polluted environment and still throw", () => {
++    // Simulate prototype pollution: without an own-property guard, the polluted
++    // value would pass validation and silently be treated as a valid environment.
++    (Object.prototype as Record<string, unknown>)["environment"] = "sandbox";
++    try {
++      expect(() => validateArguments({})).toThrow(
++        'The "environment" option is required and must be either "production" or "sandbox"',
++      );
++    } finally {
++      delete (Object.prototype as Record<string, unknown>)["environment"];
++    }
++  });
++
++  test("should ignore a prototype-polluted dataNamespace", () => {
++    // Simulate prototype pollution: without an own-property guard, a caller
++    // omitting `dataNamespace` would have its validation driven by the
++    // attacker's value instead of treating the option as absent.
++    (Object.prototype as Record<string, unknown>)["dataNamespace"] = "";
++    try {
++      expect(() => validateArguments({ environment: "sandbox" })).not.toThrow();
++    } finally {
++      delete (Object.prototype as Record<string, unknown>)["dataNamespace"];
++    }
++  });
++
++  test("should ignore a prototype-polluted dataSdkIntegrationSource", () => {
++    (Object.prototype as Record<string, unknown>)["dataSdkIntegrationSource"] =
++      "";
++    try {
++      expect(() => validateArguments({ environment: "sandbox" })).not.toThrow();
++    } finally {
++      delete (Object.prototype as Record<string, unknown>)[
++        "dataSdkIntegrationSource"
++      ];
++    }
++  });
++});
+diff --git a/packages/paypal-js/src/v6/validate-arguments.ts b/packages/paypal-js/src/v6/validate-arguments.ts
+new file mode 100644
+index 0000000..b01271e
+--- /dev/null
++++ b/packages/paypal-js/src/v6/validate-arguments.ts
+@@ -0,0 +1,35 @@
++import { getOwnProperty } from "../utils";
++import type { LoadCoreSdkScriptOptions } from "../../types/v6/index";
++
++export function validateArguments(options: unknown) {
++  if (typeof options !== "object" || options === null) {
++    throw new Error("Expected an options object");
++  }
++  // Use getOwnProperty to avoid picking up prototype-polluted values.
++  const guardedOptions = options as LoadCoreSdkScriptOptions;
++  const environment = getOwnProperty(guardedOptions, "environment");
++  const dataNamespace = getOwnProperty(guardedOptions, "dataNamespace");
++  const dataSdkIntegrationSource = getOwnProperty(
++    guardedOptions,
++    "dataSdkIntegrationSource",
++  );
++
++  if (environment !== "production" && environment !== "sandbox") {
++    throw new Error(
++      'The "environment" option is required and must be either "production" or "sandbox"',
++    );
++  }
++
++  if (dataNamespace !== undefined && dataNamespace.trim() === "") {
++    throw new Error('The "dataNamespace" option cannot be an empty string');
++  }
++
++  if (
++    dataSdkIntegrationSource !== undefined &&
++    dataSdkIntegrationSource.trim() === ""
++  ) {
++    throw new Error(
++      'The "dataSdkIntegrationSource" option cannot be an empty string',
++    );
++  }
++}

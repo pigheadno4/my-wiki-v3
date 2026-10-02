@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-js"
 type: source
 date_ingested: 2026-04-13
-date_updated: 2026-09-26
+date_updated: 2026-10-02
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json"
   - "github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json"
@@ -27,7 +28,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 ## Overview
 
-Latest ingested releases: `@paypal/paypal-js@11.1.1` and `@paypal/react-paypal-js@10.5.1` (September 23, 2026; collected September 26). These harden selected loader option reads and align React session-field forwarding for 11 local methods. The attached Storybook evidence adds/reworks examples for all 50 existing LPM registry entries. Earlier package-qualified knowledge remains below.
+Latest ingested releases: `@paypal/paypal-js@11.2.0` and `@paypal/react-paypal-js@10.5.2` (September 28, 2026; collected October 2). Core adds bounded v6 script-load retries and namespace-based in-flight deduplication; React extends selected own-property configuration guards and adopts core `^11.2.0`. The retry documentation conflicts with the retained implementation. Earlier package-qualified knowledge, including the September 23 LPM delta and Storybook supplement, remains below.
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
@@ -45,6 +46,28 @@ Repository: <https://github.com/paypal/paypal-js>
 - September 15 work item `github-961c3611b36c6341ad56` was approved as full additive ingest with an explicit item-specific focused reading scope: all 24 changed retained files, relevant dependencies, complete release/comparison records and wiki history, and all six attached Storybook files. The entire capsule remains immutable; unchanged unrelated files and generated schemas were not reread. This does not change the registry's default full-reading policy or claim a whole-repository review.
 
 ## Grounding excerpts
+
+### September 28 grounding
+
+> `export const MAX_SCRIPT_LOAD_ERROR_RETRIES = 2;`
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/constants.ts:9`
+
+> `export const MAX_SCRIPT_LOAD_TIMEOUT_RETRIES = 1;`
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/constants.ts:10`
+
+> `export const SCRIPT_LOAD_TIMEOUT_MS = 15_000;`
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/constants.ts:11`
+
+> `const inFlightScriptLoads = new Map<string, Promise<PayPalV6Namespace>>();`
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/index.ts:15`
+
+> `return Object.prototype.hasOwnProperty.call(options, key)`
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/react-paypal-js/src/v6/getOwnProperty.ts:12`
 
 ### September 23 patch grounding
 
@@ -292,8 +315,8 @@ Repository: <https://github.com/paypal/paypal-js>
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `11.1.1` | Delta ingest; v8 through 11.1.0 history retained |
-| `@paypal/react-paypal-js` | `10.5.1` | Same shared-SHA delta with 54-file Storybook supplement; v8 through 10.5.0 history retained |
+| `@paypal/paypal-js` | `11.2.0` | Delta ingest; v8 through 11.1.1 history retained |
+| `@paypal/react-paypal-js` | `10.5.2` | Same shared-SHA delta; v8 through 10.5.1 and prior Storybook supplements retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -487,6 +510,40 @@ Released September 23 at `dfd184b6abc9384d07a95f92db4be517d8c22c86`, compared wi
 Use explicit own configuration properties. v6 still requires an explicit valid environment; this patch does not restore a default. These are bounded hardening changes, not a claim that all prototype-related risks are eliminated or a new merchant-facing payment feature. No upstream tests or hosted checkout were run for this ingest.
 
 Implementation: [utils](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/paypal-js/src/utils.ts), [legacy/custom loaders](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/paypal-js/src/load-script.ts), and [v6 loader](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/files/packages/paypal-js/src/v6/index.ts).
+
+#### `@paypal/paypal-js@11.2.0`
+
+Released at `d9966e6dd9a5bb880341a7df1809329e82906a41`, compared with `11.1.1`. The v6 entry delegates loading to a new retry helper; validation and DOM helpers move into separate files without relaxing the explicit own `environment` requirement. The legacy root loader and retained public declaration files are unchanged.
+
+The [retry helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/load-script-with-retry.ts) handles script error and timeout events, removes the failed script, clears its timer/listeners, and retries when permitted. Retry URLs append `paypal-sdk-retry=<attempt>`. Delay is `min(50 * 2 ** (retryCount - 1), 400)` milliseconds plus up to 50% jitter; 400 caps the base, not the jitter-inclusive delay.
+
+| Failure sequence | Exact implementation boundary |
+| --- | --- |
+| Only script errors | Initial load plus at most two retries: three attempts |
+| Only timeouts | Initial load plus at most one retry: two attempts, each with a 15-second timeout |
+| Mixed error/timeout | Both paths increment the shared attempt counter; timeout allowance is tracked separately. Do not add the two budgets as independent guarantees |
+| Load event without the expected global | Immediate rejection; not an error/timeout retry |
+
+The initial cached-global check still requires a version starting with `6`. During a retry delay, the helper resolves if the namespace becomes available, without rechecking its version. Removing a timed-out script and ignoring stale events does not guarantee cancellation of the browser's already-sent request or prevention of late script evaluation; the upstream test patch explicitly acknowledges that limitation.
+
+The [entry point](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/index.ts) shares one pending chain per namespace and clears it after success or failure. Its key does not include environment, debug, or integration-source settings. Keep options consistent for a namespace; this is not environment-isolated caching. Initial pending-DOM reuse also matches the core pathname and loading state rather than the entire URL/namespace.
+
+> [!warning] Contradiction - retry limits in release notes
+> Both the [11.2.0 notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/release-notes.md) and [raw changelog](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/CHANGELOG.md) describe five retries and 10 seconds. The exact [constants](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/constants.ts) instead specify two error retries, one timeout retry, and 15 seconds per attempt. This discrepancy is also recorded in [[paypal-checkout]] and [[changelog-github-paypal-js]].
+
+Existing direct calls gain retry behavior without a new retry option:
+
+```ts
+import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
+
+const sdk = await loadCoreSdkScript({
+  environment: "sandbox",
+  dataNamespace: "paypalCheckout",
+});
+// sdk may be null during SSR; create a payment instance only in the browser.
+```
+
+This retries loading the SDK only, not payment API requests. Continue handling final loader failure, buyer cancellation, and server-side order finalization separately. The retained HTML/mock files are test harnesses, not new merchant payment features or tests executed by this wiki review.
 
 ## `@paypal/react-paypal-js`
 
@@ -886,6 +943,33 @@ The generator reads the actual LPM registry and emits static Storybook titles, w
 
 Work item `github-16ddfb4cd25d5895e633` was ingested as one approved delta after reading assigned records, complete changed retained files, cumulative wiki history, and all 54 supplemental files. The snapshot contains 155 files; the retained comparison reports eight modified, 147 unchanged, and two no longer selected. The latter are the prior React README and rollup configuration, not upstream deletions. Older knowledge and raw evidence remain intact. This is not a full upstream-repository review or hosted/runtime proof.
 
+#### `@paypal/react-paypal-js@10.5.2`
+
+Released at the same September 28 SHA, compared with `10.5.1`. Its core dependency changes from `^11.1.1` to `^11.2.0`; the provider therefore uses the bounded v6 loader retry behavior above.
+
+The new local own-property helper ignores inherited values. Previously, a direct read of an omitted option could retrieve a polluted prototype value and copy it into an explicit own property, defeating the downstream core guard. The [v6 provider](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx) now guards `environment`, `debug`, `dataNamespace`, and `dataSdkIntegrationSource` before forwarding them. The [server eligibility helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts) guards `payload`, `headers`, and `environment`; `signal` remains directly destructured.
+
+Legacy Buttons, Marks, Messages, Card Fields, and Hosted Fields also guard `dataNamespace` when resolving the SDK global and constructing related diagnostics. Other option reads remain outside this change. The release note describes remote-code-execution prevention; the retained code establishes bounded own-property hardening, not independent exploit reproduction or a complete security guarantee.
+
+Pass normal explicit props; no new retry prop or component is required. This illustrative provider shell assumes `CheckoutPage` is the merchant's existing checkout component:
+
+```tsx
+import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalProvider
+  clientId={clientId}
+  environment="sandbox"
+  dataNamespace="paypalCheckout"
+  components={["paypal-payments"]}
+>
+  <CheckoutPage />
+</PayPalProvider>;
+```
+
+Selected values supplied only through a prototype are no longer accepted at these guarded reads. No retained payment-session hook, public v6 export, or core payment declaration changes in this delta. It does not add a typed/React View/Edit Saved Payment integration; the independent Braintree v6 sample and Braintree runtime evidence retain ownership of that flow. Earlier LPM forwarding and documentation/type contradictions remain unchanged.
+
+Work item `github-5b2a7f87f06b9859f5c8` used full reading of all 37 assigned paths, including both complete manifests, cumulative raw and wiki changelogs, release records, changed files, and comparison patches. No focused-reading exception, whole-upstream-repository claim, browser/payment test, or package build is implied.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -909,6 +993,11 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 - Sources: [[source-paypal-javascript-sdk-reference]], [[source-paypal-js-sdk-v6-setup]]
 
 ## Raw Sources
+
+- [September 28 exact-SHA snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json)
+- [Core 11.2.0 record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/manifest.json) and [release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/release-notes.md)
+- [React 10.5.2 record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.2/2026-10-02/manifest.json) and [release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.2/2026-10-02/release-notes.md)
+- [Core 11.1.1 to 11.2.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.1.1--11.2.0/comparison.json) and [React 10.5.1 to 10.5.2 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.1--10.5.2/comparison.json)
 
 - [September 23 snapshot, collected September 26](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json)
 - [September 23 Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json) and [work-item attachment](../../../../tracking/github/repos/paypal/paypal-js/evidence-attachments/github-16ddfb4cd25d5895e633/attachment.json)

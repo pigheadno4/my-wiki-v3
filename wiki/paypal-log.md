@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | PayPal JS core `11.2.0` and React `10.5.2`
+
+- Delta-ingested work item `github-5b2a7f87f06b9859f5c8`, shared SHA `d9966e6dd9a5bb880341a7df1809329e82906a41`, from core `11.1.1` and React `10.5.1`. User requested full reading of every assigned file; no focused-reading exception.
+- Read all 37 assigned paths completely: two full snapshot manifests, release records, cumulative raw and wiki changelogs, changed retained files and both full comparisons. Verified all 165 current retained file hashes and sizes (1,119,051 bytes). The 23 changed/new paths and 142 unchanged paths are repeated package views, not duplicate distinct changes.
+- Updated [[paypal-checkout]] first, then additive [[source-github-paypal-js]] and [[changelog-github-paypal-js]], company, catalog and logs. Recorded bounded loader retries, selected React own-property guards, release-note/code retry mismatch, namespace configuration constraints and absence of a new saved-payment editing wrapper. All historical sections retained; no source page added, company count unchanged.
+- Receipt: `tracking/github/repos/paypal/paypal-js/ingest-review-5b2a7f87.md`. No build, browser/payment test, commit or push.
+
 ## [2026-10-02] ingest | Braintree v6 sample `06bc2de`
 
 - Additive full-ingested `github-2b0edf0d1bdbb692d15d`, `f1c712374f674ce6f0b2683f105871dcb969d2d7` to `06bc2de96264a29f33ff7b6eb0d566c1cd162b0a`, with the approved focused-reading exception and two exact-SHA frontend supplements.

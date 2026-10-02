@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-26
+date_updated: 2026-10-02
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json"
   - "github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-19-abc4c83/manifest.json"
@@ -27,6 +28,34 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `d9966e6` (2026-09-28)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `11.1.1` | `11.2.0` | 2026-09-28 | `d9966e6dd9a5bb880341a7df1809329e82906a41` | Delta |
+| `@paypal/react-paypal-js` | `10.5.1` | `10.5.2` | 2026-09-28 | `d9966e6dd9a5bb880341a7df1809329e82906a41` | Delta |
+
+Package-qualified releases `@paypal/paypal-js@11.2.0` and `@paypal/react-paypal-js@10.5.2` were collected October 2 and ingested as work item `github-5b2a7f87f06b9859f5c8`. This is one shared-SHA delta, not two separately processed source units.
+
+**Core impact:** automatic v6 script error/timeout retries, exponential backoff plus jitter, `paypal-sdk-retry` cache busting, failed-script cleanup, and one in-flight chain per namespace. Pure-error sequences allow three attempts; pure-timeout sequences allow two, with 15 seconds per attempt. Mixed failure paths share the attempt counter. A load event without the namespace rejects immediately. Namespace-based deduplication does not isolate differing environment/options, and removed timed-out scripts may still evaluate a late network response. Legacy loading and public payment declarations are unchanged.
+
+**React impact:** dependency becomes `@paypal/paypal-js ^11.2.0`. Selected own-property checks protect v6 provider option forwarding, server eligibility environment/headers/payload, and legacy component namespace resolution. They do not guard every property; the remote-code-execution wording is release-note attribution, not an independently verified security outcome. No new payment method, session API, or returning-buyer saved-payment editing wrapper is added.
+
+**Migration:** keep explicit environment and ordinary own props, use consistent configuration for each namespace, and retain final loading-error handling. SDK retries do not replace server order/capture idempotency or retry policy. Prototype-inherited values cease to work at the selected reads. Existing React providers benefit without a new retry prop. [[source-github-paypal-js]] contains direct-loader and React examples.
+
+> [!warning] Contradiction - retry documentation
+> Release notes and the raw core changelog describe five retries and a 10-second timeout; retained constants specify two error retries, one timeout retry, and 15 seconds per attempt. The source page and [[paypal-checkout]] preserve this version-qualified mismatch rather than treating the notes as implementation truth.
+
+**Updated knowledge:** additive core `11.2.0` and React `10.5.2` sections, package status, [[paypal-checkout]], company and catalog. Older releases and supplements remain intact.
+
+### Evidence boundary
+
+All 37 assigned paths were read in full, including both complete manifests, both cumulative raw changelogs, complete wiki source/changelog history, release records, changed retained files, and comparison patches. No focused-reading exception. The capsule contains 165 files: 23 changed/new retained paths and 142 unchanged paths, repeated in both package views, not 46 distinct changes. A newly retained mock file existed upstream previously; retained additions are not all new upstream files. Test harnesses remain evidence of intended scenarios, not executed test results. No browser/payment test or build was performed.
+
+Evidence: [snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json), [core release](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/manifest.json), [React release](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.2/2026-10-02/manifest.json), [core comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.1.1--11.2.0/comparison.json), [React comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.1--10.5.2/comparison.json), [retry constants](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/constants.ts), [retry implementation](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/paypal-js/src/v6/load-script-with-retry.ts), [React own-property helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/files/packages/react-paypal-js/src/v6/getOwnProperty.ts).
 
 ## Repository change set: `dfd184b` (2026-09-23)
 
@@ -499,6 +528,8 @@ The same SHA contains `@paypal/paypal-js@9.0.0`, matching React 8.9.2's declared
 The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is recorded in this change set because the approved work item contains only `@paypal/paypal-js@8.4.2`. A future React release ingest will add its own package-qualified timeline entry.
 
 ## Raw Sources
+
+- [September 28 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json), [core 11.2.0 notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/release-notes.md), and [React 10.5.2 notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.2/2026-10-02/release-notes.md)
 
 - [September 23 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json) and [Storybook supplement](../../../../raw/github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json)
 - [Core 11.1.1 notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.1.1/2026-09-26/release-notes.md) and [React 10.5.1 notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.1/2026-09-26/release-notes.md)

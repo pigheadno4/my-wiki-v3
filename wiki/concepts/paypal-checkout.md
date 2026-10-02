@@ -99,6 +99,15 @@ These transports are version-specific. The iOS README lists PayPal SDK v5 as sup
 
 The September 23, 2026 core patch centralizes own-property reads and extends them to selected legacy/custom/v6 loader options, so inherited configuration values are not accepted at those reads. Explicit own `environment` remains required for v6. This is bounded loader hardening, not evidence of a new payment feature or a complete security guarantee. React 10.5.1 depends on core `^11.1.1` and changes session-field forwarding for 11 local methods; see [[paypal-apm]] for the Pix documentation mismatch and [[source-github-paypal-js]] / [[changelog-github-paypal-js]] for implementation and retained earlier versions.
 
+### Loader 11.2.0 and React 10.5.2 Boundary
+
+The September 28, 2026 releases add automatic retry handling to the core v6 `loadCoreSdkScript()` and extend selected own-property guards into React. An all-error load has one initial attempt plus two retries; an all-timeout load has one initial attempt plus one retry, with a 15-second timeout per attempt. Mixed failures share the attempt counter, so these are not independent additive retry budgets. Retries use exponential backoff with jitter and `paypal-sdk-retry` cache busting. Concurrent loads share a chain by namespace, not by environment or all options; use consistent configuration for a namespace. This retries SDK loading, not order creation or capture.
+
+> [!warning] Contradiction - 11.2.0 retry documentation
+> The release notes and raw cumulative changelog describe five retries and a 10-second timeout. The exact collected implementation instead declares two error retries, one timeout retry, and 15 seconds per attempt. Use the implementation for this version-qualified behavior; see [[source-github-paypal-js]] and [[changelog-github-paypal-js]]. No browser or payment test was performed.
+
+React `10.5.2` depends on core `^11.2.0`. Its v6 provider guards environment, debug, namespace, and integration-source reads before forwarding them, and server eligibility guards environment, headers, and payload. Legacy Buttons, Marks, Messages, Card Fields, and Hosted Fields guard namespace selection. These checks reject inherited values at selected reads, not every property or every prototype-pollution attack. The release-note remote-code-execution claim is not independently demonstrated here. This delta adds no saved-payment editing wrapper or new payment-session API; earlier returning-buyer evidence and the independent Braintree sample remain separate.
+
 ### Historical v6 sample baseline at `b5f2df2`
 
 The `paypal-examples/v6-web-sdk-sample-integration` baseline combines static JavaScript, React/TypeScript, and Node.js examples. The standard PayPal flow fetches a server-owned client ID, checks PayPal, Pay Later, and Credit eligibility separately, starts the selected session with an unresolved create-order promise to preserve browser transient activation, and captures on approval.

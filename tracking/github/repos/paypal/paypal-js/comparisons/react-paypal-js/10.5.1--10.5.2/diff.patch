@@ -1,0 +1,836 @@
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index 313a351..4d6ba83 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,13 @@
+ # Changelog
+ 
++## 10.5.2
++
++### Patch Changes
++
++- 5f45d73: This adds Object prototype pollution guards to prevent remote code execution.
++- Updated dependencies [5f61e1d]
++  - @paypal/paypal-js@11.2.0
++
+ ## 10.5.1
+ 
+ ### Patch Changes
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index 4c7979b..cfb9209 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "10.5.1",
++  "version": "10.5.2",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+@@ -66,7 +66,7 @@
+   },
+   "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
+   "dependencies": {
+-    "@paypal/paypal-js": "^11.1.1",
++    "@paypal/paypal-js": "^11.2.0",
+     "@paypal/sdk-constants": "^1.0.122",
+     "server-only": "^0.0.1"
+   },
+diff --git a/packages/react-paypal-js/src/components/PayPalButtons.test.tsx b/packages/react-paypal-js/src/components/PayPalButtons.test.tsx
+index 629759f..a061779 100644
+--- a/packages/react-paypal-js/src/components/PayPalButtons.test.tsx
++++ b/packages/react-paypal-js/src/components/PayPalButtons.test.tsx
+@@ -533,4 +533,33 @@ describe("<PayPalButtons />", () => {
+     });
+     spyConsoleError.mockRestore();
+   });
++
++  describe("prototype pollution hardening", () => {
++    afterEach(() => {
++      delete (Object.prototype as Record<string, unknown>).dataNamespace;
++    });
++
++    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
++      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
++      const buttonsMock = jest.fn().mockReturnValue(mockPaypalButtonsComponent);
++      window.paypal = {
++        Buttons: buttonsMock,
++        version: "",
++      };
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      (window as any).evilNs = { Buttons: jest.fn() };
++
++      render(
++        <PayPalScriptProvider options={{ clientId: "test" }}>
++          <PayPalButtons />
++        </PayPalScriptProvider>,
++      );
++
++      await waitFor(() => expect(buttonsMock).toHaveBeenCalled());
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      expect((window as any).evilNs.Buttons).not.toHaveBeenCalled();
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      delete (window as any).evilNs;
++    });
++  });
+ });
+diff --git a/packages/react-paypal-js/src/components/PayPalButtons.tsx b/packages/react-paypal-js/src/components/PayPalButtons.tsx
+index 3e2f230..0ca9299 100644
+--- a/packages/react-paypal-js/src/components/PayPalButtons.tsx
++++ b/packages/react-paypal-js/src/components/PayPalButtons.tsx
+@@ -1,8 +1,11 @@
+ import React, { useEffect, useRef, useState } from "react";
+ 
+ import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
+-import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
+-import { SDK_SETTINGS } from "../constants";
++import {
++  getPayPalWindowNamespace,
++  generateErrorMessage,
++  getOwnProperty,
++} from "../utils";
+ import { useProxyProps } from "../hooks/useProxyProps";
+ import { PayPalButtonsErrorBoundary } from "./PayPalButtonsErrorBoundary";
+ 
+@@ -55,7 +58,7 @@ const PayPalButtonsInner: FunctionComponent<PayPalButtonsComponentProps> = ({
+     }
+ 
+     const paypalWindowNamespace = getPayPalWindowNamespace(
+-      options.dataNamespace,
++      getOwnProperty(options, "dataNamespace"),
+     );
+ 
+     // verify dependency on window object
+@@ -69,7 +72,7 @@ const PayPalButtonsInner: FunctionComponent<PayPalButtonsComponentProps> = ({
+             reactComponentName: PayPalButtons.displayName as string,
+             sdkComponentKey: "buttons",
+             sdkRequestedComponents: options.components,
+-            sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
++            sdkDataNamespace: getOwnProperty(options, "dataNamespace"),
+           }),
+         );
+       });
+diff --git a/packages/react-paypal-js/src/components/PayPalMarks.test.tsx b/packages/react-paypal-js/src/components/PayPalMarks.test.tsx
+index 24dca30..72480f8 100644
+--- a/packages/react-paypal-js/src/components/PayPalMarks.test.tsx
++++ b/packages/react-paypal-js/src/components/PayPalMarks.test.tsx
+@@ -247,4 +247,38 @@ describe("<PayPalMarks />", () => {
+ 
+     await waitFor(() => expect(mockRender).toBeCalledTimes(2));
+   });
++
++  describe("prototype pollution hardening", () => {
++    afterEach(() => {
++      delete (Object.prototype as Record<string, unknown>).dataNamespace;
++    });
++
++    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
++      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
++      const marksMock = jest.fn(() => ({
++        isEligible: jest.fn().mockReturnValue(true),
++        render: jest.fn().mockResolvedValue({}),
++      }));
++      window.paypal = {
++        Marks: marksMock,
++        version: "",
++      };
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      (window as any).evilNs = { Marks: jest.fn() };
++
++      render(
++        <PayPalScriptProvider
++          options={{ clientId: "test", components: "marks" }}
++        >
++          <PayPalMarks fundingSource={FUNDING.CREDIT} />
++        </PayPalScriptProvider>,
++      );
++
++      await waitFor(() => expect(marksMock).toHaveBeenCalled());
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      expect((window as any).evilNs.Marks).not.toHaveBeenCalled();
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      delete (window as any).evilNs;
++    });
++  });
+ });
+diff --git a/packages/react-paypal-js/src/components/PayPalMarks.tsx b/packages/react-paypal-js/src/components/PayPalMarks.tsx
+index a61b34d..68c5255 100644
+--- a/packages/react-paypal-js/src/components/PayPalMarks.tsx
++++ b/packages/react-paypal-js/src/components/PayPalMarks.tsx
+@@ -1,8 +1,11 @@
+ import React, { useEffect, useRef, useState } from "react";
+ 
+ import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
+-import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
+-import { SDK_SETTINGS } from "../constants";
++import {
++  getPayPalWindowNamespace,
++  generateErrorMessage,
++  getOwnProperty,
++} from "../utils";
+ 
+ import type { FC, ReactNode } from "react";
+ import type {
+@@ -71,7 +74,7 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
+     }
+ 
+     const paypalWindowNamespace = getPayPalWindowNamespace(
+-      options[SDK_SETTINGS.DATA_NAMESPACE],
++      getOwnProperty(options, "dataNamespace"),
+     );
+ 
+     // verify dependency on window object
+@@ -85,7 +88,7 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
+             reactComponentName: PayPalMarks.displayName as string,
+             sdkComponentKey: "marks",
+             sdkRequestedComponents: options.components,
+-            sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
++            sdkDataNamespace: getOwnProperty(options, "dataNamespace"),
+           }),
+         );
+       });
+diff --git a/packages/react-paypal-js/src/components/PayPalMessages.test.tsx b/packages/react-paypal-js/src/components/PayPalMessages.test.tsx
+index 44dcfb5..6ffd1a8 100644
+--- a/packages/react-paypal-js/src/components/PayPalMessages.test.tsx
++++ b/packages/react-paypal-js/src/components/PayPalMessages.test.tsx
+@@ -175,4 +175,37 @@ describe("<PayPalMessages />", () => {
+     expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+     spyConsoleError.mockRestore();
+   });
++
++  describe("prototype pollution hardening", () => {
++    afterEach(() => {
++      delete (Object.prototype as Record<string, unknown>).dataNamespace;
++    });
++
++    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
++      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
++      const messagesMock = jest.fn(() => ({
++        render: jest.fn().mockResolvedValue({}),
++      }));
++      window.paypal = {
++        Messages: messagesMock,
++        version: "",
++      };
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      (window as any).evilNs = { Messages: jest.fn() };
++
++      render(
++        <PayPalScriptProvider
++          options={{ clientId: "test", components: "messages" }}
++        >
++          <PayPalMessages />
++        </PayPalScriptProvider>,
++      );
++
++      await waitFor(() => expect(messagesMock).toHaveBeenCalled());
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      expect((window as any).evilNs.Messages).not.toHaveBeenCalled();
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      delete (window as any).evilNs;
++    });
++  });
+ });
+diff --git a/packages/react-paypal-js/src/components/PayPalMessages.tsx b/packages/react-paypal-js/src/components/PayPalMessages.tsx
+index b80185a..b184b87 100644
+--- a/packages/react-paypal-js/src/components/PayPalMessages.tsx
++++ b/packages/react-paypal-js/src/components/PayPalMessages.tsx
+@@ -1,8 +1,11 @@
+ import React, { useEffect, useRef, useState } from "react";
+ 
+ import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
+-import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
+-import { SDK_SETTINGS } from "../constants";
++import {
++  getPayPalWindowNamespace,
++  generateErrorMessage,
++  getOwnProperty,
++} from "../utils";
+ 
+ import type { FC } from "react";
+ import type {
+@@ -36,7 +39,7 @@ export const PayPalMessages: FC<PayPalMessagesComponentProps> = ({
+     }
+ 
+     const paypalWindowNamespace = getPayPalWindowNamespace(
+-      options[SDK_SETTINGS.DATA_NAMESPACE],
++      getOwnProperty(options, "dataNamespace"),
+     );
+ 
+     // verify dependency on window object
+@@ -50,7 +53,7 @@ export const PayPalMessages: FC<PayPalMessagesComponentProps> = ({
+             reactComponentName: PayPalMessages.displayName as string,
+             sdkComponentKey: "messages",
+             sdkRequestedComponents: options.components,
+-            sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
++            sdkDataNamespace: getOwnProperty(options, "dataNamespace"),
+           }),
+         );
+       });
+diff --git a/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.test.tsx b/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.test.tsx
+index e995600..080f719 100644
+--- a/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.test.tsx
++++ b/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.test.tsx
+@@ -461,4 +461,46 @@ describe("PayPalCardFieldsProvider", () => {
+     fireEvent.focus(numberField);
+     expect(onFocusFn).toHaveBeenCalledWith(2);
+   });
++
++  describe("prototype pollution hardening", () => {
++    afterEach(() => {
++      delete (Object.prototype as Record<string, unknown>).dataNamespace;
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      delete (window as any).evilNs;
++    });
++
++    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
++      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
++      const evilCardFields = jest.fn();
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      (window as any).evilNs = { CardFields: evilCardFields };
++
++      render(
++        <PayPalScriptProvider
++          options={{
++            clientId: "test-client",
++            currency: "USD",
++            intent: "authorize",
++            dataClientToken: "test-data-client-token",
++            components: "card-fields",
++          }}
++        >
++          <PayPalCardFieldsProvider
++            onApprove={mockOnApprove}
++            createOrder={mockCreateOrder}
++            onError={mockOnError}
++          >
++            <PayPalNumberField />
++            <PayPalCVVField />
++            <PayPalExpiryField />
++          </PayPalCardFieldsProvider>
++        </PayPalScriptProvider>,
++      );
++
++      await waitFor(() => {
++        expect(getMockElementsRendered().length).toEqual(3);
++      });
++      expect(evilCardFields).not.toHaveBeenCalled();
++    });
++  });
+ });
+diff --git a/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.tsx b/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.tsx
+index b260b2c..bbe0e22 100644
+--- a/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.tsx
++++ b/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.tsx
+@@ -1,8 +1,7 @@
+ import React, { ReactNode, useEffect, useRef, useState } from "react";
+ 
+ import { usePayPalScriptReducer } from "../../hooks/scriptProviderHooks";
+-import { getPayPalWindowNamespace } from "../../utils";
+-import { SDK_SETTINGS } from "../../constants";
++import { getPayPalWindowNamespace, getOwnProperty } from "../../utils";
+ import { generateMissingCardFieldsError } from "./utils";
+ import { PayPalCardFieldsContext } from "./context";
+ import { usePayPalCardFieldsRegistry } from "./hooks";
+@@ -13,6 +12,7 @@ import type {
+   PayPalCardFieldsComponentOptions,
+   PayPalCardFieldsComponent,
+ } from "@paypal/paypal-js";
++import type { PayPalCardFieldsNamespace } from "../../types/payPalCardFieldsTypes";
+ 
+ type CardFieldsProviderProps = PayPalCardFieldsComponentOptions & {
+   children: ReactNode;
+@@ -60,7 +60,7 @@ export const PayPalCardFieldsProvider = ({
+     try {
+       cardFieldsInstance.current =
+         getPayPalWindowNamespace(
+-          options[SDK_SETTINGS.DATA_NAMESPACE],
++          getOwnProperty(options, "dataNamespace"),
+         ).CardFields?.({
+           ...proxyProps,
+         }) ?? null;
+@@ -78,8 +78,8 @@ export const PayPalCardFieldsProvider = ({
+         throw new Error(
+           generateMissingCardFieldsError({
+             components: options.components,
+-            [SDK_SETTINGS.DATA_NAMESPACE]: options[SDK_SETTINGS.DATA_NAMESPACE],
+-          }),
++            dataNamespace: getOwnProperty(options, "dataNamespace"),
++          } as PayPalCardFieldsNamespace),
+         );
+       });
+       return;
+diff --git a/packages/react-paypal-js/src/components/hostedFields/PayPalHostedFieldsProvider.test.tsx b/packages/react-paypal-js/src/components/hostedFields/PayPalHostedFieldsProvider.test.tsx
+index 0a72edd..b686a87 100644
+--- a/packages/react-paypal-js/src/components/hostedFields/PayPalHostedFieldsProvider.test.tsx
++++ b/packages/react-paypal-js/src/components/hostedFields/PayPalHostedFieldsProvider.test.tsx
+@@ -451,4 +451,53 @@ describe("PayPalHostedFieldsProvider", () => {
+       );
+     });
+   });
++
++  describe("prototype pollution hardening", () => {
++    afterEach(() => {
++      delete (Object.prototype as Record<string, unknown>).dataNamespace;
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      delete (window as any).evilNs;
++    });
++
++    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
++      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      (window as any).evilNs = {
++        HostedFields: { isEligible, render: jest.fn() },
++      };
++
++      render(
++        <PayPalScriptProvider
++          options={{
++            clientId: "test-client",
++            currency: "USD",
++            intent: "authorize",
++            components: "hosted-fields",
++            dataClientToken: "test-data-client-token",
++          }}
++        >
++          <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
++            <PayPalHostedField
++              hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
++              options={{ selector: "number" }}
++            />
++            <PayPalHostedField
++              hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE}
++              options={{ selector: "expiration" }}
++            />
++            <PayPalHostedField
++              hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
++              options={{ selector: "cvv" }}
++            />
++          </PayPalHostedFieldsProvider>
++        </PayPalScriptProvider>,
++      );
++
++      await waitFor(() =>
++        expect(window?.paypal?.HostedFields?.render).toHaveBeenCalled(),
++      );
++      // eslint-disable-next-line @typescript-eslint/no-explicit-any
++      expect((window as any).evilNs.HostedFields.render).not.toHaveBeenCalled();
++    });
++  });
+ });
+diff --git a/packages/react-paypal-js/src/components/hostedFields/PayPalHostedFieldsProvider.tsx b/packages/react-paypal-js/src/components/hostedFields/PayPalHostedFieldsProvider.tsx
+index b31e5c2..5bf09c0 100644
+--- a/packages/react-paypal-js/src/components/hostedFields/PayPalHostedFieldsProvider.tsx
++++ b/packages/react-paypal-js/src/components/hostedFields/PayPalHostedFieldsProvider.tsx
+@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
+ import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
+ import { useHostedFieldsRegister } from "./hooks";
+ import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
+-import { SDK_SETTINGS } from "../../constants";
+ import {
+   validateHostedFieldChildren,
+   generateMissingHostedFieldsError,
+@@ -12,10 +11,13 @@ import {
+   PAYPAL_HOSTED_FIELDS_TYPES,
+   SCRIPT_LOADING_STATE,
+ } from "../../types/enums";
+-import { getPayPalWindowNamespace } from "../../utils";
++import { getPayPalWindowNamespace, getOwnProperty } from "../../utils";
+ 
+ import type { FC } from "react";
+-import type { PayPalHostedFieldsComponentProps } from "../../types/payPalHostedFieldTypes";
++import type {
++  PayPalHostedFieldsComponentProps,
++  PayPalHostedFieldsNamespace,
++} from "../../types/payPalHostedFieldTypes";
+ import type {
+   PayPalHostedFieldsComponent,
+   HostedFieldsHandler,
+@@ -51,15 +53,15 @@ export const PayPalHostedFieldsProvider: FC<
+     }
+     // Get the hosted fields from the [window.paypal.HostedFields] SDK
+     hostedFields.current = getPayPalWindowNamespace(
+-      options[SDK_SETTINGS.DATA_NAMESPACE],
++      getOwnProperty(options, "dataNamespace"),
+     ).HostedFields;
+ 
+     if (!hostedFields.current) {
+       throw new Error(
+         generateMissingHostedFieldsError({
+           components: options.components,
+-          [SDK_SETTINGS.DATA_NAMESPACE]: options[SDK_SETTINGS.DATA_NAMESPACE],
+-        }),
++          dataNamespace: getOwnProperty(options, "dataNamespace"),
++        } as PayPalHostedFieldsNamespace),
+       );
+     }
+     if (!hostedFields.current.isEligible()) {
+diff --git a/packages/react-paypal-js/src/utils.ts b/packages/react-paypal-js/src/utils.ts
+index 81feee4..9870b02 100644
+--- a/packages/react-paypal-js/src/utils.ts
++++ b/packages/react-paypal-js/src/utils.ts
+@@ -65,6 +65,22 @@ export function hashStr(str: string): string {
+   return hash;
+ }
+ 
++/**
++ * Read an own property from an options object, ignoring any value inherited
++ * from the prototype chain, to prevent prototype-polluted values (CWE-1321)
++ * from being silently accepted when the caller's options object omits the
++ * property. Local copy of the equivalent helper in @paypal/paypal-js's
++ * src/utils.ts, which isn't exported from that package's public entry points.
++ */
++export function getOwnProperty<T extends object, K extends keyof T>(
++  options: T,
++  key: K,
++): T[K] | undefined {
++  return Object.prototype.hasOwnProperty.call(options, key)
++    ? options[key]
++    : undefined;
++}
++
+ export function generateErrorMessage({
+   reactComponentName,
+   sdkComponentKey,
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalProvider.pollution.test.tsx b/packages/react-paypal-js/src/v6/components/PayPalProvider.pollution.test.tsx
+new file mode 100644
+index 0000000..524abf8
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/components/PayPalProvider.pollution.test.tsx
+@@ -0,0 +1,108 @@
++import "@testing-library/jest-dom";
++import React from "react";
++import { act, render, waitFor } from "@testing-library/react";
++
++import { PayPalProvider } from "./PayPalProvider";
++import { usePayPal } from "../hooks/usePayPal";
++import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
++
++import type { PayPalState } from "../context/PayPalProviderContext";
++
++const TEST_CLIENT_TOKEN = "test-client-token";
++
++/**
++ * Unlike PayPalProvider.test.tsx, this file does NOT mock
++ * @paypal/paypal-js/sdk-v6 -- it exercises the real, built loadCoreSdkScript
++ * (see jest.config's moduleNameMapper) so we can verify the actual <script>
++ * tag injected into the page, matching how packages/paypal-js/src/v6/index.test.ts
++ * verifies the same thing on the paypal-js side.
++ */
++describe("PayPalProvider prototype pollution hardening (real loadCoreSdkScript)", () => {
++  // eslint-disable-next-line @typescript-eslint/no-explicit-any
++  let scriptAppendChildSpy: any;
++
++  beforeEach(() => {
++    document.head.innerHTML = "";
++
++    scriptAppendChildSpy = jest
++      .spyOn(document.head, "appendChild")
++      .mockImplementation((node) => {
++        if (node instanceof HTMLScriptElement) {
++          const namespace = node.getAttribute("data-namespace") ?? "paypal";
++          // eslint-disable-next-line @typescript-eslint/no-explicit-any
++          (window as any)[namespace] = {
++            version: "6",
++            createInstance: jest.fn().mockResolvedValue({
++              findEligibleMethods: jest.fn(),
++              hydrateEligibleMethods: jest.fn(),
++              createPayPalOneTimePaymentSession: jest.fn(),
++              updateLocale: jest.fn(),
++            }),
++          };
++          process.nextTick(() => node.dispatchEvent(new Event("load")));
++        }
++        return node;
++      });
++  });
++
++  afterEach(() => {
++    scriptAppendChildSpy.mockRestore();
++    delete (Object.prototype as Record<string, unknown>).dataNamespace;
++    // eslint-disable-next-line @typescript-eslint/no-explicit-any
++    delete (window as any).paypal;
++    // eslint-disable-next-line @typescript-eslint/no-explicit-any
++    delete (window as any).evilNs;
++    document.head.innerHTML = "";
++  });
++
++  function TestComponent() {
++    usePayPal();
++    return null;
++  }
++
++  test("injects the script under the default namespace instead of a prototype-polluted one", async () => {
++    (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
++
++    await act(async () => {
++      render(
++        <PayPalProvider clientToken={TEST_CLIENT_TOKEN} environment="sandbox">
++          <TestComponent />
++        </PayPalProvider>,
++      );
++    });
++
++    await waitFor(() => expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1));
++
++    const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
++    expect(scriptElement.getAttribute("data-namespace")).toBeNull();
++
++    // eslint-disable-next-line @typescript-eslint/no-explicit-any
++    expect((window as any).evilNs).toBeUndefined();
++    // eslint-disable-next-line @typescript-eslint/no-explicit-any
++    await waitFor(() => expect((window as any).paypal).toBeDefined());
++  });
++
++  it("state ends up resolved against the real (unpolluted) window.paypal namespace", async () => {
++    (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
++    const state: Partial<PayPalState> = {};
++
++    function StateCapturingComponent() {
++      const instanceState = usePayPal();
++      Object.assign(state, instanceState);
++      return null;
++    }
++
++    await act(async () => {
++      render(
++        <PayPalProvider clientToken={TEST_CLIENT_TOKEN} environment="sandbox">
++          <StateCapturingComponent />
++        </PayPalProvider>,
++      );
++    });
++
++    await waitFor(() =>
++      expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED),
++    );
++    expect(state.error).toBe(null);
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalProvider.test.tsx b/packages/react-paypal-js/src/v6/components/PayPalProvider.test.tsx
+index c70a7da..b50df38 100644
+--- a/packages/react-paypal-js/src/v6/components/PayPalProvider.test.tsx
++++ b/packages/react-paypal-js/src/v6/components/PayPalProvider.test.tsx
+@@ -1080,6 +1080,30 @@ describe("Auto-memoization", () => {
+       loadCallCount,
+     );
+   });
++
++  describe("prototype pollution hardening", () => {
++    afterEach(() => {
++      delete (Object.prototype as Record<string, unknown>).dataNamespace;
++    });
++
++    test("does not forward a prototype-polluted dataNamespace when the prop is omitted", async () => {
++      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
++      const { TestComponent } = setupTestComponent();
++
++      await act(async () => {
++        render(
++          <PayPalProvider clientToken={TEST_CLIENT_TOKEN} environment="sandbox">
++            <TestComponent />
++          </PayPalProvider>,
++        );
++      });
++
++      await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
++
++      const callArgs = (loadCoreSdkScript as jest.Mock).mock.calls[0][0];
++      expect(callArgs.dataNamespace).toBeUndefined();
++    });
++  });
+ });
+ 
+ function setupTestComponent() {
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx b/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
+index 856e692..18ce359 100644
+--- a/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
++++ b/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
+@@ -14,6 +14,7 @@ import {
+ } from "../types/ProviderEnums";
+ import { toError, useCompareMemoize, useDeepCompareMemoize } from "../utils";
+ import { useError } from "../hooks/useError";
++import { getOwnProperty } from "../getOwnProperty";
+ 
+ import type {
+   Components,
+@@ -200,13 +201,28 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
+ 
+     const loadSdk = async () => {
+       try {
+-        const sdkNamespace = await loadCoreSdkScript({
+-          environment: loadCoreScriptOptions.current.environment,
+-          debug: loadCoreScriptOptions.current.debug,
+-          dataNamespace: loadCoreScriptOptions.current.dataNamespace,
+-          dataSdkIntegrationSource:
+-            loadCoreScriptOptions.current.dataSdkIntegrationSource,
+-        });
++        // Read via getOwnProperty instead of dot access: a plain dot access
++        // would fall through to a polluted Object.prototype value when the
++        // caller omits a field, and re-assigning that value as an explicit
++        // key below would turn it into an *own* property — defeating
++        // loadCoreSdkScript's own getOwnProperty guard downstream (CWE-1321).
++        const sdkOptions = {
++          environment: getOwnProperty(
++            loadCoreScriptOptions.current,
++            "environment",
++          ),
++          debug: getOwnProperty(loadCoreScriptOptions.current, "debug"),
++          dataNamespace: getOwnProperty(
++            loadCoreScriptOptions.current,
++            "dataNamespace",
++          ),
++          dataSdkIntegrationSource: getOwnProperty(
++            loadCoreScriptOptions.current,
++            "dataSdkIntegrationSource",
++          ),
++        } as LoadCoreSdkScriptOptions;
++
++        const sdkNamespace = await loadCoreSdkScript(sdkOptions);
+ 
+         if (sdkNamespace && isSubscribed) {
+           setPaypalNamespace(sdkNamespace);
+diff --git a/packages/react-paypal-js/src/v6/getOwnProperty.test.ts b/packages/react-paypal-js/src/v6/getOwnProperty.test.ts
+new file mode 100644
+index 0000000..3939272
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/getOwnProperty.test.ts
+@@ -0,0 +1,23 @@
++import { getOwnProperty } from "./getOwnProperty";
++
++describe("getOwnProperty()", () => {
++  afterEach(() => {
++    delete (Object.prototype as Record<string, unknown>).polluted;
++  });
++
++  test("returns the value for an own property", () => {
++    expect(getOwnProperty({ a: 1 }, "a")).toBe(1);
++  });
++
++  test("returns undefined for a missing own property", () => {
++    expect(getOwnProperty({} as { a?: number }, "a")).toBeUndefined();
++  });
++
++  test("ignores a value inherited from a polluted Object.prototype", () => {
++    (Object.prototype as Record<string, unknown>).polluted = "evil";
++
++    expect(
++      getOwnProperty({} as Record<string, unknown>, "polluted"),
++    ).toBeUndefined();
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/getOwnProperty.ts b/packages/react-paypal-js/src/v6/getOwnProperty.ts
+new file mode 100644
+index 0000000..0031d83
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/getOwnProperty.ts
+@@ -0,0 +1,15 @@
++/**
++ * Read an own property from an options object, ignoring any value inherited
++ * from the prototype chain, to prevent prototype-polluted values (CWE-1321)
++ * from being silently accepted when the caller's options object omits the
++ * property. Local copy of the equivalent helper in @paypal/paypal-js's
++ * src/utils.ts, which isn't exported from that package's public entry points.
++ */
++export function getOwnProperty<T extends object, K extends keyof T>(
++  options: T,
++  key: K,
++): T[K] | undefined {
++  return Object.prototype.hasOwnProperty.call(options, key)
++    ? options[key]
++    : undefined;
++}
+diff --git a/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.test.ts b/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.test.ts
+index c75b8f5..92d0e90 100644
+--- a/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.test.ts
++++ b/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.test.ts
+@@ -188,4 +188,63 @@ describe("fetchEligibleMethods", () => {
+   test("exposes the deprecated useFetchEligibleMethods alias", () => {
+     expect(useFetchEligibleMethods).toBe(fetchEligibleMethods);
+   });
++
++  describe("prototype pollution hardening", () => {
++    afterEach(() => {
++      delete (Object.prototype as Record<string, unknown>).environment;
++      delete (Object.prototype as Record<string, unknown>).payload;
++      delete (Object.prototype as Record<string, unknown>).headers;
++    });
++
++    test("throws the required-environment error instead of using a polluted environment", async () => {
++      (Object.prototype as Record<string, unknown>).environment = "sandbox";
++
++      await expect(
++        fetchEligibleMethods({
++          payload: mockPayload,
++        } as Parameters<typeof fetchEligibleMethods>[0]),
++      ).rejects.toThrow(
++        'The "environment" option is required and must be either "production" or "sandbox"',
++      );
++      expect(global.fetch).not.toHaveBeenCalled();
++    });
++
++    test("does not forward a prototype-polluted payload when omitted", async () => {
++      (Object.prototype as Record<string, unknown>).payload = {
++        purchase_units: [{ amount: { currency_code: "EVIL" } }],
++      };
++      (global.fetch as jest.Mock).mockResolvedValueOnce({
++        ok: true,
++        json: async () => mockResponse,
++      });
++
++      await fetchEligibleMethods({ environment: "sandbox" });
++
++      expect(global.fetch).toHaveBeenCalledWith(
++        expect.any(String),
++        expect.objectContaining({
++          body: JSON.stringify({}),
++        }),
++      );
++    });
++
++    test("does not forward prototype-polluted headers when omitted", async () => {
++      (Object.prototype as Record<string, unknown>).headers = {
++        "X-Evil": "true",
++      };
++      (global.fetch as jest.Mock).mockResolvedValueOnce({
++        ok: true,
++        json: async () => mockResponse,
++      });
++
++      await fetchEligibleMethods({ environment: "sandbox" });
++
++      expect(global.fetch).toHaveBeenCalledWith(
++        expect.any(String),
++        expect.objectContaining({
++          headers: undefined,
++        }),
++      );
++    });
++  });
+ });
+diff --git a/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts b/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts
+index 27b1e12..9dcd38a 100644
+--- a/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts
++++ b/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts
+@@ -3,6 +3,7 @@ import {
+   type EligiblePaymentMethods,
+   type FindEligiblePaymentMethodsResponse,
+ } from "../types";
++import { getOwnProperty } from "../getOwnProperty";
+ 
+ type FindEligiblePaymentMethodsOptions = {
+   environment: "production" | "sandbox";
+@@ -97,7 +98,12 @@ export type FindEligiblePaymentMethodsRequestPayload = {
+ export async function fetchEligibleMethods(
+   options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
+ ): Promise<FindEligiblePaymentMethodsResponse> {
+-  const { payload, signal, environment, headers } = options;
++  const { signal } = options;
++  // Use getOwnProperty to avoid picking up prototype-polluted values when
++  // the caller omits these fields (CWE-1321).
++  const payload = getOwnProperty(options, "payload");
++  const headers = getOwnProperty(options, "headers");
++  const environment = getOwnProperty(options, "environment");
+ 
+   if (environment !== "production" && environment !== "sandbox") {
+     throw new Error(

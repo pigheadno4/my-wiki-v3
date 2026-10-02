@@ -1047,6 +1047,34 @@
   Release: [manifest](../../raw/github/braintree/popup-bridge-ios/releases/popupbridge/3.1.0/2026-08-27/manifest.json)
   Comparison: Not applicable
 
+## `github-5b2a7f87f06b9859f5c8`
+
+- Repository: `paypal/paypal-js`
+- SHA: `d9966e6dd9a5bb880341a7df1809329e82906a41`
+- Collection date: `2026-10-02`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-5b2a7f87f06b9859f5c8/packet.md)
+- Review priority: `normal`
+- Required reading: `37` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-js@11.2.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/11.1.1--11.2.0/comparison.json)
+- `@paypal/react-paypal-js@10.5.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.2/2026-10-02/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.1--10.5.2/comparison.json)
+
 ## `github-5b78ff7871557dec5f21`
 
 - Repository: `metronome-industries/ai`
