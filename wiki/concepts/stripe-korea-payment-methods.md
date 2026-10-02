@@ -126,7 +126,13 @@ Dashboard-driven: enable South Korean payment methods → auto-surfaced in Check
 - **Direct API**: create PaymentIntent with `kr_card` + `payment_method_data: { type: 'kr_card' }`; `stripe.confirmPayment()` client-side with `return_url`
 - **Post-payment**: `payment_intent.succeeded` webhook
 
+## Android SDK `23.18.0` Evidence
+
+PaymentSheet release notes announce PAYCO, Korean cards, Naver Pay and Kakao Pay support. Compiled API adds `PaymentMethod.Type.Payco`, `KrCard`, `NaverPay` and `KakaoPay` with corresponding `PaymentMethodCreateParams` creation overloads. PaymentSheet forms/routing and request/confirmation implementation are excluded; do not infer merchant eligibility, recurring support or mandate handling from those declarations. This release does not announce ordinary PaymentSheet Samsung Pay support; the separate Crypto Onramp Samsung Pay history has its own scope. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## Sources
+
+- [[source-github-stripe-android]] - Android 23.18.0 Korean-method declarations and PaymentSheet announcements, with implementation limits
 
 - [[source-stripe-local-payment-methods-by-country]] — hub page: Nigeria + South Korea local payment methods
 - [[source-stripe-korea-payment-methods]] — South Korea overview: local processor model, payment methods, installments, refunds, disputes, subscription rules

@@ -1,5 +1,41 @@
 # Wiki Log
 
+## [2026-10-02] ingest | Stripe Android `23.21.0`
+
+- Approved additive full mode with focused reading: host-scoped callbacks, Embedded credential preview, Financial Connections consent contracts and experimental Onramp terms. Preserved older knowledge and retrospective changelog movements. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe Android `23.20.0`
+
+- Approved focused-reading delta: Bizum/next-action declarations, explicit internal Google Pay configuration and qualified Alipay redirect fix; earlier knowledge retained. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe Android `23.19.0`
+
+- Approved additive full mode with focused reading: revised returning-user Link visibility contract, qualified localization/race fix and resource-shrinking setting; older history preserved. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe Android `23.18.0`
+
+- Approved additive full mode with focused reading: six announced PaymentSheet methods/API additions, hosted autocomplete default, Onramp KYC declarations and restricted Identity configuration; earlier history retained. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe Android `23.17.1`
+
+- Approved full mode with focused reading: qualified Klarna/Wero/Link checkout fixes and generated-binding compatibility risk; older knowledge preserved. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe Android `23.17.0`
+
+- Approved full mode with focused reading: keyless-address migration, Identity branding/copy compatibility and module-scoped API 24 floors; older evidence retained. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe Android `23.16.0`
+
+- Approved additive full mode with focused reading: Link entry-point control, authenticated Onramp wallet deletion and qualified address-default announcements; older knowledge preserved. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe Android `23.15.0`
+
+- Approved serial focused-reading delta: optional Onramp Samsung Pay contracts and qualified Link/FPX announcements; older knowledge preserved. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
+## [2026-10-02] ingest | Stripe Android `23.14.0`
+
+- Approved serial focused-reading delta: private-preview Link appearance/billing API declarations, Tempo and a later historical annotation; older evidence preserved. Details: [[stripe-log]], [[source-github-stripe-android]], [[changelog-github-stripe-android]]. No commit or push.
+
 ## [2026-10-02] maintenance | Delegated-ingest handoff clarification
 
 - Clarified the existing `warnings` string-array requirement and default reciprocal concept descriptions to document type/version plus purpose. Material source warnings and necessary durable concept facts remain required. Guidance-only follow-up to Braintree C26; no schema coercion, new validation layer, historical-output changes, commit or push.

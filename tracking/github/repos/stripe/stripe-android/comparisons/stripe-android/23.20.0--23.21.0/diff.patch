@@ -1,0 +1,869 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 199882e..5a82eaa 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,19 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.21.0 - 2026-09-28
++
++### Payments
++* [FIXED][14625](https://github.com/stripe/stripe-android/pull/14625) Fixed an issue where PaymentSheet and `CardNumberEditText` rejected valid card numbers for BINs whose account ranges have different PAN lengths, such as some 16-digit UnionPay cards.
++
++### PaymentSheet
++* [ADDED] `EmbeddedPaymentElement.Configuration.apiConfiguration` to set publishable key and stripe account ID is now available in public preview.
++* [ADDED] Added support for MB WAY payments.
++
++### Financial Connections
++* [FIXED] Preserved `no_eligible_accounts` in `onEvent` error callbacks instead of reporting it as `unexpected_error`.
++* [FIXED] Prevented background authorization-session telemetry failures from triggering `onEvent` error callbacks.
++
+ ## 23.20.0 - 2026-09-21
+ 
+ ### Payments
+@@ -11,6 +24,9 @@ NEXT_VERSION_BUMP: PATCH
+ ### PaymentSheet
+ * [ADDED] Added support for Bizum.
+ 
++### Identity
++* [FIXED][14617](https://github.com/stripe/stripe-android/pull/14617) Updated the top app bar to use the host app background color instead of its primary color.
++
+ ## 23.19.0 - 2026-09-15
+ 
+ ### All SDKs
+@@ -20,6 +36,10 @@ NEXT_VERSION_BUMP: PATCH
+ ### PaymentSheet
+ * [FIXED][14436](https://github.com/stripe/stripe-android/pull/14436) Fixed a rare race condition which could result in the payment sheet being half-visible on screen.
+ 
++### CryptoOnramp
++* [ADDED] Added `presentTermsAndConditionsIfNeeded()` to present and record terms acceptance only when required.
++* [ADDED] Added `presentTermsOfServiceIfNeeded()` to present and record terms of service acceptance during onboarding only when required.
++
+ ## 23.18.0 - 2026-09-08
+ 
+ ### PaymentSheet
+@@ -33,6 +53,9 @@ NEXT_VERSION_BUMP: PATCH
+ ### AddressElement
+ * [CHANGED] Use Stripe-hosted address autocomplete by default.
+ 
++### CryptoOnramp
++* [ADDED] Added Canada SIN, Colombia NIT, and Philippines TIN values to `IdType`, and added `idType` to `KycInfo`.
++
+ ## 23.17.1 - 2026-08-31
+ 
+ ### PaymentSheet
+@@ -40,9 +63,6 @@ NEXT_VERSION_BUMP: PATCH
+ * [FIXED] Fixed an issue where Wero displayed duplicate country fields when collecting a full billing address.
+ * [FIXED][13323](https://github.com/stripe/stripe-android/pull/13323) Fixed an issue where selecting "Not you?" during Link 2FA did not fully log out the previous account, preventing subsequent logins.
+ 
+-### CryptoOnramp
+-* [ADDED] Added Canada SIN, Colombia NIT, and Philippines TIN values to `IdType`, and added `idType` to `KycInfo`.
+-
+ ## 23.17.0 - 2026-08-24
+ 
+ ### PaymentSheet
+diff --git a/README.md b/README.md
+index 5a6c143..3cbccf1 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.20.0'
++    implementation 'com.stripe:stripe-android:23.21.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index 277b3ce..756e089 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.20.0
++23.21.0
+diff --git a/crypto-onramp/api/crypto-onramp.api b/crypto-onramp/api/crypto-onramp.api
+index 50ddceb..5e12c8d 100644
+--- a/crypto-onramp/api/crypto-onramp.api
++++ b/crypto-onramp/api/crypto-onramp.api
+@@ -31,6 +31,8 @@ public final class com/stripe/android/crypto/onramp/OnrampCoordinator$Presenter
+ 	public final fun authorize (Ljava/lang/String;)V
+ 	public final fun collectPaymentMethod (Lcom/stripe/android/crypto/onramp/model/PaymentMethodSelection;)V
+ 	public final fun performCheckout (Ljava/lang/String;)V
++	public final fun presentTermsAndConditionsIfNeeded ()V
++	public final fun presentTermsOfServiceIfNeeded ()V
+ 	public final fun presentUserAttestation ()V
+ 	public final fun verifyIdentity ()V
+ 	public final fun verifyKycInfo (Lcom/stripe/android/paymentsheet/PaymentSheet$Address;)V
+@@ -323,6 +325,8 @@ public final class com/stripe/android/crypto/onramp/model/OnrampCallbacks {
+ 	public final fun googlePayIsReadyCallback (Lkotlin/jvm/functions/Function1;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun onrampSessionClientSecretProvider (Lkotlin/jvm/functions/Function2;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun samsungPayIsReadyCallback (Lkotlin/jvm/functions/Function2;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
++	public final fun termsAndConditionsCallback (Lcom/stripe/android/crypto/onramp/model/OnrampPartnerTermsCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
++	public final fun termsOfServiceCallback (Lcom/stripe/android/crypto/onramp/model/OnrampPartnerTermsCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun userAttestationCallback (Lcom/stripe/android/crypto/onramp/model/OnrampUserAttestationCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun verifyIdentityCallback (Lcom/stripe/android/crypto/onramp/model/OnrampVerifyIdentityCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun verifyKycCallback (Lcom/stripe/android/crypto/onramp/model/OnrampVerifyKycCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+@@ -467,6 +471,30 @@ public final class com/stripe/android/crypto/onramp/model/OnrampLogOutResult$Fai
+ 	public final fun getError ()Ljava/lang/Throwable;
+ }
+ 
++public abstract interface class com/stripe/android/crypto/onramp/model/OnrampPartnerTermsCallback {
++	public abstract fun onResult (Lcom/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult;)V
++}
++
++public abstract interface class com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult {
++}
++
++public final class com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult$Accepted : com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult {
++	public static final field $stable I
++}
++
++public final class com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult$Cancelled : com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult {
++	public static final field $stable I
++}
++
++public final class com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult$Failed : com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult {
++	public static final field $stable I
++	public final fun getError ()Ljava/lang/Throwable;
++}
++
++public final class com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult$NotRequired : com/stripe/android/crypto/onramp/model/OnrampPartnerTermsResult {
++	public static final field $stable I
++}
++
+ public abstract interface class com/stripe/android/crypto/onramp/model/OnrampRegisterLinkUserResult {
+ }
+ 
+diff --git a/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt b/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
+index 68532cf..65e2248 100644
+--- a/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
++++ b/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
+@@ -281,6 +281,28 @@ class OnrampCoordinator @Inject internal constructor(
+         fun presentUserAttestation() {
+             coordinator.presentUserAttestation()
+         }
++
++        /**
++         * Presents the current terms and conditions when acceptance is required.
++         * Requires an authenticated Link user.
++         * Call this before checkout.
++         * The result will be delivered through the terms and conditions callback provided in
++         * [OnrampCallbacks].
++         */
++        fun presentTermsAndConditionsIfNeeded() {
++            coordinator.presentTermsAndConditionsIfNeeded()
++        }
++
++        /**
++         * Presents the current terms of service when acceptance is required.
++         * Requires an authenticated Link user.
++         * Call this during onboarding after Link authentication.
++         * The result will be delivered through the terms of service callback provided in
++         * [OnrampCallbacks].
++         */
++        fun presentTermsOfServiceIfNeeded() {
++            coordinator.presentTermsOfServiceIfNeeded()
++        }
+     }
+ 
+     /**
+diff --git a/financial-connections/api/financial-connections.api b/financial-connections/api/financial-connections.api
+index a23b00d..9322250 100644
+--- a/financial-connections/api/financial-connections.api
++++ b/financial-connections/api/financial-connections.api
+@@ -20,6 +20,7 @@ public final class com/stripe/android/financialconnections/FinancialConnectionsS
+ 	public static final fun createForBankAccountToken (Landroidx/activity/ComponentActivity;Lcom/stripe/android/financialconnections/FinancialConnectionsSheetResultForTokenCallback;)Lcom/stripe/android/financialconnections/FinancialConnectionsSheet;
+ 	public static final fun createForBankAccountToken (Landroidx/fragment/app/Fragment;Lcom/stripe/android/financialconnections/FinancialConnectionsSheetResultForTokenCallback;)Lcom/stripe/android/financialconnections/FinancialConnectionsSheet;
+ 	public final fun present (Lcom/stripe/android/financialconnections/FinancialConnectionsSheet$Configuration;)V
++	public final fun present (Lcom/stripe/android/financialconnections/FinancialConnectionsSheet$Configuration;Lcom/stripe/android/financialconnections/FinancialConnectionsPreCollectedConsent;)V
+ }
+ 
+ public final class com/stripe/android/financialconnections/FinancialConnectionsSheet$Companion {
+@@ -79,6 +80,7 @@ public final class com/stripe/android/financialconnections/analytics/FinancialCo
+ 	public static final field INSTITUTION_UNAVAILABLE_PLANNED Lcom/stripe/android/financialconnections/analytics/FinancialConnectionsEvent$ErrorCode;
+ 	public static final field INSTITUTION_UNAVAILABLE_UNPLANNED Lcom/stripe/android/financialconnections/analytics/FinancialConnectionsEvent$ErrorCode;
+ 	public static final field NO_DEBITABLE_ACCOUNT Lcom/stripe/android/financialconnections/analytics/FinancialConnectionsEvent$ErrorCode;
++	public static final field NO_ELIGIBLE_ACCOUNTS Lcom/stripe/android/financialconnections/analytics/FinancialConnectionsEvent$ErrorCode;
+ 	public static final field SESSION_EXPIRED Lcom/stripe/android/financialconnections/analytics/FinancialConnectionsEvent$ErrorCode;
+ 	public static final field UNEXPECTED_ERROR Lcom/stripe/android/financialconnections/analytics/FinancialConnectionsEvent$ErrorCode;
+ 	public static final field WEB_BROWSER_UNAVAILABLE Lcom/stripe/android/financialconnections/analytics/FinancialConnectionsEvent$ErrorCode;
+diff --git a/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt b/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt
+index 1716ac5..eba85d3 100644
+--- a/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt
++++ b/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt
+@@ -45,18 +45,35 @@ class FinancialConnectionsSheet internal constructor(
+      */
+     fun present(
+         configuration: Configuration
++    ) {
++        present(configuration = configuration, preCollectedConsent = null)
++    }
++
++    /**
++     * Present the [FinancialConnectionsSheet].
++     *
++     * @param configuration the [FinancialConnectionsSheet] configuration
++     * @param preCollectedConsent evidence of consent to link a bank account, collected by the
++     * merchant prior to presenting the sheet.
++     */
++    fun present(
++        configuration: Configuration,
++        preCollectedConsent: FinancialConnectionsPreCollectedConsent?,
+     ) {
+         financialConnectionsSheetLauncher.present(
+-            configuration = configuration.toInternal(),
++            configuration = configuration.toInternal(preCollectedConsent),
+             elementsSessionContext = null,
+         )
+     }
+ 
+-    private fun Configuration.toInternal(): FinancialConnectionsSheetConfiguration {
++    private fun Configuration.toInternal(
++        preCollectedConsent: FinancialConnectionsPreCollectedConsent?,
++    ): FinancialConnectionsSheetConfiguration {
+         return FinancialConnectionsSheetConfiguration(
+             financialConnectionsSessionClientSecret = financialConnectionsSessionClientSecret,
+             publishableKey = publishableKey,
+-            stripeAccountId = stripeAccountId
++            stripeAccountId = stripeAccountId,
++            preCollectedConsent = preCollectedConsent,
+         )
+     }
+ 
+diff --git a/gradle.properties b/gradle.properties
+index 38371b2..5854f26 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -24,4 +24,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.20.0
++VERSION_NAME=23.21.0
+diff --git a/payments-core/api/payments-core.api b/payments-core/api/payments-core.api
+index 6272c92..aafa92d 100644
+--- a/payments-core/api/payments-core.api
++++ b/payments-core/api/payments-core.api
+@@ -2140,6 +2140,7 @@ public final class com/stripe/android/model/PaymentMethod$Type : java/lang/Enum,
+ 	public static final field Konbini Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field KrCard Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Link Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field MbWay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field MobilePay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Multibanco Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field NaverPay Lcom/stripe/android/model/PaymentMethod$Type;
+@@ -3693,6 +3694,7 @@ public final class com/stripe/android/model/StripeIntent$NextActionType : java/l
+ 	public static final field DisplayOxxoDetails Lcom/stripe/android/model/StripeIntent$NextActionType;
+ 	public static final field DisplayPayNowDetails Lcom/stripe/android/model/StripeIntent$NextActionType;
+ 	public static final field DisplayPromptPayDetails Lcom/stripe/android/model/StripeIntent$NextActionType;
++	public static final field MbWayAwaitAuthorization Lcom/stripe/android/model/StripeIntent$NextActionType;
+ 	public static final field RedirectToUrl Lcom/stripe/android/model/StripeIntent$NextActionType;
+ 	public static final field SwishRedirect Lcom/stripe/android/model/StripeIntent$NextActionType;
+ 	public static final field UseStripeSdk Lcom/stripe/android/model/StripeIntent$NextActionType;
+@@ -3920,9 +3922,13 @@ public final class com/stripe/android/payments/bankaccount/CollectBankAccountCon
+ public abstract interface class com/stripe/android/payments/bankaccount/CollectBankAccountLauncher {
+ 	public static final field Companion Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher$Companion;
+ 	public abstract fun presentWithPaymentIntent (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;)V
++	public abstract fun presentWithPaymentIntent (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;Lcom/stripe/android/financialconnections/FinancialConnectionsPreCollectedConsent;)V
+ 	public static synthetic fun presentWithPaymentIntent$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;ILjava/lang/Object;)V
++	public static synthetic fun presentWithPaymentIntent$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;Lcom/stripe/android/financialconnections/FinancialConnectionsPreCollectedConsent;ILjava/lang/Object;)V
+ 	public abstract fun presentWithSetupIntent (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;)V
++	public abstract fun presentWithSetupIntent (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;Lcom/stripe/android/financialconnections/FinancialConnectionsPreCollectedConsent;)V
+ 	public static synthetic fun presentWithSetupIntent$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;ILjava/lang/Object;)V
++	public static synthetic fun presentWithSetupIntent$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;Lcom/stripe/android/financialconnections/FinancialConnectionsPreCollectedConsent;ILjava/lang/Object;)V
+ }
+ 
+ public final class com/stripe/android/payments/bankaccount/CollectBankAccountLauncher$Companion {
+@@ -3934,7 +3940,9 @@ public final class com/stripe/android/payments/bankaccount/CollectBankAccountLau
+ 	public static synthetic fun presentWithDeferredPayment$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;ILjava/lang/Object;)V
+ 	public static synthetic fun presentWithDeferredSetup$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)V
+ 	public static synthetic fun presentWithPaymentIntent$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;ILjava/lang/Object;)V
++	public static synthetic fun presentWithPaymentIntent$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;Lcom/stripe/android/financialconnections/FinancialConnectionsPreCollectedConsent;ILjava/lang/Object;)V
+ 	public static synthetic fun presentWithSetupIntent$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;ILjava/lang/Object;)V
++	public static synthetic fun presentWithSetupIntent$default (Lcom/stripe/android/payments/bankaccount/CollectBankAccountLauncher;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/payments/bankaccount/CollectBankAccountConfiguration;Lcom/stripe/android/financialconnections/FinancialConnectionsPreCollectedConsent;ILjava/lang/Object;)V
+ }
+ 
+ public final class com/stripe/android/payments/bankaccount/navigation/CollectBankAccountContract$Args$Companion {
+diff --git a/paymentsheet-example/src/main/java/com/stripe/android/paymentsheet/example/playground/embedded/EmbeddedExampleActivity.kt b/paymentsheet-example/src/main/java/com/stripe/android/paymentsheet/example/playground/embedded/EmbeddedExampleActivity.kt
+index 6f2bf30..3a7c8b5 100644
+--- a/paymentsheet-example/src/main/java/com/stripe/android/paymentsheet/example/playground/embedded/EmbeddedExampleActivity.kt
++++ b/paymentsheet-example/src/main/java/com/stripe/android/paymentsheet/example/playground/embedded/EmbeddedExampleActivity.kt
+@@ -19,7 +19,10 @@ import androidx.compose.material.Button
+ import androidx.compose.material.Text
+ import androidx.compose.runtime.Composable
+ import androidx.compose.runtime.LaunchedEffect
++import androidx.compose.runtime.getValue
++import androidx.compose.runtime.mutableStateOf
+ import androidx.compose.runtime.remember
++import androidx.compose.runtime.setValue
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.platform.LocalContext
+ import androidx.compose.ui.unit.dp
+@@ -28,11 +31,15 @@ import com.github.kittinunf.fuel.core.extensions.jsonBody
+ import com.github.kittinunf.fuel.core.requests.suspendable
+ import com.github.kittinunf.result.Result
+ import com.stripe.android.PaymentConfiguration
++import com.stripe.android.core.ApiConfiguration
++import com.stripe.android.paymentelement.ApiConfigurationPreview
+ import com.stripe.android.paymentelement.EmbeddedPaymentElement
+ import com.stripe.android.paymentelement.rememberEmbeddedPaymentElement
+ import com.stripe.android.paymentsheet.CreateIntentResult
+ import com.stripe.android.paymentsheet.PaymentSheet
+ import com.stripe.android.paymentsheet.example.R
++import com.stripe.android.paymentsheet.example.playground.settings.PlaygroundSettings
++import com.stripe.android.paymentsheet.example.playground.settings.UseApiConfigurationSettingsDefinition
+ import com.stripe.android.paymentsheet.example.samples.networking.ExampleCheckoutRequest
+ import com.stripe.android.paymentsheet.example.samples.networking.ExampleCheckoutResponse
+ import com.stripe.android.paymentsheet.example.samples.networking.awaitModel
+@@ -44,17 +51,25 @@ internal class EmbeddedExampleActivity : AppCompatActivity() {
+         supportActionBar?.title = getString(R.string.embedded_example_title)
+ 
+         setContent {
+-            CheckoutScreen()
++            val useApiConfiguration = remember {
++                val snapshot = PlaygroundSettings.createFromSharedPreferences(applicationContext).snapshot()
++                UseApiConfigurationSettingsDefinition.isEnabled(snapshot)
++            }
++            CheckoutScreen(useApiConfiguration)
+         }
+     }
+ }
+ 
+ @Composable
+-fun CheckoutScreen() {
++@OptIn(ApiConfigurationPreview::class)
++fun CheckoutScreen(useApiConfiguration: Boolean = false) {
+     val context = LocalContext.current.applicationContext
++    var prefetchedCheckout by remember { mutableStateOf<CheckoutResult?>(null) }
+     val embeddedBuilder = remember {
+         EmbeddedPaymentElement.Builder(
+-            createIntentCallback = { _, _ -> checkout(context) },
++            createIntentCallback = { _, _ ->
++                (prefetchedCheckout ?: checkout(context, initializePaymentConfiguration = true)).createIntentResult
++            },
+             resultCallback = { result -> handlePaymentResult(context, result) },
+         )
+     }
+@@ -62,6 +77,15 @@ fun CheckoutScreen() {
+     val embeddedPaymentElement = rememberEmbeddedPaymentElement(embeddedBuilder)
+ 
+     LaunchedEffect(embeddedPaymentElement) {
++        val checkoutResult = if (useApiConfiguration) {
++            checkout(context, initializePaymentConfiguration = false).also {
++                prefetchedCheckout = it
++            }
++        } else {
++            null
++        }
++        val configurationBuilder = EmbeddedPaymentElement.Configuration.Builder("Powdur")
++        checkoutResult?.apiConfiguration?.let(configurationBuilder::apiConfiguration)
+         val configureResult = embeddedPaymentElement.configure(
+             intentConfiguration = PaymentSheet.IntentConfiguration(
+                 mode = PaymentSheet.IntentConfiguration.Mode.Payment(
+@@ -70,7 +94,7 @@ fun CheckoutScreen() {
+                 ),
+                 // Optional intent configuration options...
+             ),
+-            configuration = EmbeddedPaymentElement.Configuration.Builder("Powdur").build()
++            configuration = configurationBuilder.build()
+         )
+         if (configureResult is EmbeddedPaymentElement.ConfigureResult.Failed) {
+             Toast.makeText(context, configureResult.error.message, Toast.LENGTH_LONG).show()
+@@ -101,7 +125,10 @@ fun CheckoutScreen() {
+     }
+ }
+ 
+-private suspend fun checkout(context: Context): CreateIntentResult {
++private suspend fun checkout(
++    context: Context,
++    initializePaymentConfiguration: Boolean,
++): CheckoutResult {
+     val request = ExampleCheckoutRequest(
+         hotDogCount = 1,
+         saladCount = 1,
+@@ -115,18 +142,31 @@ private suspend fun checkout(context: Context): CreateIntentResult {
+         .awaitModel(ExampleCheckoutResponse.serializer())
+     return when (apiResult) {
+         is Result.Success -> {
+-            PaymentConfiguration.init(
+-                context = context,
+-                publishableKey = apiResult.value.publishableKey,
++            if (initializePaymentConfiguration) {
++                PaymentConfiguration.init(
++                    context = context,
++                    publishableKey = apiResult.value.publishableKey,
++                )
++            }
++            CheckoutResult(
++                createIntentResult = CreateIntentResult.Success(apiResult.value.paymentIntent),
++                apiConfiguration = ApiConfiguration(apiResult.value.publishableKey),
+             )
+-            CreateIntentResult.Success(apiResult.value.paymentIntent)
+         }
+         is Result.Failure -> {
+-            CreateIntentResult.Failure(apiResult.error)
++            CheckoutResult(
++                createIntentResult = CreateIntentResult.Failure(apiResult.error),
++                apiConfiguration = null,
++            )
+         }
+     }
+ }
+ 
++private data class CheckoutResult(
++    val createIntentResult: CreateIntentResult,
++    val apiConfiguration: ApiConfiguration?,
++)
++
+ private fun handlePaymentResult(context: Context, result: EmbeddedPaymentElement.Result) {
+     when (result) {
+         is EmbeddedPaymentElement.Result.Completed -> {
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index 4b86708..d0ae555 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -13,6 +13,12 @@ public final class com/stripe/android/common/nfcscan/ui/ComposableSingletons$Nfc
+ 	public final fun getLambda$-298415252$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
+ }
+ 
++public final class com/stripe/android/common/nfcscan/ui/ComposableSingletons$NfcScanningScreenKt {
++	public static final field INSTANCE Lcom/stripe/android/common/nfcscan/ui/ComposableSingletons$NfcScanningScreenKt;
++	public fun <init> ()V
++	public final fun getLambda$-484824842$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
++}
++
+ public final class com/stripe/android/common/taptoadd/ui/ComposableSingletons$TapToAddDelayScreenKt {
+ 	public static final field INSTANCE Lcom/stripe/android/common/taptoadd/ui/ComposableSingletons$TapToAddDelayScreenKt;
+ 	public fun <init> ()V
+@@ -239,7 +245,7 @@ public abstract interface class com/stripe/android/customersheet/SetupIntentClie
+ public final class com/stripe/android/elements/ece/ComposableSingletons$ExpressCheckoutElementContentKt {
+ 	public static final field INSTANCE Lcom/stripe/android/elements/ece/ComposableSingletons$ExpressCheckoutElementContentKt;
+ 	public fun <init> ()V
+-	public final fun getLambda$-1618674256$paymentsheet_release ()Lkotlin/jvm/functions/Function4;
++	public final fun getLambda$-264355572$paymentsheet_release ()Lkotlin/jvm/functions/Function5;
+ }
+ 
+ public final class com/stripe/android/link/LinkAppearance {
+@@ -398,12 +404,6 @@ public final class com/stripe/android/link/onramp/ui/ComposableSingletons$Onramp
+ 	public final fun getLambda$-1308679633$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
+ }
+ 
+-public final class com/stripe/android/link/onramp/ui/ComposableSingletons$UserAttestationScreenKt {
+-	public static final field INSTANCE Lcom/stripe/android/link/onramp/ui/ComposableSingletons$UserAttestationScreenKt;
+-	public fun <init> ()V
+-	public final fun getLambda$2076034739$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
+-}
+-
+ public final class com/stripe/android/link/ui/ComposableSingletons$ErrorTextKt {
+ 	public static final field INSTANCE Lcom/stripe/android/link/ui/ComposableSingletons$ErrorTextKt;
+ 	public fun <init> ()V
+@@ -635,6 +635,9 @@ public abstract interface class com/stripe/android/paymentelement/AnalyticEventC
+ 	public abstract fun onEvent (Lcom/stripe/android/paymentelement/AnalyticEvent;)V
+ }
+ 
++public abstract interface annotation class com/stripe/android/paymentelement/ApiConfigurationPreview : java/lang/annotation/Annotation {
++}
++
+ public abstract interface annotation class com/stripe/android/paymentelement/AppearanceAPIAdditionsPreview : java/lang/annotation/Annotation {
+ }
+ 
+@@ -713,6 +716,7 @@ public final class com/stripe/android/paymentelement/EmbeddedPaymentElement$Conf
+ 	public final fun allowsDelayedPaymentMethods (Z)Lcom/stripe/android/paymentelement/EmbeddedPaymentElement$Configuration$Builder;
+ 	public final fun allowsPaymentMethodsRequiringShippingAddress (Z)Lcom/stripe/android/paymentelement/EmbeddedPaymentElement$Configuration$Builder;
+ 	public final fun allowsRemovalOfLastSavedPaymentMethod (Z)Lcom/stripe/android/paymentelement/EmbeddedPaymentElement$Configuration$Builder;
++	public final fun apiConfiguration (Lcom/stripe/android/core/ApiConfiguration;)Lcom/stripe/android/paymentelement/EmbeddedPaymentElement$Configuration$Builder;
+ 	public final fun appearance (Lcom/stripe/android/paymentsheet/PaymentSheet$Appearance;)Lcom/stripe/android/paymentelement/EmbeddedPaymentElement$Configuration$Builder;
+ 	public final fun billingDetailsCollectionConfiguration (Lcom/stripe/android/paymentsheet/PaymentSheet$BillingDetailsCollectionConfiguration;)Lcom/stripe/android/paymentelement/EmbeddedPaymentElement$Configuration$Builder;
+ 	public final fun build ()Lcom/stripe/android/paymentelement/EmbeddedPaymentElement$Configuration;
+diff --git a/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt b/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
+index 2dedd20..c7f6807 100644
+--- a/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
++++ b/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
+@@ -14,12 +14,19 @@ import androidx.compose.runtime.Composable
+ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.graphics.toArgb
+ import androidx.fragment.app.Fragment
++import androidx.lifecycle.SavedStateHandle
++import androidx.lifecycle.ViewModel
++import androidx.lifecycle.ViewModelProvider
++import androidx.lifecycle.createSavedStateHandle
++import androidx.lifecycle.viewmodel.initializer
++import androidx.lifecycle.viewmodel.viewModelFactory
+ import com.stripe.android.CollectMissingLinkBillingDetailsPreview
+ import com.stripe.android.ExperimentalAllowsRemovalOfLastSavedPaymentMethodApi
+ import com.stripe.android.GooglePayJsonFactory
+ import com.stripe.android.LinkDisallowFundingSourceCreationPreview
+ import com.stripe.android.SharedPaymentTokenSessionPreview
+ import com.stripe.android.common.configuration.ConfigurationDefaults
++import com.stripe.android.core.ApiConfiguration
+ import com.stripe.android.core.reactnative.ReactNativeSdkInternal
+ import com.stripe.android.core.reactnative.UnregisterSignal
+ import com.stripe.android.core.strings.ResolvableString
+@@ -56,13 +63,23 @@ import com.stripe.android.uicore.getRawValueFromDimenResource
+ import dev.drewhamilton.poko.Poko
+ import kotlinx.parcelize.IgnoredOnParcel
+ import kotlinx.parcelize.Parcelize
++import java.util.UUID
+ 
+ /**
+  * A drop-in class that presents a bottom sheet to collect and process a customer's payment.
+  */
+ class PaymentSheet internal constructor(
+-    private val paymentSheetLauncher: PaymentSheetLauncher
++    private val paymentSheetLauncher: PaymentSheetLauncher,
++    private val storeViewModel: StoreViewModel
+ ) {
++    private constructor(
++        storeViewModel: StoreViewModel,
++        launcherFactory: (String) -> PaymentSheetLauncher,
++    ) : this(
++        paymentSheetLauncher = launcherFactory(storeViewModel.paymentElementCallbackIdentifier),
++        storeViewModel = storeViewModel,
++    )
++
+     /**
+      * Constructor to be used when launching [PaymentSheet] from a [ComponentActivity].
+      *
+@@ -77,7 +94,17 @@ class PaymentSheet internal constructor(
+         activity: ComponentActivity,
+         callback: PaymentSheetResultCallback
+     ) : this(
+-        DefaultPaymentSheetLauncher(activity, callback)
++        storeViewModel = ViewModelProvider.create(
++            owner = activity,
++            factory = StoreViewModel.Factory
++        )[StoreViewModel::class],
++        launcherFactory = { id ->
++            DefaultPaymentSheetLauncher(
++                activity = activity,
++                callback = callback,
++                paymentElementCallbackIdentifier = id,
++            )
++        }
+     )
+ 
+     /**
+@@ -101,9 +128,20 @@ class PaymentSheet internal constructor(
+         externalPaymentMethodConfirmHandler: ExternalPaymentMethodConfirmHandler,
+         callback: PaymentSheetResultCallback,
+     ) : this(
+-        DefaultPaymentSheetLauncher(activity, callback)
++        storeViewModel = ViewModelProvider.create(
++            owner = activity,
++            factory = StoreViewModel.Factory
++        )[StoreViewModel::class],
++        launcherFactory = { id ->
++            DefaultPaymentSheetLauncher(
++                activity = activity,
++                callback = callback,
++                paymentElementCallbackIdentifier = id,
++            )
++        }
+     ) {
+         setPaymentSheetCallbacks(
++            storeViewModel.paymentElementCallbackIdentifier,
+             PaymentElementCallbacks.Builder()
+                 .externalPaymentMethodConfirmHandler(externalPaymentMethodConfirmHandler)
+                 .build()
+@@ -132,9 +170,20 @@ class PaymentSheet internal constructor(
+         createIntentCallback: CreateIntentCallback,
+         paymentResultCallback: PaymentSheetResultCallback,
+     ) : this(
+-        DefaultPaymentSheetLauncher(activity, paymentResultCallback)
++        storeViewModel = ViewModelProvider.create(
++            owner = activity,
++            factory = StoreViewModel.Factory
++        )[StoreViewModel::class],
++        launcherFactory = { id ->
++            DefaultPaymentSheetLauncher(
++                activity = activity,
++                callback = paymentResultCallback,
++                paymentElementCallbackIdentifier = id,
++            )
++        }
+     ) {
+         setPaymentSheetCallbacks(
++            storeViewModel.paymentElementCallbackIdentifier,
+             PaymentElementCallbacks.Builder()
+                 .createIntentCallback(createIntentCallback)
+                 .build()
+@@ -167,9 +216,20 @@ class PaymentSheet internal constructor(
+         externalPaymentMethodConfirmHandler: ExternalPaymentMethodConfirmHandler,
+         paymentResultCallback: PaymentSheetResultCallback,
+     ) : this(
+-        DefaultPaymentSheetLauncher(activity, paymentResultCallback)
++        storeViewModel = ViewModelProvider.create(
++            owner = activity,
++            factory = StoreViewModel.Factory
++        )[StoreViewModel::class],
++        launcherFactory = { id ->
++            DefaultPaymentSheetLauncher(
++                activity = activity,
++                callback = paymentResultCallback,
++                paymentElementCallbackIdentifier = id,
++            )
++        }
+     ) {
+         setPaymentSheetCallbacks(
++            storeViewModel.paymentElementCallbackIdentifier,
+             PaymentElementCallbacks.Builder()
+                 .createIntentCallback(createIntentCallback)
+                 .externalPaymentMethodConfirmHandler(externalPaymentMethodConfirmHandler)
+@@ -191,7 +251,17 @@ class PaymentSheet internal constructor(
+         fragment: Fragment,
+         callback: PaymentSheetResultCallback
+     ) : this(
+-        DefaultPaymentSheetLauncher(fragment, callback)
++        storeViewModel = ViewModelProvider.create(
++            owner = fragment,
++            factory = StoreViewModel.Factory
++        )[StoreViewModel::class],
++        launcherFactory = { id ->
++            DefaultPaymentSheetLauncher(
++                fragment = fragment,
++                callback = callback,
++                paymentElementCallbackIdentifier = id,
++            )
++        }
+     )
+ 
+     /**
+@@ -215,9 +285,20 @@ class PaymentSheet internal constructor(
+         externalPaymentMethodConfirmHandler: ExternalPaymentMethodConfirmHandler,
+         callback: PaymentSheetResultCallback,
+     ) : this(
+-        DefaultPaymentSheetLauncher(fragment, callback)
++        storeViewModel = ViewModelProvider.create(
++            owner = fragment,
++            factory = StoreViewModel.Factory
++        )[StoreViewModel::class],
++        launcherFactory = { id ->
++            DefaultPaymentSheetLauncher(
++                fragment = fragment,
++                callback = callback,
++                paymentElementCallbackIdentifier = id,
++            )
++        }
+     ) {
+         setPaymentSheetCallbacks(
++            storeViewModel.paymentElementCallbackIdentifier,
+             PaymentElementCallbacks.Builder()
+                 .externalPaymentMethodConfirmHandler(externalPaymentMethodConfirmHandler)
+                 .build()
+@@ -246,9 +327,20 @@ class PaymentSheet internal constructor(
+         createIntentCallback: CreateIntentCallback,
+         paymentResultCallback: PaymentSheetResultCallback,
+     ) : this(
+-        DefaultPaymentSheetLauncher(fragment, paymentResultCallback)
++        storeViewModel = ViewModelProvider.create(
++            owner = fragment,
++            factory = StoreViewModel.Factory
++        )[StoreViewModel::class],
++        launcherFactory = { id ->
++            DefaultPaymentSheetLauncher(
++                fragment = fragment,
++                callback = paymentResultCallback,
++                paymentElementCallbackIdentifier = id,
++            )
++        }
+     ) {
+         setPaymentSheetCallbacks(
++            storeViewModel.paymentElementCallbackIdentifier,
+             PaymentElementCallbacks.Builder()
+                 .createIntentCallback(createIntentCallback)
+                 .build()
+@@ -281,9 +373,20 @@ class PaymentSheet internal constructor(
+         externalPaymentMethodConfirmHandler: ExternalPaymentMethodConfirmHandler,
+         paymentResultCallback: PaymentSheetResultCallback,
+     ) : this(
+-        DefaultPaymentSheetLauncher(fragment, paymentResultCallback)
++        storeViewModel = ViewModelProvider.create(
++            owner = fragment,
++            factory = StoreViewModel.Factory
++        )[StoreViewModel::class],
++        launcherFactory = { id ->
++            DefaultPaymentSheetLauncher(
++                fragment = fragment,
++                callback = paymentResultCallback,
++                paymentElementCallbackIdentifier = id,
++            )
++        }
+     ) {
+         setPaymentSheetCallbacks(
++            storeViewModel.paymentElementCallbackIdentifier,
+             PaymentElementCallbacks.Builder()
+                 .createIntentCallback(createIntentCallback)
+                 .externalPaymentMethodConfirmHandler(externalPaymentMethodConfirmHandler)
+@@ -373,15 +476,38 @@ class PaymentSheet internal constructor(
+          * @param activity The Activity that is presenting [PaymentSheet].
+          */
+         fun build(activity: ComponentActivity): PaymentSheet {
+-            initializeCallbacks()
+-            return PaymentSheet(DefaultPaymentSheetLauncher(activity, resultCallback))
++            val storeViewModel = ViewModelProvider.create(
++                owner = activity,
++                factory = StoreViewModel.Factory
++            )[StoreViewModel::class]
++            initializeCallbacks(storeViewModel.paymentElementCallbackIdentifier)
++            return PaymentSheet(
++                paymentSheetLauncher = DefaultPaymentSheetLauncher(
++                    activity = activity,
++                    callback = resultCallback,
++                    paymentElementCallbackIdentifier = storeViewModel.paymentElementCallbackIdentifier,
++                ),
++                storeViewModel = storeViewModel,
++            )
+         }
+ 
+         @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+         @ReactNativeSdkInternal
+         fun build(activity: ComponentActivity, signal: UnregisterSignal): PaymentSheet {
+-            initializeCallbacks()
+-            return PaymentSheet(DefaultPaymentSheetLauncher(activity, signal, resultCallback))
++            val storeViewModel = ViewModelProvider.create(
++                owner = activity,
++                factory = StoreViewModel.Factory
++            )[StoreViewModel::class]
++            initializeCallbacks(storeViewModel.paymentElementCallbackIdentifier)
++            return PaymentSheet(
++                paymentSheetLauncher = DefaultPaymentSheetLauncher(
++                    activity = activity,
++                    signal = signal,
++                    callback = resultCallback,
++                    paymentElementCallbackIdentifier = storeViewModel.paymentElementCallbackIdentifier,
++                ),
++                storeViewModel = storeViewModel,
++            )
+         }
+ 
+         /**
+@@ -390,8 +516,19 @@ class PaymentSheet internal constructor(
+          * @param fragment the Fragment that is presenting the payment sheet.
+          */
+         fun build(fragment: Fragment): PaymentSheet {
+-            initializeCallbacks()
+-            return PaymentSheet(DefaultPaymentSheetLauncher(fragment, resultCallback))
++            val storeViewModel = ViewModelProvider.create(
++                owner = fragment,
++                factory = StoreViewModel.Factory
++            )[StoreViewModel::class]
++            initializeCallbacks(storeViewModel.paymentElementCallbackIdentifier)
++            return PaymentSheet(
++                paymentSheetLauncher = DefaultPaymentSheetLauncher(
++                    fragment = fragment,
++                    callback = resultCallback,
++                    paymentElementCallbackIdentifier = storeViewModel.paymentElementCallbackIdentifier,
++                ),
++                storeViewModel = storeViewModel,
++            )
+         }
+ 
+         /**
+@@ -408,8 +545,8 @@ class PaymentSheet internal constructor(
+             )
+         }
+ 
+-        private fun initializeCallbacks() {
+-            setPaymentSheetCallbacks(callbacksBuilder.build())
++        private fun initializeCallbacks(callbackIdentifier: String) {
++            setPaymentSheetCallbacks(callbackIdentifier, callbacksBuilder.build())
+         }
+     }
+ 
+@@ -812,6 +949,7 @@ class PaymentSheet internal constructor(
+         internal val termsDisplay: Map<PaymentMethod.Type, TermsDisplay> = emptyMap(),
+         internal val opensCardScannerAutomatically: Boolean = ConfigurationDefaults.opensCardScannerAutomatically,
+         internal val userOverrideCountry: String? = ConfigurationDefaults.userOverrideCountry,
++        internal val apiConfiguration: ApiConfiguration.State? = null,
+     ) : Parcelable {
+ 
+         @JvmOverloads
+@@ -917,6 +1055,7 @@ class PaymentSheet internal constructor(
+             allowsRemovalOfLastSavedPaymentMethod = ConfigurationDefaults.allowsRemovalOfLastSavedPaymentMethod,
+             externalPaymentMethods = ConfigurationDefaults.externalPaymentMethods,
+             customPaymentMethods = ConfigurationDefaults.customPaymentMethods,
++            apiConfiguration = null,
+         )
+ 
+         /**
+@@ -952,6 +1091,7 @@ class PaymentSheet internal constructor(
+             private var opensCardScannerAutomatically: Boolean =
+                 ConfigurationDefaults.opensCardScannerAutomatically
+             private var userOverrideCountry: String? = ConfigurationDefaults.userOverrideCountry
++            private var apiConfiguration: ApiConfiguration.State? = null
+ 
+             private var customPaymentMethods: List<CustomPaymentMethod> =
+                 ConfigurationDefaults.customPaymentMethods
+@@ -1129,6 +1269,17 @@ class PaymentSheet internal constructor(
+                 this.userOverrideCountry = userOverrideCountry
+             }
+ 
++            /**
++             * Sets the API credentials to use for PaymentSheet or FlowController.
++             *
++             * When not set, the payment element uses the credentials initialized through
++             * [com.stripe.android.PaymentConfiguration].
++             */
++            @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
++            fun apiConfiguration(apiConfiguration: ApiConfiguration) = apply {
++                this.apiConfiguration = apiConfiguration.build()
++            }
++
+             fun build() = Configuration(
+                 merchantDisplayName = merchantDisplayName,
+                 customer = customer,
+@@ -1154,6 +1305,7 @@ class PaymentSheet internal constructor(
+                 termsDisplay = termsDisplay,
+                 opensCardScannerAutomatically = opensCardScannerAutomatically,
+                 userOverrideCountry = userOverrideCountry,
++                apiConfiguration = apiConfiguration,
+             )
+         }
+ 
+@@ -1196,6 +1348,11 @@ class PaymentSheet internal constructor(
+                 @Suppress("DEPRECATION")
+                 googlePlacesApiKey?.let { googlePlacesApiKey(it) }
+                 userOverrideCountry?.let { userOverrideCountry(it) }
++                apiConfiguration?.let {
++                    apiConfiguration(
++                        ApiConfiguration(it.publishableKey).stripeAccountId(it.stripeAccountId)
++                    )
++                }
+             }
+     }
+ 
+@@ -4421,9 +4578,30 @@ class PaymentSheet internal constructor(
+         }
+     }
+ 
++    internal class StoreViewModel(
++        private val savedStateHandle: SavedStateHandle
++    ) : ViewModel() {
++        val paymentElementCallbackIdentifier: String
++            get() {
++                val storeId = savedStateHandle.get<String>(ID_KEY) ?: UUID.randomUUID().toString()
++                savedStateHandle[ID_KEY] = storeId
++                return storeId
++            }
++
++        companion object {
++            private const val ID_KEY = "PAYMENTSHEET_ID"
++
++            val Factory = viewModelFactory {
++                initializer {
++                    StoreViewModel(createSavedStateHandle())
++                }
++            }
++        }
++    }
++
+     companion object {
+-        private fun setPaymentSheetCallbacks(callbacks: PaymentElementCallbacks) {
+-            PaymentElementCallbackReferences[PAYMENT_SHEET_DEFAULT_CALLBACK_IDENTIFIER] = callbacks
++        private fun setPaymentSheetCallbacks(callbackIdentifier: String, callbacks: PaymentElementCallbacks) {
++            PaymentElementCallbackReferences[callbackIdentifier] = callbacks
+         }
+ 
+         private fun setFlowControllerCallbacks(callbacks: PaymentElementCallbacks) {

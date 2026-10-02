@@ -1,0 +1,126 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 9951144..0d13f24 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,11 +3,22 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.14.0 - 2026-08-03
++
++### CryptoOnramp
++* [ADDED] Added Tempo as a supported wallet network and pinned Crypto Onramp internal API calls to the preview API version required by newer networks.
++
++### PaymentSheet
++* [ADDED] `LinkController` now supports appearance customization via `LinkAppearance` (private preview).
++
+ ## 23.13.1 - 2026-07-23
+ 
+ ### Payments
+ * [FIXED][13544](https://github.com/stripe/stripe-android/pull/13544) Fixed an issue where the SDK could fail to correctly reconcile and close out an Alipay payment in test mode.
+ 
++### PaymentSheet
++* [ADDED] Added `billingDetailsCollectionConfiguration` to `LinkController.Configuration` (private preview).
++
+ ## 23.13.0 - 2026-07-20
+ 
+ ### Payments
+diff --git a/README.md b/README.md
+index 81ad118..d23a505 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.13.1'
++    implementation 'com.stripe:stripe-android:23.14.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index d444594..f5883a1 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.13.1
++23.14.0
+diff --git a/crypto-onramp/api/crypto-onramp.api b/crypto-onramp/api/crypto-onramp.api
+index fa29066..9dd1ba7 100644
+--- a/crypto-onramp/api/crypto-onramp.api
++++ b/crypto-onramp/api/crypto-onramp.api
+@@ -183,6 +183,7 @@ public final class com/stripe/android/crypto/onramp/model/CryptoNetwork : java/l
+ 	public static final field Solana Lcom/stripe/android/crypto/onramp/model/CryptoNetwork;
+ 	public static final field Stellar Lcom/stripe/android/crypto/onramp/model/CryptoNetwork;
+ 	public static final field Sui Lcom/stripe/android/crypto/onramp/model/CryptoNetwork;
++	public static final field Tempo Lcom/stripe/android/crypto/onramp/model/CryptoNetwork;
+ 	public static final field Worldchain Lcom/stripe/android/crypto/onramp/model/CryptoNetwork;
+ 	public static final field Xrpl Lcom/stripe/android/crypto/onramp/model/CryptoNetwork;
+ 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+diff --git a/gradle.properties b/gradle.properties
+index 8743993..97c9b07 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -23,4 +23,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.13.1
++VERSION_NAME=23.14.0
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index d95aee8..be3f49a 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -231,6 +231,43 @@ public abstract interface class com/stripe/android/customersheet/SetupIntentClie
+ 	public abstract fun provideSetupIntentClientSecret (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+ }
+ 
++public final class com/stripe/android/link/LinkAppearance {
++	public static final field $stable I
++	public fun <init> ()V
++	public final fun darkColors (Lcom/stripe/android/link/LinkAppearance$Colors;)Lcom/stripe/android/link/LinkAppearance;
++	public final fun lightColors (Lcom/stripe/android/link/LinkAppearance$Colors;)Lcom/stripe/android/link/LinkAppearance;
++	public final fun primaryButton (Lcom/stripe/android/link/LinkAppearance$PrimaryButton;)Lcom/stripe/android/link/LinkAppearance;
++	public final fun reduceLinkBranding (Z)Lcom/stripe/android/link/LinkAppearance;
++	public final fun style (Lcom/stripe/android/link/LinkAppearance$Style;)Lcom/stripe/android/link/LinkAppearance;
++}
++
++public final class com/stripe/android/link/LinkAppearance$Colors {
++	public static final field $stable I
++	public fun <init> ()V
++	public final fun borderSelected-8_81llA (J)Lcom/stripe/android/link/LinkAppearance$Colors;
++	public final fun contentOnPrimary-8_81llA (J)Lcom/stripe/android/link/LinkAppearance$Colors;
++	public final fun primary-8_81llA (J)Lcom/stripe/android/link/LinkAppearance$Colors;
++}
++
++public final class com/stripe/android/link/LinkAppearance$PrimaryButton {
++	public static final field $stable I
++	public fun <init> ()V
++	public final fun cornerRadiusDp (Ljava/lang/Float;)Lcom/stripe/android/link/LinkAppearance$PrimaryButton;
++	public final fun heightDp (Ljava/lang/Float;)Lcom/stripe/android/link/LinkAppearance$PrimaryButton;
++}
++
++public final class com/stripe/android/link/LinkAppearance$Style : java/lang/Enum, android/os/Parcelable {
++	public static final field ALWAYS_DARK Lcom/stripe/android/link/LinkAppearance$Style;
++	public static final field ALWAYS_LIGHT Lcom/stripe/android/link/LinkAppearance$Style;
++	public static final field AUTOMATIC Lcom/stripe/android/link/LinkAppearance$Style;
++	public static final field CREATOR Landroid/os/Parcelable$Creator;
++	public final fun describeContents ()I
++	public static fun getEntries ()Lkotlin/enums/EnumEntries;
++	public static fun valueOf (Ljava/lang/String;)Lcom/stripe/android/link/LinkAppearance$Style;
++	public static fun values ()[Lcom/stripe/android/link/LinkAppearance$Style;
++	public final fun writeToParcel (Landroid/os/Parcel;I)V
++}
++
+ public final class com/stripe/android/link/LinkController {
+ 	public static final field $stable I
+ 	public final fun configure-gIAlu-s (Lcom/stripe/android/link/LinkController$Configuration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+@@ -249,6 +286,8 @@ public final class com/stripe/android/link/LinkController$Configuration {
+ 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+ 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+ 	public final fun allowLogout (Z)Lcom/stripe/android/link/LinkController$Configuration;
++	public final fun appearance (Lcom/stripe/android/link/LinkAppearance;)Lcom/stripe/android/link/LinkController$Configuration;
++	public final fun billingDetailsCollectionConfiguration (Lcom/stripe/android/paymentsheet/PaymentSheet$BillingDetailsCollectionConfiguration;)Lcom/stripe/android/link/LinkController$Configuration;
+ 	public final fun email (Ljava/lang/String;)Lcom/stripe/android/link/LinkController$Configuration;
+ 	public final fun paymentMethodTypes (Ljava/util/List;)Lcom/stripe/android/link/LinkController$Configuration;
+ 	public final fun phoneNumber (Ljava/lang/String;)Lcom/stripe/android/link/LinkController$Configuration;

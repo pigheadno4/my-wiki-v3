@@ -240,7 +240,13 @@ Pay in 4 interest-free installments or monthly payments up to 36 months. Max cre
 
 Use Dynamic Payment Methods (enabled by default) via Checkout, Payment Element, or hosted Invoice page. No individual integration required per method. **Payment Method Messaging Element** (PMME) recommended for on-site BNPL messaging — dynamically shows relevant options. The legacy `affirmMessage` Element (Affirm-only) is deprecated in the latest Stripe.js.
 
+## Android SDK `23.18.0` Evidence
+
+PaymentSheet release notes announce SeQura and Scalapay support. The retained payments-core API adds `PaymentMethod.Type.Sequra`/`Scalapay` and corresponding creation overloads. These are version-qualified announcements and declarations, not proof of enabled merchant access, Android form/redirect implementation or changed commercial terms. Existing provider-specific details above are not revalidated by this SDK capsule. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## Sources
+
+- [[source-github-stripe-android]] - Android 23.18.0 SeQura/Scalapay declarations and PaymentSheet support announcements
 
 - [[source-stripe-bnpl-overview]] — product/API/transaction support matrices for 11 BNPL methods
 - [[source-stripe-affirm]] — Affirm deep-dive: financing packages, payment tiers, refunds, disputes, prohibited categories, Connect requirements

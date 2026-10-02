@@ -1,0 +1,200 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0d13f24..b9ceb63 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,15 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.15.0 - 2026-08-10
++
++### PaymentSheet
++* [FIXED] LinkController (private preview) now returns an error when no funding sources are available for a Link session, rather than silently falling back to card.
++* [ADDED] Added support for the Agrobank, MBSB Bank, and Bank of China FPX banks, and the FPX bank list is now displayed in alphabetical order.
++
++### CryptoOnramp
++* [ADDED][13623](https://github.com/stripe/stripe-android/pull/13623) Added optional Samsung Pay support to Crypto Onramp, including availability checks, payment credential collection, and developer-facing error details. Integrators must provide the Samsung Pay SDK in their application.
++
+ ## 23.14.0 - 2026-08-03
+ 
+ ### CryptoOnramp
+diff --git a/README.md b/README.md
+index d23a505..ba8b270 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.14.0'
++    implementation 'com.stripe:stripe-android:23.15.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index f5883a1..2e56e87 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.14.0
++23.15.0
+diff --git a/crypto-onramp/api/crypto-onramp.api b/crypto-onramp/api/crypto-onramp.api
+index 9dd1ba7..7423bc1 100644
+--- a/crypto-onramp/api/crypto-onramp.api
++++ b/crypto-onramp/api/crypto-onramp.api
+@@ -131,6 +131,37 @@ public final class com/stripe/android/crypto/onramp/exception/SDKVersion {
+ 	public fun toString ()Ljava/lang/String;
+ }
+ 
++public final class com/stripe/android/crypto/onramp/exception/SamsungPayException : java/lang/IllegalStateException, com/stripe/android/crypto/onramp/exception/StripeCryptoOnrampError {
++	public static final field $stable I
++	public fun getCode ()Ljava/lang/String;
++	public fun getDeveloperMessage ()Ljava/lang/String;
++	public fun getDocUrl ()Ljava/lang/String;
++	public final fun getReason ()Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public final fun getSamsungPayErrorCode ()Ljava/lang/Integer;
++	public fun getUnderlyingError ()Ljava/lang/Throwable;
++	public fun getUserMessage ()Ljava/lang/String;
++}
++
++public final class com/stripe/android/crypto/onramp/exception/SamsungPayException$Reason : java/lang/Enum {
++	public static final field AppUpdateRequired Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field CredentialsFailed Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field InvalidConfiguration Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field NotConfigured Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field NotReady Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field NotSupported Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field OperationFailed Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field PlatformKeyUnavailable Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field PresentationFailed Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field SdkIncompatible Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field SdkUnavailable Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field SetupRequired Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static final field TemporarilyUnavailable Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public final fun getCode ()Ljava/lang/String;
++	public static fun getEntries ()Lkotlin/enums/EnumEntries;
++	public static fun valueOf (Ljava/lang/String;)Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++	public static fun values ()[Lcom/stripe/android/crypto/onramp/exception/SamsungPayException$Reason;
++}
++
+ public abstract interface class com/stripe/android/crypto/onramp/exception/StripeCryptoOnrampError {
+ 	public abstract fun getCode ()Ljava/lang/String;
+ 	public abstract fun getDeveloperMessage ()Ljava/lang/String;
+@@ -274,6 +305,7 @@ public final class com/stripe/android/crypto/onramp/model/OnrampCallbacks {
+ 	public final fun collectPaymentCallback (Lcom/stripe/android/crypto/onramp/model/OnrampCollectPaymentMethodCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun googlePayIsReadyCallback (Lkotlin/jvm/functions/Function1;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun onrampSessionClientSecretProvider (Lkotlin/jvm/functions/Function2;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
++	public final fun samsungPayIsReadyCallback (Lkotlin/jvm/functions/Function2;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun userAttestationCallback (Lcom/stripe/android/crypto/onramp/model/OnrampUserAttestationCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun verifyIdentityCallback (Lcom/stripe/android/crypto/onramp/model/OnrampVerifyIdentityCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+ 	public final fun verifyKycCallback (Lcom/stripe/android/crypto/onramp/model/OnrampVerifyKycCallback;)Lcom/stripe/android/crypto/onramp/model/OnrampCallbacks;
+@@ -330,6 +362,16 @@ public final class com/stripe/android/crypto/onramp/model/OnrampConfiguration {
+ 	public final fun googlePayConfig (Lcom/stripe/android/googlepaylauncher/GooglePayPaymentMethodLauncher$Config;)Lcom/stripe/android/crypto/onramp/model/OnrampConfiguration;
+ 	public final fun merchantDisplayName (Ljava/lang/String;)Lcom/stripe/android/crypto/onramp/model/OnrampConfiguration;
+ 	public final fun publishableKey (Ljava/lang/String;)Lcom/stripe/android/crypto/onramp/model/OnrampConfiguration;
++	public final fun samsungPayConfig (Lcom/stripe/android/crypto/onramp/model/OnrampConfiguration$SamsungPayConfig;)Lcom/stripe/android/crypto/onramp/model/OnrampConfiguration;
++}
++
++public final class com/stripe/android/crypto/onramp/model/OnrampConfiguration$SamsungPayConfig {
++	public static final field $stable I
++	public fun <init> (Ljava/lang/String;)V
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
++	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+ }
+ 
+ public abstract interface class com/stripe/android/crypto/onramp/model/OnrampConfigurationResult {
+@@ -566,6 +608,7 @@ public final class com/stripe/android/crypto/onramp/model/PaymentMethodDisplayDa
+ 	public static final field BankAccount Lcom/stripe/android/crypto/onramp/model/PaymentMethodDisplayData$Type;
+ 	public static final field Card Lcom/stripe/android/crypto/onramp/model/PaymentMethodDisplayData$Type;
+ 	public static final field GooglePay Lcom/stripe/android/crypto/onramp/model/PaymentMethodDisplayData$Type;
++	public static final field SamsungPay Lcom/stripe/android/crypto/onramp/model/PaymentMethodDisplayData$Type;
+ 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+ 	public static fun valueOf (Ljava/lang/String;)Lcom/stripe/android/crypto/onramp/model/PaymentMethodDisplayData$Type;
+ 	public static fun values ()[Lcom/stripe/android/crypto/onramp/model/PaymentMethodDisplayData$Type;
+@@ -600,16 +643,36 @@ public final class com/stripe/android/crypto/onramp/model/PaymentMethodSelection
+ 	public fun getType ()Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
+ }
+ 
++public final class com/stripe/android/crypto/onramp/model/PaymentMethodSelection$SamsungPay : com/stripe/android/crypto/onramp/model/PaymentMethodSelection {
++	public static final field $stable I
++	public fun <init> (Ljava/lang/String;JLjava/lang/String;)V
++	public fun getType ()Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
++}
++
+ public final class com/stripe/android/crypto/onramp/model/PaymentMethodType : java/lang/Enum {
+ 	public static final field BankAccount Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
+ 	public static final field Card Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
+ 	public static final field CardAndBankAccount Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
+ 	public static final field GooglePay Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
++	public static final field SamsungPay Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
+ 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+ 	public static fun valueOf (Ljava/lang/String;)Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
+ 	public static fun values ()[Lcom/stripe/android/crypto/onramp/model/PaymentMethodType;
+ }
+ 
++public abstract class com/stripe/android/crypto/onramp/model/SamsungPayAvailabilityResult {
++	public static final field $stable I
++}
++
++public final class com/stripe/android/crypto/onramp/model/SamsungPayAvailabilityResult$Available : com/stripe/android/crypto/onramp/model/SamsungPayAvailabilityResult {
++	public static final field $stable I
++}
++
++public final class com/stripe/android/crypto/onramp/model/SamsungPayAvailabilityResult$Unavailable : com/stripe/android/crypto/onramp/model/SamsungPayAvailabilityResult {
++	public static final field $stable I
++	public final fun getError ()Lcom/stripe/android/crypto/onramp/exception/SamsungPayException;
++}
++
+ public final class com/stripe/android/crypto/onramp/model/WalletOwnershipChallenge {
+ 	public static final field $stable I
+ 	public fun equals (Ljava/lang/Object;)Z
+diff --git a/crypto-onramp/build.gradle b/crypto-onramp/build.gradle
+index 233719a..e9c36ee 100644
+--- a/crypto-onramp/build.gradle
++++ b/crypto-onramp/build.gradle
+@@ -37,6 +37,7 @@ dependencies {
+     testImplementation testLibs.mockito.kotlin
+     testImplementation testLibs.robolectric
+     testImplementation testLibs.truth
++    testImplementation testLibs.turbine
+ 
+     androidTestImplementation testLibs.androidx.junit
+     androidTestImplementation testLibs.espresso.core
+diff --git a/gradle.properties b/gradle.properties
+index 97c9b07..704e7b1 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -23,4 +23,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.14.0
++VERSION_NAME=23.15.0
+diff --git a/paymentsheet/build.gradle b/paymentsheet/build.gradle
+index b2a476e..ae93a0d 100644
+--- a/paymentsheet/build.gradle
++++ b/paymentsheet/build.gradle
+@@ -7,6 +7,21 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+ apply plugin: 'app.cash.paparazzi'
+ apply plugin: 'dev.drewhamilton.poko'
+ 
++android {
++    testOptions {
++        managedDevices {
++            localDevices {
++                // google_apis includes an IME, unlike the regular aosp-atd test image.
++                register("pixel2api33ime") {
++                    device = "Pixel 2"
++                    apiLevel = 33
++                    systemImageSource = "google_apis"
++                }
++            }
++        }
++    }
++}
++
+ dependencies {
+     api project(":payments-core")
+     implementation project(':payments-ui-core')

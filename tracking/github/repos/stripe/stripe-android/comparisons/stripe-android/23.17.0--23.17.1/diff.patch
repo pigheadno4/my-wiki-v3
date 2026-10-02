@@ -1,0 +1,85 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 031da12..e74b517 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,13 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.17.1 - 2026-08-31
++
++### PaymentSheet
++* [FIXED] Fixed an issue where Klarna billing address fields did not update when the country changed.
++* [FIXED] Fixed an issue where Wero displayed duplicate country fields when collecting a full billing address.
++* [FIXED][13323](https://github.com/stripe/stripe-android/pull/13323) Fixed an issue where selecting "Not you?" during Link 2FA did not fully log out the previous account, preventing subsequent logins.
++
+ ## 23.17.0 - 2026-08-24
+ 
+ ### PaymentSheet
+diff --git a/README.md b/README.md
+index d19248e..1057108 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.17.0'
++    implementation 'com.stripe:stripe-android:23.17.1'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index fcf339b..0115470 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.17.0
++23.17.1
+diff --git a/gradle.properties b/gradle.properties
+index 4582c97..b42c465 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -23,4 +23,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.17.0
++VERSION_NAME=23.17.1
+diff --git a/identity/api/identity.api b/identity/api/identity.api
+index 347fd9f..a1f574f 100644
+--- a/identity/api/identity.api
++++ b/identity/api/identity.api
+@@ -121,6 +121,12 @@ public final class com/stripe/android/identity/ui/ComposableSingletons$DocumentS
+ 	public final fun getLambda$1467661199$identity_release ()Lkotlin/jvm/functions/Function2;
+ }
+ 
++public final class com/stripe/android/identity/ui/ComposableSingletons$IdentityTopAppBarKt {
++	public static final field INSTANCE Lcom/stripe/android/identity/ui/ComposableSingletons$IdentityTopAppBarKt;
++	public fun <init> ()V
++	public final fun getLambda$1456593140$identity_release ()Lkotlin/jvm/functions/Function2;
++}
++
+ public final class com/stripe/android/identity/ui/ComposableSingletons$UploadScreenKt {
+ 	public static final field INSTANCE Lcom/stripe/android/identity/ui/ComposableSingletons$UploadScreenKt;
+ 	public fun <init> ()V
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index 07a7429..c9e7316 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -2209,15 +2209,6 @@ public final class com/stripe/android/paymentsheet/databinding/StripeFragmentPri
+ 	public static fun inflate (Landroid/view/LayoutInflater;Landroid/view/ViewGroup;Z)Lcom/stripe/android/paymentsheet/databinding/StripeFragmentPrimaryButtonContainerBinding;
+ }
+ 
+-public final class com/stripe/android/paymentsheet/databinding/StripeGooglePayButtonBinding : androidx/viewbinding/ViewBinding {
+-	public final field googlePayButtonLayout Landroid/widget/RelativeLayout;
+-	public final field googlePayPaymentButton Lcom/google/android/gms/wallet/button/PayButton;
+-	public final field googlePayPrimaryButton Lcom/stripe/android/paymentsheet/ui/PrimaryButton;
+-	public static fun bind (Landroid/view/View;)Lcom/stripe/android/paymentsheet/databinding/StripeGooglePayButtonBinding;
+-	public fun getRoot ()Landroid/view/View;
+-	public static fun inflate (Landroid/view/LayoutInflater;Landroid/view/ViewGroup;)Lcom/stripe/android/paymentsheet/databinding/StripeGooglePayButtonBinding;
+-}
+-
+ public final class com/stripe/android/paymentsheet/model/PaymentOption {
+ 	public static final field $stable I
+ 	public fun <init> (ILjava/lang/String;)V

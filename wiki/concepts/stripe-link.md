@@ -115,6 +115,10 @@ Enable via: latest Stripe Mobile SDK + Link in Dashboard + dynamic PMs (`automat
 
 **Sandbox OTP**: `000000` (differs from web — web accepts any 6 digits)
 
+### Android `23.19.0` Wallet Entry Contract
+
+`PaymentSheet.LinkConfiguration.Display.WalletButtonHidden` remains Link-enabled but now documents showing its button/row for a detected existing Link user and hiding it otherwise, with automatic verification and inline sign-up retained. In the earlier 23.16.0 through retained 23.18.0 evidence, the documented button/row was hidden regardless; both histories remain version-qualified in [[source-github-stripe-android]] and [[changelog-github-stripe-android]]. This is native Android source evidence, not a change to the web integration paths above. Detection/rendering code and device verification are outside the capsule. `Never` remains distinct from hiding a wallet entry.
+
 ## Card Element (Deprecated for Link)
 
 > Not recommended — use Link Authentication Element, Express Checkout Element, or Payment Element instead.
@@ -157,6 +161,7 @@ Its typed events are `ready`, `focus`, `blur`, `escape`, `loaderstart`, and `loa
 
 ## Sources
 
+- [[source-github-stripe-android]] - versioned native Link wallet-button visibility contract at 23.19.0, with prior contract retained
 - [[source-github-react-stripe-js]] - beta Link Signup React wrapper and provider restrictions at 6.10.0
 
 - [[source-github-stripe-js]] - version-qualified Link Signup beta contract at 9.16.0

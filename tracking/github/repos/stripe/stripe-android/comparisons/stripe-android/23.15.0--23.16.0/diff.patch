@@ -1,0 +1,213 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b9ceb63..dc58cf9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,11 +3,27 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.16.0 - 2026-08-18
++
++### PaymentSheet
++* [ADDED] Added `PaymentSheet.LinkConfiguration.Display.WalletButtonHidden`, which keeps Link enabled but hides its button from the payment element UI.
++* [CHANGED] Inline address autocomplete is now enabled by default in PaymentSheet and FlowController.
++
++### AddressElement
++* [CHANGED] Inline address autocomplete is now enabled by default.
++
++### CryptoOnramp
++* [ADDED] Added `OnrampCoordinator.deleteWalletAddress(walletId:)` to delete a registered wallet address.
++
+ ## 23.15.0 - 2026-08-10
+ 
+ ### PaymentSheet
+ * [FIXED] LinkController (private preview) now returns an error when no funding sources are available for a Link session, rather than silently falling back to card.
+ * [ADDED] Added support for the Agrobank, MBSB Bank, and Bank of China FPX banks, and the FPX bank list is now displayed in alphabetical order.
++* [CHANGED] Inline address autocomplete is now enabled by default in PaymentSheet and FlowController.
++
++### AddressElement
++* [CHANGED] Inline address autocomplete is now enabled by default.
+ 
+ ### CryptoOnramp
+ * [ADDED][13623](https://github.com/stripe/stripe-android/pull/13623) Added optional Samsung Pay support to Crypto Onramp, including availability checks, payment credential collection, and developer-facing error details. Integrators must provide the Samsung Pay SDK in their application.
+diff --git a/README.md b/README.md
+index ba8b270..692150a 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.15.0'
++    implementation 'com.stripe:stripe-android:23.16.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index 2e56e87..746112b 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.15.0
++23.16.0
+diff --git a/crypto-onramp/api/crypto-onramp.api b/crypto-onramp/api/crypto-onramp.api
+index 7423bc1..5e8002e 100644
+--- a/crypto-onramp/api/crypto-onramp.api
++++ b/crypto-onramp/api/crypto-onramp.api
+@@ -8,6 +8,7 @@ public final class com/stripe/android/crypto/onramp/OnrampCoordinator {
+ 	public final fun configure (Lcom/stripe/android/crypto/onramp/model/OnrampConfiguration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+ 	public final fun createCryptoPaymentToken (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+ 	public final fun createPresenter (Landroidx/activity/ComponentActivity;)Lcom/stripe/android/crypto/onramp/OnrampCoordinator$Presenter;
++	public final fun deleteWalletAddress (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+ 	public final fun getWalletOwnershipChallenge (Ljava/lang/String;Lcom/stripe/android/crypto/onramp/model/CryptoNetwork;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+ 	public final fun hasLinkAccount (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+ 	public final fun logOut (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+@@ -400,6 +401,18 @@ public final class com/stripe/android/crypto/onramp/model/OnrampCreateCryptoPaym
+ 	public final fun getError ()Ljava/lang/Throwable;
+ }
+ 
++public abstract interface class com/stripe/android/crypto/onramp/model/OnrampDeleteWalletAddressResult {
++}
++
++public final class com/stripe/android/crypto/onramp/model/OnrampDeleteWalletAddressResult$Completed : com/stripe/android/crypto/onramp/model/OnrampDeleteWalletAddressResult {
++	public static final field $stable I
++}
++
++public final class com/stripe/android/crypto/onramp/model/OnrampDeleteWalletAddressResult$Failed : com/stripe/android/crypto/onramp/model/OnrampDeleteWalletAddressResult {
++	public static final field $stable I
++	public final fun getError ()Ljava/lang/Throwable;
++}
++
+ public abstract interface class com/stripe/android/crypto/onramp/model/OnrampGetWalletOwnershipChallengeResult {
+ }
+ 
+diff --git a/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt b/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
+index b18237e..68532cf 100644
+--- a/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
++++ b/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
+@@ -13,6 +13,7 @@ import com.stripe.android.crypto.onramp.model.OnrampCallbacks
+ import com.stripe.android.crypto.onramp.model.OnrampConfiguration
+ import com.stripe.android.crypto.onramp.model.OnrampConfigurationResult
+ import com.stripe.android.crypto.onramp.model.OnrampCreateCryptoPaymentTokenResult
++import com.stripe.android.crypto.onramp.model.OnrampDeleteWalletAddressResult
+ import com.stripe.android.crypto.onramp.model.OnrampGetWalletOwnershipChallengeResult
+ import com.stripe.android.crypto.onramp.model.OnrampHasLinkAccountResult
+ import com.stripe.android.crypto.onramp.model.OnrampLogOutResult
+@@ -107,6 +108,17 @@ class OnrampCoordinator @Inject internal constructor(
+         return interactor.registerWalletAddress(walletAddress, network)
+     }
+ 
++    /**
++     * Deletes the given crypto wallet from the current Link account.
++     * Requires an authenticated Link user.
++     *
++     * @param walletId The ID of the crypto wallet to delete.
++     * @return [OnrampDeleteWalletAddressResult] indicating the result of deleting the wallet.
++     */
++    suspend fun deleteWalletAddress(walletId: String): OnrampDeleteWalletAddressResult {
++        return interactor.deleteWalletAddress(walletId)
++    }
++
+     /**
+      * Retrieves a short-lived Stripe-issued wallet ownership challenge for a registered wallet.
+      * Requires an authenticated Link user.
+diff --git a/financial-connections/api/financial-connections.api b/financial-connections/api/financial-connections.api
+index 080348e..a23b00d 100644
+--- a/financial-connections/api/financial-connections.api
++++ b/financial-connections/api/financial-connections.api
+@@ -347,6 +347,7 @@ public final class com/stripe/android/financialconnections/navigation/Composable
+ 	public final fun getLambda$-404597064$financial_connections_release ()Lkotlin/jvm/functions/Function3;
+ 	public final fun getLambda$-513144654$financial_connections_release ()Lkotlin/jvm/functions/Function3;
+ 	public final fun getLambda$-610989204$financial_connections_release ()Lkotlin/jvm/functions/Function3;
++	public final fun getLambda$-640448304$financial_connections_release ()Lkotlin/jvm/functions/Function3;
+ 	public final fun getLambda$-734344057$financial_connections_release ()Lkotlin/jvm/functions/Function3;
+ 	public final fun getLambda$1079878273$financial_connections_release ()Lkotlin/jvm/functions/Function3;
+ 	public final fun getLambda$1233481887$financial_connections_release ()Lkotlin/jvm/functions/Function3;
+diff --git a/gradle.properties b/gradle.properties
+index 704e7b1..e1319d3 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -23,4 +23,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.15.0
++VERSION_NAME=23.16.0
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index be3f49a..cde7aa1 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -4,7 +4,6 @@ public abstract interface annotation class com/stripe/android/ExperimentalAllows
+ public final class com/stripe/android/common/nfcscan/ui/ComposableSingletons$NfcCoilTextLayoutKt {
+ 	public static final field INSTANCE Lcom/stripe/android/common/nfcscan/ui/ComposableSingletons$NfcCoilTextLayoutKt;
+ 	public fun <init> ()V
+-	public final fun getLambda$-1325870959$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
+ 	public final fun getLambda$-298415252$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
+ }
+ 
+@@ -1746,6 +1745,7 @@ public final class com/stripe/android/paymentsheet/PaymentSheet$LinkConfiguratio
+ public final class com/stripe/android/paymentsheet/PaymentSheet$LinkConfiguration$Display : java/lang/Enum {
+ 	public static final field Automatic Lcom/stripe/android/paymentsheet/PaymentSheet$LinkConfiguration$Display;
+ 	public static final field Never Lcom/stripe/android/paymentsheet/PaymentSheet$LinkConfiguration$Display;
++	public static final field WalletButtonHidden Lcom/stripe/android/paymentsheet/PaymentSheet$LinkConfiguration$Display;
+ 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+ 	public static fun valueOf (Ljava/lang/String;)Lcom/stripe/android/paymentsheet/PaymentSheet$LinkConfiguration$Display;
+ 	public static fun values ()[Lcom/stripe/android/paymentsheet/PaymentSheet$LinkConfiguration$Display;
+diff --git a/paymentsheet/build.gradle b/paymentsheet/build.gradle
+index ae93a0d..91b5579 100644
+--- a/paymentsheet/build.gradle
++++ b/paymentsheet/build.gradle
+@@ -100,6 +100,7 @@ dependencies {
+     testImplementation testLibs.mockito.inline
+     testImplementation testLibs.mockito.kotlin
+     testImplementation testLibs.robolectric
++    testImplementation testLibs.testParameterInjector
+     testImplementation testLibs.truth
+     testImplementation testLibs.turbine
+     testImplementation testLibs.espresso.intents
+diff --git a/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt b/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
+index 9b5cb39..317f1a2 100644
+--- a/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
++++ b/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
+@@ -3713,6 +3713,19 @@ class PaymentSheet internal constructor(
+             get() = when (display) {
+                 Display.Automatic -> true
+                 Display.Never -> false
++                Display.WalletButtonHidden -> true
++            }
++
++        /**
++         * Canonical source of truth for whether the Link button/row should be rendered in the
++         * payment element UI. Link may remain functionally enabled (see [shouldDisplay]) even
++         * when its button is hidden, e.g. to support the returning-user flow and inline sign-up
++         * without a visible entry point.
++         */
++        internal val shouldShowButton: Boolean
++            get() = when (display) {
++                Display.Automatic -> true
++                Display.Never, Display.WalletButtonHidden -> false
+             }
+ 
+         class Builder {
+@@ -3759,12 +3772,20 @@ class PaymentSheet internal constructor(
+             /**
+              * Link will never be displayed.
+              */
+-            Never;
++            Never,
++
++            /**
++             * Link's button/row is hidden from the payment element UI, but Link remains
++             * otherwise enabled: the returning-user flow and the inline sign-up checkbox are
++             * still shown.
++             */
++            WalletButtonHidden;
+ 
+             internal val analyticsValue: String
+                 get() = when (this) {
+                     Automatic -> "automatic"
+                     Never -> "never"
++                    WalletButtonHidden -> "wallet_button_hidden"
+                 }
+         }
+     }

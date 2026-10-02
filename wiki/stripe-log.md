@@ -6,6 +6,51 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-02] ingest | Stripe Android `23.21.0`
+
+- Approved additive full override with focused reading: github-85032643bec4e06f9d06, stripe-android@23.20.0 -> stripe-android@23.21.0 at a074a9500e14932f00ce9cef250a3c63940f9837. Twelve modified/40 unchanged files, 104 matching hashes, 757 upstream dispositions. Effective full inventory checked; changed implementation/content and affected prior context read, unchanged source/history and inventories checked mechanically.
+- Android/Onramp concepts first, source/changelog/company/index/logs. Distinguished host-scoped callbacks, preview versus restricted credentials, consent contracts and experimental terms from excluded runtime behavior. Preserved historical KYC movement and retrospective annotations separately from observed declarations. Older knowledge/count retained. No collection, runtime testing, commit or push. Next: review and commit the nine-release Android round separately from unrelated work.
+
+## [2026-10-02] ingest | Stripe Android `23.20.0`
+
+- Approved delta with focused reading: github-359d5f8840ed14f5fb9a, stripe-android@23.19.0 -> stripe-android@23.20.0 at d47cf89930d90601526f74eb6d6ab66b8fdc7e83. Eight modified/44 unchanged files, 104 matching hashes, 712 upstream dispositions. Complete current/prior launcher, changed short files and affected declaration blocks read; unchanged inventories/history checked mechanically.
+- Android concept first, source/changelog/company/index/logs. Bizum/API and internal Google Pay changes distinguished from Alipay announcement and excluded routing/repository internals. Older history/count retained. No collection, runtime testing, commit or push. Next: review 23.21.0 serially.
+
+## [2026-10-02] ingest | Stripe Android `23.19.0`
+
+- Approved full override with focused reading: github-a27781ae2df9a769c19b, stripe-android@23.18.0 -> stripe-android@23.19.0 at a95cc0edd5154f91251fe3881c7c943048c6399c. Five modified/47 unchanged files, 104 matching hashes, 942 upstream dispositions. Complete affected current/prior LinkConfiguration blocks and changed short content read; unchanged full inventory/history checked mechanically.
+- Android/Link concepts first, source/changelog/company/index/logs. Preserved the old always-hidden contract alongside the new conditional returning-user entry contract; qualified localization/race-fix announcements and shrinking declaration. Older knowledge/count retained. No collection, runtime testing, commit or push. Next: review 23.20.0 serially.
+
+## [2026-10-02] ingest | Stripe Android `23.18.0`
+
+- Approved full override with focused reading: github-3393b966354c2316a5fd, stripe-android@23.17.1 -> stripe-android@23.18.0 at f5e7f5ceb26a194f38a561c8c687265ef5fcc16d. Nine modified/43 unchanged files; 104 matching hashes, 954 classified upstream dispositions. Expanded full inventory/history checked mechanically, changed implementation/declarations/context and prior affected evidence reviewed.
+- Android/Onramp/BNPL/Korean-method concepts first, source/changelog/company/index/logs. Recorded announced payment methods/provider default, observed API/KYC declarations, restricted Identity control and dependency update; preserved retrospective attribution separately from observed signature boundary. Older knowledge/count retained. No collection, runtime testing, commit or push. Next: review 23.19.0 serially.
+
+## [2026-10-02] ingest | Stripe Android `23.17.1`
+
+- Approved full override with focused reading: github-260fad0b0f25345618ad, stripe-android@23.17.0 -> stripe-android@23.17.1 at c5f31a3043aaafe2904441d59619a4f2c8c40291. Six modified/46 unchanged files, 104 matching hashes, 263 upstream dispositions. Expanded full inventory checked mechanically; changed short files/API declarations and removed prior class reviewed.
+- Android concept first, source/changelog/company/index/logs. Qualified Klarna/Wero/Link fixes, recorded generated binding removal without implying Google Pay removal, and preserved all older knowledge/count. No extra collection, runtime testing, commit or push. Next: review 23.18.0 serially.
+
+## [2026-10-02] ingest | Stripe Android `23.17.0`
+
+- Approved additive full override with focused reading: github-e7df3a4d7b67eb7c108b, stripe-android@23.16.0 -> stripe-android@23.17.0 at 93ef69a77a4fa528db4a5e95714394c4dcb2463c. Twelve modified/40 unchanged files; all 104 retained hashes matched. Effective expanded full inventory checked; changed content/context reviewed and unchanged history mechanically preserved.
+- Concepts first, cumulative source/changelog, company/index/logs. Recorded keyless migration, Identity branding/copy ABI and module-scoped API 24, qualified Alipay/selfie announcements and retrospective floor annotation. Older knowledge/count retained. No collection, runtime tests, commit or push. Next: review 23.17.1 serially.
+
+## [2026-10-02] ingest | Stripe Android `23.16.0`
+
+- Approved additive full override with focused reading: github-b24ac7c8eac3b2ffe40c, stripe-android@23.15.0 -> stripe-android@23.16.0 at a8d0e742fa6eb7ba637ce9968d03ce5b4c75dbf0. Expanded full-mode inventory checked; ten modified/42 unchanged files and 104 matching hashes.
+- Android/Onramp concepts updated first, then source/changelog/company/index/logs. Recorded Link enabled/button hidden distinction, authenticated wallet deletion, announced autocomplete defaults and later historical attribution. Older knowledge/count retained; excluded implementation clearly marked. No collection, runtime testing, commit or push. Next serial review: 23.17.0.
+
+## [2026-10-02] ingest | Stripe Android `23.15.0`
+
+- Approved serial focused-reading delta github-b996dd27b5277e2463af, stripe-android@23.14.0 -> stripe-android@23.15.0 at 03dc31c4dad8d94f08153e87b9782095fdb8036f. Seven modified/45 unchanged files; 104 hashes verified. Changed declarations/enclosing blocks and short files read, affected prior declarations compared, unchanged history/inventories checked mechanically.
+- Added bounded Samsung Pay contracts and qualified Link/FPX announcements; Android/Onramp concepts first, then source/changelog/company/index/logs. Older knowledge/source count preserved. No additional collection, runtime testing, commit or push. Next serial review: 23.16.0 under standing approval, with separate gate for any mode override.
+
+## [2026-10-02] ingest | Stripe Android `23.14.0`
+
+- Approved serial focused-reading delta `github-fb578f4a80305ef2c8ea`, from stripe-android@23.13.1 to stripe-android@23.14.0, SHA f286cb86cdd9be1b90913c12a7194ce04758de12. Six modified/46 unchanged files; 104 prior/current hashes matched. API declarations read in complete enclosing blocks; unchanged history/inventories checked mechanically.
+- Updated Android/Onramp concepts first, source/changelog, company/index/logs. Preserved old knowledge/source count and distinguished the later billing-collection annotation. No implementation/runtime/eligibility overclaim, additional collection, commit or push. Next chronological review: 23.15.0 under the user's nine-update approval.
+
 ## [2026-10-02] ingest | Stripe iOS `26.12.1`
 
 - Approved serial full additive ingest `github-722f2ffc82b5d6e5375c`, from `stripe-ios@26.12.0` to `stripe-ios@26.12.1`, SHA `9f0d5aa20e6a690ff4d78b35c307f0fb88d6f36c`. Full overrides generated delta for incompatible STP polling parameters. Approved focused reading covers changed content, affected prior code and three supplemental files; unchanged history/inventories checked mechanically. Capsule: 276 files, one added, 22 modified, 253 unchanged; effective full list: 290 paths.

@@ -1,0 +1,11 @@
+# Stripe Android 23.14.0 Review and Ingest Receipt
+
+- Item: github-fb578f4a80305ef2c8ea; stripe-android@23.13.1 -> stripe-android@23.14.0.
+- Exact SHA: f286cb86cdd9be1b90913c12a7194ce04758de12. Release publication: 2026-08-03.
+- User approved all nine Android updates, then approved focused reading for those updates. Serial handling remains mandatory; no commit/push authorization.
+- Completed full cumulative source/changelog and relevant Android/Onramp concept reads. Read release record/notes, comparison narrative and complete patch, README, gradle.properties and VERSION. Read all changed API declarations in complete enclosing blocks and affected prior Link declarations. Changelog inserted blocks read; unchanged history and large inventories checked mechanically, not claimed as full semantic reads.
+- Parsed packet/comparison metadata and snapshot inventories. Packet Markdown hash matched. Verified all 104 prior/current retained hashes. Capsules: 52 files each, six modified, 46 unchanged, no additions/removals. All 4,733 prior changelog lines survive, with eleven inserted lines. All 337 upstream paths have dispositions; excluded paths are not semantic implementation evidence.
+- Delta remains suitable: additive preview declarations, no incompatible retained contract removal. Link appearance/billing behavior, network/API-version plumbing, current Checkout/Google Pay internals remain gaps. Later billing-collection attribution under 23.13.1 is recorded separately from this observed signature boundary.
+- Extracted four verbatim quotes with exact raw locations. Updated existing Android and Onramp concepts first, source/status/history, changelog, company/index and logs. Preserved older knowledge/source count, no redundant concept/comparison or contradiction rewrite. Historical requirements remain explicitly version-qualified.
+- Targeted wiki validation: six pages passed; git diff --check passed. Root log/provider index retain known existing missing-frontmatter format limits. No Android build, simulator/device, payment, settlement or eligibility testing.
+- Claimed only this exact work item in delta mode. Next: validate lifecycle, complete this item, then review 23.15.0 serially under the standing nine-update approval. Stop for any required mode override or new evidence authorization.

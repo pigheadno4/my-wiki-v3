@@ -1,0 +1,322 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e74b517..1fdf360 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,19 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.18.0 - 2026-09-08
++
++### PaymentSheet
++* [ADDED] Added support for SeQura.
++* [ADDED] Added support for PAYCO.
++* [ADDED] Added support for Korean cards.
++* [ADDED] Added support for Naver Pay.
++* [ADDED] Added support for Kakao Pay.
++* [ADDED] Added support for Scalapay.
++
++### AddressElement
++* [CHANGED] Use Stripe-hosted address autocomplete by default.
++
+ ## 23.17.1 - 2026-08-31
+ 
+ ### PaymentSheet
+@@ -10,6 +23,9 @@ NEXT_VERSION_BUMP: PATCH
+ * [FIXED] Fixed an issue where Wero displayed duplicate country fields when collecting a full billing address.
+ * [FIXED][13323](https://github.com/stripe/stripe-android/pull/13323) Fixed an issue where selecting "Not you?" during Link 2FA did not fully log out the previous account, preventing subsequent logins.
+ 
++### CryptoOnramp
++* [ADDED] Added Canada SIN, Colombia NIT, and Philippines TIN values to `IdType`, and added `idType` to `KycInfo`.
++
+ ## 23.17.0 - 2026-08-24
+ 
+ ### PaymentSheet
+diff --git a/README.md b/README.md
+index 1057108..7bd25d0 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.17.1'
++    implementation 'com.stripe:stripe-android:23.18.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index 0115470..3874248 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.17.1
++23.18.0
+diff --git a/build.gradle b/build.gradle
+index cb3d27a..d228a84 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -47,18 +47,6 @@ allprojects { project ->
+         google()
+         gradlePluginPortal()
+     }
+-
+-    def excludedInstrumentationTestClass = 'com.stripe.android.paymentelement.taptoadd.TapToAddTest#successWithContinueMode[FlowController]'
+-    def configureAndroidTestExclusions = {
+-        project.android.defaultConfig.testInstrumentationRunnerArguments.put(
+-                'notClass',
+-                excludedInstrumentationTestClass
+-        )
+-    }
+-
+-    project.plugins.withId("com.android.application", configureAndroidTestExclusions)
+-    project.plugins.withId("com.android.library", configureAndroidTestExclusions)
+-    project.plugins.withId("com.android.test", configureAndroidTestExclusions)
+ }
+ 
+ ext {
+diff --git a/crypto-onramp/api/crypto-onramp.api b/crypto-onramp/api/crypto-onramp.api
+index 5e8002e..50ddceb 100644
+--- a/crypto-onramp/api/crypto-onramp.api
++++ b/crypto-onramp/api/crypto-onramp.api
+@@ -228,8 +228,23 @@ public final class com/stripe/android/crypto/onramp/model/CryptoNetwork$Companio
+ 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+ }
+ 
++public final class com/stripe/android/crypto/onramp/model/IdType : java/lang/Enum {
++	public static final field CanadianSocialInsuranceNumber Lcom/stripe/android/crypto/onramp/model/IdType;
++	public static final field ColombianTaxIdentificationNumber Lcom/stripe/android/crypto/onramp/model/IdType;
++	public static final field PhilippinesTaxpayerIdentificationNumber Lcom/stripe/android/crypto/onramp/model/IdType;
++	public static final field SocialSecurityNumber Lcom/stripe/android/crypto/onramp/model/IdType;
++	public static fun getEntries ()Lkotlin/enums/EnumEntries;
++	public static fun valueOf (Ljava/lang/String;)Lcom/stripe/android/crypto/onramp/model/IdType;
++	public static fun values ()[Lcom/stripe/android/crypto/onramp/model/IdType;
++}
++
+ public final class com/stripe/android/crypto/onramp/model/KycInfo {
+ 	public static final field $stable I
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/crypto/onramp/model/IdType;Lcom/stripe/android/model/DateOfBirth;Lcom/stripe/android/paymentsheet/PaymentSheet$Address;)V
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/crypto/onramp/model/IdType;Lcom/stripe/android/model/DateOfBirth;Lcom/stripe/android/paymentsheet/PaymentSheet$Address;Lcom/stripe/android/core/model/CountryCode;)V
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/crypto/onramp/model/IdType;Lcom/stripe/android/model/DateOfBirth;Lcom/stripe/android/paymentsheet/PaymentSheet$Address;Lcom/stripe/android/core/model/CountryCode;Ljava/lang/String;)V
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/crypto/onramp/model/IdType;Lcom/stripe/android/model/DateOfBirth;Lcom/stripe/android/paymentsheet/PaymentSheet$Address;Lcom/stripe/android/core/model/CountryCode;Ljava/lang/String;Ljava/util/List;)V
++	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/crypto/onramp/model/IdType;Lcom/stripe/android/model/DateOfBirth;Lcom/stripe/android/paymentsheet/PaymentSheet$Address;Lcom/stripe/android/core/model/CountryCode;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+ 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/model/DateOfBirth;Lcom/stripe/android/paymentsheet/PaymentSheet$Address;)V
+ 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/model/DateOfBirth;Lcom/stripe/android/paymentsheet/PaymentSheet$Address;Lcom/stripe/android/core/model/CountryCode;Ljava/lang/String;Ljava/util/List;)V
+ 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/model/DateOfBirth;Lcom/stripe/android/paymentsheet/PaymentSheet$Address;Lcom/stripe/android/core/model/CountryCode;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+@@ -240,6 +255,7 @@ public final class com/stripe/android/crypto/onramp/model/KycInfo {
+ 	public final fun getDateOfBirth ()Lcom/stripe/android/model/DateOfBirth;
+ 	public final fun getFirstName ()Ljava/lang/String;
+ 	public final fun getIdNumber ()Ljava/lang/String;
++	public final fun getIdType ()Lcom/stripe/android/crypto/onramp/model/IdType;
+ 	public final fun getLastName ()Ljava/lang/String;
+ 	public final fun getNationalities ()Ljava/util/List;
+ 	public fun hashCode ()I
+diff --git a/dependencies.gradle b/dependencies.gradle
+index d3792bf..e52857f 100644
+--- a/dependencies.gradle
++++ b/dependencies.gradle
+@@ -63,7 +63,7 @@ ext.versions = [
+         playServicesCoroutines      : '1.10.1',
+         playServicesMlKitTextRecognition: '19.0.1',
+         playServicesTfLite          : '16.4.0',
+-        playServicesWallet          : '19.5.0',
++        playServicesWallet          : '20.0.0',
+         playIntegrity               : '1.4.0',
+         retrofit                    : '2.12.0',
+         robolectric                 : '4.16.1',
+diff --git a/gradle.properties b/gradle.properties
+index b42c465..bd3e06d 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -23,4 +23,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.17.1
++VERSION_NAME=23.18.0
+diff --git a/identity/src/main/java/com/stripe/android/identity/IdentityVerificationSheet.kt b/identity/src/main/java/com/stripe/android/identity/IdentityVerificationSheet.kt
+index 86d3e76..cad6166 100644
+--- a/identity/src/main/java/com/stripe/android/identity/IdentityVerificationSheet.kt
++++ b/identity/src/main/java/com/stripe/android/identity/IdentityVerificationSheet.kt
+@@ -31,7 +31,28 @@ interface IdentityVerificationSheet {
+          * Optional color to use for the native flow's primary action buttons.
+          */
+         @get:ColorInt val brandColor: Int? = null
+-    )
++    ) {
++        /**
++         * Configuration for the biometric consent screen's header.
++         *
++         * When `null`, the biometric consent screen uses the default header.
++         */
++        @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
++        @set:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
++        var biometricConsent: BiometricConsentConfiguration? = null
++
++        /**
++         * Configuration for the biometric consent screen's header.
++         */
++        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
++        @Parcelize
++        data class BiometricConsentConfiguration(
++            /**
++             * Whether to hide the branding header above the consent title.
++             */
++            val hideBrandingHeader: Boolean
++        ) : Parcelable
++    }
+ 
+     /**
+      * Result of verification.
+diff --git a/payments-core/api/payments-core.api b/payments-core/api/payments-core.api
+index 06b43f4..4845a7d 100644
+--- a/payments-core/api/payments-core.api
++++ b/payments-core/api/payments-core.api
+@@ -2134,11 +2134,14 @@ public final class com/stripe/android/model/PaymentMethod$Type : java/lang/Enum,
+ 	public static final field Fpx Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field GrabPay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Ideal Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field KakaoPay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Klarna Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Konbini Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field KrCard Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Link Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field MobilePay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Multibanco Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field NaverPay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Netbanking Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Oxxo Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field P24 Lcom/stripe/android/model/PaymentMethod$Type;
+@@ -2146,10 +2149,13 @@ public final class com/stripe/android/model/PaymentMethod$Type : java/lang/Enum,
+ 	public static final field PayNow Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field PayPal Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field PayPay Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field Payco Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field PromptPay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field RevolutPay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Satispay Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field Scalapay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field SepaDebit Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field Sequra Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Sunbit Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Swish Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Twint Lcom/stripe/android/model/PaymentMethod$Type;
+@@ -2327,10 +2333,18 @@ public final class com/stripe/android/model/PaymentMethodCreateParams : android/
+ 	public static final fun createGrabPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createGrabPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createGrabPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createKakaoPay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createKakaoPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createKakaoPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createKakaoPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createKlarna ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createKlarna (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createKlarna (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createKlarna (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createKrCard ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createKrCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createKrCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createKrCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMobilePay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2339,6 +2353,10 @@ public final class com/stripe/android/model/PaymentMethodCreateParams : android/
+ 	public static final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNaverPay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2357,6 +2375,10 @@ public final class com/stripe/android/model/PaymentMethodCreateParams : android/
+ 	public static final fun createPayPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createPayPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createPayPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createPayco ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createPayco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createPayco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createPayco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createRevolutPay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createRevolutPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createRevolutPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2365,6 +2387,14 @@ public final class com/stripe/android/model/PaymentMethodCreateParams : android/
+ 	public static final fun createSatispay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createSatispay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createSatispay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createScalapay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createScalapay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createScalapay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createScalapay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createSequra ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createSequra (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createSequra (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createSequra (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createSunbit ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createSunbit (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createSunbit (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2582,11 +2612,21 @@ public final class com/stripe/android/model/PaymentMethodCreateParams$Companion
+ 	public final fun createGrabPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createGrabPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createGrabPay$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createKakaoPay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createKakaoPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createKakaoPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createKakaoPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createKakaoPay$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createKlarna ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createKlarna (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createKlarna (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createKlarna (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createKlarna$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createKrCard ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createKrCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createKrCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createKrCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createKrCard$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createMobilePay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2597,6 +2637,11 @@ public final class com/stripe/android/model/PaymentMethodCreateParams$Companion
+ 	public final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createMultibanco$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNaverPay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createNaverPay$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2620,6 +2665,11 @@ public final class com/stripe/android/model/PaymentMethodCreateParams$Companion
+ 	public final fun createPayPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createPayPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createPayPay$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createPayco ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createPayco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createPayco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createPayco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createPayco$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createRevolutPay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createRevolutPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createRevolutPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2630,6 +2680,16 @@ public final class com/stripe/android/model/PaymentMethodCreateParams$Companion
+ 	public final fun createSatispay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createSatispay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createSatispay$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createScalapay ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createScalapay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createScalapay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createScalapay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createScalapay$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createSequra ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createSequra (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createSequra (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createSequra (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createSequra$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createSunbit ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createSunbit (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createSunbit (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;

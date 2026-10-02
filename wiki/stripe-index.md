@@ -634,8 +634,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-subscriptions-change-price]] — Change price (upgrade/downgrade): item-ID pitfall, quantity resets to 1, billing period rules, zero-amount edge cases (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-prorations]] — Prorations: 6 triggers, non-trigger table, classic vs flexible credit prorations, preview locking, unpaid invoice handling (webpage, 2026-05-13)
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections, public workspace postman.com/stripedev (github-repo, 2026-05-13)
-- [[source-github-stripe-android]] — cumulative stripe-android SDK: legacy v23.8.0 plus v23.13.1 PaymentSheet, Embedded Payment Element, direct Intents, Google Pay, Connect, Identity, Financial Connections, and onramp (github-repo, updated 2026-07-31)
-- [[changelog-github-stripe-android]] — package-qualified Android release ledger; exact v23.13.1 Alipay test-mode reconciliation fix and accumulated v23.9-v23.13 context (github-repo, 2026-07-31)
+- [[source-github-stripe-android]] — cumulative Android SDK through v23.21.0: host-scoped callbacks, Embedded API configuration preview, Financial Connections consent and Onramp terms contracts; older history/gaps retained (github-repo, updated 2026-10-02)
+- [[changelog-github-stripe-android]] — package-qualified Android ledger through v23.21.0; versioned contracts, announcements and retrospective moves (github-repo, updated 2026-10-02)
 - [[stripe-android-sdk]] — Stripe Android SDK: v23.13.1 requirements, builder-first PaymentSheet, Embedded Payment Element, Google Pay, low-level Intent APIs, specialized modules, and fulfillment boundary
 - [[source-github-stripe-ios]] — cumulative stripe-ios SDK through v26.12.1: Pix redirect/polling, consent evidence and Checkout email changes; older history, cancellation caveat and evidence gaps retained (github-repo, updated 2026-10-02)
 - [[changelog-github-stripe-ios]] — package-qualified iOS ledger through v26.12.1; SPI compatibility, release changes and retrospective annotations (github-repo, updated 2026-10-02)

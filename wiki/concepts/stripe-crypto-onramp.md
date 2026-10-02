@@ -136,11 +136,42 @@ if (await isSamsungPaySupported()) {
 
 The release also adds `onrampErrorType` variants `InvalidWalletOwnershipSignatureError`, `WalletOwnershipChallengeExpiredError`, `InvalidWalletOwnershipChallengeError`, `WalletNotFoundError`, and `UnsupportedNetworkError`. Keep generic-error fallback handling and review exhaustive switches. Wallet challenge APIs already existed in `0.70.0`; the new contribution is specific error classification. Native pins advance to Stripe Android `23.16.0` and Stripe iOS `26.7.0`. See [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
 
+### Android `23.15.0` Samsung Pay Contracts
+
+Native compiled API adds OnrampConfiguration.SamsungPayConfig, samsungPayConfig, samsungPayIsReadyCallback, SamsungPay selection/display types and Available/Unavailable results carrying SamsungPayException. Errors expose a reason, optional native error code and developer/user messages. The release requires the merchant app to supply the Samsung Pay SDK; its version, parameter meanings/defaults and runtime mapping are not established by these declarations because implementation is excluded. This is Crypto Onramp, not ordinary PaymentSheet wallet support. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]]; the React Native integration above has its own evidence/version boundary.
+
+### Android `23.16.0` Wallet Deletion
+
+Experimental `OnrampCoordinator.deleteWalletAddress(walletId: String)` is documented to delete a crypto wallet from the current Link account and requires an authenticated Link user. The retained method delegates to `OnrampInteractor`; compiled signatures expose `OnrampDeleteWalletAddressResult.Completed` and `Failed`, with `Failed.error` as Throwable. Network authorization, deletion propagation, idempotency and retry behavior remain implementation gaps, not inferred guarantees. This concerns registered wallet information, not crypto transfer or account deletion. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
+### Android `23.17.0` Module Requirements
+
+The retained Crypto Onramp and Identity Gradle files declare `minSdkVersion 24`; Onramp depends on Identity, which adds MediaPipe Tasks Vision 0.10.35. Guided 3D selfie capture is a release announcement, not a verified flow in the bounded capsule. This does not raise the minimum for every Android payment module. The new changelog labels the API 24 requirement under 23.15.0 retrospectively, absent from the earlier retained builds; exact first implementation release remains unproven. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
+### Android `23.18.0` KYC Type Evidence
+
+Compiled API adds `IdType.CanadianSocialInsuranceNumber`, `ColombianTaxIdentificationNumber`, `PhilippinesTaxpayerIdentificationNumber` and `SocialSecurityNumber`, plus `KycInfo.getIdType()` and constructor overloads carrying IdType. Earlier constructors remain present. The inventory does not establish parameter names/defaults, identifier formats, serialization, country eligibility or backend validation; the changed model/request implementations are excluded.
+
+The newer changelog labels these additions under 23.17.1 retrospectively, but the retained 23.17.1 API/notes lacked them. Keep that later label separate from the observed 23.17.1 -> 23.18.0 signature boundary; neither proves the exact first implementation release. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
+### Android `23.21.0` Conditional Terms Contracts
+
+Experimental OnrampCoordinator.Presenter adds presentTermsAndConditionsIfNeeded and presentTermsOfServiceIfNeeded. Both document an authenticated Link user; terms and conditions are called before checkout, terms of service during onboarding after authentication. Each delegates to the presenter coordinator and delivers its result through the corresponding OnrampCallbacks hook. Compiled API adds termsAndConditionsCallback/termsOfServiceCallback and OnrampPartnerTermsResult variants Accepted, Cancelled, Failed (Throwable) and NotRequired. These declarations do not establish persistence, version-of-terms matching, retries, enforcement or the complete UI/network flow because those implementations are excluded. Acceptance is not checkout or settlement.
+
+> [!warning] Contradiction
+> The 23.21.0 raw changelog moves the KYC addition previously labeled 23.17.1 to 23.18.0 and adds the terms-method note under 23.19.0 retrospectively. The earlier retained API/source lacked these terms methods through 23.20.0; this comparison directly observes their 23.20.0 -> 23.21.0 addition. Preserve both immutable history records and the observed boundary without claiming an exact first implementation release. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## Relationship to Other Crypto Products
+
+### Android `23.14.0` Evidence
+
+The retained native API signature adds CryptoNetwork.Tempo. Release notes also announce internal preview API-version pinning; the request/network implementation is excluded, so the enum does not prove its serialized value, enabled networks or merchant eligibility. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]] for version-qualified evidence; this is distinct from the React Native wrapper milestone above.
 
 - [[stripe-stablecoin-payments]] — accepting stablecoin payments on Stripe (different from onramp: onramp helps customers *buy* crypto; stablecoin payments lets merchants *accept* crypto)
 
 ## Sources
+
+- [[source-github-stripe-android]] - native 23.14.0 Tempo declaration and explicit request-implementation limits
 
 - [[source-stripe-crypto-onramp]] — overview: merchant of record role, three integration modes, application process
 - [[source-stripe-crypto-onramp-stripe-hosted]] — Stripe-hosted implementation: currencies, geo restrictions, frontend/backend customization paths, session API

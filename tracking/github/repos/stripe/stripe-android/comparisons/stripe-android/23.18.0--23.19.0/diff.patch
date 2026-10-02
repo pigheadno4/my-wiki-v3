@@ -1,0 +1,102 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1fdf360..ac3b901 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,15 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.19.0 - 2026-09-15
++
++### All SDKs
++* [ADDED] Added Welsh (United Kingdom) localization.
++* [ADDED] Added Arabic (Saudi Arabia) localization.
++
++### PaymentSheet
++* [FIXED][14436](https://github.com/stripe/stripe-android/pull/14436) Fixed a rare race condition which could result in the payment sheet being half-visible on screen.
++
+ ## 23.18.0 - 2026-09-08
+ 
+ ### PaymentSheet
+diff --git a/README.md b/README.md
+index 7bd25d0..65163fe 100644
+--- a/README.md
++++ b/README.md
+@@ -43,7 +43,7 @@ Table of contents
+ 
+ **Stripe API**: We provide [low-level APIs](https://stripe.dev/stripe-android/payments-core/com.stripe.android/-stripe/index.html) that correspond to objects and methods in the Stripe API. You can build a custom UI on top of this layer.
+ 
+-**Localized**: We support the following localizations: Bulgarian, Catalan, Chinese (Hong Kong), Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English (US), English (United Kingdom), Estonian, Filipino, Finnish, French, French (Canada), German, Greek, Hungarian, Indonesian, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Maltese, Norwegian Bokmål, Norwegian Nynorsk (Norway), Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Slovenian, Spanish, Spanish (Latin America), Swedish, Turkish, Thai and Vietnamese.
++**Localized**: We support the following localizations: Bulgarian, Catalan, Chinese (Hong Kong), Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English (US), English (United Kingdom), Estonian, Filipino, Finnish, French, French (Canada), German, Greek, Hungarian, Indonesian, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Maltese, Norwegian Bokmål, Norwegian Nynorsk (Norway), Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Slovenian, Spanish, Spanish (Latin America), Swedish, Turkish, Thai, Vietnamese and Welsh (United Kingdom).
+ 
+ **Digital Goods**: You can use the SDK to process payments via Stripe, including for digital goods and services consumed within your app (e.g. subscriptions, in-game currencies, game levels, access to premium content, or unlocking a full version).
+ 
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.18.0'
++    implementation 'com.stripe:stripe-android:23.19.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index 3874248..b97b059 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.18.0
++23.19.0
+diff --git a/gradle.properties b/gradle.properties
+index bd3e06d..e75216d 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -16,6 +16,7 @@ android.enableR8.fullMode=true
+ android.nonFinalResIds=true
+ android.nonTransitiveRClass=true
+ android.useAndroidX=true
++android.r8.optimizedResourceShrinking=true
+ 
+ org.gradle.jvmargs=-Xms4g -Xmx8g -XX:+UseParallelGC -XX:MaxMetaspaceSize=2g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+ 
+@@ -23,4 +24,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.18.0
++VERSION_NAME=23.19.0
+diff --git a/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt b/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
+index 9208aa6..2dedd20 100644
+--- a/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
++++ b/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
+@@ -3718,18 +3718,6 @@ class PaymentSheet internal constructor(
+                 Display.WalletButtonHidden -> true
+             }
+ 
+-        /**
+-         * Canonical source of truth for whether the Link button/row should be rendered in the
+-         * payment element UI. Link may remain functionally enabled (see [shouldDisplay]) even
+-         * when its button is hidden, e.g. to support the returning-user flow and inline sign-up
+-         * without a visible entry point.
+-         */
+-        internal val shouldShowButton: Boolean
+-            get() = when (display) {
+-                Display.Automatic -> true
+-                Display.Never, Display.WalletButtonHidden -> false
+-            }
+-
+         class Builder {
+             private var display: Display = Display.Automatic
+             private var collectMissingBillingDetailsForExistingPaymentMethods: Boolean = true
+@@ -3777,9 +3765,8 @@ class PaymentSheet internal constructor(
+             Never,
+ 
+             /**
+-             * Link's button/row is hidden from the payment element UI, but Link remains
+-             * otherwise enabled: the returning-user flow and the inline sign-up checkbox are
+-             * still shown.
++             * Link remains enabled, including automatic verification and inline sign-up.
++             * Its button or row is shown when an existing Link user is detected and hidden otherwise.
+              */
+             WalletButtonHidden;
+ 

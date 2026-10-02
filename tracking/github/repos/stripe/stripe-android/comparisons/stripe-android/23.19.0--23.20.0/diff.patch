@@ -1,0 +1,142 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ac3b901..199882e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,14 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.20.0 - 2026-09-21
++
++### Payments
++* [FIXED][14643](https://github.com/stripe/stripe-android/pull/14643) Fixed redirects with Alipay+ and the Alipay SDK
++
++### PaymentSheet
++* [ADDED] Added support for Bizum.
++
+ ## 23.19.0 - 2026-09-15
+ 
+ ### All SDKs
+diff --git a/README.md b/README.md
+index 65163fe..5a6c143 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.19.0'
++    implementation 'com.stripe:stripe-android:23.20.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index b97b059..277b3ce 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.19.0
++23.20.0
+diff --git a/financial-connections/build.gradle b/financial-connections/build.gradle
+index 6b3c985..9cf3bf4 100644
+--- a/financial-connections/build.gradle
++++ b/financial-connections/build.gradle
+@@ -57,6 +57,7 @@ dependencies {
+     kspDebug libs.showkaseProcessor
+ 
+     testImplementation testLibs.androidx.archCore
++    testImplementation testLibs.androidx.composeUi
+     testImplementation testLibs.androidx.core
+     testImplementation testLibs.androidx.fragment
+     testImplementation testLibs.androidx.junit
+diff --git a/gradle.properties b/gradle.properties
+index e75216d..38371b2 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -24,4 +24,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.19.0
++VERSION_NAME=23.20.0
+diff --git a/payments-core/api/payments-core.api b/payments-core/api/payments-core.api
+index 4845a7d..6272c92 100644
+--- a/payments-core/api/payments-core.api
++++ b/payments-core/api/payments-core.api
+@@ -2122,6 +2122,7 @@ public final class com/stripe/android/model/PaymentMethod$Type : java/lang/Enum,
+ 	public static final field BacsDebit Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Bancontact Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Billie Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field Bizum Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Blik Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Boleto Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field CREATOR Landroid/os/Parcelable$Creator;
+@@ -3683,6 +3684,7 @@ public final class com/stripe/android/model/StripeIntent$NextActionData$VerifyWi
+ 
+ public final class com/stripe/android/model/StripeIntent$NextActionType : java/lang/Enum {
+ 	public static final field AlipayRedirect Lcom/stripe/android/model/StripeIntent$NextActionType;
++	public static final field AwaitAuthorization Lcom/stripe/android/model/StripeIntent$NextActionType;
+ 	public static final field BlikAuthorize Lcom/stripe/android/model/StripeIntent$NextActionType;
+ 	public static final field CashAppRedirect Lcom/stripe/android/model/StripeIntent$NextActionType;
+ 	public static final field DisplayBoletoDetails Lcom/stripe/android/model/StripeIntent$NextActionType;
+diff --git a/payments-core/src/main/java/com/stripe/android/googlepaylauncher/GooglePayLauncher.kt b/payments-core/src/main/java/com/stripe/android/googlepaylauncher/GooglePayLauncher.kt
+index b94a2eb..0e8e949 100644
+--- a/payments-core/src/main/java/com/stripe/android/googlepaylauncher/GooglePayLauncher.kt
++++ b/payments-core/src/main/java/com/stripe/android/googlepaylauncher/GooglePayLauncher.kt
+@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
+ import androidx.lifecycle.compose.LocalLifecycleOwner
+ import androidx.lifecycle.lifecycleScope
+ import com.stripe.android.DefaultCardFundingFilter
++import com.stripe.android.GooglePayConfig
+ import com.stripe.android.PaymentConfiguration
+ import com.stripe.android.core.networking.AnalyticsRequestExecutor
+ import com.stripe.android.core.networking.DefaultAnalyticsRequestExecutor
+@@ -85,6 +86,7 @@ class GooglePayLauncher internal constructor(
+                 billingAddressParameters = config.billingAddressConfig.convert(),
+                 existingPaymentMethodRequired = config.existingPaymentMethodRequired,
+                 allowCreditCards = config.allowCreditCards,
++                googlePayConfig = GooglePayConfig(context),
+                 errorReporter = ErrorReporter.createFallbackInstance(
+                     context = context,
+                     productUsage = setOf(PRODUCT_USAGE),
+@@ -129,6 +131,7 @@ class GooglePayLauncher internal constructor(
+                 billingAddressParameters = config.billingAddressConfig.convert(),
+                 existingPaymentMethodRequired = config.existingPaymentMethodRequired,
+                 allowCreditCards = config.allowCreditCards,
++                googlePayConfig = GooglePayConfig(context),
+                 errorReporter = ErrorReporter.createFallbackInstance(
+                     context = context,
+                     productUsage = setOf(PRODUCT_USAGE),
+@@ -177,6 +180,7 @@ class GooglePayLauncher internal constructor(
+                 billingAddressParameters = config.billingAddressConfig.convert(),
+                 existingPaymentMethodRequired = config.existingPaymentMethodRequired,
+                 allowCreditCards = config.allowCreditCards,
++                googlePayConfig = GooglePayConfig(context),
+                 errorReporter = ErrorReporter.createFallbackInstance(
+                     context = context,
+                     productUsage = setOf(PRODUCT_USAGE)
+@@ -416,6 +420,7 @@ fun rememberGooglePayLauncher(
+                     billingAddressParameters = config.billingAddressConfig.convert(),
+                     existingPaymentMethodRequired = config.existingPaymentMethodRequired,
+                     allowCreditCards = config.allowCreditCards,
++                    googlePayConfig = GooglePayConfig(context),
+                     errorReporter = ErrorReporter.createFallbackInstance(
+                         context = context,
+                         productUsage = setOf(GooglePayLauncher.PRODUCT_USAGE)
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index c9e7316..4b86708 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -1,6 +1,12 @@
+ public abstract interface annotation class com/stripe/android/ExperimentalAllowsRemovalOfLastSavedPaymentMethodApi : java/lang/annotation/Annotation {
+ }
+ 
++public final class com/stripe/android/common/nfcscan/ui/ComposableSingletons$NfcCloseButtonKt {
++	public static final field INSTANCE Lcom/stripe/android/common/nfcscan/ui/ComposableSingletons$NfcCloseButtonKt;
++	public fun <init> ()V
++	public final fun getLambda$1040730440$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
++}
++
+ public final class com/stripe/android/common/nfcscan/ui/ComposableSingletons$NfcCoilTextLayoutKt {
+ 	public static final field INSTANCE Lcom/stripe/android/common/nfcscan/ui/ComposableSingletons$NfcCoilTextLayoutKt;
+ 	public fun <init> ()V
