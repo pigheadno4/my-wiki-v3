@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C39
+
+- Twenty website raws: eight NAB account/processor and twelve general disputes/risk/compliance pages, fully read and independently reviewed through ten shared rolling child slots. Twenty exact sources and seven existing concepts promoted; no new concept. Catalog452=435website+17GitHub; raw unchanged.
+- First pass19/20; twenty full initial reviews plus one targeted review, no repeated full review or coordinator semantic repair. NAB chargeback-fee debit timing remains unresolved; the scoped fee-outcome exception is source-cited in disputes. BGN date gap and SRC availability/end-of-support conflict remain visible.
+- Fixed queries40/40 passed; no wrong-provider audit, retrieval defect or source correction. Exact candidate equality, hashes, ownership, approved updates, reciprocal/raw/index routes and exhaustive catalogs/counts passed. Existing typed validation and final timing recorded under `tracking/ingest/braintree/braintree-campaign-39/`. No collection, GitHub ingestion, rule/code change, commit or push.
+
 ## [2026-10-04] ingest | Braintree website C38
 
 - Twenty BR/Brazil and Moneris-account website raws fully read and independently reviewed through ten shared rolling child slots. Twenty exact source candidates and seven existing reciprocal concepts promoted; no new concept. Catalog432=415website+17GitHub; raw unchanged.

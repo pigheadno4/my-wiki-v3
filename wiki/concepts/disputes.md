@@ -24,6 +24,9 @@ A **dispute** occurs when a buyer challenges a transaction — typically because
 - Seller responds via platform; bank/card network makes final decision
 - Merchant typically charged a chargeback fee regardless of outcome
 
+> [!warning] Account-specific fee-outcome qualification
+> Provider and account terms qualify chargeback-fee outcomes. In the captured Braintree NAB article, a bank ruling in the merchant's favor credits the transaction amount back and does not charge a fee, while losing or accepting returns the disputed amount to the cardholder and incurs a chargeback fee. [[source-braintree-articles-nab-chargebacks-retrievals-prearbs]]
+
 ## Common Dispute Reasons
 
 - Item not received (INR)
@@ -328,6 +331,12 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 - [[stripe]] — Stripe disputes handled via Dashboard, webhooks, and API
 
 ## Sources
+- [[source-braintree-articles-nab-chargebacks-retrievals-prearbs]] - captured 2026-09-16 Braintree-hosted NAB account/processor article for credit-card dispute notifications, response deadlines, chargeback/retrieval/pre-arbitration handling, statuses and reporting
+- [[source-braintree-articles-risk-and-security-chargebacks-retrievals-chargeback-reason-codes]] - Braintree-hosted 2026-09-16 snapshot of a reason-code table generated 2025-09-22 for received credit-card disputes, organized by card brand and dispute type with separate JCB retrieval codes, region/network variability, a changeable and potentially incomplete inventory, and Visa decimal-code normalization; not independent current card-network authority or ACH return-code evidence
+- [[source-braintree-articles-risk-and-security-chargebacks-retrievals-disputing-chargebacks]] - 2026-09-16 general Braintree guide for account-dependent chargeback acceptance and dispute choices, card-brand-defined evidence conditions, refund-overlap risk, beta evidence recommendations and narrowly qualified pre-arbitration guidance; not bank-specific procedure, current universal policy or an outcome guarantee
+- [[source-braintree-articles-risk-and-security-chargebacks-retrievals-overview]] - captured 2026-09-16 general Braintree overview of chargeback, retrieval, and pre-arbitration roles; banking-partner and merchant-account qualifications govern fund and fee handling, and its dated U.S. flat-rate pre-arbitration auto-accept statement is not independent current bank or card-network policy
+- [[source-braintree-articles-risk-and-security-chargebacks-retrievals-reducing-chargebacks]] - 2026-09-16 Braintree general guidance article routing to customer-data collection, purchase/subscription transparency, support/refunds/descriptors, internal monitoring, CAPTCHA and fraud tools intended to reduce chargeback frequency; it says chargebacks cannot be eliminated and is not current independent bank/card-network policy or an outcome guarantee
+- [[source-braintree-articles-risk-and-security-card-brand-monitoring-programs-overview]] - 2026-09-16 Braintree-hosted overview of Visa/Mastercard monthly threshold-based chargeback and fraud monitoring, ratio definitions, first-chargeback-only dispute-ratio treatment, program-specific outbound routes, and notification limited to merchant accounts provided through Braintree; not independent current card-network rules, numeric-threshold authority, compliance or enrollment proof, or transferable account behavior
 
 - [[source-braintree-articles-br-chargebacks-retrievals-prearbs]] - 2026-09-16 Braintree-hosted BR/Brazil-route credit-card dispute snapshot covering account-sensitive notifications, interface-qualified management, reply-by expiration, chargeback/retrieval/pre-arb effects, statuses and reports; not a transferable price or currency schedule, independent current bank/network policy, sibling-account behavior, or execution and fund-arrival proof
 

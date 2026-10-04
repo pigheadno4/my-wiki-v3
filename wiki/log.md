@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Braintree website C39
+
+- Twenty NAB and general disputes/risk/compliance retrieval sources; first pass19/20, one targeted correction, fixed queries40/40. Catalog452=435website+17GitHub. Raw unchanged; scoped conflicts retained. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-39/`. No commit/push.
+
 ## [2026-10-04] ingest | Direct v6 saved-method sample `a318bcf`
 
 - Full additive/focused; history and demo limits retained. Details [[paypal-log]]. No commit/push.

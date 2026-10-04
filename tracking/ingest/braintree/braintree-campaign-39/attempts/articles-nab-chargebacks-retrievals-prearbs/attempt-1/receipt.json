@@ -1,0 +1,67 @@
+{
+  "job_id": "articles-nab-chargebacks-retrievals-prearbs",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree NAB Chargebacks, Retrievals, and Pre-Arbs\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/nab/chargebacks-retrievals-prearbs\"\nraw_files:\n  - \"braintree/articles/nab/chargebacks-retrievals-prearbs-2026-09-16.md\"\ntags: [braintree, disputes, chargebacks, retrievals, pre-arbitration, nab]\n---\n\n## Overview\n\nThis captured Braintree-hosted NAB account/processor article describes credit-card transaction disputes: notifications, Control Panel and stated API management routes, response cutoffs, chargebacks, retrievals, re-opens, pre-arbitrations, statuses, and the Dispute Report. It explicitly routes PayPal disputes elsewhere. As a 2026-09-16 documentation snapshot, it is not independent current NAB or card-network policy, proof of a merchant account's eligibility or configuration, or evidence that any dispute action or fund movement succeeded. See [[braintree]] and [[disputes]].\n\n## Key takeaways\n\n- Braintree says a dispute triggers an email from its disputes address. The first gateway admin is the default recipient, but notification frequency and recipients can be changed in the Control Panel. User Recipients remain constrained by their roles and sub-merchant associations, while an address entered in the Email Address field receives all dispute notifications. Webhooks can also report status changes to Open, Won, or Lost.\n- The captured page shows two Control Panel instruction sets because Braintree says it was rolling out a dispute-management interface change. Both routes expose dispute review, evidence or acceptance actions; the page also states that disputes can be managed through the API.\n- Every chargeback, retrieval, or pre-arb has a Control Panel reply-by date tied to the account time zone. At 12am on that date, the opportunity to submit evidence is lost; if the case expires, Braintree says it sends an Accept response on the merchant's behalf and the chargeback can no longer be disputed.\n- For a chargeback, the article says the original transaction amount is automatically debited within seven days of the dispute report and held by the bank until resolution. A favorable ruling credits the transaction amount back and avoids the chargeback fee; losing or accepting returns the disputed amount to the cardholder and incurs a fee whose standard amount is in the merchant's pricing agreement.\n- A retrieval is an information request for an unidentifiable charge. The article distinguishes it from chargebacks and pre-arbs because funds are not removed and no retrieval-processing fee is charged; it gives an 11-day response period and recommends providing identifying information. For a fraud-related retrieval, refunding is presented as advice that may help avoid a later chargeback fee, not as a requirement or guaranteed outcome.\n- A re-open gives the merchant another opportunity to support the claim. When no additional evidence is available, the article says the case can remain open until expiry and the bank will decide from the evidence already supplied.\n- A pre-arbitration is described as a second cardholder dispute after the merchant won the chargeback. The NAB-specific note says NAB treats disputes as one continuous dispute, so continued challenges may appear as additional chargebacks rather than a pre-arbitration escalation.\n\n## Detail locators\n\n- Notification defaults, recipient visibility, email-address behavior, and webhook status changes: raw lines 25-46.\n- Interface-rollout variants, Control Panel actions, reply-by cutoff, expiry effect, reason-code guidance, and the stated API route: raw lines 49-85.\n- Chargeback definition, debit and hold, ruling outcomes, fees, acceptance, evidence, and timeline: raw lines 90-127.\n- Retrieval definition, no-debit/no-fee distinction, response period, and fraud-related refund advice: raw lines 130-136.\n- Re-open handling and original-evidence continuation: raw lines 139-143.\n- Pre-arbitration definition and NAB continuous-dispute treatment: raw lines 146-150.\n- Displayed dispute statuses and meanings: raw lines 153-162.\n- Dispute Report permission, access path, fields, and analysis/reconciliation use: raw lines 165-175.\n\n## Related\n\n- [[braintree]]\n- [[disputes]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/nab/chargebacks-retrievals-prearbs-2026-09-16|Braintree NAB Chargebacks, Retrievals, and Pre-Arbs (captured 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "This article describes credit card transaction disputes. For more information about PayPal disputes, see [PayPal disputes](/braintree/articles/guides/payment-methods/paypal/disputes).",
+      "location": "lines 17-18, NOTE below the title"
+    },
+    {
+      "text": "Every chargeback, retrieval, or pre-arb has a reply-by date listed in the Control Panel. At 12am on this date you will lose the opportunity to submit evidence and the case will expire. The time zone for your account was established during the application process; to see your current time zone settings, click on the gear icon in the top right corner, click **Business** from the drop-down menu, and scroll to the **Time Zone** section.\n\nIf you let the case expire, an Accept response will be sent on your behalf and you will no longer be able to dispute the chargeback. This is to mitigate any non-response fees assessed by the card brands, and will not affect your reporting (e.g. cases you allow to expire will still have the Expired  [status](#statuses) ).",
+      "location": "lines 77-79, Managing in the Control Panel"
+    },
+    {
+      "text": "We will notify you of the chargeback, and the cardholder\u2019s bank will then give you the opportunity to submit evidence against the cardholder\u2019s claim and evaluate any documentation you provide. The original transaction amount will automatically be debited from your account within 7 days of the dispute being reported and held by the bank until the dispute is resolved.\n\nIf the bank rules in your favor, the transaction amount will be credited back to your account, and you will not be charged a fee. If you lose or accept the chargeback, the disputed amount will be returned to the cardholder, and you will be charged a chargeback fee.",
+      "location": "lines 94-96, Chargebacks"
+    },
+    {
+      "text": "A retrieval is a request for information about an unidentifiable charge. Unlike chargebacks and pre-arbs, funds are not removed from your bank account, and you will not be charged a fee to process the retrieval.\n\nTo lower the risk of a retrieval turning into a chargeback, we recommend that you dispute the retrieval and [provide information](#submitting-evidence) that will help the cardholder identify the transaction. You have 11 days to respond to a retrieval before it is considered forfeited.",
+      "location": "lines 130-134, Retrievals"
+    },
+    {
+      "text": "A pre-arbitration, or pre-arb, occurs when a chargeback is filed, the merchant wins, and the cardholder disputes the charge for a second time.\n\nUnlike other institutions, NAB treats disputes as one continuous dispute, so if the cardholder continues to dispute the charge, you may see additional chargebacks instead of an escalation into a pre-arbitration.",
+      "location": "lines 146-150, Pre-arbs"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c39-nab-disputes-reciprocal",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-nab-chargebacks-retrievals-prearbs]] - captured 2026-09-16 Braintree-hosted NAB account/processor article for credit-card dispute notifications, response deadlines, chargeback/retrieval/pre-arbitration handling, statuses and reporting",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route NAB-account/processor-specific; do not transfer it to sibling account routes or treat it as independent current NAB/card-network policy or execution proof."
+        ]
+      },
+      {
+        "update_id": "braintree-c39-nab-fee-outcome-qualification",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Chargebacks (Bank/Card Issuer)",
+        "proposed_markdown": "Provider and account terms qualify chargeback-fee outcomes. In the captured Braintree NAB article, a bank ruling in the merchant's favor credits the transaction amount back and does not charge a fee, while losing or accepting returns the disputed amount to the cardholder and incurs a chargeback fee.",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "This conflicts with the concept's broad statement that merchants typically pay a chargeback fee regardless of outcome; retain the NAB account/processor and captured-snapshot qualification rather than universalizing either rule."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/nab/chargebacks-retrievals-prearbs-2026-09-16.md",
+  "raw_sha256": "833f7ef098af7978d636236756cd64e0e863ee02621246b0632893eeb77f3147",
+  "status": "candidate_ready"
+}

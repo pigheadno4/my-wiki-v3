@@ -16,6 +16,8 @@ The Dashboard provides sales and transaction volume, totals, averages, and route
 Sandbox and Production use mutually exclusive Control Panel environments that do not interact and may have different login credentials. Use the dedicated reporting documentation for reconciliation and the specific administration guides for task-level behavior. [[source-braintree-control-panel-overview]]
 
 ## Sources
+- [[source-braintree-articles-nab-transactions-descriptors]] - 2026-09-16 Braintree-hosted NAB-routed account article for hard and per-transaction dynamic statement descriptors, with bank-controlled rendering and account- and payment-method-qualified update requirements; not independent current NAB authority or proof of regional/account eligibility, accepted changes, or transaction execution
+- [[source-braintree-articles-nab-change-your-bank-account]] - 2026-09-16 Braintree-hosted NAB-path article for Control Panel submission of a bank statement or signed bank letter to request a new Australia-based business checking account; upload is not acceptance, approval or change-completion proof, and the page does not imply a settlement currency or sibling-route policy
 
 - [[source-braintree-articles-br-transactions-descriptors]] - 2026-09-16 Braintree Brazil-path descriptor snapshot covering bank-controlled statement rendering, post-authorization/post-settlement display wording, account-setup and merchant-account-level format constraints, and application-derived configuration/change routing; not proof of current Brazil, merchant-account, card-brand or payment-method eligibility, exact bank display, merchant-specific configuration, change acceptance, posting timing or payment success
 

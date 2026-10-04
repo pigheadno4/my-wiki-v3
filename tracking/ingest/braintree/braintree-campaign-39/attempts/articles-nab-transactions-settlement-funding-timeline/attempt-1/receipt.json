@@ -1,0 +1,53 @@
+{
+  "job_id": "articles-nab-transactions-settlement-funding-timeline",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree NAB Settlement and Funding Timeline\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/nab/transactions/settlement-funding-timeline\"\nraw_files:\n  - \"braintree/articles/nab/transactions/settlement-funding-timeline-2026-09-16.md\"\ntags: [braintree, nab, settlement, funding, merchant-account]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree-hosted NAB account/processor snapshot explains how card transactions move from settlement batching and processor confirmation to disbursement, with bank-qualified timing, separate Amex and PayPal handling, and a card-verification warning. It is not independent current NAB, Amex, or PayPal policy, a schedule for a sibling account route, a timing guarantee, or proof that an individual transaction settled, was disbursed, or arrived at a bank.\n\n## Key takeaways\n\n- Credit-card transactions are grouped into settlement batches and sent to the processing bank for settlement confirmation. The account cutoff is stated as 9:55pm AET and unchangeable; transactions submitted after it move to the next day's batch.\n- Funds become ready for disbursement only after processor confirmation that the transaction settled successfully. For a business bank account also held with NAB, the stated schedules are 1\u20133 business days for Visa/Mastercard and 2\u20138 business days for American Express, both measured after submission for settlement. A different banking institution may add delay.\n- The page describes the Amex schedule as experiential rather than guaranteed and says Amex controls its own cutoff times and disbursements. Apple Pay and Google Pay transactions funded by Amex are processed and disbursed with regular Amex transactions.\n- PayPal manages disbursement separately from the Braintree-managed account and has a separate funding-options route.\n- Separately, when Braintree card verification is enabled, the page says the gateway verifies all cards with $1 authorizations; individual verification should also use $1 because $0 attempts trigger validation error 91741.\n\n## Detail locators\n\n- Settlement-to-disbursement transition and fixed cutoff: lines 16 and 21\u201323.\n- Card-brand schedules, Amex ownership qualification, and other-bank delay: lines 26\u201331.\n- Card-verification amount and validation-error warning: lines 34\u201336.\n- Amex-funded Apple Pay and Google Pay treatment: lines 39\u201341.\n- Separate PayPal disbursement route: lines 44\u201346.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]] \u2014 provider concept for merchant-account roles and the general post-settlement funding route.\n\n## Raw Sources\n\n- [[raw/braintree/articles/nab/transactions/settlement-funding-timeline-2026-09-16|Braintree NAB Settlement and Funding Timeline (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Credit card transactions are divided into settlement batches and sent to the processing bank to confirm settlement. The settlement batch cut-off time for your account is 9:55pm AET, and can't be changed. Any transactions submitted for settlement after that time will be included in the next day\u2019s settlement batch.",
+      "location": "line 21 under \"Credit cards\""
+    },
+    {
+      "text": "Once we receive confirmation from the processor that a transaction has successfully settled, your funds are ready for disbursement. If your business bank account is also with NAB, you should see the funds deposited in your bank account based on the following schedule:",
+      "location": "line 23 under \"Credit cards\""
+    },
+    {
+      "text": "- **Visa/Mastercard**: 1-3 business days after transaction has been submitted for settlement\n- **American Express**: 2-8 business days after transaction has been submitted for settlement*\n\n*In our experience, Amex transactions are disbursed according to this schedule. Because Amex sets their own settlement batch cutoff times and handles your disbursements directly, you\u2019ll need to contact them for details.",
+      "location": "lines 26\u201329 under \"Credit cards\""
+    },
+    {
+      "text": "If you have enabled our [card verification](/braintree/articles/control-panel/vault/card-verification) feature, the Braintree gateway will verify all cards with $1 authorizations. If you choose to verify cards on an individual basis, make sure to run $1 authorizations; $0 authorization attempts will trigger a [validation error](/braintree/docs/reference/general/validation-errors/all#code-91741).",
+      "location": "line 36 under \"A special note on card verification\""
+    },
+    {
+      "text": "PayPal manages the disbursement of funds separately from your Braintree-managed account and there are [different funding options available](/braintree/articles/guides/payment-methods/paypal/funding-reconciliation).",
+      "location": "line 46 under \"PayPal\""
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-nab-settlement-funding-source-route",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-nab-transactions-settlement-funding-timeline]] - 2026-09-16 Braintree-hosted NAB account/processor snapshot for the fixed credit-card batch cutoff, processor-confirmed settlement prerequisite, submission-anchored and destination-bank-qualified card schedules, direct Amex handling, Amex-funded wallet alignment and separate PayPal funding; not independent current bank or processor policy, a sibling-account schedule, a timing guarantee, or proof of an individual settlement, disbursement or bank arrival",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The captured page and trusted NAB route do not state a region or currency; do not infer either from AET, NAB, or neighboring account articles."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/nab/transactions/settlement-funding-timeline-2026-09-16.md",
+  "raw_sha256": "34531aed25c97bba8e909f079367517e9ac6b3b5c108e5ab7806cc72bca5843b",
+  "status": "candidate_ready"
+}
