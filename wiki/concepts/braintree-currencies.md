@@ -17,6 +17,9 @@ The page states support for more than 130 local currencies in 44 countries but d
 
 ## Sources
 
+- [[source-braintree-articles-moneris-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted Moneris-path account article routing to merchant-account currency processing, customer-bank conversion, USD-or-CAD presentment and settlement, and the requirement that presentment and settlement use the same selected currency
+- [[source-braintree-articles-br-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted BR-path account article routing to Brazil BRL presentment, merchant-account-currency processing, customer-bank conversion and possible fees, plus refund-difficulty and chargeback-risk warnings; its modal purchase wording is not a current eligibility, exchange-rate, fee, refund or execution guarantee
+
 - [[source-braintree-articles-apac-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted APAC-path article routing to merchant-account currency processing, customer-bank conversion and possible fee/refund risk, additional-currency merchant-account setup, applicable presentment and settlement guidance, and merchant-account-ID selection
 
 - [[source-braintree-articles-wells-ic-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted Wells IC account article routing to merchant-account currency processing, customer-bank conversion and possible fee/refund risk, additional-currency merchant-account setup, applicable presentment and settlement guidance, and merchant-account-ID selection

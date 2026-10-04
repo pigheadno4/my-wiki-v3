@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C38
+
+- Twenty BR/Brazil and Moneris-account website raws fully read and independently reviewed through ten shared rolling child slots. Twenty exact source candidates and seven existing reciprocal concepts promoted; no new concept. Catalog432=415website+17GitHub; raw unchanged.
+- First pass19/20; twenty full initial reviews plus one targeted review, no repeated full review or coordinator semantic repair. The corrected Moneris warning separates pre-settlement batch cutoff from post-settlement payout/bank timing without resolving the raw's distinct schedules.
+- Candidate equality, hashes, unique ownership, approved updates, reciprocal/raw/index routes and exhaustive catalogs/counts passed. Fixed queries40/40 passed; an invalid historical Metronome groupA report was excluded and the exact Braintree group rerun. A bounded audit wording correction preserves the equal-split/final-remainder conflict; no source repair. Timing/evidence: `tracking/ingest/braintree/braintree-campaign-38/`. No collection, GitHub ingestion, rule/code change, commit or push.
+
 ## [2026-10-04] ingest | Braintree website C37
 
 - Twenty website raws: two AIB authorizations, eight APAC, nine AU and Brazil overview, fully read and independently reviewed through ten shared rolling child slots. Catalog412=395website+17GitHub; six existing concepts updated, no new concept. Raw unchanged.

@@ -329,6 +329,8 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 
 ## Sources
 
+- [[source-braintree-articles-br-chargebacks-retrievals-prearbs]] - 2026-09-16 Braintree-hosted BR/Brazil-route credit-card dispute snapshot covering account-sensitive notifications, interface-qualified management, reply-by expiration, chargeback/retrieval/pre-arb effects, statuses and reports; not a transferable price or currency schedule, independent current bank/network policy, sibling-account behavior, or execution and fund-arrival proof
+
 - [[source-braintree-articles-apac-chargebacks-retrievals-prearbs]] - 2026-09-16 Braintree-hosted APAC-route credit-card dispute snapshot covering account-qualified notification and response channels, reply-by expiration, bank adjudication, net-disbursement and settlement-currency fee effects, retrieval/pre-arb distinctions, statuses and a non-reconciliation report boundary; not PayPal-dispute authority, independent current bank/card-network policy, a universal price schedule, or transferable sibling-account behavior
 - [[source-braintree-articles-au-chargebacks-retrievals-prearbs]] - 2026-09-16 captured Braintree AU credit-card-dispute article covering account-sensitive notifications, Control Panel and stated API management routes, reply-by expiration, chargeback/retrieval/pre-arb effects, $25 AUD fee statements, statuses, and report purposes; not independent current bank/card-network policy, execution proof, a merchant-specific agreement, or transferable pricing for another region or account context
 

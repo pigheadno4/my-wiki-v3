@@ -1,0 +1,57 @@
+{
+  "job_id": "articles-br-reporting-reconciliation-transaction-level-fee-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Brazil Transaction-Level Fee Report\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/br/reporting-reconciliation/transaction-level-fee-report\"\nraw_files:\n  - \"braintree/articles/br/reporting-reconciliation/transaction-level-fee-report-2026-09-16.md\"\ntags: [braintree, brazil, reporting, reconciliation, installments, funds-anticipation]\n---\n\n## Overview\n\nThis collected [[braintree]] Brazil-route article, labeled Document Version 1.0, describes the Transaction-Level Fee report's transaction and fee detail for Brazil. It says report detail depends on whether the merchant has IC+ or flat-rate/blended pricing, lists credit and debit cards, Venmo, Apple Pay and Google Pay as supported payment methods, and adds Brazil-specific installment and Funds Anticipation fee detail.\n\nIts central reconciliation use is narrow: locate installment disbursement or adjustment records, inspect the documented fee columns, and compare each installment's **Total Fee Amount** with **Net Settlement Fees** for the same line item in the separately linked Disbursement Report. This is a report-matching procedure, not evidence that a transaction settled, an installment was disbursed, a refund completed, or funds reached a bank account.\n\n## Key takeaways\n\n- For Brazil installments, the page names Visa and Mastercard credit cards and PayPal Wallet transactions, and says **Discount Fees** and **Pre-defined Funds Anticipation Fees** are assessed per installment. The page does not establish debit-card installment support or transfer this Brazil-specific capability to another region.\n- For disbursed installments, it directs operators to **Record Type = Installment** and **Record Subtype = Disbursements**, use **Transaction ID** to identify the installment, and inspect **Discount**, **Per Transaction Fee**, **Funds Anticipation Rate**, **Braintree Total Amount**, and **Total Fee Amount**. Its formulas use settlement amount, but the page supplies no denomination, precision or rounding rule.\n- For installment refunds, discount-fee credits may depend on the merchant's pricing agreement, and only fully refunded installment transactions have associated refunded fees. The refund amount is divided equally across installments and reported with **Record Subtype = Adjustment**; the raw locator preserves the credit columns and formulas.\n- For both installment disbursements and adjustments, the article says installment **Total Fee Amount** should equal **Net Settlement Fees** for the same Disbursement Report line item. The linked report is separate authority, so this source does not establish its access, completeness, timing, settlement finality or bank-posting behavior.\n- The page states that Brazil credit-card transactions take 30 days to disburse by default and describes **Pre-defined Funds Anticipation** as an agreed schedule and rate that pays all credit-card transactions earlier, including standard transactions and installments. The rate columns support fee calculation for a sale or refund; this snapshot does not establish a current universal timeline, account eligibility, an agreed rate, payout execution or arrival.\n\n> [!warning] Pricing-model and reconciliation boundary\n> This Brazil page says report detail depends on IC+ versus flat-rate/blended pricing and then gives installment reconciliation instructions without restating a pricing-model limit. The separately ingested [[source-braintree-control-panel-reporting-transaction-level-fee-report|general Transaction-Level Fee Report page]] says Brazil availability is by default for flat-rate/blended merchants, while IC+ report interchange values are estimates and must not be used for reconciliation. Do not use the Brazil article to override that pricing-specific limit or infer Brazil IC+ availability; obtain account-specific clarification before relying on installment fee matching under IC+.\n\n> [!warning] Brazil route, account and currency scope\n> Keep this evidence within the captured Brazil route. The body does not identify a merchant-account program, settlement currency, conversion behavior, fee denomination, numeric rate, precision or rounding rule. Its report table later lists Samsung Pay and Bank Account rows even though the report-definition support list names only cards, Venmo, Apple Pay and Google Pay; treat that table as a field-value locator, not proof of added payment-method support.\n\n> [!warning] Snapshot and money-movement boundary\n> The raw was fetched on 2026-09-16 and carries page metadata updated 2025-04-01 plus a version-1.0 changelog dated 2021-02-18. Those dates preserve provenance, not current policy. Report rows, fee formulas, a scheduled earlier payout and a cross-report match do not prove payment execution, settlement, disbursement, refund completion or bank arrival for any transaction.\n\n## Detail locators\n\n- Document version and changelog route: `## Document Version 1.0`, raw lines 17-19; initial-version row, raw lines 124-128.\n- Report purpose, pricing-model dependency and supported-method list: `## Report Definition`, raw lines 22-30.\n- Brazil-specific installment and Funds Anticipation additions plus the separate report-running route: `## Report Definition`, raw lines 32-38.\n- Brazil installment payment-method and per-installment fee scope: `### Installments`, raw lines 41-49.\n- Disbursement record selectors, identity field, fee columns and formulas: `#### Reconciling Fees for Installment Disbursements`, raw lines 52-64.\n- Refund-credit and fully-refunded qualifications, equal division and adjustment record selector: `#### Reconciling Fees for Installment Adjustments`, raw lines 69-85.\n- Transaction-Level Fee Report to Disbursement Report line-item equality statement: raw line 89.\n- Default 30-day statement, agreed Pre-defined Funds Anticipation schedule/rate, transaction scope and rate-column calculation: `### Funds Anticipation`, raw lines 92-100.\n- Record type/subtype table: `## Record types and subtypes`, raw lines 103-109.\n- Payment-instrument field table, including rows beyond the earlier support list: `## Payment instrument types and subtypes`, raw lines 112-121.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n- Pricing-model-specific report authority and reconciliation limit: [[source-braintree-control-panel-reporting-transaction-level-fee-report]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/br/payment-capabilities-2026-09-16|Braintree Brazil Payment Capabilities]] - linked installment-capability navigation; not read as factual evidence for this source\n- [[raw/braintree/articles/br/reporting-reconciliation/disbursement-report-2026-09-16|Braintree Brazil Disbursement Report]] - linked line-item comparison destination; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/articles/br/reporting-reconciliation/transaction-level-fee-report-2026-09-16|Braintree Brazil Transaction-Level Fee Report]] - fully read version-1.0 snapshot covering Brazil installment fee matching, refund adjustments, Funds Anticipation and report field locators\n",
+  "quotes": [
+    {
+      "text": "The Transaction-Level Fee report provides detailed information about your transactions and the fees associated with them. The details provided in the report depend on whether you have an IC+ pricing model, or a flat rate or blended model. Contact us if you're unsure of your pricing model. Payment methods supported by the Transaction-Level Fee report:",
+      "location": "raw line 24 under ## Report Definition"
+    },
+    {
+      "text": "In Brazil, merchants can offer customers the ability to pay for transactions in installments. This is supported for Visa and Mastercard credit cards, and PayPal Wallet transactions. [Learn more about the installments capability](/braintree/articles/br/payment-capabilities).",
+      "location": "raw line 43 under ### Installments"
+    },
+    {
+      "text": "When a transaction with installments is refunded, the discount fees for each installment may also be refunded. This is dependent on your pricing agreement with PayPal. Only fully refunded transactions with installments will have refunded fees associated with it.",
+      "location": "raw line 71 under #### Reconciling Fees for Installment Adjustments"
+    },
+    {
+      "text": "For both installment disbursement and adjustments that appear in the Transaction Level Fee Report, the Total Fee Amount for the installment should be equal to the Net Settlement Fees for the same line item in the [Disbursement Report](/braintree/articles/br/reporting-reconciliation/disbursement-report).",
+      "location": "raw line 89 after the installment-adjustment methodology"
+    },
+    {
+      "text": "In Brazil, credit card transactions take 30 days to disburse by default. Merchants can opt to pay a certain rate-based fee to have their credit card transactions paid out sooner than 30 days. This feature is called Funds Anticipation.",
+      "location": "raw line 94 under ### Funds Anticipation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "br-transaction-level-fee-report-reconciliation-source-route",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources, alongside the existing Braintree Transaction-Level Fee Report route",
+        "proposed_markdown": "- [[source-braintree-articles-br-reporting-reconciliation-transaction-level-fee-report]] - 2026-09-16 Braintree Brazil-route Document Version 1.0 for pricing-dependent transaction-fee detail, installment disbursement/adjustment fee matching and qualified Funds Anticipation fields; the page states no currency or account-program rule, does not override the separate IC+ no-reconciliation limit, and is not payout or bank-arrival proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the source route Brazil-specific and preserve the absence of a currency, merchant-account-program, precision and rounding rule.",
+          "The Brazil page's pricing-model language and unqualified installment reconciliation steps do not override the separately collected general report page, which limits default Brazil availability to flat-rate/blended pricing and says IC+ interchange estimates must not be used for reconciliation.",
+          "Treat the report's field table as a locator rather than proof that Samsung Pay or Bank Account is supported, because those rows are absent from the report-definition support list.",
+          "Do not infer transaction execution, settlement, disbursement, refund completion or bank arrival from report rows, formulas, a Funds Anticipation schedule or cross-report equality."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/br/reporting-reconciliation/transaction-level-fee-report-2026-09-16.md",
+  "raw_sha256": "6eb09ff191e3a520029723c198f701ac314e6bb61657a992da334c0ee7cf4e46",
+  "status": "candidate_ready"
+}

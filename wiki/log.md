@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Braintree website C38
+
+- Twenty BR/Brazil and Moneris website sources approved; first pass19/20, twenty full initial reviews and one targeted correction, no repeated full review. Catalog432(415website+17GitHub), seven existing concepts updated; fixed queries40/40 passed. An auditor's historical-provider mixup was excluded and only that group rerun; known conflicts remain explicit. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-38/`. Raw unchanged; no commit/push or next campaign authorized.
+
 ## [2026-10-04] ingest | Messaging Components `1.98.0`
 
 - Additive full/focused reading: Canadian bilingual long-term presentment, currency formatting, FR/AT/DE credit warnings/layouts and modal Tab guard. Eligibility and visual/accessibility outcomes remain unproven; earlier history preserved. Details [[paypal-log]] and [[changelog-github-paypal-messaging-components]]. No runtime/payment test, commit or push. Next: scoped commit review.

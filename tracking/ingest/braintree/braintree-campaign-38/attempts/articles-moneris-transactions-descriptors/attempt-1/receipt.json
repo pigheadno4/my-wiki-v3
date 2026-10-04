@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-moneris-transactions-descriptors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Moneris Transaction Descriptors\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/moneris/transactions/descriptors\"\nraw_files:\n  - \"braintree/articles/moneris/transactions/descriptors-2026-09-16.md\"\ntags: [braintree, moneris, transactions, descriptors, bank-statements]\n---\n\n## Overview\n\nThis Braintree-hosted, Moneris-routed snapshot explains the identifying information customers may see on bank statements for purchases made through a merchant's mobile app or website. For the account addressed by the article, it distinguishes an automatically configured hard descriptor from an API-supplied dynamic descriptor; the customer's bank ultimately determines the exact rendering. This is account-route documentation from [[braintree]], not independent Moneris API documentation or PayPal Orchestration authority.\n\n## Key takeaways\n\n- The article says the account supports hard and dynamic descriptors. A hard descriptor is displayed after settlement once the customer's bank finalizes the transaction status, while a dynamic descriptor is custom information passed with each transaction through the API.\n- Hard descriptor information requires merchant name (DBA), location and phone number. The phone number is not shown in the hard descriptor by default, and the article routes assistance and descriptor changes through Braintree's contact path.\n- The merchant name/DBA is limited to 22 characters and to letters, numbers, periods and dashes. The article says Braintree automatically configured the hard descriptor from application information.\n- Depending on the card issuer, a statement will typically append the dynamic descriptor name to the DBA with a forward slash. The DBA, slash and dynamic name share a 22-character limit; exceeding it can cause truncation or reversion to the hard descriptor. Dynamic names cannot contain spaces or special characters.\n- The linked per-transaction developer-doc route supports only the `name` field in this snapshot; phone and URL are not supported there. PayPal descriptor updates use the PayPal console, while Amex descriptor updates require direct contact with American Express.\n\n> [!warning] Scope and statement-rendering boundaries\n> This is a 2026-09-16 snapshot of a Braintree article under its Moneris account route. It does not establish current availability, a merchant's account or regional eligibility, independent Moneris requirements, API request shape, Orchestration behavior, or successful payment processing. Do not transfer its rules to sibling account, processor, region or payment-method routes. The issuing bank controls exact statement rendering, and the article uses qualified language for the typical dynamic format and the possible truncation-or-reversion outcome.\n\n## Detail locators\n\n- Descriptor purpose, mobile-app or website context, bank-controlled rendering and example: `# Descriptors`, raw lines 14-18.\n- Hard and dynamic descriptor definitions: `# Descriptors`, raw lines 20-24.\n- Required hard-descriptor parameters, default phone-number visibility and merchant-name restrictions: `# Descriptors`, raw lines 26-37.\n- Application-derived hard configuration, Braintree change route and separate PayPal/Amex routes: `# Descriptors`, raw lines 41-47.\n- Dynamic descriptor composition, issuer-qualified typical rendering and shared 22-character limit: `## Dynamic descriptors`, raw lines 52-67.\n- Dynamic-name character restrictions and identification guidance: `### Dynamic descriptor name`, raw lines 72-81.\n- Overlength truncation-or-reversion possibility and the per-transaction developer-doc field boundary: `### Dynamic descriptor name`, raw lines 84-89.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- General Braintree descriptor route: [[source-braintree-control-panel-descriptors]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/moneris/transactions/descriptors-2026-09-16|Braintree Moneris Transaction Descriptors]] - complete collected Braintree article for the Moneris-routed hard and dynamic descriptor snapshot\n",
+  "quotes": [
+    {
+      "text": "A descriptor is the identifying information that your customers will see on their bank statement when they make a purchase through your mobile app or website. Ultimately, a customer\u2019s bank will determine exactly how your business\u2019s descriptors will appear on customer statements, but they are often formatted like this:",
+      "location": "raw lines 14-18 under # Descriptors; quoted text is line 16"
+    },
+    {
+      "text": "- **Hard descriptors**: The descriptor that shows up after a transaction has settled. As soon as the customer's bank has finalized the transaction status, the hard descriptor will be permanently displayed as the description of the charge on the customer\u2019s statement.\n- **Dynamic descriptors**: A custom descriptor configured by you and passed with each transaction via the API. This can be helpful if you want to provide specific information about the transaction in your descriptor (e.g. the name of the product).",
+      "location": "raw lines 20-24 under # Descriptors; quoted bullets are lines 23-24"
+    },
+    {
+      "text": "Your merchant name/DBA has a limit of 22 characters, and can only include letters, numbers, periods, and dashes.",
+      "location": "raw lines 36-37, NOTE under # Descriptors; quoted text is line 37"
+    },
+    {
+      "text": "Depending on the card issuer, customers\u2019 statements will typically show the dynamic descriptor name appended to your DBA on file, separated by a forward slash (/). While the end result can vary, your customer should see a descriptor formatted similar to this on their statement:",
+      "location": "raw lines 52-62 under ## Dynamic descriptors; quoted text is line 60"
+    },
+    {
+      "text": "If the full length of your dynamic descriptor \u2013 including the merchant name (DBA), forward slash, and dynamic descriptor name \u2013 exceeds the 22-character limit, it will either be truncated or reverted to your hard descriptor.",
+      "location": "raw lines 84-85, NOTE under ### Dynamic descriptor name; quoted text is line 85"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c38-w8-braintree-control-panel-moneris-descriptors",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-moneris-transactions-descriptors]] - 2026-09-16 Braintree-hosted Moneris account-route descriptor snapshot covering bank-controlled statement rendering, application-derived hard configuration, API-supplied dynamic names, qualified truncation-or-reversion behavior and separate PayPal/Amex update paths; not independent Moneris API or Orchestration authority, current regional/account eligibility, sibling-route policy, or payment-success evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Retain the Moneris account-route and snapshot qualifications; do not generalize these descriptor rules to sibling processors, regions or current policy.",
+          "The raw does not establish independent Moneris API behavior or PayPal Orchestration behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/moneris/transactions/descriptors-2026-09-16.md",
+  "raw_sha256": "c77ef5f09eb6424a18ca820ea377edf747ab0435d207f96e807fe42366a4eb2d",
+  "status": "candidate_ready"
+}

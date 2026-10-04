@@ -1,0 +1,54 @@
+{
+  "job_id": "articles-br-reporting-reconciliation-disbursement-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Brazil Disbursement Report\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/br/reporting-reconciliation/disbursement-report\"\nraw_files:\n  - \"braintree/articles/br/reporting-reconciliation/disbursement-report-2026-09-16.md\"\ntags: [braintree, brazil, disbursement, reconciliation, reporting]\n---\n\n## Overview\n\nThis collected [[braintree]] article at the exact Brazil (`/articles/br/`) route identifies itself as Disbursement Report version 1.1. It presents the report as a way to reconcile daily PayPal and Braintree deposits with a system of record, using both batch summaries and event-level detail for payment events that affected a deposit. The documented file has Header, Summary, Detail and Footer sections.\n\nThis is a 2026-09-16 documentation snapshot, not proof that the report is currently available to a particular account, that a payment settled, or that a deposit reached a bank account. The page does not document access permissions, delivery, generation schedule, merchant pricing rates or current eligibility.\n\n## Key takeaways\n\n- The Summary represents each reporting-period disbursement batch as a line item and identifies merchant-account amount, transfer and destination-bank context. The Detail represents disbursement-impacting events such as transactions and disputes, while the Footer provides record and file counts for ingestion checks.\n- For the documented Brazil reconciliation route, the page tells the reader to match a PayPal bank-statement deposit to Summary **Net Disbursed Amount**, use **Funding Account** to group Detail rows, and sum **Net Disbursed** within each group. It says Brazil's **Funding Account** value will always be a PayPal Account Number because PayPal Wallet and credit/debit-card transactions are disbursed through a PayPal account. This is the report's stated matching method and account-routing rule, not evidence that any particular deposit arrived.\n- The page supplies separate report-event procedures for sales/refunds, installment disbursements and adjustments, and disputes. For disputes, it says a **Chargeback** should be **Lost** with a negative amount, while a **Chargeback reversal** should be **Won** with a positive amount; these are report-record expectations rather than proof of an external dispute outcome. Use the raw locators for the exact record-type, subtype and identifier filters.\n- Time and currency meanings are field-specific. The Header carries report generation date and timezone. Detail distinguishes object creation, settlement and disbursement dates; **Settlement date** is stated to populate only for sales and refunds. Detail also separates transaction currency and settlement currency, includes an exchange rate when those currencies differ, and records gross, fee and net values. These fields describe the report snapshot and do not establish pricing terms or exchange-rate authority.\n- The Summary includes a separate **Previous failed disbursement amount** when a prior failed disbursement is included in the current day's disbursement. Do not treat a current report total as if it necessarily contains only newly disbursed events.\n\n> [!warning] Scope and money-movement boundary\n> Keep the account-routing statement within this captured Brazil report route. The route and report fields do not establish current account eligibility, another region's behavior, bank policy, fund availability, settlement finality or successful deposit.\n\n> [!warning] Pricing and currency boundary\n> Fee, gross, net, transaction-currency, settlement-currency and exchange-rate fields are reconciliation data. The page does not state a merchant's pricing model or rates, validate a conversion, or make the report independent pricing authority.\n\n> [!warning] Captured data-dictionary wording defect\n> The **RD** dictionary row says Detail rows belong to the Summary section, and the **RF** dictionary row similarly says Footer rows belong to the Summary section, even though the report-format section defines separate Detail and Footer sections. Preserve those statements as unresolved source wording defects; do not use them to relabel RD or RF rows as Summary rows.\n\n## Detail locators\n\n- Document version and central reconciliation purpose: `## Document Version 1.1` and `## Report Definition`, raw lines 17\u201324.\n- Four-section structure and section purposes: `## Report format`, raw lines 27\u201355.\n- Deposit matching, Brazil PayPal Account Number funding-account rule, Detail grouping and per-record-type transition: `## How to Use the Report` through `### Reconciling deposit amount to funding account in PayPal`, raw lines 58\u201371.\n- Sales/refunds and installment record filters, identifiers, dates, transfer IDs and net values: raw lines 74\u2013100.\n- Dispute identifier, amount, subtype, status and sign expectations: `### Reconciling disputes`, raw lines 103\u2013112.\n- Report-generated date and timezone fields: `### Report Header Data Dictionary`, raw lines 120\u2013129.\n- Summary transfer, bank-account, currency, current amount and previous-failed-disbursement fields: `### Report Summary Data Dictionary`, raw lines 132\u2013143.\n- Detail object/account identifiers, event dates, transaction-versus-settlement currency, amount/fee/net fields and exchange rate: `### Report Detail Data Dictionary`, raw lines 146\u2013185.\n- Captured RD and RF section-description defects: raw lines 150 and 192.\n- Footer file and record counts: `### Footer Data dictionary`, raw lines 188\u2013195.\n- Exact record types and subtypes: `## Record types and subtypes`, raw lines 198\u2013221.\n- Version history: `## Changelog`, raw lines 240\u2013245.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/br/reporting-reconciliation/disbursement-report-2026-09-16|Braintree Brazil Disbursement Report]] - fully read 2026-09-16 snapshot of version 1.1, its Brazil funding-account rule, reconciliation procedure, event/date/currency fields and data-dictionary wording defects\n",
+  "quotes": [
+    {
+      "text": "To reconcile your daily deposits from PayPal and Braintree with your system of records to clear your receivables, you will need to use the Disbursement Report. This report will contain both summarized and event-level detail of every payment event that impacted a deposit from PayPal and Braintree to your deposit bank account.",
+      "location": "raw line 24 under ## Report Definition"
+    },
+    {
+      "text": "The **Summary** section will contain summarized data about the disbursement batches from the reporting period. Each disbursement batch will appear as a line-item in this section and will have information like the total amount disbursed per merchant account, the transfer ID of the disbursement, and the bank account to which the funds were disbursed.",
+      "location": "raw line 45 under ### Summary"
+    },
+    {
+      "text": "- Locate theFunding Accountfor each deposit line-item in the**Summary**section. For Brazil, this value will always be a PayPal Account Number because both PayPal Wallet and Credit/Debit Card transactions are disbursed through a PayPal account.",
+      "location": "raw line 67 under ### Reconciling deposit amount to funding account in PayPal"
+    },
+    {
+      "text": "- IfRecord Subtype=**Chargeback**then the dispute should have a status of**Lost**and should be a negative amount\n- IfRecord Subtype=**Chargeback reversal**then the dispute should have a status of**Won**and be a positive amount",
+      "location": "raw lines 111\u2013112 under ### Reconciling disputes"
+    },
+    {
+      "text": "| Previous failed disbursement amount | If the previous disbursement failed and was included in the current day's disbursement, its amount will be found here. |",
+      "location": "raw line 142 under ### Report Summary Data Dictionary"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c38-w2-payment-reconciliation-reporting-reciprocal",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-br-reporting-reconciliation-disbursement-report]] - 2026-09-16 Braintree-hosted Brazil-route Disbursement Report version 1.1 for daily PayPal/Braintree deposit reconciliation, including the Brazil PayPal Account Number funding-account rule, merchant-account and transfer grouping, transaction-versus-settlement currency and report-event time locators, and previous-failed-disbursement carryover; not merchant pricing, current account eligibility or access, independent bank policy, or proof that a deposit arrived",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep the route and account-routing statement specific to this captured Brazil report; do not generalize it to sibling regions or current account eligibility.",
+          "The raw RD and RF dictionary descriptions conflict with the report's separate Detail and Footer section definitions by saying those rows belong to Summary."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/br/reporting-reconciliation/disbursement-report-2026-09-16.md",
+  "raw_sha256": "4a20801ca86e68a407f045f9a77285d57636da01492e5b6e33c6d5468c7a97ca",
+  "status": "candidate_ready"
+}

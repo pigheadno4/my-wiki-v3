@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-br-reporting-reconciliation-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Brazil Reconciliation\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/br/reporting-reconciliation/reconciliation\"\nraw_files:\n  - \"braintree/articles/br/reporting-reconciliation/reconciliation-2026-09-16.md\"\ntags: [braintree, brazil, reconciliation, disbursements, reporting]\n---\n\n## Overview\n\nThis collected [[braintree]] article at the exact Brazil (`/articles/br/`) route describes using a monthly merchant statement and several reports to reconcile disbursements with bank-account records. Its central workflow compares statement **Disbursement Details** with deposits, then uses the Unified Disbursement Report where debt repayment can make the amount reaching the bank differ from **Total Disbursed** in the PayPal account.\n\nThis is a 2026-09-16 Braintree-hosted snapshot of the Brazil route. The body does not identify a pricing model or settlement currency, and it does not establish current account eligibility, independent bank policy, or equivalence with sibling regional or processor-specific articles.\n\n## Key takeaways\n\n- The article identifies the monthly merchant statement as the primary reconciliation tool. In **Disbursement Details**, the **Date** is when the page says funds were disbursed to the merchant's PayPal account before being swept to the bank. Conditional on the merchant using batch settlement, it says Monday-through-Thursday settlements should be deposited the same day, Friday settlements are swept the following Monday, and swept funds should appear on the bank statement within one to two business days. These are page-stated timing expectations, not a settlement or bank-arrival guarantee.\n- **Total Disbursed** is said to match the PayPal-account deposit, but some settled funds may be sent to a partnering bank for debt repayment. The article therefore requires the Unified Disbursement Report for reliable reconciliation of deposits to the bank account; a PayPal-account total alone is not sufficient bank-deposit evidence.\n- The **Unified Disbursement Report** combines PayPal- and Braintree-processed transactions, details disbursement-impacting sales, refunds, installments, disputes and fees, and can combine multiple Braintree accounts that settle into one PayPal account and are disbursed together. This report description supports reconciliation routing, not proof that any listed event settled or that funds arrived.\n- The **Disbursement Summary** can show transactions for a selected day's disbursement or gross sales and credits grouped by card type. The article says it may take one to three business days after disbursement to become available, requires the **Create, Run, and Download Reports** permission, is selected by merchant account and date range, and excludes transaction fees. It recommends first matching the bank-statement deposit to statement **Total Disbursed**, then using Braintree's disbursement date to pull the corresponding summary; the debt-repayment warning above remains controlling when those amounts differ.\n- For disputes, the article routes reconciliation to the **Disbursement Date** in the Disputes Financial Impact Report, described as the exact date disbursed funds were credited or debited from the account. That report date is an event anchor within this snapshot, not independent evidence of bank posting, availability or finality.\n\n> [!warning] Brazil snapshot and account scope\n> Keep this evidence within the captured Brazil article. The body supplies no pricing-model or currency qualification, and the route alone does not make the guidance current authority for another region, processor arrangement or account program. Multiple Braintree accounts settling into one PayPal account is a documented report use case, not evidence that any particular merchant has that configuration.\n\n> [!warning] Reconciliation is not deposit or settlement proof\n> Statement amounts, report event dates and expected sweep or bank-statement timing support a reconciliation procedure only. They do not prove that an individual transaction settled, that a deposit reached or became available in a bank account, that debt repayment was correctly applied, or that a credit or debit is final.\n\n## Detail locators\n\n- Document purpose and monthly-statement-first route: `# Reconciliation` and `## Statement reconciliation`, raw lines 14-21.\n- PayPal-account disbursement date, batch-settlement weekday conditions, sweep timing and debt-repayment warning requiring the Unified Disbursement Report: `### Disbursement Details`, raw lines 24-30.\n- Unified Disbursement Report coverage, disbursement-impacting event list and multiple-Braintree-account-to-one-PayPal-account use: `### Unified Disbursement Report`, raw lines 40-42.\n- Disbursement Summary purpose, one-to-three-business-day availability lag, permission gate, amount/date matching procedure, transaction-fee exclusion and merchant-account/date controls: `### Disbursement Summary report`, raw lines 45-66.\n- Disputes Financial Impact Report route and **Disbursement Date** meaning: `### Dispute Report`, raw lines 71-73.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n- Linked statement, Unified Disbursement Report, role-permission and disputes-report destinations are navigation unless separately ingested and read; their detailed behavior is not established by this source.\n\n## Raw Sources\n\n- [[raw/braintree/articles/br/reporting-reconciliation/reconciliation-2026-09-16|Braintree Brazil Reconciliation]] - fully read collected article covering statement and report reconciliation, PayPal-to-bank sweep timing, the debt-repayment warning, report availability and permission conditions, and dispute event dates\n",
+  "quotes": [
+    {
+      "text": "We provide you with a monthly merchant statement and multiple reports for reconciling disbursements to your bank account. This guide outlines where to locate those tools and how to best utilize them for reconciliation.",
+      "location": "raw line 16 under # Reconciliation"
+    },
+    {
+      "text": "Most of our merchants reconcile by comparing the **Disbursement Details** section to the deposits they see in their bank accounts. In this section of your statement, the Date column reflects when we disbursed the funds to your PayPal account, which are then swept into your bank. If you use the batch settlement feature, funds that settle Monday through Thursday should be deposited into your bank the same day; funds settled on Fridays will be swept on the following Monday. Once swept, funds should be reflected on your bank statement within 1-2 business days.",
+      "location": "raw line 26 under ### Disbursement Details"
+    },
+    {
+      "text": "The Total Disbursed column will match the deposit you see in your PayPal account, however due the to the fact that some of your settled funds may be sent to your partnering bank for the purposes of debt repayment, you must use to the [Unified Disbursement Report](/braintree/articles/br/reporting-reconciliation/disbursement-report) to reliably reconcile the deposits to your bank account.",
+      "location": "raw line 30 NOTE under ### Disbursement Details"
+    },
+    {
+      "text": "PayPal provides a disbursement report that will include both PayPal and Braintree processed transactions in a single report. This report will detail all disbursement impacting events, including sales, refunds, installments, disputes, and fees. Additionally, the report makes it possible to reconcile multiple Braintree accounts that may settle into a single PayPal account and get disbursed together. [Learn more about how to use the Unified Disbursement Report](/braintree/articles/br/reporting-reconciliation/disbursement-report).",
+      "location": "raw line 42 under ### Unified Disbursement Report"
+    },
+    {
+      "text": "If you would like to see individual transactions from a particular day\u2019s disbursement, or see your gross sales and credits grouped by card type, you can use the Disbursement Summary in the Control Panel. Keep in mind that it can take 1-3 business days after the disbursement for the Disbursement Summary to become available, and only users with the Create, Run, and Download Reports [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-create-run-and-download-reports) can access this report in the Control Panel.",
+      "location": "raw line 47 under ### Disbursement Summary report"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c38-br-reconciliation-reciprocal-source",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-br-reporting-reconciliation-reconciliation]] - 2026-09-16 Braintree-hosted Brazil-route reconciliation snapshot covering monthly statement and PayPal-to-bank sweep anchors, debt-repayment-qualified Unified Disbursement Report use, combined PayPal/Braintree disbursement events, and permission- and delay-qualified Disbursement Summary use; no stated pricing or currency scope, sibling-region authority, settlement proof or bank-deposit proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The route is Brazil-specific, while the body does not state a pricing model, settlement currency, or equivalence with sibling regional or processor-specific guidance.",
+          "Statement and report dates and expected timing support reconciliation only; they do not prove settlement, bank deposit, fund availability, or finality."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/br/reporting-reconciliation/reconciliation-2026-09-16.md",
+  "raw_sha256": "a97a0449319df05dc686d91f397a58116a2cd3d10669989fd17fad47fec24177",
+  "status": "candidate_ready"
+}
