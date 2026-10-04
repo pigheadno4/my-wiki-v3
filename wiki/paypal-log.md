@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Checkout Components `5.0.436`
+
+- Delta-ingested `github-05de85883ddb6e597928`, `@paypal/checkout-components@5.0.435` to `5.0.436`, SHA `5b2afe08b007bd026083492b8242d65047b7d3b8`, with approved item-specific focused reading.
+- Read the complete changed/prior authored Pay Later configuration and package, authored patch sections, new raw changelog entry and cumulative wiki history. Verified both 214-file capsules, 210 unchanged files, packet/comparison hashes and identical prior raw changelog suffix; generated evidence checked mechanically, not a full semantic read.
+- Recorded conditional Canadian French `Payer en 4` to `Payer plus tard`, existing later Pay in 4/France override precedence, unchanged API/dependency contracts and unavailable separate release notes. Updated Pay Later/Checkout concepts before cumulative source/changelog, company, index and logs; earlier history retained, source_count unchanged.
+- Sources: [[source-github-paypal-checkout-components]], [[changelog-github-paypal-checkout-components]]. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-05de8588.md`. No build, browser/payment test, commit or push.
+
 ## [2026-10-02] ingest | PayPal JS core `11.2.0` and React `10.5.2`
 
 - Delta-ingested work item `github-5b2a7f87f06b9859f5c8`, shared SHA `d9966e6dd9a5bb880341a7df1809329e82906a41`, from core `11.1.1` and React `10.5.1`. User requested full reading of every assigned file; no focused-reading exception.

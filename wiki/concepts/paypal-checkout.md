@@ -166,6 +166,8 @@ At `@paypal/checkout-components@5.0.434`, the checkout child installs a configur
 
 At `@paypal/checkout-components@5.0.435`, new regression tests cover the existing plain PayPal iframe title without a funding source and the `PayPal-venmo` title with Venmo. No authored runtime implementation changes; the generated bundles differ only in scoped-style identifiers under mechanical comparison. This is test coverage, not a new accessibility fix or independently verified screen-reader outcome. The `5.0.433` label revert and `5.0.434` window-name monitoring remain. Source: [[source-github-paypal-checkout-components]]; history: [[changelog-github-paypal-checkout-components]].
 
+At `@paypal/checkout-components@5.0.436`, the eligible Canadian Pay Later product's French label changes from `Payer en 4` to `Payer plus tard`. Later independent Pay in 4/France branches can overwrite it, so this is not a universal French label. The sole authored edit is presentation-only; dependency ranges, merchant callbacks and payment APIs are unchanged in this comparison. Neither the label nor the retained generated bundle proves hosted deployment or merchant eligibility. See [[paypal-pay-later]], [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
+
 ### SDK release assembly baseline: `@paypal/sdk-release@5.0.569`
 
 The independent `paypal/paypal-sdk-release` repository records the component bill of materials used to assemble and release the combined PayPal and Braintree browser SDK. Baseline `5.0.569` pins Checkout Components `5.0.428`, Messaging Components `1.94.0`, Apple Pay Components `1.8.2`, Google Pay Components `1.3.5`, SDK Client `4.0.204`, and seven other direct PayPal component packages.

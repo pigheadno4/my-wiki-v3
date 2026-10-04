@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-09-27
+date_updated: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json"
@@ -22,7 +23,7 @@ tags: [paypal, checkout, javascript-sdk, github-repository, venmo, pay-later]
 
 ## Overview
 
-`paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends ingested history through `@paypal/checkout-components@5.0.435` at exact SHA `1f668d5ebfba91a6e636f2453aeaba36d65cb5c7`. The latest patch adds iframe-title regression tests, not authored runtime changes. The `5.0.434` checkout-child window-name monitoring, iframe aria-label addition in `5.0.432`, and revert in `5.0.433` remain documented.
+`paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends ingested history through `@paypal/checkout-components@5.0.436` at exact SHA `5b2afe08b007bd026083492b8242d65047b7d3b8`. The latest patch changes a conditional Canadian French Pay Later label. The `5.0.435` iframe-title regression coverage, `5.0.434` checkout-child window-name monitoring, iframe aria-label addition in `5.0.432`, and revert in `5.0.433` remain documented.
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
 
@@ -289,6 +290,29 @@ The existing `5.0.433` aria-label revert and `5.0.434` window-name monitoring th
 
 **Grounding:** current raw `files/CHANGELOG.md:3` says "chore: add test for button iframe title"; `files/package.json:3` declares `"version": "5.0.435"`; the comparison's added `src/zoid/buttons/component.test.js` says "uses the plain PayPal label when no funding source is set" and "appends the funding source to the label when one is set".
 
+## Version 5.0.436 Canadian French Pay Later label
+
+Released September 29, 2026; collected and delta-ingested October 4 as `github-05de85883ddb6e597928`. The only authored implementation edit in the [complete Pay Later configuration](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/files/src/funding/paylater/config.jsx) changes the label when `fundingEligibility.paylater.products.paylater` is eligible, its variant is `CA`, and `locale.lang` is `fr`:
+
+```diff
+ if (
+   paylater?.products?.paylater?.eligible &&
+   paylater?.products?.paylater?.variant === "CA" &&
+   lang === "fr"
+ ) {
+-  labelText = "Payer en 4";
++  labelText = "Payer plus tard";
+ }
+```
+
+These are independent `if` statements, not mutually exclusive branches. A later eligible `payIn4` product overwrites the label with `Pay in 4`; the France-specific condition can then overwrite it with `Payer en plusieurs fois`. The Canadian French result therefore applies only when a later branch does not replace it. This preserves the helper's existing precedence rather than introducing a new priority rule.
+
+Both legacy and rebranded `Logo` branches use `getLabelText(fundingEligibility, locale)` with a `Pay Later` fallback. The configuration's `labelText` property also calls the helper, retaining its existing funding-enum fallback expression. The edit is conditional button presentation, not new Canadian eligibility, installment terms, merchant enablement, or a payment-session feature. Package JSON changes only version; no dependency-range, public-export or merchant API migration is detected. Earlier version knowledge remains intact.
+
+**Evidence boundary:** user-approved, item-specific focused reading of the complete changed/prior authored configuration and package, new raw changelog entry, authored patch sections and complete cumulative wiki history. Both 214-file snapshots were verified by size, SHA-256 and Git blob ID; 210 retained paths are unchanged. The prior raw changelog is an identical suffix. The generated bundle contains the new literal with the CA/fr condition and later override, but its changes are not reducible to the label substitution plus scoped-style identifiers; no full generated-code semantic-equivalence or hosted-deployment claim is made. The excluded generated test bundle remains in the comparison patch, not the raw capsule. Separate upstream notes are unavailable. No build, browser/visual, screen-reader or payment test was performed. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-05de8588.md`.
+
+**Grounding:** current raw `src/funding/paylater/config.jsx:59` reads `paylater?.products?.paylater?.variant === "CA" &&`; line 60 reads `lang === "fr"`; line 62 reads `labelText = "Payer plus tard";`; lines 65-66 read `if (paylater?.products?.payIn4?.eligible) {` followed by `labelText = "Pay in 4";`. `CHANGELOG.md:3` records "feat: update ca button label text".
+
 ## Public and security boundary
 
 The browser-facing `Buttons` component is public on merchant pages. Lower-level checkout controls remain PayPal-domain-only. The iframe helper is therefore not a merchant escape hatch for forcing an unsupported presentation mode.
@@ -302,9 +326,14 @@ The exact snapshot also shows that layout, platform, remembered funding, and ser
 - [[paypal-checkout]] — cumulative PayPal Checkout concept
 - [[paypal-vault]] — setup-token and stored-payment-method concepts
 - [[paypal-expanded-checkout]] — Card Fields and 3DS concepts
+- [[paypal-pay-later]] — version-qualified Pay Later button presentation and product-documentation boundaries
 - [[source-paypal-pay-with-venmo]] — current product documentation for mobile app switch and desktop QR
 
 ## Raw sources
+
+- [Snapshot 5.0.436](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json) and [release record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.436/2026-10-04/manifest.json)
+- [Pay Later configuration](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/files/src/funding/paylater/config.jsx), [package](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/files/package.json), and [changelog](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/files/CHANGELOG.md) (new entry read; prior raw history checked mechanically)
+- [Comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.435--5.0.436/comparison.json) and [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.435--5.0.436/diff.patch) (authored sections read; generated sections checked mechanically)
 
 - [Snapshot 5.0.435](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json)
 - [Release 5.0.435](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.435/2026-09-27/manifest.json)

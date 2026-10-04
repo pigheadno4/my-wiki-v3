@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-09-27
+date_updated: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-e5f517b/manifest.json"
@@ -23,6 +24,22 @@ tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-checkout-components`. Cumulative implementation knowledge belongs in [[source-github-paypal-checkout-components]] and the linked immutable snapshots.
+
+## `@paypal/checkout-components@5.0.436` (2026-09-29)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/checkout-components` | `5.0.435` | `5.0.436` | `5b2afe08b007bd026083492b8242d65047b7d3b8` | Delta, approved focused reading |
+
+**Finding:** The only authored implementation edit changes an eligible Canadian Pay Later product's French label from `Payer en 4` to `Payer plus tard`. Later independent Pay in 4/France conditions can overwrite it; this is not a universal French label change. Legacy and rebranded button text and the configuration's `labelText` use the helper.
+
+**Impact:** Conditional presentation, not a new financing offer, eligibility rule, payment API or merchant migration. Package JSON changes only version; dependency ranges and public exports remain unchanged. Prior iframe accessibility and window-name history remain preserved. No browser/payment or hosted-deployment proof.
+
+**Evidence boundary:** Full changed/prior authored configuration and package reads; full cumulative wiki history; new raw changelog entry and authored comparison sections read. Under the approved focused-reading exception, manifest inventories, all 214 prior and 214 current files, unchanged history and generated evidence were checked mechanically. Four retained changes, 210 unchanged files, no retained additions/removals. The prior raw changelog is an identical suffix. The new label appears in the generated bundle, but a label substitution plus scoped-style normalization does not account for all bundle differences; no full generated-code semantic equivalence is claimed. Separate release notes unavailable; generated tests remain raw-policy-excluded.
+
+**Updated areas:** Pay Later and Checkout concepts first, then cumulative source, company, provider index and logs. All earlier version knowledge retained; no new source or cross-company comparison. Work item: `github-05de85883ddb6e597928`.
+
+**Evidence:** [snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json), [release](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.436/2026-10-04/manifest.json), [complete authored configuration](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/files/src/funding/paylater/config.jsx), [comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.435--5.0.436/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.435--5.0.436/diff.patch), [review](../../../../tracking/github/repos/paypal/paypal-checkout-components/ingest-review-05de8588.md).
 
 ## `@paypal/checkout-components@5.0.435` (2026-09-21)
 

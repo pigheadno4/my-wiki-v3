@@ -25,6 +25,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.5.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.4.1--26.5.0/comparison.json)
 
+## `github-05de85883ddb6e597928`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `5b2afe08b007bd026083492b8242d65047b7d3b8`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-05de85883ddb6e597928/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.436` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.436/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.435--5.0.436/comparison.json)
+
 ## `github-06ee06345a65e7231cb5`
 
 - Repository: `paypal/paypal-checkout-components`

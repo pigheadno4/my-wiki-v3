@@ -106,6 +106,8 @@ At `@paypal/checkout-components@5.0.427`, an eligible backend-provided Pay Later
 
 The same release changes rebranded button and overlay CSS from `PayPal Plain` to `PayPalOpen-Regular`. No merchant JavaScript API change was detected. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
 
+At `@paypal/checkout-components@5.0.436` (September 29, 2026), the eligible `paylater` product with variant `CA` and locale language `fr` changes its label from `Payer en 4` to `Payer plus tard`. This helper supplies both legacy and rebranded button text and the configuration's `labelText`. Its conditions are independent: a later eligible `payIn4` branch can replace the label with `Pay in 4`, and the France-specific branch can replace it with `Payer en plusieurs fois`. The edit is conditional presentation, not Canadian product eligibility or financing-term evidence; it requires no documented merchant API migration. Earlier Austrian presentation history remains preserved. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
+
 ## Available Countries (beyond US)
 
 Pay Later offerings differ by country — Australia, France, Germany, Italy, Spain, UK each have their own products. Check the Expanded Checkout eligibility page for which countries support Pay Later.
