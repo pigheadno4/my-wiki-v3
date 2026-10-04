@@ -1,0 +1,212 @@
+# GitHub package comparison
+
+- Repository: `adyen/adyen-node-api-library`
+- Package: `@adyen/api-library`
+- From: `32.0.0` (`99d1a0cf69c8660952baffd1437b00aae2fa4f23`)
+- To: `32.1.0` (`afd3bb485d84d861324a183b99839431bafa4e68`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `README.md`
+- `VERSION`
+- `doc/CloudDeviceApi.md`
+- `package.json`
+- `src/helpers/getJsonResponse.ts`
+- `src/helpers/requestForm.ts`
+- `src/httpClient/clientInterface.ts`
+- `src/httpClient/httpURLConnectionClient.ts`
+- `src/services/balanceControl/balanceControlApi.ts`
+- `src/services/binLookup/binLookupApi.ts`
+- `src/services/capital/dynamicOffersApi.ts`
+- `src/services/capital/grantAccountsApi.ts`
+- `src/services/capital/grantOffersApi.ts`
+- `src/services/capital/grantsApi.ts`
+- `src/services/checkout/donationsApi.ts`
+- `src/services/checkout/modificationsApi.ts`
+- `src/services/checkout/ordersApi.ts`
+- `src/services/checkout/paymentLinksApi.ts`
+- `src/services/checkout/paymentsApi.ts`
+- `src/services/checkout/recurringApi.ts`
+- `src/services/checkout/utilityApi.ts`
+- `src/services/dataProtection/dataProtectionApi.ts`
+- `src/services/disputes/disputesApi.ts`
+- `src/services/documentCollector/documentsApi.ts`
+- `src/services/documentCollector/index.ts`
+- `src/services/index.ts`
+- `src/services/legalEntityManagement/businessLinesApi.ts`
+- `src/services/legalEntityManagement/documentsApi.ts`
+- `src/services/legalEntityManagement/hostedOnboardingApi.ts`
+- `src/services/legalEntityManagement/legalEntitiesApi.ts`
+- `src/services/legalEntityManagement/pCIQuestionnairesApi.ts`
+- `src/services/legalEntityManagement/taxEDeliveryConsentApi.ts`
+- `src/services/legalEntityManagement/termsOfServiceApi.ts`
+- `src/services/legalEntityManagement/transferInstrumentsApi.ts`
+- `src/services/payment/modificationsApi.ts`
+- `src/services/payment/paymentsApi.ts`
+- `src/services/paymentsApp/paymentsAppApi.ts`
+- `src/services/payout/initializationApi.ts`
+- `src/services/payout/instantPayoutsApi.ts`
+- `src/services/payout/reviewingApi.ts`
+- `src/services/posMobile/posMobileApi.ts`
+- `src/services/recurring/recurringApi.ts`
+- `src/services/resource.ts`
+- `src/services/sessionAuthentication/sessionAuthenticationApi.ts`
+- `src/services/storedValue/storedValueApi.ts`
+- `src/services/transfers/capitalApi.ts`
+- `src/services/transfers/cashOutApi.ts`
+- `src/services/transfers/transactionsApi.ts`
+- `src/services/transfers/transfersApi.ts`
+- `src/typings/checkout/affirmDetails.ts`
+- `src/typings/checkout/agency.ts`
+- `src/typings/checkout/airline.ts`
+- `src/typings/checkout/auPayDetails.ts`
+- `src/typings/checkout/carRental.ts`
+- `src/typings/checkout/cardBrandDetails.ts`
+- `src/typings/checkout/checkoutErrorResponseEntity.ts`
+- `src/typings/checkout/checkoutSessionPatchSessionRequest.ts`
+- `src/typings/checkout/checkoutSessionPatchSessionResponse.ts`
+- `src/typings/checkout/createCheckoutSessionRequest.ts`
+- `src/typings/checkout/createCheckoutSessionResponse.ts`
+- `src/typings/checkout/dBaraiDetails.ts`
+- `src/typings/checkout/defaultErrorResponseEntity.ts`
+- `src/typings/checkout/destination.ts`
+- `src/typings/checkout/donationCampaignsRequest.ts`
+- `src/typings/checkout/donationPaymentRequestPaymentMethod.ts`
+- `src/typings/checkout/enhancedSchemeData.ts`
+- `src/typings/checkout/folio.ts`
+- `src/typings/checkout/healthcare.ts`
+- `src/typings/checkout/invalidField.ts`
+- `src/typings/checkout/itemDetailLine.ts`
+- `src/typings/checkout/klarnaDetails.ts`
+- `src/typings/checkout/leg.ts`
+- `src/typings/checkout/levelTwoThree.ts`
+- `src/typings/checkout/lineItem.ts`
+- `src/typings/checkout/lodging.ts`
+- `src/typings/checkout/models.ts`
+- `src/typings/checkout/objectSerializer.ts`
+- `src/typings/checkout/passenger.ts`
+- `src/typings/checkout/paymentDetails.ts`
+- `src/typings/checkout/paymentRequest.ts`
+- `src/typings/checkout/paymentRequestPaymentMethod.ts`
+- `src/typings/checkout/paymentResponseAction.ts`
+- `src/typings/checkout/paypalUpdateOrderRequest.ts`
+- `src/typings/checkout/pickupInfo.ts`
+- `src/typings/checkout/rentalSurcharges.ts`
+- `src/typings/checkout/returnInfo.ts`
+- `src/typings/checkout/rivertyDetails.ts`
+- `src/typings/checkout/room.ts`
+- `src/typings/checkout/sepaDirectDebitDetails.ts`
+- `src/typings/checkout/sepaDirectDebitDonations.ts`
+- `src/typings/checkout/sessionAmountUpdate.ts`
+- `src/typings/checkout/storedPaymentMethod.ts`
+- `src/typings/checkout/storedPaymentMethodDetails.ts`
+- `src/typings/checkout/temporaryServices.ts`
+- `src/typings/checkout/thirdPartyTokenRedundancyInfo.ts`
+- `src/typings/checkout/ticket.ts`
+- `src/typings/checkout/travelAgency.ts`
+- `src/typings/index.ts`
+- `src/typings/payment/additionalDataCommon.ts`
+- `src/typings/payment/responseAdditionalDataCommon.ts`
+
+## Upstream changes
+
+- `modified`: `README.md`
+- `modified`: `VERSION`
+- `modified`: `doc/CloudDeviceApi.md`
+- `modified`: `package.json`
+- `modified`: `src/helpers/getJsonResponse.ts`
+- `added`: `src/helpers/requestForm.ts`
+- `modified`: `src/httpClient/clientInterface.ts`
+- `modified`: `src/httpClient/httpURLConnectionClient.ts`
+- `modified`: `src/services/balanceControl/balanceControlApi.ts`
+- `modified`: `src/services/binLookup/binLookupApi.ts`
+- `modified`: `src/services/capital/dynamicOffersApi.ts`
+- `modified`: `src/services/capital/grantAccountsApi.ts`
+- `modified`: `src/services/capital/grantOffersApi.ts`
+- `modified`: `src/services/capital/grantsApi.ts`
+- `modified`: `src/services/checkout/donationsApi.ts`
+- `modified`: `src/services/checkout/modificationsApi.ts`
+- `modified`: `src/services/checkout/ordersApi.ts`
+- `modified`: `src/services/checkout/paymentLinksApi.ts`
+- `modified`: `src/services/checkout/paymentsApi.ts`
+- `modified`: `src/services/checkout/recurringApi.ts`
+- `modified`: `src/services/checkout/utilityApi.ts`
+- `modified`: `src/services/dataProtection/dataProtectionApi.ts`
+- `modified`: `src/services/disputes/disputesApi.ts`
+- `added`: `src/services/documentCollector/documentsApi.ts`
+- `added`: `src/services/documentCollector/index.ts`
+- `modified`: `src/services/index.ts`
+- `modified`: `src/services/legalEntityManagement/businessLinesApi.ts`
+- `modified`: `src/services/legalEntityManagement/documentsApi.ts`
+- `modified`: `src/services/legalEntityManagement/hostedOnboardingApi.ts`
+- `modified`: `src/services/legalEntityManagement/legalEntitiesApi.ts`
+- `modified`: `src/services/legalEntityManagement/pCIQuestionnairesApi.ts`
+- `modified`: `src/services/legalEntityManagement/taxEDeliveryConsentApi.ts`
+- `modified`: `src/services/legalEntityManagement/termsOfServiceApi.ts`
+- `modified`: `src/services/legalEntityManagement/transferInstrumentsApi.ts`
+- `modified`: `src/services/payment/modificationsApi.ts`
+- `modified`: `src/services/payment/paymentsApi.ts`
+- `modified`: `src/services/paymentsApp/paymentsAppApi.ts`
+- `modified`: `src/services/payout/initializationApi.ts`
+- `modified`: `src/services/payout/instantPayoutsApi.ts`
+- `modified`: `src/services/payout/reviewingApi.ts`
+- `modified`: `src/services/posMobile/posMobileApi.ts`
+- `modified`: `src/services/recurring/recurringApi.ts`
+- `modified`: `src/services/resource.ts`
+- `modified`: `src/services/sessionAuthentication/sessionAuthenticationApi.ts`
+- `modified`: `src/services/storedValue/storedValueApi.ts`
+- `modified`: `src/services/transfers/capitalApi.ts`
+- `modified`: `src/services/transfers/cashOutApi.ts`
+- `modified`: `src/services/transfers/transactionsApi.ts`
+- `modified`: `src/services/transfers/transfersApi.ts`
+- `modified`: `src/typings/checkout/affirmDetails.ts`
+- `modified`: `src/typings/checkout/agency.ts`
+- `modified`: `src/typings/checkout/airline.ts`
+- `added`: `src/typings/checkout/auPayDetails.ts`
+- `added`: `src/typings/checkout/carRental.ts`
+- `modified`: `src/typings/checkout/cardBrandDetails.ts`
+- `added`: `src/typings/checkout/checkoutErrorResponseEntity.ts`
+- `added`: `src/typings/checkout/checkoutSessionPatchSessionRequest.ts`
+- `added`: `src/typings/checkout/checkoutSessionPatchSessionResponse.ts`
+- `modified`: `src/typings/checkout/createCheckoutSessionRequest.ts`
+- `modified`: `src/typings/checkout/createCheckoutSessionResponse.ts`
+- `added`: `src/typings/checkout/dBaraiDetails.ts`
+- `deleted`: `src/typings/checkout/defaultErrorResponseEntity.ts`
+- `modified`: `src/typings/checkout/destination.ts`
+- `modified`: `src/typings/checkout/donationCampaignsRequest.ts`
+- `modified`: `src/typings/checkout/donationPaymentRequestPaymentMethod.ts`
+- `modified`: `src/typings/checkout/enhancedSchemeData.ts`
+- `added`: `src/typings/checkout/folio.ts`
+- `added`: `src/typings/checkout/healthcare.ts`
+- `modified`: `src/typings/checkout/itemDetailLine.ts`
+- `modified`: `src/typings/checkout/klarnaDetails.ts`
+- `modified`: `src/typings/checkout/leg.ts`
+- `modified`: `src/typings/checkout/levelTwoThree.ts`
+- `modified`: `src/typings/checkout/lineItem.ts`
+- `added`: `src/typings/checkout/lodging.ts`
+- `modified`: `src/typings/checkout/models.ts`
+- `modified`: `src/typings/checkout/objectSerializer.ts`
+- `modified`: `src/typings/checkout/passenger.ts`
+- `modified`: `src/typings/checkout/paymentDetails.ts`
+- `modified`: `src/typings/checkout/paymentRequest.ts`
+- `modified`: `src/typings/checkout/paymentRequestPaymentMethod.ts`
+- `modified`: `src/typings/checkout/paymentResponseAction.ts`
+- `modified`: `src/typings/checkout/paypalUpdateOrderRequest.ts`
+- `added`: `src/typings/checkout/pickupInfo.ts`
+- `added`: `src/typings/checkout/rentalSurcharges.ts`
+- `added`: `src/typings/checkout/returnInfo.ts`
+- `modified`: `src/typings/checkout/rivertyDetails.ts`
+- `added`: `src/typings/checkout/room.ts`
+- `modified`: `src/typings/checkout/sepaDirectDebitDetails.ts`
+- `added`: `src/typings/checkout/sepaDirectDebitDonations.ts`
+- `renamed`: `src/typings/checkout/invalidField.ts` -> `src/typings/checkout/sessionAmountUpdate.ts`
+- `modified`: `src/typings/checkout/storedPaymentMethod.ts`
+- `modified`: `src/typings/checkout/storedPaymentMethodDetails.ts`
+- `added`: `src/typings/checkout/temporaryServices.ts`
+- `added`: `src/typings/checkout/thirdPartyTokenRedundancyInfo.ts`
+- `modified`: `src/typings/checkout/ticket.ts`
+- `modified`: `src/typings/checkout/travelAgency.ts`
+- `modified`: `src/typings/index.ts`
+- `modified`: `src/typings/payment/additionalDataCommon.ts`
+- `modified`: `src/typings/payment/responseAdditionalDataCommon.ts`

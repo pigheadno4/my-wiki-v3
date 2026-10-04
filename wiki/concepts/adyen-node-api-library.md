@@ -35,7 +35,50 @@ The encrypted variant adds Nexo payload encryption, HMAC integrity validation, c
 
 ## Version and query boundary
 
+### `32.1.0` additive full update
+
+Checkout remains v72 and Node.js remains 18 or newer. `PaymentsApi.updateSession`
+adds `PATCH /sessions/{sessionId}` with required `amount` (currency and minor-unit
+value) and `sessionData` from the client `beforeSubmit` callback. Optional
+`payable: true` finalizes the amount and prevents further session updates;
+`false` requires a later update to `true` before submission. The response's
+`sessionData` is optional. Merchant servers must calculate the trusted amount;
+this server evidence does not establish Web SDK callback behavior by itself.
+
+Payment-method, donation and action discriminator classes gain concrete `type`
+mappings used by the serializer. Checkout adds au PAY, d払い and SEPA donation
+models, third-party token-request template data, richer enhanced-scheme data,
+and PayPal order-update shipping address/amount and discount amount. Model
+presence does not establish merchant eligibility. Old Checkout error-model
+exports are removed; consumers must review generated type imports.
+
+Custom HTTP implementations now accept `string | Buffer`, not only JSON strings.
+The multipart helper buffers its payload and supplies content headers/length;
+Document Collector upload and Session Authentication exports remain broader
+API inventory because their full domain model trees are outside this capsule.
+The newly retained standard-notification types are unchanged from the older
+supplement, not newly introduced payment events. See
+[[source-github-adyen-node-api-library]] and
+[[changelog-github-adyen-node-api-library]] for exact-SHA evidence and migration.
+
 Release `32.0.0` is a major migration boundary because Checkout v72 removes or changes request fields and introduces Cloud Device API. Future source-page updates must append package-qualified release history. Minor releases should use delta ingest when the classifier and evidence show a bounded change; major or broad upgrades should use additive full ingest without deleting older version knowledge.
+
+### `32.2.0` transport delta
+
+The latest ingested release is `@adyen/api-library@32.2.0`. Its non-proxy
+`HttpURLConnectionClient` caches one HTTPS Agent per instance and accepts
+constructor `AgentOptions`, including opt-in `keepAlive`. Reuse the merchant
+`Client`/HTTP client instance to retain that cache. HTTPS 308 redirects preserve
+the request's agent; the existing one-hop and Adyen-host restrictions remain.
+The proxy branch still constructs an agent per request.
+
+A changed non-empty certificate path resets the cached agent while retaining
+initial agent options. An identical path returns early, so replacing certificate
+file contents at that path is not automatically detected by this code. Certificate
+loading failures reject the request before sending. The default constructor does
+not explicitly enable keep-alive; no latency benchmark was performed. Payments
+App sub-merchant boarding-token data is a release-note claim outside the retained
+domain model scope. Checkout stays v72 and Node.js stays >=18.
 
 For non-checkout API families, the current capsule supports only service/version inventory unless the retained source covers the queried domain. Detailed questions about those domains should trigger a temporary clone or focused immutable supplement.
 

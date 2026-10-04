@@ -6,6 +6,16 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | `@adyen/api-library@32.2.0`
+
+- Serial delta of `github-a2a0fe409a7c3a95ab90`, SHA `134f50078ca8889ff21e6c76f71c6377ddcb2120`, only after 32.1.0 completed. Approved focused reading: three changed retained files and prior HTTP/dependency context, full patch/records and cumulative source/changelog read; 563 unchanged files and manifests checked mechanically. All 1,132 prior/current retained file hashes and packet/release/comparison hashes verified.
+- Concept-first update records non-proxy HTTPS agent reuse, optional keep-alive, redirect agent preservation and certificate-path cache boundaries. Payments App data remains notes-only. Older history retained, 14 repository sources/21 package releases. No SDK build, network/payment test, commit or push. Next: scoped commit review of both releases and the collector correction.
+
+## [2026-10-04] ingest | `@adyen/api-library@32.1.0`
+
+- Serial additive full ingest of `github-dfdbb9a8bd1c5274ddb3`, SHA `afd3bb485d84d861324a183b99839431bafa4e68`, using approved focused reading: all 103 added/modified retained files, four removed retained paths, prior/dependency context, records and comparison read. Verified 1,111 baseline/current file hashes and all packet/release/comparison hashes; 463 unchanged files checked mechanically.
+- Concept updated first; cumulative source/changelog, company, provider index and logs updated. Session amount/payable lifecycle, discriminator and model migration, PayPal order data and multipart contract recorded. Broader APIs/security announcements remain qualified. `32.0.0` preserved; 14 repository sources, 20 package releases. No SDK build, merchant API/payment test, commit or push. Next: `32.2.0` delta.
+
 ## [2026-10-04] ingest | `@adyen/react-native@2.12.0` note revision
 
 - Approved documentation-only delta for `github-318cfc2eff0d537cfc99`: revised release notes add a linked Android 5.19.0/iOS 5.25.1 dependency table and bold version formatting. Same exact SHA and 301 unchanged retained files; no new release, dependency upgrade or feature claim.

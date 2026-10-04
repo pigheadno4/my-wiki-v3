@@ -1,9 +1,11 @@
 ---
 title: "GitHub changelog: Adyen/adyen-node-api-library"
 type: source
-date_ingested: 2026-08-02
+date_ingested: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-node-api-library/snapshots/2026-10-04-134f500/manifest.json"
+  - "github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/manifest.json"
   - "github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/manifest.json"
 tags: [adyen, nodejs, server-sdk, checkout-api, cloud-device-api, changelog, github-repository]
 ---
@@ -37,3 +39,67 @@ Chronological release synthesis for `Adyen/adyen-node-api-library`. Cumulative i
 - Snapshot manifest: `raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/manifest.json`
 - Checkout implementation: `raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/files/src/services/checkout/`
 - Cloud Device migration: `raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/files/doc/MigratingToCloudDeviceApi.md`
+
+## `@adyen/api-library@32.0.0` -> `@adyen/api-library@32.1.0` (2026-09-03)
+
+Exact SHA `afd3bb485d84d861324a183b99839431bafa4e68`; additive full ingest
+with approved focused reading, completed 2026-10-04. All older history retained.
+
+**Important findings:** Sessions gain `updateSession` for amount changes, required
+callback `sessionData`, and a finalizing `payable` flag. Payment/donation/action
+discriminator mappings are populated. PayPal order updates gain delivery address,
+shipping and discount amounts; enriched scheme data and third-party token templates
+extend typed checkout requests. Checkout remains v72; runtime remains Node.js >=18.
+
+**Migration:** Review removed Checkout error exports and Paybright enum, gopay
+stored-method mapping, and custom HTTP clients' new `string | Buffer` payload
+contract. Finalize only when the trusted server amount is final; `payable: true`
+prevents further Session updates. Request models are not merchant eligibility proof.
+
+**Additional scope:** Buffered multipart helper and Document Collector upload
+service, Session Authentication export, form-data 4.0.6 and micromatch override.
+Broader domain models/transitive security fixes remain inventory or notes-level.
+Five notification types are unchanged coverage from the old supplement. The HMAC
+README example is corrected without changing the validator implementation.
+
+**Updated source sections:** 32.1.0 lifecycle, models, transport/dependency and
+evidence-boundary sections; existing notification prose narrowed to actual branches.
+Concept, company, provider index/log and root log updated; source count unchanged.
+
+**Evidence:**
+- Snapshot: `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/manifest.json`
+- Release record: `raw/github/adyen/adyen-node-api-library/releases/api-library/32.1.0/2026-10-04/manifest.json`
+- Release notes: `raw/github/adyen/adyen-node-api-library/releases/api-library/32.1.0/2026-10-04/release-notes.md`
+- Comparison: `tracking/github/repos/adyen/adyen-node-api-library/comparisons/api-library/32.0.0--32.1.0/comparison.json`, `comparison.md` and `diff.patch`
+- Exact implementation paths are listed in [[source-github-adyen-node-api-library]].
+
+## `@adyen/api-library@32.1.0` -> `@adyen/api-library@32.2.0` (2026-09-24)
+
+Exact SHA `134f50078ca8889ff21e6c76f71c6377ddcb2120`; delta ingest with
+approved focused reading, completed 2026-10-04. Earlier history preserved.
+
+**Important findings:** Non-proxy HTTPS agent caching per HTTP client instance;
+optional constructor AgentOptions for explicit keep-alive; agent preserved on
+HTTPS 308 redirects; cache invalidated when a different certificate path is installed.
+Certificate loading errors reject before sending. Existing one-hop and host checks
+remain. Checkout v72 and Node.js >=18 are unchanged.
+
+**Migration/impact:** Reuse the merchant Client instance to keep the agent cache.
+Default options do not explicitly enable keep-alive; proxy agents are still created
+per request. Same certificate path returns early, so in-place file replacement is
+not automatically detected. No performance or payment execution claim.
+
+**Broader scope:** Notes announce Payments App sub-merchant boarding-token data;
+excluded domain models prevent exact field/eligibility claims. The mutable `HEAD`
+changelog link in notes is not the comparison authority.
+
+**Updated sections:** cumulative 32.2.0 transport and inventory findings;
+Node concept, company status, provider index and logs. Source count remains 14;
+unique ingested Adyen package releases becomes 21.
+
+**Evidence:**
+- Snapshot: `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-134f500/manifest.json`
+- Release record: `raw/github/adyen/adyen-node-api-library/releases/api-library/32.2.0/2026-10-04/manifest.json`
+- Notes: `raw/github/adyen/adyen-node-api-library/releases/api-library/32.2.0/2026-10-04/release-notes.md`
+- Transport: `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-134f500/files/src/httpClient/httpURLConnectionClient.ts`
+- Comparison: `tracking/github/repos/adyen/adyen-node-api-library/comparisons/api-library/32.1.0--32.2.0/comparison.json`, `comparison.md` and `diff.patch`

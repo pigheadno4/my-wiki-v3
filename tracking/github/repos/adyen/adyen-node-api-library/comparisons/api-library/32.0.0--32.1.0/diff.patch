@@ -1,0 +1,4152 @@
+diff --git a/README.md b/README.md
+index 7a6d314..b9cc2a8 100644
+--- a/README.md
++++ b/README.md
+@@ -23,13 +23,14 @@ This library supports the following:
+ | [Cloud device API](https://docs.adyen.com/api-explorer/cloud-device-api/latest/overview)              |     v1      | Cloud device point-of-sale solution for cloud integrations. Our latest In-Person Payments integration for cloud communications.                                                                                                                                                                                                          | [CloudDeviceAPI](/src/services/clouddevice/index.ts)                                                                                                            |
+ | [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/2/overview)                        |     v2      | The Configuration API enables you to create a platform where you can onboard your users as account holders and create balance accounts, cards, and business accounts.                                                                                                                                                                    | [BalancePlatform](/src/services/balancePlatform/index.ts)                                                                                                               |
+ | [DataProtection API](https://docs.adyen.com/development-resources/data-protection-api)                     |     v1      | Adyen Data Protection API provides a way for you to process [Subject Erasure Requests](https://gdpr-info.eu/art-17-gdpr/) as mandated in GDPR. Use our API to submit a request to delete shopper's data, including payment details and other related information (for example, delivery address or shopper email)                        | [DataProtection](/src/services/dataProtectionApi.ts)                                                                                                                    |
++| [Document Collector API](https://docs.adyen.com/api-explorer/Document-Collector/1/overview)                |     v1      | The Document Collector API provides endpoints for uploading documents required for cross-border invoicing.                                                                                                                                                                                                                                                       | [DocumentCollectorAPI](/src/services/documentCollector/index.ts)                                                                                                        |
+ | [Legal Entity Management API](https://docs.adyen.com/api-explorer/legalentity/4/overview)                  |     v4      | Manage legal entities that contain information required for verification.                                                                                                                                                                                                                                                                | [LegalEntityManagement](/src/services/legalEntityManagement/index.ts)                                                                                                   |
+ | [Local/Cloud-based Terminal API](https://docs.adyen.com/point-of-sale/terminal-api-reference)              |      -      | Our point-of-sale integration. For cloud communications, consider migrating to the [Cloud device API](https://docs.adyen.com/api-explorer/cloud-device-api/latest/overview) for building your In-Person Payments cloud integration.                                                                                                       | [TerminalLocalAPI](/src/services/terminalLocalAPI.ts) or [TerminalCloudAPI](/src/services/terminalCloudAPI.ts) |
+ | [Management API](https://docs.adyen.com/api-explorer/Management/3/overview)                                |     v3      | Configure and manage your Adyen company and merchant accounts, stores, and payment terminals.                                                                                                                                                                                                                                            | [Management](/src/services/management/index.ts)                                                                                                                         |
+ | [Open Banking API](https://docs.adyen.com/api-explorer/open-banking/1/overview)                                |     v1      | The Open Banking API provides secure endpoints to share financial data and services with third parties.                                                                                                                                                                                                                                          | [Open Banking](/src/services/openbanking/index.ts)                                                                                                                         |
+ | [Payments API](https://docs.adyen.com/api-explorer/Payment/68/overview)                                    |     v68     | Our classic integration for online payments.                                                                                                                                                                                                                                                                                             | [ClassicIntegrationAPI](/src/services/paymentApi.ts)                                                                                                                    |
+ | [Payouts API](https://docs.adyen.com/api-explorer/Payout/68/overview)                                      |     v68     | Endpoints for sending funds to your customers.                                                                                                                                                                                                                                                                                           | [Payout](/src/services/payout/index.ts)                                                                                                                                 |
+-| [Platforms APIs](https://docs.adyen.com/platforms/api)                                                     |      -      | Set of APIs when using Adyen for Platforms. This API is used for the classic integration.                                                                                                                                                                                                                                                | [Platforms](/src/services/platforms.ts)                                                                                                                                 |
++| [Platforms APIs](https://docs.adyen.com/classic-platforms/api)                                             |      -      | Set of APIs when using Adyen for Platforms. This API is used for the classic integration.                                                                                                                                                                                                                                                | [Platforms](/src/services/platforms.ts)                                                                                                                                 |
+ | [Account API](https://docs.adyen.com/api-explorer/Account/6/overview)                                      |     v6      | Provides endpoints for managing account-related entities on your platform. These related entities include account holders, accounts, bank accounts, shareholders, and verification-related documents.                                                                                                                                    | [Account](/src/services/platforms.ts)                                                                                                                                   |
+ | [Fund API](https://docs.adyen.com/api-explorer/Fund/6/overview)                                            |     v6      | Provides endpoints for managing the funds in the accounts on your platform. These management operations include, for example, the transfer of funds from one account to another, the payout of funds to an account holder, and the retrieval of balances in an account.                                                                  | [Fund](/src/services/platforms.ts)                                                                                                                                      |
+ | [Hosted onboarding API](https://docs.adyen.com/api-explorer/Hop/6/overview)                                |     v6      | Provides endpoints that you can use to generate links to Adyen-hosted pages, such as an onboarding page or a PCI compliance questionnaire. You can provide these links to your account holders so that they can complete their onboarding.                                                                                               | [HostedOnboardingPage](/src/services/platforms.ts)                                                                                                                      |
+@@ -337,7 +338,10 @@ if ("accountHolderCode" in genericWebhook) {
+ ```
+ Verify the authenticity (where you retrieve the hmac key from the CA and the signature from the webhook header);
+ ``` typescript
+-const isValid = hmacValidator.validateBankingHMAC("YOUR_HMAC_KEY", "YOUR_HMAC_SIGNATURE", jsonString)
++import { hmacValidator } from "@adyen/api-library";
++
++const validator = new hmacValidator();
++const isValid = validator.validateHMACSignature("YOUR_HMAC_KEY", "YOUR_HMAC_SIGNATURE", jsonString);
+ ```
+ ### Management Webhooks
+ Management webhooks are also parsed with the same approach, using `ManagementWebhooksHandler`:
+diff --git a/VERSION b/VERSION
+index 308b186..fe9ca52 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-32.0.0
++32.1.0
+diff --git a/doc/CloudDeviceApi.md b/doc/CloudDeviceApi.md
+index b2a302f..0728d1f 100644
+--- a/doc/CloudDeviceApi.md
++++ b/doc/CloudDeviceApi.md
+@@ -232,6 +232,9 @@ const data: SaleToAcquirerData = {
+     shopperReference: "shopper-123",
+     recurringProcessingModel: RecurringProcessingModel.CardOnFile,
+     metadata: { orderId: "42" },
++    additionalData: {
++        captureDelayHours: "4",
++    },
+ };
+ 
+ const encoded = SaleToAcquirerDataParser.toBase64(data); // Base64 string, ready to assign to SaleData.SaleToAcquirerData
+diff --git a/package.json b/package.json
+index f71891e..e82fa67 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@adyen/api-library",
+-  "version": "32.0.0",
++  "version": "32.1.0",
+   "description": "The Adyen API Library for NodeJS enables you to work with Adyen APIs.",
+   "main": "lib/src/index.js",
+   "types": "lib/src/index.d.ts",
+@@ -41,7 +41,7 @@
+     "acorn": "^8.0.1",
+     "dotenv": "^16.0.0",
+     "eslint": "8.57.1",
+-    "eslint-plugin-unused-imports": "^2.0.0",
++    "eslint-plugin-unused-imports": "^4.0.0",
+     "jest": "^29.0.0",
+     "jest-ts-auto-mock": "^2.0.0",
+     "kind-of": "^6.0.3",
+@@ -49,11 +49,12 @@
+     "nock": "13.5.6",
+     "ts-auto-mock": "~3.6.0",
+     "ts-jest": "^29.0.0",
+-    "ts-loader": "9.5.1",
++    "ts-loader": "9.6.2",
+     "ttypescript": "^1.5.10",
+     "typescript": "4.9.5"
+   },
+   "dependencies": {
++    "form-data": "4.0.6",
+     "https-proxy-agent": "5.0.1"
+   },
+   "optionalDependencies": {
+@@ -62,6 +63,7 @@
+   "overrides": {
+     "lodash": "^4.18.0",
+     "lodash-es": "^4.18.0",
++    "micromatch": "^4.0.8",
+     "picomatch": "^2.3.2",
+     "ts-auto-mock": "~3.6.0"
+   }
+diff --git a/src/helpers/getJsonResponse.ts b/src/helpers/getJsonResponse.ts
+index 1325db0..0cc4cba 100644
+--- a/src/helpers/getJsonResponse.ts
++++ b/src/helpers/getJsonResponse.ts
+@@ -27,14 +27,14 @@ import { TerminalApiResponse } from "../typings/terminal/models";
+  * 
+  * @template T The request type (usually a model or plain object).
+  * @param {Resource} resource - The API resource to which the request is sent.
+- * @param {T | string} jsonRequest - The request payload, either as an object or raw JSON string.
++ * @param {T | string | Buffer} jsonRequest - The request payload, either as an object, raw JSON string, or Buffer.
+  * @param {IRequest.Options} [requestOptions] - Optional HTTP request options.
+  * @returns {Promise<string | TerminalApiResponse>} A promise resolving to either a raw response string or a `TerminalApiResponse` object.
+  *
+  * @example
+  * const response = await getJsonResponse<TerminalApiRequest>(terminalApiResource, request);
+  */
+-async function getJsonResponse<T>(resource: Resource, jsonRequest: T | string, requestOptions?: IRequest.Options): Promise<string | TerminalApiResponse>;
++async function getJsonResponse<T>(resource: Resource, jsonRequest: T | string | Buffer, requestOptions?: IRequest.Options): Promise<string | TerminalApiResponse>;
+ /**
+  * Sends a JSON request to the given resource and returns a deserialized response of the expected type.
+  * Used by all APIs and Terminal API sync method 
+@@ -42,14 +42,14 @@ async function getJsonResponse<T>(resource: Resource, jsonRequest: T | string, r
+  * @template T The request type.
+  * @template R The expected deserialized response type.
+  * @param {Resource} resource - The API resource to which the request is sent.
+- * @param {T | string} jsonRequest - The request payload, either as an object or raw JSON string.
++ * @param {T | string | Buffer} jsonRequest - The request payload, either as an object, raw JSON string, or Buffer.
+  * @param {IRequest.Options} [requestOptions] - Optional HTTP request options.
+  * @returns {Promise<R>} A promise resolving to the deserialized response object.
+  *
+  * @example
+  * const response = await getJsonResponse<MyRequestType, MyResponseType>(resource, request);
+  */
+-async function getJsonResponse<T, R>(resource: Resource, jsonRequest: T | string, requestOptions?: IRequest.Options): Promise<R>;
++async function getJsonResponse<T, R>(resource: Resource, jsonRequest: T | string | Buffer, requestOptions?: IRequest.Options): Promise<R>;
+ 
+ /**
+  * Makes the API call and returns the parsed JSON response.
+@@ -57,16 +57,18 @@ async function getJsonResponse<T, R>(resource: Resource, jsonRequest: T | string
+  * @template T - The type of the request payload.
+  * @template R - The expected type of the parsed JSON response.
+  * @param resource - The API resource responsible for handling the request.
+- * @param jsonRequest - The request payload, either as an object or a JSON string.
++ * @param jsonRequest - The request payload, either as an object, a JSON string, or a Buffer.
+  * @param requestOptions - Optional request options to customize the request.
+  * @returns A promise that resolves to the parsed JSON response of type `R`, or the string "ok" for TerminalAPI responses.
+  */
+ async function getJsonResponse<T, R>(
+     resource: Resource,
+-    jsonRequest: T | string,
++    jsonRequest: T | string | Buffer,
+     requestOptions: IRequest.Options = {},
+ ): Promise<R | string> {
+-    const request = typeof jsonRequest === "string" ? jsonRequest : JSON.stringify(jsonRequest);
++    const request = typeof jsonRequest === "string" || Buffer.isBuffer(jsonRequest)
++        ? jsonRequest
++        : JSON.stringify(jsonRequest);
+     const response = await resource.request(request, requestOptions);
+ 
+     if (!response) {
+diff --git a/src/helpers/requestForm.ts b/src/helpers/requestForm.ts
+new file mode 100644
+index 0000000..92dd544
+--- /dev/null
++++ b/src/helpers/requestForm.ts
+@@ -0,0 +1,72 @@
++import FormData from "form-data";
++import { URLSearchParams } from "url";
++import { IRequest } from "../typings/requestOptions";
++
++/**
++ * Supported form encoders for multipart and URL-encoded requests.
++ */
++export type RequestForm = FormData | URLSearchParams;
++
++/**
++ * Removes headers by name using case-insensitive matching.
++ *
++ * @param headers - Headers to filter.
++ * @param headerNames - Header names to remove.
++ * @returns A copy without matching headers.
++ */
++export function removeHeaders(
++    headers: IRequest.Options["headers"],
++    headerNames: string[],
++): NonNullable<IRequest.Options["headers"]> {
++    const filteredHeaders: NonNullable<IRequest.Options["headers"]> = { ...headers };
++    const normalizedNames = new Set(headerNames.map((headerName) => headerName.toLowerCase()));
++
++    for (const headerName of Object.keys(filteredHeaders)) {
++        if (normalizedNames.has(headerName.toLowerCase())) {
++            delete filteredHeaders[headerName];
++        }
++    }
++
++    return filteredHeaders;
++}
++
++/**
++ * Creates a form encoder for the operation's supported content types.
++ *
++ * @param contentTypes - Media types accepted by the API operation.
++ * @returns A multipart or URL-encoded form encoder.
++ */
++export function createRequestForm(contentTypes: string[]): RequestForm {
++    const isMultipart = contentTypes.some(
++        (contentType) => contentType.split(";", 1)[0].trim().toLowerCase() === "multipart/form-data"
++    );
++
++    return isMultipart ? new FormData() : new URLSearchParams();
++}
++
++/**
++ * Serializes a form and merges its content headers with request headers.
++ *
++ * @param form - Form encoder containing the request fields.
++ * @param requestHeaders - Optional caller-provided request headers.
++ * @returns The serialized request body and headers required to send it.
++ */
++export function finalizeRequestForm(
++    form: RequestForm,
++    requestHeaders?: IRequest.Options["headers"],
++): { request: string | Buffer; headers: IRequest.Options["headers"] } {
++    const request = "getBuffer" in form ? form.getBuffer() : form.toString();
++    const formHeaders = "getHeaders" in form
++        ? form.getHeaders()
++        : { "Content-Type": "application/x-www-form-urlencoded" };
++    const filteredHeaders = removeHeaders(requestHeaders, ["Content-Type", "Content-Length"]);
++
++    return {
++        request,
++        headers: {
++            ...filteredHeaders,
++            ...formHeaders,
++            "Content-Length": Buffer.isBuffer(request) ? request.length : Buffer.byteLength(request),
++        },
++    };
++}
+diff --git a/src/httpClient/clientInterface.ts b/src/httpClient/clientInterface.ts
+index 024edde..592b046 100644
+--- a/src/httpClient/clientInterface.ts
++++ b/src/httpClient/clientInterface.ts
+@@ -22,7 +22,7 @@ import { IRequest } from "../typings/requestOptions";
+ 
+ interface ClientInterface {
+     request(
+-        endpoint: string, json: string, config: Config, isApiKeyRequired: boolean, requestOptions?: IRequest.Options,
++        endpoint: string, json: string | Buffer, config: Config, isApiKeyRequired: boolean, requestOptions?: IRequest.Options,
+     ): Promise<string>;
+     proxy?: AgentOptions;
+ }
+diff --git a/src/httpClient/httpURLConnectionClient.ts b/src/httpClient/httpURLConnectionClient.ts
+index 4dabd00..ee16840 100644
+--- a/src/httpClient/httpURLConnectionClient.ts
++++ b/src/httpClient/httpURLConnectionClient.ts
+@@ -47,7 +47,7 @@ class HttpURLConnectionClient implements ClientInterface {
+      * Throws an ApiException when an error occurs (invalid API key, API error response, etc.).
+      *
+      * @param endpoint - The URL to which the request will be sent.
+-     * @param json - The JSON string to be sent as the request body.
++     * @param json - The string or Buffer to be sent as the request body.
+      * @param config - The configuration object containing authentication, timeout, and certificate details.
+      * @param isApiRequired - Indicates whether an API key is required for this request.
+      * @param requestOptions - Additional options for the HTTP request, such as headers and timeout.
+@@ -56,10 +56,10 @@ class HttpURLConnectionClient implements ClientInterface {
+      */
+     public request(
+         endpoint: string,
+-        json: string,
++        json: string | Buffer,
+         config: Config,
+         isApiRequired: boolean,
+-        requestOptions: IRequest.Options,
++        requestOptions: IRequest.Options = {},
+     ): Promise<string> {
+         requestOptions.headers ??= {};
+         requestOptions.timeout = config.connectionTimeoutMillis;
+@@ -83,7 +83,12 @@ class HttpURLConnectionClient implements ClientInterface {
+             requestOptions.headers.Authorization = `Basic ${authStringEnc}`;
+         }
+ 
+-        requestOptions.headers[ApiConstants.CONTENT_TYPE] = ApiConstants.APPLICATION_JSON_TYPE;
++        // Preserve caller-provided content types, including multipart boundaries.
++        const hasContentType = Object.keys(requestOptions.headers)
++            .some((headerName) => headerName.toLowerCase() === ApiConstants.CONTENT_TYPE.toLowerCase());
++        if (!hasContentType) {
++            requestOptions.headers[ApiConstants.CONTENT_TYPE] = ApiConstants.APPLICATION_JSON_TYPE;
++        }
+ 
+         const httpConnection: ClientRequest = this.createRequest(endpoint, requestOptions, config.applicationName);
+ 
+@@ -150,7 +155,7 @@ class HttpURLConnectionClient implements ClientInterface {
+      * @param allowRedirect Whether to allow redirect upon 308 response status code
+      * @returns Promise with the API response
+      */
+-    private doRequest(connectionRequest: ClientRequest, json: string, allowRedirect: boolean): Promise<string> {
++    private doRequest(connectionRequest: ClientRequest, json: string | Buffer, allowRedirect: boolean): Promise<string> {
+ 
+         return new Promise((resolve, reject): void => {
+             connectionRequest.flushHeaders();
+@@ -259,7 +264,7 @@ class HttpURLConnectionClient implements ClientInterface {
+                 connectionRequest.abort();
+             });
+             connectionRequest.on("error", (e) => reject(new ApiException(e.message)));
+-            connectionRequest.write(Buffer.from(json));
++            connectionRequest.write(json);
+             connectionRequest.end();
+         });
+     }
+diff --git a/src/services/balanceControl/balanceControlApi.ts b/src/services/balanceControl/balanceControlApi.ts
+index 8a06973..0da661c 100644
+--- a/src/services/balanceControl/balanceControlApi.ts
++++ b/src/services/balanceControl/balanceControlApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/binLookup/binLookupApi.ts b/src/services/binLookup/binLookupApi.ts
+index 32a0381..b0bd062 100644
+--- a/src/services/binLookup/binLookupApi.ts
++++ b/src/services/binLookup/binLookupApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/capital/dynamicOffersApi.ts b/src/services/capital/dynamicOffersApi.ts
+index fcf069d..81f7acf 100644
+--- a/src/services/capital/dynamicOffersApi.ts
++++ b/src/services/capital/dynamicOffersApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/capital/grantAccountsApi.ts b/src/services/capital/grantAccountsApi.ts
+index 232229f..f1e8f15 100644
+--- a/src/services/capital/grantAccountsApi.ts
++++ b/src/services/capital/grantAccountsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/capital/grantOffersApi.ts b/src/services/capital/grantOffersApi.ts
+index f1b953b..6e5f540 100644
+--- a/src/services/capital/grantOffersApi.ts
++++ b/src/services/capital/grantOffersApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/capital/grantsApi.ts b/src/services/capital/grantsApi.ts
+index da2f287..d1a7536 100644
+--- a/src/services/capital/grantsApi.ts
++++ b/src/services/capital/grantsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/checkout/donationsApi.ts b/src/services/checkout/donationsApi.ts
+index 82e28f4..b221719 100644
+--- a/src/services/checkout/donationsApi.ts
++++ b/src/services/checkout/donationsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/checkout/modificationsApi.ts b/src/services/checkout/modificationsApi.ts
+index 2ab708a..5c22730 100644
+--- a/src/services/checkout/modificationsApi.ts
++++ b/src/services/checkout/modificationsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/checkout/ordersApi.ts b/src/services/checkout/ordersApi.ts
+index fe78476..ee41f22 100644
+--- a/src/services/checkout/ordersApi.ts
++++ b/src/services/checkout/ordersApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/checkout/paymentLinksApi.ts b/src/services/checkout/paymentLinksApi.ts
+index 28b19dd..6b746bd 100644
+--- a/src/services/checkout/paymentLinksApi.ts
++++ b/src/services/checkout/paymentLinksApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/checkout/paymentsApi.ts b/src/services/checkout/paymentsApi.ts
+index 9d73f28..204fb0b 100644
+--- a/src/services/checkout/paymentsApi.ts
++++ b/src/services/checkout/paymentsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+@@ -17,6 +16,8 @@ import Resource from "../resource";
+ import { ObjectSerializer } from "../../typings/checkout/objectSerializer";
+ import { CardDetailsRequest } from "../../typings/checkout/models";
+ import { CardDetailsResponse } from "../../typings/checkout/models";
++import { CheckoutSessionPatchSessionRequest } from "../../typings/checkout/models";
++import { CheckoutSessionPatchSessionResponse } from "../../typings/checkout/models";
+ import { CreateCheckoutSessionRequest } from "../../typings/checkout/models";
+ import { CreateCheckoutSessionResponse } from "../../typings/checkout/models";
+ import { PaymentDetailsRequest } from "../../typings/checkout/models";
+@@ -167,4 +168,26 @@ export class PaymentsApi extends Service {
+         return ObjectSerializer.deserialize(response, "CreateCheckoutSessionResponse");
+     }
+ 
++    /**
++    * @summary Update a payment session
++    * @param sessionId {@link string } 
++    * @param checkoutSessionPatchSessionRequest {@link CheckoutSessionPatchSessionRequest } 
++    * @param requestOptions {@link IRequest.Options }
++    * @return {@link CheckoutSessionPatchSessionResponse }
++    */
++    public async updateSession(sessionId: string, checkoutSessionPatchSessionRequest: CheckoutSessionPatchSessionRequest, requestOptions?: IRequest.Options): Promise<CheckoutSessionPatchSessionResponse> {
++        const endpoint = `${this.baseUrl}/sessions/{sessionId}`
++            .replace("{" + "sessionId" + "}", encodeURIComponent(String(sessionId)));
++        const resource = new Resource(this, endpoint);
++        
++        const request: CheckoutSessionPatchSessionRequest = ObjectSerializer.serialize(checkoutSessionPatchSessionRequest, "CheckoutSessionPatchSessionRequest");
++        const response = await getJsonResponse<CheckoutSessionPatchSessionRequest, CheckoutSessionPatchSessionResponse>(
++            resource,
++            request,
++            { ...requestOptions, method: "PATCH" }
++        );
++
++        return ObjectSerializer.deserialize(response, "CheckoutSessionPatchSessionResponse");
++    }
++
+ }
+diff --git a/src/services/checkout/recurringApi.ts b/src/services/checkout/recurringApi.ts
+index dee0ddc..3798e4e 100644
+--- a/src/services/checkout/recurringApi.ts
++++ b/src/services/checkout/recurringApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/checkout/utilityApi.ts b/src/services/checkout/utilityApi.ts
+index 80b37b5..bb93a34 100644
+--- a/src/services/checkout/utilityApi.ts
++++ b/src/services/checkout/utilityApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/dataProtection/dataProtectionApi.ts b/src/services/dataProtection/dataProtectionApi.ts
+index adddf90..1cb62bb 100644
+--- a/src/services/dataProtection/dataProtectionApi.ts
++++ b/src/services/dataProtection/dataProtectionApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/disputes/disputesApi.ts b/src/services/disputes/disputesApi.ts
+index 0a37921..73e04d6 100644
+--- a/src/services/disputes/disputesApi.ts
++++ b/src/services/disputes/disputesApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/documentCollector/documentsApi.ts b/src/services/documentCollector/documentsApi.ts
+new file mode 100644
+index 0000000..fd32bd5
+--- /dev/null
++++ b/src/services/documentCollector/documentsApi.ts
+@@ -0,0 +1,75 @@
++/*
++ * The version of the OpenAPI document: v1
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++import getJsonResponse from "../../helpers/getJsonResponse";
++import Service from "../../service";
++import Client from "../../client";
++import { IRequest } from "../../typings/requestOptions";
++import Resource from "../resource";
++
++import { ObjectSerializer } from "../../typings/documentCollector/objectSerializer";
++import { DocumentContext } from "../../typings/documentCollector/models";
++import { DocumentUploadResponse } from "../../typings/documentCollector/models";
++
++/**
++ * API handler for DocumentsApi
++ */
++export class DocumentsApi extends Service {
++
++    private readonly API_BASEPATH: string = "https://document-collector-test.adyen.com/v1";
++    private baseUrl: string;
++
++    public constructor(client: Client){
++        super(client);
++        this.baseUrl = this.createBaseUrl(this.API_BASEPATH);
++    }
++
++    /**
++    * @summary Upload a document
++    * @param requestOptions {@link IRequest.Options }
++    * @return {@link DocumentUploadResponse }
++    */
++    public async uploadCrossBorderInvoice(context: DocumentContext, file: import("../../typings/httpFile").HttpFile, merchantAccount: string, requestOptions?: IRequest.Options): Promise<DocumentUploadResponse> {
++        const endpoint = `${this.baseUrl}/crossBorderInvoices`;
++        const resource = new Resource(this, endpoint);
++        
++        if (context === null || context === undefined) {
++            throw new Error("Required parameter context was null or undefined");
++        }
++        if (file === null || file === undefined) {
++            throw new Error("Required parameter file was null or undefined");
++        }
++        if (merchantAccount === null || merchantAccount === undefined) {
++            throw new Error("Required parameter merchantAccount was null or undefined");
++        }
++        const contentTypes = ["multipart/form-data"];
++        const requestForm = await import("../../helpers/requestForm");
++        const form = requestForm.createRequestForm(contentTypes);
++        if (context != null) {
++            form.append("context", String(context));
++        }
++        if (file != null) {
++            if ("getBuffer" in form) {
++                form.append("file", file.data, { filename: file.name });
++            }
++        }
++        if (merchantAccount != null) {
++            form.append("merchantAccount", String(merchantAccount));
++        }
++        const { request, headers } = requestForm.finalizeRequestForm(form, requestOptions?.headers);
++        const response = await getJsonResponse<string | Buffer, DocumentUploadResponse>(
++            resource,
++            request,
++            { ...requestOptions, headers, method: "POST" }
++        );
++
++        return ObjectSerializer.deserialize(response, "DocumentUploadResponse");
++    }
++
++}
+diff --git a/src/services/documentCollector/index.ts b/src/services/documentCollector/index.ts
+new file mode 100644
+index 0000000..e9cf4e6
+--- /dev/null
++++ b/src/services/documentCollector/index.ts
+@@ -0,0 +1,24 @@
++/*
++ * The version of the OpenAPI document: v1
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++import { DocumentsApi } from "./documentsApi";
++
++import Service from "../../service";
++import Client from "../../client";
++
++export default class DocumentCollectorAPI extends Service {
++    
++    public constructor(client: Client) {
++        super(client);
++    }
++
++    public get DocumentsApi() {
++        return new DocumentsApi(this.client);
++    }
++}
+diff --git a/src/services/index.ts b/src/services/index.ts
+index a62d4c2..e8aef70 100644
+--- a/src/services/index.ts
++++ b/src/services/index.ts
+@@ -9,6 +9,7 @@ export { default as BinLookupAPI } from "./binLookup";
+ export { default as CheckoutAPI } from "./checkout";
+ export { default as DataProtectionAPI } from "./dataProtection";
+ export { default as DisputesAPI } from "./disputes";
++export { default as DocumentCollectorAPI } from "./documentCollector";
+ export { default as LegalEntityManagementAPI } from "./legalEntityManagement";
+ export { default as ManagementAPI } from "./management";
+ export { default as PaymentAPI } from "./payment";
+diff --git a/src/services/legalEntityManagement/businessLinesApi.ts b/src/services/legalEntityManagement/businessLinesApi.ts
+index 9d9f171..e76450a 100644
+--- a/src/services/legalEntityManagement/businessLinesApi.ts
++++ b/src/services/legalEntityManagement/businessLinesApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/legalEntityManagement/documentsApi.ts b/src/services/legalEntityManagement/documentsApi.ts
+index 2b77b93..70c0557 100644
+--- a/src/services/legalEntityManagement/documentsApi.ts
++++ b/src/services/legalEntityManagement/documentsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/legalEntityManagement/hostedOnboardingApi.ts b/src/services/legalEntityManagement/hostedOnboardingApi.ts
+index 7c52bc6..8faed50 100644
+--- a/src/services/legalEntityManagement/hostedOnboardingApi.ts
++++ b/src/services/legalEntityManagement/hostedOnboardingApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/legalEntityManagement/legalEntitiesApi.ts b/src/services/legalEntityManagement/legalEntitiesApi.ts
+index 699f959..7e8e645 100644
+--- a/src/services/legalEntityManagement/legalEntitiesApi.ts
++++ b/src/services/legalEntityManagement/legalEntitiesApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/legalEntityManagement/pCIQuestionnairesApi.ts b/src/services/legalEntityManagement/pCIQuestionnairesApi.ts
+index 38c01fa..94273cc 100644
+--- a/src/services/legalEntityManagement/pCIQuestionnairesApi.ts
++++ b/src/services/legalEntityManagement/pCIQuestionnairesApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/legalEntityManagement/taxEDeliveryConsentApi.ts b/src/services/legalEntityManagement/taxEDeliveryConsentApi.ts
+index 092cd7c..202fc43 100644
+--- a/src/services/legalEntityManagement/taxEDeliveryConsentApi.ts
++++ b/src/services/legalEntityManagement/taxEDeliveryConsentApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/legalEntityManagement/termsOfServiceApi.ts b/src/services/legalEntityManagement/termsOfServiceApi.ts
+index fdba882..b182085 100644
+--- a/src/services/legalEntityManagement/termsOfServiceApi.ts
++++ b/src/services/legalEntityManagement/termsOfServiceApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/legalEntityManagement/transferInstrumentsApi.ts b/src/services/legalEntityManagement/transferInstrumentsApi.ts
+index fa08dc9..71236a4 100644
+--- a/src/services/legalEntityManagement/transferInstrumentsApi.ts
++++ b/src/services/legalEntityManagement/transferInstrumentsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/payment/modificationsApi.ts b/src/services/payment/modificationsApi.ts
+index 8ef990a..2f8808b 100644
+--- a/src/services/payment/modificationsApi.ts
++++ b/src/services/payment/modificationsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/payment/paymentsApi.ts b/src/services/payment/paymentsApi.ts
+index 089f0b9..2239353 100644
+--- a/src/services/payment/paymentsApi.ts
++++ b/src/services/payment/paymentsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/paymentsApp/paymentsAppApi.ts b/src/services/paymentsApp/paymentsAppApi.ts
+index 072a524..b4ed941 100644
+--- a/src/services/paymentsApp/paymentsAppApi.ts
++++ b/src/services/paymentsApp/paymentsAppApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/payout/initializationApi.ts b/src/services/payout/initializationApi.ts
+index 466ae00..98b1a74 100644
+--- a/src/services/payout/initializationApi.ts
++++ b/src/services/payout/initializationApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/payout/instantPayoutsApi.ts b/src/services/payout/instantPayoutsApi.ts
+index 9c2043d..3dfd94f 100644
+--- a/src/services/payout/instantPayoutsApi.ts
++++ b/src/services/payout/instantPayoutsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/payout/reviewingApi.ts b/src/services/payout/reviewingApi.ts
+index f90f70a..074ba87 100644
+--- a/src/services/payout/reviewingApi.ts
++++ b/src/services/payout/reviewingApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/posMobile/posMobileApi.ts b/src/services/posMobile/posMobileApi.ts
+index 96135f7..6349919 100644
+--- a/src/services/posMobile/posMobileApi.ts
++++ b/src/services/posMobile/posMobileApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/recurring/recurringApi.ts b/src/services/recurring/recurringApi.ts
+index 9c703d5..0107d82 100644
+--- a/src/services/recurring/recurringApi.ts
++++ b/src/services/recurring/recurringApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/resource.ts b/src/services/resource.ts
+index cb76b57..4aee22e 100644
+--- a/src/services/resource.ts
++++ b/src/services/resource.ts
+@@ -26,12 +26,25 @@ class Resource {
+     private endpoint: string;
+     private service: Service;
+ 
++    /**
++     * Creates a resource for an API service endpoint.
++     *
++     * @param service - Service used to access the configured HTTP client.
++     * @param endpoint - Fully qualified URL for the API operation.
++     */
+     public constructor(service: Service, endpoint: string) {
+         this.service = service;
+         this.endpoint = endpoint;
+     }
+ 
+-    public request(json: string, requestOptions?: IRequest.Options): Promise<string> {
++    /**
++     * Sends a string or binary request to the resource endpoint.
++     *
++     * @param json - Request body to send.
++     * @param requestOptions - Optional HTTP request configuration.
++     * @returns The response body as a string.
++     */
++    public request(json: string | Buffer, requestOptions?: IRequest.Options): Promise<string> {
+         const clientInterface: ClientInterface = this.service.client.httpClient;
+         const config: Config = this.service.client.config;
+ 
+diff --git a/src/services/sessionAuthentication/sessionAuthenticationApi.ts b/src/services/sessionAuthentication/sessionAuthenticationApi.ts
+index 204e77d..bd8ae85 100644
+--- a/src/services/sessionAuthentication/sessionAuthenticationApi.ts
++++ b/src/services/sessionAuthentication/sessionAuthenticationApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/storedValue/storedValueApi.ts b/src/services/storedValue/storedValueApi.ts
+index c3d2bc8..1b6ff7f 100644
+--- a/src/services/storedValue/storedValueApi.ts
++++ b/src/services/storedValue/storedValueApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/transfers/capitalApi.ts b/src/services/transfers/capitalApi.ts
+index 7c6bb8b..a23f595 100644
+--- a/src/services/transfers/capitalApi.ts
++++ b/src/services/transfers/capitalApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/transfers/cashOutApi.ts b/src/services/transfers/cashOutApi.ts
+index 7dcf708..4f9a602 100644
+--- a/src/services/transfers/cashOutApi.ts
++++ b/src/services/transfers/cashOutApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/transfers/transactionsApi.ts b/src/services/transfers/transactionsApi.ts
+index fd04b62..2aae513 100644
+--- a/src/services/transfers/transactionsApi.ts
++++ b/src/services/transfers/transactionsApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/services/transfers/transfersApi.ts b/src/services/transfers/transfersApi.ts
+index 385a3d1..b8065de 100644
+--- a/src/services/transfers/transfersApi.ts
++++ b/src/services/transfers/transfersApi.ts
+@@ -7,7 +7,6 @@
+  * Do not edit this class manually.
+  */
+ 
+-
+ import getJsonResponse from "../../helpers/getJsonResponse";
+ import Service from "../../service";
+ import Client from "../../client";
+diff --git a/src/typings/checkout/affirmDetails.ts b/src/typings/checkout/affirmDetails.ts
+index c4c7840..86675a0 100644
+--- a/src/typings/checkout/affirmDetails.ts
++++ b/src/typings/checkout/affirmDetails.ts
+@@ -14,6 +14,10 @@ export class AffirmDetails {
+     */
+     "checkoutAttemptId"?: string;
+     /**
++    * The Affirm financing program to apply to this transaction.
++    */
++    "financingProgram"?: string;
++    /**
+     * Base64-encoded JSON object containing SDK related parameters required by the SDK
+     */
+     "sdkData"?: string;
+@@ -33,6 +37,12 @@ export class AffirmDetails {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "financingProgram",
++            "baseName": "financingProgram",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "sdkData",
+             "baseName": "sdkData",
+diff --git a/src/typings/checkout/agency.ts b/src/typings/checkout/agency.ts
+index 424f7dd..b31526d 100644
+--- a/src/typings/checkout/agency.ts
++++ b/src/typings/checkout/agency.ts
+@@ -10,11 +10,11 @@
+ 
+ export class Agency {
+     /**
+-    * The reference number for the invoice, issued by the agency. * Encoding: ASCII * minLength: 1 character * maxLength: 6 characters
++    * The reference number for the invoice, issued by the agency. * Encoding: ASCII * minLength: 1 character * maxLength: 6 characters * **additionalData key:** `airline.agency_invoice_number`
+     */
+     "invoiceNumber"?: string;
+     /**
+-    * The two-letter agency plan identifier. * Encoding: ASCII * minLength: 2 characters * maxLength: 2 characters
++    * The two-letter agency plan identifier. * Encoding: ASCII * minLength: 2 characters * maxLength: 2 characters * **additionalData key:** `airline.agency_plan_name`
+     */
+     "planName"?: string;
+ 
+diff --git a/src/typings/checkout/airline.ts b/src/typings/checkout/airline.ts
+index f224325..51f889b 100644
+--- a/src/typings/checkout/airline.ts
++++ b/src/typings/checkout/airline.ts
+@@ -17,36 +17,36 @@ import { TravelAgency } from "./travelAgency";
+ export class Airline {
+     "agency"?: Agency | null;
+     /**
+-    * The amount charged for boarding the plane, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * Encoding: Numeric * minLength: 1 character * maxLength: 11 characters
++    * The amount charged for boarding the plane, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * Encoding: Numeric * minLength: 1 character * maxLength: 11 characters * **additionalData key:** `airline.boarding_fee`
+     */
+     "boardingFee"?: number;
+     /**
+-    * The [IATA](https://www.iata.org/services/pages/codes.aspx) 3-digit accounting code (PAX) that identifies the carrier. * Format: IATA 3-digit accounting code (PAX) * Example: KLM = 074 * minLength: 3 characters * maxLength: 3 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The [IATA](https://www.iata.org/services/pages/codes.aspx) 3-digit accounting code (PAX) that identifies the carrier. * Format: IATA 3-digit accounting code (PAX) * Example: KLM = 074 * minLength: 3 characters * maxLength: 3 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.airline_code`
+     */
+     "code"?: string;
+     /**
+-    * The [CRS](https://en.wikipedia.org/wiki/Computer_reservation_system) used to make the reservation and purchase the ticket. * Encoding: ASCII * minLength: 4 characters * maxLength: 4 characters
++    *  The [CRS](https://en.wikipedia.org/wiki/Computer_reservation_system) used to make the reservation and purchase the ticket. * Encoding: ASCII * minLength: 4 characters * maxLength: 4 characters * **additionalData key:** `airline.computerized_reservation_system`
+     */
+     "computerizedReservationSystem"?: string;
+     /**
+-    * The alphanumeric customer reference number. * Encoding: ASCII * maxLength: 20 characters * If you send more than 20 characters, the customer reference number is truncated * Must not start with a space or be all spaces.
++    * The alphanumeric customer reference number. * Encoding: ASCII * maxLength: 20 characters * If you send more than 20 characters, the customer reference number is truncated * Must not start with a space or be all spaces. * **additionalData key:** `airline.customer_reference_number`
+     */
+     "customerReferenceNumber"?: string;
+     /**
+-    * The [IATA](https://www.iata.org/services/pages/codes.aspx) 2-letter accounting code (PAX) that identifies the carrier. * Encoding: ASCII * Example: KLM = KL * minLength: 2 characters * maxLength: 2 characters * Must not start with a space or be all spaces.
++    * The [IATA](https://www.iata.org/services/pages/codes.aspx) 2-letter accounting code (PAX) that identifies the carrier. * Encoding: ASCII * Example: KLM = KL * minLength: 2 characters * maxLength: 2 characters * Must not start with a space or be all spaces. * **additionalData key:** `airline.airline_designator_code`
+     */
+     "designatorCode"?: string;
+     /**
+-    * A code that identifies the type of item bought. The description of the code can appear on credit card statements. * Encoding: ASCII * Example: Passenger ticket = 01 * minLength: 2 characters * maxLength: 2 characters
++    * A code that identifies the type of item bought. The description of the code can appear on credit card statements. * Encoding: ASCII * Example: Passenger ticket = 01 * minLength: 2 characters * maxLength: 2 characters * **additionalData key:** `airline.document_type`
+     */
+     "documentType"?: string;
+     /**
+-    * The flight departure date. Time is optional. * Format for date only: `yyyy-MM-dd` * Format for date and time: `yyyy-MM-ddTHH:mm` * Use local time of departure airport. * minLength: 10 characters * maxLength: 16 characters
++    * The flight departure date. Time is optional. * Format for date only: `yyyy-MM-dd` * Format for date and time: `yyyy-MM-ddTHH:mm` * Use local time of departure airport. * minLength: 10 characters * maxLength: 16 characters * **additionalData key:** `airline.flight_date`
+     */
+     "flightDate"?: Date;
+     "legs"?: Array<Leg>;
+     /**
+-    * The passenger\'s name, initials, and title. * Format: last name + first name or initials + title * Example: *FLYER / MARY MS* * minLength: 1 character * maxLength: 20 characters * If you send more than 20 characters, the name is truncated * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The passenger\'s name, initials, and title. * Format: last name + first name or initials + title * Example: *FLYER / MARY MS* * minLength: 1 character * maxLength: 20 characters * If you send more than 20 characters, the name is truncated * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.passenger_name`
+     */
+     "passengerName": string;
+     "passengers"?: Array<Passenger>;
+diff --git a/src/typings/checkout/auPayDetails.ts b/src/typings/checkout/auPayDetails.ts
+new file mode 100644
+index 0000000..031c9ae
+--- /dev/null
++++ b/src/typings/checkout/auPayDetails.ts
+@@ -0,0 +1,84 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class AuPayDetails {
++    /**
++    * The checkout attempt identifier.
++    */
++    "checkoutAttemptId"?: string;
++    /**
++    * This is the `recurringDetailReference` returned in the response when you created the token.
++    *
++	* @deprecated since Adyen Checkout API v49
++	* Use `storedPaymentMethodId` instead.
++    */
++    "recurringDetailReference"?: string;
++    /**
++    * Base64-encoded JSON object containing SDK related parameters required by the SDK
++    */
++    "sdkData"?: string;
++    /**
++    * This is the `recurringDetailReference` returned in the response when you created the token.
++    */
++    "storedPaymentMethodId"?: string;
++    /**
++    * **aupay**
++    */
++    "type"?: AuPayDetails.TypeEnum;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "checkoutAttemptId",
++            "baseName": "checkoutAttemptId",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "recurringDetailReference",
++            "baseName": "recurringDetailReference",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "sdkData",
++            "baseName": "sdkData",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "storedPaymentMethodId",
++            "baseName": "storedPaymentMethodId",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "type",
++            "baseName": "type",
++            "type": "AuPayDetails.TypeEnum",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return AuPayDetails.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
++export namespace AuPayDetails {
++    export enum TypeEnum {
++        Aupay = 'aupay'
++    }
++}
+diff --git a/src/typings/checkout/carRental.ts b/src/typings/checkout/carRental.ts
+new file mode 100644
+index 0000000..d5d48db
+--- /dev/null
++++ b/src/typings/checkout/carRental.ts
+@@ -0,0 +1,147 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++import { PickupInfo } from "./pickupInfo";
++import { RentalSurcharges } from "./rentalSurcharges";
++import { ReturnInfo } from "./returnInfo";
++
++
++export class CarRental {
++    /**
++    * The customer service phone number of the car rental company. * Format: Alphanumeric * maxLength: 17 * For US and CA numbers must be 10 characters in length * Must not contain any special characters such as + or - * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.customerServiceTollFreeNumber`
++    */
++    "customerServicePhoneNumber"?: string;
++    /**
++    * Indicates if the customer didn\'t pick up their rental car. * **additionalData key:** `carRental.noShowIndicator`
++    */
++    "noShow"?: boolean;
++    "pickupInfo"?: PickupInfo | null;
++    /**
++    * Indicates whether the rental rate is daily or weekly. * **additionalData key:** `carRental.rateIndicator`
++    */
++    "rateType"?: CarRental.RateTypeEnum;
++    /**
++    * The rental agreement number for the car rental. * Format: ASCII * maxLength: 9 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.rentalAgreementNumber`
++    */
++    "rentalAgreementNumber"?: string;
++    /**
++    * The classification of the rental car. * Format: Alphanumeric * maxLength: 4 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.rentalClassId`
++    */
++    "rentalClassId"?: string;
++    /**
++    * The number of days the car is rented for. * Format: Numeric * Max value: 9999 * **additionalData key:** `carRental.daysRented`
++    */
++    "rentalDays"?: number;
++    /**
++    * Rental rate, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * Frequency of the rental rate is specified in the rateType field. * **additionalData key:** `carRental.rate`
++    */
++    "rentalRate"?: number;
++    "rentalSurcharges"?: RentalSurcharges | null;
++    /**
++    * The name of the person renting the car. * Format: ASCII * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.renterName`
++    */
++    "renterName": string;
++    "returnInfo"?: ReturnInfo | null;
++    /**
++    * Indicates if the goods or services were tax-exempt, or if tax was not collected. * **additionalData key:** `carRental.taxExemptIndicator`
++    */
++    "taxExempt"?: boolean;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "customerServicePhoneNumber",
++            "baseName": "customerServicePhoneNumber",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "noShow",
++            "baseName": "noShow",
++            "type": "boolean",
++            "format": ""
++        },
++        {
++            "name": "pickupInfo",
++            "baseName": "pickupInfo",
++            "type": "PickupInfo | null",
++            "format": ""
++        },
++        {
++            "name": "rateType",
++            "baseName": "rateType",
++            "type": "CarRental.RateTypeEnum",
++            "format": ""
++        },
++        {
++            "name": "rentalAgreementNumber",
++            "baseName": "rentalAgreementNumber",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "rentalClassId",
++            "baseName": "rentalClassId",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "rentalDays",
++            "baseName": "rentalDays",
++            "type": "number",
++            "format": "int32"
++        },
++        {
++            "name": "rentalRate",
++            "baseName": "rentalRate",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "rentalSurcharges",
++            "baseName": "rentalSurcharges",
++            "type": "RentalSurcharges | null",
++            "format": ""
++        },
++        {
++            "name": "renterName",
++            "baseName": "renterName",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "returnInfo",
++            "baseName": "returnInfo",
++            "type": "ReturnInfo | null",
++            "format": ""
++        },
++        {
++            "name": "taxExempt",
++            "baseName": "taxExempt",
++            "type": "boolean",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return CarRental.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
++export namespace CarRental {
++    export enum RateTypeEnum {
++        Daily = 'daily',
++        Weekly = 'weekly'
++    }
++}
+diff --git a/src/typings/checkout/cardBrandDetails.ts b/src/typings/checkout/cardBrandDetails.ts
+index c4f21b1..e13a0e5 100644
+--- a/src/typings/checkout/cardBrandDetails.ts
++++ b/src/typings/checkout/cardBrandDetails.ts
+@@ -9,6 +9,10 @@
+ 
+ 
+ export class CardBrandDetails {
++    /**
++    * Indicates if the card supports FSA/HSA healthcare payments.
++    */
++    "healthcare"?: boolean;
+     /**
+     * Indicates if you support the card brand.
+     */
+@@ -23,6 +27,12 @@ export class CardBrandDetails {
+     static readonly mapping: {[index: string]: string} | undefined = undefined;
+ 
+     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "healthcare",
++            "baseName": "healthcare",
++            "type": "boolean",
++            "format": ""
++        },
+         {
+             "name": "supported",
+             "baseName": "supported",
+diff --git a/src/typings/checkout/checkoutErrorResponseEntity.ts b/src/typings/checkout/checkoutErrorResponseEntity.ts
+new file mode 100644
+index 0000000..61f3eb3
+--- /dev/null
++++ b/src/typings/checkout/checkoutErrorResponseEntity.ts
+@@ -0,0 +1,61 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class CheckoutErrorResponseEntity {
++    "errorCode": string;
++    "errorType": string;
++    "message": string;
++    "pspReference"?: string;
++    "status"?: number;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "errorCode",
++            "baseName": "errorCode",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "errorType",
++            "baseName": "errorType",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "message",
++            "baseName": "message",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "pspReference",
++            "baseName": "pspReference",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "status",
++            "baseName": "status",
++            "type": "number",
++            "format": "int32"
++        }    ];
++
++    static getAttributeTypeMap() {
++        return CheckoutErrorResponseEntity.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/checkoutSessionPatchSessionRequest.ts b/src/typings/checkout/checkoutSessionPatchSessionRequest.ts
+new file mode 100644
+index 0000000..16a9e60
+--- /dev/null
++++ b/src/typings/checkout/checkoutSessionPatchSessionRequest.ts
+@@ -0,0 +1,55 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++import { SessionAmountUpdate } from "./sessionAmountUpdate";
++
++
++export class CheckoutSessionPatchSessionRequest {
++    "amount": SessionAmountUpdate;
++    /**
++    * Indicates if the session is payable. If the payment amount is final, set this to **true** to indicate that the session is payable, so that the shopper can proceed to submit the payment. When you set this to **true**, you can no longer update the session.  If you set this to **false**, you must make another request to update the session and set this to **true** before the shopper can submit the payment. 
++    */
++    "payable"?: boolean;
++    /**
++    * The encoded payment session data from the `beforeSubmit` callback from [Drop-in](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow?platform=Web&integration=Drop-in#update-the-session-amount) or [the Component](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow?platform=Web&integration=Components#update-the-session-amount).
++    */
++    "sessionData": string;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "amount",
++            "baseName": "amount",
++            "type": "SessionAmountUpdate",
++            "format": ""
++        },
++        {
++            "name": "payable",
++            "baseName": "payable",
++            "type": "boolean",
++            "format": ""
++        },
++        {
++            "name": "sessionData",
++            "baseName": "sessionData",
++            "type": "string",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return CheckoutSessionPatchSessionRequest.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/checkoutSessionPatchSessionResponse.ts b/src/typings/checkout/checkoutSessionPatchSessionResponse.ts
+new file mode 100644
+index 0000000..610a2c5
+--- /dev/null
++++ b/src/typings/checkout/checkoutSessionPatchSessionResponse.ts
+@@ -0,0 +1,33 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class CheckoutSessionPatchSessionResponse {
++    "sessionData"?: string;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "sessionData",
++            "baseName": "sessionData",
++            "type": "string",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return CheckoutSessionPatchSessionResponse.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/createCheckoutSessionRequest.ts b/src/typings/checkout/createCheckoutSessionRequest.ts
+index ae7a40b..220cebb 100644
+--- a/src/typings/checkout/createCheckoutSessionRequest.ts
++++ b/src/typings/checkout/createCheckoutSessionRequest.ts
+@@ -24,6 +24,7 @@ import { PlatformChargebackLogic } from "./platformChargebackLogic";
+ import { RiskData } from "./riskData";
+ import { ShopperName } from "./shopperName";
+ import { Split } from "./split";
++import { ThirdPartyTokenRedundancyInfo } from "./thirdPartyTokenRedundancyInfo";
+ import { ThreeDSecureData } from "./threeDSecureData";
+ 
+ 
+@@ -147,6 +148,10 @@ export class CreateCheckoutSessionRequest {
+     "returnUrl": string;
+     "riskData"?: RiskData | null;
+     /**
++    * Use this if you made a `/paymentMethods` request to get the payment methods for the shopper\'s checkout session.  A unique ID to [connect the shopper to a single checkout session](https://docs.adyen.com/online-payments/checkout-settings#checkout-shopper-conversion-id) that uses multiple API requests. You can use this to get insights into conversion rates.
++    */
++    "shopperConversionId"?: string;
++    /**
+     * The shopper\'s email address.
+     */
+     "shopperEmail"?: string;
+@@ -215,6 +220,7 @@ export class CreateCheckoutSessionRequest {
+     * Sets a custom theme for [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/?platform=Web&integration=Hosted+Checkout). The value can be any of the **Theme ID** values from your Customer Area.
+     */
+     "themeId"?: string;
++    "thirdPartyTokenRedundancyInfo"?: ThirdPartyTokenRedundancyInfo | null;
+     "threeDS2RequestData"?: CheckoutSessionThreeDS2RequestData | null;
+     /**
+     * Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.
+@@ -473,6 +479,12 @@ export class CreateCheckoutSessionRequest {
+             "type": "RiskData | null",
+             "format": ""
+         },
++        {
++            "name": "shopperConversionId",
++            "baseName": "shopperConversionId",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "shopperEmail",
+             "baseName": "shopperEmail",
+@@ -581,6 +593,12 @@ export class CreateCheckoutSessionRequest {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "thirdPartyTokenRedundancyInfo",
++            "baseName": "thirdPartyTokenRedundancyInfo",
++            "type": "ThirdPartyTokenRedundancyInfo | null",
++            "format": ""
++        },
+         {
+             "name": "threeDS2RequestData",
+             "baseName": "threeDS2RequestData",
+diff --git a/src/typings/checkout/createCheckoutSessionResponse.ts b/src/typings/checkout/createCheckoutSessionResponse.ts
+index 5c9dd27..bf3fa7c 100644
+--- a/src/typings/checkout/createCheckoutSessionResponse.ts
++++ b/src/typings/checkout/createCheckoutSessionResponse.ts
+@@ -24,6 +24,7 @@ import { PlatformChargebackLogic } from "./platformChargebackLogic";
+ import { RiskData } from "./riskData";
+ import { ShopperName } from "./shopperName";
+ import { Split } from "./split";
++import { ThirdPartyTokenRedundancyInfo } from "./thirdPartyTokenRedundancyInfo";
+ import { ThreeDSecureData } from "./threeDSecureData";
+ 
+ 
+@@ -223,6 +224,7 @@ export class CreateCheckoutSessionResponse {
+     * Sets a custom theme for [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/?platform=Web&integration=Hosted+Checkout). The value can be any of the **Theme ID** values from your Customer Area.
+     */
+     "themeId"?: string;
++    "thirdPartyTokenRedundancyInfo"?: ThirdPartyTokenRedundancyInfo | null;
+     "threeDS2RequestData"?: CheckoutSessionThreeDS2RequestData | null;
+     /**
+     * Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.
+@@ -605,6 +607,12 @@ export class CreateCheckoutSessionResponse {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "thirdPartyTokenRedundancyInfo",
++            "baseName": "thirdPartyTokenRedundancyInfo",
++            "type": "ThirdPartyTokenRedundancyInfo | null",
++            "format": ""
++        },
+         {
+             "name": "threeDS2RequestData",
+             "baseName": "threeDS2RequestData",
+diff --git a/src/typings/checkout/dBaraiDetails.ts b/src/typings/checkout/dBaraiDetails.ts
+new file mode 100644
+index 0000000..1ef325f
+--- /dev/null
++++ b/src/typings/checkout/dBaraiDetails.ts
+@@ -0,0 +1,84 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class DBaraiDetails {
++    /**
++    * The checkout attempt identifier.
++    */
++    "checkoutAttemptId"?: string;
++    /**
++    * This is the `recurringDetailReference` returned in the response when you created the token.
++    *
++	* @deprecated since Adyen Checkout API v49
++	* Use `storedPaymentMethodId` instead.
++    */
++    "recurringDetailReference"?: string;
++    /**
++    * Base64-encoded JSON object containing SDK related parameters required by the SDK
++    */
++    "sdkData"?: string;
++    /**
++    * This is the `recurringDetailReference` returned in the response when you created the token.
++    */
++    "storedPaymentMethodId"?: string;
++    /**
++    * **dbarai**
++    */
++    "type"?: DBaraiDetails.TypeEnum;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "checkoutAttemptId",
++            "baseName": "checkoutAttemptId",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "recurringDetailReference",
++            "baseName": "recurringDetailReference",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "sdkData",
++            "baseName": "sdkData",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "storedPaymentMethodId",
++            "baseName": "storedPaymentMethodId",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "type",
++            "baseName": "type",
++            "type": "DBaraiDetails.TypeEnum",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return DBaraiDetails.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
++export namespace DBaraiDetails {
++    export enum TypeEnum {
++        Dbarai = 'dbarai'
++    }
++}
+diff --git a/src/typings/checkout/defaultErrorResponseEntity.ts b/src/typings/checkout/defaultErrorResponseEntity.ts
+deleted file mode 100644
+index 5781c16..0000000
+--- a/src/typings/checkout/defaultErrorResponseEntity.ts
++++ /dev/null
+@@ -1,112 +0,0 @@
+-/*
+- * The version of the OpenAPI document: v72
+- * 
+- *
+- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+- * https://openapi-generator.tech
+- * Do not edit this class manually.
+- */
+-
+-import { InvalidField } from "./invalidField";
+-
+-/**
+-* Standardized error response following RFC-7807 format
+-*/
+-
+-
+-export class DefaultErrorResponseEntity {
+-    /**
+-    * A human-readable explanation specific to this occurrence of the problem.
+-    */
+-    "detail"?: string;
+-    /**
+-    * Unique business error code.
+-    */
+-    "errorCode"?: string;
+-    /**
+-    * A URI that identifies the specific occurrence of the problem if applicable.
+-    */
+-    "instance"?: string;
+-    /**
+-    * Array of fields with validation errors when applicable.
+-    */
+-    "invalidFields"?: Array<InvalidField>;
+-    /**
+-    * The unique reference for the request.
+-    */
+-    "requestId"?: string;
+-    /**
+-    * The HTTP status code.
+-    */
+-    "status"?: number;
+-    /**
+-    * A short, human-readable summary of the problem type.
+-    */
+-    "title"?: string;
+-    /**
+-    * A URI that identifies the validation error type. It points to human-readable documentation for the problem type.
+-    */
+-    "type"?: string;
+-
+-    static readonly discriminator: string | undefined = undefined;
+-
+-    static readonly mapping: {[index: string]: string} | undefined = undefined;
+-
+-    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
+-        {
+-            "name": "detail",
+-            "baseName": "detail",
+-            "type": "string",
+-            "format": ""
+-        },
+-        {
+-            "name": "errorCode",
+-            "baseName": "errorCode",
+-            "type": "string",
+-            "format": ""
+-        },
+-        {
+-            "name": "instance",
+-            "baseName": "instance",
+-            "type": "string",
+-            "format": ""
+-        },
+-        {
+-            "name": "invalidFields",
+-            "baseName": "invalidFields",
+-            "type": "Array<InvalidField>",
+-            "format": ""
+-        },
+-        {
+-            "name": "requestId",
+-            "baseName": "requestId",
+-            "type": "string",
+-            "format": ""
+-        },
+-        {
+-            "name": "status",
+-            "baseName": "status",
+-            "type": "number",
+-            "format": "int32"
+-        },
+-        {
+-            "name": "title",
+-            "baseName": "title",
+-            "type": "string",
+-            "format": ""
+-        },
+-        {
+-            "name": "type",
+-            "baseName": "type",
+-            "type": "string",
+-            "format": ""
+-        }    ];
+-
+-    static getAttributeTypeMap() {
+-        return DefaultErrorResponseEntity.attributeTypeMap;
+-    }
+-
+-    public constructor() {
+-    }
+-}
+-
+diff --git a/src/typings/checkout/destination.ts b/src/typings/checkout/destination.ts
+index 7ed96fc..0e15863 100644
+--- a/src/typings/checkout/destination.ts
++++ b/src/typings/checkout/destination.ts
+@@ -10,15 +10,15 @@
+ 
+ export class Destination {
+     /**
+-    * The two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) or three-letter [ISO 3166-1 alpha-3 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) for the destination address.   * Encoding: ASCII    * Min length: 2 characters   * Max length: 3 characters
++    * The two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) or three-letter [ISO 3166-1 alpha-3 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) for the destination address. * Encoding: ASCII * Min length: 2 characters * Max length: 3 characters * **additionalData key:** `enhancedSchemeData.destinationCountryCode`
+     */
+     "countryCode"?: string;
+     /**
+-    * The postal code of the destination address. * Encoding: ASCII * Max length: 10 characters * Must not start with a space. * For the US, it must be in five or nine digits format. For example, 10001 or 10001-0000. * For Canada, it must be in 6 digits format. For example, M4B 1G5.
++    * The postal code of the destination address. * Encoding: ASCII * Max length: 10 characters * Must not start with a space. * For the US, it must be in five or nine digits format. For example, 10001 or 10001-0000. * For Canada, it must be in 6 digits format. For example, M4B 1G5. * **additionalData key:** `enhancedSchemeData.destinationPostalCode`
+     */
+     "postalCode"?: string;
+     /**
+-    * The state or province code of the destination address. * Encoding: ASCII * Max length: 3 characters * Must not start with a space.
++    * The state or province code of the destination address. * Encoding: ASCII * Max length: 3 characters * Must not start with a space. * **additionalData key:** `enhancedSchemeData.destinationStateProvinceCode`
+     */
+     "stateOrProvince"?: string;
+ 
+diff --git a/src/typings/checkout/donationCampaignsRequest.ts b/src/typings/checkout/donationCampaignsRequest.ts
+index e499817..a5d3cb1 100644
+--- a/src/typings/checkout/donationCampaignsRequest.ts
++++ b/src/typings/checkout/donationCampaignsRequest.ts
+@@ -14,6 +14,10 @@ export class DonationCampaignsRequest {
+     */
+     "currency": string;
+     /**
++    * The label that is assigned to the donation campaign.
++    */
++    "label"?: string;
++    /**
+     * Locale on the shopper interaction device.
+     */
+     "locale"?: string;
+@@ -37,6 +41,12 @@ export class DonationCampaignsRequest {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "label",
++            "baseName": "label",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "locale",
+             "baseName": "locale",
+diff --git a/src/typings/checkout/donationPaymentRequestPaymentMethod.ts b/src/typings/checkout/donationPaymentRequestPaymentMethod.ts
+index dfa1494..a31228d 100644
+--- a/src/typings/checkout/donationPaymentRequestPaymentMethod.ts
++++ b/src/typings/checkout/donationPaymentRequestPaymentMethod.ts
+@@ -12,6 +12,7 @@ import { CardDonations } from "./cardDonations";
+ import { GooglePayDonations } from "./googlePayDonations";
+ import { IdealDonations } from "./idealDonations";
+ import { PayWithGoogleDonations } from "./payWithGoogleDonations";
++import { SepaDirectDebitDonations } from "./sepaDirectDebitDonations";
+ 
+ /**
+ * The type and required details of a payment method to use.  When `donationToken` is provided, the payment method is derived from the token and this field becomes optional.  If you are [PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide), and make donations using raw card details, you must explicitly provide the payment method details.
+@@ -23,7 +24,7 @@ import { PayWithGoogleDonations } from "./payWithGoogleDonations";
+  * Type
+  * @export
+  */
+-export type DonationPaymentRequestPaymentMethod = ApplePayDonations | CardDonations | GooglePayDonations | IdealDonations | PayWithGoogleDonations;
++export type DonationPaymentRequestPaymentMethod = ApplePayDonations | CardDonations | GooglePayDonations | IdealDonations | PayWithGoogleDonations | SepaDirectDebitDonations;
+ 
+ /**
+ * @type DonationPaymentRequestPaymentMethodClass
+@@ -32,7 +33,17 @@ export type DonationPaymentRequestPaymentMethod = ApplePayDonations | CardDonati
+ */
+ export class DonationPaymentRequestPaymentMethodClass {
+     
+-    static readonly discriminator: string = "type";
++    
++    static readonly discriminator: string | undefined = "type";
+ 
+-    static readonly mapping: {[index: string]: string} | undefined = undefined;
++    static readonly mapping: {[index: string]: string} | undefined = {
++        "applepay": "ApplePayDonations",
++        "card": "CardDonations",
++        "googlepay": "GooglePayDonations",
++        "ideal": "IdealDonations",
++        "networkToken": "CardDonations",
++        "paywithgoogle": "PayWithGoogleDonations",
++        "scheme": "CardDonations",
++        "sepadirectdebit": "SepaDirectDebitDonations",
++    };
+ }
+diff --git a/src/typings/checkout/enhancedSchemeData.ts b/src/typings/checkout/enhancedSchemeData.ts
+index d115425..e5611b4 100644
+--- a/src/typings/checkout/enhancedSchemeData.ts
++++ b/src/typings/checkout/enhancedSchemeData.ts
+@@ -8,12 +8,20 @@
+  */
+ 
+ import { Airline } from "./airline";
++import { CarRental } from "./carRental";
++import { Healthcare } from "./healthcare";
+ import { LevelTwoThree } from "./levelTwoThree";
++import { Lodging } from "./lodging";
++import { TemporaryServices } from "./temporaryServices";
+ 
+ 
+ export class EnhancedSchemeData {
+     "airline"?: Airline | null;
++    "carRental"?: CarRental | null;
++    "healthcare"?: Healthcare | null;
+     "levelTwoThree"?: LevelTwoThree | null;
++    "lodging"?: Lodging | null;
++    "temporaryServices"?: TemporaryServices | null;
+ 
+     static readonly discriminator: string | undefined = undefined;
+ 
+@@ -26,11 +34,35 @@ export class EnhancedSchemeData {
+             "type": "Airline | null",
+             "format": ""
+         },
++        {
++            "name": "carRental",
++            "baseName": "carRental",
++            "type": "CarRental | null",
++            "format": ""
++        },
++        {
++            "name": "healthcare",
++            "baseName": "healthcare",
++            "type": "Healthcare | null",
++            "format": ""
++        },
+         {
+             "name": "levelTwoThree",
+             "baseName": "levelTwoThree",
+             "type": "LevelTwoThree | null",
+             "format": ""
++        },
++        {
++            "name": "lodging",
++            "baseName": "lodging",
++            "type": "Lodging | null",
++            "format": ""
++        },
++        {
++            "name": "temporaryServices",
++            "baseName": "temporaryServices",
++            "type": "TemporaryServices | null",
++            "format": ""
+         }    ];
+ 
+     static getAttributeTypeMap() {
+diff --git a/src/typings/checkout/folio.ts b/src/typings/checkout/folio.ts
+new file mode 100644
+index 0000000..6819d8f
+--- /dev/null
++++ b/src/typings/checkout/folio.ts
+@@ -0,0 +1,46 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class Folio {
++    /**
++    * The folio cash advances, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `lodging.folioCashAdvances`
++    */
++    "cashAdvances"?: number;
++    /**
++    * The card acceptor\'s internal invoice or billing ID reference number. * Format: Alphanumeric * Must not start with a space * Must not contain any special characters * Must not be all zeros. * **additionalData key:** `lodging.folioNumber`
++    */
++    "number"?: string;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "cashAdvances",
++            "baseName": "cashAdvances",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "number",
++            "baseName": "number",
++            "type": "string",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return Folio.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/healthcare.ts b/src/typings/checkout/healthcare.ts
+new file mode 100644
+index 0000000..8705508
+--- /dev/null
++++ b/src/typings/checkout/healthcare.ts
+@@ -0,0 +1,76 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class Healthcare {
++    /**
++    * The dental amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    */
++    "dentalValue"?: number;
++    /**
++    * The other medical amount not covered by the specific categories, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    */
++    "otherMedicalValue"?: number;
++    /**
++    * The prescription/Rx amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    */
++    "prescriptionValue"?: number;
++    /**
++    * The total healthcare amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    */
++    "totalHealthcareValue": number;
++    /**
++    * The vision/optical prescription amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    */
++    "visionPrescriptionValue"?: number;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "dentalValue",
++            "baseName": "dentalValue",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "otherMedicalValue",
++            "baseName": "otherMedicalValue",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "prescriptionValue",
++            "baseName": "prescriptionValue",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "totalHealthcareValue",
++            "baseName": "totalHealthcareValue",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "visionPrescriptionValue",
++            "baseName": "visionPrescriptionValue",
++            "type": "number",
++            "format": "int64"
++        }    ];
++
++    static getAttributeTypeMap() {
++        return Healthcare.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/itemDetailLine.ts b/src/typings/checkout/itemDetailLine.ts
+index 9860691..b0d9b75 100644
+--- a/src/typings/checkout/itemDetailLine.ts
++++ b/src/typings/checkout/itemDetailLine.ts
+@@ -10,35 +10,35 @@
+ 
+ export class ItemDetailLine {
+     /**
+-    * The code that identifies the item in a standardized commodity coding scheme. There are different commodity coding schemes: * [UNSPSC commodity codes](https://www.ungm.org/public/unspsc) * [HS commodity codes](https://www.wcoomd.org/en/topics/nomenclature/overview.aspx) * [NAICS commodity codes](https://www.census.gov/naics/) * [NAPCS commodity codes](https://www.census.gov/naics/napcs/)   * Encoding: ASCII * Max length: 12 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The code that identifies the item in a standardized commodity coding scheme. There are different commodity coding schemes: * [UNSPSC commodity codes](https://www.ungm.org/public/unspsc) * [HS commodity codes](https://www.wcoomd.org/en/topics/nomenclature/overview.aspx) * [NAICS commodity codes](https://www.census.gov/naics/) * [NAPCS commodity codes](https://www.census.gov/naics/napcs/)   * Encoding: ASCII * Max length: 12 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `enhancedSchemeData.itemDetailLine[N].commodityCode`
+     */
+     "commodityCode"?: string;
+     /**
+-    * A description of the item, that provides details about the purchase.   For Visa transactions with level 3 ESD, the description must not be the same or very similar to your merchant name, or, consist only of common words like \"product\", or \"service\". * Encoding: ASCII * Max length: 26 characters * Must not be a single character. * Must not be blank. * Must not be all special characters. * Must not start with a space or be all spaces. * Must not be all zeros.
++    * A description of the item, that provides details about the purchase.   For Visa transactions with level 3 ESD, the description must not be the same or very similar to your merchant name, or, consist only of common words like \"product\", or \"service\". * Encoding: ASCII * Max length: 26 characters * Must not be a single character. * Must not be blank. * Must not be all special characters. * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `enhancedSchemeData.itemDetailLine[N].description`
+     */
+     "description"?: string;
+     /**
+-    * The discount amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    * The discount amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `enhancedSchemeData.itemDetailLine[N].discountAmount`
+     */
+     "discountAmount"?: number;
+     /**
+-    * The product code. Must be a unique product code associated with the item or service. This can be your unique code for the item, or the manufacturer\'s product code.  * Encoding: ASCII. * Max length: 12 characters
++    * The product code. Must be a unique product code associated with the item or service. This can be your unique code for the item, or the manufacturer\'s product code.  * Encoding: ASCII. * Max length: 12 characters * **additionalData key:** `enhancedSchemeData.itemDetailLine[N].productCode`
+     */
+     "productCode"?: string;
+     /**
+-    * The number of items. Must be an integer greater than zero. * Encoding: Numeric * Max value: 9999
++    * The number of items. Must be an integer greater than zero. * Encoding: Numeric * Max value: 9999 * **additionalData key:** `enhancedSchemeData.itemDetailLine[N].quantity`
+     */
+     "quantity"?: number;
+     /**
+-    * The total amount for the line item, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000  See [Amount requirements for level 2/3 ESD](https://docs.adyen.com//payment-methods/cards/enhanced-scheme-data/l2-l3#amount-requirements) to learn more about how to calculate the line item total.
++    * The total amount for the line item, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000  See [Amount requirements for level 2/3 ESD](https://docs.adyen.com//payment-methods/cards/enhanced-scheme-data/l2-l3#amount-requirements) to learn more about how to calculate the line item total. * **additionalData key:** `enhancedSchemeData.itemDetailLine[N].totalAmount`
+     */
+     "totalAmount"?: number;
+     /**
+-    * The unit of measurement for an item. * Encoding: ASCII * Max length: 3 characters
++    * The unit of measurement for an item. * Encoding: ASCII * Max length: 3 characters * **additionalData key:** `enhancedSchemeData.itemDetailLine[N].unitOfMeasure`
+     */
+     "unitOfMeasure"?: string;
+     /**
+-    * The unit price, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    * The unit price, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `enhancedSchemeData.itemDetailLine[N].unitPrice`
+     */
+     "unitPrice"?: number;
+ 
+diff --git a/src/typings/checkout/klarnaDetails.ts b/src/typings/checkout/klarnaDetails.ts
+index ed87776..715036a 100644
+--- a/src/typings/checkout/klarnaDetails.ts
++++ b/src/typings/checkout/klarnaDetails.ts
+@@ -22,6 +22,10 @@ export class KlarnaDetails {
+     */
+     "deliveryAddress"?: string;
+     /**
++    * Base64-encoded merchant metadata (Extra Merchant Data) forwarded to Klarna at authorization.
++    */
++    "merchantData"?: string;
++    /**
+     * Shopper name, date of birth, phone number, and email address.
+     */
+     "personalDetails"?: string;
+@@ -72,6 +76,12 @@ export class KlarnaDetails {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "merchantData",
++            "baseName": "merchantData",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "personalDetails",
+             "baseName": "personalDetails",
+diff --git a/src/typings/checkout/leg.ts b/src/typings/checkout/leg.ts
+index 78f0992..4c51362 100644
+--- a/src/typings/checkout/leg.ts
++++ b/src/typings/checkout/leg.ts
+@@ -10,39 +10,39 @@
+ 
+ export class Leg {
+     /**
+-    * The [IATA](https://www.iata.org/services/pages/codes.aspx) 2-letter accounting code (PAX) that identifies the carrier. This field is required if the airline data includes leg details. * Example: KLM = KL * minLength: 2 characters * maxLength: 2 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The [IATA](https://www.iata.org/services/pages/codes.aspx) 2-letter accounting code (PAX) that identifies the carrier. This field is required if the airline data includes leg details. * Example: KLM = KL * minLength: 2 characters * maxLength: 2 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.leg[N].carrier_code`
+     */
+     "carrierCode"?: string;
+     /**
+-    * A one-letter travel class identifier.  The following are common:  * F: first class * J: business class * Y: economy class * W: premium economy  * Encoding: ASCII * minLength: 1 character * maxLength: 1 character * Must not start with a space or be all spaces. * Must not be all zeros.
++    * A one-letter travel class identifier.  The following are common:  * F: first class * J: business class * Y: economy class * W: premium economy  * Encoding: ASCII * minLength: 1 character * maxLength: 1 character * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.leg[N].class_of_travel`
+     */
+     "classOfTravel"?: string;
+     /**
+-    * Date and time of travel in format `yyyy-MM-ddTHH:mm`. * Use local time of departure airport. * minLength: 16 characters * maxLength: 16 characters
++    * Date and time of travel in format `yyyy-MM-ddTHH:mm`. * Use local time of departure airport. * minLength: 16 characters * maxLength: 16 characters * **additionalData key:** `airline.leg[N].date_of_travel`
+     */
+     "dateOfTravel"?: Date;
+     /**
+-    * The [IATA](https://www.iata.org/services/pages/codes.aspx) three-letter airport code of the departure airport. This field is required if the airline data includes leg details.  * Encoding: ASCII * Example: Amsterdam = AMS * minLength: 3 characters * maxLength: 3 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The [IATA](https://www.iata.org/services/pages/codes.aspx) three-letter airport code of the departure airport. This field is required if the airline data includes leg details.  * Encoding: ASCII * Example: Amsterdam = AMS * minLength: 3 characters * maxLength: 3 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.leg[N].depart_airport`
+     */
+     "departureAirportCode"?: string;
+     /**
+-    * The amount of [departure tax](https://en.wikipedia.org/wiki/Departure_tax) charged, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * Encoding: Numeric * minLength: 1 * maxLength: 11 * Must not be all zeros.
++    * The amount of [departure tax](https://en.wikipedia.org/wiki/Departure_tax) charged, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * Encoding: Numeric * minLength: 1 * maxLength: 11 * Must not be all zeros. * **additionalData key:** `airline.leg[N].depart_tax`
+     */
+     "departureTax"?: number;
+     /**
+-    * The [IATA](https://www.iata.org/services/pages/codes.aspx) 3-letter airport code of the destination airport. This field is required if the airline data includes leg details. * Example: Amsterdam = AMS * Encoding: ASCII * minLength: 3 characters * maxLength: 3 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The [IATA](https://www.iata.org/services/pages/codes.aspx) 3-letter airport code of the destination airport. This field is required if the airline data includes leg details. * Example: Amsterdam = AMS * Encoding: ASCII * minLength: 3 characters * maxLength: 3 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.leg[N].destination_code`
+     */
+     "destinationAirportCode"?: string;
+     /**
+-    * The [fare basis code](https://en.wikipedia.org/wiki/Fare_basis_code), alphanumeric. * minLength: 1 character * maxLength: 15 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The [fare basis code](https://en.wikipedia.org/wiki/Fare_basis_code), alphanumeric. * minLength: 1 character * maxLength: 15 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.leg[N].fare_base_code`
+     */
+     "fareBasisCode"?: string;
+     /**
+-    * The flight identifier. * minLength: 1 character * maxLength: 5 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The flight identifier. * minLength: 1 character * maxLength: 5 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.leg[N].flight_number`
+     */
+     "flightNumber"?: string;
+     /**
+-    * A one-letter code that indicates whether the passenger is entitled to make a stopover. Can be a space, O if the passenger is entitled to make a stopover, or X if they are not. * Encoding: ASCII * minLength: 1 character * maxLength: 1 character
++    * A one-letter code that indicates whether the passenger is entitled to make a stopover. Can be a space, O if the passenger is entitled to make a stopover, or X if they are not. * Encoding: ASCII * minLength: 1 character * maxLength: 1 character * **additionalData key:** `airline.leg[N].stop_over_code`
+     */
+     "stopOverCode"?: string;
+ 
+diff --git a/src/typings/checkout/levelTwoThree.ts b/src/typings/checkout/levelTwoThree.ts
+index d82bb85..58849e0 100644
+--- a/src/typings/checkout/levelTwoThree.ts
++++ b/src/typings/checkout/levelTwoThree.ts
+@@ -13,16 +13,16 @@ import { ItemDetailLine } from "./itemDetailLine";
+ 
+ export class LevelTwoThree {
+     /**
+-    * The reference number to identify the customer and their order. * Format: ASCII * Max length: 25 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The reference number to identify the customer and their order. * Format: ASCII * Max length: 25 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `enhancedSchemeData.customerReference`
+     */
+     "customerReferenceNumber"?: string;
+     "destination"?: Destination | null;
+     /**
+-    * The duty tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    * The duty tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `enhancedSchemeData.dutyAmount`
+     */
+     "dutyAmount"?: number;
+     /**
+-    * The shipping amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000
++    * The shipping amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `enhancedSchemeData.freightAmount`
+     */
+     "freightAmount"?: number;
+     /**
+@@ -30,15 +30,15 @@ export class LevelTwoThree {
+     */
+     "itemDetailLines"?: Array<ItemDetailLine>;
+     /**
+-    * The date of the order. * Min Length: 10 characters * Max Length: 10 characters * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd
++    * The date of the order. * Min Length: 10 characters * Max Length: 10 characters * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd * **additionalData key:** `enhancedSchemeData.orderDate`
+     */
+     "orderDate"?: string;
+     /**
+-    * The postal code of the address where the item is shipped from. * Encoding: ASCII * Max length: 10 characters * For the US, it must be in five or nine digits format. For example, 10001 or 10001-0000. * For Canada, it must be in 6 digits format. For example, M4B 1G5.
++    * The postal code of the address where the item is shipped from. * Encoding: ASCII * Max length: 10 characters * For the US, it must be in five or nine digits format. For example, 10001 or 10001-0000. * For Canada, it must be in 6 digits format. For example, M4B 1G5. * **additionalData key:** `enhancedSchemeData.shipFromPostalCode`
+     */
+     "shipFromPostalCode"?: string;
+     /**
+-    * The amount of state or provincial [tax included in the total transaction amount](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/l2-l3#requirements-to-send-level-2-3-esd), in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * For L2 data: must not be all zeroes.  * For L3 data: can be zero.
++    * The amount of state or provincial [tax included in the total transaction amount](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/l2-l3#requirements-to-send-level-2-3-esd), in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * For L2 data: must not be all zeroes.  * For L3 data: can be zero. * **additionalData key:** `enhancedSchemeData.totalTaxAmount`
+     */
+     "totalTaxAmount"?: number;
+ 
+diff --git a/src/typings/checkout/lineItem.ts b/src/typings/checkout/lineItem.ts
+index 2561325..86fbc31 100644
+--- a/src/typings/checkout/lineItem.ts
++++ b/src/typings/checkout/lineItem.ts
+@@ -62,6 +62,26 @@ export class LineItem {
+     */
+     "receiverEmail"?: string;
+     /**
++    * Shipping company handling the return of the item.
++    */
++    "returnShippingCompany"?: string;
++    /**
++    * Tracking number for the return of the item.
++    */
++    "returnTrackingNumber"?: string;
++    /**
++    * Tracking URI for the return of the item.
++    */
++    "returnTrackingUri"?: string;
++    /**
++    * Shipping company handling the delivery of the item.
++    */
++    "shippingCompany"?: string;
++    /**
++    * Shipping method used to deliver the item.
++    */
++    "shippingMethod"?: string;
++    /**
+     * Size of the item.
+     */
+     "size"?: string;
+@@ -78,6 +98,14 @@ export class LineItem {
+     */
+     "taxPercentage"?: number;
+     /**
++    * Tracking number for the delivery of the item.
++    */
++    "trackingNumber"?: string;
++    /**
++    * Tracking URI for the delivery of the item.
++    */
++    "trackingUri"?: string;
++    /**
+     * Universal Product Code.
+     */
+     "upc"?: string;
+@@ -165,6 +193,36 @@ export class LineItem {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "returnShippingCompany",
++            "baseName": "returnShippingCompany",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "returnTrackingNumber",
++            "baseName": "returnTrackingNumber",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "returnTrackingUri",
++            "baseName": "returnTrackingUri",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "shippingCompany",
++            "baseName": "shippingCompany",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "shippingMethod",
++            "baseName": "shippingMethod",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "size",
+             "baseName": "size",
+@@ -189,6 +247,18 @@ export class LineItem {
+             "type": "number",
+             "format": "int64"
+         },
++        {
++            "name": "trackingNumber",
++            "baseName": "trackingNumber",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "trackingUri",
++            "baseName": "trackingUri",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "upc",
+             "baseName": "upc",
+diff --git a/src/typings/checkout/lodging.ts b/src/typings/checkout/lodging.ts
+new file mode 100644
+index 0000000..98978b2
+--- /dev/null
++++ b/src/typings/checkout/lodging.ts
+@@ -0,0 +1,173 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++import { Folio } from "./folio";
++import { Room } from "./room";
++
++
++export class Lodging {
++    /**
++    * The check-in date. * Min Length: 10 characters * Max Length: 10 characters * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd * **additionalData key:** `lodging.checkInDate`
++    */
++    "checkInDate"?: string;
++    /**
++    * The check-out date. * Min Length: 10 characters * Max Length: 10 characters * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd * **additionalData key:** `lodging.checkOutDate`
++    */
++    "checkOutDate"?: string;
++    /**
++    * The toll-free phone number for the lodging customer service. * Format: Alphanumeric * For US and CA numbers must be 10 characters in length * Must not start with a space * Must not contain any special characters such as + or - * Must not be all zeros. * **additionalData key:** `lodging.customerServiceTollFreeNumber`
++    */
++    "customerServicePhoneNumber"?: string;
++    /**
++    * Indicates that the facility complies with the Hotel and Motel Fire Safety Act of 1990. * **additionalData key:** `lodging.fireSafetyActIndicator`
++    */
++    "fireSafetyCompliance"?: boolean;
++    "folio"?: Folio | null;
++    /**
++    * Any charges for food and beverages associated with the booking, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `lodging.foodBeverageCharges`
++    */
++    "foodBeverageCharges"?: number;
++    /**
++    * The category of lodging charges for the payment. * **additionalData key:** `lodging.specialProgramCode`
++    */
++    "lodgingChargeType"?: Lodging.LodgingChargeTypeEnum;
++    /**
++    * Indicates if the customer didn\'t check in for their booking. * **additionalData key:** `lodging.noShowIndicator`
++    */
++    "noShow"?: boolean;
++    /**
++    * The prepaid expenses for the booking, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `lodging.prepaidExpenses`
++    */
++    "prepaidExpenses"?: number;
++    /**
++    * The lodging property location\'s phone number. * Format: Alphanumeric * Min length: 10 characters * For US and CA numbers must be 10 characters in length * Must not start with a space * Must not contain any special characters such as + or - * Must not be all zeros. * **additionalData key:** `lodging.propertyPhoneNumber`
++    */
++    "propertyPhoneNumber"?: string;
++    /**
++    * The name of the person renting the room. * Format: ASCII * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `lodging.renterName`
++    */
++    "renterName"?: string;
++    /**
++    * The list of rooms booked.
++    */
++    "rooms"?: Array<Room>;
++    /**
++    * The total room tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `lodging.totalRoomTax`
++    */
++    "totalRoomTax"?: number;
++    /**
++    * The total tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `lodging.totalTax`
++    */
++    "totalTax"?: number;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "checkInDate",
++            "baseName": "checkInDate",
++            "type": "string",
++            "format": "date"
++        },
++        {
++            "name": "checkOutDate",
++            "baseName": "checkOutDate",
++            "type": "string",
++            "format": "date"
++        },
++        {
++            "name": "customerServicePhoneNumber",
++            "baseName": "customerServicePhoneNumber",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "fireSafetyCompliance",
++            "baseName": "fireSafetyCompliance",
++            "type": "boolean",
++            "format": ""
++        },
++        {
++            "name": "folio",
++            "baseName": "folio",
++            "type": "Folio | null",
++            "format": ""
++        },
++        {
++            "name": "foodBeverageCharges",
++            "baseName": "foodBeverageCharges",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "lodgingChargeType",
++            "baseName": "lodgingChargeType",
++            "type": "Lodging.LodgingChargeTypeEnum",
++            "format": ""
++        },
++        {
++            "name": "noShow",
++            "baseName": "noShow",
++            "type": "boolean",
++            "format": ""
++        },
++        {
++            "name": "prepaidExpenses",
++            "baseName": "prepaidExpenses",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "propertyPhoneNumber",
++            "baseName": "propertyPhoneNumber",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "renterName",
++            "baseName": "renterName",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "rooms",
++            "baseName": "rooms",
++            "type": "Array<Room>",
++            "format": ""
++        },
++        {
++            "name": "totalRoomTax",
++            "baseName": "totalRoomTax",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "totalTax",
++            "baseName": "totalTax",
++            "type": "number",
++            "format": "int64"
++        }    ];
++
++    static getAttributeTypeMap() {
++        return Lodging.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
++export namespace Lodging {
++    export enum LodgingChargeTypeEnum {
++        AdvanceDeposit = 'advanceDeposit',
++        NoShow = 'noShow',
++        Stay = 'stay'
++    }
++}
+diff --git a/src/typings/checkout/models.ts b/src/typings/checkout/models.ts
+index 673f9a2..3eae2db 100644
+--- a/src/typings/checkout/models.ts
++++ b/src/typings/checkout/models.ts
+@@ -33,6 +33,7 @@ export * from "./applePayDonations"
+ export * from "./applePaySessionRequest"
+ export * from "./applePaySessionResponse"
+ export * from "./applicationInfo"
++export * from "./auPayDetails"
+ export * from "./authenticationData"
+ export * from "./bacsDirectDebitDetails"
+ export * from "./balanceCheckRequest"
+@@ -43,6 +44,7 @@ export * from "./blikDetails"
+ export * from "./browserInfo"
+ export * from "./cancelOrderRequest"
+ export * from "./cancelOrderResponse"
++export * from "./carRental"
+ export * from "./cardBrandDetails"
+ export * from "./cardDetails"
+ export * from "./cardDetailsRequest"
+@@ -54,6 +56,7 @@ export * from "./checkoutAwaitAction"
+ export * from "./checkoutBankAccount"
+ export * from "./checkoutBankTransferAction"
+ export * from "./checkoutDelegatedAuthenticationAction"
++export * from "./checkoutErrorResponseEntity"
+ export * from "./checkoutForwardRequest"
+ export * from "./checkoutForwardRequestCard"
+ export * from "./checkoutForwardRequestOptions"
+@@ -67,6 +70,8 @@ export * from "./checkoutQrCodeAction"
+ export * from "./checkoutRedirectAction"
+ export * from "./checkoutSDKAction"
+ export * from "./checkoutSessionInstallmentOption"
++export * from "./checkoutSessionPatchSessionRequest"
++export * from "./checkoutSessionPatchSessionResponse"
+ export * from "./checkoutSessionThreeDS2RequestData"
+ export * from "./checkoutThreeDS2Action"
+ export * from "./checkoutVoucherAction"
+@@ -77,7 +82,7 @@ export * from "./createCheckoutSessionRequest"
+ export * from "./createCheckoutSessionResponse"
+ export * from "./createOrderRequest"
+ export * from "./createOrderResponse"
+-export * from "./defaultErrorResponseEntity"
++export * from "./dBaraiDetails"
+ export * from "./deliveryAddress"
+ export * from "./deliveryMethod"
+ export * from "./destination"
+@@ -101,6 +106,7 @@ export * from "./enhancedSchemeData"
+ export * from "./externalPlatform"
+ export * from "./externalTokenDetails"
+ export * from "./fastlaneDetails"
++export * from "./folio"
+ export * from "./forexQuote"
+ export * from "./fraudCheckResult"
+ export * from "./fraudResult"
+@@ -109,12 +115,12 @@ export * from "./fundRecipient"
+ export * from "./genericIssuerPaymentMethodDetails"
+ export * from "./googlePayDetails"
+ export * from "./googlePayDonations"
++export * from "./healthcare"
+ export * from "./idealDetails"
+ export * from "./idealDonations"
+ export * from "./inputDetail"
+ export * from "./installmentOption"
+ export * from "./installments"
+-export * from "./invalidField"
+ export * from "./item"
+ export * from "./itemDetailLine"
+ export * from "./klarnaDetails"
+@@ -123,6 +129,7 @@ export * from "./leg"
+ export * from "./levelTwoThree"
+ export * from "./lineItem"
+ export * from "./listStoredPaymentMethodsResponse"
++export * from "./lodging"
+ export * from "./mandate"
+ export * from "./masterpassDetails"
+ export * from "./mbwayDetails"
+@@ -179,6 +186,7 @@ export * from "./paymentValidationsResponse"
+ export * from "./paypalUpdateOrderRequest"
+ export * from "./paypalUpdateOrderResponse"
+ export * from "./phone"
++export * from "./pickupInfo"
+ export * from "./pixDetails"
+ export * from "./pixPayByBankDetails"
+ export * from "./pixPayByBankRiskSignals"
+@@ -188,6 +196,7 @@ export * from "./pseDetails"
+ export * from "./rakutenPayDetails"
+ export * from "./ratepayDetails"
+ export * from "./recurring"
++export * from "./rentalSurcharges"
+ export * from "./responseAdditionalData3DSecure"
+ export * from "./responseAdditionalDataBillingAddress"
+ export * from "./responseAdditionalDataCard"
+@@ -200,13 +209,17 @@ export * from "./responseAdditionalDataSepa"
+ export * from "./responseAdditionalDataSwish"
+ export * from "./responsePaymentMethod"
+ export * from "./result"
++export * from "./returnInfo"
+ export * from "./riskData"
+ export * from "./rivertyDetails"
++export * from "./room"
+ export * from "./sDKEphemPubKey"
+ export * from "./samsungPayDetails"
+ export * from "./screenDimensions"
+ export * from "./sepaDirectDebitDetails"
++export * from "./sepaDirectDebitDonations"
+ export * from "./serviceError"
++export * from "./sessionAmountUpdate"
+ export * from "./sessionResultResponse"
+ export * from "./shopperIdPaymentMethod"
+ export * from "./shopperInteractionDevice"
+@@ -225,6 +238,8 @@ export * from "./subMerchant"
+ export * from "./subMerchantInfo"
+ export * from "./surcharge"
+ export * from "./taxTotal"
++export * from "./temporaryServices"
++export * from "./thirdPartyTokenRedundancyInfo"
+ export * from "./threeDS2RequestData"
+ export * from "./threeDS2RequestFields"
+ export * from "./threeDS2ResponseData"
+diff --git a/src/typings/checkout/objectSerializer.ts b/src/typings/checkout/objectSerializer.ts
+index eb0f795..a5c6d84 100644
+--- a/src/typings/checkout/objectSerializer.ts
++++ b/src/typings/checkout/objectSerializer.ts
+@@ -35,6 +35,7 @@ import { ApplePayDonations } from "./applePayDonations";
+ import { ApplePaySessionRequest } from "./applePaySessionRequest";
+ import { ApplePaySessionResponse } from "./applePaySessionResponse";
+ import { ApplicationInfo } from "./applicationInfo";
++import { AuPayDetails } from "./auPayDetails";
+ import { AuthenticationData } from "./authenticationData";
+ import { BacsDirectDebitDetails } from "./bacsDirectDebitDetails";
+ import { BalanceCheckRequest } from "./balanceCheckRequest";
+@@ -45,6 +46,7 @@ import { BlikDetails } from "./blikDetails";
+ import { BrowserInfo } from "./browserInfo";
+ import { CancelOrderRequest } from "./cancelOrderRequest";
+ import { CancelOrderResponse } from "./cancelOrderResponse";
++import { CarRental } from "./carRental";
+ import { CardBrandDetails } from "./cardBrandDetails";
+ import { CardDetails } from "./cardDetails";
+ import { CardDetailsRequest } from "./cardDetailsRequest";
+@@ -56,6 +58,7 @@ import { CheckoutAwaitAction } from "./checkoutAwaitAction";
+ import { CheckoutBankAccount } from "./checkoutBankAccount";
+ import { CheckoutBankTransferAction } from "./checkoutBankTransferAction";
+ import { CheckoutDelegatedAuthenticationAction } from "./checkoutDelegatedAuthenticationAction";
++import { CheckoutErrorResponseEntity } from "./checkoutErrorResponseEntity";
+ import { CheckoutForwardRequest } from "./checkoutForwardRequest";
+ import { CheckoutForwardRequestCard } from "./checkoutForwardRequestCard";
+ import { CheckoutForwardRequestOptions } from "./checkoutForwardRequestOptions";
+@@ -69,6 +72,8 @@ import { CheckoutQrCodeAction } from "./checkoutQrCodeAction";
+ import { CheckoutRedirectAction } from "./checkoutRedirectAction";
+ import { CheckoutSDKAction } from "./checkoutSDKAction";
+ import { CheckoutSessionInstallmentOption } from "./checkoutSessionInstallmentOption";
++import { CheckoutSessionPatchSessionRequest } from "./checkoutSessionPatchSessionRequest";
++import { CheckoutSessionPatchSessionResponse } from "./checkoutSessionPatchSessionResponse";
+ import { CheckoutSessionThreeDS2RequestData } from "./checkoutSessionThreeDS2RequestData";
+ import { CheckoutThreeDS2Action } from "./checkoutThreeDS2Action";
+ import { CheckoutVoucherAction } from "./checkoutVoucherAction";
+@@ -79,7 +84,7 @@ import { CreateCheckoutSessionRequest } from "./createCheckoutSessionRequest";
+ import { CreateCheckoutSessionResponse } from "./createCheckoutSessionResponse";
+ import { CreateOrderRequest } from "./createOrderRequest";
+ import { CreateOrderResponse } from "./createOrderResponse";
+-import { DefaultErrorResponseEntity } from "./defaultErrorResponseEntity";
++import { DBaraiDetails } from "./dBaraiDetails";
+ import { DeliveryAddress } from "./deliveryAddress";
+ import { DeliveryMethod } from "./deliveryMethod";
+ import { Destination } from "./destination";
+@@ -103,6 +108,7 @@ import { EnhancedSchemeData } from "./enhancedSchemeData";
+ import { ExternalPlatform } from "./externalPlatform";
+ import { ExternalTokenDetails } from "./externalTokenDetails";
+ import { FastlaneDetails } from "./fastlaneDetails";
++import { Folio } from "./folio";
+ import { ForexQuote } from "./forexQuote";
+ import { FraudCheckResult } from "./fraudCheckResult";
+ import { FraudResult } from "./fraudResult";
+@@ -111,12 +117,12 @@ import { FundRecipient } from "./fundRecipient";
+ import { GenericIssuerPaymentMethodDetails } from "./genericIssuerPaymentMethodDetails";
+ import { GooglePayDetails } from "./googlePayDetails";
+ import { GooglePayDonations } from "./googlePayDonations";
++import { Healthcare } from "./healthcare";
+ import { IdealDetails } from "./idealDetails";
+ import { IdealDonations } from "./idealDonations";
+ import { InputDetail } from "./inputDetail";
+ import { InstallmentOption } from "./installmentOption";
+ import { Installments } from "./installments";
+-import { InvalidField } from "./invalidField";
+ import { Item } from "./item";
+ import { ItemDetailLine } from "./itemDetailLine";
+ import { KlarnaDetails } from "./klarnaDetails";
+@@ -125,6 +131,7 @@ import { Leg } from "./leg";
+ import { LevelTwoThree } from "./levelTwoThree";
+ import { LineItem } from "./lineItem";
+ import { ListStoredPaymentMethodsResponse } from "./listStoredPaymentMethodsResponse";
++import { Lodging } from "./lodging";
+ import { Mandate } from "./mandate";
+ import { MasterpassDetails } from "./masterpassDetails";
+ import { MbwayDetails } from "./mbwayDetails";
+@@ -181,6 +188,7 @@ import { PaymentValidationsResponse } from "./paymentValidationsResponse";
+ import { PaypalUpdateOrderRequest } from "./paypalUpdateOrderRequest";
+ import { PaypalUpdateOrderResponse } from "./paypalUpdateOrderResponse";
+ import { Phone } from "./phone";
++import { PickupInfo } from "./pickupInfo";
+ import { PixDetails } from "./pixDetails";
+ import { PixPayByBankDetails } from "./pixPayByBankDetails";
+ import { PixPayByBankRiskSignals } from "./pixPayByBankRiskSignals";
+@@ -190,6 +198,7 @@ import { PseDetails } from "./pseDetails";
+ import { RakutenPayDetails } from "./rakutenPayDetails";
+ import { RatepayDetails } from "./ratepayDetails";
+ import { Recurring } from "./recurring";
++import { RentalSurcharges } from "./rentalSurcharges";
+ import { ResponseAdditionalData3DSecure } from "./responseAdditionalData3DSecure";
+ import { ResponseAdditionalDataBillingAddress } from "./responseAdditionalDataBillingAddress";
+ import { ResponseAdditionalDataCard } from "./responseAdditionalDataCard";
+@@ -201,13 +210,17 @@ import { ResponseAdditionalDataOpi } from "./responseAdditionalDataOpi";
+ import { ResponseAdditionalDataSepa } from "./responseAdditionalDataSepa";
+ import { ResponseAdditionalDataSwish } from "./responseAdditionalDataSwish";
+ import { ResponsePaymentMethod } from "./responsePaymentMethod";
++import { ReturnInfo } from "./returnInfo";
+ import { RiskData } from "./riskData";
+ import { RivertyDetails } from "./rivertyDetails";
++import { Room } from "./room";
+ import { SDKEphemPubKey } from "./sDKEphemPubKey";
+ import { SamsungPayDetails } from "./samsungPayDetails";
+ import { ScreenDimensions } from "./screenDimensions";
+ import { SepaDirectDebitDetails } from "./sepaDirectDebitDetails";
++import { SepaDirectDebitDonations } from "./sepaDirectDebitDonations";
+ import { ServiceError } from "./serviceError";
++import { SessionAmountUpdate } from "./sessionAmountUpdate";
+ import { SessionResultResponse } from "./sessionResultResponse";
+ import { ShopperIdPaymentMethod } from "./shopperIdPaymentMethod";
+ import { ShopperInteractionDevice } from "./shopperInteractionDevice";
+@@ -226,6 +239,8 @@ import { SubMerchant } from "./subMerchant";
+ import { SubMerchantInfo } from "./subMerchantInfo";
+ import { Surcharge } from "./surcharge";
+ import { TaxTotal } from "./taxTotal";
++import { TemporaryServices } from "./temporaryServices";
++import { ThirdPartyTokenRedundancyInfo } from "./thirdPartyTokenRedundancyInfo";
+ import { ThreeDS2RequestData } from "./threeDS2RequestData";
+ import { ThreeDS2RequestFields } from "./threeDS2RequestFields";
+ import { ThreeDS2ResponseData } from "./threeDS2ResponseData";
+@@ -295,6 +310,7 @@ let enumsMap: Set<string> = new Set<string>([
+     "ApplePayDetails.TypeEnum",
+     "ApplePayDonations.FundingSourceEnum",
+     "ApplePayDonations.TypeEnum",
++    "AuPayDetails.TypeEnum",
+     "AuthenticationData.AttemptAuthenticationEnum",
+     "BacsDirectDebitDetails.TypeEnum",
+     "BalanceCheckRequest.RecurringProcessingModelEnum",
+@@ -303,6 +319,7 @@ let enumsMap: Set<string> = new Set<string>([
+     "BillDeskDetails.TypeEnum",
+     "BlikDetails.TypeEnum",
+     "CancelOrderResponse.ResultCodeEnum",
++    "CarRental.RateTypeEnum",
+     "CardDetails.FundingSourceEnum",
+     "CardDetails.TypeEnum",
+     "CardDonations.FundingSourceEnum",
+@@ -336,6 +353,7 @@ let enumsMap: Set<string> = new Set<string>([
+     "CreateCheckoutSessionResponse.StoreFiltrationModeEnum",
+     "CreateCheckoutSessionResponse.StorePaymentMethodModeEnum",
+     "CreateOrderResponse.ResultCodeEnum",
++    "DBaraiDetails.TypeEnum",
+     "DeliveryMethod.TypeEnum",
+     "DeviceRenderOptions.SdkInterfaceEnum",
+     "DeviceRenderOptions.SdkUiTypeEnum",
+@@ -366,6 +384,7 @@ let enumsMap: Set<string> = new Set<string>([
+     "Installments.PlanEnum",
+     "KlarnaDetails.TypeEnum",
+     "KlarnaNetworkDetails.TypeEnum",
++    "Lodging.LodgingChargeTypeEnum",
+     "Mandate.AmountRuleEnum",
+     "Mandate.BillingAttemptsRuleEnum",
+     "Mandate.FrequencyEnum",
+@@ -443,6 +462,7 @@ let enumsMap: Set<string> = new Set<string>([
+     "SamsungPayDetails.FundingSourceEnum",
+     "SamsungPayDetails.TypeEnum",
+     "SepaDirectDebitDetails.TypeEnum",
++    "SepaDirectDebitDonations.TypeEnum",
+     "SessionResultResponse.StatusEnum",
+     "Split.TypeEnum",
+     "StandalonePaymentCancelResponse.StatusEnum",
+@@ -525,6 +545,7 @@ let typeMap: {[index: string]: any} = {
+     "ApplePaySessionRequest": ApplePaySessionRequest,
+     "ApplePaySessionResponse": ApplePaySessionResponse,
+     "ApplicationInfo": ApplicationInfo,
++    "AuPayDetails": AuPayDetails,
+     "AuthenticationData": AuthenticationData,
+     "BacsDirectDebitDetails": BacsDirectDebitDetails,
+     "BalanceCheckRequest": BalanceCheckRequest,
+@@ -535,6 +556,7 @@ let typeMap: {[index: string]: any} = {
+     "BrowserInfo": BrowserInfo,
+     "CancelOrderRequest": CancelOrderRequest,
+     "CancelOrderResponse": CancelOrderResponse,
++    "CarRental": CarRental,
+     "CardBrandDetails": CardBrandDetails,
+     "CardDetails": CardDetails,
+     "CardDetailsRequest": CardDetailsRequest,
+@@ -546,6 +568,7 @@ let typeMap: {[index: string]: any} = {
+     "CheckoutBankAccount": CheckoutBankAccount,
+     "CheckoutBankTransferAction": CheckoutBankTransferAction,
+     "CheckoutDelegatedAuthenticationAction": CheckoutDelegatedAuthenticationAction,
++    "CheckoutErrorResponseEntity": CheckoutErrorResponseEntity,
+     "CheckoutForwardRequest": CheckoutForwardRequest,
+     "CheckoutForwardRequestCard": CheckoutForwardRequestCard,
+     "CheckoutForwardRequestOptions": CheckoutForwardRequestOptions,
+@@ -559,6 +582,8 @@ let typeMap: {[index: string]: any} = {
+     "CheckoutRedirectAction": CheckoutRedirectAction,
+     "CheckoutSDKAction": CheckoutSDKAction,
+     "CheckoutSessionInstallmentOption": CheckoutSessionInstallmentOption,
++    "CheckoutSessionPatchSessionRequest": CheckoutSessionPatchSessionRequest,
++    "CheckoutSessionPatchSessionResponse": CheckoutSessionPatchSessionResponse,
+     "CheckoutSessionThreeDS2RequestData": CheckoutSessionThreeDS2RequestData,
+     "CheckoutThreeDS2Action": CheckoutThreeDS2Action,
+     "CheckoutVoucherAction": CheckoutVoucherAction,
+@@ -569,7 +594,7 @@ let typeMap: {[index: string]: any} = {
+     "CreateCheckoutSessionResponse": CreateCheckoutSessionResponse,
+     "CreateOrderRequest": CreateOrderRequest,
+     "CreateOrderResponse": CreateOrderResponse,
+-    "DefaultErrorResponseEntity": DefaultErrorResponseEntity,
++    "DBaraiDetails": DBaraiDetails,
+     "DeliveryAddress": DeliveryAddress,
+     "DeliveryMethod": DeliveryMethod,
+     "Destination": Destination,
+@@ -593,6 +618,7 @@ let typeMap: {[index: string]: any} = {
+     "ExternalPlatform": ExternalPlatform,
+     "ExternalTokenDetails": ExternalTokenDetails,
+     "FastlaneDetails": FastlaneDetails,
++    "Folio": Folio,
+     "ForexQuote": ForexQuote,
+     "FraudCheckResult": FraudCheckResult,
+     "FraudResult": FraudResult,
+@@ -601,12 +627,12 @@ let typeMap: {[index: string]: any} = {
+     "GenericIssuerPaymentMethodDetails": GenericIssuerPaymentMethodDetails,
+     "GooglePayDetails": GooglePayDetails,
+     "GooglePayDonations": GooglePayDonations,
++    "Healthcare": Healthcare,
+     "IdealDetails": IdealDetails,
+     "IdealDonations": IdealDonations,
+     "InputDetail": InputDetail,
+     "InstallmentOption": InstallmentOption,
+     "Installments": Installments,
+-    "InvalidField": InvalidField,
+     "Item": Item,
+     "ItemDetailLine": ItemDetailLine,
+     "KlarnaDetails": KlarnaDetails,
+@@ -615,6 +641,7 @@ let typeMap: {[index: string]: any} = {
+     "LevelTwoThree": LevelTwoThree,
+     "LineItem": LineItem,
+     "ListStoredPaymentMethodsResponse": ListStoredPaymentMethodsResponse,
++    "Lodging": Lodging,
+     "Mandate": Mandate,
+     "MasterpassDetails": MasterpassDetails,
+     "MbwayDetails": MbwayDetails,
+@@ -671,6 +698,7 @@ let typeMap: {[index: string]: any} = {
+     "PaypalUpdateOrderRequest": PaypalUpdateOrderRequest,
+     "PaypalUpdateOrderResponse": PaypalUpdateOrderResponse,
+     "Phone": Phone,
++    "PickupInfo": PickupInfo,
+     "PixDetails": PixDetails,
+     "PixPayByBankDetails": PixPayByBankDetails,
+     "PixPayByBankRiskSignals": PixPayByBankRiskSignals,
+@@ -680,6 +708,7 @@ let typeMap: {[index: string]: any} = {
+     "RakutenPayDetails": RakutenPayDetails,
+     "RatepayDetails": RatepayDetails,
+     "Recurring": Recurring,
++    "RentalSurcharges": RentalSurcharges,
+     "ResponseAdditionalData3DSecure": ResponseAdditionalData3DSecure,
+     "ResponseAdditionalDataBillingAddress": ResponseAdditionalDataBillingAddress,
+     "ResponseAdditionalDataCard": ResponseAdditionalDataCard,
+@@ -691,13 +720,17 @@ let typeMap: {[index: string]: any} = {
+     "ResponseAdditionalDataSepa": ResponseAdditionalDataSepa,
+     "ResponseAdditionalDataSwish": ResponseAdditionalDataSwish,
+     "ResponsePaymentMethod": ResponsePaymentMethod,
++    "ReturnInfo": ReturnInfo,
+     "RiskData": RiskData,
+     "RivertyDetails": RivertyDetails,
++    "Room": Room,
+     "SDKEphemPubKey": SDKEphemPubKey,
+     "SamsungPayDetails": SamsungPayDetails,
+     "ScreenDimensions": ScreenDimensions,
+     "SepaDirectDebitDetails": SepaDirectDebitDetails,
++    "SepaDirectDebitDonations": SepaDirectDebitDonations,
+     "ServiceError": ServiceError,
++    "SessionAmountUpdate": SessionAmountUpdate,
+     "SessionResultResponse": SessionResultResponse,
+     "ShopperIdPaymentMethod": ShopperIdPaymentMethod,
+     "ShopperInteractionDevice": ShopperInteractionDevice,
+@@ -716,6 +749,8 @@ let typeMap: {[index: string]: any} = {
+     "SubMerchantInfo": SubMerchantInfo,
+     "Surcharge": Surcharge,
+     "TaxTotal": TaxTotal,
++    "TemporaryServices": TemporaryServices,
++    "ThirdPartyTokenRedundancyInfo": ThirdPartyTokenRedundancyInfo,
+     "ThreeDS2RequestData": ThreeDS2RequestData,
+     "ThreeDS2RequestFields": ThreeDS2RequestFields,
+     "ThreeDS2ResponseData": ThreeDS2ResponseData,
+diff --git a/src/typings/checkout/passenger.ts b/src/typings/checkout/passenger.ts
+index 4939f19..11ea537 100644
+--- a/src/typings/checkout/passenger.ts
++++ b/src/typings/checkout/passenger.ts
+@@ -10,23 +10,23 @@
+ 
+ export class Passenger {
+     /**
+-    * The passenger\'s date of birth. * Format `yyyy-MM-dd` * minLength: 10 * maxLength: 10
++    * The passenger\'s date of birth. * Format `yyyy-MM-dd` * minLength: 10 * maxLength: 10 * **additionalData key:** `airline.passenger[N].date_of_birth`
+     */
+     "dateOfBirth"?: string;
+     /**
+-    * The passenger\'s first name. > This field is required if the airline data includes passenger details or leg details. * Encoding: ASCII
++    * The passenger\'s first name. > This field is required if the airline data includes passenger details or leg details. * Encoding: ASCII * **additionalData key:** `airline.passenger[N].first_name`
+     */
+     "firstName"?: string;
+     /**
+-    * The passenger\'s last name. > This field is required if the airline data includes passenger details or leg details. * Encoding: ASCII
++    * The passenger\'s last name. > This field is required if the airline data includes passenger details or leg details. * Encoding: ASCII * **additionalData key:** `airline.passenger[N].last_name`
+     */
+     "lastName"?: string;
+     /**
+-    * The passenger\'s phone number, including country code. This is an alphanumeric field that can include the \'+\' and \'-\' signs. * Encoding: ASCII * minLength: 3 characters * maxLength: 30 characters
++    * The passenger\'s phone number, including country code. This is an alphanumeric field that can include the \'+\' and \'-\' signs. * Encoding: ASCII * minLength: 3 characters * maxLength: 30 characters * **additionalData key:** `airline.passenger[N].phone_number`
+     */
+     "phoneNumber"?: string;
+     /**
+-    * The IATA passenger type code (PTC). * Encoding: ASCII * minLength: 3 characters * maxLength: 6 characters
++    * The IATA passenger type code (PTC). * Encoding: ASCII * minLength: 3 characters * maxLength: 6 characters * **additionalData key:** `airline.passenger[N].traveller_type`
+     */
+     "travellerType"?: string;
+ 
+diff --git a/src/typings/checkout/paymentDetails.ts b/src/typings/checkout/paymentDetails.ts
+index 0b4399a..678bee5 100644
+--- a/src/typings/checkout/paymentDetails.ts
++++ b/src/typings/checkout/paymentDetails.ts
+@@ -60,7 +60,6 @@ export namespace PaymentDetails {
+         Multibanco = 'multibanco',
+         BankTransfer = 'bankTransfer',
+         BankTransferIban = 'bankTransfer_IBAN',
+-        Paybright = 'paybright',
+         Paynow = 'paynow',
+         AffirmPos = 'affirm_pos',
+         Iris = 'iris',
+@@ -113,7 +112,6 @@ export namespace PaymentDetails {
+         Benefit = 'benefit',
+         Knet = 'knet',
+         Omannet = 'omannet',
+-        GopayWallet = 'gopay_wallet',
+         KcpNaverpay = 'kcp_naverpay',
+         Fawry = 'fawry',
+         Atome = 'atome',
+diff --git a/src/typings/checkout/paymentRequest.ts b/src/typings/checkout/paymentRequest.ts
+index edb2c26..848d659 100644
+--- a/src/typings/checkout/paymentRequest.ts
++++ b/src/typings/checkout/paymentRequest.ts
+@@ -34,6 +34,7 @@ import { ShopperTaxInfo } from "./shopperTaxInfo";
+ import { Split } from "./split";
+ import { SubMerchantInfo } from "./subMerchantInfo";
+ import { Surcharge } from "./surcharge";
++import { ThirdPartyTokenRedundancyInfo } from "./thirdPartyTokenRedundancyInfo";
+ import { ThreeDS2RequestFields } from "./threeDS2RequestFields";
+ import { ThreeDSecureData } from "./threeDSecureData";
+ 
+@@ -244,6 +245,7 @@ export class PaymentRequest {
+     * The shopper\'s telephone number.  The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication. > Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.
+     */
+     "telephoneNumber"?: string;
++    "thirdPartyTokenRedundancyInfo"?: ThirdPartyTokenRedundancyInfo | null;
+     "threeDS2RequestData"?: ThreeDS2RequestFields | null;
+     /**
+     * Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorisation.Default: **false**.
+@@ -682,6 +684,12 @@ export class PaymentRequest {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "thirdPartyTokenRedundancyInfo",
++            "baseName": "thirdPartyTokenRedundancyInfo",
++            "type": "ThirdPartyTokenRedundancyInfo | null",
++            "format": ""
++        },
+         {
+             "name": "threeDS2RequestData",
+             "baseName": "threeDS2RequestData",
+diff --git a/src/typings/checkout/paymentRequestPaymentMethod.ts b/src/typings/checkout/paymentRequestPaymentMethod.ts
+index 5b8275e..ef8e520 100644
+--- a/src/typings/checkout/paymentRequestPaymentMethod.ts
++++ b/src/typings/checkout/paymentRequestPaymentMethod.ts
+@@ -15,12 +15,14 @@ import { AmazonPayDetails } from "./amazonPayDetails";
+ import { AncvDetails } from "./ancvDetails";
+ import { AndroidPayDetails } from "./androidPayDetails";
+ import { ApplePayDetails } from "./applePayDetails";
++import { AuPayDetails } from "./auPayDetails";
+ import { BacsDirectDebitDetails } from "./bacsDirectDebitDetails";
+ import { BillDeskDetails } from "./billDeskDetails";
+ import { BlikDetails } from "./blikDetails";
+ import { CardDetails } from "./cardDetails";
+ import { CashAppDetails } from "./cashAppDetails";
+ import { CellulantDetails } from "./cellulantDetails";
++import { DBaraiDetails } from "./dBaraiDetails";
+ import { DirectDebitAuDetails } from "./directDebitAuDetails";
+ import { DokuDetails } from "./dokuDetails";
+ import { DragonpayDetails } from "./dragonpayDetails";
+@@ -76,7 +78,7 @@ import { ZipDetails } from "./zipDetails";
+  * Type
+  * @export
+  */
+-export type PaymentRequestPaymentMethod = AchDetails | AffirmDetails | AfterpayDetails | AlmaDetails | AmazonPayDetails | AncvDetails | AndroidPayDetails | ApplePayDetails | BacsDirectDebitDetails | BillDeskDetails | BlikDetails | CardDetails | CashAppDetails | CellulantDetails | DirectDebitAuDetails | DokuDetails | DragonpayDetails | EBankingFinlandDetails | EcontextVoucherDetails | EftDetails | ExternalTokenDetails | FastlaneDetails | GenericIssuerPaymentMethodDetails | GooglePayDetails | IdealDetails | KlarnaDetails | KlarnaNetworkDetails | MasterpassDetails | MbwayDetails | MobilePayDetails | MolPayDetails | OpenInvoiceDetails | PayByBankAISDirectDebitDetails | PayByBankDetails | PayPalDetails | PayPayDetails | PayToDetails | PayUUpiDetails | PayWithGoogleDetails | PaymentDetails | PixDetails | PixPayByBankDetails | PseDetails | RakutenPayDetails | RatepayDetails | RivertyDetails | SamsungPayDetails | SepaDirectDebitDetails | StoredPaymentMethodDetails | TwintDetails | UpiCollectDetails | UpiIntentDetails | UpiQrDetails | VippsDetails | VisaCheckoutDetails | WeChatPayDetails | WeChatPayMiniProgramDetails | ZipDetails;
++export type PaymentRequestPaymentMethod = AchDetails | AffirmDetails | AfterpayDetails | AlmaDetails | AmazonPayDetails | AncvDetails | AndroidPayDetails | ApplePayDetails | AuPayDetails | BacsDirectDebitDetails | BillDeskDetails | BlikDetails | CardDetails | CashAppDetails | CellulantDetails | DBaraiDetails | DirectDebitAuDetails | DokuDetails | DragonpayDetails | EBankingFinlandDetails | EcontextVoucherDetails | EftDetails | ExternalTokenDetails | FastlaneDetails | GenericIssuerPaymentMethodDetails | GooglePayDetails | IdealDetails | KlarnaDetails | KlarnaNetworkDetails | MasterpassDetails | MbwayDetails | MobilePayDetails | MolPayDetails | OpenInvoiceDetails | PayByBankAISDirectDebitDetails | PayByBankDetails | PayPalDetails | PayPayDetails | PayToDetails | PayUUpiDetails | PayWithGoogleDetails | PaymentDetails | PixDetails | PixPayByBankDetails | PseDetails | RakutenPayDetails | RatepayDetails | RivertyDetails | SamsungPayDetails | SepaDirectDebitDetails | StoredPaymentMethodDetails | TwintDetails | UpiCollectDetails | UpiIntentDetails | UpiQrDetails | VippsDetails | VisaCheckoutDetails | WeChatPayDetails | WeChatPayMiniProgramDetails | ZipDetails;
+ 
+ /**
+ * @type PaymentRequestPaymentMethodClass
+@@ -85,7 +87,250 @@ export type PaymentRequestPaymentMethod = AchDetails | AffirmDetails | AfterpayD
+ */
+ export class PaymentRequestPaymentMethodClass {
+     
+-    static readonly discriminator: string = "type";
++    
++    static readonly discriminator: string | undefined = "type";
+ 
+-    static readonly mapping: {[index: string]: string} | undefined = undefined;
++    static readonly mapping: {[index: string]: string} | undefined = {
++        "ach": "AchDetails",
++        "ach_plaid": "AchDetails",
++        "affirm": "AffirmDetails",
++        "affirm_pos": "PaymentDetails",
++        "afterpay_b2b": "AfterpayDetails",
++        "afterpay_default": "AfterpayDetails",
++        "afterpay_directdebit": "OpenInvoiceDetails",
++        "afterpaytouch": "AfterpayDetails",
++        "afterpaytouch_pos": "AfterpayDetails",
++        "alipay": "PaymentDetails",
++        "alipay_hk": "PaymentDetails",
++        "alipay_hk_wap": "PaymentDetails",
++        "alipay_hk_web": "PaymentDetails",
++        "alipay_plus": "StoredPaymentMethodDetails",
++        "alipay_plus_alipay_cn": "StoredPaymentMethodDetails",
++        "alipay_plus_alipay_hk": "StoredPaymentMethodDetails",
++        "alipay_plus_dana": "StoredPaymentMethodDetails",
++        "alipay_plus_gcash": "StoredPaymentMethodDetails",
++        "alipay_plus_kakaopay": "StoredPaymentMethodDetails",
++        "alipay_plus_kplus": "StoredPaymentMethodDetails",
++        "alipay_plus_naverpay": "StoredPaymentMethodDetails",
++        "alipay_plus_rabbitlinepay": "StoredPaymentMethodDetails",
++        "alipay_plus_tosspay": "StoredPaymentMethodDetails",
++        "alipay_plus_touchngo": "StoredPaymentMethodDetails",
++        "alipay_plus_truemoney": "StoredPaymentMethodDetails",
++        "alipay_wap": "PaymentDetails",
++        "alliancedata": "CardDetails",
++        "alma": "AlmaDetails",
++        "altId": "CardDetails",
++        "amazonpay": "AmazonPayDetails",
++        "ancv": "AncvDetails",
++        "androidpay": "AndroidPayDetails",
++        "applepay": "ApplePayDetails",
++        "atome": "PaymentDetails",
++        "atome_pos": "OpenInvoiceDetails",
++        "aupay": "AuPayDetails",
++        "balanceplatform": "PaymentDetails",
++        "bankTransfer": "PaymentDetails",
++        "bankTransfer_IBAN": "PaymentDetails",
++        "bcmc": "CardDetails",
++        "bcmc_mobile": "StoredPaymentMethodDetails",
++        "bcmc_mobile_QR": "StoredPaymentMethodDetails",
++        "bcmc_mobile_app": "StoredPaymentMethodDetails",
++        "benefit": "PaymentDetails",
++        "billdesk_online": "BillDeskDetails",
++        "billdesk_wallet": "BillDeskDetails",
++        "bizum": "PaymentDetails",
++        "blik": "BlikDetails",
++        "boletobancario": "PaymentDetails",
++        "boletobancario_bancodobrasil": "PaymentDetails",
++        "boletobancario_bradesco": "PaymentDetails",
++        "boletobancario_hsbc": "PaymentDetails",
++        "boletobancario_itau": "PaymentDetails",
++        "boletobancario_santander": "PaymentDetails",
++        "card": "CardDetails",
++        "cashapp": "CashAppDetails",
++        "cashticket": "PaymentDetails",
++        "cellulant": "CellulantDetails",
++        "clearpay": "AfterpayDetails",
++        "dana": "StoredPaymentMethodDetails",
++        "dbarai": "DBaraiDetails",
++        "directEbanking": "PaymentDetails",
++        "directdebit_AU": "DirectDebitAuDetails",
++        "directdebit_GB": "BacsDirectDebitDetails",
++        "doku": "DokuDetails",
++        "doku_alfamart": "DokuDetails",
++        "doku_atm_mandiri_va": "DokuDetails",
++        "doku_atm_mandiri_va_lite": "DokuDetails",
++        "doku_bca_klikpay": "DokuDetails",
++        "doku_bca_va": "DokuDetails",
++        "doku_bni": "DokuDetails",
++        "doku_bni_va": "DokuDetails",
++        "doku_bri_va": "DokuDetails",
++        "doku_briepay": "DokuDetails",
++        "doku_card": "DokuDetails",
++        "doku_cimb_va": "DokuDetails",
++        "doku_danamon_va": "DokuDetails",
++        "doku_indomaret": "DokuDetails",
++        "doku_mandiri_clickpay": "DokuDetails",
++        "doku_mandiri_multipayment": "DokuDetails",
++        "doku_mandiri_multipayment_lite": "DokuDetails",
++        "doku_mandiri_va": "DokuDetails",
++        "doku_ovo": "DokuDetails",
++        "doku_paymentmethods": "DokuDetails",
++        "doku_permata_atm": "DokuDetails",
++        "doku_permata_lite_atm": "DokuDetails",
++        "doku_sinarmas_va": "DokuDetails",
++        "doku_wallet": "DokuDetails",
++        "dragonpay_ebanking": "DragonpayDetails",
++        "dragonpay_otc_banking": "DragonpayDetails",
++        "dragonpay_otc_non_banking": "DragonpayDetails",
++        "dragonpay_otc_philippines": "DragonpayDetails",
++        "duitnow": "PaymentDetails",
++        "ebanking_FI": "EBankingFinlandDetails",
++        "econtext": "EcontextVoucherDetails",
++        "econtext_atm": "EcontextVoucherDetails",
++        "econtext_online": "EcontextVoucherDetails",
++        "econtext_seven_eleven": "EcontextVoucherDetails",
++        "econtext_stores": "EcontextVoucherDetails",
++        "eft_directdebit_CA": "EftDetails",
++        "eps": "GenericIssuerPaymentMethodDetails",
++        "externalToken": "ExternalTokenDetails",
++        "facilypay": "PaymentDetails",
++        "facilypay_10x": "PaymentDetails",
++        "facilypay_12x": "PaymentDetails",
++        "facilypay_3x": "PaymentDetails",
++        "facilypay_4x": "PaymentDetails",
++        "facilypay_6x": "PaymentDetails",
++        "fastlane": "FastlaneDetails",
++        "fawry": "PaymentDetails",
++        "fpx_agrobank": "PaymentDetails",
++        "gcash": "StoredPaymentMethodDetails",
++        "giftcard": "CardDetails",
++        "googlepay": "GooglePayDetails",
++        "gopay_wallet": "StoredPaymentMethodDetails",
++        "grabpay_ID": "StoredPaymentMethodDetails",
++        "grabpay_MY": "StoredPaymentMethodDetails",
++        "grabpay_PH": "StoredPaymentMethodDetails",
++        "grabpay_SG": "StoredPaymentMethodDetails",
++        "grabpay_TH": "StoredPaymentMethodDetails",
++        "grabpay_VN": "StoredPaymentMethodDetails",
++        "ideal": "IdealDetails",
++        "ikano": "PaymentDetails",
++        "iris": "PaymentDetails",
++        "kakaopay": "StoredPaymentMethodDetails",
++        "karenmillen": "PaymentDetails",
++        "kcp_banktransfer": "PaymentDetails",
++        "kcp_creditcard": "PaymentDetails",
++        "kcp_naverpay": "PaymentDetails",
++        "kcp_payco": "PaymentDetails",
++        "klarna": "KlarnaDetails",
++        "klarna_account": "KlarnaDetails",
++        "klarna_b2b": "KlarnaDetails",
++        "klarna_network": "KlarnaNetworkDetails",
++        "klarna_paynow": "KlarnaDetails",
++        "klarnapayments": "KlarnaDetails",
++        "klarnapayments_account": "KlarnaDetails",
++        "klarnapayments_b2b": "KlarnaDetails",
++        "knet": "PaymentDetails",
++        "konbini": "PaymentDetails",
++        "mada": "PaymentDetails",
++        "masterpass": "MasterpassDetails",
++        "maybank2u_mae": "PaymentDetails",
++        "mbway": "MbwayDetails",
++        "mobilepay": "MobilePayDetails",
++        "molpay_affin_epg": "PaymentDetails",
++        "molpay_amb": "PaymentDetails",
++        "molpay_bangkokbank": "MolPayDetails",
++        "molpay_bankislam": "PaymentDetails",
++        "molpay_boost": "PaymentDetails",
++        "molpay_cimb": "PaymentDetails",
++        "molpay_ebanking_MY": "PaymentDetails",
++        "molpay_ebanking_TH": "MolPayDetails",
++        "molpay_ebanking_VN": "PaymentDetails",
++        "molpay_ebanking_direct_MY": "PaymentDetails",
++        "molpay_ebanking_fpx_MY": "MolPayDetails",
++        "molpay_fpx": "PaymentDetails",
++        "molpay_hlb": "PaymentDetails",
++        "molpay_kbank": "MolPayDetails",
++        "molpay_krungsribank": "MolPayDetails",
++        "molpay_krungthaibank": "MolPayDetails",
++        "molpay_maybank2u": "PaymentDetails",
++        "molpay_publicbank": "PaymentDetails",
++        "molpay_rhb": "PaymentDetails",
++        "molpay_siamcommercialbank": "MolPayDetails",
++        "momo_wallet": "StoredPaymentMethodDetails",
++        "momo_wallet_app": "StoredPaymentMethodDetails",
++        "multibanco": "PaymentDetails",
++        "naps": "PaymentDetails",
++        "networkToken": "CardDetails",
++        "nordea": "PaymentDetails",
++        "oasis": "PaymentDetails",
++        "omannet": "PaymentDetails",
++        "oney": "PaymentDetails",
++        "onlineBanking_CZ": "GenericIssuerPaymentMethodDetails",
++        "onlineBanking_PL": "GenericIssuerPaymentMethodDetails",
++        "onlineBanking_SK": "GenericIssuerPaymentMethodDetails",
++        "onlinebanking_IN": "GenericIssuerPaymentMethodDetails",
++        "openinvoice": "OpenInvoiceDetails",
++        "oxxo": "StoredPaymentMethodDetails",
++        "paybybank": "PayByBankDetails",
++        "paybybank_AIS_DD": "PayByBankAISDirectDebitDetails",
++        "paybybank_pix": "PixPayByBankDetails",
++        "paymaya_wallet": "StoredPaymentMethodDetails",
++        "payme": "PaymentDetails",
++        "payme_pos": "PaymentDetails",
++        "paynow": "PaymentDetails",
++        "paypal": "PayPalDetails",
++        "paypay": "PayPayDetails",
++        "paypo": "PaymentDetails",
++        "paysafecard": "StoredPaymentMethodDetails",
++        "paytm": "PaymentDetails",
++        "payto": "PayToDetails",
++        "payu_IN_cashcard": "PaymentDetails",
++        "payu_IN_nb": "PaymentDetails",
++        "payu_IN_upi": "PayUUpiDetails",
++        "paywithgoogle": "PayWithGoogleDetails",
++        "pix": "PixDetails",
++        "primeiropay_boleto": "PaymentDetails",
++        "promptpay": "PaymentDetails",
++        "pse_payulatam": "PseDetails",
++        "rakutenpay": "RakutenPayDetails",
++        "ratepay": "RatepayDetails",
++        "ratepay_directdebit": "RatepayDetails",
++        "riverty": "RivertyDetails",
++        "riverty_account": "RivertyDetails",
++        "riverty_installments": "RivertyDetails",
++        "samsungpay": "SamsungPayDetails",
++        "scalapay": "PaymentDetails",
++        "scalapay_3x": "PaymentDetails",
++        "scalapay_4x": "PaymentDetails",
++        "scheme": "CardDetails",
++        "sepadirectdebit": "SepaDirectDebitDetails",
++        "sepadirectdebit_amazonpay": "SepaDirectDebitDetails",
++        "sepadirectdebit_riverty": "RivertyDetails",
++        "swish": "PaymentDetails",
++        "touchngo": "PaymentDetails",
++        "truemoney": "StoredPaymentMethodDetails",
++        "trustly": "PaymentDetails",
++        "trustlyvector": "PaymentDetails",
++        "twint": "TwintDetails",
++        "twint_pos": "PaymentDetails",
++        "unionpay": "PaymentDetails",
++        "upi_collect": "UpiCollectDetails",
++        "upi_intent": "UpiIntentDetails",
++        "upi_qr": "UpiQrDetails",
++        "vipps": "VippsDetails",
++        "visacheckout": "VisaCheckoutDetails",
++        "wallet_IN": "PaymentDetails",
++        "walley": "PaymentDetails",
++        "walley_b2b": "PaymentDetails",
++        "warehouse": "PaymentDetails",
++        "wechatpay": "WeChatPayDetails",
++        "wechatpayMiniProgram": "WeChatPayMiniProgramDetails",
++        "wechatpayQR": "PaymentDetails",
++        "wechatpaySDK": "PaymentDetails",
++        "wechatpayWeb": "PaymentDetails",
++        "wechatpay_pos": "WeChatPayDetails",
++        "wero": "PaymentDetails",
++        "zip": "ZipDetails",
++        "zip_pos": "ZipDetails",
++    };
+ }
+diff --git a/src/typings/checkout/paymentResponseAction.ts b/src/typings/checkout/paymentResponseAction.ts
+index 32efaca..2f2372a 100644
+--- a/src/typings/checkout/paymentResponseAction.ts
++++ b/src/typings/checkout/paymentResponseAction.ts
+@@ -36,7 +36,19 @@ export type PaymentResponseAction = CheckoutAwaitAction | CheckoutBankTransferAc
+ */
+ export class PaymentResponseActionClass {
+     
+-    static readonly discriminator: string = "type";
++    
++    static readonly discriminator: string | undefined = "type";
+ 
+-    static readonly mapping: {[index: string]: string} | undefined = undefined;
++    static readonly mapping: {[index: string]: string} | undefined = {
++        "await": "CheckoutAwaitAction",
++        "bankTransfer": "CheckoutBankTransferAction",
++        "delegatedAuthentication": "CheckoutDelegatedAuthenticationAction",
++        "nativeRedirect": "CheckoutNativeRedirectAction",
++        "qrCode": "CheckoutQrCodeAction",
++        "redirect": "CheckoutRedirectAction",
++        "sdk": "CheckoutSDKAction",
++        "threeDS2": "CheckoutThreeDS2Action",
++        "voucher": "CheckoutVoucherAction",
++        "wechatpaySDK": "CheckoutSDKAction",
++    };
+ }
+diff --git a/src/typings/checkout/paypalUpdateOrderRequest.ts b/src/typings/checkout/paypalUpdateOrderRequest.ts
+index 719f7b9..93e478b 100644
+--- a/src/typings/checkout/paypalUpdateOrderRequest.ts
++++ b/src/typings/checkout/paypalUpdateOrderRequest.ts
+@@ -8,16 +8,19 @@
+  */
+ 
+ import { Amount } from "./amount";
++import { DeliveryAddress } from "./deliveryAddress";
+ import { DeliveryMethod } from "./deliveryMethod";
+ import { TaxTotal } from "./taxTotal";
+ 
+ 
+ export class PaypalUpdateOrderRequest {
+     "amount"?: Amount | null;
++    "deliveryAddress"?: DeliveryAddress | null;
+     /**
+     * The list of new delivery methods and the cost of each.
+     */
+     "deliveryMethods"?: Array<DeliveryMethod>;
++    "discountAmount"?: Amount | null;
+     /**
+     * The `paymentData` from the client side. This value changes every time you make a `/paypal/updateOrder` request.
+     */
+@@ -30,6 +33,7 @@ export class PaypalUpdateOrderRequest {
+     * The original `sessionId` from the `/sessions` response.
+     */
+     "sessionId"?: string;
++    "shippingAmount"?: Amount | null;
+     "taxTotal"?: TaxTotal | null;
+ 
+     static readonly discriminator: string | undefined = undefined;
+@@ -43,12 +47,24 @@ export class PaypalUpdateOrderRequest {
+             "type": "Amount | null",
+             "format": ""
+         },
++        {
++            "name": "deliveryAddress",
++            "baseName": "deliveryAddress",
++            "type": "DeliveryAddress | null",
++            "format": ""
++        },
+         {
+             "name": "deliveryMethods",
+             "baseName": "deliveryMethods",
+             "type": "Array<DeliveryMethod>",
+             "format": ""
+         },
++        {
++            "name": "discountAmount",
++            "baseName": "discountAmount",
++            "type": "Amount | null",
++            "format": ""
++        },
+         {
+             "name": "paymentData",
+             "baseName": "paymentData",
+@@ -67,6 +83,12 @@ export class PaypalUpdateOrderRequest {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "shippingAmount",
++            "baseName": "shippingAmount",
++            "type": "Amount | null",
++            "format": ""
++        },
+         {
+             "name": "taxTotal",
+             "baseName": "taxTotal",
+diff --git a/src/typings/checkout/pickupInfo.ts b/src/typings/checkout/pickupInfo.ts
+new file mode 100644
+index 0000000..8673daa
+--- /dev/null
++++ b/src/typings/checkout/pickupInfo.ts
+@@ -0,0 +1,66 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class PickupInfo {
++    /**
++    * The city where the car is rented. * Format: ASCII * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.locationCity`
++    */
++    "city"?: string;
++    /**
++    * The country where the car is rented, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. * maxLength: 2 characters * **additionalData key:** `carRental.locationCountry`
++    */
++    "countryCode"?: string;
++    /**
++    * The pick-up date. * minLength: 10 characters * maxLength: 10 characters * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd * **additionalData key:** `carRental.checkOutDate`
++    */
++    "date"?: string;
++    /**
++    * The state or province where the car is rented. * maxLength: 3 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.locationStateProvince`
++    */
++    "stateOrProvince"?: string;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "city",
++            "baseName": "city",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "countryCode",
++            "baseName": "countryCode",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "date",
++            "baseName": "date",
++            "type": "string",
++            "format": "date"
++        },
++        {
++            "name": "stateOrProvince",
++            "baseName": "stateOrProvince",
++            "type": "string",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return PickupInfo.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/rentalSurcharges.ts b/src/typings/checkout/rentalSurcharges.ts
+new file mode 100644
+index 0000000..af2b385
+--- /dev/null
++++ b/src/typings/checkout/rentalSurcharges.ts
+@@ -0,0 +1,56 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class RentalSurcharges {
++    /**
++    * The fuel charges associated with the rental, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `carRental.fuelCharges`
++    */
++    "fuel"?: number;
++    /**
++    * Any insurance charges associated with the rental, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `carRental.insuranceCharges`
++    */
++    "insurance"?: number;
++    /**
++    * The charge for not returning a car to the original rental location, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `carRental.oneWayDropOffCharges`
++    */
++    "oneWayDropOff"?: number;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "fuel",
++            "baseName": "fuel",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "insurance",
++            "baseName": "insurance",
++            "type": "number",
++            "format": "int64"
++        },
++        {
++            "name": "oneWayDropOff",
++            "baseName": "oneWayDropOff",
++            "type": "number",
++            "format": "int64"
++        }    ];
++
++    static getAttributeTypeMap() {
++        return RentalSurcharges.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/returnInfo.ts b/src/typings/checkout/returnInfo.ts
+new file mode 100644
+index 0000000..3fb0db2
+--- /dev/null
++++ b/src/typings/checkout/returnInfo.ts
+@@ -0,0 +1,76 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class ReturnInfo {
++    /**
++    * The city where the car must be returned. * Format: ASCII * maxLength: 18 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.returnCity`
++    */
++    "city"?: string;
++    /**
++    * The country where the car must be returned, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. * maxLength: 2 characters * **additionalData key:** `carRental.returnCountry`
++    */
++    "countryCode"?: string;
++    /**
++    * The date by which the car must be returned. * minLength: 10 characters * maxLength: 10 characters * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd * **additionalData key:** `carRental.returnDate`
++    */
++    "date"?: string;
++    /**
++    * The agency code, phone number, or address abbreviation. * Format: ASCII * maxLength: 10 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.returnLocationId`
++    */
++    "locationId"?: string;
++    /**
++    * The state or province where the car must be returned. * Format: ASCII * maxLength: 3 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `carRental.returnStateProvince`
++    */
++    "stateOrProvince"?: string;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "city",
++            "baseName": "city",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "countryCode",
++            "baseName": "countryCode",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "date",
++            "baseName": "date",
++            "type": "string",
++            "format": "date"
++        },
++        {
++            "name": "locationId",
++            "baseName": "locationId",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "stateOrProvince",
++            "baseName": "stateOrProvince",
++            "type": "string",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return ReturnInfo.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/rivertyDetails.ts b/src/typings/checkout/rivertyDetails.ts
+index b2725a3..9356267 100644
+--- a/src/typings/checkout/rivertyDetails.ts
++++ b/src/typings/checkout/rivertyDetails.ts
+@@ -30,6 +30,10 @@ export class RivertyDetails {
+     */
+     "iban"?: string;
+     /**
++    * Base64-encoded merchant metadata (Extra Merchant Data) forwarded to Riverty at authorization.
++    */
++    "merchantData"?: string;
++    /**
+     * Shopper name, date of birth, phone number, and email address.
+     */
+     "personalDetails"?: string;
+@@ -92,6 +96,12 @@ export class RivertyDetails {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "merchantData",
++            "baseName": "merchantData",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "personalDetails",
+             "baseName": "personalDetails",
+diff --git a/src/typings/checkout/room.ts b/src/typings/checkout/room.ts
+new file mode 100644
+index 0000000..4fdbc2d
+--- /dev/null
++++ b/src/typings/checkout/room.ts
+@@ -0,0 +1,46 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class Room {
++    /**
++    * The total number of nights the room is booked for. * Format: Numeric * Must be a number between 1 and 99 * **additionalData key:** `lodging.room[N].numberOfNights`
++    */
++    "numberOfNights"?: number;
++    /**
++    * Room rate per night, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `lodging.room[N].rate`
++    */
++    "rate"?: number;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "numberOfNights",
++            "baseName": "numberOfNights",
++            "type": "number",
++            "format": "int32"
++        },
++        {
++            "name": "rate",
++            "baseName": "rate",
++            "type": "number",
++            "format": "int64"
++        }    ];
++
++    static getAttributeTypeMap() {
++        return Room.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/sepaDirectDebitDetails.ts b/src/typings/checkout/sepaDirectDebitDetails.ts
+index ab34e02..1b9d5e3 100644
+--- a/src/typings/checkout/sepaDirectDebitDetails.ts
++++ b/src/typings/checkout/sepaDirectDebitDetails.ts
+@@ -20,11 +20,11 @@ export class SepaDirectDebitDetails {
+     /**
+     * The International Bank Account Number (IBAN).
+     */
+-    "iban": string;
++    "iban"?: string;
+     /**
+     * The name of the bank account holder.
+     */
+-    "ownerName": string;
++    "ownerName"?: string;
+     /**
+     * This is the `recurringDetailReference` returned in the response when you created the token.
+     *
+diff --git a/src/typings/checkout/sepaDirectDebitDonations.ts b/src/typings/checkout/sepaDirectDebitDonations.ts
+new file mode 100644
+index 0000000..ffbc9ff
+--- /dev/null
++++ b/src/typings/checkout/sepaDirectDebitDonations.ts
+@@ -0,0 +1,84 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class SepaDirectDebitDonations {
++    /**
++    * The checkout attempt identifier.
++    */
++    "checkoutAttemptId"?: string;
++    /**
++    * This is the `recurringDetailReference` returned in the response when you created the token.
++    *
++	* @deprecated since Adyen Checkout API v49
++	* Use `storedPaymentMethodId` instead.
++    */
++    "recurringDetailReference"?: string;
++    /**
++    * Base64-encoded JSON object containing SDK related parameters required by the SDK
++    */
++    "sdkData"?: string;
++    /**
++    * This is the `recurringDetailReference` returned in the response when you created the token.
++    */
++    "storedPaymentMethodId"?: string;
++    /**
++    * **sepadirectdebit**
++    */
++    "type"?: SepaDirectDebitDonations.TypeEnum;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "checkoutAttemptId",
++            "baseName": "checkoutAttemptId",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "recurringDetailReference",
++            "baseName": "recurringDetailReference",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "sdkData",
++            "baseName": "sdkData",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "storedPaymentMethodId",
++            "baseName": "storedPaymentMethodId",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "type",
++            "baseName": "type",
++            "type": "SepaDirectDebitDonations.TypeEnum",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return SepaDirectDebitDonations.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
++export namespace SepaDirectDebitDonations {
++    export enum TypeEnum {
++        Sepadirectdebit = 'sepadirectdebit'
++    }
++}
+diff --git a/src/typings/checkout/invalidField.ts b/src/typings/checkout/sessionAmountUpdate.ts
+similarity index 59%
+rename from src/typings/checkout/invalidField.ts
+rename to src/typings/checkout/sessionAmountUpdate.ts
+index 11305f9..8d2e567 100644
+--- a/src/typings/checkout/invalidField.ts
++++ b/src/typings/checkout/sessionAmountUpdate.ts
+@@ -8,19 +8,15 @@
+  */
+ 
+ 
+-export class InvalidField {
++export class SessionAmountUpdate {
+     /**
+-    * Description of the validation error.
++    * The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).
+     */
+-    "message": string;
++    "currency": string;
+     /**
+-    * The field that has an invalid value.
++    * The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
+     */
+-    "name": string;
+-    /**
+-    * The invalid value.
+-    */
+-    "value": string;
++    "value": number;
+ 
+     static readonly discriminator: string | undefined = undefined;
+ 
+@@ -28,26 +24,20 @@ export class InvalidField {
+ 
+     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
+         {
+-            "name": "message",
+-            "baseName": "message",
+-            "type": "string",
+-            "format": ""
+-        },
+-        {
+-            "name": "name",
+-            "baseName": "name",
++            "name": "currency",
++            "baseName": "currency",
+             "type": "string",
+             "format": ""
+         },
+         {
+             "name": "value",
+             "baseName": "value",
+-            "type": "string",
+-            "format": ""
++            "type": "number",
++            "format": "int64"
+         }    ];
+ 
+     static getAttributeTypeMap() {
+-        return InvalidField.attributeTypeMap;
++        return SessionAmountUpdate.attributeTypeMap;
+     }
+ 
+     public constructor() {
+diff --git a/src/typings/checkout/storedPaymentMethod.ts b/src/typings/checkout/storedPaymentMethod.ts
+index d184190..e6b1e0d 100644
+--- a/src/typings/checkout/storedPaymentMethod.ts
++++ b/src/typings/checkout/storedPaymentMethod.ts
+@@ -34,6 +34,10 @@ export class StoredPaymentMethod {
+     */
+     "expiryYear"?: string;
+     /**
++    * The token issued by an external tokenization service representing the shopper\'s payment method
++    */
++    "externalToken"?: string;
++    /**
+     * The name of the payment method holder.
+     */
+     "holderName"?: string;
+@@ -123,6 +127,12 @@ export class StoredPaymentMethod {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "externalToken",
++            "baseName": "externalToken",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "holderName",
+             "baseName": "holderName",
+diff --git a/src/typings/checkout/storedPaymentMethodDetails.ts b/src/typings/checkout/storedPaymentMethodDetails.ts
+index ae44422..ba31983 100644
+--- a/src/typings/checkout/storedPaymentMethodDetails.ts
++++ b/src/typings/checkout/storedPaymentMethodDetails.ts
+@@ -108,6 +108,7 @@ export namespace StoredPaymentMethodDetails {
+         Dana = 'dana',
+         Kakaopay = 'kakaopay',
+         Truemoney = 'truemoney',
+-        Paysafecard = 'paysafecard'
++        Paysafecard = 'paysafecard',
++        GopayWallet = 'gopay_wallet'
+     }
+ }
+diff --git a/src/typings/checkout/temporaryServices.ts b/src/typings/checkout/temporaryServices.ts
+new file mode 100644
+index 0000000..f6b60a1
+--- /dev/null
++++ b/src/typings/checkout/temporaryServices.ts
+@@ -0,0 +1,96 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class TemporaryServices {
++    /**
++    * The name or ID of the person working in a temporary capacity. * Format: ASCII * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `enhancedSchemeData.employeeName`
++    */
++    "employeeName"?: string;
++    /**
++    * The billing period end date. * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd * **additionalData key:** `enhancedSchemeData.tempWeekEnding`
++    */
++    "endDate"?: string;
++    /**
++    * The hourly rate for the temporary services, in [minor units](https://docs.adyen.com/development-resources/currency-codes). * For example, 2000 means USD 20.00. * Encoding: Numeric * Max value: 10000000000 * **additionalData key:** `enhancedSchemeData.regularHoursRate`
++    */
++    "hourRate"?: number;
++    /**
++    * The number of hours worked during the billing period. * Format: Numeric * **additionalData key:** `enhancedSchemeData.regularHoursWorked`
++    */
++    "hoursWorked"?: number;
++    /**
++    * The job description of the person working in a temporary capacity. * Format: ASCII * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `enhancedSchemeData.jobDescription`
++    */
++    "jobDescription"?: string;
++    /**
++    * The name of the person requesting the temporary services. * Format: ASCII * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `enhancedSchemeData.requestName`
++    */
++    "serviceRequestor"?: string;
++    /**
++    * The billing period start date. * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd * **additionalData key:** `enhancedSchemeData.tempStartDate`
++    */
++    "startDate"?: string;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "employeeName",
++            "baseName": "employeeName",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "endDate",
++            "baseName": "endDate",
++            "type": "string",
++            "format": "date"
++        },
++        {
++            "name": "hourRate",
++            "baseName": "hourRate",
++            "type": "number",
++            "format": "int32"
++        },
++        {
++            "name": "hoursWorked",
++            "baseName": "hoursWorked",
++            "type": "number",
++            "format": "int32"
++        },
++        {
++            "name": "jobDescription",
++            "baseName": "jobDescription",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "serviceRequestor",
++            "baseName": "serviceRequestor",
++            "type": "string",
++            "format": ""
++        },
++        {
++            "name": "startDate",
++            "baseName": "startDate",
++            "type": "string",
++            "format": "date"
++        }    ];
++
++    static getAttributeTypeMap() {
++        return TemporaryServices.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/thirdPartyTokenRedundancyInfo.ts b/src/typings/checkout/thirdPartyTokenRedundancyInfo.ts
+new file mode 100644
+index 0000000..a20ac24
+--- /dev/null
++++ b/src/typings/checkout/thirdPartyTokenRedundancyInfo.ts
+@@ -0,0 +1,46 @@
++/*
++ * The version of the OpenAPI document: v72
++ * 
++ *
++ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
++ * https://openapi-generator.tech
++ * Do not edit this class manually.
++ */
++
++
++export class ThirdPartyTokenRedundancyInfo {
++    /**
++    * Request-specific parameter values to populate the template placeholders. Each key must match a placeholder defined in the template referenced by `requestTemplateCode`.
++    */
++    "requestParameters"?: { [key: string]: string; };
++    /**
++    * Identifier for the third-party token request template configured in your Adyen account. This template defines the structure and endpoint for token requests.
++    */
++    "requestTemplateCode": string;
++
++    static readonly discriminator: string | undefined = undefined;
++
++    static readonly mapping: {[index: string]: string} | undefined = undefined;
++
++    static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
++        {
++            "name": "requestParameters",
++            "baseName": "requestParameters",
++            "type": "{ [key: string]: string; }",
++            "format": ""
++        },
++        {
++            "name": "requestTemplateCode",
++            "baseName": "requestTemplateCode",
++            "type": "string",
++            "format": ""
++        }    ];
++
++    static getAttributeTypeMap() {
++        return ThirdPartyTokenRedundancyInfo.attributeTypeMap;
++    }
++
++    public constructor() {
++    }
++}
++
+diff --git a/src/typings/checkout/ticket.ts b/src/typings/checkout/ticket.ts
+index 731a4a6..3364599 100644
+--- a/src/typings/checkout/ticket.ts
++++ b/src/typings/checkout/ticket.ts
+@@ -10,15 +10,15 @@
+ 
+ export class Ticket {
+     /**
+-    * The address of the organization that issued the ticket. * minLength: 0 characters * maxLength: 16 characters
++    * The address of the organization that issued the ticket. * minLength: 0 characters * maxLength: 16 characters * **additionalData key:** `airline.ticket_issue_address`
+     */
+     "issueAddress"?: string;
+     /**
+-    * The date that the ticket was issued to the passenger. * minLength: 10 characters * maxLength: 10 characters * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd
++    * The date that the ticket was issued to the passenger. * minLength: 10 characters * maxLength: 10 characters * Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd * **additionalData key:** `airline.issue_date`
+     */
+     "issueDate"?: string;
+     /**
+-    * The ticket\'s unique identifier. * minLength: 1 character * maxLength: 15 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The ticket\'s unique identifier. * minLength: 1 character * maxLength: 15 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.ticket_number`
+     */
+     "number"?: string;
+ 
+diff --git a/src/typings/checkout/travelAgency.ts b/src/typings/checkout/travelAgency.ts
+index cafd54b..94c3c6a 100644
+--- a/src/typings/checkout/travelAgency.ts
++++ b/src/typings/checkout/travelAgency.ts
+@@ -10,11 +10,11 @@
+ 
+ export class TravelAgency {
+     /**
+-    * The unique identifier from IATA or ARC for the travel agency that issues the ticket. * Encoding: ASCII * minLength: 1 character * maxLength: 8 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The unique identifier from IATA or ARC for the travel agency that issues the ticket. * Encoding: ASCII * minLength: 1 character * maxLength: 8 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.travel_agency_code`
+     */
+     "code"?: string;
+     /**
+-    * The name of the travel agency.  * Encoding: ASCII * minLength: 1 character * maxLength: 25 characters * Must not start with a space or be all spaces. * Must not be all zeros.
++    * The name of the travel agency.  * Encoding: ASCII * minLength: 1 character * maxLength: 25 characters * Must not start with a space or be all spaces. * Must not be all zeros. * **additionalData key:** `airline.travel_agency_name`
+     */
+     "name"?: string;
+ 
+diff --git a/src/typings/index.ts b/src/typings/index.ts
+index f949aa7..dcf4300 100644
+--- a/src/typings/index.ts
++++ b/src/typings/index.ts
+@@ -15,6 +15,7 @@ export * as binlookup from "./binLookup/models";
+ export * as capital from "./capital/models";
+ export * as checkout from "./checkout/models";
+ export * as dataProtection from "./dataProtection/models";
++export * as documentCollector from "./documentCollector/models";
+ export * as legalEntityManagement from "./legalEntityManagement/models";
+ export * as management from "./management/models";
+ export * as openBanking from "./openBanking/models";
+@@ -24,6 +25,7 @@ export * as platformsAccount from "./platformsAccount/models";
+ export * as platformsFund from "./platformsFund/models";
+ export * as platformsHostedOnboardingPage from "./platformsHostedOnboardingPage/models";
+ export * as recurring from "./recurring/models";
++export * as sessionAuthentication from "./sessionAuthentication/models";
+ export * as storedValue from "./storedValue/models";
+ export * as tapi from "./tapi/models";
+ export * as terminal from "./terminal/models";
+@@ -46,4 +48,5 @@ export * as transactionWebhooks from "./transactionWebhooks/models";
+ export * as transferWebhooks from "./transferWebhooks/models";
+ 
+ // shared
++export * from "./httpFile";
+ export * as requestOptions from "./requestOptions";
+diff --git a/src/typings/payment/additionalDataCommon.ts b/src/typings/payment/additionalDataCommon.ts
+index 0d3459c..d380364 100644
+--- a/src/typings/payment/additionalDataCommon.ts
++++ b/src/typings/payment/additionalDataCommon.ts
+@@ -93,6 +93,10 @@ export class AdditionalDataCommon {
+     * This field is required if the transaction is performed by a registered payment facilitator. This field must contain the tax ID of the actual merchant. * Format: alpha-numeric. * Fixed length: 11 or 14 characters.
+     */
+     "subMerchantTaxId"?: string;
++    /**
++    * Allows you to link the transaction to the original or previous one in a subscription/card-on-file chain For Mastercard payments. This field is required for token-based transactions where Adyen does not tokenize the card.  Transaction identifier from Mastercard.  Submit the original transaction ID of the contract in your payment request if you are not tokenizing card details with Adyen and are making a merchant-initiated transaction (MIT) for subsequent charges.  Make sure you are sending `shopperInteraction` **ContAuth** and `recurringProcessingModel` **Subscription** or **UnscheduledCardOnFile** to ensure that the transaction is classified as MIT.
++    */
++    "transactionLinkId"?: string;
+ 
+     static readonly discriminator: string | undefined = undefined;
+ 
+@@ -224,6 +228,12 @@ export class AdditionalDataCommon {
+             "baseName": "subMerchantTaxId",
+             "type": "string",
+             "format": ""
++        },
++        {
++            "name": "transactionLinkId",
++            "baseName": "transactionLinkId",
++            "type": "string",
++            "format": ""
+         }    ];
+ 
+     static getAttributeTypeMap() {
+diff --git a/src/typings/payment/responseAdditionalDataCommon.ts b/src/typings/payment/responseAdditionalDataCommon.ts
+index 09ed5e7..bc5d7cf 100644
+--- a/src/typings/payment/responseAdditionalDataCommon.ts
++++ b/src/typings/payment/responseAdditionalDataCommon.ts
+@@ -264,6 +264,10 @@ export class ResponseAdditionalDataCommon {
+     */
+     "tokenization_storedPaymentMethodId"?: string;
+     /**
++    * Returned in the response for Mastercard payments.  This contains the Mastercard Transaction Link Identifier (TLID).
++    */
++    "transactionLinkId"?: string;
++    /**
+     * The `visaTransactionId`, has a fixed length of 15 numeric characters.  > Contact Support Team to enable this field.
+     */
+     "visaTransactionId"?: string;
+@@ -649,6 +653,12 @@ export class ResponseAdditionalDataCommon {
+             "type": "string",
+             "format": ""
+         },
++        {
++            "name": "transactionLinkId",
++            "baseName": "transactionLinkId",
++            "type": "string",
++            "format": ""
++        },
+         {
+             "name": "visaTransactionId",
+             "baseName": "visaTransactionId",

@@ -1381,6 +1381,19 @@ def _upstream_dispositions(
         elif exclusion:
             disposition = "intentional-policy-exclusion"
             reason = exclusion
+        elif (
+            report_scope
+            and change.status == "renamed"
+            and change.old_path in prior_files
+            and _required_by_policy(
+                change.old_path, package_roots, capsule, package
+            )
+            and not _required_by_policy(
+                change.new_path, package_roots, capsule, package
+            )
+        ):
+            disposition = "intentional-policy-exclusion"
+            reason = "renamed-outside-capsule-policy"
         elif any(
             _required_by_policy(path, package_roots, capsule, package)
             for path in paths

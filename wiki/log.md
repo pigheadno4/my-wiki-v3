@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Adyen Node `32.2.0`
+
+- Serial delta/focused reading after 32.1.0: HTTPS agent reuse and redirect preservation, configurable keep-alive, certificate-path cache limits; Payments App data remains notes-only. Older history retained; 14 repository sources/21 releases. Details [[adyen-log]] and [[changelog-github-adyen-node-api-library]]. No SDK/payment execution, commit or push. Next: scoped commit review.
+
+## [2026-10-04] ingest | Adyen Node `32.1.0`
+
+- Additive full with approved focused reading: Session amount finalization, discriminator/model compatibility, PayPal shipping/discount and multipart transport. Historical `32.0.0` retained; concept-first updates, 14 repository sources/20 releases. Details [[adyen-log]] and [[changelog-github-adyen-node-api-library]]. No SDK/payment execution, commit or push. Next: serial `32.2.0` delta.
+
 ## [2026-10-04] ingest | Braintree website C35
 
 - Twenty Wells IC/Wells Flat sources approved through ten rolling child slots; initial first pass 17/20, twenty full initial reviews plus five targeted reviews, no repeated full review. Final queries 40/40 after preserving a Marketplace/pricing rounding contradiction in both sources and the concept; original failure and targeted recheck retained. Catalog 372 (355 website + 17 GitHub); seven existing concepts updated, 28 typed pages plus three amended-page rechecks passed. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-35/`. Raw unchanged; no commit or push.

@@ -2611,6 +2611,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.19.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.18.0--23.19.0/comparison.json)
 
+## `github-a2a0fe409a7c3a95ab90`
+
+- Repository: `adyen/adyen-node-api-library`
+- SHA: `134f50078ca8889ff21e6c76f71c6377ddcb2120`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-134f500/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-node-api-library/ingest-packets/github-a2a0fe409a7c3a95ab90/packet.md)
+- Review priority: `high`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/api-library@32.2.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-node-api-library/releases/api-library/32.2.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-node-api-library/comparisons/api-library/32.1.0--32.2.0/comparison.json)
+
 ## `github-a3e31c47bd77ac327a7b`
 
 - Repository: `braintree/braintree_node`
@@ -3740,6 +3765,31 @@
 - `adyen-3ds2-android@2.2.27` (recommended `full`)
   Release: [manifest](../../raw/github/adyen/adyen-3ds2-android/releases/adyen-3ds2-android/2.2.27/2026-08-17/manifest.json)
   Comparison: Not applicable
+
+## `github-dfdbb9a8bd1c5274ddb3`
+
+- Repository: `adyen/adyen-node-api-library`
+- SHA: `afd3bb485d84d861324a183b99839431bafa4e68`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-node-api-library/ingest-packets/github-dfdbb9a8bd1c5274ddb3/packet.md)
+- Review priority: `high`
+- Required reading: `116` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/api-library@32.1.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-node-api-library/releases/api-library/32.1.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-node-api-library/comparisons/api-library/32.0.0--32.1.0/comparison.json)
 
 ## `github-e27c0e62a2e8e19ebd7c`
 

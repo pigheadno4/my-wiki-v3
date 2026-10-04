@@ -73,6 +73,19 @@ The wrapper does not merge the native repositories' histories. Native behavior r
 
 ## Node.js server surface
 
+Latest ingested Node update: `@adyen/api-library@32.2.0` (2026-10-04 ingest).
+It caches the non-proxy HTTPS agent per HTTP client instance, accepts optional
+keep-alive settings, and retains the agent on HTTPS redirects. Certificate-path
+changes invalidate the cache; an identical path does not detect in-place file
+rotation. Proxy caching and default keep-alive are not established. The `32.1.0`
+update adds Session amount updates with required callback session data and a finalizing
+`payable` flag, concrete payment/action discriminator mappings, PayPal order
+shipping/discount fields and richer typed checkout data. Custom HTTP clients must
+handle `string | Buffer`; removed Checkout error exports require import review.
+Checkout remains v72 and Node.js >=18. Document Collector/Session Authentication
+remain broader inventory, not full domain coverage. See
+[[source-github-adyen-node-api-library]] and [[changelog-github-adyen-node-api-library]].
+
 The retained `@adyen/api-library@32.0.0` baseline provides typed merchant-server clients for Checkout API v72, payment modifications, Sessions, orders, links, stored methods, notifications, and broader Adyen API families. It also introduces Cloud Device API v1 as the first-class cloud point-of-sale path with regional routing, device management, and optional Nexo message protection.
 
 The Node library does not render shopper UI. Its broader API and webhook exports are inventory evidence where the complete generated model trees were not retained; detailed non-checkout queries should trigger focused recollection.
@@ -112,10 +125,11 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
 - Ingested cumulative GitHub repository sources: 14
-- Ingested package releases: 19
+- Ingested package releases: 21
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
 - Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`, `@adyen/adyen-web@6.46.0`.
-- Latest ingest: `adyen/adyen-web` at `@adyen/adyen-web@6.46.0`, exact SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`
+- Additional retained and ingested Node releases: `@adyen/api-library@32.1.0`, `@adyen/api-library@32.2.0`.
+- Latest ingest: `adyen/adyen-node-api-library` at `@adyen/api-library@32.2.0`, exact SHA `134f50078ca8889ff21e6c76f71c6377ddcb2120`
 
 ## Sources
 

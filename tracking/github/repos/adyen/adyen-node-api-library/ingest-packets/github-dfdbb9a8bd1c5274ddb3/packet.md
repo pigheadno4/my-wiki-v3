@@ -1,0 +1,277 @@
+# GitHub ingest packet
+
+- Repository: `adyen/adyen-node-api-library`
+- Work item: `github-dfdbb9a8bd1c5274ddb3`
+- Snapshot: `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+## `@adyen/api-library`
+
+- Version: `32.0.0` -> `32.1.0`
+- Recommendation: `full` / `high`
+- Unchanged retained files: `463`
+
+### Required reading
+
+- `raw/github/adyen/adyen-node-api-library/releases/api-library/32.1.0/2026-10-04/manifest.json`
+- `raw/github/adyen/adyen-node-api-library/releases/api-library/32.1.0/2026-10-04/release-notes.md`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/files/src/notification/bankingWebhookHandler.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/files/src/notification/managementWebhookHandler.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/files/src/typings/checkout/defaultErrorResponseEntity.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/files/src/typings/checkout/invalidField.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/manifest.json`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/README.md`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/VERSION`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/doc/CloudDeviceApi.md`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/package.json`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/helpers/getJsonResponse.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/helpers/requestForm.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/httpClient/clientInterface.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/httpClient/httpURLConnectionClient.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/balanceControl/balanceControlApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/binLookup/binLookupApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/capital/dynamicOffersApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/capital/grantAccountsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/capital/grantOffersApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/capital/grantsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/checkout/donationsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/checkout/modificationsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/checkout/ordersApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/checkout/paymentLinksApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/checkout/paymentsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/checkout/recurringApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/checkout/utilityApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/dataProtection/dataProtectionApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/disputes/disputesApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/documentCollector/documentsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/documentCollector/index.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/index.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/legalEntityManagement/businessLinesApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/legalEntityManagement/documentsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/legalEntityManagement/hostedOnboardingApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/legalEntityManagement/legalEntitiesApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/legalEntityManagement/pCIQuestionnairesApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/legalEntityManagement/taxEDeliveryConsentApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/legalEntityManagement/termsOfServiceApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/legalEntityManagement/transferInstrumentsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/payment/modificationsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/payment/paymentsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/paymentsApp/paymentsAppApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/payout/initializationApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/payout/instantPayoutsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/payout/reviewingApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/posMobile/posMobileApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/recurring/recurringApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/resource.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/sessionAuthentication/sessionAuthenticationApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/storedValue/storedValueApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/transfers/capitalApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/transfers/cashOutApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/transfers/transactionsApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/services/transfers/transfersApi.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/affirmDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/agency.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/airline.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/auPayDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/carRental.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/cardBrandDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/checkoutErrorResponseEntity.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/checkoutSessionPatchSessionRequest.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/checkoutSessionPatchSessionResponse.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/createCheckoutSessionRequest.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/createCheckoutSessionResponse.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/dBaraiDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/destination.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/donationCampaignsRequest.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/donationPaymentRequestPaymentMethod.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/enhancedSchemeData.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/folio.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/healthcare.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/itemDetailLine.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/klarnaDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/leg.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/levelTwoThree.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/lineItem.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/lodging.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/models.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/objectSerializer.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/passenger.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/paymentDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/paymentRequest.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/paymentRequestPaymentMethod.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/paymentResponseAction.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/paypalUpdateOrderRequest.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/pickupInfo.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/rentalSurcharges.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/returnInfo.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/rivertyDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/room.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/sepaDirectDebitDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/sepaDirectDebitDonations.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/sessionAmountUpdate.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/storedPaymentMethod.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/storedPaymentMethodDetails.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/temporaryServices.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/thirdPartyTokenRedundancyInfo.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/ticket.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/checkout/travelAgency.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/index.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/notification/amount.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/notification/models.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/notification/notification.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/notification/notificationItem.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/notification/notificationRequestItem.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/payment/additionalDataCommon.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/files/src/typings/payment/responseAdditionalDataCommon.ts`
+- `raw/github/adyen/adyen-node-api-library/snapshots/2026-10-04-afd3bb4/manifest.json`
+- `tracking/github/repos/adyen/adyen-node-api-library/comparisons/api-library/32.0.0--32.1.0/comparison.json`
+- `tracking/github/repos/adyen/adyen-node-api-library/comparisons/api-library/32.0.0--32.1.0/comparison.md`
+- `tracking/github/repos/adyen/adyen-node-api-library/comparisons/api-library/32.0.0--32.1.0/diff.patch`
+
+### Files absent from current snapshot
+
+Snapshot absence is not proof of upstream deletion. `not-listed` refers only to the supplied upstream change inventory.
+
+- `src/notification/bankingWebhookHandler.ts`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `src/notification/managementWebhookHandler.ts`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `src/typings/checkout/defaultErrorResponseEntity.ts`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `src/typings/checkout/invalidField.ts`: `not-retained-in-current-snapshot`; upstream: `renamed`
+
+### Upstream changes
+
+- `modified` `.github/actions/format/action.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/release.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/sonarcloud.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/stale.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `README.md`: `retained-evidence` (snapshot-file)
+- `modified` `VERSION`: `retained-evidence` (snapshot-file)
+- `modified` `doc/CloudDeviceApi.md`: `retained-evidence` (snapshot-file)
+- `modified` `package-lock.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
+- `modified` `sdk-generation-log/balancecontrol.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/binlookup.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/capital.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/checkout.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/dataprotection.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/disputes.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `sdk-generation-log/documentcollector.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/legalentitymanagement.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/payment.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/paymentsapp.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/payout.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/posmobile.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/recurring.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/sessionauthentication.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/storedvalue.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sdk-generation-log/transfers.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sonar-project.properties`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/__tests__/checkout.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/__tests__/cloudDevice/cloudDeviceApi.terminal.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `src/__tests__/documentCollector.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/__tests__/httpURLConnectionClient.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `src/__tests__/requestForm.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/__tests__/sessionAuthenticationApi.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/helpers/getJsonResponse.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/helpers/requestForm.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/httpClient/clientInterface.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/httpClient/httpURLConnectionClient.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/balanceControl/balanceControlApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/binLookup/binLookupApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/capital/dynamicOffersApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/capital/grantAccountsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/capital/grantOffersApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/capital/grantsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/checkout/donationsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/checkout/modificationsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/checkout/ordersApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/checkout/paymentLinksApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/checkout/paymentsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/checkout/recurringApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/checkout/utilityApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/dataProtection/dataProtectionApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/disputes/disputesApi.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/services/documentCollector/documentsApi.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/services/documentCollector/index.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/index.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/legalEntityManagement/businessLinesApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/legalEntityManagement/documentsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/legalEntityManagement/hostedOnboardingApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/legalEntityManagement/legalEntitiesApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/legalEntityManagement/pCIQuestionnairesApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/legalEntityManagement/taxEDeliveryConsentApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/legalEntityManagement/termsOfServiceApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/legalEntityManagement/transferInstrumentsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/payment/modificationsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/payment/paymentsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/paymentsApp/paymentsAppApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/payout/initializationApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/payout/instantPayoutsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/payout/reviewingApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/posMobile/posMobileApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/recurring/recurringApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/resource.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/sessionAuthentication/sessionAuthenticationApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/storedValue/storedValueApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/transfers/capitalApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/transfers/cashOutApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/transfers/transactionsApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/services/transfers/transfersApi.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/affirmDetails.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/agency.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/airline.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/auPayDetails.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/carRental.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/cardBrandDetails.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/checkoutErrorResponseEntity.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/checkoutSessionPatchSessionRequest.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/checkoutSessionPatchSessionResponse.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/createCheckoutSessionRequest.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/createCheckoutSessionResponse.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/dBaraiDetails.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/destination.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/donationCampaignsRequest.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/donationPaymentRequestPaymentMethod.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/enhancedSchemeData.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/folio.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/healthcare.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/itemDetailLine.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/klarnaDetails.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/leg.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/levelTwoThree.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/lineItem.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/lodging.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/models.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/objectSerializer.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/passenger.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/paymentDetails.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/paymentRequest.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/paymentRequestPaymentMethod.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/paymentResponseAction.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/paypalUpdateOrderRequest.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/pickupInfo.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/rentalSurcharges.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/returnInfo.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/rivertyDetails.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/room.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/sepaDirectDebitDetails.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/sepaDirectDebitDonations.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/sessionAmountUpdate.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/storedPaymentMethod.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/storedPaymentMethodDetails.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/temporaryServices.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/typings/checkout/thirdPartyTokenRedundancyInfo.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/ticket.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/checkout/travelAgency.ts`: `retained-evidence` (snapshot-file)
+- `renamed` `src/typings/documentCollector/defaultErrorResponseEntity.ts`: `intentional-policy-exclusion` (renamed-outside-capsule-policy)
+- `added` `src/typings/documentCollector/documentContext.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `src/typings/documentCollector/documentUploadResponse.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `src/typings/documentCollector/invalidField.ts`: `intentional-policy-exclusion` (renamed-outside-capsule-policy)
+- `added` `src/typings/documentCollector/models.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `src/typings/documentCollector/objectSerializer.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `src/typings/httpFile.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/typings/index.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/payment/additionalDataCommon.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/payment/responseAdditionalDataCommon.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/typings/storedValue/storedValueLoadRequest.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `templates-v7/typescript/api/api.mustache`: `intentional-policy-exclusion` (outside-capsule-policy)

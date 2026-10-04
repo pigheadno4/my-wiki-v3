@@ -2473,6 +2473,48 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("retained-evidence",
                          packet.document["packages"][0]["upstream_changes"][0]["disposition"])
 
+    def test_rename_outside_scope_preserves_prior_reading_without_requiring_destination(self):
+        old_path = "src/old.ts"
+        new_path = "other-domain/model.ts"
+        prior = {"package.json": self.manifest_content("10.0.0"),
+                 old_path: "implementation\n"}
+        current = {"package.json": self.manifest_content("10.0.1")}
+        packet = self.build(prior, current, (
+            UpstreamChange("renamed", old_path, new_path),))
+        row = packet.document["packages"][0]["upstream_changes"][0]
+        self.assertEqual("intentional-policy-exclusion", row["disposition"])
+        self.assertEqual("renamed-outside-capsule-policy", row["reason"])
+        self.assertIn(
+            "raw/github/acme/widgets/snapshots/2026-07-27-aaaaaaa/files/src/old.ts",
+            packet.document["required_reading"],
+        )
+        self.assertFalse(any(path.endswith(new_path)
+                             for path in packet.document["required_reading"]))
+
+    def test_rename_outside_scope_without_prior_evidence_still_blocks(self):
+        prior = {"package.json": self.manifest_content("10.0.0")}
+        current = {"package.json": self.manifest_content("10.0.1")}
+        with self.assertRaisesRegex(PacketBuildError, "blocking evidence gap"):
+            self.build(prior, current, (
+                UpstreamChange("renamed", "src/old.ts", "other-domain/model.ts"),))
+
+    def test_rename_into_scope_requires_current_destination_evidence(self):
+        prior = {"package.json": self.manifest_content("10.0.0")}
+        current = {"package.json": self.manifest_content("10.0.1")}
+        with self.assertRaisesRegex(PacketBuildError, "blocking evidence gap"):
+            self.build(prior, current, (
+                UpstreamChange("renamed", "other-domain/model.ts", "src/new.ts"),))
+
+    def test_rename_between_unselected_paths_preserves_existing_scope_disposition(self):
+        prior = {"package.json": self.manifest_content("10.0.0"),
+                 "legacy/old.ts": "implementation\n"}
+        current = {"package.json": self.manifest_content("10.0.1")}
+        packet = self.build(prior, current, (
+            UpstreamChange("renamed", "legacy/old.ts", "other-domain/model.ts"),))
+        row = packet.document["packages"][0]["upstream_changes"][0]
+        self.assertEqual("intentional-policy-exclusion", row["disposition"])
+        self.assertEqual("prior-only-outside-current-policy", row["reason"])
+
     def test_legacy_packet_replay_preserves_old_format_without_scope_annotations(self):
         from github_validation import _packet_inputs
 
