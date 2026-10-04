@@ -644,9 +644,9 @@ Operations history: [[stripe-log]]
 - [[changelog-github-stripe-terminal-ios]] — package-qualified Terminal iOS v5 ledger; exact 5.8.0 buzzer, expanded SetupIntent, logging, disconnect, printer, and Tap to Pay changes (github-repo, 2026-08-31)
 - [[source-github-stripe-terminal-android]] — `stripeterminal@5.8.0` native card-present SDK: Android permissions and lifecycle, readers, Tap to Pay, payments, SetupIntents, refunds, offline forwarding, updates, and support lifecycle (github-repo, 2026-08-31)
 - [[changelog-github-stripe-terminal-android]] — package-qualified Terminal Android v5 ledger; exact 5.8.0 permission, buzzer, printer, Keystore, update, and Tap to Pay PIN changes (github-repo, 2026-08-31)
-- [[source-github-stripe-react-native]] — cumulative `@stripe/stripe-react-native` through v0.75.0: PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and private-preview Link Controller (github-repo, updated 2026-09-05)
-- [[changelog-github-stripe-react-native]] — package-qualified release ledger; v0.75.0 Onramp Samsung Pay and wallet-verification errors (github-repo, 2026-09-05)
-- [[stripe-react-native-sdk]] — Stripe React Native SDK through v0.75.0: PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, app-store boundary, and migration notes
+- [[source-github-stripe-react-native]] — cumulative `@stripe/stripe-react-native` through v0.80.0: SPM/new architecture, consent/inline Checkout preview; older history retained (github-repo, updated 2026-10-04)
+- [[changelog-github-stripe-react-native]] — package-qualified release ledger through v0.80.0; migration and implementation findings (github-repo, 2026-10-04)
+- [[stripe-react-native-sdk]] — Stripe React Native SDK through v0.80.0: migration, consent and partial Checkout preview boundaries
 - [[source-stripe-subscriptions-cancel]] — Cancel subscriptions: 4 methods, custom cancel date caveats, invoice item handling, dispute config, anchor behavior (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-pause]] — True pause (flexible billing only): bill_for, 6 blocking conditions, resume 23h window, 4 webhooks (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-invoices]] — Subscription invoices: lifecycle, 4-level payment priority, draft window, void rules, metadata propagation (webpage, 2026-05-13)

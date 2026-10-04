@@ -1,0 +1,179 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-react-native`
+- Package: `@stripe/stripe-react-native`
+- From: `0.75.0` (`e0a845f40749703480146c9d70721b9007d0516d`)
+- To: `0.76.0` (`ee6e868130f9a61f197fa5005157d1e7f82d3052`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.github/workflows/update-podfile-lock.yml`
+- `CHANGELOG.md`
+- `CONTRIBUTING.md`
+- `android/gradle.properties`
+- `android/src/main/java/com/reactnativestripesdk/CurrencySelectorElementEvent.kt`
+- `android/src/main/java/com/reactnativestripesdk/CurrencySelectorElementView.kt`
+- `android/src/main/java/com/reactnativestripesdk/CurrencySelectorElementViewManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt`
+- `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistry.kt`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/EmbeddedPaymentElementViewManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/EmbeddedPaymentElementViewManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/StripeCurrencySelectorElementManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/StripeCurrencySelectorElementManagerInterface.java`
+- `android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java`
+- `android/src/oldarch/java/com/reactnativestripesdk/NativeStripeSdkModuleSpec.java`
+- `android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistryTest.kt`
+- `e2e-tests/ios-only/local-only/checkout-adaptive-pricing.yml`
+- `etc/stripe-react-native.api.md`
+- `example/ios/Podfile.lock`
+- `example/src/App.tsx`
+- `example/src/api/checkoutSession.ts`
+- `example/src/api/onrampBackend.ts`
+- `example/src/checkoutPlayground/CheckoutPlaygroundCartSections.tsx`
+- `example/src/checkoutPlayground/CheckoutPlaygroundCartStyles.ts`
+- `example/src/checkoutPlayground/CheckoutPlaygroundCartUtils.ts`
+- `example/src/checkoutPlayground/CheckoutPlaygroundCartView.tsx`
+- `example/src/checkoutPlayground/CheckoutPlaygroundConfigView.tsx`
+- `example/src/checkoutPlayground/CheckoutPlaygroundEmbeddedView.tsx`
+- `example/src/checkoutPlayground/CheckoutPlaygroundFormRows.tsx`
+- `example/src/checkoutPlayground/CheckoutPlaygroundUI.tsx`
+- `example/src/checkoutPlayground/CurrencySelectorAppearanceConfig.ts`
+- `example/src/checkoutPlayground/PaymentMethodEditorModal.tsx`
+- `example/src/checkoutPlayground/components.tsx`
+- `example/src/checkoutPlayground/types.ts`
+- `example/src/screens/CheckoutScreen.tsx`
+- `example/src/screens/HomeScreen.tsx`
+- `example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `example/src/screens/Onramp/sections/RegisterWalletAddressSection.tsx`
+- `ios/Checkout/CheckoutControllerRegistry.swift`
+- `ios/CurrencySelectorElementManager.m`
+- `ios/CurrencySelectorElementView.swift`
+- `ios/NewArch/StripeCurrencySelectorElementComponentView.h`
+- `ios/NewArch/StripeCurrencySelectorElementComponentView.mm`
+- `ios/OldArch/StripeSdkEventEmitterCompat.h`
+- `ios/OldArch/StripeSdkEventEmitterCompat.m`
+- `ios/StripeOnrampSdk.mm`
+- `ios/StripeSdk.mm`
+- `ios/StripeSdkEmitter.swift`
+- `ios/StripeSdkImpl+Checkout.swift`
+- `ios/StripeSdkImpl+Embedded.swift`
+- `ios/StripeSdkImpl+PaymentSheet.swift`
+- `ios/StripeSdkImpl.swift`
+- `ios/Tests/CheckoutControllerRegistryTests.swift`
+- `jest/mock.js`
+- `jest/setup.js`
+- `package.json`
+- `patches/old-arch-codegen-fix.patch`
+- `src/checkout/CheckoutControllerEventEmitter.ts`
+- `src/checkout/__tests__/Checkout.test.tsx`
+- `src/checkout/__tests__/CheckoutControllerEventEmitter.test.ts`
+- `src/checkout/createCheckout.ts`
+- `src/components/CheckoutPaymentElementView.tsx`
+- `src/components/CurrencySelectorElement.tsx`
+- `src/events.ts`
+- `src/functions.ts`
+- `src/hooks/useCheckout.ts`
+- `src/hooks/useCheckout.tsx`
+- `src/hooks/useOnramp.tsx`
+- `src/index.tsx`
+- `src/specs/NativeCurrencySelectorElement.ts`
+- `src/specs/NativeEmbeddedPaymentElement.ts`
+- `src/specs/NativeOnrampSdkModule.ts`
+- `src/specs/NativeStripeSdkModule.ts`
+- `src/types/Checkout.ts`
+- `src/types/EmbeddedPaymentElement.tsx`
+- `src/types/PaymentSheet.ts`
+- `src/types/index.ts`
+- `stripe-react-native.podspec`
+
+## Upstream changes
+
+- `modified`: `.github/workflows/update-podfile-lock.yml`
+- `modified`: `CHANGELOG.md`
+- `modified`: `CONTRIBUTING.md`
+- `modified`: `android/gradle.properties`
+- `deleted`: `android/src/main/java/com/reactnativestripesdk/CurrencySelectorElementEvent.kt`
+- `deleted`: `android/src/main/java/com/reactnativestripesdk/CurrencySelectorElementView.kt`
+- `deleted`: `android/src/main/java/com/reactnativestripesdk/CurrencySelectorElementViewManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt`
+- `added`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistry.kt`
+- `modified`: `android/src/oldarch/java/com/facebook/react/viewmanagers/EmbeddedPaymentElementViewManagerDelegate.java`
+- `modified`: `android/src/oldarch/java/com/facebook/react/viewmanagers/EmbeddedPaymentElementViewManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/StripeCurrencySelectorElementManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/StripeCurrencySelectorElementManagerInterface.java`
+- `modified`: `android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java`
+- `modified`: `android/src/oldarch/java/com/reactnativestripesdk/NativeStripeSdkModuleSpec.java`
+- `modified`: `android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistryTest.kt`
+- `deleted`: `e2e-tests/ios-only/local-only/checkout-adaptive-pricing.yml`
+- `modified`: `etc/stripe-react-native.api.md`
+- `modified`: `example/ios/Podfile.lock`
+- `modified`: `example/src/App.tsx`
+- `deleted`: `example/src/api/checkoutSession.ts`
+- `modified`: `example/src/api/onrampBackend.ts`
+- `deleted`: `example/src/checkoutPlayground/CheckoutPlaygroundCartSections.tsx`
+- `deleted`: `example/src/checkoutPlayground/CheckoutPlaygroundCartStyles.ts`
+- `deleted`: `example/src/checkoutPlayground/CheckoutPlaygroundCartUtils.ts`
+- `deleted`: `example/src/checkoutPlayground/CheckoutPlaygroundCartView.tsx`
+- `deleted`: `example/src/checkoutPlayground/CheckoutPlaygroundConfigView.tsx`
+- `deleted`: `example/src/checkoutPlayground/CheckoutPlaygroundEmbeddedView.tsx`
+- `deleted`: `example/src/checkoutPlayground/CheckoutPlaygroundFormRows.tsx`
+- `deleted`: `example/src/checkoutPlayground/CheckoutPlaygroundUI.tsx`
+- `deleted`: `example/src/checkoutPlayground/CurrencySelectorAppearanceConfig.ts`
+- `deleted`: `example/src/checkoutPlayground/PaymentMethodEditorModal.tsx`
+- `deleted`: `example/src/checkoutPlayground/components.tsx`
+- `deleted`: `example/src/checkoutPlayground/types.ts`
+- `deleted`: `example/src/screens/CheckoutScreen.tsx`
+- `modified`: `example/src/screens/HomeScreen.tsx`
+- `modified`: `example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `modified`: `example/src/screens/Onramp/sections/RegisterWalletAddressSection.tsx`
+- `added`: `ios/Checkout/CheckoutControllerRegistry.swift`
+- `deleted`: `ios/CurrencySelectorElementManager.m`
+- `deleted`: `ios/CurrencySelectorElementView.swift`
+- `deleted`: `ios/NewArch/StripeCurrencySelectorElementComponentView.h`
+- `deleted`: `ios/NewArch/StripeCurrencySelectorElementComponentView.mm`
+- `modified`: `ios/OldArch/StripeSdkEventEmitterCompat.h`
+- `modified`: `ios/OldArch/StripeSdkEventEmitterCompat.m`
+- `modified`: `ios/StripeOnrampSdk.mm`
+- `modified`: `ios/StripeSdk.mm`
+- `modified`: `ios/StripeSdkEmitter.swift`
+- `deleted`: `ios/StripeSdkImpl+Checkout.swift`
+- `modified`: `ios/StripeSdkImpl+Embedded.swift`
+- `modified`: `ios/StripeSdkImpl+PaymentSheet.swift`
+- `modified`: `ios/StripeSdkImpl.swift`
+- `added`: `ios/Tests/CheckoutControllerRegistryTests.swift`
+- `modified`: `jest/mock.js`
+- `modified`: `jest/setup.js`
+- `modified`: `package.json`
+- `modified`: `patches/old-arch-codegen-fix.patch`
+- `added`: `src/checkout/CheckoutControllerEventEmitter.ts`
+- `added`: `src/checkout/__tests__/Checkout.test.tsx`
+- `added`: `src/checkout/__tests__/CheckoutControllerEventEmitter.test.ts`
+- `added`: `src/checkout/createCheckout.ts`
+- `added`: `src/components/CheckoutPaymentElementView.tsx`
+- `deleted`: `src/components/CurrencySelectorElement.tsx`
+- `modified`: `src/events.ts`
+- `modified`: `src/functions.ts`
+- `added`: `src/hooks/useCheckout.ts`
+- `deleted`: `src/hooks/useCheckout.tsx`
+- `modified`: `src/hooks/useOnramp.tsx`
+- `modified`: `src/index.tsx`
+- `deleted`: `src/specs/NativeCurrencySelectorElement.ts`
+- `modified`: `src/specs/NativeEmbeddedPaymentElement.ts`
+- `modified`: `src/specs/NativeOnrampSdkModule.ts`
+- `modified`: `src/specs/NativeStripeSdkModule.ts`
+- `modified`: `src/types/Checkout.ts`
+- `modified`: `src/types/EmbeddedPaymentElement.tsx`
+- `modified`: `src/types/PaymentSheet.ts`
+- `modified`: `src/types/index.ts`
+- `modified`: `stripe-react-native.podspec`

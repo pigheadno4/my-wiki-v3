@@ -6,6 +6,31 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | React Native `0.80.0`
+
+- Delta with focused reading, github-9be7291cb2f1d1ffc9b4 at ce9c1bf03fff8c022b244c2ac62a89c35ae6fab3. Verified 240 current/234 prior hashes and 219 unchanged files, packet/notes/comparison/history. Concept first; cumulative source/changelog/company/index/logs; older knowledge/count retained.
+- Private-preview consent, original acceptance timestamp, inline Checkout view and remaining modal/confirmation gaps. Demo custom-secret pattern explicitly excluded from production guidance; native pins unchanged. No native build/payment test, commit or push. Approved 0.76-0.80 serial loop complete after validation; next: scoped commit review.
+
+## [2026-10-04] ingest | React Native `0.79.0`
+
+- Delta with focused reading, github-1a16bda9bfe31d157849 at 6bbf9d530b2ca97993ed4d9a4b10cfd3d387730d. Verified 234 current/233 prior hashes and 212 unchanged files, notes/packet/comparison/history. SDK concept first; source/changelog/company/index/logs; older history/count retained.
+- Native upgrades, Connect loading appearance, reactive Checkout lifecycle and server-update handshake. Presentation/confirmation/view still unimplemented; no backend retry/idempotency claims. No device test, commit or push. Next: 0.80.0 delta, serially.
+
+## [2026-10-04] ingest | React Native `0.78.0`
+
+- Additive full with focused reading, github-d9f1ae40b60cf515676a at fa56337f1b9f935c4d80de4a17c312c780a423e1. 233 current/233 prior file hashes and older history verified. Concepts first, cumulative source/changelog/company/index/logs; old knowledge/count preserved.
+- SPM/dynamic-framework migration and temporary fallback; partial Checkout native controller with remaining presentation/confirmation/hook/view gaps; Financial Connections error codes. SPM helper is complete added-file patch evidence. No native build/test, commit or push. Next: 0.79.0 delta, serially.
+
+## [2026-10-04] ingest | React Native `0.77.0`
+
+- Additive full, focused reading, github-5f21519e3eed9f164ede at cc200808f0aefc9e7c6d328f2b9d428fdeb3a3d1. Checked 233 current/247 prior hashes, notes/comparison/packet and older history. Concepts first; source/changelog/company/index/logs, older knowledge/count preserved.
+- New architecture required; Google Pay Activity Result and PaymentSheet result lifecycle; KYC types; scaffold-only Checkout mappers and internal Connect/Financial Connections handling. Android Onramp full-file gap retained. No device test, commit or push. Next: 0.78.0 full, serially.
+
+## [2026-10-04] ingest | React Native `0.76.0`
+
+- Approved additive full override, focused reading, item github-5b7b7125a474bec8891c at ee6e868130f9a61f197fa5005157d1e7f82d3052. Checked 247 current/252 prior hashes, packet/comparison/notes and unchanged cumulative history. Concepts first, cumulative source/changelog/company/index/logs; old history/count preserved.
+- Wallet deletion plus Checkout API replacement and explicit unimplemented runtime boundary. Corrected older capability inference: 0.75 native bridge was already unavailable and currency views zero-height. Android Onramp full-file gap retained. No runtime test, commit or push. Next: 0.77.0 full, serially.
+
 ## [2026-10-02] ingest | Stripe Android `23.21.0`
 
 - Approved additive full override with focused reading: github-85032643bec4e06f9d06, stripe-android@23.20.0 -> stripe-android@23.21.0 at a074a9500e14932f00ce9cef250a3c63940f9837. Twelve modified/40 unchanged files, 104 matching hashes, 757 upstream dispositions. Effective full inventory checked; changed implementation/content and affected prior context read, unchanged source/history and inventories checked mechanically.

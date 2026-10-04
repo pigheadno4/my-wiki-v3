@@ -1,0 +1,1561 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 745b613..3df755e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,16 @@
+ # CHANGELOG
+ 
++## 0.79.0 - 2026-09-29
++
++**Changes**
++
++* Updated Stripe iOS SDK from 26.12.0 to 26.12.1.
++* Updated Stripe Android SDK from 23.20.0 to 23.21.0.
++
++**Fixes**
++
++* [Fixed] Connect embedded components now use the configured appearance background and text colors for their loading indicator. ([#2665](https://github.com/stripe/stripe-react-native/pull/2665))
++
+ ## 0.78.0 - 2026-09-23
+ **Changes**
+ * [Changed] React Native versions < 0.75 are deprecated.
+diff --git a/android/gradle.properties b/android/gradle.properties
+index a5fe714..8e93a6f 100644
+--- a/android/gradle.properties
++++ b/android/gradle.properties
+@@ -3,4 +3,4 @@ StripeSdk_compileSdkVersion=36
+ StripeSdk_targetSdkVersion=36
+ StripeSdk_minSdkVersion=23
+ # Keep StripeSdk_stripeVersion in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/android/gradle.properties
+-StripeSdk_stripeVersion=23.20.0
++StripeSdk_stripeVersion=23.21.0
+diff --git a/android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt b/android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt
+index 2dec78f..b770c75 100644
+--- a/android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt
++++ b/android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt
+@@ -100,6 +100,10 @@ class EventEmitterCompat(
+     invoke("paymentMethodMessagingElementConfigureResult", value)
+   }
+ 
++  fun emitCheckoutServerUpdateRequested(value: ReadableMap?) {
++    invoke("checkoutServerUpdateRequested", value)
++  }
++
+   fun emitCheckoutControllerDidUpdate(value: ReadableMap?) {
+     invoke("checkoutControllerDidUpdate", value)
+   }
+diff --git a/android/src/main/java/com/reactnativestripesdk/PaymentLauncherManager.kt b/android/src/main/java/com/reactnativestripesdk/PaymentLauncherManager.kt
+index ce58693..61bc92b 100644
+--- a/android/src/main/java/com/reactnativestripesdk/PaymentLauncherManager.kt
++++ b/android/src/main/java/com/reactnativestripesdk/PaymentLauncherManager.kt
+@@ -357,6 +357,7 @@ class PaymentLauncherManager(
+       StripeIntent.NextActionType.CashAppRedirect,
+       StripeIntent.NextActionType.SwishRedirect,
+       StripeIntent.NextActionType.AwaitAuthorization,
++      StripeIntent.NextActionType.MbWayAwaitAuthorization,
+       StripeIntent.NextActionType.DisplayPromptPayDetails,
+       null,
+       -> false
+diff --git a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+index 7f245f9..3dd40a5 100644
+--- a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
++++ b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+@@ -1566,6 +1566,37 @@ class StripeSdkModule(
+     }
+   }
+ 
++  @ReactMethod
++  override fun runCheckoutServerUpdate(controllerId: String, operationId: String, promise: Promise) {
++    performCheckoutMutation(controllerId, promise) { controller ->
++      val instance = checkoutControllers.getValue(controllerId)
++      controller.runServerUpdate {
++        instance.requestServerUpdate(operationId) {
++          eventEmitter.emitCheckoutServerUpdateRequested(
++            Arguments.createMap().apply {
++              putString("controllerId", controllerId)
++              putString("operationId", operationId)
++            },
++          )
++        }
++      }
++    }
++  }
++
++  @ReactMethod
++  override fun completeCheckoutServerUpdate(
++    controllerId: String,
++    operationId: String,
++    error: String?,
++    promise: Promise,
++  ) {
++    UiThreadUtil.runOnUiThread {
++      val instance = checkoutControllers[controllerId]
++      instance?.completeServerUpdate(operationId, error)
++      promise.resolve(null)
++    }
++  }
++
+   @Suppress("TooGenericExceptionCaught")
+   private fun performCheckoutMutation(
+     controllerId: String,
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt b/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
+index 5064bf9..7206885 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
+@@ -7,6 +7,7 @@ import com.facebook.react.bridge.WritableMap
+ import com.reactnativestripesdk.EventEmitterCompat
+ import com.stripe.android.checkout.CheckoutController
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
++import kotlinx.coroutines.CompletableDeferred
+ import kotlinx.coroutines.CoroutineScope
+ import kotlinx.coroutines.CoroutineStart
+ import kotlinx.coroutines.ExperimentalCoroutinesApi
+@@ -25,6 +26,7 @@ internal class NativeCheckoutControllerInstance(
+   private val scope: CoroutineScope,
+   initialSession: WritableMap,
+ ) {
++  private val serverUpdateCompletions = mutableMapOf<String, CompletableDeferred<Result<Unit>>>()
+   private var controllerId: String? = null
+   private var latestSession = initialSession
+   private var destroyed = false
+@@ -67,6 +69,29 @@ internal class NativeCheckoutControllerInstance(
+     scope.launch(start = CoroutineStart.UNDISPATCHED) { block() }
+   }
+ 
++  @MainThread
++  suspend fun requestServerUpdate(operationId: String, request: () -> Unit): Result<Unit> {
++    UiThreadUtil.assertOnUiThread()
++    check(serverUpdateCompletions[operationId] == null) { "Checkout server update is already pending." }
++    val completion = CompletableDeferred<Result<Unit>>()
++    serverUpdateCompletions[operationId] = completion
++    return try {
++      request()
++      completion.await()
++    } finally {
++      serverUpdateCompletions.remove(operationId)
++    }
++  }
++
++  @MainThread
++  fun completeServerUpdate(operationId: String, error: String?) {
++    UiThreadUtil.assertOnUiThread()
++    val completion = serverUpdateCompletions[operationId] ?: return
++    completion.complete(
++      error?.let { Result.failure(IllegalStateException(it)) } ?: Result.success(Unit),
++    )
++  }
++
+   @MainThread
+   fun destroy() {
+     UiThreadUtil.assertOnUiThread()
+diff --git a/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt b/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt
+index e5b4bb5..5ea703e 100644
+--- a/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt
++++ b/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt
+@@ -563,6 +563,7 @@ internal fun mapNextAction(
+     NextActionType.BlikAuthorize,
+     NextActionType.UseStripeSdk,
+     NextActionType.AwaitAuthorization,
++    NextActionType.MbWayAwaitAuthorization,
+     NextActionType.DisplayPayNowDetails,
+     NextActionType.DisplayPromptPayDetails,
+     null,
+diff --git a/android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt b/android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt
+index 7979e65..653abc7 100644
+--- a/android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt
+@@ -36,6 +36,7 @@ class MappersTest {
+       mapOf(
+         FinancialConnectionsEvent.ErrorCode.ACCOUNT_NUMBERS_UNAVAILABLE to "account_numbers_unavailable",
+         FinancialConnectionsEvent.ErrorCode.ACCOUNTS_UNAVAILABLE to "accounts_unavailable",
++        FinancialConnectionsEvent.ErrorCode.NO_ELIGIBLE_ACCOUNTS to "no_eligible_accounts",
+         FinancialConnectionsEvent.ErrorCode.NO_DEBITABLE_ACCOUNT to "no_debitable_account",
+         FinancialConnectionsEvent.ErrorCode.AUTHORIZATION_FAILED to "authorization_failed",
+         FinancialConnectionsEvent.ErrorCode.INSTITUTION_UNAVAILABLE_PLANNED to
+@@ -162,6 +163,17 @@ class MappersTest {
+     assertNull(result)
+   }
+ 
++  @Test
++  fun mapNextAction_MbWayAwaitAuthorization_ReturnsNull() {
++    val result =
++      mapNextAction(
++        StripeIntent.NextActionType.MbWayAwaitAuthorization,
++        StripeIntent.NextActionData.MbWayAwaitAuthorization,
++      )
++
++    assertNull(result)
++  }
++
+   // ============================================
+   // mapToPreferredNetworks Tests
+   // ============================================
+diff --git a/example/ios/Podfile.lock b/example/ios/Podfile.lock
+index f4aceee..389e9ed 100644
+--- a/example/ios/Podfile.lock
++++ b/example/ios/Podfile.lock
+@@ -1822,7 +1822,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native (0.77.0):
++  - stripe-react-native (0.79.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1843,10 +1843,10 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - stripe-react-native/Core (= 0.77.0)
+-    - stripe-react-native/NewArch (= 0.77.0)
++    - stripe-react-native/Core (= 0.79.0)
++    - stripe-react-native/NewArch (= 0.79.0)
+     - Yoga
+-  - stripe-react-native/Core (0.77.0):
++  - stripe-react-native/Core (0.79.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1868,7 +1868,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/NewArch (0.77.0):
++  - stripe-react-native/NewArch (0.79.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1890,7 +1890,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/Onramp (0.77.0):
++  - stripe-react-native/Onramp (0.79.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -2155,75 +2155,75 @@ SPEC CHECKSUMS:
+   RCTTypeSafety: 16a4144ca3f959583ab019b57d5633df10b5e97c
+   React: 914f8695f9bf38e6418228c2ffb70021e559f92f
+   React-callinvoker: 1c0808402aee0c6d4a0d8e7220ce6547af9fba71
+-  React-Core: c61410ef0ca6055e204a963992e363227e0fd1c5
++  React-Core: 4ae98f9e8135b8ddbd7c98730afb6fdae883db90
+   React-Core-prebuilt: 02f0ad625ddd47463c009c2d0c5dd35c0d982599
+-  React-CoreModules: 1f6d1744b5f9f2ec684a4bb5ced25370f87e5382
+-  React-cxxreact: 3af79478e8187b63ffc22b794cd42d3fc1f1f2da
++  React-CoreModules: e878a90bb19b8f3851818af997dbae3b3b0a27ac
++  React-cxxreact: 28af9844f6dc87be1385ab521fbfb3746f19563c
+   React-debug: dfe7f2f01b36058f2a9b94872e071eb40e063a3c
+-  React-defaultsnativemodule: 414bc0a2e02166cd7fa0a41e104434935ae01708
+-  React-domnativemodule: 9ec14a7fed0d3e4e76fd48e07d911f8934ab282d
+-  React-Fabric: a2c0c50b9f0ea1f67e6b4bbde55589cacb8c3213
+-  React-FabricComponents: 796f19e3beb5e44bcdd72bd4d8a5954d6a61d225
+-  React-FabricImage: f75d4b23f449364c3aeae684cd2995c2be68149a
+-  React-featureflags: 3285df1e581749640b797db0ab2120e9c6974da5
+-  React-featureflagsnativemodule: 181e9aa5afcdbc27ca560a6872d9510e0f7d9179
+-  React-graphics: 22b2dce86291d73fe7e37c7492d44865d9077a67
+-  React-hermes: e875778b496c86d07ab2ccaa36a9505d248a254b
+-  React-idlecallbacksnativemodule: db0dae0874018750aedb4f6f574d68c05c6478cd
+-  React-ImageManager: c659ddac4e196a28cefd036f5881b2c355363882
+-  React-jserrorhandler: 23a4e4e66c95a68300a4d01f359f9b8a5500aaa3
+-  React-jsi: 89d43d1e7d4d0663f8ba67e0b39eb4e4672c27de
+-  React-jsiexecutor: abe4874aaab90dfee5dec480680220b2f8af07e3
+-  React-jsinspector: 91f19a57032075d0f820fdee080080a21c4afabe
+-  React-jsinspectorcdp: 20537446838cf73f826cb1f78ec1180c58da6eb5
+-  React-jsinspectornetwork: fc9a317f3a57c33da6252c9cc160d321b85a3a48
+-  React-jsinspectortracing: 9dcf5dd0b7a4373704c4804cac75790b7d7977b4
+-  React-jsitooling: 65c430d41f8df1e5014863dbc569068d0458359b
+-  React-jsitracing: 12d9474cefa6ce0ac4d0affde93dddabb17ea343
+-  React-logger: 50fdb9a8236da90c0b1072da5c32ee03aeb5bf28
+-  React-Mapbuffer: 0164bc6ba0866e6314d86851620e6f1f95a1b4fb
+-  React-microtasksnativemodule: f5972fb404f7c363ff34b2292e72a716956c590c
+-  react-native-safe-area-context: c5d42c4294aa175415947e23c2ac956253abfc7d
+-  React-NativeModulesApple: 8969913947d5b576de4ed371a939455a8daf28aa
++  React-defaultsnativemodule: 97a21185f62a12ee43066962e4786ef784de609c
++  React-domnativemodule: 7e6146dd8f6ea1b2ef0ae445d6c074291dde9e55
++  React-Fabric: 5e75e04864d4112ec1a97aa5367a9f68c91abb99
++  React-FabricComponents: 1d6b2f485acff0b79a10b9b637c70fea8359bed7
++  React-FabricImage: 19d5e71d52febd292a560369482c7d19958494f5
++  React-featureflags: 2ac1f10be17bd846f58746796697e8611a1d9f5b
++  React-featureflagsnativemodule: 02fa160389138c7142b88c946dc3c1917a90197e
++  React-graphics: b3688efb708952b76f9b282fefe1c54938724ae1
++  React-hermes: fcfad3b917400f49026f3232561e039c9d1c34bf
++  React-idlecallbacksnativemodule: 10b74cbc6b2f8bb249696ed2fb352d12d384ecee
++  React-ImageManager: c02958d614171f56612393b35c355206780bf3a5
++  React-jserrorhandler: 8e063c4be9723e87445dbcb22ac46e849c50e2e1
++  React-jsi: d2c3f8555175371c02da6dfe7ed1b64b55a9d6c0
++  React-jsiexecutor: ba537434eb45ee018b590ed7d29ee233fddb8669
++  React-jsinspector: b9b6058146d39b1b8989b0d8b60f95746b5c9b66
++  React-jsinspectorcdp: 603914629da96f3916e527a213913ac285466867
++  React-jsinspectornetwork: 8c280e193c0b163905532ef6b6925c1a9b53d668
++  React-jsinspectortracing: 76168f616aa2c0bcf0de4a999efab5f68f8d6f5c
++  React-jsitooling: c788e7fad8459826c6c692dc94d802bca85669b6
++  React-jsitracing: bf304b323bc5f7cd6dfcc10e90298a02cb60ba0b
++  React-logger: c3e2f8a2e284341205f61eef3d4677ab5a309dfd
++  React-Mapbuffer: abad17e497845ba728b779e2fac123ee961d4545
++  React-microtasksnativemodule: 90dfab2adb37c8c90da7afffcec427d7c90acb29
++  react-native-safe-area-context: 3f031fa5a6c36a3731f6fa2202bfa8f411850c6b
++  React-NativeModulesApple: 1664340b8750d64e0ef3907c5e53d9481f74bcbd
+   React-oscompat: ce47230ed20185e91de62d8c6d139ae61763d09c
+-  React-perflogger: 02b010e665772c7dcb859d85d44c1bfc5ac7c0e4
+-  React-performancetimeline: bdad83ed66209c5cd252a38ed2c7b16c535c2286
++  React-perflogger: b1af3cfb3f095f819b2814910000392a8e17ba9f
++  React-performancetimeline: 856a78d5841c3abee88376291315ac8a0c48a13e
+   React-RCTActionSheet: 0b14875b3963e9124a5a29a45bd1b22df8803916
+-  React-RCTAnimation: a7b90fd2af7bb9c084428867445a1481a8cb112e
+-  React-RCTAppDelegate: 3262bedd01263f140ec62b7989f4355f57cec016
+-  React-RCTBlob: c17531368702f1ebed5d0ada75a7cf5915072a53
+-  React-RCTFabric: 14cd088b95d6c00c9dadad25cf946fb1770cc898
+-  React-RCTFBReactNativeSpec: 8948374e74e37e65923abfffeb12bf78e0aa7318
+-  React-RCTImage: c68078a120d0123f4f07a5ac77bea3bb10242f32
+-  React-RCTLinking: cf8f9391fe7fe471f96da3a5f0435235eca18c5b
+-  React-RCTNetwork: ca31f7c879355760c2d9832a06ee35f517938a20
+-  React-RCTRuntime: 9669e40cc60ac65f09e75730e925c4a6a66debd4
+-  React-RCTSettings: e0e140b2ff4bf86d34e9637f6316848fc00be035
+-  React-RCTText: 75915bace6f7877c03a840cc7b6c622fb62bfa6b
+-  React-RCTVibration: 25f26b85e5e432bb3c256f8b384f9269e9529f25
++  React-RCTAnimation: 60f6eca214a62b9673f64db6df3830cee902b5af
++  React-RCTAppDelegate: 37734b39bac108af30a0fd9d3e1149ec68b82c28
++  React-RCTBlob: 83fbcbd57755caf021787324aac2fe9b028cc264
++  React-RCTFabric: 31bf00d2759294baecbcb75643eeddd23163b9e4
++  React-RCTFBReactNativeSpec: f8cd2d6381702b2039f3b9b3de025dbf36dbbc54
++  React-RCTImage: 47aba3be7c6c64f956b7918ab933769602406aac
++  React-RCTLinking: 2dbaa4df2e4523f68baa07936bd8efdfa34d5f31
++  React-RCTNetwork: 1fca7455f9dedf7de2b95bec438da06680f3b000
++  React-RCTRuntime: 69ff58e90dbdb17160734f0df16527c18ff61f0c
++  React-RCTSettings: 01bf91c856862354d3d2f642ccb82f3697a4284a
++  React-RCTText: cb576a3797dcb64933613c522296a07eaafc0461
++  React-RCTVibration: 560af8c086741f3525b8456a482cdbe27f9d098e
+   React-rendererconsistency: 51d190444383ec3b4c87321c700d1f6513c751c9
+-  React-renderercss: 876db927db3e30259c47be13bfa36d2c646b6c13
+-  React-rendererdebug: c1056f8c458501ef6022a076d47bcc9fd1a84b01
+-  React-RuntimeApple: 0766031d217ff53b8c5bb3a90a114c698890ccbb
+-  React-RuntimeCore: b3c96e5eaa457d8f5680e7986d8694a8329bcfea
+-  React-runtimeexecutor: d1f52523b0b66051e22be1aabd8dd5de1dbf5eef
+-  React-RuntimeHermes: 2396631900bdb9fb05667de66345365d0d394e2b
+-  React-runtimescheduler: 2032e7fa094a7494809b478ef4434588b5ab992a
+-  React-timing: 32f695c27e3896d6f1bef77de042781b1bc999b3
+-  React-utils: 9f498dae9ce2da37772ab680a37ba516a4ea0a7e
+-  ReactAppDependencyProvider: 1bcd3527ac0390a1c898c114f81ff954be35ed79
+-  ReactCodegen: 9a5f0d4c80fe9bb1ff29309a76392825aabe68c7
+-  ReactCommon: 08810150b1206cc44aecf5f6ae19af32f29151a8
++  React-renderercss: 71b1849846dd0c1765bafd2392e56e19d197bd48
++  React-rendererdebug: 4cb736002d8dcaf2abcab40c71b2a5ec75c54b72
++  React-RuntimeApple: 3db10ad73c93b61f5544d92dea7e47585850d3c8
++  React-RuntimeCore: 5352d1df7bcca57c82b2b8d5f9e43e1206e0b3c3
++  React-runtimeexecutor: 99c6e2de25a17554fd096d9150459a5b0a6e66b4
++  React-RuntimeHermes: cbd16cf2df1f2c681fbbd7b88d5ee99c88cab8e3
++  React-runtimescheduler: 390a9e98b919d165d6f9f9d08535ff65bcc75631
++  React-timing: b4d33249d3105a9f890f271383bf02e07dbbe524
++  React-utils: 0beba7df8da743c0703bbb24f0cbda1b1d03aaba
++  ReactAppDependencyProvider: c277c5b231881ad4f00cd59e3aa0671b99d7ebee
++  ReactCodegen: 8cdd5dde550463bc215652a888a61c8ca8f1e787
++  ReactCommon: e6e232202a447d353e5531f2be82f50f47cbaa9a
+   ReactNativeDependencies: 71ce9c28beb282aa720ea7b46980fff9669f428a
+-  ReactNativeHost: c8e2848a9d0d07b42bb915760f07e747937ed491
+-  ReactTestApp-DevSupport: 4d6eaeeb6c023b757ba42010104c1b0228b82e32
++  ReactNativeHost: b1fac5896238a0956833aa1b3c60277663deb271
++  ReactTestApp-DevSupport: 1e24de7d6d78e0e922a3298c10fa27b3728112a5
+   ReactTestApp-Resources: 49fb7249af8203b9c74fd85de8c6f5bbb77a41df
+-  RNCAsyncStorage: c8407cc394627a3a4cf56b457d594bfa822b6ab8
+-  RNCPicker: 0a2e0c924f89d88878cbda326b0fe1655e35967f
+-  RNScreens: 30e3e86744e6dd0c46ebee546f7f79d70b382c69
+-  stripe-react-native: 2f59e1807366a730b4f0f230c870107089d3ad50
++  RNCAsyncStorage: 0574155b95b96b89a51717c4dd42fb6057926bbc
++  RNCPicker: 8857af4403867e2d81b8e8149e3e5c66282f1ee9
++  RNScreens: e3ad77a0b586f4910e4f4c30ec05d91a2c506075
++  stripe-react-native: ff95828ad8f694a8e8408d8fff5b368eaa42b37d
+   Yoga: 65431d43277b661ebc7289c6c5d82f64ce42cfe0
+ 
+ PODFILE CHECKSUM: 42f4a228dce42b0f6b2dbef6801b7dd522b701fe
+ 
+-COCOAPODS: 1.16.2
++COCOAPODS: 1.15.2
+diff --git a/ios/Checkout/NativeCheckoutControllerInstance.swift b/ios/Checkout/NativeCheckoutControllerInstance.swift
+index 542fff4..77cdb25 100644
+--- a/ios/Checkout/NativeCheckoutControllerInstance.swift
++++ b/ios/Checkout/NativeCheckoutControllerInstance.swift
+@@ -17,6 +17,7 @@ final class NativeCheckoutControllerInstance {
+     private var observation: AnyCancellable?
+     private var controllerId: String?
+     private var isDestroyed = false
++    private var serverUpdateContinuations: [String: CheckedContinuation<Void, Error>] = [:]
+ 
+     init(
+         checkout: CheckoutController,
+@@ -41,15 +42,61 @@ final class NativeCheckoutControllerInstance {
+             }
+     }
+ 
++    func runServerUpdate(
++        operationId: String,
++        request: @escaping () -> Void
++    ) async throws {
++        do {
++            try await checkout.runServerUpdate {
++                try await withTaskCancellationHandler {
++                    try Task.checkCancellation()
++                    guard !self.isDestroyed, self.serverUpdateContinuations[operationId] == nil else {
++                        throw CancellationError()
++                    }
++                    try await withCheckedThrowingContinuation { continuation in
++                        self.serverUpdateContinuations[operationId] = continuation
++                        request()
++                    }
++                } onCancel: {
++                    Task { @MainActor [weak self] in
++                        self?.completeServerUpdate(operationId: operationId, error: CancellationError())
++                    }
++                }
++            }
++        } catch {
++            if isDestroyed { throw CancellationError() }
++            throw error
++        }
++    }
++
++    func completeServerUpdate(operationId: String, error: String?) {
++        let callbackError = error.map {
++            NSError(domain: "CheckoutServerUpdate", code: 0, userInfo: [NSLocalizedDescriptionKey: $0])
++        }
++        completeServerUpdate(operationId: operationId, error: callbackError)
++    }
++
+     func destroy() {
+         guard !isDestroyed else { return }
+         isDestroyed = true
++        let updates = serverUpdateContinuations
++        serverUpdateContinuations.removeAll()
++        updates.values.forEach { $0.resume(throwing: CancellationError()) }
+         observation?.cancel()
+         observation = nil
+         // The pinned iOS SDK has no explicit destruction API. Removing this
+         // instance from the registry releases its Checkout and Payment Element.
+     }
+ 
++    private func completeServerUpdate(operationId: String, error: Error?) {
++        guard let continuation = serverUpdateContinuations.removeValue(forKey: operationId) else { return }
++        if let error {
++            continuation.resume(throwing: error)
++        } else {
++            continuation.resume()
++        }
++    }
++
+     private func emit(status: Status) {
+         guard let controllerId else {
+             return
+diff --git a/ios/StripeSdk.mm b/ios/StripeSdk.mm
+index e341120..18b01cb 100644
+--- a/ios/StripeSdk.mm
++++ b/ios/StripeSdk.mm
+@@ -267,6 +267,23 @@ RCT_EXPORT_METHOD(clearCheckoutPaymentOption:(nonnull NSString *)controllerId
+   [StripeSdkImpl.shared clearCheckoutPaymentOption:controllerId resolver:resolve rejecter:reject];
+ }
+ 
++RCT_EXPORT_METHOD(runCheckoutServerUpdate:(nonnull NSString *)controllerId
++                              operationId:(nonnull NSString *)operationId
++                                  resolve:(nonnull RCTPromiseResolveBlock)resolve
++                                   reject:(nonnull RCTPromiseRejectBlock)reject)
++{
++  [StripeSdkImpl.shared runCheckoutServerUpdate:controllerId operationId:operationId resolver:resolve rejecter:reject];
++}
++
++RCT_EXPORT_METHOD(completeCheckoutServerUpdate:(nonnull NSString *)controllerId
++                                   operationId:(nonnull NSString *)operationId
++                                         error:(nullable NSString *)error
++                                       resolve:(nonnull RCTPromiseResolveBlock)resolve
++                                        reject:(nonnull RCTPromiseRejectBlock)reject)
++{
++  [StripeSdkImpl.shared completeCheckoutServerUpdate:controllerId operationId:operationId error:error resolver:resolve rejecter:reject];
++}
++
+ RCT_EXPORT_METHOD(clientSecretProviderSetupIntentClientSecretCallback:(nonnull NSString *)setupIntentClientSecret
+                                                                       resolve:(nonnull RCTPromiseResolveBlock)resolve
+                                                                        reject:(nonnull RCTPromiseRejectBlock)reject)
+diff --git a/ios/StripeSdkEmitter.swift b/ios/StripeSdkEmitter.swift
+index 88cbe5a..2aa0872 100644
+--- a/ios/StripeSdkEmitter.swift
++++ b/ios/StripeSdkEmitter.swift
+@@ -1,6 +1,7 @@
+ import Foundation
+ 
+ @objc public protocol StripeSdkEmitter {
++    func emitCheckoutServerUpdateRequested(_ value: [String: Any])
+     func emitOnConfirmHandlerCallback(_ value: [String: Any])
+     func emitOnConfirmationTokenHandlerCallback(_ value: [String: Any])
+     func emitOnFinancialConnectionsEvent(_ value: [String: Any])
+diff --git a/ios/StripeSdkEventEmitterCompat.h b/ios/StripeSdkEventEmitterCompat.h
+index 7f9a739..a71f092 100644
+--- a/ios/StripeSdkEventEmitterCompat.h
++++ b/ios/StripeSdkEventEmitterCompat.h
+@@ -29,4 +29,5 @@
+ - (void)emitPaymentMethodMessagingElementConfigureResult:(NSDictionary *)value;
+ - (void)emitCheckoutControllerDidUpdate:(NSDictionary *)value;
+ - (void)emitCheckoutControllerDidSelectPaymentOption:(NSDictionary *)value;
++- (void)emitCheckoutServerUpdateRequested:(NSDictionary *)value;
+ @end
+diff --git a/ios/StripeSdkEventEmitterCompat.m b/ios/StripeSdkEventEmitterCompat.m
+index d5faa9d..2c3be7c 100644
+--- a/ios/StripeSdkEventEmitterCompat.m
++++ b/ios/StripeSdkEventEmitterCompat.m
+@@ -28,6 +28,7 @@
+     @"paymentMethodMessagingElementDidUpdateHeight",
+     @"paymentMethodMessagingElementConfigureResult",
+     @"checkoutControllerDidUpdate",
++    @"checkoutServerUpdateRequested",
+     @"checkoutControllerDidSelectPaymentOption",
+   ];
+ }
+@@ -152,4 +153,9 @@
+   [self sendEventWithName:@"checkoutControllerDidSelectPaymentOption" body:value];
+ }
+ 
++- (void)emitCheckoutServerUpdateRequested:(NSDictionary *)value
++{
++  [self sendEventWithName:@"checkoutServerUpdateRequested" body:value];
++}
++
+ @end
+diff --git a/ios/StripeSdkImpl+Checkout.swift b/ios/StripeSdkImpl+Checkout.swift
+index 48bed65..4cf9ee0 100644
+--- a/ios/StripeSdkImpl+Checkout.swift
++++ b/ios/StripeSdkImpl+Checkout.swift
+@@ -142,6 +142,38 @@ extension StripeSdkImpl {
+         }
+     }
+ 
++    @objc(runCheckoutServerUpdate:operationId:resolver:rejecter:)
++    public func runCheckoutServerUpdate(
++        controllerId: String,
++        operationId: String,
++        resolver resolve: @escaping RCTPromiseResolveBlock,
++        rejecter reject: @escaping RCTPromiseRejectBlock
++    ) {
++        performCheckoutMutation(controllerId: controllerId, resolver: resolve, rejecter: reject) { [weak self] instance in
++            try await instance.runServerUpdate(operationId: operationId) { [weak self] in
++                self?.emitter?.emitCheckoutServerUpdateRequested([
++                    "controllerId": controllerId,
++                    "operationId": operationId,
++                ])
++            }
++        }
++    }
++
++    @objc(completeCheckoutServerUpdate:operationId:error:resolver:rejecter:)
++    public func completeCheckoutServerUpdate(
++        controllerId: String,
++        operationId: String,
++        error: String?,
++        resolver resolve: @escaping RCTPromiseResolveBlock,
++        rejecter reject: @escaping RCTPromiseRejectBlock
++    ) {
++        Task { @MainActor [weak self] in
++            let instance = self?.checkoutControllers[controllerId]
++            instance?.completeServerUpdate(operationId: operationId, error: error)
++            resolve(nil)
++        }
++    }
++
+     private func performCheckoutMutation(
+         controllerId: String,
+         resolver resolve: @escaping RCTPromiseResolveBlock,
+diff --git a/package.json b/package.json
+index 315292e..c666310 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-react-native",
+-  "version": "0.78.0",
++  "version": "0.79.0",
+   "author": "Stripe",
+   "description": "Stripe SDK for React Native",
+   "main": "lib/commonjs/index",
+diff --git a/scripts/propose.rb b/scripts/propose.rb
+index d3efb37..e2237f8 100755
+--- a/scripts/propose.rb
++++ b/scripts/propose.rb
+@@ -8,6 +8,7 @@ require_relative 'helpers'
+ require_relative 'native_sdk_versions'
+ 
+ @release_type = nil
++@is_dry_run = false
+ 
+ VALID_RELEASE_TYPES = %w[patch minor major].freeze
+ 
+@@ -44,7 +45,7 @@ end
+ 
+ def create_proposal_pr(version, native_sdk_updater, native_sdk_versions)
+   branch = "release/propose-#{version}"
+-  execute_or_fail("git checkout -b #{branch}")
++  execute_or_fail("git checkout -b #{branch}") unless @is_dry_run
+ 
+   bump_version(version)
+   update_changelog(version)
+@@ -58,12 +59,16 @@ def create_proposal_pr(version, native_sdk_updater, native_sdk_versions)
+     puts "#{change.name}: #{status}"
+   end
+ 
+-  ios_changed = native_sdk_changes.any? { |change| change.name == 'stripe-ios' && change.changed }
+-  execute_or_fail("yarn pods") if ios_changed
++  execute_or_fail("yarn pods")
+ 
+-  files_to_add = ['package.json', 'CHANGELOG.md']
++  if @is_dry_run
++    puts "[dry-run] Local preparation complete. Changes are left in the working tree for inspection."
++    puts "[dry-run] Skipping staging, committing, pushing, and PR creation."
++    return
++  end
++
++  files_to_add = ['package.json', 'CHANGELOG.md', 'example/ios/Podfile.lock']
+   files_to_add.concat(native_sdk_changes.select(&:changed).map(&:path))
+-  files_to_add << 'example/ios/Podfile.lock' if ios_changed
+   execute_or_fail("git add #{files_to_add.map(&:shellescape).join(' ')}")
+   execute_or_fail("git commit -m 'Propose #{version}'")
+   execute_or_fail("git push -u origin #{branch}")
+@@ -96,7 +101,7 @@ end
+ OptionParser.new do |opts|
+   opts.banner = <<~BANNER
+     USAGE:
+-        ./scripts/propose.rb <release_type>
++        ./scripts/propose.rb [OPTIONS] <release_type>
+ 
+     Creates a proposal PR for the next release. Replaces the '## Unreleased'
+     header in CHANGELOG.md with the new version and today's date, updates the
+@@ -104,8 +109,14 @@ OptionParser.new do |opts|
+ 
+     ARGS:
+         <release_type>    "patch", "minor", or "major"
++
++    OPTIONS:
+   BANNER
+ 
++  opts.on("--dry-run", "Update local files and install pods; leave changes uncommitted without creating a branch, pushing, or opening a PR") do
++    @is_dry_run = true
++  end
++
+   opts.on("-h", "--help", "Show this help message") do
+     puts opts
+     exit
+@@ -124,7 +135,12 @@ end
+ 
+ Dir.chdir(`git rev-parse --show-toplevel`.strip)
+ 
+-preflight_checks
++if @is_dry_run
++  puts "[dry-run] Updating version files, CHANGELOG.md, and pods in the current checkout."
++  puts "[dry-run] Changes will remain in the working tree; no branch, commit, push, or PR will be created."
++else
++  preflight_checks
++end
+ 
+ version = next_version
+ puts "Proposing #{version} (currently #{current_version})"
+diff --git a/src/checkout/CheckoutControllerEventEmitter.ts b/src/checkout/CheckoutControllerEventEmitter.ts
+index 1b4b294..3860b0c 100644
+--- a/src/checkout/CheckoutControllerEventEmitter.ts
++++ b/src/checkout/CheckoutControllerEventEmitter.ts
+@@ -8,7 +8,7 @@ export interface CheckoutControllerUpdate {
+ }
+ 
+ /** Creates identifiers for controllers and server-update operations. */
+-export function createCheckoutId(): string {
++export function createCheckoutBridgeId(): string {
+   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+     /[xy]/g,
+     (character) => {
+diff --git a/src/checkout/__tests__/runServerUpdate.test.ts b/src/checkout/__tests__/runServerUpdate.test.ts
+new file mode 100644
+index 0000000..967b970
+--- /dev/null
++++ b/src/checkout/__tests__/runServerUpdate.test.ts
+@@ -0,0 +1,95 @@
++import { addListener } from '../../events';
++import NativeStripeSdk from '../../specs/NativeStripeSdkModule';
++import { runServerUpdate } from '../runServerUpdate';
++
++jest.mock('../../events', () => ({ addListener: jest.fn() }));
++jest.mock('../../specs/NativeStripeSdkModule', () => ({
++  __esModule: true,
++  default: {
++    runCheckoutServerUpdate: jest.fn(),
++    completeCheckoutServerUpdate: jest.fn(),
++  },
++}));
++
++function deferred() {
++  let resolve!: () => void;
++  let reject!: (error: Error) => void;
++  const promise = new Promise<void>((yes, no) => {
++    resolve = yes;
++    reject = no;
++  });
++  return { promise, resolve, reject };
++}
++
++const start = NativeStripeSdk.runCheckoutServerUpdate as jest.Mock;
++const complete = NativeStripeSdk.completeCheckoutServerUpdate as jest.Mock;
++const listen = addListener as jest.Mock;
++const controllerId = 'controller';
++
++beforeEach(() => {
++  start.mockReset();
++  complete.mockReset().mockResolvedValue(undefined);
++  listen.mockReset().mockImplementation(() => ({ remove: jest.fn() }));
++});
++
++function request(
++  controller = controllerId,
++  operation = start.mock.calls[0][1]
++) {
++  listen.mock.calls[0][1]({
++    controllerId: controller,
++    operationId: operation,
++  });
++}
++
++it.each([undefined, new Error('Server failed')])(
++  'reports callback completion to its native operation: %s',
++  async (error) => {
++    const pending = deferred();
++    start.mockReturnValue(pending.promise);
++    const callback = jest.fn(async () => {
++      if (error) {
++        throw error;
++      }
++    });
++    const update = runServerUpdate(controllerId, callback);
++    expect(callback).not.toHaveBeenCalled();
++    complete.mockImplementation(async () => {
++      pending.resolve();
++    });
++    request('other');
++    request(controllerId, 'other');
++    request();
++    await update;
++    expect(callback).toHaveBeenCalledTimes(1);
++    expect(complete).toHaveBeenCalledWith(
++      ...start.mock.calls[0],
++      error?.message ?? null
++    );
++    expect(listen.mock.results[0].value.remove).toHaveBeenCalledTimes(1);
++  }
++);
++
++it('cleans up after native failure and ignores a late callback', async () => {
++  const native = deferred();
++  const callback = deferred();
++  start.mockReturnValue(native.promise);
++  const update = runServerUpdate(controllerId, () => callback.promise);
++  request();
++  native.reject(new Error('Native update failed'));
++  await expect(update).rejects.toThrow('Native update failed');
++  callback.resolve();
++  await Promise.resolve();
++  await Promise.resolve();
++  expect(complete).not.toHaveBeenCalled();
++  expect(listen.mock.results[0].value.remove).toHaveBeenCalledTimes(1);
++});
++
++it('rejects if native cannot receive the callback result', async () => {
++  start.mockReturnValue(new Promise(() => {}));
++  complete.mockRejectedValue(new Error('Bridge unavailable'));
++  const update = runServerUpdate(controllerId, async () => {});
++  request();
++  await expect(update).rejects.toThrow('Bridge unavailable');
++  expect(listen.mock.results[0].value.remove).toHaveBeenCalledTimes(1);
++});
+diff --git a/src/checkout/__tests__/useCheckout.test.ts b/src/checkout/__tests__/useCheckout.test.ts
+new file mode 100644
+index 0000000..5033399
+--- /dev/null
++++ b/src/checkout/__tests__/useCheckout.test.ts
+@@ -0,0 +1,220 @@
++import { act, renderHook, waitFor } from '@testing-library/react-native';
++import { addListener } from '../../events';
++import { useCheckout } from '../../hooks/useCheckout';
++import NativeStripeSdk from '../../specs/NativeStripeSdkModule';
++import type { Checkout } from '../../types/Checkout';
++import { checkoutSession as session } from '../__fixtures__/session';
++import type { CheckoutControllerUpdate } from '../CheckoutControllerEventEmitter';
++
++jest.mock('../../events', () => ({ addListener: jest.fn() }));
++jest.mock('../../specs/NativeStripeSdkModule', () => ({
++  __esModule: true,
++  default: {
++    createCheckout: jest.fn(),
++    destroyCheckout: jest.fn(),
++    updateCheckoutEmail: jest.fn(),
++    runCheckoutServerUpdate: jest.fn(),
++    completeCheckoutServerUpdate: jest.fn(),
++  },
++}));
++
++const options: Checkout.CreateOptions = {
++  clientSecret: 'cs_test_secret',
++  returnURL: 'example://checkout',
++};
++const getConfiguration = async () => options;
++const events = addListener as jest.Mock;
++const create = NativeStripeSdk.createCheckout as jest.Mock;
++const destroy = NativeStripeSdk.destroyCheckout as jest.Mock;
++const updateEmail = NativeStripeSdk.updateCheckoutEmail as jest.Mock;
++const startServerUpdate = NativeStripeSdk.runCheckoutServerUpdate as jest.Mock;
++const completeServerUpdate =
++  NativeStripeSdk.completeCheckoutServerUpdate as jest.Mock;
++
++function renderCheckout(overrides: Partial<Checkout.UseOptions> = {}) {
++  const initialProps: Checkout.UseOptions = {
++    getConfiguration,
++    ...overrides,
++  };
++  return renderHook(
++    (hookOptions: Checkout.UseOptions) => useCheckout(hookOptions),
++    { initialProps }
++  );
++}
++
++function emit(update: CheckoutControllerUpdate) {
++  events.mock.calls
++    .filter(([event]) => event === 'checkoutControllerDidUpdate')
++    .forEach(([, eventListener]) => eventListener(update));
++}
++
++function listener(event: string) {
++  return events.mock.calls.find(([name]) => name === event)![1];
++}
++
++function controllerId(index = 0): string {
++  return create.mock.calls[index][1];
++}
++
++function deferred<T>() {
++  let resolve!: (value: T) => void;
++  let reject!: (error: Error) => void;
++  const promise = new Promise<T>((yes, no) => {
++    resolve = yes;
++    reject = no;
++  });
++  return { promise, resolve, reject };
++}
++
++beforeEach(() => {
++  events.mockReset().mockImplementation(() => ({ remove: jest.fn() }));
++  create.mockReset().mockImplementation(async (_, id) => ({
++    controllerId: id,
++    session,
++  }));
++  destroy.mockReset().mockResolvedValue(undefined);
++  updateEmail.mockReset().mockResolvedValue(undefined);
++  startServerUpdate.mockReset();
++  completeServerUpdate.mockReset().mockResolvedValue(undefined);
++});
++
++it('loads while enabled and follows native updates', async () => {
++  const configuration = jest.fn(getConfiguration);
++  const hook = renderCheckout({
++    enabled: false,
++    getConfiguration: configuration,
++  });
++
++  expect(hook.result.current.status).toBe('idle');
++  await hook.result.current.reload();
++  expect(configuration).not.toHaveBeenCalled();
++
++  hook.rerender({ enabled: true, getConfiguration: configuration });
++  await waitFor(() => expect(hook.result.current.status).toBe('ready'));
++  const firstUpdateEmail = hook.result.current.updateEmail;
++  const updated = { ...session, email: 'native@example.com' };
++  act(() =>
++    emit({ controllerId: controllerId(), status: 'updating', session: updated })
++  );
++
++  expect(hook.result.current).toMatchObject({
++    status: 'updating',
++    session: updated,
++  });
++  await hook.result.current.updateEmail('jenny@example.com');
++  expect(updateEmail).toHaveBeenCalledWith(controllerId(), 'jenny@example.com');
++
++  hook.rerender({ enabled: true, getConfiguration: configuration });
++  expect(hook.result.current.updateEmail).toBe(firstUpdateEmail);
++  expect(configuration).toHaveBeenCalledTimes(1);
++  hook.unmount();
++  await waitFor(() => expect(destroy).toHaveBeenCalledWith(controllerId()));
++});
++
++it('reloads with the latest configuration and ignores old events', async () => {
++  const first = jest.fn(getConfiguration);
++  const nextOptions = { ...options, clientSecret: 'new-secret' };
++  const next = jest.fn(async () => nextOptions);
++  const hook = renderCheckout({ getConfiguration: first });
++  await waitFor(() => expect(hook.result.current.status).toBe('ready'));
++
++  const reload = hook.result.current.reload;
++  hook.rerender({ getConfiguration: next });
++  expect(next).not.toHaveBeenCalled();
++  await act(reload);
++
++  expect(destroy).toHaveBeenCalledWith(controllerId());
++  expect(create).toHaveBeenLastCalledWith(nextOptions, controllerId(1));
++  act(() =>
++    emit({
++      controllerId: controllerId(),
++      status: 'updating',
++      session: { ...session, email: 'stale' },
++    })
++  );
++  expect(hook.result.current).toMatchObject({ status: 'ready', session });
++  expect(hook.result.current.reload).toBe(reload);
++});
++
++it('ignores stale configuration results', async () => {
++  const pending = deferred<Checkout.CreateOptions>();
++  const configuration = jest
++    .fn()
++    .mockReturnValueOnce(pending.promise)
++    .mockResolvedValue(options);
++  const hook = renderCheckout({ getConfiguration: configuration });
++  await waitFor(() => expect(configuration).toHaveBeenCalledTimes(1));
++
++  await act(() => hook.result.current.reload());
++  await act(() => pending.resolve({ ...options, clientSecret: 'stale' }));
++
++  expect(create).toHaveBeenCalledTimes(1);
++  expect(create).toHaveBeenCalledWith(options, expect.any(String));
++});
++
++it('destroys a controller created after unmount', async () => {
++  const pending = deferred<{
++    controllerId: string;
++    session: Checkout.Session;
++  }>();
++  create.mockReturnValueOnce(pending.promise);
++  const hook = renderCheckout();
++  await waitFor(() => expect(create).toHaveBeenCalledTimes(1));
++
++  hook.unmount();
++  await act(() => pending.resolve({ controllerId: controllerId(), session }));
++
++  expect(destroy).toHaveBeenCalledWith(controllerId());
++});
++
++it('reports initialization errors and recovers on reload', async () => {
++  create.mockRejectedValueOnce(
++    Object.assign(new Error('Expired secret'), { code: 'InvalidClientSecret' })
++  );
++  const hook = renderCheckout();
++  await waitFor(() => expect(hook.result.current.status).toBe('error'));
++  expect(hook.result.current.error).toMatchObject({
++    code: 'InvalidClientSecret',
++    message: 'Expired secret',
++  });
++
++  await act(() => hook.result.current.reload());
++  expect(hook.result.current).toMatchObject({ status: 'ready', error: null });
++});
++
++it('cancels an active server update during reload', async () => {
++  const native = deferred<void>();
++  const server = deferred<void>();
++  startServerUpdate.mockReturnValue(native.promise);
++  const hook = renderCheckout();
++  await waitFor(() => expect(hook.result.current.status).toBe('ready'));
++
++  const update = hook.result.current.runServerUpdate(() => server.promise);
++  const settled = update.catch((error: unknown) => error);
++  const [id, operationId] = startServerUpdate.mock.calls[0];
++  await act(() =>
++    listener('checkoutServerUpdateRequested')({
++      controllerId: id,
++      operationId,
++    })
++  );
++  destroy.mockImplementationOnce(async () => {
++    native.reject(
++      Object.assign(new Error('Controller destroyed'), { code: 'Canceled' })
++    );
++  });
++
++  await act(() => hook.result.current.reload());
++  await act(async () => {
++    expect(await settled).toMatchObject({
++      code: 'Canceled',
++      message: 'Controller destroyed',
++    });
++    server.resolve();
++  });
++
++  expect(destroy).toHaveBeenCalledWith(id);
++  expect(completeServerUpdate).not.toHaveBeenCalled();
++  expect(hook.result.current.status).toBe('ready');
++  expect(controllerId(1)).not.toBe(id);
++});
+diff --git a/src/checkout/createCheckout.ts b/src/checkout/createCheckout.ts
+index af71d7a..9473b31 100644
+--- a/src/checkout/createCheckout.ts
++++ b/src/checkout/createCheckout.ts
+@@ -1,10 +1,11 @@
+ import type { Checkout, CheckoutController } from '../types/Checkout';
+ import type { StripeError } from '../types/Errors';
++import { runServerUpdate } from './runServerUpdate';
+ import NativeStripeSdk from '../specs/NativeStripeSdkModule';
+ import {
+   addCheckoutControllerListener,
+   addCheckoutControllerSelectionListener,
+-  createCheckoutId,
++  createCheckoutBridgeId,
+ } from './CheckoutControllerEventEmitter';
+ 
+ const CHECKOUT_NOT_IMPLEMENTED_MESSAGE =
+@@ -31,7 +32,8 @@ function checkoutError(
+   return error;
+ }
+ 
+-function normalizeCheckoutError(error: unknown): CheckoutOperationError {
++/** Preserves native error codes and wraps untyped bridge failures. */
++export function normalizeCheckoutError(error: unknown): CheckoutOperationError {
+   if (error instanceof Error) {
+     const code = (error as Partial<CheckoutOperationError>).code;
+     if (code && checkoutErrorCodes.has(code)) {
+@@ -71,15 +73,27 @@ function nativeCreateOptions(
+ export async function createCheckout(
+   options: Checkout.CreateOptions
+ ): Promise<CheckoutController> {
+-  const controllerId = createCheckoutId();
++  return createCheckoutController(options);
++}
++
++/** Creates a controller and reports its native state changes to useCheckout. */
++export async function createCheckoutController(
++  options: Checkout.CreateOptions,
++  onUpdate?: (controller: CheckoutController) => void
++): Promise<CheckoutController> {
++  const controllerId = createCheckoutBridgeId();
+   let status: CheckoutController['status'] = 'ready';
+   let session: Checkout.Session | undefined;
+   let destroyPromise: Promise<void> | undefined;
++  let controller: CheckoutController | undefined;
+   // Subscribe before creating native so initial updates cannot be lost.
+   const subscription = addCheckoutControllerListener(controllerId, (update) => {
+     if (status !== 'destroyed') {
+       status = update.status;
+       session = update.session;
++      if (controller) {
++        onUpdate?.(controller);
++      }
+     }
+   });
+   const selectionSubscription = addCheckoutControllerSelectionListener(
+@@ -122,7 +136,7 @@ export async function createCheckout(
+       present: notImplemented,
+     };
+ 
+-    return {
++    controller = {
+       get status() {
+         return status;
+       },
+@@ -149,8 +163,8 @@ export async function createCheckout(
+         performOperation(() =>
+           NativeStripeSdk.removeCheckoutPromotionCode(controllerId)
+         ),
+-      // TODO(porter): Bridge the Checkout server-update handshake.
+-      runServerUpdate: notImplemented,
++      runServerUpdate: (serverUpdate) =>
++        performOperation(() => runServerUpdate(controllerId, serverUpdate)),
+       clearPaymentOption: () =>
+         performOperation(() =>
+           NativeStripeSdk.clearCheckoutPaymentOption(controllerId)
+@@ -174,6 +188,7 @@ export async function createCheckout(
+         return destroyPromise;
+       },
+     };
++    return controller;
+   } catch (error) {
+     subscription.remove();
+     selectionSubscription.remove();
+diff --git a/src/checkout/runServerUpdate.ts b/src/checkout/runServerUpdate.ts
+new file mode 100644
+index 0000000..f51827d
+--- /dev/null
++++ b/src/checkout/runServerUpdate.ts
+@@ -0,0 +1,54 @@
++import { addListener } from '../events';
++import NativeStripeSdk from '../specs/NativeStripeSdkModule';
++import { createCheckoutBridgeId } from './CheckoutControllerEventEmitter';
++
++/** Runs the merchant callback when native is ready to update this session. */
++export async function runServerUpdate(
++  controllerId: string,
++  serverUpdate: () => Promise<void>
++): Promise<void> {
++  const operationId = createCheckoutBridgeId();
++  let active = true;
++  let requested = false;
++  let rejectCompletion!: (error: unknown) => void;
++  const completionFailure = new Promise<never>((_, reject) => {
++    rejectCompletion = reject;
++  });
++  const complete = async (error: string | null) => {
++    if (active) {
++      await NativeStripeSdk.completeCheckoutServerUpdate(
++        controllerId,
++        operationId,
++        error
++      );
++    }
++  };
++  const subscription = addListener('checkoutServerUpdateRequested', (event) => {
++    if (
++      !active ||
++      event.controllerId !== controllerId ||
++      event.operationId !== operationId ||
++      requested
++    ) {
++      return;
++    }
++    requested = true;
++    Promise.resolve()
++      .then(serverUpdate)
++      .then(
++        () => complete(null),
++        (error: unknown) =>
++          complete(error instanceof Error ? error.message : String(error))
++      )
++      .catch(rejectCompletion);
++  });
++  try {
++    await Promise.race([
++      NativeStripeSdk.runCheckoutServerUpdate(controllerId, operationId),
++      completionFailure,
++    ]);
++  } finally {
++    active = false;
++    subscription.remove();
++  }
++}
+diff --git a/src/connect/EmbeddedComponent.tsx b/src/connect/EmbeddedComponent.tsx
+index 636ce24..1e24a8b 100644
+--- a/src/connect/EmbeddedComponent.tsx
++++ b/src/connect/EmbeddedComponent.tsx
+@@ -6,11 +6,14 @@ import React, {
+   useState,
+ } from 'react';
+ import {
++  ActivityIndicator,
+   AppState,
+   AppStateStatus,
+   Linking,
+   Platform,
+   StyleProp,
++  StyleSheet,
++  View,
+   ViewStyle,
+ } from 'react-native';
+ import type { WebView, WebViewMessageEvent } from 'react-native-webview';
+@@ -82,6 +85,17 @@ export interface CommonComponentProps {
+   style?: StyleProp<ViewStyle>;
+ }
+ 
++const styles = StyleSheet.create({
++  loadingIndicatorContainer: {
++    position: 'absolute',
++    flex: 1,
++    justifyContent: 'center',
++    alignItems: 'center',
++    height: '100%',
++    width: '100%',
++  },
++});
++
+ type EmbeddedComponentType =
+   | 'invoice-history'
+   | 'transactions-list'
+@@ -838,6 +852,7 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+   );
+ 
+   const backgroundColor = appearance?.variables?.colorBackground || '#FFFFFF';
++  const textColor = appearance?.variables?.colorText || '#000000';
+ 
+   const mergedStyle = useMemo(
+     () => [{ backgroundColor }, style],
+@@ -850,6 +865,13 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+     <WebViewComponent
+       ref={ref}
+       style={mergedStyle}
++      renderLoading={() => {
++        return (
++          <View style={[styles.loadingIndicatorContainer, { backgroundColor }]}>
++            <ActivityIndicator color={textColor} />
++          </View>
++        );
++      }}
+       webviewDebuggingEnabled={DEVELOPMENT_MODE}
+       source={source}
+       userAgent={userAgent}
+diff --git a/src/connect/__tests__/EmbeddedComponent.test.tsx b/src/connect/__tests__/EmbeddedComponent.test.tsx
+index aefc18f..204cc46 100644
+--- a/src/connect/__tests__/EmbeddedComponent.test.tsx
++++ b/src/connect/__tests__/EmbeddedComponent.test.tsx
+@@ -5,6 +5,7 @@ const mockInjectJavaScript = jest.fn();
+ let webViewOnMessage: ((event: any) => void) | undefined;
+ let mockLoadWebView = false;
+ let mockWebViewComponent: any;
++let mockWebViewProps: any;
+ 
+ jest.mock('react', () => {
+   const React = jest.requireActual('react');
+@@ -25,6 +26,7 @@ jest.mock('react-native-webview', () => {
+   const React = require('react');
+   mockWebViewComponent = React.forwardRef((props: any, ref: any) => {
+     webViewOnMessage = props.onMessage;
++    mockWebViewProps = props;
+     React.useImperativeHandle(ref, () => ({
+       injectJavaScript: mockInjectJavaScript,
+     }));
+@@ -45,7 +47,12 @@ jest.mock('../../specs/NativeStripeSdkModule', () =>
+ 
+ import React from 'react';
+ import { render, waitFor, act } from '@testing-library/react-native';
+-import { Platform, AppState } from 'react-native';
++import {
++  ActivityIndicator,
++  AppState,
++  Platform,
++  StyleSheet,
++} from 'react-native';
+ import 'react-native-webview';
+ import NativeStripeSdk from '../../specs/NativeStripeSdkModule';
+ import {
+@@ -79,6 +86,7 @@ describe('EmbeddedComponent', () => {
+     jest.clearAllMocks();
+     webViewOnMessage = undefined;
+     mockLoadWebView = false;
++    mockWebViewProps = undefined;
+     connectInstance = loadConnectAndInitialize(mockInitParams);
+   });
+ 
+@@ -118,6 +126,56 @@ describe('EmbeddedComponent', () => {
+       expect(true).toBe(true);
+     });
+ 
++    it('uses appearance colors for the loading indicator', async () => {
++      connectInstance = loadConnectAndInitialize({
++        ...mockInitParams,
++        appearance: {
++          variables: {
++            colorBackground: '#AABBCC',
++            colorText: '#112233',
++          },
++        },
++      });
++
++      mockLoadWebView = true;
++      renderComponent();
++
++      await waitFor(() => {
++        expect(mockWebViewProps?.renderLoading).toEqual(expect.any(Function));
++      });
++
++      const loadingView = mockWebViewProps.renderLoading();
++      const loadingIndicator = loadingView.props.children;
++
++      expect(StyleSheet.flatten(loadingView.props.style)).toMatchObject({
++        backgroundColor: '#AABBCC',
++      });
++      expect(loadingIndicator.type).toBe(ActivityIndicator);
++      expect(loadingIndicator.props.color).toBe('#112233');
++    });
++
++    it('uses fallback colors for the loading indicator', async () => {
++      connectInstance = loadConnectAndInitialize({
++        publishableKey: 'pk_test_123',
++        fetchClientSecret: jest.fn(async () => 'secret_123'),
++      });
++
++      mockLoadWebView = true;
++      renderComponent();
++
++      await waitFor(() => {
++        expect(mockWebViewProps?.renderLoading).toEqual(expect.any(Function));
++      });
++
++      const loadingView = mockWebViewProps.renderLoading();
++      const loadingIndicator = loadingView.props.children;
++
++      expect(StyleSheet.flatten(loadingView.props.style)).toMatchObject({
++        backgroundColor: '#FFFFFF',
++      });
++      expect(loadingIndicator.props.color).toBe('#000000');
++    });
++
+     it('SDK version validation rejects invalid formats', () => {
+       // This test verifies the version format check at module load time
+       // The actual validation happens in the module scope
+diff --git a/src/events.ts b/src/events.ts
+index 57efe4c..5491807 100644
+--- a/src/events.ts
++++ b/src/events.ts
+@@ -30,6 +30,10 @@ const compatEventEmitter =
+ // Versions before RN 0.80 crash sometimes when setting the event emitter callback.
+ // Move this back to the NativeStripeSdkModule spec once we drop support for RN < 0.80.
+ type Events = {
++  checkoutServerUpdateRequested: EventEmitter<{
++    controllerId: string;
++    operationId: string;
++  }>;
+   onConfirmHandlerCallback: EventEmitter<{
+     paymentMethod: UnsafeObject<PaymentMethod.Result>;
+     shouldSavePaymentMethod: boolean;
+diff --git a/src/hooks/useCheckout.ts b/src/hooks/useCheckout.ts
+index 2d65f31..6cb64f3 100644
+--- a/src/hooks/useCheckout.ts
++++ b/src/hooks/useCheckout.ts
+@@ -1,22 +1,44 @@
+-import { useMemo } from 'react';
+-import type { Checkout } from '../types/Checkout';
++import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
++import {
++  createCheckoutController,
++  normalizeCheckoutError,
++} from '../checkout/createCheckout';
++import type { Checkout, CheckoutController } from '../types/Checkout';
+ 
+-const CHECKOUT_NOT_IMPLEMENTED_MESSAGE =
+-  'This version of @stripe/stripe-react-native does not include native support for the Checkout private preview.';
+-
+-const checkoutNotImplementedStripeError: NonNullable<
+-  Checkout.UseResult['error']
+-> = {
+-  code: 'Failed',
+-  message: CHECKOUT_NOT_IMPLEMENTED_MESSAGE,
++type State = Pick<
++  Checkout.UseResult,
++  'status' | 'session' | 'paymentElement' | 'error'
++>;
++const idle: State = {
++  status: 'idle',
++  session: null,
++  paymentElement: null,
++  error: null,
+ };
+ 
+-const rejectNotImplemented = (): Promise<never> =>
+-  Promise.reject(new Error(CHECKOUT_NOT_IMPLEMENTED_MESSAGE));
++function stateForController(controller: CheckoutController): State {
++  if (controller.status === 'destroyed') {
++    return {
++      ...idle,
++      status: 'error',
++      error: {
++        code: 'Canceled',
++        message: 'The Checkout controller was destroyed.',
++      },
++    };
++  }
++  return {
++    status: controller.status,
++    session: controller.session,
++    paymentElement: controller.paymentElement,
++    error: null,
++  };
++}
+ 
+ /**
+- * Loads a Checkout Session and exposes its reactive state and controller
+- * methods. The hook owns the native controller lifecycle.
++ * Loads Checkout and exposes native session updates. The hook destroys its
++ * controller on disable, reload, and unmount. Changing getConfiguration does
++ * not reload automatically; reload uses its latest value.
+  *
+  * @remarks
+  * This API is in private preview and can change without notice.
+@@ -24,24 +46,106 @@ const rejectNotImplemented = (): Promise<never> =>
+  * @CheckoutSessionPrivatePreview
+  */
+ export function useCheckout(options: Checkout.UseOptions): Checkout.UseResult {
+-  // TODO(porter): Implement the Checkout lifecycle with the native SDK.
+   const enabled = options.enabled ?? true;
++  const configuration = useRef(options.getConfiguration);
++  configuration.current = options.getConfiguration;
++  const active = useRef(false);
++  const generation = useRef(0);
++  const controller = useRef<CheckoutController | undefined>(undefined);
++  const destruction = useRef<Promise<void> | undefined>(undefined);
++  const [state, setState] = useState<State>(idle);
++
++  const destroy = useCallback(async () => {
++    const previous = controller.current;
++    controller.current = undefined;
++    const pending = previous ? previous.destroy() : destruction.current;
++    destruction.current = pending;
++    try {
++      await pending;
++    } finally {
++      if (destruction.current === pending) {
++        destruction.current = undefined;
++      }
++    }
++  }, []);
++
++  const reload = useCallback(async () => {
++    if (!active.current) {
++      return;
++    }
++    const request = ++generation.current;
++    const isCurrent = () => active.current && generation.current === request;
++    setState({ ...idle, status: 'loading' });
++    try {
++      await destroy();
++      if (!isCurrent()) {
++        return;
++      }
++      const createOptions = await configuration.current();
++      if (!isCurrent()) {
++        return;
++      }
++      const next = await createCheckoutController(createOptions, (updated) => {
++        if (isCurrent() && controller.current === updated) {
++          setState(stateForController(updated));
++        }
++      });
++      if (!isCurrent()) {
++        await next.destroy();
++        return;
++      }
++      controller.current = next;
++      setState(stateForController(next));
++    } catch (error) {
++      if (isCurrent()) {
++        setState({
++          ...idle,
++          status: 'error',
++          error: normalizeCheckoutError(error),
++        });
++      }
++      throw error;
++    }
++  }, [destroy]);
++
++  useEffect(() => {
++    active.current = enabled;
++    if (enabled) {
++      // The hook exposes initialization failures through its error state.
++      reload().catch(() => {});
++    } else {
++      setState(idle);
++    }
++    return () => {
++      active.current = false;
++      generation.current += 1;
++      // Cleanup cannot report errors through an unmounted hook.
++      destroy().catch(() => {});
++    };
++  }, [destroy, enabled, reload]);
++
++  const methods = useMemo<Omit<Checkout.UseResult, keyof State>>(() => {
++    const currentController = () => {
++      if (!active.current || !controller.current) {
++        throw new Error('Checkout has not loaded a controller.');
++      }
++      return controller.current;
++    };
++    return {
++      reload,
++      updateEmail: async (email) => currentController().updateEmail(email),
++      updateShippingAddress: async (address) =>
++        currentController().updateShippingAddress(address),
++      applyPromotionCode: async (code) =>
++        currentController().applyPromotionCode(code),
++      removePromotionCode: async () =>
++        currentController().removePromotionCode(),
++      clearPaymentOption: async () => currentController().clearPaymentOption(),
++      runServerUpdate: async (callback) =>
++        currentController().runServerUpdate(callback),
++      confirm: async () => currentController().confirm(),
++    };
++  }, [reload]);
+ 
+-  return useMemo<Checkout.UseResult>(
+-    () => ({
+-      status: enabled ? 'error' : 'idle',
+-      session: null,
+-      paymentElement: null,
+-      error: enabled ? checkoutNotImplementedStripeError : null,
+-      reload: rejectNotImplemented,
+-      updateEmail: rejectNotImplemented,
+-      updateShippingAddress: rejectNotImplemented,
+-      applyPromotionCode: rejectNotImplemented,
+-      removePromotionCode: rejectNotImplemented,
+-      runServerUpdate: rejectNotImplemented,
+-      clearPaymentOption: rejectNotImplemented,
+-      confirm: rejectNotImplemented,
+-    }),
+-    [enabled]
+-  );
++  return { ...(enabled ? state : idle), ...methods };
+ }
+diff --git a/src/specs/NativeStripeSdkModule.ts b/src/specs/NativeStripeSdkModule.ts
+index 0fb35fc..5de4bff 100644
+--- a/src/specs/NativeStripeSdkModule.ts
++++ b/src/specs/NativeStripeSdkModule.ts
+@@ -281,6 +281,19 @@ export interface Spec extends TurboModule {
+   /** @CheckoutSessionPrivatePreview */
+   destroyCheckout(controllerId: string): Promise<void>;
+ 
++  /** @CheckoutSessionPrivatePreview */
++  runCheckoutServerUpdate(
++    controllerId: string,
++    operationId: string
++  ): Promise<void>;
++
++  /** @CheckoutSessionPrivatePreview */
++  completeCheckoutServerUpdate(
++    controllerId: string,
++    operationId: string,
++    error: string | null
++  ): Promise<void>;
++
+   // Events
+   addListener: (eventType: string) => void;
+   removeListeners: (count: number) => void;
+diff --git a/stripe-react-native.podspec b/stripe-react-native.podspec
+index 855fcdb..bb72892 100644
+--- a/stripe-react-native.podspec
++++ b/stripe-react-native.podspec
+@@ -3,7 +3,7 @@ require_relative 'stripe_spm'
+ 
+ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+ # Keep stripe_version in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/stripe-identity-react-native.podspec
+-stripe_version = '26.12.0'
++stripe_version = '26.12.1'
+ 
+ if ENV['RCT_NEW_ARCH_ENABLED'] == '0'
+   raise 'stripe-react-native requires the React Native new architecture. Use RCT_NEW_ARCH_ENABLED=1 in your Podfile.'
+diff --git a/stripe_spm.rb b/stripe_spm.rb
+index 5818a97..0e5fa91 100644
+--- a/stripe_spm.rb
++++ b/stripe_spm.rb
+@@ -181,13 +181,17 @@ module StripeSPM
+   #     signing identity without losing their bundle identifiers/entitlements.
+   #   - Synchronizes frameworks on every build and removes obsolete files
+   #     within each framework so incremental builds pick up SDK updates.
+-  #   - FRAMEWORKS_FOLDER_PATH is unset for build types with no frameworks
+-  #     folder (some non-app targets); treat that as "nothing to do".
++  #   - TARGET_BUILD_DIR or FRAMEWORKS_FOLDER_PATH can be unset for build types
++  #     with no frameworks folder (some non-app targets); treat that as
++  #     "nothing to do".
+   #
+   # The heredoc is single-quoted (<<~'SCRIPT') so ${...} reaches the shell
+   # untouched by Ruby interpolation.
+   EMBED_SCRIPT = <<~'SCRIPT'.freeze
+     set -e
++    if [ -z "${TARGET_BUILD_DIR:-}" ]; then
++      exit 0
++    fi
+     if [ -z "${FRAMEWORKS_FOLDER_PATH:-}" ]; then
+       exit 0
+     fi

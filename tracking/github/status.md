@@ -279,6 +279,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.1/2026-09-26/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.0--10.5.1/comparison.json)
 
+## `github-1a16bda9bfe31d157849`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `6bbf9d530b2ca97993ed4d9a4b10cfd3d387730d`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-04-6bbf9d5/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-1a16bda9bfe31d157849/packet.md)
+- Review priority: `normal`
+- Required reading: `31` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.79.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.79.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.78.0--0.79.0/comparison.json)
+
 ## `github-1ab2662d292502a53058`
 
 - Repository: `braintree/braintree-web`
@@ -1177,6 +1202,31 @@
   To SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
   Comparison: Not applicable
 
+## `github-5b7b7125a474bec8891c`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `ee6e868130f9a61f197fa5005157d1e7f82d3052`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-5b7b7125a474bec8891c/packet.md)
+- Review priority: `normal`
+- Required reading: `55` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.76.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.76.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.75.0--0.76.0/comparison.json)
+
 ## `github-5bcc04b6e283f4b89e2b`
 
 - Repository: `stripe/stripe-js`
@@ -1226,6 +1276,31 @@
 - `paypal-ios@2.0.1` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-ios/releases/paypal-ios/2.0.1/2026-07-31/manifest.json)
   Comparison: Not applicable
+
+## `github-5f21519e3eed9f164ede`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `cc200808f0aefc9e7c6d328f2b9d428fdeb3a3d1`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-5f21519e3eed9f164ede/packet.md)
+- Review priority: `high`
+- Required reading: `62` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.77.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.77.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.76.0--0.77.0/comparison.json)
 
 ## `github-60b7545cc0ad3999d886`
 
@@ -2358,6 +2433,31 @@
   From SHA: `de90a89c90b06421ca34241e7162236e2b04fd79`
   To SHA: `bb23e7c63305a872326f43c3d52c5edd53e20b43`
   Comparison: [manifest](repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/de90a89--bb23e7c/comparison.json)
+
+## `github-9be7291cb2f1d1ffc9b4`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `ce9c1bf03fff8c022b244c2ac62a89c35ae6fab3`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ce9c1bf/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-9be7291cb2f1d1ffc9b4/packet.md)
+- Review priority: `normal`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.80.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.80.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.79.0--0.80.0/comparison.json)
 
 ## `github-9ce02cb999656064a1a6`
 
@@ -3540,6 +3640,31 @@
 - `braintree-web-drop-in@1.48.0` (recommended `delta`)
   Release: [manifest](../../raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.48.0/2026-09-20/manifest.json)
   Comparison: [manifest](repos/braintree/braintree-web-drop-in/comparisons/braintree-web-drop-in/1.47.0--1.48.0/comparison.json)
+
+## `github-d9f1ae40b60cf515676a`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `fa56337f1b9f935c4d80de4a17c312c780a423e1`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-d9f1ae40b60cf515676a/packet.md)
+- Review priority: `normal`
+- Required reading: `65` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.78.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.78.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.77.0--0.78.0/comparison.json)
 
 ## `github-dac96e3489eeeca5d8e0`
 

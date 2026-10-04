@@ -1,0 +1,177 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-react-native`
+- Work item: `github-d9f1ae40b60cf515676a`
+- Snapshot: `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `@stripe/stripe-react-native`
+
+- Version: `0.77.0` -> `0.78.0`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `182`
+
+### Required reading
+
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.78.0/2026-10-04/manifest.json`
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.78.0/2026-10-04/release-notes.md`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/files/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistry.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/files/ios/Checkout/CheckoutControllerRegistry.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/files/ios/StripeSdk-Bridging-Header.h`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/files/ios/StripeSdk.xcodeproj/project.pbxproj`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/files/ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/manifest.json`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/MIGRATING.md`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/README.md`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/build.gradle`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/gradle.properties`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/src/main/java/com/reactnativestripesdk/PaymentLauncherManager.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/AddressSheet/AddressSheetView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/ApplePayButtonView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/ApplePayUtils.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/ApplePayViewController.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/AuBECSDebitFormView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/CardFieldView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/CardFormView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/Checkout/CheckoutConfigurationMapper.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/Checkout/CheckoutSessionSerializer.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/Checkout/NativeCheckoutControllerInstance.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/ConnectAccountOnboarding/ConnectAccountOnboardingView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/ConnectAccountOnboarding/ConnectAccountOnboardingViewManager.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/EmbeddedPaymentElementView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/FinancialConnections.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/Mappers.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/NavigationBarView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/PaymentMethodMessagingElementView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/PaymentPassFinder.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/PushProvisioning/AddToWalletButtonView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/PushProvisioning/PushProvisioningUtils.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdk.mm`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkEmitter.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkEventEmitterCompat.h`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkEventEmitterCompat.m`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkImpl+Checkout.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkImpl+CustomerSheet.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkImpl+Embedded.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkImpl+LinkController.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkImpl+PaymentSheet.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/ios/StripeSdkImpl.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/package.json`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/checkout/CheckoutControllerEventEmitter.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/checkout/createCheckout.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/events.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/plugin/withStripe.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/specs/NativeStripeSdkModule.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/types/Checkout.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/types/FinancialConnections.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/stripe-react-native.podspec`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/manifest.json`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.77.0--0.78.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.77.0--0.78.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.77.0--0.78.0/diff.patch`
+
+### Files absent from current snapshot
+
+Snapshot absence is not proof of upstream deletion. `not-listed` refers only to the supplied upstream change inventory.
+
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistry.kt`: `upstream-deletion`; upstream: `deleted`
+- `ios/Checkout/CheckoutControllerRegistry.swift`: `upstream-deletion`; upstream: `deleted`
+- `ios/StripeSdk-Bridging-Header.h`: `upstream-deletion`; upstream: `deleted`
+- `ios/StripeSdk.xcodeproj/project.pbxproj`: `upstream-deletion`; upstream: `deleted`
+- `ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme`: `upstream-deletion`; upstream: `deleted`
+
+### Upstream changes
+
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `CONTRIBUTING.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `MIGRATING.md`: `retained-evidence` (snapshot-file)
+- `modified` `README.md`: `retained-evidence` (snapshot-file)
+- `modified` `android/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `android/gradle.properties`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/PaymentLauncherManager.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistry.kt`: `retained-evidence` (snapshot-file)
+- `added` `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`: `retained-evidence` (snapshot-file)
+- `added` `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `deleted` `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistryTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `bitrise.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/ios-only/financial-connections-session.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/ios-only/financial-connections-token.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `etc/stripe-react-native.api.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/ios/Podfile`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/ios/Podfile.lock`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `example/patches/react-native-test-app+4.4.12.patch`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `ios/AddressSheet/AddressSheetView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/ApplePayButtonView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/ApplePayUtils.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/ApplePayViewController.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/AuBECSDebitFormView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/CardFieldView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/CardFormView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Checkout/CheckoutConfigurationMapper.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `ios/Checkout/CheckoutControllerRegistry.swift`: `retained-evidence` (snapshot-file)
+- `added` `ios/Checkout/CheckoutSessionSerializer.swift`: `retained-evidence` (snapshot-file)
+- `added` `ios/Checkout/NativeCheckoutControllerInstance.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/ConnectAccountOnboarding/ConnectAccountOnboardingView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/ConnectAccountOnboarding/ConnectAccountOnboardingViewManager.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/EmbeddedPaymentElementView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/FinancialConnections.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Mappers.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/NavigationBarView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/PaymentMethodMessagingElementView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/PaymentPassFinder.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/PushProvisioning/AddToWalletButtonView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/PushProvisioning/PushProvisioningUtils.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `ios/StripeSdk-Bridging-Header.h`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdk.mm`: `retained-evidence` (snapshot-file)
+- `deleted` `ios/StripeSdk.xcodeproj/project.pbxproj`: `retained-evidence` (snapshot-file)
+- `deleted` `ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkEmitter.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkEventEmitterCompat.h`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkEventEmitterCompat.m`: `retained-evidence` (snapshot-file)
+- `added` `ios/StripeSdkImpl+Checkout.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkImpl+CustomerSheet.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkImpl+Embedded.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkImpl+LinkController.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkImpl+PaymentSheet.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkImpl.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `ios/Tests/CheckoutControllerRegistryTests.swift`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `ios/Tests/CheckoutSessionSerializerTests.swift`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `ios/Tests/CheckoutTestFixtures.swift`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `ios/Tests/MappersTests.swift`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `ios/Tests/NativeCheckoutControllerInstanceTests.swift`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
+- `modified` `scripts/propose.rb`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/test-expo-project`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/update-expo-plugins.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/checkout/CheckoutControllerEventEmitter.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/checkout/__fixtures__/session.ts`: `intentional-policy-exclusion` (excluded-category:fixtures)
+- `modified` `src/checkout/__tests__/Checkout.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `deleted` `src/checkout/__tests__/CheckoutControllerEventEmitter.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `src/checkout/createCheckout.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/events.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/plugin/__tests__/withStripe-test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `src/plugin/withStripe.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/specs/NativeStripeSdkModule.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/types/Checkout.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/types/FinancialConnections.ts`: `retained-evidence` (snapshot-file)
+- `modified` `stripe-react-native.podspec`: `retained-evidence` (snapshot-file)
+- `added` `stripe_spm.rb`: `intentional-policy-exclusion` (outside-capsule-policy)

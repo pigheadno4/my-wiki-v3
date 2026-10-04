@@ -2,9 +2,14 @@
 title: "GitHub: stripe/stripe-react-native"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-09-05
+date_updated: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-react-native/snapshots/2026-10-04-ce9c1bf/manifest.json"
+  - "github/stripe/stripe-react-native/snapshots/2026-10-04-6bbf9d5/manifest.json"
+  - "github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/manifest.json"
+  - "github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/manifest.json"
+  - "github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-09-01-e0a845f/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-09-01-a628bc0/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-09-01-8b1bc13/manifest.json"
@@ -15,7 +20,7 @@ tags: [stripe, react-native, mobile, sdk, payments, payment-sheet, embedded-paym
 
 ## Overview
 
-`stripe/stripe-react-native` publishes `@stripe/stripe-react-native`, Stripe's official React Native bridge to its native iOS and Android payment SDKs. This cumulative page preserves the legacy `0.65.1` manual capsule, the approved `0.72.0` full baseline, and approved deltas through `0.75.0` at commit `e0a845f40749703480146c9d70721b9007d0516d`.
+`stripe/stripe-react-native` publishes `@stripe/stripe-react-native`, Stripe's official React Native bridge to its native iOS and Android payment SDKs. This cumulative page preserves the legacy `0.65.1` manual capsule, the approved `0.72.0` baseline and subsequent history through `0.80.0` delta at `ce9c1bf03fff8c022b244c2ac62a89c35ae6fab3`.
 
 Repository: <https://github.com/stripe/stripe-react-native>
 
@@ -81,7 +86,7 @@ Repository: <https://github.com/stripe/stripe-react-native>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/stripe-react-native` | `0.75.0` | `e0a845f40749703480146c9d70721b9007d0516d` | Approved deltas over `0.72.0` full baseline; legacy `0.65.1` retained |
+| `@stripe/stripe-react-native` | `0.80.0` | `ce9c1bf03fff8c022b244c2ac62a89c35ae6fab3` | Delta with approved focused reading; older history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -90,8 +95,8 @@ This table reports wiki ingest progress, not the latest version published upstre
 The package exposes CommonJS, ES module, and TypeScript declaration outputs from generated `lib/` paths. The retained source establishes three implementation layers:
 
 1. `src/` owns the public TypeScript hooks, components, functions, types, code-generated native specifications, and Connect wrappers.
-2. `android/src/main/` implements the Kotlin bridge over Stripe Android SDK `23.16.0`.
-3. `ios/` implements the Swift and Objective-C bridge over Stripe iOS SDK `26.7.0`, including old- and new-architecture component views.
+2. `android/src/main/` implements the Kotlin bridge over Stripe Android SDK `23.21.0` through `0.80.0`; earlier pins remain in version history.
+3. `ios/` implements the Swift and Objective-C bridge over Stripe iOS SDK `26.12.1` through `0.80.0`. New architecture is required from 0.77.0; older old-architecture component evidence is historical.
 
 The Android and iOS modules map native result objects and errors back into stable React Native return shapes. Native implementation remains authoritative when TypeScript declarations and platform behavior diverge.
 
@@ -115,9 +120,15 @@ The imperative and hook surfaces include:
 - microdeposit verification;
 - `createRadarSession`;
 - card-wallet eligibility and push-provisioning operations; and
-- Checkout Session state and line-item/shipping updates through `useCheckout`.
+- historical internal Checkout Session declarations (see the corrected private-preview boundary below; these are not an established working integration).
 
 These client APIs consume client secrets and ephemeral configuration created by a merchant backend. They do not replace server-side Intent, CustomerSession, Checkout Session, or Connect-session creation.
+
+### Checkout Private Preview
+
+The Checkout private preview is separate from ordinary Intent-based PaymentSheet. At 0.78.0 imperative creation/session/mutations become partially bridged; 0.79.0 adds the reactive hook and server-update handshake. Payment presentation, confirmation and the embedded view remain unimplemented through 0.79.0. Platform-specific mutation gaps and earlier stubs remain version-qualified below; this is not a complete merchant-ready Checkout integration.
+
+0.80.0 adds inline native `CheckoutPaymentElementView` rendering for an SDK-owned element. Modal `paymentElement.present` and payment `confirm` remain unimplemented. Treat the staged preview implementation history separately from normal PaymentSheet, and do not equate inline rendering with a complete payment flow.
 
 ### Platform Pay
 
@@ -173,17 +184,21 @@ The root package exports these principal hooks:
 | `useOnramp()` | Crypto onramp coordinator |
 | `useLinkController()` | Private-preview standalone Link selection and SetupIntent confirmation |
 
-Principal components include `StripeProvider`, `CardField`, `CardForm`, `AuBECSDebitForm`, `PlatformPayButton`, `AddressSheet`, `CustomerSheet`, `EmbeddedPaymentElement`, `PaymentMethodMessagingElement`, `CurrencySelectorElement`, `AddToWalletButton`, `StripeContainer`, and Connect embedded components.
+Principal components include `StripeProvider`, `CardField`, `CardForm`, `AuBECSDebitForm`, `PlatformPayButton`, `AddressSheet`, `CustomerSheet`, `EmbeddedPaymentElement`, `PaymentMethodMessagingElement`, `AddToWalletButton`, `StripeContainer`, and Connect embedded components. Historical internal `CurrencySelectorElement` source through 0.75.0 was a native placeholder and is removed at 0.76.0; it is not a current supported component.
 
 ## Platform requirements
+
+From 0.77.0, enable TurboModules/Fabric on Android, iOS and Expo. The older platform requirements below come from wrapper guidance; resolve actual native SDK minimums for the selected dependency versions rather than treating a wrapper declaration as proof of device compatibility.
 
 | Platform | Minimum |
 | --- | --- |
 | Android | API 23, `compileSdkVersion` 36, `targetSdkVersion` 36, Kotlin 2.x |
-| iOS | iOS 13 or later for current releases |
+| iOS | Wrapper README/podspec declare 13; this is not proof that the pinned native SDK supports 13. Verify the selected native SDK deployment target. |
 | Expo | Use `expo install @stripe/stripe-react-native`; each Expo SDK pins a compatible package version |
 
 If an Android app cannot move to SDK 36, the migration guide directs it to pin a package release based on Stripe Android SDK 22.x or earlier. `CardForm` additionally requires a Material Components theme.
+
+From 0.78.0, React Native >=0.75 defaults to SPM for the native Stripe iOS SDK and requires dynamic frameworks. The wrapper remains a development pod: still run `pod install`. Configure `use_frameworks! :linkage => :dynamic`, or Expo `expo-build-properties` with `ios.useFrameworks: 'dynamic'`. RN <0.75 is deprecated and currently falls back to CocoaPods. Temporary opt-out uses `$StripeDisableSPM = true` or the SDK Expo plugin's `disableSPM: true`; the fallback is deprecated. Preserve `react_native_post_install`; check the app embed phase if dynamic frameworks cannot load. The README directs Identity SDK co-users to opt out until Identity supports SPM.
 
 ## Initialization
 
@@ -200,6 +215,73 @@ await initStripe({ publishableKey: 'pk_...', merchantIdentifier: 'merchant.com.a
 For digital goods and services sold inside the app, including subscriptions, in-game currency, premium content, and app unlocking, the repository directs developers to Apple or Google in-app purchase APIs. This Stripe SDK is for scenarios allowed under the applicable app-store rules.
 
 ## Version History
+
+### `@stripe/stripe-react-native@0.80.0` - Delta
+
+**Financial Connections private preview:** `preCollectedConsent` is accepted by account/session collection, bank-account token collection and Intent bank collection on both platforms. Supply the server-created Consent object's ID and Unix-second timestamp captured at affirmative acceptance of the complete Stripe-issued text. Reuse the same timestamp on retries rather than resetting it at launch. Stripe may still show its own consent pane; this does not guarantee consent UI is bypassed or preview access granted.
+
+The bridges map optional consent to native launchers and fail missing/empty ID or nonnumeric timestamp fields within a supplied consent map. Android converts Double to Long; iOS NSNumber to intValue. These are basic shape checks, not comprehensive authenticity, freshness or valid-time enforcement. Omission leaves the ordinary consent path. Session/token collection respects connected-account configuration already present in the bridge.
+
+**Demo flow, patch-only:** The example obtains account holder, issued consent text/locale/expiry and collection session from its demo backend, renders the full text, checks expiry when the buyer presses Agree, captures seconds and launches collection. It clears its overlay before the native sheet and restores the default publishable key when switching back. The configured default merchant lacks preview access. Its custom-secret-in-mobile setup is demo-only and must not be copied into production: keep secret keys on the merchant backend. Server Consent API semantics require separate evidence; demo routes are not public Stripe API endpoints.
+
+**Inline Checkout element:** A WeakMap resolves only SDK-owned elements to controller IDs; unknown objects throw. React starts native height at 1, remounts on controller-ID changes and animates height updates. The iOS UIKit container uses native intrinsic height, permits one mount of an owned element, and detaches on window removal/recycle/destruction. Android Compose measures independent of the React height, obtains a presenter for the current ComponentActivity and releases it when that Activity is destroyed. Controller destruction notifies mounted views to detach on both platforms. Missing native controller/Activity means no attachment; source inspection does not prove all lifecycle recovery cases.
+
+**Remaining limits:** Modal presentation and confirmation still throw; hook/server-update from 0.79.0 and platform-specific mutation gaps persist. Native versions remain Android `23.21.0`/iOS `26.12.1`. No native build, consent authorization or device payment test. Existing knowledge/count retained.
+
+**Grounding:** FinancialConnections.ts:7 states Stripe may still show its consent pane; :16 requires reusing acceptance time on retries; createCheckout.ts:153/:190 retain modal/confirmation stubs; iOS container:35 says one mount only.
+
+### `@stripe/stripe-react-native@0.79.0` - Delta
+
+**Announced updates:** Native pins advance Android `23.20.0 -> 23.21.0`, iOS `26.12.0 -> 26.12.1`. Connect's loading overlay/spinner uses configured background/text colors, with white/black fallback. This changes loading appearance, not merchant-account authorization or payment state.
+
+**Additional Checkout implementation:** `useCheckout` replaces its stub with loading/ready/updating/error/idle lifecycle and native session observation. It destroys controllers on disable/reload/unmount, tracks asynchronous generations, and destroys a late-created stale controller. `getConfiguration` changes do not automatically reload; reload calls the latest function. Initialization errors populate state; explicit reload rejection is retained.
+
+`runServerUpdate` now creates an operation ID, subscribes before starting native work, filters both controller and operation IDs, and invokes the merchant callback once upon native request. It reports callback success/error to native and removes its listener on settlement. Android waits on a deferred completion; iOS waits on a continuation and cancels pending continuations when destroyed. Android scope cancellation also follows destruction. No wrapper callback timeout, backend idempotency or automatic retry is established. Update the session on the merchant backend; the native SDK owns its refresh operation.
+
+**Remaining gaps:** `paymentElement.present` and `confirm` still throw; `CheckoutPaymentElementView` is hash-identical to its stub. iOS email mutation and Android null shipping clearing retain 0.78.0 limits. The hook/handshake implementation is not evidence of complete payment or private-preview access. Android adds MbWayAwaitAuthorization to existing next-action switches; do not infer new merchant enablement. The patch-only SPM helper guards missing TARGET_BUILD_DIR before embedding. Older knowledge/count preserved, no native build or payment test.
+
+**Grounding:** useCheckout.ts:40-41 says changing getConfiguration does not reload automatically; createCheckout.ts:136/:173 retain presentation/confirmation stubs; EmbeddedComponent.tsx:855 sets colorText with black fallback.
+
+### `@stripe/stripe-react-native@0.78.0` - Additive Full Ingest
+
+**SPM migration:** The native Stripe iOS dependency moves to `stripe-ios-spm` with an exact version pin; the React Native wrapper still installs through CocoaPods. The complete new SPM helper is preserved in comparison hunks, outside the standalone capsule. It requires CocoaPods >=1.10 in SPM mode, verifies dynamic linkage/package references/project integrity, conditionally links Onramp, and adds an idempotent app embed/sign phase for dynamic Stripe frameworks. Opting out removes that phase. Expo's `disableSPM` plugin adds/removes its tagged Podfile block. RN <0.75 is deprecated, not immediately hard-rejected by the SPM selector. No install/build was executed.
+
+**Partial Checkout implementation:** `createCheckout` subscribes before native creation, returns observed session/status and stable paymentElement ownership, bridges shipping/promotion/clear operations and destroys its controller/listeners idempotently. Android supports native email updates; iOS explicitly rejects email mutation because its pinned SDK lacks the method. Android null shipping addresses are rejected; iOS delegates the optional address to native. Payment presentation, `runServerUpdate` and `confirm` remain unimplemented, and the hook/view remain hash-identical stubs. Do not infer a complete Checkout flow or preview eligibility from bridge presence.
+
+**Lifecycle/contracts:** JS-generated IDs and per-controller listener filtering replace the old registry/sequence buffer. Android observes session/updating flows and cancels work on destroy/invalidation; iOS observes publishers and checks controller identity after mutation. Session serializers expose status/totals/order items/payment-option details. Item-level amountDetails and adjustableQuantity.enabled replace earlier declared shapes; lastPaymentError, useAutocompleteEndpoints, group amountDetails and item discount are removed. Android payment-option images have a five-second loading timeout and empty-string fallback. These are bounded implementation findings, not cross-platform runtime proof.
+
+**Financial Connections/compatibility:** Adds `no_eligible_accounts` and Android-only `web_browser_unavailable`; Android emits the native error enum's string value. AwaitAuthorization is handled in Android next-action switches, without proving a new method's merchant availability. Native pins advance Android `23.19.0 -> 23.20.0`, iOS `26.11.0 -> 26.12.0`. Older validated knowledge remains intact.
+
+**Grounding:** `MIGRATING.md:7` specifies `use_frameworks! :linkage => :dynamic`; README.md:79 deprecates RN below 0.75; createCheckout.ts:122 is `present: notImplemented,`; iOS StripeSdkImpl+Checkout.swift:91 rejects unsupported email updates.
+
+### `@stripe/stripe-react-native@0.77.0` - Additive Full Ingest
+
+**Architecture migration:** TurboModules/Fabric are now mandatory. Set Android `newArchEnabled=true`, iOS `RCT_NEW_ARCH_ENABLED=1`, and Expo `newArchEnabled: true`. Android build configuration rejects disabled new architecture; the podspec rejects explicit `0` and always installs Core/NewArch. Old iOS view managers and Android legacy codegen sources are removed; Fabric component implementations remain. The event-emitter compatibility layer is for new-architecture RN below 0.80, not restored old-architecture support.
+
+**Android wallet lifecycle:** Google Pay payment-method/token creation moves from AutoResolveHelper/request-code dispatch to `GooglePayRequestLauncher` and the Activity Result API. It re-registers after Activity recreation, destroys request resources after callbacks, and rejects overlapping requests. Successful status with no PaymentData becomes an explicit failure; canceled status remains distinct. PaymentSheet result delivery now waits for a current Activity, with single-run lifecycle cleanup. Retest rotation, background/resume, cancellation and rapid repeated taps; no device test was performed.
+
+**Onramp:** KYC adds optional `idType`: US `social_security_number`, Canada `ca_sin`, Colombia `co_nit`, Philippines `ph_tin`. Documented default and native fallback are SSN; account/region eligibility is not established. The demo resets identifiers when residence changes. Android presenter recreation is announced and visible in changed hunks, but complete Android Onramp implementation remains outside the capsule.
+
+**Checkout scaffolding, not availability:** Both native configuration mappers are added while the public stubs remain hash-identical to 0.76.0. Android uses Session-controlled billing collection, has deferred TODO setters for phone/save opt-in/Google Pay environment and parts of appearance; iOS billing configuration currently maps address only. iOS Apple Pay mapping requires a configured merchant identifier. The mapper contracts do not establish functioning creation, confirmation or rendering.
+
+**Connect:** Internal auth-challenge setter/callback wiring is omitted from public prop types and is explicitly not an authorization boundary. Financial Connections cancellation returns null session/token/error, successful completion without a session yields `UnexpectedError`, and cleanup moves to an idempotent finalizer. These changes come from implementation comparison, not headline notes.
+
+Native pins advance Android `23.17.1 -> 23.19.0`, iOS `26.9.0 -> 26.11.0`. This additive full ingest preserves all older API/history findings. Grounding: `README.md:76` requires new architecture; `src/types/Onramp.ts:250` documents the SSN default; `StripeSdkModule.kt:895` rejects a request already in progress; `src/connect/EmbeddedComponent.tsx:663` reports completion without a session.
+
+### `@stripe/stripe-react-native@0.76.0` - Additive Full Ingest
+
+**Onramp:** `useOnramp().deleteWalletAddress(walletId)` deletes a registered wallet from the authenticated current Link account and resolves an optional error. iOS delegates to the native coordinator; Android result mapping is visible only in comparison hunks. The demo fetches wallet records via its backend, deletes by ID, then removes local entries and resets selected wallet/challenge state when appropriate. Deletion does not transfer cryptocurrency. Backend propagation, idempotency and retry guarantees remain unproven.
+
+**Checkout contract replacement:** The root newly exports `useCheckout`, `createCheckout` and `CheckoutPaymentElementView`; `CheckoutController` owns session, payment element, mutations, confirmation and destruction. `UseOptions` declares `enabled` and `getConfiguration`; creation options require a Session client secret and `returnURL`. The new session model uses `orderSummaryItems`, `totals` and typed lifecycle/payment status, replacing the previous internal session shape. These are declarations, not functioning runtime support at this SHA.
+
+> [!warning] Contradiction
+> Earlier source text described Checkout mutations and CurrencySelectorElement as normal payment surfaces. Prior 0.75.0 native Checkout methods already rejected calls as temporarily unavailable, and currency-selector views reported zero height. In 0.76.0 the replacement `useCheckout` explicitly returns error/idle with null session/element and rejects every operation; controller creation and view rendering throw. This corrects the earlier capability inference, not a regression from a proven working Checkout flow. See [[stripe-react-native-sdk]].
+
+The old CurrencySelectorElement/native specification, Checkout bridge methods, `PaymentSheet.CheckoutSetupParams` and Embedded Payment Element Checkout overload are removed. Ordinary Intent-based PaymentSheet and Embedded Payment Element remain separate. Native controller registries generate opaque IDs, advance per-controller event sequence numbers and destroy resources on removal/invalidation; JavaScript event buffering rejects duplicate/out-of-order sequence values. This lifecycle scaffolding does not make Checkout usable.
+
+**Compatibility:** Native dependencies advance Android `23.16.0 -> 23.17.1`, iOS `26.7.0 -> 26.9.0`. The retained migration guide still documents SDK 36 and the older Platform Pay migration. The full ingest adds this broader API/architecture boundary while preserving older knowledge; it used the user's focused-reading exception and hash checks for unchanged evidence, not a full upstream-tree read.
+
+**Grounding:** `src/hooks/useOnramp.tsx:313-314` states "Deletes the given crypto wallet from the current Link account." / "Requires an authenticated Link user."; `src/hooks/useCheckout.ts:5` states "This version of @stripe/stripe-react-native does not include native support for the Checkout private preview."; its line 32 is `status: enabled ? 'error' : 'idle',`. Prior `ios/StripeSdkImpl.swift:41` records temporary Checkout unavailability.
 
 ### `@stripe/stripe-react-native@0.75.0`
 
@@ -260,6 +342,47 @@ The May 2026 manual capsule established PaymentSheet, Platform Pay, CardField/Ca
 
 ## Raw Sources
 
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ce9c1bf/manifest.json` - exact-SHA 0.80.0 capsule, 240 retained files
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.80.0/2026-10-04/manifest.json` - release identity
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.80.0/2026-10-04/release-notes.md` - consent private-preview announcement
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.79.0--0.80.0/comparison.json` - comparison identity/dispositions
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.79.0--0.80.0/diff.patch` - changed production/affected prior code, complete new view/spec implementations and demo hunks
+
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-6bbf9d5/manifest.json` - exact-SHA 0.79.0 capsule, 234 retained files
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.79.0/2026-10-04/manifest.json` - release identity
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.79.0/2026-10-04/release-notes.md` - native upgrades and Connect appearance fix
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.78.0--0.79.0/comparison.json` - comparison identity/dispositions
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.78.0--0.79.0/diff.patch` - changed production and affected prior code
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-6bbf9d5/files/src/hooks/useCheckout.ts` - complete reactive lifecycle implementation
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-6bbf9d5/files/src/checkout/createCheckout.ts` - complete partial controller bridge
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-6bbf9d5/files/src/checkout/runServerUpdate.ts` - complete added handshake
+
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/manifest.json` - exact-SHA 0.78.0 capsule, 233 retained files
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.78.0/2026-10-04/manifest.json` - release identity
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.78.0/2026-10-04/release-notes.md` - SPM migration and deprecation
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.77.0--0.78.0/comparison.json` - comparison identity/dispositions
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.77.0--0.78.0/diff.patch` - changed production hunks, complete added native controllers/serializers and SPM helper
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/MIGRATING.md` - complete migration guide
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/README.md` - installation and troubleshooting
+
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/manifest.json` - exact-SHA 0.77.0 capsule, 233 retained files
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.77.0/2026-10-04/manifest.json` - release identity
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.77.0/2026-10-04/release-notes.md` - architecture/KYC/lifecycle changes
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.76.0--0.77.0/comparison.json` - comparison identity/dispositions
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.76.0--0.77.0/diff.patch` - changed production code and affected prior code, including full added mapper/launcher implementations
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-cc20080/files/android/src/main/java/com/reactnativestripesdk/GooglePayRequestLauncher.kt` - complete lifecycle launcher
+
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/manifest.json` - 0.76.0 exact-SHA capsule, 247 retained files
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.76.0/2026-10-04/manifest.json` - package-qualified release identity
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.76.0/2026-10-04/release-notes.md` - wallet deletion announcement
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.75.0--0.76.0/comparison.json` - exact comparison identity and dispositions
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.75.0--0.76.0/diff.patch` - changed code and prior Checkout/Onramp evidence
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/files/src/types/Checkout.ts` - complete new preview contract
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/files/src/hooks/useCheckout.ts` - complete unimplemented hook
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/files/src/checkout/createCheckout.ts` - complete unimplemented creation API
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/files/src/components/CheckoutPaymentElementView.tsx` - complete unimplemented view
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/files/MIGRATING.md` - retained migration guidance
+
 - `raw/github/stripe/stripe-react-native/snapshots/2026-09-01-e0a845f/manifest.json` — exact-SHA `0.75.0` capsule
 - `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.75.0/2026-09-01/manifest.json` — release identity
 - `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.75.0/2026-09-01/release-notes.md` — release features
@@ -279,7 +402,7 @@ The May 2026 manual capsule established PaymentSheet, Platform Pay, CardField/Ca
 - `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.73.0--0.74.0/diff.patch` — retained implementation delta
 - `raw/github/stripe/stripe-react-native/snapshots/2026-09-01-a628bc0/files/src/types/PlatformPay.ts` — Apple Pay restriction contract
 - `raw/github/stripe/stripe-react-native/snapshots/2026-09-01-a628bc0/files/ios/ApplePayUtils.swift` — native payment-network mapping
-- `raw/github/stripe/stripe-react-native/snapshots/2026-09-01-a628bc0/files/src/components/NotificationBanner.tsx` — experimental Connect notification banner
+- `raw/github/stripe/stripe-react-native/snapshots/2026-09-01-a628bc0/files/src/connect/NotificationBanner.tsx` — experimental Connect notification banner
 - `raw/github/stripe/stripe-react-native/snapshots/2026-09-01-8b1bc13/manifest.json` — exact-SHA `0.73.0` source capsule
 - `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.73.0/2026-09-01/manifest.json` — package-qualified `0.73.0` release record
 - `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.73.0/2026-09-01/release-notes.md` — exact upstream `0.73.0` release note

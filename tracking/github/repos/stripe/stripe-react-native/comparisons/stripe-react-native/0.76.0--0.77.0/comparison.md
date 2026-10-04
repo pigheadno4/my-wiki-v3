@@ -1,0 +1,237 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-react-native`
+- Package: `@stripe/stripe-react-native`
+- From: `0.76.0` (`ee6e868130f9a61f197fa5005157d1e7f82d3052`)
+- To: `0.77.0` (`cc200808f0aefc9e7c6d328f2b9d428fdeb3a3d1`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.claude/skills/add-native-feature/SKILL.md`
+- `.claude/skills/deflake-test/SKILL.md`
+- `.claude/skills/deflake-test/scripts/repeat-until-failure.sh`
+- `CHANGELOG.md`
+- `CLAUDE.md`
+- `CONTRIBUTING.md`
+- `README.md`
+- `android/build.gradle`
+- `android/gradle.properties`
+- `android/src/main/java/com/reactnativestripesdk/GooglePayRequestHelper.kt`
+- `android/src/main/java/com/reactnativestripesdk/GooglePayRequestLauncher.kt`
+- `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/AddToWalletButtonManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/AddToWalletButtonManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/AddressSheetViewManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/AddressSheetViewManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/ApplePayButtonManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/ApplePayButtonManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/AuBECSDebitFormManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/AuBECSDebitFormManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/CardFieldManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/CardFieldManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/CardFormManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/CardFormManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/EmbeddedPaymentElementViewManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/EmbeddedPaymentElementViewManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/GooglePayButtonManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/GooglePayButtonManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/PaymentMethodMessagingElementViewManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/PaymentMethodMessagingElementViewManagerInterface.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/StripeContainerManagerDelegate.java`
+- `android/src/oldarch/java/com/facebook/react/viewmanagers/StripeContainerManagerInterface.java`
+- `android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java`
+- `android/src/oldarch/java/com/reactnativestripesdk/NativeStripeSdkModuleSpec.java`
+- `android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt`
+- `android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt`
+- `android/src/test/java/com/reactnativestripesdk/GooglePayRequestHelperTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/GooglePayRequestLauncherTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/PaymentSheetManagerTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt`
+- `bitrise.yml`
+- `e2e-tests/android-only/financial-connections-session.yml`
+- `e2e-tests/android-only/financial-connections-token.yml`
+- `e2e-tests/customersheet.yml`
+- `e2e-tests/paymentsheet-customFlow-decoupled.yml`
+- `e2e-tests/rn-arch.yml`
+- `etc/stripe-react-native.api.md`
+- `example/android/gradle.properties`
+- `example/ios/Podfile`
+- `example/ios/Podfile.lock`
+- `example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `example/src/screens/Onramp/KycResidence.ts`
+- `example/src/screens/Onramp/sections/AttachKycInfoSection.tsx`
+- `example/src/screens/Onramp/sections/PaymentCollectionSection.tsx`
+- `ios/AddressSheet/AddressSheetView.swift`
+- `ios/AddressSheet/AddressSheetViewManager.m`
+- `ios/AddressSheet/AddressSheetViewManager.swift`
+- `ios/ApplePayButtonManager.m`
+- `ios/ApplePayButtonManager.swift`
+- `ios/ApplePayButtonView.swift`
+- `ios/AuBECSDebitFormManager.m`
+- `ios/AuBECSDebitFormManager.swift`
+- `ios/AuBECSDebitFormView.swift`
+- `ios/CardFieldManager.m`
+- `ios/CardFieldManager.swift`
+- `ios/CardFormManager.m`
+- `ios/CardFormManager.swift`
+- `ios/CardFormView.swift`
+- `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `ios/ConnectAccountOnboarding/ConnectAccountOnboardingView.swift`
+- `ios/EmbeddedPaymentElementManager.m`
+- `ios/EmbeddedPaymentElementView.swift`
+- `ios/Mappers.swift`
+- `ios/NavigationBarManager.m`
+- `ios/NavigationBarManager.swift`
+- `ios/OldArch/StripeSdkEventEmitterCompat.h`
+- `ios/OldArch/StripeSdkEventEmitterCompat.m`
+- `ios/PushProvisioning/AddToWalletButtonManager.m`
+- `ios/PushProvisioning/AddToWalletButtonManager.swift`
+- `ios/PushProvisioning/AddToWalletButtonView.swift`
+- `ios/StripeContainerManager.m`
+- `ios/StripeContainerManager.swift`
+- `ios/StripeOnrampSdk.h`
+- `ios/StripeOnrampSdk.mm`
+- `ios/StripeSdk.h`
+- `ios/StripeSdk.mm`
+- `ios/StripeSdk.xcodeproj/project.pbxproj`
+- `ios/StripeSdkEventEmitterCompat.h`
+- `ios/StripeSdkEventEmitterCompat.m`
+- `ios/StripeSdkImpl.swift`
+- `ios/Tests/CheckoutConfigurationMapperTests.swift`
+- `ios/Tests/OnrampMappersTests.swift`
+- `ios/Tests/ReactNativeAnalyticsTests.swift`
+- `package.json`
+- `patches/README.md`
+- `patches/old-arch-codegen-fix.patch`
+- `scripts/NativeStripeSdkModuleSpec.patch`
+- `scripts/old-arch-codegen-android`
+- `scripts/run-maestro-tests`
+- `scripts/test-project`
+- `scripts/update-expo-plugins.js`
+- `src/connect/Components.tsx`
+- `src/connect/EmbeddedComponent.tsx`
+- `src/connect/__tests__/Components.test.tsx`
+- `src/connect/__tests__/EmbeddedComponent.test.tsx`
+- `src/events.ts`
+- `src/types/Checkout.ts`
+- `src/types/Onramp.ts`
+- `stripe-react-native.podspec`
+
+## Upstream changes
+
+- `modified`: `.claude/skills/add-native-feature/SKILL.md`
+- `added`: `.claude/skills/deflake-test/SKILL.md`
+- `added`: `.claude/skills/deflake-test/scripts/repeat-until-failure.sh`
+- `modified`: `CHANGELOG.md`
+- `modified`: `CLAUDE.md`
+- `modified`: `CONTRIBUTING.md`
+- `modified`: `README.md`
+- `modified`: `android/build.gradle`
+- `modified`: `android/gradle.properties`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/GooglePayRequestHelper.kt`
+- `added`: `android/src/main/java/com/reactnativestripesdk/GooglePayRequestLauncher.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt`
+- `added`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/AddToWalletButtonManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/AddToWalletButtonManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/AddressSheetViewManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/AddressSheetViewManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/ApplePayButtonManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/ApplePayButtonManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/AuBECSDebitFormManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/AuBECSDebitFormManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/CardFieldManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/CardFieldManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/CardFormManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/CardFormManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/EmbeddedPaymentElementViewManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/EmbeddedPaymentElementViewManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/GooglePayButtonManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/GooglePayButtonManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/PaymentMethodMessagingElementViewManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/PaymentMethodMessagingElementViewManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/StripeContainerManagerDelegate.java`
+- `deleted`: `android/src/oldarch/java/com/facebook/react/viewmanagers/StripeContainerManagerInterface.java`
+- `deleted`: `android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java`
+- `deleted`: `android/src/oldarch/java/com/reactnativestripesdk/NativeStripeSdkModuleSpec.java`
+- `modified`: `android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt`
+- `modified`: `android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/GooglePayRequestHelperTest.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/GooglePayRequestLauncherTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/PaymentSheetManagerTest.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt`
+- `modified`: `bitrise.yml`
+- `modified`: `e2e-tests/android-only/financial-connections-session.yml`
+- `modified`: `e2e-tests/android-only/financial-connections-token.yml`
+- `modified`: `e2e-tests/customersheet.yml`
+- `modified`: `e2e-tests/paymentsheet-customFlow-decoupled.yml`
+- `deleted`: `e2e-tests/rn-arch.yml`
+- `modified`: `etc/stripe-react-native.api.md`
+- `modified`: `example/android/gradle.properties`
+- `modified`: `example/ios/Podfile`
+- `modified`: `example/ios/Podfile.lock`
+- `modified`: `example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `added`: `example/src/screens/Onramp/KycResidence.ts`
+- `modified`: `example/src/screens/Onramp/sections/AttachKycInfoSection.tsx`
+- `modified`: `example/src/screens/Onramp/sections/PaymentCollectionSection.tsx`
+- `modified`: `ios/AddressSheet/AddressSheetView.swift`
+- `deleted`: `ios/AddressSheet/AddressSheetViewManager.m`
+- `deleted`: `ios/AddressSheet/AddressSheetViewManager.swift`
+- `deleted`: `ios/ApplePayButtonManager.m`
+- `deleted`: `ios/ApplePayButtonManager.swift`
+- `modified`: `ios/ApplePayButtonView.swift`
+- `deleted`: `ios/AuBECSDebitFormManager.m`
+- `deleted`: `ios/AuBECSDebitFormManager.swift`
+- `modified`: `ios/AuBECSDebitFormView.swift`
+- `deleted`: `ios/CardFieldManager.m`
+- `deleted`: `ios/CardFieldManager.swift`
+- `deleted`: `ios/CardFormManager.m`
+- `deleted`: `ios/CardFormManager.swift`
+- `modified`: `ios/CardFormView.swift`
+- `added`: `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `modified`: `ios/ConnectAccountOnboarding/ConnectAccountOnboardingView.swift`
+- `deleted`: `ios/EmbeddedPaymentElementManager.m`
+- `modified`: `ios/EmbeddedPaymentElementView.swift`
+- `modified`: `ios/Mappers.swift`
+- `deleted`: `ios/NavigationBarManager.m`
+- `deleted`: `ios/NavigationBarManager.swift`
+- `deleted`: `ios/PushProvisioning/AddToWalletButtonManager.m`
+- `deleted`: `ios/PushProvisioning/AddToWalletButtonManager.swift`
+- `modified`: `ios/PushProvisioning/AddToWalletButtonView.swift`
+- `deleted`: `ios/StripeContainerManager.m`
+- `deleted`: `ios/StripeContainerManager.swift`
+- `modified`: `ios/StripeOnrampSdk.h`
+- `modified`: `ios/StripeOnrampSdk.mm`
+- `modified`: `ios/StripeSdk.h`
+- `modified`: `ios/StripeSdk.mm`
+- `modified`: `ios/StripeSdk.xcodeproj/project.pbxproj`
+- `renamed`: `ios/OldArch/StripeSdkEventEmitterCompat.h` -> `ios/StripeSdkEventEmitterCompat.h`
+- `renamed`: `ios/OldArch/StripeSdkEventEmitterCompat.m` -> `ios/StripeSdkEventEmitterCompat.m`
+- `modified`: `ios/StripeSdkImpl.swift`
+- `added`: `ios/Tests/CheckoutConfigurationMapperTests.swift`
+- `modified`: `ios/Tests/OnrampMappersTests.swift`
+- `modified`: `ios/Tests/ReactNativeAnalyticsTests.swift`
+- `modified`: `package.json`
+- `deleted`: `patches/README.md`
+- `deleted`: `patches/old-arch-codegen-fix.patch`
+- `deleted`: `scripts/NativeStripeSdkModuleSpec.patch`
+- `deleted`: `scripts/old-arch-codegen-android`
+- `modified`: `scripts/run-maestro-tests`
+- `modified`: `scripts/test-project`
+- `modified`: `scripts/update-expo-plugins.js`
+- `modified`: `src/connect/Components.tsx`
+- `modified`: `src/connect/EmbeddedComponent.tsx`
+- `modified`: `src/connect/__tests__/Components.test.tsx`
+- `modified`: `src/connect/__tests__/EmbeddedComponent.test.tsx`
+- `modified`: `src/events.ts`
+- `modified`: `src/types/Checkout.ts`
+- `modified`: `src/types/Onramp.ts`
+- `modified`: `stripe-react-native.podspec`

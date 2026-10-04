@@ -1,0 +1,183 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-react-native`
+- Package: `@stripe/stripe-react-native`
+- From: `0.77.0` (`cc200808f0aefc9e7c6d328f2b9d428fdeb3a3d1`)
+- To: `0.78.0` (`fa56337f1b9f935c4d80de4a17c312c780a423e1`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `CONTRIBUTING.md`
+- `MIGRATING.md`
+- `README.md`
+- `android/build.gradle`
+- `android/gradle.properties`
+- `android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt`
+- `android/src/main/java/com/reactnativestripesdk/PaymentLauncherManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistry.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`
+- `android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistryTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java`
+- `android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt`
+- `bitrise.yml`
+- `e2e-tests/ios-only/financial-connections-session.yml`
+- `e2e-tests/ios-only/financial-connections-token.yml`
+- `etc/stripe-react-native.api.md`
+- `example/ios/Podfile`
+- `example/ios/Podfile.lock`
+- `example/patches/react-native-test-app+4.4.12.patch`
+- `ios/AddressSheet/AddressSheetView.swift`
+- `ios/ApplePayButtonView.swift`
+- `ios/ApplePayUtils.swift`
+- `ios/ApplePayViewController.swift`
+- `ios/AuBECSDebitFormView.swift`
+- `ios/CardFieldView.swift`
+- `ios/CardFormView.swift`
+- `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `ios/Checkout/CheckoutControllerRegistry.swift`
+- `ios/Checkout/CheckoutSessionSerializer.swift`
+- `ios/Checkout/NativeCheckoutControllerInstance.swift`
+- `ios/ConnectAccountOnboarding/ConnectAccountOnboardingView.swift`
+- `ios/ConnectAccountOnboarding/ConnectAccountOnboardingViewManager.swift`
+- `ios/EmbeddedPaymentElementView.swift`
+- `ios/FinancialConnections.swift`
+- `ios/Mappers.swift`
+- `ios/NavigationBarView.swift`
+- `ios/PaymentMethodMessagingElementView.swift`
+- `ios/PaymentPassFinder.swift`
+- `ios/PushProvisioning/AddToWalletButtonView.swift`
+- `ios/PushProvisioning/PushProvisioningUtils.swift`
+- `ios/StripeSdk-Bridging-Header.h`
+- `ios/StripeSdk.mm`
+- `ios/StripeSdk.xcodeproj/project.pbxproj`
+- `ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme`
+- `ios/StripeSdkEmitter.swift`
+- `ios/StripeSdkEventEmitterCompat.h`
+- `ios/StripeSdkEventEmitterCompat.m`
+- `ios/StripeSdkImpl+Checkout.swift`
+- `ios/StripeSdkImpl+CustomerSheet.swift`
+- `ios/StripeSdkImpl+Embedded.swift`
+- `ios/StripeSdkImpl+LinkController.swift`
+- `ios/StripeSdkImpl+PaymentSheet.swift`
+- `ios/StripeSdkImpl.swift`
+- `ios/Tests/CheckoutControllerRegistryTests.swift`
+- `ios/Tests/CheckoutSessionSerializerTests.swift`
+- `ios/Tests/CheckoutTestFixtures.swift`
+- `ios/Tests/MappersTests.swift`
+- `ios/Tests/NativeCheckoutControllerInstanceTests.swift`
+- `package.json`
+- `scripts/propose.rb`
+- `scripts/test-expo-project`
+- `scripts/update-expo-plugins.js`
+- `src/checkout/CheckoutControllerEventEmitter.ts`
+- `src/checkout/__fixtures__/session.ts`
+- `src/checkout/__tests__/Checkout.test.tsx`
+- `src/checkout/__tests__/CheckoutControllerEventEmitter.test.ts`
+- `src/checkout/createCheckout.ts`
+- `src/events.ts`
+- `src/plugin/__tests__/withStripe-test.ts`
+- `src/plugin/withStripe.ts`
+- `src/specs/NativeStripeSdkModule.ts`
+- `src/types/Checkout.ts`
+- `src/types/FinancialConnections.ts`
+- `stripe-react-native.podspec`
+- `stripe_spm.rb`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `CONTRIBUTING.md`
+- `modified`: `MIGRATING.md`
+- `modified`: `README.md`
+- `modified`: `android/build.gradle`
+- `modified`: `android/gradle.properties`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/EventEmitterCompat.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/PaymentLauncherManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `deleted`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistry.kt`
+- `added`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`
+- `added`: `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`
+- `deleted`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutControllerRegistryTest.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java`
+- `added`: `android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt`
+- `modified`: `bitrise.yml`
+- `modified`: `e2e-tests/ios-only/financial-connections-session.yml`
+- `modified`: `e2e-tests/ios-only/financial-connections-token.yml`
+- `modified`: `etc/stripe-react-native.api.md`
+- `modified`: `example/ios/Podfile`
+- `modified`: `example/ios/Podfile.lock`
+- `added`: `example/patches/react-native-test-app+4.4.12.patch`
+- `modified`: `ios/AddressSheet/AddressSheetView.swift`
+- `modified`: `ios/ApplePayButtonView.swift`
+- `modified`: `ios/ApplePayUtils.swift`
+- `modified`: `ios/ApplePayViewController.swift`
+- `modified`: `ios/AuBECSDebitFormView.swift`
+- `modified`: `ios/CardFieldView.swift`
+- `modified`: `ios/CardFormView.swift`
+- `modified`: `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `deleted`: `ios/Checkout/CheckoutControllerRegistry.swift`
+- `added`: `ios/Checkout/CheckoutSessionSerializer.swift`
+- `added`: `ios/Checkout/NativeCheckoutControllerInstance.swift`
+- `modified`: `ios/ConnectAccountOnboarding/ConnectAccountOnboardingView.swift`
+- `modified`: `ios/ConnectAccountOnboarding/ConnectAccountOnboardingViewManager.swift`
+- `modified`: `ios/EmbeddedPaymentElementView.swift`
+- `modified`: `ios/FinancialConnections.swift`
+- `modified`: `ios/Mappers.swift`
+- `modified`: `ios/NavigationBarView.swift`
+- `modified`: `ios/PaymentMethodMessagingElementView.swift`
+- `modified`: `ios/PaymentPassFinder.swift`
+- `modified`: `ios/PushProvisioning/AddToWalletButtonView.swift`
+- `modified`: `ios/PushProvisioning/PushProvisioningUtils.swift`
+- `deleted`: `ios/StripeSdk-Bridging-Header.h`
+- `modified`: `ios/StripeSdk.mm`
+- `deleted`: `ios/StripeSdk.xcodeproj/project.pbxproj`
+- `deleted`: `ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme`
+- `modified`: `ios/StripeSdkEmitter.swift`
+- `modified`: `ios/StripeSdkEventEmitterCompat.h`
+- `modified`: `ios/StripeSdkEventEmitterCompat.m`
+- `added`: `ios/StripeSdkImpl+Checkout.swift`
+- `modified`: `ios/StripeSdkImpl+CustomerSheet.swift`
+- `modified`: `ios/StripeSdkImpl+Embedded.swift`
+- `modified`: `ios/StripeSdkImpl+LinkController.swift`
+- `modified`: `ios/StripeSdkImpl+PaymentSheet.swift`
+- `modified`: `ios/StripeSdkImpl.swift`
+- `deleted`: `ios/Tests/CheckoutControllerRegistryTests.swift`
+- `added`: `ios/Tests/CheckoutSessionSerializerTests.swift`
+- `added`: `ios/Tests/CheckoutTestFixtures.swift`
+- `modified`: `ios/Tests/MappersTests.swift`
+- `added`: `ios/Tests/NativeCheckoutControllerInstanceTests.swift`
+- `modified`: `package.json`
+- `modified`: `scripts/propose.rb`
+- `modified`: `scripts/test-expo-project`
+- `modified`: `scripts/update-expo-plugins.js`
+- `modified`: `src/checkout/CheckoutControllerEventEmitter.ts`
+- `added`: `src/checkout/__fixtures__/session.ts`
+- `modified`: `src/checkout/__tests__/Checkout.test.tsx`
+- `deleted`: `src/checkout/__tests__/CheckoutControllerEventEmitter.test.ts`
+- `modified`: `src/checkout/createCheckout.ts`
+- `modified`: `src/events.ts`
+- `modified`: `src/plugin/__tests__/withStripe-test.ts`
+- `modified`: `src/plugin/withStripe.ts`
+- `modified`: `src/specs/NativeStripeSdkModule.ts`
+- `modified`: `src/types/Checkout.ts`
+- `modified`: `src/types/FinancialConnections.ts`
+- `modified`: `stripe-react-native.podspec`
+- `added`: `stripe_spm.rb`

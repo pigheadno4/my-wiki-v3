@@ -1,0 +1,1919 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3df755e..3fead58 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # CHANGELOG
+ 
++## 0.80.0 - 2026-09-30
++
++**Features**
++
++* [Added] Added support for pre-collected consent in Financial Connections flows. (private preview)
++
+ ## 0.79.0 - 2026-09-29
+ 
+ **Changes**
+diff --git a/android/src/main/java/com/reactnativestripesdk/CollectBankAccountLauncherManager.kt b/android/src/main/java/com/reactnativestripesdk/CollectBankAccountLauncherManager.kt
+index 6f6fc99..1a9ca6e 100644
+--- a/android/src/main/java/com/reactnativestripesdk/CollectBankAccountLauncherManager.kt
++++ b/android/src/main/java/com/reactnativestripesdk/CollectBankAccountLauncherManager.kt
+@@ -12,6 +12,7 @@ import com.reactnativestripesdk.utils.mapFromPaymentIntentResult
+ import com.reactnativestripesdk.utils.mapFromSetupIntentResult
+ import com.stripe.android.core.reactnative.ReactNativeSdkInternal
+ import com.stripe.android.financialconnections.FinancialConnections
++import com.stripe.android.financialconnections.FinancialConnectionsPreCollectedConsent
+ import com.stripe.android.model.PaymentIntent
+ import com.stripe.android.model.SetupIntent
+ import com.stripe.android.model.StripeIntent
+@@ -27,6 +28,7 @@ class CollectBankAccountLauncherManager(
+   private val clientSecret: String,
+   private val isPaymentIntent: Boolean,
+   private val collectParams: CollectBankAccountConfiguration.USBankAccount,
++  private val preCollectedConsent: FinancialConnectionsPreCollectedConsent?,
+ ) : StripeUIManager(context) {
+   private lateinit var collectBankAccountLauncher: CollectBankAccountLauncher
+ 
+@@ -44,17 +46,19 @@ class CollectBankAccountLauncherManager(
+ 
+     if (isPaymentIntent) {
+       collectBankAccountLauncher.presentWithPaymentIntent(
+-        publishableKey,
+-        stripeAccountId,
+-        clientSecret,
+-        collectParams,
++        publishableKey = publishableKey,
++        stripeAccountId = stripeAccountId,
++        clientSecret = clientSecret,
++        configuration = collectParams,
++        preCollectedConsent = preCollectedConsent,
+       )
+     } else {
+       collectBankAccountLauncher.presentWithSetupIntent(
+-        publishableKey,
+-        stripeAccountId,
+-        clientSecret,
+-        collectParams,
++        publishableKey = publishableKey,
++        stripeAccountId = stripeAccountId,
++        clientSecret = clientSecret,
++        configuration = collectParams,
++        preCollectedConsent = preCollectedConsent,
+       )
+     }
+   }
+diff --git a/android/src/main/java/com/reactnativestripesdk/FinancialConnectionsSheetManager.kt b/android/src/main/java/com/reactnativestripesdk/FinancialConnectionsSheetManager.kt
+index 35d43b5..4c1ebe8 100644
+--- a/android/src/main/java/com/reactnativestripesdk/FinancialConnectionsSheetManager.kt
++++ b/android/src/main/java/com/reactnativestripesdk/FinancialConnectionsSheetManager.kt
+@@ -13,6 +13,7 @@ import com.reactnativestripesdk.utils.mapFromFinancialConnectionsEvent
+ import com.reactnativestripesdk.utils.mapFromToken
+ import com.stripe.android.core.reactnative.ReactNativeSdkInternal
+ import com.stripe.android.financialconnections.FinancialConnections
++import com.stripe.android.financialconnections.FinancialConnectionsPreCollectedConsent
+ import com.stripe.android.financialconnections.FinancialConnectionsSheet
+ import com.stripe.android.financialconnections.FinancialConnectionsSheetForTokenResult
+ import com.stripe.android.financialconnections.FinancialConnectionsSheetResult
+@@ -29,6 +30,7 @@ class FinancialConnectionsSheetManager(
+   private var mode: Mode,
+   publishableKey: String,
+   stripeAccountId: String?,
++  private val preCollectedConsent: FinancialConnectionsPreCollectedConsent?,
+ ) : StripeUIManager(context) {
+   enum class Mode {
+     ForToken,
+@@ -58,14 +60,20 @@ class FinancialConnectionsSheetManager(
+             activity,
+             signal,
+             ::onFinancialConnectionsSheetForTokenResult,
+-          ).present(configuration = configuration)
++          ).present(
++            configuration = configuration,
++            preCollectedConsent = preCollectedConsent,
++          )
+       }
+ 
+       Mode.ForSession -> {
+         @SuppressLint("RestrictedApi")
+         FinancialConnectionsSheet
+           .create(activity, signal, ::onFinancialConnectionsSheetForDataResult)
+-          .present(configuration = configuration)
++          .present(
++            configuration = configuration,
++            preCollectedConsent = preCollectedConsent,
++          )
+       }
+     }
+   }
+diff --git a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+index 3dd40a5..f10a5de 100644
+--- a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
++++ b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+@@ -56,6 +56,7 @@ import com.reactnativestripesdk.utils.mapFromToken
+ import com.reactnativestripesdk.utils.mapToAddress
+ import com.reactnativestripesdk.utils.mapToBankAccountType
+ import com.reactnativestripesdk.utils.mapToPaymentMethodType
++import com.reactnativestripesdk.utils.mapToPreCollectedConsent
+ import com.reactnativestripesdk.utils.mapToReturnURL
+ import com.reactnativestripesdk.utils.mapToShippingDetails
+ import com.reactnativestripesdk.utils.mapToUICustomization
+@@ -1043,15 +1044,22 @@ class StripeSdkModule(
+         billingDetails.getString("email"),
+       )
+ 
++    val preCollectedConsent =
++      mapToPreCollectedConsent(params).getOrElse {
++        promise.resolve(createError(ErrorType.Failed.toString(), it.message))
++        return
++      }
++
+     unregisterStripeUIManager(collectBankAccountLauncherManager)
+     collectBankAccountLauncherManager =
+       CollectBankAccountLauncherManager(
+-        reactApplicationContext,
+-        publishableKey,
+-        stripeAccountId,
+-        clientSecret,
+-        isPaymentIntent,
+-        collectParams,
++        context = reactApplicationContext,
++        publishableKey = publishableKey,
++        stripeAccountId = stripeAccountId,
++        clientSecret = clientSecret,
++        isPaymentIntent = isPaymentIntent,
++        collectParams = collectParams,
++        preCollectedConsent = preCollectedConsent,
+       ).also {
+         registerStripeUIManager(it)
+         it.present(promise)
+@@ -1157,14 +1165,21 @@ class StripeSdkModule(
+     // Use connectedAccountId from params if provided, otherwise fall back to global stripeAccountId
+     val accountId = getValOr(params, "connectedAccountId", null) ?: stripeAccountId
+ 
++    val preCollectedConsent =
++      mapToPreCollectedConsent(params).getOrElse {
++        promise.resolve(createError(ErrorType.Failed.toString(), it.message))
++        return
++      }
++
+     unregisterStripeUIManager(financialConnectionsSheetManager)
+     financialConnectionsSheetManager =
+       FinancialConnectionsSheetManager(
+-        reactApplicationContext,
+-        clientSecret,
+-        FinancialConnectionsSheetManager.Mode.ForToken,
+-        publishableKey,
+-        accountId,
++        context = reactApplicationContext,
++        clientSecret = clientSecret,
++        mode = FinancialConnectionsSheetManager.Mode.ForToken,
++        publishableKey = publishableKey,
++        stripeAccountId = accountId,
++        preCollectedConsent = preCollectedConsent,
+       ).also {
+         registerStripeUIManager(it)
+         it.present(promise)
+@@ -1185,14 +1200,21 @@ class StripeSdkModule(
+     // Use connectedAccountId from params if provided, otherwise fall back to global stripeAccountId
+     val accountId = getValOr(params, "connectedAccountId", null) ?: stripeAccountId
+ 
++    val preCollectedConsent =
++      mapToPreCollectedConsent(params).getOrElse {
++        promise.resolve(createError(ErrorType.Failed.toString(), it.message))
++        return
++      }
++
+     unregisterStripeUIManager(financialConnectionsSheetManager)
+     financialConnectionsSheetManager =
+       FinancialConnectionsSheetManager(
+-        reactApplicationContext,
+-        clientSecret,
+-        FinancialConnectionsSheetManager.Mode.ForSession,
+-        publishableKey,
+-        accountId,
++        context = reactApplicationContext,
++        clientSecret = clientSecret,
++        mode = FinancialConnectionsSheetManager.Mode.ForSession,
++        publishableKey = publishableKey,
++        stripeAccountId = accountId,
++        preCollectedConsent = preCollectedConsent,
+       ).also {
+         registerStripeUIManager(it)
+         it.present(promise)
+diff --git a/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt b/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt
+index 55cdd2d..4b4cefe 100644
+--- a/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt
++++ b/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt
+@@ -8,6 +8,7 @@ import com.facebook.react.module.model.ReactModuleInfo
+ import com.facebook.react.module.model.ReactModuleInfoProvider
+ import com.facebook.react.uimanager.ViewManager
+ import com.reactnativestripesdk.addresssheet.AddressSheetViewManager
++import com.reactnativestripesdk.checkout.CheckoutPaymentElementViewManager
+ import com.reactnativestripesdk.pushprovisioning.AddToWalletButtonManager
+ 
+ // Fool autolinking for older versions that do not support BaseReactPackage.
+@@ -60,6 +61,7 @@ class StripeSdkPackage : BaseReactPackage() {
+       AddToWalletButtonManager(),
+       AddressSheetViewManager(),
+       EmbeddedPaymentElementViewManager(),
++      CheckoutPaymentElementViewManager(),
+       NavigationBarManager(),
+       PaymentMethodMessagingElementViewManager(),
+     )
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutPaymentElementView.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutPaymentElementView.kt
+new file mode 100644
+index 0000000..151d646
+--- /dev/null
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutPaymentElementView.kt
+@@ -0,0 +1,102 @@
++package com.reactnativestripesdk.checkout
++
++import androidx.activity.ComponentActivity
++import androidx.compose.foundation.layout.Box
++import androidx.compose.foundation.layout.requiredHeight
++import androidx.compose.runtime.Composable
++import androidx.compose.runtime.getValue
++import androidx.compose.runtime.mutableStateOf
++import androidx.compose.runtime.remember
++import androidx.compose.runtime.setValue
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.layout.layout
++import androidx.compose.ui.layout.onSizeChanged
++import androidx.compose.ui.platform.LocalDensity
++import androidx.compose.ui.unit.IntOffset
++import androidx.compose.ui.unit.dp
++import com.facebook.react.bridge.Arguments
++import com.facebook.react.bridge.WritableMap
++import com.facebook.react.uimanager.ThemedReactContext
++import com.facebook.react.uimanager.UIManagerHelper
++import com.facebook.react.uimanager.events.Event
++import com.reactnativestripesdk.StripeAbstractComposeView
++import com.reactnativestripesdk.StripeSdkModule
++import com.stripe.android.elements.PaymentElement
++import com.stripe.android.paymentelement.CheckoutSessionPreview
++
++/** Displays the Payment Element owned by a registered Checkout controller. */
++@OptIn(CheckoutSessionPreview::class)
++class CheckoutPaymentElementView(
++  private val reactContext: ThemedReactContext,
++) : StripeAbstractComposeView(reactContext) {
++  private var controllerId: String? = null
++  private var element by mutableStateOf<PaymentElement?>(null)
++  private var removeObserver: (() -> Unit)? = null
++
++  fun setControllerId(value: String?) {
++    if (controllerId == value) return
++    detach()
++    controllerId = value
++    attach()
++  }
++
++  override fun onAttachedToWindow() {
++    super.onAttachedToWindow()
++    attach()
++  }
++
++  override fun onDetachedFromWindow() {
++    detach()
++    super.onDetachedFromWindow()
++  }
++
++  private fun attach() {
++    if (!isAttachedToWindow || element != null) return
++    val id = controllerId ?: return
++    val module = reactContext.getNativeModule(StripeSdkModule::class.java) ?: return
++    val instance = module.checkoutControllers[id] ?: return
++    val activity = reactContext.currentActivity as? ComponentActivity ?: return
++    element = instance.paymentElement(activity)
++    removeObserver = instance.observeDestruction { detach() }
++  }
++
++  fun detach() {
++    removeObserver?.invoke()
++    removeObserver = null
++    element = null
++  }
++
++  @Composable
++  override fun Content() {
++    val paymentElement = element ?: return
++    val density = LocalDensity.current
++    var heightDp by remember(paymentElement) { mutableStateOf(1.dp) }
++    Box(
++      Modifier
++        .requiredHeight(heightDp)
++        .onSizeChanged { size ->
++          val height = with(density) { size.height.toDp() }
++          if (height != heightDp) {
++            heightDp = height
++            UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)?.dispatchEvent(
++              CheckoutElementHeightEvent(reactContext.surfaceId, id, height.value),
++            )
++          }
++        }
++        .layout { measurable, constraints ->
++          // Measure the content independently of React Native's current height.
++          val height = measurable.minIntrinsicHeight(constraints.maxWidth).coerceAtLeast(1)
++          val placeable = measurable.measure(constraints.copy(minHeight = height, maxHeight = height))
++          layout(constraints.maxWidth, placeable.height) {
++            placeable.placeRelative(IntOffset.Zero)
++          }
++        },
++    ) { paymentElement.Content() }
++  }
++}
++
++private class CheckoutElementHeightEvent(surfaceId: Int, viewId: Int, private val height: Float) :
++  Event<CheckoutElementHeightEvent>(surfaceId, viewId) {
++  override fun getEventName() = "topHeightChanged"
++  override fun getEventData(): WritableMap = Arguments.createMap().apply { putDouble("height", height.toDouble()) }
++}
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutPaymentElementViewManager.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutPaymentElementViewManager.kt
+new file mode 100644
+index 0000000..2faeb87
+--- /dev/null
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutPaymentElementViewManager.kt
+@@ -0,0 +1,32 @@
++package com.reactnativestripesdk.checkout
++
++import com.facebook.react.module.annotations.ReactModule
++import com.facebook.react.uimanager.ThemedReactContext
++import com.facebook.react.uimanager.ViewGroupManager
++import com.facebook.react.viewmanagers.CheckoutPaymentElementViewManagerDelegate
++import com.facebook.react.viewmanagers.CheckoutPaymentElementViewManagerInterface
++
++@ReactModule(name = CheckoutPaymentElementViewManager.NAME)
++class CheckoutPaymentElementViewManager :
++    ViewGroupManager<CheckoutPaymentElementView>(),
++  CheckoutPaymentElementViewManagerInterface<CheckoutPaymentElementView> {
++  companion object {
++    const val NAME = "CheckoutPaymentElementView"
++  }
++
++  private val delegate = CheckoutPaymentElementViewManagerDelegate(this)
++  override fun getName() = NAME
++  override fun getDelegate() = delegate
++  override fun createViewInstance(context: ThemedReactContext) = CheckoutPaymentElementView(context)
++  override fun needsCustomLayoutForChildren() = true
++
++  override fun setControllerId(view: CheckoutPaymentElementView, value: String?) {
++    view.setControllerId(value)
++  }
++
++  override fun onDropViewInstance(view: CheckoutPaymentElementView) {
++    view.detach()
++    view.handleOnDropViewInstance()
++    super.onDropViewInstance(view)
++  }
++}
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt b/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
+index 7206885..9a4c5bf 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
+@@ -1,11 +1,16 @@
+ package com.reactnativestripesdk.checkout
+ 
++import androidx.activity.ComponentActivity
+ import androidx.annotation.MainThread
++import androidx.lifecycle.Lifecycle
++import androidx.lifecycle.LifecycleEventObserver
+ import com.facebook.react.bridge.Arguments
+ import com.facebook.react.bridge.UiThreadUtil
+ import com.facebook.react.bridge.WritableMap
+ import com.reactnativestripesdk.EventEmitterCompat
+ import com.stripe.android.checkout.CheckoutController
++import com.stripe.android.checkout.CheckoutPresenter
++import com.stripe.android.elements.PaymentElement
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+ import kotlinx.coroutines.CompletableDeferred
+ import kotlinx.coroutines.CoroutineScope
+@@ -30,6 +35,41 @@ internal class NativeCheckoutControllerInstance(
+   private var controllerId: String? = null
+   private var latestSession = initialSession
+   private var destroyed = false
++  private val destructionObservers = mutableSetOf<() -> Unit>()
++  private var presenter: CheckoutPresenter? = null
++  private var activity: ComponentActivity? = null
++  private val activityObserver = LifecycleEventObserver { _, event ->
++    if (event == Lifecycle.Event.ON_DESTROY) {
++      releasePresenter()
++    }
++  }
++
++  /** Reuses the native Payment Element for the lifetime of its activity. */
++  fun paymentElement(activity: ComponentActivity): PaymentElement {
++    check(!destroyed) { "Checkout controller was destroyed." }
++    if (this.activity !== activity) {
++      releasePresenter()
++      presenter = controller.createPresenter(activity)
++      this.activity = activity
++      activity.lifecycle.addObserver(activityObserver)
++    }
++    return checkNotNull(presenter).paymentElement()
++  }
++
++  private fun releasePresenter() {
++    activity?.lifecycle?.removeObserver(activityObserver)
++    activity = null
++    presenter = null
++  }
++
++  fun observeDestruction(observer: () -> Unit): () -> Unit {
++    if (destroyed) {
++      observer()
++      return {}
++    }
++    destructionObservers.add(observer)
++    return { destructionObservers.remove(observer) }
++  }
+ 
+   /** Starts native snapshot observation for this bridge identifier. */
+   @MainThread
+@@ -99,6 +139,10 @@ internal class NativeCheckoutControllerInstance(
+       return
+     }
+     destroyed = true
++    val observers = destructionObservers.toList()
++    destructionObservers.clear()
++    observers.forEach { it() }
++    releasePresenter()
+     scope.cancel()
+     controller.destroy()
+   }
+diff --git a/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt b/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt
+index 5ea703e..0315239 100644
+--- a/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt
++++ b/android/src/main/java/com/reactnativestripesdk/utils/Mappers.kt
+@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
+ import com.facebook.react.bridge.Arguments
+ import com.facebook.react.bridge.ReadableArray
+ import com.facebook.react.bridge.ReadableMap
++import com.facebook.react.bridge.ReadableType
+ import com.facebook.react.bridge.WritableArray
+ import com.facebook.react.bridge.WritableMap
+ import com.facebook.react.bridge.WritableNativeMap
+ import com.stripe.android.PaymentAuthConfig
++import com.stripe.android.financialconnections.FinancialConnectionsPreCollectedConsent
+ import com.stripe.android.financialconnections.analytics.FinancialConnectionsEvent
+ import com.stripe.android.model.Address
+ import com.stripe.android.model.BankAccount
+@@ -637,6 +639,26 @@ fun getValOr(
+     if (it.hasKey(key)) it.getString(key) else default
+   } ?: default
+ 
++internal fun mapToPreCollectedConsent(params: ReadableMap): Result<FinancialConnectionsPreCollectedConsent?> {
++  val consentMap = params.getMap("preCollectedConsent") ?: return Result.success(null)
++  val consent = consentMap.getString("consent")
++  val hasNumericCollectedAt =
++    consentMap.hasKey("collectedAt") && consentMap.getType("collectedAt") == ReadableType.Number
++  if (consent.isNullOrEmpty() || !hasNumericCollectedAt) {
++    return Result.failure(
++      IllegalArgumentException(
++        "preCollectedConsent must include a non-empty consent string and a numeric collectedAt timestamp.",
++      ),
++    )
++  }
++  return Result.success(
++    FinancialConnectionsPreCollectedConsent(
++      consent = consent,
++      collectedAt = consentMap.getDouble("collectedAt").toLong(),
++    ),
++  )
++}
++
+ internal fun mapToAddress(
+   addressMap: ReadableMap?,
+   cardAddress: Address?,
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
+index 722f5df..256cd04 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
+@@ -83,6 +83,19 @@ class NativeCheckoutControllerInstanceTest {
+     assertTrue(canceled)
+   }
+ 
++  @Test
++  fun `view observers can detach and are notified once on destruction`() = withFixture { fixture ->
++    var detachedCalls = 0
++    var mountedCalls = 0
++    val remove = fixture.instance.observeDestruction { detachedCalls++ }
++    fixture.instance.observeDestruction { mountedCalls++ }
++    remove()
++    fixture.instance.destroy()
++    fixture.instance.destroy()
++    assertEquals(0, detachedCalls)
++    assertEquals(1, mountedCalls)
++  }
++
+   @Test
+   fun `does not emit ready with an outdated session while its image loads`() = withFixture { fixture ->
+     fixture.start()
+diff --git a/android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt b/android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt
+index 653abc7..b932bd7 100644
+--- a/android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/mappers/MappersTest.kt
+@@ -9,6 +9,7 @@ import com.reactnativestripesdk.utils.mapPaymentMethodType
+ import com.reactnativestripesdk.utils.mapToAddress
+ import com.reactnativestripesdk.utils.mapToBillingDetails
+ import com.reactnativestripesdk.utils.mapToPaymentMethodType
++import com.reactnativestripesdk.utils.mapToPreCollectedConsent
+ import com.reactnativestripesdk.utils.mapToPreferredNetworks
+ import com.reactnativestripesdk.utils.parseCustomPaymentMethods
+ import com.reactnativestripesdk.utils.readableArrayOf
+@@ -30,6 +31,52 @@ import org.robolectric.RobolectricTestRunner
+ @SuppressLint("RestrictedApi")
+ @RunWith(RobolectricTestRunner::class)
+ class MappersTest {
++  @Test
++  fun mapToPreCollectedConsent_mapsValues() {
++    val params =
++      readableMapOf(
++        "preCollectedConsent" to
++          readableMapOf(
++            "consent" to "fccons_test",
++            "collectedAt" to 1_725_000_123.0,
++          ),
++      )
++
++    val result = mapToPreCollectedConsent(params).getOrThrow()
++
++    assertEquals("fccons_test", result?.consent)
++    assertEquals(1_725_000_123L, result?.collectedAt)
++  }
++
++  @Test
++  fun mapToPreCollectedConsent_returnsNullWhenAbsent() {
++    assertNull(mapToPreCollectedConsent(readableMapOf()).getOrThrow())
++  }
++
++  @Test
++  fun mapToPreCollectedConsent_failsWhenConsentMissing() {
++    val params =
++      readableMapOf(
++        "preCollectedConsent" to readableMapOf("collectedAt" to 1_725_000_123.0),
++      )
++
++    assertTrue(mapToPreCollectedConsent(params).isFailure)
++  }
++
++  @Test
++  fun mapToPreCollectedConsent_failsWhenCollectedAtIsNotNumeric() {
++    val params =
++      readableMapOf(
++        "preCollectedConsent" to
++          readableMapOf(
++            "consent" to "fccons_test",
++            "collectedAt" to "not-a-number",
++          ),
++      )
++
++    assertTrue(mapToPreCollectedConsent(params).isFailure)
++  }
++
+   @Test
+   fun mapFinancialConnectionsEventErrorCode_ReturnsPublicValue() {
+     val expectedValues =
+diff --git a/etc/stripe-react-native.api.md b/etc/stripe-react-native.api.md
+index 66cee01..ebcf7b2 100644
+--- a/etc/stripe-react-native.api.md
++++ b/etc/stripe-react-native.api.md
+@@ -1162,7 +1162,7 @@ export interface CheckoutPaymentElement {
+ }
+ 
+ // @public
+-export function CheckoutPaymentElementView(_props: CheckoutPaymentElementViewProps): React_2.JSX.Element;
++export function CheckoutPaymentElementView(input: CheckoutPaymentElementViewProps): React_2.JSX.Element;
+ 
+ // @public
+ export interface CheckoutPaymentElementViewProps extends ViewProps {
+@@ -1220,6 +1220,7 @@ type CollectBankAccountParams = {
+     };
+     style?: UserInterfaceStyle;
+     onEvent?: (event: FinancialConnectionsEvent) => void;
++    preCollectedConsent?: PreCollectedConsent;
+ };
+ 
+ // @public (undocumented)
+@@ -1243,6 +1244,7 @@ type CollectBankAccountTokenParams = {
+     style?: UserInterfaceStyle;
+     onEvent?: (event: FinancialConnectionsEvent) => void;
+     connectedAccountId?: string;
++    preCollectedConsent?: PreCollectedConsent;
+ };
+ 
+ // @public
+@@ -1253,6 +1255,7 @@ type CollectFinancialConnectionsAccountsParams = {
+     style?: UserInterfaceStyle;
+     onEvent?: (event: FinancialConnectionsEvent) => void;
+     connectedAccountId?: string;
++    preCollectedConsent?: PreCollectedConsent;
+ };
+ 
+ // @public (undocumented)
+@@ -2005,6 +2008,7 @@ type FieldName_2 = 'CardNumber' | 'Cvc' | 'ExpiryDate' | 'PostalCode';
+ 
+ declare namespace FinancialConnections {
+     export {
++        PreCollectedConsent,
+         CollectFinancialConnectionsAccountsParams,
+         SessionResult,
+         TokenResult,
+@@ -3525,6 +3529,12 @@ export enum PlatformPayError {
+     Unknown = "Unknown"
+ }
+ 
++// @public
++type PreCollectedConsent = {
++    consent: string;
++    collectedAt: number;
++};
++
+ // @public
+ export const presentLinkController: () => Promise<LinkController.PresentResult>;
+ 
+@@ -4699,7 +4709,7 @@ interface WeChatPayParams_2 {
+ // src/connect/connectTypes.ts:218:3 - (ae-forgotten-export) The symbol "CssFontSource" needs to be exported by the entry point index.d.ts
+ // src/connect/connectTypes.ts:218:3 - (ae-forgotten-export) The symbol "CustomFontSource" needs to be exported by the entry point index.d.ts
+ // src/types/PaymentIntent.ts:280:5 - (ae-forgotten-export) The symbol "MetaData" needs to be exported by the entry point index.d.ts
+-// src/types/PaymentMethod.ts:298:3 - (ae-forgotten-export) The symbol "UserInterfaceStyle" needs to be exported by the entry point index.d.ts
++// src/types/PaymentMethod.ts:301:3 - (ae-forgotten-export) The symbol "UserInterfaceStyle" needs to be exported by the entry point index.d.ts
+ 
+ // (No @packageDocumentation comment for this package)
+ 
+diff --git a/example/ios/Podfile.lock b/example/ios/Podfile.lock
+index 389e9ed..7533b51 100644
+--- a/example/ios/Podfile.lock
++++ b/example/ios/Podfile.lock
+@@ -1822,7 +1822,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native (0.79.0):
++  - stripe-react-native (0.80.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1843,10 +1843,10 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - stripe-react-native/Core (= 0.79.0)
+-    - stripe-react-native/NewArch (= 0.79.0)
++    - stripe-react-native/Core (= 0.80.0)
++    - stripe-react-native/NewArch (= 0.80.0)
+     - Yoga
+-  - stripe-react-native/Core (0.79.0):
++  - stripe-react-native/Core (0.80.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1868,7 +1868,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/NewArch (0.79.0):
++  - stripe-react-native/NewArch (0.80.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1890,7 +1890,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/Onramp (0.79.0):
++  - stripe-react-native/Onramp (0.80.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -2221,7 +2221,7 @@ SPEC CHECKSUMS:
+   RNCAsyncStorage: 0574155b95b96b89a51717c4dd42fb6057926bbc
+   RNCPicker: 8857af4403867e2d81b8e8149e3e5c66282f1ee9
+   RNScreens: e3ad77a0b586f4910e4f4c30ec05d91a2c506075
+-  stripe-react-native: ff95828ad8f694a8e8408d8fff5b368eaa42b37d
++  stripe-react-native: 819c8b442f80321f241b42a5f6d45c846a3a145d
+   Yoga: 65431d43277b661ebc7289c6c5d82f64ce42cfe0
+ 
+ PODFILE CHECKSUM: 42f4a228dce42b0f6b2dbef6801b7dd522b701fe
+diff --git a/example/src/Config.ts b/example/src/Config.ts
+index ddcbc9e..4ecefe2 100644
+--- a/example/src/Config.ts
++++ b/example/src/Config.ts
+@@ -2,6 +2,20 @@
+ export const API_URL =
+   'https://rigorous-heartbreaking-cephalopod.stripedemos.com';
+ 
++export const FINANCIAL_CONNECTIONS_API_URL =
++  'https://ios-financial-connections-playground.stripedemos.com';
++
++/*
++🛠️ To test pre-collected consent in CollectBankAccountScreen:
++
++The financial_connections_pre_collected_consent preview isn't enabled on the
++demo backend's default merchant. Fill in the account-specific test keys
++below (do not commit real values) to have the demo backend use them via its
++`custom_keys` merchant path instead.
++*/
++export const FINANCIAL_CONNECTIONS_CUSTOM_PK = '';
++export const FINANCIAL_CONNECTIONS_CUSTOM_SK = '';
++
+ // To test Samsung Pay in the Crypto Onramp example, register the Android app
+ // with Samsung Pay and replace this value with the assigned in-app service ID.
+ // Samsung Pay SDK 2.22.00 must also be installed in example/android/libs.
+diff --git a/example/src/screens/CollectBankAccountScreen.tsx b/example/src/screens/CollectBankAccountScreen.tsx
+index d55cb3e..e7e39ef 100644
+--- a/example/src/screens/CollectBankAccountScreen.tsx
++++ b/example/src/screens/CollectBankAccountScreen.tsx
+@@ -1,15 +1,96 @@
+ import React from 'react';
+-import { Alert, Platform, View, Text, Switch } from 'react-native';
+-import { useFinancialConnectionsSheet } from '@stripe/stripe-react-native';
++import {
++  Alert,
++  Platform,
++  ScrollView,
++  StyleSheet,
++  Switch,
++  Text,
++  TextInput,
++  View,
++} from 'react-native';
++import {
++  initStripe,
++  useFinancialConnectionsSheet,
++} from '@stripe/stripe-react-native';
++import type { FinancialConnections } from '@stripe/stripe-react-native';
+ import { setFinancialConnectionsForceNativeFlow } from '@stripe/stripe-react-native/src/functions';
+ import Button from '../components/Button';
+ import PaymentScreen from '../components/PaymentScreen';
+-import { API_URL } from '../Config';
++import { fetchPublishableKey } from '../helpers';
++import {
++  API_URL,
++  FINANCIAL_CONNECTIONS_API_URL,
++  FINANCIAL_CONNECTIONS_CUSTOM_PK,
++  FINANCIAL_CONNECTIONS_CUSTOM_SK,
++} from '../Config';
+ import type { FinancialConnectionsEvent } from '@stripe/stripe-react-native/src/types/FinancialConnections';
+ 
++// The financial_connections_pre_collected_consent preview isn't enabled on
++// the demo backend's default merchant, so route pre-collected consent
++// requests through custom_keys when a demo account is configured locally.
++const DEMO_CONFIGURATION = FINANCIAL_CONNECTIONS_CUSTOM_SK
++  ? {
++      merchant: 'custom_keys',
++      test_mode: true,
++      custom_public_key: FINANCIAL_CONNECTIONS_CUSTOM_PK,
++      custom_secret_key: FINANCIAL_CONNECTIONS_CUSTOM_SK,
++    }
++  : {
++      merchant: 'default',
++      test_mode: true,
++    };
++
++type AccountHolder =
++  | { type: 'customer'; customer: string }
++  | { type: 'account'; account: string };
++
++type IssuedConsent = {
++  id: string;
++  consentText: string;
++  locale: string;
++  expiresAt: number;
++};
++
++type PendingConsent = {
++  accountHolder: AccountHolder;
++  consent: IssuedConsent;
++  launchMode: 'session' | 'token';
++};
++
++async function postDemoBackend<T>(
++  endpoint: string,
++  body: Record<string, unknown>
++): Promise<T> {
++  const response = await fetch(`${FINANCIAL_CONNECTIONS_API_URL}${endpoint}`, {
++    method: 'POST',
++    headers: {
++      'Content-Type': 'application/json',
++    },
++    body: JSON.stringify(body),
++  });
++  const result = await response.json();
++  if (!response.ok || result.error) {
++    throw new Error(result.error ?? `Request failed with ${response.status}`);
++  }
++  return result;
++}
++
+ export default function CollectBankAccountScreen() {
+   const [clientSecret, setClientSecret] = React.useState('');
+   const [forceNativeFlow, setForceNativeFlow] = React.useState(false);
++  const [usePreCollectedConsent, setUsePreCollectedConsent] =
++    React.useState(false);
++  const [consentLocale, setConsentLocale] = React.useState('');
++  const [pendingConsent, setPendingConsent] =
++    React.useState<PendingConsent | null>(null);
++  const [consentLoading, setConsentLoading] = React.useState(false);
++  const [defaultPublishableKey, setDefaultPublishableKey] = React.useState<
++    string | null
++  >(null);
++  // Set once launchWithPendingConsent swaps in the playground's publishable
++  // key, so the default-merchant flow can restore it before launching again.
++  const usingCustomStripeKeyRef = React.useRef(false);
+   const {
+     loading,
+     collectBankAccountToken,
+@@ -18,6 +99,7 @@ export default function CollectBankAccountScreen() {
+ 
+   React.useEffect(() => {
+     fetchClientSecret();
++    fetchPublishableKey('us_bank_account').then(setDefaultPublishableKey);
+   }, []);
+ 
+   React.useEffect(() => {
+@@ -49,15 +131,16 @@ export default function CollectBankAccountScreen() {
+     }
+   };
+ 
+-  const handleCollectTokenPress = async () => {
+-    const { session, token, error } = await collectBankAccountToken(
+-      clientSecret,
+-      {
+-        onEvent: (event: FinancialConnectionsEvent) => {
+-          console.log('Event received:', event);
+-        },
+-      }
+-    );
++  const collectToken = async (
++    secret: string,
++    preCollectedConsent?: FinancialConnections.PreCollectedConsent
++  ) => {
++    const { session, token, error } = await collectBankAccountToken(secret, {
++      preCollectedConsent,
++      onEvent: (event: FinancialConnectionsEvent) => {
++        console.log('Event received:', event);
++      },
++    });
+ 
+     if (error) {
+       Alert.alert(`Error code: ${error.code}`, error.message);
+@@ -75,10 +158,14 @@ export default function CollectBankAccountScreen() {
+     }
+   };
+ 
+-  const handleCollectSessionPress = async () => {
++  const collectSession = async (
++    secret: string,
++    preCollectedConsent?: FinancialConnections.PreCollectedConsent
++  ) => {
+     const { session, error } = await collectFinancialConnectionsAccounts(
+-      clientSecret,
++      secret,
+       {
++        preCollectedConsent,
+         onEvent: (event: FinancialConnectionsEvent) => {
+           console.log('Event received:', event);
+           console.log('Institution name:', event.metadata.institutionName);
+@@ -98,40 +185,262 @@ export default function CollectBankAccountScreen() {
+     }
+   };
+ 
++  const prepareConsent = async (launchMode: 'session' | 'token') => {
++    setConsentLoading(true);
++    try {
++      const holderType = launchMode === 'token' ? 'account' : 'customer';
++      const { account_holder: accountHolder } = await postDemoBackend<{
++        account_holder: AccountHolder;
++      }>('/create_accountholder', {
++        ...DEMO_CONFIGURATION,
++        type: holderType,
++      });
++      const result = await postDemoBackend<{
++        id: string;
++        consent_text: string;
++        locale: string;
++        expires_at: number;
++      }>('/create_consent', {
++        ...DEMO_CONFIGURATION,
++        account_holder: accountHolder,
++        ...(consentLocale ? { locale: consentLocale } : {}),
++      });
++      setPendingConsent({
++        accountHolder,
++        consent: {
++          id: result.id,
++          consentText: result.consent_text,
++          locale: result.locale,
++          expiresAt: result.expires_at,
++        },
++        launchMode,
++      });
++    } catch (error) {
++      Alert.alert(
++        'Unable to create consent',
++        error instanceof Error ? error.message : String(error)
++      );
++    } finally {
++      setConsentLoading(false);
++    }
++  };
++
++  const launchWithPendingConsent = async () => {
++    if (!pendingConsent) {
++      return;
++    }
++
++    const collectedAt = Math.floor(Date.now() / 1000);
++    if (pendingConsent.consent.expiresAt <= collectedAt) {
++      setPendingConsent(null);
++      Alert.alert('Consent expired', 'Request new consent and try again.');
++      return;
++    }
++
++    setConsentLoading(true);
++    try {
++      const isToken = pendingConsent.launchMode === 'token';
++      const result = await postDemoBackend<{
++        client_secret: string;
++        publishable_key: string;
++      }>('/setup_playground', {
++        ...DEMO_CONFIGURATION,
++        account_holder: pendingConsent.accountHolder,
++        use_case: isToken ? 'token' : 'data',
++        ...(isToken
++          ? { payment_method_permission: true }
++          : { balances_permission: true }),
++      });
++      await initStripe({
++        publishableKey: result.publishable_key,
++        merchantIdentifier: 'merchant.com.stripe.react.native',
++        urlScheme: 'com.stripe.react.native',
++        setReturnUrlSchemeOnAndroid: true,
++      });
++      usingCustomStripeKeyRef.current = true;
++      const preCollectedConsent = {
++        consent: pendingConsent.consent.id,
++        collectedAt,
++      };
++      setPendingConsent(null);
++      if (isToken) {
++        await collectToken(result.client_secret, preCollectedConsent);
++      } else {
++        await collectSession(result.client_secret, preCollectedConsent);
++      }
++    } catch (error) {
++      Alert.alert(
++        'Unable to launch Financial Connections',
++        error instanceof Error ? error.message : String(error)
++      );
++    } finally {
++      setConsentLoading(false);
++    }
++  };
++
++  const restoreDefaultStripeKeyIfNeeded = async () => {
++    if (!usingCustomStripeKeyRef.current || !defaultPublishableKey) {
++      return;
++    }
++    await initStripe({
++      publishableKey: defaultPublishableKey,
++      merchantIdentifier: 'merchant.com.stripe.react.native',
++      urlScheme: 'com.stripe.react.native',
++      setReturnUrlSchemeOnAndroid: true,
++    });
++    usingCustomStripeKeyRef.current = false;
++  };
++
++  const handleCollectTokenPress = async () => {
++    if (usePreCollectedConsent) {
++      await prepareConsent('token');
++    } else {
++      await restoreDefaultStripeKeyIfNeeded();
++      await collectToken(clientSecret);
++    }
++  };
++
++  const handleCollectSessionPress = async () => {
++    if (usePreCollectedConsent) {
++      await prepareConsent('session');
++    } else {
++      await restoreDefaultStripeKeyIfNeeded();
++      await collectSession(clientSecret);
++    }
++  };
++
+   return (
+-    <PaymentScreen paymentMethod="us_bank_account">
+-      {Platform.OS === 'ios' && (
+-        <View
+-          style={{
+-            marginBottom: 16,
+-            flexDirection: 'row',
+-            alignItems: 'center',
+-            justifyContent: 'space-between',
+-          }}
+-        >
+-          <Text>Force native flow</Text>
++    <View style={styles.screen}>
++      <PaymentScreen paymentMethod="us_bank_account">
++        {Platform.OS === 'ios' && (
++          <View
++            style={{
++              marginBottom: 16,
++              flexDirection: 'row',
++              alignItems: 'center',
++              justifyContent: 'space-between',
++            }}
++          >
++            <Text>Force native flow</Text>
++            <Switch
++              value={forceNativeFlow}
++              onValueChange={setForceNativeFlow}
++              accessibilityLabel="Force native flow"
++              testID="force_native_flow_switch"
++            />
++          </View>
++        )}
++        <View style={styles.settingRow}>
++          <Text>Use pre-collected consent</Text>
+           <Switch
+-            value={forceNativeFlow}
+-            onValueChange={setForceNativeFlow}
+-            accessibilityLabel="Force native flow"
+-            testID="force_native_flow_switch"
++            value={usePreCollectedConsent}
++            onValueChange={setUsePreCollectedConsent}
++            accessibilityLabel="Use pre-collected consent"
++            testID="pre_collected_consent_switch"
+           />
+         </View>
++        {usePreCollectedConsent && !FINANCIAL_CONNECTIONS_CUSTOM_SK && (
++          <Text style={styles.hint}>
++            Enter your demo account keys in example/src/Config.ts
++            (FINANCIAL_CONNECTIONS_CUSTOM_PK/SK) to use pre-collected consent.
++          </Text>
++        )}
++        {usePreCollectedConsent && (
++          <TextInput
++            style={styles.input}
++            value={consentLocale}
++            onChangeText={setConsentLocale}
++            placeholder="Consent locale (optional)"
++            autoCapitalize="none"
++          />
++        )}
++        <Button
++          variant="primary"
++          onPress={handleCollectTokenPress}
++          title={!clientSecret ? 'loading...' : 'Collect token'}
++          loading={loading || consentLoading}
++          disabled={!clientSecret || consentLoading}
++        />
++        <Button
++          variant="primary"
++          onPress={handleCollectSessionPress}
++          title={!clientSecret ? 'loading...' : 'Collect session'}
++          loading={loading || consentLoading}
++          disabled={!clientSecret || consentLoading}
++        />
++      </PaymentScreen>
++      {pendingConsent && (
++        // Rendered as a sibling of PaymentScreen (not inside its ScrollView,
++        // and not a native Modal) so it fills the actual screen and fully
++        // disappears before collectToken/collectSession presents the native
++        // Financial Connections sheet - stacking two native modal
++        // presentations back-to-back causes a blank screen on iOS.
++        <View style={styles.modalContainer}>
++          <Text style={styles.modalTitle}>Financial Connections consent</Text>
++          <Text style={styles.locale}>
++            Locale: {pendingConsent.consent.locale}
++          </Text>
++          <ScrollView style={styles.consentTextContainer}>
++            <Text selectable>{pendingConsent.consent.consentText}</Text>
++          </ScrollView>
++          <View style={styles.modalActions}>
++            <Button onPress={() => setPendingConsent(null)} title="Cancel" />
++            <Button
++              variant="primary"
++              onPress={launchWithPendingConsent}
++              title="Agree and continue"
++              loading={consentLoading}
++              disabled={consentLoading}
++            />
++          </View>
++        </View>
+       )}
+-      <Button
+-        variant="primary"
+-        onPress={handleCollectTokenPress}
+-        title={!clientSecret ? 'loading...' : 'Collect token'}
+-        loading={loading}
+-        disabled={!clientSecret}
+-      />
+-      <Button
+-        variant="primary"
+-        onPress={handleCollectSessionPress}
+-        title={!clientSecret ? 'loading...' : 'Collect session'}
+-        loading={loading}
+-        disabled={!clientSecret}
+-      />
+-    </PaymentScreen>
++    </View>
+   );
+ }
++
++const styles = StyleSheet.create({
++  screen: {
++    flex: 1,
++  },
++  hint: {
++    marginBottom: 16,
++    color: '#6b7280',
++    fontSize: 13,
++  },
++  settingRow: {
++    marginBottom: 16,
++    flexDirection: 'row',
++    alignItems: 'center',
++    justifyContent: 'space-between',
++  },
++  input: {
++    borderBottomColor: '#6b7280',
++    borderBottomWidth: 1,
++    marginBottom: 16,
++    paddingVertical: 8,
++  },
++  modalContainer: {
++    ...StyleSheet.absoluteFillObject,
++    backgroundColor: '#fff',
++    padding: 24,
++    paddingTop: 64,
++    zIndex: 10,
++    elevation: 10,
++  },
++  modalTitle: {
++    fontSize: 20,
++    fontWeight: '600',
++    marginBottom: 8,
++  },
++  locale: {
++    marginBottom: 16,
++  },
++  consentTextContainer: {
++    flex: 1,
++    marginBottom: 16,
++  },
++  modalActions: {
++    gap: 8,
++  },
++});
+diff --git a/ios/Checkout/CheckoutPaymentElementContainerView.swift b/ios/Checkout/CheckoutPaymentElementContainerView.swift
+new file mode 100644
+index 0000000..0e8a258
+--- /dev/null
++++ b/ios/Checkout/CheckoutPaymentElementContainerView.swift
+@@ -0,0 +1,79 @@
++import Combine
++import React
++@_spi(STP) import StripePaymentSheet
++import UIKit
++
++/// Hosts the UIKit view owned by a registered Checkout controller.
++@objc(CheckoutPaymentElementContainerView)
++@MainActor
++public final class CheckoutPaymentElementContainerView: UIView {
++    @objc public var controllerId: String? {
++        didSet {
++            guard oldValue != controllerId else { return }
++            detach()
++            attach()
++        }
++    }
++    @objc public var onHeightChanged: RCTDirectEventBlock?
++    private var elementView: PaymentElementUIView?
++    private var destruction: AnyCancellable?
++    private var reportedHeight: CGFloat?
++    private lazy var nativeDelegate = ElementDelegate(view: self)
++
++    override public func didMoveToWindow() {
++        super.didMoveToWindow()
++        if window == nil { detach() } else { attach() }
++    }
++
++    private func attach() {
++        guard window != nil, elementView == nil, let controllerId,
++              let instance = StripeSdkImpl.shared.checkoutControllers[controllerId] else {
++            return
++        }
++        let view = instance.checkout.getPaymentElement().uiView
++        guard view.superview == nil else {
++            assertionFailure("A Checkout Payment Element can only be mounted once.")
++            return
++        }
++        elementView = view
++        view.delegate = nativeDelegate
++        addSubview(view)
++        destruction = instance.observeDestruction { [weak self] in self?.detach() }
++        setNeedsLayout()
++    }
++
++    @objc public func detach() {
++        destruction?.cancel()
++        destruction = nil
++        elementView?.delegate = nil
++        elementView?.removeFromSuperview()
++        elementView = nil
++        reportedHeight = nil
++    }
++
++    override public func layoutSubviews() {
++        super.layoutSubviews()
++        guard let elementView, bounds.width > 0 else { return }
++        let size = elementView.systemLayoutSizeFitting(CGSize(width: bounds.width, height: UIView.layoutFittingCompressedSize.height))
++        let height = ceil(size.height)
++        elementView.frame = CGRect(x: 0, y: 0, width: bounds.width, height: height)
++        if height != reportedHeight {
++            reportedHeight = height
++            onHeightChanged?(["height": height])
++        }
++    }
++
++}
++
++// Keep Stripe SPI types out of the public Objective-C view interface.
++@MainActor
++private final class ElementDelegate: PaymentElementViewDelegate {
++    private weak var view: CheckoutPaymentElementContainerView?
++
++    init(view: CheckoutPaymentElementContainerView) { self.view = view }
++
++    func paymentElementViewDidUpdateHeight(paymentElementView: PaymentElementUIView) {
++        view?.setNeedsLayout()
++    }
++
++}
+diff --git a/ios/Checkout/NativeCheckoutControllerInstance.swift b/ios/Checkout/NativeCheckoutControllerInstance.swift
+index 77cdb25..eba24be 100644
+--- a/ios/Checkout/NativeCheckoutControllerInstance.swift
++++ b/ios/Checkout/NativeCheckoutControllerInstance.swift
+@@ -16,6 +16,7 @@ final class NativeCheckoutControllerInstance {
+     private let emitEvent: ([String: Any]) -> Void
+     private var observation: AnyCancellable?
+     private var controllerId: String?
++    private var destructionObservers: [UUID: () -> Void] = [:]
+     private var isDestroyed = false
+     private var serverUpdateContinuations: [String: CheckedContinuation<Void, Error>] = [:]
+ 
+@@ -76,9 +77,23 @@ final class NativeCheckoutControllerInstance {
+         completeServerUpdate(operationId: operationId, error: callbackError)
+     }
+ 
++    /// Releases views when their controller is destroyed before they unmount.
++    func observeDestruction(_ observer: @escaping () -> Void) -> AnyCancellable {
++        guard !isDestroyed else {
++            observer()
++            return AnyCancellable {}
++        }
++        let id = UUID()
++        destructionObservers[id] = observer
++        return AnyCancellable { [weak self] in self?.destructionObservers.removeValue(forKey: id) }
++    }
++
+     func destroy() {
+         guard !isDestroyed else { return }
+         isDestroyed = true
++        let observers = Array(destructionObservers.values)
++        destructionObservers.removeAll()
++        observers.forEach { $0() }
+         let updates = serverUpdateContinuations
+         serverUpdateContinuations.removeAll()
+         updates.values.forEach { $0.resume(throwing: CancellationError()) }
+diff --git a/ios/FinancialConnections.swift b/ios/FinancialConnections.swift
+index 6597d80..36be31b 100644
+--- a/ios/FinancialConnections.swift
++++ b/ios/FinancialConnections.swift
+@@ -16,6 +16,7 @@ class FinancialConnections {
+         withClientSecret: String,
+         returnURL: String? = nil,
+         configuration: FinancialConnectionsSheet.Configuration? = nil,
++        preCollectedConsent: FinancialConnectionsPreCollectedConsent? = nil,
+         onEvent: ((FinancialConnectionsEvent) -> Void)? = nil,
+         resolve: @escaping RCTPromiseResolveBlock
+     ) {
+@@ -28,6 +29,7 @@ class FinancialConnections {
+             financialConnectionsSheet.onEvent = onEvent
+             financialConnectionsSheet.present(
+                 from: findViewControllerPresenter(from: RCTKeyWindow()?.rootViewController ?? UIViewController()),
++                preCollectedConsent: preCollectedConsent,
+                 completion: { result in
+                     switch result {
+                     case .completed(session: let session):
+@@ -45,6 +47,7 @@ class FinancialConnections {
+         withClientSecret: String,
+         returnURL: String? = nil,
+         configuration: FinancialConnectionsSheet.Configuration? = nil,
++        preCollectedConsent: FinancialConnectionsPreCollectedConsent? = nil,
+         onEvent: ((FinancialConnectionsEvent) -> Void)? = nil,
+         resolve: @escaping RCTPromiseResolveBlock
+     ) {
+@@ -57,6 +60,7 @@ class FinancialConnections {
+             financialConnectionsSheet.onEvent = onEvent
+             financialConnectionsSheet.presentForToken(
+                 from: findViewControllerPresenter(from: RCTKeyWindow()?.rootViewController ?? UIViewController()),
++                preCollectedConsent: preCollectedConsent,
+                 completion: { result in
+                     switch result {
+                     case .completed(result: let result):
+@@ -75,6 +79,33 @@ class FinancialConnections {
+         }
+     }
+ 
++    internal struct PreCollectedConsentError: LocalizedError {
++        var errorDescription: String? {
++            "preCollectedConsent must include a non-empty consent string and a numeric collectedAt timestamp."
++        }
++    }
++
++    internal static func mapToPreCollectedConsent(
++        _ params: NSDictionary
++    ) throws -> FinancialConnectionsPreCollectedConsent? {
++        guard let value = params["preCollectedConsent"] as? NSDictionary else {
++            return nil
++        }
++
++        guard
++            let consent = value["consent"] as? String,
++            !consent.isEmpty,
++            let collectedAt = value["collectedAt"] as? NSNumber
++        else {
++            throw PreCollectedConsentError()
++        }
++
++        return FinancialConnectionsPreCollectedConsent(
++            consent: consent,
++            collectedAt: collectedAt.intValue
++        )
++    }
++
+     internal static func mapFromSessionResult(
+         _ session: StripeAPI.FinancialConnectionsSession
+     ) -> NSDictionary {
+diff --git a/ios/NewArch/CheckoutPaymentElementViewComponentView.h b/ios/NewArch/CheckoutPaymentElementViewComponentView.h
+new file mode 100644
+index 0000000..0330643
+--- /dev/null
++++ b/ios/NewArch/CheckoutPaymentElementViewComponentView.h
+@@ -0,0 +1,4 @@
++#import <React/RCTViewComponentView.h>
++
++@interface CheckoutPaymentElementViewComponentView : RCTViewComponentView
++@end
+diff --git a/ios/NewArch/CheckoutPaymentElementViewComponentView.mm b/ios/NewArch/CheckoutPaymentElementViewComponentView.mm
+new file mode 100644
+index 0000000..aecc870
+--- /dev/null
++++ b/ios/NewArch/CheckoutPaymentElementViewComponentView.mm
+@@ -0,0 +1,66 @@
++#import "CheckoutPaymentElementViewComponentView.h"
++#import <react/renderer/components/rnstripe/ComponentDescriptors.h>
++#import <react/renderer/components/rnstripe/EventEmitters.h>
++#import <react/renderer/components/rnstripe/Props.h>
++#import <react/renderer/components/rnstripe/RCTComponentViewHelpers.h>
++#import <React/RCTConversions.h>
++#import <React/RCTFabricComponentsPlugins.h>
++#import "StripeSwiftInterop.h"
++
++using namespace facebook::react;
++
++@interface CheckoutPaymentElementViewComponentView () <RCTCheckoutPaymentElementViewViewProtocol>
++@end
++
++@implementation CheckoutPaymentElementViewComponentView {
++  CheckoutPaymentElementContainerView *_view;
++}
++
+++ (void)load { [super load]; }
++
++- (instancetype)initWithFrame:(CGRect)frame
++{
++  if (self = [super initWithFrame:frame]) {
++    _props = std::make_shared<const CheckoutPaymentElementViewProps>();
++    [self prepareView];
++  }
++  return self;
++}
++
++- (void)prepareView
++{
++  _view = [CheckoutPaymentElementContainerView new];
++  self.contentView = _view;
++  __weak __typeof(self) weakSelf = self;
++  _view.onHeightChanged = ^(NSDictionary *event) {
++    __typeof(self) strongSelf = weakSelf;
++    if (!strongSelf || !strongSelf->_eventEmitter) { return; }
++    CheckoutPaymentElementViewEventEmitter::OnHeightChanged payload = {.height = [event[@"height"] doubleValue]};
++    std::static_pointer_cast<const CheckoutPaymentElementViewEventEmitter>(strongSelf->_eventEmitter)->onHeightChanged(payload);
++  };
++}
++
++- (void)updateProps:(const Props::Shared &)props oldProps:(const Props::Shared &)oldProps
++{
++  const auto &viewProps = *std::static_pointer_cast<const CheckoutPaymentElementViewProps>(props);
++  _view.controllerId = RCTNSStringFromString(viewProps.controllerId);
++  [super updateProps:props oldProps:oldProps];
++}
++
+++ (ComponentDescriptorProvider)componentDescriptorProvider
++{
++  return concreteComponentDescriptorProvider<CheckoutPaymentElementViewComponentDescriptor>();
++}
++
++- (void)prepareForRecycle
++{
++  [_view detach];
++  [super prepareForRecycle];
++  [self prepareView];
++}
++@end
++
++Class<RCTComponentViewProtocol> CheckoutPaymentElementViewCls(void)
++{
++  return CheckoutPaymentElementViewComponentView.class;
++}
+diff --git a/ios/StripeSdkImpl.swift b/ios/StripeSdkImpl.swift
+index 8a709ed..1de8494 100644
+--- a/ios/StripeSdkImpl.swift
++++ b/ios/StripeSdkImpl.swift
+@@ -861,6 +861,13 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+ 
+         let style = STPBankAccountCollectorUserInterfaceStyle(from: params)
+         let bankAccountCollector = STPBankAccountCollector(style: style)
++        let preCollectedConsent: FinancialConnectionsPreCollectedConsent?
++        do {
++            preCollectedConsent = try FinancialConnections.mapToPreCollectedConsent(params)
++        } catch {
++            resolve(Errors.createError(ErrorType.Failed, error.localizedDescription))
++            return
++        }
+ 
+         if isPaymentIntent {
+             DispatchQueue.main.async {
+@@ -868,6 +875,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+                     clientSecret: clientSecret as String,
+                     returnURL: connectionsReturnURL,
+                     params: collectParams,
++                    preCollectedConsent: preCollectedConsent,
+                     from: findViewControllerPresenter(from: RCTKeyWindow()?.rootViewController ?? UIViewController()),
+                     onEvent: onEvent
+                 ) { intent, error in
+@@ -895,6 +903,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+                     clientSecret: clientSecret as String,
+                     returnURL: connectionsReturnURL,
+                     params: collectParams,
++                    preCollectedConsent: preCollectedConsent,
+                     from: findViewControllerPresenter(from: RCTKeyWindow()?.rootViewController ?? UIViewController()),
+                     onEvent: onEvent
+                 ) { intent, error in
+@@ -1194,10 +1203,19 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+             resolve(result)
+         }
+ 
++        let preCollectedConsent: FinancialConnectionsPreCollectedConsent?
++        do {
++            preCollectedConsent = try FinancialConnections.mapToPreCollectedConsent(params)
++        } catch {
++            wrappedResolve(Errors.createError(ErrorType.Failed, error.localizedDescription))
++            return
++        }
++
+         FinancialConnections.presentForToken(
+             withClientSecret: clientSecret,
+             returnURL: returnURL,
+             configuration: configuration,
++            preCollectedConsent: preCollectedConsent,
+             onEvent: onEvent,
+             resolve: wrappedResolve
+         )
+@@ -1240,10 +1258,19 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+             resolve(result)
+         }
+ 
++        let preCollectedConsent: FinancialConnectionsPreCollectedConsent?
++        do {
++            preCollectedConsent = try FinancialConnections.mapToPreCollectedConsent(params)
++        } catch {
++            wrappedResolve(Errors.createError(ErrorType.Failed, error.localizedDescription))
++            return
++        }
++
+         FinancialConnections.present(
+             withClientSecret: clientSecret,
+             returnURL: returnURL,
+             configuration: configuration,
++            preCollectedConsent: preCollectedConsent,
+             onEvent: onEvent,
+             resolve: wrappedResolve
+         )
+diff --git a/ios/Tests/MappersTests.swift b/ios/Tests/MappersTests.swift
+index ce1d3f0..9953611 100644
+--- a/ios/Tests/MappersTests.swift
++++ b/ios/Tests/MappersTests.swift
+@@ -540,6 +540,43 @@ class MappersTests: XCTestCase {
+         XCTAssertEqual(Mappers.mapToUserInterfaceStyle(""), .automatic)
+     }
+ 
++    // MARK: - Financial Connections Consent
++
++    func test_mapToPreCollectedConsent_mapsValues() throws {
++        let result = try FinancialConnections.mapToPreCollectedConsent([
++            "preCollectedConsent": [
++                "consent": "fccons_test",
++                "collectedAt": 1_725_000_123,
++            ],
++        ])
++
++        XCTAssertEqual(result?.consent, "fccons_test")
++        XCTAssertEqual(result?.collectedAt, 1_725_000_123)
++    }
++
++    func test_mapToPreCollectedConsent_returnsNilWhenAbsent() throws {
++        XCTAssertNil(try FinancialConnections.mapToPreCollectedConsent([:]))
++    }
++
++    func test_mapToPreCollectedConsent_throwsWhenConsentMissing() {
++        XCTAssertThrowsError(
++            try FinancialConnections.mapToPreCollectedConsent([
++                "preCollectedConsent": ["collectedAt": 1_725_000_123],
++            ])
++        )
++    }
++
++    func test_mapToPreCollectedConsent_throwsWhenCollectedAtIsNotNumeric() {
++        XCTAssertThrowsError(
++            try FinancialConnections.mapToPreCollectedConsent([
++                "preCollectedConsent": [
++                    "consent": "fccons_test",
++                    "collectedAt": "not-a-number",
++                ],
++            ])
++        )
++    }
++
+     // MARK: - Return URL Mappers
+ 
+     func test_mapToReturnURL_validScheme() {
+diff --git a/ios/Tests/NativeCheckoutControllerInstanceTests.swift b/ios/Tests/NativeCheckoutControllerInstanceTests.swift
+index f678a53..0aaad5b 100644
+--- a/ios/Tests/NativeCheckoutControllerInstanceTests.swift
++++ b/ios/Tests/NativeCheckoutControllerInstanceTests.swift
+@@ -52,6 +52,45 @@ final class NativeCheckoutControllerInstanceTests: XCTestCase {
+         XCTAssertTrue(sdk.pendingCheckoutCreations.isEmpty)
+     }
+ 
++    func test_inlineViewReleasesReplacedAndDestroyedControllers() async throws {
++        let sdk = StripeSdkImpl.shared
++        let first = NativeCheckoutControllerInstance(checkout: try await makeCheckout(), emitEvent: { _ in })
++        let second = NativeCheckoutControllerInstance(checkout: try await makeCheckout(), emitEvent: { _ in })
++        let firstElement = first.checkout.getPaymentElement()
++        let secondElement = second.checkout.getPaymentElement()
++        let firstId = "first"
++        let secondId = "second"
++        sdk.checkoutControllers[firstId] = first
++        sdk.checkoutControllers[secondId] = second
++        defer {
++            sdk.checkoutControllers.removeValue(forKey: firstId)?.destroy()
++            sdk.checkoutControllers.removeValue(forKey: secondId)?.destroy()
++        }
++        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
++        let view = CheckoutPaymentElementContainerView(frame: CGRect(x: 0, y: 0, width: 320, height: 1))
++        view.controllerId = firstId
++        var heights: [CGFloat] = []
++        view.onHeightChanged = { event in heights.append(event?["height"] as? CGFloat ?? 0) }
++        window.addSubview(view)
++        view.layoutIfNeeded()
++        XCTAssertTrue(view.subviews.first === firstElement.uiView)
++        XCTAssertGreaterThan(heights.first ?? 0, 0)
++        let measurements = heights.count
++        view.setNeedsLayout()
++        view.layoutIfNeeded()
++        XCTAssertEqual(heights.count, measurements)
++
++        view.controllerId = secondId
++        XCTAssertNil(firstElement.uiView.superview)
++        XCTAssertNil(firstElement.uiView.delegate)
++        sdk.checkoutControllers.removeValue(forKey: firstId)?.destroy()
++        XCTAssertTrue(view.subviews.first === secondElement.uiView)
++        sdk.checkoutControllers.removeValue(forKey: secondId)?.destroy()
++        XCTAssertTrue(view.subviews.isEmpty)
++        XCTAssertNil(secondElement.uiView.delegate)
++        view.removeFromSuperview()
++    }
++
+     private func makeCheckout() async throws -> CheckoutController {
+         let sessionConfiguration = URLSessionConfiguration.ephemeral
+         sessionConfiguration.protocolClasses = [CheckoutFixtureURLProtocol.self]
+@@ -63,6 +102,7 @@ final class NativeCheckoutControllerInstanceTests: XCTestCase {
+             returnURL: "https://example.com/checkout"
+         )
+         configuration.apiClient = apiClient
++        configuration.paymentElement = .init()
+         return try await CheckoutController(configuration: configuration)
+     }
+ }
+diff --git a/package.json b/package.json
+index c666310..5595981 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-react-native",
+-  "version": "0.79.0",
++  "version": "0.80.0",
+   "author": "Stripe",
+   "description": "Stripe SDK for React Native",
+   "main": "lib/commonjs/index",
+@@ -203,6 +203,7 @@
+         "CardField": "CardFieldComponentView",
+         "CardForm": "CardFormComponentView",
+         "EmbeddedPaymentElementView": "EmbeddedPaymentElementViewComponentView",
++        "CheckoutPaymentElementView": "CheckoutPaymentElementViewComponentView",
+         "NavigationBar": "NavigationBarComponentView",
+         "StripeContainer": "StripeContainerComponentView"
+       }
+diff --git a/src/checkout/__tests__/CheckoutPaymentElementView.test.tsx b/src/checkout/__tests__/CheckoutPaymentElementView.test.tsx
+new file mode 100644
+index 0000000..fdcef72
+--- /dev/null
++++ b/src/checkout/__tests__/CheckoutPaymentElementView.test.tsx
+@@ -0,0 +1,66 @@
++import { checkoutSession as session } from '../__fixtures__/session';
++import React from 'react';
++import { fireEvent, render } from '@testing-library/react-native';
++import { LayoutAnimation } from 'react-native';
++import { CheckoutPaymentElementView } from '../../components/CheckoutPaymentElementView';
++import { createCheckout } from '../createCheckout';
++import type { Checkout } from '../../types/Checkout';
++import NativeStripeSdk from '../../specs/NativeStripeSdkModule';
++
++jest.mock('../../events', () => ({
++  addListener: jest.fn(() => ({ remove: jest.fn() })),
++}));
++jest.mock(
++  '../../specs/NativeCheckoutPaymentElement',
++  () => require('react-native').View
++);
++jest.mock('../../specs/NativeStripeSdkModule', () => ({
++  __esModule: true,
++  default: { createCheckout: jest.fn(), destroyCheckout: jest.fn() },
++}));
++
++it('routes the controller ID and resets native height when the element changes', async () => {
++  const configureNext = jest
++    .spyOn(LayoutAnimation, 'configureNext')
++    .mockImplementation(() => {});
++  const options: Checkout.CreateOptions = {
++    clientSecret: 'cs_test_secret',
++    returnURL: 'example://checkout',
++  };
++  (NativeStripeSdk.createCheckout as jest.Mock)
++    .mockResolvedValueOnce({ controllerId: 'controller-1', session })
++    .mockResolvedValueOnce({ controllerId: 'controller-2', session });
++  const first = await createCheckout(options);
++  const second = await createCheckout(options);
++  const { getByTestId, rerender, unmount } = render(
++    <CheckoutPaymentElementView
++      testID="element"
++      element={first.paymentElement}
++      style={{ height: 999 }}
++    />
++  );
++  expect(getByTestId('element').props.controllerId).toBe(
++    (NativeStripeSdk.createCheckout as jest.Mock).mock.calls[0][1]
++  );
++  expect(getByTestId('element')).toHaveStyle({ width: '100%', height: 1 });
++  fireEvent(getByTestId('element'), 'heightChanged', {
++    nativeEvent: { height: 140 },
++  });
++  expect(configureNext).toHaveBeenCalledWith(
++    LayoutAnimation.Presets.easeInEaseOut
++  );
++  expect(getByTestId('element')).toHaveStyle({ height: 140 });
++  rerender(
++    <CheckoutPaymentElementView
++      testID="element"
++      element={second.paymentElement}
++    />
++  );
++  expect(getByTestId('element').props.controllerId).toBe(
++    (NativeStripeSdk.createCheckout as jest.Mock).mock.calls[1][1]
++  );
++  expect(getByTestId('element')).toHaveStyle({ height: 1 });
++  unmount();
++  await Promise.all([first.destroy(), second.destroy()]);
++  configureNext.mockRestore();
++});
+diff --git a/src/checkout/createCheckout.ts b/src/checkout/createCheckout.ts
+index 9473b31..559ff8f 100644
+--- a/src/checkout/createCheckout.ts
++++ b/src/checkout/createCheckout.ts
+@@ -1,4 +1,8 @@
+-import type { Checkout, CheckoutController } from '../types/Checkout';
++import type {
++  Checkout,
++  CheckoutController,
++  CheckoutPaymentElement,
++} from '../types/Checkout';
+ import type { StripeError } from '../types/Errors';
+ import { runServerUpdate } from './runServerUpdate';
+ import NativeStripeSdk from '../specs/NativeStripeSdkModule';
+@@ -8,6 +12,19 @@ import {
+   createCheckoutBridgeId,
+ } from './CheckoutControllerEventEmitter';
+ 
++const paymentElementIds = new WeakMap<CheckoutPaymentElement, string>();
++
++/** Resolves a Payment Element owned by a Checkout controller. */
++export function getCheckoutPaymentElementId(
++  element: CheckoutPaymentElement
++): string {
++  const id = paymentElementIds.get(element);
++  if (!id) {
++    throw new Error('Payment Element was not created by this SDK.');
++  }
++  return id;
++}
++
+ const CHECKOUT_NOT_IMPLEMENTED_MESSAGE =
+   'This version of @stripe/stripe-react-native does not include native support for the Checkout private preview.';
+ const CHECKOUT_DESTROYED_MESSAGE = 'This Checkout controller was destroyed.';
+@@ -188,6 +205,7 @@ export async function createCheckoutController(
+         return destroyPromise;
+       },
+     };
++    paymentElementIds.set(paymentElement, controllerId);
+     return controller;
+   } catch (error) {
+     subscription.remove();
+diff --git a/src/components/CheckoutPaymentElementView.tsx b/src/components/CheckoutPaymentElementView.tsx
+index 5fe49af..31efb3b 100644
+--- a/src/components/CheckoutPaymentElementView.tsx
++++ b/src/components/CheckoutPaymentElementView.tsx
+@@ -1,20 +1,48 @@
+-import type React from 'react';
++import React, { useState } from 'react';
++import { LayoutAnimation } from 'react-native';
++import { getCheckoutPaymentElementId } from '../checkout/createCheckout';
++import NativeCheckoutPaymentElement from '../specs/NativeCheckoutPaymentElement';
+ import type { CheckoutPaymentElementViewProps } from '../types/Checkout';
+ 
+-const CHECKOUT_NOT_IMPLEMENTED_MESSAGE =
+-  'This version of @stripe/stripe-react-native does not include native support for the Checkout private preview.';
+-
+ /**
+- * Renders the Checkout-owned Payment Element inline.
++ * Renders the Checkout-owned Payment Element inline and follows its native height.
+  *
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
+  * @CheckoutSessionPrivatePreview
+  */
+-export function CheckoutPaymentElementView(
+-  _props: CheckoutPaymentElementViewProps
+-): React.JSX.Element {
+-  // TODO(porter): Render Checkout Payment Element with a native component.
+-  throw new Error(CHECKOUT_NOT_IMPLEMENTED_MESSAGE);
++export function CheckoutPaymentElementView({
++  element,
++  ...props
++}: CheckoutPaymentElementViewProps): React.JSX.Element {
++  const controllerId = getCheckoutPaymentElementId(element);
++  return (
++    <MeasuredElement
++      key={controllerId}
++      controllerId={controllerId}
++      {...props}
++    />
++  );
++}
++
++function MeasuredElement({
++  controllerId,
++  style,
++  ...props
++}: Omit<CheckoutPaymentElementViewProps, 'element'> & {
++  controllerId: string;
++}): React.JSX.Element {
++  const [height, setHeight] = useState(1);
++  return (
++    <NativeCheckoutPaymentElement
++      {...props}
++      controllerId={controllerId}
++      style={[{ width: '100%' }, style, { height }]}
++      onHeightChanged={({ nativeEvent }) => {
++        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
++        setHeight(nativeEvent.height);
++      }}
++    />
++  );
+ }
+diff --git a/src/specs/NativeCheckoutPaymentElement.ts b/src/specs/NativeCheckoutPaymentElement.ts
+new file mode 100644
+index 0000000..df15ff9
+--- /dev/null
++++ b/src/specs/NativeCheckoutPaymentElement.ts
+@@ -0,0 +1,15 @@
++import type { HostComponent, ViewProps } from 'react-native';
++import type {
++  DirectEventHandler,
++  Double,
++} from 'react-native/Libraries/Types/CodegenTypes';
++import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
++
++export interface NativeProps extends ViewProps {
++  controllerId: string;
++  onHeightChanged?: DirectEventHandler<Readonly<{ height: Double }>>;
++}
++
++export default codegenNativeComponent<NativeProps>(
++  'CheckoutPaymentElementView'
++) as HostComponent<NativeProps>;
+diff --git a/src/types/FinancialConnections.ts b/src/types/FinancialConnections.ts
+index cc68c8a..9d277c1 100644
+--- a/src/types/FinancialConnections.ts
++++ b/src/types/FinancialConnections.ts
+@@ -2,6 +2,24 @@ import type { UserInterfaceStyle } from './Common';
+ import type { BankAccount } from './Token';
+ import type { StripeError } from './Errors';
+ 
++/**
++ * Evidence that the customer accepted your own consent text before Financial
++ * Connections was presented. Stripe may still show its own consent pane in
++ * addition to yours.
++ */
++export type PreCollectedConsent = {
++  /** ID of the Financial Connections Consent object returned by your server. */
++  consent: string;
++  /**
++   * Unix timestamp, in seconds, when the customer affirmatively accepted the
++   * complete Stripe-issued consent text. Capture this once, at acceptance
++   * time, and reuse the same value on retries instead of the time Financial
++   * Connections is (re-)launched. `Date.now()` returns milliseconds, so
++   * divide by 1000.
++   */
++  collectedAt: number;
++};
++
+ export type CollectFinancialConnectionsAccountsParams = {
+   /** iOS Only. Style options for colors in Financial Connections. By default, the bank account collector will automatically switch between light and dark mode compatible colors based on device settings. */
+   style?: UserInterfaceStyle;
+@@ -9,6 +27,11 @@ export type CollectFinancialConnectionsAccountsParams = {
+   onEvent?: (event: FinancialConnectionsEvent) => void;
+   /** Optional connected account ID to use for this Financial Connections session. Used for Stripe Connect embedded components. */
+   connectedAccountId?: string;
++  /**
++   * Optional evidence that the customer accepted the text issued through a
++   * Consent object.
++   */
++  preCollectedConsent?: PreCollectedConsent;
+ };
+ 
+ export type SessionResult =
+diff --git a/src/types/PaymentMethod.ts b/src/types/PaymentMethod.ts
+index 67b1821..6772498 100644
+--- a/src/types/PaymentMethod.ts
++++ b/src/types/PaymentMethod.ts
+@@ -6,7 +6,10 @@ import type {
+ } from './Token';
+ import type { FutureUsage } from './PaymentIntent';
+ import type { BillingDetails, UserInterfaceStyle } from './Common';
+-import type { FinancialConnectionsEvent } from './FinancialConnections';
++import type {
++  FinancialConnectionsEvent,
++  PreCollectedConsent,
++} from './FinancialConnections';
+ 
+ export interface Result {
+   id: string;
+@@ -298,6 +301,11 @@ export type CollectBankAccountParams = {
+   style?: UserInterfaceStyle;
+   /** An optional event listener to receive @type {FinancialConnectionEvent} for specific events during the process of a user connecting their financial accounts. */
+   onEvent?: (event: FinancialConnectionsEvent) => void;
++  /**
++   * Optional evidence that the customer accepted the text issued through a
++   * Consent object.
++   */
++  preCollectedConsent?: PreCollectedConsent;
+ };
+ 
+ export type CollectBankAccountTokenParams = {
+@@ -307,4 +315,9 @@ export type CollectBankAccountTokenParams = {
+   onEvent?: (event: FinancialConnectionsEvent) => void;
+   /** Optional connected account ID. Used for Stripe Connect embedded components. */
+   connectedAccountId?: string;
++  /**
++   * Optional evidence that the customer accepted the text issued through a
++   * Consent object.
++   */
++  preCollectedConsent?: PreCollectedConsent;
+ };

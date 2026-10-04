@@ -1,5 +1,25 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Stripe React Native `0.80.0`
+
+- Delta/focused reading: private-preview consent with original acceptance time and inline Checkout rendering; modal/confirmation gaps retained. Details [[stripe-log]] and [[changelog-github-stripe-react-native]]. Older knowledge/count preserved. No native build/test, commit or push. Next: scoped commit review of the completed 0.76-0.80 loop.
+
+## [2026-10-04] ingest | Stripe React Native `0.79.0`
+
+- Delta/focused reading: native upgrades, Connect loading colors, reactive Checkout and server-update handshake with remaining payment gaps. Older history/count retained. Details [[stripe-log]] and [[changelog-github-stripe-react-native]]. No native build/test, commit or push. Next: 0.80.0 delta.
+
+## [2026-10-04] ingest | Stripe React Native `0.78.0`
+
+- Additive full/focused reading: SPM migration, partial Checkout bridge and explicit remaining gaps. Older history/count retained. Details [[stripe-log]] and [[changelog-github-stripe-react-native]]. No native build/test, commit or push. Next: 0.79.0 delta.
+
+## [2026-10-04] ingest | Stripe React Native `0.77.0`
+
+- Additive full with focused reading: new architecture, Google Pay lifecycle and KYC typing; Checkout still scaffold-only. Older history retained. Details [[stripe-log]] and [[changelog-github-stripe-react-native]]. No runtime test, commit or push. Next: 0.78.0 serial ingest.
+
+## [2026-10-04] ingest | Stripe React Native `0.76.0`
+
+- Additive full override with focused reading: wallet deletion and corrected Checkout preview boundary, with historical knowledge retained. Details [[stripe-log]] and [[changelog-github-stripe-react-native]]. No runtime test, commit or push. Next: 0.77.0 serial ingest.
+
 ## [2026-10-04] ingest | Braintree website C34
 
 - Twenty website sources approved through ten rolling child slots; first pass 19/20, twenty full initial reviews plus one targeted correction, no repeated full review. Final queries 40/40 after one index-edge repair and targeted A/E route rechecks; original failure evidence retained. Catalog 352 (335 website + 17 GitHub); two provider concept hubs, 30 typed pages validated. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-34/`. Raw unchanged; no commit or push.

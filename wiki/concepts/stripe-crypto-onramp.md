@@ -116,6 +116,16 @@ Every session status change generates a webhook.
 
 ## React Native 0.75.0 Delta
 
+### React Native 0.77.0 KYC Typing
+
+`KycInfo.idType` accepts `social_security_number` (US SSN), `ca_sin` (Canada SIN), `co_nit` (Colombia NIT), and `ph_tin` (Philippines TIN), with SSN as the documented default. Retained iOS mapping also falls back to SSN for missing/unrecognized strings; Android mappings show the same fallback in comparison hunks. These identifiers do not prove regional merchant access or successful KYC validation. The demo clears the ID number when residence changes and keeps EU-only birthplace/nationality fields separate. Android presenter recreation is a release-note announcement backed by changed hunks, not a full-file or device-tested guarantee. See [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
+### React Native 0.76.0 Wallet Deletion
+
+`useOnramp().deleteWalletAddress(walletId)` deletes a registered wallet from the current Link account and requires an authenticated Link user. Await its `{error?}` result and handle failure before changing local state. The iOS bridge delegates to the native coordinator and maps failure; Android delegation/result handling is visible in comparison hunks, but the complete Android Onramp implementation remains outside the capsule. This is wallet-record deletion, not a crypto transfer or account deletion; propagation, idempotency and retry guarantees are not established.
+
+The retained demo lists wallets through its backend, deletes by ID with its reauthentication wrapper, removes the successful result from local state, and clears selected wallet/challenge state when it matches. That demo retry behavior is not a general SDK retry guarantee. See [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
 `@stripe/stripe-react-native@0.75.0` adds Android Samsung Pay collection through `useOnramp()`. Enable the Onramp module with `StripeSdk_includeOnramp=true`, include Samsung Pay SDK `2.22.00` in the app, and pass `samsungPay.serviceId` to `configure`. Optional fields are `merchantId`, `merchantName`, and `allowedCardBrands`; an omitted or empty brand list uses SDK defaults.
 
 After configuration, call `isSamsungPaySupported()` before offering the option. The retained iOS bridge resolves `false`; Android readiness and setup changes are visible in comparison hunks, while complete Android Onramp implementation files are outside this capsule. This capability is specific to Crypto Onramp and does not establish Samsung Pay support in ordinary PaymentSheet.
