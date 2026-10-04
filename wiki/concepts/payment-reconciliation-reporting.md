@@ -108,6 +108,14 @@ Metronome documents a billing-data reconciliation pattern that extends beyond ma
 
 ## Sources
 
+- [[source-braintree-articles-aib-bf-reconciliation]] - 2026-09-16 Braintree-hosted exact AIB BF reconciliation snapshot covering statement Disbursement Details-to-bank-deposit matching, permission- and delay-qualified Disbursement Summary use, dispute disbursement dates and transaction-level fee routes; not AIB AF or LR guidance, current independent bank authority, proof of deposit, or evidence that linked targets agree
+
+- [[source-braintree-articles-aib-af-reconciliation]] - 2026-09-16 Braintree-hosted ordinary AIB AF reconciliation snapshot covering Funding Totals comparison, permission-gated AIB Transaction Fee Report access, processing-date net-settlement matching, discrepancy techniques and Total Fee Amount treatment; distinct from AIB AF LR and AIB BF, not independent current bank policy or proof of deposit arrival
+
+- [[source-braintree-articles-aib-bf-statements-reporting]] - Braintree-hosted AIB BF statements and monthly Transaction Fee Report route covering Control Panel permissions, account-dependent statement sections, VAT exclusion and report reconciliation limits; not AIB AF, independent current bank policy, or proof that linked targets agree
+
+- [[source-braintree-articles-aib-af-reconciliation-lr]] - Braintree-hosted AIB AF `Reconciliation (LR)` route for statement Funding Totals and Transaction Fee Report matching, with net/gross settlement qualifications and failed-disbursement records; not ordinary reconciliation, AIB BF, current independent bank authority, or proof that a deposit arrived
+
 - [[source-braintree-articles-wells-ic-statements-reconciliation]] - captured Braintree Wells IC+ statement and reconciliation route covering fee timing and Disbursement Details matching; not flat-rate, Marketplace, independent bank-policy, or individual-deposit proof
 - [[source-braintree-articles-wells-flat-statements-reconciliation]] - Braintree-hosted Wells Flat statement and reconciliation route for disbursement matching, merchant-account fee treatment, report permissions and limitations, and qualified multi-currency-to-USD behavior; Marketplace is separate, and the snapshot is not independent current bank policy or proof of deposit
 - [[source-braintree-articles-chase-reporting-reconciliation]] - Braintree-owned Chase-partnership reporting route to Chase Paymentech Online, including report retention and named financial reports for recurring reconciliation; daily deposit amounts are not proof of an individual funded deposit

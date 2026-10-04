@@ -1,0 +1,56 @@
+{
+  "job_id": "articles-aib-bf-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree AIB BF Reconciliation\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/aib-bf/reconciliation\"\nraw_files:\n  - \"braintree/articles/aib-bf/reconciliation-2026-09-16.md\"\ntags: [braintree, aib-bf, reconciliation, disbursements, reporting, fees]\n---\n\n## Overview\n\nThis collected [[braintree]] article at the exact AIB BF route explains reconciliation using statement Disbursement Details, bank deposits, the Control Panel Disbursement Summary, dispute reporting and transaction-level fee calculations. The AIB BF path label is retained without expanding it or transferring the guidance to AIB AF, LR, another account or region, or current independent bank authority.\n\n## Key takeaways\n\n- The article says most merchants compare the Disbursement Details on the second page of a Braintree statement with bank-account deposits. For more granular work, it describes calculating fees per transaction. It expressly says the Dashboard and Settlement Batch Summary may be helpful but should not be used for reconciliation.\n- In Disbursement Details, the Date is Braintree's disbursement date, the fee breakdown is per disbursement, and the Total Disbursed amount is stated to match the bank-statement deposit. The page says funds should appear within 1\u20133 business days depending on the bank, then separately says that typical 1\u20133-business-day timing can vary. These statements are snapshot guidance, not proof that a particular deposit arrived or a current bank timing guarantee.\n- The Disbursement Summary can expose individual transactions for a day's disbursement or gross sales and credits grouped by card type. It may not become available until 1\u20133 business days after disbursement, requires the Create, Run, and Download Reports permission, and does not include transaction fees. The article recommends matching the bank deposit amount to Total Disbursed first and then using Braintree's disbursement date to select the corresponding summary.\n- For disputes, the article points to the Disbursement Date in the Disputes Financial Impact Report as the date disbursed funds were credited to or debited from the account. This is the article's reporting route, not independent evidence of bank movement.\n- For transaction-level fee calculations, the article directs a transaction search filtered by Disbursed date range, followed by the account statement's Pricing Schedule and a round-down step. It also points to a Transaction Fee Report for fees assessed and deducted from specific sale transactions, available at the beginning of each month. The linked pricing, statement, dispute and Control Panel pages are navigation targets only; this source does not establish that their detailed behavior or terms agree with this snapshot.\n\n> [!warning] Exact scope and reconciliation limits\n> Keep this evidence within the captured AIB BF article. Do not treat it as AIB AF or LR guidance, current independent bank authority, account eligibility, proof of an individual deposit or dispute movement, or a guarantee of 1\u20133-business-day timing. Do not use the Dashboard or Settlement Batch Summary as reconciliation evidence on the strength of this page, and do not treat the Disbursement Summary as including transaction fees.\n\n## Detail locators\n\n- Primary statement-to-bank matching method, granular fee option and explicit Dashboard/Settlement Batch Summary warning: `# Reconciliation`, raw lines 16\u201322.\n- Disbursement date meaning, conditional bank timing, fee breakdown and Total Disbursed matching statement: `## Disbursement Details`, raw lines 27\u201331.\n- Disbursement Summary purpose, availability delay, permission gate, variable arrival timing and transaction-fee exclusion: `## Disbursement Summary report`, raw lines 34\u201342.\n- Control Panel steps, merchant-account/date-range selection, CSV totals and per-day transaction view: raw lines 47\u201357.\n- Dispute reconciliation via the Disputes Financial Impact Report's Disbursement Date: `## Reconciling disputes`, raw lines 60\u201362.\n- Disbursed-date transaction-search steps, Pricing Schedule lookup, round-down instruction and monthly Transaction Fee Report route: `## Calculating fees on a transaction level`, raw lines 65\u201384.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n- Supporting concept: [[braintree-control-panel]]\n- Linked statement, pricing, dispute, permission, Dashboard and Settlement Batch Summary destinations are navigation only and were not used as behavioral evidence for this entry.\n\n## Raw Sources\n\n- [[raw/braintree/articles/aib-bf/reconciliation-2026-09-16|Braintree AIB BF Reconciliation]] - fully read collected article covering statement-to-bank matching, disbursement-report conditions, disputes and transaction-level fee calculation\n",
+  "quotes": [
+    {
+      "text": "Most of our merchants reconcile by comparing the Disbursement Details \u2013 which can be found on the second page of your Braintree statement \u2013 to the deposits they see in their bank accounts.\n\nIf you\u2019re looking for more granular information, some merchants like to reconcile down to the transaction by [calculating their own per transaction fees](/braintree/articles/aib-bf/reconciliation#calculating-fees-on-a-transaction-level).\n\n\n**IMPORTANT**\n While the [Dashboard](/braintree/articles/control-panel/overview#dashboard) and the [Settlement Batch Summary](/braintree/articles/control-panel/reporting/settlement-batch-summary) can be helpful tools, they should not be used for reconciliation purposes.",
+      "location": "# Reconciliation, raw lines 16\u201322"
+    },
+    {
+      "text": "In the **Disbursement Details** \u2013 which can be found on the second page of your Braintree statement \u2013 the Date column reflects when we disbursed the funds to your bank. Depending on how long your bank takes to manage incoming deposits, these funds should be reflected on your bank statement within 1-3 business days of the disbursement date.\n\nThe **Disbursement Details** also show you a breakdown of the fees applied to each disbursement, and the Total Disbursed column will match the deposit you see on your bank statement.",
+      "location": "## Disbursement Details, raw lines 29\u201331"
+    },
+    {
+      "text": "If you would like to see individual transactions from a particular day\u2019s disbursement, or see your gross sales and credits grouped by card type, you can use the Disbursement Summary in the Control Panel. Keep in mind that it can take 1-3 business days after the disbursement for the Disbursement Summary to become available, and only users with the Create, Run, and Download Reports [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-create-run-and-download-reports) can access this report in the Control Panel.\n\nWhile disbursements typically take 1-3 business days to reach your bank account, this time frame can vary. As a result, it\u2019s best to match the amount of the deposit on your bank statement with the **Total Disbursed** amount in the [Disbursement Details](#disbursement-details) on your Braintree statement. Once you determine Braintree\u2019s disbursement date, you can use that to pull the corresponding Disbursement Summary.\n\n\n**NOTE**\n The Disbursement Summary does not include transaction fees.",
+      "location": "## Disbursement Summary report, raw lines 36\u201342"
+    },
+    {
+      "text": "You can reconcile disputes with your Braintree statement by using the Disbursement Date column of the [Disputes Financial Impact Report](/braintree/articles/aib-bf/chargebacks-retrievals-prearbs#dispute-reports). Here you will find the exact date that disbursed funds were credited or debited from your account.",
+      "location": "## Reconciling disputes, raw line 62"
+    },
+    {
+      "text": "From here, you can create additional columns for your transaction fees. To find your specific transaction fees, look at the [Pricing Schedule](/braintree/articles/aib-bf/statements-reporting#pricing-schedule) on your statement. Make sure to [round down](/braintree/articles/aib-bf/pricing-fees#rounding-down), and then apply the fees to your individual transactions.\n\n\n**NOTE**\n You can also view all fees assessed and deducted from specific sale transactions within the [Transaction Fee Report](/braintree/articles/aib-bf/statements-reporting#transaction-fee-report). This report is available at the beginning of each month.",
+      "location": "## Calculating fees on a transaction level, raw lines 80\u201384"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-aib-bf-reconciliation-reciprocal",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-aib-bf-reconciliation]] - 2026-09-16 Braintree-hosted exact AIB BF reconciliation snapshot covering statement Disbursement Details-to-bank-deposit matching, permission- and delay-qualified Disbursement Summary use, dispute disbursement dates and transaction-level fee routes; not AIB AF or LR guidance, current independent bank authority, proof of deposit, or evidence that linked targets agree",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the exact AIB BF route and do not transfer its guidance to AIB AF, LR, another account or current independent bank policy.",
+          "The source expressly excludes the Dashboard and Settlement Batch Summary from reconciliation use, and says the Disbursement Summary omits transaction fees.",
+          "Treat linked pages as navigation only, not evidence that their detailed behavior or terms agree with this snapshot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/aib-bf/reconciliation-2026-09-16.md",
+  "raw_sha256": "3e8a01cf6708d4f244a5a9adef8611bb693eecab84c7e3a0b968e2916af42942",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,10 @@
+# Braintree C36 close audit
+
+- Scope: twenty pinned AIB AF/BF website pages; all twenty fully read by workers and independent initial reviewers, approved and promoted. Initial first pass 18/20; 22 worker attempts, twenty full initial reviews and two targeted reviews. No repeated full review, schema-rejected handoff, formatter repair or coordinator semantic repair.
+- Targeted corrections: BF pricing explicitly preserves the binary classifier versus separate IC++ identification conflict; AF funding restores batching to confirm settlement before post-settlement AIB disbursement. Unaffected candidate bytes, quotes, suggestions and raw hashes stayed unchanged.
+- Structural close passed at 2026-10-04T07:08:22Z: exact accepted candidate equality, primary SHA-256, canonical URL and primary-raw uniqueness, evidence links, approved shared suggestions, source/concept reciprocity, provider-index routes and exhaustive source catalogs/counts.
+- Catalog: 392 sources = 375 website + 17 GitHub. Six existing concepts updated, no new concepts. Twenty source pages contain 12,233 words; the increase versus C35 is not a prose-reduction claim.
+- Fixed query audits A–E passed 40/40; individual reports retain questions, answers and route/evidence checks. Known SRC support/availability ambiguity remains unresolved; AF/BF provisioning/funding and reconciliation/funding event anchors remain distinct. No execution or current bank policy proof inferred.
+- Existing typed validation passed for twenty sources, six concepts, company and provider log (28 pages); git diff --check passed. Runtime completed at 2026-10-04T07:16:48Z with zero coordinator repairs; elapsed total 30m38s.
+- Shared ten-slot rolling pool encountered one retained completed-agent thread limit; reusing the exact listed independent Sol reviewer preserved the trusted review order. No configuration change or review waiver; completed status is not a claim of thread release.
+- No collection, GitHub ingestion, code/rule/schema/validator changes, commit or push. Unrelated shared-checkout changes preserved.

@@ -329,6 +329,10 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 
 ## Sources
 
+- [[source-braintree-articles-aib-af-chargebacks-retrievals-prearbs]] - 2026-09-16 captured Braintree AIB AF credit-card-dispute article covering account-sensitive notifications, Control Panel and stated API management routes, reply-by expiration, chargeback/retrieval/pre-arb effects, statuses, and the non-reconciliation report boundary; not AIB BF behavior, independent current bank/card-network authority, or a merchant-specific pricing agreement, and its linked targets were not used to establish broader agreement
+
+- [[source-braintree-articles-aib-bf-chargebacks-retrievals-prearbs]] - 2026-09-16 Braintree-hosted AIB BF credit-card dispute snapshot covering chargeback, retrieval and pre-arbitration definitions, evidence and response cutoff, payout and fee effects, Control Panel/API routes, statuses and reports; not independent current bank authority, a defined region/pricing model, or transferable AF/Wells policy
+
 - [[source-braintree-articles-wells-flat-pre-dispute-programs]] - 2026-09-16 Braintree Wells Flat-route article describing US-supported Visa RDR, direct Visa enrollment, merchant-rule outcomes, liability acceptance and qualified Visa dispute-ratio treatment; this is captured Braintree documentation, not independent current Visa policy or universal account eligibility.
 
 - [[source-braintree-articles-wells-flat-chargebacks-retrievals-prearbs]] - captured 2026-09-16 Braintree Wells Flat credit-card dispute article covering retrieval, chargeback, pre-arbitration and arbitration boundaries, response cutoff, Control Panel/API routes, and a dated US flat-rate pre-arbitration auto-accept policy; not independent current Wells or universal Braintree policy

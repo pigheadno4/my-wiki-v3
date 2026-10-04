@@ -17,6 +17,12 @@ Sandbox and Production use mutually exclusive Control Panel environments that do
 
 ## Sources
 
+- [[source-braintree-articles-aib-af-statements]] - 2026-09-16 Braintree-hosted AIB AF statement route for monthly Control Panel availability, role-gated access, batch processing detail, pricing-agreement-sensitive fee sections and completed-transfer reporting; not AIB BF or independent current bank, eligibility, pricing, deposit-arrival or payment-success authority
+
+- [[source-braintree-articles-aib-af-transactions-descriptors]] - 2026-09-16 Braintree-hosted AIB AF descriptor article covering bank-controlled statement presentation, application-derived hard/soft configuration, separate PayPal/Amex update routes, and per-transaction dynamic/refund behavior; not AIB BF evidence, independent current bank policy, or proof of regional/account eligibility or pricing
+
+- [[source-braintree-articles-aib-bf-transactions-descriptors]] - Braintree-hosted AIB BF descriptor article covering bank-controlled statement presentation, application-derived hard/soft configuration, per-transaction dynamic descriptors and refund descriptor reuse; not AIB AF evidence, independent current bank policy, current eligibility/pricing proof, or transaction-success evidence
+
 - [[source-braintree-articles-wells-ic-transactions-descriptors]] - 2026-09-16 Braintree-captured Wells IC article for bank-controlled descriptor presentation, application-derived account configuration, dynamic/refund behavior and aggregated-versus-own Amex qualifications; not independent current bank policy, Wells Flat evidence, or proof of regional/account eligibility or pricing
 - [[source-braintree-articles-wells-flat-transactions-descriptors]] - 2026-09-16 Braintree-owned Wells Flat descriptor article covering bank-controlled statement presentation, application-derived Control Panel configuration, per-transaction dynamic descriptors and aggregated-versus-own Amex account scope; not independent current bank policy or transferable to Wells IC, another account, pricing path or region
 - [[source-braintree-articles-risk-and-security-overview]] - 2026-09-16 Braintree umbrella navigation page identifying the Control Panel as the reporting and payment-management interface and routing its security practices to a dedicated article

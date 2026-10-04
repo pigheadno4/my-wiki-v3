@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C36
+
+- Twenty AIB AF/BF website raws fully read and independently reviewed through ten shared rolling child slots. Catalog: 392 sources (375 website + 17 GitHub); six existing concepts updated, no new concepts. Raw unchanged.
+- Initial first pass 18/20; twenty full initial reviews plus two targeted reviews, zero repeated full reviews, schema-rejected handoffs or formatter repairs. Bounded corrections exposed the BF pricing IC++ identification conflict and restored AF batching-to-confirm-settlement before post-settlement disbursement. No invented conflict resolution or coordinator semantic repair.
+- Fixed queries 40/40 passed. AF/BF provisioning and funding distinctions, reconciliation-versus-funding event anchors and the existing SRC availability/end-of-support conflict remain explicit. Snapshot documentation is not proof of current bank policy or payment execution.
+- Candidate equality, immutable hashes, unique primary ownership, approved updates, reciprocal/index routes, exhaustive catalogs/counts and 28 typed pages passed close checks. Timing and evidence: `tracking/ingest/braintree/braintree-campaign-36/`. No collection, GitHub ingestion, code/rule/schema change, commit or push.
+
 ## [2026-10-04] ingest | Braintree website C35
 
 - Twenty Wells IC/Wells Flat website raws fully read and independently reviewed through ten shared rolling slots. Catalog: 372 sources (355 website + 17 GitHub); seven existing concepts updated, no new concepts. Raw unchanged.

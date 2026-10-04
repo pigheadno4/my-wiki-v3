@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-aib-af-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree AIB AF Reconciliation\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/aib-af/reconciliation\"\nraw_files:\n  - \"braintree/articles/aib-af/reconciliation-2026-09-16.md\"\ntags: [braintree, aib-af, reconciliation, reporting, settlement]\n---\n\n## Overview\n\nThis captured [[braintree]] AIB AF article documents ordinary reconciliation using the AIB Merchant Statement and AIB Transaction Fee Report. General reconciliation compares the statement's **Funding Totals** with bank-account deposits. Transaction-level reconciliation compares the fee report with both the AIB Statement and bank deposits, then derives processing-date net settlement amounts and matches them to statement funding totals.\n\nTreat this as a Braintree-hosted snapshot for the AIB AF route, not as the separate AIB AF `Reconciliation (LR)` document, AIB BF behavior, independent current bank policy, or proof that a particular deposit arrived. The body states no region or pricing model, and links to statements, role permissions, merchant-account IDs, pricing models, Excel help and the Control Panel are navigation rather than evidence that those targets agree with this snapshot.\n\n## Key takeaways\n\n- Access to the AIB Transaction Fee Report is limited to users with the **Create, Run, and Download Reports** role permission. The documented Control Panel procedure selects merchant account scope and a date range. If a merchant processes multiple currencies and has more than one merchant account, all merchant accounts are included by default unless the merchant narrows the Merchant Account ID field.\n- The report is based on transaction settlement dates. The article says deposit typically follows settlement by one business day and suggests a wider report date range to capture all transactions in the disbursement being reconciled; this timing statement is not evidence of actual bank receipt.\n- In Excel, the article has merchants organize Settlement Amount, Total Fee Amount, Chargeback Amount and Chargeback Fee Amount by Processing Date, then calculate net settlement as Settlement Amount minus all fees and chargebacks.\n- Reconciliation matches each PivotTable Processing Date to the statement's Funding Totals date. If the net amount differs, the article suggests rounding Total Fee Amount up to two decimal places because AIB calculates it to as many as five decimals, or checking adjacent report dates because negative balances or time-zone differences can shift exact processing dates.\n- **Settlement Amount** is before fees; **Total Fee Amount** includes interchange and Braintree fees but excludes chargeback fees. Although the report exposes **Interchange Amount**, the article says merchants should use only Total Fee Amount for reconciliation regardless of pricing model. It does not supply a fee schedule or establish which pricing model applies.\n\n> [!warning] Reconciliation records are not deposit proof\n> Statement Funding Totals, report rows and the article's typical one-business-day timing support a matching procedure; they do not independently establish that a specific deposit reached the merchant's bank account.\n\n> [!warning] Captured ordinary AIB AF scope\n> Keep the report procedure, timing, column treatment and discrepancy techniques within this ordinary AIB AF snapshot. Do not transfer them to the AIB AF LR article, AIB BF, another processor/account setup, a merchant agreement, or current independent bank policy.\n\n## Detail locators\n\n- Funding Totals comparison and completed-transfer/bank-statement-text description: `## General reconciliation`, raw lines 17-19.\n- Transaction-level comparison purpose: `## Transaction-level reconciliation`, raw lines 22-24.\n- Report permission, Control Panel path, merchant-account scope and date-range selection: `### Step one`, raw lines 27-43.\n- Settlement-date basis, typical deposit lag and wider-date-range suggestion: raw line 43.\n- PivotTable fields and net-settlement calculation: `### Step two`, raw lines 46-58.\n- Merchant Statement download route: `### Step three`, raw lines 61-70.\n- Processing-date-to-Funding-Totals match and mismatch techniques: `### Step four`, raw lines 73-79.\n- Settlement, interchange and total-fee column meanings plus the do-not-use-interchange warning: `## Understand the AIB Transaction Fee Report`, raw lines 82-93.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/aib-af/reconciliation-2026-09-16|Braintree AIB AF Reconciliation]] - fully read captured article covering statement and transaction-level matching, report access and date scope, net-settlement calculation, mismatch techniques, and fee-column treatment\n",
+  "quotes": [
+    {
+      "text": "For general reconciliation, you'll want to compare the information in the **Funding Totals** section of your [AIB Merchant Statement](/braintree/articles/aib-af/statements#funding-totals) to the deposits you see in your bank account. Here you'll find details of all bank transfers completed within the billing period, along with the text that will appear on your bank statements for each disbursement.",
+      "location": "raw line 19 under ## General reconciliation"
+    },
+    {
+      "text": "Only users with the Create, Run, and Download Reports [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-create-run-and-download-reports) can access the AIB Transaction Fee Report in the Control Panel. To find this report:",
+      "location": "raw line 29 under ### Step one: Download the AIB Transaction Fee Report"
+    },
+    {
+      "text": "* The AIB Transaction Fee Report is based on transaction settlement dates. It typically takes one business day after settlement for the transaction to be deposited in your bank account. To account for this difference, we suggest specifying a wider date range when running the AIB Transaction Fee Report to ensure that it includes all of the transactions in the disbursement you are reconciling.",
+      "location": "raw line 43 under ### Step one: Download the AIB Transaction Fee Report"
+    },
+    {
+      "text": "You can then apply the Sum formula to each one of the rows in your PivotTable to calculate your net settlement amount for each processing date (i.e. Settlement Amount minus all fees and chargebacks):",
+      "location": "raw line 56 under ### Step two: Calculate your net settlement amounts"
+    },
+    {
+      "text": "The **Interchange Amount** column helps us calculate fees, but it should not be used by merchants for reconciliation. Regardless of your [pricing model](/braintree/articles/aib-af/pricing-fees#pricing-models), you should only use the **Total Fee Amount** column to reconcile your transactions.",
+      "location": "raw line 93 under ## Understand the AIB Transaction Fee Report"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-aib-af-reconciliation-payment-reconciliation-route",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-aib-af-reconciliation]] - 2026-09-16 Braintree-hosted ordinary AIB AF reconciliation snapshot covering Funding Totals comparison, permission-gated AIB Transaction Fee Report access, processing-date net-settlement matching, discrepancy techniques and Total Fee Amount treatment; distinct from AIB AF LR and AIB BF, not independent current bank policy or proof of deposit arrival",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this reciprocal route scoped to the captured ordinary AIB AF article; do not transfer its procedure, timing or fee-column treatment to AIB AF LR, AIB BF, another processor/account variant or current bank policy.",
+          "The captured links establish navigation only and were not used as evidence that their target pages agree; statement/report comparisons and typical timing do not prove a deposit arrived."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/aib-af/reconciliation-2026-09-16.md",
+  "raw_sha256": "efb6a511703339ecffcfcffbfea7d808d3323760a33606f1b244d10ec64f34dc",
+  "status": "candidate_ready"
+}

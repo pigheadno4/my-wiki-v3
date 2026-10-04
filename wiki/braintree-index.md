@@ -22,6 +22,28 @@ Operations history: [[braintree-log]]
 
 #### Processor-specific account articles
 
+- [[source-braintree-articles-aib-af-reconciliation-lr]] - Braintree AIB AF Reconciliation (LR)
+- [[source-braintree-articles-aib-af-idempotency-lr]] - Braintree AIB AF At-Most-Once Processing (LR)
+- [[source-braintree-articles-aib-bf-chargebacks-retrievals-prearbs]] - Braintree AIB BF Chargebacks, Retrievals, and Pre-Arbs
+- [[source-braintree-articles-aib-af-chargebacks-retrievals-prearbs]] - Braintree AIB AF Chargebacks, Retrievals, and Pre-Arbs
+- [[source-braintree-articles-aib-bf-pricing-fees]] - Braintree AIB BF Pricing and Fees
+- [[source-braintree-articles-aib-af-pricing-fees]] - Braintree AIB AF Pricing and Fees
+- [[source-braintree-articles-aib-bf-statements-reporting]] - Braintree AIB BF Statements and Reporting
+- [[source-braintree-articles-aib-bf-transactions-descriptors]] - Braintree AIB BF Transaction Descriptors
+- [[source-braintree-articles-aib-af-transactions-descriptors]] - Braintree AIB AF Transaction Descriptors
+- [[source-braintree-articles-aib-af-transactions-accepted-payment-methods]] - Braintree AIB AF Accepted Payment Methods
+- [[source-braintree-articles-aib-af-reconciliation]] - Braintree AIB AF Reconciliation
+- [[source-braintree-articles-aib-af-statements]] - Braintree AIB AF Statements
+- [[source-braintree-articles-aib-bf-reconciliation]] - Braintree AIB BF Reconciliation
+- [[source-braintree-articles-aib-bf-transactions-accepted-payment-methods]] - Braintree AIB BF Accepted Payment Methods
+- [[source-braintree-articles-aib-bf-change-your-bank-account]] - Braintree AIB BF Change Your Bank Account
+- [[source-braintree-articles-aib-bf-transactions-settlement-funding-timeline]] - Braintree AIB BF Settlement and Funding Timeline
+- [[source-braintree-articles-aib-af-change-your-bank-account]] - Braintree AIB AF Change Your Bank Account
+- [[source-braintree-articles-aib-af-transactions-settlement-funding-timeline]] - Braintree AIB AF Settlement and Funding Timeline
+- [[source-braintree-articles-aib-af-overview]] - Braintree AIB AF Overview
+- [[source-braintree-articles-aib-bf-overview]] - Braintree AIB BF Overview
+
+
 - [[source-braintree-articles-wells-flat-chargebacks-retrievals-prearbs]] - Braintree Wells Flat Chargebacks, Retrievals, and Pre-Arbs (Wells Flat)
 - [[source-braintree-articles-wells-ic-chargebacks-retrievals-prearbs]] - Braintree Wells IC Chargebacks, Retrievals, and Pre-Arbs (Wells IC)
 - [[source-braintree-articles-wells-ic-statements-reconciliation]] - Braintree Wells IC+ Statements and Reconciliation (Wells IC)

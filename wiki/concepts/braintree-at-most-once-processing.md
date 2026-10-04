@@ -17,4 +17,6 @@ The captured page is not generally public and directs readers to the product tea
 
 ## Sources
 
+- [[source-braintree-articles-aib-af-idempotency-lr]] - 2026-09-16 Braintree-hosted AIB AF/LR snapshot of logical-intent request identity, duplicate handling, and action-specific retry qualifications; the route does not establish independent current bank policy or merchant enablement
+
 - [[source-braintree-articles-guides-at-most-once]] - 2026-09-16 limited-audience guide to logical-intent request identity, 30-day duplicate handling, action-specific outcomes and retry qualifications

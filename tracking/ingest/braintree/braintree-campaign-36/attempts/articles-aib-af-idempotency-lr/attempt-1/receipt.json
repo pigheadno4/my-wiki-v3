@@ -1,0 +1,54 @@
+{
+  "job_id": "articles-aib-af-idempotency-lr",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree AIB AF At-Most-Once Processing (LR)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/aib-af/idempotency-LR\"\nraw_files:\n  - \"braintree/articles/aib-af/idempotency-LR-2026-09-16.md\"\ntags: [braintree, aib-af, at-most-once, idempotency, api-request-key]\n---\n\n## Overview\n\nThis Braintree-hosted AIB AF/LR document describes At-Most-Once Processing, its logical-intent idempotency model for preventing duplicate API requests from producing duplicate payment actions. Merchants supply an `ApiRequestKey` that uniquely identifies the intended logical action; identical keys within 30 days are treated as duplicates. The document says this feature is mutually exclusive with transaction duplicate checking and distinguishes it from network-level response replay.\n\nThe collected route places the document under AIB AF and labels the slug `idempotency-LR`; the body does not explain those labels or identify a processor, region, or pricing model. Treat this as Braintree snapshot documentation for that route, not independent current bank policy or proof of availability for another account variant.\n\n## Key takeaways\n\n- For identical requests within the 30-day window, the model returns the current state of the request's logical intent rather than necessarily replaying an original network response. That current state may have advanced or may be unsuccessful.\n- Matching request details can produce a retryable validation error while the original is in progress or the current result after completion; reusing a key with changed request details produces a validation error.\n- Generating a new key is not uniformly safe. The action-specific tables and footnotes condition retries on record presence and operation state, and some charge outcomes require investigation and potentially Braintree intervention.\n\n> [!warning] Restricted captured audience\n> The captured page says it is limited to a select group or specific audience, is not generally public, and should not be shared without contacting the product team. It does not establish current merchant eligibility, enablement, SDK support, or successful payment execution.\n\n> [!warning] Do not treat a new key as a blanket retry\n> A changed key can cause a functional duplicate if the first request may already have succeeded. Follow the exact action and state-specific matrix in the raw evidence.\n\n## Detail locators\n\n- Restricted-audience and sharing notice: raw lines 14-15.\n- Logical-intent purpose, mutual exclusion with transaction duplicate checking, and 30-day current-state behavior: `## At-Most-Once Processing`, raw lines 20-30.\n- `ApiRequestKey` requirement and duplicate-key window: `## Details`, raw lines 33-35.\n- Matching, in-progress, completed, and changed-request outcomes: `## Details`, raw lines 37-42.\n- Supported action families and exact operation names: `## Supported Actions`, raw lines 45-57 and the action sections that follow.\n- Authorize, charge, refund, settlement, partial-settlement, and credit matrices, including action-specific retry qualifications: raw lines 59-175.\n- Validation errors `915232`, `915233`, and `915234`: `## Error Codes`, raw lines 178-184.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-at-most-once-processing]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/aib-af/idempotency-LR-2026-09-16|Braintree AIB AF At-Most-Once Processing (LR)]] - complete captured document with logical-intent semantics, duplicate handling, action-specific scenarios, retry qualifications, and error codes\n",
+  "quotes": [
+    {
+      "text": "This page is limited to a select group of individuals or a specific audience and is not yet available to the general public. Please get in touch with the product team before sharing this link.",
+      "location": "raw line 15, restricted-audience notice before ## At-Most-Once Processing"
+    },
+    {
+      "text": "At-Most-Once Processing or Idempotency processing helps merchants ensure that duplicate API requests do not result in duplicate actions such as charging or refunding a payment multiple times. In contrast to transaction duplicate checking, this feature requires merchants to specify a unique request key, and the two features are mutually exclusive.",
+      "location": "raw line 22 under ## At-Most-Once Processing"
+    },
+    {
+      "text": "Instead of network-level idempotency, Braintree has chosen to implement logical intent idempotency or, to avoid confusion, At-Most-Once Processing. This feature ensures that duplicate API requests do not result in duplicate actions, such as charging or refunding a payment multiple times. Duplicate requests do not reach payment networks and avoid overcharging merchants. Each identical request within a 30-day window will return the current state of that request's intent. This avoids unintended duplication and can safely retry requests when unexpected errors occur, for example, networking failures.",
+      "location": "raw line 30 under ## At-Most-Once Processing"
+    },
+    {
+      "text": "At-Most-Once processing requires the merchant to provide an ApiRequestKey with each request to identify the logical action being attempted uniquely. Identical ApiRequestKey values within a 30-day window are considered duplicate requests.",
+      "location": "raw line 35 under ## Details"
+    },
+    {
+      "text": "* **Footnote for use case (4)**Multiple scenarios may lead to this outcome. If no transaction record was created, then retrying with a newApiRequestKeymay be safely attempted. If a transaction record was created the error response will contain an additional key with the transaction's public identifier, and further investigation (and potentially intervention by Braintree) is required.",
+      "location": "raw line 104 under ### Charge"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-aib-af-idempotency-lr-concept-route",
+        "target_path": "wiki/concepts/braintree-at-most-once-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-aib-af-idempotency-lr]] - 2026-09-16 Braintree-hosted AIB AF/LR snapshot of logical-intent request identity, duplicate handling, and action-specific retry qualifications; the route does not establish independent current bank policy or merchant enablement",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this reciprocal route scoped to the Braintree-hosted AIB AF/LR snapshot; do not transfer behavior to sibling AF/BF account variants or treat it as independent current bank policy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/aib-af/idempotency-LR-2026-09-16.md",
+  "raw_sha256": "caa238f3ce0fd20691ddff7ee8d741ddc1ef10bb8a558e9f2f855a039574bac7",
+  "status": "candidate_ready"
+}

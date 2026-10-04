@@ -1,0 +1,53 @@
+{
+  "job_id": "articles-aib-af-reconciliation-lr",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree AIB AF Reconciliation (LR)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/aib-af/reconciliation-lr\"\nraw_files:\n  - \"braintree/articles/aib-af/reconciliation-lr-2026-09-16.md\"\ntags: [braintree, aib-af, reconciliation, reporting, settlement]\n---\n\n## Overview\n\nThis collected `Reconciliation (LR)` article under Braintree's AIB AF path documents two reconciliation routes: comparing statement Funding Totals with bank-account deposits, and using the Transaction Fee Report to reconcile daily deposits from Braintree AIB funded accounts with merchant records and clear receivables. The report combines summarized disbursement information with event-level transaction, dispute, fee and adjustment records.\n\nThe snapshot is Braintree-hosted AIB AF documentation, not independent current bank authority or evidence of current account, region or pricing eligibility. It must not be transferred to AIB BF, ordinary AIB AF reconciliation, or other processor/account arrangements. A report row, transfer reference or expected match does not prove that an individual deposit reached the merchant's bank account; the documented record types expressly include failed disbursements.\n\n## Key takeaways\n\n- For general reconciliation, the article directs merchants to compare the AIB Merchant Statement's **Funding Totals** with bank-account deposits. That statement section is described as containing completed bank-transfer details for the billing period and the text expected on bank statements.\n- For transaction-level reconciliation, the Transaction Fee Report is scoped to daily deposits from Braintree AIB funded accounts. It contains Gateway Transaction Records, Accounting Based Records and Summary Records; each Summary Record represents a disbursement and includes its per-MID total and Transfer ID.\n- The deposit-matching procedure uses the Transfer ID, Summary **Net Disbursed** amounts and Transaction Disbursement Key. It instructs merchants to total settlement, fee and chargeback amounts per key, truncate totals to two decimals rather than round, and confirm that all disbursement-impacting items are present before reconciling by record type.\n- Settlement treatment is qualified: for sales and refunds, net-settlement merchants use amounts net of fees, while gross-settlement merchants are routed to the separate fee-reconciliation procedure. The article also provides two gross-settlement sample files, one for daily credit and one for fee debit.\n- The data dictionary marks **Card Type Group** and **Region Relation** as EMEA-only fields, but the page does not state a general regional eligibility rule. Detailed fields, record types and subtypes remain in the raw locator rather than being treated as a universal schema or fee schedule.\n\n> [!warning] Report evidence is not deposit proof\n> The documented report and matching procedure support reconciliation but do not independently prove settlement or bank receipt. The report can contain a **Failed disbursement** record when a bank deposit fails.\n\n> [!warning] Captured AIB AF LR scope\n> Keep the net/gross treatment, field definitions and procedures within this captured AIB AF `Reconciliation (LR)` article. Do not conflate it with ordinary reconciliation, AIB BF, sibling idempotency documentation, another processor/account setup, or current independent bank policy.\n\n## Detail locators\n\n- General statement-to-deposit comparison and transaction-level report purpose: `## General reconciliation` and `## Transaction-level reconciliation`, raw lines 17-24.\n- Net and gross sample-file routes: `## Sample files`, raw lines 27-41.\n- Report categories and per-disbursement Summary Record: `### Transaction-level fee report format`, raw lines 44-66.\n- Transfer-ID matching, per-key calculations, truncation rules and the all-items-present condition: `### How to Use the Report > #### Reconciling deposit amount to the reported amounts`, raw lines 69-89.\n- Sales/refunds, net-versus-gross qualification, disputes and gross-settlement fee reconciliation: raw lines 92-134.\n- Field definitions, including EMEA-only fields and transfer/disbursement keys: `### Data dictionary for Report Records`, raw lines 137-175.\n- Record-type and subtype meanings, including failed disbursement and gross-settlement processing fees: `### Record types and Subtypes`, raw lines 178-207.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/aib-af/reconciliation-lr-2026-09-16|Braintree AIB AF Reconciliation (LR) article]] - complete collected snapshot covering statement and Transaction Fee Report reconciliation, net/gross qualifications, deposit matching, report fields and record types\n",
+  "quotes": [
+    {
+      "text": "For general reconciliation, compare the information in the **Funding Totals** section of your [AIB Merchant Statement](/braintree/articles/aib-af/statements#funding-totals) to the deposits you see in your bank account. This is where details of all bank transfers completed within the billing period are, along with the text that will appear on your bank statements for each disbursement.",
+      "location": "## General reconciliation, raw line 19"
+    },
+    {
+      "text": "Use the Transaction Fee Report to reconcile your daily deposits for your Braintree AIB funded accounts with your system of records and to clear your receivables. This report contains both summarized and event-level details (including fees) of every payment event that impacted a deposit from your AIB funded Braintree account to your deposit bank account.",
+      "location": "## Transaction-level reconciliation, raw line 24"
+    },
+    {
+      "text": "The Summary Record contains summarized data about each disbursement in the reporting period. Each disbursement appears as a line-item in this section and will have information about the total amount disbursed per MID and the transfer ID of the disbursement.",
+      "location": "### Transaction-level fee report format > #### Summary, raw line 66"
+    },
+    {
+      "text": "For merchants in net settlement, this will be net of fees. Merchants in gross settlement should refer to the [Reconciling Fees (gross settlement)](/braintree/articles/aib-af/reconciliation-lr#reconciling-fees-(gross-settlement)) section.",
+      "location": "### How to Use the Report > #### Reconciling standard sales and refunds > NOTE, raw line 107"
+    },
+    {
+      "text": "|  | Failed disbursement | (null) | When bank deposits fail, payment corresponding to the failed deposit is reported under this type. |",
+      "location": "### Record types and Subtypes, raw line 190"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-aib-af-reconciliation-lr-payment-reconciliation-route",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-aib-af-reconciliation-lr]] - Braintree-hosted AIB AF `Reconciliation (LR)` route for statement Funding Totals and Transaction Fee Report matching, with net/gross settlement qualifications and failed-disbursement records; not ordinary reconciliation, AIB BF, current independent bank authority, or proof that a deposit arrived",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not transfer this captured AIB AF LR document to ordinary AIB AF reconciliation, AIB BF, sibling idempotency documentation, other processor/account arrangements, or current independent bank policy; report data does not prove deposit arrival."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/aib-af/reconciliation-lr-2026-09-16.md",
+  "raw_sha256": "f7dcdaf4f09ea2f011b94a8eb7439ecf0bdb6308faa3e456b04232c52d5cfe64",
+  "status": "candidate_ready"
+}

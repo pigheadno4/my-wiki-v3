@@ -20,6 +20,10 @@ Card scope also varies by account and use case: the page distinguishes US from m
 
 ## Sources
 
+- [[source-braintree-articles-aib-bf-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted exact AIB BF account article for configured card brands, consequential Maestro 3D Secure and Control Panel conditions, separately enabled JCB/Discover/Diners Club, qualified alternative methods, and merchant-account currency selection with conversion-fee/refund warnings; not AIB AF, current independent authority, a merchant-specific agreement, or payment-execution proof
+
+- [[source-braintree-articles-aib-af-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted AIB AF account article for default Visa, Mastercard and Maestro acceptance, separately configured Amex with pricing prerequisites, 3D-Secure-qualified Maestro constraints, qualified alternative methods, and merchant-account currency setup; not AIB BF, independent current bank authority, universal availability, fixed pricing or payment-execution proof
+
 - [[source-braintree-articles-wells-ic-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted Wells IC article for account-scoped card acceptance, qualified alternative methods, American Express account and support choices, and merchant-account currency setup; not current independent bank policy, Wells Flat evidence, universal availability, fixed pricing or payment-execution proof
 
 - [[source-braintree-articles-wells-flat-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted Wells Flat account article for PIN/password-qualified card acceptance, aggregated-versus-direct Amex account responsibilities, conditionally available alternative methods and ambiguous deprecation wording; not a Wells IC, provider-wide or current support guarantee

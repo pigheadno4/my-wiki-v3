@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Braintree website C36
+
+- Twenty AIB AF/BF website sources approved through ten rolling child slots; first pass 18/20, twenty full initial reviews plus two targeted reviews, no repeated full review. Fixed queries 40/40 passed; pricing identification conflict and settlement chronology corrected without expanding source scope. Catalog 392 (375 website + 17 GitHub); six existing concepts updated, 28 typed pages validated. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-36/`. Raw unchanged; no commit or push.
+
 ## [2026-10-04] ingest | Adyen Node `32.2.0`
 
 - Serial delta/focused reading after 32.1.0: HTTPS agent reuse and redirect preservation, configurable keep-alive, certificate-path cache limits; Payments App data remains notes-only. Older history retained; 14 repository sources/21 releases. Details [[adyen-log]] and [[changelog-github-adyen-node-api-library]]. No SDK/payment execution, commit or push. Next: scoped commit review.

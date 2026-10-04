@@ -25,6 +25,22 @@ PayPal transactions follow a separate collected funding route: by default PayPal
 
 ## Sources
 
+- [[source-braintree-articles-aib-af-transactions-settlement-funding-timeline]] - 2026-09-16 Braintree-hosted AIB AF post-settlement funding snapshot covering the successful-settlement prerequisite, fixed account cutoff, first-deposit delay, card-brand schedules, weekday/holiday and custom cadence, wallet alignment, and separate PayPal funding; not AIB BF, current bank authority, a merchant agreement, or proof that a deposit arrived
+
+- [[source-braintree-articles-aib-bf-overview]] - 2026-09-16 Braintree-hosted AIB BF direct-link portal for recipients with at least one AIB-provisioned, Braintree-funded merchant account, preserving banking-partner variability and the multiple-account qualification; not AIB AF, independent current bank policy, region or pricing authority, or agreement with destination-article behavior
+
+- [[source-braintree-articles-aib-af-overview]] - 2026-09-16 Braintree-hosted direct-link portal for recipients with at least one merchant account provisioned and funded by AIB, routing to account-tailored articles and preserving banking-partner variability; the page does not define AF, establish a region or pricing model, or document any linked target's behavior
+
+- [[source-braintree-articles-aib-af-change-your-bank-account]] - 2026-09-16 Braintree-hosted AIB AF route for changing the business checking account used for settled-transaction payouts through a Control Panel upload of a qualifying bank statement or signed bank letter, with document-recency and account-type exclusions; not AIB BF, current independent bank authority, completed-change or payout proof, or evidence for the presence or absence of an API route
+
+- [[source-braintree-articles-aib-bf-transactions-settlement-funding-timeline]] - 2026-09-16 Braintree-hosted AIB BF snapshot for account-qualified card settlement cutoffs, conditional post-settlement funding schedules, Amex setup differences and payout-date meaning; not AIB AF or independent current bank/processor policy, and not proof of an individual settlement or deposit
+
+- [[source-braintree-articles-aib-bf-change-your-bank-account]] - 2026-09-16 Braintree-hosted AIB BF route for permission-scoped disbursement-account viewing and a Control Panel bank-account update request using a qualifying statement or signed bank letter, with same-country business-checking and document conditions; not AIB AF, independent current bank policy, proof of eligibility or completed change, or evidence for the presence or absence of an API route
+
+- [[source-braintree-articles-aib-af-pricing-fees]] - 2026-09-16 Braintree-hosted AIB AF pricing snapshot covering account-selected blended, IC+ and IC++ models, successful-sale processing-fee scope, account and regional qualifications, original-fee retention on refunds, and dispute-fee treatment; no rounding rule, numeric rate schedule, BF transfer, current bank authority, or target-page agreement
+
+- [[source-braintree-articles-aib-bf-pricing-fees]] - 2026-09-16 Braintree-hosted exact AIB BF pricing snapshot describing blended, IC+ and IC++ models, successful-sale fee scope, statement and report routes, transaction-level round-down, qualified full-refund credits and dispute fees, with an unresolved Pricing Schedule identification gap; not AIB AF, a merchant-specific rate schedule or current independent bank policy
+
 - [[source-braintree-articles-wells-ic-transactions-level-2-and-3-processing]] - 2026-09-16 Braintree Wells IC-routed article for Level 1 default and qualified Level 2/3 business-transaction data, card and account prerequisites, potential interchange benefit, unchanged level-based settlement timing, and field/setup locators; not Wells Flat, current bank policy, universal eligibility or account-specific pricing proof
 
 - [[source-braintree-articles-wells-flat-overview]] - 2026-09-16 Braintree-owned direct-link portal for merchants with at least one Wells Fargo-provisioned merchant account, routing to account-tailored articles and preserving banking-partner variability; not independent current Wells Fargo policy, pricing or interchange-cost authority
