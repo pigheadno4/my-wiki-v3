@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 262
+source_count: 272
 ---
 
 ## Overview
@@ -90,6 +90,22 @@ implementation evidence:
 - [[source-braintree-start-hosted-fields]] - Hosted Fields start guide, merchant/Braintree responsibilities and integration routes
 - [[source-braintree-hosted-fields-examples-javascript-v3]] - JavaScript v3 examples navigation, not verified example execution
 - [[source-braintree-hosted-fields-upgrading-from-custom-javascript-v3]] - v3-routed legacy v2-only availability notice, not a captured migration procedure
+
+### Premium Fraud Management Tools integration website guides
+
+- [[source-braintree-premium-fraud-management-tools-client-side-javascript-v3]] - JavaScript v3 client device-data collection and server handoff
+- [[source-braintree-premium-fraud-management-tools-server-side-node]] - Node server submission, product-qualified risk responses and unresolved bypass conflict
+- [[source-braintree-premium-fraud-management-tools-testing-go-live-node]] - Node sandbox scenarios and qualified production transition
+- [[source-braintree-premium-fraud-management-tools-client-side-android-v5]] - Android v5 client collection, consent and historical lifecycle warning
+- [[source-braintree-premium-fraud-management-tools-webhooks-node]] - Advanced-only Node reviewed-transaction notification and lookup boundary
+- [[source-braintree-premium-fraud-management-tools-client-side-ios-v7]] - iOS v7 client collection and qualified historical certificate directions
+- [[source-braintree-premium-fraud-management-tools-overview]] - Umbrella fraud-tool purpose, applicability and qualified chargeback-evidence workflow
+- [[source-braintree-premium-fraud-management-tools-configuration]] - Umbrella configuration responsibilities and sandbox-first qualification
+
+### Node testing and response reference
+
+- [[source-braintree-general-testing-node]] - Node sandbox testing categories and explicit production boundaries
+- [[source-braintree-transaction-response-node]] - Node transaction response identity/status/risk locators and outcome qualifications
 
 ### Marketplace documentation
 

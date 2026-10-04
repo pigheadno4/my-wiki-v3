@@ -1,0 +1,67 @@
+{
+  "job_id": "pfmt-webhooks-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Premium Fraud Management Tools Webhooks (Node.js)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/premium-fraud-management-tools/webhooks/node\"\nraw_files:\n  - \"braintree/docs/guides/premium-fraud-management-tools/webhooks/node-2026-09-16.md\"\ntags: [braintree, node-js, webhooks, fraud-protection-advanced, transaction-review]\n---\n\n## Overview\n\nThis collected Braintree Node.js guide describes the webhook step for merchants using **Fraud Protection Advanced**. After a transaction is formally reviewed in the Fraud Protection Advanced dashboard, Braintree sends a `TRANSACTION_REVIEWED` webhook whose parsed notification can identify the review event and reviewed transaction. This is a server-side notification-handling route, not evidence that client-side checkout, fraud evaluation, payment processing, or a consequential transaction action succeeded.\n\n## Key takeaways\n\n- The page says these Fraud Protection webhooks are available only to merchants using **Fraud Protection Advanced**. Merchants using the distinct standard **Fraud Protection** product are told to skip this webhook step and continue to Testing & Go Live. The 2026-09-16 snapshot does not establish current merchant eligibility, account enablement, or SDK-version support.\n- The general workflow is to configure at least one destination URL, parse incoming notifications, and store details from `WebhookNotification` objects for selected trigger kinds. The setup, parsing and trigger links own their respective requirements; this guide does not establish delivery timing, ordering, retry, duplicate-delivery, signature-validation, or acknowledgement semantics.\n- The documented fraud event occurs only after a transaction has been formally reviewed in the Fraud Protection Advanced dashboard. The guide names the event as `TRANSACTION_REVIEWED`; its Node callback and Promise snippets illustrate parsing `bt_signature` and `bt_payload`, then reading example `kind`, transaction ID and timestamp values. Example values are not guarantees of universal payload coverage or runtime success.\n- The webhook's transaction ID can be passed to `gateway.transaction.find` to request additional transaction information if needed. That optional lookup is separate from receiving the webhook and does not prove that the lookup succeeded or that any payment, void, refund, settlement, or other consequential transaction action was requested or completed.\n\n> [!warning] Product, event and lifecycle boundary\n> Keep the named **Fraud Protection Advanced** eligibility condition distinct from standard **Fraud Protection** and other fraud products. A reviewed-transaction notification reports a dashboard review outcome; this guide does not define or prove downstream void/refund behavior, transaction finality, processor approval, settlement, or current availability. The dedicated event reference owns any more specific action qualification.\n\n## Detail locators\n\n- Product availability and standard-versus-Advanced branch: `**AVAILABILITY**`, lines 16-17.\n- Report examples and generic destination/parse/store workflow: lines 19-32.\n- Formally reviewed transaction condition and `TRANSACTION_REVIEWED` event: `## Fraud Protection`, lines 35-37.\n- Node callback parsing and example notification properties: `### Callbacks`, lines 38-55.\n- Node Promise parsing and example notification properties: `### Promises`, lines 57-73.\n- Optional transaction-ID lookup in callback and Promise forms: lines 74-83.\n- Dedicated references for fraud-protection webhooks, general webhooks and Transaction Find: `## See also`, lines 86-91.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-webhooks]]\n- Product concept: [[braintree-fraud-protection-advanced]]\n- Dedicated reviewed-event reference: [[source-braintree-webhooks-fraud-protection-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/general/webhooks/fraud-protection/node-2026-09-16|Braintree Node.js Fraud Protection webhook reference]] - navigation only; this guide's linked event reference, not read as raw evidence for this source\n- [[raw/braintree/docs/guides/webhooks/overview-2026-09-16|Braintree webhooks overview]] - navigation only; linked general webhook setup context, not read as factual evidence for this source\n- [[raw/braintree/docs/guides/webhooks/create/node-2026-09-16|Braintree Node.js webhook creation guide]] - navigation only; linked destination setup route, not read as factual evidence for this source\n- [[raw/braintree/docs/guides/webhooks/parse/node-2026-09-16|Braintree Node.js webhook parsing guide]] - navigation only; linked parsing route, not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/transaction/find/node-2026-09-16|Braintree Node.js Transaction Find reference]] - navigation only; linked lookup route, not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/webhooks/node-2026-09-16|Braintree Premium Fraud Management Tools webhooks guide (Node.js)]] - complete collected page covering Advanced-only availability, the reviewed-transaction event, Node parsing examples and optional Transaction Find lookup\n",
+  "quotes": [
+    {
+      "text": "Fraud Protection webhooks are only available for merchants using Fraud Protection Advanced.",
+      "location": "line 17, under **AVAILABILITY**"
+    },
+    {
+      "text": "If you are using standard Fraud Protection instead of Fraud Protection Advanced, you can skip this step and proceed to our [Testing & Go Live Page](/braintree/docs/guides/premium-fraud-management-tools/testing-go-live) to complete your integration.",
+      "location": "line 17, under **AVAILABILITY**"
+    },
+    {
+      "text": "When a transaction has been formally reviewed in the Fraud Protection Advanced dashboard, we'll send a TRANSACTION_REVIEWED webhook containing information that you can use to update your records:",
+      "location": "line 37, under ## Fraud Protection"
+    },
+    {
+      "text": "You can use the transaction ID provided in the webhook's payload to make a Transaction.find API call and retrieve additional information if needed:",
+      "location": "line 74, after the Promise parsing example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pfmt-webhooks-node-webhooks-source-route",
+        "target_path": "wiki/concepts/braintree-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-webhooks-node]] - Node.js Fraud Protection Advanced reviewed-transaction webhook guide, with Advanced-only availability, server-side parsing examples, optional Transaction Find lookup and explicit lifecycle-evidence boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep Fraud Protection Advanced distinct from the standard Fraud Protection product.",
+          "Do not turn illustrative callback or Promise values into delivery, payload-completeness or action-success guarantees."
+        ]
+      },
+      {
+        "update_id": "pfmt-webhooks-node-advanced-source-route",
+        "target_path": "wiki/concepts/braintree-fraud-protection-advanced.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-webhooks-node]] - Node.js guide for the Advanced-only `TRANSACTION_REVIEWED` notification step, server-side callback/Promise parsing examples and optional transaction lookup",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The snapshot does not prove current availability, merchant enablement or an exact supported SDK version.",
+          "The notification and optional lookup do not prove any void, refund, payment or settlement action was requested or completed."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/premium-fraud-management-tools/webhooks/node-2026-09-16.md",
+  "raw_sha256": "9738ae180c48359b207c234e6b95ec07d0f25d07610b3aeec457c6f342afaa7e",
+  "status": "candidate_ready"
+}

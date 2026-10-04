@@ -1,0 +1,73 @@
+{
+  "job_id": "pfmt-client-android-v5",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Premium Fraud Management Tools Client-Side Implementation (Android v5)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/premium-fraud-management-tools/client-side/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/premium-fraud-management-tools/client-side/android/v5-2026-09-16.md\"\ntags: [braintree, premium-fraud-management, android, device-data, data-collector]\n---\n\n## Overview\n\nThis collected Braintree Android v5 client-side implementation guide describes using `DataCollector` to collect customer-device data, correlate it with a server-side session identifier, and send successful client output to the merchant server for inclusion in a card verification or transaction request. It assigns user-consent and possible location-disclosure responsibilities to the merchant application and carries a dated mobile-SDK certificate warning.\n\nThis is client-side integration evidence from a 2026-09-16 website snapshot. It does not document the server-side attachment procedure, identify which named Premium Fraud Management Tool is enabled, or establish current SDK support, merchant eligibility, account enablement, a fraud decision, processor approval, settlement, or chargeback protection. Named products such as **Fraud Protection**, **Fraud Protection Advanced**, and chargeback-protection tools are not interchangeable with this umbrella integration route.\n\n## Key takeaways\n\n- The page says `DataCollector` collects customer-device data and correlates it with a session identifier on the merchant server. For its Android v5 route, it shows the `com.braintreepayments.api:data-collector:5.8.0` dependency; that example version is a snapshot locator, not a current-version recommendation.\n- The merchant creates `DataCollector` with either a Tokenization Key or Client Token and calls `collectDeviceData()` when verifying a card or creating a transaction. In the success branch, the example sends `deviceData` to the merchant server for inclusion in the verification or transaction request. A successful client callback does not prove server receipt, risk evaluation, payment execution, or successful processing.\n- The merchant application is responsible for obtaining user-data consent. The page says to set `hasUserLocationConsent` to `true` only after the app has obtained consent to collect location data in compliance with Google Play policy; it also says the merchant may need a prominent disclosure and that the true flag enables sharing device-location data with PayPal for fraud detection and risk management.\n\n> [!warning] Historical mobile-certificate lifecycle notice\n> The captured page states that Braintree Mobile iOS and Android SDK certificates were due to expire on March 30, 2026, advises upgrading Android to `4.45.0+` or `5.0.0+`, and warns that customer traffic would fail if affected app versions were neither decommissioned nor force-upgraded by that date. Because the snapshot was fetched after the stated deadline, treat this as historical page evidence\u2014not confirmation of present certificate state, current support, or compatibility for a specific app.\n\n> [!warning] Product and execution boundary\n> Device-data collection is an input to a later merchant-server verification or transaction request. This page does not transfer risk-decision states, eligibility, liability treatment, bypass behavior, or protection terms among named fraud products, and it does not show the later server or payment lifecycle completing.\n\n## Detail locators\n\n- Dated Braintree Mobile certificate-expiry notice, advised Android version floors, app-version remediation, and stated traffic consequence: `# Client-Side Implementation > **IMPORTANT**`, raw lines 17-20.\n- Device-data purpose and server-session correlation: `## Collecting device data`, raw lines 25-27.\n- Android dependency examples for `data-collector:5.8.0`: `### Get the SDK`, raw lines 30-47.\n- Authorization choices and collection timing: `### Initializing`, raw lines 49-51.\n- Kotlin `DataCollectorRequest`, success/failure branches, and client-to-server `deviceData` handoff example: `### Kotlin`, raw lines 54-84.\n- Merchant consent responsibility, conditional `hasUserLocationConsent` setting, possible disclosure, and PayPal location-data sharing consequence: `### Kotlin > **NOTE**`, raw lines 86-89.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-fraud-tools]]\n- Platform context: [[braintree-android-sdk]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16|Braintree Premium Fraud Management Tools server-side guide route]] - linked next-page navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/client-side/android/v5-2026-09-16|Braintree Premium Fraud Management Tools client-side implementation (Android v5)]] - complete collected snapshot for device-data collection, client-to-server handoff, consent responsibilities, location-data disclosure, and the dated mobile-certificate warning\n",
+  "quotes": [
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the Android SDK to version 4.45.0+ or version 5.0.0+ for the new SSL certifications.\n\n  If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "raw lines 18-20, # Client-Side Implementation > IMPORTANT"
+    },
+    {
+      "text": "DataCollector enables you to collect data about a customer's device and correlate it with a session identifier on your server.",
+      "location": "raw line 27, ## Collecting device data"
+    },
+    {
+      "text": "Create a DataCollector with a Tokenization Key or Client Token and call DataCollector.collectDeviceData() when verifying a card or creating a transaction.",
+      "location": "raw line 51, ### Initializing"
+    },
+    {
+      "text": "// send deviceData to your server to be included in verification or transaction requests",
+      "location": "raw line 74, ### Kotlin, DataCollectorResult.Success branch"
+    },
+    {
+      "text": "Merchant applications are responsible for collecting user data consent. If your app has obtained consent from the user to collect location data in compliance with [Google Play Developer Program policies](https://support.google.com/googleplay/android-developer/answer/10144311#personal-sensitive), set hasUserLocationConsent to true. This flag enables PayPal to collect necessary information required for Fraud Detection and Risk Management.",
+      "location": "raw line 87, ### Kotlin > NOTE > User Data Consent"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pfmt-client-android-v5-fraud-tools-source-link",
+        "target_path": "wiki/concepts/braintree-fraud-tools.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-client-side-android-v5]] - Android v5 device-data collection, merchant-server handoff, location-consent and disclosure responsibilities, and a dated mobile-certificate lifecycle warning; an umbrella Premium Fraud Management Tools integration route, not named-product behavior",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Fraud Protection, Fraud Protection Advanced, and chargeback-protection products distinct; this client integration page does not identify an enabled named product or establish its decisions, eligibility, liability treatment, or bypass behavior.",
+          "Treat the March 30, 2026 certificate notice and version floors as historical snapshot evidence, not current Android SDK support or compatibility authority."
+        ]
+      },
+      {
+        "update_id": "pfmt-client-android-v5-android-sdk-source-link",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-client-side-android-v5]] - Android v5-routed Data Collector guide for device-data collection, server-request handoff, consent and location-disclosure responsibility, plus a historical mobile-certificate notice; not current package-support or named fraud-product evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page's `data-collector:5.8.0` example and Android v5 route are snapshot-scoped and do not supersede exact-SHA SDK evidence or establish current support.",
+          "Client collection success does not prove server receipt, fraud evaluation, payment execution, processor approval, or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/premium-fraud-management-tools/client-side/android/v5-2026-09-16.md",
+  "raw_sha256": "9e7da53d303298d0bb03fb14516428a27a860215b743cdf5110298d2687b7b16",
+  "status": "candidate_ready"
+}

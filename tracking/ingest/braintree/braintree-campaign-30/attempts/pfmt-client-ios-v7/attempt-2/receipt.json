@@ -1,0 +1,56 @@
+{
+  "job_id": "pfmt-client-ios-v7",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Premium Fraud Management Tools Client-Side Implementation (iOS v7)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/premium-fraud-management-tools/client-side/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/premium-fraud-management-tools/client-side/ios/v7-2026-09-16.md\"\ntags: [braintree, premium-fraud-management, ios, device-data, data-collector]\n---\n\n## Overview\n\nThis collected Braintree iOS v7 client-side implementation guide describes collecting customer-device data with Braintree Data Collector, correlating it with a server-side session identifier, and handing the resulting `device_data` string to the merchant server for inclusion with transaction or verification data submitted to the Braintree gateway. It is an umbrella **Premium Fraud Management Tools** integration route, not evidence for the behavior of any one named fraud product.\n\nThis is client-side integration evidence from a 2026-09-16 website snapshot. It does not establish current SDK support, certificate state, merchant eligibility or enablement, successful server receipt, a fraud evaluation or decision, processor approval, settlement, or chargeback protection. **Fraud Protection**, **Fraud Protection Advanced**, Kount Custom, and chargeback-protection products are not interchangeable.\n\n## Key takeaways\n\n- The page assigns device-data collection to the iOS client and gateway submission to the merchant server. The client initializes `BTDataCollector`, calls `collectDeviceData`, and sends the returned string to the server with transaction or verification data; the server then includes the `device_data` parameter in its Braintree gateway request. Collecting the string is not proof that the server received or submitted it, or that the gateway evaluated it.\n- Installation routes differ by package manager: CocoaPods uses `Braintree/DataCollector`, Swift Package Manager includes `BraintreeDataCollector`, and Carthage includes both `BraintreeDataCollector` and `PPRiskMagnes`. The exact Podfile and Swift snippets remain examples in the raw locators rather than compatibility guarantees for another SDK baseline.\n- The page says collecting and passing device data with transactions helps reduce decline rates. Treat that as the page's stated purpose, not a guaranteed merchant outcome or evidence that a named Premium Fraud Management Tool produced a particular decision.\n- For PayPal accepted through the Vault flow, the page states that collection through `BraintreeDataCollector` is required. That condition is limited to the documented PayPal Vault flow and does not establish PayPal eligibility, vault success, later payment success, or equivalence with other payment methods.\n\n> [!warning] Automatic-vault verification boundary\n> When a new payment method is automatically vaulted, the page says the verification is evaluated by Premium Fraud Management Tools without device data; subsequent transactions can still pass device data. Do not infer device-data coverage for the initial automatic-vault verification.\n\n> [!warning] Historical certificate and version conflict\n> This snapshot carries a notice that Braintree Mobile SDK certificates were set to expire on March 30, 2026, directs iOS integrations to version 7.0.0 or later, and warns that traffic from app versions retaining older certificates would fail. The stated date had already passed when the page was captured. A separate same-date iOS setup snapshot names 6.17.0+ instead, so the retained pages do not establish one reconciled current upgrade floor. Verify current official release, security, and lifecycle authority before an operational change.\n\n## Detail locators\n\n- Historical Mobile SDK certificate notice, iOS 7.0.0+ direction and stated traffic consequence: `# Client-Side Implementation > IMPORTANT`, raw lines 17-20.\n- Device-data collection purpose and session correlation: `## Collecting device data`, raw lines 25-27.\n- CocoaPods, Swift Package Manager and Carthage component routes: `### Get the SDK`, raw lines 30-53.\n- Returned `device_data` purpose, `BTDataCollector` / `collectDeviceData` flow and Swift example: `### Implementation`, raw lines 56-74.\n- Client-to-server handoff and server-to-gateway responsibility: `### Implementation`, raw line 76.\n- Automatic-vault verification warning: `### Implementation > NOTE`, raw lines 79-80.\n- PayPal Vault-flow collection requirement: `### PayPal`, raw lines 85-87.\n- Server-side next-page navigation: raw line 89.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-fraud-tools]]\n- Native SDK boundary: [[braintree-ios-sdk]]\n- [[source-braintree-client-sdk-setup-ios-v7]] - separate iOS v7 setup snapshot with a conflicting historical certificate upgrade floor; neither page establishes current certificate or support state\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16|Braintree Premium Fraud Management Tools server-side Node.js guide]] - linked next-page family navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/client-side/ios/v7-2026-09-16|Braintree Premium Fraud Management Tools client-side implementation (iOS v7)]] - complete collected snapshot for iOS device-data collection, merchant-server handoff, automatic-vault and PayPal Vault qualifications, and the historical certificate notice\n",
+  "quotes": [
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the iOS SDK\u202fto version 7.0.0+  Android SDK to version 4.45.0+ or version 5.0.0+ for the new SSL certifications.",
+      "location": "raw line 18 under # Client-Side Implementation > IMPORTANT"
+    },
+    {
+      "text": "BraintreeDataCollector enables you to collect data about a customer's device and correlate it with a session identifier on your server.",
+      "location": "raw line 27 under ## Collecting device data"
+    },
+    {
+      "text": "Send the device data string to your server along with transaction or verification data (e.g.Transaction.salecalls). Your server will include thisdevice_dataparameter when submitting the request to the Braintree gateway.",
+      "location": "raw line 76 under ### Implementation"
+    },
+    {
+      "text": "If you choose to [automatically vault a customer's new payment method](/braintree/docs/start/hello-server#generate-a-client-token), verifications for those payment methods will not include device data when they are evaluated by our Premium Fraud Management Tools. Subsequent transactions can still pass device data.",
+      "location": "raw line 80 under ### Implementation > NOTE"
+    },
+    {
+      "text": "If you're accepting PayPal using the [Vault flow](/braintree/docs/guides/paypal/overview), collecting device data via BraintreeDataCollector is required.",
+      "location": "raw line 87 under ### PayPal"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pfmt-client-ios-v7-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-fraud-tools.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-client-side-ios-v7]] - iOS v7 client device-data collection and merchant-server handoff, with automatic-vault verification, PayPal Vault and historical certificate qualifications; an umbrella Premium Fraud Management Tools integration route, not named-product behavior",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the client collection and server gateway-submission responsibilities distinct; the page does not prove server receipt, fraud evaluation or payment execution.",
+          "Do not transfer this umbrella route's wording to Fraud Protection, Fraud Protection Advanced, Kount Custom or chargeback-protection product behavior.",
+          "Treat the March 30, 2026 certificate notice and iOS 7.0.0+ direction as historical snapshot evidence; a separate same-date iOS setup snapshot names 6.17.0+, so current lifecycle state and one reconciled upgrade floor remain unestablished."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/premium-fraud-management-tools/client-side/ios/v7-2026-09-16.md",
+  "raw_sha256": "5f77c59745adbb6369db1a5c0343961531d80fb3b0f1536fe2af0d31d2af3e93",
+  "status": "candidate_ready"
+}

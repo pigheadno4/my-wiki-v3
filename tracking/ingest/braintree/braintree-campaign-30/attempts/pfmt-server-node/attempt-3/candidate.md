@@ -1,0 +1,54 @@
+---
+title: "Braintree Premium Fraud Management Tools Server-Side Implementation (Node.js)"
+type: source
+date_ingested: 2026-10-04
+original_format: webpage
+canonical_url: "https://developer.paypal.com/braintree/docs/guides/premium-fraud-management-tools/server-side/node"
+raw_files:
+  - "braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16.md"
+  - "braintree/articles/guides/fraud-tools/premium/overview-2026-09-16.md"
+  - "braintree/articles/guides/fraud-tools/premium/chargeback-protection-2026-09-16.md"
+tags: [braintree, premium-fraud-management, node-js, device-data, risk-data]
+---
+
+## Overview
+
+This captured Node.js server-side guide is the server half of Braintree's umbrella Premium Fraud Management Tools device-data integration: a merchant backend receives client-collected device data, attaches it to customer, payment-method or transaction requests, and reads risk responses. The page also provides routes for verification requests, custom fields and a per-request skip option. It is a dated documentation snapshot, not proof of current account enablement, product eligibility, payment execution or SDK support.
+
+## Key takeaways
+
+- The captured availability table recommends the latest SDK and identifies Node SDK 2.24.0 as the minimum for all features described as available on this page. That is a page-scoped historical requirement, not a claim that 2.24.0 is currently supported or sufficient for present-day enablement.
+- The server passes collected device data when creating a customer, payment method or transaction. The guide strongly recommends device data when a customer adds a credit card to the Vault or initiates a transaction; for verification requests, it says device data enables preliminary fraud checks in addition to any enabled AVS, CVV and risk-threshold checks. The Node examples are implementation examples, not successful-execution guarantees.
+- For PayPal transactions using the Vault flow, the page separately calls including device data critical for reducing decline rates and routes details to a PayPal guide. This does not make that PayPal concern interchangeable with card-fraud scoring.
+- This captured page says setting `skipAdvancedFraudChecking` skips Premium Fraud Management Tools checks for a specific transaction, and it documents the option for specific verification calls through payment-method create/update and customer create/update. Do not generalize that statement to every named Premium Fraud Management Tool. Skipping a fraud check does not establish authorization, approval, capture, settlement or funding.
+- Fraud Protection Advanced custom fields must be passed in payment transaction details before they can be created in the tool and used in filter conditions. This page does not establish current Advanced eligibility, account configuration or filter behavior beyond that prerequisite.
+- Returned risk data can include the fraud service provider, risk identifier, device-data-captured flag and risk decision. The page says Fraud Protection data includes decision reasons and Fraud Protection Advanced data additionally includes a risk score; those named products and their response fields must remain distinct. The listed risk-decision values are `Not Evaluated`, `Approve`, `Review` and `Decline`, but this page does not define the gateway or processor action for each value. A risk decision, including `Review`, is not itself processor authorization, capture or settlement.
+
+> [!warning] Unresolved Chargeback Protection bypass conflict
+> This captured server-side page describes `skipAdvancedFraudChecking` generically, but retained named-product authorities conflict. The Premium Fraud Management Tools overview says Chargeback Protection and Effortless Chargeback Protection do not support bypassing or skipping fraud checks; the Chargeback Protection article says a merchant can bypass a declined decision with `Options.SkipAdvancedFraudChecking`. Treat Chargeback Protection-tool bypass as unresolved and follow [[braintree-chargeback-protection]] rather than using this server-side page as universal bypass guidance.
+
+## Detail locators
+
+- SDK availability and the captured Node minimum: `**AVAILABILITY**`, lines 17-24.
+- Request placement and callback/Promise examples for transactions and payment-method verification: `## Using device data`, lines 29-92.
+- Recommended events, verification rationale and the separate PayPal Vault warning: `### When to pass device data`, lines 94-108.
+- Captured transaction and verification skip wording plus Node examples: `### Skipping Premium Fraud Management Tools`, lines 111-172.
+- Fraud Protection Advanced custom-field purpose and transaction-input prerequisite: `## Custom fields`, lines 174-178.
+- Response-field inventory, product-qualified additions, Node property examples and decision values: `## Response handling`, lines 181-201.
+- Overview statement that both Chargeback Protection tools do not support bypass: supporting Premium Fraud Management Tools overview, `## Overriding rejections`, lines 125-132.
+- Conflicting Chargeback Protection article statement that a declined decision can be bypassed: supporting article, `### Transaction statuses`, lines 38-42.
+
+## Related
+
+- Company: [[braintree]]
+- Main umbrella concept: [[braintree-fraud-tools]]
+- Named product concept: [[braintree-fraud-protection]]
+- Named product concept: [[braintree-fraud-protection-advanced]]
+- Chargeback bypass conflict: [[braintree-chargeback-protection]]
+- Server integration boundary: [[braintree-server-sdk]]
+
+## Raw Sources
+
+- [[raw/braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16|Braintree Premium Fraud Management Tools server-side implementation for Node.js]] — complete captured primary guide covering SDK availability, device-data forwarding, page-qualified per-request skipping, custom fields and risk response handling
+- [[raw/braintree/articles/guides/fraud-tools/premium/overview-2026-09-16|Braintree Premium Fraud Management Tools overview]] — complete supporting authority for the umbrella client/server requirement and the statement that Chargeback Protection tools do not support bypass
+- [[raw/braintree/articles/guides/fraud-tools/premium/chargeback-protection-2026-09-16|Braintree Chargeback protection tools article]] — complete supporting authority for the conflicting statement that `Options.SkipAdvancedFraudChecking` can bypass a declined Chargeback Protection-tool decision

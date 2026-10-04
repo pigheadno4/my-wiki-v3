@@ -1,0 +1,91 @@
+{
+  "job_id": "pfmt-server-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Premium Fraud Management Tools Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/premium-fraud-management-tools/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16.md\"\ntags: [braintree, premium-fraud-management, node-js, device-data, risk-data]\n---\n\n## Overview\n\nThis captured Node.js server-side guide explains how a merchant backend supplies client-collected device data to Braintree requests, optionally skips Premium Fraud Management Tools checks for an individual transaction or verification, supplies transaction custom fields used by Fraud Protection Advanced filters, and reads risk data returned for credit-card verifications and compatible-payment-method transactions. It is a dated documentation snapshot, not proof of current account enablement, product eligibility, payment execution or SDK support.\n\n## Key takeaways\n\n- The captured availability table recommends the latest SDK and identifies Node SDK 2.24.0 as the minimum for all features described as available on this page. That is a page-scoped historical requirement, not a claim that 2.24.0 is currently supported or sufficient for present-day enablement.\n- The server passes collected device data when creating a customer, payment method or transaction. The guide strongly recommends device data when a customer adds a credit card to the Vault or initiates a transaction; for verification requests, it says device data enables preliminary fraud checks in addition to any enabled AVS, CVV and risk-threshold checks. The Node examples are implementation examples, not successful-execution guarantees.\n- For PayPal transactions using the Vault flow, the page separately calls including device data critical for reducing decline rates and routes details to a PayPal guide. This does not make that PayPal concern interchangeable with card-fraud scoring.\n- Setting `skipAdvancedFraudChecking` skips Premium Fraud Management Tools checks for a specific transaction. The page also documents the option for specific verification calls through payment-method create/update and customer create/update. Skipping a fraud check does not establish authorization, approval, capture, settlement or funding.\n- Fraud Protection Advanced custom fields must be passed in payment transaction details before they can be created in the tool and used in filter conditions. This page does not establish current Advanced eligibility, account configuration or filter behavior beyond that prerequisite.\n- Returned risk data can include the fraud service provider, risk identifier, device-data-captured flag and risk decision. The page says Fraud Protection data includes decision reasons and Fraud Protection Advanced data additionally includes a risk score; those named products and their response fields must remain distinct. The listed risk-decision values are `Not Evaluated`, `Approve`, `Review` and `Decline`, but this page does not define the gateway or processor action for each value. A risk decision, including `Review`, is not itself processor authorization, capture or settlement.\n\n## Detail locators\n\n- SDK availability and the captured Node minimum: `**AVAILABILITY**`, lines 17-24.\n- Request placement and callback/Promise examples for transactions and payment-method verification: `## Using device data`, lines 29-92.\n- Recommended events, verification rationale and the separate PayPal Vault warning: `### When to pass device data`, lines 94-108.\n- Transaction and verification bypass option plus Node examples: `### Skipping Premium Fraud Management Tools`, lines 111-172.\n- Fraud Protection Advanced custom-field purpose and transaction-input prerequisite: `## Custom fields`, lines 174-178.\n- Response-field inventory, product-qualified additions, Node property examples and decision values: `## Response handling`, lines 181-201.\n\n## Related\n\n- Company: [[braintree]]\n- Named product concept: [[braintree-fraud-protection]]\n- Named product concept: [[braintree-fraud-protection-advanced]]\n- Server integration boundary: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16|Braintree Premium Fraud Management Tools server-side implementation for Node.js]] \u2014 complete captured guide covering SDK availability, device-data forwarding, per-request skipping, custom fields and risk response handling\n",
+  "quotes": [
+    {
+      "text": "Node2.24.0",
+      "location": "**AVAILABILITY**, line 21"
+    },
+    {
+      "text": "Include the collected client device data via the top-level `device_data` parameter when creating a [customer](/braintree/docs/reference/request/customer/create/node#device_data), [payment method](/braintree/docs/reference/request/payment-method/create/node#device_data), or [transaction](/braintree/docs/reference/request/transaction/sale/node#device_data).",
+      "location": "## Using device data, line 31"
+    },
+    {
+      "text": "If you do not want to perform Premium Fraud Management Tools checks on a specific transaction, pass [Options.SkipAdvancedFraudChecking](/braintree/docs/reference/request/transaction/sale/node#options-skip_advanced_fraud_checking) when creating the transaction via the API:",
+      "location": "### Skipping Premium Fraud Management Tools, line 113"
+    },
+    {
+      "text": "Before you create any custom field in the tool, you must ensure the fields you want to use are passed as part of the payment transaction details. [See our guide](/braintree/docs/reference/request/transaction/sale/node#custom-fields) for steps to incorporate custom fields in your transaction API calls.",
+      "location": "## Custom fields, line 178"
+    },
+    {
+      "text": "We return the risk data on credit card verifications and on transactions with [all compatible payment methods](/braintree/docs/guides/premium-fraud-management-tools/overview#compatibility). The data includes the fraud service provider, the risk identifier, the device data captured flag, and the risk decision, which can provide further context on how a verification or transaction was scored by our Premium Fraud Management Tools. For users of Fraud Protection, the data will include the decision reasons. For users of Fraud Protection Advanced, the data will also include the risk score.",
+      "location": "## Response handling, line 183"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pfmt-server-node-fraud-protection-source-route",
+        "target_path": "wiki/concepts/braintree-fraud-protection.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources, after the existing source entry",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-server-side-node]] - Node.js server-side device-data forwarding, per-request fraud-check skipping and risk-response handling, with decision reasons qualified to Fraud Protection and no authorization or settlement inference",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep Fraud Protection distinct from Fraud Protection Advanced; this page qualifies decision reasons to Fraud Protection and risk score additionally to Advanced.",
+          "Do not infer the gateway or processor action for any listed risk-decision value from this source; use the named product source for its decision mapping.",
+          "Treat the captured page as snapshot evidence, not current product enablement, eligibility, SDK support or successful payment proof."
+        ]
+      },
+      {
+        "update_id": "pfmt-server-node-fraud-protection-advanced-source-route",
+        "target_path": "wiki/concepts/braintree-fraud-protection-advanced.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources, after the existing source entry",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-server-side-node]] - Node.js server-side device-data forwarding, transaction-input prerequisite for Advanced custom fields, per-request fraud-check skipping and risk responses with the risk score qualified to Fraud Protection Advanced",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize the Advanced-only risk score or custom-field filtering language to Fraud Protection.",
+          "The listed `Review` value is a risk-decision value; this source does not establish manual-review completion, processor authorization, capture or settlement.",
+          "The page does not establish current Advanced eligibility, account enablement, pricing or current SDK support."
+        ]
+      },
+      {
+        "update_id": "pfmt-server-node-server-sdk-source-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related, alongside other Node.js website guides",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-server-side-node]] - captured Node.js server-side route for passing client-collected device data into customer, payment-method and transaction requests, selectively skipping premium fraud checks, supplying Advanced custom fields and reading product-qualified risk responses",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the client/server split: this page covers server submission of already-collected device data, not client-side collection.",
+          "The captured Node 2.24.0 minimum is historical page-scoped availability text, not current package-support evidence.",
+          "The code blocks are examples and do not prove successful fraud evaluation, verification, transaction authorization or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16.md",
+  "raw_sha256": "4db17222d72ad33b67f13068384ad9cafc68caa23618b688ee49491f7965535d",
+  "status": "candidate_ready"
+}

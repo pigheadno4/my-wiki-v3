@@ -16,6 +16,7 @@ The Dashboard provides sales and transaction volume, totals, averages, and route
 Sandbox and Production use mutually exclusive Control Panel environments that do not interact and may have different login credentials. Use the dedicated reporting documentation for reconciliation and the specific administration guides for task-level behavior. [[source-braintree-control-panel-overview]]
 
 ## Sources
+- [[source-braintree-general-testing-node]] - collected Node.js general testing reference for Braintree Sandbox fixtures and simulated gateway outcomes, with qualified environment, Production and purge boundaries
 - [[source-braintree-credit-cards-testing-go-live-node]] - collected Node.js credit-card testing and go-live guide covering Sandbox response controls, isolated Production credentials and settings, the server/client responsibility split, and limited real-payment Production-test cautions
 
 - [[source-braintree-auth-configuration]] - closed-beta platform OAuth application configuration in the environment-specific Control Panel, including merchant-facing metadata, registered redirects and server-held client credentials

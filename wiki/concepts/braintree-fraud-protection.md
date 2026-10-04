@@ -18,5 +18,6 @@ For a new transaction, the guide says Fraud Protection sends transaction informa
 This concept covers the named **Fraud Protection** product in the collected page. Keep it distinct from [[braintree-fraud-protection-advanced]], Basic Fraud Tools, 3D Secure, chargeback-protection products and Control Panel security. The page does not establish current support, merchant eligibility, account enablement, fees or any risk-decision states beyond **Approve** and **Decline**.
 
 ## Sources
+- [[source-braintree-premium-fraud-management-tools-server-side-node]] - Node.js server-side device-data forwarding and risk-response route, with decision reasons qualified to Fraud Protection and no authorization or settlement inference
 
 - [[source-braintree-fraud-tools-premium-fraud-protection]] - named product purpose, fraud-filter interface, approve/decline gateway mapping, default Transaction Risk Filter and transaction-detail diagnostic

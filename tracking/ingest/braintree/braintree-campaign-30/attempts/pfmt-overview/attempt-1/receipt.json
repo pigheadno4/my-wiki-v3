@@ -1,0 +1,72 @@
+{
+  "job_id": "pfmt-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Premium Fraud Management Tools Overview\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/premium-fraud-management-tools/overview\"\nraw_files:\n  - \"braintree/docs/guides/premium-fraud-management-tools/overview-2026-09-16.md\"\ntags: [braintree, premium-fraud-management-tools, risk-data, chargeback-protection, disputes]\n---\n\n## Overview\n\nThis collected Braintree developer-guide overview describes Premium Fraud Management Tools as pre-processing fraud-prevention and detection checks, identifies transaction data that the page labels mandatory or recommended for particular risk tools, and gives an automated evidence-submission sequence for eligible Chargeback Protection disputes. It is an umbrella integration and routing page, not evidence that every named fraud product has the same decisions, eligibility, payment-method coverage, protection, or bypass behavior.\n\nThis is a 2026-09-16 website snapshot. It does not establish current product availability, merchant eligibility, account enablement, successful risk evaluation, processor authorization, settlement, funding, or a favorable chargeback outcome.\n\n## Key takeaways\n\n- The page positions Premium Fraud Management Tools as checks performed before a request is processed, intended to catch suspected fraud before an authorization request reaches the customer's bank. That stated purpose does not mean a risk check is bank authorization or payment execution.\n- Its transaction-data table is product-sensitive: it labels email, customer IP, and device ID for Chargeback Protection Tools while marking several fields only as recommended for Fraud Protection Advanced or for all risk tools. Exact field formats, limits, Vault/non-Vault request routes, and per-tool labels remain in the raw table rather than being generalized into a single requirement set.\n- Customer IP and device ID are described for customer-initiated transactions under the page's stated `transactionSource` conditions. The linked JavaScript v3 device-data procedure is a separate implementation route; this overview does not establish that collection or server receipt occurred.\n- For Chargeback Protection Tools, the page describes automating evidence submission after chargeback-status webhooks: act only on an `Open` chargeback, look up the dispute, confirm that `chargeback_protection_level` references a Chargeback Protection tool and that the dispute remains `Open`, add eligible text or file evidence, then finalize before the reply-by date.\n- The page states umbrella compatibility with credit and debit cards, Apple Pay, Google Pay, and Secure Remote Commerce. Treat this as page-scoped compatibility routing, not proof that every named Premium Fraud Management Tool supports every listed method for a particular merchant, region, processor, transaction, or current account configuration.\n\n> [!warning] Named products are not interchangeable\n> **Fraud Protection**, **Fraud Protection Advanced**, **Kount Custom**, **Chargeback Protection**, and **Effortless Chargeback Protection** have separate eligibility, decision, evidence, fee, and protection boundaries in their dedicated sources. The table's mandatory/recommended labels and the automated evidence workflow must be applied only to the named tool and conditions shown; they do not transfer behavior among sibling products.\n\n> [!warning] Eligibility and deadline remain consequential\n> The evidence sequence applies only when the dispute is `Open` and its `chargeback_protection_level` references a Chargeback Protection tool. Evidence still has to be eligible and finalized before the reply-by date. The sequence does not establish coverage, waive every evidence requirement, or guarantee protection or a dispute result.\n\n> [!warning] Bypass behavior remains unresolved elsewhere\n> This developer overview does not state whether fraud checks can be bypassed. The existing [[braintree-chargeback-protection]] concept records conflicting collected guidance about bypass support for Chargeback Protection tools. Do not infer bypass availability or prohibition from this page's silence; obtain current Braintree/PayPal clarification before operational use.\n\n## Detail locators\n\n- Premium-tool purpose and additional-data statement: `# Overview`, raw line 16.\n- Risk-data field formats, Vault/non-Vault routes, transaction-source conditions, and tool-specific mandatory/recommended labels: table under `# Overview`, raw lines 18-31.\n- Chargeback evidence automation purpose and webhook-to-finalization sequence: `#### Chargeback Protection Tools - submitting required evidence for eligible chargebacks`, raw lines 34-43.\n- Fraud-option comparison route: raw line 45.\n- Umbrella payment-method compatibility list: `## Compatibility`, raw lines 48-55.\n- Configuration next-page route: raw line 59.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-fraud-tools]]\n- Chargeback workflow and conflict route: [[braintree-chargeback-protection]]\n- Advanced product boundary: [[braintree-fraud-protection-advanced]]\n- Named Fraud Protection boundary: [[braintree-fraud-protection]]\n- Kount Custom boundary: [[braintree-kount-custom]]\n- Effortless product boundary: [[braintree-effortless-chargeback-protection]]\n- Generic dispute context: [[disputes]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/guides/fraud-tools/basic/overview-2026-09-16|Braintree Basic Fraud Tools overview]] - linked navigation for the basic-tools comparison; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/client-side/javascript/v3-2026-09-16|Braintree Premium Fraud Management Tools client-side JavaScript v3 guide]] - linked device-data implementation route; not used as raw factual evidence for this source\n- [[raw/braintree/docs/guides/webhooks/overview-2026-09-16|Braintree webhooks guide]] - linked chargeback-notification setup route; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/dispute/add-text-evidence/node-2026-09-16|Braintree Node.js Dispute Add Text Evidence reference]] - linked evidence-operation family route; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/document-upload/create/node-2026-09-16|Braintree Node.js Document Upload Create reference]] - linked file-upload family route; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/dispute/finalize/node-2026-09-16|Braintree Node.js Dispute Finalize reference]] - linked finalization-operation family route; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/overview-2026-09-16|Braintree Premium Fraud Management Tools overview]] - complete collected snapshot covering umbrella purpose, tool-sensitive risk-data applicability, qualified chargeback evidence automation, and payment-method compatibility routing\n",
+  "quotes": [
+    {
+      "text": "Braintree's Premium Fraud Management Tools provide a suite of fraud prevention and detection checks before a request is processed, which helps catch fraudulent activity before authorization requests ever reach your customers' banks.",
+      "location": "raw line 16 under # Overview"
+    },
+    {
+      "text": "Merchants can automate the manual submission process to pass shipping and tracking IDs and any additional eligible evidence, according to [PayPal's Seller Protection Program](https://www.paypal.com/us/legalhub/seller-protection#establishing-proof-of-shipment-or-proof-of-delivery), as follows:",
+      "location": "raw line 36 under #### Chargeback Protection Tools - submitting required evidence for eligible chargebacks"
+    },
+    {
+      "text": "The dispute is eligible ifchargeback_protection_levelfield references any Chargeback Protection tool and is in an \"Open\" state.",
+      "location": "raw line 41, Step 3 of the chargeback evidence sequence"
+    },
+    {
+      "text": "Finalize the dispute by submitting the evidence using theDispute: FinalizeAPI before the reply-by date.",
+      "location": "raw line 43, Step 5 of the chargeback evidence sequence"
+    },
+    {
+      "text": "Premium Fraud Management Tools are compatible with all credit and debit cards and the following:",
+      "location": "raw line 50 under ## Compatibility"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pfmt-overview-braintree-fraud-tools-source-route",
+        "target_path": "wiki/concepts/braintree-fraud-tools.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-overview]] - 2026-09-16 umbrella developer-guide snapshot for pre-processing fraud-check purpose, tool-sensitive transaction-data applicability, qualified Chargeback Protection evidence automation and payment-method compatibility routing; not evidence that named fraud products are interchangeable",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as an umbrella purpose and integration route; do not broaden the concept's Basic Fraud Tools behavior into premium product behavior.",
+          "Compatibility and data labels are snapshot-scoped and product-sensitive, not proof of current merchant or transaction eligibility."
+        ]
+      },
+      {
+        "update_id": "pfmt-overview-chargeback-evidence-flow",
+        "target_path": "wiki/concepts/braintree-chargeback-protection.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Conditional protection and bypass",
+        "proposed_markdown": "## Automated evidence-submission route\n\nA collected 2026-09-16 developer-guide snapshot describes an automated route for a Chargeback Protection dispute: receive chargeback-status webhooks, act only on an `Open` chargeback, look up the `dispute_id`, confirm that `chargeback_protection_level` references a Chargeback Protection tool and that the dispute remains `Open`, add eligible text or file evidence, and finalize before the reply-by date. This workflow does not itself establish transaction or chargeback eligibility, remove product-specific evidence conditions, guarantee protection or a dispute result, or resolve the separate collected conflict over bypass support. [[source-braintree-premium-fraud-management-tools-overview]]",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve both Open-state checks, evidence eligibility, and the reply-by deadline.",
+          "Do not treat the workflow as a blanket waiver or favorable-outcome guarantee.",
+          "The source is silent on bypass; retain the concept's unresolved bypass conflict rather than using this source to decide it."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/premium-fraud-management-tools/overview-2026-09-16.md",
+  "raw_sha256": "cec6d8317fc37bd032670a0f0bc8cfb02a6e20204eddaffe38fc74382fc49263",
+  "status": "candidate_ready"
+}

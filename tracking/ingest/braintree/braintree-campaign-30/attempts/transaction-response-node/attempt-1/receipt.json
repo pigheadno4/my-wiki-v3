@@ -1,0 +1,54 @@
+{
+  "job_id": "transaction-response-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Response (Node.js)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/response/transaction/node\"\nraw_files:\n  - \"braintree/docs/reference/response/transaction/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, response-objects, processor-responses, risk-data]\n---\n\n## Overview\n\nThis collected Braintree Node.js response reference describes the Transaction record, including its current status, and routes readers through successful and unsuccessful result interpretation, processor and gateway response categories, risk data, status history, authorization-adjustment detail and network response codes. It is a response-retrieval reference, not proof that any specific payment was authorized, accepted by risk controls, submitted for settlement, settled or funded.\n\n## Key takeaways\n\n- The page identifies the Transaction object as a record containing transaction details and the current status. Its successful-result section associates success with an `authorized`, `settling`, or conditionally `submitted_for_settlement` status and shows how to inspect the payment-instrument type. Those states remain distinct; a successful result or an authorized status does not by itself establish settlement or funding.\n- An unsuccessful result is grouped into three routes: validation preventing transaction creation, processor decline at authorization or settlement, and gateway rejection. The page exposes authorization-decline processor responses, settlement-decline processor settlement responses, and account-setting-based gateway-rejection reasons as separate diagnostic categories; one category must not be treated as evidence of another.\n- Risk data is documented for credit-card verifications and transactions using compatible payment methods. The listed categories include fraud-service provider, risk identifier, device-data-captured flag and risk decision; the page additionally associates decision reasons with Fraud Protection and a risk score with Fraud Protection Advanced. These values provide scoring context and do not themselves establish processor authorization or settlement. The Java and .NET minimum-version note on the page is not a Node.js SDK requirement.\n- Status history records transaction status changes with amount, status, UTC timestamp, transaction source and user categories. The exact status and source value inventories remain at the raw locator; listed history events document recorded states, not guaranteed transition order or completion of settlement.\n- Network response code and text can be present on some transaction and verification objects as raw card-network responses. The page says they are supplemental and directs integrations to treat the processor response code as the source of truth.\n- The settlement examples keep lifecycle actions conditional: a transaction submitted for settlement may be voided before it settles, while a settled transaction requires the separate refund route. Exact operation eligibility belongs to the linked request references rather than this response-object page.\n- The page states that results are limited according to the linked PayPal Data Protection Addendum for Card Processing Products policy. Because that external policy is not part of this source, this entry preserves the notice without interpreting which fields or records are limited.\n\n## Detail locators\n\n- Results-limitation notice and Transaction-record identity: `# Transaction`, lines 17-20.\n- Successful result statuses and payment-instrument-type inspection: `## Result object > ### Successful result`, lines 28-49.\n- Unsuccessful-result categories and validation route: `### Unsuccessful result` and `#### Validation errors`, lines 51-79.\n- Authorization processor-decline fields and standardized-versus-additional processor response guidance: `#### Processor declined`, lines 80-109.\n- Settlement processor-decline fields: `#### Processor settlement declined`, lines 111-129.\n- Account-setting-based gateway-rejection status and reason: `#### Gateway rejection`, lines 131-146.\n- Risk-data scope, product-specific additions, cross-language version note and decision-value inventory: `#### Risk data`, lines 148-180.\n- Merchant-account currency example: `## Examples > ### Currencies`, lines 191-200.\n- Settlement-result handling examples and settlement-decline route: `### Settlement status`, lines 202-254.\n- Pre-settlement void versus post-settlement refund example: `### Voiding settlement`, lines 256-283.\n- Explicit and possible automatic authorization adjustments plus adjustment-field table: `## Authorization adjustments`, lines 285-309.\n- Status-history field categories, exact status/source inventories and callback/Promise examples: `## Status history details`, lines 312-367.\n- Product-ID orientation: `## Product ID codes`, lines 369-371.\n- Supplemental network-response qualification and exact card-network code tables: `## Network response codes`, lines 375-584.\n\n## Evidence boundaries\n\n> [!warning] Response state is not an end-to-end payment outcome\n> Keep result success, processor authorization, gateway risk decisions, settlement submission, settlement completion and later funding separate. This snapshot documents returned response categories and examples; it does not establish current merchant eligibility, account configuration, field presence for every transaction, or successful execution of an individual payment.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- General Node.js result-wrapper semantics: [[source-braintree-result-objects-node]]\n- Provider-level transaction lifecycle route: [[source-braintree-transaction-lifecycle]]\n- Fraud product distinctions: [[braintree-fraud-protection]] and [[braintree-fraud-protection-advanced]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/response/transaction/node-2026-09-16|Braintree Transaction response reference - Node.js]] - complete collected page covering Transaction response identity, success and failure categories, processor and gateway diagnostics, risk data, settlement examples, authorization adjustments, status history and network response codes\n",
+  "quotes": [
+    {
+      "text": "A record that includes all details of a transaction, including current [status](#status).",
+      "location": "# Transaction, line 20"
+    },
+    {
+      "text": "If the result is successful, the transaction will have either a[settling status](/braintree/docs/reference/general/statuses#settling),[authorized status](/braintree/docs/reference/general/statuses#authorized), or (if theoption was used) a[submitted for settlement status](/braintree/docs/reference/general/statuses#submitted-for-settlement).",
+      "location": "## Result object > ### Successful result, line 30"
+    },
+    {
+      "text": "Success will return`{false}`if:\n- [Validations](#validation-errors)prevent the transaction from being created\n- The processor[declines the authorization](#processor-declined)or[settlement](#processor-settlement-declined)\n- The[gateway rejects](#gateway-rejection)the transaction",
+      "location": "## Result object > ### Unsuccessful result, lines 53-56"
+    },
+    {
+      "text": "We return the risk data on credit card verifications and on transactions with [all compatible payment methods](/braintree/docs/guides/premium-fraud-management-tools/overview#compatibility). The data includes the fraud service provider, the risk identifier, the device data captured flag, and the risk decision, which can provide further context on how a verification or transaction was scored by our Premium Fraud Management Tools. For users of Fraud Protection, the data will include the decision reasons. For users of Fraud Protection Advanced, the data will also include the risk score.",
+      "location": "## Result object > #### Risk data, line 150"
+    },
+    {
+      "text": "These network response values are the raw responses that may be returned by the card network, and when present they can provide additional detail about why a request was approved or declined. However, this information is supplemental to the processor response code; you should consider the processor response code to be the source of truth.",
+      "location": "## Network response codes, line 379"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-response-node-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-transaction-response-node]] - Node.js Transaction response record covering distinct result, processor-authorization, settlement, gateway-rejection, risk-data, status-history and supplemental network-response routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Reciprocal retrieval route only; do not infer payment-outcome guarantees, universal field presence, current merchant eligibility or current SDK support from this collected response snapshot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/response/transaction/node-2026-09-16.md",
+  "raw_sha256": "1291876fa6f8d455f95cc9e3d3df2491e17b4c7a695c26a98c160e79b373c11c",
+  "status": "candidate_ready"
+}

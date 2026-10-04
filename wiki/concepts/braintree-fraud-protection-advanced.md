@@ -18,5 +18,8 @@ The guide limits availability to eligible Braintree Direct merchants using the l
 A merchant can designate suspicious payments for manual review by creating a filter with the **Review** decision label, then approve or reject a reviewed transaction; the guide links to a separate webhook route for the resulting notification. Exact Dashboard procedures, custom-field settings, payment-method coverage and scoring configuration remain in the source's raw locators.
 
 ## Sources
+- [[source-braintree-premium-fraud-management-tools-server-side-node]] - Node.js server-side device-data forwarding, transaction-input prerequisite for Advanced custom fields and risk responses with the risk score qualified to Fraud Protection Advanced
+- [[source-braintree-premium-fraud-management-tools-webhooks-node]] - Node.js guide for the Advanced-only `TRANSACTION_REVIEWED` notification step, server-side callback/Promise parsing examples and optional transaction lookup
+- [[source-braintree-premium-fraud-management-tools-testing-go-live-node]] - 2026-09-16 Node.js guide snapshot for the Fraud Protection Advanced-only sandbox pending-review simulation and the separate, qualified server-led production transition with real-payment, fee and fraud-testing warnings
 
 - [[source-braintree-fraud-tools-premium-fraud-protection-advanced]] - product purpose, merchant eligibility, configurable rules, manual review, gateway risk-decision actions and Not Evaluated fallback

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Braintree website C30
+
+- Ten website sources independently reviewed and promoted through five shared rolling child slots; first pass 6/10, ten full plus four targeted reviews, no repeated full review. Catalog: 272 sources (255 website + 17 GitHub). Details and fixed query/close evidence: [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-30/`. Raw unchanged; no commit or push.
+
 ## [2026-10-04] ingest | Checkout Components `5.0.436`
 
 - Approved focused-reading delta for the conditional Canadian French Pay Later label; preserved later override precedence and all older version knowledge. Details: [[paypal-log]], [[source-github-paypal-checkout-components]], [[changelog-github-paypal-checkout-components]]. No build, browser/payment test, commit or push.

@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C30
+
+- Ten pinned Premium Fraud Management Tools guides and Node testing/transaction-response references fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 272 sources (255 website + 17 GitHub). Routes: [[braintree-index]], [[braintree-fraud-tools]], [[braintree-chargeback-protection]] and [[braintree-server-sdk]].
+- First-review pass 6/10; ten initial full reviews plus four bounded targeted reviews, no repeated full review. Corrections preserved concept identity, actual dated navigation and unresolved named-product bypass conflict. One server worker handoff was mechanically rejected because supporting-document quotes occupied primary-only quote slots; the next bounded handoff fixed the receipt without rewriting its corrected source.
+- Raw unchanged; coordinator owns canonical/shared/state writes. Five fixed query groups and final closure evidence are recorded under `tracking/ingest/braintree/braintree-campaign-30/`. No collection, GitHub ingest, scheduler/schema/validator change, commit or push.
+
 ## [2026-10-02] ingest | Braintree website C29
 
 - Ten pinned 3DS overview/advanced-options/Rules Manager and checkout UI/Hosted Fields website pages fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 262 sources (245 website + 17 GitHub). See [[braintree-index]], [[braintree-3d-secure]], [[braintree-web-sdk]] and [[braintree-web-drop-in]].

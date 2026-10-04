@@ -1,0 +1,57 @@
+{
+  "job_id": "pfmt-client-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Premium Fraud Management Tools Client-Side Implementation (JavaScript v3)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/premium-fraud-management-tools/client-side/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/premium-fraud-management-tools/client-side/javascript/v3-2026-09-16.md\"\ntags: [braintree, premium-fraud-management, javascript, device-data, data-collector]\n---\n\n## Overview\n\nThis collected Braintree JavaScript v3 client-side implementation guide describes how a checkout page collects customer-device information with `dataCollector` and hands the resulting `deviceData` string to the merchant server. It covers custom integrations and Drop-in, plus a conditional FraudNet initialization callback and an automatic-vault verification caveat.\n\nThis is client-side integration evidence from a 2026-09-16 website snapshot. It does not document how the server attaches device data to a transaction or verification, identify which named Premium Fraud Management Tool is enabled, or establish current SDK support, merchant eligibility, account enablement, a fraud decision, processor approval, settlement, or protection from chargebacks. Named products such as **Fraud Protection**, **Fraud Protection Advanced**, and chargeback-protection tools are not interchangeable with this umbrella implementation route.\n\n## Key takeaways\n\n- For a custom integration, the page loads the Braintree Web client and data-collector components, creates an authorized client, and passes that client to `braintree.dataCollector.create`. It says the resulting `deviceData` string must be provided to the merchant server; injecting it into a form as a hidden input is presented only as a common mechanism, not as the sole required transport.\n- The same Braintree client can be reused for `dataCollector` and other components such as Hosted Fields or PayPal. Callback and Promise examples, script URLs, form wiring, and error-handling shapes remain in the raw locators rather than being treated as invariant API guarantees.\n- For Drop-in, setting `dataCollector: true` makes `requestPaymentMethod` include `deviceData` alongside the payment-method nonce for server handoff. This client-side response does not itself show server receipt, risk evaluation, payment execution, or successful processing.\n- If an integration needs to use a CMID before FraudNet finishes loading, the page conditionally advises passing a `cb1` callback name to `dataCollector.create` and defining the named function on `window`; the callback is invoked after FraudNet initialization. This is troubleshooting advice for that race condition, not a universal prerequisite.\n\n> [!warning] Automatic-vault verification boundary\n> When a new payment method is automatically vaulted, the page says its verification is evaluated by Premium Fraud Management Tools without device data; subsequent transactions can still pass device data. Do not infer that automatic vaulting preserves device-data coverage for the initial verification.\n\n> [!warning] Version, product, and snapshot boundary\n> The `/javascript/v3` route identifies the guide family, while its custom script-tag example pins Braintree Web `3.87.0`; the snapshot does not establish a current recommended package version or compatibility with another retained SDK baseline. Its umbrella **Premium Fraud Management Tools** wording does not transfer capabilities, decisions, eligibility, liability treatment, or bypass behavior among named fraud products. Recheck current official guidance for operational decisions.\n\n## Detail locators\n\n- Device-data purpose and custom-versus-Drop-in branch: `## Collecting device data`, raw lines 17-21.\n- Custom script tags, client reuse, `dataCollector` creation, callbacks, Promises and error examples: `### Custom`, raw lines 24-77.\n- Returned `deviceData`, merchant-server responsibility and optional hidden-input transport example: `### Custom`, raw lines 78-129.\n- Conditional CMID/FraudNet race callback: `### Troubleshooting fraudnet loading race condition`, raw lines 131-133.\n- Drop-in `dataCollector: true`, `requestPaymentMethod`, nonce/device-data response and form examples: `### Drop-in`, raw lines 136-232.\n- Automatic-vault verification warning: `### Drop-in > **NOTE**`, raw lines 234-235.\n- PayPal Vault navigation and next-page server-side route: `### PayPal`, raw lines 240-244.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-fraud-tools]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/server-side/node-2026-09-16|Braintree Premium Fraud Management Tools server-side Node.js guide]] - linked next-page family navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/premium-fraud-management-tools/client-side/javascript/v3-2026-09-16|Braintree Premium Fraud Management Tools client-side implementation (JavaScript v3)]] - complete collected snapshot for custom and Drop-in device-data collection, merchant-server handoff, race-condition advice and the automatic-vault verification warning\n",
+  "quotes": [
+    {
+      "text": "To help detect fraud, use dataCollector to collect information about a customer's device on your checkout page.",
+      "location": "## Collecting device data, line 19"
+    },
+    {
+      "text": "The data returned will have a deviceData string value. It is up to you to provide this value to your server. A common mechanism for this is to inject the device data value into your form as a hidden input.",
+      "location": "### Custom, line 78"
+    },
+    {
+      "text": "If you're running into a race condition with using a CMID (client metadata ID) before fraudnet has finished loading, you can pass a cb1 callback name option to dataCollector.create(). Define a function on the global window object and it will be invoked when fraudnet has finished initializing so you can then safely use the CMID.",
+      "location": "### Troubleshooting fraudnet loading race condition, line 133"
+    },
+    {
+      "text": "When requestPaymentMethod is called, the response will include deviceData to send to your server. A common mechanism for this is to inject the device data value into your form as a hidden input.",
+      "location": "### Drop-in, line 177"
+    },
+    {
+      "text": "If you choose to [automatically vault a customer's new payment method](/braintree/docs/start/hello-server#generate-a-client-token), verifications for those payment methods will not include device data when they are evaluated by our Premium Fraud Management Tools. Subsequent transactions can still pass device data.",
+      "location": "### Drop-in > **NOTE**, lines 234-235"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pfmt-client-javascript-v3-fraud-tools-route",
+        "target_path": "wiki/concepts/braintree-fraud-tools.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-premium-fraud-management-tools-client-side-javascript-v3]] - JavaScript v3 custom and Drop-in device-data collection, merchant-server handoff, conditional FraudNet race callback and automatic-vault verification warning; an umbrella Premium Fraud Management Tools integration route, not named-product behavior",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a purpose-and-navigation route: the source does not identify an enabled named Premium Fraud Management Tool or establish any named product's capabilities, eligibility, decisions, liability treatment or bypass behavior.",
+          "The existing concept distinguishes Basic Fraud Tools from premium-product behavior; adding this reciprocal route must not erase that boundary or imply that device-data collection makes the named products interchangeable.",
+          "Preserve the JavaScript v3 client-side and 2026-09-16 snapshot scope, including the distinction between collecting or returning deviceData and the merchant server actually using it.",
+          "Preserve the automatic-vault warning: the new payment method's verification is evaluated without device data, although subsequent transactions can still pass it."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/premium-fraud-management-tools/client-side/javascript/v3-2026-09-16.md",
+  "raw_sha256": "8fe798600ea25768d19c767142c489b1a0b36e4d6efb7c9f4ff5f0fe948b2b43",
+  "status": "candidate_ready"
+}

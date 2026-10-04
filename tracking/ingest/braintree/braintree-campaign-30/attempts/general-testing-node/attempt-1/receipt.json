@@ -1,0 +1,58 @@
+{
+  "job_id": "general-testing-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree General Testing Reference (Node.js)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/testing/node\"\nraw_files:\n  - \"braintree/docs/reference/general/testing/node-2026-09-16.md\"\ntags: [braintree, node-js, sandbox, testing, transactions, disputes, fraud-tools]\n---\n\n## Overview\n\nThis collected Braintree Node.js general testing reference catalogs Sandbox-only values and routes for simulating gateway behavior across transactions, card verification, payment-method nonces, settlement status, disputes, 3D Secure, fraud tools, AVS/CVV, bank details and selected wallet flows. Its central retrieval value is the boundary between these simulations and Production: the environments, credentials and created configuration are separate, and the page does not establish live acceptance, merchant eligibility or successful real-money processing.\n\n## Key takeaways\n\n- The page uses specific Sandbox values to trigger simulated outcomes. Transaction authorization behavior is driven by the amount, while card-verification behavior is driven by the test card number or verification nonce. A listed valid card number does not by itself guarantee transaction success because amount and, when configured, AVS/CVV inputs can also affect the result.\n- Static `payment_method_nonce` values are provided for server-side Sandbox testing, and the Node.js section exposes four `braintree.Test.Nonces` objects. The full card, alternative-payment-method, verification, CVV-only and 3D Secure fixture inventories remain at the raw locators below rather than being treated as Production capabilities.\n- The settlement testing routes can move a transaction already in `submitted_for_settlement` to `settled` or `settlement_declined`. The displayed callback and Promise snippets are examples for this collected Node.js page, not proof of successful execution or a guarantee about other SDK variants.\n- Sandbox disputes can be simulated, but Production dispute response and management depend on account setup and are not available to every account. The source also routes to Sandbox dispute-creation and outcome-simulation procedures; those fixtures do not prove Production dispute eligibility or behavior.\n- Fraud testing is conditional. The pending-review fixture is described as available only for Fraud Protection Advanced; Risk Threshold rejection reasons require at least Node `2.24.0` on this page or appear as `Unrecognized`; the Sandbox fraud-product UI is illustrative rather than configurable for rejection testing; fraud-response fixtures can depend on enabled fraud, risk-threshold or AVS/CVV rules; and `fake-gateway-rejected-fraud-nonce` is marked deprecated.\n- Purging Sandbox data is consequential: confirmation logs the user out, locks the account and blocks API operations until completion. The page says the purge does not affect regular merchant accounts, recurring-billing plans, webhooks or other account settings, and it cannot delete merchant accounts.\n\n> [!warning] Sandbox simulation and destructive-action boundaries\n> This 2026-09-16 snapshot documents simulated Sandbox outcomes, not current availability, account eligibility, Production acceptance, bank behavior or live execution. Sandbox objects, options and recurring-billing settings do not transfer to Production, credentials differ, and production dispute management is account-dependent. Purge Test Data temporarily locks the Sandbox account and blocks API operations until the purge finishes.\n\n## Detail locators\n\n- Sandbox purpose and Sandbox-versus-Production isolation, non-transfer and separate credentials: `# Testing`, lines 14-20.\n- Amount-driven authorization and settlement-response fixtures: `## Transaction amounts`, lines 23-39.\n- Card transaction-versus-verification control distinction, valid-card qualification and verification fixtures: `## Credit card numbers`, lines 42-143.\n- Static server-side nonces, example sale calls, card and alternative-payment-method fixtures, verification/CVV-only fixtures, 3D Secure scenarios and Node.js nonce objects: `## Payment method nonces`, lines 146-334.\n- Submitted-for-settlement status transitions and Node.js callback/Promise examples: `## Settlement status`, lines 336-401.\n- Sandbox dispute availability qualification, dispute creation and simulated API/Control Panel outcomes: `## Disputes`, lines 404-515.\n- External 3D Secure test-card route: `## 3D Secure`, lines 517-519.\n- Fraud-product qualification, minimum SDK-version table, illustrative-UI limit, conditional nonces and deprecated nonce: `## Fraud tools`, lines 522-563.\n- AVS/CVV rule-enablement condition and response tables: `## AVS and CVV/CID responses`, lines 566-609.\n- Sandbox routing numbers and external IBAN-generator route: `## Bank routing numbers`, lines 612-623.\n- Platform-specific PayPal One Touch testing routes: `## PayPal One Touch`, lines 626-628.\n- Purge inventory, confirmation procedure, temporary lock/API outage and unaffected-setting limits: `## Purge sandbox data`, lines 631-656.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- Supporting server integration concept: [[braintree-server-sdk]]\n- Supporting fraud concept: [[braintree-fraud-tools]]\n- Supporting authentication concept: [[braintree-3d-secure]]\n- Related Sandbox/Production orientation: [[source-braintree-get-started-try-it-out]]\n- Related card testing and go-live guide: [[source-braintree-credit-cards-testing-go-live-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/testing/node-2026-09-16|Braintree General Testing Reference for Node.js]] - complete collected reference covering Sandbox test fixtures, Node.js examples, simulated status and dispute routes, fraud qualifications, environment isolation and purge consequences\n",
+  "quotes": [
+    {
+      "text": "Use the test values below to test functionality in the [Braintree sandbox](https://sandbox.braintreegateway.com/login).",
+      "location": "line 16, # Testing"
+    },
+    {
+      "text": "The sandbox is an entirely separate environment from your production account. **Nothing created in the sandbox (e.g. processing options, recurring billing settings) will transfer to production.** Your login information, [merchant ID](/braintree/articles/control-panel/important-gateway-credentials#merchant-id) , and [API keys](/braintree/articles/control-panel/important-gateway-credentials#api-keys) will also be different. See [Try It Out](/braintree/articles/get-started/try-it-out) for more details.",
+      "location": "line 20, # Testing > NOTE"
+    },
+    {
+      "text": "When testing card verifications and transactions, keep in mind:    \n- **Transaction**success is determined by the[test amount](/braintree/docs/reference/general/testing/node#transaction-amounts)you use. For example, when testing decline scenarios.\n- **Verification**success is determined by the[test card number](/braintree/docs/reference/general/testing/node#card-numbers-for-unsuccessful-verification)you use. For example, when testing Vault and recurring billing scenarios.",
+      "location": "lines 48-50, ## Credit card numbers > NOTE"
+    },
+    {
+      "text": "In order to access the Risk Threshold gateway rejection reason, you must use at least the version indicated below. \n- Java3.1.0\n- .NET5.0.0\n- Node2.24.0\n- PHP5.3.0\n- Python4.3.0\n- Ruby2.103.0\n\n \n\nOtherwise, you will receive an Unrecognized status for the gateway rejection.",
+      "location": "lines 534-544, ## Fraud tools > IMPORTANT"
+    },
+    {
+      "text": "This action will log you out, lock your account, and block API operations until the purge is complete.\n\n Purging this data will not affect regular merchant accounts, recurring billing plans, webhooks, or other account settings. While you can [delete individual plans](/braintree/articles/guides/recurring-billing/plans#deleting-a-plan) and webhooks, you can't delete merchant accounts.",
+      "location": "lines 654-656, ## Purge sandbox data > NOTE"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "general-testing-node-braintree-control-panel-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-general-testing-node]] - collected Node.js general testing reference for Braintree Sandbox fixtures and simulated gateway outcomes, with qualified environment, Production and purge boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the page as a collected 2026-09-16 Sandbox snapshot, not proof of current availability, Production acceptance, account eligibility or successful payment execution.",
+          "Preserve the distinction between amount-driven transaction behavior and card-number- or nonce-driven verification behavior; do not treat a valid test card as a guaranteed successful transaction.",
+          "Keep Node.js nonce objects and examples package- and snapshot-qualified; do not attribute them to other SDK variants.",
+          "Preserve conditional fraud-tool requirements, the Node 2.24.0 minimum shown for the Risk Threshold rejection reason, the illustrative-only Sandbox UI limit and the deprecated fraud nonce.",
+          "Preserve purge consequences: logout, temporary account lock and blocked API operations until completion, along with the page's unaffected-setting and merchant-account deletion limits."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/testing/node-2026-09-16.md",
+  "raw_sha256": "444a7b68ce8e85f0162867993e0294078c3bb9609f2a5dcba01f7ad8eef7d859",
+  "status": "candidate_ready"
+}
