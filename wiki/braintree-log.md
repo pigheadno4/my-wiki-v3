@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C34
+
+- Twenty pinned website raws: seven Chase processor articles, seven Adyen processor articles and six account/refund/security guides, fully read and independently reviewed using ten shared rolling child slots. Catalog: 352 sources (335 website + 17 GitHub). New [[braintree-at-most-once-processing]] and [[braintree-account-updater]] retrieval hubs; processor articles remain Braintree-owned evidence, separate from Orchestration and independent provider authority.
+- First pass 19/20; twenty initial full reviews and one targeted review, no repeated full review or format repair. Chase bank-change wording was narrowed from an unsupported categorical no-API assertion to the documented Control Panel upload route; all other candidate content stayed unchanged.
+- Final fixed-query result 40/40. A missing provider-index link to [[payment-reconciliation-reporting]] was repaired mechanically; original E failure and A missed-edge correction are retained with targeted route/hash rechecks. No source semantic rewrite or extra full raw reanalysis. All candidate bytes, immutable raw hashes, unique ownership, approved updates, reciprocal routes, catalogs/counts and 30 typed pages passed close checks.
+- Timing and reports: `tracking/ingest/braintree/braintree-campaign-34/`. Shared catalogs/counts/logs aggregated once; no collection, GitHub ingestion, code/schema/validator change, commit or push. Concurrency rule change was separately authorized before execution.
+
 ## [2026-10-04] ingest | Braintree website C33
 
 - Twenty pinned website raws (eight Orchestration guides and twelve Forward API references) fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 332 sources (315 website + 17 GitHub). New [[braintree-orchestration]] retrieval hub distinguishes provider-level operation ownership from destination-qualified rules and [[braintree-forward-api]].

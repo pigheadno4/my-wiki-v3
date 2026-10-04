@@ -1,0 +1,26 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "at-most-once-create-retrieval-hub",
+      "target_path": "wiki/concepts/braintree-at-most-once-processing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Create new concept page",
+      "proposed_markdown": "---\ntitle: \"Braintree At-Most-Once Processing\"\ntype: concept\ncategory: technology\ntags: [braintree, at-most-once, idempotency, api-request-key, duplicate-requests]\n---\n\n## Braintree At-Most-Once Processing\n\nBraintree's collected limited-audience guide defines At-Most-Once Processing as logical-intent idempotency for preventing duplicate API requests from causing duplicate actions. It requires a merchant-supplied `ApiRequestKey` for the intended logical action, treats identical keys within 30 days as duplicates, and states that this feature is mutually exclusive with transaction duplicate checking. This is distinct from network-level response replay. [[source-braintree-articles-guides-at-most-once]]\n\n## Duplicate and retry route\n\nFor matching request details, an in-progress operation can return a retryable validation error and a completed operation can return its current result state; changed request details produce a validation error. The returned state may be unsuccessful or may have advanced since the original request. Generating a new key is not uniformly safe: use the source's action-specific tables and record/state checks, because some cases require investigation and potentially Braintree intervention.\n\nThe captured page is not generally public and directs readers to the product team before sharing. It establishes neither current merchant eligibility nor enablement, SDK support or successful execution.\n\n## Sources\n\n- [[source-braintree-articles-guides-at-most-once]] - 2026-09-16 limited-audience guide to logical-intent request identity, 30-day duplicate handling, action-specific outcomes and retry qualifications\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Root index to Braintree index audit found no dedicated at-most-once or idempotency concept; braintree-payment-platform and braintree-server-sdk do not cover request-key duplicate semantics, while the Control Panel duplicate-checking route is a distinct mechanism that this source calls mutually exclusive.",
+        "Keep the concept navigation-first: exact supported operations, matrices, HTTP and validation codes, and action-specific retry procedures belong in the source and pinned raw.",
+        "Preserve the source's restricted-audience notice and do not imply general availability, merchant enablement, SDK support or payment-execution proof."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

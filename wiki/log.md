@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Braintree website C34
+
+- Twenty website sources approved through ten rolling child slots; first pass 19/20, twenty full initial reviews plus one targeted correction, no repeated full review. Final queries 40/40 after one index-edge repair and targeted A/E route rechecks; original failure evidence retained. Catalog 352 (335 website + 17 GitHub); two provider concept hubs, 30 typed pages validated. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-34/`. Raw unchanged; no commit or push.
+
 ## [2026-10-04] ingest | Braintree website C33
 
 - Twenty Orchestration/Forward API website sources independently reviewed and promoted through five rolling child slots; first pass 15/20, twenty full plus five targeted reviews, no repeated full review. Five dispatch-order query groups passed 40/40. Catalog: 332 sources (315 website + 17 GitHub). Details: [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-33/`. Raw unchanged; no commit or push.

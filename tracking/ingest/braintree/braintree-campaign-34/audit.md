@@ -1,0 +1,9 @@
+# Braintree C34 close evidence
+
+- Twenty of twenty source jobs approved; nineteen first-pass, one bounded correction with targeted review. Twenty initial full reviews and one targeted review; zero repeated full reviews, zero mechanical handoff repairs.
+- Sources exactly match accepted candidates. All primary raw hashes are unchanged, provenance and reverse raw ownership agree, canonical URLs remain unique, all approved concept updates are present, reciprocal links resolve, and website source catalogs are exhaustive and nonduplicative.
+- Company count: 352 = 335 website + 17 GitHub. Twenty new website sources and two new provider retrieval concepts. Source volume 10,237 words. Typed-page validator: 30/30 passed.
+- Final query result: 40/40 PASS. Five initial eight-question reports retained. Group E found a missing Braintree-index-to-generic-reconciliation-concept edge; Group A had incorrectly passed the same edge for Adyen. One coordinator navigation insertion repaired both routes; A/E targeted route and unchanged-hash addenda passed. No semantic source repair or repeated full raw review was needed. Every campaign page already received the fixed complete-evidence query audit; no campaign page was excluded after the failure.
+- Temporary close checker initially compared parsed source_count text to an integer; corrected comparison passed without wiki changes. No new validator or scheduler was introduced.
+- Exact manifest and role orders retained. Coordinator alone wrote canonical sources, concepts, catalogs/logs and campaign state. Ten simultaneous native children were confirmed; roles share the ten-slot pool and retain rolling allocation.
+- Prior unrelated GitHub unit-suite failure remains outside this campaign; this documentation-only close used existing targeted/typed checks, not a new full unit run. No collection, GitHub ingest, commit or push.

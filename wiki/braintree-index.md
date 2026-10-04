@@ -16,6 +16,36 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+
+- [[braintree-at-most-once-processing]] - logical-intent request identity and action-specific retry-safety routes
+- [[braintree-account-updater]] - issuer-dependent Vault update eligibility, request and reporting routes
+
+#### Processor-specific account articles
+
+- [[source-braintree-articles-adyen-reconciliation]] - Braintree Adyen Reconciliation
+- [[source-braintree-articles-chase-transactions-descriptors]] - Braintree Chase Transaction Descriptors
+- [[source-braintree-articles-adyen-transactions-descriptors]] - Braintree Adyen Transaction Descriptors
+- [[source-braintree-articles-chase-transactions-accepted-payment-methods]] - Braintree Chase Accepted Payment Methods
+- [[source-braintree-articles-adyen-pricing-fees]] - Braintree Adyen Pricing and Fees
+- [[source-braintree-articles-adyen-change-your-bank-account]] - Braintree Adyen Change Your Bank Account
+- [[source-braintree-articles-chase-pricing-fees]] - Braintree Chase Pricing and Fees
+- [[source-braintree-articles-chase-change-your-bank-account]] - Braintree Chase Change Your Bank Account
+- [[source-braintree-articles-chase-transactions-settlement-funding-timeline]] - Braintree Chase Settlement and Funding Timeline
+- [[source-braintree-articles-adyen-transactions-accepted-payment-methods]] - Braintree Adyen Accepted Payment Methods
+- [[source-braintree-articles-adyen-overview]] - Braintree Adyen-Provisioned Merchant Account Overview
+- [[source-braintree-articles-chase-overview]] - Braintree Chase Overview
+- [[source-braintree-articles-chase-reporting-reconciliation]] - Braintree Chase Reporting and Reconciliation
+- [[source-braintree-articles-adyen-transactions-settlement-funding-timeline]] - Braintree Adyen Settlement and Funding Timeline
+
+#### Account, refund and security guides
+
+- [[source-braintree-articles-guides-at-most-once]] - Braintree At-Most-Once Processing Guide
+- [[source-braintree-articles-guides-refund-authorizations]] - Braintree Refund Authorizations
+- [[source-braintree-articles-guides-account-updater]] - Braintree Account Updater Guide
+- [[source-braintree-articles-guides-account-information]] - Braintree Updating Account Information
+- [[source-braintree-articles-risk-and-security-allowlisting]] - Braintree Allowlisting
+- [[source-braintree-articles-risk-and-security-overview]] - Braintree Risk and Security Overview
+
 #### Orchestration destination guides
 
 - [[source-braintree-orchestration-adyen]] - Braintree PayPal Orchestration Adyen Integration Guide
@@ -472,6 +502,8 @@ Operations history: [[braintree-log]]
 - [[braintree-popup-bridge]] - WebView popup transport, Venmo app-switch return, and payment-eligibility boundary
 
 ## Cross-Cutting Concepts
+
+- [[payment-reconciliation-reporting]] - cross-provider reporting and reconciliation hub, including Braintree-owned Adyen Settlement Details Report and Chase Paymentech account-specific routes
 
 - [[card-brand-detection]] - generic brand inference, ambiguity, UI metadata, and validation/acceptance boundary
 - [[payment-input-formatting]] - generic pattern, paste, caret, browser-compatibility, and validation boundaries

@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-adyen-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Adyen Reconciliation\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/adyen/reconciliation\"\nraw_files:\n  - \"braintree/articles/adyen/reconciliation-2026-09-16.md\"\ntags: [braintree, adyen, reconciliation, settlement, reporting]\n---\n\n## Overview\n\nThis collected Braintree article documents the Settlement Details Report for merchants whose transactions are processed with Adyen. It presents the report as the primary reconciliation tool for aligning payout-level report data with bank-deposit records and provides transaction, fee, correction and reference fields for investigation.\n\nThe snapshot is Braintree-hosted processor documentation, not independent Adyen authority and not the C33 PayPal Orchestration Adyen integration guide. It does not prove that an individual payout or bank deposit completed, or establish current regional, account or pricing eligibility.\n\n## Key takeaways\n\n- Braintree says the Settlement Details Report is generated upon payout and is available only to users with the Create, Run, and Download Reports permission. The documented Control Panel path is **Reports** \u2192 **Settlement Details Report** \u2192 **Run Report**.\n- The report lists the transactions included in a bank deposit and gross and net settlement amounts for captures, refunds and, when present, chargebacks. It also identifies fee totals, deposit corrections and the reported bank-transfer amount. These report fields support reconciliation; they are not independent proof that funds arrived.\n- The **Merchant Payout** row reports the amount Adyen sent, an Adyen reference intended to appear on the bank statement, and a **Net Debit** amount that the article says should match the bank deposit. The **Modification Reference** can align batches with account deposits.\n- Transaction details are merchant-account-specific. The report's **Merchant Account** field identifies the MID used to process a transaction, and merchants processing through more than one MID receive a separate report for each MID. **Psp Reference** is Adyen's transaction identifier, while **Merchant Reference** is the Braintree transaction ID used for Control Panel search.\n- Adjustments can appear as **Deposit Correction**, **Invoice Deduction** or **Balancetransfer** lines. The article says reserve movements or outstanding fees can change the reported deposit amount, monthly invoice corrections can be debits or credits, and transfers between settlement batches can alter the payout. Its \u20ac0,10-per-transaction, 1000-transaction-minimum scenario is expressly an example conditioned on agreed pricing, not a regional or universal fee schedule.\n- The transaction-detail section distinguishes settled, refunded and chargeback rows and defines gross, net, currency, exchange-rate, commission and payment-method-variant fields. Use the raw locators for the exact row-by-row treatment rather than applying one amount rule to every transaction type.\n\n> [!warning] Report and deposit boundary\n> The page documents reconciliation fields in a generated report. A reported payout amount, reference or expected bank-deposit match does not by itself establish that a particular payout settled or that funds reached the merchant's bank account.\n\n## Detail locators\n\n- Report purpose, payout-generation condition, required role permission and Control Panel run steps: `# Reconciliation`, raw lines 16-24.\n- Included transactions, gross/net settlement amounts, fees, corrections and reported bank-transfer amount: `# Reconciliation`, raw line 25.\n- Payout amount, bank-statement reference and deposit-matching fields: `## Merchant Payout`, raw lines 30-34.\n- Fee period, total and currency: `## Transaction Fees`, raw lines 37-39.\n- Reserve movements and the conditional monthly-minimum fee example: `## Corrections > ### Deposit Correction`, raw lines 42-49.\n- Tier-pricing invoice correction and debit/credit direction: `## Corrections > ### Invoice Deduction`, raw lines 52-54.\n- Transfers between settlement batches and the displayed support route: `## Corrections > ### Balance Transfer`, raw lines 57-59.\n- Transaction types and field-by-field amount, currency, reference, commission and payment-method definitions: `## Transaction details`, raw lines 62-136.\n- Per-MID report separation and the Adyen versus Braintree transaction-reference distinction: `## Transaction details > #### Merchant Account` through `#### Merchant Reference`, raw lines 74-86.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n- Supporting concept: [[braintree-control-panel]]\n- Distinct C33 processor-connection guide: [[source-braintree-orchestration-adyen]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/adyen/reconciliation-2026-09-16|Braintree Adyen reconciliation article]] - complete collected page covering Settlement Details Report access, payout and adjustment rows, per-MID reporting, transaction references and detailed amount fields\n",
+  "quotes": [
+    {
+      "text": "The Settlement Details Report is generated upon payout and is only available for users with the Create, Run, and Download Reports [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-create-run-and-download-reports).",
+      "location": "raw line 18 under # Reconciliation"
+    },
+    {
+      "text": "The Settlement Details Report will list all of the transactions included in that bank deposit and will specify the gross and net settlement amounts for captures, refunds, and (if present) chargebacks. Fee totals and deposit corrections are also specified, as well as the amount transferred to your bank account.",
+      "location": "raw line 25 under # Reconciliation"
+    },
+    {
+      "text": "The **Merchant Payout** section is in a row near the bottom of the report and is one of the most helpful line items for reconciling deposits. This will show you how much Adyen has sent to your bank account, along with Adyen\u2019s reference number that will appear on your bank statement. The amount in the **Net Debit** column should match the deposit in your bank account.",
+      "location": "raw line 32 under ## Merchant Payout"
+    },
+    {
+      "text": "The Deposit Correction can also indicate if your deposit amount was adjusted to cover any outstanding fees. For example, if you agreed to a 1000-transaction monthly minimum at \u20ac0,10 per transaction, but do not process 1000 transactions, you would incur fees on the difference. Those fees would then be deducted from your deposit amount, rather than debited from your bank account separately.",
+      "location": "raw line 49 under ### Deposit Correction"
+    },
+    {
+      "text": "This field will identify which [merchant account ID](/braintree/articles/control-panel/important-gateway-credentials#merchant-account-id) (MID) the transaction was processed with. If you are processing with more than one MID, you will have a separate report for each one.",
+      "location": "raw line 76 under #### Merchant Account"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-articles-adyen-reconciliation-payment-reconciliation-source-link",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-adyen-reconciliation]] - Braintree-hosted Settlement Details Report route for merchants whose transactions are processed with Adyen, covering permission-gated access, per-MID reports, payout and transaction references, and reserve, fee, invoice and batch-transfer adjustment locators; not independent Adyen authority or proof of an individual bank deposit",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this processor-specific Braintree article separate from the C33 PayPal Orchestration Adyen integration guide and from independent Adyen documentation.",
+          "The report's payout and deposit-matching fields do not prove that a particular payout settled or reached a bank account; the pricing scenario is an example conditioned on an agreement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/adyen/reconciliation-2026-09-16.md",
+  "raw_sha256": "79fb24b1450f9c9946b4fde1649bfcc8f3df08edbbfffd160bf91718cc69fd58",
+  "status": "candidate_ready"
+}

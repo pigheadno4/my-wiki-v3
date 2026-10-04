@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-guides-account-updater",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Account Updater Guide\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/account-updater\"\nraw_files:\n  - \"braintree/articles/guides/account-updater-2026-09-16.md\"\ntags: [braintree, account-updater, vault, cards, recurring-billing, reporting]\n---\n\n## Overview\n\nThis collected Braintree guide documents Account Updater, an optional Braintree Direct feature that requests updated account numbers and/or expiration dates from participating issuers for supported vaulted cards. The captured eligibility is limited to merchants based in the US or transacting primarily with US customers; pricing varies by pricing model, and the feature is not enabled by default.\n\n## Key takeaways\n\n- A compatible card is not guaranteed to be updateable: issuer participation controls eligibility. The guide lists Visa, Mastercard and Discover, while excluding prepaid cards and cards processed through Apple Pay or Google Pay.\n- On initial enablement, Braintree requests issuer updates for vaulted supported credit cards in batches of 600,000. If the Vault contains more than 2 million payment methods, the initial request is limited to cards that expired within the prior 13 months.\n- After the initial batch, requests run on documented rolling criteria involving expiration, near-term recurring billing, transaction activity and Next Day Card Refresh. The transaction-activity section explains why one decline may be insufficient for a recently successful monthly subscription, and Next Day Card Refresh works only when failed-transaction retry logic is configured.\n- Account Updater activity can be inspected in an individual payment method's history, a Control Panel report, or a daily-report webhook. The Control Panel report is limited to 40,000 rows; the webhook route links a CSV for vaulted payment methods updated within 24 hours and uses a different event-description column name.\n- Certain returned event descriptions stop further update submissions for that card until a user manually updates the payment method in the Control Panel or through the API.\n\n## Detail locators\n\n- Feature purpose: `# Account Updater`, lines 14-16.\n- Pricing-model qualification: `## Fees`, lines 19-21.\n- Braintree Direct, US, issuer-participation, supported-card and excluded-card scope: `## Compatibility`, lines 24-40.\n- Not-enabled-by-default setup boundary: `## Setup`, lines 45-47.\n- Initial batching and the more-than-2-million-Vault limit: `## How it works`, lines 50-56.\n- Rolling triggers and transaction-activity criteria, including the one-decline recurring-billing example: `## How it works`, lines 60-78.\n- Next Day Card Refresh retry dependency and decline-code table: `### Next Day Card Refresh`, lines 81-99.\n- Reporting routes, payment-method history, the 40,000-row report limit and daily webhook details: `## Reporting`, lines 102-154.\n- Event descriptions and no-resend-until-manual-update behavior: `### Event descriptions`, lines 159-173.\n\n## Evidence boundary\n\n> [!warning] Update requests are not guaranteed card updates\n> Account Updater requests updates from participating issuers; card-brand compatibility alone does not establish issuer participation or a successful update. Next Day Card Refresh additionally depends on merchant retry logic, and the reporting outcomes include unsuccessful or action-required states. This collected snapshot does not prove current availability, merchant enablement or a successful payment retry.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-account-updater]]\n- Supporting concepts: [[braintree-control-panel]], [[braintree-webhooks]], [[recurring-payments]]\n- [[source-braintree-control-panel-reporting-expiring-cards]] - navigation to the separate report that identifies expired or soon-to-expire Vault cards\n- [[source-braintree-webhooks-account-updater-node]] - navigation to the feature-specific daily-report webhook reference\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/account-updater-2026-09-16|Braintree Account Updater guide]] - complete collected guide covering feature identity, pricing and eligibility, request criteria, retry dependency, reporting and terminal no-resend outcomes\n",
+  "quotes": [
+    {
+      "text": "Account Updater is a feature that automatically requests updates for vaulted payment methods in the event that a customer's vaulted card expires or is replaced \u2013 helping you avoid failed transactions or gaps in services provided to your customers.",
+      "location": "# Account Updater, line 16"
+    },
+    {
+      "text": "Account Updater is available to merchants who use Braintree Direct and are either based in the US or transact primarily with US customers. [Contact us](/braintree/help) to see if Account Updater is a good fit for your business.",
+      "location": "## Compatibility, line 26"
+    },
+    {
+      "text": "Whether a card can be updated using Account Updater is dependent on the customer\u2019s issuing bank and that bank's participation in this feature. As a result, even if a customer's card type is compatible, it may not be eligible for automatic updates if the issuing bank does not participate. Supported card types are:",
+      "location": "### Customer compatibility, line 31"
+    },
+    {
+      "text": "Next Day Card Refresh attempts to update vaulted cards if an authorization is declined with certain decline codes. This feature will only work if you have retry logic set up to re-attempt failed transactions \u2013 whether it\u2019s through our [recurring billing feature](/braintree/articles/guides/recurring-billing/recurring-advanced-settings#automatic-retries) or logic you\u2019ve built yourself. These are the decline codes that will trigger Next Day Card Refresh before being retried:",
+      "location": "### Next Day Card Refresh, line 83"
+    },
+    {
+      "text": "We will not attempt to resend any cards for updates that return the Call customer - account closed, Call customer for updates, Call issuer for updates, or Do not retry event descriptions until the payment method has been manually updated by a user in the Control Panel or via the API.",
+      "location": "### Event descriptions, line 173"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-account-updater-hub",
+        "target_path": "wiki/concepts/braintree-account-updater.md",
+        "update_kind": "durable_fact",
+        "anchor": "new file",
+        "proposed_markdown": "---\ntitle: \"Braintree Account Updater\"\ntype: concept\ncategory: technology\ntags: [braintree, account-updater, vault, cards, recurring-billing]\n---\n\n## Braintree Account Updater\n\nBraintree Account Updater is an optional Braintree Direct feature that requests updated account numbers and/or expiration dates from participating issuers for supported vaulted cards and applies returned changes to the Vault. The collected guide limits merchant eligibility to businesses based in the US or transacting primarily with US customers, says pricing varies by pricing model, and states that the feature is not enabled by default. Issuer participation remains a separate card-level condition, so a supported card brand does not guarantee an update. [[source-braintree-articles-guides-account-updater]]\n\n## Operating boundaries\n\nThe collected guide lists vaulted Visa, Mastercard and Discover credit cards, excludes prepaid cards and cards processed through Apple Pay or Google Pay, and documents an initial request followed by rolling request criteria. A Vault containing more than 2 million payment methods receives the guide's narrower initial expired-card scope. Next Day Card Refresh depends on configured retry logic; exact thresholds, transaction-activity conditions and decline codes remain in the source's verified raw locators. [[source-braintree-articles-guides-account-updater]]\n\nReporting exposes successful and unsuccessful or action-required outcomes through payment-method history, a Control Panel report and a daily-report webhook. For `Call customer - account closed`, `Call customer for updates`, `Call issuer for updates` or `Do not retry`, Braintree says it will not resend the card until the payment method is manually updated in the Control Panel or through the API. An update request is not proof of issuer participation, a successful Vault change or a successful later payment. [[source-braintree-articles-guides-account-updater]]\n\n## Sources\n\n- [[source-braintree-articles-guides-account-updater]] - unversioned Braintree guide to Account Updater eligibility, issuer-dependent Vault update requests, rolling criteria, retry dependency, reporting and terminal no-resend outcomes\n- [[source-braintree-control-panel-reporting-expiring-cards]] - separate Control Panel report for identifying expired or soon-to-expire Vault cards; report visibility is not an update request\n- [[source-braintree-webhooks-account-updater-node]] - feature-restricted Node.js reference for the Account Updater daily-report webhook\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "New hub is proposed because the existing index-led routes split Account Updater between the expiring-card report and daily-report webhook and do not retain the provider-specific feature lifecycle and eligibility boundaries.",
+          "Snapshot eligibility and behavior do not prove current merchant enablement, issuer participation, a successful Vault update or a successful later payment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/account-updater-2026-09-16.md",
+  "raw_sha256": "8dba196742d04b02a470a8513fa3f78cf3ae6604f28cf2367b18402c74f86888",
+  "status": "candidate_ready"
+}

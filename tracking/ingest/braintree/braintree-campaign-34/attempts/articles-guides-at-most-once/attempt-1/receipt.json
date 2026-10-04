@@ -1,0 +1,56 @@
+{
+  "job_id": "articles-guides-at-most-once",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree At-Most-Once Processing Guide\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/guides/at-most-once\"\nraw_files:\n  - \"braintree/articles/guides/at-most-once-2026-09-16.md\"\ntags: [braintree, at-most-once, idempotency, api-request-key, duplicate-requests]\n---\n\n## Overview\n\nThis collected Braintree guide describes At-Most-Once Processing, Braintree's logical-intent idempotency model for preventing duplicate API requests from causing duplicate payment actions. The merchant supplies an `ApiRequestKey` that uniquely identifies the intended logical action; identical keys within a 30-day window are treated as duplicate requests. The guide distinguishes this feature from network-level idempotency and says it is mutually exclusive with transaction duplicate checking.\n\nThe captured page labels itself as limited to a select group or specific audience, not generally public, and directs readers to the product team before sharing it. This 2026-09-16 snapshot therefore does not establish current general availability, account enablement, SDK support or successful payment execution.\n\n## Key takeaways\n\n- For the documented model, Braintree returns the current state of the original logical intent for an identical request within the 30-day window; this is not a promise to replay the same network response, and a returned transaction state may be unsuccessful or may have advanced since the original request.\n- When the key and other request details match, an in-progress original request produces a retryable validation error, while a completed original request returns the action's current result. Reusing the key with changed amount, customer, payment-method or other request details produces a validation error.\n- The captured supported-action list includes authorize, charge, partial capture, settlement submission, credit, refund and reverse. Exact API operations, status-dependent results, legacy HTTP codes, error codes and action-specific scenarios remain in the raw tables.\n- A validation error is not blanket permission to generate a new key and retry. The guide's action-specific footnotes make safety depend on whether a transaction or refund record exists and on the operation's state; some outcomes require further investigation and potentially Braintree intervention.\n\n> [!warning] Restricted captured audience\n> The source says the page is not generally public and should be discussed with the product team before sharing. Treat it as snapshot documentation, not proof that the feature is available or enabled for a particular merchant.\n\n> [!warning] Do not equate this with response replay\n> Braintree describes this as logical-intent At-Most-Once Processing rather than network-level idempotency. Duplicate requests can return a retryable validation error or the current action state, not necessarily the original response.\n\n> [!warning] Do not rotate the key blindly\n> Before generating a new `ApiRequestKey`, use the operation-specific state and record-presence rules in the raw guide. A new key can create a functional duplicate when the first request may already have succeeded.\n\n## Detail locators\n\n- Restricted-audience notice and product-team sharing direction: notice before `## At-Most-Once Processing`, raw lines 14-15.\n- Feature purpose, unique-request-key requirement and mutual exclusion with transaction duplicate checking: `## At-Most-Once Processing`, raw lines 20-30.\n- `ApiRequestKey` identity and 30-day duplicate window: `## Details`, raw lines 33-35.\n- Same-details in-progress and completed outcomes, plus changed-details validation: `## Details`, raw lines 37-42.\n- Supported action families: `## Supported Actions`, raw lines 45-57.\n- Authorize and charge scenario matrices and consequential changed-request/new-key footnotes: `### Authorize` and `### Charge`, raw lines 59-106.\n- Refund, settlement, partial-settlement, credit and reverse matrices with action-specific retry qualifications: raw lines 109-194.\n- Validation error codes `915232`, `915233` and `915234`: `## Error Codes`, raw lines 197-203.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-at-most-once-processing]]\n- Server gateway operations: [[braintree-server-sdk]]\n- Distinct, mutually exclusive mechanism: [[source-braintree-control-panel-duplicate-checking]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/guides/at-most-once-2026-09-16|Braintree At-Most-Once Processing guide]] - complete collected guide covering logical-intent semantics, request-key identity, duplicate outcomes, supported actions, action-specific retry qualifications and error codes\n",
+  "quotes": [
+    {
+      "text": "This page is limited to a select group of individuals or a specific audience and is not yet available to the general public. Please get in touch with the product team before sharing this link.",
+      "location": "Restricted-audience notice before ## At-Most-Once Processing, raw line 15"
+    },
+    {
+      "text": "At-Most-Once Processing or Idempotency processing helps merchants ensure that duplicate API requests do not result in duplicate actions such as charging or refunding a payment multiple times. In contrast to transaction duplicate checking, this feature requires merchants to specify a unique request key, and the two features are mutually exclusive.",
+      "location": "Under ## At-Most-Once Processing, raw line 22"
+    },
+    {
+      "text": "Instead of network-level idempotency, Braintree has chosen to implement logical intent idempotency or, to avoid confusion, At-Most-Once Processing. This feature ensures that duplicate API requests do not result in duplicate actions, such as charging or refunding a payment multiple times. Duplicate requests do not reach payment networks and avoid overcharging merchants. Each identical request within a 30-day window will return the current state of that request's intent. This avoids unintended duplication and can safely retry requests when unexpected errors occur, for example, networking failures.",
+      "location": "Under ## At-Most-Once Processing, raw line 30"
+    },
+    {
+      "text": "At-Most-Once processing requires the merchant to provide an ApiRequestKey with each request to identify the logical action being attempted uniquely. Identical ApiRequestKey values within a 30-day window are considered duplicate requests.",
+      "location": "Under ## Details, raw line 35"
+    },
+    {
+      "text": "* **Footnote for use case (4)**Multiple scenarios may lead to this outcome. If no transaction record was created, then retrying with a newApiRequestKeymay be safely attempted. If a transaction record was created the error response will contain an additional key with the transaction's public identifier, and further investigation (and potentially intervention by Braintree) is required.",
+      "location": "Charge use-case (4) footnote, raw line 104"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "at-most-once-create-retrieval-hub",
+        "target_path": "wiki/concepts/braintree-at-most-once-processing.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree At-Most-Once Processing\"\ntype: concept\ncategory: technology\ntags: [braintree, at-most-once, idempotency, api-request-key, duplicate-requests]\n---\n\n## Braintree At-Most-Once Processing\n\nBraintree's collected limited-audience guide defines At-Most-Once Processing as logical-intent idempotency for preventing duplicate API requests from causing duplicate actions. It requires a merchant-supplied `ApiRequestKey` for the intended logical action, treats identical keys within 30 days as duplicates, and states that this feature is mutually exclusive with transaction duplicate checking. This is distinct from network-level response replay. [[source-braintree-articles-guides-at-most-once]]\n\n## Duplicate and retry route\n\nFor matching request details, an in-progress operation can return a retryable validation error and a completed operation can return its current result state; changed request details produce a validation error. The returned state may be unsuccessful or may have advanced since the original request. Generating a new key is not uniformly safe: use the source's action-specific tables and record/state checks, because some cases require investigation and potentially Braintree intervention.\n\nThe captured page is not generally public and directs readers to the product team before sharing. It establishes neither current merchant eligibility nor enablement, SDK support or successful execution.\n\n## Sources\n\n- [[source-braintree-articles-guides-at-most-once]] - 2026-09-16 limited-audience guide to logical-intent request identity, 30-day duplicate handling, action-specific outcomes and retry qualifications\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Root index to Braintree index audit found no dedicated at-most-once or idempotency concept; braintree-payment-platform and braintree-server-sdk do not cover request-key duplicate semantics, while the Control Panel duplicate-checking route is a distinct mechanism that this source calls mutually exclusive.",
+          "Keep the concept navigation-first: exact supported operations, matrices, HTTP and validation codes, and action-specific retry procedures belong in the source and pinned raw.",
+          "Preserve the source's restricted-audience notice and do not imply general availability, merchant enablement, SDK support or payment-execution proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/guides/at-most-once-2026-09-16.md",
+  "raw_sha256": "e6c138ab587cc2f155b7b82d174ffb4868f7d4fc5191d3f5cb408a52507ab2a8",
+  "status": "candidate_ready"
+}

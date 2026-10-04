@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-adyen-transactions-descriptors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Adyen Transaction Descriptors\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/adyen/transactions/descriptors\"\nraw_files:\n  - \"braintree/articles/adyen/transactions/descriptors-2026-09-16.md\"\ntags: [braintree, adyen, descriptors, transactions, bank-statements, amex]\n---\n\n## Overview\n\nThis collected Braintree-owned article, filed under its Adyen processor documentation, describes statement descriptors for the Braintree account in scope. It distinguishes the post-settlement hard descriptor from a per-transaction dynamic descriptor while leaving the exact customer-statement presentation to the customer's bank. This is not independent Adyen API or PayPal Orchestration documentation.\n\n## Key takeaways\n\n- The hard descriptor appears after a transaction settles and remains as the charge description once the customer's bank finalizes the transaction status. A dynamic descriptor is custom information passed with each transaction through the API.\n- Merchant name and merchant city are required descriptor parameters. The article says Braintree automatically configured the account's hard descriptor from application information; changing it requires the account's authorized signer to contact Braintree with the fields and desired values. The authorized signer is distinct from an Account Admin role and cannot be managed in the Control Panel.\n- For a dynamic descriptor, Braintree obtains the location from the application information rather than requiring it on the transaction. The raw section lists the permitted descriptor-name contents and character rules and warns that many banks truncate names at 22 characters.\n- For American Express transactions using Adyen's aggregated Amex account, the article says dynamic descriptors are unsupported and the hard descriptor is passed by default when dynamic descriptors are enabled. Merchants processing through their own Amex account are instead directed to configure dynamic descriptors with Amex.\n\n> [!warning] Scope and presentation boundaries\n> This Braintree snapshot gives no general regional or pricing-model eligibility statement; the illustrated currency is not eligibility evidence. A customer's bank controls the final statement display, and the captured page is not proof of current support for a particular account. Do not transfer these descriptor rules or Amex account conditions to another processor.\n\n## Detail locators\n\n- Descriptor purpose, bank-controlled presentation and example: `# Descriptors`, lines 16-18.\n- Hard and dynamic descriptor definitions: `# Descriptors`, lines 20-26.\n- Required merchant-name/city fields and hard-descriptor change route: `## Configuring descriptors`, lines 29-37.\n- Authorized-signer identity, Account Admin distinction and identity-confirmation note: `### Authorized signer`, lines 40-48.\n- Hard-descriptor merchant-name and merchant-city constraints: `## Hard descriptor requirements`, lines 53-69.\n- Dynamic location handling, name-field constraints, bank truncation warning and linked developer-doc route: `## Dynamic descriptor requirements`, lines 72-88.\n- Aggregated-account versus own-account American Express behavior: `### Special note on Amex`, lines 91-95.\n\n## Related\n\n- Company: [[braintree]]\n- Account administration concept: [[braintree-control-panel]]\n- Transaction API/SDK concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/adyen/transactions/descriptors-2026-09-16|Braintree Adyen Transaction Descriptors]] - complete collected article covering account descriptor configuration, statement presentation and Amex account qualifications\n",
+  "quotes": [
+    {
+      "text": "A descriptor (or clearing name, as it's sometimes referred to) is the identifying information that your customers will see on their statement when they make a purchase through your mobile app or website. Ultimately, a customer\u2019s bank will determine exactly how your business\u2019s descriptors will appear on customer statements, but they are often formatted like this:",
+      "location": "line 16 under # Descriptors"
+    },
+    {
+      "text": "- **Hard descriptors**: The descriptor that shows up after a transaction has settled. As soon as the customer's bank has finalized the transaction status, the hard descriptor will be permanently displayed as the description of the charge on their statement.\n- **Dynamic descriptors**: A custom descriptor configured and passed with each transaction via the API. This can be helpful if you want to provide specific information about the transaction in your descriptor (e.g. the name of the product).",
+      "location": "lines 23-24 under # Descriptors"
+    },
+    {
+      "text": "We have automatically configured your hard descriptor based on information collected during the application process. To make any changes, the authorized signer on your account will need to [contact us](/braintree/help/updateDescriptor). Let us know (1) which fields you would like to change and (2) the new desired values for these fields. Keep the [restrictions below](#hard-descriptor-requirements) in mind when sending us your new values.",
+      "location": "line 37 under ## Configuring descriptors"
+    },
+    {
+      "text": " Many banks truncate descriptor names at 22 characters, so keep that in mind while designating your dynamic descriptor name.",
+      "location": "line 84 under ## Dynamic descriptor requirements"
+    },
+    {
+      "text": "If you are processing American Express transactions using Adyen\u2019s aggregated Amex account, dynamic descriptors are not supported. If you have dynamic descriptors enabled, your hard descriptor will be passed by default for Amex transactions.\n\nIf you are processing Amex transactions through your own Amex account, you can configure dynamic descriptors directly through them. Contact Amex for assistance.",
+      "location": "lines 93-95 under ### Special note on Amex"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-articles-adyen-transactions-descriptors-control-panel-link",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "In ## Sources, immediately after the existing [[source-braintree-control-panel-descriptors]] entry.",
+        "proposed_markdown": "- [[source-braintree-articles-adyen-transactions-descriptors]] - 2026-09-16 Braintree-hosted Adyen-processor descriptor article covering bank-controlled statement presentation, application-derived hard descriptors and authorized-signer change routing, per-transaction dynamic descriptors, and aggregated-versus-own Amex account qualifications",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this processor-qualified support-contact route distinct from the general Control Panel descriptor article's region-specific Business-page route.",
+          "This is Braintree-owned documentation, not independent current Adyen API or PayPal Orchestration authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/adyen/transactions/descriptors-2026-09-16.md",
+  "raw_sha256": "6c8da5aa74c868b707a7afad2507ce11d023e97c88145f05a81d1315f38c9532",
+  "status": "candidate_ready"
+}

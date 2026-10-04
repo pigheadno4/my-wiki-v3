@@ -1,0 +1,52 @@
+{
+  "job_id": "articles-risk-and-security-allowlisting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Allowlisting\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/risk-and-security/allowlisting\"\nraw_files:\n  - \"braintree/articles/risk-and-security/allowlisting-2026-09-16.md\"\ntags: [braintree, control-panel, allowlisting, ip-addresses, hostnames, api-security]\n---\n\n## Overview\n\nThis collected Braintree article documents merchant-configured IP-address and hostname allowlisting for access to the Braintree Gateway Control Panel and for server-to-server API calls. It distinguishes those restrictions from the separate developer reference for allowlisting Braintree IP addresses and domains.\n\n## Key takeaways\n\n- Once these restrictions are enabled, the article says access is denied unless the user's IP address or hostname is on the allowlist. It also says Braintree does not offer denylisting of selected IP addresses or hostnames.\n- The allowlist applies only to Control Panel access and server-to-server API calls. Encrypted calls made directly from a customer's browser, including client-SDK requests for payment method nonces, are not subject to it and continue to be passed to Braintree regardless of the user's IP address.\n- A user needs the **Edit IP Restrictions** role permission to configure the list. The documented Control Panel settings let that user grant Control Panel access, API access or both for each address or hostname; granting only one type blocks the other.\n- The article recommends testing allowlisted addresses or hostnames in the sandbox before implementing them in production. It also documents wildcard logic for hostname ranges and IP subnet ranges, plus CIDR notation support.\n\n## Evidence boundary\n\n> [!warning] Restriction scope and rollout safety\n> This page concerns merchant-configured access to the Braintree Gateway, not the separate task of allowing Braintree's own IP addresses or domains through merchant infrastructure. Browser-originated encrypted client-SDK calls are explicitly outside this allowlist. A Control Panel-only or API-only entry blocks the other access type, and the page recommends sandbox testing before production use. The 2026-09-16 collection establishes snapshot provenance, not current account eligibility, configuration state or successful enforcement.\n\n## Detail locators\n\n- Purpose and distinction from the Braintree IP-address/domain developer reference: `# Allowlisting > NOTE`, lines 17-18.\n- Definition, default-deny behavior after enablement and unsupported denylisting: `# Allowlisting`, lines 22-26.\n- Control Panel/server-to-server scope and browser-originated encrypted-call exclusion: `# Allowlisting`, line 30.\n- Required role permission and Control Panel configuration procedure: `## Enabling IP and hostname restrictions`, lines 33-48.\n- One-sided-access blocking consequence and sandbox-before-production recommendation: `## Enabling IP and hostname restrictions > IMPORTANT`, lines 51-52.\n- Wildcard and CIDR support: `## Wildcards and CIDR notation`, lines 57-59.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- Role-permission reference: [[source-braintree-control-panel-users-roles-role-permissions]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/general/braintree-ip-addresses-2026-09-16|Braintree IP Addresses and Domains]] - unread navigation-only route linked by this article for the distinct task of allowlisting Braintree infrastructure\n\n## Raw Sources\n\n- [[raw/braintree/articles/risk-and-security/allowlisting-2026-09-16|Braintree Allowlisting]] - complete collected article covering merchant-configured IP/hostname restrictions, affected access paths, permission and configuration routes, rollout warnings, wildcards and CIDR support\n",
+  "quotes": [
+    {
+      "text": "This article covers how to use IP and hostname restrictions to better control what users have access to your Braintree Gateway. For information on allowlisting Braintree IP addresses and domains, [see our developer docs](/braintree/docs/reference/general/braintree-ip-addresses).",
+      "location": "lines 17-18, NOTE under # Allowlisting"
+    },
+    {
+      "text": "If you want to add an extra layer of security to your gateway, you can define which specific IP addresses or hostnames can access your Control Panel or take certain actions via the API. This is called allowlisting. Once enabled, access will be denied unless the user's IP address or hostname is added to the allowlist.",
+      "location": "line 22 under # Allowlisting"
+    },
+    {
+      "text": "The allowlist only applies to Control Panel access and server-to-server calls via the API. Any encrypted calls that come straight from the customer\u2019s browser (e.g. requests for [payment method nonces](/braintree/docs/guides/payment-method-nonces) using our client SDKs) will not be subject to the allowlist and will be passed to Braintree, regardless of the user\u2019s IP address.",
+      "location": "line 30 under # Allowlisting"
+    },
+    {
+      "text": "Users with the Edit IP Restrictions [role permission](/braintree/articles/control-panel/users-roles/role-permissions#permission-edit-ip-restrictions) can follow these steps to allowlist certain IP addresses or hostnames:",
+      "location": "line 35 under ## Enabling IP and hostname restrictions"
+    },
+    {
+      "text": "If you give an IP address or hostname access to only the Control Panel or only the API, it will block access to the other. We always recommend testing in the sandbox before implementing allowlisted IP addresses or hostnames in production.",
+      "location": "lines 51-52, IMPORTANT under ## Enabling IP and hostname restrictions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-allowlisting-control-panel-reciprocal",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-risk-and-security-allowlisting]] - collected 2026-09-16 article for merchant-configured Control Panel and server-to-server API IP/hostname restrictions, including permission and access-scope boundaries, the browser-originated client-call exclusion and the sandbox-before-production warning",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/risk-and-security/allowlisting-2026-09-16.md",
+  "raw_sha256": "ff45c19e66ba209a8de40b5d86fede1895ef05fa1e7f2fce371e2812862a1035",
+  "status": "candidate_ready"
+}
