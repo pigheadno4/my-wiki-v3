@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-wells-ic-transactions-settlement-funding-timeline",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Wells IC Settlement and Funding Timeline\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/wells-ic/transactions/settlement-funding-timeline\"\nraw_files:\n  - \"braintree/articles/wells-ic/transactions/settlement-funding-timeline-2026-09-16.md\"\ntags: [braintree, wells-ic, settlement, funding, disbursement, credit-cards]\n---\n\n## Overview\n\nThis pinned Braintree-hosted Wells IC article describes the path after a transaction has settled for the captured Braintree Direct account context: funds pass through the merchant account to the bank account, with Braintree managing funding. It is a retrieval route for card settlement batches, qualified post-settlement disbursement timing, account-specific exceptions and separate wallet/PayPal handling. It does not establish Wells Flat terms, current universal bank policy or proof that an individual deposit reached a bank account.\n\n## Key takeaways\n\n- For credit cards other than American Express, transactions are divided into settlement batches and sent to the processor several times daily for confirmation. Transactions submitted for settlement after 5pm CT (US) move to the next day's settlements.\n- After processor confirmation of successful settlement, the article says Braintree disburses the funds and that they should appear in the bank account 2 business days after the associated transactions settled. Disbursements occur on weekdays except bank holidays, when they are sent the next business day.\n- Under Braintree's aggregated American Express setup, the final batch is sent at 4PM CT (US); later submissions move to the next day's settlements, and the article gives a 2\u20135-business-day disbursement window. The fixed cutoff is not adjusted for daylight saving time, so the article says it runs at 3PM CT between the first Sunday in November and the second Sunday in March.\n- With the merchant's own American Express account rather than Braintree's aggregated setup, American Express sets the cutoff and funds and deposits the transactions directly. Gateway-only accounts through another merchant-account provider instead have one daily settlement batch with a 6am CDT/CST cutoff.\n- The Control Panel's disbursement date records when money was sent to the bank account; it may not match when funds appear. Apple Pay and Google Pay follow the credit-card disbursement route, while PayPal manages disbursement separately from the Braintree-managed account.\n\n> [!warning] Funding timing is not individual deposit proof\n> Every listed bank timing starts from the article's applicable settlement or disbursement condition and retains the card-brand, account-setup, weekday and bank-holiday qualifications. A disbursement date shows when money was sent, not when or whether a particular deposit appeared. This captured Wells IC route must not be generalized to Wells Flat or current universal bank policy.\n\n## Detail locators\n\n- Post-settlement merchant-account-to-bank-account path, Braintree Direct funding ownership and support route: `# Settlement and Funding Timeline`, line 16.\n- Non-Amex credit-card batching, 5pm CT cutoff and next-day settlement handling: `## Credit cards`, lines 22\u201329.\n- Successful-settlement prerequisite, 2-business-day bank timing and weekday/bank-holiday qualification: `## Credit cards`, lines 29\u201331.\n- Aggregated American Express cutoff, next-day handling and 2\u20135-business-day timing: `### American Express`, line 36.\n- Daylight-saving-time qualification for the aggregated American Express cutoff: `### American Express > NOTE`, lines 39\u201340.\n- Merchant-owned American Express account responsibility: `### American Express`, line 44.\n- Gateway-only account cutoff and uncertainty-support route: `### Special note on gateway-only accounts`, lines 47\u201349.\n- Control Panel disbursement fields and the sent-versus-appeared distinction: `### Disbursement Information`, lines 52\u201364.\n- Apple Pay and Google Pay treatment: `## Apple Pay and Google Pay`, lines 67\u201369.\n- Separate PayPal disbursement route: `## PayPal`, lines 72\u201374.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- Separate general funding route: [[source-braintree-get-started-get-paid]]\n- Separate PayPal funding route: [[source-braintree-payment-methods-paypal-funding-reconciliation]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/wells-ic/transactions/settlement-funding-timeline-2026-09-16|Braintree Wells IC Settlement and Funding Timeline article]] - complete collected page covering Braintree Direct post-settlement funding, card batching and timing qualifications, account-specific exceptions, disbursement-date meaning and separate wallet/PayPal handling\n",
+  "quotes": [
+    {
+      "text": "After a transaction is settled, funds will pass through your merchant account to your bank account. Because you are using Braintree Direct, we manage funding for you. If you have questions about or issues with your funding, [Contact us](/braintree/help/Reconciling).",
+      "location": "line 16 under # Settlement and Funding Timeline"
+    },
+    {
+      "text": "Credit card transactions are divided into settlement batches and sent to the processor several times a day to confirm settlement. Transactions submitted for settlement after 5pm CT (US) will be included in the next day's settlements.",
+      "location": "line 27 under ## Credit cards"
+    },
+    {
+      "text": "Once we receive confirmation from the processor that a transaction has successfully settled, we will disburse the funds to your account. You should see the funds deposited in your bank account 2 business days after the associated transactions have settled.\n\nFunds are disbursed every weekday, excluding bank holidays, in which case they're sent the next business day.",
+      "location": "lines 29-31 under ## Credit cards"
+    },
+    {
+      "text": "American Express transactions are divided into settlement batches separate from other credit card transactions. If you're using our Braintree aggregated American Express setup, the final settlement batch is sent to the processor at 4PM CT (US) each day; any transactions submitted for settlement after this time will be included in the next day's settlements. You should see the funds from these transactions disbursed into your account within 2-5 business days.",
+      "location": "line 36 under ### American Express"
+    },
+    {
+      "text": "Keep in mind, the disbursement date represents the date that the money was sent to your bank account and won\u2019t necessarily align with the date that the funds appear in your bank account. Learn how to [reconcile these deposits](/braintree/articles/wells-ic/statements-reconciliation).",
+      "location": "line 64 under ### Disbursement Information"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-wells-ic-settlement-funding-route",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-wells-ic-transactions-settlement-funding-timeline]] - 2026-09-16 Braintree-hosted Wells IC snapshot for Braintree Direct card settlement batches and qualified post-settlement disbursement timing, including Amex, gateway-only, sent-versus-arrived and separate PayPal boundaries; not Wells Flat/current universal policy or proof of an individual deposit",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured Wells IC snapshot only; not Wells Flat or current universal bank policy.",
+          "Funding timelines and a disbursement date do not prove that an individual deposit arrived."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/wells-ic/transactions/settlement-funding-timeline-2026-09-16.md",
+  "raw_sha256": "828b6776f08e76d360588121add17c794c7328b305d1ff2be6ebeb89eaec6687",
+  "status": "candidate_ready"
+}

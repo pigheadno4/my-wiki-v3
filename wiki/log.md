@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Braintree website C35
+
+- Twenty Wells IC/Wells Flat sources approved through ten rolling child slots; initial first pass 17/20, twenty full initial reviews plus five targeted reviews, no repeated full review. Final queries 40/40 after preserving a Marketplace/pricing rounding contradiction in both sources and the concept; original failure and targeted recheck retained. Catalog 372 (355 website + 17 GitHub); seven existing concepts updated, 28 typed pages plus three amended-page rechecks passed. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-35/`. Raw unchanged; no commit or push.
+
 ## [2026-10-04] ingest | Stripe React Native `0.80.0`
 
 - Delta/focused reading: private-preview consent with original acceptance time and inline Checkout rendering; modal/confirmation gaps retained. Details [[stripe-log]] and [[changelog-github-stripe-react-native]]. Older knowledge/count preserved. No native build/test, commit or push. Next: scoped commit review of the completed 0.76-0.80 loop.

@@ -22,6 +22,27 @@ Operations history: [[braintree-log]]
 
 #### Processor-specific account articles
 
+- [[source-braintree-articles-wells-flat-chargebacks-retrievals-prearbs]] - Braintree Wells Flat Chargebacks, Retrievals, and Pre-Arbs (Wells Flat)
+- [[source-braintree-articles-wells-ic-chargebacks-retrievals-prearbs]] - Braintree Wells IC Chargebacks, Retrievals, and Pre-Arbs (Wells IC)
+- [[source-braintree-articles-wells-ic-statements-reconciliation]] - Braintree Wells IC+ Statements and Reconciliation (Wells IC)
+- [[source-braintree-articles-wells-flat-statements-reconciliation]] - Braintree Wells Flat Statements and Reconciliation (Wells Flat)
+- [[source-braintree-articles-wells-flat-braintree-marketplace-statements-reconciliation]] - Braintree Marketplace Statements and Reconciliation (Wells Flat)
+- [[source-braintree-articles-wells-ic-braintree-marketplace-statements-reconciliation]] - IC+ Braintree Marketplace Statements and Reconciliation (Wells IC)
+- [[source-braintree-articles-wells-ic-transactions-descriptors]] - Braintree Wells IC Transaction Descriptors (Wells IC)
+- [[source-braintree-articles-wells-flat-transactions-descriptors]] - Braintree Wells Flat Transaction Descriptors (Wells Flat)
+- [[source-braintree-articles-wells-flat-transactions-accepted-payment-methods]] - Braintree Wells Flat Accepted Payment Methods (Wells Flat)
+- [[source-braintree-articles-wells-ic-transactions-accepted-payment-methods]] - Braintree Wells IC Accepted Payment Methods (Wells IC)
+- [[source-braintree-articles-wells-ic-pricing-fees]] - Braintree Wells IC+ Pricing and Fees (Wells IC)
+- [[source-braintree-articles-wells-flat-pricing-fees]] - Braintree Wells Flat Pricing and Fees (Wells Flat)
+- [[source-braintree-articles-wells-flat-change-your-bank-account]] - Braintree Wells Flat Change Your Bank Account (Wells Flat)
+- [[source-braintree-articles-wells-ic-change-your-bank-account]] - Braintree Wells IC Change Your Bank Account (Wells IC)
+- [[source-braintree-articles-wells-flat-transactions-settlement-funding-timeline]] - Braintree Wells Flat Settlement and Funding Timeline (Wells Flat)
+- [[source-braintree-articles-wells-ic-transactions-settlement-funding-timeline]] - Braintree Wells IC Settlement and Funding Timeline (Wells IC)
+- [[source-braintree-articles-wells-ic-transactions-level-2-and-3-processing]] - Braintree Wells IC Level 2 and 3 Processing (Wells IC)
+- [[source-braintree-articles-wells-flat-pre-dispute-programs]] - Braintree Wells Flat Pre-dispute Programs (Wells Flat)
+- [[source-braintree-articles-wells-flat-overview]] - Braintree Wells Flat Overview (Wells Flat)
+- [[source-braintree-articles-wells-ic-overview]] - Braintree Wells IC+ Overview (Wells IC)
+
 - [[source-braintree-articles-adyen-reconciliation]] - Braintree Adyen Reconciliation
 - [[source-braintree-articles-chase-transactions-descriptors]] - Braintree Chase Transaction Descriptors
 - [[source-braintree-articles-adyen-transactions-descriptors]] - Braintree Adyen Transaction Descriptors
@@ -504,6 +525,7 @@ Operations history: [[braintree-log]]
 ## Cross-Cutting Concepts
 
 - [[payment-reconciliation-reporting]] - cross-provider reporting and reconciliation hub, including Braintree-owned Adyen Settlement Details Report and Chase Paymentech account-specific routes
+- [[disputes]] - cross-provider dispute lifecycle hub, including Braintree-owned Wells IC/Wells Flat retrieval, chargeback, pre-arbitration and pre-dispute routes
 
 - [[card-brand-detection]] - generic brand inference, ambiguity, UI metadata, and validation/acceptance boundary
 - [[payment-input-formatting]] - generic pattern, paste, caret, browser-compatibility, and validation boundaries

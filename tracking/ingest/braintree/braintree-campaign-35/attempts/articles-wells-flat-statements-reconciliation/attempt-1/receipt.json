@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-wells-flat-statements-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Wells Flat Statements and Reconciliation\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/wells-flat/statements-reconciliation\"\nraw_files:\n  - \"braintree/articles/wells-flat/statements-reconciliation-2026-09-16.md\"\ntags: [braintree, wells-flat, statements, reconciliation, disbursements, reporting]\n---\n\n## Overview\n\nThis collected [[braintree]] Wells Flat article describes Braintree statements and statement-based reconciliation: statement contents and account-specific fee sections, matching statement disbursement details to bank deposits, supporting Control Panel reports, and a qualified multi-currency path. It is a Braintree-hosted snapshot for the captured Wells Flat scope, not independent current bank policy, current account or regional eligibility, or proof that a particular deposit arrived.\n\n## Key takeaways\n\n- A Braintree statement is described as a snapshot of settled transactions, Braintree processing fees, and deposits sent to the merchant account. Statements are accessed from **Reports** \u2192 **Statements** in the Control Panel; the user needs the **View Statements** role permission.\n- The documented primary reconciliation method compares the statement's second-page **Disbursement Details** with bank-account deposits. The article explicitly says not to use the Dashboard or Settlement Batch Summary for reconciliation.\n- The statement's **Pricing Schedule** identifies the fee structure for the merchant account, including discount, cross-border, chargeback, and per-transaction fee rates. The **Braintree Fee Details** treatment differs between Braintree's aggregated Amex account and a merchant's own Amex account; use the raw locators rather than transferring these rules to IC+ pricing or another account configuration.\n- **Total Disbursed** is account-dependent: with Braintree's aggregated Amex account it includes the listed card brands including Amex, while a merchant with its own Amex account receives Amex disbursements directly from Amex and those funds are excluded. The disbursement date is the date funds were sent, not their availability date; the snapshot says they should appear on the bank statement within 1\u20132 business days.\n- The Control Panel **Disbursement Summary** can show a day's transactions or gross sales and credits by card type, but it excludes transaction fees and omits Amex transactions for merchants using their own Amex account. Access requires the **Create, Run, and Download Reports** role permission.\n- For merchants that have multi-currency merchant accounts, the article says transactions are converted to USD without an additional conversion fee and deposited in USD. It says each exchange rate is determined at authorization, applied at disbursement, and can vary within one disbursement; this is captured Wells Flat documentation, not a general regional or bank guarantee.\n\n> [!warning] Scope and reconciliation boundaries\n> Braintree Marketplace statements are expressly different and must use the separate Marketplace guide; do not transfer this page's statement or reconciliation treatment to Marketplace. The page also does not establish IC+ reporting rules. A statement date or reported amount is reconciliation evidence, not independent proof of bank availability or a completed individual deposit.\n\n## Detail locators\n\n- Marketplace separation: note before `## Statements`, raw lines 17\u201318.\n- Statement purpose, Control Panel access path, and **View Statements** permission: `## Statements`, raw lines 23\u201336.\n- Statement-section inventory and payment-method-dependent U.S. bank account and Venmo breakdowns: `## Statements`, raw lines 40\u201356.\n- Disbursement, processing, fee, aggregated-Amex, own-Amex, pricing-schedule, and promotion sections: `### Summary page`, raw lines 61\u2013105.\n- Primary reconciliation comparison and the Dashboard/Settlement Batch Summary prohibition: `## Reconciliation`, raw lines 108\u2013116.\n- Disbursement-date meaning, bank-statement timing statement, and aggregated-versus-own-Amex treatment: `### Disbursement Details`, raw lines 121\u2013133.\n- Disbursement Summary purpose, omissions, permission, run steps, and CSV/transaction routes: `### Disbursement Summary report`, raw lines 136\u2013155.\n- Dispute-report and transaction-level-fee-report routes: `### Dispute Report` and `### Transaction-level reconciliation`, raw lines 160\u2013169.\n- Multi-currency merchant-account prerequisite, USD conversion, exchange-rate timing and CSV lookup: `## Multi-currency reconciliation`, raw lines 172\u2013192.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[payment-reconciliation-reporting]]\n- Supporting concept: [[braintree-control-panel]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/wells-flat/statements-reconciliation-2026-09-16|Braintree Wells Flat statements and reconciliation article]] - complete collected snapshot covering statements, account- and pricing-qualified fee sections, disbursement matching, report limitations, permissions, and multi-currency reconciliation\n",
+  "quotes": [
+    {
+      "text": "If you are using [Braintree Marketplace](/braintree/articles/guides/braintree-marketplace/overview), your statements will look different. See the [Braintree Marketplace statements and reconciliation guide](/braintree/articles/wells-flat/braintree-marketplace-statements-reconciliation) to learn more.",
+      "location": "note before ## Statements, raw line 18"
+    },
+    {
+      "text": "Your Braintree statement is a snapshot of your settled transactions, Braintree processing fees, and deposits sent to your account. You can use it for reconciliation purposes or to evaluate your transaction activity.",
+      "location": "## Statements, raw line 25"
+    },
+    {
+      "text": "The Pricing Schedule identifies the [fee structure](/braintree/articles/wells-flat/pricing-fees) for your merchant account, which includes the discount, cross border fee, chargeback fee, and per transaction fee rates. It also displays the [chargeback fee rate](/braintree/articles/wells-flat/pricing-fees#chargebacks,-retrievals,-and-pre-arbitrations).",
+      "location": "### Summary page > #### Pricing Schedule, raw line 100"
+    },
+    {
+      "text": "While the [Dashboard](/braintree/articles/control-panel/overview#dashboard) and the [Settlement Batch Summary](/braintree/articles/control-panel/reporting/settlement-batch-summary) can be helpful tools for quickly assessing processing activity in your account, they should not be used for reconciliation purposes.",
+      "location": "## Reconciliation > IMPORTANT, raw lines 115\u2013116"
+    },
+    {
+      "text": "During the disbursement process, we will convert all of your transactions to USD without charging any additional conversion fees. The funds will be deposited into your bank account in USD, which will be reflected on your Braintree statement. The reconciliation process doesn\u2019t differ from what we have outlined above: you can compare the Disbursement Details\u2014which can be found on the second page of your Braintree statement\u2014to the deposits you see in your bank account.",
+      "location": "## Multi-currency reconciliation, raw line 180"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-wells-flat-statements-reconciliation-source-route",
+        "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-wells-flat-statements-reconciliation]] - Braintree-hosted Wells Flat statement and reconciliation route for disbursement matching, merchant-account fee treatment, report permissions and limitations, and qualified multi-currency-to-USD behavior; Marketplace is separate, and the snapshot is not independent current bank policy or proof of deposit\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route scoped to the captured Wells Flat Braintree article; do not transfer its rules to IC+ pricing or Braintree Marketplace.",
+          "Do not present the snapshot as independent current bank policy, current regional or account eligibility, or proof that an individual deposit arrived."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/wells-flat/statements-reconciliation-2026-09-16.md",
+  "raw_sha256": "82342e3f1b84f5f82936873db11a581d637133bae1996587829783d618e863e2",
+  "status": "candidate_ready"
+}

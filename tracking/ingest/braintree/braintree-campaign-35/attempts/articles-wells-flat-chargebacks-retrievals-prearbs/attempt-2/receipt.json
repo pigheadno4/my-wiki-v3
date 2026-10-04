@@ -1,0 +1,54 @@
+{
+  "job_id": "articles-wells-flat-chargebacks-retrievals-prearbs",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Wells Flat Chargebacks, Retrievals, and Pre-Arbs\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/wells-flat/chargebacks-retrievals-prearbs\"\nraw_files:\n  - \"braintree/articles/wells-flat/chargebacks-retrievals-prearbs-2026-09-16.md\"\ntags: [braintree, wells-flat, disputes, chargebacks, retrievals, pre-arbitration]\n---\n\n## Overview\n\nThis captured Braintree Wells Flat article describes the credit-card dispute lifecycle, notifications, response routes, deadlines, statuses, and reporting for its documented account context. It is a retrieval entry for the collected Braintree page, not independent current Wells policy, not a universal Braintree pricing schedule, and not the separate PayPal-disputes workflow.\n\n## Key takeaways\n\n- The article divides the credit-card dispute lifecycle into retrieval, chargeback, pre-arbitration, and arbitration. It says Braintree can manage every stage except arbitration. A retrieval is optional and does not remove funds or incur a retrieval-processing fee in this documented context; a chargeback immediately debits the disputed amount and assesses a non-refundable chargeback fee, while pre-arbitration is a further issuer challenge and also carries a non-refundable chargeback fee regardless of outcome.\n- Arbitration is outside Braintree's end-to-end dispute support: Braintree does not create an Arbitration dispute, so it is absent from the Control Panel, Disputes APIs, and dispute reports, and merchants cannot submit additional evidence for it. The losing party forfeits the disputed amount and can incur substantial card-network fees passed through to merchants. The article separately says merchants on interchange pricing see arbitration pass-through fees in the Pass-through Fee Report; that interchange-pricing reporting statement must not be applied to flat-rate accounts.\n- Dispute notifications can be delivered by email, and webhooks can notify on Open, Won, or Lost status updates for chargebacks, retrievals, and pre-arbitrations. The documented Control Panel procedures are not the only management route: the article expressly states that disputes can also be managed by API.\n- Every chargeback, retrieval, and pre-arbitration has a reply-by date. At midnight on that date, using the account time zone established during application, the merchant loses the opportunity to submit evidence; expiration sends an Accept response on the merchant's behalf and removes the ability to dispute the chargeback. The captured article separately says Visa and Mastercard have deprecated the retrieval stage and that US issuers may still create Visa or Mastercard retrievals, but merchants do not need to respond when that happens. This qualification is snapshot article evidence, not independent current card-network policy.\n- The snapshot states that, as of August 27, 2025, Braintree auto-accepts pre-arbitrations under USD 1,000 for US flat-rate merchants so arbitration fees are not passed to them; those merchants may represent pre-arbitrations above USD 1,000 and may configure a higher auto-accept threshold in the Control Panel. For pre-arbitrations that are not auto-accepted, the captured article says a merchant should dispute only with additional evidence not previously provided: responses are unlikely to succeed without new and compelling evidence, and a merchant with only the same documentation is generally advised to accept. This is captured article guidance rather than a universal or current card-network rule. The auto-accept policy is a dated, region-, pricing-, and account-qualified statement from the captured Wells Flat page, not proof of current or broader Wells policy.\n\n## Evidence boundaries\n\n> [!warning] Captured account and pricing context\n> Keep all lifecycle, fee, reporting, and auto-accept statements scoped to this captured Braintree Wells Flat article. In particular, do not transfer the article's interchange-pricing Pass-through Fee Report statement to flat-rate merchants, or its dated US flat-rate pre-arbitration policy to interchange-pricing, non-US, or other processor/account contexts. Obtain current merchant-specific fees and policy from the applicable agreement or account channel.\n\n> [!warning] Arbitration and response cutoff\n> Arbitration is not represented as a Braintree-managed dispute and does not allow additional merchant evidence in the documented flow. Before arbitration, missing the reply-by cutoff results in acceptance on the merchant's behalf and loss of the opportunity to dispute the chargeback.\n\n## Detail locators\n\n- Credit-card rather than PayPal-dispute scope: opening note, lines 17-18.\n- Four-stage lifecycle; retrieval meaning and fee effects; Visa/Mastercard retrieval deprecation and US-issuer no-response qualification; chargeback and pre-arbitration meanings and fee effects: `## Dispute Process`, lines 23-44.\n- Arbitration's Control Panel/API/report absence, evidence prohibition, financial effect, pricing-qualified reporting, snapshot network-fee figures, and Braintree control boundary: `## Dispute Process`, lines 48-58.\n- Email-recipient permissions and webhook notification route: `## Dispute Notifications`, lines 63-84.\n- Current and legacy Control Panel procedures: `## Managing in the Control Panel`, lines 87-114.\n- Reply-by cutoff, account-time-zone basis, expiration acceptance, and explicit API-management route: `## Managing in the Control Panel`, lines 116-129.\n- Chargeback acceptance, evidence response, and snapshot USD 15 fee statements: `## Chargebacks`, lines 134-155.\n- Retrieval meaning and response guidance: `## Retrievals`, lines 158-164.\n- Pre-arbitration meaning, new-and-compelling-evidence success condition, same-documentation acceptance guidance, non-auto-accepted additional-evidence condition, dated US flat-rate auto-accept policy, configurable threshold, and pricing rationale: `## Pre-arbitrations`, lines 167-200.\n- Status definitions: `## Statuses`, lines 203-218.\n- Dispute Report and Disputes Financial Impact Report purposes: `## Dispute Reports`, lines 221-238.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n- Administration route: [[braintree-control-panel]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/wells-flat/chargebacks-retrievals-prearbs-2026-09-16|Braintree Wells Flat Chargebacks, Retrievals, and Pre-Arbs]] - fully read captured article covering the credit-card dispute lifecycle, notifications, Control Panel and API management, deadlines, fees, dated US flat-rate pre-arbitration policy, statuses, and reports\n",
+  "quotes": [
+    {
+      "text": "There are four stages of the dispute lifecycle: retrieval, chargeback, pre-arbitration, and arbitration. You can manage all stages of the lifecycle except arbitration with Braintree.",
+      "location": "## Dispute Process, line 25"
+    },
+    {
+      "text": "When a case is escalated to card networks, Braintree does not create a dispute for Arbitration. Therefore, Arbitrations are not found in the Braintree Control Panel, Disputes APIs, or Disputes reports. Please note that merchants can't submit additional evidence for Arbitrations.",
+      "location": "## Dispute Process, line 48"
+    },
+    {
+      "text": "Every chargeback, retrieval, or pre-arb has a reply-by date listed in the Control Panel. At 12am on this date, you will lose the opportunity to submit evidence.",
+      "location": "## Managing in the Control Panel, line 117"
+    },
+    {
+      "text": "Disputes can now be managed via the API as well. [Learn more.](/braintree/docs/guides/disputes/overview)",
+      "location": "## Managing in the Control Panel, line 129"
+    },
+    {
+      "text": "As of **August 27th, 2025**, Braintree will auto accept pre-arbitrations under $1,000 for flat-rate merchants in the US, ensuring that arbitration fees are not passed on to them. Flat-rate merchants will have the ability to represent pre-arbitrations exceeding $1,000.",
+      "location": "## Pre-arbitrations, line 173"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "concept-disputes-wells-flat-source-route",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-wells-flat-chargebacks-retrievals-prearbs]] - captured 2026-09-16 Braintree Wells Flat credit-card dispute article covering retrieval, chargeback, pre-arbitration and arbitration boundaries, response cutoff, Control Panel/API routes, and a dated US flat-rate pre-arbitration auto-accept policy; not independent current Wells or universal Braintree policy",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep pricing, account, processor, and region qualifications attached: do not transfer interchange-pricing reporting facts to flat-rate merchants or the dated US flat-rate auto-accept policy to other pricing, processor, or regional contexts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/wells-flat/chargebacks-retrievals-prearbs-2026-09-16.md",
+  "raw_sha256": "3d9940e3cff58885eb002fe311c420b5b4704c418b2f2b685da5fb34e43685ad",
+  "status": "candidate_ready"
+}

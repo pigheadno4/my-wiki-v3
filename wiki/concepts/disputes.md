@@ -328,6 +328,11 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 - [[stripe]] — Stripe disputes handled via Dashboard, webhooks, and API
 
 ## Sources
+
+- [[source-braintree-articles-wells-flat-pre-dispute-programs]] - 2026-09-16 Braintree Wells Flat-route article describing US-supported Visa RDR, direct Visa enrollment, merchant-rule outcomes, liability acceptance and qualified Visa dispute-ratio treatment; this is captured Braintree documentation, not independent current Visa policy or universal account eligibility.
+
+- [[source-braintree-articles-wells-flat-chargebacks-retrievals-prearbs]] - captured 2026-09-16 Braintree Wells Flat credit-card dispute article covering retrieval, chargeback, pre-arbitration and arbitration boundaries, response cutoff, Control Panel/API routes, and a dated US flat-rate pre-arbitration auto-accept policy; not independent current Wells or universal Braintree policy
+- [[source-braintree-articles-wells-ic-chargebacks-retrievals-prearbs]] - 2026-09-16 Braintree Wells IC webpage snapshot routing to the credit-card retrieval, chargeback, pre-arbitration and arbitration lifecycle, account-qualified notification and deadline handling, Wells IC fee/reporting details, and the boundary that arbitration is not managed end to end or represented as a Braintree dispute; not current independent bank policy or transferable Wells Flat pricing
 - [[source-braintree-articles-risk-and-security-overview]] - 2026-09-16 Braintree umbrella navigation page identifying chargebacks as a standard online-payment business concern and routing merchants to the dedicated handling and minimization guide
 - [[source-braintree-payment-methods-paypal-disputes]] - PayPal-specific Braintree Control Panel dispute route covering linked-account setup, Retrieval/Claim/Chargeback roles, reply-by cutoff, fee boundary, customer-resolution-first guidance and status interpretation; its Control Panel labels are not PayPal Disputes API lifecycle-stage enum authority, which remains with the existing PayPal API evidence on this concept
 - [[source-braintree-payment-methods-unionpay]] - Braintree guide stating a UnionPay standard chargeback fee of USD 25 or settlement-currency equivalent, non-refundable regardless of outcome and inclusive of pre-arbitrations

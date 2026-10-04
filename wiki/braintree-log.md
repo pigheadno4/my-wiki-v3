@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C35
+
+- Twenty Wells IC/Wells Flat website raws fully read and independently reviewed through ten shared rolling slots. Catalog: 372 sources (355 website + 17 GitHub); seven existing concepts updated, no new concepts. Raw unchanged.
+- Initial first pass 17/20; twenty full initial reviews plus five targeted reviews, no repeated full review. Three initial corrections preserved dispute qualifications, currency reciprocal navigation and tax-exempt-status-field meaning. One later Marketplace handoff was rejected for missing suggestion quote indexes and corrected within the three-attempt limit.
+- Final queries 40/40. Original Group B failure retained: Marketplace round-down instructions conflict with linked pricing nearest-unit rounding. Both sources now link the fully read counterpart evidence, and [[braintree-marketplace]] preserves the unresolved warning. No invented current-account policy; targeted promotion/route recheck closes the affected queries.
+- Candidate equality, raw hashes, unique primary ownership, approved concept updates, reciprocal/index routes, exhaustive catalogs/counts and existing typed validation passed. Timing and evidence: `tracking/ingest/braintree/braintree-campaign-35/`. No collection, GitHub ingestion, code/rule/schema change, commit or push.
+
 ## [2026-10-04] ingest | Braintree website C34
 
 - Twenty pinned website raws: seven Chase processor articles, seven Adyen processor articles and six account/refund/security guides, fully read and independently reviewed using ten shared rolling child slots. Catalog: 352 sources (335 website + 17 GitHub). New [[braintree-at-most-once-processing]] and [[braintree-account-updater]] retrieval hubs; processor articles remain Braintree-owned evidence, separate from Orchestration and independent provider authority.
