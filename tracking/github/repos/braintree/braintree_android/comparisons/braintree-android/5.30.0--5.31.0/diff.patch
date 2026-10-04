@@ -1,0 +1,162 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5a46aa0..f3b9b2f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,12 @@
+ # Braintree Android SDK Release Notes
+ 
++## 5.31.0 (2026-08-03)
++
++* PayPal
++    * Collect device information to improve PayPal app switch eligibility when it's enabled
++* BraintreeCore
++    * Update Browser Switch version to 3.6.0
++
+ ## 5.30.0 (2026-07-21)
+ 
+ * General
+diff --git a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalInternalClient.kt b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalInternalClient.kt
+index 8e7994a..b498bd5 100644
+--- a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalInternalClient.kt
++++ b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalInternalClient.kt
+@@ -1,7 +1,9 @@
+ package com.braintreepayments.api.paypal
+ 
++import android.app.ActivityManager
+ import android.content.Context
+ import android.net.Uri
++import android.os.Build
+ import com.braintreepayments.api.core.AnalyticsParamRepository
+ import com.braintreepayments.api.core.ApiClient
+ import com.braintreepayments.api.core.AppSwitchRepository
+@@ -17,6 +19,7 @@ import com.braintreepayments.api.core.usecase.GetReturnLinkUseCase
+ import com.braintreepayments.api.datacollector.DataCollector
+ import com.braintreepayments.api.datacollector.DataCollectorInternalRequest
+ import org.json.JSONException
++import org.json.JSONObject
+ 
+ internal class PayPalInternalClient(
+     private val braintreeClient: BraintreeClient,
+@@ -69,7 +72,7 @@ internal class PayPalInternalClient(
+             null
+         }
+ 
+-        val requestBody = payPalRequest.createRequestBody(
++        val baseRequestBody = payPalRequest.createRequestBody(
+             configuration = configuration,
+             authorization = merchantRepository.authorization,
+             successUrl = successUrl,
+@@ -77,6 +80,12 @@ internal class PayPalInternalClient(
+             appLink = appLinkParam
+         ) ?: throw JSONException("Error creating requestBody")
+ 
++        val requestBody = if (payPalRequest.enablePayPalAppSwitch && appLinkParam != null) {
++            appendDeviceInfo(context, baseRequestBody)
++        } else {
++            baseRequestBody
++        }
++
+         return sendPost(
+             url = url,
+             requestBody = requestBody,
+@@ -187,6 +196,21 @@ internal class PayPalInternalClient(
+             .build()
+     }
+ 
++    private fun appendDeviceInfo(context: Context, requestBody: String): String {
++        val activityManager =
++            context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager ?: return requestBody
++        val memInfo = ActivityManager.MemoryInfo().also { activityManager.getMemoryInfo(it) }
++        return JSONObject(requestBody).apply {
++            val appSwitchContext = optJSONObject(PayPalRequest.APP_SWITCH_CONTEXT_KEY)
++                ?: JSONObject().also { put(PayPalRequest.APP_SWITCH_CONTEXT_KEY, it) }
++            appSwitchContext.put(PayPalRequest.DEVICE_INFO_KEY, JSONObject().apply {
++                put(PayPalRequest.DEVICE_MODEL_KEY, Build.MODEL)
++                put(PayPalRequest.MEMORY_AVAILABLE_MB_KEY, (memInfo.availMem / BYTES_PER_MB).toInt())
++                put(PayPalRequest.MEMORY_TOTAL_MB_KEY, (memInfo.totalMem / BYTES_PER_MB).toInt())
++            })
++        }.toString()
++    }
++
+     private fun extractContextId(redirectUri: Uri): String? {
+         return redirectUri.getQueryParameter("ba_token")
+             ?: redirectUri.getQueryParameter("token")
+@@ -197,5 +221,6 @@ internal class PayPalInternalClient(
+     companion object {
+         private const val CREATE_SINGLE_PAYMENT_ENDPOINT = "paypal_hermes/create_payment_resource"
+         private const val SETUP_BILLING_AGREEMENT_ENDPOINT = "paypal_hermes/setup_billing_agreement"
++        private const val BYTES_PER_MB = 1024L * 1024L
+     }
+ }
+diff --git a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalRequest.kt b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalRequest.kt
+index bf95660..c9eb9d6 100644
+--- a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalRequest.kt
++++ b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalRequest.kt
+@@ -143,9 +143,10 @@ abstract class PayPalRequest internal constructor(
+         internal const val LINE_ITEMS_KEY: String = "line_items"
+         internal const val USER_ACTION_KEY: String = "user_action"
+         internal const val ENABLE_APP_SWITCH_KEY: String = "launch_paypal_app"
++        internal const val APP_SWITCH_CONTEXT_KEY: String = "app_switch_context"
++        internal const val MERCHANT_APP_RETURN_URL_KEY: String = "merchant_app_return_url"
+         internal const val OS_VERSION_KEY: String = "os_version"
+         internal const val OS_TYPE_KEY: String = "os_type"
+-        internal const val MERCHANT_APP_RETURN_URL_KEY: String = "merchant_app_return_url"
+         internal const val PLAN_TYPE_KEY: String = "plan_type"
+         internal const val PLAN_METADATA_KEY: String = "plan_metadata"
+         internal const val PAYER_PHONE_KEY: String = "payer_phone"
+@@ -155,5 +156,9 @@ abstract class PayPalRequest internal constructor(
+         internal const val CONTACT_PREFERENCE_KEY: String = "contact_preference"
+         internal const val SHOPPER_SESSION_ID_KEY: String = "shopper_session_id"
+         internal const val AMOUNT_BREAKDOWN_KEY: String = "amount_breakdown"
++        internal const val DEVICE_INFO_KEY: String = "device_info"
++        internal const val DEVICE_MODEL_KEY: String = "model"
++        internal const val MEMORY_AVAILABLE_MB_KEY: String = "memory_available_mb"
++        internal const val MEMORY_TOTAL_MB_KEY: String = "memory_total_mb"
+     }
+ }
+diff --git a/README.md b/README.md
+index 72d9e7e..cb0b11c 100644
+--- a/README.md
++++ b/README.md
+@@ -24,7 +24,7 @@ For an integration offering card payments, add the following dependency in your
+ 
+ ```groovy
+ dependencies {
+-    implementation 'com.braintreepayments.api:card:5.30.0'
++    implementation 'com.braintreepayments.api:card:5.31.0'
+ }
+ ```
+ 
+diff --git a/build.gradle b/build.gradle
+index eb2ab22..75ae438 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -47,13 +47,13 @@ allprojects {
+     }
+ }
+ 
+-version '5.30.0'
++version '5.31.0'
+ group 'com.braintreepayments'
+ ext {
+     compileSdkVersion = 37
+     minSdkVersion = 23
+     minSdkVersionPayPalMessaging = 23
+-    versionCode = 226
++    versionCode = 227
+     targetSdkVersion = 37
+     versionName = version
+ }
+diff --git a/v5_MIGRATION_GUIDE.md b/v5_MIGRATION_GUIDE.md
+index 4bbbe59..22e331c 100644
+--- a/v5_MIGRATION_GUIDE.md
++++ b/v5_MIGRATION_GUIDE.md
+@@ -40,7 +40,7 @@ are required.
+ 
+ ```diff
+ - implementation 'com.braintreepayments.api:card:4.x.x'
+-+ implementation 'com.braintreepayments.api:card:5.30.0'
+++ implementation 'com.braintreepayments.api:card:5.31.0'
+ ```
+ 
+ ## Braintree Client

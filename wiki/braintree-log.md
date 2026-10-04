@@ -6,6 +6,11 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | `braintree-android@5.33.0`
+
+- Approved serial delta from 5.32.0 at SHA 04b82bbb1cb49e3a5ad44bac920704ba03c99317: Compose CardFields/controller, nonce/server handoff, shared input validation and presentation. Documented merchant-owned validation/submission gating, saveable number/expiration/CVV state, no submit clearing and default ViewModel ownership caveats; no security/runtime guarantees.
+- Updated [[braintree-android-sdk]], [[source-github-braintree-android]], [[changelog-github-braintree-android]], company and index. No new source pages; counts unchanged. Focused reading approved for this release only; 398 current and 390 prior file hashes verified, 382 unchanged files. Older history and dependency gaps preserved. No Android build/UI/payment test, collection/policy change, commit or push.
+
 ## [2026-10-04] ingest | Braintree website C32
 
 - Twenty pinned Extend OAuth and Forward API website guides fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 312 sources (295 website + 17 GitHub). New retrieval hubs: [[braintree-extend-oauth]] and [[braintree-forward-api]]; existing Auth/platform/SDK source ownership preserved.
@@ -13,6 +18,15 @@ tags: [braintree, github-repository, operations]
 - Five fixed query groups passed 40/40. Raw immutable; destination-provider guides remain Braintree-hosted evidence, not current Adyen/Stripe/Hyperwallet/Worldpay authority or execution proof. Snapshot beta, production eligibility, security and platform/version boundaries remain visible.
 - Coordinator aggregated company/index/log/count once, repaired the stale website-count prose and checked reciprocal evidence/catalog routes. Reports and close evidence: `tracking/ingest/braintree/braintree-campaign-32/`. No collection, GitHub ingestion, code/rule/schema/validator change, commit or push.
 
+## [2026-10-04] ingest | `braintree-android@5.32.0`
+
+- Approved serial delta from 5.31.0 at SHA 2695a481d8cd56a3d6db379297e6682663d2c94e: optional campaign IDs, beta Shopper Insights errors/expiry, conditional Venmo commonId fallback and registry/lifecycle Google Pay constructor. Documented caller responsibilities and documentation-only scheme changes; older history and Browser Switch discrepancy preserved.
+- Updated [[braintree-android-sdk]], [[source-github-braintree-android]], [[changelog-github-braintree-android]], company and index. No new source pages; source count unchanged. Focused reading approved for 5.32.0 only; 390 current and 388 prior file hashes verified, 367 unchanged files. No build/payment test, commit or push. 5.33.0 remains awaiting approval.
+
+## [2026-10-04] ingest | `braintree-android@5.31.0`
+
+- Approved serial delta from 5.30.0 at SHA 438d33ac42c92ca7489c3fec3b45d088a75a8361: automatic PayPal app-switch device context under installed-app/resolution and app-link gates; nonce/server flow unchanged. Preserved Browser Switch 3.6.0 release-note versus 3.5.1 dependency-document mismatch and privacy/runtime limits.
+- Updated [[braintree-android-sdk]], [[source-github-braintree-android]], [[changelog-github-braintree-android]], company and index; historical baseline preserved. Source count unchanged: 292 (275 website + 17 GitHub). Focused reading approved; both 388-file snapshot hashes verified. No build/payment test, commit or push. 5.32.0/5.33.0 remain awaiting approval.
 
 ## [2026-10-04] ingest | Braintree website C31
 

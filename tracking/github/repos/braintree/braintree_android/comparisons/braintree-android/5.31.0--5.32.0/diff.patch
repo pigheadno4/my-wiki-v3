@@ -1,0 +1,607 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f3b9b2f..180aeae 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,18 @@
+ # Braintree Android SDK Release Notes
+ 
++## 5.32.0 (2026-08-27)
++
++* GooglePay
++  * Add Compose constructor for GooglePay
++* PayPal
++    * Add `PayPalCheckoutRequest.campaigns` to associate campaigns with a checkout order
++* ShopperInsights
++    * Add `CustomerSessionRequest.payPalCampaigns` to associate campaigns with a customer session
++    * Fix response handling bug that buries customer session create and update errors
++    * Add optional `CustomerRecommendations.expiresAt` indicating when returned recommendations should be treated as stale
++* Venmo
++    * Fix `VenmoAccountNonce.externalId` returning empty after vaulting a Venmo account with a client token
++
+ ## 5.31.0 (2026-08-03)
+ 
+ * PayPal
+diff --git a/GooglePay/src/main/java/com/braintreepayments/api/googlepay/GooglePayLauncher.kt b/GooglePay/src/main/java/com/braintreepayments/api/googlepay/GooglePayLauncher.kt
+index 32e5f33..d0f457b 100644
+--- a/GooglePay/src/main/java/com/braintreepayments/api/googlepay/GooglePayLauncher.kt
++++ b/GooglePay/src/main/java/com/braintreepayments/api/googlepay/GooglePayLauncher.kt
+@@ -78,6 +78,24 @@ class GooglePayLauncher internal constructor(
+         callback: GooglePayLauncherCallback
+     ) : this(activity.activityResultRegistry, activity, activity, callback = callback)
+ 
++    /**
++     * Used to launch the Google Pay payment sheet from a composable, or anywhere else a Fragment
++     * or ComponentActivity reference is not available. This class must be instantiated before the
++     * [lifecycleOwner] reaches the CREATED state.
++     *
++     * @param registry the [ActivityResultRegistry] to use for launching the Google Pay payment sheet
++     * @param lifecycleOwner the [LifecycleOwner] used to control when the launcher is registered
++     * @param context an Android Context
++     * @param callback a [GooglePayLauncherCallback] to receive the result of the Google Pay
++     * payment flow
++     */
++    constructor(
++        registry: ActivityResultRegistry,
++        lifecycleOwner: LifecycleOwner,
++        context: Context,
++        callback: GooglePayLauncherCallback
++    ) : this(registry, lifecycleOwner, context, GooglePayInternalClient(), callback)
++
+     /**
+      * Launches the Google Pay payment sheet. This method cannot be called until the lifecycle of
+      * the Fragment or Activity used to instantiate your [GooglePayLauncher] has reached the
+diff --git a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalCampaign.kt b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalCampaign.kt
+new file mode 100644
+index 0000000..10d23c5
+--- /dev/null
++++ b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalCampaign.kt
+@@ -0,0 +1,20 @@
++package com.braintreepayments.api.paypal
++
++import android.os.Parcelable
++import kotlinx.parcelize.Parcelize
++import org.json.JSONObject
++
++/**
++ * A PayPal co-marketing campaign to associate with a checkout order.
++ *
++ * @property id The PayPal-assigned campaign identifier.
++ */
++@Parcelize
++data class PayPalCampaign(val id: String) : Parcelable {
++
++    internal fun toJson(): JSONObject = JSONObject().put(CAMPAIGN_ID_KEY, id)
++
++    companion object {
++        private const val CAMPAIGN_ID_KEY = "id"
++    }
++}
+diff --git a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalCheckoutRequest.kt b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalCheckoutRequest.kt
+index c4fb250..1d53b81 100644
+--- a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalCheckoutRequest.kt
++++ b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalCheckoutRequest.kt
+@@ -74,6 +74,8 @@ import org.json.JSONObject
+  * @property amountBreakdown Breakdown of items associated to the total cost
+  *
+  * @property shouldOfferCredit Offers PayPal Credit if the customer qualifies. Defaults to false.
++ *
++ * @property campaigns List of PayPal co-marketing campaigns to associate with the order.
+  */
+ @Parcelize
+ class PayPalCheckoutRequest @JvmOverloads constructor(
+@@ -104,6 +106,7 @@ class PayPalCheckoutRequest @JvmOverloads constructor(
+     override var recurringBillingPlanType: PayPalRecurringBillingPlanType? = null,
+     var amountBreakdown: AmountBreakdown? = null,
+     override var shouldOfferCredit: Boolean = false,
++    var campaigns: List<PayPalCampaign> = emptyList(),
+ ) : PayPalRequest(
+     hasUserLocationConsent = hasUserLocationConsent,
+     localeCode = localeCode,
+@@ -194,6 +197,12 @@ class PayPalCheckoutRequest @JvmOverloads constructor(
+             parameters.put(LINE_ITEMS_KEY, jsonLineItems)
+         }
+ 
++        if (campaigns.isNotEmpty()) {
++            val jsonCampaigns = JSONArray()
++            campaigns.forEach { jsonCampaigns.put(it.toJson()) }
++            parameters.put(PAYPAL_CAMPAIGNS_KEY, jsonCampaigns)
++        }
++
+         val experienceProfile = JSONObject()
+         experienceProfile.put(NO_SHIPPING_KEY, !isShippingAddressRequired)
+         experienceProfile.put(LANDING_PAGE_TYPE_KEY, landingPageType?.stringValue)
+diff --git a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalClient.kt b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalClient.kt
+index 25d5ae6..6c71faf 100644
+--- a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalClient.kt
++++ b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalClient.kt
+@@ -73,6 +73,18 @@ class PayPalClient internal constructor(
+      * your application to be used to return to your app from the PayPal payment flows.
+      * @param deepLinkFallbackUrlScheme A return url scheme that will be used as a deep link fallback when returning to
+      * your app via App Link is not available (buyer unchecks the "Open supported links" setting).
++     *
++     * The value must be a bare URL scheme, not a full URL. It must:
++     * - Contain only alphanumeric characters, hyphens (`-`), and periods (`.`)
++     * - Not include `://`
++     * - Not include a path, query string, or fragment (no `/`, `?`, or `#`)
++     * - Match the scheme declared in your `AndroidManifest.xml`
++     *
++     * Valid examples: `"com.merchant.app.payments"`, `"merchantapp"`, `"merchant-app.payments"`.
++     *
++     * Invalid examples: `"com.merchant.app.payments://"` (contains `://`),
++     * `"com.merchant.app.payments/callback"` (contains a path),
++     * `"com.merchant_app"` (underscore not allowed).
+      */
+     constructor(
+         context: Context,
+diff --git a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalRequest.kt b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalRequest.kt
+index c9eb9d6..a6ca808 100644
+--- a/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalRequest.kt
++++ b/PayPal/src/main/java/com/braintreepayments/api/paypal/PayPalRequest.kt
+@@ -156,6 +156,7 @@ abstract class PayPalRequest internal constructor(
+         internal const val CONTACT_PREFERENCE_KEY: String = "contact_preference"
+         internal const val SHOPPER_SESSION_ID_KEY: String = "shopper_session_id"
+         internal const val AMOUNT_BREAKDOWN_KEY: String = "amount_breakdown"
++        internal const val PAYPAL_CAMPAIGNS_KEY: String = "paypal_campaigns"
+         internal const val DEVICE_INFO_KEY: String = "device_info"
+         internal const val DEVICE_MODEL_KEY: String = "model"
+         internal const val MEMORY_AVAILABLE_MB_KEY: String = "memory_available_mb"
+diff --git a/README.md b/README.md
+index cb0b11c..3ba6df6 100644
+--- a/README.md
++++ b/README.md
+@@ -24,7 +24,7 @@ For an integration offering card payments, add the following dependency in your
+ 
+ ```groovy
+ dependencies {
+-    implementation 'com.braintreepayments.api:card:5.31.0'
++    implementation 'com.braintreepayments.api:card:5.32.0'
+ }
+ ```
+ 
+@@ -340,7 +340,7 @@ class ExampleFragment : Fragment() {
+ ## Help
+ 
+ * [Read the docs](https://developer.paypal.com/braintree/docs/guides/overview)
+-* [Check out the reference docs](https://braintree.github.io/braintree_android/index.html)
++* [Check out the reference docs](https://braintree.github.io/braintree_android/current/)
+ * Find a bug? [Open an issue](https://github.com/braintree/braintree_android/issues)
+ * Want to contribute? [Check out contributing guidelines](CONTRIBUTING.md) and [submit a pull request](https://help.github.com/articles/creating-a-pull-request).
+ 
+diff --git a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/CustomerRecommendations.kt b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/CustomerRecommendations.kt
+index 291a339..28a3abf 100644
+--- a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/CustomerRecommendations.kt
++++ b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/CustomerRecommendations.kt
+@@ -8,6 +8,8 @@ import com.braintreepayments.api.core.ExperimentalBetaApi
+  * @property sessionId The session ID for the customer session.
+  * @property isInPayPalNetwork Whether the customer is in the PayPal network.
+  * @property paymentRecommendations The payment recommendations for the shopper.
++ * @property expiresAt The ISO 8601 date and time after which the recommendations should be
++ * treated as stale, or null if not provided.
+  *
+  * Warning: This feature is in beta. It's public API may change or be removed in future releases.
+  */
+@@ -15,5 +17,6 @@ import com.braintreepayments.api.core.ExperimentalBetaApi
+ data class CustomerRecommendations internal constructor(
+     val sessionId: String?,
+     val isInPayPalNetwork: Boolean?,
+-    val paymentRecommendations: List<PaymentOptions>?
++    val paymentRecommendations: List<PaymentOptions>?,
++    val expiresAt: String? = null
+ )
+diff --git a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/CustomerSessionRequest.kt b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/CustomerSessionRequest.kt
+index 074ae4c..31a381f 100644
+--- a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/CustomerSessionRequest.kt
++++ b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/CustomerSessionRequest.kt
+@@ -10,6 +10,7 @@ import com.braintreepayments.api.core.ExperimentalBetaApi
+  * @property payPalAppInstalled If the PayPal app is installed on the device.
+  * @property venmoAppInstalled If the Venmo app is installed on the device.
+  * @property purchaseUnits List of purchase units containing the amount and currency code.
++ * @property payPalCampaigns List of PayPal co-marketing campaigns to associate with the session.
+  *
+  * Warning: This feature is in beta. It's public API may change or be removed in future releases.
+  */
+@@ -20,4 +21,5 @@ data class CustomerSessionRequest(
+     var payPalAppInstalled: Boolean? = null,
+     var venmoAppInstalled: Boolean? = null,
+     var purchaseUnits: List<PurchaseUnit>? = null,
++    var payPalCampaigns: List<ShopperInsightsCampaign>? = null,
+ )
+diff --git a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/ShopperInsightsCampaign.kt b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/ShopperInsightsCampaign.kt
+new file mode 100644
+index 0000000..2b3cfc7
+--- /dev/null
++++ b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/ShopperInsightsCampaign.kt
+@@ -0,0 +1,11 @@
++package com.braintreepayments.api.shopperinsights.v2
++
++import com.braintreepayments.api.core.ExperimentalBetaApi
++
++/**
++ * A PayPal co-marketing campaign to associate with a customer session.
++ *
++ * @property id The PayPal-assigned campaign identifier.
++ */
++@ExperimentalBetaApi
++data class ShopperInsightsCampaign(val id: String)
+diff --git a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/CreateCustomerSessionApi.kt b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/CreateCustomerSessionApi.kt
+index b95adc4..dadbb9d 100644
+--- a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/CreateCustomerSessionApi.kt
++++ b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/CreateCustomerSessionApi.kt
+@@ -58,6 +58,7 @@ internal class CreateCustomerSessionApi(
+         val input = JSONObject().apply {
+             put(CUSTOMER, jsonRequestObjects.customer)
+             putOpt(PURCHASE_UNITS, jsonRequestObjects.purchaseUnits)
++            putOpt(PAYPAL_CAMPAIGNS, jsonRequestObjects.campaigns)
+         }
+ 
+         return JSONObject().put(INPUT, input)
+@@ -69,6 +70,7 @@ internal class CreateCustomerSessionApi(
+         private const val INPUT = "input"
+         private const val CUSTOMER = "customer"
+         private const val PURCHASE_UNITS = "purchaseUnits"
++        private const val PAYPAL_CAMPAIGNS = "paypalCampaigns"
+         private const val CREATE_CUSTOMER_SESSION = "createCustomerSession"
+     }
+ }
+diff --git a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/CustomerSessionRequestBuilder.kt b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/CustomerSessionRequestBuilder.kt
+index 02676fe..d2fc868 100644
+--- a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/CustomerSessionRequestBuilder.kt
++++ b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/CustomerSessionRequestBuilder.kt
+@@ -14,6 +14,7 @@ class CustomerSessionRequestBuilder {
+     internal data class JsonRequestObjects(
+         val customer: JSONObject,
+         val purchaseUnits: JSONArray?,
++        val campaigns: JSONArray? = null,
+     )
+ 
+     internal fun createRequestObjects(customerSessionRequest: CustomerSessionRequest): JsonRequestObjects {
+@@ -42,7 +43,17 @@ class CustomerSessionRequestBuilder {
+                 }
+             }
+ 
+-        return JsonRequestObjects(customer, purchaseUnits)
++        val campaigns = customerSessionRequest.payPalCampaigns
++            ?.takeIf { it.isNotEmpty() }
++            ?.let { campaigns ->
++                JSONArray().apply {
++                    campaigns.forEach { campaign ->
++                        put(JSONObject().put(CAMPAIGN_ID, campaign.id))
++                    }
++                }
++            }
++
++        return JsonRequestObjects(customer, purchaseUnits, campaigns)
+     }
+ 
+     private companion object {
+@@ -53,5 +64,6 @@ class CustomerSessionRequestBuilder {
+         private const val AMOUNT = "amount"
+         private const val VALUE = "value"
+         private const val CURRENCY_CODE = "currencyCode"
++        private const val CAMPAIGN_ID = "id"
+     }
+ }
+diff --git a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/GenerateCustomerRecommendationsApi.kt b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/GenerateCustomerRecommendationsApi.kt
+index 79fd3ad..1ff1b29 100644
+--- a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/GenerateCustomerRecommendationsApi.kt
++++ b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/GenerateCustomerRecommendationsApi.kt
+@@ -1,7 +1,9 @@
+ package com.braintreepayments.api.shopperinsights.v2.internal
+ 
+ import com.braintreepayments.api.core.BraintreeClient
++import com.braintreepayments.api.core.BraintreeException
+ import com.braintreepayments.api.core.ExperimentalBetaApi
++import com.braintreepayments.api.core.GraphQLConstants
+ import com.braintreepayments.api.shopperinsights.v2.CustomerRecommendations
+ import com.braintreepayments.api.shopperinsights.v2.CustomerSessionRequest
+ import com.braintreepayments.api.shopperinsights.v2.PaymentOptions
+@@ -43,6 +45,7 @@ internal class GenerateCustomerRecommendationsApi(
+                             paymentOption
+                             recommendedPriority
+                         }
++                        expiresAt
+                     }
+                 }
+                 """.trimIndent()
+@@ -75,21 +78,30 @@ internal class GenerateCustomerRecommendationsApi(
+                 val jsonRequestObjects = customerSessionRequestBuilder.createRequestObjects(customerSessionRequest)
+                 put(CUSTOMER, jsonRequestObjects.customer)
+                 putOpt(PURCHASE_UNITS, jsonRequestObjects.purchaseUnits)
++                putOpt(PAYPAL_CAMPAIGNS, jsonRequestObjects.campaigns)
+             }
+         }
+ 
+         return JSONObject().put(INPUT, input)
+     }
+ 
+-    @Throws(JSONException::class)
++    @Throws(JSONException::class, BraintreeException::class)
+     private fun parseRecommendationsResponse(responseBody: String): CustomerRecommendations {
+         val jsonObject = JSONObject(responseBody)
++
++        val errors = jsonObject.optJSONArray(GraphQLConstants.Keys.ERRORS)
++        if (errors != null && errors.length() > 0) {
++            val message = errors.getJSONObject(0).optString(GraphQLConstants.Keys.MESSAGE, responseBody)
++            throw BraintreeException(message)
++        }
++
+         val data = jsonObject.getJSONObject("data")
+         val recommendations = data.getJSONObject(GENERATE_CUSTOMER_RECOMMENDATIONS)
+ 
+         val sessionId = recommendations.getString(SESSION_ID)
+         val isInPayPalNetwork = recommendations.getBoolean("isInPayPalNetwork")
+         val paymentRecommendations = recommendations.getJSONArray("paymentRecommendations")
++        val expiresAt = recommendations.opt(EXPIRES_AT) as? String
+ 
+         val paymentOptions = mutableListOf<PaymentOptions>()
+         for (i in 0 until paymentRecommendations.length()) {
+@@ -105,7 +117,8 @@ internal class GenerateCustomerRecommendationsApi(
+         return CustomerRecommendations(
+             sessionId = sessionId,
+             isInPayPalNetwork = isInPayPalNetwork,
+-            paymentRecommendations = paymentOptions
++            paymentRecommendations = paymentOptions,
++            expiresAt = expiresAt
+         )
+     }
+ 
+@@ -116,6 +129,8 @@ internal class GenerateCustomerRecommendationsApi(
+         private const val SESSION_ID = "sessionId"
+         private const val CUSTOMER = "customer"
+         private const val PURCHASE_UNITS = "purchaseUnits"
++        private const val PAYPAL_CAMPAIGNS = "paypalCampaigns"
+         private const val GENERATE_CUSTOMER_RECOMMENDATIONS = "generateCustomerRecommendations"
++        private const val EXPIRES_AT = "expiresAt"
+     }
+ }
+diff --git a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/ShopperInsightsResponseParser.kt b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/ShopperInsightsResponseParser.kt
+index 18bfb7f..976391d 100644
+--- a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/ShopperInsightsResponseParser.kt
++++ b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/ShopperInsightsResponseParser.kt
+@@ -1,5 +1,7 @@
+ package com.braintreepayments.api.shopperinsights.v2.internal
+ 
++import com.braintreepayments.api.core.BraintreeException
++import com.braintreepayments.api.core.GraphQLConstants
+ import org.json.JSONException
+ import org.json.JSONObject
+ 
+@@ -8,9 +10,17 @@ import org.json.JSONObject
+  */
+ internal class ShopperInsightsResponseParser {
+ 
+-    @Throws(JSONException::class)
++    @Throws(JSONException::class, BraintreeException::class)
+     fun parseSessionId(responseBody: String, graphQLCall: String): String {
+-        val data = JSONObject(responseBody).getJSONObject(DATA)
++        val responseJSON = JSONObject(responseBody)
++
++        val errors = responseJSON.optJSONArray(GraphQLConstants.Keys.ERRORS)
++        if (errors != null && errors.length() > 0) {
++            val message = errors.getJSONObject(0).optString(GraphQLConstants.Keys.MESSAGE, responseBody)
++            throw BraintreeException(message)
++        }
++
++        val data = responseJSON.getJSONObject(DATA)
+         val sessionObject = data.getJSONObject(graphQLCall)
+         return sessionObject.getString(SESSION_ID)
+     }
+diff --git a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/UpdateCustomerSessionApi.kt b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/UpdateCustomerSessionApi.kt
+index 4c71d76..61bdeac 100644
+--- a/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/UpdateCustomerSessionApi.kt
++++ b/ShopperInsights/src/main/java/com/braintreepayments/api/shopperinsights/v2/internal/UpdateCustomerSessionApi.kt
+@@ -65,6 +65,7 @@ internal class UpdateCustomerSessionApi(
+             put(SESSION_ID, sessionId)
+             put(CUSTOMER, jsonRequestObjects.customer)
+             putOpt(PURCHASE_UNITS, jsonRequestObjects.purchaseUnits)
++            putOpt(PAYPAL_CAMPAIGNS, jsonRequestObjects.campaigns)
+         }
+ 
+         return JSONObject().put(INPUT, input)
+@@ -77,6 +78,7 @@ internal class UpdateCustomerSessionApi(
+         private const val SESSION_ID = "sessionId"
+         private const val CUSTOMER = "customer"
+         private const val PURCHASE_UNITS = "purchaseUnits"
++        private const val PAYPAL_CAMPAIGNS = "paypalCampaigns"
+         private const val UPDATE_CUSTOMER_SESSION = "updateCustomerSession"
+     }
+ }
+diff --git a/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/PayPalButton.kt b/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/PayPalButton.kt
+index 61f552b..d270f5c 100644
+--- a/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/PayPalButton.kt
++++ b/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/PayPalButton.kt
+@@ -86,6 +86,18 @@ class PayPalButton @JvmOverloads constructor(
+      * merchant's application to be used to return to merchant's app from the PayPal payment flows.
+      * @param deepLinkFallbackUrlScheme a return url scheme that will be used as a deep link fallback when returning to
+      * merchant's app via App Link is not available (buyer unchecks the "Open supported links" setting).
++     *
++     * The value must be a bare URL scheme, not a full URL. It must:
++     * - Contain only alphanumeric characters, hyphens (`-`), and periods (`.`)
++     * - Not include `://`
++     * - Not include a path, query string, or fragment (no `/`, `?`, or `#`)
++     * - Match the scheme declared in your `AndroidManifest.xml`
++     *
++     * Valid examples: `"com.merchant.app.payments"`, `"merchantapp"`, `"merchant-app.payments"`.
++     *
++     * Invalid examples: `"com.merchant.app.payments://"` (contains `://`),
++     * `"com.merchant.app.payments/callback"` (contains a path),
++     * `"com.merchant_app"` (underscore not allowed).
+      * @param activityResultCaller      an [ActivityResultCaller] (typically a Fragment or Activity) that will be used
+      * to register the ActivityResultLauncher for the PayPal browser switch flow.
+      */
+diff --git a/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/VenmoButton.kt b/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/VenmoButton.kt
+index 348a79f..63d7bab 100644
+--- a/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/VenmoButton.kt
++++ b/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/VenmoButton.kt
+@@ -83,6 +83,18 @@ class VenmoButton @JvmOverloads constructor(
+      * merchant's application to be used to return to merchant's app from the Venmo payment flows.
+      * @param deepLinkFallbackUrlScheme a return url scheme that will be used as a deep link fallback when returning to
+      * merchant's app via App Link is not available (buyer unchecks the "Open supported links" setting).
++     *
++     * The value must be a bare URL scheme, not a full URL. It must:
++     * - Contain only alphanumeric characters, hyphens (`-`), and periods (`.`)
++     * - Not include `://`
++     * - Not include a path, query string, or fragment (no `/`, `?`, or `#`)
++     * - Match the scheme declared in your `AndroidManifest.xml`
++     *
++     * Valid examples: `"com.merchant.app.payments"`, `"merchantapp"`, `"merchant-app.payments"`.
++     *
++     * Invalid examples: `"com.merchant.app.payments://"` (contains `://`),
++     * `"com.merchant.app.payments/callback"` (contains a path),
++     * `"com.merchant_app"` (underscore not allowed).
+      * @param activityResultCaller      an [ActivityResultCaller] (typically a Fragment or Activity) that will be used
+      * to register the ActivityResultLauncher for the Venmo browser switch flow.
+      */
+diff --git a/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/compose/PayPalButton.kt b/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/compose/PayPalButton.kt
+index c9846ac..b5ca569 100644
+--- a/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/compose/PayPalButton.kt
++++ b/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/compose/PayPalButton.kt
+@@ -38,6 +38,18 @@ import kotlinx.coroutines.launch
+  * @param authorization: An authorization string to use for tokenization.
+  * @param appLinkReturnUrl: A [Uri] that sends back control to the host app after PayPal flow completes.
+  * @param deepLinkFallbackUrlScheme: Fallback scheme in case [appLinkReturnUrl] doesn't work.
++ *
++ * The value must be a bare URL scheme, not a full URL. It must:
++ * - Contain only alphanumeric characters, hyphens (`-`), and periods (`.`)
++ * - Not include `://`
++ * - Not include a path, query string, or fragment (no `/`, `?`, or `#`)
++ * - Match the scheme declared in your `AndroidManifest.xml`
++ *
++ * Valid examples: `"com.merchant.app.payments"`, `"merchantapp"`, `"merchant-app.payments"`.
++ *
++ * Invalid examples: `"com.merchant.app.payments://"` (contains `://`),
++ * `"com.merchant.app.payments/callback"` (contains a path),
++ * `"com.merchant_app"` (underscore not allowed).
+  * @param paypalTokenizeCallback: A [PayPalTokenizeCallback] that handles the result of the tokenization.
+  */
+ @Composable
+diff --git a/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/compose/VenmoButton.kt b/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/compose/VenmoButton.kt
+index c1b7bef..4e7c194 100644
+--- a/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/compose/VenmoButton.kt
++++ b/UIComponents/src/main/java/com/braintreepayments/api/uicomponents/compose/VenmoButton.kt
+@@ -39,6 +39,18 @@ import kotlinx.coroutines.launch
+  * @param authorization: An authorization string to use for tokenization.
+  * @param appLinkReturnUrl: A [Uri] that sends back control to the host app after Venmo flow completes.
+  * @param deepLinkFallbackUrlScheme: Fallback scheme in case [appLinkReturnUrl] doesn't work.
++ *
++ * The value must be a bare URL scheme, not a full URL. It must:
++ * - Contain only alphanumeric characters, hyphens (`-`), and periods (`.`)
++ * - Not include `://`
++ * - Not include a path, query string, or fragment (no `/`, `?`, or `#`)
++ * - Match the scheme declared in your `AndroidManifest.xml`
++ *
++ * Valid examples: `"com.merchant.app.payments"`, `"merchantapp"`, `"merchant-app.payments"`.
++ *
++ * Invalid examples: `"com.merchant.app.payments://"` (contains `://`),
++ * `"com.merchant.app.payments/callback"` (contains a path),
++ * `"com.merchant_app"` (underscore not allowed).
+  * @param venmoTokenizeCallback: A [VenmoTokenizeCallback] that handles the result of the tokenization.
+  */
+ @Composable
+diff --git a/Venmo/src/main/java/com/braintreepayments/api/venmo/VenmoAccountNonce.kt b/Venmo/src/main/java/com/braintreepayments/api/venmo/VenmoAccountNonce.kt
+index e5c7ac7..10c9375 100644
+--- a/Venmo/src/main/java/com/braintreepayments/api/venmo/VenmoAccountNonce.kt
++++ b/Venmo/src/main/java/com/braintreepayments/api/venmo/VenmoAccountNonce.kt
+@@ -46,6 +46,7 @@ data class VenmoAccountNonce internal constructor(
+ 
+         private const val VENMO_DETAILS_KEY = "details"
+         private const val VENMO_USERNAME_KEY = "username"
++        private const val VENMO_COMMON_ID_KEY = "commonId"
+ 
+         private const val VENMO_PAYMENT_METHOD_ID_KEY = "paymentMethodId"
+         private const val VENMO_PAYER_INFO_KEY = "payerInfo"
+@@ -71,6 +72,7 @@ data class VenmoAccountNonce internal constructor(
+             val nonce: String
+             val isDefault: Boolean
+             val username: String
++            var externalId: String? = null
+ 
+             if (json.has(VENMO_PAYMENT_METHOD_ID_KEY)) {
+                 isDefault = false
+@@ -82,11 +84,17 @@ data class VenmoAccountNonce internal constructor(
+ 
+                 val details = json.getJSONObject(VENMO_DETAILS_KEY)
+                 username = details.getString(VENMO_USERNAME_KEY)
++                // The vault response does not include a `payerInfo.externalId` field, but
++                // `details.commonId` contains the same underlying Venmo account identifier.
++                externalId = if (details.has(VENMO_COMMON_ID_KEY)) {
++                    details.getString(VENMO_COMMON_ID_KEY)
++                } else {
++                    null
++                }
+             }
+ 
+             val payerInfo = json.optJSONObject(VENMO_PAYER_INFO_KEY)
+             var email: String? = null
+-            var externalId: String? = null
+             var firstName: String? = null
+             var lastName: String? = null
+             var phoneNumber: String? = null
+diff --git a/Venmo/src/main/java/com/braintreepayments/api/venmo/VenmoClient.kt b/Venmo/src/main/java/com/braintreepayments/api/venmo/VenmoClient.kt
+index 3e75731..eb374fe 100644
+--- a/Venmo/src/main/java/com/braintreepayments/api/venmo/VenmoClient.kt
++++ b/Venmo/src/main/java/com/braintreepayments/api/venmo/VenmoClient.kt
+@@ -86,6 +86,18 @@ class VenmoClient internal constructor(
+      * your application to be used to return to your app from the PayPal
+      * @param deepLinkFallbackUrlScheme A return url scheme that will be used as a deep link fallback when returning to
+      * your app via App Link is not available (buyer unchecks the "Open supported links" setting).
++     *
++     * The value must be a bare URL scheme, not a full URL. It must:
++     * - Contain only alphanumeric characters, hyphens (`-`), and periods (`.`)
++     * - Not include `://`
++     * - Not include a path, query string, or fragment (no `/`, `?`, or `#`)
++     * - Match the scheme declared in your `AndroidManifest.xml`
++     *
++     * Valid examples: `"com.merchant.app.payments"`, `"merchantapp"`, `"merchant-app.payments"`.
++     *
++     * Invalid examples: `"com.merchant.app.payments://"` (contains `://`),
++     * `"com.merchant.app.payments/callback"` (contains a path),
++     * `"com.merchant_app"` (underscore not allowed).
+      */
+     @JvmOverloads
+     constructor(
+diff --git a/build.gradle b/build.gradle
+index 75ae438..42010be 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -47,13 +47,13 @@ allprojects {
+     }
+ }
+ 
+-version '5.31.0'
++version '5.32.0'
+ group 'com.braintreepayments'
+ ext {
+     compileSdkVersion = 37
+     minSdkVersion = 23
+     minSdkVersionPayPalMessaging = 23
+-    versionCode = 227
++    versionCode = 228
+     targetSdkVersion = 37
+     versionName = version
+ }
+@@ -129,8 +129,9 @@ subprojects {
+ }
+ 
+ dokkaHtmlMultiModule.configure {
+-    // redirect dokka output to GitHub pages root directory
+-    outputDirectory.set(project.file("docs"))
++    // generate into a gitignored build directory; scripts/publish-docs.sh publishes
++    // this to the gh-pages branch instead of committing it into main
++    outputDirectory.set(project.file("build/dokkaDocs"))
+ }
+ 
+ subprojects {
+diff --git a/v5_MIGRATION_GUIDE.md b/v5_MIGRATION_GUIDE.md
+index 22e331c..245cc70 100644
+--- a/v5_MIGRATION_GUIDE.md
++++ b/v5_MIGRATION_GUIDE.md
+@@ -40,7 +40,7 @@ are required.
+ 
+ ```diff
+ - implementation 'com.braintreepayments.api:card:4.x.x'
+-+ implementation 'com.braintreepayments.api:card:5.31.0'
+++ implementation 'com.braintreepayments.api:card:5.32.0'
+ ```
+ 
+ ## Braintree Client

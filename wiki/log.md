@@ -1,9 +1,21 @@
 # Wiki Log
 
+## [2026-10-04] ingest | `braintree-android@5.33.0`
+
+- Serial Compose CardFields/controller delta with nonce/server handoff and explicit submit/saved-state caveats; preserved older history. Details [[braintree-log]] and [[changelog-github-braintree-android]]. Focused reading approved for this release only; no Android build/UI/payment test, commit or push.
+
 ## [2026-10-04] ingest | Braintree website C32
 
 - Twenty Extend OAuth/Forward API website sources independently reviewed and promoted through five shared rolling child slots; first pass 16/20, twenty full plus four targeted reviews, no repeated full review. Five query groups passed 40/40. Catalog: 312 sources (295 website + 17 GitHub). Details: [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-32/`. Raw unchanged; no commit or push.
 
+
+## [2026-10-04] ingest | `braintree-android@5.32.0`
+
+- Serial campaign/error/expiry, Venmo identity and Google Pay constructor delta; earlier history and Browser Switch mismatch preserved. Details [[braintree-log]] and [[changelog-github-braintree-android]]. Focused reading approved for this release only; no build/payment test, commit or push.
+
+## [2026-10-04] ingest | `braintree-android@5.31.0`
+
+- Serial PayPal app-switch device-context delta; preserved 5.30.0 history and Browser Switch dependency-document mismatch. Details [[braintree-log]] and [[changelog-github-braintree-android]]. Focused reading approved; no build/payment test, commit or push.
 
 ## [2026-10-04] ingest | Braintree website C31
 

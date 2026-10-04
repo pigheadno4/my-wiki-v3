@@ -28,6 +28,35 @@ PayPal and Venmo are separate Braintree modules:
 
 Venmo is not a PayPal funding-source enum in this SDK. This Braintree Venmo path is also independent from `paypal/paypal-android@2.3.0`, which does not expose a native Venmo integration in its retained source.
 
+## `5.31.0` PayPal App-Switch Device Context
+
+Compared with the retained 5.30.0 baseline, `braintree-android@5.31.0` automatically adds device model and available/total memory to `app_switch_context.device_info` on the PayPal authorization request. This happens only after app-switch enablement survives installed-app/resolution checks and an app-link return URL exists. Memory values are integer conversions after division by 1024 squared. If ActivityManager is unavailable, the base request is returned unchanged.
+
+This shared path serves checkout and vault authorization; it does not change nonce/server processing or guarantee that the PayPal server selects app switch. The new helper does not inspect hasUserLocationConsent; the existing separate DataCollector request still receives that flag. This code distinction is not a privacy/compliance conclusion. See [[source-github-braintree-android]].
+
+> [!warning] Contradiction
+> The 5.31.0 release notes report Browser Switch 3.6.0, while that exact snapshot's unchanged DEPENDENCIES.md lists 3.5.1. BraintreeCore/build.gradle uses the libs.browser.switch alias, but its version catalog is outside the capsule. The resolved version and dependency behavior are therefore not independently established. Both raw authorities are linked in [[source-github-braintree-android]]; no build or runtime test was performed.
+
+## `5.32.0` Campaigns, Recommendations and Wallet Integration
+
+`braintree-android@5.32.0` adds optional `PayPalCheckoutRequest.campaigns` (default empty), serialized as `paypal_campaigns` containing ID objects. Beta Shopper Insights v2 adds optional `CustomerSessionRequest.payPalCampaigns`, serialized as GraphQL `paypalCampaigns` for session create/update and recommendation generation with a request object. Empty lists are omitted. These inputs associate existing campaign IDs; they do not establish campaign provisioning, eligibility or a guaranteed offer.
+
+Shopper Insights now checks a nonempty GraphQL `errors` array before reading `data` in session and recommendation parsers. It uses the first error's message, and existing API/client handling returns a Failure. `CustomerRecommendations.expiresAt` is an optional ISO-8601-documented string, not SDK-enforced expiration or automatic refreshing. Applications should handle failures and recommendation staleness separately; do not expose unsanitized upstream errors. The feature remains beta.
+
+The vaulted Venmo nonce branch now reads `details.commonId` into `externalId` when present, fixing one previously empty-ID path. A later `payerInfo.externalId` assignment can overwrite it, so a nonempty ID is not guaranteed. Vault authorization requirements remain unchanged.
+
+A new public `GooglePayLauncher(ActivityResultRegistry, LifecycleOwner, Context, callback)` constructor provides a Compose-compatible entry point without requiring the existing Fragment/Activity constructor. Its KDoc requires initialization before the owner's CREATED state and launch only once CREATED is reached. It is not a new composable payment button or proof of a tested Compose flow.
+
+PayPal/Venmo client and button KDoc now specifies a bare deep-link fallback scheme matching AndroidManifest.xml, not a full URL; this delta does not add a runtime validator. See [[source-github-braintree-android]] and [[changelog-github-braintree-android]] for exact evidence and preserved 5.30.0/5.31.0 history, including the unresolved Browser Switch discrepancy. No SDK build or payment test was performed.
+
+## `5.33.0` Compose Card Fields
+
+`braintree-android@5.33.0` adds a Compose `CardFields` form for number, expiration and CVV, paired with `rememberCardFieldsController(authorization, request)`. The controller exposes isFormValid and submit(callback); submission copies the entered fields into the optional Card request, calls CardClient.tokenize and returns CardFieldsResult.Success with a nonce or Failure. Merchant server processing is still required; this is not a transaction, 3DS challenge or Drop-in replacement.
+
+The application owns its submit button and should gate it with isFormValid: controller.submit itself does not guard against invalid fields or duplicate submission. Input sanitization, brand-aware lengths, focus advancement and blur-based validation share the existing card-field validation model. Display formatting is separate from raw card values; CVV digits are masked with a 1.5-second reveal of a newly typed digit.
+
+The controller uses rememberSaveable/TextFieldValue.Saver for number, expiration and CVV and restores ViewModel validation state. These source-level mechanics are not proof of secure storage, compliance, successful process restoration or sensitive-data clearing; submit contains no field-clearing step. Multiple forms within the same default ViewModel owner are not shown to be isolated by this helper. Before deployment, inspect host saved-state/lifecycle handling rather than treat masking as protection of underlying data. See [[source-github-braintree-android]] and [[changelog-github-braintree-android]]. No Android build, UI or payment test was performed; older evidence and unresolved dependency gaps remain intact.
+
 ## Drop-in Boundary
 
 Website customization guidance warns against enabling Vault Manager for recurring-billing integrations because customers could delete payment methods associated with subscriptions. This is a Drop-in configuration warning, not evidence of subscription cancellation behavior or exact package compatibility. [[source-braintree-drop-in-customization-android-v5]]

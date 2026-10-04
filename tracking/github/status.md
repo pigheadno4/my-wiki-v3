@@ -995,6 +995,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.8.0/2026-09-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.7.0--26.8.0/comparison.json)
 
+## `github-50a0160c94669e522efa`
+
+- Repository: `braintree/braintree_android`
+- SHA: `04b82bbb1cb49e3a5ad44bac920704ba03c99317`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_android/snapshots/2026-10-04-04b82bb/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_android/ingest-packets/github-50a0160c94669e522efa/packet.md)
+- Review priority: `normal`
+- Required reading: `25` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-android@5.33.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_android/releases/braintree-android/5.33.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_android/comparisons/braintree-android/5.32.0--5.33.0/comparison.json)
+
 ## `github-523453a8a9fad6afdf6f`
 
 - Repository: `paypal-examples/paypal-ios-sdk-demo-app`
@@ -3208,6 +3233,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/8.11.0/2026-07-30/manifest.json)
   Comparison: Not applicable
 
+## `github-cb53f29ed21b94cda047`
+
+- Repository: `braintree/braintree_android`
+- SHA: `2695a481d8cd56a3d6db379297e6682663d2c94e`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_android/snapshots/2026-10-04-2695a48/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_android/ingest-packets/github-cb53f29ed21b94cda047/packet.md)
+- Review priority: `high`
+- Required reading: `32` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-android@5.32.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_android/releases/braintree-android/5.32.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_android/comparisons/braintree-android/5.31.0--5.32.0/comparison.json)
+
 ## `github-cba5dcae559e55e8182d`
 
 - Repository: `paypal/paypal-checkout-components`
@@ -3232,6 +3282,31 @@
 - `@paypal/checkout-components@4.1.47` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/4.1.47/2026-07-23/manifest.json)
   Comparison: Not applicable
+
+## `github-d0228afe14f5b691e8b7`
+
+- Repository: `braintree/braintree_android`
+- SHA: `438d33ac42c92ca7489c3fec3b45d088a75a8361`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_android/snapshots/2026-10-04-438d33a/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_android/ingest-packets/github-d0228afe14f5b691e8b7/packet.md)
+- Review priority: `normal`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-android@5.31.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_android/releases/braintree-android/5.31.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_android/comparisons/braintree-android/5.30.0--5.31.0/comparison.json)
 
 ## `github-d17bdc90cb232420fcbc`
 

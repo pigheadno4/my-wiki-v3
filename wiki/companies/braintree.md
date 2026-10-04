@@ -436,6 +436,12 @@ The repository schedules Drop-in deprecation for 2026-09-01 and unsupported stat
 
 ## Android SDK Surface
 
+`braintree-android@5.33.0` adds a Compose CardFields form and controller for card tokenization using the existing nonce/server model. Applications own the submit button, validity gating and duplicate-submit handling. Card fields including CVV use saveable state; masking and restoration code do not prove secure storage or field clearing. This is not Drop-in, 3DS or new wallet functionality. Older Android history remains preserved. [[source-github-braintree-android]] [[changelog-github-braintree-android]] [[braintree-android-sdk]]
+
+`braintree-android@5.32.0` adds checkout/session campaign ID inputs, beta Shopper Insights GraphQL-error propagation and optional recommendation expiry, a vaulted Venmo commonId fallback and a Compose-compatible Google Pay launcher constructor. Campaign inputs do not prove offer eligibility; expiry is not automatically enforced, and payerInfo can overwrite the Venmo ID fallback. Deep-link guidance is documentation-only. Earlier history and the Browser Switch discrepancy remain preserved. [[source-github-braintree-android]] [[changelog-github-braintree-android]] [[braintree-android-sdk]]
+
+`braintree-android@5.31.0` automatically sends device model and available/total memory with PayPal Checkout/Vault authorization when app switch passes its existing checks and an app-link return URL exists. This does not guarantee server app-switch selection. Release notes report Browser Switch 3.6.0, while the retained dependency document still lists 3.5.1; resolved version remains unverified. See [[source-github-braintree-android]] and [[braintree-android-sdk]]. The 5.30.0 baseline below remains historical evidence.
+
 `braintree-android@5.30.0` provides modular native clients for cards, PayPal, Venmo, Google Pay, local payments, SEPA, 3D Secure, fraud data, and payment-method presentation. Redirect-capable methods use a request/launcher/result pattern with app-link or deep-link return handling before nonce tokenization.
 
 PayPal and Venmo are separate Braintree modules. Venmo can launch the Venmo app or a mobile browser and supports conditional multi-use vaulting with a customer-scoped client token. This is distinct from the standalone `paypal/paypal-android` SDK, whose retained `2.3.0` source does not establish a native Venmo path.
@@ -512,7 +518,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest retained UUID utility release: `@braintree/uuid@2.0.0` at `d134a2ca93d12705a76ff036baeba568016f9b13`
 - Latest retained input formatter ref: `default-branch@8dcc6ea` at `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089` (`package.json` 4.2.0)
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
-- Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
+- Latest ingested Android release: `braintree-android@5.33.0` at `04b82bbb1cb49e3a5ad44bac920704ba03c99317`
 - Latest retained Android Drop-in release: `drop-in@6.17.0` at `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
 - Latest ingested iOS release: `braintree-ios@7.13.0` at `020dfb7a7803ec3ce8b2df2a0f71e386a4bf84e3`
 - Latest retained iOS Drop-in release: `BraintreeDropIn@9.14.0` at `d951d104ac960188824bda191be2f57c57351a31`
