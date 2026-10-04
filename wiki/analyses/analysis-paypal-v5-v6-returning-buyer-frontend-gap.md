@@ -2,17 +2,27 @@
 title: "PayPal v5 to v6: Returning-Buyer Frontend Evidence Gap"
 type: analysis
 date_created: 2026-09-27
+date_updated: 2026-10-04
 tags: [paypal, javascript-sdk, vault, returning-buyer, migration]
 ---
 
-## Conclusion
+## October 4 Update: Direct v6 HTML Evidence
+
+The direct-PayPal sample at `default-branch@a318bcf` (committed September 29) now renders `<paypal-saved-payment-methods>` and invokes `createPayPalEditSavedPaymentSession()` with customer/vault context in a browser-safe client token. It separates edit/approve followed by capture from direct vault-ID submission, including a Create Order `COMPLETED` branch. See [[source-github-v6-web-sdk-sample-integration]], [[changelog-github-v6-web-sdk-sample-integration]] and [[paypal-vault]].
+
+> [!info] Dated evidence gap narrowed
+> The September 27 finding below remains valid for its checked snapshots. The newer direct-PayPal HTML sample closes the absence-of-example gap, not typed/React support, tested merchant eligibility or complete v5/v6 parity. Its React code is unchanged despite dependency range `^10.5.2`; its direct client-token/Orders API path is separate from Braintree's preferred-token/nonce integration. No payment or browser test was performed.
+
+The new sample forwards `target_customer_id` or vault/billing-agreement claims; it does not establish a direct-PayPal parameter named `preferredPaymentMethodToken`. Identifier mutual exclusivity is instructed but not enforced, and server ownership/persistence/payment-state controls are incomplete. These limits belong to the new sample evidence rather than being inferred from the older docs.
+
+## Historical Conclusion (September 27)
 
 Direct PayPal JS SDK v5 documents a customer-aware saved-PayPal frontend experience. An equivalent direct-PayPal v6 frontend integration was not confirmed in the documentation and package evidence checked on 2026-09-27. Backend payment-token reuse is not evidence of frontend parity.
 
 > [!info] Evolving
 > This is a bounded documentation/type-surface gap, not proof that the hosted v6 runtime cannot support the experience. No merchant sandbox or production end-to-end test was performed. Package versions below identify the checked snapshots, not a permanent latest-version claim.
 
-## Capability Boundaries
+## Historical Capability Boundaries (September 27)
 
 | Capability | Direct PayPal v5 | Direct PayPal v6 |
 | --- | --- | --- |

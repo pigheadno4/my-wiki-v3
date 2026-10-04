@@ -6,6 +6,10 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Direct v6 saved-method sample `a318bcf`
+
+- Full additive `github-9765a512b0b7925416d4`, approved focused reading: fourteen changed files, twelve prior versions and affected dependencies; all 526 retained hashes checked. Saved-method editing, token/order branches and demo limitations recorded, older history retained. Receipt: `tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-review-9765a512.md`. No runtime test, commit or push.
+
 ## [2026-10-04] ingest | SDK release assembly `5.0.580`
 
 - Serial delta/focused `github-e9f3203a4f2bd9735db9`, SHA `27aa46b6623c9b20a74d5c58ce060be25be68dc4`: Checkout Components `5.0.435` -> `5.0.436`; the other eleven direct pins remain unchanged. Common remains `1.0.62`, Messaging remains `1.98.0`.

@@ -22,8 +22,8 @@ Operations history: [[paypal-log]]
 - [[source-stripe-paypal-custom-payment-method]] — PayPal as CPM: low-code adapter for Checkout, EU→standard PM vs global→CPM adapter decision rule (webpage, 2026-05-08)
 - [[source-stripe-subscriptions-paypal]] — PayPal subscription: Checkout + Direct API, off_session required, billing agreement ID, mandate.updated on revoke (webpage, 2026-05-13)
 - [[stripe-paypal]] — Stripe PayPal Integration: Checkout + SetupIntents, off_session critical, BAID, mandate.updated, detach cancels billing agreement
-- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 Web SDK samples through `bb23e7c`: ACH Wallet, optional HTML/React card name, auto presentation for 46 local methods; earlier Apple Pay and baseline history retained
-- [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified history through `de90a89` to `bb23e7c`, with sample limitations and the approved focused-reading boundary
+- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 samples through `a318bcf`: direct saved-method preview/edit, token context, ACH Wallet, card name and LPM presentation; earlier history retained
+- [[changelog-github-v6-web-sdk-sample-integration]] — history through `a318bcf`, saved-method sample limits and focused-reading boundaries
 - [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree v6 sample through `06bc2de`: static saved-payment editing, preferred-token server context and nonce/token submission; React and earlier baseline preserved
 - [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — commit-qualified `f1c7123` to `06bc2de` history and production-boundary ledger
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample: Orders, partner headers, Hosted Fields, shipping patches, subscriptions, and retained defects (`5409a3b`)
@@ -230,7 +230,7 @@ Operations history: [[paypal-log]]
 
 ## Analyses
 
-- [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]] - customer-aware saved-wallet frontend migration gap, checked 2026-09-27
+- [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]] - September 27 gap plus October 4 direct-v6 HTML evidence; typed/React and tested parity remain separate
 
 - [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages iOS vs Android: released baselines, Braintree-only untagged policy, platform risks, and rollout recommendation
 - [[analysis-paypal-react-apple-pay-10-3-to-10-4-migration]] — React Apple Pay 10.3→10.4 migration: core 11 dependency, native `ApplePaySession`, `@types/applepayjs`, prebuilt button integration, and server boundaries

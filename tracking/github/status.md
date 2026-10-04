@@ -2579,6 +2579,33 @@
   To SHA: `9b14b71be496ca299401b3303b572856fd19baf4`
   Comparison: Not applicable
 
+## `github-9765a512b0b7925416d4`
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- SHA: `a318bcf7cb8a458b180df553ab459db3a5a79586`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/manifest.json)
+- Packet: [review packet](repos/paypal/v6-web-sdk-sample-integration/ingest-packets/github-9765a512b0b7925416d4/packet.md)
+- Review priority: `high`
+- Required reading: `537` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@a318bcf` (recommended `full`)
+  Ref: `main`
+  From SHA: `bb23e7c63305a872326f43c3d52c5edd53e20b43`
+  To SHA: `a318bcf7cb8a458b180df553ab459db3a5a79586`
+  Comparison: [manifest](repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/bb23e7c--a318bcf/comparison.json)
+
 ## `github-986685252a62505561c4`
 
 - Repository: `paypal/paypal-js`

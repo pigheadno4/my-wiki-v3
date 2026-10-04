@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal-examples/v6-web-sdk-sample-integration"
 type: source
 date_ingested: 2026-08-04
-date_updated: 2026-09-19
+date_updated: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json"
@@ -15,6 +16,39 @@ tags: [paypal, web-sdk-v6, samples, changelog, github-repository]
 ## Overview
 
 Commit-qualified history for `paypal-examples/v6-web-sdk-sample-integration`. Durable integration guidance belongs in [[source-github-v6-web-sdk-sample-integration]].
+
+## `default-branch@a318bcf` - Direct PayPal Saved Payment Methods (2026-09-29)
+
+| Ref | Prior SHA | Current SHA | Ingest mode |
+| --- | --- | --- | --- |
+| `main` | `bb23e7c63305a872326f43c3d52c5edd53e20b43` | `a318bcf7cb8a458b180df553ab459db3a5a79586` | Full additive; approved option-1 focused reading |
+
+Collected/ingested October 4, 2026. Two added and twelve modified retained files, 250 unchanged, no deletion. All changed files and twelve prior versions plus affected dependencies read fully; 262 prior and 264 current file hashes verified. The full 537-path assignment was not semantically reread; immutable inventories, packet and earlier wiki history are preserved.
+
+### New and changed behavior
+
+- Adds a static direct-PayPal returning-buyer preview/edit page using `paypal-saved-payment-methods`, its custom element and `createPayPalEditSavedPaymentSession({ commit: false, ... })`.
+- Client-token route accepts `target_customer_id` or a `vault_id` claim; a `B-`-prefixed ID selects `billing_agreement_id`. This is distinct from Braintree's preferred-token/nonce path.
+- Editing creates an order without a vault ID, stores the approved ID and captures it on Submit Order. Direct submission includes the vault ID and avoids recapture if Create Order returned `COMPLETED`; customer-ID-only configuration requires approval first.
+- Save-payment response exposes payment-token/customer IDs for local testing, with an explicit production server-side-storage warning; actual database persistence remains empty.
+- Core dependency range `^10.0.1` -> `^11.2.0`; React wrapper `^10.5.0` -> `^10.5.2`. TypeScript button guards become early returns, lint/tool ranges advance, and two iframe examples move Node 20 -> 22. No new React saved-method page or wrapper is established.
+
+### Findings and limits
+
+- HTML's either-ID/not-both instruction is not enforced; blank/both inputs can reach the token endpoint.
+- Failed/ineligible reinitialization can leave the earlier visible element/session; overlapping initialization has no generation guard. No browser reproduction was performed.
+- Server has no inspected customer-authentication/ownership binding; identifier display, empty persistence, unchecked "captured" labels and fresh per-request UUIDs are not production security, settlement or duplicate-payment guarantees.
+- The September 27 direct-v6 frontend-gap analysis now has a dated sample-code update; historical findings remain, while typed/React parity, eligibility and live behavior remain unproven.
+- Changed test and lockfile are excluded under existing policy. No runtime, payment, build or browser test; no registry or collection-policy change.
+
+Updated source sections: latest identity, evidence boundary, new saved-method flows, token handoff, limitations and exact evidence. Concepts: [[paypal-checkout]], [[paypal-vault]]. Company/index/logs and the dated [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]] updated; company source count unchanged.
+
+**Evidence:**
+
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/manifest.json`
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/bb23e7c--a318bcf/comparison.json`
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/bb23e7c--a318bcf/diff.patch`
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-review-9765a512.md`
 
 ## `default-branch@bb23e7c` - ACH Wallet and Card Name (2026-09-17)
 

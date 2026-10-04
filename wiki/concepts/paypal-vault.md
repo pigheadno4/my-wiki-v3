@@ -50,6 +50,15 @@ This is orchestration evidence, not a production token store: `savePaymentTokenT
 > [!warning] Contradiction - React save-card success is not durable vaulting
 > Review at `default-branch@bb23e7c` narrows the earlier repository-wide description: the React save-card example creates and submits a setup token, then displays success without calling `/paypal-api/vault/payment-token/create`. The HTML card example does make that request, but the shared server still has no implemented database persistence. The React gap already exists at `de90a89`; the new name field does not fix or introduce it. Source: [[source-github-v6-web-sdk-sample-integration]].
 
+### Direct v6 returning-buyer sample at `a318bcf`
+
+The September 29, 2026 direct-PayPal sample adds `paypal-saved-payment-methods`, the `<paypal-saved-payment-methods>` element and `createPayPalEditSavedPaymentSession({ commit: false, ... })`. A browser-safe client token carries either `target_customer_id` or `claims[]=vault_id:<id>`; a `B-`-prefixed input selects `billing_agreement_id` instead. These are the sample's token-request rules, not interchangeable Braintree token-generation APIs.
+
+Editing starts with an order that omits the vault ID, records the approved order ID, and captures it on a separate Submit Order action. Direct submission instead includes `paymentSource.paypal.vaultId` and skips another capture if Create Order already returned `COMPLETED`. Customer-ID-only configuration requires approval first because the direct-submit branch requires a vault ID. This is static HTML/JavaScript integration evidence; the React sample only advances its wrapper range to `^10.5.2`, without adding a returning-buyer page. Source: [[source-github-v6-web-sdk-sample-integration]]; history: [[changelog-github-v6-web-sdk-sample-integration]].
+
+> [!warning] Contradiction - identifier instruction is not enforced
+> The HTML says to enter either vault ID or customer ID, not both. The client and token route forward both when supplied and also permit neither. The save-payment route now returns token/customer IDs for local development despite the unchanged production warning to keep them server-side. Database persistence remains empty, and the server does not bind supplied identifiers to an authenticated merchant customer. Treat this as a demo, not a production vault store or authorization design. See [[source-github-v6-web-sdk-sample-integration]].
+
 ### Version 10.0.1 package evidence
 
 `@paypal/paypal-js@10.0.1` adds optional `vaultSetupToken` to the legacy Buttons `OnApproveData` type. Its expanded `createVaultSetupToken` JSDoc covers PayPal and Venmo vault-without-purchase: return a server-created Vault API setup token, using `payment_source.venmo` for Venmo. In these flows, `onApprove` returns `data.vaultSetupToken` while `data.orderID` is empty.

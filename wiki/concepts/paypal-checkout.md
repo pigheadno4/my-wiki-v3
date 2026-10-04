@@ -121,6 +121,12 @@ The September 17, 2026 sample adds a client-token ACH Wallet flow and server con
 > [!warning] Contradiction - older client-token scope
 > The older setup guide's vaulting/Fastlane-only description is narrower than the retained Basic Apple Pay (`de90a89`) and ACH Wallet (`bb23e7c`) implementations. This corrects the scope of the evidence, not merchant availability or hosted runtime guarantees.
 
+### Direct v6 returning-buyer sample at `a318bcf`
+
+The September 29, 2026 direct-PayPal HTML example adds a preview/edit saved-method element and `createPayPalEditSavedPaymentSession()` initialized from customer/vault context in a browser-safe client token. With `commit: false`, approval records an order ID; Submit Order then captures that order. The editing order omits the vault ID. A separate direct-submit path supplies the vault ID and avoids recapture when Create Order already returns `COMPLETED`. See [[paypal-vault]], [[source-github-v6-web-sdk-sample-integration]] and [[changelog-github-v6-web-sdk-sample-integration]].
+
+This updates the September 27 direct-v6 frontend evidence gap at the sample-code level, not deployed behavior, merchant eligibility or v5 feature parity. It does not add a React saved-method wrapper: the TypeScript one-time sample declares core `^11.2.0` and the React sample declares wrapper `^10.5.2`, but neither implements this new HTML flow. These are dependency ranges, not exact installations or new package releases. Keep the direct Orders API path separate from Braintree's preferred-token/nonce integration.
+
 ### Historical server-side sample at `5409a3b`
 
 The September 2023 `paypal-examples/paypal-sdk-server-side-integration` baseline uses PayPal JS SDK 5.1.x with a Fastify/TypeScript server. The browser sends cart SKU and quantity to the merchant server; the server resolves prices from its own catalog, obtains and caches an OAuth access token, creates the order, and captures or authorizes after approval. Partner examples add `PayPal-Partner-Attribution-Id` and either `PayPal-Auth-Assertion` or a payee merchant ID for connected-merchant calls.

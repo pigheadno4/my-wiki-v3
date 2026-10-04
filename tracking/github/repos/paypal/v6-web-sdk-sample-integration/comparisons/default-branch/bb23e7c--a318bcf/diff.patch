@@ -1,0 +1,790 @@
+diff --git a/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/.nvmrc b/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/.nvmrc
+index 209e3ef..2bd5a0a 100644
+--- a/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/.nvmrc
++++ b/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/.nvmrc
+@@ -1 +1 @@
+-20
++22
+diff --git a/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/.nvmrc b/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/.nvmrc
+index 209e3ef..2bd5a0a 100644
+--- a/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/.nvmrc
++++ b/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/.nvmrc
+@@ -1 +1 @@
+-20
++22
+diff --git a/client/components/paypalPayments/oneTimePayment/typescript/eslint.config.js b/client/components/paypalPayments/oneTimePayment/typescript/eslint.config.js
+index 12b9090..059e05a 100644
+--- a/client/components/paypalPayments/oneTimePayment/typescript/eslint.config.js
++++ b/client/components/paypalPayments/oneTimePayment/typescript/eslint.config.js
+@@ -15,6 +15,7 @@ export default defineConfig([
+   {
+     rules: {
+       "max-params": ["error", 2],
++      "unicorn/no-unnecessary-fetch-options": "off",
+     },
+   },
+ ]);
+diff --git a/client/components/paypalPayments/oneTimePayment/typescript/package.json b/client/components/paypalPayments/oneTimePayment/typescript/package.json
+index f3c68a1..77426d5 100644
+--- a/client/components/paypalPayments/oneTimePayment/typescript/package.json
++++ b/client/components/paypalPayments/oneTimePayment/typescript/package.json
+@@ -15,16 +15,16 @@
+   "license": "Apache-2.0",
+   "description": "",
+   "dependencies": {
+-    "@paypal/paypal-js": "^10.0.1"
++    "@paypal/paypal-js": "^11.2.0"
+   },
+   "devDependencies": {
+     "@eslint/js": "^10.0.1",
+     "@types/node": "^25.7.0",
+-    "eslint": "^10.3.0",
+-    "eslint-plugin-unicorn": "^64.0.0",
+-    "prettier": "^3.8.3",
++    "eslint": "^10.11.0",
++    "eslint-plugin-unicorn": "^76.0.0",
++    "prettier": "^3.9.9",
+     "typescript": "^6.0.3",
+-    "typescript-eslint": "^8.59.3",
+-    "vite": "^8.0.12"
++    "typescript-eslint": "^8.71.0",
++    "vite": "^8.3.1"
+   }
+ }
+diff --git a/client/components/paypalPayments/oneTimePayment/typescript/src/app.ts b/client/components/paypalPayments/oneTimePayment/typescript/src/app.ts
+index eab3545..54a5aeb 100644
+--- a/client/components/paypalPayments/oneTimePayment/typescript/src/app.ts
++++ b/client/components/paypalPayments/oneTimePayment/typescript/src/app.ts
+@@ -108,27 +108,29 @@ function setupPayLaterButton({
+   const { productCode, countryCode } = paylaterPaymentMethodDetails;
+   const paylaterButton = document.querySelector("#paylater-button");
+ 
+-  if (paylaterButton && productCode && countryCode) {
+-    paylaterButton.setAttribute("productCode", productCode);
+-    paylaterButton.setAttribute("countryCode", countryCode);
+-    paylaterButton?.removeAttribute("hidden");
+-
+-    paylaterButton?.addEventListener("click", async () => {
+-      try {
+-        // get the promise reference by invoking createOrder()
+-        // do not await this async function since it can cause transient activation issues
+-        const createOrderPromise = createOrderApiCall();
+-        await paylaterPaymentSession.start(
+-          { presentationMode: "auto" },
+-          createOrderPromise,
+-        );
+-
+-        renderAlert({ type: "info", message: "Order successfully created" });
+-      } catch (error) {
+-        console.error(error);
+-      }
+-    });
++  if (!(paylaterButton && productCode && countryCode)) {
++    return;
+   }
++
++  paylaterButton.setAttribute("productCode", productCode);
++  paylaterButton.setAttribute("countryCode", countryCode);
++  paylaterButton?.removeAttribute("hidden");
++
++  paylaterButton?.addEventListener("click", async () => {
++    try {
++      // get the promise reference by invoking createOrder()
++      // do not await this async function since it can cause transient activation issues
++      const createOrderPromise = createOrderApiCall();
++      await paylaterPaymentSession.start(
++        { presentationMode: "auto" },
++        createOrderPromise,
++      );
++
++      renderAlert({ type: "info", message: "Order successfully created" });
++    } catch (error) {
++      console.error(error);
++    }
++  });
+ }
+ 
+ function setupPayPalCreditButton({
+@@ -146,26 +148,28 @@ function setupPayPalCreditButton({
+   const { countryCode } = creditPaymentMethodDetails;
+   const paypalCreditButton = document.querySelector("#paypal-credit-button");
+ 
+-  if (paypalCreditButton && countryCode) {
+-    paypalCreditButton.setAttribute("countryCode", countryCode);
+-    paypalCreditButton.removeAttribute("hidden");
+-
+-    paypalCreditButton.addEventListener("click", async () => {
+-      try {
+-        // get the promise reference by invoking createOrder()
+-        // do not await this async function since it can cause transient activation issues
+-        const createOrderPromise = createOrderApiCall();
+-        await paypalCreditPaymentSession.start(
+-          { presentationMode: "auto" },
+-          createOrderPromise,
+-        );
+-
+-        renderAlert({ type: "info", message: "Order successfully created" });
+-      } catch (error) {
+-        console.error(error);
+-      }
+-    });
++  if (!(paypalCreditButton && countryCode)) {
++    return;
+   }
++
++  paypalCreditButton.setAttribute("countryCode", countryCode);
++  paypalCreditButton.removeAttribute("hidden");
++
++  paypalCreditButton.addEventListener("click", async () => {
++    try {
++      // get the promise reference by invoking createOrder()
++      // do not await this async function since it can cause transient activation issues
++      const createOrderPromise = createOrderApiCall();
++      await paypalCreditPaymentSession.start(
++        { presentationMode: "auto" },
++        createOrderPromise,
++      );
++
++      renderAlert({ type: "info", message: "Order successfully created" });
++    } catch (error) {
++      console.error(error);
++    }
++  });
+ }
+ 
+ function getSharedPaymentSessionOptions() {
+diff --git a/client/components/paypalPayments/savePayment/html/src/app.js b/client/components/paypalPayments/savePayment/html/src/app.js
+index b902f8d..9c6cea8 100644
+--- a/client/components/paypalPayments/savePayment/html/src/app.js
++++ b/client/components/paypalPayments/savePayment/html/src/app.js
+@@ -31,6 +31,11 @@ const paymentSessionOptions = {
+       data.vaultSetupToken,
+     );
+     console.log("Create payment token response: ", createPaymentTokenResponse);
++    const { paymentTokenId, customerId } = createPaymentTokenResponse;
++    renderAlert({
++      type: "success",
++      message: `Vaulted! Use these for the saved payment methods flow — customerId: ${customerId} | paymentTokenId (vaultId): ${paymentTokenId}`,
++    });
+   },
+   onCancel(data) {
+     renderAlert({ type: "warning", message: "onCancel() callback called" });
+diff --git a/client/components/paypalPayments/savedPaymentMethods/html/src/app.js b/client/components/paypalPayments/savedPaymentMethods/html/src/app.js
+new file mode 100644
+index 0000000..bd4ded7
+--- /dev/null
++++ b/client/components/paypalPayments/savedPaymentMethods/html/src/app.js
+@@ -0,0 +1,263 @@
++// Holds the vault configuration set by the buyer via the "Set" button.
++const vaultConfig = {
++  vaultId: "",
++  targetCustomerId: "",
++};
++
++// Set when the buyer approves an order through the saved payment method
++// component. The submit button captures this order instead of creating
++// a new one.
++let approvedOrderId = null;
++
++async function onPayPalWebSdkLoaded() {
++  document
++    .querySelector("#set-vault-config")
++    .addEventListener("click", initializePayPal);
++
++  document
++    .querySelector("#submit-button")
++    .addEventListener("click", onSubmitOrder);
++
++  await initializePayPal();
++}
++
++async function initializePayPal() {
++  try {
++    // Changing the vault configuration invalidates any order approved
++    // under the previous configuration.
++    approvedOrderId = null;
++
++    vaultConfig.vaultId = document.querySelector("#vault-id").value.trim();
++    vaultConfig.targetCustomerId = document
++      .querySelector("#target-customer-id")
++      .value.trim();
++
++    const clientToken = await getBrowserSafeClientToken({
++      targetCustomerId: vaultConfig.targetCustomerId,
++      vaultId: vaultConfig.vaultId,
++    });
++    const sdkInstance = await window.paypal.createInstance({
++      clientToken,
++      components: ["paypal-saved-payment-methods", "paypal-messages"],
++    });
++
++    const paymentMethods = await sdkInstance.findEligibleMethods({
++      currencyCode: "USD",
++    });
++
++    const { canBeVaulted } = paymentMethods.getDetails("paypal");
++
++    if (paymentMethods.isEligible("paypal") && canBeVaulted) {
++      configurePayPalButton(sdkInstance);
++    }
++  } catch (error) {
++    console.error(error);
++  }
++}
++
++const paymentSessionOptions = {
++  commit: false,
++  async onApprove(data) {
++    console.log("onApprove", data);
++    approvedOrderId = data.orderId;
++    renderAlert({
++      type: "success",
++      message: `Payment method successfully updated for order ${data.orderId} — click "Submit Order" to capture it. ${JSON.stringify(data)}`,
++    });
++  },
++  onCancel(data) {
++    renderAlert({ type: "warning", message: "onCancel() callback called" });
++    console.log("onCancel", data);
++  },
++  onError(error) {
++    renderAlert({
++      type: "danger",
++      message: `onError() callback called: ${error}`,
++    });
++    console.log("onError", error);
++  },
++};
++
++// Tracks the active session so the click handler (attached once) always
++// uses the most recently configured SDK instance.
++let editSavedPaymentSession;
++
++async function configurePayPalButton(sdkInstance) {
++  editSavedPaymentSession = sdkInstance.createPayPalEditSavedPaymentSession(
++    paymentSessionOptions,
++  );
++
++  const savedPaymentMethodComponent = document.querySelector(
++    "#saved-payment-method",
++  );
++  savedPaymentMethodComponent.removeAttribute("hidden");
++
++  if (savedPaymentMethodComponent.dataset.listenerAttached) {
++    return;
++  }
++  savedPaymentMethodComponent.dataset.listenerAttached = "true";
++
++  savedPaymentMethodComponent.addEventListener("click", async () => {
++    try {
++      // get the promise reference by invoking createOrder()
++      // do not await this async function since it can cause transient activation issues
++      //
++      // The order for the popup flow must NOT include the vault ID:
++      // creating an order with payment_source.paypal.vault_id charges it
++      // immediately (COMPLETED), which the buyer-approval popup can't
++      // work with. The session resolves the saved payment method from
++      // the client token instead.
++      const createOrderPromise = createOrder();
++      await editSavedPaymentSession.start(
++        { presentationMode: "auto" },
++        createOrderPromise,
++      );
++    } catch (error) {
++      console.error(error);
++    }
++  });
++
++  // Set up credit messaging
++  sdkInstance.createPayPalMessages({
++    buyerCountry: "US",
++    currencyCode: "USD",
++  });
++}
++
++async function getBrowserSafeClientToken({ targetCustomerId, vaultId } = {}) {
++  const queryParams = new URLSearchParams();
++  if (targetCustomerId) {
++    queryParams.append("targetCustomerId", targetCustomerId);
++  }
++  if (vaultId) {
++    queryParams.append("vaultId", vaultId);
++  }
++
++  const response = await fetch(
++    `/paypal-api/auth/browser-safe-client-token?${queryParams.toString()}`,
++    {
++      method: "GET",
++      headers: {
++        "Content-Type": "application/json",
++      },
++    },
++  );
++  if (!response.ok) {
++    throw new Error("Failed to fetch client token");
++  }
++  const { accessToken } = await response.json();
++
++  return accessToken;
++}
++
++async function createOrder({ vaultId } = {}) {
++  const body = {};
++  if (vaultId) {
++    body.vaultId = vaultId;
++  }
++
++  const response = await fetch(
++    "/paypal-api/checkout/orders/create-order-for-paypal-saved-payment-methods",
++    {
++      method: "POST",
++      headers: {
++        "Content-Type": "application/json",
++      },
++      body: JSON.stringify(body),
++    },
++  );
++  const data = await response.json();
++
++  if (!response.ok) {
++    throw new Error(
++      `Order creation failed ${data ? JSON.stringify(data) : ""}`,
++    );
++  }
++
++  renderAlert({
++    type: "info",
++    message: `Order successfully created: ${data.id}`,
++  });
++
++  // `status` and `responseBody` are extra fields consumed by
++  // onSubmitOrder() — the payment session only reads `orderId`.
++  return { orderId: data.id, status: data.status, responseBody: data };
++}
++
++async function onSubmitOrder() {
++  const submitButton = document.querySelector("#submit-button");
++  submitButton.disabled = true;
++
++  try {
++    if (!approvedOrderId && !vaultConfig.vaultId) {
++      renderAlert({
++        type: "warning",
++        message:
++          "No order to submit — set a vault ID, or click the saved payment method to approve an order first.",
++      });
++      return;
++    }
++
++    let orderId = approvedOrderId;
++    let captureData = null;
++
++    if (!orderId) {
++      // Creating an order with a vault ID charges the saved payment
++      // method in the same call, so the order can come back COMPLETED
++      // with nothing left to capture.
++      const createResult = await createOrder({ vaultId: vaultConfig.vaultId });
++      orderId = createResult.orderId;
++      if (createResult.status === "COMPLETED") {
++        captureData = createResult.responseBody;
++      }
++    }
++
++    if (!captureData) {
++      captureData = await captureOrder({ orderId });
++    }
++
++    approvedOrderId = null;
++    console.log("Capture result", captureData);
++    renderAlert({
++      type: "success",
++      message: `Order successfully captured! ${JSON.stringify(captureData)}`,
++    });
++  } catch (error) {
++    console.error(error);
++    renderAlert({
++      type: "danger",
++      message: `Order submit failed: ${error.message}`,
++    });
++  } finally {
++    submitButton.disabled = false;
++  }
++}
++
++async function captureOrder({ orderId }) {
++  const response = await fetch(
++    `/paypal-api/checkout/orders/${orderId}/capture`,
++    {
++      method: "POST",
++      headers: {
++        "Content-Type": "application/json",
++      },
++    },
++  );
++  const data = await response.json();
++
++  if (!response.ok) {
++    throw new Error(`Order capture failed ${data ? JSON.stringify(data) : ""}`);
++  }
++
++  return data;
++}
++
++function renderAlert({ type, message }) {
++  const alertComponentElement = document.querySelector("alert-component");
++  if (!alertComponentElement) {
++    return;
++  }
++
++  alertComponentElement.setAttribute("type", type);
++  alertComponentElement.innerText = message;
++}
+diff --git a/client/components/paypalPayments/savedPaymentMethods/html/src/index.html b/client/components/paypalPayments/savedPaymentMethods/html/src/index.html
+new file mode 100644
+index 0000000..9169dd5
+--- /dev/null
++++ b/client/components/paypalPayments/savedPaymentMethods/html/src/index.html
+@@ -0,0 +1,167 @@
++<!doctype html>
++<html lang="en">
++  <head>
++    <meta charset="UTF-8" />
++    <title>PayPal Payments - Saved Payment Methods Flow - PayPal Web SDK</title>
++    <meta name="viewport" content="width=device-width, initial-scale=1" />
++    <style>
++      .buttons-container {
++        display: flex;
++        flex-direction: row;
++        align-items: center;
++        flex-wrap: wrap;
++        gap: 0.75rem;
++      }
++      .buttons-container span {
++        font-weight: bold;
++      }
++      #paypal-message {
++        flex-basis: 100%;
++        /* wordmark width + flex gap, so the message's left edge lines up
++           with the "PayPal" label above it */
++        margin-left: calc(45px + 0.75rem);
++      }
++      alert-component {
++        max-width: 50rem;
++        margin-top: 4rem;
++      }
++      .note {
++        max-width: 50rem;
++        padding: 0.75rem 1rem;
++        background-color: #f0f7ff;
++        border-left: 3px solid #0070ba;
++        border-radius: 4px;
++        font-size: 14px;
++        line-height: 1.5;
++      }
++      .vault-config {
++        display: flex;
++        flex-direction: column;
++        gap: 0.75rem;
++        max-width: 25rem;
++        margin-bottom: 1.5rem;
++      }
++      .custom-field {
++        display: flex;
++        flex-direction: column;
++        gap: 4px;
++      }
++      .field-label {
++        font-family: Verdana, sans-serif;
++        font-size: 14px;
++        color: #333333;
++        font-weight: 500;
++      }
++      .field-input {
++        width: 100%;
++        height: 48px;
++        border: 1px solid #d1d5db;
++        border-radius: 4px;
++        padding: 0 12px;
++        font-family: Verdana, sans-serif;
++        font-size: 14px;
++        box-sizing: border-box;
++      }
++      .field-input:focus {
++        outline: none;
++        border-color: #0070ba;
++      }
++      #set-vault-config,
++      #submit-button {
++        max-width: 225px;
++        height: 48px;
++        border: none;
++        border-radius: 4px;
++        background-color: #0070ba;
++        color: #ffffff;
++        font-family: Verdana, sans-serif;
++        font-size: 14px;
++        font-weight: 500;
++        cursor: pointer;
++      }
++      #submit-button {
++        width: 225px;
++        margin-top: 1.5rem;
++      }
++      #submit-button:disabled {
++        opacity: 0.6;
++        cursor: not-allowed;
++      }
++    </style>
++    <link rel="stylesheet" href="/client/shared/styles.css" />
++  </head>
++
++  <body>
++    <h1>PayPal Saved Payment Methods</h1>
++    <p>
++      This is the recommended integration pattern for the returning buyer flow
++      where the vaulted payment method is previewed, allowing the buyer to click
++      and edit the payment method as needed.
++    </p>
++    <p class="note">
++      Need a Vault ID or Customer ID to try this flow? Run the
++      <a
++        href="/client/components/paypalPayments/savePayment/html/src/index.html"
++        >PayPal Save Payment (vault without purchase)</a
++      >
++      example first — after approving, it returns a <code>customerId</code> and
++      a <code>paymentTokenId</code> (vault ID).
++      <strong>Only one is needed</strong>: enter either the vault ID or the
++      target customer ID below (not both).
++    </p>
++
++    <div class="vault-config">
++      <div class="custom-field">
++        <label class="field-label" for="vault-id">Vault ID:</label>
++        <input
++          type="text"
++          id="vault-id"
++          class="field-input"
++          placeholder="Enter vault ID"
++        />
++      </div>
++      <div class="custom-field">
++        <label class="field-label" for="target-customer-id"
++          >Target Customer ID:</label
++        >
++        <input
++          type="text"
++          id="target-customer-id"
++          class="field-input"
++          placeholder="Enter target customer ID"
++        />
++      </div>
++      <button type="button" id="set-vault-config">Set</button>
++    </div>
++
++    <div class="buttons-container">
++      <paypal-monogram class="paypal-white"></paypal-monogram>
++      <span>PayPal</span>
++      <paypal-saved-payment-methods
++        id="saved-payment-method"
++        hidden
++      ></paypal-saved-payment-methods>
++      <paypal-message
++        id="paypal-message"
++        auto-bootstrap
++        amount="205.00"
++        logo-type="TEXT"
++        offer-types="PAY_LATER_SHORT_TERM"
++      ></paypal-message>
++    </div>
++
++    <button type="button" id="submit-button">Submit Order</button>
++
++    <alert-component></alert-component>
++
++    <script src="app.js"></script>
++
++    <script
++      async
++      src="https://www.sandbox.paypal.com/web-sdk/v6/core"
++      onload="onPayPalWebSdkLoaded()"
++    ></script>
++
++    <script async src="/client/shared/alert-component.js"></script>
++  </body>
++</html>
+diff --git a/client/index.html b/client/index.html
+index 7f79956..aa1c0ba 100644
+--- a/client/index.html
++++ b/client/index.html
+@@ -34,6 +34,12 @@
+               >Save payment flow with PayPal</a
+             >
+           </li>
++          <li>
++            <a
++              href="/client/components/paypalPayments/savedPaymentMethods/html/src/index.html"
++              >Saved Payment Methods Return Buyer Experience</a
++            >
++          </li>
+           <li>
+             <a
+               href="/client/components/paypalPayments/oneTimePayment/html/src/advanced/paymentHandler/index.html"
+diff --git a/client/prebuiltPages/react/package.json b/client/prebuiltPages/react/package.json
+index 870b928..92e5b4e 100644
+--- a/client/prebuiltPages/react/package.json
++++ b/client/prebuiltPages/react/package.json
+@@ -13,7 +13,7 @@
+     "typecheck": "tsc --build --noEmit"
+   },
+   "dependencies": {
+-    "@paypal/react-paypal-js": "^10.5.0",
++    "@paypal/react-paypal-js": "^10.5.2",
+     "react": "19.2.8",
+     "react-dom": "19.2.8",
+     "react-error-boundary": "6.1.2",
+diff --git a/server/node/src/routes/authRouteHandler.ts b/server/node/src/routes/authRouteHandler.ts
+index 1d4489d..b73b648 100644
+--- a/server/node/src/routes/authRouteHandler.ts
++++ b/server/node/src/routes/authRouteHandler.ts
+@@ -9,17 +9,30 @@ const { DOMAINS, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET } =
+ const oAuthAuthorizationController = new OAuthAuthorizationController(client);
+ 
+ export async function clientTokenRouteHandler(
+-  _request: Request,
++  request: Request,
+   response: Response,
+ ) {
+   const auth = Buffer.from(
+     `${PAYPAL_SANDBOX_CLIENT_ID}:${PAYPAL_SANDBOX_CLIENT_SECRET}`,
+   ).toString("base64");
+ 
++  const { targetCustomerId, vaultId } = request.query;
++  let claimKey = "vault_id";
++  if (vaultId && typeof vaultId === "string" && vaultId.startsWith("B-")) {
++    claimKey = "billing_agreement_id";
++  }
++
+   const fieldParameters = {
+     response_type: "client_token",
+     // the Fastlane component requires this domains[] parameter
+     ...(DOMAINS && { "domains[]": DOMAINS }),
++    // Saved Payment Methods requires either vaultId or targetCustomerId
++    ...(targetCustomerId && typeof targetCustomerId === "string"
++      ? { target_customer_id: targetCustomerId }
++      : {}),
++    ...(vaultId && typeof vaultId === "string"
++      ? { "claims[]": `${claimKey}:${vaultId}` }
++      : {}),
+   };
+ 
+   const { result, statusCode } =
+diff --git a/server/node/src/routes/index.ts b/server/node/src/routes/index.ts
+index 871f64a..379ee6c 100644
+--- a/server/node/src/routes/index.ts
++++ b/server/node/src/routes/index.ts
+@@ -16,6 +16,7 @@ import {
+   getOrderRouteHandler,
+   captureOrderRouteHandler,
+   captureAchWalletOrderRouteHandler,
++  createOrderForSavedPaymentMethodsRouteHandler,
+ } from "./ordersRouteHandler";
+ 
+ import {
+@@ -52,6 +53,11 @@ router.post(
+   createOrderForPayPalOneTimePaymentWithVaultRouteHandler,
+ );
+ 
++router.post(
++  "/paypal-api/checkout/orders/create-order-for-paypal-saved-payment-methods",
++  createOrderForSavedPaymentMethodsRouteHandler,
++);
++
+ router.post(
+   "/paypal-api/checkout/orders/create-order-for-apple-pay-one-time-payment-with-vault",
+   createOrderForApplePayOneTimePaymentWithVaultRouteHandler,
+diff --git a/server/node/src/routes/ordersRouteHandler.ts b/server/node/src/routes/ordersRouteHandler.ts
+index 0f26598..8ebac30 100644
+--- a/server/node/src/routes/ordersRouteHandler.ts
++++ b/server/node/src/routes/ordersRouteHandler.ts
+@@ -39,6 +39,7 @@ const OneTimePaymentSchema = z
+     processingInstruction: z.enum(ProcessingInstruction).optional(),
+     returnUrl: z.url().optional(),
+     cancelUrl: z.url().optional(),
++    vaultId: z.string().optional(),
+   })
+   .transform((data) => {
+     const { items, totalAmount } = calculateCartAmount(
+@@ -245,6 +246,55 @@ export async function createOrderForPayPalOneTimePaymentWithVaultRouteHandler(
+   response.status(statusCode).json(result);
+ }
+ 
++export async function createOrderForSavedPaymentMethodsRouteHandler(
++  request: Request,
++  response: Response,
++) {
++  const {
++    currencyCode,
++    totalAmount,
++    items,
++    intent,
++    processingInstruction,
++    vaultId,
++  } = OneTimePaymentSchema.parse(request.body ?? {});
++
++  const orderRequestBody = {
++    intent,
++    ...(processingInstruction && { processingInstruction }),
++    purchaseUnits: [
++      {
++        amount: {
++          currencyCode,
++          value: totalAmount,
++          breakdown: {
++            itemTotal: {
++              currencyCode: currencyCode,
++              value: totalAmount,
++            },
++          },
++        },
++        items,
++      },
++    ],
++    ...(vaultId && {
++      paymentSource: {
++        paypal: {
++          vaultId,
++        },
++      },
++    }),
++  };
++
++  const { result, statusCode } = await ordersController.createOrder({
++    body: orderRequestBody,
++    paypalRequestId: randomUUID(),
++    prefer: "return=minimal",
++  });
++
++  response.status(statusCode).json(result);
++}
++
+ export async function createOrderForApplePayOneTimePaymentWithVaultRouteHandler(
+   request: Request,
+   response: Response,
+diff --git a/server/node/src/routes/vaultRouteHandler.ts b/server/node/src/routes/vaultRouteHandler.ts
+index 7af5a90..6d4fdfd 100644
+--- a/server/node/src/routes/vaultRouteHandler.ts
++++ b/server/node/src/routes/vaultRouteHandler.ts
+@@ -94,9 +94,14 @@ export async function createPaymentTokenRouteHandler(
+     // PayPal recommends storing this value in your database
+     // and NOT returning it back to the browser.
+     await savePaymentTokenToDatabase(result);
++    // NOTE: returning the paymentTokenId and customerId to the browser
++    // here is for local testing/development of the saved payment methods
++    // flow only. In production, keep these server-side.
+     response.status(statusCode).json({
+       status: "SUCCESS",
+       description: "Payment token saved to database for future transactions",
++      paymentTokenId: result.id,
++      customerId: result.customer?.id,
+     });
+   } else {
+     response.status(statusCode).json({

@@ -2,9 +2,10 @@
 title: "GitHub: paypal-examples/v6-web-sdk-sample-integration"
 type: source
 date_ingested: 2026-04-17
-date_updated: 2026-09-19
+date_updated: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json"
@@ -18,12 +19,15 @@ tags: [paypal, web-sdk-v6, samples, node-js, react, card-fields, venmo, google-p
 
 Repository: <https://github.com/paypal-examples/v6-web-sdk-sample-integration>
 
-The latest collected baseline is `default-branch@bb23e7c` (`bb23e7c63305a872326f43c3d52c5edd53e20b43`, committed September 17, collected September 19, 2026). It adds ACH Wallet, optional cardholder-name fields, and local-method automatic presentation. Earlier commit-qualified findings below remain historical reference, not overwritten by this full additive update.
+The September 19 collected baseline, `default-branch@bb23e7c` (`bb23e7c63305a872326f43c3d52c5edd53e20b43`, committed September 17, 2026), adds ACH Wallet, optional cardholder-name fields, and local-method automatic presentation. Its commit-qualified findings remain historical reference.
+
+The latest locally ingested snapshot is `default-branch@a318bcf` (`a318bcf7cb8a458b180df553ab459db3a5a79586`, committed September 29, collected/ingested October 4, 2026). It adds a direct-PayPal saved-method preview/edit HTML example, customer-aware client-token generation and saved-method order submission. Full additive ingest preserves every earlier baseline; no browser or payment test was performed.
 
 ## Evidence Boundary
 
 - The `de90a89` capsule retains 259 files totaling 864,367 bytes and excludes 11 files totaling 393,130 bytes under reviewed capsule policy. The generated comparison identifies eight retained changes from `b5f2df2`.
-- The current `bb23e7c` capsule retains 262 files / 877,954 bytes with the same 11 exclusions. Comparison with `de90a89`: three added and 62 modified files; 197 unchanged retained files verified by SHA-256. Under an explicitly approved one-time focused-reading exception, all changed files and prior versions plus affected dependencies were read completely; the entire 532-path full-mode assignment was not semantically reread. Registry and immutable packet remain unchanged.
+- The `bb23e7c` capsule retains 262 files / 877,954 bytes with the same 11 exclusions. Comparison with `de90a89`: three added and 62 modified files; 197 unchanged retained files verified by SHA-256. Under an explicitly approved one-time focused-reading exception, all changed files and prior versions plus affected dependencies were read completely; the entire 532-path full-mode assignment was not semantically reread. Registry and immutable packet remain unchanged.
+- The `a318bcf` capsule retains 264 files / 892,436 bytes and excludes 11 files / 397,902 bytes. Comparison with `bb23e7c`: two added and twelve modified retained files, 250 unchanged, no deletion. Full additive mode uses the user's option-1 focused-reading exception: all fourteen changed/current files, twelve prior versions and affected local dependencies read fully; both inventories and all retained hashes checked mechanically. The 537-path full assignment was not semantically reread. Changed excluded test/lockfile paths remain outside the capsule; registry and packet are unchanged.
 - The sample demonstrates public integration contracts and orchestration. It does not establish merchant eligibility, regional availability, account enablement, certification, or production behavior.
 - No generated comparison connects the legacy `dd9ef8a` selection to `b5f2df2`; the earlier 36-file review is preserved as historical context and the current full baseline was compared manually during ingest.
 - Upstream README statements are not treated as stronger than contradictory implementation code.
@@ -212,6 +216,74 @@ Paths below are under `raw/github/paypal/v6-web-sdk-sample-integration/snapshots
 - `client/components/localPaymentMethods/idealPayments/html/src/app.js:98` - representative `auto` option; all 46 changed implementations were read, not inferred from this one example.
 - `client/prebuiltPages/react/package.json` and `server/node/package.json` - declared ranges, not lockfile resolutions.
 
+## Change from `bb23e7c` to `a318bcf`
+
+### Direct PayPal saved-method preview and editing
+
+The new `client/components/paypalPayments/savedPaymentMethods/html/src/` page loads the sandbox hosted v6 core and renders `<paypal-saved-payment-methods>`. It obtains a server-generated browser-safe client token and initializes `components: ["paypal-saved-payment-methods", "paypal-messages"]`. After USD eligibility, it checks PayPal eligibility and `canBeVaulted`, exposes the element, and creates `createPayPalEditSavedPaymentSession()` with `commit: false` and approve/cancel/error callbacks. The HTML describes this as a returning-buyer preview/edit pattern; this snapshot establishes the invocation, not hosted UI internals or actual merchant eligibility.
+
+The token route now forwards `targetCustomerId` as `target_customer_id`. Alternatively it forwards `vaultId` in `claims[]`, using `vault_id:<id>` by default or `billing_agreement_id:<id>` when the supplied string starts with `B-`. It still requests `response_type: "client_token"`, conditionally forwards `domains[]`, and keeps API credentials on the server. This direct-PayPal route does not use Braintree GraphQL `preferredPaymentMethodToken` or Braintree payment-method nonces.
+
+Two branches share the new `/paypal-api/checkout/orders/create-order-for-paypal-saved-payment-methods` route:
+
+| Branch | Create Order input | Subsequent action |
+| --- | --- | --- |
+| Buyer edits/approves through the saved-method session | No vault ID; session resolves context from the client token | `onApprove` stores `data.orderId`; Submit Order captures that same ID |
+| Direct submission without an approved order | Vault ID sent as `paymentSource.paypal.vaultId` | Skip capture if Create Order returned `COMPLETED`; otherwise call the capture route |
+
+The editing click creates the order promise without awaiting it before `start({ presentationMode: "auto" }, promise)`, preserving transient activation. `onApprove` does not capture. The submit button is disabled while its handler runs and restored in `finally`. Changing identifier configuration clears the previously approved order ID; the element's click listener is attached once and refers to the latest configured session. Customer-ID-only input can enter the editing path but cannot directly submit before approval because that branch requires a vault ID.
+
+The server adds optional `vaultId` to its shared Zod order schema, calculates the default USD 205 cart from its own catalog, retains CAPTURE as the default intent, accepts optional processing instruction, and uses a fresh request UUID with `return=minimal`. The sample comments say including a vault ID charges during creation; the actual client still checks the returned status. Do not generalize automatic completion to every request, merchant or intent, or interpret edit approval as durable replacement of the stored token.
+
+### Save-payment handoff and development-only identifiers
+
+The existing HTML save-without-purchase flow still creates and approves a setup token, then calls `/paypal-api/vault/payment-token/create`. That server response now includes `paymentTokenId` and `customerId`; the HTML displays them so a developer can enter one in the new page. The server explicitly labels this return as local development only and retains its instruction to keep long-lived tokens server-side in production. `savePaymentTokenToDatabase()` remains empty.
+
+> [!warning] Contradiction - identifier instruction is not enforced
+> The new HTML says "enter either the vault ID or the target customer ID below (not both)." Its JavaScript and token endpoint forward both when supplied and permit neither; they do not validate mutual exclusivity. The initialization routine also leaves an earlier visible element/session intact if a later initialization is ineligible or fails. No generation guard prevents overlapping initialization from completing out of order. These are sample-local limitations, not proven hosted SDK defects. See [[paypal-vault]].
+
+> [!warning] Production boundary - ownership, persistence and payment state
+> The inspected server installs no customer authentication/ownership middleware before these routes. Supplied customer/vault IDs are not bound to an authenticated application customer, durable storage is absent, and IDs are intentionally displayed/logged for development. The submit handler treats any successful HTTP capture response as "captured" without inspecting individual capture status; after success it clears the approved ID and permits another direct submission. A fresh UUID on every request is not an application-level duplicate-payment guard. Production adaptation needs server-owned identity, payment-state reconciliation and stable retry/idempotency handling; no payment was executed here.
+
+### TypeScript, React and unchanged integration history
+
+The TypeScript one-time PayPal example changes core dependency range `^10.0.1` to `^11.2.0`; Pay Later and Credit button guards become early returns without changing their session-start/capture sequence. ESLint/Unicorn/Prettier/typescript-eslint/Vite ranges advance, and the unnecessary-fetch-options lint rule is disabled. Two iframe examples change `.nvmrc` from Node 20 to 22. The new navigation link points to the static saved-method page.
+
+The React manifest advances wrapper range `^10.5.0` to `^10.5.2`, while every retained React implementation file is hash-identical. Its fully read `App.tsx` still initializes a client-ID-based provider without `paypal-saved-payment-methods` and adds no returning-buyer route. This update is not a new typed/React saved-method integration and does not ingest those packages' release implementations. The unchanged server SDK range remains `^2.5.0`. Existing ACH, card-name, Apple Pay, Google Pay, LPM and subscription implementation history remains qualified by the earlier snapshots.
+
+> [!info] Dated frontend-gap update
+> The September 27 analysis had not found a direct-PayPal v6 customer-aware frontend flow in its checked docs/packages. This September 29 HTML sample supplies new direct-PayPal frontend evidence; the older observation is historical, not a permanent runtime limitation. Typed/React parity and tested merchant behavior remain unresolved. See [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]].
+
+### Grounding and exact evidence at `a318bcf`
+
+Paths below are under `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/files/`:
+
+> `components: ["paypal-saved-payment-methods", "paypal-messages"],`
+>
+> `client/components/paypalPayments/savedPaymentMethods/html/src/app.js:41`
+
+> `commit: false,`
+>
+> `client/components/paypalPayments/savedPaymentMethods/html/src/app.js:59`
+
+> `if (createResult.status === "COMPLETED") {`
+>
+> `client/components/paypalPayments/savedPaymentMethods/html/src/app.js:210`
+
+> `? { target_customer_id: targetCustomerId }`
+>
+> `server/node/src/routes/authRouteHandler.ts:31`
+
+> `// here is for local testing/development of the saved payment methods`
+>
+> `server/node/src/routes/vaultRouteHandler.ts:98`
+
+- New saved-method `src/app.js` and `src/index.html`: full client orchestration and identifier instruction.
+- `server/node/src/routes/authRouteHandler.ts`, `index.ts`, `ordersRouteHandler.ts`, `vaultRouteHandler.ts`: token context, routing, order construction/capture and development-only vault response.
+- `server/node/src/server.ts`, `paypalServerSdkClient.ts`, `productCatalog.ts`: middleware, sandbox client, logging and default cart dependencies.
+- `client/components/paypalPayments/savePayment/html/src/app.js`: setup-token exchange and development-ID handoff.
+- `client/components/paypalPayments/oneTimePayment/typescript/src/app.ts` and `package.json`, `client/prebuiltPages/react/package.json` and `src/App.tsx`: version-range and frontend-scope boundaries.
+
 ## Related
 
 - Company: [[paypal]]
@@ -227,6 +299,10 @@ Paths below are under `raw/github/paypal/v6-web-sdk-sample-integration/snapshots
 - Repository history: [[changelog-github-v6-web-sdk-sample-integration]]
 
 ## Raw Sources
+
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/manifest.json` - immutable saved-payment-methods update; all earlier snapshots retained
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/bb23e7c--a318bcf/comparison.json` - fourteen retained changes and two excluded changed paths
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-review-9765a512.md` - approved focused-reading scope, grounding and validation receipt
 
 - `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json` - immutable exact-SHA capsule for ACH Wallet, card-name and LPM presentation update
 - `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/de90a89--bb23e7c/comparison.json` - 65 changed paths, 197 unchanged

@@ -29,7 +29,7 @@
 
 ## Analyses
 
-- [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]] - documented v5 saved-PayPal UI versus unverified direct v6 parity; backend token reuse and Braintree kept separate
+- [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]] - historical v5/v6 gap plus new direct-v6 HTML saved-method evidence; typed/React, tested parity and Braintree remain separate
 
 - [[analysis-paypal-pay-later-fr-integration-guide]] — PayPal Pay Later FR messaging + button integration for US merchant account (cross-border, limited release)
 - [[analysis-paypal-radio-button-payment-wall]] — PayPal + Pay Later radio button payment wall: funding eligibility gating, marks, standalone buttons

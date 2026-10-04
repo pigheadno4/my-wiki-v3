@@ -1,48 +1,52 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Direct v6 saved-method sample `a318bcf`
+
+- Full additive/focused; history and demo limits retained. Details [[paypal-log]]. No commit/push.
+
 ## [2026-10-04] ingest | SDK release assembly `5.0.580`
 
-- Serial delta/focused: Checkout Components `5.0.435` -> `5.0.436`; the other eleven direct pins remain unchanged. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: Checkout `5.0.436`; other pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.579`
 
-- Serial delta/focused: Common Components `1.0.61` -> `1.0.62`; Messaging Components `1.97.0` -> `1.98.0`; other ten direct pins unchanged. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: Common `1.0.62`, Messaging `1.98.0`; other pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.578`
 
-- Serial delta/focused: Common Components `1.0.60` -> `1.0.61`; the other eleven direct pins remain unchanged. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: Common `1.0.61`; other pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.577`
 
-- Serial delta/focused: Checkout Components `5.0.434` -> `5.0.435`; Messaging Components `1.96.0` -> `1.97.0`; other ten direct pins unchanged. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: Checkout `5.0.435`, Messaging `1.97.0`; other pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.576`
 
-- Serial delta/focused: All twelve direct pins remain unchanged; the retained package edit is version-only. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: version-only; twelve pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.575`
 
-- Serial delta/focused: All twelve direct pins remain unchanged; the retained package edit is version-only. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: version-only; twelve pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.574`
 
-- Serial delta/focused: Checkout Components `5.0.433` -> `5.0.434`; the other eleven direct pins remain unchanged. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: Checkout `5.0.434`; other pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.573`
 
-- Serial delta/focused: Checkout Components `5.0.432` -> `5.0.433`; Messaging Components `1.95.1` -> `1.96.0`; other ten direct pins unchanged. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: Checkout `5.0.433`, Messaging `1.96.0`; other pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.572`
 
-- Serial delta/focused: Checkout Components advances `5.0.431` -> `5.0.432`; the other eleven direct pins remain unchanged. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: Checkout `5.0.432`; other pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.571`
 
-- Serial delta/focused: All twelve direct component pins remain unchanged; the retained package edit is version-only. Assembly/history details: [[paypal-log]]. No commit/push.
+- Delta/focused: version-only; twelve pins unchanged. Details [[paypal-log]]. No commit/push.
 
 ## [2026-10-04] ingest | SDK release assembly `5.0.570`
 
-- Serial delta: Checkout pin `5.0.428` -> `5.0.431`, Messaging `1.94.0` -> `1.95.1`; other direct pins/tooling unchanged. Older history retained; assembly is not behavior/deployment proof. Details [[paypal-log]], [[changelog-github-paypal-sdk-release]]. No commit/push. Next: serial `5.0.571`.
+- Delta: Checkout `5.0.431`, Messaging `1.95.1`; other pins/tooling unchanged. Composition, not deployment proof. Details [[paypal-log]]. No commit/push. Next: `5.0.571`.
 
 ## [2026-10-04] ingest | Braintree website C38
 
