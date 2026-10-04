@@ -1,0 +1,55 @@
+{
+  "job_id": "reference-forward-api-server-errors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Server Errors\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/server-errors\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/server-errors-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, server-errors, api-errors]\n---\n\n## Overview\n\nThis collected, unversioned Braintree Forward API reference describes server errors returned when Forward API cannot complete a request. It is a failure-reference route for [[braintree-forward-api]], not a [[braintree-orchestration]] transaction-lifecycle reference, and it does not establish destination acceptance, payment execution, settlement, funding, or current production enablement. See [[braintree]].\n\n## Key takeaways\n\n- Production Forward API use is subject to eligibility; the snapshot routes readers to an Account Manager or Business Development rather than establishing current merchant eligibility or enablement.\n- The page shows an example JSON body containing `error`, `message`, and `request-uuid`, but describes its format only as resembling the example. Treat the object as an illustration, not a guaranteed required response schema.\n- The catalog maps connection-establishment, request-processing, and between-packet timeouts to HTTP 504, and a failed TLS handshake with the destination API to HTTP 502. Use the raw table for the exact error names, explanations, additional `message` fields, and status mappings.\n- A destination-originated 5xx is handled differently: the page says the Forward API response has status code 200 while the response body shows the destination response error in its `status` field. An HTTP 200 from Forward API therefore does not by itself establish destination success.\n- This page does not define a retry policy, remediation sequence, destination processing result, or payment-lifecycle outcome.\n\n> [!warning] Distinguish Forward API HTTP status from destination status\n> When the destination returns a 5xx, the documented Forward API response status is 200 and the destination response error is represented in the body. Inspect the destination status carried in the response body rather than interpreting the Forward API HTTP 200 as a successful destination or payment outcome.\n\n## Detail locators\n\n- Production eligibility and Account Manager or Business Development inquiry route: `**AVAILABILITY**`, raw lines 16-17.\n- Server-error identity and illustrative JSON response body: introductory paragraph and JSON block, raw lines 19-30.\n- Exact timeout and TLS error catalog, additional fields, and HTTP 502/504 mappings: error table, raw lines 32-37.\n- Destination 5xx represented by a Forward API HTTP 200 with the destination error in the body `status` field: `**NOTE**`, raw lines 39-40.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- General forwarding model: [[source-braintree-reference-forward-api-overview]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\nThe following linked pages are navigation targets and were not read as raw factual evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]]\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Forward API configuration reference]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/server-errors-2026-09-16|Braintree Forward API server errors]] - fully read 2026-09-16 snapshot covering production eligibility, the illustrative error body, timeout/TLS server-error catalog, HTTP status mappings, and destination-5xx relay behavior\n",
+  "quotes": [
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility.   Contact your Account Manager for more information or [submit an inquiry to our Business Development team](https://www.braintreepayments.com/products/braintree-extend#contact).",
+      "location": "**AVAILABILITY**, raw line 17"
+    },
+    {
+      "text": "Server errors are returned when the [Forward API](/braintree/docs/reference/forward-api/overview/) is unable to complete the request. The body is a JSON structure with a format resembling the following example:",
+      "location": "introductory paragraph, raw line 19"
+    },
+    {
+      "text": "| Connect timeout | Time establishing a TCP connection to the destination exceeded the configured threshold | [connect_timeout](/braintree/docs/reference/forward-api/config#connect_timeout) | 504 |",
+      "location": "server-error table, raw line 34"
+    },
+    {
+      "text": "| TLS error | The[TLS handshake](https://en.wikipedia.org/wiki/Transport_Layer_Security#TLS_handshake)with the destination API failed |  | 502 |",
+      "location": "server-error table, raw line 37"
+    },
+    {
+      "text": "If the destination returns a 5xx error, the [Forward API response](/braintree/docs/reference/forward-api/overview/#example) will have a status code of 200, but the response body will show the destination's response error in the status field.",
+      "location": "**NOTE**, raw line 40"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "reference-forward-api-server-errors-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-server-errors]] - 2026-09-16 collected unversioned Forward API server-error reference for illustrative failure-body shape, timeout/TLS 502/504 mappings, production eligibility, and the destination-5xx boundary where Forward API returns HTTP 200 while carrying the destination error in the body; not Orchestration, retry-policy, destination-success, payment-lifecycle, or current-enablement evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Forward API's own 502/504 server-error catalog distinct from the separately documented destination-5xx behavior carried through a Forward API HTTP 200.",
+          "Treat the JSON body only as an example whose format is described as resembling the shown object, not as a guaranteed required schema."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/server-errors-2026-09-16.md",
+  "raw_sha256": "e981e4287cfff545f575c99dc3de01bf6e69565b635d49b0795b820dfdddf014",
+  "status": "candidate_ready"
+}

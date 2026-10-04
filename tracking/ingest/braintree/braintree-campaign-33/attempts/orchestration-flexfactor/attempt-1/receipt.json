@@ -1,0 +1,55 @@
+{
+  "job_id": "orchestration-flexfactor",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Orchestration: FlexFactor Integration Guide\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/orchestration/flexfactor\"\nraw_files:\n  - \"braintree/docs/guides/orchestration/flexfactor-2026-09-16.md\"\ntags: [braintree, orchestration, flexfactor, card-payments, revenue-recovery]\n---\n\n## Overview\n\nThis Braintree-hosted guide describes integrating FlexFactor with Braintree through the PayPal Orchestration Platform. It says FlexFactor's real-time decision engine evaluates a transaction after failure on PayPal Enterprise and can recover revenue from false declines. The documented integration supports Visa and Mastercard credit or debit cards. This is Braintree authority for this orchestration route, not independent FlexFactor provider authority, and the snapshot does not prove merchant enablement, transaction execution, recovery, settlement, dispute outcome, or funding.\n\n## Key takeaways\n\n- Each merchant needs a FlexFactor account, FlexFactor credentials shared securely with Braintree through an AM or TAM, and currency-specific merchant accounts. Merchants without a dedicated AM or TAM are directed to Braintree client onboarding.\n- The guide describes a direct Braintree connection that routes transactions to FlexFactor. The merchant makes the initial transaction attempt and decides when to trigger a retry to FlexFactor; this merchant-driven rule is distinct from Braintree's automatic retries for the specific capture, dual-step charge, and refund HTTP-error states documented in the status table. This orchestration route is not automatically the Braintree Forward API, and Forward API-only limitations must not be imported into it.\n- The supported core path is dual-step authorization and capture; single-step charge is marked unsupported. A standalone authorization must be captured within seven days, while the status mapping says the FlexFactor-configured authorization window can range from five minutes to seven days. Full capture is supported, but partial capture, capture above the authorized amount, and authorization adjustment are not.\n- For capture or dual-step charge HTTP 4xx/5xx outcomes after successful authorization, the Braintree status remains `SETTLING` while Braintree automatically retries FlexFactor until a final `SETTLED` or `SETTLEMENT_DECLINED` status. Do not ship goods or treat the transaction as successful before `SETTLED`. Refund HTTP 4xx/5xx follows the same automatic-retry and final-status pattern.\n- Full and partial refunds are supported, but refunds cannot exceed the settled amount and partial refunds are limited to 60% of the original order price. Full voids before settlement are supported; settled transactions require a refund. FlexFactor handles disputes and chargebacks for this integration.\n\n## Detail locators\n\n- **Supported lifecycle and methods:** `Features` \u2192 `Core transaction lifecycle`, `Voids and refunds`, and `Payment instruments and methods`.\n- **Data, fraud, and verification support:** `Features` \u2192 `Data, descriptors, and fraud signals` and `Verifications`.\n- **Account, credentials, and merchant-account prerequisites:** `Before you begin`.\n- **Connection and merchant-triggered retry:** `FlexFactor integration`.\n- **Status ownership, conditional automatic retries, and fulfillment warnings:** `Transaction status mapping`.\n- **Required transaction fields:** `Required fields`.\n- **Captured sandbox card behavior:** `Testing`; these examples do not establish production eligibility or successful execution.\n- **Dispute ownership:** `Disputes`.\n\n## Related\n\n- [[braintree]]\n- [[braintree-orchestration]]\n\n## Related raw API references\n\nThe guide links to Braintree SDK and GraphQL transaction-processing references and to FlexFactor credential documentation. Those linked targets were not read for this entry and are navigation only.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/orchestration/flexfactor-2026-09-16|FlexFactor Integration Guide (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "This guide is for developers integrating FlexFactor with Braintree through the PayPal Orchestration Platform. It covers supported capabilities, required fields, transaction status mapping, and testing for this integration.",
+      "location": "line 16, introduction"
+    },
+    {
+      "text": "- **FlexFactor configuration and credentials:**Each merchant must have an account with FlexFactor. To securely share the[FlexFactor credentials](https://guides.flexfactor.io/docs/credentials/)with Braintree, work with your AM or TAM.",
+      "location": "line 121, Before you begin"
+    },
+    {
+      "text": "- **Merchant account setup:**To process transactions with FlexFactor, you need currency-specific merchant accounts for use in your integration. Your Braintree AM or TAM can help facilitate this setup.",
+      "location": "line 122, Before you begin"
+    },
+    {
+      "text": "The FlexFactor integration uses a direct connection through Braintree. Transactions are routed directly to FlexFactor, bypassing intermediate processing steps.\n\nThe retry logic in this integration is merchant-driven: you first attempt the transaction, and then you decide when to trigger a retry attempt to FlexFactor.",
+      "location": "lines 129-131, FlexFactor integration"
+    },
+    {
+      "text": "Do not ship goods or consider the transaction successful until the status changes toSETTLED.  In the rare event that FlexFactor returns HTTP status 4xx/5xx for capture after successful authorization, it is due to: an invalid or malformed payload sent to FlexFactor, or a network or server overload error.  Retry logic: Braintree automatically retries this transaction on FlexFactor until a final status is received.",
+      "location": "line 144, Transaction status mapping, Capture / HTTP status 4xx or 5xx"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "orchestration-flexfactor-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-orchestration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-orchestration-flexfactor]] - Braintree-hosted FlexFactor route through PayPal Orchestration Platform with currency-specific merchant-account and securely shared FlexFactor-credential prerequisites, merchant-triggered initial retries, integration-scoped automatic retries, and `SETTLING` fulfillment guardrails; not independent FlexFactor provider authority or proof of enablement, execution, recovery, settlement, dispute outcome, or funding",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route distinct from Braintree Forward API; do not import forwarding-only limitations.",
+          "The guide is Braintree-hosted integration authority, not independent FlexFactor provider authority or proof of actual execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/orchestration/flexfactor-2026-09-16.md",
+  "raw_sha256": "4a7ba483ec9cc339eb99e62bca968ab13eefee8a0b63445b20767b1069a9bf85",
+  "status": "candidate_ready"
+}

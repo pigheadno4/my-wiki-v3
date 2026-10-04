@@ -1,0 +1,55 @@
+{
+  "job_id": "reference-forward-api-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Overview\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/overview\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/overview-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, vault, payment-data-forwarding]\n---\n\n## Overview\n\nThis collected, unversioned Braintree Forward API overview describes forwarding raw payment data from the Braintree Vault to a third-party destination. The destination need not be a Braintree merchant, but the page defines it as a PCI-compliant entity that requires raw payment data. Production Forward API use is subject to eligibility. See [[braintree]] and [[braintree-forward-api]].\n\nThis is a retrieval entry for the forwarding model, not a replacement API specification. It does not establish that a destination authorized a merchant, accepted or processed a request, or created, authorized, captured, settled or funded a payment. Forward API is also separate from the processor-connection and transaction-lifecycle route indexed at [[braintree-orchestration]].\n\n## Key takeaways\n\n- Before forwarding, the developer writes a destination config that describes the HTTPS request the Forward API will make. Once that config exists, a caller sends an HTTPS request to Forward API that references the config and supplies a payment-method nonce or token used to look up Vault data.\n- Forward API then makes the configured destination API request on the caller's behalf with the specified payment data and relays the destination response. The page says that, when the forwarding request succeeds, the Forward API response body includes the destination's full HTTPS response.\n- The overview names transaction, loyalty/rewards and processing services as examples and says other integrations requiring raw payment information can potentially use the route. These are use-case orientations, not guarantees that a destination supports an operation or that a particular merchant is eligible.\n\n> [!warning] Eligibility and account authority remain separate\n> The 2026-09-16 snapshot says production use is subject to eligibility and routes inquiries to an Account Manager or Business Development. It does not prove current enablement, a usable production config, or the account/role permission required for a particular merchant.\n\n> [!warning] Raw payment data requires an independently established security boundary\n> The page identifies destinations as PCI-compliant entities and describes sending sensitive Vault-derived payment data over configured HTTPS requests. This sparse overview does not define credential handling, logging/redaction controls, client-versus-server placement, or how PCI compliance is established; do not treat forwarding or a relayed HTTP response as destination approval or payment-lifecycle evidence.\n\n## Detail locators\n\n- Forward API identity, Vault source and destination qualification: `# Forward API`, raw line 16.\n- Example transaction, loyalty/rewards, processing and other use cases: `# Forward API`, raw lines 20-28.\n- Production eligibility and Account Manager or Business Development inquiry route: `**AVAILABILITY**`, raw lines 31-36.\n- Destination config purpose and setup-before-request sequence: `## How it works`, raw lines 41-47.\n- Caller request, config reference and Vault lookup through a payment-method nonce or token: `## How it works`, raw lines 50-52.\n- Destination request delegation, specified payment data and response relay: `## How it works`, raw lines 55-62.\n- Simplified `httpbin.org` request/response illustration: `## Example`, raw lines 67-104.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\nThe following linked pages are navigation targets and were not read as factual evidence for this entry:\n\n- [[raw/braintree/articles/control-panel/vault/overview-2026-09-16|Braintree Vault overview]]\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Forward API configuration reference]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Braintree Forward API overview]] - fully read 2026-09-16 snapshot covering Vault-to-destination identity, production eligibility, config-based HTTPS forwarding and destination-response relay\n",
+  "quotes": [
+    {
+      "text": "The Braintree Forward API allows developers to forward raw payment data from the [Vault](/braintree/articles/control-panel/vault/overview) to third parties. These third parties\u2014or destinations\u2014do not need to be Braintree merchants; they can be any PCI compliant entity that requires raw payment data.",
+      "location": "raw line 16, Forward API introduction"
+    },
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility.",
+      "location": "raw line 32, availability notice"
+    },
+    {
+      "text": "You will tell the Forward API how to include the sensitive payment data by writing a config that describes the HTTPS requests the Forward API will make.",
+      "location": "raw line 43, How it works"
+    },
+    {
+      "text": "Once you've set up a config for a given destination, you can begin making requests to the Forward API to send payment data to that destination, and the Forward API will make the necessary HTTPS requests on your behalf.",
+      "location": "raw line 47, How it works"
+    },
+    {
+      "text": "- The Forward API receives a response from the destination.\n- You receive a response from the Forward API.\n- If the request is successful, the Forward API[response body includes the destination's full HTTPS response](#example).",
+      "location": "raw lines 60-62, How it works response sequence"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-reference-forward-api-overview-concept-reciprocal",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-overview]] - 2026-09-16 collected unversioned Forward API overview for Vault-to-PCI-compliant-destination identity, production eligibility, config-based HTTPS request delegation and destination-response relay; an outbound forwarding route distinct from Orchestration processor connections and transaction lifecycle operations",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The snapshot's eligibility statement does not establish current product access, a usable production config, or a merchant's account/role permission.",
+          "Forwarding raw payment data or receiving the destination's HTTP response does not establish destination authorization, payment execution, settlement or funding."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/overview-2026-09-16.md",
+  "raw_sha256": "b4a15cfd383db2d24472e0a3d9b9a4586dd080a05428e3aea327f9dd659db366",
+  "status": "candidate_ready"
+}

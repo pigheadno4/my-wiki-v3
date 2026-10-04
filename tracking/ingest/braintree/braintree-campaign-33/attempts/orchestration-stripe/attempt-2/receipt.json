@@ -1,0 +1,52 @@
+{
+  "job_id": "orchestration-stripe",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree PayPal Orchestration Stripe Integration\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/orchestration/stripe\"\nraw_files:\n  - \"braintree/docs/guides/orchestration/stripe-2026-09-16.md\"\ntags: [braintree, orchestration, stripe, card-payments, transaction-lifecycle]\n---\n\n## Overview\n\nThis Braintree-hosted Stripe integration guide describes a US-only route for using an existing Braintree integration to process card transactions through PayPal Orchestration with Stripe as the destination. Merchants perform transaction operations through Braintree, while the guide says settlement, chargebacks, reporting, and reconciliation are handled through the Stripe portal. This collected page is Braintree documentation for that destination integration, not independent current Stripe authority, proof of account eligibility, or execution evidence.\n\n## Key takeaways\n\n- Use Braintree for transaction operations; operating directly in Stripe can create discrepancies and synchronization errors. The documented core route supports single-step charge, separate authorization and capture, full capture, voids, and refunds, subject to the operation matrix and status rules in the raw source; within this Braintree-managed integration, a standalone authorization must be captured within seven days before it expires. It does not support partial capture, capture above the authorized amount, Adjust Authorization, or the listed escrow/partial-settlement operations.\n- Setup requires a US-based merchant, currency-specific Braintree merchant accounts arranged with a Braintree AM or TAM, a Stripe connection configured in the Braintree Control Panel, and the correct distinct Stripe key for each sandbox or production environment. The guide directs merchants to confirm setup with a sandbox test transaction.\n- Stripe transactions require `cardholderName` during payment-method tokenization. Refunds require sufficient Stripe-account funds; an insufficient-funds refund can remain `PENDING` at Stripe and `SETTLING` in Braintree until Braintree receives a final webhook update. Merchants are not required to implement the Stripe refund webhooks described by this guide because Braintree registers them.\n- Treat `SETTLING` as non-final: do not ship goods or provide services until the Braintree transaction is `SETTLED`. The generic reconciliation paragraph says Braintree queries Stripe for capture, refund, and charge, but the more specific `FAILED`-charge section says charge errors are not automatically reconciled. Because the source does not resolve that conflict, query by the internal transaction reference with Find/Search before attempting another create.\n- The feature tables, required-field mappings, response-code mappings, test-card mappings, and SDK/GraphQL navigation are snapshot-specific detail routes. They do not establish current Stripe behavior outside this Braintree-managed integration or prove settlement or funding.\n\n## Detail locators\n\n- **Supported feature matrices:** `## Features` (lines 21-108), including core lifecycle, void/refund, payment instruments, fraud data, and verification support.\n- **Account, environment, credential, field, and webhook prerequisites:** `## Before you begin` and `## Transactions` (lines 111-188).\n- **Supported Braintree transaction operations:** `### Transaction object support` (lines 191-222).\n- **Status mapping, reconciliation, fulfillment, and retry behavior:** `## Transaction status mapping` through `## Retries` (lines 223-283).\n- **Network-token enablement and response mappings:** `## Network tokens` and `## Response codes` (lines 286-403).\n- **Sandbox card mapping and production distinction:** `## Test cards` (lines 406-439).\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/orchestration/stripe-2026-09-16|Braintree Stripe Integration Guide (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "PayPal's partnership with Stripe enables merchants to leverage their existing Braintree integration to process transactions through the PayPal Orchestration platform.All post processing (settlement, chargebacks, reporting and reconciliation) is done through your Stripe portal.\n\nThis integration is currently limited to the United States only.Use this guide if you are a US-based merchant who wants to route card transactions through Stripe using your existing Braintree integration. This guide covers setup, transaction operations, status mapping, response codes, and testing. For SDK and GraphQL code examples, see the relavant links in [Related content](#related-content).\n\nUse the Braintree platform for all transaction operations. Performing operations directly with Stripe could cause discrepancies and synchronization errors.",
+      "location": "lines 16-20"
+    },
+    {
+      "text": "- To set up currency-specific Braintree merchant accounts for use in your integration, contact your Braintree account manager (AM) or technical account manager (TAM).\n- When you have your Stripe account, work with your AM or TAM to configure the Stripe connection within the Braintree control panel. Stripe provides distinct API keys for sandbox and production environments. You must create the connection using the correct key for each environment.\n- Set up your environments to process the transactions using the information in[Transactions](#transactions).\n- Confirm your setup by processing a test transaction using the[sandbox test cards](#test-cards)that are listed in this guide.",
+      "location": "lines 116-119"
+    },
+    {
+      "text": "- **Cardholder name:**All Stripe transactions require the**cardholderName**. You must must include it during payment method tokenization.\n- **Refunds:**Merchants must have sufficient funds in their Stripe account to cover any refund amounts. If adequate funds are unavailable when a refund is initiated, Stripe will place the refund inPENDINGstatus. If Stripe returns aPENDINGrefund, Braintree will receive the final status update through a webhook when the refund succeeds or fails. No intermediate updates are sent while the refund remains in thePENDINGstate.\n- **Webhooks:**Braintree registers webhook endpoints forrefund.updatedandrefund.createdStripe events to receive final settlement status for pending refunds. Merchants are not required to implement their own webhooks.",
+      "location": "lines 124-126"
+    },
+    {
+      "text": "In rare cases when Stripe returns HTTP 4xx/5xx errors during capture or refund, the transaction may remain in SETTLING status while Braintree reconciles the outcome. This can happen due to:\n\n\n- Network or server overload\n- Stripe API unavailability\n\n**Reconciliation logic:** Braintree queries Stripe for transaction status for capture, refund, and charge. If Stripe confirms the operation succeeded, the transaction moves to SETTLED. If Stripe declines, the transaction moves to SETTLEMENT_DECLINED.\n\nPossible outcomes:\n\n\n- If Stripe approves, the status changes toSETTLED.\n- If Stripe declines, the status changes toSETTLEMENT_DECLINED.\n\nDo not ship goods or provide services until the transaction status isSETTLED.\n### FAILED status during charge\n\nIf Braintree doesn't receive an inline response from Stripe due to network errors or timeouts, the charge transaction status is set to FAILED. Unlike capture and refund, Braintree does not automatically reconcile charge errors. If you are unsure whether a charge was created, query the transaction (Find/Search) using your internal transaction reference before attempting a second create.",
+      "location": "lines 255-272"
+    },
+    {
+      "text": "- Do not build a \"duplicate capture/refund retry loop\" when you seesuccess: truebut status isSETTLING.\n- Always rely on transaction status before shipping goods or confirming the final outcome.\n- If your request times out or you are unsure whether a transaction was created, query the transaction (Find/Search) using your internal transaction reference (transactionId) before attempting a second create.\n- Retry logic onFAILEDtransactions can be configured at the merchant account level. For help with this configuration, contact your Braintree AM or TAM.",
+      "location": "lines 280-283"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "orchestration-stripe-reciprocal-payment-platform",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-orchestration-stripe]] - 2026-09-16 Braintree-hosted guide for a US-only PayPal Orchestration route to Stripe using Braintree transaction operations, environment-specific connection setup, and status/reconciliation safeguards; not independent current Stripe authority or proof of eligibility, execution, settlement, or funding",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/orchestration/stripe-2026-09-16.md",
+  "raw_sha256": "152e11c1695965977c4daaff0f608df4c6eada81baaef8f709e9c07e03ea9bfa",
+  "status": "candidate_ready"
+}

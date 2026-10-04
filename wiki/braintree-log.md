@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C33
+
+- Twenty pinned website raws (eight Orchestration guides and twelve Forward API references) fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 332 sources (315 website + 17 GitHub). New [[braintree-orchestration]] retrieval hub distinguishes provider-level operation ownership from destination-qualified rules and [[braintree-forward-api]].
+- First-review pass 15/20; twenty initial full reviews plus five targeted reviews, no repeated full review. Bounded corrections preserved Stripe capture/reconciliation qualifications, EBANX Nigeria partial-capture conflict, dLocal duplicate-retry/Turkey decimal conflict and main route, endpoint-name-to-config selection and related navigation, and example-versus-schema scope for tokenization errors.
+- Five dispatch-order query groups passed 40/40, overlapping ongoing ingest. A nonblocking FlexFactor Testing environment label was recorded; query answers followed the raw without inferring sandbox. Raw hashes and contents remain unchanged; destination documents remain Braintree-hosted snapshot evidence, not independent destination-provider authority or execution/settlement/funding proof.
+- Coordinator aggregated source catalogs/counts and logs once; exact accepted candidates, approved concept updates, reciprocal evidence/navigation, unique canonical ownership, exhaustive catalogs and touched typed pages are checked at close. Evidence: `tracking/ingest/braintree/braintree-campaign-33/`. No collection, GitHub ingestion, code/rule/schema/validator change, commit or push.
+
 ## [2026-10-04] ingest | `braintree-android@5.33.0`
 
 - Approved serial delta from 5.32.0 at SHA 04b82bbb1cb49e3a5ad44bac920704ba03c99317: Compose CardFields/controller, nonce/server handoff, shared input validation and presentation. Documented merchant-owned validation/submission gating, saveable number/expiration/CVV state, no submit clearing and default ViewModel ownership caveats; no security/runtime guarantees.

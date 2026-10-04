@@ -1,0 +1,55 @@
+{
+  "job_id": "reference-forward-api-vault-errors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Vault Errors\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/vault-errors\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/vault-errors-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, vault-errors, api-errors]\n---\n\n## Overview\n\nThis collected, unversioned Braintree [[braintree-forward-api|Forward API]] reference catalogs Vault-related failures returned in a response body to the caller's application. The page shows a JSON body resembling an example with top-level `error`, nested `message`, and `request-uuid` fields; because the page describes the body as resembling the example, the sample is not a guarantee of an exhaustive or fixed response schema. See [[braintree]].\n\nThis is Forward API Vault-error reference material, not [[braintree-orchestration]] documentation. It does not establish destination-side acceptance or processing, or any payment authorization, capture, settlement, reconciliation, or funding result.\n\n## Key takeaways\n\n- Production Forward API use is subject to eligibility. The snapshot directs readers to an Account Manager or Business Development; collection of the page and possession of credentials do not establish current merchant eligibility, production approval, or enablement.\n- The Vault-status catalog maps `401` to invalid API credentials or an IP allowlist violation, and `403` to credentials lacking the Forward API right. For the latter, the page directs readers to contact Braintree to confirm that the user's API credentials have been allowlisted. These entries identify failure conditions, not credential-provisioning or automatic-retry procedures.\n- The `404` entries distinguish an invalid `merchant_id`, `payment_method_nonce`, or `payment_method_token`; the nonce and token cases list corresponding not-found text in additional `message` content. Use the raw table for the exact field links and message text.\n- The `422` entries cover a malformed or data-insufficient payment method, a payment method that cannot be used with Forward API, failures in one or more payment methods or `cse_data` bindings, and a PayPal-specific nonce condition. The bindings entry says to inspect the returned object for details and identifies `message` as a JSON object; it does not define the object's schema or guarantee a particular correction or outcome.\n- For forwarding a PayPal account, the page says the supplied `payment_method_nonce` must come from the Vault flow and gives additional text stating that a Pre-Approved Payment enabled PayPal account is required for exporting. This is a subject-specific prerequisite in the Vault-error catalog, not a general statement about other payment methods or sibling APIs.\n\n> [!warning] Eligibility and access boundary\n> Production Forward API use remains eligibility-gated. A captured error catalog, allowlisted credential, or corrected request does not by itself prove current production enablement or destination authorization.\n\n> [!warning] Error reference is not execution evidence\n> The page describes Vault failures returned by Forward API. It supplies no general retry contract and does not establish that a destination accepted or processed a forwarded request or that any payment lifecycle step occurred.\n\n## Detail locators\n\n- Production eligibility and Account Manager or Business Development inquiry route: `**AVAILABILITY**`, raw lines 17-20.\n- Example response body and its `error`, nested `message`, `vault_error?`, `vault_status`, message text, and `request-uuid`: opening JSON example, raw lines 22-34.\n- Vault-context lead-in and complete status table: raw lines 35-45.\n- Invalid credentials or IP allowlist violation (`401`) and missing Forward API right (`403`): raw lines 37-38.\n- Invalid merchant, nonce, and token cases (`404`): raw lines 39-41.\n- Insufficient/malformed data, non-exportable method, and payment-method or `cse_data` binding cases (`422`): raw lines 42-44.\n- PayPal-account nonce Vault-flow prerequisite and Pre-Approved Payment enabled account text (`422`): raw line 45.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\nThe following linked pages are navigation targets and were not read as factual evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]]\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Forward API forwarding-request reference]]\n- [[raw/braintree/docs/guides/payment-methods/node-2026-09-16|Braintree payment methods guide for Node.js]]\n- [[raw/braintree/articles/risk-and-security/allowlisting-2026-09-16|Braintree IP allowlisting article]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/vault-errors-2026-09-16|Braintree Forward API Vault errors]] - fully read 2026-09-16 snapshot covering production eligibility, the illustrative response body, Vault status mappings, field-specific failures, binding-error context and the PayPal Vault-flow prerequisite\n",
+  "quotes": [
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility.",
+      "location": "raw line 18 under **AVAILABILITY**"
+    },
+    {
+      "text": "Vault errors are returned in the response body to your application. The body is a JSON structure with a format resembling this example:",
+      "location": "raw line 22 below the availability notice"
+    },
+    {
+      "text": "| 401 | The provided API credentials are invalid or are sent from an IP violating the[IP allowlist](/braintree/articles/risk-and-security/allowlisting). | None |",
+      "location": "raw line 37 in the Vault Status table"
+    },
+    {
+      "text": "| 422 | Errors occurred with one or more payment methods or[cse_data](/braintree/docs/reference/forward-api/forward#cse_data)bindings. Inspect the object to see specific details. | messageis a JSON object |",
+      "location": "raw line 44 in the Vault Status table"
+    },
+    {
+      "text": "| 422 | The provided[payment_method_nonce](/braintree/docs/reference/forward-api/forward#payment_method_nonce)must be retrieved via the Vault flow when you forward a PayPal account. | Pre-Approved Payment enabled PayPal account required for exporting. |",
+      "location": "raw line 45 in the Vault Status table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-forward-api-vault-errors-source-link",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-vault-errors]] - 2026-09-16 collected unversioned Forward API Vault-error reference for the illustrative response body, `401`/`403` access failures, field-specific `404` cases, `422` data/export/binding failures and the PayPal Vault-flow prerequisite; production remains eligibility-gated, the example is not a guaranteed schema, and the catalog does not define Orchestration, general retry policy or downstream payment-lifecycle behavior",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route under Braintree Forward API rather than Braintree Orchestration.",
+          "Do not treat the illustrative JSON body as a guaranteed exhaustive schema or generalize the PayPal-specific Vault-flow prerequisite to other payment methods."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/vault-errors-2026-09-16.md",
+  "raw_sha256": "881881f5ef887f46661c66844d8bf28039fae377a76c93b78c215da214fc9191",
+  "status": "candidate_ready"
+}

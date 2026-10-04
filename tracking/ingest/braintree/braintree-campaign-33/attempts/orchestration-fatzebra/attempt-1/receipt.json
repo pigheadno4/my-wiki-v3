@@ -1,0 +1,55 @@
+{
+  "job_id": "orchestration-fatzebra",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Orchestration: Fat Zebra Integration Guide\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/orchestration/fatzebra\"\nraw_files:\n  - \"braintree/docs/guides/orchestration/fatzebra-2026-09-16.md\"\ntags: [braintree, orchestration, fat-zebra, australia, new-zealand, card-payments]\n---\n\n## Overview\n\nThis Braintree-hosted integration guide describes using an existing Braintree integration to process transactions through PayPal Orchestration Platform with Fat Zebra. It applies only in Australia and New Zealand. Transaction operations stay on the Braintree platform, while settlement, chargebacks, reporting, and reconciliation are handled through the Fat Zebra portal. The guide is Braintree authority for this integration route, not independent Fat Zebra API authority, and the snapshot does not prove merchant enablement, transaction execution, settlement, or funding.\n\n## Key takeaways\n\n- Setup requires currency-specific Braintree merchant accounts plus a Fat Zebra account and environment-specific Fat Zebra API credentials. The guide directs merchants to share the required credentials securely with their Braintree AM or TAM; merchants without one are routed to Braintree client onboarding.\n- Every Fat Zebra transaction requires `cardholderName`, supplied during payment-method tokenization. Wallet processing must be enabled in the Fat Zebra merchant account for Apple Pay or Google Pay; Braintree webhooks require integration-specific configuration through an AM or TAM; EFTPOS enablement is through Fat Zebra and is supported by Braintree only for single-step charge transactions.\n- Supported central operations include single-step charge, standalone authorization followed by capture, full and partial capture, void, refund, verification, and selected SDK or GraphQL transaction operations. Exact capability, payment-method, field-mapping, response-code, and sandbox-test details remain in the raw locators below.\n- Status is the operational source of truth. An authorization expires after five calendar days if not captured. Capture or refund API errors can remain `SETTLING` while Braintree reconciles the result, and the guide says not to ship or provide service until the status becomes `SETTLED`. A charge with no inline response can become `FAILED`, then later be reconciled to `SETTLED` with an automatic refund initiated.\n- Do not create duplicate capture or refund retry loops when `success: true` is paired with `SETTLING`. After a timeout or uncertain create outcome, use Find or Search with the internal transaction reference before attempting another create; merchant-account-level retry for `FAILED` transactions requires TAM configuration.\n\n## Detail locators\n\n- **Feature matrix:** `Features` covers core lifecycle support, voids and refunds, payment instruments, data and fraud signals, and card verification.\n- **Prerequisites and credentials:** `Before you begin`.\n- **Transaction requirements and ownership:** `Transactions`; required fields and Braintree-to-Fat-Zebra mappings are under `Transaction creation`.\n- **Vaulting and CVV behavior:** `Vaulted payment methods` and `Transaction object support` \u2192 `CVV handling`.\n- **Statuses and reconciliation:** `Transaction status`, including `SETTLING status with HTTP errors` and `FAILED status during charge`.\n- **Duplicate protection:** `Retries`.\n- **Network tokens and diagnostics:** `Network tokens` and `Response codes`.\n- **Sandbox behavior:** `Test cards`, including mapped card numbers, amount-based failure triggers, and Apple Pay test cryptograms.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]]\n\n## Related raw API references\n\nThe guide links to Braintree SDK and GraphQL transaction guides, transaction response documentation, and Fat Zebra documentation. Those linked targets were not read for this entry and are navigation only.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/orchestration/fatzebra-2026-09-16|Fat Zebra Integration Guide (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "PayPal's partnership with Fat Zebra enables merchants to leverage their existing Braintree integration to process transactions through PayPal Orchestration Platform.All post processing (settlement, chargebacks, reporting and reconciliation) is done through your FatZebra portal.",
+      "location": "lines 14-18, under `# Fat Zebra Integration Guide`"
+    },
+    {
+      "text": "- To process card transactions through Fat Zebra, you need currency-specific Braintree merchant accounts for your integration. Your Braintree account manager (AM) or technical account manager (TAM) can assist you in setting these up.\n- A Fat Zebra account. Fat Zebra uses basic authentication (username and password). You will receive API credentials from Fat Zebra for the sandbox and production environments. For more information, see the[Fat Zebra API documentation](https://docs.fatzebra.com/).",
+      "location": "lines 109-115, under `## Before you begin`"
+    },
+    {
+      "text": "Use the Braintree platform for all transaction operations. Performing operations directly with Fat Zebra could cause discrepancies and synchronization errors to occur.",
+      "location": "line 129, under `## Transactions`"
+    },
+    {
+      "text": "| Capture | API error | SETTLING | Rare event. Braintree will reconcile the transaction. Do not ship goods or provide service until the status transitions toSETTLED. For more information, see[SETTLING status with HTTP errors](#settling-status). |",
+      "location": "line 243, in the table under `## Transaction status`"
+    },
+    {
+      "text": "- Do not build a duplicate capture or refund retry loop when you seesuccess: truebut the status isSETTLING.\n- Always rely on transaction status before shipping goods or confirming the final outcome.\n- If your request times out or you are unsure whether a transaction was created, query the transaction (Find or Search) using your internal transaction reference (transactionId) before attempting a second create.",
+      "location": "lines 269-277, under `## Retries`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "orchestration-fatzebra-platform-source-link",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-orchestration-fatzebra]] - Braintree-hosted Australia/New Zealand Fat Zebra integration guide for PayPal Orchestration Platform transaction processing, Braintree-operation ownership, currency-specific merchant-account and Fat Zebra credential prerequisites, and reconciliation-safe status and retry handling; not independent Fat Zebra API authority or payment, settlement, or funding proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This Orchestration route is not automatically Braintree Forward API; do not import Forward API eligibility, request-construction, logging, or forwarding-only limitations.",
+          "The Braintree-hosted guide is not independent Fat Zebra authority, and its examples or status mappings do not prove an executed transaction, settlement, reconciliation completion, or funding."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/orchestration/fatzebra-2026-09-16.md",
+  "raw_sha256": "338b4e6d54964540bd4a52b2880c321a0d4e7bc4e73656f1b1790fba9de1b7f3",
+  "status": "candidate_ready"
+}

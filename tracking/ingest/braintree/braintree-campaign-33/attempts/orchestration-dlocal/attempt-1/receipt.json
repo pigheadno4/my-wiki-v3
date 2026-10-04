@@ -1,0 +1,54 @@
+{
+  "job_id": "orchestration-dlocal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree dLocal Payment Orchestration Integration Guide\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/orchestration/dlocal\"\nraw_files:\n  - \"braintree/docs/guides/orchestration/dlocal-2026-09-16.md\"\ntags: [braintree, dlocal, payment-orchestration, cards, transactions]\n---\n\n## Overview\n\nThis Braintree-hosted guide documents how merchants with an existing Braintree integration can use PayPal Payment Orchestration to process card transactions through dLocal. Transaction operations remain on Braintree; the guide warns that operating directly with dLocal can create discrepancies and synchronization errors. It is not independent dLocal API authority or proof of merchant availability, payment execution, settlement, or funding.\n\n## Key takeaways\n\n- Setup spans both providers: the merchant needs currency-specific Braintree merchant accounts and a dLocal account, and works with a Braintree AM or TAM to share the dLocal API and integration keys securely with Braintree. dLocal issues separate sandbox and production keys.\n- After setup, create and manage transactions through the Braintree SDK or GraphQL API. Customer creation is mandatory for this integration, including first name, last name, and email; the raw guide locates the complete transaction-field mapping and country-specific requirements for card brands, 3DS, tax identifiers, decimal handling, and installments.\n- Lifecycle state is consequential: a standalone authorization must be captured within seven days. For capture or refund HTTP errors, Braintree can keep a transaction in `SETTLING` while it reconciles with dLocal; do not ship or provide service until the status is `SETTLED`. A charge with no inline response can be `FAILED`, then later become `SETTLED` during reconciliation with an automatic refund initiated.\n- Feature, operation, response-code, network-token, sandbox-card, and country matrices are snapshot-specific details in the pinned raw. Conditional enablement and market rules should be checked there rather than generalized from an example.\n\n## Detail locators\n\n- Identity and Braintree-owned transaction-operation boundary: lines 14-25 and 124-138.\n- Feature and lifecycle-operation matrices: lines 26-103 and 192-210.\n- Dual-provider setup and market-specific prerequisites: lines 106-121.\n- Required transaction and customer data: lines 136-180.\n- Status mapping, reconciliation, and retry cautions: lines 214-263.\n- Network tokens, response-code lookup, and sandbox mapping qualification: lines 266-290.\n- Country-specific requirements and go-live route: lines 328-367.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/orchestration/dlocal-2026-09-16|Braintree dLocal Integration Guide (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "PayPal's partnership with dLocal enables merchants to leverage their existing Braintree integration to process transactions through the PayPal Payment Orchestration platform. This guide helps developers with an existing Braintree integration use PayPal's Payment Orchestration platform to process transactions through dLocal.",
+      "location": "dLocal Integration Guide, line 18"
+    },
+    {
+      "text": "Use the Braintree platform for all transaction operations. Performing operations directly with dLocal could create discrepancies and cause synchronization errors.",
+      "location": "dLocal Integration Guide, line 20"
+    },
+    {
+      "text": "- **On Braintree:**To process card transactions through dLocal, you need currency-specific Braintree merchant accounts for use in your integration. For help with this setup, contact your AM or TAM.\n- **On dLocal:**Each merchant must have an account with dLocal. After you create your dLocal account, work with your AM or TAM to securely share the account's API and integration keys with Braintree. dLocal provides separate API keys for sandbox and production environments. For more information about setting up a dLocal account, see the[dLocal API documentation](https://docs.dlocal.com/)",
+      "location": "Before you begin, lines 111-112"
+    },
+    {
+      "text": "| Capture | API error or unreachable | SETTLING | In this rare event, Braintree reconciles the transaction. Do not ship goods or provide service until the status isSETTLED. For more information, see[SETTLING status with HTTP errors](#settling-status). |",
+      "location": "Transaction status mapping table, line 228"
+    },
+    {
+      "text": "If Braintree receives no inline response from dLocal due to network errors or timeouts, the transaction status is FAILED. Braintree reconciles this transaction. If the transaction is identified as successful during reconciliation, the status is updated from FAILED to SETTLED, and a refund is automatically initiated. The original transaction remains SETTLED. This operation can be retried. For more information, see [Retries](#retries).",
+      "location": "FAILED status during charge, line 253"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-orchestration-dlocal-payment-platform-route",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-orchestration-dlocal]] - 2026-09-16 collected Braintree-hosted dLocal Payment Orchestration guide for existing Braintree merchants, covering Braintree-owned transaction operations, dual-provider setup, country-qualified card requirements, and reconciled lifecycle warnings",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Payment Orchestration distinct from Braintree Forward API; this Braintree-hosted guide is not independent dLocal authority and its status mappings do not prove settlement or funding."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/orchestration/dlocal-2026-09-16.md",
+  "raw_sha256": "29571e0d5399319aeef9664089dcb80ca4ccc3e29a5756ce53e6d71f1817b1c4",
+  "status": "candidate_ready"
+}

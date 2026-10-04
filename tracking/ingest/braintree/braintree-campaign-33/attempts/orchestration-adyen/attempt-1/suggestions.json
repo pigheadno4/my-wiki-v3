@@ -1,0 +1,27 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "orchestration-adyen-new-braintree-orchestration-concept",
+      "target_path": "wiki/concepts/braintree-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "new concept file",
+      "proposed_markdown": "---\ntitle: \"Braintree Orchestration\"\ntype: concept\ncategory: technology\ntags: [braintree, paypal-orchestration, payment-processing, processor-connections, transaction-lifecycle]\n---\n\n## Braintree Orchestration\n\nA collected Braintree Adyen integration guide documents a PayPal Orchestration route in which merchants keep their existing Braintree integration while transactions are processed through an Adyen processor connection. For this connection, transaction operations remain on Braintree; performing operations directly with Adyen can cause synchronization issues and data inconsistencies. The guide assigns settlement, chargebacks, reporting and reconciliation to the merchant's Adyen portal. This is distinct from [[braintree-forward-api]], which is the documented outbound request-construction and forwarding route. [[source-braintree-orchestration-adyen]]\n\n## Adyen-qualified route\n\nThe collected Adyen route requires currency-specific Braintree merchant accounts, an Adyen account for each merchant, Braintree-assisted processor-connection configuration and an Adyen API user with the `API PCI Payments` role. Its core transaction path uses authorization followed by capture rather than a single-step charge. Capture and refund are asynchronous: `SETTLING` awaits an Adyen webhook and can become `SETTLED` or `SETTLEMENT_DECLINED`, so fulfillment waits for `SETTLED` and pending or uncertain results require status lookup rather than blind duplication. These are Adyen-integration facts from the 2026-09-16 snapshot, not universal behavior for every orchestration destination or proof of current eligibility, transaction success, settlement or funding. [[source-braintree-orchestration-adyen]]\n\nThe guide's country scope is unresolved: its introduction says the connection supports transactions in most Adyen-supported countries, while its later supported-countries section says all. Confirm current merchant, country, currency and account eligibility rather than selecting either statement as authoritative.\n\n## Sources\n\n- [[source-braintree-orchestration-adyen]] - 2026-09-16 Braintree-hosted Adyen processor-connection guide covering setup, Braintree-owned transaction operations, authorization/capture support, asynchronous status handling and an unresolved country-scope conflict",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Create this concept only as an Adyen-qualified orchestration retrieval hub; do not generalize the operation matrix, prerequisites or lifecycle to other destinations without their own evidence.",
+        "Keep Orchestration distinct from Forward API and do not import forwarding-only eligibility, transformation or destination-example limitations.",
+        "Preserve the internal most-countries versus all-countries conflict until current authoritative clarification exists.",
+        "Adyen-portal post-processing is not evidence that a transaction settled or that funds arrived."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "reference-forward-api-validation-errors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Validation Errors\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/validation-errors\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/validation-errors-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, validation-errors, api-errors]\n---\n\n## Overview\n\nThis collected, unversioned Braintree Forward API reference describes validation errors returned in the response body to the caller's application. Its example response has a top-level `error`, a nested `message` object containing `\"validation_error?\": true` and error-specific context, and a `request-uuid`. The page says all validation errors include the validation flag in `message`; the remaining catalog supplies error names, explanations, and selected additional `message` fields. See [[braintree]] and [[braintree-forward-api]].\n\nThis is a retrieval route for Forward API request-validation failures. It is not Braintree Orchestration documentation, and a validation response or request UUID does not establish that a destination accepted or processed a request or that a payment was created, authorized, captured, settled, reconciled, or funded.\n\n## Key takeaways\n\n- Production Forward API use is subject to eligibility; the snapshot directs readers to an Account Manager or Business Development rather than establishing current merchant eligibility or production enablement.\n- The catalog covers configuration shape, request syntax and required inputs, mutual-TLS certificate/key validation, HTTP method and header constraints, destination URL and network restrictions, and selected payment-method/tokenization conditions. Use the raw table for the complete error-name, explanation, and additional-field inventory rather than treating these categories as exhaustive runtime behavior.\n- Environment boundaries are consequential: inline client certificates are sandbox-only; inline configurations are disallowed in production and production configs must be submitted and approved. `debug_transformations` is also disallowed in production because it might return PCI-sensitive data.\n- Mutual TLS requires both `client_cert` and `client_key`; the catalog separately identifies invalid X.509 certificate and PEM-encoded PKCS 8 private-key inputs. These validation rules do not establish how credentials should be provisioned, stored, rotated, or authorized for a destination.\n- The destination/network entries include DNS lookup failure, malformed or non-HTTP(S) URLs, private-network rejection, and config-regex mismatch. They describe validation failures, not downstream retry policy or a guarantee that correcting an input will produce destination or payment success.\n- Two final catalog entries explicitly say to retry after updating, respectively, the customer-vault email/phone for AMEX network tokenization or the payment method for an endpoint limited to `PayPalBillingAgreement` and `VenmoAccount`. Preserve those subject-specific conditions; they are not a general retry guarantee for other Forward API errors.\n\n> [!warning] Production and sensitive-debug boundaries\n> The 2026-09-16 snapshot gates production use on eligibility, requires submitted and approved production configs, and prohibits production `debug_transformations` because they might return PCI-sensitive data. Collection of this page, sandbox behavior, or possession of credentials does not prove production approval or safe handling of sensitive output.\n\n> [!warning] Validation is not downstream execution evidence\n> These errors concern Forward API request validation. The page does not establish destination-side authorization, acceptance, processing, or any payment-lifecycle result, and it supplies no general automatic-retry or eventual-success contract.\n\n## Detail locators\n\n- Production eligibility and Account Manager or Business Development inquiry route: `**AVAILABILITY**`, raw lines 17-20.\n- Example response body's `error`, nested `message`, validation flag, method context and `request-uuid`: opening JSON example, raw lines 22-33.\n- Shared `message` validation flag and start of the error catalog: raw line 34.\n- Configuration, inline production restrictions, certificate/key, conditional transformation, header, request-format and JSON Schema entries: error table, raw lines 36-48.\n- Missing config, payment type, URL and request format; config URL-regex, JSON shape and HTTP-method entries: error table, raw lines 49-57.\n- DNS, private-network, URL/protocol and production debug-transformation entries: error table, raw lines 58-62.\n- Merchant, override and payment-method input requirements plus the two subject-specific retry entries: error table, raw lines 63-69.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- General forwarding model: [[source-braintree-reference-forward-api-overview]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\nThe following linked pages are navigation targets and were not read as factual evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Forward API configuration reference]]\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Forward API forwarding-request reference]]\n- [[raw/braintree/docs/guides/extend/forward-api/examples-2026-09-16|Forward API examples guide]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/validation-errors-2026-09-16|Braintree Forward API validation errors]] - fully read 2026-09-16 snapshot covering the response shape, common validation marker, validation-error catalog, production restrictions and subject-specific retry text\n",
+  "quotes": [
+    {
+      "text": " **Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility. ",
+      "location": "raw line 18 under **AVAILABILITY**"
+    },
+    {
+      "text": "Validation errors are returned in the response body to your application. The body is a JSON structure with a format resembling this example:",
+      "location": "raw line 22 under # Validation Errors"
+    },
+    {
+      "text": "{\n  \"error\": \"Unknown HTTP Method\",\n  \"message\": {\n    \"validation_error?\": true,\n    \"method\": \"An-Erroneously-Misnamed-HTTP-Method\"\n  },\n  \"request-uuid\": \"a-unique-identifier-for-the-request\"\n}",
+      "location": "raw lines 25-32 in the opening JSON example"
+    },
+    {
+      "text": "| Inline configurations are not allowed in production | The[config](/braintree/docs/reference/forward-api/forward#config)parameter isn't allowed in production. All configs must be submitted and approved. |  |",
+      "location": "raw line 39 in the validation-error table"
+    },
+    {
+      "text": "| debug_transformations is not allowed in production | The[debug_transformations](/braintree/docs/reference/forward-api/forward#debug_transformations)parameter isn't allowed in production since it might otherwise return PCI sensitive data. |  |",
+      "location": "raw line 62 in the validation-error table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "reference-forward-api-validation-errors-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-validation-errors]] - 2026-09-16 collected unversioned Forward API validation-error reference for the response-body failure shape, common `message` validation flag, request/config/security error catalog and production eligibility/config/debug boundaries; not Orchestration or destination/payment-lifecycle evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this source in the Forward API retrieval hub and distinct from Braintree Orchestration.",
+          "Do not interpret a validation response, request UUID or corrected input as destination acceptance, payment execution or a general retry guarantee."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/validation-errors-2026-09-16.md",
+  "raw_sha256": "e1250b9b037de0d8ad2fbedc80553dfb97210eeda1a575a914e2804adb070087",
+  "status": "candidate_ready"
+}

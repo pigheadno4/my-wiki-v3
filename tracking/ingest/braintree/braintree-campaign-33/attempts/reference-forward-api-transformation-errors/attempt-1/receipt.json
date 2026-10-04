@@ -1,0 +1,55 @@
+{
+  "job_id": "reference-forward-api-transformation-errors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Transformation Errors\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/transformation-errors\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/transformation-errors-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, transformation-errors, api-errors]\n---\n\n## Overview\n\nThis collected, unversioned Braintree Forward API reference describes transformation errors returned in the response body to the caller's application. The page illustrates a JSON response with a top-level `error`, a nested `message` object, and a `request-uuid`; because it says the format merely resembles the example, the illustration is not treated as a complete required response schema. See [[braintree]] and [[braintree-forward-api]].\n\nThis is a failure-reference route for Forward API request transformations, not PayPal Orchestration documentation. A transformation error or request UUID does not establish that a destination received, accepted, or processed a request, or that any payment was created, authorized, captured, settled, reconciled, or funded.\n\n## Key takeaways\n\n- Production Forward API use is subject to eligibility; the snapshot directs readers to an Account Manager or Business Development rather than establishing current merchant eligibility or production enablement.\n- Before performing a transformation, Forward API type-checks it. The type-error section identifies the common top-level error as `Received invalid transformation. Does not type check`; its `message` includes `\"transformation_error?\": true`, the triggering `expression`, and a `type_errors` list. These are transformation-failure fields, not evidence of destination processing.\n- The catalog says transformation results must be serializable as boolean, nil, number, or string. It also lists failures for invalid expiration-year or expiration-month inputs, unsupported character encoding, a non-numeric string passed for integer conversion, and an out-of-bounds slice range. Exact error strings and additional `message` fields remain in the raw table.\n- The three documented type-error categories are invalid function arity, invalid argument type, and invalid function name. Function arguments are described as zero-indexed, and one transformation may return multiple type errors when multiple argument types are invalid or when arity and argument types are both invalid.\n\n> [!warning] Example shape is not a required-schema claim\n> The page says the body format resembles its JSON example. Do not infer additional requiredness, exclusivity, field ordering, or completeness beyond the explicitly described transformation-error fields and catalog entries.\n\n> [!warning] No retry, downstream-success, or enablement contract\n> This snapshot does not define a general retry policy, guarantee that correcting a transformation will produce destination success, establish downstream processing, or prove current production enablement.\n\n## Detail locators\n\n- Production eligibility and Account Manager or Business Development inquiry route: `**AVAILABILITY**`, raw lines 17-20.\n- Illustrative response-body shape with `error`, nested `message`, transformation flag, expression, type-error list and `request-uuid`: opening JSON example, raw lines 22-34.\n- Transformation-error catalog, serializable return-type constraint, function-input failures and error-specific additional fields: raw lines 35-45.\n- Pre-transformation type check and common type-error fields: `## Type errors`, raw lines 48-54.\n- Invalid-arity, invalid-argument-type and invalid-function-name categories, including zero-indexed arguments: type-error table, raw lines 54-58.\n- Condition under which a transformation may return multiple type errors: raw line 60.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- General forwarding model: [[source-braintree-reference-forward-api-overview]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\nThe following linked pages are navigation targets and were not read as factual evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/functions-2026-09-16|Forward API function reference]]\n- [[raw/braintree/docs/guides/extend/forward-api/transformations-2026-09-16|Forward API transformations guide]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/transformation-errors-2026-09-16|Braintree Forward API transformation errors]] - fully read 2026-09-16 snapshot covering the response example, transformation-error catalog, pre-execution type checking and type-error categories\n",
+  "quotes": [
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility.",
+      "location": "**AVAILABILITY**, raw line 18"
+    },
+    {
+      "text": "Transformation errors are returned in the response body to your application. The body is a JSON structure with a format resembling this example:",
+      "location": "opening text below **AVAILABILITY**, raw line 22"
+    },
+    {
+      "text": "Transformations must return one of boolean, nil, number, string",
+      "location": "transformation-error table, raw line 38"
+    },
+    {
+      "text": "Before the Forward API performs a transformation, it first type checks the transformation to ensure correctness.",
+      "location": "## Type errors, raw line 50"
+    },
+    {
+      "text": "A transformation may return multiple type errors if multiple arguments have invalid types or if both arity and argument type(s) are invalid.",
+      "location": "## Type errors, raw line 60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "reference-forward-api-transformation-errors-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-transformation-errors]] - 2026-09-16 collected unversioned Forward API transformation-error reference for the illustrative response-body shape, exact failure identity, pre-execution type checking, serializable-result and function-input catalog, multiple-type-error condition, and production eligibility boundary; not Orchestration, required-schema, retry, downstream-processing, or payment-lifecycle evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The JSON body is introduced as an example that the response format resembles; do not treat it as a complete required schema.",
+          "Keep this Forward API failure reference distinct from Orchestration and do not infer retries, downstream processing, current enablement, or payment lifecycle outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/transformation-errors-2026-09-16.md",
+  "raw_sha256": "2e4d07769683941e70c78d3922be5ce2a4380820a5261e5da31b335457225451",
+  "status": "candidate_ready"
+}

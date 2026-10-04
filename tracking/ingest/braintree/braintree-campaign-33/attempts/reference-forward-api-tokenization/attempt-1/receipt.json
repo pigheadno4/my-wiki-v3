@@ -1,0 +1,55 @@
+{
+  "job_id": "reference-forward-api-tokenization",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Tokenization Reference\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/tokenization\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/tokenization-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, tokenization, network-tokens, tpan]\n---\n\n## Overview\n\nThis collected, unversioned Braintree Forward API reference shows sandbox request examples that ask Braintree to tokenize a payment-method nonce on forward and place network-tokenized-card number and CVV values into a JSON request body. The examples cover Discover and Mastercard TPAN shapes, use Braintree public/private-key authentication and a merchant ID, enable debug transformations, and send to `httpbin.org`; they are request-construction examples rather than evidence of a destination authorization or completed payment. Production Forward API use is subject to eligibility. See [[braintree]] and [[braintree-forward-api]].\n\nThis Forward API operation is distinct from [[braintree-orchestration]], whose retained route concerns processor connections and Braintree transaction lifecycle operations. Nothing in this tokenization reference establishes Orchestration configuration or execution.\n\n## Key takeaways\n\n- Both captured examples POST to the Braintree sandbox forwarding endpoint with `tokenize_on_forward: true`, an inline config accepting `NetworkTokenizedCard`, and transformations that write `$number` and `$cvv` into the outbound JSON body. The returned number/CVV snippets are debug-example output, not proof that a destination accepted or processed a payment.\n- The Mastercard example adds `tsp.currency_code: \"EUR\"`; this page presents that value in an example and does not state that it is a universal requirement.\n- For a Discover TPAN authorization, the page says the generated CVV is required unless `expire_at` was set and omission results in a decline. It also says a TPAN has no associated postal code and that supplying any postal code produces AVS response `M (matches)`.\n- Attempting tokenization for an unsupported or invalid payment instrument returns the linked Forward API error response. The complete error catalog remains in that separate reference.\n\n> [!warning] Production eligibility is separate from the sandbox examples\n> The page states that production Forward API use is subject to eligibility. A captured request shape, sandbox response, API key pair or merchant ID does not establish production enablement.\n\n> [!warning] Protect credentials and transformed payment data\n> The examples contain private-key authentication and transformed card/CVV fields. Keep live credentials, merchant IDs, nonces, card data and CVVs out of source pages, logs and evidence artifacts. This sparse reference does not define a client/server integration boundary.\n\n## Detail locators\n\n- Production eligibility and contact route: `**AVAILABILITY**`, raw lines 17-20.\n- Discover sandbox endpoint, curl authentication placeholders, merchant ID, fake nonce, debug/tokenization flags, inline config and `$number`/`$cvv` transformations: `## Example - Discover TPAN`, raw lines 27-68.\n- Mastercard sandbox request, example EUR TSP currency and transformed output: `## Example - Mastercard TPAN`, raw lines 70-112.\n- Discover generated-CVV requirement, `expire_at` exception and postal-code/AVS behavior: `## AVS and CVV`, raw lines 117-119.\n- Unsupported or invalid instrument error route: `## Errors`, raw lines 122-124.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\nThe following linked pages are navigation targets and were not read as factual evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]]\n- [[raw/braintree/docs/reference/forward-api/tokenization-errors-2026-09-16|Forward API tokenization errors]]\n- [[raw/braintree/docs/reference/general/processor-responses/avs-cvv-responses-2026-09-16|AVS and CVV processor responses]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/tokenization-2026-09-16|Braintree Forward API tokenization reference]] - fully read 2026-09-16 snapshot covering production eligibility, Discover and Mastercard sandbox TPAN examples, Discover CVV/AVS behavior and the invalid-instrument error route\n",
+  "quotes": [
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility.",
+      "location": "raw lines 17-18, availability notice"
+    },
+    {
+      "text": "\"payment_method_nonce\": \"fake-valid-nonce\",\n    \"debug_transformations\": true,\n    \"tokenize_on_forward\": true,",
+      "location": "raw lines 39-41, Discover TPAN request body"
+    },
+    {
+      "text": "\"tsp\": {\"currency_code\": \"EUR\"},",
+      "location": "raw line 86, Mastercard TPAN request body"
+    },
+    {
+      "text": "Authorizations against a Discover TPAN require the generated CVV unless the [expire_at](#tsp.expire_at) option was set; failing to provide it will result in a decline.   The TPAN does not have an associated postal code, and any postal code provided during an authorization will result in an AVS response of [M (matches)](/braintree/docs/reference/general/processor-responses/avs-cvv-responses#avs).",
+      "location": "raw line 119, AVS and CVV section"
+    },
+    {
+      "text": "If tokenization is attempted on an unsupported or invalid payment instrument, the Forward API will return an [error response](/braintree/docs/reference/forward-api/tokenization-errors).",
+      "location": "raw line 124, Errors section"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-reference-forward-api-tokenization-concept-reciprocal",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-tokenization]] - 2026-09-16 collected unversioned Forward API tokenization reference with Discover and Mastercard sandbox TPAN request examples, Discover generated-CVV and AVS behavior, the invalid-instrument error route and the production-eligibility boundary; distinct from Orchestration transaction lifecycle operations",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured examples use sandbox debug transformations and httpbin.org; they do not establish destination payment execution or production enablement.",
+          "Do not infer role permissions, network or region coverage, or broader tokenization behavior from this sparse reference; those claims require separately read authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/tokenization-2026-09-16.md",
+  "raw_sha256": "c0764c57ed432d22902b16879fbd4e430d144e19d155e1e62698a1d7c1e10656",
+  "status": "candidate_ready"
+}

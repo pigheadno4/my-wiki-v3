@@ -1,0 +1,56 @@
+{
+  "job_id": "reference-forward-api-variables",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Variables Reference\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/variables\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/variables-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, variables, transformations]\n---\n\n## Overview\n\nThis collected, unversioned Braintree Forward API reference defines how transformation strings resolve global, template and local variables while constructing an outbound destination request. It documents substitution and request-construction behavior, not destination authority, request acceptance, payment execution or transaction lifecycle state. Production Forward API use is subject to eligibility. See [[braintree]] and [[braintree-forward-api]].\n\nThis route is distinct from [[braintree-orchestration]], whose retained pages concern processor connections and Braintree transaction lifecycle operations.\n\n## Key takeaways\n\n- Most strings evaluate to themselves. Strings beginning with `$` instead perform global-variable or template lookups.\n- Global lookups use `$variable_name`. When a name exists in multiple sources, precedence increases from Forward API-provided values, to the forwarding request's `data`, to its `sensitive_data`; therefore `sensitive_data` wins a same-name collision.\n- Template lookups use a path such as `$/section/nested_section` to fetch part of the partially constructed request, serialize it under `request_format`, and return a string. Local lookups use `$/var/name`; `/var` is a non-serialized template section that cannot be supplied by either the config or forwarding request, and transformations can write values there for later lookup.\n- For Apple Pay cards, this page says the underlying card information is unavailable: the card number is the DPAN and its expiration date is the DPAN expiration date, not the underlying card's.\n- With multiple payment-method tokens, variables bind by 1-indexed token position. An unsuffixed variable and its `_1` form resolve to the first payment method. The captured sentence for forwarding both a payment method and a nonce is malformed, but indicates the nonce variables receive the `_2` suffix; use the linked example and forwarding-request reference for the complete request shape.\n\n> [!warning] Production availability is qualified\n> The 2026-09-16 snapshot says production Forward API use is subject to eligibility and routes inquiries to an Account Manager or Business Development. It does not establish current enablement, configuration approval or destination acceptance for a merchant.\n\n> [!warning] Treat substituted data according to its sensitivity\n> The precedence model includes a `sensitive_data` section, and substitutions may expose payment-method-derived values in a constructed destination request. This sparse page does not define client/server placement, credential storage, logging or redaction controls; those boundaries require the applicable Forward API configuration, destination and security authority.\n\n> [!note] The captured global-variable inventory is empty\n> The snapshot ends immediately after the `### Available Global Variables` heading. It therefore supports the lookup rules above but does not provide a recoverable name-by-name global-variable catalog.\n\n## Detail locators\n\n- Production eligibility and inquiry route: `**AVAILABILITY**`, raw lines 17-20.\n- Literal-string behavior and `$` lookup trigger: below `# Variables`, raw line 22.\n- Global lookup syntax, sources and collision precedence: below `# Variables`, raw line 26.\n- Template lookup syntax, partial-request access and `request_format` serialization: below `# Variables`, raw line 30.\n- Local `$/var/name` lookups, non-serialization and prohibition on config/request provision: below `# Variables`, raw lines 34-38.\n- Local-variable definition and reuse examples: `### json`, raw lines 41-49.\n- Apple Pay DPAN and expiration-date qualification: below the local-variable example, raw line 50.\n- Multiple-payment-method suffix binding, 1-based positions and unsuffixed/`_1` equivalence: `### Variable suffixes`, raw line 55.\n- Captured malformed nonce-suffix sentence: `### Variable suffixes`, raw line 59.\n- Empty captured inventory heading: `### Available Global Variables`, raw lines 62-65.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\nThe following linked pages are navigation targets and were not read as factual evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]]\n- [[raw/braintree/docs/guides/extend/forward-api/examples-2026-09-16|Forward API examples]]\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Forwarding request reference]]\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Forward configuration and request-format reference]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/variables-2026-09-16|Braintree Forward API variables reference]] - fully read 2026-09-16 snapshot covering production eligibility, global/template/local lookup behavior, precedence, DPAN qualification, suffix rules and the missing captured global-variable inventory\n",
+  "quotes": [
+    {
+      "text": "Most strings evaluate to themselves, but strings beginning with $ perform either variable lookups or template lookups.",
+      "location": "raw line 22, below # Variables"
+    },
+    {
+      "text": "Global variable lookups are of the form $variable_name. When they are evaluated they return the result of looking up the named variable. Global variables may come from a couple different sources (in increasing order of precedence): the Forward API itself, anything specified in data of the forwarding request, and anything specified in the sensitive_data section of the forwarding request. If the same variable name appears in different sources, the variable from the source with the highest level of precedence will be chosen.",
+      "location": "raw line 26, below # Variables"
+    },
+    {
+      "text": "Template lookups are of the form $/section/nested_section/etc Template lookups allow transformations to reference part of the partially constructed request (the template). When template lookups are evaluated the relevant section of the template is fetched, serialized accoring to the rules in request_format, and returned as a string.",
+      "location": "raw line 30, below # Variables"
+    },
+    {
+      "text": "When using an Apple Pay card, you do not have access to the underlying card information. The card number will be the DPAN, and the expiration date will correspond to the DPAN, not the underlying card.",
+      "location": "raw line 50, after the local-variable use example"
+    },
+    {
+      "text": "When [forwarding multiple payment methods](/braintree/docs/guides/extend/forward-api/examples#forwarding-multiple-payment-methods), variables for each payment method are bound based on their token's position in the array of [payment_method_tokens](/braintree/docs/reference/forward-api/forward#payment_method_tokens), 1-indexed. Unsuffixed variables reference the first payment method: $variable and $variable_1 have the same value.",
+      "location": "raw line 55, under ### Variable suffixes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-forward-api-variables-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-variables]] - 2026-09-16 collected unversioned variable-substitution reference covering global precedence, partial-template serialization, non-serialized local variables, Apple Pay DPAN qualification and payment-method suffix binding; production eligibility remains qualified, and the captured global-variable inventory is empty",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured sentence about nonce suffixing is malformed; the source page keeps that qualification and routes the full request shape to unread navigation.",
+          "The raw ends after the Available Global Variables heading, so this suggestion must not imply a complete variable-name inventory.",
+          "Variable construction is not destination acceptance, payment execution or Orchestration lifecycle evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/variables-2026-09-16.md",
+  "raw_sha256": "6601c5d5b73f520fc154a8ab0ff6990fbeeef23a217f51f812b4bc67c261859e",
+  "status": "candidate_ready"
+}

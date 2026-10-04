@@ -1,0 +1,55 @@
+{
+  "job_id": "reference-forward-api-forward",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Forward API Forward Request Reference\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/forward\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/forward-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, api-reference, request-parameters, sandbox]\n---\n\n## Overview\n\nThis collected Braintree reference page lists the available keys on an incoming Forward API request and identifies the sandbox forwarding endpoint. It documents request construction and routing inputs, not an exhaustive end-to-end operation contract and not evidence that a destination received or accepted a request or that a payment was created, authorized, captured, settled, reconciled, or funded. This is Forward API evidence, not PayPal Orchestration evidence. See [[braintree]] and [[braintree-forward-api]].\n\n## Key takeaways\n\n- Production Forward API use is subject to eligibility; the page directs readers to an Account Manager or Business Development. The snapshot does not establish a merchant's current eligibility, production enablement, account readiness, role permissions, destination credentials, or usable production configuration.\n- A caller can supply a `Trace-Id` header, whose value the page says appears in all logs for that request. Treat trace values as operational identifiers and avoid placing secrets or payment data in them.\n- `merchant_id` and `method` are marked required. The merchant identifier selects the merchant whose Vault will be accessed, while `method` identifies the HTTP method for the destination request. `name` is the name of the endpoint receiving the card information and is used to look up which config applies to the request; it is required in production. The page lists these request fields but does not state the authentication scheme for the incoming call or guarantee destination delivery.\n- Several controls are explicitly sandbox-only: per-request `client_cert` and `client_key`, inline `config` or `configs`, and `debug_transformations`. When `debug_transformations` is present, no request is sent to the destination; the API instead returns a representation of the request that otherwise would have been executed, with the prospective query string in `X-Query-String`.\n- `cse_data` applies only to payment data captured through Braintree's deprecated client-side encryption integration. `sensitive_data` makes values available to transformations while the page says those values are not logged by Forward API; this statement is not a broader credential-storage, destination-logging, or response-redaction guarantee.\n- The page routes nonce/token inputs, one-or-many configs, one-or-many destination URLs, overrides, request body/header/query-string maps, and variable aliases through parameter entries. Those routine schemas remain in the pinned raw rather than being reproduced here.\n\n> [!warning] Eligibility and environment boundary\n> The captured endpoint is the sandbox forwarding endpoint, and several fields are explicitly sandbox-only. Production use is eligibility-gated, `name` is required in production, and this page alone does not establish production access, configuration approval, credentials, permissions, or environment alignment.\n\n> [!warning] Debug and logging boundaries\n> `debug_transformations` deliberately does not send a destination request, so its returned representation is not delivery or payment evidence. The page's no-logging statement is limited to values supplied through `sensitive_data`; it should not be generalized to every request field, destination system, response, or external log.\n\n## Detail locators\n\n- Production eligibility and Account Manager or Business Development inquiry route: `# Forward > AVAILABILITY`, raw lines 17-18.\n- Incoming-request identity, `POST`, and sandbox forwarding endpoint: `# Forward`, raw lines 20-23.\n- Optional `Trace-Id` request tracer and its log correlation: `#### Trace-ID`, raw lines 26-28.\n- Sandbox-only mutual-TLS certificate/private-key fields and inline single/multiple configuration selection: `#### Parameters`, raw lines 33-39.\n- Deprecated client-side encryption qualification and `cse_data` transformation binding: `#### Parameters > cse_data`, raw lines 41-45.\n- Caller `data` variables and sandbox-only `debug_transformations` no-send behavior: `#### Parameters`, raw lines 49-51.\n- Required merchant Vault identity and destination HTTP method: `#### Parameters > merchant_id` and `method`, raw lines 53-61.\n- Production-required endpoint/config name, override behavior, and body/header/query-string maps: `#### Parameters`, raw lines 65-73.\n- Payment-method nonce/token inputs, one-indexed multiple-token binding, and Forward API no-logging statement for `sensitive_data`: `#### Parameters`, raw lines 75-81.\n- Single or type-selected candidate destination URLs and variable aliases: `#### Parameters`, raw lines 83-87.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]] - navigation-only route linked for general Forward API context and production eligibility; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Forward API config reference]] - navigation-only route for named/inline config and template details; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/forward-api/functions-2026-09-16|Forward API functions reference]] - navigation-only route for transformation variable lookup; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/extend/forward-api/cryptography-2026-09-16|Forward API cryptography guide]] - navigation-only route for mutual-TLS details; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/extend/forward-api/examples-2026-09-16|Forward API examples guide]] - navigation-only route for multiple-payment-method aliases; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Braintree Forward API Forward request reference]] - complete collected request-reference snapshot covering production eligibility, sandbox endpoint, trace identity, request/config inputs, no-send debugging, required merchant/method fields, production naming and sensitive-data logging qualification\n",
+  "quotes": [
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility. Contact your Account Manager for more information or [submit an inquiry to our Business Development team](https://www.braintreepayments.com/products/braintree-extend#contact) .",
+      "location": "# Forward > AVAILABILITY, raw lines 17-18"
+    },
+    {
+      "text": "You can add a tracer to a Forward API request by including the header -H \u201cTrace-Id: 123456790357\u201d. The tracer value you pass in Trace-Id will show up in all of the logs for this request.",
+      "location": "#### Trace-ID, raw line 28"
+    },
+    {
+      "text": "When debug_transformations is present no request is sent to the destination. A representation of the request which would have been executed in the absence of debug_transformations is instead returned. The query string which would have been used is returned in theX-Query-Stringheader. (sandbox only)",
+      "location": "#### Parameters > debug_transformations, raw line 51"
+    },
+    {
+      "text": "RequiredThe unique identifier of the merchant whose Vault will be accessed.",
+      "location": "#### Parameters > merchant_id, raw line 55"
+    },
+    {
+      "text": "A list of values that are made available to transformations as global variables. They will not be logged by the Forward API.",
+      "location": "#### Parameters > sensitive_data, raw line 81"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "reference-forward-api-forward-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-forward]] - 2026-09-16 Forward API incoming-request reference for sandbox endpoint and controls, trace identity, required merchant/method fields, production naming and eligibility, debug no-send behavior, and the `sensitive_data` logging boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This reference documents Forward API request keys and must not be used as evidence for PayPal Orchestration or destination/payment execution.",
+          "The no-logging claim is limited to `sensitive_data`; do not generalize it to all fields, destinations, responses, or external logs."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/forward-2026-09-16.md",
+  "raw_sha256": "c0382ce1e2d9870ba5b28458d6c147048ad43d23eb4e4cbc659f0b595b6836a2",
+  "status": "candidate_ready"
+}

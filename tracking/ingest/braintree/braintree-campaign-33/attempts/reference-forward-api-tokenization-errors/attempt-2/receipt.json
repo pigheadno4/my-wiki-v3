@@ -1,0 +1,52 @@
+{
+  "job_id": "reference-forward-api-tokenization-errors",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Forward API Tokenization Errors Reference\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/forward-api/tokenization-errors\"\nraw_files:\n  - \"braintree/docs/reference/forward-api/tokenization-errors-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, tokenization, errors, testing]\n---\n\n## Overview\n\nThis collected, unversioned Braintree Forward API reference catalogs errors returned by Forward API tokenization. The page shows an example JSON response body containing `error`, `message` and `request-uuid`, and maps named failures to HTTP 400, 422 or 500 responses. Production Forward API use is subject to eligibility. See [[braintree]] and [[braintree-forward-api]].\n\nThis is the Forward API tokenization failure catalog, not an [[braintree-orchestration]] transaction-lifecycle reference. It does not establish that a destination processed a request, nor does it specify downstream retry, authorization, capture, settlement or funding behavior.\n\n## Key takeaways\n\n- The catalog distinguishes an unsupported payment-instrument type (HTTP 400), a set of validation, issuer, risk, network, PayPal and token-state failures (HTTP 422), and an unhandled tokenization exception (HTTP 500). The individual error names, explanations and optional message fields remain in the raw table.\n- A risk-denial explanation explicitly says its reason must never be displayed to the customer to prevent information disclosure. This customer-display restriction is specific to that catalog entry; the page does not define a general remediation or retry policy.\n- The page supplies sandbox-only card numbers and nonces for selected unsuccessful tokenization responses. A separate negative-testing table maps two PayPal mock rejection cases to `max_amount` values; these are test triggers, not production outcome rules.\n- Some entries describe conditions involving cryptogram eligibility, issuer support, network validation, token state or token presence. Treat those descriptions as error classifications, not proof of a particular account's enablement, token history or corrective action.\n\n> [!warning] Production availability is separately gated\n> The snapshot states that production Forward API use is subject to eligibility and routes questions to an Account Manager or Business Development. The error catalog and sandbox fixtures do not prove production enablement.\n\n> [!warning] Preserve the risk-reason disclosure restriction\n> The `Denied due to risk` reason is marked as information that should never be shown to the customer. Do not surface that reason in customer-facing messages.\n\n## Detail locators\n\n- Production eligibility and inquiry route: `**AVAILABILITY**`, raw lines 17-20.\n- Example response-body structure and `error`, `message` and `request-uuid` fields: introductory paragraph and JSON block, raw lines 22-32.\n- Full error, explanation, message and HTTP-status catalog: main table, raw lines 33-54.\n- Risk-denial disclosure warning: `Denied due to risk`, raw line 38.\n- Sandbox card-number and nonce fixtures for unsuccessful tokenization: `### Test credit card numbers and nonces`, raw lines 59-69.\n- PayPal mock rejection testing through `max_amount`: `### Negative testing with PayPal tokenization`, raw lines 72-77.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n- Distinct processor-connection route: [[braintree-orchestration]]\n\n## Related raw API references\n\nThe following linked pages are navigation targets and were not read as factual evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/tokenization-2026-09-16|Forward API tokenization reference]]\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/forward-api/tokenization-errors-2026-09-16|Braintree Forward API tokenization errors reference]] - fully read 2026-09-16 snapshot covering response-body shape, error/status catalog, disclosure warning and sandbox negative-testing fixtures\n",
+  "quotes": [
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility.",
+      "location": "raw line 18 under **AVAILABILITY**"
+    },
+    {
+      "text": "Tokenization errors are returned in the response body. The body is a JSON structure with a format resembling this example:",
+      "location": "raw line 22 immediately before the JSON example"
+    },
+    {
+      "text": "| Denied due to risk | Denied due to fraudulent behavior.Note: To prevent information disclosure, this reason should never be displayed to the customer. | None | 422 |",
+      "location": "raw line 38 in the main error table"
+    },
+    {
+      "text": "| Tokenization failed | An unhandled exception occurred. | None | 500 |",
+      "location": "raw line 54 in the main error table"
+    },
+    {
+      "text": "The following credit card numbers can be used to trigger specific unsuccessful tokenization responses in the sandbox environment.| Error | Test Value | Card Type | Corresponding Test Nonces |",
+      "location": "raw line 61 under ### Test credit card numbers and nonces"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-forward-api-tokenization-errors-source-link",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-reference-forward-api-tokenization-errors]] - 2026-09-16 collected unversioned Forward API tokenization error catalog for JSON failure bodies, HTTP 400/422/500 mappings, the risk-reason disclosure restriction and sandbox negative-test fixtures; production remains eligibility-gated and the catalog does not define Orchestration or downstream retry/payment lifecycle behavior",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/forward-api/tokenization-errors-2026-09-16.md",
+  "raw_sha256": "95b18012c99d3f912a78415a5069db0aee1c9954b66353f024b300d136bfcf26",
+  "status": "candidate_ready"
+}
