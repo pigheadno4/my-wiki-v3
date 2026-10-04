@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Messaging Components `1.98.0`
+
+- Additive full/focused reading: Canadian bilingual long-term presentment, currency formatting, FR/AT/DE credit warnings/layouts and modal Tab guard. Eligibility and visual/accessibility outcomes remain unproven; earlier history preserved. Details [[paypal-log]] and [[changelog-github-paypal-messaging-components]]. No runtime/payment test, commit or push. Next: scoped commit review.
+
 ## [2026-10-04] ingest | Braintree website C37
 
 - Twenty AIB/APAC/AU/Brazil website sources approved; initial first pass20/20, twenty full independent reviews, zero retries. Fixed queries40/40 passed with regional/account/event/support conflicts and prerequisites preserved. Catalog412(395website+17GitHub), six existing concepts updated,28typed pages validated. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-37/`. Raw unchanged; no commit or push.

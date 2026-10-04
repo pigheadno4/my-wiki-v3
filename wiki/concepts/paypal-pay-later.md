@@ -84,6 +84,8 @@ For the v6 React web component, `@paypal/react-paypal-js@10.1.2` expands the typ
 
 For Braintree integrations, `@paypal/react-paypal-js@10.2.0` adds `useBraintreePayPalMessages()`. The hook asynchronously creates a Messages instance from Braintree's shared `paypalCheckoutV6` object, then exposes readiness, loading, error, and content-fetch state. Returned content can update its amount without a new fetch. An empty failure sentinel is still passed to `<paypal-message>` so the element can collapse while the hook exposes the fetch error.
 
+At `@paypal/messaging-components@1.98.0` (September 28, 2026), Canadian presentment expands with English/French long-term message dispatch and modal/product-list content; Canadian localization was already present in older releases. Calculator/result amounts gain explicit English `CAD` or French `$ CA` formatting. FR/AT/DE messages add credit-warning copy and responsive warning layouts, and FR modal views conditionally render warning content. The modal's forward-Tab wrap branch now excludes Shift+Tab. These are version-qualified presentation/source changes, not new eligibility, changed qualification, legal-compliance or tested accessibility evidence. Removed French account-required wording does not prove that the requirement was removed. No new checkout or React API is established; all earlier version knowledge is preserved. See [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]].
+
 ### Native iOS Messages
 
 The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion in UIKit or through a SwiftUI wrapper. It accepts client ID, environment, amount, placement, preferred offer, buyer country, language/locale, and style context; PayPal's response can still select a generic message. Buyer-country override requires PayPal approval.
@@ -124,8 +126,8 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 
 - [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 Messages typing and v10.2.0 Braintree Messages hook behavior
-- [[source-github-paypal-messaging-components]] — web messaging runtime through `1.97.0`, including pageType migration, inline disclosures and ES/IT warning layouts; earlier evidence preserved
-- [[changelog-github-paypal-messaging-components]] — package-qualified web Messaging Components release ledger from `1.95.1` through `1.97.0`
+- [[source-github-paypal-messaging-components]] — web messaging runtime through `1.98.0`, adding Canadian bilingual long-term presentment, FR/AT/DE warnings, currency formatting and a modal Tab guard; earlier evidence preserved
+- [[changelog-github-paypal-messaging-components]] — package-qualified web Messaging Components release ledger from `1.95.1` through `1.98.0`
 - [[source-github-paypal-messages-ios]] — native iOS Pay Later and PayPal Credit message configuration, rendering, modal, and lifecycle
 - [[source-github-paypal-messages-android]] — native Android message view, modal, callbacks, caching, analytics, availability warning, and `1.3.0` source risks
 - [[changelog-github-paypal-messages-android]] — managed Android `1.3.0` release plus cumulative earlier stable context

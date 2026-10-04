@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-messaging-components"
 type: source
 date_ingested: 2026-08-29
-date_updated: 2026-09-20
+date_updated: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-09-20-39769bc/manifest.json"
   - "github/paypal/paypal-messaging-components/supplements/2026-09-20-39769bc-70608700/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-09-20-a682a8d/manifest.json"
@@ -15,6 +16,35 @@ tags: [paypal, pay-later, paypal-credit, messaging, changelog, github-repository
 ## Overview
 
 Package-qualified release history for `paypal/paypal-messaging-components`. Durable implementation behavior belongs in [[source-github-paypal-messaging-components]]; this page records version transitions and their evidence.
+
+## `@paypal/messaging-components@1.98.0` (2026-09-28)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/messaging-components` | `1.97.0` | `1.98.0` | `a639ec71494d3278684f5896017a426ed1fbfcd1` | Full additive, approved focused reading |
+
+**Important findings:** Canadian English/French long-term message dispatch, modal/product-list expansion and checkout offer content; explicit CAD/CA currency display; FR/AT/DE credit-warning copy and responsive layouts; conditional FR modal warnings; corrected forward-Tab wrap condition; lowercased country class on the modal body.
+
+**Developer or merchant impact:** Presentment expands existing Canadian localization, not a first launch or qualification change. Removed French account-required wording and revised Canadian regional-rate copy are authored content, not proof of relaxed eligibility or current financing terms. Cross-border AT/DE account disclaimers remain. This repository does not add a PayPal JS/React checkout or saved-payment wrapper.
+
+**Migration action:** No detected merchant public-API or dependency migration; package manifest changes only its version. Check narrow warning banners, localized currency output and reverse-Tab navigation in runtime QA. Country-class insertion alone does not establish the final modal color. These checks were not run.
+
+**Updated source sections:** additive `1.98.0` Canadian presentment, warnings and navigation; latest-version and raw navigation; Pay Later concept first, then cumulative source/changelog, company, index and logs. All `1.95.1`, `1.96.0` and `1.97.0` history remains preserved.
+
+**Evidence boundary:** 16 added, 133 modified, no removed and 577 unchanged retained files; 726-file current snapshot. Full mode follows the approved capsule count budget 720 to 760, not a breaking API finding. Fully read all changed current implementation/content, affected prior files, new changelog section and complete comparison. Manifests, 2,957 upstream dispositions and unchanged cumulative history checked mechanically under the specific exception. Excluded modal stylesheet aggregation and source-only accessibility/layout evidence remain limitations; no build, browser, visual, screen-reader or payment test, commit or push.
+
+**Evidence:**
+
+- Release record: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.98.0/2026-10-04/manifest.json`
+- Release notes: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.98.0/2026-10-04/release-notes.md`
+- Snapshot: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json`
+- Comparison: `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.97.0--1.98.0/comparison.json`
+- Comparison detail: `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.97.0--1.98.0/comparison.md`
+- Tab guard: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/components/modal/v2/lib/utils.js`
+- Canadian dispatch: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/server/locale/CA/mutations/index.js`
+- FR warning/disclosure: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/content/modals/FR/short_term_en.json`
+- Shared warning wrapping: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/server/message/mediaQueries.js`
+- Review: `tracking/github/repos/paypal/paypal-messaging-components/ingest-review-93c29d33.md`
 
 ## `@paypal/messaging-components@1.97.0` (2026-09-17)
 

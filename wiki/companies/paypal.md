@@ -57,6 +57,8 @@ The `1.96.0` delta adds calculator error/loading accessibility semantics, financ
 
 The `1.97.0` full additive ingest records the `view-edit-fi` to `view-edit-funding-instrument` page-type migration, inline disclosure iframe/Back behavior for flagged modal content, native callback URLs, ES/IT borrowing-cost warnings and layout changes, and a v2 default text size of 12px instead of 14px. Two approved exact-SHA supplemental files support disclosure implementation details. Earlier releases remain preserved; no merchant Apple Pay, eligibility, legal-compliance or runtime-QA conclusion follows. See [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]].
 
+The `1.98.0` Messaging Components release (September 28, 2026) expands Canadian English/French long-term message and modal presentment, adds FR/AT/DE credit-warning copy/layouts, refines Canadian currency formatting and corrects a modal forward-Tab guard. Canadian localization existed previously; these are presentation changes, not new checkout/React contracts or proven eligibility, financing terms, legal compliance or runtime accessibility. Earlier release knowledge remains intact in [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]].
+
 The separate `@paypal/sdk-logos` package provides inline and external-image rendering for PayPal, Venmo, card brands, wallets, and local-payment-method artwork. The retained history preserves 117 generated `2.3.3` CDN SVGs and the complete policy-selected `2.3.7` public source. Logo presence is asset evidence only: it does not establish merchant eligibility, regional availability, payment enablement, or permission to use protected marks.
 
 The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion for UIKit and SwiftUI. It uses merchant and transaction context to fetch a message and web-backed learn-more/application modal, but does not execute checkout payments. Buyer-country override requires PayPal approval, and public offer enums are not eligibility evidence. A later untagged `develop` README commit, `fdd1868`, states that native iOS Messages requires a Braintree account and Braintree SDK integration and does not support PPCP SDK integrations; no source code changed and no package release contains this evidence yet.
@@ -291,8 +293,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.436`
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` component bill of materials and release/deployment workflow
 - [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger
-- [[source-github-paypal-messaging-components]] — web messaging through `1.97.0`: page-type migration, inline disclosures, ES/IT warnings and v2 defaults; earlier releases preserved
-- [[changelog-github-paypal-messaging-components]] — package-qualified Messaging Components ledger from `1.95.1` through `1.97.0`
+- [[source-github-paypal-messaging-components]] — web messaging through `1.98.0`: Canadian bilingual long-term presentment, FR/AT/DE warnings, currency display and Tab guard; earlier releases preserved
+- [[changelog-github-paypal-messaging-components]] — package-qualified Messaging Components ledger from `1.95.1` through `1.98.0`
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

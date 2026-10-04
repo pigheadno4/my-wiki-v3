@@ -1,0 +1,311 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-messaging-components`
+- Package: `@paypal/messaging-components`
+- From: `1.97.0` (`39769bc09150879c1e85d3f5ae27a516279f652a`)
+- To: `1.98.0` (`a639ec71494d3278684f5896017a426ed1fbfcd1`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `content/messages/AT/generic-non-at.json`
+- `content/messages/AT/generic.json`
+- `content/messages/AT/gpl_eqz-non-at.json`
+- `content/messages/AT/gpl_eqz.json`
+- `content/messages/AT/gpl_gtz-non-at.json`
+- `content/messages/AT/gpl_gtz.json`
+- `content/messages/AT/gplq_eqz-non-at.json`
+- `content/messages/AT/gplq_eqz.json`
+- `content/messages/AT/gplq_gtz-non-at.json`
+- `content/messages/AT/gplq_gtz.json`
+- `content/messages/AT/pi30-non-at.json`
+- `content/messages/AT/pi30.json`
+- `content/messages/AT/pi30nq-non-at.json`
+- `content/messages/AT/pi30nq.json`
+- `content/messages/AT/pi30q-non-at.json`
+- `content/messages/AT/pi30q.json`
+- `content/messages/CA/long_term_nq_gtz.json`
+- `content/messages/CA/long_term_nq_gtz_fr.json`
+- `content/messages/CA/long_term_q_gtz.json`
+- `content/messages/CA/long_term_q_gtz_fr.json`
+- `content/messages/DE/generic-non-de.json`
+- `content/messages/DE/generic.json`
+- `content/messages/DE/gpl_eqz-non-de.json`
+- `content/messages/DE/gpl_eqz.json`
+- `content/messages/DE/gpl_gtz-non-de.json`
+- `content/messages/DE/gpl_gtz.json`
+- `content/messages/DE/gplq_eqz-non-de.json`
+- `content/messages/DE/gplq_eqz.json`
+- `content/messages/DE/gplq_gtz-non-de.json`
+- `content/messages/DE/gplq_gtz.json`
+- `content/messages/DE/pi30-non-de.json`
+- `content/messages/DE/pi30.json`
+- `content/messages/DE/pi30nq-non-de.json`
+- `content/messages/DE/pi30nq.json`
+- `content/messages/DE/pi30q-non-de.json`
+- `content/messages/DE/pi30q.json`
+- `content/messages/FR/generic.json`
+- `content/messages/FR/gpl.json`
+- `content/messages/FR/gplq.json`
+- `content/messages/FR/long_term_nq_gtz.json`
+- `content/messages/FR/long_term_q_gtz.json`
+- `content/modals/CA/long_term.json`
+- `content/modals/CA/long_term_fr.json`
+- `content/modals/CA/long_term_xo_fr.json`
+- `content/modals/CA/product_list.json`
+- `content/modals/CA/product_list_fr.json`
+- `content/modals/CA/short_term.json`
+- `content/modals/CA/short_term_fr.json`
+- `content/modals/CA/short_term_xo.json`
+- `content/modals/CA/short_term_xo_fr.json`
+- `content/modals/FR/long_term.json`
+- `content/modals/FR/product_list.json`
+- `content/modals/FR/short_term.json`
+- `content/modals/FR/short_term_en.json`
+- `content/offers/CA/long_term.json`
+- `content/offers/CA/long_term_fr.json`
+- `content/offers/CA/long_term_xo.json`
+- `content/offers/CA/long_term_xo_fr.json`
+- `demo/helpers/accounts.js`
+- `package.json`
+- `src/components/modal/v2/lib/locale.js`
+- `src/components/modal/v2/lib/utils.js`
+- `src/components/modal/v2/parts/BodyContent.jsx`
+- `src/components/modal/v2/parts/Calculator.jsx`
+- `src/components/modal/v2/parts/OfferCard.jsx`
+- `src/components/modal/v2/parts/TermsTable.jsx`
+- `src/components/modal/v2/parts/views/LongTerm/Content.jsx`
+- `src/components/modal/v2/parts/views/ProductList/Content.jsx`
+- `src/components/modal/v2/parts/views/ShortTerm/Content.jsx`
+- `src/server/locale/AT/GPL/mutations/generic-non-at.js`
+- `src/server/locale/AT/GPL/mutations/generic.js`
+- `src/server/locale/AT/GPL/mutations/gpl_eqz-non-at.js`
+- `src/server/locale/AT/GPL/mutations/gpl_eqz.js`
+- `src/server/locale/AT/GPL/mutations/gpl_gtz-non-at.js`
+- `src/server/locale/AT/GPL/mutations/gpl_gtz.js`
+- `src/server/locale/AT/GPL/mutations/gplq_eqz-non-at.js`
+- `src/server/locale/AT/GPL/mutations/gplq_eqz.js`
+- `src/server/locale/AT/GPL/mutations/gplq_gtz-non-at.js`
+- `src/server/locale/AT/GPL/mutations/gplq_gtz.js`
+- `src/server/locale/AT/GPL/styles/flex/base.css`
+- `src/server/locale/AT/GPL/styles/flex/ratio--1x1.css`
+- `src/server/locale/AT/GPL/styles/flex/ratio--1x4.css`
+- `src/server/locale/AT/GPL/styles/flex/ratio--20x1.css`
+- `src/server/locale/AT/GPL/styles/flex/ratio--6x1.css`
+- `src/server/locale/AT/GPL/styles/flex/ratio--8x1.css`
+- `src/server/locale/AT/GPL/styles/text/disclaimer.css`
+- `src/server/locale/AT/GPL/styles/text/index.js`
+- `src/server/locale/AT/Pi30/mutations/pi30-non-at.js`
+- `src/server/locale/AT/Pi30/mutations/pi30.js`
+- `src/server/locale/AT/Pi30/mutations/pi30nq-non-at.js`
+- `src/server/locale/AT/Pi30/mutations/pi30nq.js`
+- `src/server/locale/AT/Pi30/mutations/pi30q-non-at.js`
+- `src/server/locale/AT/Pi30/mutations/pi30q.js`
+- `src/server/locale/AT/Pi30/styles/flex/base.css`
+- `src/server/locale/AT/Pi30/styles/flex/ratio--1x1.css`
+- `src/server/locale/AT/Pi30/styles/flex/ratio--1x4.css`
+- `src/server/locale/AT/Pi30/styles/flex/ratio--20x1.css`
+- `src/server/locale/AT/Pi30/styles/flex/ratio--6x1.css`
+- `src/server/locale/AT/Pi30/styles/flex/ratio--8x1.css`
+- `src/server/locale/AT/Pi30/styles/text/disclaimer.css`
+- `src/server/locale/AT/Pi30/styles/text/index.js`
+- `src/server/locale/CA/mutations/index.js`
+- `src/server/locale/CA/mutations/long_term_nq_gtz.js`
+- `src/server/locale/CA/mutations/long_term_q_gtz.js`
+- `src/server/locale/DE/GPL/mutations/generic-non-de.js`
+- `src/server/locale/DE/GPL/mutations/generic.js`
+- `src/server/locale/DE/GPL/mutations/gpl_eqz-non-de.js`
+- `src/server/locale/DE/GPL/mutations/gpl_eqz.js`
+- `src/server/locale/DE/GPL/mutations/gpl_gtz-non-de.js`
+- `src/server/locale/DE/GPL/mutations/gpl_gtz.js`
+- `src/server/locale/DE/GPL/mutations/gplq_eqz-non-de.js`
+- `src/server/locale/DE/GPL/mutations/gplq_eqz.js`
+- `src/server/locale/DE/GPL/mutations/gplq_gtz-non-de.js`
+- `src/server/locale/DE/GPL/mutations/gplq_gtz.js`
+- `src/server/locale/DE/GPL/styles/flex/base.css`
+- `src/server/locale/DE/GPL/styles/flex/ratio--1x1.css`
+- `src/server/locale/DE/GPL/styles/flex/ratio--1x4.css`
+- `src/server/locale/DE/GPL/styles/flex/ratio--20x1.css`
+- `src/server/locale/DE/GPL/styles/flex/ratio--6x1.css`
+- `src/server/locale/DE/GPL/styles/flex/ratio--8x1.css`
+- `src/server/locale/DE/GPL/styles/text/disclaimer.css`
+- `src/server/locale/DE/GPL/styles/text/index.js`
+- `src/server/locale/DE/Pi30/mutations/pi30-non-de.js`
+- `src/server/locale/DE/Pi30/mutations/pi30.js`
+- `src/server/locale/DE/Pi30/mutations/pi30nq-non-de.js`
+- `src/server/locale/DE/Pi30/mutations/pi30nq.js`
+- `src/server/locale/DE/Pi30/mutations/pi30q-non-de.js`
+- `src/server/locale/DE/Pi30/mutations/pi30q.js`
+- `src/server/locale/DE/Pi30/styles/flex/base.css`
+- `src/server/locale/DE/Pi30/styles/flex/ratio--1x1.css`
+- `src/server/locale/DE/Pi30/styles/flex/ratio--1x4.css`
+- `src/server/locale/DE/Pi30/styles/flex/ratio--20x1.css`
+- `src/server/locale/DE/Pi30/styles/flex/ratio--6x1.css`
+- `src/server/locale/DE/Pi30/styles/flex/ratio--8x1.css`
+- `src/server/locale/DE/Pi30/styles/text/disclaimer.css`
+- `src/server/locale/DE/Pi30/styles/text/index.js`
+- `src/server/locale/FR/mutations/generic.js`
+- `src/server/locale/FR/mutations/gpl.js`
+- `src/server/locale/FR/mutations/gplq.js`
+- `src/server/locale/FR/mutations/long_term_nq_gtz.js`
+- `src/server/locale/FR/mutations/long_term_q_gtz.js`
+- `src/server/locale/FR/styles/flex/base.css`
+- `src/server/locale/FR/styles/flex/ratio--1x1.css`
+- `src/server/locale/FR/styles/flex/ratio--1x4.css`
+- `src/server/locale/FR/styles/flex/ratio--20x1.css`
+- `src/server/locale/FR/styles/flex/ratio--6x1.css`
+- `src/server/locale/FR/styles/flex/ratio--8x1.css`
+- `src/server/message/mediaQueries.js`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `content/messages/AT/generic-non-at.json`
+- `modified`: `content/messages/AT/generic.json`
+- `modified`: `content/messages/AT/gpl_eqz-non-at.json`
+- `modified`: `content/messages/AT/gpl_eqz.json`
+- `modified`: `content/messages/AT/gpl_gtz-non-at.json`
+- `modified`: `content/messages/AT/gpl_gtz.json`
+- `modified`: `content/messages/AT/gplq_eqz-non-at.json`
+- `modified`: `content/messages/AT/gplq_eqz.json`
+- `modified`: `content/messages/AT/gplq_gtz-non-at.json`
+- `modified`: `content/messages/AT/gplq_gtz.json`
+- `modified`: `content/messages/AT/pi30-non-at.json`
+- `modified`: `content/messages/AT/pi30.json`
+- `modified`: `content/messages/AT/pi30nq-non-at.json`
+- `modified`: `content/messages/AT/pi30nq.json`
+- `modified`: `content/messages/AT/pi30q-non-at.json`
+- `modified`: `content/messages/AT/pi30q.json`
+- `added`: `content/messages/CA/long_term_nq_gtz.json`
+- `added`: `content/messages/CA/long_term_nq_gtz_fr.json`
+- `added`: `content/messages/CA/long_term_q_gtz.json`
+- `added`: `content/messages/CA/long_term_q_gtz_fr.json`
+- `modified`: `content/messages/DE/generic-non-de.json`
+- `modified`: `content/messages/DE/generic.json`
+- `modified`: `content/messages/DE/gpl_eqz-non-de.json`
+- `modified`: `content/messages/DE/gpl_eqz.json`
+- `modified`: `content/messages/DE/gpl_gtz-non-de.json`
+- `modified`: `content/messages/DE/gpl_gtz.json`
+- `modified`: `content/messages/DE/gplq_eqz-non-de.json`
+- `modified`: `content/messages/DE/gplq_eqz.json`
+- `modified`: `content/messages/DE/gplq_gtz-non-de.json`
+- `modified`: `content/messages/DE/gplq_gtz.json`
+- `modified`: `content/messages/DE/pi30-non-de.json`
+- `modified`: `content/messages/DE/pi30.json`
+- `modified`: `content/messages/DE/pi30nq-non-de.json`
+- `modified`: `content/messages/DE/pi30nq.json`
+- `modified`: `content/messages/DE/pi30q-non-de.json`
+- `modified`: `content/messages/DE/pi30q.json`
+- `modified`: `content/messages/FR/generic.json`
+- `modified`: `content/messages/FR/gpl.json`
+- `modified`: `content/messages/FR/gplq.json`
+- `modified`: `content/messages/FR/long_term_nq_gtz.json`
+- `modified`: `content/messages/FR/long_term_q_gtz.json`
+- `added`: `content/modals/CA/long_term.json`
+- `added`: `content/modals/CA/long_term_fr.json`
+- `modified`: `content/modals/CA/long_term_xo_fr.json`
+- `added`: `content/modals/CA/product_list.json`
+- `added`: `content/modals/CA/product_list_fr.json`
+- `modified`: `content/modals/CA/short_term.json`
+- `modified`: `content/modals/CA/short_term_fr.json`
+- `modified`: `content/modals/CA/short_term_xo.json`
+- `modified`: `content/modals/CA/short_term_xo_fr.json`
+- `modified`: `content/modals/FR/long_term.json`
+- `modified`: `content/modals/FR/product_list.json`
+- `modified`: `content/modals/FR/short_term.json`
+- `modified`: `content/modals/FR/short_term_en.json`
+- `modified`: `content/offers/CA/long_term.json`
+- `modified`: `content/offers/CA/long_term_fr.json`
+- `added`: `content/offers/CA/long_term_xo.json`
+- `added`: `content/offers/CA/long_term_xo_fr.json`
+- `modified`: `demo/helpers/accounts.js`
+- `modified`: `package.json`
+- `modified`: `src/components/modal/v2/lib/locale.js`
+- `modified`: `src/components/modal/v2/lib/utils.js`
+- `modified`: `src/components/modal/v2/parts/BodyContent.jsx`
+- `modified`: `src/components/modal/v2/parts/Calculator.jsx`
+- `modified`: `src/components/modal/v2/parts/OfferCard.jsx`
+- `modified`: `src/components/modal/v2/parts/TermsTable.jsx`
+- `modified`: `src/components/modal/v2/parts/views/LongTerm/Content.jsx`
+- `modified`: `src/components/modal/v2/parts/views/ProductList/Content.jsx`
+- `modified`: `src/components/modal/v2/parts/views/ShortTerm/Content.jsx`
+- `modified`: `src/server/locale/AT/GPL/mutations/generic-non-at.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/generic.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/gpl_eqz-non-at.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/gpl_eqz.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/gpl_gtz-non-at.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/gpl_gtz.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/gplq_eqz-non-at.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/gplq_eqz.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/gplq_gtz-non-at.js`
+- `modified`: `src/server/locale/AT/GPL/mutations/gplq_gtz.js`
+- `modified`: `src/server/locale/AT/GPL/styles/flex/base.css`
+- `modified`: `src/server/locale/AT/GPL/styles/flex/ratio--1x1.css`
+- `modified`: `src/server/locale/AT/GPL/styles/flex/ratio--1x4.css`
+- `modified`: `src/server/locale/AT/GPL/styles/flex/ratio--20x1.css`
+- `modified`: `src/server/locale/AT/GPL/styles/flex/ratio--6x1.css`
+- `modified`: `src/server/locale/AT/GPL/styles/flex/ratio--8x1.css`
+- `added`: `src/server/locale/AT/GPL/styles/text/disclaimer.css`
+- `modified`: `src/server/locale/AT/GPL/styles/text/index.js`
+- `modified`: `src/server/locale/AT/Pi30/mutations/pi30-non-at.js`
+- `modified`: `src/server/locale/AT/Pi30/mutations/pi30.js`
+- `modified`: `src/server/locale/AT/Pi30/mutations/pi30nq-non-at.js`
+- `modified`: `src/server/locale/AT/Pi30/mutations/pi30nq.js`
+- `modified`: `src/server/locale/AT/Pi30/mutations/pi30q-non-at.js`
+- `modified`: `src/server/locale/AT/Pi30/mutations/pi30q.js`
+- `modified`: `src/server/locale/AT/Pi30/styles/flex/base.css`
+- `modified`: `src/server/locale/AT/Pi30/styles/flex/ratio--1x1.css`
+- `modified`: `src/server/locale/AT/Pi30/styles/flex/ratio--1x4.css`
+- `modified`: `src/server/locale/AT/Pi30/styles/flex/ratio--20x1.css`
+- `modified`: `src/server/locale/AT/Pi30/styles/flex/ratio--6x1.css`
+- `modified`: `src/server/locale/AT/Pi30/styles/flex/ratio--8x1.css`
+- `added`: `src/server/locale/AT/Pi30/styles/text/disclaimer.css`
+- `modified`: `src/server/locale/AT/Pi30/styles/text/index.js`
+- `modified`: `src/server/locale/CA/mutations/index.js`
+- `added`: `src/server/locale/CA/mutations/long_term_nq_gtz.js`
+- `added`: `src/server/locale/CA/mutations/long_term_q_gtz.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/generic-non-de.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/generic.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/gpl_eqz-non-de.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/gpl_eqz.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/gpl_gtz-non-de.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/gpl_gtz.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/gplq_eqz-non-de.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/gplq_eqz.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/gplq_gtz-non-de.js`
+- `modified`: `src/server/locale/DE/GPL/mutations/gplq_gtz.js`
+- `modified`: `src/server/locale/DE/GPL/styles/flex/base.css`
+- `modified`: `src/server/locale/DE/GPL/styles/flex/ratio--1x1.css`
+- `modified`: `src/server/locale/DE/GPL/styles/flex/ratio--1x4.css`
+- `modified`: `src/server/locale/DE/GPL/styles/flex/ratio--20x1.css`
+- `modified`: `src/server/locale/DE/GPL/styles/flex/ratio--6x1.css`
+- `modified`: `src/server/locale/DE/GPL/styles/flex/ratio--8x1.css`
+- `added`: `src/server/locale/DE/GPL/styles/text/disclaimer.css`
+- `modified`: `src/server/locale/DE/GPL/styles/text/index.js`
+- `modified`: `src/server/locale/DE/Pi30/mutations/pi30-non-de.js`
+- `modified`: `src/server/locale/DE/Pi30/mutations/pi30.js`
+- `modified`: `src/server/locale/DE/Pi30/mutations/pi30nq-non-de.js`
+- `modified`: `src/server/locale/DE/Pi30/mutations/pi30nq.js`
+- `modified`: `src/server/locale/DE/Pi30/mutations/pi30q-non-de.js`
+- `modified`: `src/server/locale/DE/Pi30/mutations/pi30q.js`
+- `modified`: `src/server/locale/DE/Pi30/styles/flex/base.css`
+- `modified`: `src/server/locale/DE/Pi30/styles/flex/ratio--1x1.css`
+- `modified`: `src/server/locale/DE/Pi30/styles/flex/ratio--1x4.css`
+- `modified`: `src/server/locale/DE/Pi30/styles/flex/ratio--20x1.css`
+- `modified`: `src/server/locale/DE/Pi30/styles/flex/ratio--6x1.css`
+- `modified`: `src/server/locale/DE/Pi30/styles/flex/ratio--8x1.css`
+- `added`: `src/server/locale/DE/Pi30/styles/text/disclaimer.css`
+- `modified`: `src/server/locale/DE/Pi30/styles/text/index.js`
+- `modified`: `src/server/locale/FR/mutations/generic.js`
+- `modified`: `src/server/locale/FR/mutations/gpl.js`
+- `modified`: `src/server/locale/FR/mutations/gplq.js`
+- `modified`: `src/server/locale/FR/mutations/long_term_nq_gtz.js`
+- `modified`: `src/server/locale/FR/mutations/long_term_q_gtz.js`
+- `modified`: `src/server/locale/FR/styles/flex/base.css`
+- `modified`: `src/server/locale/FR/styles/flex/ratio--1x1.css`
+- `modified`: `src/server/locale/FR/styles/flex/ratio--1x4.css`
+- `modified`: `src/server/locale/FR/styles/flex/ratio--20x1.css`
+- `modified`: `src/server/locale/FR/styles/flex/ratio--6x1.css`
+- `modified`: `src/server/locale/FR/styles/flex/ratio--8x1.css`
+- `modified`: `src/server/message/mediaQueries.js`

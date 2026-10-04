@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-messaging-components"
 type: source
 date_ingested: 2026-08-29
-date_updated: 2026-09-20
+date_updated: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-09-20-39769bc/manifest.json"
   - "github/paypal/paypal-messaging-components/supplements/2026-09-20-39769bc-70608700/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-09-20-a682a8d/manifest.json"
@@ -16,7 +17,7 @@ tags: [paypal, pay-later, paypal-credit, messaging, javascript, github-repositor
 
 `paypal/paypal-messaging-components` implements PayPal Credit and Pay Later promotional messaging for merchant websites. This cumulative page begins with package-qualified baseline `@paypal/messaging-components@1.95.1` at exact SHA `2bdaf940cdb0dcd29a8a3bc992eea975798d6d00`.
 
-The latest ingested release here is `@paypal/messaging-components@1.97.0`, released September 17, 2026, at `39769bc09150879c1e85d3f5ae27a516279f652a`. Its full additive ingest covers a page-type migration, inline disclosures, Spain/Italy messaging warnings and v2 default typography. The `1.95.1` baseline and `1.96.0` accessibility/content delta below remain preserved.
+The latest ingested release here is `@paypal/messaging-components@1.98.0`, released September 28, 2026, at `a639ec71494d3278684f5896017a426ed1fbfcd1`. Its additive ingest records Canadian bilingual long-term presentment, FR/AT/DE credit warnings and layouts, currency formatting and a modal Tab guard. The `1.95.1` baseline, `1.96.0` accessibility/content delta and `1.97.0` page-type/disclosure history below remain preserved.
 
 Repository: <https://github.com/paypal/paypal-messaging-components>
 
@@ -188,9 +189,64 @@ V2 `styles.js` changes its default font size from 14 to 12, and `validOptions.js
 
 The package manifest changes only the version. Demo account edits format commented examples; they do not enable new accounts. No upstream build, browser, native-host, visual or production test was run for this ingest.
 
+## `1.98.0` Canadian Presentment, Credit Warnings And Modal Navigation
+
+Compared with `1.97.0`, the capsule adds 16 files and modifies 133, with no removals and 577 unchanged files. Full additive mode follows the reviewed capsule-budget change from 720 to 760 files; that does not itself indicate a breaking payment API. Under the item-specific focused-reading exception, all changed current implementation/content and affected prior files were read completely, along with the new changelog section and full comparison; unchanged inventories/history were checked mechanically. The snapshot retains 726 files, not the entire upstream repository.
+
+### Canadian Bilingual Long-Term Presentment
+
+The CA dispatcher adds `PLLT_MQ_GZ` and `PLLT_NQ_GZ`, selecting new qualified/non-qualified long-term mutation modules instead of the prior generic fallback. Four new English/French message JSONs supply long-term headlines, while the modules handle text/flex layouts, bilingual breaks, logo variants and ratio-specific punctuation. This chooses the supplied message's presentation; it does not decide buyer qualification.
+
+New English/French long-term modal and product-list JSONs expand the content. The product list describes Pay in 4 and monthly financing with merchant/consumer eligibility qualifications. Long-term checkout (`xo`) offer JSONs are also new. Existing Canadian short-term and French checkout content is revised, so this is not the first Canadian localization or first French Canadian support.
+
+Calculator formatting changes English `$<value>` to `$<value> CAD` and French `<value> $ CAD` to `<value> $ CA`. Language now passes through `TermsTable` to `OfferCard`; for CA interest/total amounts, English appends `CAD` and French replaces a trailing `$` with `$ CA`. Other countries and falsey values keep the prior branch. This is scoped display formatting, not a general currency parser.
+
+Ordinary long-term threshold errors now give a purchase-range instruction for both below/above-range cases; checkout variants retain separate lower/upper instructions. French Canadian labels change to `Payer par mois` and `TAP`. Revised nonzero-rate disclaimer copy adds Quebec/Newfoundland-specific wording. These are authored `1.98.0` content findings, not verified current financing terms, legal guidance or product availability. Qualifying-offer filtering and term sorting remain unchanged.
+
+### FR, AT And DE Credit Warnings
+
+Five FR message JSONs and sixteen each for AT and DE add a `large` credit-warning disclaimer. FR warns about repayment/borrowing cost; AT/DE use borrowing-cost warnings for generic/interest-bearing content and late-payment-cost warnings for zero-interest/Pay in 30 content. Mutations put `large` before the default link and, for cross-border variants, the existing extra account disclaimer. That account disclaimer remains.
+
+New AT/DE text CSS applies normal weight, no underline and normal wrapping; it explicitly styles `extra` because inserting `large` moves it out of the first-of-type position. FR uses the new `disclaimerSpanWrap()` to allow the first multi-span warning to wrap separately from the following link. The existing `disclaimerWrap()` changes from fixed-minimum-width warning treatment to restoring inline messaging and span wrapping below the breakpoint. Its older behavior remains recorded in `1.97.0` above.
+
+Flex changes affect headlines, logos, warning sizes and placement across square, tall and wide banners. For example, AT/DE GPL square warnings use a base 5.5vw rule, narrow 150px rules use a 6.5px disclaimer, and 20x1 rules up to 650px use 1vw warning text. Internal `6x1` CSS is a mobile base, not a new public ratio. Narrow-container readability needs runtime QA; release CCD2 wording does not establish legal compliance.
+
+FR long-term, short-term and product-list views conditionally render supplied `creditWarning`; short-term English/French content supplies it. FR modal disclosures remove explicit French-account-required wording and revise links/provider text while retaining resident/approval qualifications. Product-list copy adds creditworthiness and market-dependent cross-border wording. Copy changes alone establish neither relaxed account requirements nor cross-border entitlement.
+
+### Modal Navigation And Country Class
+
+The forward-Tab wrap branch now requires `!e.shiftKey`; previously it could run when Shift+Tab was pressed from the last tabbable element. This is a source-level correction, not complete keyboard/screen-reader accessibility proof. `BodyContent` appends a lowercased country class to its content container. The excluded modal stylesheet aggregation prevents a claim about a specific resulting modal color, especially because release history includes a removal and revert.
+
+Version-qualified implementation excerpts, not merchant integration code:
+
+```jsx
+// 1.98.0 forward-wrap condition; Shift+Tab no longer enters this branch.
+} else if (!e.shiftKey && document.activeElement === tabArray[tabArray.length - 1]) {
+```
+
+```js
+// 1.98.0 CA dispatch; the prior version used the generic fallback for these IDs.
+case 'PLLT_MQ_GZ':
+    return longTermQ[type];
+case 'PLLT_NQ_GZ':
+    return longTermNQ[type];
+```
+
+### Grounding And Scope
+
+Five exact excerpts from the `2026-10-04-a639ec7/files/` snapshot:
+
+- `src/components/modal/v2/lib/utils.js:101`: `} else if (!e.shiftKey && document.activeElement === tabArray[tabArray.length - 1]) {`
+- `src/components/modal/v2/parts/BodyContent.jsx:93`: `const countryClassName = country?.toLowerCase();`
+- `content/modals/FR/short_term_en.json:49`: `"creditWarning": "Caution! A credit costs money and must be repaid.",`
+- `src/server/locale/CA/mutations/index.js:11-12`: `case 'PLLT_MQ_GZ':` followed by `return longTermQ[type];`
+- `src/server/message/mediaQueries.js:222`: ``return `.message__disclaimer > span.multi:first-of-type { white-space: normal; }`;``
+
+No detected public API or dependency change: `package.json` changes only its version; Puppeteer is already `^25.3.0` in the prior snapshot. Commented demo accounts do not enable production accounts. This is not `paypal-js`, its React wrapper or checkout orchestration, and the release does not establish a new saved-payment/token contract. No build, browser, visual, screen-reader or payment test was run.
+
 ## Version-Qualified Use
 
-Use this source and [[changelog-github-paypal-messaging-components]] for the `1.95.1` baseline and exact `1.96.0` and `1.97.0` changes. Earlier behavior remains version-qualified rather than overwritten by the newer release. Use official Pay Later documentation for current eligibility and product availability, [[source-github-paypal-js]] for loader and React contracts, and [[source-github-paypal-sdk-release]] for the version assembled into a particular combined SDK release.
+Use this source and [[changelog-github-paypal-messaging-components]] for the `1.95.1` baseline and exact `1.96.0`, `1.97.0` and `1.98.0` changes. Earlier behavior remains version-qualified rather than overwritten by the newer release. Use official Pay Later documentation for current eligibility and product availability, [[source-github-paypal-js]] for loader and React contracts, and [[source-github-paypal-sdk-release]] for the version assembled into a particular combined SDK release.
 
 ## Related
 
@@ -202,6 +258,25 @@ Use this source and [[changelog-github-paypal-messaging-components]] for the `1.
 
 ## Raw Sources
 
+- `1.98.0` snapshot: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json`
+- Release record: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.98.0/2026-10-04/manifest.json`
+- Release notes: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.98.0/2026-10-04/release-notes.md`
+- Comparison: `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.97.0--1.98.0/comparison.json`
+- Comparison detail and patch: `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.97.0--1.98.0/comparison.md`, `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.97.0--1.98.0/diff.patch`
+- Tab guard: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/components/modal/v2/lib/utils.js`
+- Country class: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/components/modal/v2/parts/BodyContent.jsx`
+- Calculator: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/components/modal/v2/parts/Calculator.jsx`
+- Currency selection: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/components/modal/v2/lib/locale.js`
+- Result formatting: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/components/modal/v2/parts/OfferCard.jsx`
+- CA dispatcher: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/server/locale/CA/mutations/index.js`
+- CA long-term content: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/content/modals/CA/long_term.json`
+- CA product-list content: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/content/modals/CA/product_list_fr.json`
+- FR warning/disclosure content: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/content/modals/FR/short_term_en.json`
+- AT message warning: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/content/messages/AT/generic.json`
+- DE text disclaimer: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/server/locale/DE/GPL/styles/text/disclaimer.css`
+- FR layout: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/server/locale/FR/styles/flex/ratio--20x1.css`
+- Shared wrapping: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/files/src/server/message/mediaQueries.js`
+- Review: `tracking/github/repos/paypal/paypal-messaging-components/ingest-review-93c29d33.md`
 - `1.97.0` snapshot: `raw/github/paypal/paypal-messaging-components/snapshots/2026-09-20-39769bc/manifest.json`
 - Release record: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.97.0/2026-09-20/manifest.json`
 - Release notes: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.97.0/2026-09-20/release-notes.md`

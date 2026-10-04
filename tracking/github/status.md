@@ -2323,6 +2323,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.2/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.1--10.1.2/comparison.json)
 
+## `github-93c29d339b648ea8820e`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `a639ec71494d3278684f5896017a426ed1fbfcd1`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-93c29d339b648ea8820e/packet.md)
+- Review priority: `normal`
+- Required reading: `99` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/messaging-components@1.98.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.98.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.97.0--1.98.0/comparison.json)
+
 ## `github-961c3611b36c6341ad56`
 
 - Repository: `paypal/paypal-js`

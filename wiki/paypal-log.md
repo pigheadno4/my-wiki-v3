@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Messaging Components `1.98.0`
+
+- Additive full ingest of `github-93c29d339b648ea8820e`, `@paypal/messaging-components@1.97.0` to `1.98.0`, SHA `a639ec71494d3278684f5896017a426ed1fbfcd1`, with approved item-specific focused reading. Full mode follows the reviewed capsule count budget increase to 760, not a detected breaking API.
+- Fully read all 148 changed current files besides the cumulative changelog, its new release section, 132 modified prior files besides unchanged changelog history, release records and entire comparison. Verified 710 prior/726 current retained files and complete disposition coverage: 149 retained changes, 2,808 policy exclusions, 577 unchanged retained files, no gaps/unclassified changes.
+- Recorded Canadian bilingual long-term dispatch/content, currency formatting, FR/AT/DE warning layouts, conditional FR modal warnings and the forward-Tab guard. Account-copy removal is not eligibility proof; modal country class is not color proof. No new PayPal JS/React payment contract inferred.
+- Updated [[paypal-pay-later]] first, then [[source-github-paypal-messaging-components]], [[changelog-github-paypal-messaging-components]], company/catalog/logs. Earlier history preserved; no source added, source_count unchanged. Review: `tracking/github/repos/paypal/paypal-messaging-components/ingest-review-93c29d33.md`. No build, runtime/payment test, commit or push.
+
 ## [2026-10-04] ingest | Checkout Components `5.0.436`
 
 - Delta-ingested `github-05de85883ddb6e597928`, `@paypal/checkout-components@5.0.435` to `5.0.436`, SHA `5b2afe08b007bd026083492b8242d65047b7d3b8`, with approved item-specific focused reading.
