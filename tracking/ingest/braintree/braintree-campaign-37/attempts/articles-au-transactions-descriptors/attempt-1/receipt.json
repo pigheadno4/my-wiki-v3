@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-au-transactions-descriptors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree AU Transaction Descriptors\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/au/transactions/descriptors\"\nraw_files:\n  - \"braintree/articles/au/transactions/descriptors-2026-09-16.md\"\ntags: [braintree, au, transactions, descriptors, bank-statements]\n---\n\n## Overview\n\nThis collected Braintree article, filed under its AU documentation path, describes identifying information customers may see on statements for purchases through a merchant's mobile app or website. It distinguishes soft, hard and per-transaction dynamic descriptors, while stating that the customer's bank ultimately determines the exact statement presentation.\n\n## Key takeaways\n\n- The article says the addressed account supports three descriptor types: a soft descriptor after authorization while a charge is pending, a hard descriptor after settlement once the customer's bank finalizes transaction status, and a dynamic descriptor configured and passed with each transaction through the API. This is a statement about the captured page's addressed account, not proof that every Australian account, processor or payment method supports the same behavior.\n- Merchant name (trading name) and clearing city and country are listed as required descriptor information. The article says the hard descriptor was automatically configured from application information and routes change requests through Braintree's contact path; exact field constraints remain in the pinned raw.\n- The article later labels its location subsection `Clearing city and state` and constrains city and state, despite earlier requiring clearing city and country. The snapshot does not resolve that terminology mismatch, so confirm the account-specific requirement rather than treating country and state as interchangeable.\n- PayPal-transaction descriptor updates use the PayPal console instead of the Braintree contact route described for the hard descriptor. Dynamic-descriptor details include a refund default and an Amex Direct-specific asterisk rule; these narrow statements do not establish payment-method eligibility, refund success, authorization, settlement or funding.\n\n> [!warning] Scope and evidence boundaries\n> This is a 2026-09-16 snapshot of Braintree's AU documentation path. The page does not name a processor or establish current regional availability, account assignment, processor support, payment-method eligibility or successful payment/refund execution. Do not transfer its rules to sibling processor or account articles. A customer's bank controls the final statement rendering, and the example format is not a guarantee.\n\n## Detail locators\n\n- Descriptor purpose, bank-controlled presentation and example: `# Descriptors`, raw lines 14-18.\n- Account-scoped soft, hard and dynamic descriptor meanings: `# Descriptors`, raw lines 20-25.\n- Required merchant-name and clearing-location parameters, application-derived hard descriptor and Braintree change route: raw lines 27-33.\n- Separate PayPal-console update route: note below `# Descriptors`, raw lines 36-37.\n- Hard/soft merchant-name limits and the unresolved country-versus-state terminology: `## Hard and soft descriptor requirements`, raw lines 42-57.\n- Refund descriptor default, business-name-only dynamic descriptor scope, detailed character rules, Amex Direct asterisk requirement and registered-trading-name condition: `## Dynamic descriptor requirements`, raw lines 60-76.\n- Linked Ruby developer-doc route for passing a per-transaction dynamic descriptor: raw line 78; navigation only, not additional behavioral evidence for this entry.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n- General descriptor route: [[source-braintree-control-panel-descriptors]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/au/transactions/descriptors-2026-09-16|Braintree AU Transaction Descriptors]] - complete collected article for AU-path descriptor types, configuration, update routes, statement-display qualifications and field requirements\n",
+  "quotes": [
+    {
+      "text": "A descriptor is the identifying information that your customers will see on their statement when they make a purchase through your mobile app or website. Ultimately, a customer\u2019s bank will determine exactly how your business\u2019s descriptors will appear on customer statements, but they are often formatted like this:",
+      "location": "raw lines 14-16 under # Descriptors"
+    },
+    {
+      "text": "- **Soft descriptors**: The descriptor that shows up after a transaction has been authorized. While the charge is in a pending state, the soft descriptor will be displayed on the customer's statement.\n- **Hard descriptors**: The descriptor that shows up after a transaction has settled. As soon as the customer's bank has finalized the transaction status, the hard descriptor will be permanently displayed as the description of the charge on their statement.\n- **Dynamic descriptors**: A custom descriptor configured and passed with each transaction via the API. This can be helpful if you want to provide specific information about the transaction in your descriptor (e.g. the name of the product).",
+      "location": "raw lines 23-25 under # Descriptors"
+    },
+    {
+      "text": "We have automatically configured your hard descriptor based on information collected during the application process. [Contact us](/braintree/help/updateDescriptor) to make any changes. Let us know (1) which fields you would like to change and (2) the new desired values for these fields. Keep the restrictions below in mind when sending us your new values.",
+      "location": "raw line 33 under # Descriptors"
+    },
+    {
+      "text": "If you would like to update your descriptor for PayPal transactions, you can do so from your [PayPal console](https://www.paypal.com/login).",
+      "location": "raw lines 36-37, note below # Descriptors"
+    },
+    {
+      "text": "When issuing a refund, the descriptor will default to the dynamic descriptor that was passed on the original transaction.",
+      "location": "raw lines 63-64, note under ## Dynamic descriptor requirements"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c37-au-descriptors-control-panel-reciprocal",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-au-transactions-descriptors]] - 2026-09-16 Braintree AU-path article for account-scoped soft, hard and dynamic statement descriptors, application-derived hard-descriptor configuration, separate PayPal update routing and unresolved country-versus-state field terminology; not proof of current availability, processor/account assignment, payment-method eligibility or successful payment/refund execution",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the evidence scoped to the captured AU documentation path and addressed account; do not transfer sibling processor, account or payment-method rules.",
+          "The raw first requires clearing city and country, then labels and constrains clearing city and state; the snapshot does not resolve the mismatch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/au/transactions/descriptors-2026-09-16.md",
+  "raw_sha256": "3cf06e70fea598e903acfa90b7b4c9eb558d8b1faccf0b7670b2443b072631e1",
+  "status": "candidate_ready"
+}

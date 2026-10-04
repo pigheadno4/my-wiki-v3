@@ -20,6 +20,10 @@ Card scope also varies by account and use case: the page distinguishes US from m
 
 ## Sources
 
+- [[source-braintree-articles-au-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted AU-path account article for default Visa and Mastercard acceptance, direct Amex setup with currency and pricing prerequisites, and qualified PayPal, Apple Pay and Google Pay availability; not current support, universal merchant eligibility, fixed pricing or payment-execution proof, with the narrower mobile-only wallet wording versus dedicated web-capable guides preserved as an unresolved channel-scope difference
+
+- [[source-braintree-articles-apac-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted APAC-path account article for default Visa and Mastercard acceptance, Hong Kong/Singapore-only direct Amex setup and pricing prerequisites, qualified PayPal and wallet availability, and merchant-account currency handling; not current regional support, universal merchant eligibility, fixed pricing or payment-execution proof, with the known SRC/Click to Pay support-status conflict left unresolved
+
 - [[source-braintree-articles-aib-bf-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted exact AIB BF account article for configured card brands, consequential Maestro 3D Secure and Control Panel conditions, separately enabled JCB/Discover/Diners Club, qualified alternative methods, and merchant-account currency selection with conversion-fee/refund warnings; not AIB AF, current independent authority, a merchant-specific agreement, or payment-execution proof
 
 - [[source-braintree-articles-aib-af-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted AIB AF account article for default Visa, Mastercard and Maestro acceptance, separately configured Amex with pricing prerequisites, 3D-Secure-qualified Maestro constraints, qualified alternative methods, and merchant-account currency setup; not AIB BF, independent current bank authority, universal availability, fixed pricing or payment-execution proof

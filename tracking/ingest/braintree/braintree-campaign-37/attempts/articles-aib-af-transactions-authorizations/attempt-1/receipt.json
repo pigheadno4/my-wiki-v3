@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-aib-af-transactions-authorizations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree AIB AF Authorizations\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/aib-af/transactions/authorizations\"\nraw_files:\n  - \"braintree/articles/aib-af/transactions/authorizations-2026-09-16.md\"\ntags: [braintree, aib-af, transactions, authorizations, voids, gateway-rejections]\n---\n\n## Overview\n\nThis pinned Braintree-hosted AIB AF article explains the authorization hold on a customer's funds, the later settlement step that debits those funds and routes them into the merchant account, and how expiration, voids, and gateway rejections affect release of the hold. It is snapshot evidence for this exact AIB AF route; the page does not define the AIB AF label or establish a region, current account eligibility, independent bank policy, successful settlement, merchant funding, or arrival of a bank deposit.\n\n## Key takeaways\n\n- `Authorized` means the customer's bank has placed a hold for the transaction amount. Only if the transaction is later submitted for settlement does the article describe those funds as being debited from the customer's bank account and routed into the merchant account; authorization itself is not settlement or funding proof.\n- An authorization that is not submitted for settlement in time expires and the bank releases the held funds. The expiration timeline varies by card type.\n- The article says a void cancels transfer of held funds before settlement and is typically available for `Authorized` or `Submitted for Settlement` transactions. For a void while `Authorized`, it says the authorization should disappear and held funds will be released within 24\u201348 hours; this wording is not a guarantee of immediate bank-side release.\n- Automatic settlement submission changes the voiding point: the merchant can void only after the transaction reaches `Submitted for Settlement`. Voiding in that state does not automatically release the original hold; the pending authorization remains until expiry, and the article routes the customer to their bank, which should be able to see the void request and update the statement.\n- A gateway rejection can occur after authorization and after the bank has already placed a hold. The gateway then voids the original authorization, but the article separately warns that customers may have to wait until authorization expiry to see held funds released. With automatic settlement submission, the gateway rejection is voided only after the transaction has entered `Submitted for Settlement`.\n\n> [!warning] Authorization, settlement, and funding are distinct\n> This snapshot documents a bank hold and qualified release behavior. It does not prove that a transaction was submitted for settlement, settled successfully, reached a merchant account, or funded a bank account. Do not transfer its AIB AF wording to AIB BF or treat it as current independent bank policy.\n\n## Detail locators\n\n- Authorization hold and later settlement-dependent debit and merchant-account routing: `# Authorizations`, raw line 16.\n- Expiry when not submitted in time, bank release, and card-type timing variation: `# Authorizations`, raw line 18.\n- Possible release delay after voids and gateway rejections: `# Authorizations`, raw line 20.\n- Void meaning, typical eligible statuses, and the qualified 24\u201348-hour Authorized-void statement: `## Voids`, raw line 25.\n- Automatic-submission constraint: `## Voids`, raw line 27.\n- Submitted-for-settlement void behavior, expiry, and customer-bank route: `### Voiding Submitted for Settlement transactions`, raw line 32.\n- Post-authorization gateway rejection, gateway void, and bank release wording: `## Gateway Rejections`, raw line 37.\n- Automatic-submission gateway-rejection timing: `## Gateway Rejections`, raw line 39.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- General lifecycle route: [[source-braintree-transaction-lifecycle]]\n- Control Panel gateway-rejection route: [[source-braintree-control-panel-gateway-rejections]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/aib-af/transactions/authorizations-2026-09-16|Braintree AIB AF Authorizations article]] - complete captured page covering authorization holds, expiration, void timing and post-authorization gateway rejection behavior\n",
+  "quotes": [
+    {
+      "text": "When a transaction is in the [Authorized](/braintree/articles/get-started/transaction-lifecycle#authorized) status, your customer\u2019s bank puts a hold on the funds needed to cover the cost of that transaction. If the transaction is later submitted for settlement, those funds will be debited from the customer\u2019s bank account and routed into your merchant account.",
+      "location": "raw line 16 under # Authorizations"
+    },
+    {
+      "text": "If a pending authorization is not submitted for settlement in time, it will expire, and the customer\u2019s bank will release the held funds. Authorization expiration timelines differ by card type; [learn more in our developer docs](/braintree/docs/reference/general/statuses#authorization-expired).",
+      "location": "raw line 18 under # Authorizations"
+    },
+    {
+      "text": "[Voids](/braintree/articles/control-panel/transactions/refunds-voids-credits#voids) occur when you cancel the transfer of held funds from a customer's bank account before the transaction settles. Typically, you can only void a transaction that has the status of [Authorized](/braintree/articles/get-started/transaction-lifecycle#authorized) or [Submitted for Settlement](/braintree/articles/get-started/transaction-lifecycle#submitted-for-settlement). When you void an Authorized transaction, the authorization should disappear from your customer\u2019s bank account, and any held funds will be released within 24 to 48 hours.",
+      "location": "raw line 25 under ## Voids"
+    },
+    {
+      "text": "When you void a Submitted for Settlement transaction, the funds held on the original authorization will not be released automatically. Instead, your customer will continue to see a pending authorization until it eventually [expires](/braintree/docs/reference/general/statuses#authorization-expired). When this happens, you can have your customer contact their bank; the bank should be able to see the void request and update your customer's bank statement.",
+      "location": "raw line 32 under ### VoidingSubmitted for Settlementtransactions"
+    },
+    {
+      "text": "A transaction will be [gateway rejected](/braintree/articles/control-panel/transactions/gateway-rejections) if it does not pass certain rules or settings in your Braintree gateway. Gateway rejections can occur after a transaction moves into the Authorized status, and your cardholder\u2019s bank has already put a hold on the customer\u2019s funds. When this happens, the gateway will then void the original authorization and the cardholder\u2019s bank will release the funds.",
+      "location": "raw line 37 under ## Gateway Rejections"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c37-aib-af-authorizations-payment-platform-source",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-aib-af-transactions-authorizations]] - 2026-09-16 Braintree-hosted AIB AF snapshot of authorization holds, card-type-dependent expiry, status-qualified void behavior and post-authorization gateway rejection; authorization is not settlement or funding proof, and the page is not AIB BF or current independent bank authority",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route scoped to the exact AIB AF snapshot; do not transfer it to AIB BF or infer a region, current account eligibility, or independent bank policy.",
+          "Authorization records a funds hold, not successful settlement, merchant funding, or bank-deposit arrival."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/aib-af/transactions/authorizations-2026-09-16.md",
+  "raw_sha256": "aa7ffa2b765ea3b25e8024f95968f3dd8bf82d69dcb05c9c6bd96ece0695b350",
+  "status": "candidate_ready"
+}

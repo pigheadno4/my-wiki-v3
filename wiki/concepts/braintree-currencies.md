@@ -17,6 +17,8 @@ The page states support for more than 130 local currencies in 44 countries but d
 
 ## Sources
 
+- [[source-braintree-articles-apac-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted APAC-path article routing to merchant-account currency processing, customer-bank conversion and possible fee/refund risk, additional-currency merchant-account setup, applicable presentment and settlement guidance, and merchant-account-ID selection
+
 - [[source-braintree-articles-wells-ic-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted Wells IC account article routing to merchant-account currency processing, customer-bank conversion and possible fee/refund risk, additional-currency merchant-account setup, applicable presentment and settlement guidance, and merchant-account-ID selection
 
 - [[source-braintree-articles-wells-flat-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted Wells Flat account article routing to merchant-account currency processing, customer-bank conversion and fee/refund risk, additional-currency account setup, applicable presentment and settlement guidance, and merchant-account-ID selection

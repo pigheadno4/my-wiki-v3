@@ -1,0 +1,55 @@
+{
+  "job_id": "articles-apac-transactions-settlement-funding-timeline",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree APAC Settlement and Funding Timeline\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/apac/transactions/settlement-funding-timeline\"\nraw_files:\n  - \"braintree/articles/apac/transactions/settlement-funding-timeline-2026-09-16.md\"\ntags: [braintree, apac, settlement, funding, disbursement, credit-cards]\n---\n\n## Overview\n\nThis collected [[braintree]] article under the APAC path describes the Braintree Direct route from a settled transaction through the merchant account to the merchant's bank account. For cards, it separates batch submission, the `Settling` state, processing-bank initiation and acknowledgment, the `Settled` state, disbursement, and later bank-account visibility.\n\nThis is a Braintree-hosted APAC snapshot. The page does not identify a country, account configuration, acquiring bank, currency, or independent bank authority, so its schedule must not be transferred to Australia, every APAC merchant, a sibling processor/account route, a merchant agreement, or current policy. It is not evidence that an individual transaction settled, was disbursed, or arrived in a bank account.\n\n## Key takeaways\n\n- The article starts with the prerequisite that a transaction is already settled before funds pass through the merchant account to the bank account, and says Braintree services funding because the merchant is using Braintree Direct.\n- The captured card flow says transactions are submitted for settlement at 3am Central Time (US), then marked `Settling`. Braintree sends the batch to the processing bank, which initiates the funds transfer and produces a settlement acknowledgment; after Braintree receives confirmation, it marks transactions `Settled` and disburses them to the bank account. These are distinct lifecycle events, not interchangeable proof of bank arrival.\n- The card-brand schedule is anchored to submission for settlement: the article says the merchant should see Visa/Mastercard funds in 1\u20133 business days and American Express funds in 2\u20138 business days. The Amex statement is expressly based on Braintree's experience; Amex sets its own cutoff and handles disbursement directly, so the page routes details to Amex.\n- A separate funding statement uses transaction creation as its anchor and says funds are typically reflected within 2\u20135 business days. Default disbursement is every weekday excluding bank holidays; weekend or holiday funds are sent the following business day, and the article says it typically takes another business day before they are visible. Do not collapse these qualified timing statements into one guaranteed service level.\n- Apple Pay and Google Pay are described as processed and disbursed alongside credit cards. PayPal instead manages disbursement separately from the Braintree-managed account; the linked PayPal funding-options page is navigation only here.\n\n> [!warning] Event anchors and modal timing\n> `Submitted for settlement`, transaction creation, settlement confirmation, disbursement, and bank-account visibility are different anchors. The article uses `should`, `typically`, and `in our experience`; none of the ranges guarantees settlement, payout, or deposit arrival for an individual transaction.\n\n> [!warning] Captured APAC route only\n> Keep the 3am Central Time batch time, brand ranges, descriptor, cadence and visibility delay within this captured APAC article. The path label alone does not establish country-wide or region-wide applicability, including Australia, and the snapshot is not current independent bank, processor, or PayPal policy.\n\n## Detail locators\n\n- Post-settlement prerequisite, merchant-account-to-bank-account path and Braintree Direct funding scope: `# Settlement and Funding Timeline`, raw line 16.\n- Card batch submission at 3am Central Time (US), `Settling`, processing-bank transfer initiation, acknowledgment, `Settled` and disbursement sequence: `## Credit cards > ### Settlement`, raw line 24.\n- Submission-anchored Visa/Mastercard and American Express ranges: `## Credit cards > ### Settlement`, raw lines 27\u201328.\n- Experiential Amex qualification, Amex-owned cutoff and direct disbursement: `## Credit cards > ### Settlement`, raw line 30.\n- Deposit descriptor: `## Credit cards > ### Funding`, raw lines 35\u201337.\n- Creation-anchored typical range: `## Credit cards > ### Funding`, raw line 39.\n- Weekday cadence, bank-holiday/weekend handling and additional visibility day: `## Credit cards > ### Funding`, raw line 41.\n- Apple Pay and Google Pay alignment with card processing and disbursement: `## Apple Pay and Google Pay`, raw lines 44\u201346.\n- Separately managed PayPal disbursement and linked funding-options route: `## PayPal`, raw lines 49\u201351.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/apac/transactions/accepted-payment-methods-2026-09-16|Braintree APAC accepted payment methods]] - unread navigation-only destination linked for Apple Pay and Google Pay; not used as factual evidence here\n- [[raw/braintree/articles/guides/payment-methods/paypal/funding-reconciliation-2026-09-16|Braintree PayPal funding and reconciliation]] - unread navigation-only destination linked for separate PayPal funding options; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/articles/apac/transactions/settlement-funding-timeline-2026-09-16|Braintree APAC Settlement and Funding Timeline article]] - fully read captured page covering the Braintree Direct post-settlement path, card lifecycle and qualified timing anchors, deposit descriptor, disbursement cadence, wallet alignment and separate PayPal funding\n",
+  "quotes": [
+    {
+      "text": "After a transaction is settled, funds will pass through your merchant account to your bank account. Because you are using Braintree Direct, we service funding for you.",
+      "location": "raw line 16 under # Settlement and Funding Timeline"
+    },
+    {
+      "text": "Transactions are currently submitted for settlement at 3am Central Time (US). Once the settlement batch is submitted, we mark the transactions as Settling. We then send the batch of transactions to the processing bank, which initiates the transfer of funds and generates a settlement acknowledgment report. When we receive this settlement confirmation, we mark the transactions as Settled and disburse them to your bank account.",
+      "location": "raw line 24 under ## Credit cards > ### Settlement"
+    },
+    {
+      "text": "- **Visa/Mastercard**: 1-3 business days after transaction has been submitted for settlement\n- [**American Express**](/braintree/articles/apac/transactions/accepted-payment-methods#american-express): 2-8 business days after transaction has been submitted for settlement*\n\n*In our experience, Amex transactions are disbursed according to this schedule. Because Amex sets their own settlement batch cutoff times and handles your disbursements directly, you\u2019ll need to contact them for details.",
+      "location": "raw lines 27\u201330 under ## Credit cards > ### Settlement"
+    },
+    {
+      "text": "Depending on your bank, you\u2019ll typically see the funds reflected in your account within 2-5 business days of the transaction creation date.\n\nBy default, funds are disbursed every weekday, excluding bank holidays. On weekends and bank holidays, funds will be sent to your bank account the following business day. It typically takes an additional business day before you see the funds in your account.",
+      "location": "raw lines 39\u201341 under ## Credit cards > ### Funding"
+    },
+    {
+      "text": "All [Apple Pay and Google Pay](/braintree/articles/apac/transactions/accepted-payment-methods#alternative-payment-methods) transactions will be processed and disbursed alongside your credit card transactions.\n\n\n## PayPal\n\nPayPal manages the disbursement of funds separately from your Braintree-managed account and there are [different funding options available](/braintree/articles/guides/payment-methods/paypal/funding-reconciliation).",
+      "location": "raw lines 44\u201351 under ## Apple Pay and Google Pay and ## PayPal"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c37-w15-braintree-payment-platform-reciprocal-apac-timeline",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-apac-transactions-settlement-funding-timeline]] - 2026-09-16 Braintree-hosted APAC settlement and funding timeline snapshot distinguishing post-settlement Braintree Direct lifecycle events, submission- versus creation-anchored qualified card timing, disbursement versus bank visibility, wallet alignment and separate PayPal funding; not Australia- or region-wide/current policy and not proof of an individual settlement, payout or deposit",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not transfer the captured APAC path's 3am Central Time batch time, card ranges, descriptor or cadence to Australia, all APAC merchants, sibling processor/account routes or current policy.",
+          "Keep submission for settlement, transaction creation, settlement confirmation, disbursement and bank-account visibility as distinct event anchors."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/apac/transactions/settlement-funding-timeline-2026-09-16.md",
+  "raw_sha256": "c975e7111e3d0a6fe599c4d4a0ac0b1a36311e339f92aaf5a0c4f60d3b732cf1",
+  "status": "candidate_ready"
+}

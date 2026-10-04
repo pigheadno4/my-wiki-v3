@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | Braintree website C37
+
+- Twenty AIB/APAC/AU/Brazil website sources approved; initial first pass20/20, twenty full independent reviews, zero retries. Fixed queries40/40 passed with regional/account/event/support conflicts and prerequisites preserved. Catalog412(395website+17GitHub), six existing concepts updated,28typed pages validated. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-37/`. Raw unchanged; no commit or push.
+
 ## [2026-10-04] ingest | Braintree website C36
 
 - Twenty AIB AF/BF website sources approved through ten rolling child slots; first pass 18/20, twenty full initial reviews plus two targeted reviews, no repeated full review. Fixed queries 40/40 passed; pricing identification conflict and settlement chronology corrected without expanding source scope. Catalog 392 (375 website + 17 GitHub); six existing concepts updated, 28 typed pages validated. Details [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-36/`. Raw unchanged; no commit or push.

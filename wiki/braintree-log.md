@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C37
+
+- Twenty website raws: two AIB authorizations, eight APAC, nine AU and Brazil overview, fully read and independently reviewed through ten shared rolling child slots. Catalog412=395website+17GitHub; six existing concepts updated, no new concept. Raw unchanged.
+- Initial first pass20/20: twenty worker attempts and twenty full initial reviews; no retry, targeted/repeated full review, schema-rejected handoff, formatter repair or coordinator semantic repair.
+- Fixed queries40/40 passed. AU fee-scope and country/state wording, APAC/AU event anchors, wallet-channel differences, SRC support conflict and AU report-eligibility/pricing boundaries remain discoverable and unresolved where appropriate. APAC banking-partner provisioning is distinct from AU/Brazil Braintree-funded account conditions. No current policy or individual execution/deposit proof inferred.
+- Exact candidates, hashes, unique ownership, approved reciprocal updates, raw/concept/index routes, exhaustive catalogs/counts and28typed pages passed close checks. Evidence/timing: `tracking/ingest/braintree/braintree-campaign-37/`. No collection, GitHub ingestion, rule/code/schema change, commit or push.
+
 ## [2026-10-04] ingest | Braintree website C36
 
 - Twenty AIB AF/BF website raws fully read and independently reviewed through ten shared rolling child slots. Catalog: 392 sources (375 website + 17 GitHub); six existing concepts updated, no new concepts. Raw unchanged.
