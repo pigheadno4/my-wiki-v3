@@ -1,0 +1,54 @@
+{
+  "job_id": "lpm-testing-go-live-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Local Payment Methods Testing and Go Live (Node.js)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/local-payment-methods/testing-go-live/node\"\nraw_files:\n  - \"braintree/docs/guides/local-payment-methods/testing-go-live/node-2026-09-16.md\"\ntags: [braintree, local-payment-methods, node-js, sandbox, production, testing]\n---\n\n## Overview\n\nThis collected Braintree Node.js guide distinguishes two Sandbox approaches for Local Payment Methods and documents the separate work required to move server-side configuration to Production. It is a website snapshot with no exact Node package version; simulated or linked-Sandbox results are not proof of current merchant eligibility, Production acceptance, successful live payment, settlement, or funding.\n\n## Key takeaways\n\n- Mocked Local Payment Method testing is the default. It uses Braintree Sandbox test values to simulate PayPal responses and can check client- and server-side configuration and expected request responses, but it does not provide end-to-end testing, send data to a PayPal Sandbox account, or work with the PayPal Checkout component of the JavaScript v3 SDK.\n- The linked-PayPal-account approach requires additional setup and connects a Braintree Sandbox account to a PayPal Sandbox account. The page says this returns data to both Sandbox accounts and enables fuller integration testing such as transaction reporting and email receipts. This remains Sandbox evidence, not a completed live-payment result.\n- The linked flow requires PayPal Sandbox API credentials. The PayPal business Sandbox account must use the same country as the Braintree Sandbox account; the app must use the same Sandbox developer account. After linking, some fake nonces may stop working. The page warns not to use the PayPal business account as the customer account for linked-flow or Production test payments because that results in declines.\n- Sandbox and Production accounts are not linked: objects, processing options, recurring-billing settings, login information, merchant ID, and API keys do not transfer. The guide recommends a dedicated API user rather than an individual user's credentials, with a non-employee-specific email and Account Admin permissions, and requires Production merchant ID, public key, and private key in server-side code. Public and private keys are environment- and user-specific.\n- The Node.js server example switches the gateway to `braintree.Environment.Production` and uses Production credentials. The page says no client-side configuration update is needed for this transition because the client obtains its client token from the server; this does not remove method enablement or account-configuration prerequisites. Production account settings must mirror the tested Sandbox configuration, with recurring-billing plans or settings recreated when applicable.\n- The Production check calls for a small number of low-value sale transactions for each intended payment-method type, submitted for settlement and followed through to bank deposit. Real payment methods are required; settled test transactions debit the associated method and incur fees, so the guide says to use reasonable amounts and limit the number of tests.\n\n> [!warning] Sandbox results are not live-payment proof\n> Mocked outcomes and linked-Sandbox data do not establish Production availability or a completed live payment. Production uses separate credentials and settings, requires real payment methods, and can move real funds and incur fees.\n\n## Detail locators\n\n- Mocked versus linked-PayPal Sandbox testing modes and their boundaries: `# Testing and Go Live`, lines 16-31.\n- PayPal business-account-as-customer decline warning: `# Testing and Go Live > IMPORTANT`, lines 36-37.\n- Mocked-flow credential route and no-PayPal-Sandbox-data boundary: `## Mocked Local Payment Method testing`, lines 40-44.\n- Linked-account prerequisites, same-country/account setup and Sandbox credentials: `## Local Payment Method testing with linked PayPal account`, lines 45-68.\n- Fake-nonce warning and Braintree Sandbox Control Panel linking steps: `## Local Payment Method testing with linked PayPal account > NOTE`, lines 73-83.\n- Sandbox/Production isolation and non-transfer warning: `## Go live`, lines 86-90.\n- Dedicated API-user recommendation and Production credential requirements: `## Go live > ### Create an API user` through `### Get production credentials`, lines 93-109.\n- Production account recreation, Node.js server environment switch and client-token boundary: `### Update production account settings` through `### Update live server configuration`, lines 110-127.\n- Low-value Production sales, settlement/deposit check and real-payment debit/fee warning: `## Test transactions in production`, lines 128-134.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Local Payment Methods article owner: [[source-braintree-payment-methods-local-payment-methods]]\n- Supporting server concept: [[braintree-server-sdk]]\n- Supporting administration concept: [[braintree-control-panel]]\n- Local-payment event route: [[braintree-webhooks]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/general/testing/node-2026-09-16|Braintree Node.js general testing reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/articles/control-panel/important-gateway-credentials-2026-09-16|Braintree gateway-credentials article]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/articles/control-panel/users-roles/managing-users-roles-2026-09-16|Braintree users-and-roles article]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/local-payment-methods/server-side/node-2026-09-16|Braintree Local Payment Methods server-side Node.js guide]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/general/webhooks/local-payment-methods/node-2026-09-16|Braintree Local Payment Methods webhook reference for Node.js]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Braintree Node.js transaction-sale reference]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/payment-method-types-overview-2026-09-16|Braintree payment-method types overview]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/articles/get-started/try-it-out-2026-09-16|Braintree Sandbox-versus-Production article]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/local-payment-methods/testing-go-live/node-2026-09-16|Braintree Local Payment Methods Testing and Go Live for Node.js]] - complete collected page covering mocked and linked-PayPal Sandbox approaches, account and credential prerequisites, isolated Production configuration, the Node.js environment switch, and limited real-payment Production checks\n",
+  "quotes": [
+    {
+      "text": "Allows you to confirm that your client- and server-side configurations are correct and that you are receiving appropriate responses for your requests",
+      "location": "# Testing and Go Live, line 22"
+    },
+    {
+      "text": "Do not use your PayPal business account as the PayPal customer account when paying for test transactions in the linked PayPal flow or in production. Doing so will result in [declines](/braintree/docs/reference/general/processor-responses/authorization-responses) .",
+      "location": "# Testing and Go Live > IMPORTANT, line 37"
+    },
+    {
+      "text": " **Your sandbox account is not linked to your production account in any way** . Nothing created in the sandbox will transfer to production. This includes processing options and recurring billing settings. Your login information, merchant ID, and API keys will also be different.",
+      "location": "## Go live > IMPORTANT, line 90"
+    },
+    {
+      "text": "On the client side, no configuration updates are needed when you make the switch to production \u2013 your client obtains its client token from your server, which is all the configuration it needs.",
+      "location": "## Go live > ### Update live server configuration, line 127"
+    },
+    {
+      "text": "Real payment methods must be used in the production environment. Test values from the sandbox testing page will not work. This means that every test transaction that you allow to settle in your production account will debit funds from the associated payment method and fees will be assessed. Be sure to test with reasonable amounts and only run a limited number of transactions.",
+      "location": "## Test transactions in production > IMPORTANT, line 134"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "lpm-testing-go-live-node-payment-methods-source-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-local-payment-methods-testing-go-live-node]] - Node.js Local Payment Methods testing/go-live guide distinguishing mocked and linked-PayPal Sandbox approaches from separate Production credentials, server configuration and limited real-payment checks",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The collected website page does not state an exact Node package version or prove current merchant eligibility, Production acceptance, successful live payment, settlement, or funding.",
+          "The existing source-braintree-payment-methods-local-payment-methods page remains the Local Payment Methods article owner; this proposal is only a reciprocal route to a separate testing/go-live guide."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/local-payment-methods/testing-go-live/node-2026-09-16.md",
+  "raw_sha256": "9b427a1e61d7d740df127b87e8f19ff50e3f2fb718b23bc3c7fb49d28f1e9d1f",
+  "status": "candidate_ready"
+}

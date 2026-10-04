@@ -1,0 +1,55 @@
+{
+  "job_id": "lpm-bancomatpay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree BANCOMAT Pay Local Payment Method\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/local-payment-methods/bancomatpay\"\nraw_files:\n  - \"braintree/docs/guides/local-payment-methods/bancomatpay-2026-09-16.md\"\ntags: [braintree, local-payment-methods, bancomat-pay, javascript, webhooks]\n---\n\n## Overview\n\nThis collected Braintree guide describes BANCOMAT Pay as a Local Payment Method that lets a customer place an order and then complete payment in the BANCOMAT Pay mobile digital-wallet app. It is a retrieval route for the guide's limited-release pilot availability, merchant and customer applicability, JavaScript-client and server-side SDK scope, and the payment-ID-to-webhook-token handoff. The 2026-09-16 snapshot does not establish current availability, a merchant's enablement, buyer eligibility or a completed live payment.\n\n## Key takeaways\n\n- The guide marks BANCOMAT Pay as a limited release for pilot merchants in selected countries and directs interested merchants to contact Braintree. Its applicability table identifies `bancomatpay`, buyers in Italy, sellers globally except Russia, Japan and Brazil, `EUR`, and a minimum customer transaction of `0.01 EUR`; those captured values remain snapshot scope rather than proof of current or individual eligibility.\n- The stated prerequisites are a valid PayPal business account created, verified and linked in the Braintree Control Panel and use of the latest Client SDK. The page says BANCOMAT Pay is available only through the JavaScript Client SDK and various server-side SDKs. Its loading example uses Braintree Web `3.111.0`, but an example script version is not a current support or minimum-version guarantee.\n- This method does not follow the normal initial nonce-return path. The guide says no pop-up launches and the merchant receives a payment ID rather than a nonce; the example instructs the merchant to store that payment ID on its server so it can be mapped to a later Braintree webhook.\n- The guide requires merchants to be signed up for Local Payment Method webhooks. It says the `local_payment_completed` webhook delivers the single-use token on which the merchant must transact after the buyer completes payment. That notification-and-token handoff is not itself evidence of settlement, funding or a particular completion speed.\n\n## Evidence boundaries\n\n> [!warning] Pilot and applicability scope\n> Limited-release wording, the captured country/currency table and a fully read documentation snapshot do not prove current program availability, merchant enablement or customer eligibility. Recheck the live program and account-specific conditions before relying on the route.\n\n> [!warning] Initiation, notification and payment outcome\n> A successful `startPayment` call or receipt of a payment ID records initiation, not completed payment. The later `local_payment_completed` notification supplies a single-use token to transact upon; this page does not say that notification proves settlement or funding, and it does not establish that the path is instant.\n\n> [!warning] Nonce, platform and environment scope\n> The initial client response has no nonce. Keep that response separate from the webhook-delivered single-use token, and preserve the guide's JavaScript-client plus server-side SDK boundary. The captured page and examples do not identify an execution environment or prove sandbox or production execution.\n\n## Detail locators\n\n- Limited-release notice and participation route: `### Overview`, lines 20-21.\n- Method identity, PayPal business-account prerequisite and latest-Client-SDK direction: `### Overview`, lines 23-26.\n- Payment type, buyer/seller countries, currency and minimum transaction: `### Overview`, lines 28-30.\n- Example Client SDK and Local Payments SDK script versions: `### Loading the SDK`, lines 33-42.\n- Required Local Payment Method webhook registration and single-use-token delivery: `### Capturing BANCOMAT Pay Transactions`, lines 43-46.\n- Captured JavaScript-client and server-side SDK limitation: `### BANCOMAT Pay with GraphQL`, lines 47-51.\n- No-pop-up, no-initial-nonce and payment-ID behavior: `### Example Requests`, lines 54-57.\n- Callback example fields, server-side payment-ID retention and initiation error handling: `### Callback`, lines 60-95.\n- Promise-form example and the same payment-ID retention boundary: `### Promise`, lines 97-130.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Local-method family guide: [[source-braintree-payment-methods-local-payment-methods]]\n- Notification concept: [[braintree-webhooks]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/local-payment-methods/bancomatpay-2026-09-16|Braintree BANCOMAT Pay guide]] - complete collected page covering pilot availability, applicability, SDK scope, initiation and webhook-token handoff\n",
+  "quotes": [
+    {
+      "text": "BANCOMAT Pay is currently in limited release and is available to pilot merchants in selected countries. If you want to participate in the pilot, [contact us](/braintree/help/acceptPaymentTypes) .",
+      "location": "### Overview, lines 20-21"
+    },
+    {
+      "text": "BANCOMAT Pay is a local payment method that a customer can use to place an order and then complete\nthe payment with their BANCOMAT Pay mobile digital wallet app.",
+      "location": "### Overview, lines 23-24"
+    },
+    {
+      "text": "BANCOMAT Pay works by circumventing the normal tokenization process. For this reason, merchants**must**be signed up to receive and process the[LPMs webhooks](/braintree/docs/reference/general/webhooks/local-payment-methods/ruby).\nThe merchant will receive the single-use token they must transact upon through thelocal_payment_completedwebhook.",
+      "location": "### Capturing BANCOMAT Pay Transactions, lines 43-46"
+    },
+    {
+      "text": "BANCOMAT Pay is currently available only through the Javascript Client SDK and various server-side SDKs.",
+      "location": "### BANCOMAT Pay with GraphQL, lines 47-51"
+    },
+    {
+      "text": "No pop-up will be launched, and the merchant will not receive a response with a nonce. The merchant will receive a response with a payment ID that they will need to keep track of in their system.",
+      "location": "### Example Requests, lines 54-57"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-lpm-bancomatpay-payment-methods-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-local-payment-methods-bancomatpay]] - collected BANCOMAT Pay guide for limited-release applicability, JavaScript-client and server-side SDK scope, and the payment-ID-to-webhook single-use-token handoff without inferring settlement, funding or instant completion",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The snapshot does not establish current pilot availability, merchant enablement or buyer eligibility.",
+          "The webhook-delivered token is a notification and transaction-input boundary, not proof of settlement, funding or instant completion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/local-payment-methods/bancomatpay-2026-09-16.md",
+  "raw_sha256": "c30dfcdde2f2853a32ecd9d5d2bf9144466af795f1b6b096afe37a43ef67ddd8",
+  "status": "candidate_ready"
+}

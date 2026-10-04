@@ -1,0 +1,54 @@
+{
+  "job_id": "lpm-multibanco",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Multibanco Local Payment Method\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/local-payment-methods/multibanco\"\nraw_files:\n  - \"braintree/docs/guides/local-payment-methods/multibanco-2026-09-16.md\"\ntags: [braintree, local-payment-methods, multibanco, portugal, graphql, webhooks]\n---\n\n## Overview\n\nThis collected, unversioned Braintree guide describes Multibanco as a voucher-based Local Payment Method created online and paid later at an ATM with a debit card or through online banking. It is a retrieval route for the method's limited-release applicability, linked-PayPal prerequisite, non-instant no-capture lifecycle, server-side GraphQL route, sandbox simulation and required outcome webhooks. The 2026-09-16 snapshot does not establish current availability, merchant enablement, buyer eligibility or a completed live payment.\n\n## Key takeaways\n\n- The guide marks Multibanco as a limited release for pilot merchants in Braintree-supported merchant countries except Brazil, Japan and Russia, and limits customers to buyers in Portugal. Those captured conditions are snapshot applicability, not proof that a particular merchant or buyer is eligible.\n- Processing requires a valid PayPal business account that has been created, verified and linked in the Braintree Control Panel. The page directs the server side to GraphQL to create a local payment transaction, but it names no client platform, SDK or version and does not document a client token, nonce or other initiation-response contract.\n- Multibanco is non-instant: the guide says a buyer has up to seven days to pay the voucher. There is no merchant capture call; Braintree says it associates a transaction after receiving confirmation that the voucher was paid. Creation or access to an approval URL therefore must not be presented as completed payment.\n- A webhook integration is required. The guide says webhooks confirm a successful payment or notify that a voucher expired, and it shows `local_payment_funded` and `local_payment_expired` example payloads. The funded example's `status: settled` is example content, not evidence that a specific payment settled or that merchant funding completed.\n- In Sandbox, the approval URL opens a modal that can simulate successful, expired or unapproved outcomes. The page says the successful simulation sends a webhook after two to three minutes and updates the payment context with an associated transaction; this is Sandbox-only simulated behavior, not Production execution evidence or a general delivery-time guarantee.\n\n## Evidence boundaries\n\n> [!warning] Pilot, country and snapshot scope\n> Limited-release wording and the captured seller/buyer geography do not prove current program availability, account enablement or individual buyer eligibility. Recheck live and account-specific conditions before relying on this route.\n\n> [!warning] Non-instant lifecycle and outcome\n> Keep transaction creation, an approval URL, voucher payment, Braintree's confirmation, transaction association, webhook delivery, example transaction status and merchant funding as distinct evidence points. This page says there is no capture call and does not establish that initiation or approval completes payment.\n\n> [!warning] Platform, token and environment scope\n> The page names server-side GraphQL but no client SDK, platform or version, and it does not specify a token or nonce handoff. Its modal and two-to-three-minute webhook timing are explicitly Sandbox simulation behavior; neither the simulation nor the example webhook proves Production execution, settlement of a particular payment or merchant funding.\n\n## Detail locators\n\n- Limited-release merchant and Portugal-buyer applicability: `### Configuration`, lines 17-21.\n- Voucher identity, ATM or online-banking payment and seven-day non-instant window: `### Configuration`, line 23.\n- Created, verified and linked PayPal business-account prerequisite: `### Configuration`, line 26.\n- No-capture transition and Braintree transaction association after voucher-payment confirmation: `### Capturing Non-Instant Transaction`, lines 29-31.\n- Sandbox approval-modal outcomes, successful-simulation timing and payment-context update: note under `### Capturing Non-Instant Transaction`, lines 34-35.\n- Server-side GraphQL transaction-creation route: `### Server Side with GraphQL`, lines 38-42.\n- Required successful-payment and expired-voucher webhooks: `### Configure webhooks`, lines 45-47.\n- Funded and expired webhook example fields: `### Configure webhooks`, lines 49-76; exact notification-content route: line 77.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Article-level Local Payment Methods owner: [[source-braintree-payment-methods-local-payment-methods]]\n- Notification concept: [[braintree-webhooks]]\n\n## Related raw API references\n\nThe following collected pages were not used as factual authority for this source entry; they are exact-file navigation for follow-on setup and implementation work:\n\n- [[raw/braintree/articles/guides/payment-methods/paypal/setup-guide-2026-09-16|PayPal setup guide]]\n- [[raw/braintree/graphql/integration_guides/non_instant_local_payments-2026-09-16|GraphQL non-instant local payments guide]]\n- [[raw/braintree/docs/guides/webhooks/overview-2026-09-16|Braintree webhooks overview]]\n- [[raw/braintree/docs/reference/general/webhooks/local-payment-methods/node-2026-09-16|Node.js Local Payment Method webhook reference]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/local-payment-methods/multibanco-2026-09-16|Braintree Multibanco guide]] - complete collected page covering pilot applicability, payment timing, PayPal setup, no-capture behavior, GraphQL routing, Sandbox simulation and webhook outcomes\n",
+  "quotes": [
+    {
+      "text": "Multibanco is currently in limited release and is available to pilot merchants in any [supported merchant country](https://www.braintreepayments.com/country-selection) except Brazil, Japan, and Russia. For customers, it is limited to buyers in Portugal only. If you want to participate in the pilot, please [contact us](/braintree/help/acceptPaymentTypes) .",
+      "location": "### Configuration, line 21"
+    },
+    {
+      "text": "Multibanco is a voucher-based payment scheme that is created online but is paid for at an ATM with a debit card, or using online banking. This payment scheme differs from other \"instant\" payments in that the buyer has up to 7 days to complete the payment.",
+      "location": "### Configuration, line 23"
+    },
+    {
+      "text": "There is no capture call for non-instant transactions; Braintree will associate a transaction on behalf of the merchant once we receive confirmation that the voucher has been paid.",
+      "location": "### Capturing Non-Instant Transaction, line 31"
+    },
+    {
+      "text": "In sandbox, use the approval URL to display a modal in which you can simulate a successful payment, an expired payment, or an unapproved payment. If successful payment is selected, a webhook will be sent to the merchant in 2-3 minutes and the payment context will update to show an associated transaction.",
+      "location": "NOTE under ### Capturing Non-Instant Transaction, line 35"
+    },
+    {
+      "text": "A webhook integration is required for Multibanco. Webhooks serve as confirmation of a successful payment as well as notification of an expired payment voucher.[See the webhooks guide](/braintree/docs/guides/webhooks/overview)for a general overview on how to configure webhooks.",
+      "location": "### Configure webhooks, line 47"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "lpm-multibanco-a1-concept-source",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-local-payment-methods-multibanco]] - collected Multibanco route for limited-release merchant and Portugal-buyer applicability, voucher-based ATM or online-banking payment, linked-PayPal setup, seven-day non-instant no-capture lifecycle, server-side GraphQL routing and required outcome webhooks",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep current availability, merchant enablement, buyer eligibility, Production execution, settlement and funding qualified; the article-level Local Payment Methods owner remains a separate source route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/local-payment-methods/multibanco-2026-09-16.md",
+  "raw_sha256": "14cc759ec837a8394b11e1f40e930d06e99679b52e9867f32b34c244076eeaff",
+  "status": "candidate_ready"
+}

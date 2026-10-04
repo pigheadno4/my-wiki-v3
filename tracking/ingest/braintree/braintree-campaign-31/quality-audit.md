@@ -1,0 +1,13 @@
+# Braintree C31 quality close
+
+Result: PASS. Twenty approved canonical sources; fourteen first-pass approvals; twenty full initial reviews plus six bounded targeted reviews, zero repeated full reviews. No failed/rejected jobs remain. Worker handoffs required no mechanical format repair; coordinator changed no approved source facts.
+
+Ten fixed query groups passed 40/40 questions. Reports query-audit-a.md through query-audit-j.md contain actual index/concept/source/raw routes, object/action matching, direct answers, exact locators, full selected evidence reads/hash checks and bounded gap sweeps. Queries overlapped remaining promotion; final close checked the direct catalogs independently. Group E discovered the generic Android method-table versus JavaScript-only Pay Upon Invoice notice tension and did not infer native support. Group G identified an imprecise coordinator-written BANCOMAT catalog label; both company/index labels were narrowed to initial payment ID and later webhook single-use token without changing approved sources or adding another semantic review.
+
+The campaign-wide close verified all twenty canonical source bytes equal approved final candidates, pinned primary hashes unchanged, exact canonical URLs unique, factual raw_files and Raw Sources links resolve, every approved concept update is present, source/concept reciprocal routes resolve, and every provider source has exactly one company and provider-index list entry. Recursive count is 292 sources: 275 website + 17 GitHub, excluding changelogs.
+
+`validate_wiki.py` passed all 24 touched typed pages; scoped `git diff --check` passed. Runtime monitor is complete at 2026-10-04T02:29:40Z, elapsed 2661 seconds. Company/index/log/count were aggregated once, with the one concrete catalog-label correction above. Raw was never edited. Unrelated GitHub, PayPal and BYD shared-checkout changes were preserved.
+
+Material boundaries retained: exact method/platform/version; sparse native notices versus JavaScript-only implementation; historical certificate directions versus current package/runtime support; limited-release/account eligibility; payment ID versus nonce/single-use token; initiation/notification versus settlement/funding; non-instant method-specific timing; captured iOS sample defect; unresolved webhook/GraphQL, currency/presentment and Boleto support-list conflicts; GrabPay's internal seller-country conflict. One iOS review's supporting-provenance rule misinterpretation was corrected by its existing reviewer without a new worker attempt or repeated full review.
+
+No collection, GitHub ingestion, code/rule/schema/validator change, commit or push. This report is post-close documentation, not another audit layer.

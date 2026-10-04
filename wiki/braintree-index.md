@@ -103,6 +103,29 @@ Operations history: [[braintree-log]]
 - [[source-braintree-general-testing-node]] - Node sandbox testing categories and explicit production boundaries
 - [[source-braintree-transaction-response-node]] - Node transaction response identity/status/risk locators and outcome qualifications
 
+#### Local Payment Methods website guides
+
+- [[source-braintree-local-payment-methods-overview]] - Developer-guide orientation and applicability/deprecation/currency boundaries
+- [[source-braintree-local-payment-methods-configuration-javascript-v3]] - JavaScript v3 configuration responsibilities and account/environment prerequisites
+- [[source-braintree-local-payment-methods-configuration-android-v5]] - Android v5 configuration checklist and historical certificate qualification
+- [[source-braintree-local-payment-methods-configuration-ios-v7]] - iOS v7-routed configuration checklist, historical certificate and execution boundary
+- [[source-braintree-local-payment-methods-client-side-custom-android-v5]] - Android v5 custom-client request/nonce handoff and dependency/webhook qualifications
+- [[source-braintree-local-payment-methods-client-side-custom-ios-v7]] - iOS v7 custom-client request/nonce handoff, sample defect and currency/webhook tensions
+- [[source-braintree-local-payment-methods-server-side-node]] - Node server transaction/notification responsibilities and Payment Context alternative boundary
+- [[source-braintree-local-payment-methods-testing-go-live-node]] - Node local-payment sandbox fixtures, linked PayPal test account and production cautions
+- [[source-braintree-local-payment-methods-pay-upon-invoice-javascript-v3]] - JavaScript v3 Pay Upon Invoice flow, prerequisites and payment/funding qualifications
+- [[source-braintree-local-payment-methods-pay-upon-invoice-android-v5]] - Android v5 route carrying a JavaScript v3-only availability notice
+- [[source-braintree-local-payment-methods-pay-upon-invoice-ios-v7]] - iOS v7 route carrying a JavaScript v3-only availability notice
+- [[source-braintree-local-payment-methods-bancomatpay]] - BANCOMAT Pay initiation/payment-ID and later webhook single-use-token boundary
+- [[source-braintree-local-payment-methods-mbway]] - MB WAY initiation, conditional applicability and notification/nonce handoff
+- [[source-braintree-local-payment-methods-boleto-bancario]] - Boleto non-instant payment route with unresolved GraphQL support and currency tension
+- [[source-braintree-local-payment-methods-trustly]] - Trustly non-instant association and unresolved family currency/lifecycle wording
+- [[source-braintree-local-payment-methods-multibanco]] - Multibanco non-instant payment and seven-day completion/notification boundary
+- [[source-braintree-local-payment-methods-oxxo]] - OXXO non-instant route with unresolved currency wording and example boundary
+- [[source-braintree-local-payment-methods-alipay]] - Alipay limited-release applicability and unresolved currency-code/EUR/CNY relationship
+- [[source-braintree-local-payment-methods-grabpay]] - GrabPay applicability notice with unresolved Singapore-versus-global seller scope
+- [[source-braintree-local-payment-methods-satispay]] - Satispay limited-release Italy-buyer applicability and separate integration navigation
+
 #### Marketplace
 
 - [[source-braintree-marketplace-article-overview]] - article-level product model, scope and eligibility qualifications

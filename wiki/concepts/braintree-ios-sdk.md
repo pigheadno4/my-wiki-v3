@@ -79,6 +79,8 @@ The repository includes SwiftUI wrapper examples but does not officially support
 The v7 migration moves request properties into initializers, changes feature clients to direct authorization initializers, renames Local Payment and 3D Secure start methods, requires universal-link handling for Venmo, and removes PayPal Native Checkout. Exact release `7.9.0` only aligns the BraintreeUIComponents minimum deployment target with iOS 16; broader v7 behavior comes from the cumulative exact-SHA baseline.
 
 ## Related
+- [[source-braintree-local-payment-methods-configuration-ios-v7]] - website iOS v7-routed Local Payment Methods prerequisite checklist for linked PayPal account, client authorization, client/server/webhook responsibilities and environment-specific success, preserving the historical certificate deadline and exact-package/execution boundaries
+- [[source-braintree-local-payment-methods-client-side-custom-ios-v7]] - website iOS v7 custom Local Payment Methods document route with SDK/request locators, a captured undefined start argument, an omitted result body and separately qualified server-notification alternatives
 - [[source-braintree-drop-in-customization-ios-v7]] - 2026-09-16 website snapshot from an iOS v7 Drop-in customization route, retained for lifecycle and SDK-routing notices; the route is not evidence of iOS v7 Drop-in support
 
 - [[source-braintree-drop-in-setup-and-integration-ios-v7]] - captured iOS v7-routed Drop-in setup snapshot whose body says v7 is not supported through Drop-in, routes Drop-in users to v5, and carries dated 2026/2027 lifecycle and migration notices; not current support or payment-processing evidence

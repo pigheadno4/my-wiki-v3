@@ -1,0 +1,56 @@
+{
+  "job_id": "lpm-mbway",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree MB WAY Local Payment Method\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/local-payment-methods/mbway\"\nraw_files:\n  - \"braintree/docs/guides/local-payment-methods/mbway-2026-09-16.md\"\ntags: [braintree, local-payment-methods, mb-way, javascript, webhooks]\n---\n\n## Overview\n\nThis collected Braintree guide describes MB WAY as a Local Payment Method that lets a customer place an order and then complete payment in the MB WAY mobile digital-wallet app. It is a retrieval route for the guide's limited-release pilot availability, merchant and customer applicability, JavaScript-client and server-side SDK scope, and the payment-ID-to-webhook-nonce handoff. The 2026-09-16 snapshot does not establish current availability, a merchant's enablement, buyer eligibility or a completed live payment.\n\n## Key takeaways\n\n- The guide marks MB WAY as a limited release for pilot merchants in selected countries and directs interested merchants to contact Braintree. Its applicability table identifies `mbway`, buyers in Portugal, sellers globally except Russia, Japan and Brazil, `EUR`, and a minimum customer transaction of `1 EUR`; those captured values remain snapshot scope rather than proof of current or individual eligibility.\n- The stated prerequisites are a valid PayPal business account created, verified and linked in the Braintree Control Panel and use of the latest Client SDK. The page says MB WAY is available only through the JavaScript Client SDK and various server-side SDKs. Its loading example uses Braintree Web `3.111.0`, but an example script version is not a current support or minimum-version guarantee.\n- This method circumvents the normal tokenization process. The guide says no pop-up launches and the merchant receives a payment ID rather than a single-use token in the initial client response; the example instructs the merchant to store that payment ID on its server so it can be mapped to a later Braintree webhook.\n- The guide requires merchants to be signed up for Local Payment Method webhooks. It says the merchant receives the nonce needed to transact through the `local_payment_completed` webhook. That notification-and-nonce handoff is not itself evidence of settlement, funding or a particular completion speed.\n\n## Evidence boundaries\n\n> [!warning] Pilot and applicability scope\n> Limited-release wording, the captured country/currency table and a fully read documentation snapshot do not prove current program availability, merchant enablement or customer eligibility. Recheck the live program and account-specific conditions before relying on the route.\n\n> [!warning] Initiation, notification and payment outcome\n> A successful `startPayment` call or receipt of a payment ID records initiation, not completed payment. The later `local_payment_completed` notification supplies the nonce needed for a subsequent transaction; this page does not say that notification proves settlement or funding, and it does not establish that the path is instant.\n\n> [!warning] Nonce, platform and environment scope\n> The initial client response has no single-use token. Keep that response separate from the webhook-delivered nonce, and preserve the guide's JavaScript-client plus server-side SDK boundary. The captured page and examples do not identify a Sandbox or Production execution environment and do not prove execution in either one.\n\n## Detail locators\n\n- Limited-release notice and participation route: `### Overview`, lines 20-21.\n- Method identity, PayPal business-account prerequisite and latest-Client-SDK direction: `### Overview`, lines 23-26.\n- Payment type, buyer/seller countries, currency and minimum transaction: `### Overview`, lines 28-30.\n- Example Client SDK and Local Payments SDK script versions: `### Loading the SDK`, lines 33-42.\n- Required Local Payment Method webhook registration and nonce delivery: `### Capturing MB WAY Transactions`, lines 43-46.\n- Captured JavaScript-client and server-side SDK limitation: `### MB WAY with GraphQL`, lines 47-51.\n- No-pop-up, no-initial-single-use-token and payment-ID behavior: `### Example Requests`, lines 54-58.\n- Callback example fields, server-side payment-ID retention and initiation error handling: `### Callback`, lines 59-94.\n- Promise-form example and the same payment-ID retention boundary: `### Promise`, lines 96-129.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Local-method family guide: [[source-braintree-payment-methods-local-payment-methods]]\n- Notification concept: [[braintree-webhooks]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/local-payment-methods/mbway-2026-09-16|Braintree MB WAY guide]] - complete collected page covering pilot availability, applicability, SDK scope, initiation and webhook-nonce handoff\n",
+  "quotes": [
+    {
+      "text": "MB WAY is currently in limited release and is available to pilot merchants in selected countries. If you want to participate in the pilot, please [contact us](/braintree/help/acceptPaymentTypes) .",
+      "location": "### Overview, lines 20-21"
+    },
+    {
+      "text": "MB WAY is a local payment method that a customer can use to place an order and then complete the\npayment with their MB WAY mobile digital wallet app.",
+      "location": "### Overview, lines 23-24"
+    },
+    {
+      "text": "MB WAY works by circumventing the normal tokenization process. For this reason, merchants**must**be signed up to receive and process the[LPMs webhooks](/braintree/docs/reference/general/webhooks/local-payment-methods/ruby).\nThe merchant will receive the nonce they will need to transact upon through thelocal_payment_completedwebhook.",
+      "location": "### Capturing MB WAY Transactions, lines 43-46"
+    },
+    {
+      "text": "MB WAY is currently available only through the Javascript Client SDK and various server-side SDKs.",
+      "location": "### MB WAY with GraphQL, lines 47-51"
+    },
+    {
+      "text": "No pop-up will be launched, and the merchant will not receive a response with a\nsingle-use token. The merchant will receive a response with a payment ID they will need to keep\ntrack of in their system.",
+      "location": "### Example Requests, lines 54-58"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-lpm-mbway-payment-methods-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-local-payment-methods-mbway]] - collected MB WAY guide for limited-release applicability, JavaScript-client and server-side SDK scope, and the payment-ID-to-webhook nonce handoff without inferring settlement, funding or instant completion",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The snapshot does not establish current pilot availability, merchant enablement or buyer eligibility.",
+          "The initial client response provides a payment ID rather than a single-use token; the later webhook-delivered nonce is a transaction-input boundary, not proof of settlement, funding or instant completion.",
+          "The captured page does not identify a Sandbox or Production execution environment or prove execution in either one."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/local-payment-methods/mbway-2026-09-16.md",
+  "raw_sha256": "fd4cf126cd3ec15ffc646804de33b74cc4b1bc1af12b0edd13933fe94c5f0a84",
+  "status": "candidate_ready"
+}

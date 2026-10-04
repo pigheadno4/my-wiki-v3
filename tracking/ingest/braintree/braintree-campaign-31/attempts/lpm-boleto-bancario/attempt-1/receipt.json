@@ -1,0 +1,51 @@
+{
+  "job_id": "lpm-boleto-bancario",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Boleto Banc\u00e1rio\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/local-payment-methods/boleto-bancario\"\nraw_files:\n  - \"braintree/docs/guides/local-payment-methods/boleto-bancario-2026-09-16.md\"\ntags: [braintree, local-payment-methods, boleto-bancario, brazil, non-instant-payments, webhooks]\n---\n\n## Overview\n\nThis collected Braintree developer guide describes Boleto Banc\u00e1rio as a cash-based Brazilian payment scheme that is created online and paid at a bank branch or an authorized processor. It is a non-instant method: the page gives the buyer up to three days to pay the voucher. The 2026-09-16 snapshot says Boleto Banc\u00e1rio is in limited release only for pilot merchants in Brazil, so it does not establish current availability, merchant approval, buyer eligibility or successful payment execution.\n\n## Key takeaways\n\n- The method-specific prerequisite is a valid PayPal business account that has been created, verified and linked in the Braintree Control Panel. The page routes transaction creation to a server-side GraphQL integration; it does not document a client SDK, client token, nonce or single-use-token flow.\n- Boleto Banc\u00e1rio is non-instant. The guide says there is no capture call; Braintree associates a transaction for the merchant after receiving confirmation that the voucher was paid. Creating the local payment transaction or presenting an approval URL therefore is not evidence that the buyer paid, that a transaction was associated, or that settlement or merchant funding completed.\n- A webhook integration is required. The page assigns webhooks the roles of confirming a successful payment and notifying the merchant that a voucher expired. The funded and expired payloads are examples; the example transaction's `settled` status does not prove that a particular payment settled or that funds reached the merchant's bank account.\n- In Sandbox, the approval URL opens a modal that can simulate successful, expired and unapproved outcomes. The page says successful and expired simulations send a webhook in two to three minutes, while the payment context becomes settled-associated or expired as described. These simulator outcomes are Sandbox behavior, not Production timing or real-payment evidence.\n\n## Evidence boundaries\n\n> [!warning] Availability and environment\n> Preserve the page's exact pilot-only Brazil qualification. This collected snapshot does not prove present release status, account enablement or Production acceptance. The approval-URL modal and stated two-to-three-minute webhook behavior are explicitly Sandbox simulation.\n\n> [!warning] Non-instant lifecycle\n> Keep GraphQL transaction creation, voucher presentation, buyer payment, Braintree's receipt of payment confirmation, transaction association, webhook delivery, example `settled` state, settlement and merchant funding as distinct evidence points. This page names funded and expired webhook events but does not establish bank funding for an individual payment.\n\n## Detail locators\n\n- Limited-release status and pilot-merchant Brazil scope: `### Configuration > **AVAILABILITY**`, raw lines 20-21.\n- Cash-based method identity, in-person payment locations and up-to-three-day non-instant timing: `### Configuration`, raw line 23.\n- Linked, verified PayPal business-account prerequisite: `### Configuration`, raw line 26.\n- Server-side GraphQL transaction-creation route: `### Server Side requests with GraphQL`, raw lines 29-33.\n- No-capture behavior and confirmation-dependent transaction association: `### Capturing Non-Instant Transaction`, raw lines 36-38.\n- Sandbox approval-URL modal, simulated outcomes, webhook timing and payment-context results: `### Capturing Non-Instant Transaction > **NOTE**`, raw lines 39-43.\n- Required webhook roles: `### Configure webhooks`, raw lines 48-50.\n- Example funded and expired payload fields: `### Configure webhooks`, raw lines 52-79.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Article-level Local Payment Methods owner: [[source-braintree-payment-methods-local-payment-methods]]\n\n## Related raw API references\n\nThe following collected pages were not used as factual authority for this source entry; they are exact-file navigation for follow-on implementation work:\n\n- [[raw/braintree/graphql/integration_guides/non_instant_local_payments-2026-09-16|Braintree GraphQL non-instant Local Payment Methods integration guide]]\n- [[raw/braintree/docs/guides/webhooks/overview-2026-09-16|Braintree webhooks overview]]\n- [[raw/braintree/docs/reference/general/webhooks/local-payment-methods/node-2026-09-16|Node.js Local Payment Method webhook reference]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/local-payment-methods/boleto-bancario-2026-09-16|Braintree Boleto Banc\u00e1rio guide]] - fully read pinned website snapshot covering method identity, pilot applicability, PayPal setup, GraphQL routing, non-instant transaction association, Sandbox simulation and webhook outcomes\n",
+  "quotes": [
+    {
+      "text": "Boleto Banc\u00e1rio is currently in limited release and is only available to pilot merchants in Brazil. If you want to participate in the pilot, please [contact us](/braintree/help/acceptPaymentTypes) .",
+      "location": "### Configuration > **AVAILABILITY**, line 21"
+    },
+    {
+      "text": "Boleto Banc\u00e1rio is a cash-based payment scheme that is created online but is paid for at any bank branch or at authorized processors such as drugstores, supermarkets, lottery agencies, and post offices. This payment scheme differs from other \"instant\" payments in that the buyer has up to 3 days to complete the payment. Before you can accept Boleto Banc\u00e1rio, you will need to ensure you have completed the following steps:",
+      "location": "### Configuration, line 23"
+    },
+    {
+      "text": "There is no capture call for non-instant transactions; Braintree will associate a transaction on behalf of the merchant once we receive confirmation that the voucher has been paid.",
+      "location": "### Capturing Non-Instant Transaction, line 38"
+    },
+    {
+      "text": "In sandbox, use the approval URL to display a modal in which you can simulate a successful payment, an expired payment, or an unapproved payment. \n- Successful payment: a webhook will be sent to the merchant in 2-3 minutes and the payment context will update to show an associated transaction in a settled state.\n- Expired payment: a webhook will be sent to the merchant in 2-3 minutes and the payment context will be expired.\n- Unapproved payment: the payment context will be expired.",
+      "location": "### Capturing Non-Instant Transaction > **NOTE**, lines 40-43"
+    },
+    {
+      "text": "A webhook integration is required for Boleto Banc\u00e1rio. Webhooks serve as confirmation of a successful payment as well as notification of an expired payment voucher.[See the webhooks guide](/braintree/docs/guides/webhooks/overview)for a general overview on how to configure webhooks.",
+      "location": "### Configure webhooks, line 50"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-lpm-boleto-bancario-concept-source-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-local-payment-methods-boleto-bancario]] - unversioned Boleto Banc\u00e1rio developer guide for method-specific pilot applicability and non-instant lifecycle retrieval",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/local-payment-methods/boleto-bancario-2026-09-16.md",
+  "raw_sha256": "39b764bd8761b550b4a1974f6bb153cd05820dbdf4d6b31fe7fd4e95b5ecf77c",
+  "status": "candidate_ready"
+}

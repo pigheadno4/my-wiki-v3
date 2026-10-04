@@ -1,0 +1,54 @@
+{
+  "job_id": "lpm-pay-upon-invoice-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Pay Upon Invoice \u2014 JavaScript v3\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/local-payment-methods/pay-upon-invoice/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/local-payment-methods/pay-upon-invoice/javascript/v3-2026-09-16.md\"\ntags: [braintree, local-payment-methods, pay-upon-invoice, javascript, ratepay, germany]\n---\n\n## Overview\n\nThis collected Braintree developer guide is the JavaScript v3 route for Pay Upon Invoice (`pay_upon_invoice`), also called Rechnungskauf mit Ratepay. It describes a German invoice-based buy-now-pay-later method in which an eligible buyer can receive and inspect goods before paying Ratepay by bank transfer within 30 days; the buyer does not need a PayPal account. The snapshot says the method is in limited release for pilot merchants in Germany, so it does not establish current availability or eligibility.\n\n## Key takeaways\n\n- The guide limits this integration to eligible German merchants selling B2C goods to buyers in Germany, in EUR, with the listed EUR 5\u20132,500 transaction range. It requires method approval, acceptance of the Ratepay terms as part of the PayPal User Agreement, a valid VAT ID or the documented additional-VAT consequence, and shipment within seven days.\n- Processing Local Payment Methods requires a valid PayPal business account linked in the Braintree Control Panel. The page gives separate Sandbox and Production onboarding routes for direct merchants; completing one environment's onboarding does not establish the other environment or live acceptance.\n- In JavaScript v3, the merchant creates the data collector and Local Payment components, derives a `correlationId`, and calls `startPayment` with `paymentType: 'pay_upon_invoice'`. The `onPaymentStart` handler must store `data.paymentId` on the merchant server so a later Braintree webhook can be correlated. Calling `startPayment` or receiving that payment ID is initiation, not evidence of invoice approval, transaction creation, settlement or merchant funding.\n- There is no merchant capture call. The guide says Braintree associates a transaction after confirmation that the invoice has been confirmed, and requires webhooks to report a successful transaction based on an invoice or a rejected invoice approval. Its funded-webhook payload is an example, not a guarantee that a particular transaction settled.\n- The page says the merchant is funded immediately when the buyer successfully completes checkout and that the buyer pays Ratepay, but it separately advises verifying each successful transaction's settled amount in the merchant's PayPal account and not shipping until that amount is confirmed. It also requires shipment tracking, a response to Ratepay disputes within 10 business days, and retention of shipment and delivery proof for at least 180 days to avoid the stated automatic-reversal risk.\n\n## Evidence boundaries\n\n> [!warning] Availability and environment\n> This is a 2026-09-16 documentation snapshot for JavaScript v3 and a pilot-only German method. It does not prove current release status, merchant approval, buyer eligibility, Sandbox onboarding, Production onboarding or successful payment execution.\n\n> [!warning] Lifecycle and funding\n> Keep `startPayment`, the server-stored payment ID, invoice confirmation, the funded or expired webhook, transaction creation, example `settled` status and verification of funds in the merchant's PayPal account as distinct evidence points. The page's immediate-funding statement does not remove its instruction to verify the settled amount before shipment.\n\n## Detail locators\n\n- Limited-release status, German invoice-method identity, 30-day buyer payment and no-buyer-PayPal-account statement: `### Overview`, lines 17\u201323.\n- Terms acceptance, Germany/EUR/B2C limits, transaction range, shipment timing, approval and VAT qualification: `### Eligibility`, lines 24\u201339.\n- Ratepay risk decision, checkout/funding description, invoice instructions and buyer bank-transfer flow: `### How It Works`, lines 42\u201351.\n- Settlement verification and do-not-ship-until-confirmed advice: `### How It Works`, lines 54\u201355.\n- Dispute-response deadline, evidence requirements and 180-day retention warning: `#### Dispute handling`, lines 58\u201366; shipment-information duty: `#### Provide shipment information`, lines 67\u201373.\n- Linked PayPal business-account prerequisite and separate Sandbox/Production onboarding links: `### Configuration`, lines 77\u201383.\n- FraudNet/data-collector scope and desktop-browser qualification: `### FraudNet integration`, lines 90\u201392.\n- `startPayment` and `correlationId` requirements: `### Invoke Pay Upon Invoice`, lines 93\u201397; callback and Promise examples, including server storage of `paymentId`: lines 100\u2013260.\n- Required `startPayment` parameter names: lines 261\u2013277.\n- No-capture transition and required funded/rejected webhook roles: `### Capturing Pay Upon Invoice Transactions`, lines 280\u2013282, and `### Configure webhooks`, lines 283\u2013313.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Article-level Local Payment Methods owner: [[source-braintree-payment-methods-local-payment-methods]]\n\n## Related raw API references\n\nThe following collected pages were not used as factual authority for this source entry; they are exact-file navigation for follow-on implementation work:\n\n- [[raw/braintree/docs/guides/local-payment-methods/configuration/javascript/v3-2026-09-16|JavaScript v3 Local Payment Methods configuration]]\n- [[raw/braintree/docs/guides/local-payment-methods/server-side/node-2026-09-16|Node.js Local Payment Methods server-side guide]]\n- [[raw/braintree/docs/guides/local-payment-methods/testing-go-live/node-2026-09-16|Node.js Local Payment Methods testing and go-live guide]]\n- [[raw/braintree/docs/guides/webhooks/overview-2026-09-16|Braintree webhooks overview]]\n- [[raw/braintree/docs/reference/general/webhooks/local-payment-methods/node-2026-09-16|Node.js Local Payment Method webhook reference]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/local-payment-methods/pay-upon-invoice/javascript/v3-2026-09-16|Braintree Pay Upon Invoice \u2014 JavaScript v3 guide]] - complete collected page covering method identity, eligibility, Ratepay flow, merchant obligations, JavaScript initiation, no-capture behavior and webhook outcomes\n",
+  "quotes": [
+    {
+      "text": "Pay Upon Invoice is currently in limited release and is only available to pilot merchants in Germany. If you want to participate in the pilot, please [contact us](/braintree/help?issue=acceptPaymentTypes) .",
+      "location": "### Overview, line 21"
+    },
+    {
+      "text": "Pay upon Invoice is an invoice payment method in Germany. It's a local buy now, pay later payment method that allows the buyer to place an order, receive the goods, try them, verify they are in good order, and then pay the invoice within 30 days. No PayPal account is needed for the buyer to use Pay upon Invoice. Braintree/PayPal has partnered with Ratepay to provide this service. This payment method is also called Rechnungskauf mit Ratepay in German.",
+      "location": "### Overview, line 23"
+    },
+    {
+      "text": "- You are funded immediately when the buyer successfully completes the checkout process with the Pay upon Invoice method. The buyer pays Ratepay instead of you. Ratepay is responsible for following up with the buyer to ensure the payment is made.",
+      "location": "### How It Works, line 46"
+    },
+    {
+      "text": "It is advised to verify each successful PUI transaction on merchant side to ensure the amount settled to merchant's PayPal account matches the Order amount. It is recommended to not ship the goods until the amount has been confirmed, and if there is a discrepancy, reverse the transaction by initiating a refund. Ensure to use PayPal credentials for Onboarding, Disputes handling, Providing Shipment information, Funds settlement and Reports.",
+      "location": "### How It Works, line 55"
+    },
+    {
+      "text": "A webhook integration is required for Pay Upon Invoice. Webhooks serve as confirmation of a successful transaction based on an invoice as well as notification of a rejected invoice approval.[See the webhooks guide](/braintree/docs/guides/webhooks/overview)for a general overview on how to configure webhooks. Below is an example of a Local Payment funded webhook for when the payment has been approved by RatePay and a transaction is created:",
+      "location": "### Configure webhooks, line 285"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-lpm-pui-js-v3-braintree-payment-methods-source-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-local-payment-methods-pay-upon-invoice-javascript-v3]] - JavaScript v3 Pay Upon Invoice route for pilot-only Germany/EUR B2C scope, linked PayPal onboarding, `startPayment` and payment-ID correlation, no-capture transaction association, required outcome webhooks, and shipment/dispute safeguards",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep client initiation and the stored payment ID distinct from invoice approval, a funded webhook, transaction creation, settlement and merchant funding confirmation.",
+          "Keep this method/platform guide separate from the article-level Local Payment Methods source owner."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/local-payment-methods/pay-upon-invoice/javascript/v3-2026-09-16.md",
+  "raw_sha256": "145d4f39498ca0383fa592369e59827ae0d3c5ed37744e4799d38c9c55ff89c9",
+  "status": "candidate_ready"
+}

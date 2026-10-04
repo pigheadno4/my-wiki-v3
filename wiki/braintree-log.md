@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C31
+
+- Twenty pinned Local Payment Methods website guides fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 292 sources (275 website + 17 GitHub). Routes: [[braintree-index]], [[braintree-payment-methods]], [[braintree-ios-sdk]] and [[braintree-server-sdk]].
+- First-review pass 14/20; twenty initial full reviews plus six bounded targeted reviews, no repeated full review. Corrections retained relevant webhook/GraphQL and currency/lifecycle conflicts, an iOS sample defect and supporting-raw provenance. An iOS reviewer provenance-rule misinterpretation was corrected within the existing review, without another worker attempt or full rereview.
+- Preserve concrete method/platform/version, limited-release and historical certificate qualifications; client nonce/notification is not settlement or funding. Sparse native Pay Upon Invoice routes contain JavaScript-only availability notices, not native integration procedures. GrabPay's seller-country conflict remains unresolved.
+- Raw unchanged; coordinator owns canonical/shared/state writes. Forty fixed questions and final close evidence are recorded under `tracking/ingest/braintree/braintree-campaign-31/`. No collection, GitHub ingest, scheduler/schema/validator change, commit or push.
+
 ## [2026-10-04] ingest | `braintree-ios@7.13.0`
 
 - Serial delta from 7.12.0: declared iOS 15 floor, PayPal return background task/cancellation mapping and compatibility changes. Apple Pay recurring metadata remains iOS 16+; error code 15 alone does not prove OS expiry. Updated cumulative source/changelog/concept/company/index, preserving all history and count 272. Focused reading approved; no build/payment test, commit or push.

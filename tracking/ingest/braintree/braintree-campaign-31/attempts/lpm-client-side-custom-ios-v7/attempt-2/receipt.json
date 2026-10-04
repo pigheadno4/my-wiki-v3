@@ -1,0 +1,71 @@
+{
+  "job_id": "lpm-client-side-custom-ios-v7",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Local Payment Methods Custom Client-Side Implementation for iOS v7\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/local-payment-methods/client-side-custom/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/local-payment-methods/client-side-custom/ios/v7-2026-09-16.md\"\n  - \"braintree/articles/guides/payment-methods/local-payment-methods-2026-09-16.md\"\n  - \"braintree/docs/guides/local-payment-methods/server-side/node-2026-09-16.md\"\ntags: [braintree, local-payment-methods, ios, swift, custom-ui, webhooks]\n---\n\n## Overview\n\nThis captured Braintree developer guide describes a custom Local Payment Methods client flow for iOS v7. The merchant selects a transaction-consistent merchant account, adds the Local Payment SDK modules, constructs a method-specific `BTLocalPaymentRequest`, and starts `BTLocalPaymentClient`, which the page says launches an `ASWebAuthenticationSession`. It is a platform/version-routed website snapshot for [[braintree]], [[braintree-payment-methods]] and [[braintree-ios-sdk]], not current SDK-package evidence or proof of merchant eligibility, buyer eligibility, payment authorization, completion, settlement or funding. Separate same-date article and Node server snapshots below supply supporting prerequisites and conflicts; they do not change this page's primary identity.\n\n## Key takeaways\n\n- The merchant account determines the PayPal credentials used for the transaction. The guide requires the same merchant account across other calls in that transaction lifecycle and says it cannot be switched between the start and finish of a Local Payment transaction.\n- The supporting umbrella article separately limits Local Payment Methods to eligible merchants, requires PayPal to be added to the Braintree integration, and says a valid PayPal Business Account must be created, verified and linked in the Braintree Control Panel before completing the client and server integrations. These article-level prerequisites are not claims made by the primary iOS page.\n- The page permits merchant-owned custom UI and gives an iDEAL button as its example. Its captured tables map named Local Payment Methods to `paymentType`, country and currency values, required request parameters and some minimum transaction amounts; those combinations are method-specific rather than evidence of uniform availability or timing.\n- The client example initializes `BTLocalPaymentClient`, creates a `BTLocalPaymentRequest`, assigns a flow delegate and calls `start()`. A delegate callback allows preprocessing before invoking its supplied `start` closure. The example callback body is omitted, so this snapshot does not establish a nonce or any completed server-side transaction.\n- The primary guide says Braintree webhooks must be implemented to accept Local Payment Methods. The same-date Node server guide calls the Payment Context GraphQL API an alternative to webhooks, but separately documents customer-return and no-return transaction paths, a three-hour auto-refund condition and `local_payment_reversed`. The snapshots do not resolve the scope of the stated alternative, and neither a notification nor a Payment Context is by itself proof of settlement or funding.\n- The captured warning says older Braintree Mobile SDK certificates expire on March 30, 2026, directs iOS SDK 6.17.0 or newer for new certificates, and warns that traffic from app versions retaining older SDKs will fail after expiration. This historical warning appears on an iOS v7-routed page and does not establish the current support status of any exact SDK package.\n\n## Evidence boundaries\n\n> [!warning] Captured sample is not copy-ready\n> The Swift snippet declares `let request = BTLocalPaymentRequest(...)` and assigns its delegate, but then calls `localPaymentClient.start(localPaymentRequest)` even though `localPaymentRequest` is not defined in the captured snippet. Do not copy this invocation unchanged or treat it as successful execution evidence. The omitted result body also cannot establish a returned nonce, authorization, completion, settlement or funding.\n\n> [!warning] Unresolved same-date currency conflict\n> The supporting umbrella article says Local Payment Method transactions are automatically presented to customers in euros, while the primary iOS method table supplies PLN for BLIK, SGD for grabpay, GBP for UK SOFORT, and EUR or PLN for P24. Do not harmonize these claims or infer which is current; use the exact method-specific implementation row and verify applicable current product authority.\n\n> [!warning] Webhook and Payment Context GraphQL tension\n> The primary page states that webhooks must be implemented, while the supporting Node page calls the Payment Context GraphQL API an alternative to webhooks. The Node page also separately describes both client-returned and webhook-returned nonce routes, a three-hour auto-refund and `local_payment_reversed`; do not infer that GraphQL replaces every completed or reversed webhook responsibility.\n\n> [!warning] Lifecycle and environment scope\n> Client initiation, the omitted result callback and server notifications are distinct from authorization, completion, settlement, funding and reversal outcomes. The page does not classify every listed method as instant or non-instant, and its placeholder client authorization plus captured examples do not prove sandbox or production execution.\n\n> [!warning] Shipping-data scope\n> `shippingAddressRequired` is conditional on shipping physical goods. The guide says `true` prompts for shipping details, while the default `false` prompts for basic customer information; data already collected can instead be passed in the request. These prompt descriptions are not payment-result guarantees.\n\n## Detail locators\n\n- Historical mobile SDK certificate-expiration notice and stated traffic consequence: primary iOS raw, `# Client-Side Implementation`, lines 17-20.\n- Merchant-account selection, credential role and no-switch lifecycle condition: primary iOS raw, `### Determine which merchant account to use`, lines 28-30.\n- CocoaPods, Swift Package Manager and Carthage module lists: primary iOS raw, `### Get the SDK`, lines 33-53.\n- Custom UI purpose and per-method `paymentType`, country and currency table: primary iOS raw, `### Invoke payment flow`, lines 56-73.\n- `paymentTypeCountryCode` fallback rule: primary iOS raw, `### Invoke payment flow`, line 74.\n- Required-parameter and minimum-limit table: primary iOS raw, `### Invoke payment flow`, lines 76-88.\n- Client initialization, request construction, the `request` versus undefined `localPaymentRequest` mismatch, omitted result body and delegate callback: primary iOS raw, `### Invoke payment flow`, lines 90-138, especially lines 116-129.\n- Webhook requirement: primary iOS raw, `### Invoke payment flow`, lines 140-141.\n- Conditional shipping-address collection and default basic-information behavior: primary iOS raw, `### Shipping addresses`, lines 146-150.\n- Eligible-merchant and PayPal-integration prerequisite plus euro-presentment statement: supporting umbrella article raw, `## Availability`, lines 19-21; valid PayPal Business Account setup: `## Setup`, lines 29-31.\n- Customer-return/no-return paths, three-hour auto-refund and reversal webhook: supporting Node raw, `## Local Payment Method webhooks`, lines 21-31; two nonce routes: `## Creating transactions`, lines 54-59.\n- Payment Context update and GraphQL-alternative wording: supporting Node raw, `## Payment Contexts`, lines 124-130.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Native SDK route: [[braintree-ios-sdk]]\n- Umbrella article prerequisites and lifecycle owner: [[source-braintree-payment-methods-local-payment-methods]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/local-payment-methods/client-side-custom/ios/v7-2026-09-16|Braintree Local Payment Methods Custom Client-Side Implementation \u2014 iOS v7 (captured 2026-09-16)]] \u2014 primary platform/version guide.\n- [[raw/braintree/articles/guides/payment-methods/local-payment-methods-2026-09-16|Braintree Local Payment Methods article (captured 2026-09-16)]] \u2014 fully read supporting authority for eligibility, PayPal setup and the conflicting umbrella currency statement.\n- [[raw/braintree/docs/guides/local-payment-methods/server-side/node-2026-09-16|Braintree Local Payment Methods Server-Side Implementation \u2014 Node.js (captured 2026-09-16)]] \u2014 fully read supporting authority for return/no-return handling, nonce routes, auto-refund, reversal notification and the Payment Context GraphQL tension.\n",
+  "quotes": [
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the iOS SDK\u202fto version 6.17.0+ for the new SSL certifications.\n\n  If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "# Client-Side Implementation, lines 17-20"
+    },
+    {
+      "text": "This will determine which PayPal credentials are used for the transaction, and **must** match the merchant account specified with any other calls in the transaction lifecycle (e.g. Transaction.sale ). Many merchants use a separate merchant account for local payments. Other merchants use separate merchant accounts for transactions in different currencies. It is not possible to switch merchant accounts between the start and finish of a local payment transaction, so it is important to determine the correct one from the start.",
+      "location": "### Determine which merchant account to use, line 30"
+    },
+    {
+      "text": "You can implement a custom UI, such as your own iDEAL button.",
+      "location": "### Invoke payment flow, line 58"
+    },
+    {
+      "text": "Initialize a BTLocalPaymentClient and then call start(). This will launch an ASWebAuthenticationSession :",
+      "location": "### Invoke payment flow, line 90"
+    },
+    {
+      "text": "You must implement Braintree webhooks in order to accept Local Payment Methods. See [Server-side](/braintree/docs/guides/local-payment-methods/server-side#local-payment-method-webhooks) for details.",
+      "location": "### Invoke payment flow, lines 140-141"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-lpm-client-ios-v7-payment-methods-source-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-local-payment-methods-client-side-custom-ios-v7]] - iOS v7 custom-client document route with method-specific request and initiation locators, preserving the unresolved umbrella-versus-method currency conflict and bounded webhook-versus-Payment-Context-GraphQL tension",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This captured website route is snapshot evidence and does not prove current SDK-package support, merchant or buyer eligibility, completed payment, settlement or funding.",
+          "The same-date supporting article and Node guide are fully read supporting provenance; do not resolve their currency and server-notification tensions beyond the source page's qualified warning text."
+        ]
+      },
+      {
+        "update_id": "c31-lpm-client-ios-v7-ios-sdk-source-route",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-local-payment-methods-client-side-custom-ios-v7]] - website iOS v7 custom Local Payment Methods document route with SDK/request locators, a captured undefined start argument, an omitted result body and separately qualified server-notification alternatives",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not present the captured Swift sample as copy-ready or as proof of a returned nonce or successful invocation.",
+          "Keep the historical 6.17.0 certificate direction and website guide separate from current exact-package support and the independently retained braintree-ios implementation baseline."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/local-payment-methods/client-side-custom/ios/v7-2026-09-16.md",
+  "raw_sha256": "d4c157b16a608410a1d21b8ed1736d3d846c7c51ad808309a081a81bd83c130f",
+  "status": "candidate_ready"
+}
