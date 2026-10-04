@@ -1,0 +1,55 @@
+{
+  "job_id": "extend-forward-api-adyen",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Adyen Destination Example\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/adyen\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/adyen-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, adyen, sandbox]\n---\n\n## Overview\n\nThis collected Braintree developer guide is a destination example for using Braintree Forward API configurations with two Adyen API routes: Payments through `adyen_payments` and Authorise through `adyen_authorise`. It is a Braintree-hosted forwarding guide, not Adyen-owned API authority, proof of current Adyen capability, or evidence that Adyen authorized a merchant, accepted a request, executed a payment, or settled funds. See [[braintree]] and [[braintree-forward-api]].\n\nThe snapshot was collected on 2026-09-16. Its displayed requests target Braintree's sandbox forwarding endpoint and an Adyen test Payments URL. They preserve example request construction and credential placement, not current production availability, account approval, destination configuration, successful forwarding, or payment execution.\n\n## Key takeaways\n\n- The page states that production Forward API use is subject to eligibility and directs readers to an Account Manager or Business Development. Collection of the page, availability of a sandbox endpoint, and the example request do not establish production approval.\n- The page names `adyen_payments` for the Adyen Payments API and `adyen_authorise` for the Adyen Authorise API. These are destination-config routes documented by Braintree; current Adyen API behavior and merchant eligibility require separate Adyen authority and account evidence.\n- The displayed Payments examples send `POST` requests through `https://forwarding.sandbox.braintreegateway.com/` to `https://checkout-test.adyen.com/v70/payments`. They authenticate the forwarding call with Braintree public/private keys and include a Braintree merchant ID and payment-method nonce. Destination authentication is supplied separately in `sensitive_data`, using either `basic_auth_token` or `api_key`.\n- Both displayed requests use `adyen_payments`, a `fake-valid-nonce`, test card data, amount/currency fields and an order-reference placeholder. They are examples only; they do not demonstrate a successful destination response, authorization, capture, settlement, or production credential setup, and they do not provide an `adyen_authorise` request example.\n- For additional non-mandatory destination fields, the guide points to the Forward API `override` attribute with a `body` containing a JSON or XML string. It warns that data sent this way appears in Braintree logs and instructs users not to send sensitive data or customer PII through that path.\n\n> [!warning] Production eligibility and destination authority are separate\n> Braintree says production Forward API use is eligibility-gated. Confirm Braintree approval, the correct environment and forwarding configuration, and current Adyen API, account and credential requirements before relying on this route. This Braintree-hosted example is not official Adyen authority.\n\n> [!warning] Protect credentials and logged override data\n> The examples require Braintree credentials and merchant identity plus a destination Basic-auth token or API key. Keep real credentials, payment data and private identifiers out of source and evidence artifacts. The guide specifically warns that override-body data appears in Braintree logs and should not contain sensitive data or customer PII.\n\n> [!warning] Example requests are not payment proof\n> The snapshot contains request examples but no destination response or lifecycle evidence. It does not prove request acceptance, merchant authorization, payment authorization or capture, settlement, funding, or production readiness.\n\n## Detail locators\n\n- Production Forward API eligibility and contact routes: `**AVAILABILITY**`, raw lines 16-17.\n- Named Adyen API/config pairings: paragraph below `# Adyen`, raw line 19.\n- Basic-auth and API-key authentication support: `## Usage`, raw line 24.\n- Basic-auth sandbox request fields, Braintree credentials, `adyen_payments`, Adyen test v70 Payments URL, sample payment data and `basic_auth_token`: first `### bash` example, raw lines 25-50.\n- API-key sandbox request and `api_key` placement: second `### bash` example, raw lines 51-77.\n- Optional-field `override.body` guidance and JSON/XML string format: paragraph after the second example, raw line 78.\n- Logging and sensitive-data/PII warning for the override path: `**NOTE**`, raw lines 79-80.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Braintree Forward API overview]] - linked navigation-only route for general Forward API behavior and production eligibility; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Braintree Forward API request reference]] - linked navigation-only route for `override` details; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/extend/forward-api/worldpay-2026-09-16|Braintree Forward API Worldpay guide]] - next-page navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/adyen-2026-09-16|Braintree Forward API Adyen destination guide]] - complete collected guide covering eligibility, named destination configs, Basic-auth and API-key sandbox examples, override-body guidance and the logging warning\n",
+  "quotes": [
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility. Contact your Account Manager for more information or [submit an inquiry to our Business Development team](https://www.braintreepayments.com/products/braintree-extend#contact).",
+      "location": "raw line 17 under **AVAILABILITY**"
+    },
+    {
+      "text": "Forward API can be used to interact with the following Adyen APIs:   1. [Payments](/payments) using adyen_payments config 2. [Authorise](/authorise) using adyen_authorise config",
+      "location": "raw line 19 below # Adyen"
+    },
+    {
+      "text": "The shared config also supports both Basic auth and API key based authentication. Here is a sample request using Basic auth:",
+      "location": "raw line 24 under ## Usage"
+    },
+    {
+      "text": "However, a user will likely send additional non-mandatory fields as part of their request. To do so, they should populate the override attribute with a body attribute, where the value of the body attribute is a JSON or XML string containing the optional attributes to be sent and their values. [Override Documentation](https://developer.paypal.com/braintree/docs/reference/forward-api/forward#override)",
+      "location": "raw line 78 after the second bash example"
+    },
+    {
+      "text": "Any data sent to us this way appear in our logs. Users should refrain from sending us sensitive data and customer PII.",
+      "location": "raw line 80 under **NOTE**"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "extend-forward-api-adyen-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-forward-api-adyen]] - Braintree-hosted destination guide for `adyen_payments` and `adyen_authorise`, Basic-auth/API-key sandbox request examples, production eligibility, and logged-override cautions; not Adyen authority or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the page as Braintree documentation for a forwarding destination example, not official Adyen authority or proof of current Adyen capability.",
+          "The examples show request construction only and contain no destination response, payment lifecycle result, settlement evidence or production approval."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/adyen-2026-09-16.md",
+  "raw_sha256": "fbde7b7d7cdb33fd6aaa1e9768ba8ddd66376196b2f778af32075e38edfc8813",
+  "status": "candidate_ready"
+}

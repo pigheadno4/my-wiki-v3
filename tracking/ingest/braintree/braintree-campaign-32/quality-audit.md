@@ -1,0 +1,13 @@
+# Braintree C32 quality close
+
+Result: PASS. Twenty canonical website sources approved and promoted; first pass 16/20 (80%). Twenty full initial independent reviews plus four bounded targeted reviews; zero repeated full reviews, failed or rejected jobs. Coordinator changed no approved source facts.
+
+Five approved query groups passed 40/40 questions. Reports A–E record actual root/provider/concept/source/raw routes, requested object/action identity, direct answers, verified evidence locations, full selected evidence reads, hash integrity, reciprocal routes and bounded gap sweeps. Reports reflect navigation locations as inspected; later aggregate catalog insertion can shift line numbers without changing targets or raw locators. The C and B groups also fully read relevant role-permission and Auth authority to preserve known tensions and distinct product ownership.
+
+The close checked all twenty canonical source bytes against accepted final candidate files, exact primary hashes and canonical URLs, factual raw_files and Raw Sources links, approved concept updates, reciprocal routes, exhaustive unique company/provider-index entries and recursive counts. Total: 312 sources = 295 website + 17 GitHub, excluding changelogs. New concepts braintree-extend-oauth and braintree-forward-api are independently approved retrieval hubs, not merged Auth or destination-provider owners. Existing Auth/platform routes remain valid for their assigned sources.
+
+One promotion serialization defect was corrected mechanically: apply_patch added a terminal newline absent from the approved access-token candidate. The canonical file was aligned to the accepted candidate's exact bytes; no statement, quote, raw or handoff changed and no semantic rereview was needed. Handoff format repairs remained zero. The initial close found this discrepancy; the close was rerun after that bounded repair. No unit suite or extra semantic audit layer was added.
+
+validate_wiki.py passed 26 touched typed pages; scoped git diff --check passed. Runtime is complete at 2026-10-04T03:24:20Z, elapsed 2621 seconds (43m41s). All twenty jobs are approved, with no running/reviewing/queued jobs. The complete transition succeeded; a subsequent payload-print lookup raised KeyError and was resolved by reading the saved complete campaign/monitor, not by repeating the transition.
+
+Company/index/log/count aggregated once; the stale company introductory website-count text was corrected to 295. Raw remains unchanged. Unrelated GitHub/PayPal/BYD shared-checkout edits and historical entries were preserved. No collection, GitHub ingestion, code/rule/schema/validator change, commit or push.

@@ -1,0 +1,51 @@
+{
+  "job_id": "extend-oauth-connect-urls-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Extend OAuth Connect URLs (Node.js)\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/oauth/connect-urls/node\"\nraw_files:\n  - \"braintree/docs/guides/extend/oauth/connect-urls/node-2026-09-16.md\"\ntags: [braintree, braintree-extend, oauth, node-js, connect-urls]\n---\n\n## Overview\n\nThis collected Node.js guide documents the first Connect URL stage of [[braintree-extend-oauth]]. After a platform has configured its OAuth application, it uses its OAuth application credentials to generate a Braintree URL where a merchant logs in and is asked to agree to the requested scopes. The guide covers URL inputs and redirect and state controls; it does not prove that a merchant consented, credentials were issued, API access succeeded or a payment was accepted. This is an Extend route, not the separate [[braintree-auth]] product.\n\n## Key takeaways\n\n- The 2026-09-16 snapshot labels OAuth closed beta in production and open beta in sandbox. This is page-scoped availability wording, not evidence of current access, production-beta admission or account enablement.\n- The platform-side Node.js gateway example initializes `BraintreeGateway` with OAuth application `clientId` and `clientSecret` values and calls `gateway.oauth.connectUrl()`. The resulting URL sends the merchant to Braintree to log in and agree to the requested scopes. The placeholders and generated URL demonstrate request construction only; they do not establish secure secret storage, successful consent or a completed connection.\n- Connect URL generation requires `redirect_uri` and `scope`; `state` is also supported. The redirect URI is where Braintree sends the merchant after authorization, must already be allowlisted in the OAuth application configuration and must be a full URI. HTTPS is required in production. Exact parameter spelling in the Node example, its sample values and the Control Panel steps for revealing credentials remain in the raw locators.\n- `scope` identifies requested permissions for the merchant account. Multiple scopes use a comma-delimited string. The example's `shared_vault_transactions` value is illustrative and does not prove that scope was granted, enabled or used successfully; the full scope inventory belongs to the linked OAuth reference.\n- The guide describes `state` as an OAuth 2.0 CSRF control: submit a non-guessable value, verify that the value returned to the redirect URI matches it and escape its contents, typically with base64 or URL encoding, so the browser redirect does not alter it. The page says Braintree returns the submitted value verbatim; it does not replace the platform's matching check.\n- For a user consenting to their own OAuth application, Braintree automatically intersects requested scopes with that user's current API privileges. If the intersection changes, the access token is automatically revoked and the user must request a new token to use the existing intersection. This special case is not a general statement about every connected merchant or every token change.\n\n## Evidence boundaries\n\n> [!warning] Environment and transport qualification\n> Production is labeled closed beta and sandbox open beta in this collected page. Credentials must come from the Control Panel for the environment being used, and the redirect URI must be allowlisted there; production redirect URIs require HTTPS. None of those configuration facts proves current eligibility or successful authorization.\n\n> [!warning] Credential and state security boundary\n> The Node gateway example contains placeholder OAuth application credentials, not deployable values or a complete secret-management design. The documented CSRF protection depends on the platform generating a non-guessable, properly escaped `state` and comparing the returned value; merely including a fixed or unchecked value does not satisfy the described check.\n\n> [!warning] Extend and Auth remain distinct\n> This guide is collected under Braintree Extend. Its OAuth and connected-merchant vocabulary must not be used to transfer availability, configuration, scope or lifecycle claims to [[braintree-auth]].\n\n## Detail locators\n\n- Availability and Connect URL's place in the OAuth sequence: `# Connect URLs`, lines 14-19.\n- Required credentials, required and optional parameters, and the Node `gateway.oauth.connectUrl()` example: `# Connect URLs`, lines 21-44.\n- Production-versus-sandbox Control Panel credential-access steps: `## Access your OAuth application credentials`, lines 47-57.\n- Redirect destination, allowlisting, full-URI requirement and production HTTPS rule: `## Specify connect URL parameters > ### Redirect URI`, lines 60-67.\n- Requested-permission meaning, comma-delimited multiple scopes and the example scope route: `## Specify connect URL parameters > ### Scope`, lines 70-74.\n- Own-application consent intersection and automatic revocation consequence: `## Specify connect URL parameters > ### Scope`, line 76.\n- Non-guessable state, returned-value comparison and escaping guidance: `## Specify connect URL parameters > ### State`, lines 81-85.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-extend-oauth]]\n- Product orientation: [[braintree-payment-platform]]\n- Node gateway boundary: [[braintree-server-sdk]]\n- Separate product route: [[braintree-auth]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/extend/oauth/configuration-2026-09-16|Braintree Extend OAuth configuration]] - unread navigation-only route for OAuth application configuration and redirect allowlisting details\n- [[raw/braintree/docs/guides/extend/oauth/overview-2026-09-16|Braintree Extend OAuth overview]] - unread navigation-only route for the wider OAuth sequence\n- [[raw/braintree/docs/guides/extend/oauth/reference-2026-09-16|Braintree Extend OAuth reference]] - unread navigation-only route for the complete scope inventory\n- [[raw/braintree/docs/guides/extend/oauth/shared-vault/node-2026-09-16|Braintree Extend Shared Vault (Node.js)]] - unread navigation-only route for the example scope's Shared Vault use case\n- [[raw/braintree/docs/guides/extend/oauth/access-tokens/node-2026-09-16|Braintree Extend OAuth Access Tokens (Node.js)]] - unread navigation-only route for the post-consent authorization-code exchange and token lifecycle\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/oauth/connect-urls/node-2026-09-16|Braintree Extend OAuth Connect URLs (Node.js)]] - complete collected guide for merchant login and requested-scope consent URL generation, environment-specific application credentials, redirect allowlisting, scope selection, CSRF state handling and the own-application privilege-intersection consequence\n",
+  "quotes": [
+    {
+      "text": "OAuth is in closed beta in production, and open beta in sandbox.",
+      "location": "# Connect URLs > AVAILABILITY, line 17"
+    },
+    {
+      "text": "The connect URL goes to a Braintree website that prompts the merchant to log into their Braintree account and agree the OAuth scopes you're requesting.",
+      "location": "# Connect URLs, line 19"
+    },
+    {
+      "text": "The `redirect_uri` parameter specifies where Braintree should send the merchant after they authorize your application. All redirect URIs must be allowlisted as part of your OAuth [configuration](/braintree/docs/guides/extend/oauth/configuration).",
+      "location": "## Specify connect URL parameters > ### Redirect URI, line 65"
+    },
+    {
+      "text": "If the intersection changes, the access token will be automatically revoked.",
+      "location": "## Specify connect URL parameters > ### Scope, line 76"
+    },
+    {
+      "text": "You can verify the authenticity of the request to the redirect URI by submitting a non-guessable `state` parameter when generating the connect URL and ensuring the value returned matches the value submitted.",
+      "location": "## Specify connect URL parameters > ### State, line 83"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "concept-braintree-extend-oauth-source-connect-urls-node",
+        "target_path": "wiki/concepts/braintree-extend-oauth.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-oauth-connect-urls-node]] - Node.js Connect URL generation for merchant login and requested-scope consent, with environment-qualified application credentials, redirect allowlisting, scope selection and CSRF state controls",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/oauth/connect-urls/node-2026-09-16.md",
+  "raw_sha256": "9ce775fd7825784187f1419e351edbf24cd7470692da7e6faa41672f0354fa8c",
+  "status": "candidate_ready"
+}

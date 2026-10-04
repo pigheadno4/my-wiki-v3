@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | Braintree website C32
+
+- Twenty pinned Extend OAuth and Forward API website guides fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 312 sources (295 website + 17 GitHub). New retrieval hubs: [[braintree-extend-oauth]] and [[braintree-forward-api]]; existing Auth/platform/SDK source ownership preserved.
+- First-review pass 16/20; twenty initial full reviews plus four bounded targeted reviews, no repeated full review. Corrections preserved destination-dependent encryption, the literal unverified Android scheme, PGP key identity versus trust authority and factual-versus-navigation provenance, and an incomplete Shared Vault cloning qualification.
+- Five fixed query groups passed 40/40. Raw immutable; destination-provider guides remain Braintree-hosted evidence, not current Adyen/Stripe/Hyperwallet/Worldpay authority or execution proof. Snapshot beta, production eligibility, security and platform/version boundaries remain visible.
+- Coordinator aggregated company/index/log/count once, repaired the stale website-count prose and checked reciprocal evidence/catalog routes. Reports and close evidence: `tracking/ingest/braintree/braintree-campaign-32/`. No collection, GitHub ingestion, code/rule/schema/validator change, commit or push.
+
+
 ## [2026-10-04] ingest | Braintree website C31
 
 - Twenty pinned Local Payment Methods website guides fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 292 sources (275 website + 17 GitHub). Routes: [[braintree-index]], [[braintree-payment-methods]], [[braintree-ios-sdk]] and [[braintree-server-sdk]].

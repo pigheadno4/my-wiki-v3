@@ -1,0 +1,53 @@
+{
+  "job_id": "extend-forward-api-cryptography",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Forward API Cryptography\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/cryptography\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/cryptography-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, cryptography, encryption, mutual-tls]\n---\n\n## Overview\n\nThis collected unversioned Braintree guide describes the Forward API cryptographic toolkit for encrypting or signing parts of an outgoing forwarded request when a destination API requires security beyond the TLS protection that the page says already covers card data emitted by the Forward API. Production use of the Forward API is subject to eligibility. This is configuration and forwarding guidance, not evidence that a payment was executed or accepted.\n\n## Key takeaways\n\n- The page says all card data emitted by the Forward API is already protected by industry-standard TLS; the documented cryptographic functions are additional transformations for destination requirements, not a replacement for that transport protection.\n- The guide documents AES-GCM transformations, RSA public-key encryption and certificate-based mutual TLS. The exact function names, key-array structure, nonce placement and request examples remain in the raw locators and linked references rather than being treated as a complete algorithm inventory.\n- AES keys are sensitive and should be transmitted securely. The page directs merchants to encrypt them with the Forward API PGP public key before submitting them for use in configs.\n- Mutual-TLS private keys are also sensitive and receive the same secure-transmission and PGP-encryption warning. The snapshot distinguishes sandbox, where a PEM-encoded client certificate and key may be supplied per request, from production, where a certificate and key are loaded with the config if necessary.\n- The RSA example notes that encryption output is non-deterministic. The displayed AES, RSA and mutual-TLS payloads are examples, not proof of successful forwarding, destination acceptance or payment execution.\n- Production Forward API use is eligibility-gated in this snapshot; the page directs readers to an Account Manager or Business Development rather than establishing eligibility for any merchant.\n\n## Evidence boundary\n\n> [!warning] Sensitive key material and forwarding scope\n> Treat AES keys and mutual-TLS private keys as sensitive. This page instructs readers to use the Forward API PGP public key before submitting that material for configs, but the linked PGP page was not read as evidence for its operational procedure. The collected guide does not establish current merchant eligibility, destination behavior, successful request delivery, payment authorization, capture, settlement or any other payment outcome.\n\n## Detail locators\n\n- Production eligibility notice and inquiry routes: `# Cryptography > AVAILABILITY`, lines 14-17.\n- Toolkit purpose, baseline TLS protection and destination-driven need for additional features: `## Overview`, lines 20-22.\n- AES key-handling warning, required toolkit routes and three-step nonce/encryption outline: `## AES`, lines 25-39.\n- AES partial config example: `## AES > ### Example partial config`, lines 41-64.\n- RSA public-key encryption requirements, example request and non-deterministic result note: `## RSA`, lines 67-114.\n- Mutual-TLS key-handling warning and sandbox-versus-production certificate/key handling: `## TLS mutual authentication`, lines 117-122.\n- Mutual-TLS example request: `## TLS mutual authentication > ### Example`, lines 125-201.\n- Additional signing and encryption navigation: `## Additional Features`, lines 204-206.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Braintree Forward API overview]] - unread navigation-only destination for the eligibility link; not used as behavioral evidence here\n- [[raw/braintree/docs/guides/extend/forward-api/pgp-key-2026-09-16|Braintree Forward API PGP Public Key guide]] - unread navigation-only destination for encrypting sensitive key material; not used as procedural evidence here\n- [[raw/braintree/docs/reference/forward-api/functions-2026-09-16|Braintree Forward API functions reference]] - unread navigation-only destination for cryptographic and signing function details; not used as behavioral evidence here\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Braintree Forward API config reference]] - unread navigation-only destination for config key structure; not used as behavioral evidence here\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Braintree Forward API forward reference]] - unread navigation-only destination for per-request sandbox certificate and key fields; not used as behavioral evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/cryptography-2026-09-16|Braintree Forward API Cryptography]] - complete collected guide covering toolkit purpose, production eligibility, AES and RSA transformations, mutual-TLS handling, sensitive-key warnings, environment qualifications and example boundaries\n",
+  "quotes": [
+    {
+      "text": "**Use of the production**  [**Forward API**](/braintree/docs/reference/forward-api/overview/)  **is subject to eligibility.**",
+      "location": "# Cryptography > AVAILABILITY, line 17"
+    },
+    {
+      "text": "The Forward API contains a cryptographic toolkit that allows you to encrypt or sign parts of the outgoing request.",
+      "location": "## Overview, line 22"
+    },
+    {
+      "text": "**AES keys are sensitive information and should always be transmitted securely.**   You should use the Forward API's [PGP public key](/braintree/docs/guides/extend/forward-api/pgp-key) to encrypt these keys before submitting them for use with Forward API configs.",
+      "location": "## AES > IMPORTANT, line 28"
+    },
+    {
+      "text": "Note that the result of RSA encryption is non-deterministic.",
+      "location": "## RSA, line 114"
+    },
+    {
+      "text": "The Forward API supports certificate-based TLS [mutual authentication](https://en.wikipedia.org/wiki/Mutual_authentication), commonly referred to as \"client certificate authentication\". In sandbox, a PEM-encoded [client_cert](/braintree/docs/reference/forward-api/forward#client_cert) and [client_key](/braintree/docs/reference/forward-api/forward#client_key) may be passed per-request. In production, a certificate and key will be loaded with the config if necessary.",
+      "location": "## TLS mutual authentication, line 122"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "concept-braintree-payment-platform-forward-cryptography-source",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-forward-api-cryptography]] - unversioned Forward API guide to additional outgoing-request cryptography that some destination APIs may require beyond the Forward API's baseline TLS protection, sensitive-key handling, environment-qualified mutual TLS and production eligibility; forwarding configuration, not payment execution",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "A dedicated Forward topic appears to be a genuine concept gap, but the campaign's examples worker owns any new Forward concept proposal; keep this update to the existing payment-platform route and do not create a duplicate concept proposal from this receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/cryptography-2026-09-16.md",
+  "raw_sha256": "7e07246bbea037ec19ed5af9bd1280f5b6c102315816aecf03fa62db588cbea4",
+  "status": "candidate_ready"
+}

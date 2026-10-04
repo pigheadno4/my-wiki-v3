@@ -1,0 +1,53 @@
+{
+  "job_id": "extend-forward-api-tokenization-support",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Tokenization Support\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/tokenization-support\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/tokenization-support-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, tokenization, network-tokens, tpan]\n---\n\n## Overview\n\nThis collected, unversioned Braintree developer guide describes optional Forward API conversion of a referenced payment method into Discover or Mastercard tokenized primary account number (TPAN) information for forwarding to a third party. It documents Braintree-side tokenization selection and restriction controls, not the third party's API contract or proof that a destination authorization, charge, settlement or funding action executed.\n\nThe snapshot was collected on 2026-09-16. It preserves the guide's eligibility notice, supported-network and region qualifications, conditional tokenization behavior, TSP restriction route and sandbox examples, but does not establish current availability, merchant approval, linked credentials or successful production execution.\n\n## Key takeaways\n\n- Production Forward API use is subject to eligibility. The guide separately says production tokenization requires approval and linked PayPal credentials, so possession of API keys, sandbox access or collection of this page does not establish production enablement.\n- The snapshot states support for Discover and Mastercard TPANs. Discover is restricted to US-issued credit cards, PayPal accounts and Venmo accounts; Mastercard is restricted to credit cards issued in the European Union or United Kingdom and PayPal accounts. These are captured qualifications, not current eligibility proof.\n- A Forward API config that supports `NetworkTokenizedCard` but not the supplied payment-method token or nonce's payment-method type causes tokenization to be attempted automatically. When the config supports both types, `tokenize_on_forward: true` selects tokenized-card information for forwarding. An attempt is not a guarantee that tokenization or the downstream request succeeds.\n- Optional TSP options can limit what a third party can do with a TPAN; the guide illustrates `max_amount` by saying a much larger attempted charge would fail. The tokenization reference remains the route for the complete option and field contract.\n- The captured capability table says neither network supports cryptogram-based authorizations. It says CVV-based authorization is required unless `expire_at` is specified, multiple authorizations are supported only when `expire_at` is specified, PayPal support is currently limited to channel-initiated billing agreements, and Venmo support is listed only for Discover.\n- The Discover and Mastercard snippets call the Braintree sandbox forwarding endpoint with public/private-key authentication, a fake nonce, `debug_transformations` and inline test configuration. They demonstrate request shape and synthetic output only; they do not establish OAuth authority, production credential safety, current destination acceptance or a completed payment.\n\n> [!warning] Eligibility and credentials are independent prerequisites\n> The collected page makes production Forward API eligibility, tokenization approval and linked PayPal credentials separate conditions. Confirm current enablement and credential linkage with Braintree before production use.\n\n> [!warning] Tokenization selection is not downstream execution\n> `NetworkTokenizedCard`, `tokenize_on_forward` and TSP options govern Braintree's attempted tokenization and the information or restrictions used when forwarding. They do not establish that the third party accepted the request or performed an authorization, charge, settlement or funding action.\n\n> [!warning] Keep live credentials and payment data out of examples and evidence\n> The captured snippets use environment-variable placeholders, a fake nonce and sandbox debug transformations. Do not substitute or retain live keys, merchant IDs, nonces, card numbers or CVVs in source, logs or evidence artifacts.\n\n## Detail locators\n\n- Production Forward API eligibility and contact route: `**AVAILABILITY**`, raw lines 16-17.\n- Supported TPAN networks, account/card geography and production approval plus linked-PayPal-credential prerequisite: paragraph after `**AVAILABILITY**`, raw line 19.\n- Network capability matrix, including amount/TTL controls, authorization modes, multiple-use condition and PayPal/Venmo scope: `## Capabilities`, raw lines 22-33.\n- `NetworkTokenizedCard` config type and `$cvv` variable: opening list under `## Usage`, raw lines 38-42.\n- Automatic versus `tokenize_on_forward` selection and optional TSP restrictions: final paragraph under `## Usage`, raw line 44.\n- Discover sandbox request and synthetic transformed output: `## Example - Discover TPAN`, raw lines 47-81.\n- Mastercard sandbox request, EUR TSP option and synthetic transformed output: `## Example - Mastercard TPAN`, raw lines 84-119.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- Related destination example: [[source-braintree-extend-forward-api-hyperwallet]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Braintree Forward API overview]] - linked navigation-only route for general Forward API behavior and eligibility; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/forward-api/tokenization-2026-09-16|Braintree Forward API tokenization reference]] - linked navigation-only field and TSP option contract; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Braintree Forward API config reference]] - linked navigation-only route for config `types`; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/forward-api/variables-2026-09-16|Braintree Forward API variables reference]] - linked navigation-only route for `$cvv`; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/tokenization-support-2026-09-16|Braintree Forward API tokenization-support guide]] - complete collected guide covering eligibility, supported TPAN networks and regions, capability conditions, tokenization selection, TSP restrictions and sandbox examples\n",
+  "quotes": [
+    {
+      "text": "Use of the production**  [**Forward API**](/braintree/docs/reference/forward-api/overview/)  **is subject to eligibility.",
+      "location": "raw line 17 under AVAILABILITY"
+    },
+    {
+      "text": "The Forward API currently supports Discover and Mastercard TPANs.     Discover TPANs are currently restricted to US-issued credit cards, PayPal accounts, and Venmo accounts.     Mastercard TPANs are currently restricted to credit cards issued in the European Union or United Kingdom and PayPal accounts.     In production, tokenization requires approval and linked PayPal credentials.",
+      "location": "raw line 19, paragraph after AVAILABILITY"
+    },
+    {
+      "text": "| **Supports cryptogram-based authorizations** | No | No |",
+      "location": "raw line 28 in Capabilities table"
+    },
+    {
+      "text": "| **Supports multiple authorizations** | Yes, if[expire_at](/braintree/docs/reference/forward-api/tokenization#tsp-expire_at)is specified | Yes, if[expire_at](/braintree/docs/reference/forward-api/tokenization#tsp-expire_at)is specified |",
+      "location": "raw line 30 in Capabilities table"
+    },
+    {
+      "text": "Tokenization will be attempted automatically if a config supports the \"NetworkTokenizedCard\" type but not the payment method type of the specified payment_method_token or payment_method_nonce. If the config supports both, [\"tokenize_on_forward\"parameter](/braintree/docs/reference/forward-api/tokenization#tokenize_on_forward) can be set to true to send tokenized card information.     You can optionally pass [TSP Options](/braintree/docs/reference/forward-api/tokenization#tsp) when forwarding a specific payment method to a third party to limit what can be done with a TPAN. For example, if you passed max_amount as 10.00, and the third party tried to charge 900.00, the transaction would fail.",
+      "location": "raw line 44, final paragraph under Usage"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "extend-forward-tokenization-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-forward-api-tokenization-support]] - 2026-09-16 unversioned Forward API guide for conditional Discover/Mastercard TPAN conversion, regional/account qualifications, TSP restrictions and sandbox examples; production eligibility, approval, linked credentials and downstream execution remain separate",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "A dedicated Forward API concept proposal is owned by a separate campaign worker and remains under review; route this source through the existing payment-platform concept unless that concept is approved and published.",
+          "The source documents attempted tokenization and forwarding controls, not current production eligibility or successful third-party authorization, charge, settlement or funding execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/tokenization-support-2026-09-16.md",
+  "raw_sha256": "53b7d399dceb6a856b40252526e7390a18c9eb36c846f85a2fd8282c0e3289c6",
+  "status": "candidate_ready"
+}

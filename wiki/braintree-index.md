@@ -12,6 +12,32 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+#### Extend OAuth and Forward API website guides
+
+- [[braintree-extend-oauth]] - Extend connected-merchant OAuth retrieval hub, separate from Braintree Auth
+- [[source-braintree-extend-oauth-client-side-ios-v7]] - Braintree Extend OAuth Client-side Connect Flow for iOS v7
+- [[source-braintree-extend-oauth-access-tokens-node]] - Braintree Extend OAuth Access Tokens (Node.js)
+- [[source-braintree-extend-oauth-client-side-android-v5]] - Braintree Extend OAuth Client-side Connect Flow for Android v5
+- [[source-braintree-extend-oauth-reference]] - Braintree Extend OAuth Reference
+- [[source-braintree-extend-oauth-connect-urls-node]] - Braintree Extend OAuth Connect URLs (Node.js)
+- [[source-braintree-extend-oauth-client-side-javascript-v3]] - Braintree Extend OAuth Client-side Connect Flow for JavaScript v3
+- [[source-braintree-extend-oauth-configuration]] - Braintree Extend OAuth Configuration
+- [[source-braintree-extend-oauth-overview]] - Braintree Extend OAuth Overview
+- [[source-braintree-extend-oauth-shared-vault-node]] - Braintree Extend OAuth Shared Vault (Node.js)
+
+- [[braintree-forward-api]] - Forward API request-construction and security retrieval hub
+- [[source-braintree-extend-forward-api-examples]] - Braintree Forward API Examples
+- [[source-braintree-extend-forward-api-cryptography]] - Braintree Forward API Cryptography
+- [[source-braintree-extend-forward-api-hyperwallet]] - Braintree Forward API Hyperwallet Integration
+- [[source-braintree-extend-forward-api-configuration]] - Braintree Extend Forward API Configuration
+- [[source-braintree-extend-forward-api-tokenization-support]] - Braintree Forward API Tokenization Support
+- [[source-braintree-extend-forward-api-transformations]] - Braintree Forward API Transformations
+- [[source-braintree-extend-forward-api-pgp-key]] - Braintree Forward API PGP Public Key
+- [[source-braintree-extend-forward-api-adyen]] - Braintree Forward API Adyen Destination Example
+- [[source-braintree-extend-forward-api-braintree-api-forwarding]] - Braintree Extend Forwarding Braintree API Payment Tokens
+- [[source-braintree-extend-forward-api-stripe]] - Braintree Forward API Stripe Destination Example
+- [[source-braintree-extend-forward-api-worldpay]] - Braintree Forward API Worldpay Destination Guide
+
 #### Braintree Auth
 
 - [[source-braintree-auth-overview]] - closed-beta product purpose, connected-merchant roles and service/payment use-case routes
@@ -381,6 +407,10 @@ Operations history: [[braintree-log]]
 - [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger beginning at `5.3.0` (github-repo, 2026-08-27)
 
 ## Concepts
+
+- [[braintree-extend-oauth]] - Extend connected-merchant consent, server credential exchange and token lifecycle retrieval, distinct from Braintree Auth
+
+- [[braintree-forward-api]] - Extend outbound request construction, transformation, security and destination-guide retrieval routes; not payment-execution proof
 
 - [[braintree-auth]] - provider-specific OAuth connection, merchant-scoped actions, configuration, testing and security routes
 

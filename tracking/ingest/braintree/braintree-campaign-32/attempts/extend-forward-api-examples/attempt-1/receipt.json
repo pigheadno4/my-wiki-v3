@@ -1,0 +1,55 @@
+{
+  "job_id": "extend-forward-api-examples",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Examples\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/examples\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/examples-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, transformations, vault, sandbox]\n---\n\n## Overview\n\nThis Braintree Extend guide is an examples catalog for constructing Forward API destination requests with functions, transformations, caller-supplied values, Vault-derived payment data and request overrides. Its calls target the Braintree forwarding sandbox and `httpbin.org`; they illustrate request construction and returned debug output, not successful payment execution, downstream acceptance, or merchant authority at a destination. Production use of the Forward API remains eligibility-gated. See [[braintree]] and [[braintree-forward-api]].\n\n## Key takeaways\n\n- Forward API functions can be nested to construct values such as destination HTTP Basic authorization, and global variables used by that example are supplied per forwarding request under `sensitive_data` or `data`. The page does not establish a complete credential-handling policy or destination permission model.\n- Transformations can populate body, header and URL-parameter paths. An `override` supplies a request baseline: non-empty override values take precedence over conflicting transformations, while unaffected content passes through to the destination.\n- Conditional transformations use `if_defined`; the guide also demonstrates XML sibling indices and attributes, multi-payment-method suffixes or aliases, and append index `-1`. These are example configurations, not guarantees about a particular destination API.\n- Braintree states that it does not store CVVs for vaulted payment methods. When a destination requires CVV with vaulted card data, the documented example combines the long-lived payment-method token with a CVV-only payment-method nonce and reads the suffixed CVV variable.\n- `/var` binds an intermediate value only for the current transformation. It can be reused in later rules but is not itself emitted to an outbound body, header or URL parameter.\n\n## Detail locators\n\n- `## Functions` and `### Nested functions` \u2014 `join`, `array` and `base64` composition examples.\n- `## HTTP basic auth` \u2014 destination Authorization-header construction, per-request variable placement, sandbox request and debug output.\n- `## Trace-ID` \u2014 request tracer header and log-correlation statement.\n- `## Hashed data` \u2014 hash/template/override example and XML serialization.\n- `## Transformations and overrides` \u2014 precedence and pass-through behavior.\n- `## Conditional transformations` \u2014 `if_defined` behavior and captured test-nonce qualification.\n- `## XML sibling elements sharing a name` and `## XML attributes` \u2014 XML path examples.\n- `## CVV with vaulted card data` \u2014 token plus CVV-only nonce route and variable suffixing.\n- `## Forwarding multiple payment methods` and `## Forwarding multiple payment methods with aliases` \u2014 suffix, alias, conditional membership and append-index examples.\n- `## Variable binding` \u2014 transformation-local `/var` lifetime and reuse.\n\n## Related raw API references\n\nThe following are navigation targets named by this page and were not read as evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]]\n- [[raw/braintree/docs/reference/forward-api/functions-2026-09-16|Forward API function reference]]\n- [[raw/braintree/docs/reference/forward-api/variables-2026-09-16|Forward API variables reference]]\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Forward request reference]]\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Forward configuration reference]]\n- [[raw/braintree/docs/guides/extend/forward-api/transformations-2026-09-16|Forward transformations guide]]\n- [[raw/braintree/docs/guides/extend/forward-api/cryptography-2026-09-16|Forward cryptography guide]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/examples-2026-09-16|Braintree Forward API examples (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": " **Use of the production**  [Forward API](/braintree/docs/reference/forward-api/overview/)  **is subject to eligibility.**   Contact your Account Manager for more information or [submit an inquiry to our Business Development team](https://www.braintreepayments.com/products/braintree-extend#contact).",
+      "location": "Line 17, availability notice"
+    },
+    {
+      "text": "The Forward API provides a number of functions that can be used to construct requests.",
+      "location": "Line 40 under ## Functions"
+    },
+    {
+      "text": "The override functions as a baseline for the request \u2013 the entirety of the override will be sent to the destination, modified only by transformations that do not conflict with non-empty values in the override.",
+      "location": "Line 296 under ## Transformations and overrides"
+    },
+    {
+      "text": "Braintree does not store CVVs of vaulted payment methods for compliance reasons. If the destination API requires CVV and you are using vaulted card data, you must specify a payment_method_nonce containing the CVV along with your long-lived payment_method_token.",
+      "location": "Line 432 under ## CVV with vaulted card data"
+    },
+    {
+      "text": "/var path helps to store a value under a name and reuse it later similar to bind function. The value exists only for the duration of the transformation \u2014 it is never included in the outbound request body, headers, or URL params the way /body, /header, and /urlparam are.",
+      "location": "Line 578 under ## Variable binding"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-extend-forward-api-examples-new-concept",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree Forward API\"\ntype: concept\ncategory: technology\ntags: [braintree, braintree-extend, forward-api, payment-data-forwarding, vault]\n---\n\n## Braintree Forward API\n\nBraintree Forward API is the Braintree Extend route for constructing outbound requests to a destination from Braintree payment-method data and caller-supplied values. The collected examples demonstrate functions, transformations, overrides, conditional paths, XML construction, multiple payment methods and transformation-local variables. Production use is subject to eligibility. [[source-braintree-extend-forward-api-examples]]\n\nThis forwarding route is distinct from evidence that a destination authorized the merchant, accepted the request, executed a payment, or settled funds. The retained examples use Braintree's sandbox forwarding endpoint and `httpbin.org`; their returned request/debug representations are configuration examples, not payment outcomes. Destination-specific authority, credentials, request semantics and execution must be established by their own documentation and evidence.\n\n## Vault and CVV boundary\n\nBraintree states that vaulted payment methods do not retain CVV. When a destination requires CVV with vaulted card data, the documented example combines a long-lived payment-method token with a separately collected CVV-only payment-method nonce and uses Forward API variable suffixing. This is a data-construction path, not proof that the destination permits or successfully processes the request. [[source-braintree-extend-forward-api-examples]]\n\n## Sources\n\n- [[source-braintree-extend-forward-api-examples]] - sandbox examples for functions, transformation and override behavior, multi-payment-method construction, transformation-local variables, eligibility and the Vault/CVV boundary\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Root index to Braintree index audit found no dedicated Braintree Forward API concept; use braintree-payment-platform only as the temporary provider route until this shared gap is resolved.",
+          "The examples snapshot does not establish destination authorization, successful payment execution, settlement, current production eligibility, or a complete credential-handling policy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/examples-2026-09-16.md",
+  "raw_sha256": "7879e083ded33fad7fd1d661ed622ee5af4fbf308285c2420dfa637ee7337b2a",
+  "status": "candidate_ready"
+}

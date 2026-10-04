@@ -1,0 +1,56 @@
+{
+  "job_id": "extend-oauth-client-side-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Extend OAuth Client-side Connect Flow for JavaScript v3\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/oauth/client-side/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/extend/oauth/client-side/javascript/v3-2026-09-16.md\"\ntags: [braintree, braintree-extend, oauth, javascript-v3, connect, client-side]\n---\n\n## Overview\n\nThis collected [[braintree]] page is a JavaScript v3 client-side Connect guide under the site's `extend/oauth` route. It has a platform page give `BraintreeOAuthConnect` a Connect URL generated on the platform server so the page can display **Connect with Braintree** and send a merchant to Braintree's consent UI for the requested OAuth scopes. The snapshot labels OAuth closed beta in production and open beta in sandbox. [[braintree-extend-oauth]] owns this Extend OAuth route; it remains distinct from the separate [[braintree-auth]] product despite overlapping connected-merchant OAuth terminology and the page's Braintree Auth contact link.\n\n## Key takeaways\n\n- The browser-side library can display the provided **Connect with Braintree** button, while generation of the Connect URL remains a server responsibility. The page describes that URL as pointing to a Braintree website with a consent UI appropriate for the requested OAuth scopes.\n- The page says not to initialize `braintree-oauth-connect.js` or display the Connect button again when the merchant returns to the page after authorizing the application. This is a return-page presentation rule, not proof that consent completed, credentials were issued, an API call succeeded or a payment was accepted.\n- `connectUrl` and `container` are required parameters. The optional `onError` callback receives an error object with a `message` property, and the optional `environment` accepts `production` (the documented default) or `sandbox`. These are fields in the collected JavaScript v3 snapshot, not evidence of current production access, environment isolation or parity with other client variants.\n- The page supplies both a hosted library inclusion and a manual button-image example. Those examples establish presentation options only; they do not move server-owned URL generation or OAuth credential work into the browser.\n\n> [!warning] Flow and product boundary\n> This raw page does not document Finish Later handling, authorization-code exchange, access-token creation, state validation or callback security. Do not import those behaviors from the separate Braintree Auth JavaScript guide or infer them from the button example. Follow the dedicated Extend OAuth server-side sources for those stages and preserve the merchant-approved scope boundary.\n\n> [!warning] Snapshot-qualified availability\n> Production closed beta and sandbox open beta are statements from the page collected on 2026-09-16. They do not prove current availability, platform or merchant eligibility, successful OAuth authorization, usable credentials or payment execution.\n\n## Detail locators\n\n- Production closed-beta and sandbox open-beta availability: `# Client-side Connect Flow > AVAILABILITY`, raw lines 17-18.\n- Merchant authorization transition and Connect-button task: introduction below availability, raw lines 20-28.\n- Hosted library inclusion and manual button-image alternatives: `## Display the button`, raw lines 33-48.\n- Return-page rule not to initialize the library or show the button again after authorization: note below `## Display the button`, raw lines 50-51.\n- Browser use of a server-generated Connect URL and `BraintreeOAuthConnect` example: `## Specify parameters`, raw lines 54-68.\n- Required `connectUrl` and `container`, optional `onError`, and optional `environment` with documented values/default: parameter table, raw lines 69-74.\n- Consent-UI and requested-scope purpose of the server-generated Connect URL: parameter table, raw line 71.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-extend-oauth]]\n- Product boundary: [[braintree-auth]] - separate connected-merchant OAuth route whose JavaScript Finish Later behavior is not documented by this Extend page.\n\n## Related raw API references\n\nThe following are unread navigation targets named by this page; they are not evidence for claims above.\n\n- [[raw/braintree/docs/guides/extend/oauth/overview-2026-09-16|Braintree Extend OAuth overview (collected 2026-09-16)]]\n- [[raw/braintree/docs/guides/extend/oauth/connect-urls/node-2026-09-16|Braintree Extend OAuth Connect URLs for Node.js (collected 2026-09-16)]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/oauth/client-side/javascript/v3-2026-09-16|Braintree Extend OAuth client-side Connect flow for JavaScript v3 (collected 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "OAuth is in closed beta in production, and open beta in sandbox. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest in the production beta release.",
+      "location": "raw line 18, immediately below AVAILABILITY"
+    },
+    {
+      "text": "Once you've generated a connect URL, the next steps in the [OAuth sequence](/braintree/docs/guides/extend/oauth/overview#oauth-sequence) involve sending the merchant to Braintree for authorization. To do this, you'll need to:",
+      "location": "raw line 20, introduction below AVAILABILITY"
+    },
+    {
+      "text": "If the merchant returns to this page after authorizing your application, you should not initialize braintree-oauth-connect.js or display the **Connect with Braintree** button again.",
+      "location": "raw line 51, NOTE below ## Display the button"
+    },
+    {
+      "text": "With the button added to your page, use BraintreeOAuthConnect to specify the connect URL you generated on your server, the container on the page where the button will live, and any other desired parameters:",
+      "location": "raw line 56 under ## Specify parameters"
+    },
+    {
+      "text": "| connectUrl | Required.[The URL you generated on your server](/braintree/docs/guides/extend/oauth/connect-urls)that points to a Braintree website with a consent UI appropriate for the requested OAuth scopes. |",
+      "location": "raw line 71 in the parameter table under ## Specify parameters"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-extend-oauth-client-side-javascript-v3-source-link",
+        "target_path": "wiki/concepts/braintree-extend-oauth.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-oauth-client-side-javascript-v3]] - JavaScript v3 client-side Connect-button guide for starting merchant consent with a server-generated Extend OAuth URL, with return-page display and environment parameter qualifications",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Braintree Extend OAuth distinct from Braintree Auth despite overlapping connected-merchant OAuth terminology and the Braintree Auth contact link on the page.",
+          "The assigned raw does not document Finish Later handling, authorization-code exchange, access-token creation, state validation or callback security; do not import those behaviors from Braintree Auth.",
+          "Treat production closed-beta and sandbox open-beta wording, the environment values and the return-page display rule as snapshot-qualified documentation, not proof of current availability, environment isolation, completed consent, credential issuance or payment execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/oauth/client-side/javascript/v3-2026-09-16.md",
+  "raw_sha256": "a3e90abd78953a4c10dbe3a118fe9a7f2a4ff76c3973163249b5a7a8daa2dc87",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,50 @@
+{
+  "job_id": "extend-forward-api-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Extend Forward API Configuration\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/configuration\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/configuration-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, configuration, payment-data, sandbox]\n---\n\n## Overview\n\nThis collected Braintree Extend guide is a retrieval entry for configuring a Forward API request. It describes two JSON inputs: an incoming forward request that identifies the merchant, outgoing payment-method nonce or token, and destination URL; and a config that controls the outgoing request's format, structure, and transformations. The snapshot permits inline configs in sandbox but says production configs are reviewed and imported by Braintree and then referenced by name. This is request-construction and payment-data-forwarding documentation, not evidence that a destination accepted a request or that a payment was executed, authorized, captured, settled, or funded.\n\n## Key takeaways\n\n- Production Forward API use is subject to eligibility. The page directs the reader to an Account Manager or Business Development, so this snapshot does not establish a merchant's current access, approval, account readiness, or applicable role permission. See the separate Control Panel permission route below for collected role-level evidence.\n- The incoming JSON request carries destination and payment-method references, while the config defines allowed request shape and transformations. In sandbox, a config can be supplied inline; in production, Braintree reviews and imports each config and the request references the stored config by name.\n- The inline example uses Braintree public/private-key Basic authentication and shows a `$number` transformation placeholder replaced with credit-card data from the Vault. The named sandbox `braintree` config example separately places a private key under `sensitive_data`; these are illustrative request fields, not a general security, storage, redaction, or permission contract.\n- In sandbox, setting `debug_transformations` to true prevents the outgoing request and returns the data that would have been sent. The displayed response includes a full test card number, so debug output can contain payment-card data and must not be treated as safe-to-log evidence. A debug response also does not prove destination reachability, payment execution, authorization, settlement, or funding.\n- The page routes exact incoming-request parameters, config parameters, test nonces, and formatting, encoding, and encryption transformations to separate references. Those unread pages are navigation only here.\n\n> [!warning] Eligibility, permission, and account scope\n> This immutable 2026-09-16 snapshot says production Forward API use is subject to eligibility and that production configs are reviewed and imported. It does not establish current product availability, approval for a particular merchant, the Control Panel role needed to forward payment methods, or a usable production account/config. Verify those separately; the collected permission route is [[source-braintree-control-panel-users-roles-role-permissions]].\n\n> [!warning] Forwarding is not payment outcome evidence\n> Sending or previewing transformed payment data is not proof that the destination accepted the request or that any payment was created, authorized, captured, settled, reconciled, or funded. Even the page's named `braintree` sandbox config is an example described as creating transactions in Braintree sandbox, not retained runtime evidence of a successful transaction.\n\n## Detail locators\n\n- Production eligibility and Account Manager or Business Development inquiry route: `# Configuration > AVAILABILITY`, lines 16-17.\n- Two JSON sources for configuration: `# Configuration`, lines 19-24.\n- Incoming request identity and merchant, payment-method, and destination fields: `## Incoming Forward Request`, lines 26-30.\n- Config purpose, sandbox inline-config behavior, production review/import, and name-based reference: `## Configs`, line 35.\n- Inline curl request, Basic-auth environment keys, URL/method restrictions, request formatting, payment-method type, and `$number` transformation: `## Configs`, lines 36-59.\n- Returned destination status, headers, body, and request time plus the Vault replacement explanation and config-reference route: `## Configs`, lines 60-70.\n- Named `braintree` sandbox config example, including transaction destination, amount, `data`, and `sensitive_data`: `## Configs`, lines 70-87.\n- Sandbox-only debug behavior, illustrative request, and returned full test card number: `## Debug Transformations`, lines 90-126.\n- Postman collection navigation: `## Debug Transformations`, line 127.\n- Test-nonce navigation: `## Test Nonces`, lines 130-132.\n- Transformation formatting, encoding, and encryption navigation: `## Transformations`, lines 135-137.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- Role-permission route: [[source-braintree-control-panel-users-roles-role-permissions]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Forward API incoming request reference]] - navigation-only route for incoming-request parameters; not used as factual evidence here\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Forward API config reference]] - navigation-only route for config parameters; not used as factual evidence here\n- [[raw/braintree/docs/guides/extend/forward-api/transformations-2026-09-16|Forward API transformations guide]] - navigation-only route for formatting, encoding, and encryption; not used as factual evidence here\n- [[raw/braintree/docs/reference/general/testing/node-2026-09-16|Braintree testing reference (Node.js route)]] - navigation-only route for test nonces; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/configuration-2026-09-16|Braintree Extend Forward API Configuration guide]] - complete collected guide for incoming-request and config composition, sandbox versus production config handling, debug transformations, and qualified production availability\n",
+  "quotes": [
+    {
+      "text": "**Use of the production**  [**Forward API**](/braintree/docs/reference/forward-api/overview/)  **is subject to eligibility.**",
+      "location": "# Configuration > AVAILABILITY, line 17"
+    },
+    {
+      "text": "The [incoming forward request](/braintree/docs/reference/forward-api/forward) is simply the body of the incoming request to the Forward API. It is specified in JSON, and contains information like your merchant ID, the nonce or token of the outgoing payment method, and the URL of the outgoing request.",
+      "location": "## Incoming Forward Request, line 28"
+    },
+    {
+      "text": "[Configs](/braintree/docs/reference/forward-api/config/) specify the format, structure, and transformations that are applied to a request before being sent to the destination.",
+      "location": "## Configs, line 35"
+    },
+    {
+      "text": "Debug transformations tell the Forward API to not make an outgoing request, and instead respond with the information it would have sent.",
+      "location": "## Debug Transformations, line 92"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-forward-config-payment-platform-source-link",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-forward-api-configuration]] - collected Braintree Extend Forward API configuration guide for incoming request and config composition, sandbox inline versus production reviewed-and-imported configs, debug transformations, and production eligibility boundaries; forwarding is not payment execution or settlement proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep this as a reciprocal source route on the existing payment-platform concept; the separately assigned examples worker owns any new Forward-specific concept proposal.",
+          "Forward API configuration and debug output do not prove destination acceptance, payment execution, authorization, capture, settlement, funding, current production eligibility, or merchant role permission."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/configuration-2026-09-16.md",
+  "raw_sha256": "6cada0c91eda2625d92d39e7ff5aab22ac3ce6d017ff4d0377320c8ee67594b6",
+  "status": "candidate_ready"
+}

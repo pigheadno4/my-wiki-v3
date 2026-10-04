@@ -1,0 +1,52 @@
+{
+  "job_id": "extend-forward-api-braintree-api-forwarding",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Extend Forwarding Braintree API Payment Tokens\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/braintree-api-forwarding\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/braintree-api-forwarding-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, payment-method-nonce, payment-method-token, sandbox]\n---\n\n## Overview\n\nThis collected Braintree Extend guide describes two ways to construct a Forward API request from payment data returned by the alternate Braintree API: pass a returned token as `payment_method_nonce`, or pass a stored payment-method token backed by a payment method in that API as `payment_method_token`. The page illustrates both routes with server-authenticated calls to Braintree's sandbox forwarding endpoint and an `httpbin.org` destination. It is configuration guidance, not evidence that a destination accepted a request or that a payment was executed, authorized, captured, settled, reconciled, or funded. See [[braintree]] and [[braintree-forward-api]].\n\n## Key takeaways\n\n- Production Forward API use is subject to eligibility. The page directs readers to an Account Manager or Business Development, so this snapshot does not establish current availability, merchant eligibility, production enablement, or account readiness.\n- For a token returned from the alternate Braintree API, the first example uses the `payment_method_nonce` request field. For a payment-method token backed by a payment method in that API, the second example uses `payment_method_token`. These are distinct request-object choices; the page does not say that one proves the other exists or remains usable.\n- Both examples call `https://forwarding.sandbox.braintreegateway.com/`, authenticate with Braintree public/private keys, identify a `merchant_id`, request `POST`, and target `https://httpbin.org/post`. Their inline configs constrain the method and destination URL, specify URL-encoded body formatting and `CreditCard` type, and transform `$number` into `/body/card[number]`. These are example values and options, not a general destination-support, credential-storage, permission, or production-config contract.\n- The page does not document a Control Panel role, destination-side authorization, or a returned destination/payment result. Forwarding configuration must therefore remain separate from proof that the merchant may act at the destination or that any transaction was created or completed.\n\n> [!warning] Eligibility and permission boundary\n> The immutable 2026-09-16 snapshot gates production Forward API use on eligibility but does not establish a merchant's present eligibility, required Control Panel role, destination authority, or production configuration approval. The Basic-auth credentials in the curl examples identify how those sandbox requests are formed; they do not establish broader permissions.\n\n> [!warning] Forwarding is not payment outcome evidence\n> The examples construct requests to `httpbin.org` through the Braintree sandbox forwarding endpoint. They do not show a retained response or prove destination acceptance, payment execution, authorization, capture, settlement, reconciliation, or funding.\n\n## Detail locators\n\n- Production eligibility and Account Manager or Business Development inquiry route: `# Forwarding Braintree API Payment Tokens > AVAILABILITY`, lines 17-18.\n- Returned alternate-Braintree-API token and `payment_method_nonce` route: `# Forwarding Braintree API Payment Tokens`, lines 20-21.\n- Nonce example's sandbox endpoint, Basic authentication, merchant, method, destination, config restrictions, type, and card-number transformation: first `### bash` block, lines 23-45.\n- Backed payment-method token and `payment_method_token` route: `# Forwarding Braintree API Payment Tokens`, lines 46-48.\n- Stored-token example's sandbox endpoint, Basic authentication, merchant, method, destination, config restrictions, type, and card-number transformation: second `### bash` block, lines 50-72.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]] - navigation-only route linked by the availability notice; not used as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/braintree-api-forwarding-2026-09-16|Braintree guide to forwarding Braintree API payment tokens]] - complete collected guide for the two alternate-Braintree-API token input routes, sandbox request examples, and production-eligibility qualification\n",
+  "quotes": [
+    {
+      "text": "**Use of the production [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility.** Contact your Account Manager for more information or [submit an inquiry to our Business Development team](https://www.braintreepayments.com/products/braintree-extend#contact) .",
+      "location": "# Forwarding Braintree API Payment Tokens > AVAILABILITY, line 18"
+    },
+    {
+      "text": "You may wish to forward payment tokens from the alternate Braintree API. If you have a token\nreturned from the Braintree API, you can forward it with thepayment_method_nonceparameter.",
+      "location": "# Forwarding Braintree API Payment Tokens, lines 20-21"
+    },
+    {
+      "text": "If you have a payment method token backed by a payment method in the alternate Braintree API, you\ncan forward it with thepayment_method_tokenparameter as you would any other payment\nmethod token.",
+      "location": "# Forwarding Braintree API Payment Tokens, lines 46-48"
+    },
+    {
+      "text": "        \"payment_method_nonce\": \"tokencc_dp8wcw_wd4629_rqfkg2_qkwyz6_jq3\", \n        \"url\": \"https://httpbin.org/post\", \n        \"config\": { \n            \"name\": \"braintree-alternate-api-with-payment-token\", \n            \"methods\": [\"POST\"], \n            \"url\": \"^https://httpbin\\\\.org/post$\", \n            \"request_format\": {\"/body\": \"urlencode\"}, \n            \"types\": [\"CreditCard\"], \n            \"transformations\": [{ \n                \"path\": \"/body/card[number]\", \n                \"value\": \"$number\" \n            }]",
+      "location": "first ### bash block, lines 31-42"
+    },
+    {
+      "text": "    \"payment_method_token\": \"abc123\",\n    \"url\": \"https://httpbin.org/post\",\n    \"config\": {\n      \"name\": \"braintree-alternate-api-with-payment-method-token\",\n      \"methods\": [\"POST\"],\n      \"url\": \"^https://httpbin\\.org/post$\",\n      \"request_format\": {\"/body\": \"urlencode\"},\n      \"types\": [\"CreditCard\"],\n      \"transformations\": [{\n        \"path\": \"/body/card[number]\",\n        \"value\": \"$number\"\n      }]",
+      "location": "second ### bash block, lines 58-69"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-braintree-forward-api-reciprocal-braintree-api-forwarding",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-forward-api-braintree-api-forwarding]] - 2026-09-16 Braintree Extend guide to forwarding alternate-Braintree-API nonces or stored payment-method tokens through sandbox request examples, with production-eligibility and payment-outcome-evidence boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/braintree-api-forwarding-2026-09-16.md",
+  "raw_sha256": "333522e4318874637851ab73efba5ca9c7e8e236f85e14f4a0ccfd12d6040b97",
+  "status": "candidate_ready"
+}

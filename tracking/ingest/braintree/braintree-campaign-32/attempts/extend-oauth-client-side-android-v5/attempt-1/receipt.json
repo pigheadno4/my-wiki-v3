@@ -1,0 +1,57 @@
+{
+  "job_id": "extend-oauth-client-side-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Extend OAuth Client-side Connect Flow for Android v5\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/oauth/client-side/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/extend/oauth/client-side/android/v5-2026-09-16.md\"\ntags: [braintree, braintree-extend, oauth, android, connect, client-side]\n---\n\n## Overview\n\nThis collected [[braintree]] page is an Android v5 client-side Connect guide under the site's `extend/oauth` route. It describes an app sending a merchant to Braintree-hosted authorization with a server-supplied Connect URL, leaves access-token creation and the return redirect on the platform server, and captures the return in the app with an Android `IntentFilter`. The snapshot labels OAuth closed beta in production and open beta in sandbox. [[braintree-extend-oauth]] owns this Extend OAuth route; it remains distinct from the separate [[braintree-auth]] product despite overlapping connected-merchant OAuth terminology and the page's Braintree Auth contact link.\n\n## Key takeaways\n\n- The recommended Android sequence is described as avoiding exposure of the platform's `client_secret`: the merchant taps Connect with Braintree, the app opens the server-supplied Connect URL using an `Intent`, and, after merchant authorization and server-side access-token creation, the server redirects to a URL captured by the app's `IntentFilter`.\n- The supplied Connect button is described as sending merchants to Braintree to log in and agree to the requested OAuth scopes. The downloadable assets and `ImageButton` markup are presentation examples, not evidence that consent occurred, a token was issued, or an action or payment succeeded.\n- The return example uses the `/merchant-connected` path in an exported, browsable Android activity. The page says future Android SDK versions will require verification of the app's Intent Filters; it does not establish callback authenticity, successful deep-link verification, or current SDK behavior.\n- A historical notice says Braintree Mobile SDK certificates were set to expire on March 30, 2026, names Android SDK 4.45.0+ or 5.0.0+ in a malformed remediation sentence, and warns that customer traffic for affected older app versions would fail unless those versions were decommissioned or force-upgraded. Preserve this as dated snapshot guidance, not proof of the present certificate state, supported versions, current availability, or account eligibility.\n\n## Evidence boundaries\n\n> [!warning] Environment-qualified beta snapshot\n> Production closed beta and sandbox open beta are statements from the page collected on 2026-09-16. They do not prove current availability or enablement for a particular platform or merchant.\n\n> [!warning] Client/server and product boundary\n> The app launches the server-supplied Connect URL and receives the return route, while the platform server creates the access token and issues the redirect. Do not put the `client_secret` in the app, infer broader OAuth permissions than the merchant approved, or merge this Extend OAuth source into the separate Braintree Auth product route.\n\n## Detail locators\n\n- Production closed-beta and sandbox open-beta availability: raw lines 17-18.\n- Historical Mobile SDK certificate notice, March 30, 2026 date, Android 4.45.0+/5.0.0+ wording and traffic-failure warning: raw lines 23-24.\n- Android OAuth sequence and app/server responsibility split: `Android OAuth sequence`, raw lines 31-38.\n- Connect button purpose, downloadable assets and `ImageButton` example: `Display the button`, raw lines 41-60.\n- `Intent` launch using a server-supplied Connect URL: `Send the merchant to Braintree`, raw lines 63-65.\n- `/merchant-connected` return and manifest `IntentFilter` example: `Capture the return URL with an intent filter`, raw lines 68-91.\n- Future Intent Filter verification note: raw lines 93-94.\n\n## Related\n\n- [[braintree]] - provider overview.\n- [[braintree-extend-oauth]] - main Extend OAuth merchant-consent and server credential route.\n- [[braintree-payment-platform]] - provider orientation separating Direct, Extend and Auth.\n- [[braintree-auth]] - separate connected-merchant OAuth product route; shared terminology does not make the products interchangeable.\n\n## Related raw API references\n\nThe following are unread navigation targets named by this page; they are not evidence for claims above.\n\n- [[raw/braintree/docs/guides/extend/oauth/overview-2026-09-16|Braintree Extend OAuth overview (collected 2026-09-16)]]\n- [[raw/braintree/docs/guides/extend/oauth/access-tokens/node-2026-09-16|Braintree Extend OAuth access tokens for Node.js (collected 2026-09-16)]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/oauth/client-side/android/v5-2026-09-16|Braintree Extend OAuth client-side Connect flow for Android v5 (collected 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "OAuth is in closed beta in production, and open beta in sandbox. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest in the production beta release.",
+      "location": "raw line 18, immediately below AVAILABILITY"
+    },
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade theiOS SDK\u202fto version 6.17.0+Android SDK to version 4.45.0+ or version 5.0.0+for the new SSL certifications.  If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "raw line 24, immediately below IMPORTANT"
+    },
+    {
+      "text": "While the high-level OAuth sequence on the [Overview](/braintree/docs/guides/extend/oauth/overview) still holds true, we recommend this Android-specific client-side flow, which avoids exposing your client_secret :",
+      "location": "Android OAuth sequence, raw line 33"
+    },
+    {
+      "text": "After the merchant has authorized and your server has created an[access token](/braintree/docs/guides/extend/oauth/access-tokens), your server redirects the merchant to a URL that is captured by an[IntentFilter](https://developer.android.com/reference/android/content/IntentFilter)in your app",
+      "location": "Android OAuth sequence, third bullet, raw line 38"
+    },
+    {
+      "text": "Future versions of the Android SDK will require you to [verify your app's Intent Filters](https://developer.android.com/training/app-links/#request-verify).",
+      "location": "NOTE below Capture the return URL with an intent filter, raw line 94"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-extend-oauth-client-side-android-v5-source-link",
+        "target_path": "wiki/concepts/braintree-extend-oauth.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-oauth-client-side-android-v5]] - Android v5 client-side Connect route using a server-supplied URL, Android `Intent` and `IntentFilter`, with server-owned access-token creation and return redirect, production closed-beta and sandbox open-beta qualifications, a future Intent Filter verification note, and a dated Mobile SDK certificate/version warning",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat this only as a reciprocal source link for the approved coordinator-owned braintree-extend-oauth concept creation; do not create a second concept or duplicate the access-token worker's proposal.",
+          "Keep Braintree Extend OAuth distinct from Braintree Auth despite overlapping connected-merchant OAuth terminology and the Braintree Auth contact link on the page.",
+          "The availability, certificate date and SDK version statements are snapshot-qualified and do not establish current production access, certificate state or supported versions.",
+          "The Android manifest and IntentFilter are examples; the page's future-verification note does not prove callback authenticity or current App Links verification."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/oauth/client-side/android/v5-2026-09-16.md",
+  "raw_sha256": "9c47b6f8b9f5aaceb024dea1e80273b70caa98d2e1d1fa3e6708cb6bd5004b61",
+  "status": "candidate_ready"
+}

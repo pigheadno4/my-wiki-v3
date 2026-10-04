@@ -1,0 +1,52 @@
+{
+  "job_id": "extend-forward-api-transformations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Transformations\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/transformations\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/transformations-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, transformations, dsl]\n---\n\n## Overview\n\nThis collected Braintree Extend guide explains how a Forward API configuration uses ordered transformations and a small domain-specific language (DSL) to construct parts of an outbound destination request from payment-method data, caller values and intermediate variables. It documents request-construction semantics, not evidence that the destination authorized the merchant, accepted or processed the request, executed a payment, or settled funds. Production use of Forward API is subject to eligibility. See [[braintree]] and [[braintree-forward-api]].\n\n## Key takeaways\n\n- A config's `transformations` key controls where payment-method data is inserted into outbound forwarding requests. Transformations run in listed order, so later rules can use values produced for further transformation; the guide's PAN/CVV and authorization-header snippets are construction examples, not destination requirements or successful-request evidence.\n- Transformation paths target four base locations: `/body`, `/header`, `/urlparam` and `/var`. The first three build the destination body, headers and query string, while `/var` temporarily stores a transformation result for reuse. Nested body paths depend on the configured request format.\n- Hierarchical path output is content-type aware. The page shows JSON, XML and URL-encoded results, but says hierarchy is undefined for URL encoding; bracketed PHP-style field names must instead be written explicitly in the path.\n- Numeric path indices are zero-based for JSON-array elements or XML siblings. An index of `-1` appends to an array or sibling set; the page identifies variable-count payment-method forwarding as a primary use and routes the full example elsewhere.\n- In the DSL, JSON primitives generally evaluate to themselves, arrays represent function calls, and all arguments are evaluated before the function runs. Literal arrays therefore use the `array` function. Strings beginning with `$` resolve variables or parts of the outbound forwarding request.\n- The outermost transformation function must return a boolean, number, null or string. A transformation writing to a local variable is the exception and may return any type. Exact function signatures and variable behavior remain in their separate reference pages.\n\n> [!warning] Production eligibility is separate\n> The collected page states that production Forward API use is subject to eligibility. A configuration example, raw snapshot or sandbox capability does not establish production approval or current account enablement.\n\n> [!warning] Forwarding configuration is not payment or settlement proof\n> These transformations construct outbound request content. They do not establish destination-side merchant authority, credential validity, acceptance, payment authorization or capture, settlement, payout or funding. Destination-specific permissions and behavior require their own current authority and execution evidence.\n\n> [!warning] Treat transformed values as sensitive\n> The page demonstrates transformations involving PAN, CVV, usernames and passwords. It does not provide a complete secret-handling policy. Keep real credentials and payment data out of source, logs and evidence artifacts, and use the applicable destination and Braintree security requirements.\n\n## Detail locators\n\n- Production eligibility qualification and contact routes: `**AVAILABILITY**`, raw lines 16-17.\n- Ordered transformation semantics, config key and PAN/CVV encoding example: introduction below `# Transformations`, raw lines 19-27.\n- Four base paths, request-construction roles, temporary `/var` storage and request-format-dependent nested paths: `## Path`, raw lines 30-55.\n- Zero-based indices, JSON-array/XML-sibling examples and append index `-1`: `### Numerical indices`, raw lines 58-94.\n- Authorization-header construction example, function-array syntax, eager argument evaluation and literal-array rule: `## Functions`, raw lines 97-115.\n- `$` variable references and outermost return-type constraint, including the local-variable exception: `## Types`, raw lines 118-120.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n\n## Related raw API references\n\nThe following are navigation targets named by this page and were not read as factual evidence for this entry:\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Forward API overview]]\n- [[raw/braintree/docs/reference/forward-api/config-2026-09-16|Forward configuration reference]]\n- [[raw/braintree/docs/guides/extend/forward-api/cryptography-2026-09-16|Forward cryptography guide]]\n- [[raw/braintree/docs/guides/extend/forward-api/examples-2026-09-16|Forward API examples]]\n- [[raw/braintree/docs/reference/forward-api/functions-2026-09-16|Forward API function reference]]\n- [[raw/braintree/docs/reference/forward-api/variables-2026-09-16|Forward API variables reference]]\n- [[raw/braintree/docs/guides/extend/forward-api/tokenization-support-2026-09-16|Forward API tokenization-support guide]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/transformations-2026-09-16|Braintree Forward API transformations guide]] - fully read 2026-09-16 snapshot covering eligibility, paths, indices, DSL function evaluation and type constraints\n",
+  "quotes": [
+    {
+      "text": "**Use of the production**  [**Forward API**](/braintree/docs/reference/forward-api/overview/) **is subject to eligibility.**",
+      "location": "raw line 17 under **AVAILABILITY**"
+    },
+    {
+      "text": "Transformations are applied in the order they appear and may take advantage of a small domain-specific language (DSL) to programmatically modify request contents.",
+      "location": "raw line 19, introduction below # Transformations"
+    },
+    {
+      "text": "There are four valid base paths: \"/body\", \"/header\", \"/urlparam\", and \"/var\".",
+      "location": "raw line 32 under ## Path"
+    },
+    {
+      "text": "The DSL is strict, and all arguments are evaluated before the function is called.",
+      "location": "raw line 115 under ## Functions"
+    },
+    {
+      "text": "The outermost function in a transformation must return either a boolean, a number, null, or a string.",
+      "location": "raw line 120 under ## Types"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-forward-api-transformations-source-link",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-forward-api-transformations]] - collected Braintree Extend guide to ordered Forward API transformation paths, DSL evaluation and type constraints, with production-eligibility and destination-execution boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/transformations-2026-09-16.md",
+  "raw_sha256": "5327197255a952a641504e390ee54bfccf0c68c16898e177d76acf68da56f67d",
+  "status": "candidate_ready"
+}

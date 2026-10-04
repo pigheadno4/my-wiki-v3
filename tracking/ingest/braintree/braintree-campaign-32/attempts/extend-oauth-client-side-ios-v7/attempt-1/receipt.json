@@ -1,0 +1,54 @@
+{
+  "job_id": "extend-oauth-client-side-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Extend OAuth Client-side Connect Flow for iOS v7\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/oauth/client-side/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/extend/oauth/client-side/ios/v7-2026-09-16.md\"\ntags: [braintree, oauth, ios, connect, client-side]\n---\n\n## Overview\n\nThis collected [[braintree]] page is an iOS v7 client-side OAuth Connect guide under the site's `extend/oauth` route. It sends a merchant from an app to Braintree-hosted authorization, leaves access-token creation on the platform server, and returns the merchant to the app through a custom URL scheme. The snapshot says OAuth was closed beta in production and open beta in sandbox. The route and OAuth terminology do not by themselves establish that this is the Braintree Extend payment-data-sharing product; [[braintree-payment-platform]] preserves the provider's separate Direct, Extend and Auth orientations, while [[braintree-auth]] owns the connected-merchant OAuth model.\n\n## Key takeaways\n\n- The iOS-specific sequence recommends presenting Braintree authorization in `SFSafariViewController`. After merchant authorization and server-side access-token creation, the server redirects the merchant to a custom URL captured by the app.\n- The supplied Connect button is described as sending merchants to Braintree to log in and agree to requested OAuth scopes. The button assets, Safari controller, notification observer, `CFBundleURLTypes`, and application-delegate handler are implementation examples, not evidence of a completed authorization, a usable token, or payment acceptance.\n- The guide prose says the application-delegate function will ensure that the custom URL comes from a trusted source, but the displayed function only posts the received URL and returns `true`; it does not visibly validate `url` or `sourceApplication`. Do not infer callback authenticity from the sample.\n- The page explicitly warns against putting sensitive information in the custom return URL because multiple iOS apps can intercept custom URL schemes.\n- A historical notice says Braintree Mobile SDK certificates were set to expire on March 30, 2026 and warns that affected older app versions would lose all customer traffic after that date. Its remediation sentence is malformed but names iOS SDK 6.17.0+; retain it as dated snapshot guidance, not proof of current SDK support, certificate state, or account eligibility.\n\n## Detail locators\n\n- Production closed-beta and sandbox open-beta availability: raw lines 17-18.\n- Historical Mobile SDK certificate notice and iOS 6.17.0+ wording: raw lines 21-22.\n- iOS OAuth sequence and client/server responsibility split: `iOS OAuth sequence`, raw lines 25-32.\n- Connect button purpose, assets and view-controller setup: `Display the button`, raw lines 35-43.\n- `SFSafariViewController` example using a server-provided Connect URL: `Send the merchant to Braintree`, raw lines 46-72.\n- Notification observer and Safari dismissal example: `Prepare for the merchant to return`, raw lines 74-110.\n- Custom-scheme configuration, application-delegate example and prose/code trust-validation conflict: `Capture the custom URL`, raw lines 112-151.\n- Sensitive-data interception warning and return-event completion statement: raw lines 153-156.\n\n## Related\n\n- [[braintree]] - provider overview.\n- [[braintree-auth]] - existing provider-specific connected-merchant OAuth hub.\n- [[braintree-payment-platform]] - separate Direct, Extend and Auth product-orientation boundary.\n\n## Related raw API references\n\nThe following are unread navigation targets named by this page; they are not evidence for claims above.\n\n- [[raw/braintree/docs/guides/extend/oauth/overview-2026-09-16|Extend OAuth overview (collected 2026-09-16)]]\n- [[raw/braintree/docs/guides/extend/oauth/access-tokens/node-2026-09-16|Extend OAuth access tokens for Node (collected 2026-09-16)]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/oauth/client-side/ios/v7-2026-09-16|Braintree Extend OAuth client-side Connect flow for iOS v7 (collected 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "OAuth is in closed beta in production, and open beta in sandbox. [Contact us](https://www.braintreepayments.com/products/braintree-auth#contact) to express interest in the production beta release.",
+      "location": "raw line 18, immediately below AVAILABILITY"
+    },
+    {
+      "text": "While the high-level OAuth sequence on the [Overview](/braintree/docs/guides/extend/oauth/overview) still holds true, we recommend this iOS-specific client-side flow, which avoids exposing your client_secret :",
+      "location": "iOS OAuth sequence, raw line 27"
+    },
+    {
+      "text": "After the merchant has authorized and your server has created an[access token](/braintree/docs/guides/extend/oauth/access-tokens), your server redirects the merchant to a URL that is captured by a[custom URL scheme](https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Inter-AppCommunication/Inter-AppCommunication.html#//apple_ref/doc/uid/TP40007072-CH6-SW1)in your app",
+      "location": "iOS OAuth sequence, third bullet, raw line 32"
+    },
+    {
+      "text": "Define a function to handle the custom URL in your AppDelegate that will ensure the URL is from a trusted source and broadcast an event to our view:",
+      "location": "Capture the custom URL > Application delegate, raw line 141"
+    },
+    {
+      "text": "Your server should not send sensitive information to the client via the custom URL, since multiple iOS apps are able to intercept custom URL schemes.",
+      "location": "IMPORTANT below the application-delegate example, raw line 154"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-extend-oauth-client-side-ios-v7-auth-link",
+        "target_path": "wiki/concepts/braintree-auth.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-oauth-client-side-ios-v7]] - iOS v7 OAuth Connect route under the site's Extend path, with production closed-beta and sandbox open-beta qualifications, server-created access-token return, custom-scheme interception risk and a dated Mobile SDK certificate notice; the route name alone does not identify the Braintree Extend payment-data-sharing product",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep this source distinct from the already retained braintree-auth/client-side iOS snapshot: their paths and availability wording differ even though their app/server sequence substantially overlaps.",
+          "Do not create or duplicate an Extend OAuth or access-token concept from this worker suggestion; the assigned access-token worker owns any genuine new-concept gap assessment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/oauth/client-side/ios/v7-2026-09-16.md",
+  "raw_sha256": "56c3e27340609cde095ba1f9fbc3cdfb9704f1773a60ef6f536f88f880a03568",
+  "status": "candidate_ready"
+}

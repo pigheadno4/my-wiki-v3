@@ -1,0 +1,56 @@
+{
+  "job_id": "extend-forward-api-hyperwallet",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Hyperwallet Integration\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/hyperwallet\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/hyperwallet-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, hyperwallet, bank-cards]\n---\n\n## Overview\n\nThis collected Braintree developer guide documents a Forward API destination integration for sending payment-method data to Hyperwallet's Bank Card Create and Bank Card Update API routes. It is a Braintree-hosted guide for configuring and testing forwarding, not Hyperwallet-owned API authority and not proof that a card was tokenized, a payout was initiated or completed, or a customer payment was executed.\n\nThe snapshot was collected on 2026-09-16. It preserves the guide's environment mapping, request examples, prerequisites and troubleshooting notes, but does not establish current production eligibility, account enablement, successful API execution or present Hyperwallet behavior.\n\n## Key takeaways\n\n- The guide says production Forward API use is subject to eligibility and directs readers to an Account Manager or Business Development. Collection of this page and sandbox access do not establish production approval.\n- The documented environment mapping uses `hyperwallet_sandbox` for Braintree Sandbox to Hyperwallet Sandbox, and `hyperwallet_integration` for both Braintree Sandbox to Hyperwallet UAT and Braintree Production to Hyperwallet Production. The destination URL must also match the environment and configured URL pattern.\n- Before the sandbox example, the page directs the reader to create a Hyperwallet sandbox account and user, obtain the returned user token, and use the Hyperwallet API username and API password from the credentials flow. The example separately authenticates to the Braintree sandbox forwarding endpoint with Braintree public/private keys and places the Hyperwallet username, password and card data under `sensitive_data`; these values are credentials or sensitive payment data, not reusable sample configuration.\n- The create and update examples send a Braintree `payment_method_nonce` to the Forward API and target Hyperwallet REST v4 bank-card URLs with `POST` and `PUT`, respectively. These are example forwarding requests. They do not establish that Forward API creates a Braintree Vault token, runs a Hyperwallet payout, or executes a customer payment.\n- Hyperwallet sandbox accepts only a limited set of card numbers according to the page. The examples therefore override the card number with a literal `sensitive_data.number`; for a normal request, the guide says to omit that attribute so the number comes from the nonce. The displayed numbers and CVV are test values only.\n- For UAT, the page says to work with the onboarding helper for nonce-tokens representing vaulted debit cards that Forward API loads and sends to Hyperwallet. Its troubleshooting guidance also calls out the required trailing slash for bank-card collection URLs, the correct REST version, an environment-appropriate URL, and a non-US `transferMethodCountry` error condition.\n\n> [!warning] Production eligibility is separate\n> The collected page states that production Forward API use is subject to eligibility. Confirm current approval, configuration and environment alignment with Braintree before production use; a successful sandbox request would not establish production access.\n\n> [!warning] Forwarding is not tokenization, payout or payment execution\n> This guide uses a Braintree payment-method nonce as input to forwarding requests that create or update a Hyperwallet bank-card resource. It does not document creation of a new Braintree payment-method token, payout initiation or completion, customer-payment authorization or capture, settlement, or funding. Hyperwallet API behavior remains under Hyperwallet's own current authority.\n\n> [!warning] Protect both credential sets and payment data\n> The examples contain placeholders for Braintree keys, a merchant ID, a Hyperwallet user token, Hyperwallet API credentials, and sensitive card fields. Keep real values out of source, logs and evidence artifacts, and do not copy the literal sandbox test card values into production requests.\n\n## Detail locators\n\n- Production eligibility qualification and contact routes: `**AVAILABILITY**`, raw lines 17-18.\n- Destination identity and Bank Card Create/Update scope: introduction below `# Hyperwallet Integration`, raw line 20.\n- Braintree-to-Hyperwallet environment and config-name mapping: `## Naming & Environment Alignment`, raw lines 23-29.\n- Sandbox-account, user-token and Hyperwallet API-credential prerequisites: `## Example`, raw lines 32-37.\n- Sandbox create request, Braintree authentication, forwarding fields, destination URL and sensitive-data placement: `Example create request (sandbox)`, raw lines 39-67.\n- Example Hyperwallet bank-card response body: `Response Body`, raw lines 68-94.\n- Update-token prerequisite and example `PUT` forwarding request: `Example update request`, raw lines 95-120.\n- Sandbox literal-number override, normal nonce-number behavior and test-value list: notes after the update example, raw lines 122-131.\n- URL-regex failure, trailing-slash/version/environment guidance and country-related error: `## Common Issues`, raw lines 136-160.\n- Hyperwallet test-value distinction and UAT onboarding-helper nonce-token prerequisite: final paragraph under `## Common Issues`, raw line 169.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Braintree Forward API overview]] - linked navigation-only destination for the production-eligibility route and general Forward API reference; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/hyperwallet-2026-09-16|Braintree Forward API Hyperwallet integration guide]] - complete collected destination guide covering eligibility, environment mapping, sandbox prerequisites, create/update examples, nonce-versus-literal test-card handling, UAT onboarding and common issues\n",
+  "quotes": [
+    {
+      "text": " **Use of the production** [**Forward API**](/braintree/docs/reference/forward-api/overview/) **is subject to eligibility.** Contact your Account Manager for more information or [submit an inquiry to our Business Development team](https://www.braintreepayments.com/products/braintree-extend#contact) .",
+      "location": "raw line 18 under **AVAILABILITY**"
+    },
+    {
+      "text": "Hyperwallet provides an [API](https://docs.hyperwallet.com/content/api/v4/overview/accessing-the-api) that you can use to interact with their service. The Forward API can be used to interact with the [Bank Card Create](https://docs.hyperwallet.com/content/api/v4/resources/bank-cards/create) and [Bank Card Update](https://docs.hyperwallet.com/content/api/v4/resources/bank-cards/update) parts of this API.",
+      "location": "raw line 20 below # Hyperwallet Integration"
+    },
+    {
+      "text": "| Braintree Env | Hyperwallet Env | Config Name |\n| --- | --- | --- |\n| Sandbox | Sandbox | hyperwallet_sandbox |\n| Sandbox | UAT | hyperwallet_integration |\n| Production | Production | hyperwallet_integration |",
+      "location": "raw lines 25-29 under ## Naming & Environment Alignment"
+    },
+    {
+      "text": "For testing in sandbox, Hyperwallet only accepts a limited set of card numbers. As such, even though in a normal request the card number will come from the payment_method_nonce , for this example we are overwriting that with a literal using the number attribute of sensitive_data . To use the account number of the nonce, as in a normal request, omit the number attribute from sensitive_data .",
+      "location": "raw line 123 in the note after the update example"
+    },
+    {
+      "text": "Hyperwallet does not accept the traditional [test values](/braintree/docs/reference/general/testing#payment-method-nonces) Braintree has setup for **`payment_method_nonce`**. For sandbox, you can use the test values noted earlier in this document. For UAT, you need to work with your onboarding helper to receive nonce-tokens that represent vaulted debit cards that are then loaded by Forward API and sent to Hyperwallet.",
+      "location": "raw line 169 under ## Common Issues"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "extend-forward-api-hyperwallet-payment-platform-source-route",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-forward-api-hyperwallet]] - 2026-09-16 Braintree-hosted Forward API destination guide for Hyperwallet Bank Card Create/Update forwarding, with environment, eligibility and test-data qualifications; not Hyperwallet API authority or evidence of tokenization, payout or payment execution",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a reciprocal source route under the existing payment-platform concept; a dedicated Forward API concept may be proposed elsewhere, but this worker must not duplicate one here.",
+          "Preserve the Braintree-hosted destination-guide boundary: linked Hyperwallet pages were not read and remain the authority for current Hyperwallet API behavior.",
+          "Do not conflate forwarding a nonce-derived account number with Braintree token creation, Hyperwallet payout execution or customer-payment processing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/hyperwallet-2026-09-16.md",
+  "raw_sha256": "917a63366e1392dd29606973ce05af139c9ff39002732c34d62e70980e785f0d",
+  "status": "candidate_ready"
+}

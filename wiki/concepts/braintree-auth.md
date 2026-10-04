@@ -24,6 +24,7 @@ Keep Braintree Auth distinct from generic transaction authorization, Braintree D
 The reference routes new-account field pre-population, existing-merchant-only login, OAuth scope selection, the redirect-returned `merchantId`, and an intermediary-server pattern for downloadable software. It says platform `client_id` and `client_secret` values must remain secret and explicitly warns that its worked `state` example is insecure, directing implementers to the server-side guide for safe handling. Its OAuth prose says three additional scopes while the rendered table contains four entries; preserve that source inconsistency rather than inferring a corrected count. Exact fields, scope meanings, validation errors and the worked redirect sequence remain in the raw reference. [[source-braintree-auth-reference-node]]
 
 ## Sources
+- [[source-braintree-extend-oauth-client-side-ios-v7]] - iOS v7 OAuth Connect route under the site's Extend path, with production closed-beta and sandbox open-beta qualifications, server-created access-token return, custom-scheme interception risk and a dated Mobile SDK certificate notice; the route name alone does not identify the Braintree Extend payment-data-sharing product
 
 - [[source-braintree-auth-client-side-javascript-v3]] - closed-beta JavaScript v3 browser-side Connect-button route using `braintree-oauth-connect.js` and a server-generated `connect_url`, with parameter locators and a Finish Later denial-return boundary but no modal, parity, current-eligibility or payment-authorization inference
 

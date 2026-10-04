@@ -1,0 +1,49 @@
+{
+  "job_id": "extend-forward-api-stripe",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Forward API Stripe Destination Example\"\ntype: source\ndate_ingested: 2026-10-04\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/extend/forward-api/stripe\"\nraw_files:\n  - \"braintree/docs/guides/extend/forward-api/stripe-2026-09-16.md\"\ntags: [braintree, braintree-extend, forward-api, stripe, sandbox]\n---\n\n## Overview\n\nThis collected Braintree developer guide is a destination example for using Braintree Forward API configurations with Stripe API routes. It names Braintree configs for Stripe Payment Methods, Tokens and Charges. It is Braintree-hosted forwarding guidance, not Stripe-owned API authority, evidence of current Stripe capability, or proof that Stripe authorized a merchant, accepted a request, created a payment method or token, executed a charge, or completed a payment. See [[braintree]] and [[braintree-forward-api]].\n\nThe snapshot was collected on 2026-09-16. Its displayed request targets Braintree's sandbox forwarding endpoint and Stripe's `/v1/payment_methods` route. It documents example request construction, not current production availability, account approval, destination credentials or configuration, successful forwarding, tokenization, authorization, capture, settlement, or funding.\n\n## Key takeaways\n\n- The page states that production Forward API use is subject to eligibility and directs readers to an Account Manager or Business Development. Collection of the page and availability of a sandbox endpoint do not establish production approval or merchant enablement.\n- The page associates Stripe Payment Methods, Tokens and Charges routes with the Braintree config names `stripe_create_payment_method`, `stripe_create_token` and `stripe_create_charge`, respectively. Those are Braintree-documented destination config names; current Stripe API contracts, account eligibility and credential requirements require separate Stripe authority and account evidence.\n- The one displayed request posts to Braintree's sandbox forwarding endpoint, authenticates that forwarding call with Braintree public/private keys, includes a Braintree merchant ID and `payment_method_nonce`, selects `stripe_create_payment_method`, and targets `https://api.stripe.com/v1/payment_methods`. It is an example only and contains no destination response or lifecycle evidence.\n- The example also places illustrative card fields under `data`. The page does not establish that the example is a complete production credential, PCI, tokenization or payment workflow, and it does not show example calls for `stripe_create_token` or `stripe_create_charge`.\n- For additional non-mandatory destination fields, the guide points to the Forward API `override` attribute with a `body` containing a JSON or XML string. It warns that data sent through that path appears in Braintree logs and tells users not to send sensitive data or customer PII that way.\n\n> [!warning] Production eligibility and destination authority are separate\n> Braintree says production Forward API use is eligibility-gated. Confirm Braintree approval, the correct environment and forwarding configuration, and current Stripe API, account and credential requirements before relying on this route. This Braintree-hosted example is not official Stripe authority.\n\n> [!warning] Protect credentials, payment data and logged overrides\n> Keep real Braintree credentials, card data, destination credentials and private identifiers out of source and evidence artifacts. The guide specifically warns that override-body data appears in Braintree logs and should not contain sensitive data or customer PII.\n\n> [!warning] Config names and example requests are not payment proof\n> The snapshot names configs and contains a request example but no destination response or lifecycle evidence. It does not prove request acceptance, payment-method or token creation, charge authorization or capture, settlement, funding, or production readiness.\n\n## Detail locators\n\n- Production Forward API eligibility and contact routes: `**AVAILABILITY**`, raw lines 16-17.\n- Stripe API route and Braintree config-name associations for Payment Methods, Tokens and Charges: paragraph below `# Stripe`, raw line 19.\n- Braintree sandbox forwarding endpoint, Basic-auth environment variables, merchant ID, payment-method nonce, `stripe_create_payment_method`, Stripe destination URL and illustrative card fields: `## Usage` / `### bash`, raw lines 22-45.\n- Optional-field `override.body` guidance and JSON/XML string format: paragraph after the example, raw line 46.\n- Logging and sensitive-data/PII warning for the override path: `**NOTE**`, raw lines 47-48.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-forward-api]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/forward-api/overview-2026-09-16|Braintree Forward API overview]] - linked navigation-only route for general Forward API behavior and production eligibility; not read as factual evidence for this source\n- [[raw/braintree/docs/reference/forward-api/forward-2026-09-16|Braintree Forward API request reference]] - linked navigation-only route for `override` details; not read as factual evidence for this source\n\n## Linked destination references (navigation only)\n\n- [Stripe Payment Methods create reference](https://stripe.com/docs/api/payment_methods/create) - linked by the collected guide; not read as factual evidence here\n- [Stripe Tokens reference](https://stripe.com/docs/api/tokens) - linked by the collected guide; not read as factual evidence here\n- [Stripe Charges create reference](https://stripe.com/docs/api/charges/create) - linked by the collected guide; not read as factual evidence here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/extend/forward-api/stripe-2026-09-16|Braintree Forward API Stripe destination guide]] - complete collected guide covering production eligibility, three named Stripe destination configs, a sandbox Payment Methods request example, override-body guidance and the logging warning\n",
+  "quotes": [
+    {
+      "text": "**Use of the production** [Forward API](/braintree/docs/reference/forward-api/overview/) is subject to eligibility. Contact your Account Manager for more information or [submit an inquiry to our Business Development team](https://www.braintreepayments.com/products/braintree-extend#contact).",
+      "location": "**AVAILABILITY**, raw line 17"
+    },
+    {
+      "text": "The forward API can be used to interact with the following API's of Stripe   1. [Payment Methods](https://stripe.com/docs/api/payment_methods/create) using stripe_create_payment_method config   2. [Tokens](https://stripe.com/docs/api/tokens) using stripe_create_token config 3. [Charges](https://stripe.com/docs/api/charges/create) using stripe_create_charge config",
+      "location": "paragraph below # Stripe, raw line 19"
+    },
+    {
+      "text": "However, a user will likely send additional non-mandatory fields as part of their request. To do so, they should populate the override attribute with a body attribute, where the value of the body attribute is a JSON or XML string containing the optional attributes to be sent and their values. [Override Documentation](https://developer.paypal.com/braintree/docs/reference/forward-api/forward#override)",
+      "location": "paragraph after the bash example, raw line 46"
+    },
+    {
+      "text": "Any data sent to us this way appear in our logs. Users should refrain from sending us sensitive data and customer PII.",
+      "location": "**NOTE**, raw lines 47-48"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "concept-braintree-forward-api-source-stripe",
+        "target_path": "wiki/concepts/braintree-forward-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-extend-forward-api-stripe]] - 2026-09-16 Braintree-hosted destination guide naming Stripe Payment Methods, Tokens and Charges configs, with a sandbox Payment Methods request example, production eligibility and logged-override cautions; not Stripe API authority or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The source is Braintree-hosted guidance and must not be represented as current Stripe-owned API authority, merchant eligibility, successful tokenization, charge execution or payment proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/extend/forward-api/stripe-2026-09-16.md",
+  "raw_sha256": "7cd45ce4282096647df94abc450e774a31f38281f6ee56a30c9c0b3c7c33113a",
+  "status": "candidate_ready"
+}
