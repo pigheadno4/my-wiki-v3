@@ -1409,6 +1409,56 @@
   Release: [manifest](../../raw/github/braintree/braintree-android-drop-in/releases/drop-in/6.17.0/2026-08-13/manifest.json)
   Comparison: Not applicable
 
+## `github-65beae12907d62851f35`
+
+- Repository: `braintree/braintree_ios`
+- SHA: `09bc25a1564b0eb8c802d2ef396ec27ceaf9cd2f`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_ios/snapshots/2026-10-04-09bc25a/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_ios/ingest-packets/github-65beae12907d62851f35/packet.md)
+- Review priority: `normal`
+- Required reading: `20` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-ios@7.12.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.12.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_ios/comparisons/braintree-ios/7.11.0--7.12.0/comparison.json)
+
+## `github-66903af97b56083e7bcc`
+
+- Repository: `braintree/braintree_ios`
+- SHA: `020dfb7a7803ec3ce8b2df2a0f71e386a4bf84e3`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_ios/snapshots/2026-10-04-020dfb7/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_ios/ingest-packets/github-66903af97b56083e7bcc/packet.md)
+- Review priority: `normal`
+- Required reading: `25` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-ios@7.13.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.13.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_ios/comparisons/braintree-ios/7.12.0--7.13.0/comparison.json)
+
 ## `github-674c25ce833e37536ebc`
 
 - Repository: `braintree/popup-bridge-android`
@@ -1486,6 +1536,31 @@
 - `stripe-ios@26.12.1` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.12.1/2026-09-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.12.0--26.12.1/comparison.json)
+
+## `github-72f033218ff5ef2cfae0`
+
+- Repository: `braintree/braintree_ios`
+- SHA: `eb7f88e8e4ad03fcf79ce5e2926755f7934201d0`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_ios/snapshots/2026-10-04-eb7f88e/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_ios/ingest-packets/github-72f033218ff5ef2cfae0/packet.md)
+- Review priority: `high`
+- Required reading: `33` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-ios@7.10.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.10.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_ios/comparisons/braintree-ios/7.9.0--7.10.0/comparison.json)
 
 ## `github-745e3ef633e593f66922`
 
@@ -2410,6 +2485,31 @@
 - `braintree@3.39.0` (recommended `full`)
   Release: [manifest](../../raw/github/braintree/braintree_node/releases/braintree/3.39.0/2026-08-09/manifest.json)
   Comparison: Not applicable
+
+## `github-a67f34a9fcf4438cc133`
+
+- Repository: `braintree/braintree_ios`
+- SHA: `2a9aa1e20b1d066cb97c66af3e2ccd7f17e90fc0`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_ios/snapshots/2026-10-04-2a9aa1e/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_ios/ingest-packets/github-a67f34a9fcf4438cc133/packet.md)
+- Review priority: `normal`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-ios@7.11.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.11.0/2026-10-04/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_ios/comparisons/braintree-ios/7.10.0--7.11.0/comparison.json)
 
 ## `github-a7964cb187666bb0930f`
 

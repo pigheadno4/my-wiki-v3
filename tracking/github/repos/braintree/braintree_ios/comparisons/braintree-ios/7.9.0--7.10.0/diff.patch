@@ -1,0 +1,1534 @@
+diff --git a/Braintree.podspec b/Braintree.podspec
+index 5f796a1..1c24282 100644
+--- a/Braintree.podspec
++++ b/Braintree.podspec
+@@ -1,6 +1,6 @@
+ Pod::Spec.new do |s|
+   s.name             = "Braintree"
+-  s.version          = "7.9.0"
++  s.version          = "7.10.0"
+   s.summary          = "Braintree iOS SDK: Helps you accept card and alternative payments in your iOS app."
+   s.description      = <<-DESC
+                        Braintree is a full-stack payments platform for developers
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index eda8f17..e9a13f8 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,14 @@
+ # Braintree iOS SDK Release Notes
+ 
++## 7.10.0 (2026-08-27)
++* BraintreeShopperInsights
++  * Add `payPalCampaigns` to `BTCustomerSessionRequest` for customer session and recommendations requests so eligible PayPal campaign context can be recorded during the shopping journey.
++  * Add `expiresAt` as an optional ISO-8601 `String` to `BTCustomerRecommendationsResult` to expose the recommendation expiration timestamp.
++* BraintreePayPal
++  * Add `campaigns` to `BTPayPalCheckoutRequest` so eligible campaign context can be persisted during order creation and surfaced in the PayPal checkout experience.
++* BraintreeVenmo
++  * Fix `BTVenmoAccountNonce.externalID` returning `nil` after vaulting a Venmo account with a client token
++
+ ## 7.9.0 (2026-07-21)
+ * BraintreeUIComponents
+   * Fix minimum target version to iOS 16.0 to match all other modules
+diff --git a/Demo/Application/Base/PaymentButtonBaseViewController.swift b/Demo/Application/Base/PaymentButtonBaseViewController.swift
+index 63da4b1..7d8f9bb 100644
+--- a/Demo/Application/Base/PaymentButtonBaseViewController.swift
++++ b/Demo/Application/Base/PaymentButtonBaseViewController.swift
+@@ -6,7 +6,10 @@ class PaymentButtonBaseViewController: BaseViewController {
+     let authorization: String
+ 
+     var heightConstraint: CGFloat?
++    var usesIntrinsicContentHeight = false
+ 
++    private let scrollView = UIScrollView()
++    private let contentView = UIView()
+     private var paymentButton = UIView()
+ 
+     override init(authorization: String) {
+@@ -25,14 +28,63 @@ class PaymentButtonBaseViewController: BaseViewController {
+         view.backgroundColor = .systemBackground
+ 
+         paymentButton = createPaymentButton()
+-        view.addSubview(paymentButton)
+-
+-        NSLayoutConstraint.activate([
+-            paymentButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+-            paymentButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+-            paymentButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+-            paymentButton.heightAnchor.constraint(equalToConstant: heightConstraint ?? 100)
+-        ])
++        paymentButton.translatesAutoresizingMaskIntoConstraints = false
++
++        scrollView.keyboardDismissMode = .interactive
++        scrollView.translatesAutoresizingMaskIntoConstraints = false
++        contentView.translatesAutoresizingMaskIntoConstraints = false
++
++        contentView.addSubview(paymentButton)
++        scrollView.addSubview(contentView)
++        view.addSubview(scrollView)
++
++        let contentViewEqualHeightConstraint = contentView.heightAnchor.constraint(
++            equalTo: scrollView.frameLayoutGuide.heightAnchor
++        )
++        contentViewEqualHeightConstraint.priority = .defaultLow
++
++        let contentInset: CGFloat = usesIntrinsicContentHeight ? 10 : 20
++
++        let paymentButtonTopConstraint = paymentButton.topAnchor.constraint(
++            equalTo: contentView.topAnchor,
++            constant: contentInset
++        )
++        paymentButtonTopConstraint.priority = .defaultHigh
++
++        let paymentButtonBottomConstraint = paymentButton.bottomAnchor.constraint(
++            equalTo: contentView.bottomAnchor,
++            constant: -contentInset
++        )
++        paymentButtonBottomConstraint.priority = .defaultHigh
++
++        var constraints = [
++            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
++            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
++            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
++            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
++
++            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
++            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
++            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
++            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
++            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
++            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
++            contentViewEqualHeightConstraint,
++
++            paymentButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
++            paymentButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
++            paymentButton.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: contentInset),
++            paymentButton.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -contentInset),
++            paymentButtonTopConstraint,
++            paymentButtonBottomConstraint
++        ]
++
++        if !usesIntrinsicContentHeight {
++            constraints.append(paymentButton.heightAnchor.constraint(equalToConstant: heightConstraint ?? 100))
++            constraints.append(paymentButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor))
++        }
++
++        NSLayoutConstraint.activate(constraints)
+     }
+ 
+     /// A factory method that subclasses must implement to return a payment button view.
+diff --git a/Demo/Application/Features/ApplePayView.swift b/Demo/Application/Features/ApplePayView.swift
+new file mode 100644
+index 0000000..9084908
+--- /dev/null
++++ b/Demo/Application/Features/ApplePayView.swift
+@@ -0,0 +1,108 @@
++import SwiftUI
++import BraintreeApplePay
++import BraintreeCore
++import PassKit
++
++struct ApplePayView: View {
++
++    let applePayClient: BTApplePayClient
++    let onProgress: (String?) -> Void
++    let onComplete: (BTPaymentMethodNonce?) -> Void
++    let onPaymentRequestCreated: (PKPaymentRequest) -> Void
++
++    @State private var isApplePaySupported = false
++
++    // swiftlint:disable:next force_unwrapping
++    private let managementURL = URL(string: "https://www.merchant.com/update-payment")!
++
++    init(
++        client: BTApplePayClient,
++        onProgress: @escaping (String?) -> Void = { _ in },
++        onComplete: @escaping (BTPaymentMethodNonce?) -> Void = { _ in },
++        onPaymentRequestCreated: @escaping (PKPaymentRequest) -> Void = { _ in }
++    ) {
++        self.applePayClient = client
++        self.onProgress = onProgress
++        self.onComplete = onComplete
++        self.onPaymentRequestCreated = onPaymentRequestCreated
++    }
++
++    var body: some View {
++        VStack {
++            if isApplePaySupported {
++                PayWithApplePayButton(.plain) {
++                    Task {
++                        await requestApplePayPayment()
++                    }
++                }
++                .payWithApplePayButtonStyle(.automatic)
++                .frame(height: 50)
++                .padding(.horizontal)
++            }
++        }
++        .onAppear {
++            Task {
++                let isSupported = await applePayClient.isApplePaySupported()
++                if !isSupported {
++                    onProgress("canMakePayments returned false, hiding Apple Pay button")
++                }
++                isApplePaySupported = isSupported
++            }
++        }
++    }
++
++    private func requestApplePayPayment() async {
++        onProgress("Constructing PKPaymentRequest")
++
++        do {
++            let request = try await applePayClient.makePaymentRequest()
++            let paymentRequest = constructPaymentRequest(with: request)
++            paymentRequest.recurringPaymentRequest = recurringPaymentRequest()
++
++            onProgress("Presenting Apple Pay Sheet")
++            onPaymentRequestCreated(paymentRequest)
++        } catch {
++            onProgress(error.localizedDescription)
++        }
++    }
++
++    private func recurringPaymentRequest() -> PKRecurringPaymentRequest {
++        PKRecurringPaymentRequest(
++            paymentDescription: "Payment description.",
++            regularBilling: PKRecurringPaymentSummaryItem(label: "Payment label", amount: 10.99),
++            managementURL: managementURL
++        )
++    }
++
++    private func constructPaymentRequest(with paymentRequest: PKPaymentRequest) -> PKPaymentRequest {
++        paymentRequest.requiredBillingContactFields = [PKContactField.name]
++
++        let shippingMethod1 = PKShippingMethod(label: "✈️ Fast Shipping", amount: 4.99)
++        shippingMethod1.detail = "Fast but expensive"
++        shippingMethod1.identifier = "fast"
++
++        let shippingMethod2 = PKShippingMethod(label: "🐢 Slow Shipping", amount: 0.00)
++        shippingMethod2.detail = "Slow but free"
++        shippingMethod2.identifier = "slow"
++
++        let shippingMethod3 = PKShippingMethod(label: "💣 Unavailable Shipping", amount: NSDecimalNumber(string: "0xdeadbeef"))
++        shippingMethod3.detail = "It will make Apple Pay fail"
++        shippingMethod3.identifier = "fail"
++
++        paymentRequest.shippingMethods = [shippingMethod1, shippingMethod2, shippingMethod3]
++        paymentRequest.requiredShippingContactFields = [PKContactField.name, PKContactField.phoneNumber, PKContactField.emailAddress]
++
++        paymentRequest.paymentSummaryItems = [
++            PKPaymentSummaryItem(label: "SOME ITEM", amount: 10),
++            PKPaymentSummaryItem(label: "SHIPPING", amount: shippingMethod1.amount),
++            PKPaymentSummaryItem(label: "BRAINTREE", amount: 14.99)
++        ]
++
++        paymentRequest.merchantCapabilities = .capability3DS
++        return paymentRequest
++    }
++}
++
++#Preview {
++    ApplePayView(client: BTApplePayClient(authorization: ""))
++}
+diff --git a/Demo/Application/Features/ApplePayViewController.swift b/Demo/Application/Features/ApplePayViewController.swift
+index 8bef545..b10e79e 100644
+--- a/Demo/Application/Features/ApplePayViewController.swift
++++ b/Demo/Application/Features/ApplePayViewController.swift
+@@ -5,90 +5,38 @@ import PassKit
+ class ApplePayViewController: PaymentButtonBaseViewController {
+ 
+     lazy var applePayClient = BTApplePayClient(authorization: authorization)
+-    // swiftlint:disable:next force_unwrapping
+-    let managementURL = URL(string: "https://www.merchant.com/update-payment")!
+ 
+     override func viewDidLoad() {
+         super.viewDidLoad()
+ 
+         title = "Apple Pay"
+-    }
+ 
+-    override func createPaymentButton() -> UIView {
+-        applePayClient.isApplePaySupported { isSupported in
+-            if !isSupported {
+-                self.progressBlock("canMakePayments returned false, hiding Apple Pay button")
+-                return
+-            }
++        let demoView = ApplePayView(
++            client: applePayClient,
++            onProgress: progressBlock,
++            onComplete: completionBlock
++        ) { [weak self] paymentRequest in
++            self?.presentPaymentSheet(with: paymentRequest)
+         }
+ 
+-        let applePayButton = PKPaymentButton(paymentButtonType: .plain, paymentButtonStyle: .automatic)
+-        applePayButton.translatesAutoresizingMaskIntoConstraints = false
+-        applePayButton.addTarget(self, action: #selector(tappedApplePayButton), for: .touchUpInside)
+-
+-        NSLayoutConstraint.activate([applePayButton.heightAnchor.constraint(equalToConstant: 50)])
+-
+-        return applePayButton
+-    }
+-
+-    @objc func tappedApplePayButton() {
+-        progressBlock("Constructing PKPaymentRequest")
+-
+-        applePayClient.makePaymentRequest { request, error in
+-            guard let request else {
+-                self.progressBlock(error?.localizedDescription)
+-                return
+-            }
+-
+-            let paymentRequest = self.constructPaymentRequest(with: request)
+-            guard let paymentAuthorizationViewController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
+-                self.progressBlock("Could not create PKPaymentAuthorizationViewController")
+-                return
+-            }
+-            paymentAuthorizationViewController.delegate = self
+-
+-            paymentRequest.recurringPaymentRequest = self.recurringPaymentRequest()
+-
+-            self.progressBlock("Presenting Apple Pay Sheet")
+-            self.present(paymentAuthorizationViewController, animated: true)
+-        }
++        embed(demoView)
+     }
+ 
+-    private func recurringPaymentRequest() -> PKRecurringPaymentRequest {
+-        let recurringPaymentRequest = PKRecurringPaymentRequest(
+-            paymentDescription: "Payment description.",
+-            regularBilling: PKRecurringPaymentSummaryItem(label: "Payment label", amount: 10.99),
+-            managementURL: managementURL
+-        )
+-        return recurringPaymentRequest
++    // TODO: Remove or change createPaymentButton during full SwiftUI migration
++    // This is to suppress Constraint warnings when the payment button is not overriden. The actual Payment Button is within the SwiftUI view
++    override func createPaymentButton() -> UIView {
++        let placeholderView = UIView()
++        placeholderView.translatesAutoresizingMaskIntoConstraints = false
++        return placeholderView
+     }
+ 
+-    private func constructPaymentRequest(with paymentRequest: PKPaymentRequest) -> PKPaymentRequest {
+-        paymentRequest.requiredBillingContactFields = [PKContactField.name]
+-
+-        let shippingMethod1 = PKShippingMethod(label: "✈️ Fast Shipping", amount: 4.99)
+-        shippingMethod1.detail = "Fast but expensive"
+-        shippingMethod1.identifier = "fast"
+-
+-        let shippingMethod2 = PKShippingMethod(label: "🐢 Slow Shipping", amount: 0.00)
+-        shippingMethod2.detail = "Slow but free"
+-        shippingMethod2.identifier = "slow"
+-
+-        let shippingMethod3 = PKShippingMethod(label: "💣 Unavailable Shipping", amount: NSDecimalNumber(string: "0xdeadbeef"))
+-        shippingMethod3.detail = "It will make Apple Pay fail"
+-        shippingMethod3.identifier = "fail"
+-
+-        paymentRequest.shippingMethods = [shippingMethod1, shippingMethod2, shippingMethod3]
+-        paymentRequest.requiredShippingContactFields = [PKContactField.name, PKContactField.phoneNumber, PKContactField.emailAddress]
+-
+-        paymentRequest.paymentSummaryItems = [
+-            PKPaymentSummaryItem(label: "SOME ITEM", amount: 10),
+-            PKPaymentSummaryItem(label: "SHIPPING", amount: shippingMethod1.amount),
+-            PKPaymentSummaryItem(label: "BRAINTREE", amount: 14.99)
+-        ]
+-
+-        paymentRequest.merchantCapabilities = .capability3DS
+-        return paymentRequest
++    private func presentPaymentSheet(with paymentRequest: PKPaymentRequest) {
++        guard let paymentAuthorizationViewController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
++            progressBlock("Could not create PKPaymentAuthorizationViewController")
++            return
++        }
++        paymentAuthorizationViewController.delegate = self
++        present(paymentAuthorizationViewController, animated: true)
+     }
+ }
+ 
+diff --git a/Demo/Application/Features/CardTokenizationView.swift b/Demo/Application/Features/CardTokenizationView.swift
+new file mode 100644
+index 0000000..786ad98
+--- /dev/null
++++ b/Demo/Application/Features/CardTokenizationView.swift
+@@ -0,0 +1,114 @@
++import SwiftUI
++import BraintreeCore
++import BraintreeCard
++
++struct CardTokenizationView: View {
++    
++    let cardClient: BTCardClient
++    let onProgress: (String?) -> Void
++    let onComplete: (BTPaymentMethodNonce?) -> Void
++    
++    @State private var cardNumber = ""
++    @State private var expirationDate = ""
++    @State private var cvv = ""
++    @State private var postalCode = ""
++    @State private var phoneNumber = ""
++    @State private var fieldsEnabled = true
++    
++    init(
++        client: BTCardClient,
++        onProgress: @escaping (String?) -> Void = { _ in },
++        onComplete: @escaping (BTPaymentMethodNonce?) -> Void = { _ in }
++    ) {
++        self.cardClient = client
++        self.onProgress = onProgress
++        self.onComplete = onComplete
++    }
++    
++    var body: some View {
++        VStack(spacing: 10) {
++            CardFormView(
++                cardNumber: $cardNumber,
++                expirationDate: $expirationDate,
++                cvv: $cvv,
++                postalCode: $postalCode,
++                phoneNumber: $phoneNumber,
++                hidePostalCodeField: true,
++                hidePhoneNumberField: true,
++                fieldsEnabled: fieldsEnabled
++            )
++            
++            Button {
++                Task { await tappedSubmit() }
++            } label: {
++                Text("Submit")
++                    .font(.system(size: 17, weight: .semibold))
++                    .foregroundColor(.white)
++                    .frame(maxWidth: .infinity)
++                    .padding(.vertical, 12)
++            }
++            .background(fieldsEnabled ? Color.black : Color.black.opacity(0.3))
++            .clipShape(Capsule())
++            .disabled(!fieldsEnabled)
++            
++            Button {
++                tappedAutoFill()
++            } label: {
++                Text("Autofill")
++            }
++            .disabled(!fieldsEnabled)
++        }
++        .padding(.horizontal)
++    }
++    
++    private func tappedAutoFill() {
++        cardNumber = "4111111111111111"
++        cvv = "123"
++        expirationDate = CardHelpers.generateFuture(.date)
++    }
++    
++    private func tappedSubmit() async {
++        onProgress("Tokenizing Card Details")
++        
++        guard let card = makeCard() else {
++            onProgress("Fill in all the card fields.")
++            return
++        }
++        
++        fieldsEnabled = false
++        
++        cardClient.tokenize(card) { nonce, error in
++            fieldsEnabled = true
++            
++            guard let nonce else {
++                onProgress(error?.localizedDescription)
++                return
++            }
++            
++            onComplete(nonce)
++        }
++    }
++    
++    private func makeCard() -> BTCard? {
++        guard !cardNumber.isEmpty, !cvv.isEmpty else { return nil }
++        
++        let parts = expirationDate.split(separator: "/")
++        guard parts.count == 2,
++            let month = parts.first,
++            let year = parts.last,
++            !month.isEmpty, !year.isEmpty else {
++            return nil
++        }
++        
++        return BTCard(
++            number: cardNumber,
++            expirationMonth: String(month),
++            expirationYear: String(year),
++            cvv: cvv
++        )
++    }
++}
++
++#Preview {
++    CardTokenizationView(client: BTCardClient(authorization: "sandbox_tokenization_key"))
++}
+diff --git a/Demo/Application/Features/CardTokenizationViewController.swift b/Demo/Application/Features/CardTokenizationViewController.swift
+index bc7c325..7ce25ab 100644
+--- a/Demo/Application/Features/CardTokenizationViewController.swift
++++ b/Demo/Application/Features/CardTokenizationViewController.swift
+@@ -2,78 +2,25 @@ import UIKit
+ import BraintreeCard
+ 
+ class CardTokenizationViewController: PaymentButtonBaseViewController {
+-
+-    private let cardFormView = BTCardFormView()
+-    private var autofillButton = UIButton(type: .system)
+-
++    
+     override func viewDidLoad() {
+         super.viewDidLoad()
+-        createSubviews()
+-        layoutConstraints()
+-    }
+-
+-    override func createPaymentButton() -> UIView {
+-        let submitButton = createButton(title: "Submit", action: #selector(tappedSubmit))
+-        return submitButton
+-    }
+-
+-    @objc func tappedSubmit() {
+-        progressBlock("Tokenizing card details!")
+-
+-        guard let card = CardHelpers.newCard(from: cardFormView) else {
+-            progressBlock("Fill in all the card fields.")
+-            return
+-        }
++        
+         let cardClient = BTCardClient(authorization: authorization)
+-
+-        setFieldsEnabled(false)
+-        cardClient.tokenize(card) { nonce, error in
+-            self.setFieldsEnabled(true)
+-
+-            guard let nonce else {
+-                self.progressBlock(error?.localizedDescription)
+-                return
+-            }
+-
+-            self.completionBlock(nonce)
+-        }
++        let demoView = CardTokenizationView(
++            client: cardClient,
++            onProgress: progressBlock,
++            onComplete: completionBlock
++        )
++        embed(demoView)
+     }
+-
+-    @objc func tappedAutofill() {
+-        cardFormView.cardNumberTextField.text = "4111111111111111"
+-        cardFormView.cvvTextField.text = "123"
+-        cardFormView.expirationTextField.text = CardHelpers.generateFuture(.date)
+-    }
+-
+-    private func setFieldsEnabled(_ isEnabled: Bool) {
+-        cardFormView.cardNumberTextField.isEnabled = isEnabled
+-        cardFormView.expirationTextField.isEnabled = isEnabled
+-        cardFormView.cvvTextField.isEnabled = isEnabled
+-        autofillButton.isEnabled = isEnabled
+-    }
+-
+-    private func createSubviews() {
+-        cardFormView.translatesAutoresizingMaskIntoConstraints = false
+-        cardFormView.hidePhoneNumberField = true
+-        cardFormView.hidePostalCodeField = true
+-        setFieldsEnabled(true)
+-
+-        autofillButton = createButton(title: "Autofill", action: #selector(tappedAutofill))
+-
+-        view.addSubview(cardFormView)
+-        view.addSubview(autofillButton)
+-    }
+-
+-    private func layoutConstraints() {
+-        NSLayoutConstraint.activate([
+-            cardFormView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+-            cardFormView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+-            cardFormView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+-            cardFormView.heightAnchor.constraint(equalToConstant: 200),
+-
+-            autofillButton.topAnchor.constraint(equalTo: cardFormView.bottomAnchor, constant: 10),
+-            autofillButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+-            autofillButton.heightAnchor.constraint(equalToConstant: 30)
+-        ])
++    
++    // TODO: Remove or change createPaymentButton during full SwiftUI migration
++    // This is to suppress the Constraint warnings when the payment button is not overriden.
++    // The actual Payment Button is within the SwiftUI view.
++    override func createPaymentButton() -> UIView {
++        let placeholderView = UIView()
++        placeholderView.translatesAutoresizingMaskIntoConstraints = false
++        return placeholderView
+     }
+ }
+diff --git a/Demo/Application/Features/Helpers/CardFormView.swift b/Demo/Application/Features/Helpers/CardFormView.swift
+new file mode 100644
+index 0000000..76f87ab
+--- /dev/null
++++ b/Demo/Application/Features/Helpers/CardFormView.swift
+@@ -0,0 +1,79 @@
++import SwiftUI
++
++struct CardFormView: View {
++
++    @Binding var cardNumber: String
++    @Binding var expirationDate: String
++    @Binding var cvv: String
++    @Binding var postalCode: String
++    @Binding var phoneNumber: String
++
++    var hidePostalCodeField: Bool = false
++    var hidePhoneNumberField: Bool = false
++    var hideCVVField: Bool = false
++    var fieldsEnabled: Bool = true
++
++    private enum Field: Hashable {
++        case cardNumber, expirationDate, cvv, postalCode, phoneNumber
++    }
++
++    @FocusState private var focusedField: Field?
++
++    var body: some View {
++        VStack(spacing: 12) {
++            styledField("Card Number", text: $cardNumber, field: .cardNumber, keyboard: .numberPad)
++
++            HStack(spacing: 12) {
++                styledField("MM/YY", text: $expirationDate, field: .expirationDate, keyboard: .numberPad)
++
++                if !hideCVVField {
++                    styledField("CVV", text: $cvv, field: .cvv, keyboard: .numberPad)
++                }
++            }
++
++            if !hidePostalCodeField {
++                styledField("Postal Code", text: $postalCode, field: .postalCode, keyboard: .default)
++            }
++
++            if !hidePhoneNumberField {
++                styledField("Phone Number", text: $phoneNumber, field: .phoneNumber, keyboard: .phonePad)
++            }
++        }
++    }
++
++    @ViewBuilder
++    private func styledField(
++        _ placeholder: String,
++        text: Binding<String>,
++        field: Field,
++        keyboard: UIKeyboardType
++    ) -> some View {
++        TextField(placeholder, text: text)
++            .keyboardType(keyboard)
++            .disabled(!fieldsEnabled)
++            .focused($focusedField, equals: field)
++            .padding(.horizontal, 16)
++            .padding(.vertical, 14)
++            .background(Color(.systemBackground))
++            .clipShape(RoundedRectangle(cornerRadius: 12))
++            .overlay(
++                RoundedRectangle(cornerRadius: 12)
++                    .stroke(borderColor(for: field), lineWidth: 1)
++            )
++    }
++
++    private func borderColor(for field: Field) -> Color {
++        focusedField == field ? Color(.systemBlue) : Color(.systemGray4)
++    }
++}
++
++#Preview {
++    CardFormView(
++        cardNumber: .constant(""),
++        expirationDate: .constant(""),
++        cvv: .constant(""),
++        postalCode: .constant(""),
++        phoneNumber: .constant("")
++    )
++    .padding()
++}
+diff --git a/Demo/Application/Features/IdealView.swift b/Demo/Application/Features/IdealView.swift
+new file mode 100644
+index 0000000..c9d92e7
+--- /dev/null
++++ b/Demo/Application/Features/IdealView.swift
+@@ -0,0 +1,103 @@
++import SwiftUI
++import BraintreeCore
++import BraintreeLocalPayment
++
++struct IdealView: View {
++    
++    let localPaymentClient: BTLocalPaymentClient
++    let onProgress: (String?) -> Void
++    let onComplete: (BTPaymentMethodNonce?) -> Void
++    
++    @StateObject private var flowCoordinator = LocalPaymentFlowCoordinator()
++    
++    init(
++        client: BTLocalPaymentClient,
++        onProgress: @escaping (String?) -> Void = { _ in },
++        onComplete: @escaping (BTPaymentMethodNonce?) -> Void = { _ in }
++    ) {
++        self.localPaymentClient = client
++        self.onProgress = onProgress
++        self.onComplete = onComplete
++    }
++    
++    var body: some View {
++        VStack(spacing: 5) {
++            Button {
++                flowCoordinator.paymentID = nil
++                Task {
++                    await startPaymentWithBank()
++                }
++            } label: {
++                Text("Pay with iDEAL")
++                    .frame(maxWidth: .infinity)
++            }
++            .buttonStyle(.borderedProminent)
++            .buttonBorderShape(.capsule)
++            .controlSize(.large)
++            .padding(.horizontal)
++            
++            if let paymentID = flowCoordinator.paymentID {
++                Text("Local Payment ID: \(paymentID)")
++                    .font(.footnote)
++            }
++        }
++    }
++
++    private func startPaymentWithBank() async {
++        onProgress("Loading iDEAL Merchant Account...")
++        
++        let postalAddress = BTPostalAddress(
++            streetAddress: "836486 of 22321 Park Lake",
++            locality: "Den Haag",
++            countryCodeAlpha2: "NL",
++            postalCode: "2585 GJ"
++        )
++        
++        let request = BTLocalPaymentRequest(
++            paymentType: "ideal",
++            amount: "1.01",
++            currencyCode: "EUR",
++            paymentTypeCountryCode: "NL",
++            merchantAccountID: "altpay_eur",
++            address: postalAddress,
++            email: "lingo-buyer@paypal.com",
++            givenName: "Linh",
++            surname: "Ngo",
++            phone: "639847934"
++        )
++        
++        request.localPaymentFlowDelegate = flowCoordinator
++        
++        do {
++            let result = try await localPaymentClient.start(request)
++            onComplete(BTPaymentMethodNonce(nonce: result.nonce))
++        } catch {
++            if error as? BTLocalPaymentError == .canceled("") {
++                onProgress("Canceled 🎲")
++            } else {
++                onProgress("Error: \(error.localizedDescription)")
++            }
++        }
++    }
++}
++
++
++final class LocalPaymentFlowCoordinator: NSObject, ObservableObject, BTLocalPaymentRequestDelegate {
++    
++    @Published var paymentID: String?
++
++    nonisolated func localPaymentStarted(
++        _ request: BTLocalPaymentRequest,
++        paymentID: String,
++        start: @escaping () -> Void
++    ) {
++        Task { @MainActor in
++            self.paymentID = paymentID
++        }
++        start()
++    }
++}
++
++#Preview {
++    IdealView(client: BTLocalPaymentClient(authorization: "sandbox_d54x7ckf_hh4cpc39zq4rgjcg"))
++}
+diff --git a/Demo/Application/Features/IdealViewController.swift b/Demo/Application/Features/IdealViewController.swift
+index fd05921..7386195 100644
+--- a/Demo/Application/Features/IdealViewController.swift
++++ b/Demo/Application/Features/IdealViewController.swift
+@@ -4,98 +4,23 @@ import BraintreeCore
+ 
+ class IdealViewController: PaymentButtonBaseViewController {
+ 
+-    // swiftlint:disable:next implicitly_unwrapped_optional
+-    var localPaymentClient: BTLocalPaymentClient!
+-    var paymentIDLabel = UILabel()
+-
+     override func viewDidLoad() {
+         super.viewDidLoad()
+-
+-        progressBlock("Loading iDEAL Merchant Account...")
+-        progressBlock("Ready!")
+         title = "iDEAL"
+-    }
+-
+-    override func createPaymentButton() -> UIView {
+-        let iDEALButton = createButton(title: "Pay with iDEAL", action: #selector(tappedIDEAL))
+-        let label = UILabel()
+-        label.numberOfLines = 0
+-        label.translatesAutoresizingMaskIntoConstraints = false
+-
+-        self.paymentIDLabel = label
+-
+-        let stackView = UIStackView(arrangedSubviews: [iDEALButton, label])
+-        stackView.axis = .vertical
+-        stackView.spacing = 5
+-        stackView.alignment = .center
+-        stackView.translatesAutoresizingMaskIntoConstraints = false
+-
+-        NSLayoutConstraint.activate([
+-            iDEALButton.topAnchor.constraint(equalTo: stackView.topAnchor),
+-            iDEALButton.heightAnchor.constraint(equalToConstant: 19.5),
+-
+-            label.topAnchor.constraint(equalTo: iDEALButton.bottomAnchor, constant: 5),
+-            label.heightAnchor.constraint(equalToConstant: 19.5)
+-        ])
+-
+-        return stackView
+-    }
+-
+-    @objc func tappedIDEAL() {
+-        paymentIDLabel.text = nil
+-        startPaymentWithBank()
+-    }
+-
+-    private func startPaymentWithBank() {
+-        localPaymentClient = BTLocalPaymentClient(authorization: "sandbox_f252zhq7_hh4cpc39zq4rgjcg")
+-
+-        let postalAddress = BTPostalAddress(
+-            streetAddress: "836486 of 22321 Park Lake",
+-            locality: "Den Haag",
+-            countryCodeAlpha2: "NL",
+-            postalCode: "2585 GJ"
+-        )
+         
+-        let request = BTLocalPaymentRequest(
+-            paymentType: "ideal",
+-            amount: "1.01",
+-            currencyCode: "EUR",
+-            paymentTypeCountryCode: "NL",
+-            merchantAccountID: "altpay_eur",
+-            address: postalAddress,
+-            email: "lingo-buyer@paypal.com",
+-            givenName: "Linh",
+-            surname: "Ngo",
+-            phone: "639847934"
++        let demoView = IdealView(
++            client: BTLocalPaymentClient(authorization: "sandbox_d54x7ckf_hh4cpc39zq4rgjcg"),
++            onProgress: progressBlock,
++            onComplete: completionBlock
+         )
+-        request.localPaymentFlowDelegate = self
+-
+-        localPaymentClient.start(request) { result, error in
+-            guard let result else {
+-                if error as? BTLocalPaymentError == .canceled("") {
+-                    self.progressBlock("Canceled 🎲")
+-                } else {
+-                    self.progressBlock("Error: \(error?.localizedDescription ?? "")")
+-                }
+-                return
+-            }
+-
+-            let nonce = BTPaymentMethodNonce(nonce: result.nonce)
+-            self.completionBlock(nonce)
+-        }
++        embed(demoView)
+     }
+-}
+-
+-// MARK: - BTLocalPaymentRequestDelegate Conformance
+ 
+-extension IdealViewController: BTLocalPaymentRequestDelegate {
+-
+-    func localPaymentStarted(
+-        _ request: BraintreeLocalPayment.BTLocalPaymentRequest,
+-        paymentID: String,
+-        start: @escaping () -> Void
+-    ) {
+-        paymentIDLabel.text = "LocalPayment ID: \(paymentID)"
+-        start()
++    // TODO: Remove or change createPaymentButton during full SwiftUI migration
++    // This is to suppress Constraint warnings when the payment button is not overridden. The actual Payment Button is within the SwiftUI view
++    override func createPaymentButton() -> UIView {
++        let placeholderView = UIView()
++        placeholderView.translatesAutoresizingMaskIntoConstraints = false
++        return placeholderView
+     }
+ }
+diff --git a/Demo/Application/Features/PayPalWebCheckoutViewController.swift b/Demo/Application/Features/PayPalWebCheckoutViewController.swift
+index 7bef861..aeef943 100644
+--- a/Demo/Application/Features/PayPalWebCheckoutViewController.swift
++++ b/Demo/Application/Features/PayPalWebCheckoutViewController.swift
+@@ -74,6 +74,39 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+         stackView.distribution = .fillEqually
+         return stackView
+     }()
++
++    lazy var payPalCampaignsLabel: UILabel = {
++        let label = UILabel()
++        label.text = "PayPal Campaigns:"
++        return label
++    }()
++
++    lazy var payPalCampaignsTextField: UITextField = {
++        let textField = UITextField()
++        textField.placeholder = "campaign-123-id"
++        textField.textAlignment = .right
++        textField.backgroundColor = .systemBackground
++        return textField
++    }()
++
++    lazy var payPalCampaignsStackView: UIStackView = {
++        let stackView = UIStackView(arrangedSubviews: [payPalCampaignsLabel, payPalCampaignsTextField])
++        stackView.distribution = .fillEqually
++        return stackView
++    }()
++
++    lazy var customerInfoStackView: UIStackView = {
++        let stackView = UIStackView(arrangedSubviews: [
++            emailStackView,
++            countryCodeStackView,
++            nationalNumberStackView,
++            payPalCampaignsStackView
++        ])
++        stackView.axis = .vertical
++        stackView.distribution = .fill
++        stackView.spacing = 8
++        return stackView
++    }()
+     
+     let rbaDataToggle = Toggle(title: "Recurring Billing (RBA) Data")
+     let contactInformationToggle = Toggle(title: "Add Contact Information")
+@@ -81,7 +114,7 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+     let requestBillingAgreementToggle = Toggle(title: "Request Billing Agreement")
+ 
+     override func viewDidLoad() {
+-        super.heightConstraint = 500
++        super.usesIntrinsicContentHeight = true
+         super.viewDidLoad()
+     }
+ 
+@@ -129,9 +162,7 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+         vaultStackView.spacing = 12
+ 
+         let stackView = UIStackView(arrangedSubviews: [
+-            emailStackView,
+-            countryCodeStackView,
+-            nationalNumberStackView,
++            customerInfoStackView,
+             oneTimeCheckoutStackView,
+             vaultStackView
+         ])
+@@ -187,7 +218,8 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+             userPhoneNumber: BTPayPalPhoneNumber(
+                 countryCode: countryCodeTextField.text ?? "",
+                 nationalNumber: nationalNumberTextField.text ?? ""
+-            )
++            ),
++            campaigns: payPalCampaigns
+         )
+ 
+         if amountBreakdownToggle.isOn {
+@@ -231,7 +263,8 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+                 merchantAccountID: "quantumleapsandboxtesting-1",
+                 recurringBillingDetails: recurringBillingDetails,
+                 recurringBillingPlanType: .subscription,
+-                requestBillingAgreement: true
++                requestBillingAgreement: true,
++                campaigns: payPalCampaigns
+             )
+         }
+ 
+@@ -315,7 +348,8 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+             amount: amount,
+             enablePayPalAppSwitch: true,
+             userAuthenticationEmail: emailTextField.text,
+-            userAction: .payNow
++            userAction: .payNow,
++            campaigns: payPalCampaigns
+         )
+ 
+         payPalClient.tokenize(request) { nonce, error in
+@@ -339,7 +373,8 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+             enablePayPalAppSwitch: true,
+             userAuthenticationEmail: emailTextField.text,
+             userAction: .payNow,
+-            offerCredit: true
++            offerCredit: true,
++            campaigns: payPalCampaigns
+         )
+ 
+         payPalClient.tokenize(request) { nonce, error in
+@@ -385,7 +420,8 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+             enablePayPalAppSwitch: true,
+             userAuthenticationEmail: emailTextField.text,
+             userAction: .payNow,
+-            offerPayLater: true
++            offerPayLater: true,
++            campaigns: payPalCampaigns
+         )
+ 
+         payPalClient.tokenize(request) { nonce, error in
+@@ -399,4 +435,12 @@ class PayPalWebCheckoutViewController: PaymentButtonBaseViewController {
+             self.completionBlock(nonce)
+         }
+     }
++
++    private var payPalCampaigns: [BTPayPalCampaign] {
++        payPalCampaignsTextField.text?
++            .split(separator: ",")
++            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
++            .filter { !$0.isEmpty }
++            .map { BTPayPalCampaign(id: $0) } ?? []
++    }
+ }
+diff --git a/Demo/Application/Features/ShopperInsightsViewControllerV2.swift b/Demo/Application/Features/ShopperInsightsViewControllerV2.swift
+index a36a0c6..f42bf17 100644
+--- a/Demo/Application/Features/ShopperInsightsViewControllerV2.swift
++++ b/Demo/Application/Features/ShopperInsightsViewControllerV2.swift
+@@ -15,12 +15,12 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+         // swiftlint:disable:next force_unwrapping
+         universalLink: URL(string: "https://mobile-sdk-demo-site-838cead5d3ab.herokuapp.com/braintree-payments")!
+     )
+-    
++
+     lazy var payPalVaultButton = createButton(title: "PayPal Vault", action: #selector(payPalVaultButtonTapped))
+     lazy var venmoButton = createButton(title: "Venmo", action: #selector(venmoButtonTapped))
+-    
++
+     lazy var paymentOptions: [BTPaymentOptions]? = nil
+-    
++
+     lazy var emailView: TextFieldWithLabel = {
+         let view = TextFieldWithLabel()
+         view.label.text = "Email"
+@@ -28,7 +28,7 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+         view.textField.text = "sandbox1@pp.com"
+         return view
+     }()
+-    
++
+     lazy var countryCodeView: TextFieldWithLabel = {
+         let view = TextFieldWithLabel()
+         view.label.text = "Country Code"
+@@ -36,7 +36,7 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+         view.textField.text = "1"
+         return view
+     }()
+-    
++
+     lazy var nationalNumberView: TextFieldWithLabel = {
+         let view = TextFieldWithLabel()
+         view.label.text = "National Number"
+@@ -44,7 +44,7 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+         view.textField.text = "4085005005"
+         return view
+     }()
+-    
++
+     lazy var sessionIDView: TextFieldWithLabel = {
+         let view = TextFieldWithLabel()
+         view.label.text = "SessionID"
+@@ -52,6 +52,13 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+         view.textField.text = "94f0b2db-5323-4d86-add3-paypalmsg000"
+         return view
+     }()
++
++    lazy var payPalCampaignsView: TextFieldWithLabel = {
++        let view = TextFieldWithLabel()
++        view.label.text = "PayPal Campaigns"
++        view.textField.placeholder = "campaign-123-id"
++        return view
++    }()
+     
+     private let recommendationsLabel: UILabel = {
+         let label = UILabel()
+@@ -79,10 +86,21 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+     )
+     
+     lazy var shopperInsightsInputView: UIStackView = {
+-        let stackView = UIStackView(arrangedSubviews: [emailView, countryCodeView, nationalNumberView, sessionIDView])
++        let inputViews = [
++            emailView,
++            countryCodeView,
++            nationalNumberView,
++            sessionIDView,
++            payPalCampaignsView
++        ]
++        inputViews.forEach {
++            $0.heightAnchor.constraint(equalToConstant: 48).isActive = true
++        }
++
++        let stackView = UIStackView(arrangedSubviews: inputViews)
+         stackView.axis = .vertical
+         stackView.spacing = 10
+-        stackView.distribution = .fillEqually
++        stackView.distribution = .fill
+         stackView.translatesAutoresizingMaskIntoConstraints = false
+         return stackView
+     }()
+@@ -98,25 +116,38 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+         ]
+         payPalVaultButton.isEnabled = false
+         venmoButton.isEnabled = false
++        buttons.forEach {
++            $0.heightAnchor.constraint(equalToConstant: 44).isActive = true
++        }
+ 
+         let stackView = UIStackView(arrangedSubviews: buttons)
+         stackView.axis = .vertical
+-        stackView.alignment = .center
+-        stackView.distribution = .fillEqually
++        stackView.alignment = .fill
++        stackView.distribution = .fill
++        stackView.spacing = 8
++        stackView.translatesAutoresizingMaskIntoConstraints = false
++        return stackView
++    }()
++
++    private lazy var contentStackView: UIStackView = {
++        let stackView = UIStackView(arrangedSubviews: [
++            shopperInsightsInputView,
++            paymentButtonsStackView,
++            recommendationsLabel
++        ])
++        stackView.axis = .vertical
++        stackView.spacing = 20
+         stackView.translatesAutoresizingMaskIntoConstraints = false
+         return stackView
+     }()
+ 
+-    // Update createPaymentButton to return the property
+     override func createPaymentButton() -> UIView {
+-        paymentButtonsStackView
++        contentStackView
+     }
+     
+     override func viewDidLoad() {
++        super.usesIntrinsicContentHeight = true
+         super.viewDidLoad()
+-
+-        createSubviews()
+-        layoutConstraints()
+     }
+     
+     @objc func createCustomerSessionButtonTapped(_ button: UIButton) {
+@@ -135,7 +166,8 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+                 venmoAppInstalled: shopperInsightsClient.isVenmoAppInstalled(),
+                 purchaseUnits: [
+                     BTPurchaseUnit(amount: "42.00", currencyCode: "USD")
+-                ]
++                ],
++                payPalCampaigns: payPalCampaigns
+             )
+ 
+             do {
+@@ -162,7 +194,8 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+             venmoAppInstalled: shopperInsightsClient.isVenmoAppInstalled(),
+             purchaseUnits: [
+                 BTPurchaseUnit(amount: "42.00", currencyCode: "USD")
+-            ]
++            ],
++            payPalCampaigns: payPalCampaigns
+         )
+ 
+         Task {
+@@ -194,7 +227,8 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+             venmoAppInstalled: shopperInsightsClient.isVenmoAppInstalled(),
+             purchaseUnits: [
+                 BTPurchaseUnit(amount: "42.00", currencyCode: "USD")
+-            ]
++            ],
++            payPalCampaigns: payPalCampaigns
+         )
+ 
+         Task {
+@@ -224,6 +258,7 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+                 let details = """
+                     SessionID: \(String(describing: result.sessionID ?? ""))
+                     InPayPalNetwork: \(result.isInPayPalNetwork?.description ?? "nil")
++                    ExpiresAt: \(result.expiresAt ?? "nil")
+                     PaymentRecommendations:
+                     \(result.paymentRecommendations?.map {
+                         "- Option: \($0.paymentOption), Priority: \($0.recommendedPriority)"
+@@ -242,6 +277,14 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+         recommendationsLabel.text = ""
+         recommendationsLabel.isHidden = true
+     }
++
++    private var payPalCampaigns: [ShopperInsightsCampaign] {
++        payPalCampaignsView.textField.text?
++            .split(separator: ",")
++            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
++            .filter { !$0.isEmpty }
++            .map { ShopperInsightsCampaign(id: $0) } ?? []
++    }
+     
+     private func mapPriorityToButtonOrder(_ priority: Int) -> BTButtonOrder {
+         switch priority {
+@@ -350,32 +393,6 @@ class ShopperInsightsViewControllerV2: PaymentButtonBaseViewController {
+             progressBlock(error?.localizedDescription)
+             return
+         }
+-
+         completionBlock(nonce)
+     }
+-
+-    private func createSubviews() {
+-        shopperInsightsInputView.translatesAutoresizingMaskIntoConstraints = false
+-        view.addSubview(shopperInsightsInputView)
+-        view.addSubview(recommendationsLabel)
+-    }
+-
+-    private func layoutConstraints() {
+-        NSLayoutConstraint.activate(
+-            [
+-                shopperInsightsInputView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+-                shopperInsightsInputView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+-                shopperInsightsInputView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+-                shopperInsightsInputView.heightAnchor.constraint(equalToConstant: 200)
+-            ]
+-        )
+-        
+-        NSLayoutConstraint.activate(
+-            [
+-                recommendationsLabel.topAnchor.constraint(equalTo: paymentButtonsStackView.bottomAnchor, constant: 10),
+-                recommendationsLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+-                recommendationsLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
+-            ]
+-        )
+-    }
+ }
+diff --git a/Sources/BraintreeCore/BTCoreConstants.swift b/Sources/BraintreeCore/BTCoreConstants.swift
+index dedbdfd..c713cfc 100644
+--- a/Sources/BraintreeCore/BTCoreConstants.swift
++++ b/Sources/BraintreeCore/BTCoreConstants.swift
+@@ -5,7 +5,7 @@ import Foundation
+ public class BTCoreConstants: NSObject {
+ 
+     /// :nodoc: This property is exposed for internal Braintree use only. Do not use. It is not covered by Semantic Versioning and may change or be removed at any time.
+-    public static var braintreeSDKVersion: String = "7.9.0"
++    public static var braintreeSDKVersion: String = "7.10.0"
+ 
+     /// :nodoc: This property is exposed for internal Braintree use only. Do not use. It is not covered by Semantic Versioning and may change or be removed at any time.
+     public static let callbackURLScheme: String = "sdk.ios.braintree"
+diff --git a/Sources/BraintreeCore/Info.plist b/Sources/BraintreeCore/Info.plist
+index 5ca43c3..1fabf94 100644
+--- a/Sources/BraintreeCore/Info.plist
++++ b/Sources/BraintreeCore/Info.plist
+@@ -15,11 +15,11 @@
+ 	<key>CFBundlePackageType</key>
+ 	<string>FMWK</string>
+ 	<key>CFBundleShortVersionString</key>
+-	<string>7.9.0</string>
++	<string>7.10.0</string>
+ 	<key>CFBundleSignature</key>
+ 	<string>????</string>
+ 	<key>CFBundleVersion</key>
+-	<string>7.9.0</string>
++	<string>7.10.0</string>
+ 	<key>NSPrincipalClass</key>
+ 	<string></string>
+ </dict>
+diff --git a/Sources/BraintreePayPal/BTPayPalCheckoutRequest.swift b/Sources/BraintreePayPal/BTPayPalCheckoutRequest.swift
+index 6ab5df5..c01e40d 100644
+--- a/Sources/BraintreePayPal/BTPayPalCheckoutRequest.swift
++++ b/Sources/BraintreePayPal/BTPayPalCheckoutRequest.swift
+@@ -59,6 +59,7 @@ import BraintreeCore
+     var lineItems: [BTPayPalLineItem]?
+     var localeCode: BTPayPalLocaleCode?
+     var merchantAccountID: String?
++    var campaigns: [BTPayPalCampaign]?
+     var recurringBillingDetails: BTPayPalRecurringBillingDetails?
+     var recurringBillingPlanType: BTPayPalRecurringBillingPlanType?
+     var requestBillingAgreement: Bool
+@@ -85,6 +86,7 @@ import BraintreeCore
+     ///   during checkout. Defaults to `false`.
+     ///   - contactPreference: Optional: Preference for the contact information section within the payment flow. Defaults to `.none` if not set.
+     ///   - offerCredit: Optional: Offers PayPal Credit if the customer qualifies. Defaults to `false`.
++    ///   - campaigns: Optional: PayPal campaigns applied to the transaction.
+     /// - Warning: This initializer should be used for merchants using the PayPal App Switch flow. This feature is currently in beta and may change or be removed in future releases.
+     /// - Note: The PayPal App Switch flow currently only supports the production environment.
+     public convenience init(
+@@ -97,7 +99,8 @@ import BraintreeCore
+         currencyCode: String? = nil,
+         requestBillingAgreement: Bool = false,
+         contactPreference: BTContactPreference = .none,
+-        offerCredit: Bool = false
++        offerCredit: Bool = false,
++        campaigns: [BTPayPalCampaign]? = nil
+     ) {
+         self.init(
+             amount: amount,
+@@ -109,7 +112,8 @@ import BraintreeCore
+             enablePayPalAppSwitch: enablePayPalAppSwitch,
+             requestBillingAgreement: requestBillingAgreement,
+             userAuthenticationEmail: userAuthenticationEmail,
+-            offerCredit: offerCredit
++            offerCredit: offerCredit,
++            campaigns: campaigns
+         )
+     }
+ 
+@@ -148,6 +152,7 @@ import BraintreeCore
+     ///   - userPhoneNumber: Optional: A user's phone number to initiate a quicker authentication flow in the scenario where the user has a PayPal account
+     ///   identified with the same phone number.
+     ///   - offerCredit: Optional: Offers PayPal Credit if the customer qualifies. Defaults to `false`.
++    ///   - campaigns: Optional: PayPal campaigns applied to the transaction.
+     public init(
+         amount: String,
+         intent: BTPayPalRequestIntent = .authorize,
+@@ -175,7 +180,8 @@ import BraintreeCore
+         shopperSessionID: String? = nil,
+         userAuthenticationEmail: String? = nil,
+         userPhoneNumber: BTPayPalPhoneNumber? = nil,
+-        offerCredit: Bool = false
++        offerCredit: Bool = false,
++        campaigns: [BTPayPalCampaign]? = nil
+     ) {
+         self.amount = amount
+         self.intent = intent
+@@ -198,6 +204,7 @@ import BraintreeCore
+         self.lineItems = lineItems
+         self.localeCode = localeCode
+         self.merchantAccountID = merchantAccountID
++        self.campaigns = campaigns
+         self.recurringBillingDetails = recurringBillingDetails
+         self.recurringBillingPlanType = recurringBillingPlanType
+         self.requestBillingAgreement = requestBillingAgreement
+diff --git a/Sources/BraintreePayPal/Models/BTPayPalCampaign.swift b/Sources/BraintreePayPal/Models/BTPayPalCampaign.swift
+new file mode 100644
+index 0000000..b31d99d
+--- /dev/null
++++ b/Sources/BraintreePayPal/Models/BTPayPalCampaign.swift
+@@ -0,0 +1,17 @@
++import Foundation
++
++/// A PayPal campaign applied to a checkout transaction.
++@objcMembers public class BTPayPalCampaign: NSObject, Encodable {
++
++    // MARK: - Internal Properties
++
++    let id: String
++
++    // MARK: - Public Initializer
++
++    /// Initializes a PayPal campaign.
++    /// - Parameter id: Required. The PayPal campaign ID.
++    public init(id: String) {
++        self.id = id
++    }
++}
+diff --git a/Sources/BraintreePayPal/Models/PayPalCheckoutPOSTBody.swift b/Sources/BraintreePayPal/Models/PayPalCheckoutPOSTBody.swift
+index 17b0cdb..082d3fc 100644
+--- a/Sources/BraintreePayPal/Models/PayPalCheckoutPOSTBody.swift
++++ b/Sources/BraintreePayPal/Models/PayPalCheckoutPOSTBody.swift
+@@ -26,6 +26,7 @@ struct PayPalCheckoutPOSTBody: Encodable {
+     private var merchantAccountID: String?
+     private var osType: String?
+     private var osVersion: String?
++    private var payPalCampaigns: [BTPayPalCampaign]?
+     private var recipientPhoneNumber: BTPayPalPhoneNumber?
+     private var recipientEmail: String?
+     private var recurringBillingDetails: BTPayPalRecurringBillingDetails?
+@@ -63,6 +64,10 @@ struct PayPalCheckoutPOSTBody: Encodable {
+         self.offerPayLater = payPalRequest.offerPayLater
+         self.offerCredit = payPalRequest.offerCredit
+         self.amountBreakdown = payPalRequest.amountBreakdown
++
++        if let campaigns = payPalRequest.campaigns, !campaigns.isEmpty {
++            self.payPalCampaigns = campaigns
++        }
+         
+         let currencyIsoCode = payPalRequest.currencyCode != nil ? payPalRequest.currencyCode : configuration.currencyIsoCode
+         
+@@ -169,6 +174,7 @@ struct PayPalCheckoutPOSTBody: Encodable {
+         case offerCredit = "offer_paypal_credit"
+         case osType = "os_type"
+         case osVersion = "os_version"
++        case payPalCampaigns = "paypal_campaigns"
+         case recipientPhoneNumber = "international_phone"
+         case recipientEmail = "recipient_email"
+         case recurringBillingDetails = "plan_metadata"
+diff --git a/Sources/BraintreeShopperInsights/Models/GenerateCustomerRecommendationsGraphQLBody.swift b/Sources/BraintreeShopperInsights/Models/GenerateCustomerRecommendationsGraphQLBody.swift
+index 802c0d6..978c0ec 100644
+--- a/Sources/BraintreeShopperInsights/Models/GenerateCustomerRecommendationsGraphQLBody.swift
++++ b/Sources/BraintreeShopperInsights/Models/GenerateCustomerRecommendationsGraphQLBody.swift
+@@ -16,6 +16,7 @@ struct GenerateCustomerRecommendationsGraphQLBody: Encodable {
+                         paymentOption
+                         recommendedPriority
+                     }
++                    expiresAt
+                 }
+             }
+             """
+diff --git a/Sources/BraintreeShopperInsights/Models/ShopperInsightsCampaign.swift b/Sources/BraintreeShopperInsights/Models/ShopperInsightsCampaign.swift
+new file mode 100644
+index 0000000..510f1e0
+--- /dev/null
++++ b/Sources/BraintreeShopperInsights/Models/ShopperInsightsCampaign.swift
+@@ -0,0 +1,19 @@
++import Foundation
++
++/// A campaign displayed to the customer in the shopping journey.
++/// - Warning: This feature is in beta. It's public API may change or be removed in future releases.
++public struct ShopperInsightsCampaign: Encodable {
++
++    // MARK: - Internal Properties
++
++    /// The PayPal campaign ID.
++    let id: String
++
++    // MARK: - Public Initializer
++
++    /// Creates a ShopperInsightsCampaign.
++    /// - Parameter id: Required. The PayPal campaign ID.
++    public init(id: String) {
++        self.id = id
++    }
++}
+diff --git a/Sources/BraintreeShopperInsights/Models/Variables.swift b/Sources/BraintreeShopperInsights/Models/Variables.swift
+index be7740a..b2e0d39 100644
+--- a/Sources/BraintreeShopperInsights/Models/Variables.swift
++++ b/Sources/BraintreeShopperInsights/Models/Variables.swift
+@@ -14,6 +14,7 @@ struct Variables: Encodable {
+         let sessionID: String?
+         let customer: Customer?
+         let purchaseUnits: [PurchaseUnit]?
++        let payPalCampaigns: [ShopperInsightsCampaign]?
+         
+         init(request: BTCustomerSessionRequest?, sessionID: String?) {
+             self.sessionID = sessionID
+@@ -21,12 +22,16 @@ struct Variables: Encodable {
+             purchaseUnits = request?.purchaseUnits?.compactMap {
+                 PurchaseUnit(purchaseUnit: $0)
+             }
++
++            let campaigns = request?.payPalCampaigns
++            payPalCampaigns = campaigns?.isEmpty == false ? campaigns : nil
+         }
+         
+         enum CodingKeys: String, CodingKey {
+             case sessionID = "sessionId"
+             case customer
+             case purchaseUnits
++            case payPalCampaigns = "paypalCampaigns"
+         }
+         
+         struct Customer: Encodable {
+diff --git a/Sources/BraintreeShopperInsights/V2/BTCustomerRecommendationsAPI.swift b/Sources/BraintreeShopperInsights/V2/BTCustomerRecommendationsAPI.swift
+index fd86954..a9df54a 100644
+--- a/Sources/BraintreeShopperInsights/V2/BTCustomerRecommendationsAPI.swift
++++ b/Sources/BraintreeShopperInsights/V2/BTCustomerRecommendationsAPI.swift
+@@ -43,6 +43,7 @@ final class BTCustomerRecommendationsAPI {
+             
+             let sessionID = body["data"]["generateCustomerRecommendations"]["sessionId"].asString()
+             let isInPayPalNetwork = body["data"]["generateCustomerRecommendations"]["isInPayPalNetwork"].asBool()
++            let expiresAt = body["data"]["generateCustomerRecommendations"]["expiresAt"].asString()
+             var paymentOptions: [BTPaymentOptions]? = []
+             if let paymentRecommendations = body["data"]["generateCustomerRecommendations"]["paymentRecommendations"].asArray() {
+                 for recommendation in paymentRecommendations {
+@@ -62,7 +63,8 @@ final class BTCustomerRecommendationsAPI {
+             return BTCustomerRecommendationsResult(
+                 sessionID: sessionID,
+                 isInPayPalNetwork: isInPayPalNetwork,
+-                paymentRecommendations: paymentOptions
++                paymentRecommendations: paymentOptions,
++                expiresAt: expiresAt
+             )
+         } catch {
+             apiClient.sendAnalyticsEvent(
+diff --git a/Sources/BraintreeShopperInsights/V2/BTCustomerRecommendationsResult.swift b/Sources/BraintreeShopperInsights/V2/BTCustomerRecommendationsResult.swift
+index 7adf7ea..7849f68 100644
+--- a/Sources/BraintreeShopperInsights/V2/BTCustomerRecommendationsResult.swift
++++ b/Sources/BraintreeShopperInsights/V2/BTCustomerRecommendationsResult.swift
+@@ -12,4 +12,7 @@ public struct BTCustomerRecommendationsResult {
+     
+     /// The payment recommendations for the shopper.
+     public let paymentRecommendations: [BTPaymentOptions]?
++
++    /// The ISO-8601 date and time at which the recommendations expire.
++    public let expiresAt: String?
+ }
+diff --git a/Sources/BraintreeShopperInsights/V2/BTCustomerSessionRequest.swift b/Sources/BraintreeShopperInsights/V2/BTCustomerSessionRequest.swift
+index 03516fc..051a883 100644
+--- a/Sources/BraintreeShopperInsights/V2/BTCustomerSessionRequest.swift
++++ b/Sources/BraintreeShopperInsights/V2/BTCustomerSessionRequest.swift
+@@ -9,6 +9,7 @@ public struct BTCustomerSessionRequest {
+     let payPalAppInstalled: Bool?
+     let venmoAppInstalled: Bool?
+     let purchaseUnits: [BTPurchaseUnit]?
++    let payPalCampaigns: [ShopperInsightsCampaign]?
+     
+     /// Creates a BTCustomerSessionRequest
+     /// - Parameters:
+@@ -17,18 +18,21 @@ public struct BTCustomerSessionRequest {
+     ///   - payPalAppInstalled: Optional: Checks whether the PayPal app is installed on the device.
+     ///   - venmoAppInstalled: Optional: Checks whether the Venmo app is installed on the device.
+     ///   - purchaseUnits: Optional: The list of purchase units containing the amount and currency code.
++    ///   - payPalCampaigns: Optional: PayPal campaigns displayed to the customer in the shopping journey.
+     /// - Warning: This feature is in beta. It's public API may change or be removed in future releases.
+     public init(
+         hashedEmail: String? = nil,
+         hashedPhoneNumber: String? = nil,
+         payPalAppInstalled: Bool? = nil,
+         venmoAppInstalled: Bool? = nil,
+-        purchaseUnits: [BTPurchaseUnit]? = nil
++        purchaseUnits: [BTPurchaseUnit]? = nil,
++        payPalCampaigns: [ShopperInsightsCampaign]? = nil
+     ) {
+         self.hashedEmail = hashedEmail
+         self.hashedPhoneNumber = hashedPhoneNumber
+         self.payPalAppInstalled = payPalAppInstalled
+         self.venmoAppInstalled = venmoAppInstalled
+         self.purchaseUnits = purchaseUnits
++        self.payPalCampaigns = payPalCampaigns
+     }
+ }
+diff --git a/Sources/BraintreeVenmo/BTVenmoAccountNonce.swift b/Sources/BraintreeVenmo/BTVenmoAccountNonce.swift
+index e73150d..094752e 100644
+--- a/Sources/BraintreeVenmo/BTVenmoAccountNonce.swift
++++ b/Sources/BraintreeVenmo/BTVenmoAccountNonce.swift
+@@ -35,8 +35,9 @@ import BraintreeCore
+ 
+     // MARK: - Initializers
+ 
+-    init(with nonce: String, username: String, isDefault: Bool) {
++    init(with nonce: String, username: String, isDefault: Bool, externalID: String? = nil) {
+         self.username = username
++        self.externalID = externalID
+         super.init(nonce: nonce, type: "Venmo", isDefault: isDefault)
+     }
+ 
+@@ -60,10 +61,13 @@ import BraintreeCore
+     // MARK: - Internal Methods
+ 
+     static func venmoAccount(with json: BTJSON) -> BTVenmoAccountNonce {
++        // The vault response does not include an `externalId` field, but `details.commonId`
++        // contains the same underlying Venmo account identifier.
+         BTVenmoAccountNonce(
+             with: json["nonce"].asString() ?? "",
+             username: json["details"]["username"].asString() ?? "",
+-            isDefault: json["default"].isTrue
++            isDefault: json["default"].isTrue,
++            externalID: json["details"]["commonId"].asString()
+         )
+     }
+ }

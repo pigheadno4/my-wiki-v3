@@ -6,6 +6,22 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | `braintree-ios@7.13.0`
+
+- Serial delta from 7.12.0: declared iOS 15 floor, PayPal return background task/cancellation mapping and compatibility changes. Apple Pay recurring metadata remains iOS 16+; error code 15 alone does not prove OS expiry. Updated cumulative source/changelog/concept/company/index, preserving all history and count 272. Focused reading approved; no build/payment test, commit or push.
+
+## [2026-10-04] ingest | `braintree-ios@7.12.0`
+
+- Serial delta from 7.11.0: upstream Xcode/iOS 27 support statement, PayPalMessages 2.0.0, unchanged model relocations and Amex SwiftUI demo handoff. Source history preserved; concept/company/index updated; count remains 272. Focused reading approved; no binary/build/payment proof, commit or push.
+
+## [2026-10-04] ingest | `braintree-ios@7.11.0`
+
+- Serial delta from 7.10.0: remote PayPalRisk 5.6.0 packaging, signing-fix release notes and dynamic/Carthage embedding guidance. Updated source/changelog/concept/company/index; count unchanged: 272. Focused reading approved; no binary/build/payment proof, commit or push.
+
+## [2026-10-04] ingest | `braintree-ios@7.10.0`
+
+- Delta from 7.9.0: campaign context, optional recommendation expiry, vaulted Venmo externalID fix and SwiftUI demos. Preserved baseline and immutable raw. Updated [[braintree-ios-sdk]], [[source-github-braintree-ios]], [[changelog-github-braintree-ios]], company and index. Source count unchanged: 272 (255 website + 17 GitHub). No build/payment test, commit or push.
+
 ## [2026-10-04] ingest | Braintree website C30
 
 - Ten pinned Premium Fraud Management Tools guides and Node testing/transaction-response references fully read, independently reviewed and promoted through five shared rolling child slots. Catalog: 272 sources (255 website + 17 GitHub). Routes: [[braintree-index]], [[braintree-fraud-tools]], [[braintree-chargeback-protection]] and [[braintree-server-sdk]].

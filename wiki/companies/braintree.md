@@ -399,6 +399,14 @@ Most selections return a nonce for server processing. PayPal defaults to a vault
 
 ## iOS SDK Surface
 
+`braintree-ios@7.12.0` announces Xcode 27/iOS 27 support and upgrades the PayPalMessages dependency to 2.0.0; its declared minimum remains iOS 16. Those are release/dependency statements, not local build or messaging eligibility proof. See [[source-github-braintree-ios]].
+
+`braintree-ios@7.13.0` lowers its declared minimum to iOS 15 and adds finite background-task handling around PayPal return tokenization. Cancellation maps to returnBackgroundTaskExpired without independently proving OS expiry. Apple Pay recurring metadata in the demo remains iOS 16+. Older deployment requirements remain version-qualified history; see [[source-github-braintree-ios]] and [[changelog-github-braintree-ios]].
+
+`braintree-ios@7.11.0` moves the risk dependency to remote PayPalRisk 5.6.0 after an upstream-reported signing-certificate revocation. Carthage consumers need dynamic-framework embedding; binary validation was not performed. See [[source-github-braintree-ios]].
+
+The `braintree-ios@7.10.0` delta adds optional campaign context to PayPal Checkout and beta Shopper Insights, exposes optional recommendation expiry, and fixes vaulted Venmo externalID parsing. The retained 7.9.0 baseline below remains historical. See [[source-github-braintree-ios]] and [[changelog-github-braintree-ios]].
+
 `braintree-ios@7.9.0` provides modular native clients for cards, PayPal, Venmo, Apple Pay, local payments, SEPA, 3D Secure, fraud data, Shopper Insights, messaging, and payment UI. It requires iOS 16+, Xcode 16.2+, and Swift 5.10+.
 
 PayPal supports separate checkout and vault requests, including billing-agreement consent and recurring metadata. Venmo is a separate native Braintree module using universal-link app switch with browser fallback and conditional multi-use vaulting. Apple Pay support creates and tokenizes a native payment request; the demo's recurring sheet does not by itself establish later merchant charges.
@@ -457,7 +465,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
 - Latest retained Android Drop-in release: `drop-in@6.17.0` at `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
-- Latest retained iOS release: `braintree-ios@7.9.0` at `4e987ca19f03b65a0d303b4c3ec95e0c723be971`
+- Latest ingested iOS release: `braintree-ios@7.13.0` at `020dfb7a7803ec3ce8b2df2a0f71e386a4bf84e3`
 - Latest retained iOS Drop-in release: `BraintreeDropIn@9.14.0` at `d951d104ac960188824bda191be2f57c57351a31`
 - Latest retained iOS PopupBridge release: `PopupBridge@3.1.0` at `00256b4b8c58367287fe35a442a33cd7c010a94f`
 - Latest retained Android PopupBridge release: `popup-bridge@5.3.0` at `f30654168b997ea1dd95ebc61901582ae00bebb0`

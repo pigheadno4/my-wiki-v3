@@ -1,0 +1,497 @@
+diff --git a/Braintree.podspec b/Braintree.podspec
+index ceb8d79..6dc9590 100644
+--- a/Braintree.podspec
++++ b/Braintree.podspec
+@@ -1,6 +1,6 @@
+ Pod::Spec.new do |s|
+   s.name             = "Braintree"
+-  s.version          = "7.12.0"
++  s.version          = "7.13.0"
+   s.summary          = "Braintree iOS SDK: Helps you accept card and alternative payments in your iOS app."
+   s.description      = <<-DESC
+                        Braintree is a full-stack payments platform for developers
+@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
+   s.author           = { "Braintree" => "team-bt-sdk@paypal.com" }
+   s.source           = { :git => "https://github.com/braintree/braintree_ios.git", :tag => s.version.to_s }
+ 
+-  s.platform         = :ios, "16.0"
++  s.platform         = :ios, "15.0"
+   s.compiler_flags   = "-Wall -Werror -Wextra"
+   s.swift_version    = "5.10"
+ 
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ec658a9..873ef67 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # Braintree iOS SDK Release Notes
+ 
++## 7.13.0 (2026-09-23)
++* BraintreePayPal
++    * Fix bug where the return tokenization request could fail to complete after the app was backgrounded during the PayPal app switch or browser flow, resulting in a network connection timeout error
++    * Add `BTPayPalError.returnBackgroundTaskExpired` (code 15), returned if background execution time runs out before the request completes
++* Lower minimum deployment target from iOS 16.0 to iOS 15.0
++
+ ## 7.12.0 (2026-09-16)
+ * Add support for Xcode 27 / iOS 27
+ * BraintreePayPalMessaging
+diff --git a/Demo/Application/Features/ApplePayView.swift b/Demo/Application/Features/ApplePayView.swift
+index 9084908..22da1b1 100644
+--- a/Demo/Application/Features/ApplePayView.swift
++++ b/Demo/Application/Features/ApplePayView.swift
+@@ -30,12 +30,11 @@ struct ApplePayView: View {
+     var body: some View {
+         VStack {
+             if isApplePaySupported {
+-                PayWithApplePayButton(.plain) {
++                ApplePayButtonRepresentable {
+                     Task {
+                         await requestApplePayPayment()
+                     }
+                 }
+-                .payWithApplePayButtonStyle(.automatic)
+                 .frame(height: 50)
+                 .padding(.horizontal)
+             }
+@@ -57,7 +56,11 @@ struct ApplePayView: View {
+         do {
+             let request = try await applePayClient.makePaymentRequest()
+             let paymentRequest = constructPaymentRequest(with: request)
+-            paymentRequest.recurringPaymentRequest = recurringPaymentRequest()
++
++            // NEXT_MAJOR_VERSION: remove the #available check when minimum target moved to iOS 16 or higher
++            if #available(iOS 16, *) {
++                paymentRequest.recurringPaymentRequest = recurringPaymentRequest()
++            }
+ 
+             onProgress("Presenting Apple Pay Sheet")
+             onPaymentRequestCreated(paymentRequest)
+@@ -66,6 +69,7 @@ struct ApplePayView: View {
+         }
+     }
+ 
++    @available(iOS 16, *)
+     private func recurringPaymentRequest() -> PKRecurringPaymentRequest {
+         PKRecurringPaymentRequest(
+             paymentDescription: "Payment description.",
+@@ -106,3 +110,35 @@ struct ApplePayView: View {
+ #Preview {
+     ApplePayView(client: BTApplePayClient(authorization: ""))
+ }
++
++/// UIKit-backed Apple Pay button, used so we can set a square `cornerRadius` (not exposed by the SwiftUI `PayWithApplePayButton`)
++private struct ApplePayButtonRepresentable: UIViewRepresentable {
++
++    let action: () -> Void
++
++    func makeUIView(context: Context) -> PKPaymentButton {
++        let button = PKPaymentButton(paymentButtonType: .plain, paymentButtonStyle: .automatic)
++        button.cornerRadius = 0
++        button.addTarget(context.coordinator, action: #selector(Coordinator.didTap), for: .touchUpInside)
++        return button
++    }
++
++    func updateUIView(_ uiView: PKPaymentButton, context: Context) { }
++
++    func makeCoordinator() -> Coordinator {
++        Coordinator(action: action)
++    }
++
++    final class Coordinator: NSObject {
++
++        private let action: () -> Void
++
++        init(action: @escaping () -> Void) {
++            self.action = action
++        }
++
++        @objc func didTap() {
++            action()
++        }
++    }
++}
+diff --git a/Package.swift b/Package.swift
+index 2fb6889..57465cc 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -5,7 +5,7 @@ import PackageDescription
+ 
+ let package = Package(
+     name: "Braintree",
+-    platforms: [.iOS(.v16)],
++    platforms: [.iOS(.v15)],
+     products: [
+         .library(
+             name: "BraintreeAmericanExpress",
+diff --git a/README.md b/README.md
+index cea4de2..3040547 100644
+--- a/README.md
++++ b/README.md
+@@ -8,7 +8,7 @@
+ 
+ Welcome to Braintree's iOS SDK. This library will help you accept card, alternative payments, and display streamlined UI in your iOS app.
+ 
+-**The Braintree iOS SDK permits a deployment target of iOS 16.0 or higher**. It requires Xcode 16.2+ and Swift 5.10+.
++**The Braintree iOS SDK permits a deployment target of iOS 15.0 or higher**. It requires Xcode 16.2+ and Swift 5.10+.
+ 
+ ## Supported Payment Methods & Features
+ 
+diff --git a/Sources/BraintreeCore/Analytics/BackgroundTaskManaging.swift b/Sources/BraintreeCore/Analytics/BackgroundTaskManaging.swift
+deleted file mode 100644
+index 36c6f3c..0000000
+--- a/Sources/BraintreeCore/Analytics/BackgroundTaskManaging.swift
++++ /dev/null
+@@ -1,13 +0,0 @@
+-import UIKit
+-
+-protocol BackgroundTaskManaging {
+-    func beginBackgroundTask(named: String?, expirationHandler handler: (() -> Void)?) -> UIBackgroundTaskIdentifier
+-    func endBackgroundTask(_ identifier: UIBackgroundTaskIdentifier)
+-}
+-
+-extension UIApplication: BackgroundTaskManaging {
+-    
+-    func beginBackgroundTask(named: String?, expirationHandler handler: (() -> Void)?) -> UIBackgroundTaskIdentifier {
+-        beginBackgroundTask(withName: named, expirationHandler: handler)
+-    }
+-}
+diff --git a/Sources/BraintreeCore/BTCoreConstants.swift b/Sources/BraintreeCore/BTCoreConstants.swift
+index 905dac1..9c4fa1b 100644
+--- a/Sources/BraintreeCore/BTCoreConstants.swift
++++ b/Sources/BraintreeCore/BTCoreConstants.swift
+@@ -5,7 +5,7 @@ import Foundation
+ public class BTCoreConstants: NSObject {
+ 
+     /// :nodoc: This property is exposed for internal Braintree use only. Do not use. It is not covered by Semantic Versioning and may change or be removed at any time.
+-    public static var braintreeSDKVersion: String = "7.12.0"
++    public static var braintreeSDKVersion: String = "7.13.0"
+ 
+     /// :nodoc: This property is exposed for internal Braintree use only. Do not use. It is not covered by Semantic Versioning and may change or be removed at any time.
+     public static let callbackURLScheme: String = "sdk.ios.braintree"
+diff --git a/Sources/BraintreeCore/BTHTTP.swift b/Sources/BraintreeCore/BTHTTP.swift
+index 820f33b..c0a4ce2 100644
+--- a/Sources/BraintreeCore/BTHTTP.swift
++++ b/Sources/BraintreeCore/BTHTTP.swift
+@@ -1,3 +1,4 @@
++// swiftlint:disable file_length
+ import Foundation
+ import Security
+ 
+@@ -46,8 +47,13 @@ class BTHTTP: NSObject, URLSessionTaskDelegate {
+         "application/json"
+     }
+ 
++    // NEXT_MAJOR_VERSION: remove the pre-16 branch when minimum target moved to iOS 16 or higher
+     var acceptLanguageString: String {
+-        "\(Locale.current.language.languageCode?.identifier ?? "en")-\(Locale.current.region?.identifier ?? "US")"
++        if #available(iOS 16, *) {
++            return "\(Locale.current.language.languageCode?.identifier ?? "en")-\(Locale.current.region?.identifier ?? "US")"
++        } else {
++            return "\(Locale.current.languageCode ?? "en")-\(Locale.current.regionCode ?? "US")"
++        }
+     }
+     
+     // MARK: - Internal Initializers
+diff --git a/Sources/BraintreeCore/Info.plist b/Sources/BraintreeCore/Info.plist
+index d9c0d03..6f446b9 100644
+--- a/Sources/BraintreeCore/Info.plist
++++ b/Sources/BraintreeCore/Info.plist
+@@ -15,11 +15,11 @@
+ 	<key>CFBundlePackageType</key>
+ 	<string>FMWK</string>
+ 	<key>CFBundleShortVersionString</key>
+-	<string>7.12.0</string>
++	<string>7.13.0</string>
+ 	<key>CFBundleSignature</key>
+ 	<string>????</string>
+ 	<key>CFBundleVersion</key>
+-	<string>7.12.0</string>
++	<string>7.13.0</string>
+ 	<key>NSPrincipalClass</key>
+ 	<string></string>
+ </dict>
+diff --git a/Sources/BraintreeCore/UIApplication+BackgroundTaskManaging.swift b/Sources/BraintreeCore/UIApplication+BackgroundTaskManaging.swift
+new file mode 100644
+index 0000000..48c81b7
+--- /dev/null
++++ b/Sources/BraintreeCore/UIApplication+BackgroundTaskManaging.swift
+@@ -0,0 +1,25 @@
++import UIKit
++
++/// :nodoc: This protocol is exposed for internal Braintree use only. Do not use. It is not covered by Semantic Versioning and may change or be removed at any time.
++///
++/// Used to mock `UIApplication`'s background task assertion API so that unit tests do not request
++/// real task assertions from the system.
++@_documentation(visibility: private)
++public protocol BackgroundTaskManaging {
++    func beginBackgroundTask(named: String?, expirationHandler handler: (() -> Void)?) -> UIBackgroundTaskIdentifier
++    func endBackgroundTask(_ identifier: UIBackgroundTaskIdentifier)
++}
++
++// MARK: - BackgroundTaskManaging
++extension UIApplication: BackgroundTaskManaging {
++
++    /// :nodoc: This method is exposed for internal Braintree use only. Do not use. It is not covered by Semantic Versioning and may change or be removed at any time.
++    ///
++    /// Adapts `beginBackgroundTask(withName:expirationHandler:)` to `BackgroundTaskManaging`. The adapter exists so the
++    /// protocol requirement can use a plain `(() -> Void)?` handler rather than UIKit's `(@MainActor @Sendable () -> Void)?`,
++    /// which would otherwise have to be matched exactly by every conforming test double.
++    @_documentation(visibility: private)
++    public func beginBackgroundTask(named: String?, expirationHandler handler: (() -> Void)?) -> UIBackgroundTaskIdentifier {
++        beginBackgroundTask(withName: named, expirationHandler: handler)
++    }
++}
+diff --git a/Sources/BraintreePayPal/BTPayPalClient.swift b/Sources/BraintreePayPal/BTPayPalClient.swift
+index 5700226..b19c428 100644
+--- a/Sources/BraintreePayPal/BTPayPalClient.swift
++++ b/Sources/BraintreePayPal/BTPayPalClient.swift
+@@ -21,6 +21,10 @@ import BraintreeDataCollector
+     /// to prevent calls to openURL. Subclassing UIApplication is not possible, since it enforces that only one instance can ever exist.
+     nonisolated(unsafe) var application: URLOpener = UIApplication.shared
+ 
++    /// Defaults to `UIApplication.shared`, but exposed for unit tests to inject test doubles so that
++    /// background task assertions are not requested from the system during tests.
++    var backgroundTaskManager: BackgroundTaskManaging = UIApplication.shared
++
+     /// Exposed for testing the approvalURL construction
+     var approvalURL: URL?
+ 
+@@ -221,6 +225,7 @@ import BraintreeDataCollector
+     // MARK: - Internal Methods
+     
+     // swiftlint:disable function_body_length
++    @MainActor
+     func handleReturn(
+         _ url: URL?,
+         paymentType: BTPayPalPaymentType
+@@ -272,7 +277,43 @@ import BraintreeDataCollector
+             correlationID: contextID.flatMap { clientMetadataIDs[$0] }
+         )
+ 
+-        let (body, _) = try await apiClient.post("/v1/payment_methods/paypal_accounts", parameters: encodableParams)
++        var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
++        var cancellableTokenizationTask: Task<(BTJSON?, HTTPURLResponse?), Error>?
++
++        let endBackgroundTaskIfNeeded = { [backgroundTaskManager] in
++            guard backgroundTaskID != .invalid else { return }
++            backgroundTaskManager.endBackgroundTask(backgroundTaskID)
++            backgroundTaskID = .invalid
++        }
++
++        backgroundTaskID = backgroundTaskManager.beginBackgroundTask(named: "BTPayPalHandleReturnTokenize") {
++            cancellableTokenizationTask?.cancel()
++            endBackgroundTaskIfNeeded()
++        }
++        defer { endBackgroundTaskIfNeeded() }
++
++        let tokenizationTask = Task {
++            try await apiClient.post("/v1/payment_methods/paypal_accounts", parameters: encodableParams)
++        }
++        cancellableTokenizationTask = tokenizationTask
++
++        let tokenizationResponse: (BTJSON?, HTTPURLResponse?)
++
++        do {
++            tokenizationResponse = try await tokenizationTask.value
++        } catch {
++            let wasCancelled = error is CancellationError || (error as? URLError)?.code == .cancelled
++
++            guard wasCancelled else {
++                notifyFailure(with: error)
++                throw error
++            }
++
++            notifyFailure(with: BTPayPalError.returnBackgroundTaskExpired)
++            throw BTPayPalError.returnBackgroundTaskExpired
++        }
++
++        let (body, _) = tokenizationResponse
+ 
+         guard
+             let payPalAccount = body?["paypalAccounts"].asArray()?.first,
+@@ -411,7 +452,13 @@ import BraintreeDataCollector
+                 return
+             }
+ 
+-            Task {
++            let appSwitchCompletion = self.appSwitchCompletion
++            Task { @MainActor [weak self] in
++                guard let self else {
++                    appSwitchCompletion(nil, BTPayPalError.deallocated)
++                    return
++                }
++
+                 do {
+                     let nonce = try await handleReturn(url, paymentType: payPalRequest.paymentType)
+                     appSwitchCompletion(nonce, nil)
+@@ -653,9 +700,14 @@ import BraintreeDataCollector
+                         return
+                     }
+ 
+-                    Task {
++                    Task { [weak self] in
++                        guard let self else {
++                            continuation.resume(throwing: BTPayPalError.deallocated)
++                            return
++                        }
++
+                         do {
+-                            let nonce = try await self.handleReturn(url, paymentType: payPalRequest.paymentType)
++                            let nonce = try await handleReturn(url, paymentType: payPalRequest.paymentType)
+                             continuation.resume(returning: nonce)
+                         } catch {
+                             continuation.resume(throwing: error)
+diff --git a/Sources/BraintreePayPal/BTPayPalError.swift b/Sources/BraintreePayPal/BTPayPalError.swift
+index 28d4a4d..c23374e 100644
+--- a/Sources/BraintreePayPal/BTPayPalError.swift
++++ b/Sources/BraintreePayPal/BTPayPalError.swift
+@@ -48,6 +48,9 @@ public enum BTPayPalError: Error, CustomNSError, LocalizedError, Equatable {
+     /// 14. Missing EC Token for App Switch
+     case missingECToken
+ 
++    /// 15. The background task wrapping the handle return tokenization request expired
++    case returnBackgroundTaskExpired
++
+     public static var errorDomain: String {
+         "com.braintreepayments.BTPayPalErrorDomain"
+     }
+@@ -84,6 +87,8 @@ public enum BTPayPalError: Error, CustomNSError, LocalizedError, Equatable {
+             return 13
+         case .missingECToken:
+             return 14
++        case .returnBackgroundTaskExpired:
++            return 15
+         }
+     }
+ 
+@@ -121,6 +126,10 @@ public enum BTPayPalError: Error, CustomNSError, LocalizedError, Equatable {
+             return "The PayPal Request was missing or invalid."
+         case .missingECToken:
+             return "Missing EC Token for PayPal App Switch."
++        case .returnBackgroundTaskExpired:
++            // swiftlint:disable line_length
++            return "The PayPal tokenization request did not finish before the app's background execution time expired. The app was backgrounded for too long after returning from PayPal."
++            // swiftlint:enable line_length
+         }
+     }
+ 
+diff --git a/Sources/BraintreeUIComponents/CardFields/CVVField/CVVFieldViewModel.swift b/Sources/BraintreeUIComponents/CardFields/CVVField/CVVFieldViewModel.swift
+index 002378a..3072272 100644
+--- a/Sources/BraintreeUIComponents/CardFields/CVVField/CVVFieldViewModel.swift
++++ b/Sources/BraintreeUIComponents/CardFields/CVVField/CVVFieldViewModel.swift
+@@ -87,7 +87,7 @@ class CVVFieldViewModel: ObservableObject {
+ 
+     private func scheduleMasking(for characterID: UUID) {
+         Task {
+-            try? await Task.sleep(for: .seconds(1))
++            try? await Task.sleep(nanoseconds: 1_000_000_000)
+             guard let index = characters.firstIndex(where: { $0.id == characterID }) else { return }
+             characters[index].isMasked = true
+         }
+diff --git a/Sources/BraintreeUIComponents/CardFields/CardNumberField/CardNumberFieldValidator.swift b/Sources/BraintreeUIComponents/CardFields/CardNumberField/CardNumberFieldValidator.swift
+index bc57d7e..f261c3d 100644
+--- a/Sources/BraintreeUIComponents/CardFields/CardNumberField/CardNumberFieldValidator.swift
++++ b/Sources/BraintreeUIComponents/CardFields/CardNumberField/CardNumberFieldValidator.swift
+@@ -45,14 +45,14 @@ struct CardNumberFieldValidator: CardFieldsValidatorProtocol {
+     func detectBrand(from digits: String) -> CardBrand {
+         // Pass 1: strict prefixes
+         for brand in CardBrand.allCases {
+-            for pattern in brand.prefixPatterns where digits.prefixMatch(of: pattern) != nil {
++            for pattern in brand.prefixPatterns where matches(pattern, in: digits) {
+                 return brand
+             }
+         }
+ 
+         // Pass 2: relaxed prefixes
+         for brand in CardBrand.allCases {
+-            for pattern in brand.relaxedPrefixPatterns where digits.prefixMatch(of: pattern) != nil {
++            for pattern in brand.relaxedPrefixPatterns where matches(pattern, in: digits) {
+                 return brand
+             }
+         }
+@@ -60,6 +60,13 @@ struct CardNumberFieldValidator: CardFieldsValidatorProtocol {
+         return .unknown
+     }
+ 
++    /// NEXT_MAJOR_VERSION: switch back to `Regex<Substring>`/`prefixMatch(of:)` when minimum target moved to iOS 16 or higher
++    private func matches(_ pattern: String, in digits: String) -> Bool {
++        guard let regex = try? NSRegularExpression(pattern: pattern) else { return false }
++        let range = NSRange(digits.startIndex..., in: digits)
++        return regex.firstMatch(in: digits, range: range) != nil
++    }
++
+     /// Luhn algorithm - Processes digits right to left, doubling every second digit.
+     private func isLuhnValid(_ digits: String) -> Bool {
+         let numbers = digits.compactMap { $0.wholeNumberValue }
+diff --git a/Sources/BraintreeUIComponents/CardFields/Shared/CardBrand.swift b/Sources/BraintreeUIComponents/CardFields/Shared/CardBrand.swift
+index ff4e601..d37f2c0 100644
+--- a/Sources/BraintreeUIComponents/CardFields/Shared/CardBrand.swift
++++ b/Sources/BraintreeUIComponents/CardFields/Shared/CardBrand.swift
+@@ -18,29 +18,30 @@ enum CardBrand: CaseIterable {
+     /// Strict prefix patterns checked first across all brands before relaxed patterns.
+     /// Order of cases in CaseIterable matters — Discover must come before UnionPay
+     /// to correctly handle the 622126–622925 co-branded range.
+-    var prefixPatterns: [Regex<Substring>] {
++    /// NEXT_MAJOR_VERSION: switch back to `Regex<Substring>` literals when minimum target moved to iOS 16 or higher
++    var prefixPatterns: [String] {
+         switch self {
+         case .visa:
+-            return [#/4\d*/#]
++            return [#"^4\d*"#]
+         case .mastercard:
+-            return [#/(?:5[1-5]|222[1-9]|22[3-9]|2[3-6]|27[0-1]|2720)\d*/#]
++            return [#"^(?:5[1-5]|222[1-9]|22[3-9]|2[3-6]|27[0-1]|2720)\d*"#]
+         case .amex:
+-            return [#/3[47]\d*/#]
++            return [#"^3[47]\d*"#]
+         case .discover:
+             // 622 prefix checked here before UnionPay's broader 62 to handle co-branded range
+-            return [#/(?:6011|65|64[4-9]|622)\d*/#]
++            return [#"^(?:6011|65|64[4-9]|622)\d*"#]
+         case .jcb:
+-            return [#/35\d*/#]
++            return [#"^35\d*"#]
+         case .dinersClub:
+-            return [#/(?:36|38|30[0-5])\d*/#]
++            return [#"^(?:36|38|30[0-5])\d*"#]
+         case .unionPay:
+-            return [#/62\d*/#]
++            return [#"^62\d*"#]
+         case .maestro:
+-            return [#/(?:5018|5020|5038|5[6-9]|6020|6304|6703|6759|676[1-3])\d*/#]
++            return [#"^(?:5018|5020|5038|5[6-9]|6020|6304|6703|6759|676[1-3])\d*"#]
+         case .hiper:
+-            return [#/637(?:095|568|599|609|612)\d*/#]
++            return [#"^637(?:095|568|599|609|612)\d*"#]
+         case .hipercard:
+-            return [#/606282\d*/#]
++            return [#"^606282\d*"#]
+         case .unknown:
+             return []
+         }
+@@ -48,10 +49,10 @@ enum CardBrand: CaseIterable {
+ 
+     /// Relaxed prefix patterns only used if no strict match is found across all brands.
+     /// Only Maestro uses relaxed matching — mirrors the drop-in's two-pass detection.
+-    var relaxedPrefixPatterns: [Regex<Substring>] {
++    var relaxedPrefixPatterns: [String] {
+         switch self {
+         case .maestro:
+-            return [#/6\d*/#]
++            return [#"^6\d*"#]
+         default:
+             return []
+         }
+diff --git a/V7_MIGRATION.md b/V7_MIGRATION.md
+index 8a06ed7..ff95aa6 100644
+--- a/V7_MIGRATION.md
++++ b/V7_MIGRATION.md
+@@ -22,7 +22,7 @@ _Documentation for v7 will be published to https://developer.paypal.com/braintre
+ 
+ ## Supported Versions
+ 
+-v7 supports a minimum deployment target of iOS 16+. It requires the use of Xcode 16.2+ and Swift 5.10+.
++v7 supports a minimum deployment target of iOS 15+. It requires the use of Xcode 16.2+ and Swift 5.10+.
+ 
+ ## Card
+ v7 updates `BTCard` to require setting all properties through the initializer, removing support for dot syntax. To construct a `BTCard`, pass the properties directly in the initializer.

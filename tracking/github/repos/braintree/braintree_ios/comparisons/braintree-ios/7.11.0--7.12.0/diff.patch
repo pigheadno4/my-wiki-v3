@@ -1,0 +1,316 @@
+diff --git a/Braintree.podspec b/Braintree.podspec
+index 6047ab4..ceb8d79 100644
+--- a/Braintree.podspec
++++ b/Braintree.podspec
+@@ -1,6 +1,6 @@
+ Pod::Spec.new do |s|
+   s.name             = "Braintree"
+-  s.version          = "7.11.0"
++  s.version          = "7.12.0"
+   s.summary          = "Braintree iOS SDK: Helps you accept card and alternative payments in your iOS app."
+   s.description      = <<-DESC
+                        Braintree is a full-stack payments platform for developers
+@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
+   end
+ 
+   s.subspec "Card" do |s|
+-    s.source_files  = "Sources/BraintreeCard/*.swift"
++    s.source_files  = "Sources/BraintreeCard/**/*.swift"
+     s.dependency "Braintree/Core"
+     s.resource_bundle = { "BraintreeCard_PrivacyInfo" => "Sources/BraintreeCard/PrivacyInfo.xcprivacy" }
+   end
+@@ -82,7 +82,7 @@ Pod::Spec.new do |s|
+   s.subspec "PayPalMessaging" do |s|
+     s.source_files = "Sources/BraintreePayPalMessaging/*.swift"
+     s.dependency "Braintree/Core"
+-    s.dependency "PayPalMessages", '1.0.0'
++    s.dependency "PayPalMessages", '2.0.0'
+     s.resource_bundle = { "BraintreePayPalMessaging_PrivacyInfo" => "Sources/BraintreePayPalMessaging/PrivacyInfo.xcprivacy" }
+   end
+ 
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7096a5e..ec658a9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,10 @@
+ # Braintree iOS SDK Release Notes
+ 
++## 7.12.0 (2026-09-16)
++* Add support for Xcode 27 / iOS 27
++* BraintreePayPalMessaging
++  * Update `PayPalMessages` dependency to 2.0.0
++
+ ## 7.11.0 (2026-08-28)
+ * BraintreeDataCollector
+   * Fix bug with revoked Magnes certificate (fixes #1857) - Error: The signature of "PPRiskMagnes.xcframework" 
+diff --git a/Cartfile b/Cartfile
+index ce3f51b..18a7f90 100644
+--- a/Cartfile
++++ b/Cartfile
+@@ -1,3 +1,3 @@
+ binary "https://assets.braintreegateway.com/mobile/ios/carthage-frameworks/cardinal-mobile/CardinalMobile.json" == 2.2.5-9
+ binary "https://github.com/paypal/paypal-risk-ios/raw/main/Carthage/PayPalRisk.json" == 5.6.0
+-binary "https://github.com/paypal/paypal-messages-ios/raw/main/Carthage/PayPalMessages.json" == 1.0.0
++binary "https://github.com/paypal/paypal-messages-ios/raw/main/Carthage/PayPalMessages.json" == 2.0.0
+diff --git a/Demo/Application/Features/AmexView.swift b/Demo/Application/Features/AmexView.swift
+new file mode 100644
+index 0000000..9642f57
+--- /dev/null
++++ b/Demo/Application/Features/AmexView.swift
+@@ -0,0 +1,107 @@
++import SwiftUI
++import BraintreeAmericanExpress
++import BraintreeCard
++import BraintreeCore
++
++private enum TestCardNumber: String {
++    case valid = "371260714673002"
++    case insufficientPoints = "371544868764018"
++    case ineligible = "378267515471109"
++}
++
++struct AmexView: View {
++
++    let amexClient: BTAmericanExpressClient
++    let cardClient: BTCardClient
++    let onProgress: (String?) -> Void
++    let onComplete: (BTPaymentMethodNonce?) -> Void
++
++    @State private var loadingCardNumber: TestCardNumber?
++
++    init(
++        amexClient: BTAmericanExpressClient,
++        cardClient: BTCardClient,
++        onProgress: @escaping (String?) -> Void = { _ in },
++        onComplete: @escaping (BTPaymentMethodNonce?) -> Void = { _ in }
++    ) {
++        self.amexClient = amexClient
++        self.cardClient = cardClient
++        self.onProgress = onProgress
++        self.onComplete = onComplete
++    }
++
++    var body: some View {
++        VStack(spacing: 10) {
++            Button("Valid Card") {
++                Task { await getRewards(for: .valid) }
++            }
++            .opacity(loadingCardNumber == .valid ? 0.5 : 1.0)
++            .allowsHitTesting(loadingCardNumber == nil)
++
++            Button("Insufficient Points Card") {
++                Task { await getRewards(for: .insufficientPoints) }
++            }
++            .opacity(loadingCardNumber == .insufficientPoints ? 0.5 : 1.0)
++            .allowsHitTesting(loadingCardNumber == nil)
++
++            Button("Ineligible Card") {
++                Task { await getRewards(for: .ineligible) }
++            }
++            .foregroundColor(.red)
++            .opacity(loadingCardNumber == .ineligible ? 0.5 : 1.0)
++            .allowsHitTesting(loadingCardNumber == nil)
++        }
++        .padding(.horizontal)
++    }
++
++    private func getRewards(for cardNumber: TestCardNumber) async {
++        guard loadingCardNumber == nil else { return }
++        loadingCardNumber = cardNumber
++        defer { loadingCardNumber = nil }
++
++        let card = BTCard(
++            number: cardNumber.rawValue,
++            expirationMonth: "12",
++            expirationYear: CardHelpers.generateFuture(.year),
++            cvv: "1234"
++        )
++
++        onProgress("Tokenizing Card")
++
++        do {
++            let tokenizedCard = try await cardClient.tokenize(card)
++            onProgress("Amex - getting rewards balance")
++
++            let rewardsBalance = try await amexClient.getRewardsBalance(
++                forNonce: tokenizedCard.nonce,
++                currencyISOCode: "USD"
++            )
++
++            if let errorMessage = rewardsBalance.errorMessage {
++                onProgress("Error: \(errorMessage)")
++                return
++            }
++
++            if
++                let rewardsAmount = rewardsBalance.rewardsAmount,
++                let rewardsUnit = rewardsBalance.rewardsUnit,
++                let currencyAmount = rewardsBalance.currencyAmount,
++                let currencyIsoCode = rewardsBalance.currencyIsoCode {
++                onProgress("\(rewardsAmount) \(rewardsUnit), \(currencyAmount) \(currencyIsoCode)")
++            } else {
++                onProgress("Unexpected response from rewards balance")
++            }
++
++            onComplete(tokenizedCard)
++        } catch {
++            onProgress(error.localizedDescription)
++        }
++    }
++}
++
++#Preview {
++    AmexView(
++        amexClient: BTAmericanExpressClient(authorization: "sandbox_tokenization_key"),
++        cardClient: BTCardClient(authorization: "sandbox_tokenization_key")
++    )
++}
+diff --git a/Demo/Application/Features/AmexViewController.swift b/Demo/Application/Features/AmexViewController.swift
+index 6d7d08a..946a0c6 100644
+--- a/Demo/Application/Features/AmexViewController.swift
++++ b/Demo/Application/Features/AmexViewController.swift
+@@ -9,71 +9,24 @@ class AmexViewController: PaymentButtonBaseViewController {
+ 
+     override func viewDidLoad() {
+         super.viewDidLoad()
+-        title = "Amex"
+-    }
+-
+-    override func createPaymentButton() -> UIView {
+-        let validCardButton = createButton(title: "Valid card", action: #selector(tappedValidCard))
+-        let insufficientPointsCardButton = createButton(title: "Insufficient points card", action: #selector(tappedInsufficientPointsCard))
+-        let ineligibleCardButton = createButton(title: "Ineligible card", action: #selector(tappedIneligibleCard))
+ 
+-        let stackView = UIStackView(arrangedSubviews: [validCardButton, insufficientPointsCardButton, ineligibleCardButton])
+-        stackView.axis = .vertical
+-        stackView.alignment = .center
+-        stackView.distribution = .fillEqually
+-        stackView.translatesAutoresizingMaskIntoConstraints = false
+-
+-        return stackView
+-    }
+-
+-    @objc func tappedValidCard() {
+-        Task {
+-            await getRewards(for: "371260714673002")
+-        }
+-    }
+-
+-    @objc func tappedInsufficientPointsCard() {
+-        Task {
+-            await getRewards(for: "371544868764018")
+-        }
+-    }
+-
+-    @objc func tappedIneligibleCard() {
+-        Task {
+-            await getRewards(for: "378267515471109")
+-        }
+-    }
++        title = "Amex"
+ 
+-    private func getRewards(for cardNumber: String) async {
+-        let card = BTCard(
+-            number: cardNumber,
+-            expirationMonth: "12",
+-            expirationYear: CardHelpers.generateFuture(.year),
+-            cvv: "1234"
++        let demoView = AmexView(
++            amexClient: amexClient,
++            cardClient: cardClient,
++            onProgress: progressBlock,
++            onComplete: completionBlock
+         )
++        embed(demoView)
++    }
+ 
+-        progressBlock("Tokenizing Card")
+-        
+-        do {
+-            let tokenizedCard = try await cardClient.tokenize(card)
+-            progressBlock("Amex - getting rewards balance")
+-            
+-            let rewardsBalance = try await amexClient.getRewardsBalance(forNonce: tokenizedCard.nonce, currencyISOCode: "USD")
+-            
+-            if let errorMessage = rewardsBalance.errorMessage {
+-                progressBlock("Error: \(errorMessage)")
+-                return
+-            }
+-            
+-            if
+-                let rewardsAmount = rewardsBalance.rewardsAmount,
+-                let rewardsUnit = rewardsBalance.rewardsUnit,
+-                let currencyAmount = rewardsBalance.currencyAmount,
+-                let currencyIsoCode = rewardsBalance.currencyIsoCode {
+-                progressBlock("\(rewardsAmount) \(rewardsUnit), \(currencyAmount) \(currencyIsoCode)")
+-            }
+-        } catch {
+-            progressBlock(error.localizedDescription)
+-        }
++    // TODO: Remove or change createPaymentButton during full SwiftUI migration
++    // This is to suppress Constraint warnings when the payment button is not overriden.
++    // The actual Payment Button is within the SwiftUI view.
++    override func createPaymentButton() -> UIView {
++        let placeholderView = UIView()
++        placeholderView.translatesAutoresizingMaskIntoConstraints = false
++        return placeholderView
+     }
+ }
+diff --git a/Package.swift b/Package.swift
+index 88d12a6..2fb6889 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -108,8 +108,8 @@ let package = Package(
+         ),
+         .binaryTarget(
+             name: "PayPalMessages",
+-            url: "https://github.com/paypal/paypal-messages-ios/releases/download/1.0.0/PayPalMessages.xcframework.zip",
+-            checksum: "565ab72a3ab75169e41685b16e43268a39e24217a12a641155961d8b10ffe1b4"
++            url: "https://github.com/paypal/paypal-messages-ios/releases/download/2.0.0/PayPalMessages.xcframework.zip",
++            checksum: "d4411c4c49367fc096b8352f2dceba36fc8f601adc6c6d498be92e065cb41f5f"
+         ),
+         .binaryTarget(
+             name: "PayPalCheckout",
+diff --git a/Sources/BraintreeCard/CreditCardGraphQLBody.swift b/Sources/BraintreeCard/Models/CreditCardGraphQLBody.swift
+similarity index 100%
+rename from Sources/BraintreeCard/CreditCardGraphQLBody.swift
+rename to Sources/BraintreeCard/Models/CreditCardGraphQLBody.swift
+diff --git a/Sources/BraintreeCard/CreditCardPOSTBody.swift b/Sources/BraintreeCard/Models/CreditCardPOSTBody.swift
+similarity index 100%
+rename from Sources/BraintreeCard/CreditCardPOSTBody.swift
+rename to Sources/BraintreeCard/Models/CreditCardPOSTBody.swift
+diff --git a/Sources/BraintreeCore/BTCoreConstants.swift b/Sources/BraintreeCore/BTCoreConstants.swift
+index 3845a77..905dac1 100644
+--- a/Sources/BraintreeCore/BTCoreConstants.swift
++++ b/Sources/BraintreeCore/BTCoreConstants.swift
+@@ -5,7 +5,7 @@ import Foundation
+ public class BTCoreConstants: NSObject {
+ 
+     /// :nodoc: This property is exposed for internal Braintree use only. Do not use. It is not covered by Semantic Versioning and may change or be removed at any time.
+-    public static var braintreeSDKVersion: String = "7.11.0"
++    public static var braintreeSDKVersion: String = "7.12.0"
+ 
+     /// :nodoc: This property is exposed for internal Braintree use only. Do not use. It is not covered by Semantic Versioning and may change or be removed at any time.
+     public static let callbackURLScheme: String = "sdk.ios.braintree"
+diff --git a/Sources/BraintreeCore/Info.plist b/Sources/BraintreeCore/Info.plist
+index 24c1aae..d9c0d03 100644
+--- a/Sources/BraintreeCore/Info.plist
++++ b/Sources/BraintreeCore/Info.plist
+@@ -15,11 +15,11 @@
+ 	<key>CFBundlePackageType</key>
+ 	<string>FMWK</string>
+ 	<key>CFBundleShortVersionString</key>
+-	<string>7.11.0</string>
++	<string>7.12.0</string>
+ 	<key>CFBundleSignature</key>
+ 	<string>????</string>
+ 	<key>CFBundleVersion</key>
+-	<string>7.11.0</string>
++	<string>7.12.0</string>
+ 	<key>NSPrincipalClass</key>
+ 	<string></string>
+ </dict>
+diff --git a/Sources/BraintreePayPal/Models/BTPayPalCampaign.swift b/Sources/BraintreePayPal/BTPayPalCampaign.swift
+similarity index 100%
+rename from Sources/BraintreePayPal/Models/BTPayPalCampaign.swift
+rename to Sources/BraintreePayPal/BTPayPalCampaign.swift

@@ -43,7 +43,30 @@ Card tokenization selects GraphQL when the remote Braintree configuration enable
 
 The 3D Secure module performs a v2 lookup and optional Cardinal challenge around a card nonce. It requires the merchant configuration JWT and a request delegate; 3D Secure v1 is explicitly unsupported.
 
+## `7.10.0` Campaign Context and Venmo Identity
+
+Compared with `7.9.0`, `braintree-ios@7.10.0` adds optional campaign-ID objects to the PayPal Checkout initializer (`campaigns: [BTPayPalCampaign]?`) and beta Shopper Insights session initializer (`payPalCampaigns: [ShopperInsightsCampaign]?`). Nonempty arrays encode as `paypal_campaigns` for checkout and `paypalCampaigns` in GraphQL session/recommendation inputs; nil or empty arrays are omitted. Passing campaign IDs does not establish campaign eligibility or create a campaign.
+
+Recommendation results expose optional ISO-8601 `expiresAt` as a string, not an SDK-enforced timer. Vaulted Venmo nonce parsing now fills `externalID` from `details.commonId`; absent data can still yield nil. The non-vaulted payment-context parser continues to use `payerInfo.externalId`. See [[source-github-braintree-ios]] and [[changelog-github-braintree-ios]].
+
+## `7.11.0` Risk Framework Packaging
+
+`braintree-ios@7.11.0` replaces locally bundled PPRiskMagnes with the `paypal-risk-ios` 5.6.0 package/PayPalRisk product (SPM), PayPalRisk 5.6.0 pod (CocoaPods), and hosted PayPalRisk binary manifest (Carthage). Release notes describe a revoked-signing-certificate fix and a static-to-dynamic framework transition. Carthage consumers must update XCFrameworks and embed PPRiskMagnes; source import remains `PPRiskMagnes`. The snapshot establishes declarations and migration guidance, not binary signature/build/runtime proof. See [[source-github-braintree-ios]].
+
+## `7.12.0` Compatibility and Messaging Dependency
+
+`braintree-ios@7.12.0` release notes announce Xcode 27/iOS 27 support; SPM and CocoaPods still declare an iOS 16 minimum in this snapshot. PayPalMessages moves from 1.0.0 to 2.0.0 across SPM, CocoaPods and Carthage. This dependency update alone does not establish new messaging eligibility or binary behavior. Card request-model and campaign-model paths move without content changes; CocoaPods expands its Card source glob recursively. The Amex demo becomes SwiftUI, tokenizes a card, requests rewards balance and passes the tokenized nonce to the completion callback on its non-error response path. See [[source-github-braintree-ios]]; not build/payment proof.
+
+## `7.13.0` iOS 15 and PayPal Return Handling
+
+`braintree-ios@7.13.0` lowers the declared minimum from iOS 16 to iOS 15 in SPM, CocoaPods, README and migration guidance; Xcode 16.2 and Swift 5.10 remain the documented floor. Older iOS 16 declarations above describe their retained versions, not the new release.
+
+PayPal return tokenization now runs on MainActor and wraps its account POST in a finite UIKit background task. Expiry cancels the request task and ends background execution; cleanup also ends it on completion. CancellationError or URLError.cancelled maps to `BTPayPalError.returnBackgroundTaskExpired` (code 15), without an independent expiry-cause check. Do not treat this error alone as proof of OS expiry or promise unlimited background completion. Other request errors retain their identity.
+
+Locale, card-brand regex and CVV-delay implementations adopt iOS 15-compatible APIs. The Apple Pay demo wraps the native PKPaymentButton, and its recurringPaymentRequest remains explicitly gated to iOS 16+. A lower SDK floor does not enable that recurring metadata on iOS 15. See [[source-github-braintree-ios]] and [[changelog-github-braintree-ios]]; not build or payment proof.
+
 ## Prebuilt iOS Drop-in
+
 
 `BraintreeDropIn@9.14.0` is an independently versioned UIKit payment-selection package, not part of the `braintree-ios@7.9.0` release. It supports iOS 12+, Xcode 15+, and Swift 5.9 and requires the older `braintree_ios` 5.27 dependency line. Do not apply modular v7 behavior to this Drop-in baseline without a compatible release.
 

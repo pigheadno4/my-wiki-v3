@@ -1,5 +1,21 @@
 # Wiki Log
 
+## [2026-10-04] ingest | `braintree-ios@7.13.0`
+
+- Serial iOS 15/PayPal return-handling delta with version-qualified Apple Pay and cancellation limits. Prior history preserved; details [[braintree-log]] and [[changelog-github-braintree-ios]]. No commit or push.
+
+## [2026-10-04] ingest | `braintree-ios@7.12.0`
+
+- Serial compatibility/messaging dependency delta and Amex demo evidence; history preserved. Details [[braintree-log]] and [[changelog-github-braintree-ios]]. No commit or push.
+
+## [2026-10-04] ingest | `braintree-ios@7.11.0`
+
+- Serial risk-packaging delta and Carthage embedding guidance; history preserved. Details [[braintree-log]] and [[changelog-github-braintree-ios]]. No commit or push.
+
+## [2026-10-04] ingest | `braintree-ios@7.10.0`
+
+- Serial delta from 7.9.0: campaign context, recommendation expiry and Venmo vault identity. Historical baseline preserved; details [[braintree-log]] and [[changelog-github-braintree-ios]]. No commit or push.
+
 ## [2026-10-04] ingest | Braintree website C30
 
 - Ten website sources independently reviewed and promoted through five shared rolling child slots; first pass 6/10, ten full plus four targeted reviews, no repeated full review. Catalog: 272 sources (255 website + 17 GitHub). Details and fixed query/close evidence: [[braintree-log]], [[braintree-index]] and `tracking/ingest/braintree/braintree-campaign-30/`. Raw unchanged; no commit or push.
