@@ -1,9 +1,10 @@
 ---
 title: "GitHub: Adyen/adyen-react-native"
 type: source
-date_ingested: 2026-08-02
+date_ingested: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json"
   - "github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json"
 tags: [adyen, react-native, mobile-sdk, drop-in, components, sessions, apple-pay, google-pay, github-repository]
 ---
@@ -99,6 +100,12 @@ The exact release adds standalone PayByBank and Apple Pay `merchantCapabilities`
 
 It also updates Adyen Android to `5.19.0`, Adyen iOS to `5.25.1`, and the development React Native baseline to `0.85`. These are the changes attributable to the retained release note. Broader Drop-in, Component, Session, action, card, and configuration findings describe accumulated implementation present at the exact SHA.
 
+## `2.12.0` release-note revision collected 2026-10-04
+
+The revised upstream note adds a dependency table linking Adyen Android `5.19.0` and Adyen iOS `5.25.1`, and bolds the same versions in the existing bullets. These versions and feature statements were already present in the earlier note. This is a documentation revision, not a new package release or dependency upgrade: SHA `2912c913266b2d1df73882980303b563ea04ab63` is unchanged, with all 301 retained files unchanged in the packet. Existing integration guidance and historical baseline remain valid within their original evidence boundaries.
+
+Both dated release-note records remain available below; [[changelog-github-adyen-react-native]] records the revision separately from the original release.
+
 ## Integration guidance
 
 - Choose Drop-in for the prebuilt payment-method flow and Components when the application owns selection or layout.
@@ -117,6 +124,8 @@ It also updates Adyen Android to `5.19.0`, Adyen iOS to `5.25.1`, and the develo
 
 ## Raw sources
 
+- Revised release manifest: `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json`
+- Revised release notes: `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/release-notes.md`
 - Snapshot manifest: `raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json`
 - Release manifest: `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-08-01/manifest.json`
 - Release notes: `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-08-01/release-notes.md`

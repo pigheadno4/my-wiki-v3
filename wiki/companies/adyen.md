@@ -67,6 +67,8 @@ The Swift package metadata has two upstream contradictions: its podspec says Apa
 
 The retained `@adyen/react-native@2.12.0` baseline wraps Adyen iOS `5.25.1` and Adyen Android `5.19.0`. It exposes Drop-in, individual Components, Sessions and advanced callbacks, follow-up actions, embedded Fabric card UI, Apple Pay, Google Pay, instant payments, and client-side encryption.
 
+The release-note revision collected 2026-10-04 adds a linked dependency table and version formatting only. The `2.12.0` SHA, native dependency versions and retained code are unchanged; it does not require an integration migration. [[source-github-adyen-react-native]] [[changelog-github-adyen-react-native]]
+
 The wrapper does not merge the native repositories' histories. Native behavior remains package- and version-qualified, and final payment status remains a merchant-server or Session concern. Apple Pay recurring request configuration is wallet-sheet metadata, not proof of a recurring billing engine.
 
 ## Node.js server surface

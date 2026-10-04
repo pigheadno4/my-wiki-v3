@@ -1,9 +1,10 @@
 ---
 title: "GitHub changelog: Adyen/adyen-react-native"
 type: source
-date_ingested: 2026-08-02
+date_ingested: 2026-10-04
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json"
   - "github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json"
 tags: [adyen, react-native, mobile-sdk, changelog, github-repository]
 ---
@@ -11,6 +12,21 @@ tags: [adyen, react-native, mobile-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `Adyen/adyen-react-native`. Cumulative implementation knowledge belongs in [[source-github-adyen-react-native]] and the linked immutable evidence.
+
+## `@adyen/react-native@2.12.0` note revision (collected 2026-10-04)
+
+**Ingest mode:** Documentation-only delta. Release identity and SHA remain `@adyen/react-native@2.12.0` at `2912c913266b2d1df73882980303b563ea04ab63`; the original release date remains 2026-07-13.
+
+**Difference from the 2026-08-01 note:** Added a dependency table with native release links for Android `5.19.0` and iOS `5.25.1`; bolded those versions in existing bullets. No feature or dependency-version changes. All 301 retained source files are unchanged; no new source snapshot is needed.
+
+**Merchant/developer impact:** No integration or migration action follows from this note revision. Native dependency boundaries and all historical implementation findings remain unchanged in [[source-github-adyen-react-native]].
+
+### Revision evidence
+
+- `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json`
+- `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/release-notes.md`
+- Prior note: `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-08-01/release-notes.md`
+- Unchanged snapshot: `raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json`
 
 ## `@adyen/react-native@2.12.0` (2026-07-13)
 

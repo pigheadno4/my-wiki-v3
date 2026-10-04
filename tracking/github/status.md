@@ -686,6 +686,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.5.0/2026-09-20/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.4.0--2.5.0/comparison.json)
 
+## `github-318cfc2eff0d537cfc99`
+
+- Repository: `adyen/adyen-react-native`
+- SHA: `2912c913266b2d1df73882980303b563ea04ab63`
+- Collection date: `2026-10-04`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `ad708afbdb100af76fa232c6fc94be71e7eecd2cf16ec00f8e99ae7af9895fb7`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-react-native/ingest-packets/github-318cfc2eff0d537cfc99/packet.md)
+- Review priority: `high`
+- Required reading: `5` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/react-native@2.12.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json)
+  Comparison: Not applicable
+
 ## `github-3393b966354c2316a5fd`
 
 - Repository: `stripe/stripe-android`

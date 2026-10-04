@@ -6,6 +6,11 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | `@adyen/react-native@2.12.0` note revision
+
+- Approved documentation-only delta for `github-318cfc2eff0d537cfc99`: revised release notes add a linked Android 5.19.0/iOS 5.25.1 dependency table and bold version formatting. Same exact SHA and 301 unchanged retained files; no new release, dependency upgrade or feature claim.
+- Preserved baseline and original notes; updated cumulative source/changelog, company provenance, index and logs. Concept audit found no new durable facts; source count unchanged. Snapshot/file/note hashes verified. No build, SDK/payment test, commit or push. Details: [[source-github-adyen-react-native]], [[changelog-github-adyen-react-native]].
+
 ## [2026-10-02] ingest | adyen/adyen-web `@adyen/adyen-web@6.46.0`
 
 - Approved additive full ingest of `github-745e3ef633e593f66922`, exact SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`, with one-item focused reading: 30 changed retained files and seven approved supplements fully read; affected prior context reviewed; 192 unchanged files and inventories checked mechanically. All 443 prior/current retained hashes and seven supplemental hashes match.

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-04] ingest | `@adyen/react-native@2.12.0` note revision
+
+- Documentation-only delta: linked native dependency table and formatting; same SHA, 301 unchanged retained files, no integration change. Historical baseline preserved. Details [[adyen-log]] and [[changelog-github-adyen-react-native]]. No commit or push.
+
 ## [2026-10-04] ingest | `braintree-android@5.33.0`
 
 - Serial Compose CardFields/controller delta with nonce/server handoff and explicit submit/saved-state caveats; preserved older history. Details [[braintree-log]] and [[changelog-github-braintree-android]]. Focused reading approved for this release only; no Android build/UI/payment test, commit or push.
