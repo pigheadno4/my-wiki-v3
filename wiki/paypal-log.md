@@ -6,6 +6,62 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-04] ingest | SDK release assembly `5.0.580`
+
+- Serial delta/focused `github-e9f3203a4f2bd9735db9`, SHA `27aa46b6623c9b20a74d5c58ce060be25be68dc4`: Checkout Components `5.0.435` -> `5.0.436`; the other eleven direct pins remain unchanged. Common remains `1.0.62`, Messaging remains `1.98.0`.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.579`
+
+- Serial delta/focused `github-b699a689cc2d6c140468`, SHA `da10cb8de5930be798cf44881a175c3c521326c2`: Common Components `1.0.61` -> `1.0.62`; Messaging Components `1.97.0` -> `1.98.0`; other ten direct pins unchanged. Common Components behavior requires independent exact-version evidence; Messaging behavior remains owned by [[source-github-paypal-messaging-components]].
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.578`
+
+- Serial delta/focused `github-09185ca415a365fb4a0b`, SHA `2e5394ce06e946b5e51b2aa34f201ecc9b5c5e48`: Common Components `1.0.60` -> `1.0.61`; the other eleven direct pins remain unchanged. Common Components implementation is absent from this capsule; its behavioral delta requires independent exact-version evidence.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.577`
+
+- Serial delta/focused `github-1a44f9fa6759ea7fdefe`, SHA `627d37cee3a23ba7b256eeff8f3e9ca425208465`: Checkout Components `5.0.434` -> `5.0.435`; Messaging Components `1.96.0` -> `1.97.0`; other ten direct pins unchanged.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.576`
+
+- Serial delta/focused `github-cc917488260ace966c80`, SHA `7f58511a2151384f823163b30699ec20adad1c61`: All twelve direct pins remain unchanged; the retained package edit is version-only.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.575`
+
+- Serial delta/focused `github-5bd7f13efccaa259fdaa`, SHA `8924d8f8be85332d841d8a4dd527a0b1871996bd`: All twelve direct pins remain unchanged; the retained package edit is version-only.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.574`
+
+- Serial delta/focused `github-6a609899adaa579e3c22`, SHA `5f04b0c4743893851fa6465a4ed14179d5024fbc`: Checkout Components `5.0.433` -> `5.0.434`; the other eleven direct pins remain unchanged.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.573`
+
+- Serial delta/focused `github-08106ca1ff7a592595f2`, SHA `7597acd9ddb49fa50c9948252768401a987c4fb8`: Checkout Components `5.0.432` -> `5.0.433`; Messaging Components `1.95.1` -> `1.96.0`; other ten direct pins unchanged.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.572`
+
+- Serial delta/focused `github-c0cd3d8649c017f9eb13`, SHA `f0dd88b1e8e7d9b86fbe406501c7fc04b1903761`: Checkout Components advances `5.0.431` -> `5.0.432`; the other eleven direct pins remain unchanged.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.571`
+
+- Serial delta/focused `github-7371cebfb43ca8ad12ec`, SHA `3a1548a1efda9e86a49c9bfe459e07917c14ece4`: All twelve direct component pins remain unchanged; the retained package edit is version-only.
+- Full changed/prior packages, release records/comparison and cumulative wiki history; manifest hashes and excluded inventories verified mechanically under the approved exception. Concept first, additive history and company/catalog/logs; source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. No SDK execution, commit or push.
+
+## [2026-10-04] ingest | SDK release assembly `5.0.570`
+
+- Serial delta ingest of `github-86090f84b479de0419dc`, `@paypal/sdk-release@5.0.569` -> `5.0.570`, SHA `0fcbea21c0ee4fb63c0c5ed6441eb51ff33832f8`. Both packet formats and all ten assigned paths read in full, including cumulative history, manifests, comparison and changed package.
+- Checkout `5.0.428` -> `5.0.431`; Messaging `1.94.0` -> `1.95.1`; other ten direct pins and retained tooling unchanged. No release notes, runtime API claim or deployed-traffic proof. Excluded CDN/lockfile changes are not characterized as unchanged behavior.
+- Concept-first additive updates; earlier baseline preserved and stale local-version wording qualified as historical. Source count unchanged. Receipt: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-10-04.md`. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]]. No build, payment test, commit or push.
+
 ## [2026-10-04] ingest | Messaging Components `1.98.0`
 
 - Additive full ingest of `github-93c29d339b648ea8820e`, `@paypal/messaging-components@1.97.0` to `1.98.0`, SHA `a639ec71494d3278684f5896017a426ed1fbfcd1`, with approved item-specific focused reading. Full mode follows the reviewed capsule count budget increase to 760, not a detected breaking API.

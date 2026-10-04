@@ -57,7 +57,7 @@ Generated: `2026-10-04`
 | paypal | `paypal/paypal-messages-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `collect-baseline` |
 | paypal | `paypal/paypal-php-server-sdk` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-24 | ingested | 2026-09-24 | `collect-baseline` |
 | paypal | `paypal/paypal-sdk-logos` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-09 | ingested | 2026-09-09 | `collect-baseline` |
-| paypal | `paypal/paypal-sdk-release` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-21 | ingested | 2026-09-21 | `collect-baseline` |
+| paypal | `paypal/paypal-sdk-release` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `wait` |
 | paypal | `paypal/paypal-typescript-server-sdk` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-09-20 | ingested | 2026-10-20 | `wait` |
 | paypal | `paypal/postman-collections` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `collect-baseline` |
 | stripe | `stripe/react-stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-09-27 | ingested | 2026-10-04 | `collect-baseline` |

@@ -174,7 +174,32 @@ The independent `paypal/paypal-sdk-release` repository records the component bil
 
 This manifest is release-composition evidence, not merchant eligibility or component-behavior evidence. Its pinned Checkout Components `5.0.428` contains the short-lived screen-reader title fix; `5.0.429` reverted that fix, while `5.0.430` and `5.0.431` add no authored source change. The separately ingested `5.0.432` instead adds an iframe aria-label. See [[source-github-paypal-sdk-release]].
 
+### SDK release assembly update: `@paypal/sdk-release@5.0.570`
+
+The `5.0.569` to `5.0.570` manifest comparison advances Checkout Components `5.0.428` to `5.0.431` and Messaging Components `1.94.0` to `1.95.1`; the other ten direct pins remain unchanged. The retained wrapper, README and workflows are byte-identical. This updates the component bill of materials, not a merchant-facing API or proof of deployed traffic. Component behavior still requires independently version-qualified evidence. Historical assembly `5.0.569` remains valid for its own version. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.571` (after `5.0.570`): All twelve direct component pins remain unchanged; the retained package edit is version-only.  Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.572` (after `5.0.571`): Checkout Components advances `5.0.431` -> `5.0.432`; the other eleven direct pins remain unchanged.  Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.573` (after `5.0.572`): Checkout Components `5.0.432` -> `5.0.433`; Messaging Components `1.95.1` -> `1.96.0`; other ten direct pins unchanged.  Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.574` (after `5.0.573`): Checkout Components `5.0.433` -> `5.0.434`; the other eleven direct pins remain unchanged.  Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.575` (after `5.0.574`): All twelve direct pins remain unchanged; the retained package edit is version-only.  Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.576` (after `5.0.575`): All twelve direct pins remain unchanged; the retained package edit is version-only.  Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.577` (after `5.0.576`): Checkout Components `5.0.434` -> `5.0.435`; Messaging Components `1.96.0` -> `1.97.0`; other ten direct pins unchanged.  Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.578` (after `5.0.577`): Common Components `1.0.60` -> `1.0.61`; the other eleven direct pins remain unchanged. Common Components implementation is absent from this capsule; its behavioral delta requires independent exact-version evidence. Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.579` (after `5.0.578`): Common Components `1.0.61` -> `1.0.62`; Messaging Components `1.97.0` -> `1.98.0`; other ten direct pins unchanged. Common Components behavior requires independent exact-version evidence; Messaging behavior remains owned by [[source-github-paypal-messaging-components]]. Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.580` (after `5.0.579`): Checkout Components `5.0.435` -> `5.0.436`; the other eleven direct pins remain unchanged. Common remains `1.0.62`, Messaging remains `1.98.0`. Composition only; component behavior and deployment are not established by these pins. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
+
 
 The exact `8.4.2` package snapshot exposes the v6 loader from the `./sdk-v6` export. Its TypeScript surface requires `clientToken` for `createInstance()` and conditionally adds methods for three declared components: `paypal-payments`, `venmo-payments`, and `paypal-legacy-billing-agreements`. The separately versioned React package appears in the same monorepo snapshot only as repository context; it is not part of the `@paypal/paypal-js@8.4.2` release identity.
 
