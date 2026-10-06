@@ -163,6 +163,10 @@ class SecretFindingsBlocked(ValueError):
         object.__setattr__(self, "_sealed", True)
 
     def __setattr__(self, name: str, value: object) -> None:
+        # Python context managers and test runners update exception tracebacks.
+        if name == "__traceback__":
+            BaseException.__setattr__(self, name, value)
+            return
         if getattr(self, "_sealed", False):
             raise AttributeError("SecretFindingsBlocked is immutable")
         object.__setattr__(self, name, value)

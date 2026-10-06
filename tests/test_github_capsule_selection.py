@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from dataclasses import FrozenInstanceError
+from contextlib import contextmanager
 from pathlib import Path
 from unittest import mock
 
@@ -1470,6 +1471,34 @@ class CapsuleSelectionTests(unittest.TestCase):
             raise error
         except blocked_type as caught:
             self.assertIs(error, caught)
+
+    def test_secret_blocking_error_survives_context_manager_traceback_updates(self):
+        finding = SecretFinding(
+            "src/secret.txt", "a" * 40, "github-token-v1", "1" * 64, "text-secrets-v1"
+        )
+        error = github_capsule_selection.SecretFindingsBlocked((finding,), (finding,))
+
+        @contextmanager
+        def managed():
+            yield
+
+        caught_error = None
+        try:
+            with managed():
+                raise error
+        except Exception as caught:
+            caught_error = caught
+
+        self.assertIs(error, caught_error)
+        self.assertIsNotNone(error.__traceback__)
+        error.__traceback__ = None
+        self.assertIsNone(error.__traceback__)
+        self.assertEqual((finding,), error.findings)
+        self.assertEqual((finding,), error.unallowlisted_findings)
+        with self.assertRaises(AttributeError):
+            error._evidence = None
+        with self.assertRaises(AttributeError):
+            error.args = ("changed",)
 
     def test_secret_blocking_error_rejects_duplicate_normative_identities(self):
         blocked_type = github_capsule_selection.SecretFindingsBlocked
