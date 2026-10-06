@@ -1,0 +1,54 @@
+{
+  "job_id": "articles-control-panel-users-roles-scim-scim-faq",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree SCIM FAQ\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/users-roles/scim/scim-faq\"\nraw_files:\n  - \"braintree/articles/control-panel/users-roles/scim/scim-faq-2026-09-16.md\"\ntags: [braintree, scim, sso, identity-management, idp, control-panel, users, roles]\n---\n\n## Overview\n\nThis Braintree FAQ describes merchant administration of SSO users and group-backed access through SCIM, including the division of responsibility between an identity provider (IdP) and the Braintree Control Panel. It is an operational FAQ for the collected page snapshot, not the onboarding procedure, a complete SCIM specification, proof of current merchant eligibility, or confirmation that a particular synchronization or lifecycle operation completed.\n\n## Key takeaways\n\n- After SCIM is enabled for a merchant, the page makes the IdP the change surface for SCIM-managed SSO users: Braintree and merchant admins cannot create or edit SSO users or convert non-SSO users to SSO in the Control Panel. Non-SSO users remain managed only in the Control Panel, and only SSO users can be SCIM users.\n- The page maps SCIM groups to membership in Braintree roles, merchant accounts, grant-all-merchant-accounts access and API-access groups. IdPs may manage membership, but they may not edit, add or remove the Braintree application groups themselves; changes to the underlying roles and merchant accounts remain Control Panel operations. A SCIM group's display name is separate from its associated role or merchant-account name, so renaming one does not rename the other, and admin-role names cannot be changed.\n- Lifecycle behavior is provider- and action-specific. The page says Braintree matches SSO/SAML identities by email, so an Okta email or username change creates a user under the new email and suspends the old Braintree user rather than editing it. It also says removing an Okta user from the Braintree application suspends the user, while Okta does not send the delete call needed for permanent Braintree deletion.\n- The page contains a material offboarding tension: its main flow calls SCIM onboarding a one-way street, while the FAQ says Braintree can roll a merchant off. The FAQ warns that changes made independently while SCIM is disabled can make later re-enablement and re-synchronization difficult, especially at high user/group volume. Treat roll-off and re-enablement as Braintree-assisted exception handling, not a documented self-service or lossless reversal.\n- Group assignment can change privileges immediately. Linking an empty Okta push group to an imported app group removes every member from the associated Braintree role, including Account Admin in the example. The page separately requires an Okta group distinct from application assignment for Push Groups and warns that the wrong assignment flow can lock users out or grant excessive privileges.\n\n## Detail locators\n\n- SCIM definition, merchant/IdP purpose and bulk provisioning scope: `## What is SCIM?` and `## Why SCIM?`, lines 27-34.\n- Token handoff, IdP-to-Braintree synchronization and SSO versus non-SSO administration boundaries: `## How does SCIM work?`, lines 37-39.\n- Roll-off/re-enablement tension and disabled Control Panel actions for SSO users: `## Troubleshooting and FAQs`, lines 47-58.\n- Pending-user import, Push Groups recovery, empty-group destructive effect and missing-member error: lines 60-83.\n- Login checks, required role assignment and SSO metadata/username-format diagnostics: lines 86-107.\n- Okta OIN cutover, email identity matching and separate SCIM-group versus role/account naming: lines 116-133.\n- Okta suspension-versus-deletion behavior, group-structure permissions and Push Groups assignment warning: lines 136-150.\n- Entra naming, multi-merchant Okta name collisions and Entra Entity ID diagnostics: lines 152-170.\n\n## Related\n\n- [[braintree]]\n- [[braintree-control-panel]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/users-roles/scim/scim-faq-2026-09-16|Braintree SCIM FAQ (collected 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "SCIM, or the System for Cross-domain Identity Management specification, is an open standard for managing user identity information. SCIM provides a defined schema for representing users and groups and a RESTful API to run CRUD operations on those user and group resources.",
+      "location": "## What is SCIM?, line 29"
+    },
+    {
+      "text": "In addition, after you're on SCIM, you won't be able to edit/create/delete SSO users on the BT control panel. This is to keep us and your IdP in sync. For your non-SSO users, they will stay non-SSO and will still be managed using the BT control panel (and only the BT control panel). Only SSO users can be SCIM users.",
+      "location": "## How does SCIM work?, line 39"
+    },
+    {
+      "text": "However, if you're not satisfied with our SCIM product, or something goes wrong, we can roll you off of SCIM. However, once we roll you off, it can be somewhat messy to roll you back onto SCIM later.",
+      "location": "## Troubleshooting and FAQs > What if there's a problem with my SCIM integration and I want to roll off?, line 49"
+    },
+    {
+      "text": "Be cautious: linking an empty Okta group to an app group, such as the Account Admin Role group, automatically removes all members from the account admin role.",
+      "location": "## Troubleshooting and FAQs > When I set up the push groups, line 78"
+    },
+    {
+      "text": "Consequently, when you change the email or username of your Okta user, our system will create a new user with the updated email address rather than editing the existing user. Additionally, this will result in the suspension of the old BT user associated with the previous email address.",
+      "location": "## Troubleshooting and FAQs > I changed the email or username of an Okta user, line 128"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-scim-faq-control-panel-source-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-articles-control-panel-users-roles-scim-scim-faq]] - 2026-09-16 Braintree SCIM operations FAQ for IdP-controlled SSO-user lifecycle and group-backed role, merchant-account and API-access membership, with Control Panel ownership of non-SSO users and role/account structure; preserves provider-specific lifecycle limits, destructive Push Groups warnings and the page's one-way-onboarding versus assisted-roll-off tension",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw says onboarding is a one-way street but later says Braintree can roll a merchant off; the source entry narrows this to Braintree-assisted exception handling and does not infer self-service or lossless reversal.",
+          "This collected FAQ is not proof of current merchant eligibility, successful synchronization, lifecycle completion or a broader SCIM policy beyond Braintree's described integration."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/users-roles/scim/scim-faq-2026-09-16.md",
+  "raw_sha256": "5e6ba38c3c475d58eed59a5172593fe39b81c53263e25a56850e9ec19c7c722d",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "graphql-guides-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Transactions Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/transactions\"\nraw_files:\n  - \"braintree/graphql/guides/transactions-2026-09-16.md\"\ntags: [braintree, graphql, transactions, authorization, capture, refunds]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide describes GraphQL operations for creating, advancing, reversing, refunding and finding transaction records. It covers immediate charge, separate authorization and capture, partial capture, state-dependent reversal, direct refund, void, refund reversal, detached refund, search and node lookup. It is a documentation snapshot, not a language-SDK implementation or an exact-schema baseline, and it does not establish current production deployment, merchant eligibility, payment-method support, transaction success, settlement or funding.\n\n## Key takeaways\n\n- `chargePaymentMethod` creates a transaction and captures immediately, while `authorizePaymentMethod` followed by `captureTransaction` separates the authorization hold from capture. The capture request uses the authorized transaction ID, and the guide says an authorization has only a limited number of days in which it can be captured.\n- The guide describes partial capture as child transactions against a parent authorization. Its own payment-method scope is inconsistent: the opening says the flow is available for PayPal and Venmo, while the dedicated partial-capture subsection says it is available for PayPal transactions. Treat support as unresolved in this snapshot. The subsection describes successful child states as `SETTLING`, `SUBMITTED_FOR_SETTLEMENT`, or `SETTLED`, with the parent at `SETTLEMENT_PENDING`.\n- A mutation returning no errors is not proof that a transaction was created successfully. Declines or fraud settings can instead produce a transaction with a failure status, and other errors can return no transaction object or only a partial object. Successful transaction status also changes over time; authorization, settlement submission, settling and settlement remain distinct events.\n- `reverseTransaction` attempts a full reversal whose result depends on settlement state: either the existing transaction becomes `VOIDED` or a new linked refund is returned. `refundTransaction` is the direct route for a known settled transaction, a partial refund or a separate refund order ID; the guide limits refundable transactions to `SETTLING` or `SETTLED` and not already fully refunded. `voidTransaction` is the pre-settlement cancellation route. The guide also covers `reverseRefund` and detached card or US-bank-account refund routes, with a displayed detached credit-card example.\n- Transactions can be searched through a `TransactionSearchInput` example or retrieved by global ID through a node query. The displayed selection sets and filters are examples, not a complete or guaranteed schema.\n\n> [!warning] Consequential and snapshot boundaries\n> Charging a single-use payment method consumes it so it can no longer be looked up, charged or vaulted. Capture is time-limited after authorization, and reverse, refund, void, refund-reversal and detached-refund mutations change transaction or monetary state; callers must use the applicable current status and operation prerequisites. The curl sample targets the sandbox endpoint, uses placeholder Basic credentials and sends `Braintree-Version: 2019-01-01`; it is an example from this collected page, not production-deployment evidence, a current-version recommendation or proof of API compatibility.\n\n## Detail locators\n\n- Creation modes and the opening PayPal/Venmo partial-capture statement: `## Creating Transactions`, lines 17-33.\n- Charge prerequisite, single-use consumption, mutation/variables/curl examples and displayed successful statuses: `### Charging a Payment Method`, lines 36-103.\n- Separate authorization/capture examples, object identity, displayed states and limited capture window: `### Using Separate Authorization and Capture`, lines 105-187.\n- Dedicated PayPal-only partial-capture statement, parent/child object and status behavior, and example blocks: `### Using Multiple Partial Capture`, lines 189-240.\n- Transaction state evolution, failure statuses and missing-or-partial-object error handling: `### Transaction Statuses` and `### Error Handling`, lines 245-290.\n- State-dependent full reversal, refund criteria and examples: `## Reversing or Refunding a Transaction` through `### Refunding a Transaction`, lines 293-516.\n- Pre-settlement void examples and displayed error scenarios: `### Voiding a Transaction`, lines 518-672.\n- Refund reversal, operation-selection table and detached-refund routes/example: `### Reversing Refunds` through `### Detached Refunds`, lines 674-813.\n- Search and node-query example shapes: `## Searching For Transactions`, lines 815-939.\n- Exact commit-qualified GraphQL operation shapes, nullability, enums and documented constraints are separately retained in `raw/github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/files/schema.graphql` via [[source-github-graphql-api]]; they must not be inferred from these website examples.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Exact commit-qualified schema: [[source-github-graphql-api]]\n- Provider lifecycle stages: [[source-braintree-transaction-lifecycle]]\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/transactions-2026-09-16|Braintree GraphQL Transactions guide]] - complete collected website page for GraphQL transaction creation, lifecycle actions, reversal/refund operations, errors and lookup examples\n",
+  "quotes": [
+    {
+      "text": "The[chargePaymentMethod](/braintree/graphql/reference/#Mutation--chargePaymentMethod)mutation creates a transaction and captures funds immediately, beginning the[process](/braintree/articles/get-started/transaction-lifecycle)of actually[transferring money from the customer to your bank account](/braintree/articles/get-started/get-paid).",
+      "location": "raw/braintree/graphql/guides/transactions-2026-09-16.md:22 under ## Creating Transactions"
+    },
+    {
+      "text": "The[authorizePaymentMethod](/braintree/graphql/reference/#Mutation--authorizePaymentMethod)and[partialCaptureTransaction](/braintree/graphql/reference/#Mutation--partialCaptureTransaction)mutations create a transaction and capture the funds in multiple partial amounts. This is available for both PayPal and Venmo transactions.",
+      "location": "raw/braintree/graphql/guides/transactions-2026-09-16.md:25 under ## Creating Transactions"
+    },
+    {
+      "text": "This mutation is available for PayPal transactions.",
+      "location": "raw/braintree/graphql/guides/transactions-2026-09-16.md:191 under ### Using Multiple Partial Capture"
+    },
+    {
+      "text": "If you charge a single-use payment method, this will consume it and you will no longer be able to look up, charge, or vault that payment method.",
+      "location": "raw/braintree/graphql/guides/transactions-2026-09-16.md:40 under ### Charging a Payment Method"
+    },
+    {
+      "text": "Even if the [chargePaymentMethod](/braintree/graphql/reference/#Mutation--chargePaymentMethod) or [authorizePaymentMethod](/braintree/graphql/reference/#Mutation--authorizePaymentMethod) mutation doesn't return any errors, the transaction may not have been created successfully. For instance, the customer's card-issuing bank may have declined the authorization, or your fraud protection settings may have blocked it. In this case, the [Transaction](/braintree/graphql/reference/#Object--Transaction) will have a failure status, such as Processor Declined or Gateway Rejected, and further information on what caused the failure. You can then use this to decide how to handle the failure and how to report it back to your customer.",
+      "location": "raw/braintree/graphql/guides/transactions-2026-09-16.md:247 under ### Transaction Statuses"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "graphql-guides-transactions-reciprocal-server-sdk",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-transactions]] - 2026-09-16 unversioned website GraphQL transaction guide for immediate charge, separate authorization/capture, internally conflicted PayPal-versus-PayPal-and-Venmo partial-capture scope, state-qualified reversal/refund/void, failure payloads and transaction lookup; distinct from language-SDK implementations and the exact commit-qualified GraphQL schema",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide internally conflicts on partial-capture method scope: its opening says PayPal and Venmo, while the dedicated subsection says PayPal only; retain the conflict rather than resolving it.",
+          "Do not transfer the website guide's examples or its Braintree-Version 2019-01-01 sandbox sample into an SDK-version, exact-schema, production-deployment or payment-success guarantee."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/transactions-2026-09-16.md",
+  "raw_sha256": "4c949698eb52382dc3582cec5435c414f9c343094db3d2643e90229708f23f43",
+  "status": "candidate_ready"
+}

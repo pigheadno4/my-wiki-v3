@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-05] ingest | Braintree website C40
+
+- Fifty retrieval sources; first pass35/50, fifteen targeted corrections, no repeated full review; fixed queries100/100. Catalog502=485website+17GitHub. Immutable raw and qualified conflicts retained; rolling ingestion and ready-query overlap. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-40/`. No commit/push.
+
 ## [2026-10-04] ingest | Braintree website C39
 
 - Twenty NAB and general disputes/risk/compliance retrieval sources; first pass19/20, one targeted correction, fixed queries40/40. Catalog452=435website+17GitHub. Raw unchanged; scoped conflicts retained. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-39/`. No commit/push.

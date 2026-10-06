@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-05] ingest | Braintree website C40
+
+- Fifty pinned website raws: 29 articles and 21 GraphQL guides, fully read and independently reviewed through ten shared rolling child slots. Fifty retrieval sources and eight existing reciprocal concepts promoted; no new concept. Catalog502=485website+17GitHub; raw unchanged.
+- First pass35/50; fifty full initial reviews and fifteen targeted correction reviews, zero repeated full reviews or coordinator semantic repairs. Historical network dates/regions/actors, SSO/SCIM lifecycle, API input-versus-consumption, error conditions, fraud eligibility and legacy support conflicts remain qualified rather than resolved by inference.
+- Fixed queries100/100 passed across thirteen disjoint groups. Incremental concept-before-source promotion overlapped ready queries with later ingestion; company/provider catalogs updated once at close. All primary hashes, canonical ownership, accepted content, approved reciprocal updates and raw/concept/index routes passed structural checks. Apple Pay's accepted candidate lacks a terminal newline; canonical differs only by that formatting terminator.
+- Evidence, timing and final typed validation: `tracking/ingest/braintree/braintree-campaign-40/`. No collection, GitHub ingestion, rule/code change, commit, push or next-campaign execution.
+
 ## [2026-10-04] ingest | Braintree website C39
 
 - Twenty website raws: eight NAB account/processor and twelve general disputes/risk/compliance pages, fully read and independently reviewed through ten shared rolling child slots. Twenty exact sources and seven existing concepts promoted; no new concept. Catalog452=435website+17GitHub; raw unchanged.

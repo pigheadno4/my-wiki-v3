@@ -1,0 +1,48 @@
+{
+  "job_id": "graphql-guides-node-query",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Node Query Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/node_query\"\nraw_files:\n  - \"braintree/graphql/guides/node_query-2026-09-16.md\"\ntags: [braintree, graphql, node-query, global-id, object-retrieval]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide describes the GraphQL `node` query for retrieving one object from a known global ID without supplying the object's type as a separate query argument. It is a GraphQL operation guide, not documentation for the legacy Braintree Node.js server SDK, a complete or exact schema, proof of current type availability, or evidence that any request or payment operation succeeded. Use the separate [[source-braintree-graphql-guides-search]] route when the retrieval question concerns multiple objects of one type rather than one known ID.\n\n## Key takeaways\n\n- A type is fetchable through this query only when it implements the `Node` interface and uses global IDs. The guide defines such an ID as identifying one type instance uniquely across all objects of all types that implement `Node`.\n- The page's captured interface list contains `Transaction`, `PaymentMethod`, `Refund`, `Customer` and `Verification`, and it shows a `__type(name: \"Node\") { possibleTypes { ... } }` introspection query. Treat that list as snapshot evidence; use the retained exact-commit schema or current introspection for an exact schema question.\n- The query takes an ID while inline fragments select fields for possible runtime types. The transaction and refund examples each request `status`; when the ID may identify either, the guide directs the caller to include both type fragments. The page does not document missing, invalid or unauthorized ID response behavior.\n- The transaction example saves a created transaction's ID for later lookup and requests its status plus nested payment-method details. Its displayed `SUBMITTED_FOR_SETTLEMENT` payload and request ID are example output, not a guaranteed state, payment-method shape, or successful execution result.\n\n## Detail locators\n\n- Node-query identity, known-ID purpose and distinction from a type-specific REST endpoint: raw lines 14-18 under `# Finding Objects with Node Query`.\n- `Node` interface/global-ID eligibility, introspection query and captured implementing-type list: raw lines 18-38.\n- Transaction and refund fragment examples, including the two-fragment case for an ID with either possible type: raw lines 40-75.\n- Saved-transaction-ID lookup query and displayed example response: raw lines 77-112 under `## Fetching Transactions`.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- Multi-object search: [[source-braintree-graphql-guides-search]]\n- Transaction operations: [[source-braintree-graphql-guides-transactions]]\n- Exact commit-qualified schema: [[source-github-graphql-api]]\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/node_query-2026-09-16|Braintree GraphQL Node Query guide]] - complete collected website page for known-global-ID object retrieval, interface eligibility, type fragments and the transaction example\n",
+  "quotes": [
+    {
+      "text": "In the GraphQL specification, the node query is a query that takes only an ID and returns the object corresponding to that ID. In a REST API, this is similar to a GET request that fetches an object by ID, but with an important difference: the node query does not require the type of that object to be specified.",
+      "location": "raw lines 14-16 under # Finding Objects with Node Query"
+    },
+    {
+      "text": "An object type is fetchable by the node query as long as it implements the node interface and uses global IDs. A global ID specifies a given instance of a type uniquely across all objects of all types that implement node. This is how we are able to fetch an object in the node query without knowing its type.",
+      "location": "raw line 18 under # Finding Objects with Node Query"
+    },
+    {
+      "text": "Say you have the ID of an object that may either be a refund or a transaction. You should include both type fragments:",
+      "location": "raw line 62, immediately before the Transaction and Refund fragment example"
+    },
+    {
+      "text": "After [creating a transaction](/braintree/graphql/guides/transactions#creating-transactions), you can save its ID to look up at a later time using the node query.",
+      "location": "raw lines 77-79 under ## Fetching Transactions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "graphql-node-query-reciprocal-platform-source",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-node-query]] - 2026-09-16 unversioned Braintree website GraphQL guide for retrieving one node-interface object by a known global ID with runtime-type fragments; distinct from multi-object search, language SDKs and exact-commit schema evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Place this reciprocal route on the provider platform concept; do not treat GraphQL node query as the legacy Braintree Node.js server SDK."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/node_query-2026-09-16.md",
+  "raw_sha256": "a0b27034bb5a38fac2b8a7adeacf66c23f3886d59b57ef16e2306b90195f6365",
+  "status": "candidate_ready"
+}

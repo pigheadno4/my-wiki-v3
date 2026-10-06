@@ -1,0 +1,56 @@
+{
+  "job_id": "graphql-guides-request-batching",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree GraphQL Request Batching Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/request_batching\"\nraw_files:\n  - \"braintree/graphql/guides/request_batching-2026-09-16.md\"\ntags: [braintree, graphql, request-batching, transport, variable-export]\n---\n\n## Overview\n\nThis collected Braintree website guide describes a work-in-progress GraphQL transport extension for sending an ordered series of ordinary GraphQL request payloads in one HTTP request and optionally passing resolved scalar values to later operations. The page says the extension is intended to maintain full compliance with the GraphQL specification because the specification leaves request/response transport intentionally vague. That is a stated design intent, not proof of achieved or current standards compliance; its `v0` media type and future-looking language make this a 2026-09-16 snapshot, not proof of deployment availability, account eligibility, SDK support or successful execution.\n\n## Key takeaways\n\n- A batch opts in with the custom `application/vnd+braintree.graphql.batch.v0+json` media type and sends a JSON array whose members are regular GraphQL payloads. Authentication applies to the whole batch; per-operation authentication is not supported in this snapshot.\n- `@export(as: \"name\")` makes a resolved scalar field available as `$name` to later operations that declare the variable. An explicitly passed variable overrides an exported variable with the same name; exporting beneath a list retains only the last encountered value.\n- Operations execute sequentially. Responses are regular GraphQL response payloads returned as a list in request order, with one shared `requestId`; each `exportedVariables` entry is the snapshot accumulated through that operation.\n- Errors do not stop later operations. If an errored field does not resolve, its export is omitted, so a dependent later operation behaves as though that variable was never supplied and may produce its own GraphQL error.\n- At the time of the snapshot, a batch is limited to five operations and operations beyond the limit return an error. Only scalar values can be exported, and the implementation returns one combined response rather than streaming individual results.\n- Braintree recommends batching only when mixing queries and mutations and/or passing values between them. Independent fields should use standard GraphQL where possible: query fields run in parallel, while top-level mutation fields run sequentially.\n\n> [!warning] No stop-on-error guarantee\n> Do not treat an earlier GraphQL error as rollback or short-circuit behavior. Every operation is attempted, so independent later mutations may still have effects even when an earlier dependency fails.\n\n> [!warning] Keep website transport evidence separate\n> The code sample uses a generic Ruby HTTP gem; it does not establish Braintree Ruby, other server-SDK or client-SDK support. The separately retained `braintree/graphql-api` source is a commit-qualified field/schema contract and must not inherit this website snapshot's batching transport behavior without exact repository evidence.\n\n## Detail locators\n\n- Ruby HTTP example, whole-request basic authentication, required custom media type, JSON-array body and exported-variable dependency: raw lines 18-33.\n- Ordered response list, shared request ID, accumulated `exportedVariables` snapshots and dependency-failure example: `## Responses`, raw lines 36-52.\n- Intended use versus standard GraphQL query/mutation execution and preference for standard GraphQL: `## When to use Request Batching`, raw lines 55-94.\n- Single combined response rather than streaming: `## Prior Art`, raw lines 97-99.\n- Non-short-circuit execution, sequential timing, five-operation limit, scalar-only export, passed-variable precedence, list-node last-value behavior and batch-wide authentication: `## More Considerations and Limitations`, raw lines 102-134.\n- Composable-operation motivation and single-response handling goal: `## Motivation`, raw lines 137-143.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- Separate commit-qualified schema authority: [[source-github-graphql-api]]\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/request_batching-2026-09-16|Braintree GraphQL Request Batching]] - fully read 2026-09-16 website snapshot of the batching transport, operation ordering, variable dependency, error behavior and limits\n",
+  "quotes": [
+    {
+      "text": "We are working on an \"extension\" of GraphQL at Braintree to allow clients to execute a series of GraphQL queries in a single HTTP request, and optionally share variables between them. \"Extension\" is in quotes because this feature is intended to maintain full compliance with the GraphQL spec, which is intentionally vague around request/response transport format.",
+      "location": "raw line 16, opening paragraph under # GraphQL Request Batching"
+    },
+    {
+      "text": ".headers(...) is where things start to diverge from a typical GraphQL request. Specifically, notice the content_type header: application/vnd+braintree.graphql.batch.v0+json. This is a custom media type that is required in order to opt-in to this feature. Without it, we will assume you are trying to make a regular GraphQL request, and fail due to invalid syntax.",
+      "location": "raw line 27, paragraph beginning .headers(...)"
+    },
+    {
+      "text": "@export is a GraphQL [query directive](https://graphql.org/learn/queries/#directives) which accepts a single argument as of type String!. In this case, we've passed \"tokenizedId\" to indicate we want the result of the field id to be available as $tokenizedId to subsequent queries, provided they declare the variable first.",
+      "location": "raw line 33, paragraph beginning @export"
+    },
+    {
+      "text": "Errors follow the same pattern as data. If a query in the list results in errors, those errors will be represented in the errors entry in the corresponding response payload. The important thing to note here is that, if an exported field can't be resolved due to errors, then it is never added to the exportedVariables object, and subsequent queries behave as if the variable was never passed.",
+      "location": "raw line 46, paragraph beginning Errors follow"
+    },
+    {
+      "text": "While we do expect clients to see slight performance improvements from this feature due to less overall HTTP round-trips, the underlying queries will be executed sequentially. So every query you add to your list will introduce that much extra time to your overall response. For that reason, we have limited the number of queries you can send at the time of this writing to 5. All queries beyond this limit will return an error.",
+      "location": "raw line 114, paragraph under ### All queries are executed sequentially"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c40-graphql-guides-request-batching-payment-platform-source",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-request-batching]] - 2026-09-16 Braintree website guide to a `v0` GraphQL batch transport for sequential operations and scalar exports between them, preserving required media type, whole-batch authentication, non-short-circuit errors, five-operation snapshot limit and separation from SDK or commit-qualified schema support\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the work-in-progress and 2026-09-16 snapshot qualification; do not claim current availability or eligibility.",
+          "Do not infer SDK support or attribute this website transport extension to the separately retained commit-qualified GraphQL schema source.",
+          "Preserve that errors do not stop later operations and that unresolved exports are omitted before dependent operations run."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/request_batching-2026-09-16.md",
+  "raw_sha256": "717072a2d9e7dc065ea0a288d6c40dd28296d964ce65508badde7fee72773414",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "graphql-integration-guides-uploading-files",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Uploading Files for Mutations Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/integration_guides/uploading_files\"\nraw_files:\n  - \"braintree/graphql/integration_guides/uploading_files-2026-09-16.md\"\ntags: [braintree, graphql, file-upload, multipart, disputes, evidence]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide describes the multipart transport used when a Braintree GraphQL mutation requires a file. The snapshot says Braintree partially implements the GraphQL Multipart Request Spec, supports one file per request, and identifies `createDisputeFileEvidence` as the only mutation then requiring this route. It is an integration example, not an exact GraphQL schema baseline, proof of current support, merchant approval, Control Panel dispute access, evidence acceptance, submission to a bank, or a dispute outcome.\n\n## Key takeaways\n\n- The request changes from the ordinary JSON transport to `multipart/form-data` and attaches the GraphQL operation plus a file. The guide's cURL uses a Sandbox endpoint, a dated `Braintree-Version` example and an Authorization header placeholder; it separately says the version and authorization headers are the same as for a standard GraphQL request. Those values illustrate request structure and do not establish Production availability, valid credentials or successful authentication.\n- The multipart `operations` part is required and has `application/json` type. It carries the GraphQL query and variables, including a `file: null` placeholder. A required `map` part links that placeholder's path, shown as `variables.file`, to the named file part. The file part supplies the local path and a valid MIME type.\n- The snapshot supports one file at a time and identifies `createDisputeFileEvidence` as the only mutation then requiring file upload. For that mutation it lists PNG, JPG, JPEG and PDF, with a maximum file size of 4 MB. Do not generalize those limits to other APIs, mutations or current product behavior.\n- The example mutation returns a dispute and an evidence object, and the page says the response has the same structure as another GraphQL API response. The displayed fields and response statement are transport guidance, not proof that a particular file passed validation, became admissible dispute evidence, was finalized or submitted, or changed the merchant's business approval or dispute result.\n\n> [!warning] Upload and dispute-lifecycle boundary\n> A multipart upload request is only the documented transport for the file-evidence mutation. This page does not establish that a merchant can access disputes, that the dispute is in an eligible state, that the uploaded material will be accepted or sent to the bank, or that any protection, reimbursement or dispute outcome follows. Verify the applicable account, dispute-state, evidence and finalization requirements separately.\n\n## Detail locators\n\n- Partial GraphQL Multipart Request Spec implementation, single-file support and `createDisputeFileEvidence` identity: opening paragraph, raw line 16.\n- Example mutation selection for the dispute and evidence objects: `### Mutation`, raw lines 18-35.\n- Changed content type and attached-file request requirement: raw line 37.\n- Supported PNG, JPG, JPEG and PDF file types and 4 MB maximum: raw line 39.\n- Sandbox cURL endpoint plus example Braintree version, Authorization, Accept and multipart headers: `### CURL`, raw lines 42-48.\n- Required `operations` part, JSON type, query/variables object and `file: null` placeholder: raw lines 49-57 and 65-66.\n- Required `map` part, placeholder-path-to-file-label association, local file path and valid MIME-type condition: raw lines 58-59 and 67-68.\n- Standard GraphQL version/authorization-header relationship and ordinary GraphQL response-structure statement: raw lines 70-72.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n- Exact commit-qualified GraphQL contract route: [[source-github-graphql-api]]\n\n## Related raw API references\n\nThe page links to the GraphQL reference entry for `createDisputeFileEvidence` and to the external GraphQL Multipart Request Spec. Those linked targets were not read as evidence for this entry and are navigation only; they do not establish exact schema equivalence, current service support, account authorization, dispute-state eligibility, evidence acceptance, finalization or outcome.\n\n## Raw Sources\n\n- [[raw/braintree/graphql/integration_guides/uploading_files-2026-09-16|Braintree GraphQL Uploading Files for Mutations guide]] - complete collected page covering the partial multipart transport, single-file and type/size limits, required form objects, standard-header relationship and response structure\n",
+  "quotes": [
+    {
+      "text": "We partially implement the [GraphQL Multipart Request Spec](https://github.com/jaydenseric/graphql-multipart-request-spec), but we only offer support for uploading a single file at a time. Currently, the only mutation that requires this is [createDisputeFileEvidence](/braintree/graphql/reference/#Mutation--createDisputeFileEvidence).",
+      "location": "raw/braintree/graphql/integration_guides/uploading_files-2026-09-16.md:16"
+    },
+    {
+      "text": "This mutation supports files of these types: PNG, JPG, JPEG, and PDF. Files uploaded with this mutation must be 4 MB or less.",
+      "location": "raw/braintree/graphql/integration_guides/uploading_files-2026-09-16.md:39"
+    },
+    {
+      "text": "The-Fflag with anoperationsobject. Theoperationsname is required. This is where you will pass your GraphQL query and variables, as you would for any other GraphQL API operation. Note that you must specify atypeofapplication/json.",
+      "location": "raw/braintree/graphql/integration_guides/uploading_files-2026-09-16.md:65"
+    },
+    {
+      "text": "The-Fflag with amapobject. Themapname is required. This is what links the location of thefilekey in youroperationsJSON (atvariables.filein this example) to the label (file_to_uploadin this example) specifying where the file path and type are specified.",
+      "location": "raw/braintree/graphql/integration_guides/uploading_files-2026-09-16.md:68"
+    },
+    {
+      "text": "The Braintree-Version and Authorization headers are the same as a standard GraphQL request.",
+      "location": "raw/braintree/graphql/integration_guides/uploading_files-2026-09-16.md:70"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c40-uploading-files-disputes-source-link",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-integration-guides-uploading-files]] - 2026-09-16 unversioned Braintree GraphQL guide for the single-file multipart transport used by `createDisputeFileEvidence`, including PNG/JPG/JPEG/PDF and 4 MB limits, required `operations`/`map` parts and standard GraphQL version/authorization headers; not current service-support, merchant-access, evidence-acceptance, finalization, business-approval or dispute-outcome proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a source route rather than importing transport mechanics into the cross-provider concept; file upload does not establish evidence acceptance, submission/finalization, business approval or dispute outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/integration_guides/uploading_files-2026-09-16.md",
+  "raw_sha256": "cb8aa544a3996fdc607dd73747c1ab5a3635c30f9f1de91c4651a774f5a24a1f",
+  "status": "candidate_ready"
+}

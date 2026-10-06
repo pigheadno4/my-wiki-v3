@@ -1,0 +1,52 @@
+{
+  "job_id": "graphql-guides-migrating",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Server SDK Migration Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/migrating\"\nraw_files:\n  - \"braintree/graphql/guides/migrating-2026-09-16.md\"\ntags: [braintree, graphql, migration, server-sdk, identifiers]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide describes a typical migration from a legacy Braintree server-SDK integration to the GraphQL API. Its central transition is from legacy IDs to GraphQL IDs, with a staged coexistence period and mappings for payment-method, transaction and raw-card concepts. It is website guidance, not a package-qualified legacy-SDK baseline, the exact commit-qualified GraphQL schema in [[source-github-graphql-api]], current merchant enablement, or evidence that a migration or payment operation succeeded.\n\n## Key takeaways\n\n- Legacy and GraphQL IDs identify the same Braintree entities, but their namespaces differ: different domain objects can share a legacy ID, whereas the guide says GraphQL IDs are unique across domains. The `idFromLegacyId` query therefore takes both a legacy ID and its `LegacyIdType`; a displayed `TRANSACTION` conversion is an example, not a universal type or result.\n- The guide's typical migration stages local schema and integration changes: add a GraphQL-ID field alongside stored legacy IDs, build the GraphQL integration, prefer the GraphQL ID when present, and otherwise translate the legacy ID or read a supported server-SDK object's `graphql_id`. During rollout it directs callers to request and dual-write GraphQL `id` and `legacyId`, then back-fill after launch and stop requesting/writing `legacyId` only once the GraphQL integration is stable. This sequence is guidance from the snapshot, not proof that any database migration, rollback path or production launch is safe or complete.\n- The captured server-side SDK route exposes already-translated `graphql_id` values on `CreditCardVerification`, `Customer`, `Dispute` and `Transaction`. Those values must not be passed through `idFromLegacyId` again. The guide does not establish this field for unlisted objects or every SDK language/version.\n- A GraphQL ID's format is explicitly not a contract. Existing IDs remain unchanged, but new formats may differ; only the documented 1\u2013256-character alphanumeric/dash/underscore bound is stated as safe to assume. Systems should not infer object type or other behavior from the displayed encoded example.\n- Terminology and actions also change. SDK nonces map to GraphQL single-use payment methods, while SDK vaulted payment methods map to multi-use payment methods and the GraphQL `usage` field distinguishes them. SDK `sale` maps conceptually to GraphQL authorize or charge mutations, with capture available separately. For PCI-scoped merchants handling raw card details, the API accepts those details only through tokenization mutations; charging or vaulting then uses the resulting payment method. The Ruby sale and GraphQL charge snippets are examples, not guarantees for all payment methods, accounts, SDK versions or schema revisions.\n\n> [!warning] Migration and evidence boundaries\n> Introducing and back-filling identifiers changes local persistence, and prematurely ending the dual-write period can remove the rollback flexibility the guide is designed to preserve. Do not translate an already translated `graphql_id`, assume an identifier's format, or project example operation shapes onto the current schema. Confirm the applicable SDK version, object support, GraphQL schema and merchant/payment-method eligibility before a production migration.\n\n## Detail locators\n\n- Guide purpose and legacy-versus-GraphQL identity model: opening and `## Legacy vs. GraphQL IDs`, lines 16\u201325.\n- Staged additional-field, fallback translation, dual-write, back-fill and cutover path: `## Migrating an Integration to Use the Braintree GraphQL API`, lines 28\u201339.\n- Supported server-SDK objects whose `graphql_id` is already translated: `### Reading the graphql_id Field`, lines 42\u201344.\n- `idFromLegacyId` input identity and displayed transaction example: `### Using the idFromLegacyId Query`, lines 47\u201377.\n- Non-contract identifier format and stated length/character bound: `### GraphQL ID Format`, lines 81\u201385.\n- Nonce/single-use and vaulted/multi-use terminology mapping: `### Nonces vs. single-use payment methods`, lines 93\u2013102.\n- SDK sale versus GraphQL authorize/charge/capture mapping and example snippets: `### Creating transactions`, lines 105\u2013137.\n- PCI-scope qualification and raw-payment-detail tokenization boundary: `### Accepting payment data directly`, lines 141\u2013145.\n- Exact commit-qualified GraphQL types, operations and schema constraints are separately retained via [[source-github-graphql-api]]; they must not be inferred from this website page's examples.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Exact commit-qualified schema: [[source-github-graphql-api]]\n- Related payment-method terminology route: [[source-braintree-payment-method-nonces]]\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/migrating-2026-09-16|Braintree GraphQL migration guide (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "Legacy IDs refer to the IDs currently accepted and returned by the Braintree SDKs. GraphQL IDs represent the same entities in the Braintree system, but include more information about the entity that make the GraphQL API more powerful. For example, instances of different domain objects may have the same legacy ID (e.g. a Transaction and a PaymentMethod may share an ID). GraphQL IDs are unique across all domains.",
+      "location": "lines 21-23, under 'Legacy vs. GraphQL IDs'"
+    },
+    {
+      "text": "Always request both theidandlegacyIdin your API requests and dual-write these IDs in your local database. This will give you the flexibility to seamlessly switch back to your SDK integration, should the need arise.",
+      "location": "line 37, under 'Migrating an Integration to Use the Braintree GraphQL API'"
+    },
+    {
+      "text": "The server-side SDKs include a graphql_id field on the [CreditCardVerification](/braintree/docs/reference/response/credit-card-verification#graphql_id), [Customer](/braintree/docs/reference/response/customer#graphql_id), [Dispute](/braintree/docs/reference/response/dispute#graphql_id), and [Transaction](/braintree/docs/reference/response/transaction#graphql_id) objects. This value is already translated and must not be translated using the idFromLegacyId query.",
+      "location": "line 44, under 'Reading thegraphql_idField'"
+    },
+    {
+      "text": "In order to avoid interruptions in processing, it's best to make minimal assumptions about what GraphQL IDs will look like in the future. The format of the GraphQL ID is not a contract. While any given ID will never change, the new IDs may follow a different format in the future.",
+      "location": "line 83, under 'GraphQL ID Format'"
+    },
+    {
+      "text": "The SDKs allow raw credit card details as input to sale and vault requests. The API only accepts raw payment details via the tokenization mutations. To charge or vault credit card details directly, tokenize and then use the resulting payment method in a vault or charge mutation.",
+      "location": "line 145, under 'Accepting payment data directly'"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "graphql-guides-migrating-server-sdk-link",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-migrating]] - 2026-09-16 unversioned Braintree website guide for staged migration from legacy server-SDK identifiers and concepts to GraphQL IDs, payment-method terminology and transaction/tokenization actions; distinct from package-qualified SDK behavior, the commit-qualified GraphQL schema, merchant eligibility and migration or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/migrating-2026-09-16.md",
+  "raw_sha256": "059e070c15e57fe15e9ae43d3aa57bf54c13dbb43844a80eb130e3fabcd58b7f",
+  "status": "candidate_ready"
+}

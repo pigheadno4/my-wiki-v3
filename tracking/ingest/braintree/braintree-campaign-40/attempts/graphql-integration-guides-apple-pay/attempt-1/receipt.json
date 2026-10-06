@@ -1,0 +1,54 @@
+{
+  "job_id": "graphql-integration-guides-apple-pay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Apple Pay Integration Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/integration_guides/apple_pay\"\nraw_files:\n  - \"braintree/graphql/integration_guides/apple_pay-2026-09-16.md\"\ntags: [braintree, graphql, apple-pay, digital-wallets, web-payments, vaulting]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide explains how its documented GraphQL route processes Apple Pay payments. It covers environment-matched test accounts, Apple Pay web-domain registration, the handoff of an authorized single-use payment-method ID to a server-side `chargePaymentMethod` call, and qualified Vault routes. It is separate from any exact-version client SDK implementation and from the commit-qualified GraphQL schema history; it does not establish current merchant or device eligibility, account enablement, deployment, successful authorization, transaction settlement or funding.\n\n## Key takeaways\n\n- Testing requires an iCloud account corresponding to the target environment: the guide specifies an iTunes Connect sandbox tester account for sandbox and a production iCloud account for production. This is an account prerequisite stated by the captured guide, not proof that a particular account, device or merchant is eligible.\n- For Apple Pay on the web, every planned domain must be registered with Apple through the Braintree Control Panel. The guide says not to register through the Apple Developer Portal and says a merchant-generated Payment Processing Certificate is unnecessary for this web route because Braintree uses its shared certificate. Sandbox and production domains are registered separately, and the fully qualified domain must match exactly, including `www` where applicable.\n- Production registration additionally requires hosting Braintree's domain-association file at `/.well-known/apple-developer-merchantid-domain-association`. The page says Apple's retrieval must avoid 3xx redirects, use HTTPS 1.1, return the file as a binary object with `Content-Type: application/octet-stream`, and remain reachable outside a firewall. These are captured setup requirements, not domain-verification or deployment proof.\n- After the customer successfully authorizes payment, the client receives a single-use payment-method ID and sends it to the merchant server, where the guide passes it to `chargePaymentMethod`. The page also directs the merchant to collect client device data and include it in `riskData`. The displayed mutation, variables and `SUBMITTED_FOR_SETTLEMENT` response are examples, not proof that authorization, submission, settlement or funding occurred.\n- The amount in the client-side Apple Pay request should reflect the amount authorized and submitted for settlement, although the page says transactions can still process if the amount changes during fulfillment. For billing address, tokenized CVV, 3D Secure authentication or other fraud-tool options, the guide routes to `chargeCreditCard` instead of `chargePaymentMethod`.\n- Apple Pay cards can be saved in the Vault only for supported use cases. The page routes supported integrations either to `vaultPaymentMethod` or to the `vaultPaymentMethodAfterTransacting` input on `chargePaymentMethod`; the linked support and GraphQL reference pages remain separate authority for eligibility and exact schema behavior.\n\n> [!warning] Scope and evidence boundary\n> This website snapshot does not identify a client SDK package/version or an exact GraphQL schema revision. Its operation and response blocks are illustrative documentation, while environment, merchant-account, Apple Pay, domain and Vault eligibility depend on separate account and platform authority. Do not treat the examples or this collected page as deployment, live availability, successful payment, settlement or reusable-token proof.\n\n## Detail locators\n\n- Apple Pay identity and stated GraphQL-guide purpose: raw lines 14-18.\n- Sandbox versus production iCloud-account prerequisite: `### iCloud account setup`, raw lines 24-26.\n- Optional website icon recommendation: `### Specify an Icon`, raw lines 29-31.\n- Web-domain registration requirement, Control Panel ownership, Apple Developer Portal exclusion and shared-certificate boundary: `### Domain registration`, raw lines 34-38.\n- Sandbox Control Panel registration steps and exact fully qualified domain-name requirement: `#### Sandbox Environment`, raw lines 41-57.\n- Production Control Panel registration, domain-association file location and verification-serving constraints: `#### Production Environment`, raw lines 62-87.\n- Successful customer authorization, single-use payment-method handoff, server-side `chargePaymentMethod` action and device-data route: `## Creating transactions`, raw lines 90-95.\n- Mutation selection, variables and displayed example response including Apple Pay origin details: raw lines 96-186.\n- Amount-consistency guidance and `chargeCreditCard` route for additional billing, CVV, 3D Secure or fraud inputs: raw lines 187-189.\n- Supported-use-case Vault qualification and `vaultPaymentMethod` or `vaultPaymentMethodAfterTransacting` routes: `## Vaulting Apple Pay cards`, raw lines 190-196.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-apple-pay]]\n- Provider payment-method lifecycle route: [[braintree-payment-methods]]\n- Commit-qualified GraphQL contract: [[source-github-graphql-api]]\n\n## Related raw API references\n\nThe page links to GraphQL reference entries for `chargePaymentMethod`, `chargeCreditCard`, `riskData`, `vaultPaymentMethod` and `vaultPaymentMethodAfterTransacting`, plus Apple, Control Panel, fraud-device-data, credit-card and Apple Pay support guidance. Those linked targets were not read for this entry and are navigation only; they do not establish exact schema equivalence, SDK behavior, account enablement, domain verification, Vault eligibility or successful execution.\n\n## Raw Sources\n\n- [[raw/braintree/graphql/integration_guides/apple_pay-2026-09-16|Braintree GraphQL Apple Pay integration guide]] - complete collected page covering environment account setup, web-domain registration, single-use payment-method charging and qualified Vault routes",
+  "quotes": [
+    {
+      "text": "This guide explains how to process Apple Pay payments with Braintree GraphQL APIs.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "When testing, you will need to be logged into an iCloud account that corresponds to your environment. Testing in sandbox requires you to be logged into an [iTunes Connect sandbox tester account](https://developer.apple.com/support/apple-pay-sandbox/), which you can create with an [Apple Developer account](https://developer.apple.com/help/account/). Similarly, you will need to be logged into a production iCloud account when testing in production.",
+      "location": "raw line 26 under `### iCloud account setup`"
+    },
+    {
+      "text": "In order to test and accept Apple Pay on the web, you'll need to register any domains you plan to use with Apple. You can do this through the Braintree Control Panel using the instructions below.",
+      "location": "raw line 36 under `### Domain registration`"
+    },
+    {
+      "text": "You will receive a single-use payment method ID when your user successfully authorizes payment. Once you send this single-use payment method ID to your server, you can create a transaction by passing it into a [chargePaymentMethod](/braintree/graphql/reference/#Mutation--chargePaymentMethod) call.",
+      "location": "raw line 92 under `## Creating transactions`"
+    },
+    {
+      "text": "Apple Pay cards can only be [saved to your Vault](/braintree/graphql/guides/payment_methods/#vaulting_the_payment_method) for specific use cases; [see the support article for details](/braintree/articles/guides/payment-methods/apple-pay#recurring-billing-and-vaulting). If your use case is supported, you can store a customer's Apple Pay card in your Vault in a few different ways:",
+      "location": "raw line 192 under `## Vaulting Apple Pay cards`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-apple-pay-reciprocal-graphql-guide",
+        "target_path": "wiki/concepts/braintree-apple-pay.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-integration-guides-apple-pay]] - 2026-09-16 unversioned Braintree website GraphQL guide to Apple Pay environment accounts, web-domain setup, authorized single-use payment-method charging and qualified Vault routes; distinct from exact-version SDK/schema evidence, current enablement or execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this website snapshot distinct from exact-version client SDK implementation and commit-qualified GraphQL schema evidence; examples do not prove deployment, authorization, settlement, funding or Vault eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/integration_guides/apple_pay-2026-09-16.md",
+  "raw_sha256": "d0ef240b8d574a5ea49d278140e4dc06ce4ba41473c6b938c671c95032258ff0",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "graphql-guides-customers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Customers Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/customers\"\nraw_files:\n  - \"braintree/graphql/guides/customers-2026-09-16.md\"\ntags: [braintree, graphql, customers, vault, payment-methods]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide describes the GraphQL `Customer` object as a record for storing and organizing one or more payment methods. It demonstrates server-side GraphQL operations to create, update, delete, search and retrieve customers. This is a website/API documentation snapshot, not a language-SDK implementation or exact-schema baseline, and it does not establish current deployment, merchant eligibility, payment-method availability or successful payment execution.\n\n## Key takeaways\n\n- `createCustomer` has no required customer fields according to the guide, so the demonstrated operation can create either a populated customer or a blank customer whose fields are added later. The displayed fields and response are examples rather than a complete or guaranteed schema.\n- Custom fields can hold additional customer data, but the guide says they must first be configured in the Control Panel before they can be used through the API.\n- `updateCustomer` requires `customerId`. The page demonstrates a company-name change; that example does not establish every supported update field.\n- `deleteCustomer` requires `customerId` and breaks the association between the customer and any transactions. A customer with existing payment methods will not be deleted; the guide directs the caller to delete those payment methods from the Vault first. A missing customer ID produces the documented `NOT_FOUND` error.\n- Customers can be searched by characteristics through the search query, or retrieved by global ID through the node query. The shown company filter, selected fields and response records are examples; use the linked GraphQL reference or an exact schema source for the complete contract.\n\n> [!warning] Consequential and evidence boundaries\n> Customer deletion is consequential: it breaks transaction associations, and existing payment methods must be removed from the Vault before the customer can be deleted. The page does not state the downstream effects of deleting those payment methods; consult the dedicated payment-method lifecycle authority before acting. The guide's example operations and responses are not proof that an account is enabled or that an individual mutation succeeded.\n\n## Detail locators\n\n- Customer-object purpose, multiple-payment-method relationship and operation inventory: `# Customers`, lines 14-16.\n- Create behavior, optional customer fields and blank-customer route: `## Create`, lines 19-26, and `### Blank customer`, lines 78-80.\n- Custom-field purpose and Control Panel prerequisite: `### Use custom fields`, lines 126-128.\n- Update operation and required customer ID: `## Update`, lines 192-194; the mutation, variables and response example continue through line 243.\n- Deletion action, required customer ID, broken transaction association, existing-payment-method blocker and prior Vault-deletion instruction: `## Delete`, lines 245-249. The mutation example and missing-customer `NOT_FOUND` behavior continue through line 282.\n- Characteristic search and its displayed query/response shape: `## Search`, lines 285-363. Global-ID node lookup and its displayed selection/response are at lines 364-399.\n- Customer-error-code navigation: `## Errors`, lines 401-403.\n- Exact commit-qualified GraphQL fields, nullability and constraints are separately retained in `raw/github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/files/schema.graphql` via [[source-github-graphql-api]]; they must not be inferred from these website examples.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Payment-method object and lifecycle: [[source-braintree-graphql-guides-payment-methods]]\n- Exact commit-qualified schema: [[source-github-graphql-api]]\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/customers-2026-09-16|Braintree GraphQL Customers guide]] - complete collected website page for GraphQL customer creation, update, deletion, search and lookup examples\n",
+  "quotes": [
+    {
+      "text": "Customer is a type of object that can be used to store and organize payment methods. A single customer can have multiple payment methods. This guide will demonstrate how to create, update, delete, and search for a customer object.",
+      "location": "# Customers, line 16"
+    },
+    {
+      "text": "You can create a customer object using the [createCustomer](/braintree/graphql/reference/#Mutation--createCustomer) mutation. This mutation has no required inputs, so you can choose which inputs are important for your needs.",
+      "location": "## Create, line 21"
+    },
+    {
+      "text": "You can use custom fields to store additional data about your customers. You'll need to [configure your custom fields in the Control Panel](/braintree/articles/control-panel/custom-fields) to use them via the API.",
+      "location": "### Use custom fields, line 128"
+    },
+    {
+      "text": "You can delete a customer using the [deleteCustomer](/braintree/graphql/reference/#Mutation--deleteCustomer) mutation. This mutation requires a customerId as input. Deleting a customer will break the association between the customer and any of their transactions.",
+      "location": "## Delete, line 247"
+    },
+    {
+      "text": "The customer will not be deleted if the customer has existing payment methods. Before deleting a customer,[delete their payment methods from your Vault](/braintree/graphql/reference/#Mutation--deletePaymentMethodFromVault).### Mutation",
+      "location": "## Delete, line 249"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "graphql-guides-customers-server-sdk-reciprocal",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-customers]] - 2026-09-16 unversioned website GraphQL customer-object guide for create, update, delete and lookup operations, preserving the custom-field prerequisite and consequential deletion boundaries; distinct from language-SDK implementations and the exact commit-qualified schema\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/customers-2026-09-16.md",
+  "raw_sha256": "f9d5789da7c2da6f9057881ad521c4dcc1e1fa9ffd6f36fc15ccdef8bcaae34f",
+  "status": "candidate_ready"
+}

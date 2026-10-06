@@ -1,0 +1,55 @@
+{
+  "job_id": "graphql-integration-guides-account-onboarding",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Account Onboarding\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/integration_guides/account_onboarding\"\nraw_files:\n  - \"braintree/graphql/integration_guides/account_onboarding-2026-09-16.md\"\ntags: [braintree, graphql, account-onboarding, partners, underwriting, merchant-accounts]\n---\n\n## Overview\n\nThis collected [[braintree|Braintree]] website guide describes a GraphQL account-onboarding route for a partner business with many billers, franchisees, or sub-merchants to submit account applications for underwriting through `createBusinessAccount`. It is limited to select merchants and requires prior Partner application completion plus PayPal Account Manager setup. It is a website integration guide, not a language-SDK contract or exact-commit GraphQL schema, and its mutation and response examples do not prove account eligibility, underwriting approval, payment processing, payout execution, or production availability.\n\n## Key takeaways\n\n- The page says the account onboarding API is available only to select merchants. Before use, the partner must have completed the initial Partners application process, been set up by a PayPal Account Manager, obtained Braintree Control Panel login credentials, and worked with that Account Manager to configure the required features. The snapshot does not identify an environment, so the credential and setup statement must not be generalized into sandbox or production enablement.\n- The intended actor is a business onboarding billers, franchisees, or sub-merchants. The API submits their information for underwriting. Only after a biller is approved does the page say the business can process payments in that biller's name and create payout calls; submission or an `accountRequest.id` is therefore not approval or downstream execution evidence.\n- The guide describes `createBusinessAccount` as accepting account settings plus nested `business` and `financialInstruments` inputs. `business` represents the biller's legal entity and identifies stakeholder and optional point-of-contact roles; `financialInstruments` represents the merchant account's payout method.\n- The displayed mutation, variables, response, and validation errors are examples. Field values and input paths remain raw locators; this page does not establish a complete/current schema, language-SDK support, or a successful application outcome.\n\n## Evidence boundaries\n\n> [!warning] Application status is not approval\n> The example response returns an `accountRequest.id`, while the opening description makes later payment processing and payout calls conditional on biller approval. Do not treat the example response, request ID, or absence of displayed errors as underwriting approval, account activation, payment acceptance, or payout success.\n\n> [!warning] Eligibility, credentials, and environment remain qualified\n> This snapshot says access is limited to select merchants and depends on Partner application and PayPal Account Manager setup with Braintree Control Panel login credentials. It does not specify sandbox versus production or prove that any account is enabled for the operation. Use [[source-braintree-graphql-guides-making-api-calls]] for the separately collected general GraphQL request and credential route.\n\n## Detail locators\n\n- Select-merchant availability and the partner use case for billers, franchisees, or sub-merchants: opening paragraphs, raw lines 16-18.\n- Partner application, PayPal Account Manager setup, Control Panel credentials, and feature configuration: `## Requirements`, raw lines 21-23.\n- `createBusinessAccount` purpose and the account, legal-entity, stakeholder, point-of-contact, and payout-method input roles: `## Creating an Application`, raw lines 26-36.\n- Mutation shape: `### Mutation`, raw lines 38-48; full variable example: `### Variables`, raw lines 51-209.\n- Example `accountRequest.id` response: `### Response`, raw lines 211-225.\n- Example validation errors and input paths: `## Error Samples`, raw lines 227-305.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- General GraphQL request and credential route: [[source-braintree-graphql-guides-making-api-calls]]\n- Separate commit-qualified schema authority: [[source-github-graphql-api]]\n\n## Raw Sources\n\n- [[raw/braintree/graphql/integration_guides/account_onboarding-2026-09-16|Braintree GraphQL account onboarding guide]] - fully read 2026-09-16 website snapshot covering select-merchant availability, partner setup, the account-application mutation, examples, and validation-error samples\n",
+  "quotes": [
+    {
+      "text": "The account onboarding API is only available for select merchants at this time.",
+      "location": "raw line 16, opening availability statement"
+    },
+    {
+      "text": "If your business has hundreds of billers, franchisees, or sub-merchants, this API streamlines the process of submitting their information for underwriting. Once a biller is approved, you can process payment in its name and create payout calls to move funds.",
+      "location": "raw line 18, opening purpose paragraph"
+    },
+    {
+      "text": "In order to use this API, you must have completed the initial application process for Partners and have been set up by your PayPal Account Manager, with login credentials to the Braintree control panel. You'll also need to work with your Account Manager to configure and set up all the features you require.",
+      "location": "raw line 23 under Requirements"
+    },
+    {
+      "text": "To create an account application, you will specify all relevant business information for underwriting and configuration options for each payment method you will accept. A few input fields define the structure of a createBusinessAccount mutation.",
+      "location": "raw line 28 under Creating an Application"
+    },
+    {
+      "text": "financialInstruments represents the payout method for the merchant account.",
+      "location": "raw line 34 under Creating an Application"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c40-account-onboarding-platform-source-link",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-integration-guides-account-onboarding]] - 2026-09-16 Braintree website GraphQL guide for select-merchant partner account applications covering Account Manager and Control Panel credential setup, underwriting submission, nested business/payout-method input roles, and validation examples; an account-request ID is not biller approval, account activation, payment processing, payout execution, environment enablement, SDK support or exact-commit schema proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this partner GraphQL account-onboarding route distinct from the legacy Braintree Marketplace Node onboarding flow; the raw names billers, franchisees, and sub-merchants but does not identify the product as Marketplace.",
+          "The raw does not state sandbox or production; preserve environment qualification and do not infer operation enablement from Control Panel login credentials."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/integration_guides/account_onboarding-2026-09-16.md",
+  "raw_sha256": "0634028710c23db39ed413d8b76e146251fcae5df3ab7207558b69e9232a9a9c",
+  "status": "candidate_ready"
+}

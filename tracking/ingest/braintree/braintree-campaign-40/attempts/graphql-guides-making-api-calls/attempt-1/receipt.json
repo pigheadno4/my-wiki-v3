@@ -1,0 +1,52 @@
+{
+  "job_id": "graphql-guides-making-api-calls",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL: Making API Calls\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/making_api_calls\"\nraw_files:\n  - \"braintree/graphql/guides/making_api_calls-2026-09-16.md\"\ntags: [braintree, graphql, api, authentication, error-handling]\n---\n\n## Overview\n\nThis collected [[braintree|Braintree]] guide describes direct HTTP request construction for the Braintree GraphQL API: environment-specific endpoints, operation-dependent authorization credentials, required request headers and JSON body shape, response and error interpretation, timeout ambiguity, and the separate GraphiQL sandbox route. It is a request guide, not evidence that a particular SDK or deployment is compatible, that an account is enabled for an operation, or that a payment succeeded.\n\n## Key takeaways\n\n- Queries and mutations use one endpoint per environment; the page says requests should use POST. A registered Braintree account and an `Authorization` header are required. Tokenization keys and client-token authorization fingerprints are limited to certain generally non-money-movement operations, while vaulting and charging require API-key authentication; the page also lists closed-beta Braintree Auth access tokens.\n- HTTP requests require a date-formatted `Braintree-Version` header, `Content-Type: application/json`, and a JSON object containing a `query` key plus an optional `variables` object. The version date is part of this GraphQL request contract, not an SDK-version or deployment-equivalence claim.\n- The collected page says the API returns HTTP 200 even when errors occur and can return partial data together with errors. Callers must inspect the JSON `data`, `errors`, and `extensions` fields; the human-readable error message may change, and `errorType` is deprecated in favor of `errorClass`.\n- Braintree says returned data is not input-validated, output-encoded, or sanitized, so the application must validate and apply context-appropriate encoding before use or display.\n- The guide recommends a 60-second timeout for requests such as transaction creation. A shorter client timeout can occur before a charge later succeeds, so the timeout alone does not establish failure; the page directs the merchant to search for the transaction and verify its status.\n\n## Detail locators\n\n- `Endpoints` and `Important Security Requirement` \u2014 sandbox/live endpoint split, POST guidance, and application-layer validation and encoding responsibility.\n- `Request Requirements` \u2014 credential types and operation limits, API-key encoding, authorization fingerprints, closed-beta Braintree Auth, required version/content headers, and JSON query/variables shape.\n- `Your First Request` and `A More Interesting Request` \u2014 ping and `chargePaymentMethod` request examples, including a multiple-mutation alias example; examples do not prove account eligibility or execution.\n- `Understanding Responses` \u2014 HTTP-200 behavior, partial success, top-level response objects, error fields and classes, deprecated `errorType`, and request IDs.\n- `Timeouts` \u2014 recommended timeout and the later-success-after-client-timeout hazard.\n- `Using GraphiQL` \u2014 browser API Explorer with sandbox login credentials and its plain-GraphQL-plus-separate-variables input format versus JSON-formatted HTTP requests.\n\n## Related\n\n- [[braintree-payment-platform]]\n- [[braintree-auth]] \u2014 only for the separately collected Braintree Auth product and OAuth route; this page's Braintree Auth credential option is marked closed beta.\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/making_api_calls-2026-09-16|Braintree GraphQL Making API Calls (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "This guide covers how to make API calls by combining [basic GraphQL ideas](/braintree/graphql/guides/#basic-concepts) with [Braintree-specific API details](/braintree/graphql/guides/concepts/).",
+      "location": "line 16 under # Making API Calls"
+    },
+    {
+      "text": "The Braintree API returns data exactly as it is provided. It does not perform input validation, output encoding, or sanitization. You are responsible for properly encoding and securing any data retrieved from the API before using or displaying it in your application. Failing to do so may introduce security vulnerabilities.",
+      "location": "line 36 under ### Important Security Requirement"
+    },
+    {
+      "text": "To use the API, you MUST have a [registered Braintree account](https://www.braintreepayments.com/sandbox) and include your credentials in the Authorization header. There are different types of credentials you can use to authorize depending on what you'd like to do. For instance, [client tokens](#client-tokens) and [tokenization keys](#tokenization-keys) are restricted to certain mutations and queries that generally don't involve money movement, such as tokenizing payment details. Other operations, such as vaulting and charging payment methods, require [API Key](#api-keys) authentication.",
+      "location": "line 80 under ### The Authorization Header"
+    },
+    {
+      "text": "A response from the GraphQL API will always return with HTTP status 200. The JSON body of the response explains whether an error occurred. Because you can send multiple queries and mutations in a single request, and because GraphQL includes the concept of a \"partial success\", the request may contain a mix of data and error messages. The body is always a JSON object and MAY include any of the three top-level keys: data, errors, and extensions.",
+      "location": "line 280 under ## Understanding Responses"
+    },
+    {
+      "text": "For example, let's say you set the timeout to 10 seconds, and you create a transaction request. If the request has not completed successfully at 10 seconds, your client will timeout. However, if the transaction then completes successfully at 19 seconds, the customer will be charged, but you will not receive any notification of this. You will need to search for the transaction to confirm if it was created and verify its status.",
+      "location": "line 368 under ## Timeouts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c40-graphql-making-api-calls-payment-platform-route",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-making-api-calls]] - 2026-09-16 Braintree GraphQL HTTP request guide for environment endpoints, operation-scoped credentials, date-versioned JSON requests, response/error inspection, application-layer data handling and transaction-timeout ambiguity; HTTP 200 or a client timeout is not payment-outcome proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/making_api_calls-2026-09-16.md",
+  "raw_sha256": "6c60963cf5921d12b3269956e88855a1e898fa5b70193877d7b9707aa688a6d9",
+  "status": "candidate_ready"
+}

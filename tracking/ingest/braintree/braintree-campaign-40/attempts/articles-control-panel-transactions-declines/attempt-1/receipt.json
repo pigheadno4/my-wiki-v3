@@ -1,0 +1,53 @@
+{
+  "job_id": "articles-control-panel-transactions-declines",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Transaction Declines and Retry Guidance\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/articles/control-panel/transactions/declines\"\nraw_files:\n  - \"braintree/articles/control-panel/transactions/declines-2026-09-16.md\"\ntags: [braintree, control-panel, transactions, processor-declines, retry-guidance, response-codes]\n---\n\n## Overview\n\nThis collected Braintree Control Panel article explains how to interpret and handle processor declines. The page metadata says it was updated on 2026-06-19, and the raw was collected on 2026-09-16. It distinguishes an issuer refusal from a gateway-setting rejection, separates authorization from settlement declines, and routes detailed handling to hard/soft classifications, response-code tables, card-network retry guidance, and processor-response fields.\n\n## Key takeaways\n\n- A processor decline means the customer's bank refused the request; the response code may indicate why, but the page says only that bank can confirm the specific reason. This differs from a gateway rejection caused by Braintree gateway settings. Response code `3000`, `Processor Network Unavailable - Try Again`, is separately described as a possible back-end processing-network problem rather than necessarily a payment-method problem.\n- Authorization declines occur when the bank refuses an authorization request. Settlement declines occur after a successful authorization when the bank denies settlement; the page describes them as much rarer.\n- A hard decline requires resolution, such as contacting support or the customer's bank, before retrying. A soft decline reflects a temporary issue for which retrying the supplied payment-method information may succeed; that possibility is not a blanket permission to ignore the response-code and network-specific rules below.\n- In the collected Visa table, Category 1 says `Do not retry`; Category 2 says `Reattempt Allowed` but limits retries to 15 over a rolling 30-day period; Categories 3 and 4 also specify a 15-retry rolling-30-day limit. The table associates fees with attempts beyond thresholds, and the article says each Category 1 retry is fined. The table itself must be consulted for the exact Braintree-response-code mapping.\n- For Mastercard, the article says retry decisions should use only `merchant_advice_code` and `merchant_advice_code_text`; it states a $0.10 fee for every reattempt beyond 10 retries in 24 hours for MAC 03 and MAC 21, and routes the specific rules to the separate Merchant Advice Codes page.\n- Additional processor responses are an optional, default-disabled Control Panel display. When enabled and the processor declines a transaction, the raw processor response appears in transaction details. The article says the API returns the additional processor response in the transaction object regardless of that display setting.\n\n> [!warning] Dated guidance with unresolved internal retry conflicts\n> Treat the network fees, thresholds, mappings, Smart Retries migration statement, and Control Panel/API behavior as claims in the 2026-09-16 snapshot, not proof of present rules, merchant eligibility, configuration, or successful execution. The Visa table lists response code `2007` in both Category 1 (`Do not retry`) and Category 3 (`Limit retries to 15`), and the code `2044` row tells the customer to try again while also labeling it Category 1 (`do not retry`); the page does not resolve those conflicts.\n\n## Detail locators\n\n- Source title and update timestamp: frontmatter, lines 5-10.\n- Processor decline identity, gateway-rejection boundary, and reason-confirmation limit: `# Declines`, lines 17-30.\n- Decline-ratio context and repeated-attempt inflation: `## Decline ratios`, lines 33-42.\n- Authorization versus settlement declines: `## Authorization declines` and `## Settlement declines`, lines 45-56.\n- Hard and soft decline handling: `## Handling declines`, lines 59-65.\n- Visa retry categories, response-code mappings, fees, and Category 1 warning: `## Retrying declined transactions > Visa`, lines 68-94.\n- Mastercard Merchant Advice Code condition and stated fee threshold: `## Retrying declined transactions > Mastercard`, lines 98-102.\n- Braintree Retry, Smart Retries, and migration wording: `## Retrying declined transactions > Braintree Smart Retries`, lines 104-114.\n- Optional Control Panel display and API-return statement for additional processor responses: `## Additional Processor Responses`, lines 117-128.\n- Response-specific authorization implications, hard/soft labels, payment-method or account qualifications, and retry guidance: `## Authorization decline codes`, lines 131-575.\n- Network-unavailable response `3000`: `## Authorization decline codes > code-3000`, lines 569-575.\n- Settlement response table, including processor, PayPal-risk, capture/refund, account, dispute, and attempt-limit cases: `## Settlement decline codes`, lines 578-595.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-control-panel]]\n\n## Raw Sources\n\n- [[raw/braintree/articles/control-panel/transactions/declines-2026-09-16|Braintree Control Panel transaction declines article]] - complete collected page covering decline identity and handling, network retry guidance, additional processor responses, and authorization and settlement response tables\n",
+  "quotes": [
+    {
+      "text": "A processor decline indicates that the customer\u2019s bank has refused the transaction request. Sometimes you can tell why it was declined by reading the response code, but only the customer's bank can confirm the specific reason.",
+      "location": "# Declines, line 22"
+    },
+    {
+      "text": "There are two types of declines: hard and soft declines. The type of decline informs how you should handle it.\n\n**Hard declines** are the result of an error or issue which can't be resolved immediately. Action such as contacting Braintree Support or asking the customer to contact their bank will need to be taken to resolve the issue before the transaction can be retried.\n\n**Soft declines** are the result of a temporary issue. Retrying the provided payment method information may be successful.",
+      "location": "## Handling declines, lines 61-65"
+    },
+    {
+      "text": "| Category 1 | [2044](#code-2044),[2047](#code-2047),[2019](#code-2019),[2007](#code-2007),[2009](#code-2009),[2108](#code-2108),[2015](#code-2015),[2017](#code-2017),[2018](#code-2018) | Do not retry | $0.10 for each domestic transaction beyond threshold. $0.15 for each international transaction beyond threshold. |\n| Category 2 | [2026](#code-2026),[2038](#code-2038),[2001](#code-2001),[2014](#code-2014),[2002](#code-2002),[2057](#code-2057),[2003](#code-2003),[2101](#code-2101),[2107](#code-2107),[2038*](#code-2038),[2046](#code-2046),[2020](#code-2020),[3000](#code-3000) | Issuer Cannot Approve At this Time (Reattempt Allowed); limit retries to 15 retries over a rolling 30 day period | $0.10 for each domestic transaction beyond threshold. $0.15 for each international transaction beyond threshold. |\n| Category 3 | [2004](#code-2004),[2007](#code-2007),[2102](#code-2102),[2010](#code-2010),[2101](#code-2101),[2103](#code-2103),[2038*](#code-2038) | Limit retries to 15 retries over a rolling 30 day period | $0.10 for each domestic transaction beyond threshold. $0.15 for each international transaction beyond threshold. |\n| Category 4 | [2000](#code-2000) | Limit retries to 15 retries over a rolling 30 day period | $0.10 for each domestic transaction beyond threshold. $0.15 for each international transaction beyond threshold. |",
+      "location": "## Retrying declined transactions > Visa, lines 84-87"
+    },
+    {
+      "text": "For Mastercard, retries should be based only on the Merchant Advice Codes found in the merchant_advice_code field and its corresponding description merchant_advice_code_text. Mastercard assesses a $0.10 fee for every reattempt exceeding 10 retries over a 24-hour period for MAC 03 and MAC 21.",
+      "location": "## Retrying declined transactions > Mastercard, line 100"
+    },
+    {
+      "text": "As a supplement to processor response codes, you can choose to enable additional processor responses in the Control Panel. If enabled \u2013 and the processor declines the transaction \u2013 the processor\u2019s raw response will be displayed in the transaction details in the Control Panel. This response doesn\u2019t often offer much additional context, which is why this feature is disabled by default. If you would like to enable it:",
+      "location": "## Additional Processor Responses, line 119"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c40-w01-control-panel-declines-source-route",
+        "target_path": "wiki/concepts/braintree-control-panel.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources; place beside [[source-braintree-control-panel-gateway-rejections]] and [[source-braintree-control-panel-transaction-issues]]",
+        "proposed_markdown": "- [[source-braintree-articles-control-panel-transactions-declines]] - 2026-09-16 Braintree transaction-decline snapshot distinguishing issuer processor declines, gateway-setting rejections and network-unavailable responses, with authorization/settlement timing, response-specific hard/soft handling, and Visa/Mastercard-qualified retry limits and fees; includes unresolved internal Visa retry conflicts and is not current network-rule, account-eligibility, configuration or execution evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The raw Visa table places response code 2007 in both Category 1 and Category 3 with conflicting retry instructions, and the 2044 implication conflicts with its Category 1 do-not-retry label; do not normalize these into a single permission."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/articles/control-panel/transactions/declines-2026-09-16.md",
+  "raw_sha256": "2a473311dda6da708b5517bf704b0f173b742360bc5dc364baf359f6d058bec6",
+  "status": "candidate_ready"
+}

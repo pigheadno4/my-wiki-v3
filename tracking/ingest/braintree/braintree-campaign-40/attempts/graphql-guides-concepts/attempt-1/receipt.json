@@ -1,0 +1,54 @@
+{
+  "job_id": "graphql-guides-concepts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Payment API Concepts\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/concepts\"\nraw_files:\n  - \"braintree/graphql/guides/concepts-2026-09-16.md\"\ntags: [braintree, graphql, payment-methods, vault, transactions, customers]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide gives conceptual context for the main Braintree GraphQL Payment API types and their behavior: payment methods, the Vault, transactions and customers. It also sketches a typical client-token and client-SDK flow that returns a single-use payment-method ID to the merchant server for GraphQL vaulting or charging. It is an orientation document, not a complete or exact GraphQL schema, a language-SDK implementation, proof of merchant or payment-method eligibility, or evidence that any request, transaction, settlement or funding succeeded.\n\n## Key takeaways\n\n- The guide's typical flow separates client and server responsibilities: the server issues a client token, the client SDK collects payment information and returns a single-use payment method, and the client passes that method's ID (called a nonce by client code) to the server. The server may then use GraphQL to vault or charge it. This is a conceptual sequence, not a guarantee that every product or integration uses the same SDK path.\n- `PaymentMethod` is the guide's umbrella object for something a customer can use to pay, including cards, wallets, PayPal, Venmo and bank accounts. The listed detail-object types and fields are illustrative routes; use the API Explorer or retained exact-schema source for complete field and type definitions.\n- A newly collected method is single-use and expires three hours after creation or after one use. The guide says vaulting consumes that method, stores the underlying payment information and creates a multi-use method. It characterizes multi-use methods as non-expiring and usable for unlimited future charges, but that wording does not establish present product support, account or buyer eligibility, authorization for a future charge, or successful execution.\n- A `Transaction` represents an attempted movement of money. Successful transactions change status as money moves toward the merchant's bank account; an unsuccessful transaction's status describes the failure. Reversing a transaction is state-dependent: the guide says it either cancels before funds are debited or refunds after money has changed hands, while direct refund is the more granular route.\n- `paymentMethodSnapshot` preserves method details from transaction time, whereas `paymentMethod` requests the current vaulted method and is null when the transaction was not created with a vaulted method. Their GraphQL return types also differ; exact union members and fields belong to the schema reference.\n- Customers are optional grouping records with one-to-many payment-method and transaction relationships. The guide says a payment method cannot be transferred to another customer and a transaction cannot be reassociated after creation; a single-use method can still be charged or authorized with a `customerId` when the customer does not store it.\n\n> [!warning] Consequential and evidence boundaries\n> Vaulting consumes the original single-use payment method; reversing or refunding changes transaction or monetary state; and the documented customer associations cannot later be transferred or reassigned. Confirm current operation prerequisites and state before acting. The page's examples and object descriptions are website-documentation evidence, not exact commit-qualified GraphQL schema or runtime guarantees.\n\n## Detail locators\n\n- Guide purpose and API Explorer route for full object fields: opening paragraph, lines 14-16.\n- Typical client-token, client-SDK, nonce handoff, vault and charge sequence: `## The Lifecycle of a Payment`, lines 19-30.\n- Payment-method identity and illustrative funding-source detail objects: `## Payment Methods`, lines 35-48.\n- Single-use lifespan, vault consumption and the page's multi-use-method characterization: `### The Braintree Vault`, lines 51-55.\n- Transaction identity, status progression, reversal and refund distinctions: `## Transactions`, lines 58-66.\n- Snapshot-versus-current payment-method semantics and return-type examples: `### Transactions and Payment Methods`, lines 69-73.\n- Optional customer grouping, vault association behavior, single-use `customerId` route, transaction membership and immutable associations: `## Customers`, lines 76-96.\n- Exact commit-qualified GraphQL operation shapes, nullability, unions, enums and constraints are separately retained in `raw/github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/files/schema.graphql` via [[source-github-graphql-api]]; do not infer them from this website guide.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Single-use method terminology and lifespan: [[source-braintree-payment-method-nonces]]\n- Transaction operation guide: [[source-braintree-graphql-guides-transactions]]\n- Exact commit-qualified schema: [[source-github-graphql-api]]\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/concepts-2026-09-16|Braintree GraphQL Payment API Concepts guide]] - complete collected website page for payment lifecycle, payment methods, Vault, transaction and customer concepts\n",
+  "quotes": [
+    {
+      "text": "This guide contains additional context on the main types in the Braintree API and their behavior. Check out the [API Explorer](/braintree/graphql/explorer) for a full list and documentation of all possible fields on each object type covered here.",
+      "location": "lines 14-16, opening paragraph under # Payment API Concepts"
+    },
+    {
+      "text": "Your server code receives the payment method ID from your client and then uses the GraphQL API to do any of the following things:",
+      "location": "line 28 under ## The Lifecycle of a Payment"
+    },
+    {
+      "text": "Single-use payment methods expire 3 hours after being created or after they are used once.",
+      "location": "line 53 under ### The Braintree Vault"
+    },
+    {
+      "text": "Vaulting consumes the initial single-use payment method, stores the underlying payment information, and creates a multi-use PaymentMethod.",
+      "location": "line 55 under ### The Braintree Vault"
+    },
+    {
+      "text": "As its name implies, paymentMethodSnapshot represents a snapshot of the payment method details at the time of the transaction, and therefore will stay the same on subsequent queries for the transaction. paymentMethod on the other hand fetches an up-to-date representation of the vaulted payment method at the time of the query (or null if the transaction wasn't created with a vaulted payment method).",
+      "location": "line 71 under ### Transactions and Payment Methods"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c40-graphql-guides-concepts-payment-methods-source",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-concepts]] - 2026-09-16 unversioned Braintree GraphQL concepts guide for the typical client/server payment-method handoff, single-use and Vault lifecycle, transaction snapshot-versus-current method semantics, and immutable customer associations; website examples and descriptions are distinct from exact commit-qualified schema, SDK behavior and runtime outcome proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a reciprocal retrieval route; do not copy the guide's broader lifecycle prose into the concept or treat its examples as exact schema or runtime guarantees."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/concepts-2026-09-16.md",
+  "raw_sha256": "e19dbf0b978a36ac3b831ee02e79cae841821c0d2ee6d98ea938d9ed3994c01d",
+  "status": "candidate_ready"
+}

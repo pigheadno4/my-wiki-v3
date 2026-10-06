@@ -1,0 +1,54 @@
+{
+  "job_id": "graphql-integration-guides-ach-direct-debit",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL ACH Direct Debit Integration Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/integration_guides/ach_direct_debit\"\nraw_files:\n  - \"braintree/graphql/integration_guides/ach_direct_debit-2026-09-16.md\"\ntags: [braintree, graphql, ach, direct-debit, bank-accounts]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot is a GraphQL integration guide for US-network ACH Direct Debit. It routes the documented `tokenizeUsBankAccount`, `vaultUsBankAccount`, `verifyUsBankAccount`, `confirmMicroTransferAmounts` and `chargeUsBankAccount` flow, plus a limited-beta Instant Verification path. The guide is separate from the JavaScript v3 client SDK implementation and the versioned GitHub GraphQL schema history; it is not proof of current merchant eligibility, production enablement, deployment, bank-account ownership, successful verification, charge settlement or funding.\n\n## Key takeaways\n\n- The page says ACH Direct Debit client-side collection uses JavaScript v3 and is not available in Drop-in UI. Its GraphQL flow is organized around tokenizing, vaulting, verifying and transacting; linked SDK and API-reference pages remain separate authority.\n- `tokenizeUsBankAccount` exchanges supplied bank details for a single-use payment-method ID. Tokenization alone does not verify the account and the resulting method is not transactable. `vaultUsBankAccount` exchanges that single-use ID for a multi-use method; when a verification method is supplied it can initiate verification in the same step, and the page says the vaulted method becomes transactable only after successful verification.\n- The verification routes described are network check, micro-transfers and independent check. For micro-transfers, the merchant collects the two amounts in its own UI and submits them with `confirmMicroTransferAmounts`; even after amount confirmation, the guide requires status lookup because the account may be ready, still waiting for the verification transfers to settle, or later report verification-settlement failure. Verification requests can be retried with the same or a different method.\n- Instant Verification is labeled limited beta for pilot merchants. The captured flow generates a client token and verification JWT server-side, redirects the customer through an open-banking experience, handles a returned tokenized account, and then vaults it with `INSTANT_VERIFICATION_ACCOUNT_VALIDATION`. A non-default merchant account ID used for the client token must match the later transaction's merchant account ID.\n- The page requires customer mandate or proof of authorization for all ACH transactions and directs the merchant to retrieve bank details, show the applicable authorization language and pass the mandate text on `vaultUsBankAccount` or `chargeUsBankAccount`. For a verified multi-use method, `chargeUsBankAccount` creates the transaction; the page recommends including collected client device data in `riskData` to help reduce declines. Each single-use payment-method ID can be vaulted only once.\n\n## Material warnings\n\n> [!warning] Unresolved `verificationMethod` contradiction\n> The vaulting section says a bank account can be vaulted without specifying a verification method, while the Common errors section says omission produces a non-null validation error. The same vaulting section says merchants performing their own verification should set `INDEPENDENT_CHECK`. This snapshot does not resolve which input shape is accepted for a particular account or API contract, so preserve both statements and verify against the applicable GraphQL schema and environment.\n\n> [!warning] Example state is not a runtime guarantee\n> The transaction prose says the multi-use payment method can be charged once verified, but the displayed `chargeUsBankAccount` response has `paymentMethodSnapshot.verified: false`. Treat the example as captured documentation, not proof that an unverified account is chargeable or that a charge, settlement or funding event occurred.\n\n> [!warning] Verification settlement is not transaction settlement\n> The status-search discussion concerns micro-transfer verification and whether those verification transfers have settled. It does not document the lifecycle or finality of an ACH charge. Use the dedicated ACH payment-method guide for delayed charge settlement, returns and disputes rather than transferring those facts into this GraphQL operation guide.\n\n## Detail locators\n\n- Client-side JavaScript v3 availability, Drop-in exclusion and four-stage flow: raw lines 14-31.\n- Tokenization definition, non-verification consequence, `tokenizeUsBankAccount` request and response shapes: `## Tokenizing`, raw lines 34-124.\n- Single-use-to-multi-use exchange, vault-plus-verification behavior and `vaultUsBankAccount` example: `## Vaulting`, raw lines 126-215.\n- Vault-without-verification wording and `INDEPENDENT_CHECK`: `### Vaulting without verification`, raw lines 217-219.\n- Network-check, micro-transfer and independent-check identities; `verifyUsBankAccount` and `confirmMicroTransferAmounts` examples: `## Verifying`, raw lines 222-371.\n- Pilot-only Instant Verification, server-generated client token, merchant-account match, JWT/redirect flow and returned payment-method handling: `### Verifying with Instant verification`, raw lines 373-649.\n- Mandate prerequisite, bank-detail lookup and mandate-text handoff to vault or charge: `#### Retrieve Bank Details for ACH Mandate`, raw lines 651-708.\n- Verification response inspection, micro-transfer verification-state lookup and retry route: raw lines 710-775.\n- Verified multi-use-method charge route, device-data recommendation and displayed example state: `## Creating Transactions`, raw lines 778-850.\n- Single-use vault-once limit and conflicting omitted-`verificationMethod` error: `## Common errors`, raw lines 852-912.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Payment-method lifecycle and return context: [[source-braintree-payment-methods-ach]]\n\n## Related raw API references\n\nThe guide links to JavaScript v3 client setup, ACH authorization language, GraphQL reference/explorer entries and fraud-device-data guidance. Those linked targets were not read for this entry and are navigation only; they do not establish SDK behavior, an exact schema version, account enablement or successful execution.\n\n## Raw Sources\n\n- [[raw/braintree/graphql/integration_guides/ach_direct_debit-2026-09-16|Braintree GraphQL ACH Direct Debit integration guide]] - complete collected page covering tokenization, vaulting, verification, pilot Instant Verification, mandate handling, charge creation and common errors\n",
+  "quotes": [
+    {
+      "text": "Merchants can integrate with ACH Direct Debit on the client-side using our [JavaScript v3 SDK](/braintree/docs/guides/client-sdk/setup/javascript/v3). It is currently not available in our Drop-in UI",
+      "location": "raw line 17 under # ACH Direct Debit, immediately after **AVAILABILITY**"
+    },
+    {
+      "text": "You can tokenize a bank account by collecting a customer's bank details, including account and routing numbers. However, this will not verify the bank account, and the resulting payment method will not be transactable. Before you can create a transaction, you will need to store the tokenized bank account information in your Vault, and then verify it.",
+      "location": "raw line 41 under ### Tokenizing without verification"
+    },
+    {
+      "text": "When vaulting a bank account, you can choose to specify a verification method. This creates a vaulted payment method and initiates a verification in a single step. If the verification fails, you can keep retrying verifications on the same payment method. A vaulted payment method will only be transactable once it has had a successful verification.",
+      "location": "raw line 137 under ### Vaulting with verification"
+    },
+    {
+      "text": "You can also vault a bank account without specifying a verification method. This will vault the payment method as usual, but no verification will be attempted. As stated above, this payment method will not be transactable until it has a subsequent successful verification. If you prefer to perform verification on your own, the [verificationMethod](/braintree/graphql/reference/#Enum--UsBankAccountVerificationMethod) should be set as INDEPENDENT_CHECK.",
+      "location": "raw line 219 under ### Vaulting without verification"
+    },
+    {
+      "text": "If you do not provide [verificationMethod](/braintree/graphql/reference/#Enum--UsBankAccountVerificationMethod) in the inputs, you will get the following error.",
+      "location": "raw line 891 under ## Common errors"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-graphql-ach-direct-debit-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-integration-guides-ach-direct-debit]] - 2026-09-16 Braintree GraphQL ACH Direct Debit integration-guide snapshot for tokenization, vaulting, verification, limited-beta Instant Verification, mandate handling and charge creation, preserving the `verificationMethod` and displayed charge-state tensions separately from SDK implementations and exact GraphQL schema history",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this Braintree website GraphQL guide separate from JavaScript v3 SDK behavior and the versioned GitHub GraphQL schema; it is not exact-schema, deployment, enablement or execution proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/integration_guides/ach_direct_debit-2026-09-16.md",
+  "raw_sha256": "ad495e84f8092aad811bc53cb723e31e67a72cb483f76f5f40daf85800269116",
+  "status": "candidate_ready"
+}

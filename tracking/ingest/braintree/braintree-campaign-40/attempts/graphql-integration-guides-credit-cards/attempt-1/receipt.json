@@ -1,0 +1,55 @@
+{
+  "job_id": "graphql-integration-guides-credit-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Credit Card Integration Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/integration_guides/credit_cards\"\nraw_files:\n  - \"braintree/graphql/integration_guides/credit_cards-2026-09-16.md\"\ntags: [braintree, graphql, credit-cards, transactions, verification, vault, tokenization]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide routes GraphQL credit-card operations for charging, verification, Vault storage, billing-address updates, authorization, detached refunds and direct card tokenization. It documents operation purposes and example selections, not a language-SDK implementation or an exact GraphQL schema baseline, and it does not establish current deployment, account enablement, card eligibility, successful authorization, settlement, funding or refund completion.\n\n## Key takeaways\n\n- `chargePaymentMethod` is presented as the simplest route: it accepts an amount and a client-relayed single-use payment method and immediately submits the transaction for settlement. For additional inputs such as billing address, tokenized CVV or 3D Secure authentication, the guide routes to `chargeCreditCard`. Both examples select a transaction object; their displayed `SUBMITTED_FOR_SETTLEMENT` status is example output, not execution evidence or proof of settlement or funding.\n- `verifyCreditCard` runs verification on a credit card already stored in the Vault and returns a verification object. The guide says the gateway normally uses a $0 or $1 authorization and automatically voids it, with a different authorization amount available through options. That authorization and automatic void are consequential card-network actions, not a purchase. When Premium Fraud Management Tools are used, the page strongly recommends sending device data on every verification. Processor-declined and gateway-rejected results expose different reason routes.\n- `vaultCreditCard` combines verification and subsequent Vault storage: the page says the resulting multi-use payment method is saved only if verification succeeds, and the payload returns separate payment-method and verification objects. `updateCreditCardBillingAddress` targets an existing multi-use card and verifies the card and new address before setting the replacement billing address. These operations can persist or modify Vault data; their displayed `VERIFIED` responses are examples rather than guarantees.\n- `authorizeCreditCard` creates an authorization without submitting for settlement and returns transaction details. The page directs the merchant to inspect transaction status and later call `captureTransaction`; authorization and capture are separate actions, and the page does not establish capture success or final settlement.\n- `refundCreditCard` is the detached-credit route and returns a refund object. Detached credits are disabled by default and generally violate card-association rules; the page says temporary enablement must be requested by the authorized signer on the Braintree gateway account. The displayed `SUBMITTED_FOR_SETTLEMENT` refund is not proof that a refund settled or reached the cardholder.\n- `tokenizeCreditCard` accepts raw credit-card fields and returns a single-use payment method. The guide restricts this mutation to PCI SAQ-D integrations and explicitly says not to use it when compliance status is uncertain. The resulting single-use method can be passed to charge or authorization mutations; tokenization itself is not authorization, verification, Vault storage or payment success.\n\n> [!warning] Scope, account and environment boundaries\n> This website snapshot does not identify an SDK package/version or an API schema version, and its code blocks are illustrative selection and response shapes. The captured page does not name Sandbox or Production, so do not infer environment availability or parity. Detached-credit enablement is account-controlled, while card, processor, fraud-tool, merchant-account and regional eligibility require separate authority.\n\n## Detail locators\n\n- Simple immediate-settlement-submission route, amount and single-use payment-method input, example transaction selection and displayed response: `## Creating simple transactions`, raw lines 17-67.\n- Advanced `chargeCreditCard` purpose, additional-input examples, transaction fields and displayed response: `## Creating advanced transactions`, raw lines 70-147.\n- Stored-card verification purpose, Control Panel recommendation, default/custom authorization amount, automatic void and request/response examples: `### Card verification`, raw lines 149-223.\n- Premium Fraud Management Tools device-data recommendation, result-object placement, decline/rejection statuses and reason routes: raw lines 224-247.\n- Verify-and-Vault success condition, separate payment-method and verification objects, examples and unsuccessful-result meanings: `### Verify and Vault`, raw lines 250-322.\n- Existing multi-use-card billing-address mutation, pre-update verification and example payload: `### Update Billing Address`, raw lines 325-386.\n- Separate authorization purpose, transaction object/status inspection, later `captureTransaction` requirement and examples: `### Authorize`, raw lines 388-435.\n- Detached-credit association warning, `refundCreditCard` request/refund object, displayed status and authorized-signer temporary-enablement prerequisite: `### Creating a Detached Refund`, raw lines 437-496.\n- PCI SAQ-D-only raw-card tokenization restriction, `tokenizeCreditCard` input/payment-method output and downstream single-use-method routes: `### Tokenization`, raw lines 497-560.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Single-use terminology and lifecycle route: [[source-braintree-payment-method-nonces]]\n- Provider transaction-lifecycle route: [[source-braintree-transaction-lifecycle]]\n\n## Related raw API references\n\nThe guide links to GraphQL reference entries for its mutations, inputs, payload objects and rejection fields, plus separate collection, Vault, transaction-lifecycle, Control Panel and fraud guidance. Those targets were not read for this entry and are navigation only; they do not establish exact schema equivalence, account enablement, environment availability or successful execution.\n\n## Raw Sources\n\n- [[raw/braintree/graphql/integration_guides/credit_cards-2026-09-16|Braintree GraphQL Credit Card integration guide]] - complete collected page covering charge, verification, Vault, billing-address update, authorization, detached-refund and PCI-qualified tokenization operations\n",
+  "quotes": [
+    {
+      "text": "You can create a transaction with just an amount and a single-use payment method relayed from your client and immediately [submit for settlement](/braintree/articles/get-started/transaction-lifecycle/#submitted-for-settlement). You may see single-use payments methods referred to as a payment_method_nonce in your client. See [here](/braintree/graphql/guides/collecting_payment_information/#use-the-payment-method) for more information regarding this terminology difference.",
+      "location": "raw line 21 under ## Creating simple transactions"
+    },
+    {
+      "text": "The gateway verifies cards by running a $0 or $1 authorization and then automatically voids it. If you'd like, you can specify a different amount via [CreditCardVerificationOptionsInput](/braintree/graphql/reference/#Input--CreditCardVerificationOptionsInput) for the authorization.",
+      "location": "raw line 157 under ### Card verification"
+    },
+    {
+      "text": "If you need to verify a credit card and subsequently save it in your Vault, you can do both in a single request using [vaultCreditCard](/braintree/graphql/reference/#Mutation--vaultCreditCard) mutation. If the verification succeeds, the resulting multi-use payment method will be saved in your Vault, and the status attribute in the response will be set to VERIFIED.",
+      "location": "raw line 252 under ### Verify and Vault"
+    },
+    {
+      "text": "If you need to authorize a credit card without submitting for settlement, you can use the [authorizeCreditCard](/braintree/graphql/reference/#Mutation--authorizeCreditCard) mutation. It will return a [TransactionPayload](/braintree/graphql/reference/#Object--TransactionPayload) object that will include transaction details. Check the status of the transaction to see if it was authorized. When [authorizing a credit card](/braintree/articles/control-panel/transactions/managing-authorizations) you will need to ensure you submit the transaction for settlement at a later time using the [captureTransaction](/braintree/graphql/reference/#Mutation--captureTransaction) mutation.",
+      "location": "raw line 390 under ### Authorize"
+    },
+    {
+      "text": "The following mutation should only be used if you fall under the PCI SAQ-D compliance level. If you are unsure of your status, do**NOT**use this mutation.[Learn more about how to collect payment information](/braintree/graphql/guides/collecting_payment_information/)The [tokenizeCreditCard](/braintree/graphql/reference/#Mutation--tokenizeCreditCard) mutation will tokenize the credit card fields and return a payload for a single-use payment method.",
+      "location": "raw line 499 under ### Tokenization"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-graphql-credit-cards-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-integration-guides-credit-cards]] - 2026-09-16 unversioned Braintree website GraphQL credit-card guide for charge, verification, Vault, billing-address update, separate authorization/capture, account-gated detached refunds and PCI SAQ-D-qualified raw-card tokenization; distinct from SDK implementations, exact schema history and execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this website guide separate from language-SDK behavior and the exact commit-qualified GraphQL schema; its examples do not prove current deployment, account enablement, environment parity or payment execution.",
+          "Preserve the account-gated detached-credit warning and the PCI SAQ-D-only restriction on tokenizeCreditCard when summarizing this route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/integration_guides/credit_cards-2026-09-16.md",
+  "raw_sha256": "27aba675687893b058e9ad1f98b51a9268543e74983022ac39c4227bbe02a90b",
+  "status": "candidate_ready"
+}

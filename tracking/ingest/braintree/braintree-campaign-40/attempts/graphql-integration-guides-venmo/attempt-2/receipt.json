@@ -1,0 +1,54 @@
+{
+  "job_id": "graphql-integration-guides-venmo",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree GraphQL Venmo Integration Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/integration_guides/venmo\"\nraw_files:\n  - \"braintree/graphql/integration_guides/venmo-2026-09-16.md\"\ntags: [braintree, graphql, venmo, payment-context, vault, authorization, transactions]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website page is a GraphQL integration guide for Venmo Payment Context creation, Vault storage and deletion, authorization, charging, business-profile selection and partial capture. It documents operation purposes and example request/response shapes; it is not a client-SDK implementation, an exact GraphQL schema baseline, or proof of current availability, account enablement, deployment, authorization, settlement or funding.\n\n## Key takeaways\n\n- `createVenmoPaymentContext` is explicitly intended for API-only merchants; the page sends web and mobile integrations to separate client-side guides. A Payment Context carries information shared among the merchant, Braintree and Venmo/PayPal, including payment intent, whether the method should be vaulted, and flags for selected customer-data collection. The displayed fields and `SANDBOX` response are examples, not a complete schema or evidence of environment parity or successful creation.\n- `vaultPaymentMethod` is the documented route for saving a customer's Venmo account for later transactions. The page also shows an after-transaction vaulting option on `chargePaymentMethod` or `chargeVenmoAccount`. The displayed vault and charge inputs pass a `paymentMethodId`; this guide does not establish whether a displayed identifier is single-use or multi-use, whether a particular invocation consumes it, how that identifier was created, or SDK nonce equivalence, so use the separate nonce/single-use-method route for that terminology and lifecycle.\n- A customer deleting a vaulted Venmo payment method on the merchant website or app also deletes that customer's Venmo merchant connection, except when duplicate Vault methods remain for the same Venmo account; the connection is removed only after the last duplicate is deleted. By contrast, a customer deleting the merchant connection within Venmo automatically removes the method from the merchant Vault. These are consequential cross-system deletions.\n- `authorizeVenmoAccount` targets an eligible Venmo account and returns a transaction payload whose `status` must be inspected. `chargePaymentMethod` is the general transaction route shown with an amount and `paymentMethodId`, and the page directs merchants to submit client-collected device data. The displayed `AUTHORIZED` and `SUBMITTED_FOR_SETTLEMENT` values are illustrative responses, not proof of authorization, settlement or funding.\n- `chargeVenmoAccount` is the route shown for selecting a Venmo business profile. The supplied `profileId` should match the profile used during client-side tokenization; omitting it associates the transaction with the default business profile. For physical goods shipped separately, the page also routes multiple partial settlements against one authorization through `partialCaptureTransaction`; the example-free statement does not prove capture or settlement success.\n\n> [!warning] Scope, eligibility and environment boundary\n> The snapshot states only that Venmo is available on supported iOS and Android devices and that Payment Context creation is for API-only merchants. It does not establish present compatibility, merchant approval, Venmo-profile setup, customer eligibility, Production enablement or Sandbox-to-Production parity. Use the dedicated Venmo payment-method guide for merchant/customer prerequisites and profile setup, and verify the applicable environment and account separately.\n\n## Detail locators\n\n- Supported-device availability statement and linked compatibility route: `# Venmo`, raw lines 14-19.\n- API-only qualification, Payment Context purpose and linked complete input reference: `## Creating a Payment Context`, raw lines 22-28.\n- `createVenmoPaymentContext` selection plus illustrative variables and response, including intent, usage, customer-client, environment, expiry, method, profile, amount and address-collection fields: raw lines 30-189.\n- Explicit Vault reuse purpose, `vaultPaymentMethod` example and after-transaction vault option: `## Vaulting the Venmo account`, raw lines 191-244.\n- Bidirectional merchant-connection/Vault deletion effects and duplicate-method qualification: `## Deleting a Vaulted Payment Method`, raw lines 247-251.\n- Eligible-account authorization purpose, status inspection and illustrative `AUTHORIZED` response: `## Authorization`, raw lines 254-309.\n- Client-collected device-data instruction, `chargePaymentMethod` amount/method input and illustrative `SUBMITTED_FOR_SETTLEMENT` response: `## Creating transactions`, raw lines 311-370.\n- `chargeVenmoAccount`, same-profile tokenization condition, omitted-profile default and example payload: `## Specifying the business profile`, raw lines 372-438.\n- Physical-goods multiple-shipment condition and `partialCaptureTransaction` route: `## Settlement`, raw lines 440-445.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Venmo eligibility, setup and payment-method lifecycle route: [[source-braintree-payment-methods-venmo]]\n- SDK nonce and GraphQL single-use-method terminology route: [[source-braintree-payment-method-nonces]]\n\n## Related raw API references\n\nThe page links to GraphQL reference entries for Payment Context, vault, authorization, charge, business-profile and partial-capture operations, and to separate client-side and Venmo-availability guidance. Those linked targets were not read as raw evidence for this entry and provide navigation only; they do not establish exact schema equivalence, SDK behavior, current eligibility, account enablement, environment availability or successful execution.\n\n## Raw Sources\n\n- [[raw/braintree/graphql/integration_guides/venmo-2026-09-16|Braintree GraphQL Venmo integration guide]] - complete collected page covering Payment Context creation, vaulting and deletion, authorization, transaction creation, business-profile selection and partial capture\n",
+  "quotes": [
+    {
+      "text": "The CreateVenmoPaymentContext mutation is intended for API-only merchants. See our [client-side integration guides](/braintree/docs/guides/venmo/client-side/javascript/v3/) for web or mobile integrations.",
+      "location": "raw lines 25-26 under ## Creating a Payment Context"
+    },
+    {
+      "text": "Payment Contexts are a \u201cbag of data\u201d that can be read by a merchant, Braintree and Venmo/PayPal. It is used to write into, read from, and share information amongst the applications. You cann declare intent about the payment method before creating a Venmo transaction as well as specify details on whether the transaction should be vaulted or not. Additionally, you can specify flags to collect certain customer information. For the full list of available inputs, please check out our [reference docs](/braintree/graphql/reference/#Input--CreateVenmoPaymentContextInput).",
+      "location": "raw line 28 under ## Creating a Payment Context"
+    },
+    {
+      "text": "If a customer deletes a vaulted Venmo payment method on a merchant website or app, it will also delete the Venmo customer's merchant connection within their Venmo app on the Connected Businesses page. However, if your Vault has duplicate payment methods for the same Venmo account, the merchant connection will not be deleted until the last payment method is deleted.",
+      "location": "raw line 249 under ## Deleting a Vaulted Payment Method"
+    },
+    {
+      "text": "To authorize an eligible Venmo account, use the [authorizeVenmoAccount](/braintree/graphql/reference/#Mutation--authorizeVenmoAccount) mutation. This mutation will return a transaction payload, and the success of the authorization can be seen by using the status field.",
+      "location": "raw line 256 under ## Authorization"
+    },
+    {
+      "text": "Creating a Venmo transaction is the same as creating any other transaction with a payment method. Be sure to pass the device data you collected on the client side when you create the transaction.\n\nYou can create a Venmo transaction using the [chargePaymentMethod](/braintree/graphql/reference/#Mutation--chargePaymentMethod) mutation while supplying an amount and paymentMethodId.",
+      "location": "raw lines 313-315 under ## Creating transactions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c40-graphql-venmo-concept-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-integration-guides-venmo]] - 2026-09-16 unversioned Braintree website GraphQL Venmo guide for API-only Payment Contexts, Vault/deletion, authorization, charge/profile and partial-capture routes; examples are not execution proof, and the page is distinct from client SDK implementations and exact schema history",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the website snapshot separate from current merchant eligibility, environment enablement, client SDK behavior and exact-SHA GraphQL schema evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/integration_guides/venmo-2026-09-16.md",
+  "raw_sha256": "39f5ed43cbb5a33554322027868a7d237d35582e56eb00c592bdfdfbb0ea8ab7",
+  "status": "candidate_ready"
+}

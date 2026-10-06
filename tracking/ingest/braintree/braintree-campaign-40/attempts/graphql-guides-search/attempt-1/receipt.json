@@ -1,0 +1,55 @@
+{
+  "job_id": "graphql-guides-search",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL Search Guide\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/search\"\nraw_files:\n  - \"braintree/graphql/guides/search-2026-09-16.md\"\ntags: [braintree, graphql, search, pagination]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of Braintree's unversioned website GraphQL search guide explains how to retrieve multiple objects of one searchable type: select the object type and requested node fields, pass criteria in variables, POST the query, and traverse the returned connection with cursors. It is a website guide, not a language-SDK contract or the exact-commit GraphQL schema. Its sandbox transaction requests and returned payloads are examples, not proof of current type availability, merchant eligibility, production behavior, or a successful payment operation.\n\n## Key takeaways\n\n- The guide contrasts a node query for one known object ID with a search query for multiple objects of the same type. It routes the actual searchable object types and fields to the GraphQL reference rather than defining the complete schema in this page.\n- Multiple supplied criteria are combined with logical AND, so an object must satisfy every supplied criterion. An empty string, null value, or empty list is treated like an omitted search field; the guide separately warns that empty or null `isNot` does not mean \"all nonempty results.\"\n- The documented criteria patterns are ranges, timestamps, multiple-value fields, and free text. Their operators and transaction/customer inputs are examples and locators, not global guarantees for every searchable object or field.\n- Results use Relay cursor connections. The snapshot says the default maximum page size is 50; clients request fields under `edges.node`, inspect `pageInfo`, and pass a returned cursor with `after` to fetch logically later results.\n- When no object matches, the documented response has an empty `edges` array, `hasNextPage: false`, and null start/end cursors. This is a query-result state, not evidence about payment execution or settlement.\n- The two cURL examples POST to the sandbox endpoint using placeholder Basic-auth public/private keys and a `Braintree-Version: 2019-01-01` header. Those values demonstrate the examples' environment, credential form, and version context; they do not establish a universal or current credential/version requirement.\n\n## Detail locators\n\n- Search purpose and four-step workflow: raw lines 14-24 under `# Searching for Objects`.\n- Sandbox transaction-search cURL example, selected fields, credentials, version header, endpoint, and variables: raw lines 26-71 under `### CURL`.\n- Criteria combination and empty-value semantics: raw lines 75-81 under `## Constructing Searches`.\n- Range operators and bounded amount example: raw lines 84-106 under `### Ranges`.\n- Timestamp operators and UTC interval example: raw lines 110-130 under `### Timestamps`.\n- Multiple-value `in` operator and transaction-status example: raw lines 134-155 under `### Multiple Value Fields`.\n- Free-text operators, `startsWith` example, and the `isNot` empty/null warning: raw lines 159-180 under `### Free Text Searches`.\n- Combined February 2019 transaction-search example: raw lines 183-239 under `### Putting it all together`.\n- Relay connection behavior, page-size statement, and first-page query/response: raw lines 243-311 under `## Understanding Your Results`.\n- Subsequent-page `after` cursor example: raw lines 311-372.\n- Empty-result response shape: raw lines 376-400 under `### Empty Results`.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]]\n- [[source-braintree-graphql-guides-making-api-calls]]\n- [[source-github-graphql-api]]\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/search-2026-09-16|Braintree GraphQL Search guide (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "A [node query](/braintree/graphql/guides/node_query) can fetch information about a specific object given an ID, but if you want to fetch information about multiple objects of the same type, you can specify criteria in a search query. The [search](/braintree/graphql/reference#Query--search) query returns the fields you can use to search for objects. The available types you can search for are defined in the [Search](/braintree/graphql/reference#Object--Search) type.",
+      "location": "line 16 under # Searching for Objects"
+    },
+    {
+      "text": "Search criteria are specified through input fields and generally follow one of four patterns to specify the criteria by which you would like to filter the results of your search. If you specify multiple criteria, they are logically AND 'd together, so all criteria must be met in order for the search to match an object.",
+      "location": "line 79 under ## Constructing Searches"
+    },
+    {
+      "text": "Searching for empty strings, null values, or empty lists is the same as omitting the search field altogether.",
+      "location": "line 81 under ## Constructing Searches"
+    },
+    {
+      "text": "Braintree's GraphQL API implements the [Relay Cursor Connections Specification](https://relay.dev/graphql/connections.htm) for presenting paginated search results. To read more about how connections are used throughout our API, see the [Pagination and Relay Connections guide](/braintree/graphql/guides/connections). Relay uses cursors for managing pagination, you must use a returned cursor as a parameter to access the next page of results, all of which will be logically after the cursor provided.",
+      "location": "line 245 under ## Understanding Your Results"
+    },
+    {
+      "text": "If you make a query for which there are no results, the edges array will be empty, hasNextPage will be false, and startCursor and endCursor will be set to null. For example:",
+      "location": "line 378 under ### Empty Results"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "graphql-guides-search-payment-platform-source-route",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-search]] - 2026-09-16 unversioned website GraphQL guide for multi-object search criteria, logical-AND and empty-value semantics, Relay cursor pagination and empty-result state; sandbox credentials, version headers, request payloads and responses are examples, distinct from language SDKs and exact-commit schema evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page routes supported types and fields to the GraphQL reference; do not treat this snapshot as the complete or current schema.",
+          "The cURL queries and responses are examples and do not prove merchant eligibility, production behavior, payment execution, settlement, or a global credential/version requirement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/search-2026-09-16.md",
+  "raw_sha256": "3e30cf7debfe6202d676ab0444807785b3ed18a0a7e89394857e0cdd8dedba41",
+  "status": "candidate_ready"
+}

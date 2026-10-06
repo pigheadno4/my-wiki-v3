@@ -1,0 +1,54 @@
+{
+  "job_id": "graphql-guides-testing",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree GraphQL: Testing in Sandbox\"\ntype: source\ndate_ingested: 2026-10-05\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/graphql/guides/testing\"\nraw_files:\n  - \"braintree/graphql/guides/testing-2026-09-16.md\"\ntags: [braintree, graphql, sandbox, testing, payment-methods, settlement]\n---\n\n## Overview\n\nThis collected [[braintree|Braintree]] website guide describes Sandbox test data and GraphQL actions for testing single-use and vaulted payment methods, transaction-status outcomes and settlement-state transitions. It is a Sandbox testing guide, not evidence of live execution, production behavior, merchant enablement, SDK support or the exact commit-qualified GraphQL schema.\n\n## Key takeaways\n\n- Sandbox test single-use payment methods act as payment-method IDs but are not consumed. The page says they may be passed as `paymentMethodId` to `chargePaymentMethod` and other payment-method queries or mutations. To exercise a vaulted path, it directs the reader to vault a test single-use method with `vaultPaymentMethod`, then charge the returned payment-method ID.\n- Transaction-status simulation uses designated test amounts on `TransactionInput` when charging a payment method. Card-verification test values have a different purpose\u2014initial payment-method validation\u2014and the page explicitly says they do not force `chargePaymentMethod` transactions into different states.\n- In Sandbox, `sandboxSettleTransaction` can force a transaction from `SUBMITTED_FOR_SETTLEMENT` to `SETTLED`, or to `SETTLEMENT_DECLINED` depending on the selected test amount. The method is Sandbox-only: production must follow normal settlement processing, and calling it there produces an error.\n- The shown PayPal vault, declined-card charge and settlement payloads are examples. Their displayed IDs, amount and response states are synthetic fixtures, not credentials, reusable live payment data, or proof that any request ran or settled. This page does not specify general HTTP request construction or authorization credentials; use the separately collected API-call guide for that prerequisite.\n\n## Detail locators\n\n- `Test Payment Methods` \u2014 non-consuming Sandbox single-use methods, their use as `paymentMethodId`, the test vault-then-charge sequence, and an example PayPal vault mutation.\n- `Testing Different Transaction Statuses` \u2014 transaction-amount status simulation, the separation from card-verification values, and an illustrative `2046.00` / `PROCESSOR_DECLINED` charge response.\n- `Forcing Settlement of Transactions` \u2014 the Sandbox settlement transition, amount-dependent `SETTLED` versus `SETTLEMENT_DECLINED` outcome, production prohibition, and example `sandboxSettleTransaction` input/response.\n\n## Related\n\n- [[braintree-payment-platform]]\n- [[braintree-payment-methods]]\n- [[source-braintree-graphql-guides-making-api-calls]] \u2014 environment endpoints, credentials, version header and request/response handling; distinct prerequisites not established by this testing page.\n\n## Raw Sources\n\n- [[raw/braintree/graphql/guides/testing-2026-09-16|Braintree GraphQL Testing (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "We provide [test single-use payment methods in Sandbox](/braintree/docs/reference/general/testing#payment-method-nonces), which can be used instead of tokenizing a new payment method every time. These function as IDs for normal single-use payment methods, but will not be consumed. You may pass any of these payment method \"nonces\" as the paymentMethodId in the chargePaymentMethod mutations or any of the other payment-method-related queries and mutations.",
+      "location": "lines 17-19, under `## Test Payment Methods`"
+    },
+    {
+      "text": "To test vaulted payment methods, use one of the test single-use payment methods in a vaultPaymentMethod mutation, then pass the resulting payment method's ID into the chargePaymentMethod mutation.",
+      "location": "line 21, under `## Test Payment Methods`"
+    },
+    {
+      "text": "Note: the [values for testing card verification](/braintree/docs/reference/general/testing#nonces-for-testing-card-verification) are not useful for forcing transactions into different states. They are for workflows related to initial validation of payment methods. When seeking different statuses in a chargePaymentMethod mutation, you must use the appropriate test value for the transaction amount.",
+      "location": "line 74, under `## Testing Different Transaction Statuses`"
+    },
+    {
+      "text": "In our sandbox environment, you can force transactions to move from SUBMITTED_FOR_SETTLEMENT to a SETTLED state (or SETTLEMENT_DECLINED, depending on the [test amount](/braintree/docs/reference/general/testing/ruby#transaction-amounts) you've chosen).",
+      "location": "line 131, under `## Forcing Settlement of Transactions`"
+    },
+    {
+      "text": "This method will only work in the [Sandbox environment](/braintree/graphql/guides/making_api_calls/#endpoints). In production, you have to wait for the normal settlement processes to complete. Calling this method in production will produce an error.",
+      "location": "line 133, under `## Forcing Settlement of Transactions`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c40-graphql-testing-platform-source",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-graphql-guides-testing]] - 2026-09-16 unversioned Braintree website GraphQL guide for Sandbox-only test payment methods, transaction-status amounts and forced settlement transitions; its examples are synthetic fixtures, not credentials, SDK or exact-schema authority, production behavior, merchant enablement, or proof of payment execution or settlement",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the Sandbox-only and production-error boundary with this reciprocal route; do not generalize the forced-settlement mutation to production.",
+          "The page is website guidance and its example responses are not live execution evidence or exact commit-qualified GraphQL schema evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/graphql/guides/testing-2026-09-16.md",
+  "raw_sha256": "2acaf335b0e140c81833364d644afda6133dcac74e6869ada976f0ec039a6453",
+  "status": "candidate_ready"
+}

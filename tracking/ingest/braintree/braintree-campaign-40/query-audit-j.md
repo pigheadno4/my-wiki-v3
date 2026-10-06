@@ -1,0 +1,49 @@
+# Braintree Campaign 40 Fixed Query Audit — Group J (37–40)
+
+Analysis ended: 2026-10-05T01:43:43Z
+
+Scope: exactly four manifest jobs, two fixed questions per source page. Catalog edits are deferred. Answers are bounded to the 2026-09-16 captures; linked references are navigation only unless explicitly identified as selected evidence.
+
+## Result
+
+**8/8 PASS.** Each source summary answers the fixed scope/non-inference and action/prerequisite/warning questions, with exact raw-detail routes and the required product-boundary distinctions.
+
+## 37. `graphql-guides-collecting-payment-information`
+
+**Route:** `wiki/index.md:11` → `wiki/braintree-index.md:596` → `wiki/concepts/braintree-payment-methods.md:25` → `wiki/sources/braintree/source-braintree-graphql-guides-collecting-payment-information.md:14-50` → `raw/braintree/graphql/guides/collecting_payment_information-2026-09-16.md`.
+
+1. **Scope / non-inference — PASS.** This is an unversioned Braintree GraphQL orientation page for the client/server payment-information route. A Braintree client SDK sends sensitive payment data directly from the client to Braintree, Braintree stores it temporarily, and the returned string is called a nonce in SDK documentation and the ID of a single-use GraphQL `PaymentMethod` (`raw:17-23,81-87`). It is not an exact/current GraphQL schema, package-qualified JavaScript/iOS/Android SDK behavior, server-credential guidance, PCI/compliance proof, current method or account eligibility, or evidence that tokenization, charging, vaulting or payment execution succeeded. The linked iOS v6 and Android v4 routes are captured navigation, not current-version proof.
+2. **Central action / prerequisites / warnings / detail route — PASS.** A client integration first needs authorization; the page offers a GraphQL `createClientToken` mutation and separately shows optional `merchantAccountId` input (`raw:26-64`). The client uses that token to collect information and obtain `payload.nonce`, then sends the nonce/payment-method ID to the merchant server, where GraphQL can charge it or store it in the Vault (`raw:68-78`). The website Drop-in snippet is illustrative, not proof that the token request, tokenization, charge or Vault action ran; `single-use` does not establish a lifetime beyond the captured terminology. Exact mutation, variables, handoff and terminology details remain at `raw:30-64,68-87`.
+
+## 38. `graphql-guides-testing`
+
+**Route:** `wiki/index.md:11` → `wiki/braintree-index.md:595` → `wiki/concepts/braintree-payment-platform.md:33` → `wiki/sources/braintree/source-braintree-graphql-guides-testing.md:14-37` → `raw/braintree/graphql/guides/testing-2026-09-16.md`.
+
+3. **Scope / non-inference — PASS.** This is a Sandbox testing guide. Its test single-use payment methods act as IDs but are not consumed; test amounts simulate transaction statuses; and `sandboxSettleTransaction` forces Sandbox settlement-state transitions (`raw:14-21,70-74,129-133`). The displayed IDs, PayPal account, card data, amounts and responses are synthetic examples, not credentials, current exact-schema or SDK authority, merchant enablement, Production behavior, a live request, payment execution, settlement or funding proof.
+4. **Central action / prerequisites / warnings / detail route — PASS.** For a Vault path, pass a test single-use method to `vaultPaymentMethod`, then charge the returned multi-use ID (`raw:19-68`). For charge-state testing, choose the documented transaction **amount**; card-verification values test initial validation and do not force `chargePaymentMethod` states (`raw:70-127`). A transaction already in `SUBMITTED_FOR_SETTLEMENT` can be forced to `SETTLED` or, depending on the test amount, `SETTLEMENT_DECLINED` with `sandboxSettleTransaction`; the method is Sandbox-only, Production must follow normal settlement, and a Production call errors (`raw:129-170`). General endpoint, credential and version-header setup belongs to the separate API-call guide and is not established by this page.
+
+## 39. `graphql-guides-node-query`
+
+**Route:** `wiki/index.md:11` → `wiki/braintree-index.md:595` → `wiki/concepts/braintree-payment-platform.md:32` → `wiki/sources/braintree/source-braintree-graphql-guides-node-query.md:14-40` → `raw/braintree/graphql/guides/node_query-2026-09-16.md`.
+
+5. **Scope / non-inference — PASS.** This page documents GraphQL's `node` query for retrieving one object from a known global ID without separately supplying its type; it is **not** the legacy Braintree Node.js server SDK (`raw:14-18`). Only types implementing the `Node` interface and using global IDs are eligible. The captured list—`Transaction`, `PaymentMethod`, `Refund`, `Customer`, `Verification`—is snapshot evidence discoverable through the shown introspection query, not a complete/current schema guarantee (`raw:20-38`). The page does not prove current type availability, account authorization, request success or any payment outcome.
+6. **Central action / prerequisites / warnings / detail route — PASS.** Supply the known global ID to `node(id: ...)` and use inline fragments for the possible runtime type; a transaction uses a `Transaction` fragment, a refund uses `Refund`, and an ID that may be either needs both (`raw:40-75`). A created transaction ID can be saved and queried later for status and nested payment-method details (`raw:77-112`). The displayed `SUBMITTED_FOR_SETTLEMENT` payload and request ID are examples, not execution or guaranteed lifecycle/type-shape evidence, and the page does not document invalid, missing or unauthorized-ID behavior. Multi-object retrieval belongs to the separate search guide.
+
+## 40. `graphql-integration-guides-uploading-files`
+
+**Route:** `wiki/index.md:11` → `wiki/braintree-index.md:614` → `wiki/concepts/disputes.md:334` → `wiki/sources/braintree/source-braintree-graphql-integration-guides-uploading-files.md:14-49` → `raw/braintree/graphql/integration_guides/uploading_files-2026-09-16.md`.
+
+7. **Scope / non-inference — PASS.** This is an unversioned GraphQL multipart-transport example. The snapshot says Braintree partially implements the GraphQL Multipart Request Spec, supports one file per request, and then identifies `createDisputeFileEvidence` as the only mutation requiring this route (`raw:14-16`). For that mutation it lists PNG/JPG/JPEG/PDF and a 4 MB maximum (`raw:37-39`). The Sandbox endpoint, dated version header, placeholder credentials and response fields are examples, not proof of current support, Production availability, valid authorization, Control Panel dispute access, dispute-state eligibility, file/evidence acceptance, submission to a bank or a dispute outcome.
+8. **Central action / prerequisites / warnings / detail route — PASS.** Send `multipart/form-data` containing required `operations` JSON (with the GraphQL query, variables, and `file: null` placeholder), required `map` JSON linking that placeholder path to the named file part, and the local file plus valid MIME type (`raw:42-68`). Braintree version and authorization headers follow an ordinary GraphQL request, and the response uses the ordinary GraphQL response structure (`raw:70-72`). This action uploads/creates file evidence; it does **not** establish dispute finalization. The separately selected Node reference says an `Open` dispute requires `gateway.dispute.finalize()` to submit evidence to the banks and transition to `Disputed` (`raw/braintree/docs/reference/request/dispute/finalize/node-2026-09-16.md:15-28`). Upload success therefore cannot be treated as evidence submission, bank acceptance, reimbursement or outcome.
+
+## Shared verification
+
+- **Manifest/provider/object/action — PASS:** provider is `braintree`; these are exact C40 manifest positions 37–40. Job IDs, canonicals, source targets and pinned raw paths match. The objects/actions are client-SDK-to-server payment-method handoff, Sandbox payment/status testing, GraphQL global-ID node retrieval, and multipart dispute-file-evidence upload.
+- **Pinned provenance — PASS:** fresh SHA-256 recomputation matches `manifest.json`: collection `5a7c62a2…4364`; testing `2acaf335…6453`; node query `a0b27034…6365`; upload `cb8aa544…a1f`. Reverse hashing found each digest on exactly one Braintree Markdown raw.
+- **Full reads — PASS:** the root index, Braintree index, three routed concept pages, all four promoted sources and all four pinned raws were read completely. The dispute-finalize source and raw were also read completely because they are necessary authority for the upload-versus-finalization boundary. Other linked GraphQL/SDK/reference pages remain bounded navigation rather than imported evidence.
+- **Navigation / reverse links — PASS with deferred catalog gap:** root → Braintree index → routed concept → source → pinned raw resolves for all four. Each routed concept links to its assigned source; each source links back to `[[braintree]]` and its routed concept; the Braintree company page also links all four sources. `wiki/braintree-index.md` has no direct rows for these four sources, but campaign catalog aggregation is explicitly deferred and the concept routes are complete; no catalog edit was made.
+- **Bounded gap sweep — PASS:** exact canonical, path, distinctive-term, source-related-link and nearby GraphQL/dispute searches found one factual raw owner per assigned canonical and no older same-canonical capture. Nearby concepts/payment-method/transaction/search/connection/API-call pages were not imported across authority boundaries. The only extra factual evidence selected was the full dispute-finalize source/raw needed to prove that upload is not final submission. No missing primary raw, contradiction, unsupported material inference or retrieval blocker was found.
+
+**Verdict: PASS — 4/4 pages, 8/8 fixed questions. No source correction or close blocker found; provider catalog rows remain deferred.**
+
+Report handoff: 2026-10-05T01:43:43Z
