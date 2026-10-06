@@ -40,7 +40,7 @@ APPENDIX_A_INVENTORY = (
     ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', True, 'default-branch', 'on-demand'),
     ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', True, 'default-branch', 'on-demand'),
     ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
@@ -2336,7 +2336,7 @@ class RegistryTests(unittest.TestCase):
                 "26",
                 "26.4.1",
                 6,
-                41,
+                42,
             ),
             (
                 "stripe/stripe-android",
