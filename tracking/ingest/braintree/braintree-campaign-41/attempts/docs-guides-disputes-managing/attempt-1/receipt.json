@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-disputes-managing",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Managing Disputes via the API\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/disputes/managing\"\nraw_files:\n  - \"braintree/docs/guides/disputes/managing-2026-09-16.md\"\ntags: [braintree, disputes, chargebacks, evidence, api]\n---\n\n## Overview\n\nThis unversioned Braintree website guide, captured 2026-09-16, explains how an eligible merchant can locate and respond to cardholder-bank disputes through the API. It covers notification and retrieval routes, the choice to accept or challenge an open dispute, the reply-by deadline, evidence association, and the separate finalization step that sends the response and evidence to the cardholder's bank for review.\n\n## Key takeaways\n\n- API dispute management is available only to merchants who can access disputes in the Braintree Control Panel. A new bank-reported dispute creates an `open` dispute object for the relevant merchant account; the merchant then decides how to respond.\n- Merchants can learn of disputes through configured email notifications or dispute webhooks, and can locate them through Dispute Search or Dispute Find requests. These are discovery routes, not proof that a response was accepted or that the dispute was won.\n- Every dispute has a `replyByDate()`. Supporting evidence must be added and the dispute finalized before that deadline for the response to be considered by the cardholder's bank. Missing it forfeits the merchant's right to contest and changes the dispute status to `expired`.\n- Accepting indicates that the merchant will take no further action; it does not necessarily mean agreement with the cardholder's claim. If the merchant does not respond by the reply-by date, Braintree says an Accept response is sent on the merchant's behalf and the dispute can no longer be contested.\n- To challenge instead, the merchant associates text or file evidence with the dispute and then finalizes it before the reply-by date. File evidence requires upload followed by attachment to the dispute. Finalization forwards the response and evidence for bank review; this page does not establish a win, settlement, fund-return, or successful adjudication outcome.\n\n## Detail locators\n\n- Control Panel dispute-access prerequisite: `# Managing > AVAILABILITY`, lines 17-18.\n- Creation of an `open` dispute object, merchant decision point, default email notification, webhook option, and Search/Find option: `## Locate open disputes`, lines 25-35.\n- Dispute webhook setup and Dispute Opened notification route: `### Using dispute webhooks`, lines 38-44.\n- Search, Find, and dispute response-object routes: `### Using dispute search and find requests`, lines 47-55.\n- Reason-code purpose, reply-by deadline, forfeiture of contest rights, and transition to `expired`: `## Respond to open disputes`, lines 58-62.\n- Accept call route, meaning of acceptance, and automatic Accept response after no timely response: `### Accepting disputes`, lines 65-69.\n- Evidence requirements, text/file distinction, upload-and-attach sequence, repetition, and finalization route: `### Responding with evidence`, lines 72-89.\n- Forwarding to the cardholder's bank for review and the warning that Braintree does not forward an unfinalized response after the reply-by date: `### Responding with evidence`, lines 91-95.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n- API operation routes: [[source-braintree-dispute-search-node]], [[source-braintree-dispute-find-node]], [[source-braintree-dispute-accept-node]], [[source-braintree-dispute-add-text-evidence-node]], [[source-braintree-document-upload-create-node]], and [[source-braintree-dispute-finalize-node]]\n\n## Related raw API references\n\n- Dispute webhooks, Search, Find, Accept, Add Text Evidence, Document Upload Create, Add File Evidence, Finalize, the dispute response object, and Evidence Requirements are linked navigation targets in the captured guide; they were not read as factual evidence for this source.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/disputes/managing-2026-09-16|Braintree Managing Disputes via the API guide]] - complete captured webpage covering access eligibility, dispute discovery, response deadline, acceptance, evidence association, finalization, and bank-review handoff\n",
+  "quotes": [
+    {
+      "text": "Managing disputes via the API is only available to merchants who can access disputes in the Braintree Control Panel.",
+      "location": "lines 17-18 (`# Managing > AVAILABILITY`)"
+    },
+    {
+      "text": "When a cardholder's bank informs Braintree of a new dispute against a merchant account, a dispute object is created for that account with a status of open. From here, it is up to you to locate the dispute and decide how to respond to it.",
+      "location": "line 27 (`## Locate open disputes`)"
+    },
+    {
+      "text": "Each dispute has a deadline for responses. You must add your supporting evidence and finalize the dispute before this [replyByDate()](/braintree/docs/reference/response/dispute#reply_by_date) in order for your response to be considered by the cardholder's bank. If you miss the deadline, you will forfeit your right to contest the cardholder's claim and the dispute status will be updated to expired.",
+      "location": "line 62 (`## Respond to open disputes`)"
+    },
+    {
+      "text": "Accepting a dispute indicates you don't wish to take any further action, but it doesn't necessarily imply you agree with the cardholder's claim. If you do not respond by the reply-by date of the dispute, an Accept response will be sent on your behalf and you will no longer be able to contest the dispute. [Learn more about when it makes sense to accept disputes in our support articles.](/braintree/articles/risk-and-security/chargebacks-retrievals/disputing-chargebacks#when-to-accept)",
+      "location": "line 69 (`### Accepting disputes`)"
+    },
+    {
+      "text": "Braintree will not forward your response to the bank unless you have finalized it before the reply-by date passes.",
+      "location": "lines 94-95 (`### Responding with evidence > IMPORTANT`)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-w41-disputes-reciprocal-source",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-disputes-managing]] - unversioned Braintree website guide captured 2026-09-16 for API dispute management by Control Panel-eligible merchants, covering open-dispute discovery, acceptance versus evidence response, the reply-by cutoff, expiration and loss of contest rights, and required finalization before evidence is forwarded for bank review; not independent current bank/card-network policy, GitHub implementation evidence, current merchant eligibility, execution proof, or evidence of a win, settlement, or returned funds",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the page as a captured unversioned Braintree website guide, not independent current law, bank/card-network policy, or GitHub implementation evidence.",
+          "Evidence association and finalization establish a bank-review handoff in this source, not a dispute win, settlement, or fund-return outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/disputes/managing-2026-09-16.md",
+  "raw_sha256": "07fadb19b6fdf99eacd3a6b27d477d20b822175b88733787ec787208503509f2",
+  "status": "candidate_ready"
+}

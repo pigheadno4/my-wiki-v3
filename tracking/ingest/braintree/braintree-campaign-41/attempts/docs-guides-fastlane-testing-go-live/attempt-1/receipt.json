@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-fastlane-testing-go-live",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Fastlane Testing Guide\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/fastlane/testing-go-live\"\nraw_files:\n  - \"braintree/docs/guides/fastlane/testing-go-live-2026-09-16.md\"\ntags: [braintree, fastlane, testing, sandbox]\n---\n\n## Overview\n\nThis collected, unversioned [[braintree]] website guide is a test checklist for [[paypal-fastlane]] guest and member scenarios. It covers Sandbox identity and authentication fixtures, consent/profile creation cases, saved-address and saved-card changes, fallback card entry, and a table of test-card values. The captured page does not identify a Braintree Web SDK or PayPal Fastlane runtime version.\n\nDespite the page URL's `testing-go-live` label, the captured content contains no production credentials, enablement, eligibility, domain approval, or launch procedure. Its scenario tables state intended integration results; completing a fixture or seeing an expected-looking result is not evidence of current production eligibility, token validity, authorization, capture, settlement, funding, or a successful live payment.\n\n## Key takeaways\n\n- The guest-payer checklist starts with a new email address not associated with a Sandbox Fastlane account. In Sandbox, it says any valid phone number may be entered and no SMS is sent; after the prescribed transaction completes, the page expects a Fastlane profile to exist for later member testing.\n- Member testing depends on first creating a Fastlane profile through the guest path. The page supplies a Sandbox-only OTP success/failure fixture and asks the integrator to exercise updates to cards and shipping addresses. These are test inputs and expected cases, not reusable production authentication behavior.\n- The member table covers successful authentication and prefill, failed or cancelled OTP fallback, adding or changing addresses and cards, and profiles with no supported card or address. Statements that an order or payment \"should\" complete are checklist expectations, not observed execution evidence.\n- The page says PayPal members without a Fastlane profile do not need a distinct Fastlane integration test and routes readers to a separate advanced-options page. That statement is scoped to this collected checklist and does not establish current product parity or live support.\n- The test-card table is snapshot data rather than proof of network, processor, or account behavior. It assigns one repeated number to two different brand rows, so retain its labels exactly when inspecting the raw and do not treat the table as independently validated.\n\n> [!WARNING]\n> This page does not document client-token creation, payment-method nonce or single-use-token handling, server transaction submission, or authorization/capture/settlement transitions. Use the applicable integration and transaction authorities for those lifecycle questions. The checklist's stated outcomes do not prove that a payment actually succeeded.\n\n## Detail locators\n\n- Guest-payer email, consent, phone and profile-creation checklist: `#### Testing Guest Payers`, lines 19-25.\n- Guest consent-off and consent-on scenario table with stated profile and payment results: lines 27-37.\n- Member-profile prerequisite, Sandbox OTP fixture and update-test instruction: `#### Testing Fastlane Members`, lines 40-47.\n- Member happy path, failed/cancelled OTP fallback, new/change address and card cases, and unsupported-card/region cases: lines 49-96.\n- PayPal-member-without-Fastlane handling and advanced-options navigation: `#### PayPal members without a Fastlane Profile`, lines 99-103.\n- Test-card values and as-captured brand labels: `#### Test Cards`, lines 106-114.\n\n## Related\n\n- [[braintree]] - company and gateway context\n- [[paypal-fastlane]] - Fastlane identity, profile and checkout-acceleration concept; consult version- and integration-specific sources for token and payment lifecycle behavior\n- [[braintree-web-sdk]] - exact-version Braintree browser-adapter evidence, kept separate from this unversioned website checklist\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/fastlane/testing-go-live-2026-09-16|Braintree Fastlane testing checklist (collected 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "- **Any phone number for sandbox:**You can enter any valid phone number (No SMS will be sent in Sandbox mode). + Upon completing the transaction, a Fastlane profile will be created to test subsequent transactions as a Fastlane member.",
+      "location": "#### Testing Guest Payers, line 24"
+    },
+    {
+      "text": "- **OTP for testing:**When the authentication modal appears and you are prompted for a one-time password (OTP) use 111111 to trigger a successful authentication and any other 6-digit number to simulate a failed authentication.",
+      "location": "#### Testing Fastlane Members, line 46"
+    },
+    {
+      "text": "| - Enter email, the buyer is recognized as having a Fastlane profile.\n- OTP flow will be triggered to authenticate the buyer.\n- Cancel the OTP by clicking the \u201cx\u201d or entering an incorrect code.\n- TheFastlanePaymentComponentshould render the card fields with no consent toggle. | OTP Failed or Cancelled | - Complete the order.\n- The payment should be completed successfully. |",
+      "location": "#### Testing Fastlane Members, OTP Failed or Cancelled table row, lines 55-59"
+    },
+    {
+      "text": "- New address will be added to the buyer's Fastlane profile. |",
+      "location": "#### Testing Fastlane Members, New Address table row result, line 65"
+    },
+    {
+      "text": "| 4005519200000004 | Visa |\n| 4012000033330026 | Visa |\n| 5555 5555 5555 4444 | Visa |\n| 378282246310005 | Mastercard |\n| 378282246310005 | American Express |",
+      "location": "#### Test Cards, lines 110-114"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-fastlane-testing-reciprocal-source",
+        "target_path": "wiki/concepts/paypal-fastlane.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-fastlane-testing-go-live]] - unversioned Braintree website checklist for Sandbox Fastlane guest/member scenarios, profile-update cases, OTP and test-card fixtures; expected checklist outcomes do not establish production eligibility or payment success",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured page supplies no production go-live requirements despite its URL; do not infer production eligibility, token lifecycle, or successful payment execution.",
+          "Keep this unversioned website snapshot separate from exact-version Braintree Web GitHub evidence and current support claims."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/fastlane/testing-go-live-2026-09-16.md",
+  "raw_sha256": "ea63f3bd94caf4636c74a04f7dcd70e677d52ccede37cee26ebf6a0405443448",
+  "status": "candidate_ready"
+}

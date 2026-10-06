@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-fastlane-faq",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Fastlane Troubleshooting and FAQs\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/fastlane/faq\"\nraw_files:\n  - \"braintree/docs/guides/fastlane/faq-2026-09-16.md\"\ntags: [braintree, fastlane, troubleshooting, payment-token, vaulting]\n---\n\n## Overview\n\nThis collected, unversioned [[braintree]] website FAQ is a troubleshooting and implementation-retrieval page for merchants integrating [[paypal-fastlane]] through Braintree. It covers merchant provisioning and disablement signals, buyer/member fallback behavior, payment-token lifetime and refresh, delivery-location controls, pickup handling, CSP guidance, vaulting answers and the division of work between the prebuilt Payment Integration and Flexible Integration. The captured page does not identify a Braintree Web SDK or hosted Fastlane runtime version.\n\nThe page is snapshot documentation, not proof of current availability, merchant or buyer eligibility, successful authentication, token consumption, payment or Vault execution, security or privacy compliance, or country support. Its `addressOptions` answer concerns merchant-allowed shipping locations; it does not state a Fastlane country-availability matrix.\n\n## Key takeaways\n\n- An initialization authorization error may mean the merchant account and client credentials are not provisioned for Fastlane; the page directs the merchant to its account team. This diagnostic does not establish enablement or eligibility.\n- When a merchant disables Fastlane, the FAQ says the client SDK reverts buyers to a guest experience without Fastlane-profile opt-in. When disabled in the Braintree Control Panel, the authentication and saved-address/card selector methods listed in the raw return `undefined`.\n- The FAQ gives a three-hour lifetime for a `paymentToken`. On checkout-page reload it recommends calling `triggerAuthenticationFlow()` again; the SDK may request OTP authentication or restore the session, and the returned authentication result includes a new token. These statements do not prove downstream transaction or Vault success.\n- Store-pickup integrations are told to set the shipping method to `pickupInStore` or `shipToStore` so the store address is not saved as the buyer's shipping address. Merchants can pass allowed locations through `addressOptions`; the page does not enumerate supported Fastlane countries or make every delivery destination eligible.\n- The CSP section recommends `frame-src *.paypal.com` for Sandbox and Production and labels the instruction as skippable for Hosted Card Fields. This is page-specific integration guidance, not a complete security policy or a security, privacy or regulatory compliance guarantee.\n- The vaulting answers conflict inside this snapshot. One answer says a token may be vaulted first through customer-create or payment-method-create and transacted later; a later answer says pre-transaction customer/payment-method creation is unsupported and only `store_in_vault_on_success` vaulting is supported. Do not select either route as authoritative without resolving the conflict against the applicable current Braintree contract.\n- The comparison table frames Payment Integration as a lighter, PayPal-prebuilt form and Flexible Integration as merchant-customized UI that additionally owns billing-address fields and conditional card-field display. This is a selection aid, not a runtime, conversion or compatibility guarantee.\n\n## Detail locators\n\n- Initialization authorization, missing member cards/addresses, token-call formatting and disabled-method troubleshooting: `# Troubleshooting and FAQs`, raw lines 16-23.\n- Merchant-disablement guest fallback and the three methods that return `undefined` after Braintree Control Panel disablement: `**Disablement Flow**`, raw lines 25-40.\n- Store-pickup shipping-method values and the profile-address safeguard: `#### FAQs` / `**How do I integrate Fastlane if I have store pick-up?**`, raw lines 47-53.\n- Transact-and-vault and vault-then-transact answers: `**How do I vault transactions with Fastlane?**`, raw lines 57-67.\n- CSP rationale, Hosted Card Fields exception and the Sandbox/Production `frame-src` value: `**Is there any directive I need to include in my Content Security Policy (CSP)?**`, raw lines 69-79.\n- Conflicting vault-support limitation: `**Will Fastlane work if I vault payer's payment methods?**`, raw lines 81-85.\n- Token lifetime, merchant-allowed shipping locations and reload authentication/session restoration: raw lines 87-97.\n- Prebuilt Payment Integration versus Flexible Integration responsibilities: `**When should I use quick-start Payment integration vs. Flexible integration?**`, raw lines 103-120.\n\n## Related\n\n- [[braintree]] - provider and gateway context\n- [[paypal-fastlane]] - Fastlane guest-checkout acceleration, identity/profile and tokenization concept; consult integration- and version-specific sources for runtime behavior\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/fastlane/faq-2026-09-16|Braintree Fastlane Troubleshooting and FAQs (collected 2026-09-16)]] - fully read pinned snapshot\n",
+  "quotes": [
+    {
+      "text": "| Authorization error while initializing fastlane | This error indicates that your merchant account and your client credentials may not be provisioned for Fastlane. Talk to your account team for assistance. |",
+      "location": "raw line 18, troubleshooting table row under # Troubleshooting and FAQs"
+    },
+    {
+      "text": "If Fastlane has been disabled by the merchant, the Fastlane client SDKs are built such that the SDK will revert to the guest experience without the ability to opt-in to creating a Fastlane profile. This will ensure there is no interruption to your buyers.",
+      "location": "raw line 29 under **Disablement Flow**"
+    },
+    {
+      "text": "If you wish to vault the paymentToken returned by the Fastlane SDK and transact later, you can do so by using the [customer create API](https://developer.paypal.com/braintree/docs/reference/request/customer/create/ruby) request or [payment method](https://developer.paypal.com/braintree/docs/reference/request/payment-method/create/ruby) create API request.",
+      "location": "raw line 67 under **How do I vault transactions with Fastlane?** / Vault and transact"
+    },
+    {
+      "text": "Fastlane does not support a flow where a customer or payment_method is created prior to a transaction. We hope to support this in a future release.",
+      "location": "raw line 85 under **Will Fastlane work if I vault payer's payment methods?**"
+    },
+    {
+      "text": "A paymentToken is valid for 3 hours from the time of issuance.",
+      "location": "raw line 89 under **How long is a paymentToken valid for?**"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-fastlane-faq-reciprocal",
+        "target_path": "wiki/concepts/paypal-fastlane.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-fastlane-faq]] - collected unversioned Braintree FAQ for provisioning/disablement diagnostics, guest fallback, token lifetime and refresh, delivery/pickup controls, CSP guidance, integration-pattern responsibilities and an unresolved internal vaulting contradiction; not current eligibility, country-support, compliance or payment/Vault-outcome evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw snapshot conflicts with itself about vault-first support: line 67 permits customer/payment-method creation before a later transaction, while line 85 says that flow is unsupported. Preserve the conflict until applicable current authority resolves it."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/fastlane/faq-2026-09-16.md",
+  "raw_sha256": "881fda98c78733512be490f1b894fefdc4825acb66e3171e62e7a47d8d67d823",
+  "status": "candidate_ready"
+}

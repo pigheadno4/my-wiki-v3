@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-06] ingest | Braintree website C41
+
+- Fifty retrieval sources; first pass41/50, initial-review pass43/50, seven targeted corrections and two pre-review quote-handoff fixes, no repeated full review. Fixed queries100/100. Catalog552=535website+17GitHub. New In-Person and Custom Prompts retrieval routes; raw unchanged. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-41/`. No commit/push.
+
 ## [2026-10-06] ingest | Braintree Node `3.40.0`
 
 - Full additive/focused from `3.39.0`: path-ID security, ACH search and qualified refund surcharge announcement; older history preserved. Details [[braintree-log]]. No commit/push.

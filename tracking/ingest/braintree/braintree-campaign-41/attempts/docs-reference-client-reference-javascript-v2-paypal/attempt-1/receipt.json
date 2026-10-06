@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-reference-client-reference-javascript-v2-paypal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree JavaScript v2 PayPal Client Reference\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/client-reference/javascript/v2/paypal\"\nraw_files:\n  - \"braintree/docs/reference/client-reference/javascript/v2/paypal-2026-09-16.md\"\ntags: [braintree, paypal, javascript-v2, client-reference, checkout, vault]\n---\n\n## Overview\n\nThis 2026-09-16 website snapshot is the Braintree.js JavaScript v2 client reference for PayPal options used by Vault and Checkout with PayPal integrations. It documents browser-side configuration, presentation and callback output; it does not itself establish current SDK support, Sandbox or Production availability, merchant enablement, server-side transaction processing, or successful payment execution.\n\n## Key takeaways\n\n- Custom and Drop-in setups must nest this configuration under a `paypal` object. `singleUse` defaults to `false`; setting it to `true` triggers the Checkout flow. For Checkout, `amount` and `currency` are required, and the `intent` option is documented only for v2.25.0 and later.\n- The reference distinguishes an `authorize` intent, which submits a transaction for authorization but not settlement, from `sale`, which submits it for settlement when a transaction is created. A PayPal authentication callback or generated nonce is therefore not by itself proof of authorization, capture or settlement.\n- `onSuccess` is deprecated and represents successful PayPal login rather than form submission; it is not fired for Drop-in. `onAuthorizationDismissed` is documented for v2.18.0 and later and is also unavailable in Drop-in.\n- Billing-address retrieval requires both `enableBillingAddress` and the PayPal Billing Address Request feature on the merchant's PayPal account; the page says the feature is not available to all merchants. Shipping-address fields and overrides are separate client options.\n- With `headless: true`, the integration supplies its own launch UI, Braintree's normal PayPal button and resolution state are not displayed, and the generated nonce must be read from `onPaymentMethodReceived`; this mode does not work with Drop-in. Linked examples and guides are navigation, not captured or executed proof.\n\n## Detail locators\n\n- `Options` lines 17-22: Vault/Checkout scope and custom-or-Drop-in nesting requirement.\n- `Options` lines 24-40: button container, nonce input field and display name.\n- `Options` lines 41-83: `singleUse`, version-qualified `intent`, authorization-versus-settlement wording and callback boundaries.\n- `Options` lines 85-166: returned shipping-address fields and shipping-address override fields/editability.\n- `Options` lines 167-204: billing-address feature, merchant-eligibility qualification and returned fields.\n- `Options` lines 205-264: Checkout amount/currency requirements and version-qualified locale inventory.\n- `Options` lines 265-281: headless/custom-UI behavior, nonce callback requirement, Drop-in exclusion and version-qualified billing-agreement description.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-web-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/client-reference/javascript/v2/paypal-2026-09-16|Braintree JavaScript v2 PayPal client reference snapshot (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "The PayPal functionality of Braintree.js accepts a few different options. The below options can be\nused for all PayPal integration types (Vault, Checkout with PayPal).\n**IMPORTANT**\nIf you are using a custom or dropin setup, you must specify paypal as its own object and nest the following configuration under it. For an example, see our [Drop-in guide](/braintree/docs/guides/drop-in/setup-and-integration/javascript/v2#paypal) .",
+      "location": "lines 19-22 under Options"
+    },
+    {
+      "text": "(default) - Submits the transaction for authorization but not settlement. To capture funds, you must pass theoption or make a separatecall.\n- ```syntax-inline\nsale\n```\n- Payment will be immediately submitted for settlement upon creating a transaction. Theparameter will be ignored and always set to`{true}`.",
+      "location": "lines 55-59 under Options > intent"
+    },
+    {
+      "text": "**Deprecated** Function A callback function that is fired immediately after a user has logged in to PayPal; it is not fired upon form submission like ```syntax-inline\nonPaymentMethodReceived\n```. This callback should only be used as a hook to signify that a user has successfully completed the PayPal login flow.",
+      "location": "lines 68-70 under Options > onSuccess"
+    },
+    {
+      "text": "Required to retrieve a ```syntax-inline\nbillingAddress\n```\n object for customers paying with PayPal and to have the PayPal Billing Address Request feature enabled in your PayPal account. Not available to all merchants; [contact PayPal](/braintree/articles/guides/payment-methods/paypal/setup-guide#contacting-paypal-support) for details on eligibility and enabling this feature.",
+      "location": "lines 169-172 under Options > enableBillingAddress"
+    },
+    {
+      "text": "In addition, by setting this to ```syntax-inline\ntrue\n```\n you will be required to retrieve the nonce generated from the PayPal auth flow from the ```syntax-inline\nonPaymentMethodReceived\n```\n callback. This does not work with the Drop-in UI.",
+      "location": "lines 272-278 under Options > headless"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-w21-web-sdk-reciprocal",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-reference-client-reference-javascript-v2-paypal]] - JavaScript v2 PayPal client-reference snapshot for Vault and Checkout option/callback routing, including version- and merchant-qualified controls; not current-support or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this website JavaScript v2 snapshot distinct from exact-version GitHub implementation evidence, JavaScript v3 or v6 behavior, and native SDK behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/client-reference/javascript/v2/paypal-2026-09-16.md",
+  "raw_sha256": "ae7ba8e46c0a4e572eb71e5d410d11f2f943dbca5d0ff70858ba47146c32de0f",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "in-person-guides-custom-prompts",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree In-Person Custom Prompts Guide\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/custom-prompts\"\nraw_files:\n  - \"braintree/in-person/guides/custom-prompts-2026-09-16.md\"\ntags: [braintree, in-person, custom-prompts, graphql, card-reader]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide describes the Custom Prompts API suite in Braintree In-Person. It lets an API caller create interactive flows on a payment reader outside payment collection, using multiple-choice, text, amount, signature, or confirmation prompts. The guide is a documentation snapshot: it does not establish current availability, merchant enablement, reader compatibility, exact GraphQL schema, successful prompt completion, or successful payment execution.\n\n## Key takeaways\n\n- The caller sends the applicable GraphQL mutation for a reader, receives an `InStoreContext.Id`, and then polls the context with a node query for the prompt-specific result. Displayed requests and `COMPLETE` responses are examples, not guarantees of acceptance, completion, or current schema compatibility.\n- Multiple-choice presents up to 15 buttons and requires either one selection or cancellation. Text prompts support alphanumeric, sensitive alphanumeric, numeric, and sensitive numeric input; amount prompts collect a reader-entered amount; signature prompts return base64-encoded PNG data; confirmation prompts return a boolean selection. Use the raw locators for fields, enum values, limits, and displayed response shapes.\n- The captured page explicitly requires a PayPal/Braintree Solutions Engineer or Integration Engineer to enable multiple-choice, text, and amount prompts in both Sandbox and Production. It identifies firmware 5.4.0 for the multiple-choice mutation and 5.2.0 for text and amount mutations; the signature and confirmation sections separately describe additions as of versions 4.0.0 and 5.2.0. These statements do not prove enablement or compatibility on a particular deployed reader.\n- `waitForNextRequest: true` can suppress the processing-spinner transition between prompts, but that transition has a hardcoded 120-second timeout. An in-progress prompt can be canceled with `requestTextDisplay` and `displayTimeout` set to `0`, or with `requestCancelContext` only while the reader has not submitted data.\n- Custom Prompt mutations are not supported for offline processing. For text and amount prompts, the page says context-linked response data is retrievable for about 10 minutes and is deleted after the first successful retrieval. For text prompts, `ALPHANUMERIC` displays a virtual keyboard only on M400, `SENSITIVE_ALPHANUMERIC` displays a virtual keyboard, and `NUMERIC` and `SENSITIVE_NUMERIC` use the reader number pad; amount prompts also use the number pad.\n\n> [!warning] Environment, hardware, data and lifecycle boundaries\n> Treat Sandbox and Production enablement separately, retain the prompt-specific firmware/version and M400 qualifications, and do not infer that an example request completed. Cancellation eligibility changes once reader data is submitted, and text/amount result retrieval is time-limited and destructive after the first successful retrieval. The page also routes readers to the Braintree sub-processors page for entities that may contact collected data; this snapshot does not itself enumerate or verify that separate page.\n\n## Detail locators\n\n- Suite purpose and the five prompt families: `## Custom Prompts Overview`, lines 19-36.\n- Multiple-choice behavior, limits, enablement, firmware and mutation/polling examples: `## Request Multiple Choice Prompt`, lines 41-53.\n- Text input types, optional format enforcement, M400 qualification and mutation/polling examples: `## Request Text Prompt`, lines 54-94.\n- Amount collection, decimal-place values, enablement, firmware and mutation/polling examples: `## Request Amount Prompt`, lines 95-107.\n- Signature collection, version-qualified changes, response example and base64 PNG handling: `## Request Signature Prompt`, lines 108-121.\n- Confirmation display, version-qualified changes and boolean-result polling example: `## Request Confirmation Prompt`, lines 124-137.\n- Multi-prompt transition behavior and 120-second timeout: `## Create a seamless flow with multiple Custom Prompts`, lines 138-140.\n- Physical-button mappings and conditional cancellation routes: `## Physical Button Behavior (X, &lt;, O)` through `## Canceling an in-progress Custom Prompt`, lines 143-150.\n- Offline exclusion, timeout, hardware/input qualifications, and text/amount result retention and deletion: `## Tips when integrating with Custom Prompts`, lines 153-174.\n- Separate sub-processor navigation for collected data: `## Data Processing`, lines 179-181.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-in-person-custom-prompts]]\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/custom-prompts-2026-09-16|Braintree In-Person Custom Prompts guide]] - complete collected website page for reader prompts, result polling, environment and device qualifications, cancellation, offline exclusion and result-retention behavior\n",
+  "quotes": [
+    {
+      "text": "Custom Prompts is a suite of API calls that allow you to create interactive flows on the reader outside of collecting payment.",
+      "location": "raw/braintree/in-person/guides/custom-prompts-2026-09-16.md line 21, under ## Custom Prompts Overview"
+    },
+    {
+      "text": "A PayPal/Braintree Solutions Engineer or Integration Engineer must enable this feature in both Sandbox and Production environments",
+      "location": "raw/braintree/in-person/guides/custom-prompts-2026-09-16.md line 46, under ## Request Multiple Choice Prompt"
+    },
+    {
+      "text": "Once you have initiated the [requestMultiChoiceSingleSelectPrompt](/braintree/graphql/reference/#Mutation--requestMultiChoiceSingleSelectPromptFromInStoreReader) and your application has received the InStoreContext.Id from the API response, you can now begin polling to retrieve the data input.",
+      "location": "raw/braintree/in-person/guides/custom-prompts-2026-09-16.md line 51, under ## Request Multiple Choice Prompt"
+    },
+    {
+      "text": "To cancel an in-progress Custom Prompt, you'll need to send a [requestTextDisplay](/braintree/in-person/guides/display-information/#request-text-display) with the displayTimeout set to \"0\". This will result in the cancellation of the Custom Prompt and the return to the reader screensaver display. You may also use the [requestCancelContext](/braintree/in-person/guides/making-a-transaction/#cancelling-a-charge) mutation as long as no data inputs have been submitted from the reader.",
+      "location": "raw/braintree/in-person/guides/custom-prompts-2026-09-16.md line 150, under ## Canceling an in-progress Custom Prompt"
+    },
+    {
+      "text": "None of the Custom Prompts API mutations are supported for [offline processing](/braintree/in-person/guides/offline-transactions/)",
+      "location": "raw/braintree/in-person/guides/custom-prompts-2026-09-16.md line 156, under ## Tips when integrating with Custom Prompts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-custom-prompts-concept",
+        "target_path": "wiki/concepts/braintree-in-person-custom-prompts.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page",
+        "proposed_markdown": "---\ntitle: \"Braintree In-Person Custom Prompts\"\ntype: concept\ncategory: technology\ntags: [braintree, in-person, custom-prompts, graphql, card-reader]\n---\n\n## Braintree In-Person Custom Prompts\n\nBraintree Custom Prompts are reader interactions outside payment collection. A caller starts a prompt-specific GraphQL mutation for multiple-choice, text, amount, signature or confirmation input, receives an in-store context ID, and polls that context for the result. The captured guide explicitly requires PayPal/Braintree Solutions Engineer or Integration Engineer enablement in both Sandbox and Production for multiple-choice, text and amount prompts; device, firmware and version qualifications vary by prompt. It does not establish current merchant enablement, reader compatibility or successful completion, and it does not state the same enablement requirement for signature or confirmation prompts.\n\n## Sources\n\n- [[source-braintree-in-person-guides-custom-prompts]] - unversioned Braintree website guide collected 2026-09-16 for reader prompt purpose, prompt/result families, enablement and hardware/version conditions, cancellation, offline exclusion and result-lifecycle boundaries\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A new provider concept is proposed because the root index routes Braintree topics through braintree-index and no existing Braintree in-person or Custom Prompts concept was found; reconcile this narrow page with any parallel in-person concept proposals before promotion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/custom-prompts-2026-09-16.md",
+  "raw_sha256": "55fa9761b95eb0583d14b3c220fca472eeefb69cdc489e2f02a94e8778422e56",
+  "status": "candidate_ready"
+}

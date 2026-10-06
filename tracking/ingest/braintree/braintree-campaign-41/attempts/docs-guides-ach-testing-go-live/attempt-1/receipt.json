@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-ach-testing-go-live",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree ACH Testing and Go Live\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/ach/testing-go-live\"\nraw_files:\n  - \"braintree/docs/guides/ach/testing-go-live-2026-09-16.md\"\ntags: [braintree, ach, direct-debit, sandbox, testing, go-live]\n---\n\n## Overview\n\nThis unversioned Braintree website snapshot documents sandbox fixtures for ACH Direct Debit verification and transaction-response simulations, followed by a short production-transition checklist. The fixtures exercise synthetic sandbox responses; they are not evidence of a live bank debit, bank-account ownership, production enablement, settlement, funding or present merchant eligibility.\n\n## Key takeaways\n\n- The page limits the route to eligible merchants able to build a custom client-side integration with JavaScript v3 and says ACH Direct Debit is not available in Drop-in UI. These snapshot statements do not prove that a particular merchant is eligible or enabled.\n- For sandbox verification, the page allows any real nine-digit routing number. It provides account-number tables for network-check and micro-transfer response simulations, including processor response codes and, for micro-transfers, displayed deposit amounts and an instant-settlement flag. Independent-check verification is described as successful in sandbox for any 4\u201317-digit account number. Use the exact tables at the raw locators rather than treating these test values as production bank-account data.\n- The micro-transfer fixture for account `1000000001` simulates a three-business-day settlement delay before a later verification transition and requires the displayed micro-deposit amounts. The captured raw omits the name of the destination verification state, so this source does not reconstruct it. For other unlisted account numbers, the page says sandbox verification succeeds but assigns random, unavailable micro-deposit amounts, as in production.\n- Sandbox transaction outcomes require a verified bank-account payment method. Listed amounts simulate one immediate failure and several settlement-pending-to-settlement-declined paths; amounts outside that table are described as successful in sandbox. The footnote specifically says webhook notification is received for final Settlement Declined outcomes due to insufficient funds or unauthorized transaction. These simulations do not establish live authorization, debit, final settlement or funding behavior.\n- The go-live checklist says to mirror tested sandbox account settings in production, recreate sandbox transaction webhooks in the production account with production endpoints, and contact Braintree to enable ACH Direct Debit in production. Completing those configuration steps is not proof of enablement or of a successful live payment.\n\n## Evidence boundaries\n\n> [!warning] Sandbox simulations are not production proof\n> The account numbers, micro-deposit amounts and transaction amounts on this page select simulated sandbox responses. They do not verify a real bank account, initiate a live debit, demonstrate production credentials or configuration, or prove settlement and funding.\n\n> [!warning] Captured state labels are incomplete\n> Several sentences in the collected raw lost the verification-state label (`astate`, `thestate`, and `markedin`). Preserve the surrounding timing and prerequisite only; consult a complete applicable authority before depending on an exact state transition.\n\n## Detail locators\n\n- Availability, JavaScript v3 custom-integration condition and Drop-in exclusion: `**AVAILABILITY**`, lines 17\u201318.\n- Sandbox routing-number rule and network-check account/response table: `## Test values for sandbox verifications` through `#### For network check verifications`, lines 21\u201345.\n- Micro-transfer account fixtures, deposit amounts, instant-settlement column and timing narratives: `#### For micro-transfer verifications`, lines 48\u201364.\n- Independent-check digit-length fixture: `#### For independent check verifications`, lines 65\u201367.\n- Sandbox transaction prerequisite, unsuccessful-amount table, final-status values and qualified webhook footnote: `## Test values for sandbox transactions`, lines 68\u201385.\n- Successful sandbox transaction conditions: `### Amounts for successful transactions`, lines 86\u201392.\n- Production account-setting, webhook recreation and enablement checklist: `## Go live`, lines 95\u2013100.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- ACH lifecycle and eligibility guide: [[source-braintree-payment-methods-ach]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/ach/testing-go-live-2026-09-16|Braintree ACH Testing and Go Live (collected 2026-09-16)]] - complete collected page covering sandbox verification fixtures, simulated transaction outcomes and the production-transition checklist\n",
+  "quotes": [
+    {
+      "text": "ACH Direct Debit is available to [eligible merchants](/braintree/articles/guides/payment-methods/ach#availability) who can implement a custom client-side integration using our [JavaScript v3 SDK](/braintree/docs/guides/client-sdk/setup/javascript/v3) . It's currently not available in our Drop-in UI.",
+      "location": "lines 17-18 under **AVAILABILITY**"
+    },
+    {
+      "text": "Use the test account numbers below to simulate the corresponding network check verification responses in the sandbox:",
+      "location": "line 32 under #### For network check verifications"
+    },
+    {
+      "text": "Using account number 1000000001, the verification will go through a more realistic settlement simulation: the micro-transfers will take 3 business days to settle, and the verification will only move to astate once the micro-transfers have settled and you\u2019ve passed the corresponding micro-deposit amounts.",
+      "location": "line 62 under #### For micro-transfer verifications"
+    },
+    {
+      "text": "In sandbox, the transaction amount determines whether or not a transaction will be successful. Use the following amounts with a verified bank account to simulate unsuccessful transactions:",
+      "location": "line 73 under ### Amounts for unsuccessful transactions"
+    },
+    {
+      "text": "If you've created any[Transaction webhooks](/braintree/docs/reference/general/webhooks/transaction)in sandbox, be sure to recreate them in your production account and point them to your production environment.",
+      "location": "line 99 under ## Go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-ach-testing-go-live-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-ach-testing-go-live]] - 2026-09-16 unversioned Braintree website guide for ACH sandbox network-check, micro-transfer, independent-check and amount-selected transaction simulations plus a production settings/webhook/enablement checklist; captured verification-state labels are incomplete, and fixtures or configuration are not live bank-debit, bank-account-ownership, production-eligibility, settlement or funding proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The collected raw omits several verification-state labels; do not infer or restore them from surrounding prose.",
+          "Keep this website snapshot distinct from current availability and from versioned SDK or GraphQL schema authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/ach/testing-go-live-2026-09-16.md",
+  "raw_sha256": "2d60b06e110ed7e41d8cef2f6301a4338364f22683ac3e9faaa885299b0ec4bc",
+  "status": "candidate_ready"
+}

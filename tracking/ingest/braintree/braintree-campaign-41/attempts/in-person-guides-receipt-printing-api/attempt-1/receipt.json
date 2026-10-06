@@ -1,0 +1,50 @@
+{
+  "job_id": "in-person-guides-receipt-printing-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person Receipt Printing API\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/receipt-printing-api\"\nraw_files:\n  - \"braintree/in-person/guides/receipt-printing-api-2026-09-16.md\"\ntags: [braintree, in-person, receipt-printing, verifone-v400m, graphql, offline-mode]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide documents how an API caller requests customized text and PNG-image output from the built-in receipt printer on a V400m reader, then polls the returned print context to determine the print action's final status. It is a device-printing route, not evidence that a receipt was physically printed or delivered, that a payment succeeded, or that an account is currently eligible for the API.\n\n## Key takeaways\n\n- The documented API is available for the V400m only. The `requestPrintFromInStoreReader` GraphQL mutation targets a V400m `readerId` and accepts caller-defined receipt `contents`; the guide describes text lines and images rather than a fixed transaction-receipt schema.\n- A request must contain 1\u2013500 content entries and the combined contents cannot exceed 122,880 bytes. Text entries can carry value, alignment, line-ending and optional decoration, weight, style and size fields; the exact field discussion is retained at the locator below.\n- Image entries must be PNG, base64-encoded in the `value` field and no larger than 76,800 bytes. The guide calls 300 pixels the ideal image width and also documents alignment and line-ending behavior.\n- The online example's mutation result is `PENDING`, and the guide requires starting context-ID polling after the initial request to determine whether printing succeeded. It recommends polling every 1\u20132 seconds and states a default 30-second timeout for an unsuccessful print. A request response, sample `PENDING` state or sample polled `COMPLETE` state is not proof of a physical print for another request.\n- The guide also supplies a distinct offline-mode mutation and directs the caller to the offline-processing polling logic. This documents receipt-print-request support in offline mode; it does not establish that an associated payment was authorized, captured, settled or funded.\n- The downloadable sample receipt is presented as a generic development baseline. The page says it includes recommended EMV receipt data; that recommendation is not itself proof that a customized receipt is compliant.\n\n## Material warnings\n\n> [!warning] Request and outcome boundary\n> Initiating `requestPrintFromInStoreReader` does not establish that paper output completed. Poll the returned print context and handle the documented receipt-printing error range. Even a recorded API status is not evidence of physical delivery to a customer or of any payment outcome.\n\n> [!warning] Scope and environment boundary\n> The guide is restricted to the V400m built-in printer. Its examples show an online reader and separately document offline-mode requests, but sample states do not establish current service availability, merchant-account eligibility, network reachability, production configuration or success in a caller's environment.\n\n## Detail locators\n\n- V400m-only scope: introductory statement, line 16.\n- Built-in printer, `requestPrintFromInStoreReader`, customizable receipt content and 122,880-byte aggregate limit: `## Introduction`, lines 19-21.\n- Required `readerId` and `contents`, 1\u2013500 content entries, text-or-image input identity and aggregate request size: `## Initiating a printing request`, lines 24-26.\n- Text value, alignment, `endOfLineFlag` and optional styling fields: `### Text Inputs`, lines 29-31.\n- PNG-only image input, 76,800-byte image limit, base64 `value`, alignment, `endOfLineFlag` and ideal width: `### Image Inputs`, lines 34-36.\n- Online mutation shape, sample `PENDING` response and required context-ID polling handoff: `### Example print request`, lines 39-41.\n- Recommended 1\u20132-second polling cadence, unsuccessful-print timeout and sample node-query shape: `### Example context ID polling request`, lines 44-48.\n- Offline request and offline node-query examples: `## Printing Receipts in Offline Mode`, lines 49-61.\n- Generic sample template, recommended EMV receipt data and downloadable Postman collection: `## Sample Receipt Template`, lines 62-68.\n- Receipt-printing error codes 96733\u201396737, PNG/base64 reminder, image-width guidance, timeout, spacing technique and offline support: `## Important tips for integrating with the Receipt Printing API`, lines 69-85.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-in-person]]\n\n## Related raw API references\n\n- [[raw/braintree/in-person/hardware/verifone-v400m-2026-09-16|Verifone V400m]] - unread hardware navigation linked by the guide\n- [[raw/braintree/in-person/guides/making-a-transaction-2026-09-16|Making a transaction]] - unread online node-query polling and EMV-data navigation linked by the guide\n- [[raw/braintree/in-person/guides/offline-transactions-2026-09-16|Offline transactions]] - unread offline-processing and polling navigation linked by the guide\n- [[raw/braintree/in-person/reference/emv-receipt-reference-2026-09-16|EMV receipt reference]] - unread sample EMV receipt navigation linked by the guide\n- [[raw/braintree/in-person/guides/graphql-error-handling-2026-09-16|GraphQL error handling]] - unread receipt-printing error-code navigation linked by the guide\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/receipt-printing-api-2026-09-16|Braintree In-Person Receipt Printing API]] - complete collected guide for V400m print requests, content formats and limits, context polling, offline-mode examples and receipt template guidance\n",
+  "quotes": [
+    {
+      "text": "This documentation article discusses the Receipt Printing API which is available for the V400m device only",
+      "location": "line 16, immediately below # Receipt Printing API"
+    },
+    {
+      "text": "For the request to be successful there must be a minimum of 1 content and a maximum of 500 contents in the request.",
+      "location": "line 26, under ## Initiating a printing request"
+    },
+    {
+      "text": "When using the [image input](/braintree/graphql/reference/#Input--InStorePrintImageInput) to print images such as business logos or QR codes the image must be in a PNG image format and cannot exceed 76,800 bytes in size.",
+      "location": "line 36, under ### Image Inputs"
+    },
+    {
+      "text": "Once you make the initial request you must also begin a context ID polling process so that your application can determine whether the printing action was successful or not.",
+      "location": "line 41, final sentence under ### Example print request, after the sample response"
+    },
+    {
+      "text": "We recommend polling every 1-2 seconds to get the final result. There is a default timeout of 30 seconds if the print is unsuccessful.",
+      "location": "line 46, under ### Example context ID polling request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-in-person-receipt-printing-api-source-link",
+        "target_path": "wiki/concepts/braintree-in-person.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-receipt-printing-api]] - 2026-09-16 unversioned Braintree In-Person guide for V400m-only customizable receipt print requests, content limits and context-status polling, including offline-mode examples; a request or sample status is not physical-print, delivery or payment-outcome proof",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/receipt-printing-api-2026-09-16.md",
+  "raw_sha256": "1c5c483bbdb2d381b1bc04f94a7c9aac80722736cd618064125b0091de7762a6",
+  "status": "candidate_ready"
+}

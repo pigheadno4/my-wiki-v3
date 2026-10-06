@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-functions-accept-new-payment-method",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Functions: Accept a New Payment Method\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/functions/accept-new-payment-method\"\nraw_files:\n  - \"braintree/docs/guides/functions/accept-new-payment-method-2026-09-16.md\"\ntags: [braintree, functions, payment-methods, transactions, integration-guide]\n---\n\n## Overview\n\nThis collected Braintree website page is a documentation preview for building a Braintree Function that connects a new payment-method service to Braintree transaction handling. It illustrates initialization, authorization-handler responsibilities, local testing, configuration and deployment, then a transaction sale that selects the function by name. The preview is not evidence that Functions are currently available to a particular merchant, that an example is production-ready or secure for a real provider, that a function was deployed, or that a payment succeeded. As website guidance, it also does not establish GitHub implementation state, an exact CLI/package version, or current package availability. [[braintree]] [[braintree-payment-platform]]\n\n## Key takeaways\n\n- The `paymentMethod` template creates an authorization handler and, by default, files for capture, void, refund and vault operations. The authorization handler is merchant-authored JavaScript: it receives transaction details, constructs the payment-method service request, performs the outbound API call, and maps the response back into Braintree's expected response shape.\n- The shown payload, endpoint, response mapping and `Authorized` status are examples. The page does not establish a complete provider API contract, authentication or secret-management design, input validation, error and timeout behavior, idempotency, PCI scope, or production security posture. Those responsibilities must be resolved for the actual payment-method service and runtime rather than inferred from the snippet.\n- The documented workflow includes local `btfns test`, optional mock-data generation, a YAML trigger map, and `btfns deploy`. Deployment defaults to sandbox; production is an explicit prompt selection or `--production` command. Local tests, generated sample data, configuration text and a deploy command do not prove deployed runtime behavior.\n- A sale example passes `functionName`; the page says configured triggers are then invoked automatically and later calls for that transaction route back to the function without repeating the function name. Data unavailable through the Transaction API may be passed through Custom Fields. This is page-scoped example behavior, not evidence of present account eligibility, a successful authorization, capture, refund, void, vault action, settlement or funding.\n\n## Detail locators\n\n- Availability and preview status: lines 17-18.\n- Template initialization and generated lifecycle files: lines 21-29.\n- Authorization handler's transaction-data, payment-service request and Braintree-response responsibilities: lines 30-62; illustrative JavaScript: lines 36-119.\n- Local testing and generated mock data: lines 121-138.\n- Trigger configuration and sandbox-versus-production deployment: lines 139-158.\n- Sale selection, trigger routing, subsequent refund/void routing and Custom Fields: lines 159-193.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/functions/accept-new-payment-method-2026-09-16|Braintree Functions \u2014 Accept a New Payment Method (collected 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "We're building functions with the same proven expertise and rock solid foundations you expect from Braintree. Take a look at our documentation preview to get a jump start on what you'll make with functions. Email [functions-requests@braintreepayments.com](mailto:functions-requests@braintreepayments.com) to learn more.",
+      "location": "lines 17-18 under AVAILABILITY"
+    },
+    {
+      "text": "The CLI will create a new directory,MyNewPaymentMethodwith anauthorization.jsfile, which you can build off of to create your function. By default,\nthe CLI will also create files for capturing, voiding, refunding, and vaulting.\n## Write Code\n\nTo authorize a payment you will write Javascript code within theauthorization.jsfile\nto communicate with the API for the payment method service. Details from the transaction call will\nbe shared with the function for use in obtaining the authorization. Create the payload and HTTP\noptions for your request.",
+      "location": "lines 28-35, following Initialize a New Function and under Write Code"
+    },
+    {
+      "text": "Before deploying, it is important to test your function locally. You can use the built-in testing\ntool to ensure everything works as expected.\n### bash\n```bash\n$ btfns test\n```\nYou can also generate a custom mock dataset for use in your own custom testing.\n### bash\n```bash\n$ btfns generate-test-data\n```\nThis will create atestData.jsonfile in the__tests__directory which\nwill contain an example payload as you can expect from Braintree\u2019s services.",
+      "location": "lines 126-138 under Test and Deploy Your Function > Testing"
+    },
+    {
+      "text": "When your function is ready, make sure your configuration file is correct.\n### yaml\n```yaml\nname: \"MyNewPaymentMethod\"\ntype: \"paymentMethod\"\ntriggers:\n  authorization: \"authorization.js\"\n  capture: \"capture.js\"\n  refund: \"refund.js\"\n  void: \"void.js\"\n  vault: \"vault.js\"\n```\nRun thedeploycommand.\n### bash\n```bash\n$ btfns deploy\n```\nBy default this will be deployed to your sandbox account, but you can select theproductionoption in the prompt or run:btfns deploy --production.",
+      "location": "lines 141-158 under Test and Deploy Your Function > Deployment"
+    },
+    {
+      "text": "Passing thefunctionNamewill automatically call your function at each of triggers\ndefined in your configuration file. Subsequent calls for this transaction will automatically route\nto your function so you do not need to pass any additional information to refund or void the\ntransaction. If you need to pass additional data to your function that is not available in the\nTransaction API, use Custom Fields.",
+      "location": "lines 181-185 under Create a Transaction"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-functions-accept-new-payment-method-source-link",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-functions-accept-new-payment-method]] - 2026-09-16 Braintree website Functions payment-method integration preview for template-generated lifecycle handlers, merchant-authored payment-service API calls and response mapping, local tests, environment-qualified deployment and transaction routing; examples are not current availability, deployed-runtime, security-completeness or successful-payment proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this route distinct from the Forward API functions DSL and from GitHub or package-version implementation evidence.",
+          "Preserve the documentation-preview and example-only boundaries when reusing this source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/functions/accept-new-payment-method-2026-09-16.md",
+  "raw_sha256": "5ac47cdaf14bf83f71bf3de875e56db6a3435ccca91489948cf52c855f03c23b",
+  "status": "candidate_ready"
+}

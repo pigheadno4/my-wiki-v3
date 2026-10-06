@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-reference-client-reference-javascript-v2-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree JavaScript v2 braintree.setup Configuration\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/client-reference/javascript/v2/configuration\"\nraw_files:\n  - \"braintree/docs/reference/client-reference/javascript/v2/configuration-2026-09-16.md\"\ntags: [braintree, javascript-v2, client-sdk, configuration, tokenization]\n---\n\n## Overview\n\nThis collected [[braintree]] website snapshot is the JavaScript v2 client reference for configuring `braintree.setup(authorization, integrationType, options)`. It documents a historical Braintree.js client-configuration surface and callback handoff for [[braintree-web-sdk]]; it is not evidence of current SDK or browser support, current hosted behavior, merchant enablement, successful payment execution, or the behavior of a separately retained GitHub version.\n\n## Key takeaways\n\n- `braintree.setup` takes a client token or tokenization key as its authorization string, an integration type of `dropin` or `custom`, and an options object. This is a client-authorization input contract; the page does not document creation of the credential or a server API credential.\n- Setup-level options are separate from the options specific to Drop-in and Custom. The common surface routes PayPal and fraud-data configuration and includes readiness, tokenization-success, and error callbacks; integration-specific fields and their conditions remain in the raw table.\n- `onReady` receives an integration object. Its PayPal launch and close methods are unavailable in Drop-in, and `initAuthFlow` is Custom-only and must run synchronously from a user click or the browser will block the popup.\n- When `onPaymentMethodReceived` is supplied, successful client-side tokenization invokes it with payment-method information, including a nonce intended for the merchant server. Braintree.js then neither inserts the hidden nonce field nor submits the form automatically, so sending data to the server becomes merchant-owned. This callback and nonce are not proof of transaction authorization, capture, settlement, or other payment completion.\n- `paymentMethodNonceReceived` is deprecated in favor of `onPaymentMethodReceived`. The page also makes the Drop-in `container` and Custom `id` fields required for their respective integration types and notes that error types vary by integration.\n- The returned details object varies by payment-method type. PayPal billing-address data is not available to all merchants and requires eligibility/enabling through PayPal Support; phone data is conditional on the corresponding PayPal business-account setting. These documented fields and inputs do not prove runtime availability for a merchant or buyer.\n\n## Detail locators\n\n- `Configuration for braintree.setup` lines 14-26 \u2014 method signature, client authorization input, supported integration-type strings, and options-object route.\n- `Setup method options` lines 29-45 \u2014 common-option scope, PayPal and data-collector routes, CORS/CSP note, readiness integration object, teardown route, Custom-only PayPal methods, synchronous-click condition, and device data.\n- `Setup method options` lines 46-59 \u2014 successful-tokenization callback and merchant-owned server handoff, returned nonce/type/details fields, deprecated callback, error shape, required Drop-in/Custom element IDs, Hosted Fields route, and default vaulted-method selection behavior.\n- `onPaymentMethodReceived details object` lines 62-75 \u2014 payment-method-dependent details and credit-card display fields.\n- `PayPal` lines 77-107 \u2014 returned billing, identity, phone and shipping fields; billing-address merchant eligibility; phone-setting condition; and further PayPal configuration navigation.\n\n## Related\n\n- [[braintree-web-sdk]] \u2014 provider concept for the browser SDK, client/server nonce boundary, and separately qualified website and exact-version evidence.\n- [[source-braintree-docs-reference-client-reference-javascript-v2-best-practices]] \u2014 companion historical v2 setup, readiness, teardown and form-handling guidance.\n- [[source-braintree-docs-reference-client-reference-javascript-v2-paypal]] \u2014 companion historical v2 PayPal options and callback reference.\n- [[source-braintree-client-sdk-migration-javascript-v3]] \u2014 separately collected historical v2-to-v3 migration route; consult it rather than treating this page as current-support evidence.\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/client-reference/javascript/v2/configuration-2026-09-16|Braintree JavaScript v2 braintree.setup configuration snapshot (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "Braintree.js integrations are created with braintree.setup.",
+      "location": "line 16 under `Configuration for braintree.setup`"
+    },
+    {
+      "text": "A string representing your client token or tokenization key",
+      "location": "line 24, `authorization` row in the argument table"
+    },
+    {
+      "text": "All available options which can be passed to the braintree.setup method, under the options object. These are independent from the options specific to the two supported integration types, Drop-in and Custom.",
+      "location": "line 31 under `Setup method options`"
+    },
+    {
+      "text": "Opens the PayPal flow. Must be called synchronously as result of a user click event or the PayPal flow popup will automatically be blocked by the browser. Only available in Custom integrations.",
+      "location": "line 43, `initAuthFlow` row under the `onReady` integration object's PayPal methods"
+    },
+    {
+      "text": "When subscribed to this callback, we will not add a hidden nonce input to your form nor submit the form automatically. It is up to you to send data to your server as you see fit, usually inside of this callback.",
+      "location": "line 46, `onPaymentMethodReceived` row under `Setup method options`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-js-v2-configuration-reciprocal",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-reference-client-reference-javascript-v2-configuration]] - historical Braintree.js JavaScript v2 `braintree.setup` configuration snapshot covering client authorization inputs, Drop-in/Custom conditions, readiness and tokenization callbacks, merchant-owned server handoff, and returned-detail eligibility limits; not current-support, runtime-enablement, payment-execution or exact-version GitHub evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Historical website JavaScript v2 snapshot; keep it distinct from current support and exact-version GitHub evidence.",
+          "Configuration inputs and callback behavior do not establish merchant enablement, browser runtime success, transaction authorization, capture or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/client-reference/javascript/v2/configuration-2026-09-16.md",
+  "raw_sha256": "bd3eb7b5e3369a23c76cafe67a64d8f3918b13b0db1f89f71dd2c9c189f97ea7",
+  "status": "candidate_ready"
+}

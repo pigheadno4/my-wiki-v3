@@ -1,0 +1,52 @@
+{
+  "job_id": "in-person-guides-card-data-collection",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person Card Data Collection\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/card-data-collection\"\nraw_files:\n  - \"braintree/in-person/guides/card-data-collection-2026-09-16.md\"\ntags: [braintree, in-person, card-reader, card-data, magstripe, graphql]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of an unversioned [[braintree]] website guide describes using a Braintree card reader to collect raw track data from non-PCI-scoped, ISO 7813-formatted magstripe cards, such as qualifying third-party gift cards or closed-loop private-label cards. The API caller controls the reader flow and is responsible for sending collected data to any applicable third-party issuer and displaying the outcome. This is a data-collection flow, not Braintree transaction processing, authorization, vaulting, capture, settlement, funding, or proof of any payment outcome.\n\n## Key takeaways\n\n- Before use, Braintree must configure the merchant gateway account with the applicable non-PCI card BIN ranges through a Braintree Solutions Engineer or Integration Engineer. The guide separately says Sandbox testing requires the full test-card numbers or at least their first eight digits; it does not establish production enablement, account eligibility, current availability, or a safe channel for exchanging those values.\n- The documented mutation initializes a reader for a swipe and allows caller-controlled prompt text and an optional post-swipe processing screen. Braintree checks the read card against known PCI BIN ranges and the merchant account's configured non-PCI BIN ranges before allowing retrieval of track 1 and track 2 data. The page states that Braintree will not return PCI card data when a PCI-scoped card is swiped. Use the raw locator for request fields and examples rather than treating the rendered sample as exact current GraphQL schema.\n- After initialization, the application waits for a swipe and polls the returned context ID with a node query at the page-stated two-second interval to observe the `InStoreContext.status` and retrieve available track data. A displayed `COMPLETE` context and sample track values demonstrate the documented collection response only; they do not prove authorization, transaction processing, vault creation, capture, settlement, funding, or a real reader interaction. Returned track content can vary with card formatting, and the page says Braintree returns whatever data is retrievable.\n- The collected page says Card Data Collection is unavailable for offline processing, requires ISO 7813 formatting, rejects conflicts with known PCI-scoped BIN ranges, and depends on configured merchant BIN ranges. Context-linked response data is described as retrievable for about ten minutes and deleted after the first successful retrieval. Treat collection completion, data availability, and data retrieval as separate lifecycle facts.\n- Braintree does not process the external-card transaction in this flow. The caller may use `requestTextDisplay` to show a customized result and is advised to avoid customer PII in that display. The guide routes to a separate Braintree sub-processors page for entities that may contact collected data, but this snapshot does not enumerate those entities or provide a complete security, consent, retention, PCI, issuer-processing, or regulatory implementation standard. It also names Braintree card readers generally without establishing model, firmware, location, or deployed-reader compatibility.\n\n> [!warning] Raw-data and lifecycle boundary\n> This flow exposes raw non-PCI magstripe track data to the API caller after card and account-range checks. Preserve the page's non-PCI, ISO 7813, configured-BIN, online-only, short retrieval-window, and delete-after-first-successful-retrieval conditions. Do not infer issuer approval, customer consent, secure downstream handling, vaulting, payment authorization, or transaction success from a request, context state, sample response, or caller-displayed message.\n\n## Detail locators\n\n- Feature identity, examples, caller control and third-party issuer responsibility: `## Feature Overview`, raw lines 19-24.\n- Gateway-account BIN configuration and Sandbox test-number condition: `## Setup and Configuration`, raw lines 27-32.\n- Reader initialization, prompt variables, PCI/non-PCI checks and configured-range gate: `## Initiate a request to collect card data`, raw lines 35-39.\n- Rendered request fields, two-second context polling, sample response and variable track-data qualification: raw lines 40-48.\n- Caller-owned result display and the suggestion to avoid customer PII: `## Displaying the transaction result`, raw lines 51-56.\n- Offline exclusion, ISO 7813 and BIN-range conditions, approximate ten-minute availability and delete-after-first-successful-retrieval behavior: `## Tips when Integrating Card Data Collection`, raw lines 59-77.\n- Separate sub-processor navigation for entities that may contact collected data: `## Data Processing`, raw lines 82-84.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-in-person]]\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/card-data-collection-2026-09-16|Braintree In-Person Card Data Collection guide (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The Card Data Collection feature is designed to allow merchants to use Braintree card readers to read magstripe track data from non-PCI scoped cards. For example, these would include 3rd party (non-cobranded) gift cards (ex: SVS, Givex, Valuelink, etc...) and (non-cobranded) closed-loop private label cards (ex: Bread Financial/ADS, Synchrony, CitiBank, etc...) as long as they adhere to ISO 7813 format. This feature is architected to give full control of the flow and experience to the API caller (typically a POS system). Braintree does not send the collected card data to any 3rd party card issuer, it is up to the API caller to do so from the POS or another system.",
+      "location": "raw line 21 under ## Feature Overview"
+    },
+    {
+      "text": "Braintree will never return PCI card data if a PCI-scoped card is swiped on the Braintree reader.",
+      "location": "raw line 24, NOTE under ## Feature Overview"
+    },
+    {
+      "text": "To use this feature, Braintree must have your non-PCI card BIN ranges configured on the Braintree gateway account. Please work with your Braintree Solutions Engineer or Integration Engineer to configure this before use.",
+      "location": "raw line 29 under ## Setup and Configuration"
+    },
+    {
+      "text": "Since Braintree is not actually processing the transaction, it is up to the API caller to display the transaction result for the customer.",
+      "location": "raw line 53 under ## Displaying the transaction result"
+    },
+    {
+      "text": "When using [Card Data Collection](/braintree/in-person/guides/card-data-collection/#card-data-collection), the response data tied to the context ID will be deleted after the first successful retrieval",
+      "location": "raw line 77, final bullet under ## Tips when Integrating Card Data Collection"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-card-data-collection-in-person-route",
+        "target_path": "wiki/concepts/braintree-in-person.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-card-data-collection]] - 2026-09-16 unversioned Braintree In-Person website guide for online reader collection of raw track data from non-PCI, ISO 7813 magstripe cards under configured merchant BIN ranges, with caller-owned issuer handling and result display plus time-limited, delete-after-first-successful-retrieval context data; collection or context completion is not authorization, vaulting, transaction processing, payment outcome, consent, secure downstream handling, or current account and reader eligibility proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/card-data-collection-2026-09-16.md",
+  "raw_sha256": "da97a07c5432395f5419fcef8b8ab467587217d7d094fd746a7f3eeefbfaa5a3",
+  "status": "candidate_ready"
+}

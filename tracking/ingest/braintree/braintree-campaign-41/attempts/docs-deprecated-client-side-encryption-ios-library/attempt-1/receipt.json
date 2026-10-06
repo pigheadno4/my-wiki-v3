@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-deprecated-client-side-encryption-ios-library",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Deprecated Client-Side Encryption iOS Library\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/deprecated/client-side-encryption/ios-library\"\nraw_files:\n  - \"braintree/docs/deprecated/client-side-encryption/ios-library-2026-09-16.md\"\ntags: [braintree, ios, deprecated, client-side-encryption, credit-cards]\n---\n\n## Overview\n\nThis 2026-09-16 website snapshot documents Braintree's deprecated legacy iOS client-side-encryption library. The legacy SDK combined a credit-card payment form with client-side encryption, but the page says the components could be used independently and required a web server using a Braintree server-side client library; the iOS SDK did not interact with the gateway directly. This snapshot is historical integration evidence, not evidence of current SDK or GitHub support.\n\n## Key takeaways\n\n- The page explicitly marks the integration method deprecated and directs readers to Braintree SDK upgrade guidance. It should not be treated as a current iOS integration recommendation.\n- For the manual-entry save-card callback described here, the app receives both raw card information and an encrypted dictionary. The page directs the app to send the encrypted dictionary to its server, which then sends it to Braintree; this client-side encryption does not itself establish PCI compliance, payment authorization, Vault success, or transaction success.\n- Configuration uses a client-side-encryption public key obtained from either the Braintree production gateway or Braintree sandbox. The page describes asymmetric encryption in which Braintree can decrypt the value but the client cannot, after which the value can pass through the merchant's servers for use by a Braintree server client library. The page distinguishes the two key sources but does not prove that either environment is configured or that encryption succeeded.\n- Payment-form, networking, Vault, error-display, and encryption snippets are examples rather than guarantees. In particular, a displayed success branch depends on the example server response after valid card data is added to the Vault; the page does not prove that a payment was authorized or processed.\n\n## Detail locators\n\n- Deprecation notice and upgrade route: raw lines 17-18.\n- Legacy SDK components and mandatory merchant-server boundary: `## Overview`, raw lines 21-29.\n- Payment-form initialization and modal presentation example: `## Payment form`, raw lines 30-52.\n- Manual-entry save-card callback, raw-versus-encrypted dictionaries, and server handoff: `### Save card flow`, raw lines 57-69.\n- Stored Venmo Touch card callback and payment-method-code example: `### Use card flow`, raw lines 71-77.\n- Example client-to-server-to-gateway method, Vault-success branch, cleanup, and omitted networking boilerplate: `### Putting it all together`, raw lines 79-94.\n- Example decline/error conditions: `### Error handling`, raw lines 95-103.\n- Production-gateway versus sandbox key retrieval, public-key initialization, asymmetric-encryption behavior, and server-client-library handoff: `## Encryption > ### Configuration`, raw lines 106-120.\n- Credit-card-number/CVV use-case description and complete Objective-C sample: `## Encryption > ### Example`, raw lines 121-152.\n\n## Related\n\n- [[braintree]]\n- [[braintree-ios-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/deprecated/client-side-encryption/ios-library-2026-09-16|Braintree deprecated client-side encryption iOS library (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The integration method outlined below is deprecated. [Learn more about upgrading to the Braintree SDKs.](/braintree/docs/reference/general/upgrade)",
+      "location": "raw lines 17-18 (deprecation notice immediately above ## Overview)"
+    },
+    {
+      "text": "The iOS SDK is designed to be used in\nconjunction with a web server using one of Braintree\u2019s server-side client libraries. The iOS SDK\ndoes not support interacting with the gateway directly.",
+      "location": "## Overview, raw lines 27-29"
+    },
+    {
+      "text": "Note that you receive raw, unencrypted info in the cardInfo dictionary, but for easy PCI Compliance,\nyou should use the cardInfoEncrypted dictionary to securely pass data through your servers to the\nBraintree gateway",
+      "location": "## Payment form > ### Save card flow, raw lines 63-66"
+    },
+    {
+      "text": "The following example code demonstrates how to pass encrypted card data from the app to your server,\nand then to the Braintree gateway.",
+      "location": "## Payment form > ### Putting it all together, raw lines 79-82"
+    },
+    {
+      "text": "Braintree client side encryption is asymmetric. Once you encrypt the data, the Braintree gateway\nwill be able to decrypt it but you will not. This means that encryptedValue is now safe to pass\nthrough your servers and use in API calls with one of our server client libraries.",
+      "location": "## Encryption > ### Configuration, raw lines 118-120"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-w14-ios-legacy-cse-reciprocal",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-deprecated-client-side-encryption-ios-library]] - deprecated legacy iOS payment-form and client-side-encryption snapshot with merchant-server/gateway and production-versus-sandbox key boundaries; not current SDK support, PCI-compliance, authorization, or payment proof\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The website snapshot documents a deprecated legacy integration and must not be merged into the current exact-version GitHub implementation baseline.",
+          "The raw page's PCI-easing language is not evidence that encryption alone establishes PCI compliance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/deprecated/client-side-encryption/ios-library-2026-09-16.md",
+  "raw_sha256": "45f45f94f8a1b0611782722935701ab3afdfc9e2ce7ab39d3df31e40e9f1dd98",
+  "status": "candidate_ready"
+}

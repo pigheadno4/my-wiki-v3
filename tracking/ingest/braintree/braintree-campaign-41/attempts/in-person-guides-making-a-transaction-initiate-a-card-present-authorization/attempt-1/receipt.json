@@ -1,0 +1,55 @@
+{
+  "job_id": "in-person-guides-making-a-transaction-initiate-a-card-present-authorization",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person Card-Present Authorization\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/making-a-transaction/initiate-a-card-present-authorization\"\nraw_files:\n  - \"braintree/in-person/guides/making-a-transaction/initiate-a-card-present-authorization-2026-09-16.md\"\ntags: [braintree, in-person, card-present, authorization, capture, graphql]\n---\n\n## Overview\n\nThis Braintree-hosted In-Person guide covers separate authorization from capture for a card-present transaction: the application requests an authorization on a reader, monitors the resulting In-Store Context, and sends a later capture request rather than having Braintree capture automatically. It is a website snapshot fetched 2026-09-16, with page metadata last updated 2025-01-20; it is not exact-version GraphQL schema authority, current firmware or payment-method support, account enablement, reader compatibility, or evidence that an authorization, capture, settlement, or funding event succeeded. See [[braintree]] and [[braintree-payment-platform]].\n\n## Key takeaways\n\n- The page says separate authorization and capture through the linked request-authorization mutation is supported starting with reader firmware 5.1.0. To initialize the reader, the application supplies at least `readerId`, `merchantAccountId`, and `transaction.amount`; the page says `merchantAccountId` is not validated in Sandbox but is required in Production for all card-reader interactions.\n- A successful authorization does not capture the transaction. The merchant must retain the returned transaction ID and make a separate capture request. Card-present authorization permits only one capture attempt, and any authorized amount remaining after the initial capture request is automatically voided.\n- The authorization request must include a unique `Idempotency-Key` HTTP header; UUIDv4 is recommended. The page explains that reusing the same key lets a POS recover the original transaction after an ambiguous communication timeout instead of accidentally creating a duplicate charge.\n- After initialization, the application waits for customer interaction and polls the GraphQL `node` query at two-second intervals using the In-Store Context ID. The request sample shows a context in `PENDING` with an `ONLINE` reader; these are example values, not guarantees. When the authorization context becomes `COMPLETE`, the page says the transaction is `AUTHORIZED`, not `SUBMITTED_FOR_SETTLEMENT`, and directs the merchant to save its ID for later capture, authorization adjustment, or void operations.\n- Capture uses the Capture Transaction mutation and requires the transaction to be `Authorized`. The page gives a 24-hour capture window, except that eligible lodging MCCs may have windows up to 30 days. A merchant may capture less than the authorized amount or, subject to eligibility, up to its maximum over-capture threshold; for ineligible MCCs, capture cannot exceed the authorized amount. The sample capture response is `SUBMITTED_FOR_SETTLEMENT`, which is distinct from authorization and is not proof of settlement or funding.\n- Incremental authorization is account- and MCC-eligible, requires an `Authorized` transaction, and is not supported for Amex or some other transaction types. The guide recommends estimated authorization when using incremental authorization and routes the `paymentInitiator: ESTIMATED` field to the example. Over-capture and incremental authorization require corresponding Braintree account configuration; direct Amex contracts may require separate Amex configuration for over-capture.\n- The page says request authorization is supported for offline transactions, but PayPal and Venmo QRC transactions do not support separate authorization from capture. L2/L3 data is not accepted in the authorization request, though the guide says it may be supplied in the separate capture request. These collected statements retain their firmware, environment, account, MCC, card-brand, payment-method, hardware, and snapshot-time qualifications.\n\n## Detail locators\n\n- `Feature Overview` (raw lines 19-24): delayed-capture use cases, authorization-versus-charge purpose, API-caller capture cadence, and firmware 5.1.0 starting point.\n- `Initializing the Reader for Authorization` (raw lines 27-41): minimum initialization inputs, Sandbox/Production merchant-account distinction, authorization-versus-capture effect, single-capture rule, idempotency requirement, and mutation/request/response examples.\n- `Checking the Reader Authorization Status` (raw lines 42-50): customer interaction, two-second polling, context/reader/transaction state examples, saved transaction ID, test-amount guidance, and the full query/response example.\n- `Capturing funds against an Authorization` (raw lines 51-61): capture window, lodging exception, single-attempt and automatic-void behavior, over-capture eligibility, `Authorized` prerequisite, and sample request/response.\n- `Using Incremental Authorizations` and `Using Estimated Auth (Pre-Auth)` (raw lines 62-77): MCC, Amex and transaction-type eligibility; required transaction state; update mutation; estimated-authorization recommendation; and example input.\n- `AMEX Over Capture Rules` (raw lines 78-84): listed MCC percentage examples and direct-contract configuration qualification.\n- `Important Tips When Integrating Separate Auth from Capture` (raw lines 87-108): offline support, account configuration, Amex incremental-auth exclusion, PayPal/Venmo QRC exclusion, and L2/L3 authorization-versus-capture boundary.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]]\n\n## Related raw API references\n\nThe captured guide links to the Braintree GraphQL reference for request authorization, node lookup, capture transaction, update transaction amount, and payment initiator. Those linked reference bodies were not read for this entry and remain navigation rather than exact-schema or behavioral evidence.\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/making-a-transaction/initiate-a-card-present-authorization-2026-09-16|Braintree In-Person guide \u2014 Initiate a Card Present Authorization (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "This page covers the support of separate auth from capture on the Braintree In-Person solution from a card present perspective.",
+      "location": "raw line 16, opening paragraph beneath `# Initiate a Card Present Authorization`"
+    },
+    {
+      "text": "Separate auth and capture using the [requestAuthorization](/braintree/graphql/reference/#Mutation--requestAuthorizeFromInStoreReader) API mutation is supported starting in firmware [version 5.1.0](/braintree/in-person/reference/app-version-release-notes/#version510)",
+      "location": "raw line 24, note under `## Feature Overview`"
+    },
+    {
+      "text": "When you're ready to charge a customer, you can create an In-Store Context by requesting to authorize a card on the reader. In this step, your application will specify at minimum, the readerId, merchantAccountId and transaction.amount details to initialize the reader for payment acceptance. Note that the merchantAccountId is not validated against in the Sandbox environment; however, this is a required value in the Production environment for all interactions with the card reader.",
+      "location": "raw line 29, first paragraph under `## Initializing the Reader for Authorization`"
+    },
+    {
+      "text": "Authorizing is similar to charging, except that if the authorization is successful, Braintree will NOT capture the transaction. It would be up to the merchant to send a separate capture request using the transaction.id to complete the charge.\n\n**NOTE**\nCard present authorizations only allow for a single capture request; multiple partial capture is NOT supported. Any remaining authorized funds after the first capture will automatically be voided.",
+      "location": "raw lines 31-34, authorization effect and immediately following note under `## Initializing the Reader for Authorization`"
+    },
+    {
+      "text": "To capture the authorized funds, you must use the [Capture Transaction mutation](/braintree/graphql/reference/#Mutation--captureTransaction) within a 24-hour window of the funds being authorized (except for eligible Lodging MCC codes, which have expiry windows of up to 30 days). For a card-present authorization, you are allowed only a single capture attempt. Any remaining authorized funds not captured after the initial capture request will be voided. You may capture a lesser amount than what was authorized or an amount up to the maximum over-capture threshold (subject to eligibility). For merchants processing on MCC codes ineligible for over-capture, the maximum amount allowed for capture is the amount authorized.",
+      "location": "raw line 53, first paragraph under `## Capturing funds against an Authorization`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-w10-payment-platform-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-making-a-transaction-initiate-a-card-present-authorization]] - 2026-09-16 Braintree-hosted In-Person card-present separate-authorization guide covering reader/context/transaction state transitions, idempotent request initiation and later single-attempt capture, with firmware, environment, account, MCC, card-brand, payment-method and capture-window qualifications; authorization and capture submission are distinct from settlement or funding, and the snapshot is not current support, enablement or execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a reciprocal retrieval route; the page does not change the durable definition of the Braintree payment platform.",
+          "Preserve the website-snapshot boundary: it is not exact-version GitHub or GraphQL schema authority and does not prove current support, merchant eligibility, reader compatibility, authorization, capture, settlement, or funding."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/making-a-transaction/initiate-a-card-present-authorization-2026-09-16.md",
+  "raw_sha256": "22f17112ec00954d42e3eab0e1797130e1b371a79547397f357819e98ba80ee6",
+  "status": "candidate_ready"
+}

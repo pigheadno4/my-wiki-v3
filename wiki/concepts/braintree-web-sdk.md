@@ -76,6 +76,16 @@ These are changes in the Braintree adapter and retained browser implementation, 
 The release also forwards `autoRedirect` and `fullPageOverlay` session-start options, blocks three dangerous property-path keys in Hosted Fields' EventedModel, and adds explicit frame targets to Payment Request, 3DS completion, and UnionPay. Payment Request adds domain verification; `framebus` changes from `6.1.0` to `6.2.0`. These are implementation changes, not proof of comprehensive security or browser acceptance. This latest retained release preserves all earlier versioned evidence above. [[changelog-github-braintree-web]]
 
 ## Related
+
+- [[source-braintree-docs-reference-client-reference-javascript-v2-configuration]] - historical Braintree.js JavaScript v2 `braintree.setup` configuration snapshot covering client authorization inputs, Drop-in/Custom conditions, readiness and tokenization callbacks, merchant-owned server handoff, and returned-detail eligibility limits; not current-support, runtime-enablement, payment-execution or exact-version GitHub evidence
+
+- [[source-braintree-docs-reference-client-reference-javascript-v2-hosted-fields]] - historical JavaScript v2 Hosted Fields client reference for field events, iframe-internal CSS support and field configuration requirements, including the vaulted-card CVV-only exception; not tokenization, client/server processing, PCI certification, current lifecycle/support, environment availability or payment-outcome proof
+
+- [[source-braintree-docs-reference-client-reference-javascript-v2-best-practices]] - historical Braintree.js JavaScript v2 client best-practices and troubleshooting snapshot covering DOM-order setup, readiness and teardown lifecycle, headless PayPal initiation, environment-split CSP locators, and form-handler bypass; not current SDK support, hosted behavior or exact-version GitHub evidence
+
+- [[source-braintree-docs-reference-client-reference-javascript-v2-paypal]] - JavaScript v2 PayPal client-reference snapshot for Vault and Checkout option/callback routing, including version- and merchant-qualified controls; not current-support or payment-execution proof
+
+- [[source-braintree-docs-guides-fastlane-reference]] - collected unversioned Braintree website reference for Fastlane create configuration, namespace identity/profile actions, card and payment component token interfaces, field locators and accessibility limits; not current hosted-runtime behavior, a comprehensive property inventory or exact-version adapter evidence
 - [[source-braintree-hosted-fields-upgrading-from-custom-javascript-v3]] - sparse Custom-to-Hosted-Fields upgrade route whose JavaScript v3 path conflicts with its v2-only availability notice; not migration-procedure or current-support evidence
 - [[source-braintree-start-hosted-fields]] - unversioned website start page orienting Hosted Fields' iframe card-entry role, direct client-to-Braintree data path, nonce substitution and integration routes
 - [[source-braintree-hosted-fields-examples-javascript-v3]] - JavaScript v3 gallery of Hosted Fields styling and merchant-UI presentation possibilities; examples are not SDK-support or payment guarantees

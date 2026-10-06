@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-guides-fastlane-advanced-option",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Fastlane Advanced Options\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/fastlane/advanced-option\"\nraw_files:\n  - \"braintree/docs/guides/fastlane/advanced-option-2026-09-16.md\"\ntags: [braintree, fastlane, javascript, payment-token, shipping, vaulting]\n---\n\n## Overview\n\nThis collected Braintree Fastlane advanced-options page combines browser/component configuration with a flexible checkout template. Its central payment path selects an authenticated member's saved card when one is available, otherwise renders `FastlaneCardComponent`; the browser obtains a `paymentToken` and sends it with previously captured device data to the merchant server to complete checkout. The token handoff is not itself processor authorization, capture, settlement or funding.\n\nThis is a 2026-09-16 website snapshot. It does not establish current Fastlane availability, merchant enablement, buyer eligibility, SDK compatibility, successful component rendering or successful payment execution. The Braintree server examples on this page use Braintree gateway routes and must not be restated as the direct PayPal Orders API pattern documented for another Fastlane integration.\n\n## Key takeaways\n\n- The flexible template branches on both successful member authentication and a saved card. In that branch it renders the selected card, Fastlane watermark and card-change control; guests, failed authentications and profiles without a card instead render Fastlane card fields. Card selection returns a `paymentToken` through the selected card's `id`, while the card component calls `getPaymentToken` with a billing address. In both cases the merchant must still send the token and device data to its server for checkout processing.\n- The page's shipping heading says \"Only supports US addresses,\" but its body is narrower: Fastlane availability is limited to US billing addresses, while the shipping address may be any destination the merchant site supports. A newly entered address must be sent in the server-side `transaction.sale()` request. Do not turn the heading into a US-only shipping restriction.\n- Store pickup requires the transaction's shipping method to be `pickupInStore` or `shipToStore`; the stated purpose is to avoid creating buyer profiles with the merchant store's address as the buyer's shipping address.\n- Vaulting is optional, not an automatic consequence of receiving a Fastlane `paymentToken`. The page offers two server-side routes: `store_in_vault_on_success` on `transaction.sale()` for transact-and-vault, or customer/payment-method creation to vault first and transact later. Neither route guarantees vault success or a later successful payment.\n- PayPal members without a Fastlane profile need no additional integration branch according to this page: the client SDK returns a `customerContextId`, presents an opt-in call to action during authentication, and returns either normal `profileData` after consent or an empty object that the merchant handles as a guest. This is client-flow behavior from the snapshot, not proof that a particular buyer will be eligible or consent.\n\n> [!warning] Client token and payment outcome boundary\n> A Fastlane `paymentToken` obtained from a selected card or `FastlaneCardComponent` is an input to subsequent merchant-server processing. It is not a processor authorization, capture, settlement or funding result, and optional vaulting requires a separate server-side action.\n\n> [!warning] Snapshot and integration-family boundary\n> This captured Braintree guide does not prove current product availability, account enablement, SDK support or live execution. Keep its Braintree `transaction.sale()` and customer/payment-method routes distinct from direct PayPal Orders API Fastlane examples.\n\n## Detail locators\n\n- Content Security Policy instruction, Hosted Card Fields exception and exact PayPal/Braintree allowlist directives: `##### Configure your Content Security Policy`, raw lines 16-35.\n- Locale setting after Fastlane initialization and the page's exact language values: `##### Specify locale`, raw lines 36-51.\n- Watermark variants, `includeAdditionalInfo`, render target and progressive tooltip behavior: `#### Rendering Fastlane Watermark`, raw lines 54-103.\n- Optional but strongly recommended watermark preloading and exact asset examples: `##### Optimization: Preload watermark assets`, raw lines 104-113.\n- US-billing versus merchant-supported shipping scope, reference navigation and newly added address handoff to `transaction.sale()`: `### Shipping Address Guidelines`, raw lines 115-124.\n- Saved-card/member-authentication branch, guest/failure/no-card branch, card-field option examples and rendering: `**Flexible Integration Template**`, raw lines 126-178.\n- Card-selector result handling, selected-card `id`, `getPaymentToken` billing-address call and token/device-data server handoff: flexible-template JavaScript, raw lines 180-218.\n- Recommended server request fields and linked field references: `**Recommended Fields for server-side API call**`, raw lines 220-226.\n- Store-pickup shipping-method safeguard: `### Store pick-up Integration`, raw lines 229-235.\n- Optional transact-and-vault versus vault-and-transact routes: `### Vaulting`, raw lines 236-246.\n- Client SDK handling of PayPal members without a Fastlane profile, including opt-in and guest dismissal outcomes: `## PayPal Members without a Fastlane Profile`, raw lines 247-256.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[paypal-fastlane]]\n- Braintree browser adapter boundary: [[braintree-web-sdk]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/fastlane/best-practices-2026-09-16|Braintree Fastlane best practices]] - linked navigation only; not read as behavioral evidence for this entry\n- [[raw/braintree/docs/guides/fastlane/reference-2026-09-16|Braintree Fastlane reference]] - linked navigation only; not read as behavioral evidence for this entry\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/fastlane/advanced-option-2026-09-16|Braintree Fastlane advanced options]] - complete collected snapshot for browser/component options, the flexible token handoff template, shipping and store-pickup conditions, optional vaulting and no-profile handling\n",
+  "quotes": [
+    {
+      "text": "While Fastlane is only available with billing addresses in the US, the shipping address can be any location that your site supports shipping to.",
+      "location": "### Shipping Address Guidelines, raw line 120"
+    },
+    {
+      "text": "if (memberAuthenticatedSuccessfully && card) {\n    // refer to Lookup & Authenticate section for details\n    // render the card here\n    // render Fastlane watermark\n    // render a change button and call profile.showCardSelector() when it is clicked\n} else {\n    // User is a guest, failed to authenticate or does not have a card in the profile.\n    // render the card fields",
+      "location": "**Flexible Integration Template** JavaScript, raw lines 149-156"
+    },
+    {
+      "text": "// Send the paymentToken and previously captured device data to server\n    // to complete checkout",
+      "location": "**Flexible Integration Template** submit handler, raw lines 216-217"
+    },
+    {
+      "text": "Ensure[shipping method](https://developer.paypal.com/braintree/docs/reference/request/transaction/sale/ruby#shipping)is set topickupInStoreorshipToStoreto ensure that the buyer profiles don\u2019t get created\nwith the address of your store as their shipping address.",
+      "location": "### Store pick-up Integration, raw lines 234-235"
+    },
+    {
+      "text": "If you wish to vault thepaymentTokenreturned by the Fastlane\nSDK at the time of transaction, you can do so by using thestore_in_vault_on_successboolean in thetransaction.sale()request on your server.",
+      "location": "### Vaulting > Transact and Vault, raw lines 241-242"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "fastlane-advanced-option-reciprocal-paypal-fastlane",
+        "target_path": "wiki/concepts/paypal-fastlane.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-fastlane-advanced-option]] - Braintree Fastlane advanced-options route for conditional saved-card versus card-field rendering, client payment-token/device-data handoff to merchant-server processing, shipping and store-pickup safeguards, and optional vaulting; not direct PayPal Orders API or payment-outcome evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this Braintree transaction.sale/customer/payment-method route distinct from the direct PayPal Orders API Fastlane pattern already described on the concept page.",
+          "A Fastlane paymentToken is an input to later server processing, not proof of authorization, capture, settlement or funding; vaulting is an optional separate server action.",
+          "Treat the 2026-09-16 page as website snapshot evidence, separate from exact-version GitHub implementation evidence and not proof of current Fastlane availability, merchant enablement, buyer eligibility, SDK support or live execution.",
+          "Do not convert the page's misleading US-address heading into a US-only shipping claim; its body limits billing addresses to the US while allowing merchant-supported shipping destinations."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/fastlane/advanced-option-2026-09-16.md",
+  "raw_sha256": "a1ac4876d9f25ba9a9a722a328c86e131b4c1eb6233b145a4d32282f757ddfb2",
+  "status": "candidate_ready"
+}

@@ -88,6 +88,18 @@ The independent `braintree-web@3.145.0` adapter still depends on `@paypal/fastla
 
 ## Sources
 
+- [[source-braintree-docs-guides-fastlane-overview]] - collected unversioned Braintree website overview for Fastlane identity, guest versus authenticated-profile framing, merchant integration conditions and the snapshot country matrix; not current availability, eligibility, exact-version GitHub or payment-execution evidence
+
+- [[source-braintree-docs-guides-fastlane-faq]] - collected unversioned Braintree FAQ for provisioning/disablement diagnostics, guest fallback, token lifetime and refresh, delivery/pickup controls, CSP guidance, integration-pattern responsibilities and an unresolved internal vaulting contradiction; not current eligibility, country-support, compliance or payment/Vault-outcome evidence
+
+- [[source-braintree-docs-guides-fastlane-best-practices]] - collected unversioned Braintree website best-practices guide for guest/member checkout UX, refresh authentication, server-side profile-change handoff and accessible styling; recommendations are not runtime or payment guarantees
+
+- [[source-braintree-docs-guides-fastlane-testing-go-live]] - unversioned Braintree website checklist for Sandbox Fastlane guest/member scenarios, profile-update cases, OTP and test-card fixtures; expected checklist outcomes do not establish production eligibility or payment success
+
+- [[source-braintree-docs-guides-fastlane-advanced-option]] - Braintree Fastlane advanced-options route for conditional saved-card versus card-field rendering, client payment-token/device-data handoff to merchant-server processing, shipping and store-pickup safeguards, and optional vaulting; not direct PayPal Orders API or payment-outcome evidence
+
+- [[source-braintree-docs-guides-fastlane-flexible-payment]] - collected Braintree website guide to the client-side Flexible Integration, where the merchant owns guest billing collection, member card/address rendering and selector state, and Card Component token acquisition; preserves SDK-version, authentication, Sandbox OTP, missing-profile-data and token-versus-payment-execution boundaries
+
 - [[source-paypal-fastlane-getting-started]] — How Fastlane works: guest/member flows, swimlane diagram, Node.js setup
 - [[source-github-v6-web-sdk-sample-integration]] — current browser-token, identity, address, and single-use-token sample
 - [[source-github-braintree-web]] - independently versioned Braintree loader and error boundary

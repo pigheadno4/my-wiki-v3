@@ -1,0 +1,52 @@
+{
+  "job_id": "in-person-guides-vaulting-and-customers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person Vaulting and Customers\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/vaulting-and-customers\"\nraw_files:\n  - \"braintree/in-person/guides/vaulting-and-customers-2026-09-16.md\"\ntags: [braintree, in-person, card-readers, vaulting, customers, graphql]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of an unversioned Braintree In-Person website guide describes using a card reader to collect a physically presented payment method and store it for later transactions. It covers an optional Braintree customer profile, a vault-only reader flow, and a separate immediate-charge flow that also requests vaulting. The guide does not establish current product or reader availability, merchant eligibility, production enablement, package-qualified SDK behavior, exact commit-qualified GraphQL schema, consent or PCI obligations, or successful payment execution. [[braintree]] [[braintree-payment-methods]]\n\n## Key takeaways\n\n- A vaulted payment method may be linked to a Braintree customer ID, whose profile can contain customer data such as name, email and phone number, or retained as a standalone payment-method token for a customer profile held in the merchant's own CRM or POS. The customer object is optional, and one customer ID can organize multiple payment methods.\n- The vault-only route requests vaulting without a related transaction. The reader request returns an in-store context ID to poll; when that context reaches `COMPLETE`, the guide says the response supplies a `paymentMethod.id` for later charge requests. The reader, asynchronous context and resulting payment method are distinct objects, and completing this vault flow is not evidence of an authorization, capture or settlement.\n- The charge-and-vault route is a different operation: the guide adds `vaultPaymentMethodAfterTransacting` to `requestChargeFromInStoreReader` for a normal immediate-charge flow and then polls a charge context. Its prose says the completed response exposes `RequestChargeInStoreContext.transaction.customer`, while the displayed example nests customer data under `transaction.paymentMethod`; use the raw locator for the rendered example and current GraphQL authority for an exact response contract. A sample transaction status is not proof of a real authorization, capture or settlement.\n- Later charges use the standard Braintree eCommerce GraphQL charge, authorization and capture mutations against the generated `paymentMethod.id`. The guide expressly classifies future charges against a Multi Use Payment Method as card-not-present and says card-not-present pricing applies. Vaulting therefore does not itself perform or guarantee any later authorization, capture or settlement.\n- For a digital wallet used on the card reader, the guide says a later transaction using the vaulted token is automatically marked as merchant initiated and has a 24-hour authorization-expiry window. It recommends using `authorizationExpiresAt` to inform capture and reauthorization logic. This statement is specific to authorizations initiated from a token originating from a card-present digital wallet; it is not a universal authorization window.\n- The tips distinguish the unique-per-vault-request `paymentMethodId`, which can be used for future charges but is discouraged for analytics, from `uniqueNumberIdentifier`, which the page describes as per-card-number analytics data that cannot perform future charges and is unavailable for PayPal and Venmo QRC methods. The page also routes vault criteria that can request a token only after a successful authorization attempt or `ALWAYS`, including after an unsuccessful attempt; consult the exact enum/schema authority before implementation.\n\n## Detail locators\n\n- **Purpose, future-charge scenarios and card-not-present pricing:** raw lines 14\u201328.\n- **Optional customer ID and displayed customer mutation example:** raw lines 31\u201335.\n- **Vault without a transaction, reader request, context polling and verification route:** raw lines 36\u201351.\n- **Immediate charge plus vault request, polling language and displayed response example:** raw lines 54\u201368.\n- **Separate future charge, authorization and capture mutation routes:** raw lines 69\u201380.\n- **Vaulted card-present digital-wallet MIT treatment and 24-hour authorization expiry:** raw lines 85\u201390.\n- **Payment-method token, analytics identifier, QRC exclusion and vault-criteria tips:** raw lines 93\u2013105.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-methods]]\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/vaulting-and-customers-2026-09-16|Braintree In-Person Vaulting and Customers (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The card reader can collect a physically presented payment method and store it for future transactions.",
+      "location": "line 16, opening paragraph under `# Vaulting and Customers`"
+    },
+    {
+      "text": "These vaulted payment methods can be linked to a customer profile (customer ID) in Braintree which can include additional customer data such as name, email, phone #, etc... or they can be used as standalone payment method tokens (payment method ID) for future payments against a customer profile stored in your own CRM or POS application.",
+      "location": "line 25, `## Getting Started`"
+    },
+    {
+      "text": "Future charges against a Multi Use Payment Method will be processed as card-not-present and receive card not present pricing.",
+      "location": "line 28, NOTE under `## Getting Started`"
+    },
+    {
+      "text": "This process can be used when you wish to place an immediate charge on a card for a known amount, but also save the card for future usage. This might be common where a customer leaves with 3 items today, but 1 item will ship in the future from a warehouse.",
+      "location": "line 56, opening paragraph under `## Vaulting a Card with a Transaction`"
+    },
+    {
+      "text": "When digital wallets (such as Apple Pay, Google Pay, and Samsung Pay) are used on the card reader, and a vaulted payment method is requested, that vaulted payment method is stored in the Braintree vault. When that paymentMethod.id token is then used for a subsequent transaction, an MIT (merchant-initiated transaction) flag will be automatically applied to the transaction. This will result in these transactions having an auth expiry window of 24 hours. This means that you should factor in this auth expiry window into your capture flow and re-auth logic.",
+      "location": "line 87, `## Vaulted Digital Wallet payment methods`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-in-person-vaulting-payment-methods-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-vaulting-and-customers]] - 2026-09-16 unversioned Braintree In-Person website guide for card-reader collection and optional customer-linked or standalone vaulting, with distinct vault-only and charge-and-vault contexts, card-not-present future-use pricing, and card-present digital-wallet MIT and 24-hour authorization-expiry qualifications; examples are not exact schema, current support or eligibility, reader/SDK behavior, security or consent guidance, or payment, capture and settlement proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/vaulting-and-customers-2026-09-16.md",
+  "raw_sha256": "68b3f93c277760e1b827585b30fb3fb979ff91746449a6b557d17e8e06c71a06",
+  "status": "candidate_ready"
+}

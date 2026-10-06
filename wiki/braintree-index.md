@@ -16,6 +16,60 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+#### In-Person, payment methods, legacy clients and GraphQL orientation (C41)
+
+- [[source-braintree-in-person-guides-making-a-transaction]] - Braintree In-Person Sale and Refund Transactions
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-network-response-codes]] - Braintree PINless Debit Optimized Routing Network Response Codes
+- [[source-braintree-in-person-guides-custom-prompts]] - Braintree In-Person Custom Prompts Guide
+- [[source-braintree-in-person-guides-offline-transactions]] - Braintree In-Person Offline Transactions Guide
+- [[source-braintree-in-person-guides-setup-reader]] - Braintree In-Person Setup Reader
+- [[source-braintree-in-person-reference-app-version-release-notes]] - Braintree In-Person Payment Application Version Release Notes
+- [[source-braintree-in-person-guides-making-a-transaction-level-2-and-level-3-data-processing]] - Braintree In-Person Level 2 and Level 3 Data Processing
+- [[source-braintree-in-person-guides-paypal-and-venmo-qrc]] - Braintree In-Person PayPal and Venmo QR Code Guide
+- [[source-braintree-docs-start-tutorial-drop-in-node]] - Braintree Drop-in Tutorial (Node.js)
+- [[source-braintree-in-person-guides-making-a-transaction-initiate-a-card-present-authorization]] - Braintree In-Person Card-Present Authorization
+- [[source-braintree-docs-guides-fastlane-flexible-payment]] - Braintree Fastlane Flexible Payment Integration
+- [[source-braintree-docs-guides-fastlane-reference]] - Braintree Fastlane Reference Types
+- [[source-braintree-in-person-guides-vaulting-and-customers]] - Braintree In-Person Vaulting and Customers
+- [[source-braintree-docs-deprecated-client-side-encryption-ios-library]] - Braintree Deprecated Client-Side Encryption iOS Library
+- [[source-braintree-docs-guides-paypal-commerce-ios-setup]] - Braintree PayPal Commerce iOS SDK Setup
+- [[source-braintree-in-person-reference-faq]] - Braintree In-Person FAQ
+- [[source-braintree-in-person-guides-additional-api-calls]] - Braintree In-Person Additional API Calls
+- [[source-braintree-docs-guides-fastlane-advanced-option]] - Braintree Fastlane Advanced Options
+- [[source-braintree-in-person-guides-graphql-error-handling]] - Braintree In-Person GraphQL Error Handling
+- [[source-braintree-docs-guides-fastlane-testing-go-live]] - Braintree Fastlane Testing Guide
+- [[source-braintree-docs-reference-client-reference-javascript-v2-paypal]] - Braintree JavaScript v2 PayPal Client Reference
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-ordering-a-product]] - Braintree PayPal Commerce Channel API — Ordering a Product
+- [[source-braintree-in-person-reference-general-payments-terminology]] - Braintree In-Person General Payments Terminology
+- [[source-braintree-docs-guides-package-tracking-overview]] - Braintree Package Tracking Overview
+- [[source-braintree-docs-reference-client-reference-javascript-v2-best-practices]] - Braintree JavaScript v2 Best Practices and Troubleshooting
+- [[source-braintree-in-person-guides-ready-for-launch]] - Braintree In-Person Ready for Launch
+- [[source-braintree-in-person-guides-receipt-printing-api]] - Braintree In-Person Receipt Printing API
+- [[source-braintree-docs-guides-sepa-direct-debit-overview]] - Braintree SEPA Direct Debit Overview
+- [[source-braintree-docs-guides-fastlane-best-practices]] - Braintree Fastlane Best Practice Guide
+- [[source-braintree-in-person-get-started-1-account-structure]] - Braintree In-Person Account Structure
+- [[source-braintree-docs-reference-client-reference-javascript-v2-hosted-fields]] - Braintree JavaScript v2 Hosted Fields Client Reference
+- [[source-braintree-docs-reference-general-currencies]] - Braintree Currencies Reference
+- [[source-braintree-docs-reference-client-reference-javascript-v2-configuration]] - Braintree JavaScript v2 braintree.setup Configuration
+- [[source-braintree-in-person-guides-card-data-collection]] - Braintree In-Person Card Data Collection
+- [[source-braintree-docs-guides-fastlane-faq]] - Braintree Fastlane Troubleshooting and FAQs
+- [[source-braintree-docs-guides-functions-cli-reference]] - Braintree Functions CLI Reference
+- [[source-braintree-in-person-hardware-verifone-v400m]] - Braintree In-Person Verifone V400m Hardware
+- [[source-braintree-docs-guides-ach-testing-go-live]] - Braintree ACH Testing and Go Live
+- [[source-braintree-in-person-about-technical-overview]] - Braintree In-Person Technical Overview
+- [[source-braintree-docs-guides-payment-method-types-overview]] - Braintree Payment Method Types Overview
+- [[source-braintree-docs-guides-disputes-managing]] - Braintree Managing Disputes via the API
+- [[source-braintree-in-person-guides-reporting-and-reconciliation]] - Braintree In-Person Reporting and Reconciliation
+- [[source-braintree-in-person-guides-display-information]] - Braintree In-Person Display Information
+- [[source-braintree-in-person-partners-overview]] - Braintree In-Person Partners Overview
+- [[source-braintree-in-person-hardware-verifone-m400]] - Braintree In-Person Verifone M400 Hardware
+- [[source-braintree-in-person-hardware-verifone-p400]] - Braintree In-Person Verifone P400 Hardware
+- [[source-braintree-docs-guides-fastlane-overview]] - Braintree Fastlane Overview
+- [[source-braintree-in-person-post-launch-activities-network-connection-test]] - Braintree In-Person Network Connection Test
+- [[source-braintree-docs-guides-functions-accept-new-payment-method]] - Braintree Functions: Accept a New Payment Method
+- [[source-braintree-graphql-guides]] - Braintree GraphQL Get Started Guide
+
+
 
 - [[braintree-at-most-once-processing]] - logical-intent request identity and action-specific retry-safety routes
 - [[braintree-account-updater]] - issuer-dependent Vault update eligibility, request and reporting routes
@@ -627,6 +681,10 @@ Operations history: [[braintree-log]]
 - [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger beginning at `5.3.0` (github-repo, 2026-08-27)
 
 ## Concepts
+
+- [[braintree-in-person]] - collected reader, context, transaction, hardware and operational retrieval routes
+- [[braintree-in-person-custom-prompts]] - reader prompt purpose, prompt/result families and qualified enablement/version routes
+- [[paypal-fastlane]] - Fastlane retrieval hub with separately scoped Braintree website and PayPal evidence
 
 - [[braintree-extend-oauth]] - Extend connected-merchant consent, server credential exchange and token lifecycle retrieval, distinct from Braintree Auth
 

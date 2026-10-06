@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-reference-client-reference-javascript-v2-best-practices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree JavaScript v2 Best Practices and Troubleshooting\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/client-reference/javascript/v2/best-practices\"\nraw_files:\n  - \"braintree/docs/reference/client-reference/javascript/v2/best-practices-2026-09-16.md\"\ntags: [braintree, javascript, client-sdk, troubleshooting, content-security-policy]\n---\n\n## Overview\n\nThis collected [[braintree]] website snapshot is a JavaScript v2 client-reference page for Braintree.js setup, readiness and teardown, custom PayPal UI initiation, Content Security Policy configuration, and form-submit handling. It is historical website guidance for [[braintree-web-sdk]], not proof of current SDK or browser support, current hosted behavior, merchant eligibility, successful payment execution, or the behavior of any separately retained GitHub version.\n\n## Key takeaways\n\n- The page recommends putting the Braintree.js script near the end of the HTML body. Separately, it says `braintree.setup()` must run only after the form container exists; running it earlier may prevent the UI from appearing. The first statement is advice, while the setup ordering is stated as a requirement.\n- The v2 `onReady` callback signals that the chosen client integration is fully loaded and interactive. Hiding Braintree-specific DOM until that callback is presented only as an option dependent on the checkout experience.\n- In single-page, modal, and other state-sensitive flows, the integration object returned through `onReady` exposes `teardown`. The page says teardown removes integration-created DOM nodes, handlers, popups, and/or iframes, and its callback signals when it is safe to continue. It can be invoked only once for each `braintree.setup()` call; concurrent and later repeated calls produce distinct errors.\n- To open the PayPal authorization flow from a merchant-supplied button, the page requires a headless PayPal integration together with `paypal.initAuthFlow()` from `onReady`. Its example passes `CLIENT_TOKEN_FROM_SERVER` to the client-side `braintree.setup()` call and leaves cross-browser click-handler compatibility to the merchant; the example does not establish server behavior or payment completion.\n- The CSP section recommends considering a Content Security Policy rather than declaring CSP universally mandatory. It provides separate Sandbox and Production directive tables for AJAX with CORS (`enableCORS: true`) and for non-CORS use. A further JavaScript-v2 snapshot instruction says 3D Secure users need `frame-src` and `form-action` set to `*`; preserve that broad wildcard statement as historical page-specific guidance, not a current general security recommendation or guarantee.\n- Braintree.js attaches form-submit handlers by default. The page shows native `HTMLFormElement.prototype.submit.call(form)` as a bypass and dispatching a custom `submit` event for a form without a button; these are client-side action examples, not evidence that tokenization, authorization, or settlement succeeded.\n\n## Detail locators\n\n- **Script tag placement and initialization** \u2014 advisory script placement and the required container-before-`braintree.setup()` ordering.\n- **Optimizing for tablets and phones** \u2014 advisory viewport metadata for injected Drop-in or PayPal interfaces and a device-review recommendation.\n- **Leverage onReady** \u2014 readiness semantics and optional DOM-hiding guidance.\n- **Teardown** \u2014 integration-object acquisition, cleanup effects, callback sequencing, one-call-per-setup constraint, and the two repeated-call error cases.\n- **Custom UI** \u2014 headless PayPal prerequisite, `paypal.initAuthFlow()` action, client-token placeholder, one-time-use amount/currency example settings, shipping-address example, and merchant-owned click compatibility.\n- **Using Braintree.js with a Content Security Policy** \u2014 advisory CSP framing; conditional CORS and non-CORS tables split by Sandbox and Production; exact resource origins; and the page's broad 3D Secure `frame-src`/`form-action` wildcard instruction. Treat the origin lists and wildcard as captured configuration, not current allowlist or security-policy evidence.\n- **Bypass submit handlers** \u2014 default submit interception, native-submit bypass, and custom-event example.\n\n## Related\n\n- [[braintree-web-sdk]] \u2014 provider concept for the browser SDK and separately qualified current/exact-version evidence.\n- [[source-braintree-client-sdk-migration-javascript-v3]] \u2014 historical v2-to-v3 migration route; consult it rather than treating this v2 practices page as current support evidence.\n- [[source-braintree-client-sdk-deprecation-policy-javascript-v3]] \u2014 separately collected JavaScript v3 lifecycle policy snapshot, which does not assign current status to this v2 page.\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/client-reference/javascript/v2/best-practices-2026-09-16|Braintree JavaScript v2 Best Practices and Troubleshooting snapshot]]\n",
+  "quotes": [
+    {
+      "text": "braintree.setup() must be called after your form container element is created. If braintree.setup() runs before the container element exists, the UI may not appear.",
+      "location": "lines 17-21, under `Script tag placement and initialization`"
+    },
+    {
+      "text": "The JavaScript SDK exposes an onReady callback that will fire when your chosen integration is fully loaded and ready to be interacted with. Depending on your checkout experience and flow, you may wish to hide portions of your DOM designated for use with Braintree until this callback is received.",
+      "location": "lines 43-45, under `Leverage onReady`"
+    },
+    {
+      "text": "In certain scenarios you may need to remove your Braintree.js integration. This is common in single page applications, modal flows, and other situations where state management is a key factor. When calling braintree.setup, you can attach a callback to onReady which will provide an object containing a teardown method.\n\nInvoking teardown will clean up any DOM nodes, event handlers, popups and/or iframes that have been created by the integration. Additionally, teardown accepts a callback which you can use to know when it is safe to proceed.",
+      "location": "lines 48-52, under `Teardown`"
+    },
+    {
+      "text": "If you wish to open the PayPal auth flow using a button other than the one provided by Braintree, you must use a combination of a [headless](/braintree/docs/reference/client-reference/javascript/v2/paypal#options) PayPal integration and the paypal.initAuthFlow method returned from the onReady callback.",
+      "location": "lines 75-77, under `Custom UI`"
+    },
+    {
+      "text": "If you are using 3D Secure, you need to setframe-srcandform-actionto*instead.",
+      "location": "line 310, after the non-CORS Sandbox/Production CSP table under `Using Braintree.js with a Content Security Policy`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-w25-web-sdk-reciprocal",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-reference-client-reference-javascript-v2-best-practices]] - historical Braintree.js JavaScript v2 client best-practices and troubleshooting snapshot covering DOM-order setup, readiness and teardown lifecycle, headless PayPal initiation, environment-split CSP locators, and form-handler bypass; not current SDK support, hosted behavior or exact-version GitHub evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the CSP recommendation advisory and the 3D Secure wildcard instruction snapshot-specific; do not universalize either into current security policy.",
+          "Do not use this website page as current SDK, browser, hosted-runtime or exact-version GitHub support evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/client-reference/javascript/v2/best-practices-2026-09-16.md",
+  "raw_sha256": "915da567109ae3006f85538d8852ea2b4d99d6221f36a560455002ca0c127f2b",
+  "status": "candidate_ready"
+}

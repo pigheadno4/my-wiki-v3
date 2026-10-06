@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-start-tutorial-drop-in-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Drop-in Tutorial (Node.js)\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/start/tutorial-drop-in-node\"\nraw_files:\n  - \"braintree/docs/start/tutorial-drop-in-node-2026-09-16.md\"\ntags: [braintree, drop-in, node-js, express, javascript, sandbox, payment-method-nonce]\n---\n\n## Overview\n\nThis [[braintree]] website-tutorial snapshot, collected 2026-09-16, builds a sandbox-only example with a browser Drop-in payment form and a Node.js/Express server. In the browser, Drop-in collects payment information and returns a one-time payment-method nonce; the example posts that nonce to `/checkout`. On the server, the Braintree Node.js library creates a Sandbox gateway and uses the nonce in a `$10.00` transaction-sale request with settlement submission requested. These are tutorial responsibilities and example requests, not proof that a transaction was authorized, submitted, settled, funded or fulfilled.\n\n## Key takeaways\n\n- The page expects current Node.js and npm, a console and text editor, Express generator 4, and a Braintree sandbox account for its test-transaction path. It labels the tutorial for Windows and Mac and uses JavaScript, Node.js and Express.\n- The browser setup includes the Drop-in script at `web/dropin/1.44.0`, initializes it with a tokenization key, calls `requestPaymentMethod()`, and posts `payload.nonce` as `paymentMethodNonce` to the merchant's `/checkout` route. The page distinguishes this static, reduced-privilege tokenization key from a server-generated client token that enables all client API capabilities.\n- The nonce is a one-time-use reference to the payment information, not the payment itself. The merchant server receives it, supplies the amount, and calls `gateway.transaction.sale`; the tutorial's `submitForSettlement: true` requests funds after a successful authorization. The sample amount and settlement choice are example flow conditions, not general defaults or execution evidence.\n- The server example explicitly selects `braintree.Environment.Sandbox` and requires sandbox merchant ID, public key and private key values. The page warns never to share the public or private key. It does not identify an exact Node SDK package version, despite describing the gateway-instance snippet as using the latest Node SDK.\n- The test section runs the local app, uses sandbox-only test values and then directs the reader to look for the transaction in the sandbox Control Panel. Instructions and expected UI/results do not show that this collected snapshot was executed successfully.\n\n> [!warning] Source-qualified Drop-in lifecycle notice\n> This website snapshot says Drop-in deprecation begins October 1, 2026, with no new features, improvements or bug fixes after that date; it says payment processing remains supported until October 1, 2027, when the SDK becomes unsupported, support ends and processing may be suspended at any time. It directs migration to the Braintree Android, iOS or JavaScript SDK. Treat these dates as this website snapshot's statements, not current status or versioned GitHub SDK evidence, and verify current official lifecycle guidance before migration planning.\n\n## Evidence and version boundaries\n\nThis is a website tutorial, not an exact-SHA GitHub implementation source. The `1.44.0` browser Drop-in URL and the unversioned `npm install braintree` instruction establish only what the example shows; they do not prove compatibility with other retained package versions. The Node.js route, JavaScript browser flow and named Android/iOS migration destinations are separate platform routes, so no behavior should be inferred across languages or SDKs.\n\n## Detail locators\n\n- Drop-in deprecation, processing-support and unsupported-status notice plus migration destinations: `# Drop-in Tutorial > **IMPORTANT**`, raw lines 17-22.\n- Estimated time, Windows/Mac label, difficulty and JavaScript/Node.js/Express technologies: `# Drop-in Tutorial`, raw lines 26-38.\n- Node.js/npm, console/editor, Express generator 4 and sandbox-account prerequisites: `## Before you begin`, raw lines 41-60.\n- Express app generation, Handlebars setup, dependency installation and server-side Braintree library purpose/install command: `## 1. Set up a basic app`, raw lines 63-104.\n- Browser Drop-in setup checklist, `1.44.0` script and jQuery-not-required note: `## 2. Add the Drop-in UI`, raw lines 106-134.\n- Client-token versus tokenization-key capabilities and the tutorial's Control Panel tokenization-key route: `### Get a tokenization key`, raw lines 137-155.\n- Browser markup, authorization parameter, `requestPaymentMethod()`, nonce POST, result-display example and nonce definition: `### Add the Drop-in UI markup`, raw lines 158-219.\n- Server responsibility, sandbox credentials, key-sharing warning, Sandbox gateway, `$10.00` sale request, nonce input, `submitForSettlement` condition and Node-SDK-version wording: `## 3. Handle checkout`, raw lines 222-317.\n- Express `/checkout` route registration: `### Connect the route to app.js`, raw lines 320-335.\n- Local start command, sandbox card fixture and Control Panel lookup directions: `## 4. Create a test transaction`, raw lines 337-379.\n- Further integration, error handling, payment-method, API, production-contact and fraud-management routes: `## Next steps`, raw lines 382-392.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-web-drop-in]]\n- Broader integration flow: [[source-braintree-get-started]]\n- Node transaction request route: [[source-braintree-transaction-sale-node]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/authorization/tokenization-key/javascript/v3-2026-09-16|Braintree tokenization-key guide for JavaScript v3]] - unread navigation-only authorization reference\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Braintree Transaction Sale request for Node.js]] - unread navigation-only server request reference\n- [[raw/braintree/docs/reference/general/testing/node-2026-09-16|Braintree testing reference for Node.js]] - unread navigation-only test-values reference\n\n## Raw Sources\n\n- [[raw/braintree/docs/start/tutorial-drop-in-node-2026-09-16|Braintree Drop-in Tutorial for Node.js]] - fully read pinned website snapshot covering prerequisites, browser Drop-in nonce collection, Node/Express sale handling and sandbox test directions\n",
+  "quotes": [
+    {
+      "text": "**Starting October 1, 2026**, the Drop-in SDK will be [**deprecated**](/braintree/docs/guides/client-sdk/deprecation-policy/ios/v6/#status-categories). No new features, improvements, or bug fixes will be released after this date. Payment processing will continue to be supported until **October 1, 2027**, but we strongly recommend migrating to the Braintree SDK as soon as possible to avoid future disruption.",
+      "location": "raw lines 17-18 under # Drop-in Tutorial > **IMPORTANT**"
+    },
+    {
+      "text": "The [Braintree Node.js library](https://github.com/braintree/braintree_node) is the server-side Braintree SDK that will communicate with Braintree\u2019s servers. Install it now so that when we\u2019re ready, we can wire up the payment form.",
+      "location": "raw line 98 under ## 1. Set up a basic app > ### Install Braintree"
+    },
+    {
+      "text": "- A[tokenization key](/braintree/docs/guides/authorization/tokenization-key/javascript/v3), which is a static key with reduced privileges that authorizes a subset of Braintree\u2019s client API capabilities",
+      "location": "raw line 143 under ## 2. Add the Drop-in UI > ### Get a tokenization key"
+    },
+    {
+      "text": "The paymentMethodNonce is a string returned by the client SDK.It\u2019s a one-time-use reference to the payment information that your customer provided in your payment form. In the next step, we\u2019ll set up your server to receive this string so it can be used to create a transaction request.",
+      "location": "raw line 219 under ## 2. Add the Drop-in UI > ### Add the Drop-in UI markup"
+    },
+    {
+      "text": "Now that the client is set up to securely collect payment information, we\u2019ll create a route on your server that accepts the paymentMethodNonce from the Drop-in UI and then uses that nonce to create a sale transaction request for $10.",
+      "location": "raw line 224 under ## 3. Handle checkout"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-w09-concept-01",
+        "target_path": "wiki/concepts/braintree-web-drop-in.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-start-tutorial-drop-in-node]] - Node.js/Express website tutorial for browser Drop-in nonce collection and a separate Sandbox transaction-sale route; preserves tutorial prerequisites, October lifecycle notice, example-only execution boundary and absent exact Node SDK package version",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Website tutorial evidence must remain distinct from independently versioned GitHub SDK sources and must not be generalized across languages or treated as successful transaction execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/start/tutorial-drop-in-node-2026-09-16.md",
+  "raw_sha256": "c2299d2ba11272b248747f239ceaf5278934f4727bf30937f861bd1713e36b4b",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "in-person-guides-making-a-transaction",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person Sale and Refund Transactions\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/making-a-transaction\"\nraw_files:\n  - \"braintree/in-person/guides/making-a-transaction-2026-09-16.md\"\ntags: [braintree, in-person, card-reader, transactions, refunds]\n---\n\n## Overview\n\nThis collected [[braintree|Braintree]] website guide describes POS and server coordination with a card reader to request and monitor card-present charges, together with qualified cancellation, partial-authorization, refund and reversal, receipt-data, and manual-entry routes. It is unversioned website guidance, not GitHub or exact-commit schema evidence, current account or hardware eligibility, feature enablement, or proof that an API request was accepted, a card was authorized, a transaction was captured or submitted for settlement, settlement completed, or funds arrived.\n\n## Key takeaways\n\n- A charge request creates an In-Store Context and supplies at least `readerId`, `merchantAccountId`, and `transaction.amount`. The page says Sandbox does not validate the merchant-account ID, while production requires it for all card-reader interactions. Charging is described as authorization followed by automatic capture only if authorization succeeds.\n- The request-charge mutation must include a unique `Idempotency-Key`; when communication fails after the customer completes the reader interaction, retrying with the same key is the documented route to recover the original transaction without creating a duplicate charge.\n- The charge-request example returns an In-Store Context in `PENDING`; this request acceptance and context state are separate from authorization and capture. The application then polls the context, whose `COMPLETE` state makes a transaction object available; the transaction has its own ID and lifecycle status, and the included successful example is only `SUBMITTED_FOR_SETTLEMENT`, not proof of settlement or funding.\n- Cancellation can return the reader to idle only before a payment instrument is presented. A cancel response of `COMPLETE` means the charge was already processed, so the guide says to retrieve status and then perform a reversal or refund; it separately records error code `96716` for attempts to cancel a context already in `PROCESSING` or `COMPLETE`.\n- Partial authorization has a page-stated October 2023 behavior and integration path. It can be controlled per transaction with `acceptPartialAuthorization`; otherwise the account feature must be enabled. A partially authorized context is `COMPLETE` with `statusReason` `PARTIALLY_AUTHORIZED`, and the POS must handle the remaining tender rather than treating context completion as full collection.\n- Refund paths remain distinct: a referenced refund uses the original transaction ID and cannot exceed its authorized amount; reversal lets Braintree select void versus refund from settlement status; and an unreferenced reader refund requires the customer and payment instrument to be present plus environment-qualified enablement. Unreferenced context `COMPLETE` indicates the refund completed, while the example refund object separately shows `SUBMITTED_FOR_SETTLEMENT`.\n\n## Detail locators\n\n- `Initializing the Reader for Charging` (raw lines 19\u201330) \u2014 minimum request fields, Sandbox/production merchant-account qualification, automatic-capture meaning, idempotency requirement, and request/response examples.\n- `Checking the Reader Charge Status` (raw lines 31\u201343) \u2014 customer interaction, two-second polling guidance, context and transaction fields, test-amount qualification, and example pending, complete, decline, network-error, and gateway-reject responses.\n- `Charge Flow Example Sequence Diagram` and `Recommended Timeout Logic` (raw lines 44\u201364) \u2014 explicitly illustrative flow, the reader's stated 180-second maximum checkout timeout, and suggested POS request/poll timeout sequence.\n- `Cancelling a Charge` (raw lines 66\u201370) \u2014 pre-presentation cancellation boundary, idle-reader effect, processed-context recovery route, and error code `96716`.\n- `Partial Authorizations` (raw lines 71\u201388) \u2014 remaining-tender behavior, status fields, Sandbox test amount, API-flag override, and account-level enablement condition.\n- `Refunding Your Customer` (raw lines 91\u2013146) \u2014 referenced refund, settlement-aware reversal, unreferenced refund and its enablement, refund reversal, and authorization adjustment for partial reversal.\n- `Receipt Data Handling` (raw lines 149\u2013192) \u2014 provider-described mandatory and optional EMV receipt fields, declined and EMV-chip-declined fields, and the warning that PayPal/Braintree does not enforce EMV-compliant receipts.\n- `Manual Key Entry Transactions` (raw lines 195\u2013213) \u2014 MOTO or unreadable-card fallback routes through Braintree Hosted Fields or Drop-in UI; the linked integration targets, not this page, govern their exact platform and SDK versions.\n- `Important Tips for building out your charge/refund flows` (raw lines 216\u2013231) \u2014 merchant-account ID, idempotency, timeout, receipt-data, and reconciliation routes.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-payment-platform]]\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/making-a-transaction-2026-09-16|Braintree In-Person Initiate a Sale or Refund (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "When you're ready to charge a customer, you should create an In-Store Context by [requesting a charge from a card reader](/braintree/graphql/reference/#Mutation--requestChargeFromInStoreReader). In this step, your application will specify, at minimum, the readerId, merchantAccountId and transaction.amount details to initialize the reader for payment acceptance. Note that the merchantAccountId is not validated against in the Sandbox environment; however, this is a required value in the production environment for all interactions with the card reader.\n\nCharging is similar to authorizing, except that if the authorization is successful, Braintree will automatically capture the transaction. This is also known as [creating a Sale Transaction](/braintree/docs/reference/request/transaction/sale/).",
+      "location": "lines 21\u201323 under ## Initializing the Reader for Charging"
+    },
+    {
+      "text": "Using Idempotency-Key is an important way of preventing duplicate charges to your customer in the event of an API communication failure. For example, if you request a charge from the reader, the customer completes the charge on the reader, but for some reason, the POS does not get back the transaction result before timing out. In this scenario, the POS could recover the original transaction using the same Idempotency-Key without accidentally creating a duplicate charge.",
+      "location": "line 28 under ## Initializing the Reader for Charging"
+    },
+    {
+      "text": "When the RequestChargeInStoreContext.status changes to \"COMPLETE\", you will also receive a transaction object RequestChargeInStoreContext.transaction in the response. Save the completed RequestChargeInStoreContext.transaction.id in your database for referencing the transaction in subsequent operations.",
+      "location": "line 35 under ## Checking the Reader Charge Status, after the image markup"
+    },
+    {
+      "text": "If you need to stop a transaction from being paid while the reader is activated and requesting payment, you can [cancel](/braintree/graphql/reference/#Mutation--requestCancelFromInStoreReader) the InStoreContext. Cancelling an InStoreContext places the reader back into **idle mode** and returns you to the PayPal-branded screensaver. It is important to note that canceling a charge is only possible when a payment instrument has not yet been presented to the card reader. After the card reader has been presented with payment, the only way to stop that would be with a reversal or refund of payment.",
+      "location": "line 68 under ## Cancelling a Charge"
+    },
+    {
+      "text": "Note that this feature requires approval to be enabled in the production environment and needs to be requested to be enabled by your Solutions Engineer or Integration Engineer in the sandbox environment",
+      "location": "line 128 under ### 3) Performing an Unreferenced Refund or \"Blind Credit\""
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-in-person-making-a-transaction-payment-platform-route",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-making-a-transaction]] - 2026-09-16 unversioned Braintree website In-Person guide for requesting and polling reader charges, distinguishing request acceptance and context states from transaction authorization, capture and settlement states, plus qualified cancellation, partial-authorization, refund/reversal, receipt and manual-entry routes; not account or hardware enablement, exact-schema authority, current eligibility, or payment, settlement or funding proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/making-a-transaction-2026-09-16.md",
+  "raw_sha256": "54c61543b3c96fa16c89ec4c0911de5ce31586b2765f5859e8d36352e89b5c17",
+  "status": "candidate_ready"
+}

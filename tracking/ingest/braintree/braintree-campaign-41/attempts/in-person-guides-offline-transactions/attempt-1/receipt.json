@@ -1,0 +1,52 @@
+{
+  "job_id": "in-person-guides-offline-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person Offline Transactions Guide\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/offline-transactions\"\nraw_files:\n  - \"braintree/in-person/guides/offline-transactions-2026-09-16.md\"\ntags: [braintree, in-person, offline-transactions, store-and-forward, card-reader, reconciliation]\n---\n\n## Overview\n\nThis collected Braintree In-Person guide describes offline transaction processing, also called Store & Forward (SAF): a supported reader captures and stores transaction data while it cannot reach the internet, then automatically uploads stored transactions to Braintree after reconnecting. It documents reader/POS network and certificate setup, reader-local initiation, status polling, retention and reconciliation behavior. This is snapshot-scoped provider guidance, not proof of current availability, merchant-account enablement, reader compatibility, successful authorization, settlement or funding.\n\n## Key takeaways\n\n- Offline capture is not a final payment outcome. Polling the context ID against the reader reports whether the reader collected card details for offline storage; after upload, the POS must poll the Braintree cloud endpoint for the final transaction status. A successful capture or upload therefore does not by itself establish authorization, settlement or funding.\n- The merchant bears the risk of a stored transaction later being declined or refused and not funded. Braintree allows any amount to be sent to the reader in an offline session, so the POS or calling application is responsible for enforcing merchant-chosen floor limits and any session-level count or amount controls.\n- The documented setup requires the reader and POS to share a local network, use static IP addresses and establish mutual TLS with certificates for both sides. The page recommends Store & Forward starting with reader firmware 5.0.0 because of critical improvements, but does not establish that every device, account or environment is eligible.\n- Offline requests go to the reader's own GraphQL endpoint and include `deferredAuthorization: true`; the guide says request inputs such as `merchantAccountId`, custom fields and shopper statement descriptors are not validated at reader level. Invalid values can fail only after forwarding, leaving the merchant unfunded.\n- Stored transactions may remain on the reader for up to five days before erasure; reconnection triggers automatic upload. After successful upload, a context ID is queryable for 24 hours, so the guide calls for at-least-daily reconciliation and storing the returned transaction ID and status in the POS database. A unique `orderId` is an additional query route that the page says does not expire.\n\n## Detail locators\n\n- Reader/POS topology, static-IP and mutual-TLS prerequisites: raw lines 45\u201364. Certificate creation, verification and reader provisioning details: raw lines 67\u2013135.\n- Reader endpoint, port, POS certificate, idempotency header and charge/refund request examples: raw lines 138\u2013157. The examples are request illustrations, not execution guarantees or exact-current schema authority.\n- Reader-local versus cloud-final status polling, firmware-qualified response fields and example responses: raw lines 160\u2013175. Cancellation behavior: raw lines 176\u2013180.\n- Reader storage, upload, query and invalid-input expiry rules: raw lines 181\u2013199. Daily reconciliation, Sandbox endpoint, `orderId` lookup and firmware-5.1.0-qualified vault/retry route: raw lines 203\u2013215.\n- The page's collected list of reader interactions supported offline and its reader-endpoint condition: raw lines 218\u2013243. Treat this as the captured website list, not current account, environment or hardware enablement proof.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]]\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/offline-transactions-2026-09-16|Braintree In-Person Offline Transactions (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "Offline transaction processing, also known as store-and-forward or SAF, allows payment acceptance even when readers are offline and unable to connect to the internet. Transactions are stored on the card reader. Once the reader is able to connect to the internet again, the stored transactions are sent to Braintree for payment processing.",
+      "location": "Introduction, raw lines 19-24 (quoted text at line 21)"
+    },
+    {
+      "text": "For transactions that occur while in offline mode via SAF the liability for the transaction falls on the merchant. For example, if once the stored offline transaction is forwarded to Braintree for processing and then comes back as declined or refused by the issuer then the merchant will not be funded for the transaction.",
+      "location": "Merchant Liability, raw lines 27-29"
+    },
+    {
+      "text": "For the POS to securely initiate a transaction on the reader, they must establish a mutually authenticated connection, which will be established via mutual TLS. In order to create this mutually authenticated connection, SSL certificates will need to be generated for both the POS and reader.",
+      "location": "Getting the Reader set up, raw lines 45-57 (quoted text at line 57)"
+    },
+    {
+      "text": "The difference with an offline transaction is that when you poll the context ID using the reader IP address as an endpoint, you will only get the transaction completion status according to whether the reader has successfully collected card details to store while offline. This DOES NOT represent the final status of the transaction.",
+      "location": "Checking the Status of a Charge or Refund, raw lines 160-164 (quoted text at line 162)"
+    },
+    {
+      "text": "It is important to reconcile your offline transactions every day to ensure that the final transaction status (once forwarded) is known by the POS. This helps to ensure that your POS remains in sync with the actual transaction status given by the card issuer. To do this you will need to use the context ID from the offline transaction and poll against it using the Braintree Cloud API endpoint. This should be done for every offline transaction **at least once per day** since the **context ID will expire 24 hours** after the stored transaction data is uploaded to the Braintree Platform.",
+      "location": "Offline Transaction Reconciliation, raw lines 203-205"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-offline-transactions-reciprocal-01",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-offline-transactions]] - 2026-09-16 collected unversioned Braintree In-Person Store & Forward guide for reader-local offline capture/storage, automatic upload and cloud-final-status reconciliation, with local-network, static-IP, mutual-TLS, firmware, merchant-liability and time-window qualifications; not proof of current account or hardware eligibility, authorization, settlement or funding",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/offline-transactions-2026-09-16.md",
+  "raw_sha256": "0bd5f29ad995299a998ff4c593d379fe8022572cf8899973f3a38d011746f171",
+  "status": "candidate_ready"
+}

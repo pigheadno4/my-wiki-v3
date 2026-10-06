@@ -1,0 +1,52 @@
+{
+  "job_id": "in-person-guides-additional-api-calls",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person Additional API Calls\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/additional-api-calls\"\nraw_files:\n  - \"braintree/in-person/guides/additional-api-calls-2026-09-16.md\"\ntags: [braintree, in-person, graphql, card-reader, locations, transactions, reconciliation]\n---\n\n## Overview\n\nThis collected [[braintree|Braintree]] website guide is a retrieval page for additional GraphQL reads and one reader-local ping: querying a reader's reported status and firmware, testing the offline ping endpoint without requesting a charge, listing locations or readers, and searching transaction records for reconciliation. It is an unversioned website snapshot, not GitHub or exact-commit schema evidence, current feature or account eligibility, reader pairing or health proof, request-charge or In-Store Context state, or proof of authorization, capture, settlement, funding, or successful reconciliation.\n\n## Key takeaways\n\n- `pingInStoreReader` is presented as a query for a specific reader's reported online/offline status, firmware version, timestamps, location, and other selected fields. The page warns that its response is accurate only within several minutes, not in real time. For offline-transaction request routing, it instead recommends the reader status returned by the request-charge mutation; a ping response is reader-state observation, not a charge request, In-Store Context, transaction, or payment outcome.\n- The reader-local `{ping}` mutation targets the displayed `https://readerIPaddress:3030/graphql` endpoint and is described only as validating that the offline endpoint can be pinged without sending a charge request. A `pong` example is an action response, not evidence of transaction creation, authorization, storage, upload, settlement, or funding.\n- The page supplies example GraphQL queries for `inStoreLocations(first: 100)` and `search { inStoreReaders(...) }`. The first selects pagination, identity, coordinates, QR-payment, payer and address fields; the second selects reader identity, reported status, software, location and vendor fields and shows an optional `locationId` `is` filter. These examples retrieve records; they do not create locations, pair readers, change reader state, or establish current exact-schema support.\n- A transaction-search example is offered as one way to automate or streamline reconciliation. Its illustrative input filters amount at or above `800.00` and status within `SETTLED` or `VOIDED`, and its selected output includes transaction ID, status and amount. The example is not a merchant-specific result, does not prove completeness or freshness, and does not itself execute, authorize, capture, settle, fund, void, or reconcile a payment.\n- The page links to separate GraphQL reference, offline-transaction, request-charge, search-construction and receipt-printing documentation. Those linked targets were not read as evidence for this entry, so their schemas, prerequisites and behavior must be verified separately.\n\n## Detail locators\n\n- `## Ping Reader` (raw lines 19-26) \u2014 query purpose, reported reader fields, several-minute freshness warning, request-charge routing recommendation, and the full query/variables/response example.\n- `## Offline Ping` (raw lines 27-33) \u2014 no-charge purpose, displayed reader-local endpoint, `{ping}` mutation, reader-ID variables and `pong` example.\n- `## Query a list of Locations` (raw lines 34-38) \u2014 location-query purpose plus complete pagination, field-selection, variables and sample-response detail.\n- `## Query a list of Readers` (raw lines 39-45) \u2014 location-or-merchant-account association statement, base reader-search example and the separate `locationId` `is` filter example.\n- `## Query a list of Transactions` (raw lines 46-53) \u2014 reconciliation framing, linked search references, illustrative amount/status criteria, selected result fields and sample response.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-in-person]]\n\n## Related raw API references\n\n- Braintree GraphQL `pingInStoreReader` reference (`/braintree/graphql/reference/#Query--pingInStoreReader`) \u2014 linked navigation only; not read as evidence.\n- Braintree In-Person offline-transactions guide (`/braintree/in-person/guides/offline-transactions/`) \u2014 linked navigation only; not read as evidence.\n- Braintree In-Person request-charge guide (`/braintree/in-person/guides/making-a-transaction/#initializing-the-reader-for-charging`) \u2014 linked navigation only; not read as evidence.\n- Braintree GraphQL Search object and constructing-searches guides \u2014 linked navigation only; not read as evidence.\n- Braintree In-Person receipt-printing guide \u2014 linked navigation only; not read as evidence.\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/additional-api-calls-2026-09-16|Braintree In-Person Additional API Calls (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "This section highlights some of the additional API calls that can be made with GraphQL to perform things like reader health/status checks, or querying a list of readers or transaction history, etc...",
+      "location": "raw line 16 under # Additional API Calls"
+    },
+    {
+      "text": "It is important to note that the data returned in the response is not accurate in real-time, it is accurate within several minutes. For building [offline transaction](/braintree/in-person/guides/offline-transactions/) request routing logic, we suggest utilizing the reader status returned in the [request charge mutation](/braintree/in-person/guides/making-a-transaction/#initializing-the-reader-for-charging).",
+      "location": "raw line 24 under ## Ping Reader, second and third sentences"
+    },
+    {
+      "text": "This API mutation can be used if you would like to validate that you can ping a reader while offline without actually sending a charge request. The result is a simple response that will indicate you can ping the reader using the offline endpoint, example below:",
+      "location": "raw line 29 under ## Offline Ping"
+    },
+    {
+      "text": "It is possible to query a list of readers that are associated with a specific location or specific merchant account. To do this you can use a query as shown below in the example:",
+      "location": "raw line 41 under ## Query a list of Readers"
+    },
+    {
+      "text": "If you would like to automate/streamline your reconciliation process, one way of doing so is by utilizing a transaction query. There are a few ways of querying transactions, try modifying the variables in your request to alter the results of your search:",
+      "location": "raw line 48 under ## Query a list of Transactions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-in-person-additional-api-calls-source",
+        "target_path": "wiki/concepts/braintree-in-person.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-additional-api-calls]] - 2026-09-16 unversioned Braintree In-Person website guide to reported reader-state and firmware lookup, reader-local no-charge ping, location and reader listing, and transaction-record search for reconciliation, preserving stale-status and example-only schema boundaries; not current support, reader health or pairing proof, request/context state, or payment, settlement, funding or reconciliation proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/additional-api-calls-2026-09-16.md",
+  "raw_sha256": "9a533d3ff6951e4cbf687fe7ef366a976992241d4b03a1d14ef0c808bb7ab003",
+  "status": "candidate_ready"
+}

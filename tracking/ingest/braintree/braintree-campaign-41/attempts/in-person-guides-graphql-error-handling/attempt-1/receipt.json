@@ -1,0 +1,54 @@
+{
+  "job_id": "in-person-guides-graphql-error-handling",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person GraphQL Error Handling\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/graphql-error-handling\"\nraw_files:\n  - \"braintree/in-person/guides/graphql-error-handling-2026-09-16.md\"\ntags: [braintree, in-person, graphql, error-handling, point-of-sale]\n---\n\n## Overview\n\nThis collected [[braintree|Braintree]] website guide explains how a point-of-sale application should interpret error information returned by the In-Person GraphQL API. It separates HTTP transport status from the JSON operation outcome, describes partial-success response layers, routes operational failure conditions to legacy codes, and recommends diagnostic logging. It is an unversioned website snapshot, not exact GraphQL schema or SDK authority, current reader or merchant support evidence, or proof that a payment or transaction succeeded.\n\n## Key takeaways\n\n- The page says the GraphQL API returns HTTP 200 even when an error occurred. Callers must inspect the JSON body: `data`, `errors`, and `extensions` may coexist, and a request containing multiple queries or mutations can contain both data and error messages. HTTP success therefore does not establish operation or payment success, and partial success must not be treated as all-or-nothing completion.\n- A successful query has a `data` object whose keys match requested fields. When an error occurs, the body includes a top-level `errors` array. Its human-readable `message` is explicitly unstable and should not be parsed; the page instead identifies `extensions.legacyCode` as the error-catalog lookup key. Exact response-field and catalog details remain at the raw locators below rather than serving as commit-qualified schema evidence.\n- The response `extensions` object includes a request-specific `requestId`. The guide recommends that the POS application store `requestId`, `transactionId`, and the API request and response for troubleshooting. This is diagnostic guidance: presence or logging of those identifiers does not establish reader readiness, transaction success, settlement, or funding.\n- Reader identity and availability, context lifecycle, and transaction diagnosis remain distinct. The catalog separately covers an offline reader, a reader not found under the supplied ID/account credentials, a reader already processing another `PENDING` or `PROCESSING` context, a missing context, and a context that cannot be cancelled while `PROCESSING` or `COMPLETE`. It does not make a reader error a transaction-state result or define unlisted retry behavior.\n- Routine request, location, pagination, configuration, printing, and other validation or operational failures are catalogued by legacy code in the raw. Processor response codes are a separate response layer that the page suggests consuming for cashier or accounting detail; the amount-based note is a simulation instruction, not proof of production processor behavior or a successful payment.\n\n> [!warning] Inspect every returned layer\n> A 200 status is only the documented transport behavior. Check `data`, `errors`, and `extensions`, preserve mixed data/error outcomes, and do not infer rollback, payment success, or transaction state from the HTTP status alone.\n\n## Detail locators\n\n- Response transport and partial-success model: `# GraphQL Error Handling`, raw line 16.\n- Successful-query `data` object: `#### Data`, raw lines 19-21.\n- Error-body requirement, invalid-reader example, unstable `message`, and `legacyCode` lookup role: `#### Errors`, raw lines 24-39.\n- Request identifier and POS logging recommendation: `#### Extensions` and `#### Point of Sale Logging`, raw lines 46-53.\n- Operation-specific legacy codes, including authorization, reader, context, location, owner, user-code, amount, invalid-field, pagination, configuration, and printing conditions: `## Table 1 - Error Code Explanations`, raw lines 56-87.\n- Reader/context distinctions: codes `96703`, `96704`, `96706`, `96708`, and `96716`, raw lines 60-63 and 70.\n- Raw processor-response-code route and amount-based simulation note: `## Processor Response Codes`, raw lines 90-96.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- [[source-braintree-graphql-guides-making-api-calls]] \u2014 general GraphQL request-construction and timeout route; this source is scoped to In-Person error interpretation.\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/graphql-error-handling-2026-09-16|Braintree In-Person GraphQL Error Handling (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "A response from the GraphQL API will always return with HTTP status 200. The JSON body of the response explains whether an error occurred. Because you can send multiple queries and mutations in a single request, and because GraphQL includes the concept of a \"partial success\", the request may contain a mix of data and error messages. The body is always a JSON object and MAY include any of the three top-level keys: data, errors, and extensions.",
+      "location": "raw line 16 under `# GraphQL Error Handling`"
+    },
+    {
+      "text": "If an error occurred, the response body MUST include a top-level errors array that describes the error or errors. For example, the response for requesting a charge on a reader with an invalid readerId.",
+      "location": "raw line 28 under `#### Errors`"
+    },
+    {
+      "text": "The API response MUST contain an extensions object. This object contains at least a requestId entry that is unique to the request and useful to Braintree Support should you need help debugging a request.",
+      "location": "raw line 48 under `#### Extensions`"
+    },
+    {
+      "text": "| 96704 | Reader not found. | A Reader with this ID was not found. Ensure the request includes the full readerId returned when calling pairInStoreReader mutation. Also ensure credentials for the same account used when pairing are used on the current request. |\n| 96706 | Context in progress. | The reader is currently processing a different context with a status of PENDING or PROCESSING. |",
+      "location": "raw lines 61-62 in `## Table 1 - Error Code Explanations`"
+    },
+    {
+      "text": "Braintree will also return raw processor response codes in the API response. You may want to parse and consume these detailed [processor response](/braintree/articles/control-panel/transactions/declines#additional-processor-responses) codes to provide detailed reason codes to your cashier or accounting team.",
+      "location": "raw line 92 under `## Processor Response Codes`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-w19-payment-platform-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-graphql-error-handling]] - 2026-09-16 unversioned Braintree website In-Person GraphQL error-handling guide for HTTP-200 response inspection, partial data/error payloads, request and legacy-code diagnosis, reader/context operation errors, POS logging and separate processor-response codes; not exact-schema, SDK, current-support or payment/transaction-success proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this website snapshot separate from exact GraphQL schema or SDK evidence, and do not treat HTTP 200 as payment or transaction success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/graphql-error-handling-2026-09-16.md",
+  "raw_sha256": "5bf2c228507499707d8cb0187ce6cdc9dc5d4e603a6d512bb65037a63828ddac",
+  "status": "candidate_ready"
+}

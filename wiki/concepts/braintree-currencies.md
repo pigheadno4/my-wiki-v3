@@ -16,6 +16,8 @@ Single-currency accounts present and settle in the merchant's home currency by d
 The page states support for more than 130 local currencies in 44 countries but does not enumerate or map them. It also warns that displaying a converted price while charging in the home currency can produce a charged amount different from the display as rates move, and that exchange-rate movement can make an international customer's refund differ from the original amount paid. Treat the collected snapshot as a retrieval route, not proof of current currency coverage or merchant eligibility.
 
 ## Sources
+
+- [[source-braintree-docs-reference-general-currencies]] - 2026-09-16 Braintree general-reference snapshot for account/country-qualified API currencies, zero-decimal markers, the Bulgaria BGN-to-EUR transition and Braintree-defined settlement-source categories; not current eligibility or independent ISO/network authority
 - [[source-braintree-articles-risk-and-security-compliance-network-updates-2023-all-networks-s23]] - historical Spring 2023 Visa/Mastercard notice describing an expected ISK shift from two minor units to zero on April 15 and an earlier April 10 merchant cutoff recommendation; not current currency metadata or network policy
 - [[source-braintree-articles-nab-transactions-accepted-payment-methods]] - 2026-09-16 Braintree-hosted NAB-path account article routing to merchant-account currency processing, customer-bank conversion and possible fee/refund/chargeback risk, additional-currency merchant-account setup, applicable presentment and settlement guidance, and merchant-account-ID selection
 

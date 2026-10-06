@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-06] ingest | Braintree website C41
+
+- Fifty pinned website raws: 25 In-Person, 24 Docs and one GraphQL landing guide; fully read and independently reviewed through ten shared rolling child slots. Fifty exact retrieval sources, eight existing reciprocal concepts and two new retrieval concepts promoted: [[braintree-in-person]] and [[braintree-in-person-custom-prompts]]. Catalog552=535website+17GitHub; raw unchanged.
+- End-to-end first pass41/50; initial independent-review pass43/50. Fifty full initial reviews plus seven bounded targeted correction reviews, no repeated full review or coordinator semantic repair. Two initial quote-substring handoffs failed mechanically and were corrected before their first independent full review. Scope/enablement, raw contradictions, example input-versus-consumption and precise locators remain qualified.
+- Fixed queries100/100 passed in thirteen disjoint groups, overlapping later ingestion. Company/provider source catalogs and counts updated once; provider-index routes include In-Person, Custom Prompts and separately scoped [[paypal-fastlane]]. Earlier deferred-edge observations are retained in audit reports and checked at close.
+- Close evidence and timing: `tracking/ingest/braintree/braintree-campaign-41/`. No collection, GitHub ingestion, code/rule/schema change, commit, push or next-campaign execution.
+
 ## [2026-10-06] ingest | Node `braintree@3.40.0`
 
 - Approved full additive/focused update from `3.39.0`, exact SHA `deb5227f1c4824b1f622115caf2ba4302134d375`; 20 changed retained files, 150 unchanged files hash-verified; historical changelog suffix identical.

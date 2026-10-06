@@ -1,0 +1,54 @@
+{
+  "job_id": "in-person-guides-making-a-transaction-level-2-and-level-3-data-processing",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree In-Person Level 2 and Level 3 Data Processing\"\ntype: source\ndate_ingested: 2026-10-06\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/making-a-transaction/level-2-and-level-3-data-processing\"\nraw_files:\n  - \"braintree/in-person/guides/making-a-transaction/level-2-and-level-3-data-processing-2026-09-16.md\"\ntags: [braintree, in-person, card-present, graphql, level-2, level-3]\n---\n\n## Overview\n\nThis collected Braintree website guide covers passing Level 2 and Level 3 data in GraphQL transaction requests for Braintree in-person transactions. The page is an unversioned website snapshot with body metadata updated 2025-01-03 and raw fetched 2026-09-16; it is not GitHub, SDK-version, exact deployed-schema or current-support evidence.\n\n## Key takeaways\n\n- The page presents Level 2 data as primarily tax information and a purchase-order number, and Level 3 data as primarily line-item, discount and shipping information. Its examples put those inputs on an in-person reader charge request; use the raw locators for exact input names, query selections and sample values rather than treating the examples as a complete current field specification.\n- Braintree says passing L2/L3 data can help lower interchange fee costs only for eligible MCC codes and eligible card types, and describes the use case as primarily relevant to B2B merchants. The page links to general L2/L3 documentation and tax-ID configuration instructions for a Braintree merchant account, but it does not enumerate the eligible MCCs or cards, identify processor/account applicability, prove merchant approval or enablement, or guarantee any interchange result.\n- Merchants will typically send both levels in the same request; the page separates them only to illustrate each level.\n- The documented flow has distinct stages: send the reader charge request, complete the card interaction on the reader, then have the POS poll the synchronously returned context ID. Request acceptance, a card prompt, reader completion, context status and transaction status are not interchangeable evidence of a successful processed or settled payment.\n- Incorrectly formatted data may be accepted initially and prompt for card insertion, but the page says an error is thrown after the card is tapped, the transaction is not processed and the final context status is `FAILED`. L2/L3 fields are not supported for offline transactions and cause an API error there. They are also not supported on the Request Authorize mutation, although the page says they may be sent in the separate capture request.\n\n> [!warning] Eligibility, support and outcome boundaries\n> Supplying these fields does not establish merchant, merchant-account, MCC, processor or card eligibility; required approval or configuration; lower interchange; current GraphQL or reader support; or authorization, capture, settlement or funding of an individual transaction. Confirm the applicable account, processor, card, environment and current schema before implementation.\n\n## Detail locators\n\n- Purpose, qualified interchange-cost statement, B2B relevance and linked tax-ID configuration route: `## Feature Overview`, lines 19-24.\n- Level 2 purpose, input names, reader-charge example and context-ID polling example: `## Level 2 Data Processing`, lines 27-33.\n- Level 3 purpose, input names, reader-charge example and context-ID polling example: `## Level 3 Data Processing`, lines 34-40.\n- Invalid-format timing and final `FAILED` context state: `## Important Tips for passing L2/L3 data`, line 44.\n- Offline exclusion, Request Authorize exclusion, separate-capture allowance and GraphQL-format handoff: `## Important Tips for passing L2/L3 data`, lines 47-53.\n\n## Related raw API references\n\nThe captured page links to the general L2/L3 required-fields and merchant-requirements pages; `TransactionTaxInput`, `TransactionShippingInput` and `TransactionLineItemInput`; the offline-transactions guide; and the card-present authorization/capture guide. Those targets are navigation only here and were not read as evidence for this entry.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- Processor-specific comparison route: [[source-braintree-articles-wells-ic-transactions-level-2-and-3-processing]]\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/making-a-transaction/level-2-and-level-3-data-processing-2026-09-16|Braintree In-Person Level 2 and Level 3 Data Processing guide]] - complete collected page covering qualified purpose, reader-charge and context-polling examples, and action-specific limitations\n",
+  "quotes": [
+    {
+      "text": "The passing of L2/L3 transaction data can help lower interchange fee costs for eligible MCC codes and eligible card types. This is primarily relevant for merchants who provide products and services to other businesses in a B2B sales environment. More information about [L2/L3 data processing](/braintree/docs/reference/general/level-2-and-3-processing/required-fields/) can also be found at the general Braintree developer documentation site including [instructions for configuring your tax ID](/braintree/docs/reference/general/level-2-and-3-processing/overview#merchant-requirements) on your Braintree merchant account.",
+      "location": "## Feature Overview, line 21"
+    },
+    {
+      "text": "Merchants who pass L2/L3 data will typically pass both L2 and L3 data in the same request. The below examples show the data being passed separately for example purposes only.",
+      "location": "## Feature Overview, line 24"
+    },
+    {
+      "text": "When data is passed in the incorrect format, the reader will initially accept the API request and prompt for card insert; however, an error will be thrown once the card is tapped, and the transaction will not be processed. The final context status would be \"FAILED\".",
+      "location": "## Important Tips for passing L2/L3 data, line 44"
+    },
+    {
+      "text": "The passing of L2/L3 data is **NOT supported** for [offline transactions](/braintree/in-person/guides/offline-transactions/), and if these API fields are passed for an offline transaction, it will result in an API error.",
+      "location": "## Important Tips for passing L2/L3 data, line 47"
+    },
+    {
+      "text": "We do not support the passing of L2/L3 data when using the [Request Authorize](/braintree/in-person/guides/making-a-transaction/initiate-a-card-present-authorization/) API mutation; however, you may pass this data when you send the [separate capture](/braintree/in-person/guides/making-a-transaction/initiate-a-card-present-authorization/#capturing-funds-against-an-authorization) request.",
+      "location": "## Important Tips for passing L2/L3 data, line 50"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c41-w07-payment-platform-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-making-a-transaction-level-2-and-level-3-data-processing]] - 2026-09-16 collected Braintree website guide for supplying Level 2/3 tax, purchase-order, line-item, discount and shipping data on in-person GraphQL reader charges, with a qualified B2B interchange-cost purpose, post-reader context polling, invalid-format failure, offline exclusion and Request Authorize versus separate-capture boundary; field supply is not merchant/account/processor/card eligibility, approval, current support, interchange savings or payment-outcome proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is an unversioned Braintree website snapshot, not GitHub, exact deployed-schema, current-support or independent processor/card-network authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/making-a-transaction/level-2-and-level-3-data-processing-2026-09-16.md",
+  "raw_sha256": "fd8a32f753624a30b30e8968765db9fb2c5ad5560bede32e4b342cfd47ae784a",
+  "status": "candidate_ready"
+}
