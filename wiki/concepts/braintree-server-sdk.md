@@ -36,6 +36,14 @@ Both retained SDKs support merchant API-key credentials and OAuth access tokens 
 
 The Node and PHP baselines expose `preferredPaymentMethodToken` during client-token generation; the Ruby `4.40.0` client-token signature does not. All three warn that legacy Venmo SDK parameters are unsupported in favor of Pay with Venmo. This confirms the broad gateway contract while also demonstrating why optional fields must remain package-qualified. Current enablement and client experience still require client-SDK and product documentation evidence.
 
+## Node.js `3.40.0` Security and Search Boundary
+
+The Node.js `braintree@3.40.0` update at SHA `deb5227f1c4824b1f622115caf2ba4302134d375` expands path-ID/token checks across gateway operations. The shared helper now accepts only nonempty strings matching `^[A-Za-z0-9_-]+$`; affected calls reject locally with `NotFoundError` before HTTP dispatch. Existing Address and Dispute helper callers inherit this stricter rule even though those files are unchanged. This is path-segment validation, not merchant authorization or proof that an object is absent. Audit custom IDs and error handling rather than sanitizing IDs into a different identity. Request-body IDs are not universally covered.
+
+Transaction search adds `achType` with `braintree.Transaction.AchType.SameDay` (`same_day`) and `.Standard` (`standard`). This filters transaction search; it does not enable ACH or guarantee settlement timing. The changelog also announces refund `surchargeAmount` support, but both retained Node versions already forward the refund options object. Do not describe that announcement as a newly added forwarding implementation or confirmed gateway acceptance.
+
+These findings belong specifically to the Node repository, not Ruby's identically named `braintree` package. Historical baselines above remain valid. See [[source-github-braintree-node]] and [[changelog-github-braintree-node]].
+
 ## Related
 - [[source-braintree-graphql-guides-customers]] - 2026-09-16 unversioned website GraphQL customer-object guide for create, update, delete and lookup operations, preserving the custom-field prerequisite and consequential deletion boundaries; distinct from language-SDK implementations and the exact commit-qualified schema
 - [[source-braintree-graphql-guides-migrating]] - 2026-09-16 unversioned Braintree website guide for staged migration from legacy server-SDK identifiers and concepts to GraphQL IDs, payment-method terminology and transaction/tokenization actions; distinct from package-qualified SDK behavior, the commit-qualified GraphQL schema, merchant eligibility and migration or payment-execution proof

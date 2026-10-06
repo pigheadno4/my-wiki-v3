@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-06] ingest | Node `braintree@3.40.0`
+
+- Approved full additive/focused update from `3.39.0`, exact SHA `deb5227f1c4824b1f622115caf2ba4302134d375`; 20 changed retained files, 150 unchanged files hash-verified; historical changelog suffix identical.
+- Broad local path-ID/token hardening and custom-ID compatibility warning; ACH same-day/standard search; refund surcharge announcement distinguished from unchanged options forwarding. TestingGateway and inherited Address/Dispute helper effects verified. No live payment or upstream test execution.
+- Updated [[source-github-braintree-node]], [[changelog-github-braintree-node]], [[braintree-server-sdk]], company and provider catalog; older knowledge and source count preserved. Collection future-mode package-name collision with Ruby remains a separate script follow-up. No commit/push.
+
 ## [2026-10-05] ingest | Braintree website C40
 
 - Fifty pinned website raws: 29 articles and 21 GraphQL guides, fully read and independently reviewed through ten shared rolling child slots. Fifty retrieval sources and eight existing reciprocal concepts promoted; no new concept. Catalog502=485website+17GitHub; raw unchanged.

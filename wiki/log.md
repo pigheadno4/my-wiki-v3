@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-06] ingest | Braintree Node `3.40.0`
+
+- Full additive/focused from `3.39.0`: path-ID security, ACH search and qualified refund surcharge announcement; older history preserved. Details [[braintree-log]]. No commit/push.
+
 ## [2026-10-05] ingest | Braintree website C40
 
 - Fifty retrieval sources; first pass35/50, fifteen targeted corrections, no repeated full review; fixed queries100/100. Catalog502=485website+17GitHub. Immutable raw and qualified conflicts retained; rolling ingestion and ready-query overlap. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-40/`. No commit/push.

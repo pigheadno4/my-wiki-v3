@@ -607,6 +607,8 @@ The schema is field-level contract evidence, not proof of merchant enablement or
 
 The server SDK does not render checkout. Browser or native SDKs collect approval or payment data and return a nonce or token to the merchant server. PayPal customer sessions are restricted to authorized merchants, and legacy Venmo SDK transaction parameters warn merchants to migrate to Pay with Venmo.
 
+The Node `braintree@3.40.0` update expands local path-ID/token validation to a nonempty ASCII letter/digit/underscore/hyphen allowlist, adds ACH-type transaction search, and announces refund `surchargeAmount` support. Existing refund options forwarding is unchanged; no live acceptance or ACH enablement is inferred. Audit custom IDs and error handling before upgrade. The `3.39.0` baseline remains preserved in [[source-github-braintree-node]] and [[changelog-github-braintree-node]].
+
 ## PHP Server SDK Surface
 
 `braintree_php@6.37.0` provides PHP gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, plans and subscriptions, and signed webhook parsing.
@@ -729,7 +731,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Ingested cumulative GitHub repository sources: 17
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
-- Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
+- Latest retained Braintree Node release: `braintree@3.40.0` at `deb5227f1c4824b1f622115caf2ba4302134d375` (ingested 2026-10-06; `3.39.0` preserved)
 - Latest retained Braintree PHP release: `braintree_php@6.37.0` at `0f53ece38397c9fed05b94620634a5a23ef8ee48`
 - Latest retained Braintree Ruby release: `braintree@4.40.0` at `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`
 - Latest retained Braintree Web release: `braintree-web@3.146.0` at `893d4e786f4161c3b96c5d34425752c5b63ff84d`

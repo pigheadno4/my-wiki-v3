@@ -1014,6 +1014,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-4452866907fd5ff661c9`
+
+- Repository: `braintree/braintree_node`
+- SHA: `deb5227f1c4824b1f622115caf2ba4302134d375`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_node/snapshots/2026-10-06-deb5227/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_node/ingest-packets/github-4452866907fd5ff661c9/packet.md)
+- Review priority: `normal`
+- Required reading: `29` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree@3.40.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_node/releases/braintree/3.40.0/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_node/comparisons/braintree/3.39.0--3.40.0/comparison.json)
+
 ## `github-459cb24ea09ef7b97664`
 
 - Repository: `paypal/paypal-sdk-logos`

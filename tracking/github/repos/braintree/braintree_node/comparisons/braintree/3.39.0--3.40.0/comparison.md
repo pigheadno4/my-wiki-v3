@@ -1,0 +1,95 @@
+# GitHub package comparison
+
+- Repository: `braintree/braintree_node`
+- Package: `braintree`
+- From: `3.39.0` (`7a9270aaf31eb87819add64a768652243f90007c`)
+- To: `3.40.0` (`deb5227f1c4824b1f622115caf2ba4302134d375`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `lib/braintree/credit_card_gateway.js`
+- `lib/braintree/credit_card_verification_gateway.js`
+- `lib/braintree/customer_gateway.js`
+- `lib/braintree/merchant_account_gateway.js`
+- `lib/braintree/payment_method_gateway.js`
+- `lib/braintree/payment_method_nonce_gateway.js`
+- `lib/braintree/paypal_account_gateway.js`
+- `lib/braintree/plan_gateway.js`
+- `lib/braintree/sepa_direct_debit_account_gateway.js`
+- `lib/braintree/subscription_gateway.js`
+- `lib/braintree/testing_gateway.js`
+- `lib/braintree/transaction.js`
+- `lib/braintree/transaction_gateway.js`
+- `lib/braintree/transaction_line_item_gateway.js`
+- `lib/braintree/transaction_search.js`
+- `lib/braintree/us_bank_account_gateway.js`
+- `lib/braintree/us_bank_account_verification_gateway.js`
+- `lib/braintree/util.js`
+- `package-lock.json`
+- `package.json`
+- `test/integration/braintree/customer_gateway_spec.js`
+- `test/integration/braintree/transaction_gateway_spec.js`
+- `test/integration/braintree/transaction_search_spec.js`
+- `test/unit/braintree/credit_card_gateway_spec.js`
+- `test/unit/braintree/credit_card_verification_gateway_spec.js`
+- `test/unit/braintree/customer_gateway_spec.js`
+- `test/unit/braintree/merchant_account_gateway_spec.js`
+- `test/unit/braintree/payment_method_gateway_spec.js`
+- `test/unit/braintree/payment_method_nonce_gateway_spec.js`
+- `test/unit/braintree/paypal_account_gateway_spec.js`
+- `test/unit/braintree/plan_gateway_spec.js`
+- `test/unit/braintree/sepa_direct_debit_account_gateway_spec.js`
+- `test/unit/braintree/subscription_gateway_spec.js`
+- `test/unit/braintree/testing_gateway_spec.js`
+- `test/unit/braintree/transaction_gateway_spec.js`
+- `test/unit/braintree/transaction_line_item_gateway_spec.js`
+- `test/unit/braintree/transaction_search_spec.js`
+- `test/unit/braintree/us_bank_account_gateway_spec.js`
+- `test/unit/braintree/us_bank_account_verification_gateway_spec.js`
+- `test/unit/braintree/util_spec.js`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `lib/braintree/credit_card_gateway.js`
+- `modified`: `lib/braintree/credit_card_verification_gateway.js`
+- `modified`: `lib/braintree/customer_gateway.js`
+- `modified`: `lib/braintree/merchant_account_gateway.js`
+- `modified`: `lib/braintree/payment_method_gateway.js`
+- `modified`: `lib/braintree/payment_method_nonce_gateway.js`
+- `modified`: `lib/braintree/paypal_account_gateway.js`
+- `modified`: `lib/braintree/plan_gateway.js`
+- `modified`: `lib/braintree/sepa_direct_debit_account_gateway.js`
+- `modified`: `lib/braintree/subscription_gateway.js`
+- `modified`: `lib/braintree/testing_gateway.js`
+- `modified`: `lib/braintree/transaction.js`
+- `modified`: `lib/braintree/transaction_gateway.js`
+- `modified`: `lib/braintree/transaction_line_item_gateway.js`
+- `modified`: `lib/braintree/transaction_search.js`
+- `modified`: `lib/braintree/us_bank_account_gateway.js`
+- `modified`: `lib/braintree/us_bank_account_verification_gateway.js`
+- `modified`: `lib/braintree/util.js`
+- `modified`: `package-lock.json`
+- `modified`: `package.json`
+- `modified`: `test/integration/braintree/customer_gateway_spec.js`
+- `modified`: `test/integration/braintree/transaction_gateway_spec.js`
+- `modified`: `test/integration/braintree/transaction_search_spec.js`
+- `modified`: `test/unit/braintree/credit_card_gateway_spec.js`
+- `modified`: `test/unit/braintree/credit_card_verification_gateway_spec.js`
+- `modified`: `test/unit/braintree/customer_gateway_spec.js`
+- `added`: `test/unit/braintree/merchant_account_gateway_spec.js`
+- `modified`: `test/unit/braintree/payment_method_gateway_spec.js`
+- `added`: `test/unit/braintree/payment_method_nonce_gateway_spec.js`
+- `added`: `test/unit/braintree/paypal_account_gateway_spec.js`
+- `modified`: `test/unit/braintree/plan_gateway_spec.js`
+- `added`: `test/unit/braintree/sepa_direct_debit_account_gateway_spec.js`
+- `modified`: `test/unit/braintree/subscription_gateway_spec.js`
+- `added`: `test/unit/braintree/testing_gateway_spec.js`
+- `modified`: `test/unit/braintree/transaction_gateway_spec.js`
+- `added`: `test/unit/braintree/transaction_line_item_gateway_spec.js`
+- `added`: `test/unit/braintree/transaction_search_spec.js`
+- `added`: `test/unit/braintree/us_bank_account_gateway_spec.js`
+- `modified`: `test/unit/braintree/us_bank_account_verification_gateway_spec.js`
+- `modified`: `test/unit/braintree/util_spec.js`

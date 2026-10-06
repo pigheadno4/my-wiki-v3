@@ -1,0 +1,2319 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 021e3be..7f9ba2b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # Changelog
+ 
++## 3.40.0
++
++- Add `achType` to transaction search
++- Resolve path traversal vulnerabilities across `CustomerGateway`, `TransactionGateway`, `CreditCardGateway`, `PaymentMethodGateway`, `PaymentMethodNonceGateway`, `SubscriptionGateway`, `MerchantAccountGateway`, `PayPalAccountGateway`, `UsBankAccountGateway`, `UsBankAccountVerificationGateway`, `CreditCardVerificationGateway`, `PlanGateway`, `SepaDirectDebitAccountGateway`, and `TransactionLineItemGateway`, and tighten `Util.isInvalidPathSegment` from a denylist to an allowlist (`^[A-Za-z0-9_-]+$`), matching `AddressGateway`/`DisputeGateway` and the other Braintree server SDKs
++- Add support for `surchargeAmount` in `Transaction.refund()`
++
+ ## 3.39.0
+ 
+ - Add `EmailFormatIsInvalid (92963)` and `EmailIsTooLong (92964)` validation error codes to `PayPalAccount`
+diff --git a/lib/braintree/credit_card_gateway.js b/lib/braintree/credit_card_gateway.js
+index 059378f..832a762 100644
+--- a/lib/braintree/credit_card_gateway.js
++++ b/lib/braintree/credit_card_gateway.js
+@@ -4,6 +4,7 @@ const { Gateway } = require("./gateway");
+ const { CreditCard } = require("./credit_card");
+ const exceptions = require("./exceptions");
+ const { CreditCardSearch } = require("./credit_card_search");
++const { Util } = require("./util");
+ const { wrapPrototype } = require("@braintree/wrap-promise");
+ 
+ class CreditCardGateway extends Gateway {
+@@ -24,13 +25,17 @@ class CreditCardGateway extends Gateway {
+   }
+ 
+   delete(token) {
++    if (Util.isInvalidPathSegment(token)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     let path = `${this.config.baseMerchantPath()}/payment_methods/credit_card/${token}`;
+ 
+     return this.gateway.http.delete(path);
+   }
+ 
+   find(token) {
+-    if (token.trim() === "") {
++    if (Util.isInvalidPathSegment(token)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
+     }
+ 
+@@ -44,7 +49,7 @@ class CreditCardGateway extends Gateway {
+   }
+ 
+   fromNonce(nonce) {
+-    if (nonce.trim() === "") {
++    if (Util.isInvalidPathSegment(nonce)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
+     }
+ 
+@@ -63,6 +68,10 @@ class CreditCardGateway extends Gateway {
+   }
+ 
+   update(token, attributes) {
++    if (Util.isInvalidPathSegment(token)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     this._checkForDeprecatedAttributes(attributes);
+ 
+     return this.gateway.http
+diff --git a/lib/braintree/credit_card_verification_gateway.js b/lib/braintree/credit_card_verification_gateway.js
+index 3904672..413189d 100644
+--- a/lib/braintree/credit_card_verification_gateway.js
++++ b/lib/braintree/credit_card_verification_gateway.js
+@@ -17,7 +17,7 @@ class CreditCardVerificationGateway extends Gateway {
+   }
+ 
+   find(creditCardVerificationId) {
+-    if (creditCardVerificationId.trim() === "") {
++    if (Util.isInvalidPathSegment(creditCardVerificationId)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
+     }
+ 
+diff --git a/lib/braintree/customer_gateway.js b/lib/braintree/customer_gateway.js
+index 05e7889..d6a8b63 100644
+--- a/lib/braintree/customer_gateway.js
++++ b/lib/braintree/customer_gateway.js
+@@ -32,6 +32,10 @@ class CustomerGateway extends Gateway {
+   }
+ 
+   delete(customerId) {
++    if (Util.isInvalidPathSegment(customerId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     return this.gateway.http.delete(
+       `${this.config.baseMerchantPath()}/customers/${customerId}`
+     );
+@@ -40,11 +44,14 @@ class CustomerGateway extends Gateway {
+   find(customerId, associationFilterId) {
+     let queryParams = "";
+ 
+-    if (customerId.trim() === "") {
+-      return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
++    if (Util.isInvalidPathSegment(customerId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
+     }
+ 
+     if (associationFilterId) {
++      if (Util.isInvalidPathSegment(associationFilterId)) {
++        return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++      }
+       queryParams = `?association_filter_id=${associationFilterId}`;
+     }
+ 
+@@ -58,6 +65,10 @@ class CustomerGateway extends Gateway {
+   }
+ 
+   update(customerId, attributes) {
++    if (Util.isInvalidPathSegment(customerId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     this._checkForDeprecatedAttributes(attributes);
+ 
+     return this.gateway.http
+diff --git a/lib/braintree/merchant_account_gateway.js b/lib/braintree/merchant_account_gateway.js
+index 95307ea..e834afb 100644
+--- a/lib/braintree/merchant_account_gateway.js
++++ b/lib/braintree/merchant_account_gateway.js
+@@ -3,6 +3,7 @@
+ let Gateway = require("./gateway").Gateway;
+ let MerchantAccount = require("./merchant_account").MerchantAccount;
+ let PaginatedResponse = require("./paginated_response").PaginatedResponse;
++let Util = require("./util").Util;
+ let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+@@ -14,7 +15,7 @@ class MerchantAccountGateway extends Gateway {
+   }
+ 
+   find(id) {
+-    if (id.trim() === "") {
++    if (Util.isInvalidPathSegment(id)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
+     }
+ 
+diff --git a/lib/braintree/payment_method_gateway.js b/lib/braintree/payment_method_gateway.js
+index 6ef5cd1..0cd25c1 100644
+--- a/lib/braintree/payment_method_gateway.js
++++ b/lib/braintree/payment_method_gateway.js
+@@ -61,7 +61,7 @@ class PaymentMethodGateway extends Gateway {
+   }
+ 
+   find(token) {
+-    if (token.trim() === "") {
++    if (Util.isInvalidPathSegment(token)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null);
+     }
+ 
+@@ -73,7 +73,7 @@ class PaymentMethodGateway extends Gateway {
+   }
+ 
+   update(token, attributes) {
+-    if (token.trim() === "") {
++    if (Util.isInvalidPathSegment(token)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null);
+     }
+ 
+@@ -128,6 +128,10 @@ class PaymentMethodGateway extends Gateway {
+   delete(token, options) {
+     let queryParam, invalidKeysError;
+ 
++    if (Util.isInvalidPathSegment(token)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found"), null);
++    }
++
+     if (typeof options === "function") {
+       options = null;
+     }
+diff --git a/lib/braintree/payment_method_nonce_gateway.js b/lib/braintree/payment_method_nonce_gateway.js
+index e293688..23d601b 100644
+--- a/lib/braintree/payment_method_nonce_gateway.js
++++ b/lib/braintree/payment_method_nonce_gateway.js
+@@ -3,6 +3,7 @@
+ let Gateway = require("./gateway").Gateway;
+ let Util = require("./util").Util;
+ let PaymentMethodNonce = require("./payment_method_nonce").PaymentMethodNonce;
++let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+ class PaymentMethodNonceGateway extends Gateway {
+@@ -30,6 +31,10 @@ class PaymentMethodNonceGateway extends Gateway {
+   }
+ 
+   create(paymentMethodToken, params) {
++    if (Util.isInvalidPathSegment(paymentMethodToken)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     let schema = {
+       valid: [
+         "paymentMethodNonce[merchantAccountId]",
+@@ -55,6 +60,10 @@ class PaymentMethodNonceGateway extends Gateway {
+   }
+ 
+   find(paymentMethodNonce) {
++    if (Util.isInvalidPathSegment(paymentMethodNonce)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     return this.gateway.http
+       .get(
+         `${this.config.baseMerchantPath()}/payment_method_nonces/${paymentMethodNonce}`
+diff --git a/lib/braintree/paypal_account_gateway.js b/lib/braintree/paypal_account_gateway.js
+index ff4ee9d..294890c 100644
+--- a/lib/braintree/paypal_account_gateway.js
++++ b/lib/braintree/paypal_account_gateway.js
+@@ -2,6 +2,7 @@
+ 
+ let Gateway = require("./gateway").Gateway;
+ let PayPalAccount = require("./paypal_account").PayPalAccount;
++let Util = require("./util").Util;
+ let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+@@ -13,7 +14,7 @@ class PayPalAccountGateway extends Gateway {
+   }
+ 
+   find(token) {
+-    if (token.trim() === "") {
++    if (Util.isInvalidPathSegment(token)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
+     }
+ 
+@@ -27,6 +28,10 @@ class PayPalAccountGateway extends Gateway {
+   }
+ 
+   update(token, attributes) {
++    if (Util.isInvalidPathSegment(token)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     return this.gateway.http
+       .put(
+         `${this.config.baseMerchantPath()}/payment_methods/paypal_account/${token}`,
+@@ -36,6 +41,10 @@ class PayPalAccountGateway extends Gateway {
+   }
+ 
+   delete(token) {
++    if (Util.isInvalidPathSegment(token)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     let path = `${this.config.baseMerchantPath()}/payment_methods/paypal_account/${token}`;
+ 
+     return this.gateway.http.delete(path);
+diff --git a/lib/braintree/plan_gateway.js b/lib/braintree/plan_gateway.js
+index de0f4c7..f9ce551 100644
+--- a/lib/braintree/plan_gateway.js
++++ b/lib/braintree/plan_gateway.js
+@@ -2,6 +2,7 @@
+ 
+ let Gateway = require("./gateway").Gateway;
+ let Plan = require("./plan").Plan;
++let Util = require("./util").Util;
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ let exceptions = require("./exceptions");
+ 
+@@ -40,7 +41,7 @@ class PlanGateway extends Gateway {
+   }
+ 
+   find(planId) {
+-    if (planId.trim() === "") {
++    if (Util.isInvalidPathSegment(planId)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
+     }
+ 
+@@ -52,6 +53,10 @@ class PlanGateway extends Gateway {
+   }
+ 
+   update(planId, attributes) {
++    if (Util.isInvalidPathSegment(planId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     return this.gateway.http
+       .put(`${this.config.baseMerchantPath()}/plans/${planId}`, {
+         plan: attributes,
+diff --git a/lib/braintree/sepa_direct_debit_account_gateway.js b/lib/braintree/sepa_direct_debit_account_gateway.js
+index 8c0d258..ee6b3ca 100644
+--- a/lib/braintree/sepa_direct_debit_account_gateway.js
++++ b/lib/braintree/sepa_direct_debit_account_gateway.js
+@@ -3,6 +3,7 @@
+ let Gateway = require("./gateway").Gateway;
+ let SepaDirectDebitAccount =
+   require("./sepa_direct_debit_account").SepaDirectDebitAccount;
++let Util = require("./util").Util;
+ let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+@@ -14,7 +15,7 @@ class SepaDirectDebitAccountGateway extends Gateway {
+   }
+ 
+   find(token) {
+-    if (token.trim() === "") {
++    if (Util.isInvalidPathSegment(token)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
+     }
+ 
+@@ -28,6 +29,10 @@ class SepaDirectDebitAccountGateway extends Gateway {
+   }
+ 
+   delete(token) {
++    if (Util.isInvalidPathSegment(token)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     let path = `${this.config.baseMerchantPath()}/payment_methods/sepa_debit_account/${token}`;
+ 
+     return this.gateway.http.delete(path);
+diff --git a/lib/braintree/subscription_gateway.js b/lib/braintree/subscription_gateway.js
+index f1769b6..660902f 100644
+--- a/lib/braintree/subscription_gateway.js
++++ b/lib/braintree/subscription_gateway.js
+@@ -4,6 +4,7 @@ let Gateway = require("./gateway").Gateway;
+ let Subscription = require("./subscription").Subscription;
+ let SubscriptionSearch = require("./subscription_search").SubscriptionSearch;
+ let TransactionGateway = require("./transaction_gateway").TransactionGateway;
++let Util = require("./util").Util;
+ let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+@@ -23,6 +24,10 @@ class SubscriptionGateway extends Gateway {
+   }
+ 
+   cancel(subscriptionId) {
++    if (Util.isInvalidPathSegment(subscriptionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     return this.gateway.http
+       .put(
+         `${this.config.baseMerchantPath()}/subscriptions/${subscriptionId}/cancel`,
+@@ -32,7 +37,7 @@ class SubscriptionGateway extends Gateway {
+   }
+ 
+   find(subscriptionId) {
+-    if (subscriptionId.trim() === "") {
++    if (Util.isInvalidPathSegment(subscriptionId)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
+     }
+ 
+@@ -79,6 +84,10 @@ class SubscriptionGateway extends Gateway {
+   }
+ 
+   update(subscriptionId, attributes) {
++    if (Util.isInvalidPathSegment(subscriptionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     return this.gateway.http
+       .put(
+         `${this.config.baseMerchantPath()}/subscriptions/${subscriptionId}`,
+diff --git a/lib/braintree/testing_gateway.js b/lib/braintree/testing_gateway.js
+index 6f86e5c..af6ba7b 100644
+--- a/lib/braintree/testing_gateway.js
++++ b/lib/braintree/testing_gateway.js
+@@ -2,6 +2,7 @@
+ 
+ let Gateway = require("./gateway").Gateway;
+ let Environment = require("./environment").Environment;
++let Util = require("./util").Util;
+ let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+@@ -41,6 +42,10 @@ class TestingGateway extends Gateway {
+   }
+ 
+   settlementOperationWithEnvironmentCheck(transactionId, operation) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     if (this.config.environment === Environment.Production) {
+       return Promise.reject(
+         // eslint-disable-next-line new-cap
+diff --git a/lib/braintree/transaction.js b/lib/braintree/transaction.js
+index 9765e66..0047628 100644
+--- a/lib/braintree/transaction.js
++++ b/lib/braintree/transaction.js
+@@ -37,6 +37,27 @@ class Transaction extends AttributeSetter {
+       Token: "token",
+     };
+ 
++    this.AchType = {
++      SameDay: "same_day",
++      Standard: "standard",
++      All() {
++        let all = [];
++
++        for (let key in this) {
++          if (!this.hasOwnProperty(key)) {
++            continue;
++          }
++          let value = this[key];
++
++          if (key !== "All") {
++            all.push(value);
++          }
++        }
++
++        return all;
++      },
++    };
++
+     this.Source = {
+       Api: "api",
+       ControlPanel: "control_panel",
+diff --git a/lib/braintree/transaction_gateway.js b/lib/braintree/transaction_gateway.js
+index c183dea..7cd5a6e 100644
+--- a/lib/braintree/transaction_gateway.js
++++ b/lib/braintree/transaction_gateway.js
+@@ -17,6 +17,10 @@ class TransactionGateway extends Gateway {
+   }
+ 
+   adjustAuthorization(transactionId, amount) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     return this.gateway.http
+       .put(
+         `${this.config.baseMerchantPath()}/transactions/${transactionId}/adjust_authorization`,
+@@ -28,6 +32,10 @@ class TransactionGateway extends Gateway {
+   }
+ 
+   cancelRelease(transactionId) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     let path = `${this.config.baseMerchantPath()}/transactions/${transactionId}/cancel_release`;
+     let body = {};
+ 
+@@ -35,6 +43,10 @@ class TransactionGateway extends Gateway {
+   }
+ 
+   cloneTransaction(transactionId, attributes) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     return this.gateway.http
+       .post(
+         `${this.config.baseMerchantPath()}/transactions/${transactionId}/clone`,
+@@ -60,8 +72,8 @@ class TransactionGateway extends Gateway {
+   }
+ 
+   find(transactionId) {
+-    if (transactionId.trim() === "") {
+-      return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
+     }
+ 
+     return this.gateway.http
+@@ -72,6 +84,10 @@ class TransactionGateway extends Gateway {
+   }
+ 
+   refund(transactionId, options) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     if (typeof options === "function") {
+       options = {};
+     } else if (typeof options !== "object") {
+@@ -121,6 +137,10 @@ class TransactionGateway extends Gateway {
+   submitForSettlement(transactionId, amount, options) {
+     let invalidKeysError;
+ 
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     options = options || {};
+ 
+     invalidKeysError = Util.verifyKeys(
+@@ -148,6 +168,10 @@ class TransactionGateway extends Gateway {
+   }
+ 
+   updateDetails(transactionId, options) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     let invalidKeysError = Util.verifyKeys(
+       this._updateDetailsSignature(),
+       options
+@@ -168,6 +192,10 @@ class TransactionGateway extends Gateway {
+   }
+ 
+   packageTracking(transactionId, attributes) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     let invalidKeysError = Util.verifyKeys(
+       this._packageTrackingSignature(),
+       attributes
+@@ -190,6 +218,10 @@ class TransactionGateway extends Gateway {
+   submitForPartialSettlement(transactionId, amount, options) {
+     let invalidKeysError;
+ 
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     options = options || {};
+ 
+     invalidKeysError = Util.verifyKeys(
+@@ -217,6 +249,10 @@ class TransactionGateway extends Gateway {
+   }
+ 
+   void(transactionId, options) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     options = options || {};
+ 
+     let body =
+diff --git a/lib/braintree/transaction_line_item_gateway.js b/lib/braintree/transaction_line_item_gateway.js
+index 4ab4baf..265a480 100644
+--- a/lib/braintree/transaction_line_item_gateway.js
++++ b/lib/braintree/transaction_line_item_gateway.js
+@@ -3,6 +3,7 @@
+ let Gateway = require("./gateway").Gateway;
+ let TransactionLineItem =
+   require("./transaction_line_item").TransactionLineItem;
++let Util = require("./util").Util;
+ let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+@@ -14,7 +15,7 @@ class TransactionLineItemGateway extends Gateway {
+   }
+ 
+   findAll(transactionId) {
+-    if (transactionId.trim() === "") {
++    if (Util.isInvalidPathSegment(transactionId)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
+     }
+ 
+diff --git a/lib/braintree/transaction_search.js b/lib/braintree/transaction_search.js
+index 3ab7a29..10351db 100644
+--- a/lib/braintree/transaction_search.js
++++ b/lib/braintree/transaction_search.js
+@@ -51,6 +51,7 @@ class TransactionSearch extends AdvancedSearch {
+ 
+     this.equalityFields("creditCardExpirationDate");
+     this.partialMatchFields("creditCardNumber");
++    this.multipleValueField("achType", { allows: Transaction.AchType.All() }); // eslint-disable-line new-cap
+     this.multipleValueField("createdUsing", {
+       allows: [
+         Transaction.CreatedUsing.FullInformation,
+diff --git a/lib/braintree/us_bank_account_gateway.js b/lib/braintree/us_bank_account_gateway.js
+index da050f1..de0fc3b 100644
+--- a/lib/braintree/us_bank_account_gateway.js
++++ b/lib/braintree/us_bank_account_gateway.js
+@@ -3,6 +3,7 @@
+ let Gateway = require("./gateway").Gateway;
+ let UsBankAccount = require("./us_bank_account").UsBankAccount;
+ let TransactionGateway = require("./transaction_gateway").TransactionGateway;
++let Util = require("./util").Util;
+ let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+@@ -14,7 +15,7 @@ class UsBankAccountGateway extends Gateway {
+   }
+ 
+   find(token) {
+-    if (token.trim() === "") {
++    if (Util.isInvalidPathSegment(token)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found"), null); // eslint-disable-line new-cap
+     }
+ 
+diff --git a/lib/braintree/us_bank_account_verification_gateway.js b/lib/braintree/us_bank_account_verification_gateway.js
+index cf73796..8fe587f 100644
+--- a/lib/braintree/us_bank_account_verification_gateway.js
++++ b/lib/braintree/us_bank_account_verification_gateway.js
+@@ -5,6 +5,7 @@ let UsBankAccountVerification =
+   require("./us_bank_account_verification").UsBankAccountVerification;
+ let UsBankAccountVerificationSearch =
+   require("./us_bank_account_verification_search").UsBankAccountVerificationSearch;
++let Util = require("./util").Util;
+ let exceptions = require("./exceptions");
+ let wrapPrototype = require("@braintree/wrap-promise").wrapPrototype;
+ 
+@@ -16,7 +17,7 @@ class UsBankAccountVerificationGateway extends Gateway {
+   }
+ 
+   find(usBankAccountVerificationId) {
+-    if (usBankAccountVerificationId.trim() === "") {
++    if (Util.isInvalidPathSegment(usBankAccountVerificationId)) {
+       return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
+     }
+ 
+@@ -49,6 +50,10 @@ class UsBankAccountVerificationGateway extends Gateway {
+     depositAmounts,
+     callback
+   ) {
++    if (Util.isInvalidPathSegment(usBankAccountVerificationId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
+     let params = {
+       usBankAccountVerification: {
+         depositAmounts: depositAmounts,
+diff --git a/lib/braintree/util.js b/lib/braintree/util.js
+index 05ed366..0d7c420 100644
+--- a/lib/braintree/util.js
++++ b/lib/braintree/util.js
+@@ -293,14 +293,9 @@ class Util {
+     return false;
+   }
+ 
++  // Allowlist of the characters that make up a Braintree id/token.
+   static isInvalidPathSegment(value) {
+-    return (
+-      typeof value !== "string" ||
+-      value.trim() === "" ||
+-      /[/\\%]/.test(value) ||
+-      value === "." ||
+-      value.includes("..")
+-    );
++    return typeof value !== "string" || !/^[A-Za-z0-9_-]+$/.test(value);
+   }
+ 
+   static zip(...arrays) {
+diff --git a/package-lock.json b/package-lock.json
+index 3339641..1adeda1 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "braintree",
+-  "version": "3.39.0",
++  "version": "3.40.0",
+   "lockfileVersion": 1,
+   "requires": true,
+   "dependencies": {
+diff --git a/package.json b/package.json
+index bda9f7e..1deb3da 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "braintree",
+-  "version": "3.39.0",
++  "version": "3.40.0",
+   "description": "A library for server-side integrating with Braintree.",
+   "keywords": [
+     "braintree",
+diff --git a/test/integration/braintree/customer_gateway_spec.js b/test/integration/braintree/customer_gateway_spec.js
+index 3bf2c97..6b3d4f5 100644
+--- a/test/integration/braintree/customer_gateway_spec.js
++++ b/test/integration/braintree/customer_gateway_spec.js
+@@ -3472,4 +3472,75 @@ describe("CustomerGateway", function () {
+         }
+       ));
+   });
++
++  describe("path traversal", function () {
++    it("rejects path traversal in customer.update and does not void the victim transaction", (done) =>
++      specHelper.defaultGateway.transaction.sale(
++        {
++          amount: "5.00",
++          creditCard: {
++            number: "4111111111111111",
++            expirationDate: "05/2030",
++          },
++          options: { submitForSettlement: false },
++        },
++        (err, saleResponse) => {
++          let transactionId = saleResponse.transaction.id;
++          let traversalId = "../transactions/" + transactionId + "/void";
++
++          specHelper.defaultGateway.customer.update(
++            traversalId,
++            { firstName: "HackerOne" },
++            function (updateErr) {
++              assert.equal(updateErr.type, braintree.errorTypes.notFoundError);
++
++              specHelper.defaultGateway.transaction.find(
++                transactionId,
++                function (findErr, transaction) {
++                  assert.isNull(findErr);
++                  assert.equal(transaction.status, "authorized");
++
++                  done();
++                }
++              );
++            }
++          );
++        }
++      ));
++
++    it("rejects path traversal in customer.delete and does not delete the victim payment method", (done) =>
++      specHelper.defaultGateway.customer.create({}, (err, customerResponse) =>
++        specHelper.defaultGateway.creditCard.create(
++          {
++            customerId: customerResponse.customer.id,
++            number: "4111111111111111",
++            expirationDate: "05/2030",
++          },
++          (creditCardErr, creditCardResponse) => {
++            let token = creditCardResponse.creditCard.token;
++            let traversalId = "../payment_methods/any/" + token;
++
++            specHelper.defaultGateway.customer.delete(
++              traversalId,
++              function (deleteErr) {
++                assert.equal(
++                  deleteErr.type,
++                  braintree.errorTypes.notFoundError
++                );
++
++                specHelper.defaultGateway.creditCard.find(
++                  token,
++                  function (findErr, creditCard) {
++                    assert.isNull(findErr);
++                    assert.equal(creditCard.token, token);
++
++                    done();
++                  }
++                );
++              }
++            );
++          }
++        )
++      ));
++  });
+ });
+diff --git a/test/integration/braintree/transaction_gateway_spec.js b/test/integration/braintree/transaction_gateway_spec.js
+index 7e7be34..7f7edc2 100644
+--- a/test/integration/braintree/transaction_gateway_spec.js
++++ b/test/integration/braintree/transaction_gateway_spec.js
+@@ -147,7 +147,7 @@ describe("TransactionGateway", function () {
+       );
+     });
+ 
+-    xit("passes scaExemption", function (done) {
++    it("passes scaExemption", function (done) {
+       let requestedExemption = "low_value";
+       let transactionParams = {
+         amount: "5.00",
+@@ -6571,6 +6571,26 @@ describe("TransactionGateway", function () {
+         );
+       });
+     });
++
++    it("accepts surchargeAmount", function (done) {
++      let transactionParams = {
++        amount: "5.00",
++        creditCard: {
++          number: "4111111111111111",
++          expirationDate: "05/28",
++        },
++        surchargeAmount: "1.00",
++      };
++
++      specHelper.defaultGateway.transaction.credit(
++        transactionParams,
++        function (err, response) {
++          assert.isTrue(response.success);
++          assert.equal(response.transaction.surchargeAmount, "1.00");
++          done();
++        }
++      );
++    });
+   });
+ 
+   describe("find", function () {
+@@ -7076,6 +7096,83 @@ describe("TransactionGateway", function () {
+           )
+       );
+     });
++
++    it("allows full refund with surchargeAmount", function (done) {
++      let transactionParams = {
++        amount: "500.00",
++        creditCard: {
++          number: "4111111111111111",
++          expirationDate: "05/28",
++        },
++        surchargeAmount: "1.00",
++        options: {
++          submitForSettlement: true,
++        },
++      };
++
++      specHelper.defaultGateway.transaction.sale(
++        transactionParams,
++        (err, saleResponse) =>
++          specHelper.defaultGateway.testing.settle(
++            saleResponse.transaction.id,
++            () =>
++              specHelper.defaultGateway.transaction.refund(
++                saleResponse.transaction.id,
++                { surchargeAmount: "1.00" },
++                function (err, response) {
++                  assert.isNull(err);
++                  assert.isTrue(response.success);
++                  assert.equal(response.transaction.type, "credit");
++                  assert.equal(
++                    response.transaction.refundedTransactionId,
++                    saleResponse.transaction.id
++                  );
++                  assert.equal(response.transaction.surchargeAmount, "1.00");
++                  done();
++                }
++              )
++          )
++      );
++    });
++
++    it("allows partial refund with surchargeAmount", function (done) {
++      let transactionParams = {
++        amount: "500.00",
++        creditCard: {
++          number: "4111111111111111",
++          expirationDate: "05/28",
++        },
++        surchargeAmount: "1.00",
++        options: {
++          submitForSettlement: true,
++        },
++      };
++
++      specHelper.defaultGateway.transaction.sale(
++        transactionParams,
++        (err, saleResponse) =>
++          specHelper.defaultGateway.testing.settle(
++            saleResponse.transaction.id,
++            () =>
++              specHelper.defaultGateway.transaction.refund(
++                saleResponse.transaction.id,
++                { amount: "200.00", surchargeAmount: "0.50" },
++                function (err, response) {
++                  assert.isNull(err);
++                  assert.isTrue(response.success);
++                  assert.equal(response.transaction.type, "credit");
++                  assert.equal(
++                    response.transaction.refundedTransactionId,
++                    saleResponse.transaction.id
++                  );
++                  assert.equal(response.transaction.amount, "200.00");
++                  assert.equal(response.transaction.surchargeAmount, "0.50");
++                  done();
++                }
++              )
++          )
++      );
++    });
+   });
+ 
+   describe("submitForSettlement", function () {
+@@ -8087,6 +8184,44 @@ describe("TransactionGateway", function () {
+     });
+   });
+ 
++  describe("path traversal", function () {
++    it("rejects path traversal in transactionId and does not void the victim transaction", function (done) {
++      let transactionParams = {
++        amount: "5.00",
++        creditCard: {
++          number: "5105105105105100",
++          expirationDate: "05/12",
++        },
++        options: { submitForSettlement: false },
++      };
++
++      specHelper.defaultGateway.transaction.sale(
++        transactionParams,
++        (err, response) => {
++          let victimTransactionId = response.transaction.id;
++          let traversalId = "../transactions/" + victimTransactionId;
++
++          specHelper.defaultGateway.transaction.void(
++            traversalId,
++            function (voidErr) {
++              assert.equal(voidErr.type, braintree.errorTypes.notFoundError);
++
++              specHelper.defaultGateway.transaction.find(
++                victimTransactionId,
++                function (findErr, transaction) {
++                  assert.isNull(findErr);
++                  assert.equal(transaction.status, "authorized");
++
++                  done();
++                }
++              );
++            }
++          );
++        }
++      );
++    });
++  });
++
+   describe("cloneTransaction", function () {
+     it("clones a transaction", function (done) {
+       let transactionParams = {
+diff --git a/test/integration/braintree/transaction_search_spec.js b/test/integration/braintree/transaction_search_spec.js
+index fefdaf7..81a6bac 100644
+--- a/test/integration/braintree/transaction_search_spec.js
++++ b/test/integration/braintree/transaction_search_spec.js
+@@ -1292,6 +1292,108 @@ describe("TransactionSearch", () =>
+         }
+       );
+     });
++
++    it("searches on achType", async () => {
++      let { SameDay, Standard } = Transaction.AchType;
++
++      // eslint-disable-next-line func-style
++      let searchByAchType = (id, achType) => (s) => {
++        s.id().is(id);
++
++        return s.achType().is(achType);
++      };
++      // eslint-disable-next-line func-style
++      let searchByAchTypes = (id, achTypes) => (s) => {
++        s.id().is(id);
++
++        return s.achType().in(achTypes);
++      };
++
++      // eslint-disable-next-line func-style
++      let runSearch = (searchFn) =>
++        new Promise((resolve, reject) => {
++          specHelper.defaultGateway.transaction.search(
++            searchFn,
++            (err, response) => {
++              if (err) {
++                reject(err);
++              } else {
++                resolve(response);
++              }
++            }
++          );
++        });
++
++      // eslint-disable-next-line func-style
++      let firstId = (response) =>
++        new Promise((resolve, reject) => {
++          response.first((err, transaction) => {
++            if (err) {
++              reject(err);
++            } else {
++              resolve(transaction.id);
++            }
++          });
++        });
++
++      // eslint-disable-next-line func-style
++      let assertSearch = async (searchFn, expectedLength, expectedId) => {
++        let response = await runSearch(searchFn);
++
++        assert.equal(response.length(), expectedLength);
++
++        if (expectedId != null) {
++          assert.equal(await firstId(response), expectedId);
++        }
++      };
++
++      let sameDay = await specHelper.defaultGateway.transaction.find(
++        "sameday_ach_sameday_requested"
++      );
++
++      await assertSearch(searchByAchType(sameDay.id, SameDay), 1, sameDay.id);
++      await assertSearch(
++        searchByAchTypes(sameDay.id, [SameDay, Standard]),
++        1,
++        sameDay.id
++      );
++      await assertSearch(searchByAchType(sameDay.id, Standard), 0, null);
++
++      let standard = await specHelper.defaultGateway.transaction.find(
++        "standard_ach_standard_requested"
++      );
++
++      await assertSearch(
++        searchByAchType(standard.id, Standard),
++        1,
++        standard.id
++      );
++      await assertSearch(searchByAchType(standard.id, SameDay), 0, null);
++      await assertSearch(
++        searchByAchTypes(standard.id, [SameDay, Standard]),
++        1,
++        standard.id
++      );
++
++      let divergent = await specHelper.defaultGateway.transaction.find(
++        "standard_ach_sameday_requested"
++      );
++
++      assert.equal(divergent.achType, Standard);
++      assert.equal(divergent.requestedAchType, SameDay);
++
++      await assertSearch(
++        searchByAchType(divergent.id, Standard),
++        1,
++        divergent.id
++      );
++      await assertSearch(searchByAchType(divergent.id, SameDay), 0, null);
++      await assertSearch(
++        searchByAchTypes(divergent.id, [SameDay, Standard]),
++        1,
++        divergent.id
++      );
++    });
+   }));
+ 
+ function __range__(left, right, inclusive) {
+diff --git a/test/unit/braintree/credit_card_gateway_spec.js b/test/unit/braintree/credit_card_gateway_spec.js
+index 7ce17e0..12b27ee 100644
+--- a/test/unit/braintree/credit_card_gateway_spec.js
++++ b/test/unit/braintree/credit_card_gateway_spec.js
+@@ -327,3 +327,77 @@ describe("CreditCardGateway - Additional Coverage", () => {
+     });
+   });
+ });
++
++describe("CreditCardGateway - path traversal", () => {
++  const traversalIds = [
++    "../../victim_customer/addresses/victim_address",
++    "foo/bar",
++    "foo\\bar",
++    "..%2f..%2fvictim",
++    "..",
++    ".",
++    "%2e%2e",
++    "",
++    "   ",
++    null,
++    123,
++    {},
++  ];
++
++  let httpStubs, gateway;
++
++  beforeEach(() => {
++    httpStubs = {
++      get: sinon.stub(),
++      post: sinon.stub(),
++      put: sinon.stub(),
++      delete: sinon.stub(),
++    };
++    gateway = new CreditCardGateway({
++      config: { baseMerchantPath: () => "/merchants/m" },
++      http: httpStubs,
++    });
++  });
++
++  function assertNotFoundAndNoHttp(promise, stub) {
++    return promise.then(assert.fail).catch((e) => {
++      assert.equal("notFoundError", e.type);
++      assert.isFalse(stub.called);
++    });
++  }
++
++  describe("delete", () => {
++    traversalIds.forEach((badId) => {
++      it(`rejects token ${JSON.stringify(badId)} without calling http`, () => {
++        return assertNotFoundAndNoHttp(gateway.delete(badId), httpStubs.delete);
++      });
++    });
++  });
++
++  describe("find", () => {
++    traversalIds.forEach((badId) => {
++      it(`rejects token ${JSON.stringify(badId)} without calling http`, () => {
++        return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++      });
++    });
++  });
++
++  describe("fromNonce", () => {
++    traversalIds.forEach((badId) => {
++      it(`rejects nonce ${JSON.stringify(badId)} without calling http`, () => {
++        return assertNotFoundAndNoHttp(gateway.fromNonce(badId), httpStubs.get);
++      });
++    });
++  });
++
++  describe("update", () => {
++    traversalIds.forEach((badId) => {
++      it(`rejects token ${JSON.stringify(badId)} without calling http`, () => {
++        return assertNotFoundAndNoHttp(
++          gateway.update(badId, {}),
++          httpStubs.put
++        );
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/credit_card_verification_gateway_spec.js b/test/unit/braintree/credit_card_verification_gateway_spec.js
+index 0fbf24f..d4e3b7d 100644
+--- a/test/unit/braintree/credit_card_verification_gateway_spec.js
++++ b/test/unit/braintree/credit_card_verification_gateway_spec.js
+@@ -1,5 +1,6 @@
+ "use strict";
+ 
++let sinon = require("sinon");
+ let CreditCardVerificationGateway =
+   require("../../../lib/braintree/credit_card_verification_gateway").CreditCardVerificationGateway;
+ let errorTypes = require("../../../lib/braintree/error_types").errorTypes;
+@@ -96,3 +97,52 @@ describe("CreditCardVerificationGateway", () =>
+       });
+     });
+   }));
++
++describe("CreditCardVerificationGateway - path traversal", () => {
++  const traversalIds = [
++    "../../victim_customer/addresses/victim_address",
++    "foo/bar",
++    "foo\\bar",
++    "..%2f..%2fvictim",
++    "..",
++    ".",
++    "%2e%2e",
++    "",
++    "   ",
++    null,
++    123,
++    {},
++  ];
++
++  let httpStubs, gateway;
++
++  beforeEach(() => {
++    httpStubs = {
++      get: sinon.stub(),
++      post: sinon.stub(),
++      put: sinon.stub(),
++      delete: sinon.stub(),
++    };
++    gateway = new CreditCardVerificationGateway({
++      config: { baseMerchantPath: () => "/merchants/m" },
++      http: httpStubs,
++    });
++  });
++
++  function assertNotFoundAndNoHttp(promise, stub) {
++    return promise.then(assert.fail).catch((e) => {
++      assert.equal("notFoundError", e.type);
++      assert.isFalse(stub.called);
++    });
++  }
++
++  describe("find", () => {
++    traversalIds.forEach((badId) => {
++      it(`rejects creditCardVerificationId ${JSON.stringify(
++        badId
++      )} without calling http`, () => {
++        return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/customer_gateway_spec.js b/test/unit/braintree/customer_gateway_spec.js
+index 6082aa8..78b0c3c 100644
+--- a/test/unit/braintree/customer_gateway_spec.js
++++ b/test/unit/braintree/customer_gateway_spec.js
+@@ -1,5 +1,6 @@
+ "use strict";
+ 
++let sinon = require("sinon");
+ let CustomerGateway =
+   require("../../../lib/braintree/customer_gateway").CustomerGateway;
+ let errorTypes = require("../../../lib/braintree/error_types").errorTypes;
+@@ -126,4 +127,82 @@ describe("CustomerGateway", () => {
+       });
+     });
+   });
++
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, customerGateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      customerGateway = new CustomerGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("delete", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects customerId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            customerGateway.delete(badId),
++            httpStubs.delete
++          );
++        });
++      });
++    });
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects customerId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            customerGateway.find(badId),
++            httpStubs.get
++          );
++        });
++      });
++    });
++
++    describe("update", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects customerId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            customerGateway.update(badId, {}),
++            httpStubs.put
++          );
++        });
++      });
++    });
++  });
+ });
+diff --git a/test/unit/braintree/merchant_account_gateway_spec.js b/test/unit/braintree/merchant_account_gateway_spec.js
+new file mode 100644
+index 0000000..d629391
+--- /dev/null
++++ b/test/unit/braintree/merchant_account_gateway_spec.js
+@@ -0,0 +1,54 @@
++"use strict";
++
++let sinon = require("sinon");
++let MerchantAccountGateway =
++  require("../../../lib/braintree/merchant_account_gateway").MerchantAccountGateway;
++
++describe("MerchantAccountGateway", () => {
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new MerchantAccountGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects id ${JSON.stringify(badId)} without calling http`, () => {
++          return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++        });
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/payment_method_gateway_spec.js b/test/unit/braintree/payment_method_gateway_spec.js
+index 5805604..23e3c80 100644
+--- a/test/unit/braintree/payment_method_gateway_spec.js
++++ b/test/unit/braintree/payment_method_gateway_spec.js
+@@ -1,5 +1,6 @@
+ "use strict";
+ 
++let sinon = require("sinon");
+ let PaymentMethodGateway =
+   require("../../../lib/braintree/payment_method_gateway").PaymentMethodGateway;
+ let PaymentMethodParser =
+@@ -135,4 +136,79 @@ describe("PaymentMethodGateway", function () {
+       });
+     });
+   });
++
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new PaymentMethodGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++        });
++      });
++    });
++
++    describe("update", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            gateway.update(badId, {}),
++            httpStubs.put
++          );
++        });
++      });
++    });
++
++    describe("delete", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            gateway.delete(badId),
++            httpStubs.delete
++          );
++        });
++      });
++    });
++  });
+ });
+diff --git a/test/unit/braintree/payment_method_nonce_gateway_spec.js b/test/unit/braintree/payment_method_nonce_gateway_spec.js
+new file mode 100644
+index 0000000..749e4a4
+--- /dev/null
++++ b/test/unit/braintree/payment_method_nonce_gateway_spec.js
+@@ -0,0 +1,69 @@
++"use strict";
++
++let sinon = require("sinon");
++let PaymentMethodNonceGateway =
++  require("../../../lib/braintree/payment_method_nonce_gateway").PaymentMethodNonceGateway;
++
++describe("PaymentMethodNonceGateway", () => {
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new PaymentMethodNonceGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("create", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects paymentMethodToken ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            gateway.create(badId, {}),
++            httpStubs.post
++          );
++        });
++      });
++    });
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects paymentMethodNonce ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++        });
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/paypal_account_gateway_spec.js b/test/unit/braintree/paypal_account_gateway_spec.js
+new file mode 100644
+index 0000000..734518f
+--- /dev/null
++++ b/test/unit/braintree/paypal_account_gateway_spec.js
+@@ -0,0 +1,82 @@
++"use strict";
++
++let sinon = require("sinon");
++let PayPalAccountGateway =
++  require("../../../lib/braintree/paypal_account_gateway").PayPalAccountGateway;
++
++describe("PayPalAccountGateway", () => {
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new PayPalAccountGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++        });
++      });
++    });
++
++    describe("update", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            gateway.update(badId, {}),
++            httpStubs.put
++          );
++        });
++      });
++    });
++
++    describe("delete", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            gateway.delete(badId),
++            httpStubs.delete
++          );
++        });
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/plan_gateway_spec.js b/test/unit/braintree/plan_gateway_spec.js
+index 2bb24c6..864a48f 100644
+--- a/test/unit/braintree/plan_gateway_spec.js
++++ b/test/unit/braintree/plan_gateway_spec.js
+@@ -89,4 +89,66 @@ describe("PlanGateway", () => {
+       });
+     });
+   });
++
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new PlanGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects planId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++        });
++      });
++    });
++
++    describe("update", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects planId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            gateway.update(badId, {}),
++            httpStubs.put
++          );
++        });
++      });
++    });
++  });
+ });
+diff --git a/test/unit/braintree/sepa_direct_debit_account_gateway_spec.js b/test/unit/braintree/sepa_direct_debit_account_gateway_spec.js
+new file mode 100644
+index 0000000..13df2ba
+--- /dev/null
++++ b/test/unit/braintree/sepa_direct_debit_account_gateway_spec.js
+@@ -0,0 +1,69 @@
++"use strict";
++
++let sinon = require("sinon");
++let SepaDirectDebitAccountGateway =
++  require("../../../lib/braintree/sepa_direct_debit_account_gateway").SepaDirectDebitAccountGateway;
++
++describe("SepaDirectDebitAccountGateway", () => {
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new SepaDirectDebitAccountGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++        });
++      });
++    });
++
++    describe("delete", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            gateway.delete(badId),
++            httpStubs.delete
++          );
++        });
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/subscription_gateway_spec.js b/test/unit/braintree/subscription_gateway_spec.js
+index 6c56505..c395fc9 100644
+--- a/test/unit/braintree/subscription_gateway_spec.js
++++ b/test/unit/braintree/subscription_gateway_spec.js
+@@ -336,4 +336,82 @@ describe("SubscriptionGateway", () => {
+       assert.isFunction(handler);
+     });
+   });
++
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, traversalGateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      traversalGateway = new SubscriptionGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("cancel", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects subscriptionId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            traversalGateway.cancel(badId),
++            httpStubs.put
++          );
++        });
++      });
++    });
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects subscriptionId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            traversalGateway.find(badId),
++            httpStubs.get
++          );
++        });
++      });
++    });
++
++    describe("update", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects subscriptionId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            traversalGateway.update(badId, {}),
++            httpStubs.put
++          );
++        });
++      });
++    });
++  });
+ });
+diff --git a/test/unit/braintree/testing_gateway_spec.js b/test/unit/braintree/testing_gateway_spec.js
+new file mode 100644
+index 0000000..6eceaa7
+--- /dev/null
++++ b/test/unit/braintree/testing_gateway_spec.js
+@@ -0,0 +1,72 @@
++"use strict";
++
++let sinon = require("sinon");
++let TestingGateway =
++  require("../../../lib/braintree/testing_gateway").TestingGateway;
++let Environment = require("../../../lib/braintree/environment").Environment;
++
++describe("TestingGateway", () => {
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new TestingGateway({
++        config: {
++          baseMerchantPath: () => "/merchants/m",
++          environment: Environment.Sandbox,
++        },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    const methods = [
++      "settle",
++      "settlementPending",
++      "settlementConfirm",
++      "settlementDecline",
++    ];
++
++    methods.forEach((method) => {
++      describe(method, () => {
++        traversalIds.forEach((badId) => {
++          it(`rejects transactionId ${JSON.stringify(
++            badId
++          )} without calling http`, () => {
++            return assertNotFoundAndNoHttp(
++              gateway[method](badId),
++              httpStubs.put
++            );
++          });
++        });
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/transaction_gateway_spec.js b/test/unit/braintree/transaction_gateway_spec.js
+index 1c4309a..342b2f8 100644
+--- a/test/unit/braintree/transaction_gateway_spec.js
++++ b/test/unit/braintree/transaction_gateway_spec.js
+@@ -1,5 +1,6 @@
+ "use strict";
+ 
++let sinon = require("sinon");
+ let TransactionGateway =
+   require("../../../lib/braintree/transaction_gateway").TransactionGateway;
+ let ThreeDSecurePassThruNetwork =
+@@ -214,3 +215,113 @@ describe("TransactionGateway", () =>
+       );
+     });
+   }));
++
++describe("TransactionGateway", () =>
++  describe("refund", function () {
++    let fakeGateway = {
++      config: {
++        baseMerchantPath() {
++          return "";
++        },
++      },
++      http: {
++        post(url, params) {
++          return Promise.resolve(params);
++        },
++      },
++    };
++
++    it("accepts surchargeAmount in refunds", function (done) {
++      let transactionGateway = new TransactionGateway(fakeGateway);
++      let refundOptions = {
++        surchargeAmount: "1.00",
++      };
++
++      transactionGateway.refund("fake_txn_id", refundOptions, (err, params) => {
++        assert.notExists(err);
++        assert.equal("1.00", params.transaction.surchargeAmount);
++        done();
++      });
++    });
++  }));
++
++describe("TransactionGateway", () => {
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, transactionGateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      transactionGateway = new TransactionGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    const cases = [
++      {
++        method: "adjustAuthorization",
++        args: ["5.00"],
++        stub: () => httpStubs.put,
++      },
++      { method: "cancelRelease", args: [], stub: () => httpStubs.put },
++      { method: "cloneTransaction", args: [{}], stub: () => httpStubs.post },
++      { method: "find", args: [], stub: () => httpStubs.get },
++      { method: "refund", args: [{}], stub: () => httpStubs.post },
++      {
++        method: "submitForSettlement",
++        args: ["5.00", {}],
++        stub: () => httpStubs.put,
++      },
++      { method: "updateDetails", args: [{}], stub: () => httpStubs.put },
++      { method: "packageTracking", args: [{}], stub: () => httpStubs.post },
++      {
++        method: "submitForPartialSettlement",
++        args: ["5.00", {}],
++        stub: () => httpStubs.post,
++      },
++      { method: "void", args: [{}], stub: () => httpStubs.put },
++    ];
++
++    cases.forEach(({ method, args, stub }) => {
++      describe(method, () => {
++        traversalIds.forEach((badId) => {
++          it(`rejects transactionId ${JSON.stringify(
++            badId
++          )} without calling http`, () => {
++            return assertNotFoundAndNoHttp(
++              transactionGateway[method](badId, ...args),
++              stub()
++            );
++          });
++        });
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/transaction_line_item_gateway_spec.js b/test/unit/braintree/transaction_line_item_gateway_spec.js
+new file mode 100644
+index 0000000..e028c40
+--- /dev/null
++++ b/test/unit/braintree/transaction_line_item_gateway_spec.js
+@@ -0,0 +1,56 @@
++"use strict";
++
++let sinon = require("sinon");
++let TransactionLineItemGateway =
++  require("../../../lib/braintree/transaction_line_item_gateway").TransactionLineItemGateway;
++
++describe("TransactionLineItemGateway", () => {
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new TransactionLineItemGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("findAll", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects transactionId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(gateway.findAll(badId), httpStubs.get);
++        });
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/transaction_search_spec.js b/test/unit/braintree/transaction_search_spec.js
+new file mode 100644
+index 0000000..30b8500
+--- /dev/null
++++ b/test/unit/braintree/transaction_search_spec.js
+@@ -0,0 +1,47 @@
++"use strict";
++
++let TransactionSearch =
++  require("../../../lib/braintree/transaction_search").TransactionSearch;
++let Transaction = require("../../../lib/braintree/transaction").Transaction;
++let Util = require("../../../lib/braintree/util").Util;
++
++let newSearch = () => new TransactionSearch(); // eslint-disable-line func-style
++
++describe("TransactionSearch", function () {
++  describe("achType", function () {
++    it("serializes same_day to the ach_type wire key", function () {
++      let search = newSearch();
++
++      search.achType().is(Transaction.AchType.SameDay);
++      assert.deepEqual(Util.convertObjectKeysToUnderscores(search.toHash()), {
++        ach_type: ["same_day"], // eslint-disable-line camelcase
++      });
++    });
++
++    it("serializes standard to the ach_type wire key", function () {
++      let search = newSearch();
++
++      search.achType().is(Transaction.AchType.Standard);
++      assert.deepEqual(Util.convertObjectKeysToUnderscores(search.toHash()), {
++        ach_type: ["standard"], // eslint-disable-line camelcase
++      });
++    });
++
++    it("serializes both values to the ach_type wire key", function () {
++      let search = newSearch();
++
++      search
++        .achType()
++        .in([Transaction.AchType.SameDay, Transaction.AchType.Standard]);
++      assert.deepEqual(Util.convertObjectKeysToUnderscores(search.toHash()), {
++        ach_type: ["same_day", "standard"], // eslint-disable-line camelcase
++      });
++    });
++
++    it("rejects values not in the allowed list", function () {
++      let search = newSearch();
++
++      assert.throws(() => search.achType().in(["not_a_valid_value"]), Error);
++    });
++  });
++});
+diff --git a/test/unit/braintree/us_bank_account_gateway_spec.js b/test/unit/braintree/us_bank_account_gateway_spec.js
+new file mode 100644
+index 0000000..ab8eb42
+--- /dev/null
++++ b/test/unit/braintree/us_bank_account_gateway_spec.js
+@@ -0,0 +1,56 @@
++"use strict";
++
++let sinon = require("sinon");
++let UsBankAccountGateway =
++  require("../../../lib/braintree/us_bank_account_gateway").UsBankAccountGateway;
++
++describe("UsBankAccountGateway", () => {
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, gateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      gateway = new UsBankAccountGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects token ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(gateway.find(badId), httpStubs.get);
++        });
++      });
++    });
++  });
++});
+diff --git a/test/unit/braintree/us_bank_account_verification_gateway_spec.js b/test/unit/braintree/us_bank_account_verification_gateway_spec.js
+index fe21e8a..e1fe926 100644
+--- a/test/unit/braintree/us_bank_account_verification_gateway_spec.js
++++ b/test/unit/braintree/us_bank_account_verification_gateway_spec.js
+@@ -321,4 +321,69 @@ describe("UsBankAccountVerificationGateway", () => {
+       assert.isFunction(handler);
+     });
+   });
++
++  describe("path traversal", () => {
++    const traversalIds = [
++      "../../victim_customer/addresses/victim_address",
++      "foo/bar",
++      "foo\\bar",
++      "..%2f..%2fvictim",
++      "..",
++      ".",
++      "%2e%2e",
++      "",
++      "   ",
++      null,
++      123,
++      {},
++    ];
++
++    let httpStubs, traversalGateway;
++
++    beforeEach(() => {
++      httpStubs = {
++        get: sinon.stub(),
++        post: sinon.stub(),
++        put: sinon.stub(),
++        delete: sinon.stub(),
++      };
++      traversalGateway = new UsBankAccountVerificationGateway({
++        config: { baseMerchantPath: () => "/merchants/m" },
++        http: httpStubs,
++      });
++    });
++
++    function assertNotFoundAndNoHttp(promise, stub) {
++      return promise.then(assert.fail).catch((e) => {
++        assert.equal("notFoundError", e.type);
++        assert.isFalse(stub.called);
++      });
++    }
++
++    describe("find", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects usBankAccountVerificationId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            traversalGateway.find(badId),
++            httpStubs.get
++          );
++        });
++      });
++    });
++
++    describe("confirmMicroTransferAmounts", () => {
++      traversalIds.forEach((badId) => {
++        it(`rejects usBankAccountVerificationId ${JSON.stringify(
++          badId
++        )} without calling http`, () => {
++          return assertNotFoundAndNoHttp(
++            traversalGateway.confirmMicroTransferAmounts(badId, []),
++            httpStubs.put
++          );
++        });
++      });
++    });
++  });
+ });
+diff --git a/test/unit/braintree/util_spec.js b/test/unit/braintree/util_spec.js
+index 055489a..7b4df17 100644
+--- a/test/unit/braintree/util_spec.js
++++ b/test/unit/braintree/util_spec.js
+@@ -691,4 +691,50 @@ describe("Util", function () {
+       assert.equal(Util.zip(array2, array1)[3][0], "d");
+     });
+   });
++
++  describe("isInvalidPathSegment", () => {
++    const validSegments = [
++      "customer123",
++      "CUSTOMER_123",
++      "a-b_c-D9",
++      "1234567890",
++      "a",
++    ];
++
++    validSegments.forEach((segment) => {
++      it(`returns false for a valid segment: ${JSON.stringify(
++        segment
++      )}`, () => {
++        assert.isFalse(Util.isInvalidPathSegment(segment));
++      });
++    });
++
++    const invalidSegments = [
++      "",
++      "   ",
++      ".",
++      "..",
++      "foo/bar",
++      "foo\\bar",
++      "foo%bar",
++      "..%2f..%2fvictim",
++      "%2e%2e",
++      "../../victim_customer/addresses/victim_address",
++      "abc.def",
++      "abc def",
++      null,
++      undefined, // eslint-disable-line no-undefined
++      123,
++      {},
++      [],
++    ];
++
++    invalidSegments.forEach((segment) => {
++      it(`returns true for an invalid segment: ${JSON.stringify(
++        segment
++      )}`, () => {
++        assert.isTrue(Util.isInvalidPathSegment(segment));
++      });
++    });
++  });
+ });
