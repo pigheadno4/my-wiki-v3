@@ -602,6 +602,46 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertIn("packages/paypal-js/src/index.ts", patch)
         self.assertNotIn("packages/react-paypal-js", patch)
 
+    def test_future_selection_ignores_same_package_versions_in_other_repositories(self):
+        self.collect()
+        work_items_path = self.root / "tracking/github/work-items.json"
+        items = load_work_items(work_items_path)
+        foreign_change = replace(
+            items[0].package_changes[0],
+            to_version="10.0.99",
+            release_id="@paypal/paypal-js@10.0.99",
+        )
+        foreign_item = replace(
+            items[0],
+            work_item_id="github-foreign-repository",
+            repo_id="other/paypal-js",
+            package_changes=(foreign_change,),
+        )
+        commit_files(
+            self.remote,
+            {
+                "packages/paypal-js/package.json": package_manifest(
+                    "@paypal/paypal-js", "10.0.1"
+                ),
+                "packages/paypal-js/src/index.ts": "export const loadScript = 2;\n",
+            },
+            "paypal js patch with foreign package history",
+        )
+        tag(self.remote, "@paypal/paypal-js@10.0.1")
+
+        run_git(self.remote, "remote", "add", "origin", str(self.remote))
+        selected = collect_github_repos._select_candidates(
+            self.config, self.config, self.remote, items + (foreign_item,), "future", None
+        )
+
+        versions = [
+            candidate.version
+            for candidate in selected
+            if candidate.package == "@paypal/paypal-js"
+        ]
+        self.assertEqual(["10.0.0", "10.0.1"], versions)
+        self.assertEqual(items, load_work_items(work_items_path))
+
     def test_same_major_payment_release_uses_bounded_delta_packet(self):
         self.collect()
         next_sha = commit_files(

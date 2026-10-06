@@ -1157,7 +1157,9 @@ def _select_candidates(
     release_mode: Optional[str],
     release: Optional[str],
 ) -> Tuple[ReleaseCandidate, ...]:
-    existing = _existing_release_ids(items)
+    existing = _existing_release_ids(
+        tuple(item for item in items if item.repo_id == config.id)
+    )
     discovered: Dict[str, ReleaseCandidate] = {}
     for track in config.version_tracks:
         rows = discover_release_candidates(effective, clone_path, track)
