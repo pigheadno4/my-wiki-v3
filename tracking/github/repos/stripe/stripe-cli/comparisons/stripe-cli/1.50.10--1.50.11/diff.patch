@@ -1,0 +1,874 @@
+diff --git a/README.md b/README.md
+index b6546d2..37a16d4 100644
+--- a/README.md
++++ b/README.md
+@@ -216,6 +216,76 @@ Because Docker containers are ephemeral, the `stripe login` command isn't suppor
+ 
+ Download the latest release for your platform from the [GitHub Releases page](https://github.com/stripe/stripe-cli/releases/latest) and replace your existing binary.
+ 
++## Uninstalling
++
++### 1. Remove your plugins
++
++Package managers only remove the `stripe` binary; they leave installed plugins behind. Remove plugins first, while the `stripe` binary is still available:
++
++```sh
++stripe plugin uninstall --all
++```
++
++### 2. Remove the CLI
++
++**npm (macOS, Linux, Windows):**
++
++```sh
++npm uninstall -g @stripe/cli
++```
++
++**Homebrew (macOS):**
++
++```sh
++brew uninstall stripe
++```
++
++**apt (Debian, Ubuntu):**
++
++```sh
++sudo apt remove stripe
++```
++
++**yum/dnf (RedHat, Fedora, CentOS):**
++
++```sh
++sudo yum remove stripe
++```
++
++**WinGet (Windows):**
++
++```sh
++winget uninstall Stripe.StripeCLI
++```
++
++**Scoop (Windows):**
++
++```sh
++scoop uninstall stripe
++```
++
++**Docker:**
++
++```sh
++docker rmi stripe/stripe-cli
++```
++
++**Without package managers:**
++
++Delete the `stripe` binary you downloaded.
++
++### 3. Optionally remove configuration and credentials
++
++Uninstalling the CLI intentionally keeps your configuration, so reinstalling preserves your projects and settings. It is only removed if you remove it yourself:
++
++```sh
++# Clear stored credentials for every project you are logged into
++stripe logout --all
++
++# Remove all remaining CLI configuration
++rm -rf "${XDG_CONFIG_HOME:-$HOME/.config}/stripe"
++```
++
+ ## Usage
+ 
+ Installing the CLI provides access to the `stripe` command.
+diff --git a/pkg/cmd/login.go b/pkg/cmd/login.go
+index 3d131f6..b65d566 100644
+--- a/pkg/cmd/login.go
++++ b/pkg/cmd/login.go
+@@ -1,26 +1,34 @@
+ package cmd
+ 
+ import (
++	"context"
+ 	"fmt"
+ 	"os"
+ 	"strings"
++	"time"
+ 
+ 	"github.com/spf13/cobra"
+ 	"golang.org/x/term"
+ 
++	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
+ 	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login"
++	"github.com/stripe/stripe-cli/pkg/requests"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/useragent"
+ 	"github.com/stripe/stripe-cli/pkg/validators"
+ )
+ 
+-// revokeToken and initiateLogin are package variables so tests can stub out
+-// the network calls made by runLoginCmd.
++// revokeToken, initiateLogin, reauth, initiateReauth, and pollPendingReauth
++// are package variables so tests can stub out the network calls made by
++// runLoginCmd.
+ var (
+-	revokeToken   = login.RevokeToken
+-	initiateLogin = login.InitiateLogin
++	revokeToken       = login.RevokeToken
++	initiateLogin     = login.InitiateLogin
++	reauth            = login.Reauth
++	initiateReauth    = login.InitiateReauth
++	pollPendingReauth = login.PollPendingReauth
+ )
+ 
+ type loginCmd struct {
+@@ -28,9 +36,11 @@ type loginCmd struct {
+ 	interactive      bool
+ 	dashboardBaseURL string
+ 	accessBaseURL    string
++	apiBaseURL       string
+ 	nonInteractive   bool
+ 	completeURL      string
+ 	completeDevice   bool
++	completeReauth   bool
+ 	newSession       bool
+ }
+ 
+@@ -76,7 +86,14 @@ For agents and scripts, use the two-step non-interactive flow:
+ 
+   --complete <poll-url>
+       Polls the given URL (from the next_step of a prior --non-interactive run)
+-      until the user approves in the browser, then saves credentials.`,
++      until the user approves in the browser, then saves credentials.
++
++If you're already logged in with a valid session, running this again re-authorizes
++the CLI instead: it opens the Stripe Dashboard so you can change permissions or
++authorize access to additional accounts or sandboxes. Use --new-session to log out
++of the current session and log in as a different user instead. --non-interactive
++works here too, printing a browser_url and a next_step of
++'stripe login --complete-reauth' to poll.`,
+ 		Example: `# Standard browser login (default for TTY users)
+   stripe login
+ 
+@@ -104,6 +121,8 @@ For agents and scripts, use the two-step non-interactive flow:
+ 	lc.cmd.Flags().StringVar(&lc.completeURL, "complete", "", "Complete a browser login by polling the given URL (from 'stripe login --non-interactive')")
+ 	lc.cmd.Flags().BoolVar(&lc.completeDevice, "complete-device", false, "Complete an OAuth device authorization started by 'stripe login --non-interactive'")
+ 	lc.cmd.Flags().MarkHidden("complete-device") // #nosec G104
++	lc.cmd.Flags().BoolVar(&lc.completeReauth, "complete-reauth", false, "Complete a reauthorization started by 'stripe login --non-interactive'")
++	lc.cmd.Flags().MarkHidden("complete-reauth") // #nosec G104
+ 
+ 	// TODO: a flag to replace existing account?
+ 	// TODO: what happens to if already logged into that account? - profile name should be the account id
+@@ -115,7 +134,9 @@ For agents and scripts, use the two-step non-interactive flow:
+ 	lc.cmd.Flags().MarkHidden("dashboard-base") // #nosec G104
+ 	lc.cmd.Flags().StringVar(&lc.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	lc.cmd.Flags().MarkHidden("access-base") // #nosec G104
+-	lc.cmd.Flags().BoolVar(&lc.newSession, "new-session", false, "Force a new login even if already authenticated")
++	lc.cmd.Flags().StringVar(&lc.apiBaseURL, "api-base", stripe.DefaultAPIBaseURL, "Sets the API base URL")
++	lc.cmd.Flags().MarkHidden("api-base") // #nosec G104
++	lc.cmd.Flags().BoolVar(&lc.newSession, "new-session", false, "Log out of the current session and force a new login, even if already authenticated")
+ 
+ 	listCmd := &loginListCmd{}
+ 	listCmd.cmd = &cobra.Command{
+@@ -159,11 +180,19 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 	if err := login.ValidateAccessBaseURL(lc.accessBaseURL); err != nil {
+ 		return err
+ 	}
++	if err := stripe.ValidateAPIBaseURL(lc.apiBaseURL); err != nil {
++		return err
++	}
+ 
+ 	if lc.completeDevice {
+ 		return login.PollPendingDeviceAuth(cmd.Context(), &Config)
+ 	}
+ 
++	if lc.completeReauth {
++		uat, _ := Config.Profile.GetUAT()
++		return pollPendingReauth(cmd.Context(), lc.accessBaseURL, uat)
++	}
++
+ 	if lc.completeURL != "" {
+ 		return login.PollForLogin(cmd.Context(), lc.completeURL, &Config)
+ 	}
+@@ -171,26 +200,22 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 	uat, _ := Config.Profile.GetUAT()
+ 	if !lc.newSession {
+ 		if strings.HasPrefix(uat, "oak_") {
+-			identity := Config.Profile.GetDisplayName()
+-			if identity == "" {
+-				if ac, _ := config.GetActiveContext(); ac != nil {
+-					identity = ac.AccountID
+-				}
++			if refreshedUAT, ok := sessionIsValid(uat); ok {
++				// The session is still valid, so there's nothing to log back
++				// into. Kick off reauthorization instead, so the user can
++				// change permissions or authorize additional accounts/sandboxes.
++				return lc.reauthorizeSession(cmd, refreshedUAT)
+ 			}
+-			if identity != "" {
+-				fmt.Fprintf(cmd.OutOrStdout(), "You're already logged in as %s.\n", identity)
+-			} else {
+-				fmt.Fprintln(cmd.OutOrStdout(), "You're already logged in.")
+-			}
+-			fmt.Fprintln(cmd.OutOrStdout(), "Run 'stripe reauth' to change permissions or authorize access to additional accounts or sandboxes.")
+-			fmt.Fprintln(cmd.OutOrStdout(), "To log in as a different user, run: stripe login --new-session")
+-			return nil
++			// The session and its refresh token have both expired; fall through to a fresh login below.
+ 		}
+ 	} else if strings.HasPrefix(uat, "oak_") {
+ 		// Revoke the previous OAuth session before starting a new one, same as `stripe logout`.
+ 		if err := revokeToken(cmd.Context(), lc.accessBaseURL); err != nil {
+ 			fmt.Fprintf(os.Stderr, "Warning: token revocation failed: %s\n", err)
+ 		}
++		if !lc.nonInteractive {
++			fmt.Fprintf(cmd.OutOrStdout(), "%s Logged out of your previous session.\n", ansi.Color(os.Stdout).Green("✓"))
++		}
+ 	}
+ 
+ 	if lc.nonInteractive || !shouldAutoLogin(os.Getenv, term.IsTerminal(int(os.Stdin.Fd()))) {
+@@ -207,6 +232,106 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 	return login.Login(cmd.Context(), lc.dashboardBaseURL, lc.accessBaseURL, &Config)
+ }
+ 
++// sessionIsValid reports whether the current OAuth session is still usable,
++// attempting a token refresh first if the access token's own expiry has
++// already passed. An expired access token often still has a valid refresh
++// token behind it, so the session is only treated as unusable once a refresh
++// attempt confirms it can't be revived. It returns the token to use, which is
++// the refreshed token if a refresh occurred.
++func sessionIsValid(uat string) (string, bool) {
++	expiresAt, expErr := config.GetUATExpiresAt()
++	if expErr == nil && time.Now().Before(expiresAt) {
++		return uat, true
++	}
++	if config.OAuthTokenRefresher == nil {
++		return uat, false
++	}
++	if err := config.OAuthTokenRefresher(&Config.Profile); err != nil {
++		return uat, false
++	}
++	if refreshedUAT, err := Config.Profile.GetUAT(); err == nil {
++		uat = refreshedUAT
++	}
++	return uat, true
++}
++
++// reauthorizeSession kicks off reauthorization for a still-valid OAuth
++// session, so the user can change permissions or authorize additional
++// accounts/sandboxes, instead of starting a fresh login.
++func (lc *loginCmd) reauthorizeSession(cmd *cobra.Command, uat string) error {
++	if lc.nonInteractive || !shouldAutoLogin(os.Getenv, term.IsTerminal(int(os.Stdin.Fd()))) {
++		return initiateReauth(cmd.Context(), lc.accessBaseURL, uat)
++	}
++	printAlreadyLoggedIn(cmd, lc.apiBaseURL, lc.accessBaseURL, uat)
++	return reauth(cmd.Context(), lc.accessBaseURL, uat)
++}
++
++// printAlreadyLoggedIn prints a summary of the currently authenticated
++// identity and authorized contexts before handing off to the interactive
++// reauth flow.
++func printAlreadyLoggedIn(cmd *cobra.Command, apiBaseURL, accessBaseURL, uat string) {
++	email := fetchLoginEmail(cmd.Context(), apiBaseURL, uat)
++	// Best-effort: the context list is a courtesy, not a precondition for reauthorizing.
++	var accounts []config.AuthorizedAccount
++	if a, err := login.ListAuthorizedAccounts(cmd.Context(), accessBaseURL, uat); err == nil {
++		accounts = a
++	}
++	contextCount := countAuthorizedContexts(accounts)
++	switch {
++	case email != "" && contextCount == 1:
++		fmt.Fprintf(cmd.OutOrStdout(), "You're already logged in to %s as %s.\n", soleAuthorizedContextName(accounts), email)
++	case contextCount == 1:
++		fmt.Fprintf(cmd.OutOrStdout(), "You're already logged in to %s.\n", soleAuthorizedContextName(accounts))
++	case email != "":
++		fmt.Fprintf(cmd.OutOrStdout(), "You're already logged in as %s.\n", email)
++	default:
++		fmt.Fprintln(cmd.OutOrStdout(), "You're already logged in.")
++	}
++	if contextCount > 1 {
++		login.PrintAuthorizedContextsList(accounts)
++	}
++}
++
++// fetchLoginEmail returns the email of the currently logged-in OAuth user, or
++// "" if there's no active context or the lookup fails; it fails open since
++// the email here is a courtesy identity confirmation, not a precondition for
++// reauthorizing.
++func fetchLoginEmail(ctx context.Context, apiBaseURL, uat string) string {
++	ac, _ := config.GetActiveContext()
++	if ac == nil {
++		return ""
++	}
++	creds := stripe.NewOAKCredentials(uat, ac.AccountID, ac.Livemode)
++	info, err := requests.GetUserInfo(ctx, apiBaseURL, &Config.Profile, creds, ac.Livemode)
++	if err != nil {
++		return ""
++	}
++	return info.Email
++}
++
++// countAuthorizedContexts counts (account, mode) pairs across accounts, the
++// same unit "contexts" refers to elsewhere (e.g. printAuthorizedSummary).
++func countAuthorizedContexts(accounts []config.AuthorizedAccount) int {
++	count := 0
++	for _, a := range accounts {
++		if len(a.Modes) == 0 {
++			count++
++		} else {
++			count += len(a.Modes)
++		}
++	}
++	return count
++}
++
++// soleAuthorizedContextName returns the display name of the single account in
++// accounts. Callers must check countAuthorizedContexts == 1 first.
++func soleAuthorizedContextName(accounts []config.AuthorizedAccount) string {
++	if len(accounts) == 0 {
++		return ""
++	}
++	return accounts[0].Name
++}
++
+ // TODO: we should support bash completion for account names
+ func (lc *loginListCmd) listLoggedInAccountsCmd(cmd *cobra.Command, args []string) error {
+ 	uat, _ := Config.Profile.GetUAT()
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index 8780f81..33856e3 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -315,9 +315,9 @@ func init() {
+ 	rootCmd.AddCommand(newListenCmd().cmd)
+ 	rootCmd.AddCommand(newLoginCmd().cmd)
+ 	rootCmd.AddCommand(newLogoutCmd().cmd)
+-	rootCmd.AddCommand(newReauthCmd().cmd)
+ 	rootCmd.AddCommand(newLogsCmd(&Config).Cmd)
+ 	rootCmd.AddCommand(newOpenCmd().cmd)
++	rootCmd.AddCommand(newReauthCmd().cmd)
+ 	rootCmd.AddCommand(newResourcesCmd().cmd)
+ 	rootCmd.AddCommand(newSamplesCmd().cmd)
+ 	rootCmd.AddCommand(newServeCmd().cmd)
+diff --git a/pkg/login/login.go b/pkg/login/login.go
+index be796e8..6912f3a 100644
+--- a/pkg/login/login.go
++++ b/pkg/login/login.go
+@@ -3,8 +3,10 @@ package login
+ import (
+ 	"context"
+ 	"encoding/json"
++	"errors"
+ 	"fmt"
+ 	"os"
++	"os/signal"
+ 	"time"
+ 
+ 	"github.com/spf13/afero"
+@@ -171,32 +173,26 @@ func PollPendingDeviceAuth(ctx context.Context, cfg *config.Config) error {
+ 
+ 	pollCtx, cancel := context.WithTimeout(ctx, expiresIn)
+ 	defer cancel()
++	waitCtx, stop := signal.NotifyContext(pollCtx, os.Interrupt)
++	defer stop()
+ 
+-	tokenResp, err := PollDeviceToken(pollCtx, cont.AccessBaseURL, clientID, cont.DeviceCode, interval)
++	s := ansi.StartNewSpinner("Waiting for confirmation...", os.Stdout)
++	result, err := PollAndSaveDeviceCredentials(waitCtx, cont.AccessBaseURL, clientID, cont.DeviceCode, interval, cfg)
++	ansi.StopSpinner(s, "", os.Stdout)
+ 	if err != nil {
+-		if pollCtx.Err() != nil {
++		switch {
++		case errors.Is(err, context.Canceled):
++			ansi.ClearLine(os.Stdout)
++			fmt.Println("Canceled. Run 'stripe login --non-interactive' again to try again.")
++			return nil
++		case pollCtx.Err() != nil:
+ 			return errorcategory.Errorf(errorcategory.Auth, "device code expired; please run 'stripe login --non-interactive' again")
++		default:
++			return err
+ 		}
+-		return err
+-	}
+-
+-	// Clear all stale credentials before saving new ones.
+-	_ = cfg.RemoveAuthFields(cfg.Profile.ProfileName)
+-
+-	if err := saveOAuthCredentials(cfg, tokenResp); err != nil {
+-		return fmt.Errorf("failed to save credentials: %w", err)
+-	}
+-
+-	accounts, err := ListAuthorizedAccounts(ctx, cont.AccessBaseURL, tokenResp.AccessToken)
+-	if err != nil {
+-		return fmt.Errorf("failed to fetch account info: %w", err)
+-	}
+-	activeID, activeLivemode := pickActiveContext(accounts)
+-	if err := populateProfileFromAccounts(cfg, accounts, activeID, activeLivemode); err != nil {
+-		return fmt.Errorf("failed to save account info: %w", err)
+ 	}
+ 
+-	printAuthorizedSummary(accounts, activeID, activeLivemode)
++	printAuthorizedSummary(result.Accounts, result.ActiveAccountID, result.ActiveLivemode)
+ 	warnIfInsecureStorage()
+ 	return nil
+ }
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index 8f0dd79..a80d052 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -3,11 +3,13 @@ package login
+ import (
+ 	"context"
+ 	"encoding/json"
++	"errors"
+ 	"fmt"
+ 	"io"
+ 	"net/http"
+ 	"net/url"
+ 	"os"
++	"os/signal"
+ 	"strings"
+ 	"time"
+ 
+@@ -168,10 +170,69 @@ func clientIDForAccessBaseURL(accessBaseURL string) string {
+ 	return StripeCLIClientIDProd
+ }
+ 
++// RequestDeviceCodeForAccessBase requests a device code using the client ID registered for
++// accessBaseURL, returning that client ID alongside the response so callers can later poll for
++// the token with PollAndSaveDeviceCredentials.
++func RequestDeviceCodeForAccessBase(ctx context.Context, accessBaseURL string) (authResp *DeviceAuthResponse, clientID string, err error) {
++	clientID = clientIDForAccessBaseURL(accessBaseURL)
++	authResp, err = RequestDeviceCode(ctx, accessBaseURL, clientID)
++	return authResp, clientID, err
++}
++
++// DeviceCodeLoginResult holds the accounts and the active account/mode saved by a completed
++// OAuth device-code login.
++type DeviceCodeLoginResult struct {
++	Accounts          []config.AuthorizedAccount
++	ActiveAccountID   string
++	ActiveDisplayName string
++	ActiveLivemode    bool
++}
++
++// PollAndSaveDeviceCredentials polls the token endpoint until the user approves, ctx is
++// canceled, or ctx's deadline is exceeded, then saves the resulting OAuth credentials and
++// populates cfg's profile with the active account. Unlike LoginWithDeviceCode, it does not print
++// progress to stdout, so callers with their own UX (e.g. the RPC service) can drive completion
++// themselves.
++func PollAndSaveDeviceCredentials(ctx context.Context, accessBaseURL, clientID, deviceCode string, interval time.Duration, cfg *config.Config) (*DeviceCodeLoginResult, error) {
++	tokenResp, err := PollDeviceToken(ctx, accessBaseURL, clientID, deviceCode, interval)
++	if err != nil {
++		return nil, err
++	}
++
++	// The token has been issued, so from here on use a context detached from ctx's
++	// cancellation/deadline: a caller-side timeout (or the natural device-code expiry) firing at
++	// this exact moment shouldn't leave a valid token saved but the account list and active
++	// context unpopulated.
++	ctx = context.WithoutCancel(ctx)
++
++	// Clear all stale credentials before saving new ones, so this succeeds even if a
++	// previously stored credential is expired or revoked.
++	_ = cfg.RemoveAuthFields(cfg.Profile.ProfileName)
++
++	if err := saveOAuthCredentials(cfg, tokenResp); err != nil {
++		return nil, fmt.Errorf("failed to save credentials: %w", err)
++	}
++
++	accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, tokenResp.AccessToken)
++	if err != nil {
++		return nil, fmt.Errorf("failed to fetch account info: %w", err)
++	}
++	activeID, activeLivemode := pickActiveContext(accounts)
++	if err := populateProfileFromAccounts(cfg, accounts, activeID, activeLivemode); err != nil {
++		return nil, fmt.Errorf("failed to save account info: %w", err)
++	}
++
++	return &DeviceCodeLoginResult{
++		Accounts:          accounts,
++		ActiveAccountID:   activeID,
++		ActiveDisplayName: cfg.Profile.DisplayName,
++		ActiveLivemode:    activeLivemode,
++	}, nil
++}
++
+ // LoginWithDeviceCode runs the full OAuth 2.1 device-code flow and saves credentials.
+ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.Config) error {
+-	clientID := clientIDForAccessBaseURL(accessBaseURL)
+-	authResp, err := RequestDeviceCode(ctx, accessBaseURL, clientID)
++	authResp, clientID, err := RequestDeviceCodeForAccessBase(ctx, accessBaseURL)
+ 	if err != nil {
+ 		return fmt.Errorf("failed to request device code: %w", err)
+ 	}
+@@ -185,13 +246,16 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 	fmt.Println(ansi.Purple(authResp.UserCode))
+ 	fmt.Println()
+ 
++	var browserOpened chan struct{}
+ 	if !isSSH() && canOpenBrowser() {
++		browserOpened = make(chan struct{})
+ 		fmt.Printf("Press enter to open the browser (^C to quit)\n")
+ 		go func() {
+ 			fmt.Scanln() //nolint:errcheck
+ 			if err := openBrowser(authResp.VerificationURI); err != nil {
+ 				fmt.Fprintf(os.Stderr, "Failed to open browser: %s\n", err)
+ 			}
++			close(browserOpened)
+ 		}()
+ 	}
+ 
+@@ -200,29 +264,26 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 
+ 	pollCtx, cancel := context.WithTimeout(ctx, expiresIn)
+ 	defer cancel()
++	waitCtx, stop := signal.NotifyContext(pollCtx, os.Interrupt)
++	defer stop()
+ 
+-	tokenResp, err := PollDeviceToken(pollCtx, accessBaseURL, clientID, authResp.DeviceCode, interval)
++	stopSpinner := startSpinnerAfterSignal("Waiting for confirmation...", os.Stdout, browserOpened)
++	result, err := PollAndSaveDeviceCredentials(waitCtx, accessBaseURL, clientID, authResp.DeviceCode, interval, cfg)
++	stopSpinner()
+ 	if err != nil {
+-		if pollCtx.Err() != nil {
++		switch {
++		case errors.Is(err, context.Canceled):
++			ansi.ClearLine(os.Stdout)
++			fmt.Println("Canceled. Run 'stripe login' to try again.")
++			return nil
++		case pollCtx.Err() != nil:
+ 			return errorcategory.Errorf(errorcategory.Auth, "device code expired; please run 'stripe login' again")
++		default:
++			return err
+ 		}
+-		return err
+-	}
+-
+-	if err := saveOAuthCredentials(cfg, tokenResp); err != nil {
+-		return fmt.Errorf("failed to save credentials: %w", err)
+-	}
+-
+-	accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, tokenResp.AccessToken)
+-	if err != nil {
+-		return fmt.Errorf("failed to fetch account info: %w", err)
+-	}
+-	activeID, activeLivemode := pickActiveContext(accounts)
+-	if err := populateProfileFromAccounts(cfg, accounts, activeID, activeLivemode); err != nil {
+-		return fmt.Errorf("failed to save account info: %w", err)
+ 	}
+ 
+-	printAuthorizedSummary(accounts, activeID, activeLivemode)
++	printAuthorizedSummary(result.Accounts, result.ActiveAccountID, result.ActiveLivemode)
+ 	warnIfInsecureStorage()
+ 	return nil
+ }
+@@ -273,7 +334,7 @@ func printAuthorizedSummary(accounts []config.AuthorizedAccount, activeID string
+ 		ctx := fmt.Sprintf("%s · %s", r.name, displayMode(r.mode))
+ 		fmt.Printf("%s Done! The Stripe CLI is authorized for %s (%s)\n", color.Green("✓"), ctx, r.id)
+ 		fmt.Printf("  Active context: %s\n\n", ctx)
+-		fmt.Println("Run 'stripe reauth' to change permissions or authorize access to additional accounts or sandboxes.")
++		fmt.Println("Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
+ 		return
+ 	}
+ 
+@@ -303,7 +364,7 @@ func printAuthorizedSummary(accounts []config.AuthorizedAccount, activeID string
+ 
+ 	fmt.Println()
+ 	fmt.Println("Run 'stripe switch context' to change your active context.")
+-	fmt.Println("Run 'stripe reauth' to change permissions or authorize access to additional accounts or sandboxes.")
++	fmt.Println("Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
+ }
+ 
+ // RefreshAccessToken exchanges a refresh token for a new access token.
+diff --git a/pkg/login/oauth_pending.go b/pkg/login/oauth_pending.go
+index ebaa487..1a8b54f 100644
+--- a/pkg/login/oauth_pending.go
++++ b/pkg/login/oauth_pending.go
+@@ -54,3 +54,46 @@ func loadPendingDeviceAuth() (*oauthContinuation, error) {
+ func clearPendingDeviceAuth() {
+ 	_ = os.Remove(pendingDeviceAuthPath())
+ }
++
++func pendingReauthAccountsPath() string {
++	return filepath.Join(filepath.Dir(config.CredentialsFilePath()), "pending_reauth_accounts.json")
++}
++
++// savePendingReauthAccounts writes a snapshot of authorized accounts to disk,
++// so a later, separate `stripe login --complete-reauth` invocation can poll
++// for a change from it.
++func savePendingReauthAccounts(accounts []config.AuthorizedAccount) error {
++	path := pendingReauthAccountsPath()
++	if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
++		return err
++	}
++	data, err := json.Marshal(accounts)
++	if err != nil {
++		return err
++	}
++	return os.WriteFile(path, data, 0600)
++}
++
++// loadPendingReauthAccounts reads the snapshot saved by
++// savePendingReauthAccounts. Returns nil, nil if none has been saved.
++func loadPendingReauthAccounts() ([]config.AuthorizedAccount, error) {
++	data, err := os.ReadFile(pendingReauthAccountsPath())
++	if err != nil {
++		if errors.Is(err, os.ErrNotExist) {
++			return nil, nil
++		}
++		return nil, err
++	}
++	var accounts []config.AuthorizedAccount
++	if err := json.Unmarshal(data, &accounts); err != nil {
++		return nil, fmt.Errorf("invalid pending reauth state: %w", err)
++	}
++	return accounts, nil
++}
++
++// clearPendingReauthAccounts removes the snapshot saved by
++// savePendingReauthAccounts, once the reauthorization it was tracking has
++// completed.
++func clearPendingReauthAccounts() {
++	_ = os.Remove(pendingReauthAccountsPath())
++}
+diff --git a/pkg/login/oauth_reauth.go b/pkg/login/oauth_reauth.go
+index f71b249..d24af70 100644
+--- a/pkg/login/oauth_reauth.go
++++ b/pkg/login/oauth_reauth.go
+@@ -13,6 +13,7 @@ import (
+ 	"strings"
+ 	"time"
+ 
++	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
+ 	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+@@ -36,9 +37,7 @@ type reauthResponse struct {
+ // directs the user to it. If a browser is available it is opened automatically;
+ // otherwise the URL is printed for the user to visit manually. It then waits
+ // for the authorized-accounts list to change before printing the updated list
+-// of authorized contexts; access-srv has no dedicated signal for "the user
+-// finished reauthorizing," so a change to the accounts/scopes returned for the
+-// token is used as a proxy for completion.
++// of authorized contexts.
+ func Reauth(ctx context.Context, accessBaseURL, accessToken string) error {
+ 	before, err := ListAuthorizedAccounts(ctx, accessBaseURL, accessToken)
+ 	if err != nil {
+@@ -53,25 +52,117 @@ func Reauth(ctx context.Context, accessBaseURL, accessToken string) error {
+ 		return err
+ 	}
+ 
++	var browserOpened chan struct{}
++	fmt.Println()
+ 	if !isSSH() && canOpenBrowser() {
+-		fmt.Println("Opening the Stripe Dashboard to re-authorize the CLI...")
+-		fmt.Printf("If the browser does not open automatically, visit:\n  %s\n", reauthURL)
+-		if err := openBrowser(reauthURL); err != nil {
+-			fmt.Fprintf(os.Stderr, "Failed to open browser: %s\n", err)
+-		}
++		browserOpened = make(chan struct{})
++		fmt.Printf("To authorize more contexts, visit %s\n\n", reauthURL)
++		fmt.Println("Press enter to open the browser (^C to quit)")
++		go func() {
++			fmt.Scanln() //nolint:errcheck
++			if err := openBrowser(reauthURL); err != nil {
++				fmt.Fprintf(os.Stderr, "Failed to open browser: %s\n", err)
++			}
++			close(browserOpened)
++		}()
+ 	} else {
+ 		fmt.Printf("Visit the following URL to re-authorize the CLI:\n  %s\n", reauthURL)
+ 	}
++
++	return waitForReauthCompletion(ctx, accessBaseURL, accessToken, before, browserOpened, nil)
++}
++
++type reauthSessionOutput struct {
++	BrowserURL string `json:"browser_url"`
++	NextStep   string `json:"next_step"`
++}
++
++// InitiateReauth fetches a reauthentication URL for the active OAuth session
++// and prints it as JSON with a next_step command, then returns immediately.
++// Intended for non-interactive (agent/script) use.
++func InitiateReauth(ctx context.Context, accessBaseURL, accessToken string) error {
++	// Best-effort: if this snapshot can't be fetched or saved, the later
++	// --complete-reauth invocation (a separate process) just falls back to a
++	// single check instead of polling for a change from it.
++	if before, err := ListAuthorizedAccounts(ctx, accessBaseURL, accessToken); err == nil {
++		_ = savePendingReauthAccounts(before)
++	}
++
++	reauthURL, err := fetchReauthURL(ctx, accessBaseURL, accessToken)
++	if err != nil {
++		return err
++	}
++	if err := validateBrowserURL(reauthURL, accessBaseURL); err != nil {
++		return err
++	}
++
++	out := reauthSessionOutput{
++		BrowserURL: reauthURL,
++		NextStep:   "stripe login --complete-reauth",
++	}
++	b, err := json.MarshalIndent(out, "", "  ")
++	if err != nil {
++		return err
++	}
++	fmt.Println(string(b))
++	return nil
++}
++
++// PollPendingReauth checks, immediately on invocation, whether the
++// authorized-accounts list already differs from the snapshot InitiateReauth
++// saved - covering both a user who finished in the browser before running
++// this, and one who runs `--complete-reauth` without a snapshot at all (e.g.
++// skipped `--non-interactive`). Only if there's a snapshot and nothing has
++// changed yet does it fall back to waiting/polling for a change.
++func PollPendingReauth(ctx context.Context, accessBaseURL, accessToken string) error {
++	before, err := loadPendingReauthAccounts()
++	if err != nil {
++		return err
++	}
++
++	accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, accessToken)
++	if err != nil {
++		return err
++	}
++
++	if before == nil || accountsSignature(accounts) != accountsSignature(before) {
++		if before != nil {
++			clearPendingReauthAccounts()
++		}
++		ac, _ := config.GetActiveContext()
++		activeID, activeLivemode := "", false
++		if ac != nil {
++			activeID = ac.AccountID
++			activeLivemode = ac.Livemode
++		}
++		printAuthorizedSummary(accounts, activeID, activeLivemode)
++		return nil
++	}
++
+ 	fmt.Println("Waiting for you to finish in the browser. Press ^C to cancel.")
++	return waitForReauthCompletion(ctx, accessBaseURL, accessToken, before, nil, func([]config.AuthorizedAccount) {
++		clearPendingReauthAccounts()
++	})
++}
+ 
++// waitForReauthCompletion waits for the authorized-accounts list to change
++// from before, then prints the updated list of authorized contexts;
++// access-srv has no dedicated signal for "the user finished reauthorizing,"
++// so a change to the accounts/scopes returned for the token is used as a
++// proxy for completion. onComplete, if non-nil, runs once a change is
++// detected and before the summary is printed.
++func waitForReauthCompletion(ctx context.Context, accessBaseURL, accessToken string, before []config.AuthorizedAccount, browserOpened <-chan struct{}, onComplete func([]config.AuthorizedAccount)) error {
+ 	waitCtx, stop := signal.NotifyContext(ctx, os.Interrupt)
+ 	defer stop()
+ 
++	stopSpinner := startSpinnerAfterSignal("Waiting for confirmation...", os.Stdout, browserOpened)
+ 	after, err := waitForAccountsChange(waitCtx, accessBaseURL, accessToken, before, reauthPollInterval, reauthPollTimeout)
++	stopSpinner()
+ 	if err != nil {
+ 		switch {
+ 		case errors.Is(err, context.Canceled):
+-			fmt.Println("Canceled. Run 'stripe whoami' to check your authorized contexts.")
++			ansi.ClearLine(os.Stdout)
++			fmt.Println("Canceled. Run 'stripe whoami' to see your authorized contexts or 'stripe login --new-session' to log in as a different user.")
+ 			return nil
+ 		case errors.Is(err, errReauthTimeout):
+ 			fmt.Println("Still waiting on the re-authorization. Run 'stripe whoami' once you've finished.")
+@@ -81,6 +172,10 @@ func Reauth(ctx context.Context, accessBaseURL, accessToken string) error {
+ 		}
+ 	}
+ 
++	if onComplete != nil {
++		onComplete(after)
++	}
++
+ 	ac, _ := config.GetActiveContext()
+ 	activeID, activeLivemode := "", false
+ 	if ac != nil {
+diff --git a/pkg/login/spinner.go b/pkg/login/spinner.go
+new file mode 100644
+index 0000000..c8e2eb8
+--- /dev/null
++++ b/pkg/login/spinner.go
+@@ -0,0 +1,40 @@
++package login
++
++import (
++	"io"
++
++	"github.com/briandowns/spinner"
++
++	"github.com/stripe/stripe-cli/pkg/ansi"
++)
++
++// startSpinnerAfterSignal starts a spinner once opened is closed, so it only
++// appears once the user has actually opened the browser rather than for the
++// full duration of the poll. If opened is nil (there's no browser-open signal
++// to wait for), the spinner starts immediately. If the work finishes before
++// opened is ever closed, the spinner never appears. It returns a func that
++// stops the spinner (a no-op if it never started).
++func startSpinnerAfterSignal(msg string, w io.Writer, opened <-chan struct{}) func() {
++	if opened == nil {
++		s := ansi.StartNewSpinner(msg, w)
++		return func() { ansi.StopSpinner(s, "", w) }
++	}
++
++	done := make(chan struct{})
++	spinnerCh := make(chan *spinner.Spinner, 1)
++	go func() {
++		select {
++		case <-opened:
++			spinnerCh <- ansi.StartNewSpinner(msg, w)
++		case <-done:
++			spinnerCh <- nil
++		}
++	}()
++
++	return func() {
++		close(done)
++		if s := <-spinnerCh; s != nil {
++			ansi.StopSpinner(s, "", w)
++		}
++	}
++}
+diff --git a/pkg/proxy/events_list.go b/pkg/proxy/events_list.go
+index bbe5033..702ff16 100644
+--- a/pkg/proxy/events_list.go
++++ b/pkg/proxy/events_list.go
+@@ -301,6 +301,13 @@ var validThinEvents = map[string]bool{
+ var validPreviewThinEvents = map[string]bool{
+ 	"v2.core.account[configuration.money_manager].capability_status_updated": true,
+ 	"v2.core.account[configuration.money_manager].updated":                   true,
++	"v2.core.approval_request.approved":                                      true,
++	"v2.core.approval_request.canceled":                                      true,
++	"v2.core.approval_request.created":                                       true,
++	"v2.core.approval_request.expired":                                       true,
++	"v2.core.approval_request.failed":                                        true,
++	"v2.core.approval_request.rejected":                                      true,
++	"v2.core.approval_request.succeeded":                                     true,
+ 	"v2.core.batch_job.batch_failed":                                         true,
+ 	"v2.core.batch_job.canceled":                                             true,
+ 	"v2.core.batch_job.completed":                                            true,
+@@ -361,4 +368,5 @@ var validPreviewThinEvents = map[string]bool{
+ 	"v2.orchestrated_commerce.agreement.created":                             true,
+ 	"v2.orchestrated_commerce.agreement.partially_confirmed":                 true,
+ 	"v2.orchestrated_commerce.agreement.terminated":                          true,
++	"v2.signals.account_evaluation.complete":                                 true,
+ }
+diff --git a/pkg/requests/stripe_version_header.go b/pkg/requests/stripe_version_header.go
+index 31fd47a..7ae8974 100644
+--- a/pkg/requests/stripe_version_header.go
++++ b/pkg/requests/stripe_version_header.go
+@@ -3,7 +3,7 @@
+ package requests
+ 
+ // StripeVersionHeaderValue is the api version header value
+-const StripeVersionHeaderValue = "2026-07-29.dahlia"
++const StripeVersionHeaderValue = "2026-08-26.dahlia"
+ 
+ // StripePreviewVersionHeaderValue is the api version header value for preview features
+-const StripePreviewVersionHeaderValue = "2026-07-29.preview"
++const StripePreviewVersionHeaderValue = "2026-08-26.preview"

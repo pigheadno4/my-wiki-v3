@@ -1,0 +1,3098 @@
+diff --git a/pkg/cmd/login.go b/pkg/cmd/login.go
+index 938277a..3d131f6 100644
+--- a/pkg/cmd/login.go
++++ b/pkg/cmd/login.go
+@@ -147,6 +147,12 @@ For agents and scripts, use the two-step non-interactive flow:
+ }
+ 
+ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
++	// Reject an invalid profile name before authenticating, so the user is not
++	// sent through a browser flow whose result cannot be saved.
++	if err := Config.Profile.ValidateProfileNameForWrite(); err != nil {
++		return err
++	}
++
+ 	if err := stripe.ValidateDashboardBaseURL(lc.dashboardBaseURL); err != nil {
+ 		return err
+ 	}
+@@ -223,7 +229,14 @@ func (lc *loginSwitchCmd) switchLoggedInAccountCmd(cmd *cobra.Command, args []st
+ 		if len(args) > 0 {
+ 			accountID = args[0]
+ 		}
+-		return login.SwitchContext(cmd.Context(), lc.accessBaseURL, &Config, accountID, lc.livemode)
++		result, err := login.SwitchContext(cmd.Context(), lc.accessBaseURL, &Config, accountID, lc.livemode)
++		if err != nil {
++			return err
++		}
++		if result != nil {
++			fmt.Fprintf(cmd.OutOrStdout(), "Active context: %s · %s (%s)\n", result.Account.Name, result.DisplayMode(), result.Account.ID)
++		}
++		return nil
+ 	}
+ 	if len(args) == 0 {
+ 		return errorcategory.Errorf(errorcategory.UserInput, "account name required")
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index cefaf21..8780f81 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -39,7 +39,11 @@ import (
+ // Config is the cli configuration for the user
+ var Config config.Config
+ 
+-var rootAccessBaseURL string
++var (
++	rootAccessBaseURL    string
++	rootAPIBaseURL       string
++	rootDashboardBaseURL string
++)
+ 
+ var fs = afero.NewOsFs()
+ 
+@@ -76,6 +80,12 @@ var rootCmd = &cobra.Command{
+ 			fullHelpMode = true
+ 		}
+ 
++		// Move the config file to the v2 layout before the command reads anything
++		// out of it. This lives here rather than in InitConfig because Go plugins
++		// call InitConfig directly, and would otherwise rewrite the user's config
++		// file themselves at arbitrary times.
++		migrateConfigIfNeeded(cmd)
++
+ 		// --access-base is a hidden persistent flag accepted by every command, and
+ 		// feeds the OAuth token refresher below, which runs silently on any command
+ 		// using a stored OAuth session. Reject anything other than the real
+@@ -276,6 +286,14 @@ func init() {
+ 	rootCmd.Flags().BoolP("version", "v", false, "Get the version of the Stripe CLI")
+ 	rootCmd.PersistentFlags().StringVar(&rootAccessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	rootCmd.PersistentFlags().MarkHidden("access-base") //nolint:errcheck
++	// --api-base and --dashboard-base are hidden persistent flags used by the plugin
++	// subsystem (install/upgrade/uninstall/provision/etc.) to target a non-default
++	// environment (e.g. QA/dev). They're only forwarded to plugins when the user
++	// explicitly sets them (see the explicitFlagValue helpers alongside their callers).
++	rootCmd.PersistentFlags().StringVar(&rootAPIBaseURL, "api-base", stripe.DefaultAPIBaseURL, "Sets the API base URL")
++	rootCmd.PersistentFlags().MarkHidden("api-base") //nolint:errcheck
++	rootCmd.PersistentFlags().StringVar(&rootDashboardBaseURL, "dashboard-base", "", "Sets the Dashboard base URL")
++	rootCmd.PersistentFlags().MarkHidden("dashboard-base") //nolint:errcheck
+ 	rootCmd.SetFlagErrorFunc(flagErrorWithNestedAPIHint)
+ 
+ 	// tell viper to monitor the following flags:
+diff --git a/pkg/cmd/switch.go b/pkg/cmd/switch.go
+index e2dacab..505a0ac 100644
+--- a/pkg/cmd/switch.go
++++ b/pkg/cmd/switch.go
+@@ -1,6 +1,8 @@
+ package cmd
+ 
+ import (
++	"fmt"
++
+ 	"github.com/spf13/cobra"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/login"
+@@ -56,5 +58,12 @@ func (sc *switchContextCmd) run(cmd *cobra.Command, args []string) error {
+ 	if len(args) > 0 {
+ 		accountID = args[0]
+ 	}
+-	return login.SwitchContext(cmd.Context(), sc.accessBaseURL, &Config, accountID, sc.livemode)
++	result, err := login.SwitchContext(cmd.Context(), sc.accessBaseURL, &Config, accountID, sc.livemode)
++	if err != nil {
++		return err
++	}
++	if result != nil {
++		fmt.Printf("Active context: %s · %s (%s)\n", result.Account.Name, result.DisplayMode(), result.Account.ID)
++	}
++	return nil
+ }
+diff --git a/pkg/config/config.go b/pkg/config/config.go
+index c5512eb..66b09a5 100644
+--- a/pkg/config/config.go
++++ b/pkg/config/config.go
+@@ -26,6 +26,21 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/keyring"
+ )
+ 
++// Top-level config.toml keys that belong to the CLI itself rather than to a
++// profile. A profile with one of these names is a collision, which is what
++// moving profiles under the reserved profiles table fixes.
++const (
++	// ColorName is the color setting. It is also a valid profile field, so it can
++	// appear both at the top level and inside a profile.
++	ColorName = "color"
++
++	// InstalledPluginsKey lists the locally installed plugins.
++	InstalledPluginsKey = "installed_plugins"
++
++	// MachineUUIDKey is the persistent machine identifier used for telemetry.
++	MachineUUIDKey = "machine_uuid"
++)
++
+ // ColorOn represnets the on-state for colors
+ const ColorOn = "on"
+ 
+@@ -61,6 +76,12 @@ type Config struct {
+ 	Profile          Profile
+ 	ProfilesFile     string
+ 	InstalledPlugins []string
++
++	// warnedConfigVersion keeps the unsupported-version warning to one line per
++	// invocation. InitConfig runs more than once: root.go initializes it eagerly to
++	// register plugins before cobra parses flags, cobra.OnInitialize runs it again,
++	// and SwitchProfile reloads through it.
++	warnedConfigVersion bool
+ }
+ 
+ // GetProfile returns the Profile of the config
+@@ -154,6 +175,15 @@ func (c *Config) InitConfig() {
+ 			"prefix": "config.Config.InitConfig",
+ 			"path":   viper.ConfigFileUsed(),
+ 		}).Debug("Using profiles file")
++
++		// Reads tolerate an unknown version: both layouts are tried, so a newer
++		// file's profiles are usually still found. Warn rather than exit, so an
++		// older pinned CLI keeps working for read-only commands. writeConfig is
++		// where an unknown version is actually refused.
++		if _, err := configVersion(viper.GetViper()); err != nil && !c.warnedConfigVersion {
++			c.warnedConfigVersion = true
++			log.Warnf("%s: %s", viper.ConfigFileUsed(), err)
++		}
+ 	}
+ 
+ 	if os.Getenv("STRIPE_CLI_CANARY") == "true" {
+@@ -225,16 +255,23 @@ func (c *Config) CopyProfile(source string, target string) error {
+ 
+ 	runtimeViper := viper.GetViper()
+ 	safeSource := strings.ReplaceAll(source, ".", " ")
+-	if !runtimeViper.IsSet(safeSource) {
+-		return errorcategory.Errorf(errorcategory.UserInput, "source profile '%s' does not exist", source)
+-	}
+-	existing := runtimeViper.Get(safeSource)
+-	if !isProfile(existing) {
+-		return errorcategory.Errorf(errorcategory.UserInput, "source '%s' is not a profile", source)
++
++	// Prefer the v2 table, where any entry is a profile, and fall back to the
++	// top level, where a profile is only recognizable by its display_name.
++	existing := runtimeViper.Get(ProfilesTableName + "." + safeSource)
++	if _, ok := toStringMap(existing); !ok {
++		if !runtimeViper.IsSet(safeSource) {
++			return errorcategory.Errorf(errorcategory.UserInput, "source profile '%s' does not exist", source)
++		}
++
++		existing = runtimeViper.Get(safeSource)
++		if !isProfile(existing) {
++			return errorcategory.Errorf(errorcategory.UserInput, "source '%s' is not a profile", source)
++		}
+ 	}
+ 
+ 	safeTarget := strings.ReplaceAll(target, ".", " ")
+-	existingMap := existing.(map[string]interface{})
++	existingMap, _ := toStringMap(existing)
+ 	newProfile := make(map[string]interface{})
+ 	for k, v := range existingMap {
+ 		if isPluginConfigSection(v) {
+@@ -245,7 +282,7 @@ func (c *Config) CopyProfile(source string, target string) error {
+ 	}
+ 	newProfile["profile_name"] = safeTarget
+ 
+-	runtimeViper.Set(safeTarget, newProfile)
++	runtimeViper.Set(profileTableKeyForWrite(runtimeViper, safeTarget), newProfile)
+ 
+ 	return writeConfig(runtimeViper)
+ }
+@@ -254,17 +291,8 @@ func (c *Config) ListProfiles() error {
+ 	runtimeViper := viper.GetViper()
+ 	var profiles []string
+ 
+-	for _, value := range runtimeViper.AllSettings() {
+-		if !isProfile(value) {
+-			continue
+-		}
+-		var displayName string
+-		switch v := value.(type) {
+-		case map[string]interface{}:
+-			displayName, _ = v["display_name"].(string)
+-		case map[string]string:
+-			displayName = v["display_name"]
+-		}
++	for _, entry := range listProfileEntries(runtimeViper) {
++		displayName, _ := entry.settings["display_name"].(string)
+ 		if displayName != "" && !slices.Contains(profiles, displayName) {
+ 			profiles = append(profiles, displayName)
+ 		}
+@@ -303,7 +331,10 @@ func (c *Config) PrintConfig() error {
+ 
+ 		fmt.Print(string(configFile))
+ 	} else {
+-		configs := viper.GetStringMapString(profileName)
++		configs := viper.GetStringMapString(ProfilesTableName + "." + profileName)
++		if len(configs) == 0 {
++			configs = viper.GetStringMapString(profileName)
++		}
+ 
+ 		if len(configs) > 0 {
+ 			fmt.Printf("[%s]\n", profileName)
+@@ -321,19 +352,19 @@ func (c *Config) PrintConfig() error {
+ func (c *Config) GetInstalledPlugins() []string {
+ 	runtimeViper := viper.GetViper()
+ 
+-	return runtimeViper.GetStringSlice("installed_plugins")
++	return runtimeViper.GetStringSlice(InstalledPluginsKey)
+ }
+ 
+ // GetMachineUUID returns the persistent machine UUID from config,
+ // generating and saving one if it doesn't exist.
+ func (c *Config) GetMachineUUID() string {
+ 	runtimeViper := viper.GetViper()
+-	id := runtimeViper.GetString("machine_uuid")
++	id := runtimeViper.GetString(MachineUUIDKey)
+ 	if id != "" {
+ 		return id
+ 	}
+ 	id = uuid.NewString()
+-	_ = c.WriteConfigField("machine_uuid", id)
++	_ = c.WriteConfigField(MachineUUIDKey, id)
+ 	return id
+ }
+ 
+@@ -365,12 +396,15 @@ func (c *Config) SwitchProfile(profileName string) error {
+ 
+ // reservedTopLevelKeys are config keys that sit alongside profiles at the top
+ // level of the file but are not profiles. They are excluded from profile removal
+-// so that a name collision cannot destroy machine-wide settings.
++// so that a name collision cannot destroy machine-wide settings — or, for
++// "profiles", the entire v2 profile table.
+ var reservedTopLevelKeys = map[string]bool{
+-	"color":             true,
+-	"installed_plugins": true,
+-	"machine_uuid":      true,
+-	"plugin_configs":    true,
++	ConfigVersionName:   true,
++	ProfilesTableName:   true,
++	ColorName:           true,
++	InstalledPluginsKey: true,
++	MachineUUIDKey:      true,
++	PluginConfigsKey:    true,
+ 	"project-name":      true,
+ 	UserInfoName:        true,
+ }
+@@ -408,44 +442,44 @@ func (c *Config) RemoveProfile(profileName string) error {
+ 	var err error
+ 	var matched bool
+ 
+-	for field, value := range runtimeViper.AllSettings() {
+-		if isProfile(value) {
+-			var profileNameAttr string
+-			switch v := value.(type) {
+-			case map[string]interface{}:
+-				if pn, ok := v["profile_name"].(string); ok {
+-					profileNameAttr = pn
+-				}
+-			case map[string]string:
+-				profileNameAttr = v["profile_name"]
+-			}
+-			if field == profileName || profileNameAttr == profileName {
+-				matched = true
+-
+-				runtimeViper, err = removeKey(runtimeViper, field)
+-				if err != nil {
+-					return err
+-				}
+-
+-				deleteLivemodeKey(LiveModeAPIKeyName, field)
+-			}
++	for _, entry := range listProfileEntries(runtimeViper) {
++		if !entry.matches(profileName) {
++			continue
+ 		}
+-	}
+ 
+-	// The enumeration above only finds tables that isProfile recognizes, which
+-	// requires a display_name, and it cannot see a profile whose name contains a
+-	// period at all because viper reads that back as nesting. Fall back to
+-	// addressing the table by its full key path, which hits exactly that profile
+-	// and leaves siblings intact.
+-	if !matched && isProfileTable(runtimeViper, profileName) {
+ 		matched = true
+ 
+-		runtimeViper, err = removeKey(runtimeViper, profileName)
++		runtimeViper, err = removeKey(runtimeViper, entry.key)
+ 		if err != nil {
+ 			return err
+ 		}
+ 
+-		deleteLivemodeKey(LiveModeAPIKeyName, profileName)
++		deleteLivemodeKey(LiveModeAPIKeyName, entry.name)
++	}
++
++	// A top-level profile is only found above when isProfile recognizes it, which
++	// requires a display_name, and a profile whose name contains a period is
++	// invisible to the enumeration entirely because viper reads that back as
++	// nesting. Fall back to addressing the table by its full key path, which hits
++	// exactly that profile and leaves siblings intact. The v2 path is tried first
++	// for the same reason reads prefer it.
++	if !matched {
++		for _, key := range []string{ProfilesTableName + "." + profileName, profileName} {
++			if !isProfileTable(runtimeViper, key) {
++				continue
++			}
++
++			matched = true
++
++			runtimeViper, err = removeKey(runtimeViper, key)
++			if err != nil {
++				return err
++			}
++
++			deleteLivemodeKey(LiveModeAPIKeyName, profileName)
++
++			break
++		}
+ 	}
+ 
+ 	if !matched {
+@@ -481,15 +515,13 @@ func (c *Config) RemoveAllProfiles() error {
+ 	runtimeViper := viper.GetViper()
+ 	var err error
+ 
+-	for field, value := range runtimeViper.AllSettings() {
+-		if isProfile(value) {
+-			runtimeViper, err = removeKey(runtimeViper, field)
+-			if err != nil {
+-				return err
+-			}
+-
+-			deleteLivemodeKey(LiveModeAPIKeyName, field)
++	for _, entry := range listProfileEntries(runtimeViper) {
++		runtimeViper, err = removeKey(runtimeViper, entry.key)
++		if err != nil {
++			return err
+ 		}
++
++		deleteLivemodeKey(LiveModeAPIKeyName, entry.name)
+ 	}
+ 
+ 	return writeConfig(runtimeViper)
+@@ -501,31 +533,24 @@ func (c *Config) RemoveAuthFields(profileName string) error {
+ 	runtimeViper := viper.GetViper()
+ 	var matched bool
+ 
+-	for field, value := range runtimeViper.AllSettings() {
+-		if isProfile(value) {
+-			var profileNameAttr string
+-			switch v := value.(type) {
+-			case map[string]interface{}:
+-				if pn, ok := v["profile_name"].(string); ok {
+-					profileNameAttr = pn
+-				}
+-			case map[string]string:
+-				profileNameAttr = v["profile_name"]
+-			}
+-			if field == profileName || profileNameAttr == profileName {
+-				matched = true
+-
+-				p := &Profile{ProfileName: field}
+-				runtimeViper = p.deleteAuthFields(runtimeViper)
+-				deleteLivemodeKey(LiveModeAPIKeyName, field)
+-			}
++	for _, entry := range listProfileEntries(runtimeViper) {
++		if !entry.matches(profileName) {
++			continue
+ 		}
++
++		matched = true
++
++		p := &Profile{ProfileName: entry.name}
++		runtimeViper = p.deleteAuthFields(runtimeViper)
++		deleteLivemodeKey(LiveModeAPIKeyName, entry.name)
+ 	}
+ 
+ 	// Profiles with a period in the name are nested tables that the enumeration
+ 	// above cannot see. Clearing them by name is the only way for a user to log
+-	// out of one, so handle that case explicitly.
+-	if !matched && isNestedProfileName(profileName) && runtimeViper.IsSet(profileName) {
++	// out of one, so handle that case explicitly. deleteAuthFields clears both
++	// layouts, so this covers a dotted profile wherever it lives.
++	if !matched && isNestedProfileName(profileName) &&
++		(runtimeViper.IsSet(ProfilesTableName+"."+profileName) || runtimeViper.IsSet(profileName)) {
+ 		p := &Profile{ProfileName: profileName}
+ 		runtimeViper = p.deleteAuthFields(runtimeViper)
+ 		deleteLivemodeKey(LiveModeAPIKeyName, profileName)
+@@ -549,12 +574,10 @@ func (c *Config) RemoveAuthFields(profileName string) error {
+ func (c *Config) RemoveAllAuthFields() error {
+ 	runtimeViper := viper.GetViper()
+ 
+-	for field, value := range runtimeViper.AllSettings() {
+-		if isProfile(value) {
+-			p := &Profile{ProfileName: field}
+-			runtimeViper = p.deleteAuthFields(runtimeViper)
+-			deleteLivemodeKey(LiveModeAPIKeyName, field)
+-		}
++	for _, entry := range listProfileEntries(runtimeViper) {
++		p := &Profile{ProfileName: entry.name}
++		runtimeViper = p.deleteAuthFields(runtimeViper)
++		deleteLivemodeKey(LiveModeAPIKeyName, entry.name)
+ 	}
+ 
+ 	deleteTopLevelLivemodeKey(UATKeychainItemKey)
+@@ -595,8 +618,13 @@ func isNestedProfileName(profileName string) bool {
+ 	return profileName != "" && strings.Contains(profileName, ".")
+ }
+ 
+-// isProfile identifies whether a config entry pertains to a user profile.
+-// A profile is a map that contains a display_name field.
++// isProfile identifies whether a top-level config entry pertains to a user
++// profile. At the top level a profile is indistinguishable from a settings table
++// except by its contents, so it is identified by its display_name field.
++//
++// Entries inside the v2 profiles table need no such guess: every table in there
++// is a profile by definition. Use listProfileEntries to enumerate profiles in a
++// way that covers both layouts.
+ func isProfile(value interface{}) bool {
+ 	switch v := value.(type) {
+ 	case map[string]interface{}:
+@@ -609,6 +637,163 @@ func isProfile(value interface{}) bool {
+ 	return false
+ }
+ 
++// configVersion reports the schema version recorded in the config file. A v1 file
++// records no config_version key, so an absent key reports ConfigVersionV1.
++//
++// It errors when the recorded version is one this binary cannot act on: either
++// unreadable as a version number, or newer than MaxSupportedConfigVersion. Both
++// are errors rather than a fallback to v1, because v1 means "flat layout" to every
++// caller, and a flat write into a file whose profiles are nested lands a second
++// copy that the read path then shadows — a write that reports success and is
++// invisible to the next read.
++//
++// On success the version is always >= ConfigVersionV1; 0 is returned only with an
++// error.
++func configVersion(v *viper.Viper) (int, error) {
++	raw := v.Get(ConfigVersionName)
++	if raw == nil {
++		return ConfigVersionV1, nil
++	}
++
++	// GetInt discards the cast error, so an unreadable value arrives here as 0 and
++	// is caught by the range check rather than by inspecting the error.
++	version := v.GetInt(ConfigVersionName)
++	if version < ConfigVersionV1 {
++		return 0, errorcategory.Errorf(errorcategory.Filesystem,
++			"%s is set to %v, which is not a version number", ConfigVersionName, raw)
++	}
++
++	if version > MaxSupportedConfigVersion {
++		return version, unsupportedConfigVersionError(version)
++	}
++
++	return version, nil
++}
++
++// isMigrated reports whether the config file stores profiles in the v2 layout,
++// under the reserved profiles table.
++func isMigrated(v *viper.Viper) bool {
++	version, err := configVersion(v)
++	return err == nil && version >= ConfigVersionV2
++}
++
++// profileTableKeyForWrite returns the key a whole profile table should be
++// written to, matching the layout the config file already uses.
++func profileTableKeyForWrite(v *viper.Viper, profileName string) string {
++	if isMigrated(v) {
++		return ProfilesTableName + "." + profileName
++	}
++
++	return profileName
++}
++
++// profileEntry is one profile found in the config file, in either layout.
++type profileEntry struct {
++	// name is the profile's name, e.g. "default". Keyring item IDs are prefixed
++	// with this name in both layouts, so it is what credential lookups need.
++	name string
++
++	// key is the viper key of the profile's table: "default" in a v1 file,
++	// "profiles.default" in a v2 file.
++	key string
++
++	// settings is the contents of the profile's table.
++	settings map[string]interface{}
++}
++
++// matches reports whether this entry is the profile the user named, either by
++// its table name or by its recorded profile_name.
++func (e profileEntry) matches(profileName string) bool {
++	if e.name == profileName {
++		return true
++	}
++
++	recorded, _ := e.settings["profile_name"].(string)
++
++	return recorded == profileName
++}
++
++// listProfileEntries returns every profile in the config file, reading both the
++// v2 profiles table and the v1 top level.
++//
++// Both layouts are scanned because a migrated file can still acquire a top-level
++// profile table: this CLI, and any plugin old enough not to know about the
++// profiles table, writes one. A v1 entry is skipped when a v2 profile of the
++// same name exists, so the migrated copy always wins, matching the read
++// precedence in ReadProfileString.
++func listProfileEntries(v *viper.Viper) []profileEntry {
++	settings := v.AllSettings()
++	entries := make([]profileEntry, 0, len(settings))
++	nestedNames := make(map[string]bool)
++
++	if nested, ok := toStringMap(settings[ProfilesTableName]); ok {
++		for name, value := range nested {
++			table, ok := toStringMap(value)
++			if !ok || !holdsProfileFields(table) {
++				continue
++			}
++
++			nestedNames[name] = true
++			entries = append(entries, profileEntry{
++				name:     name,
++				key:      ProfilesTableName + "." + name,
++				settings: table,
++			})
++		}
++	}
++
++	for name, value := range settings {
++		if name == ProfilesTableName || nestedNames[name] || !isProfile(value) {
++			continue
++		}
++
++		table, _ := toStringMap(value)
++		entries = append(entries, profileEntry{name: name, key: name, settings: table})
++	}
++
++	// AllSettings returns a map, so sort for stable output and stable ordering of
++	// the writes that follow.
++	sort.Slice(entries, func(i, j int) bool { return entries[i].name < entries[j].name })
++
++	return entries
++}
++
++// holdsProfileFields reports whether a table inside the profiles table is a
++// profile rather than a container of them.
++//
++// Viper splits keys on ".", so a hand-written profile whose name contains a
++// period reads back as nesting: profiles."a.b" becomes profiles -> a -> b. Every
++// profile field is a scalar, so requiring at least one keeps such a container
++// from being listed and removed as if it were a profile named "a". Migration
++// never produces one — it leaves a dotted profile at the top level, where the
++// existing by-name fallbacks handle it.
++func holdsProfileFields(table map[string]interface{}) bool {
++	for _, value := range table {
++		if _, isTable := toStringMap(value); !isTable {
++			return true
++		}
++	}
++
++	return false
++}
++
++// toStringMap normalizes the two map shapes viper hands back for a TOML table.
++func toStringMap(value interface{}) (map[string]interface{}, bool) {
++	switch v := value.(type) {
++	case map[string]interface{}:
++		return v, true
++	case map[string]string:
++		normalized := make(map[string]interface{}, len(v))
++		for key, item := range v {
++			normalized[key] = item
++		}
++
++		return normalized, true
++	}
++
++	return nil, false
++}
++
+ // WriteConfigField updates a configuration field and writes the updated
+ // configuration to disk.
+ func (c *Config) WriteConfigField(field string, value interface{}) error {
+@@ -620,6 +805,16 @@ func (c *Config) WriteConfigField(field string, value interface{}) error {
+ 
+ // writeConfig writes a viper instance to the config file and syncs the global viper.
+ func writeConfig(runtimeViper *viper.Viper) error {
++	// Refuse to write a file whose layout version this binary does not know. Both
++	// candidate layouts are a guess at that point, and the flat guess is silently
++	// shadowed by the nested copy, so a login would report success while leaving
++	// the credential unreadable. Checked on the global viper, not runtimeViper:
++	// writeProfile passes a scratch viper that has not merged the file yet, which
++	// is the same reason configFieldForWrite reads the global.
++	if _, err := configVersion(viper.GetViper()); err != nil {
++		return err
++	}
++
+ 	profilesFile := viper.ConfigFileUsed()
+ 	runtimeViper.SetConfigFile(profilesFile)
+ 	configType := strings.TrimPrefix(filepath.Ext(profilesFile), ".")
+@@ -633,9 +828,20 @@ func writeConfig(runtimeViper *viper.Viper) error {
+ 		return err
+ 	}
+ 
+-	// Reset global viper and re-read from file.
+-	// We must reset because ReadInConfig merges with existing values rather than
+-	// replacing them - so deleted keys would persist without this reset.
++	return ReloadConfigFile()
++}
++
++// ReloadConfigFile re-reads the config file into the global viper, replacing what
++// is already loaded rather than merging into it. Anything that rewrites the file
++// behind viper's back — the config migration, for one — needs this to see its own
++// changes.
++//
++// The reset matters: ReadInConfig merges with existing values, so keys the
++// rewrite removed would otherwise linger in memory.
++func ReloadConfigFile() error {
++	profilesFile := viper.ConfigFileUsed()
++	configType := strings.TrimPrefix(filepath.Ext(profilesFile), ".")
++
+ 	viper.Reset()
+ 	viper.SetConfigFile(profilesFile)
+ 	viper.SetConfigType(configType)
+diff --git a/pkg/config/config_layout_test.go b/pkg/config/config_layout_test.go
+new file mode 100644
+index 0000000..7d1b3d4
+--- /dev/null
++++ b/pkg/config/config_layout_test.go
+@@ -0,0 +1,485 @@
++package config
++
++import (
++	"bytes"
++	"os"
++	"strings"
++	"testing"
++
++	"github.com/spf13/viper"
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
++)
++
++// The v2 layout keeps every profile under the reserved profiles table, which is
++// what makes a profile name unable to collide with a setting. Note that
++// installed_plugins is both a real setting here and a profile name — something
++// this release line cannot produce, but can be handed by a v2 CLI.
++const v2ConfigFile = `config_version = 2
++installed_plugins = ['apps']
++
++[profiles.default]
++  account_id = 'acct_v2'
++  device_name = 'device-v2'
++  display_name = 'V2 Account'
++  test_mode_api_key = 'sk_test_v2_key'
++  test_mode_key_expires_at = '2026-01-02'
++
++[profiles.installed_plugins]
++  display_name = 'Collides With A Setting'
++  test_mode_api_key = 'sk_test_collide_key'
++`
++
++const v1ConfigFile = `installed_plugins = ['apps']
++
++[default]
++  account_id = 'acct_v1'
++  device_name = 'device-v1'
++  display_name = 'V1 Account'
++  test_mode_api_key = 'sk_test_v1_key'
++  test_mode_key_expires_at = '2026-01-02'
++`
++
++func captureStdout(t *testing.T, fn func() error) string {
++	t.Helper()
++
++	original := os.Stdout
++	r, w, err := os.Pipe()
++	require.NoError(t, err)
++	os.Stdout = w
++
++	fnErr := fn()
++
++	w.Close()
++	os.Stdout = original
++
++	var buf bytes.Buffer
++	buf.ReadFrom(r)
++
++	require.NoError(t, fnErr)
++
++	return buf.String()
++}
++
++func TestReadProfileFromV2Layout(t *testing.T) {
++	setupProfileConfig(t, v2ConfigFile)
++
++	p := Profile{ProfileName: "default"}
++
++	deviceName, err := p.GetDeviceName()
++	require.NoError(t, err)
++	require.Equal(t, "device-v2", deviceName)
++
++	accountID, err := p.GetAccountID()
++	require.NoError(t, err)
++	require.Equal(t, "acct_v2", accountID)
++
++	apiKey, err := p.GetAPIKey(false)
++	require.NoError(t, err)
++	require.Equal(t, "sk_test_v2_key", apiKey)
++
++	require.Equal(t, "V2 Account", p.GetDisplayName())
++	require.True(t, p.HasAPIKey(false))
++}
++
++func TestReadProfileFallsBackToV1Layout(t *testing.T) {
++	setupProfileConfig(t, v1ConfigFile)
++
++	p := Profile{ProfileName: "default"}
++
++	deviceName, err := p.GetDeviceName()
++	require.NoError(t, err)
++	require.Equal(t, "device-v1", deviceName)
++
++	apiKey, err := p.GetAPIKey(false)
++	require.NoError(t, err)
++	require.Equal(t, "sk_test_v1_key", apiKey)
++
++	require.Equal(t, "V1 Account", p.GetDisplayName())
++}
++
++// A migrated file can still pick up a top-level profile table, because this CLI
++// and any plugin old enough not to know about the profiles table writes one. The
++// migrated copy is the one that wins.
++func TestReadProfilePrefersV2LayoutOverV1Shadow(t *testing.T) {
++	setupProfileConfig(t, v2ConfigFile+`
++[default]
++  device_name = 'shadow-device'
++  display_name = 'Shadow Account'
++  test_mode_api_key = 'sk_test_shadow_key'
++`)
++
++	p := Profile{ProfileName: "default"}
++
++	deviceName, err := p.GetDeviceName()
++	require.NoError(t, err)
++	require.Equal(t, "device-v2", deviceName)
++
++	apiKey, err := p.GetAPIKey(false)
++	require.NoError(t, err)
++	require.Equal(t, "sk_test_v2_key", apiKey)
++}
++
++// The point of the restructure: a profile named after a setting no longer
++// overwrites that setting, and this release line has to read both back.
++func TestProfileNamedAfterSettingDoesNotCollide(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile)
++
++	require.Equal(t, []string{"apps"}, c.GetInstalledPlugins())
++
++	p := Profile{ProfileName: "installed_plugins"}
++	require.Equal(t, "Collides With A Setting", p.GetDisplayName())
++}
++
++// Legacy field names have to keep resolving in a migrated file, since the
++// migration moves fields without renaming them.
++func TestLegacyFieldAliasResolvesInV2Layout(t *testing.T) {
++	setupProfileConfig(t, `config_version = 2
++
++[profiles.default]
++  display_name = 'Legacy Account'
++  secret_key = 'sk_test_legacy_key'
++`)
++
++	p := Profile{ProfileName: "default"}
++
++	require.True(t, p.HasAPIKey(false))
++
++	apiKey, err := p.GetAPIKey(false)
++	require.NoError(t, err)
++	require.Equal(t, "sk_test_legacy_key", apiKey)
++}
++
++func TestWriteConfigFieldUsesV2LayoutWhenMigrated(t *testing.T) {
++	_, profilesFile := setupProfileConfig(t, v2ConfigFile)
++
++	p := Profile{ProfileName: "default"}
++	require.NoError(t, p.WriteConfigField("color", "on"))
++
++	require.Equal(t, "on", viper.GetString("profiles.default.color"))
++
++	contents := string(helperLoadBytes(t, profilesFile))
++	require.Contains(t, contents, "[profiles.default]")
++	// A flat write into a migrated file would create a second, shadow copy of the
++	// profile at the top level, which the read above would then shadow in turn.
++	require.NotContains(t, contents, "\n[default]")
++}
++
++func TestWriteConfigFieldStaysFlatWhenNotMigrated(t *testing.T) {
++	_, profilesFile := setupProfileConfig(t, v1ConfigFile)
++
++	p := Profile{ProfileName: "default"}
++	require.NoError(t, p.WriteConfigField("color", "on"))
++
++	require.Equal(t, "on", viper.GetString("default.color"))
++
++	contents := string(helperLoadBytes(t, profilesFile))
++	require.NotContains(t, contents, "profiles")
++}
++
++// Nothing on this release line migrates a file, so a v1 file stays v1 even after
++// it is rewritten.
++func TestWritingDoesNotMigrateAConfigFile(t *testing.T) {
++	_, profilesFile := setupProfileConfig(t, v1ConfigFile)
++
++	p := Profile{
++		ProfileName:    "default",
++		DeviceName:     "rewritten-device",
++		TestModeAPIKey: "sk_test_rewritten_key",
++		DisplayName:    "Rewritten Account",
++	}
++	require.NoError(t, p.CreateProfile())
++
++	require.False(t, viper.IsSet(ConfigVersionName))
++	require.Equal(t, "rewritten-device", viper.GetString("default.device_name"))
++
++	contents := string(helperLoadBytes(t, profilesFile))
++	require.NotContains(t, contents, "profiles")
++}
++
++// Logging in on a migrated file has to write into the profiles table. A flat
++// write would leave the fresh credentials shadowed by the stale nested copy, so
++// the login would be invisible to the CLI that just performed it.
++func TestLoginWritesIntoV2LayoutWhenMigrated(t *testing.T) {
++	setupProfileConfig(t, v2ConfigFile)
++
++	p := Profile{
++		ProfileName:    "default",
++		DeviceName:     "rewritten-device",
++		TestModeAPIKey: "sk_test_rewritten_key",
++		DisplayName:    "Rewritten Account",
++	}
++	require.NoError(t, p.CreateProfile())
++
++	require.Equal(t, "rewritten-device", viper.GetString("profiles.default.device_name"))
++	require.Equal(t, "sk_test_rewritten_key", viper.GetString("profiles.default.test_mode_api_key"))
++	require.False(t, viper.IsSet("default.device_name"))
++
++	apiKey, err := p.GetAPIKey(false)
++	require.NoError(t, err)
++	require.Equal(t, "sk_test_rewritten_key", apiKey)
++
++	// Settings that share the top level with profiles must survive the write.
++	require.Equal(t, []string{"apps"}, viper.GetStringSlice("installed_plugins"))
++	require.Equal(t, ConfigVersionV2, viper.GetInt(ConfigVersionName))
++}
++
++// A delete has to clear the field from both layouts, or a stale copy is left
++// behind in a file that contains both.
++func TestDeleteConfigFieldClearsBothLayouts(t *testing.T) {
++	setupProfileConfig(t, v2ConfigFile+`
++[default]
++  device_name = 'shadow-device'
++  display_name = 'Shadow Account'
++`)
++
++	p := Profile{ProfileName: "default"}
++	require.NoError(t, p.DeleteConfigField(DeviceNameName))
++
++	require.False(t, viper.IsSet("profiles.default.device_name"))
++	require.False(t, viper.IsSet("default.device_name"))
++	require.Equal(t, "V2 Account", viper.GetString("profiles.default.display_name"))
++}
++
++func TestRedactLivemodeValueInV2Layout(t *testing.T) {
++	setupProfileConfig(t, `config_version = 2
++
++[profiles.default]
++  display_name = 'V2 Account'
++  live_mode_api_key = 'sk_live_1234567890abcdef'
++`)
++
++	p := Profile{ProfileName: "default"}
++	p.redactAllLivemodeValues()
++
++	require.Equal(t, "sk_live_************cdef", viper.GetString("profiles.default.live_mode_api_key"))
++	require.False(t, viper.IsSet("default.live_mode_api_key"))
++}
++
++func TestListProfilesReadsBothLayouts(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile+`
++[legacy]
++  display_name = 'Legacy Account'
++`)
++	c.Profile = Profile{ProfileName: "default"}
++
++	output := captureStdout(t, c.ListProfiles)
++
++	require.Contains(t, output, "V2 Account")
++	require.Contains(t, output, "Collides With A Setting")
++	require.Contains(t, output, "Legacy Account")
++	require.Contains(t, output, "* V2 Account (active)")
++}
++
++func TestRemoveProfileInV2Layout(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile+`
++[profiles.legacy]
++  display_name = 'Legacy Account'
++`)
++
++	require.NoError(t, c.RemoveProfile("legacy"))
++
++	require.False(t, viper.IsSet("profiles.legacy"))
++	require.Equal(t, "V2 Account", viper.GetString("profiles.default.display_name"))
++}
++
++// The reserved-key guard predates the restructure and still refuses a profile
++// named after a setting, even though the v2 layout makes removing one safe.
++// Loosening a guard on a destructive operation is not worth it here: this
++// release line cannot create such a profile, and a v2 CLI can remove it.
++func TestRemoveProfileStillRefusesAReservedName(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile)
++
++	require.ErrorContains(t, c.RemoveProfile("installed_plugins"), "reserved config key")
++	require.True(t, viper.IsSet("profiles.installed_plugins"))
++	require.Equal(t, []string{"apps"}, viper.GetStringSlice("installed_plugins"))
++}
++
++// Without this, --remove-profile profiles matches the v2 [profiles] table and
++// deletes every profile.
++func TestRemoveProfileRefusesTheProfilesTable(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile)
++
++	require.ErrorContains(t, c.RemoveProfile(ProfilesTableName), "reserved config key")
++	require.True(t, viper.IsSet("profiles.default"))
++	require.True(t, viper.IsSet("profiles.installed_plugins"))
++}
++
++func TestRemoveProfileReportsNotFoundInV2Layout(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile)
++
++	require.ErrorIs(t, c.RemoveProfile("nonexistent"), ErrProfileNotFound)
++}
++
++// A profile the migration left partially written has no display_name, so it is
++// only recognizable by living inside the profiles table.
++func TestRemoveProfileWithoutDisplayNameInV2Layout(t *testing.T) {
++	c, _ := setupProfileConfig(t, `config_version = 2
++
++[profiles.partial]
++  test_mode_api_key = 'sk_test_partial_key'
++`)
++
++	require.NoError(t, c.RemoveProfile("partial"))
++	require.False(t, viper.IsSet("profiles.partial"))
++}
++
++func TestRemoveAllProfilesInV2Layout(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile)
++
++	require.NoError(t, c.RemoveAllProfiles())
++
++	require.False(t, viper.IsSet("profiles.default"))
++	require.False(t, viper.IsSet("profiles.installed_plugins"))
++	require.Equal(t, []string{"apps"}, viper.GetStringSlice("installed_plugins"))
++}
++
++func TestRemoveAuthFieldsInV2Layout(t *testing.T) {
++	c, _ := setupProfileConfig(t, `config_version = 2
++
++[profiles.default]
++  color = 'on'
++  display_name = 'V2 Account'
++  test_mode_api_key = 'sk_test_v2_key'
++`)
++
++	require.NoError(t, c.RemoveAuthFields("default"))
++
++	require.False(t, viper.IsSet("profiles.default.test_mode_api_key"))
++	require.Equal(t, "on", viper.GetString("profiles.default.color"))
++}
++
++func TestCopyProfileInV2Layout(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile)
++
++	require.NoError(t, c.CopyProfile("default", "backup"))
++
++	require.Equal(t, "sk_test_v2_key", viper.GetString("profiles.backup.test_mode_api_key"))
++	require.Equal(t, "backup", viper.GetString("profiles.backup.profile_name"))
++	require.False(t, viper.IsSet("backup"))
++}
++
++func TestPrintConfigReadsV2Layout(t *testing.T) {
++	c, _ := setupProfileConfig(t, v2ConfigFile)
++	c.Profile = Profile{ProfileName: "installed_plugins"}
++
++	output := captureStdout(t, c.PrintConfig)
++
++	require.Contains(t, output, "[installed_plugins]")
++	require.Contains(t, output, "display_name=Collides With A Setting")
++}
++
++// Viper splits keys on ".", so a hand-written dotted profile name inside the
++// profiles table reads back as a container of tables rather than a profile.
++// Listing it as a profile named "example" would be wrong.
++func TestDottedNameInsideProfilesTableIsNotListedAsAProfile(t *testing.T) {
++	c, _ := setupProfileConfig(t, `config_version = 2
++
++[profiles."example.project"]
++  display_name = 'Dotted Account'
++`)
++	c.Profile = Profile{ProfileName: "default"}
++
++	output := captureStdout(t, c.ListProfiles)
++
++	require.Contains(t, output, "No profiles found.")
++	require.ErrorIs(t, c.RemoveProfile("example"), ErrProfileNotFound)
++
++	// Addressing it by its full name still works, which is how a user removes it.
++	require.NoError(t, c.RemoveProfile("example.project"))
++	require.False(t, viper.IsSet(`profiles.example.project`))
++}
++
++// A config_version this binary does not know could only have been written by a
++// newer CLI, which is a routine situation the moment a v3 ships: a pinned CLI in
++// CI, or a synced home directory, reads the file a newer binary migrated. This
++// release line is the one most likely to meet such a file.
++const unsupportedVersionConfigFile = `config_version = 3
++
++[profiles.default]
++  device_name = 'device-v3'
++  display_name = 'V3 Account'
++  test_mode_api_key = 'sk_test_v3_key'
++`
++
++func readVersionFrom(t *testing.T, contents string) (int, error) {
++	t.Helper()
++
++	v := viper.New()
++	v.SetConfigType("toml")
++	require.NoError(t, v.ReadConfig(strings.NewReader(contents)))
++
++	return configVersion(v)
++}
++
++func TestConfigVersionTreatsAbsentKeyAsV1(t *testing.T) {
++	version, err := readVersionFrom(t, v1ConfigFile)
++	require.NoError(t, err)
++	require.Equal(t, ConfigVersionV1, version)
++}
++
++// Viper truncates a float before we ever see it, so these are rejected by the
++// range check rather than by a cast failure. A value that truncates into the
++// supported range is deliberately left alone.
++func TestConfigVersionRejectsValuesThatAreNotVersionNumbers(t *testing.T) {
++	for _, raw := range []string{"'abc'", "0", "0.3", "-1", "-1.12", "''"} {
++		t.Run(raw, func(t *testing.T) {
++			_, err := readVersionFrom(t, "config_version = "+raw+"\n")
++			require.ErrorContains(t, err, "is not a version number")
++		})
++	}
++}
++
++func TestConfigVersionRejectsVersionsNewerThanSupported(t *testing.T) {
++	_, err := readVersionFrom(t, unsupportedVersionConfigFile)
++	require.ErrorContains(t, err, "understands up to 2")
++
++	category, ok := errorcategory.Get(err)
++	require.True(t, ok)
++	require.Equal(t, errorcategory.Filesystem, category)
++}
++
++// Reads stay best-effort on an unknown version: both layouts are tried, so the
++// profile a newer CLI wrote is still found and read-only commands keep working.
++func TestReadProfileStillWorksWhenVersionIsNewerThanSupported(t *testing.T) {
++	setupProfileConfig(t, unsupportedVersionConfigFile)
++
++	p := Profile{ProfileName: "default"}
++
++	deviceName, err := p.GetDeviceName()
++	require.NoError(t, err)
++	require.Equal(t, "device-v3", deviceName)
++
++	require.Equal(t, "V3 Account", p.GetDisplayName())
++}
++
++// Writes are refused instead, because both candidate layouts are a guess at that
++// point and the flat guess is silently shadowed by the nested copy.
++func TestWriteRefusedWhenVersionIsNewerThanSupported(t *testing.T) {
++	_, profilesFile := setupProfileConfig(t, unsupportedVersionConfigFile)
++
++	p := Profile{ProfileName: "default"}
++	require.ErrorContains(t, p.WriteConfigField("color", "on"), "understands up to 2")
++
++	// The refusal has to leave the file untouched, not half-written.
++	require.Equal(t, unsupportedVersionConfigFile, string(helperLoadBytes(t, profilesFile)))
++}
++
++func TestWriteRefusedWhenVersionIsNotAVersionNumber(t *testing.T) {
++	setupProfileConfig(t, `config_version = 'abc'
++
++[profiles.default]
++  display_name = 'Malformed Version'
++`)
++
++	p := Profile{ProfileName: "default"}
++	require.ErrorContains(t, p.WriteConfigField("color", "on"), "is not a version number")
++}
++
++// An unknown version is not "migrated", so nothing downstream mistakes it for the
++// v2 layout it happens to resemble.
++func TestIsMigratedOnlyAtTheSupportedVersion(t *testing.T) {
++	setupProfileConfig(t, unsupportedVersionConfigFile)
++	require.False(t, isMigrated(viper.GetViper()))
++}
+diff --git a/pkg/config/migrate.go b/pkg/config/migrate.go
+new file mode 100644
+index 0000000..7dff0b4
+--- /dev/null
++++ b/pkg/config/migrate.go
+@@ -0,0 +1,482 @@
++package config
++
++import (
++	"bytes"
++	"fmt"
++	"os"
++	"path/filepath"
++	"reflect"
++	"sort"
++
++	"github.com/BurntSushi/toml"
++	"github.com/spf13/viper"
++
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
++	"github.com/stripe/stripe-cli/pkg/fsutil"
++)
++
++// ConfigBackupSuffix is appended to the config file name to name the backup that
++// the migration leaves behind, e.g. "config.toml.v1.bak".
++const ConfigBackupSuffix = ".v1.bak"
++
++// profileFieldNames are the field names that mark a table as a profile. A
++// top-level table is only migrated when it holds at least one of them, so an
++// unrecognized table is left where it is instead of being guessed into the
++// profiles table. Dual-read means leaving it alone costs nothing: the CLI still
++// finds it at the top level.
++var profileFieldNames = map[string]bool{
++	AccountIDName:               true,
++	ColorName:                   true,
++	DeviceNameName:              true,
++	DisplayNameName:             true,
++	IsTermsAcceptanceValidName:  true,
++	LiveModeAPIKeyName:          true,
++	LiveModeKeyExpiresAtName:    true,
++	LiveModePubKeyName:          true,
++	SandboxClaimURLName:         true,
++	SandboxExpiresAtName:        true,
++	TestModeAPIKeyName:          true,
++	TestModeKeyExpiresAtName:    true,
++	TestModePubKeyName:          true,
++	UserIDName:                  true,
++	"api_key":                   true,
++	"experimental":              true,
++	"profile_name":              true,
++	"publishable_key":           true,
++	"secret_key":                true,
++	"test_mode_publishable_key": true,
++}
++
++// migrationPlan is the v2 document the migration intends to write: every profile
++// under the profiles table, and the CLI's own settings left at the top level.
++type migrationPlan struct {
++	profiles map[string]map[string]interface{}
++	settings map[string]interface{}
++}
++
++// IsMigrated reports whether the loaded config file uses the v2 layout.
++func IsMigrated() bool {
++	return isMigrated(viper.GetViper())
++}
++
++// NeedsMigration reports whether the loaded config file should be rewritten in
++// the v2 layout. It answers from the config already in memory, so it costs
++// nothing on the common path.
++//
++// It does not check that migrating is safe for plugins, and it does not check
++// that the config file exists: a viper with no file loaded looks exactly like an
++// unmigrated one.
++func NeedsMigration() bool {
++	v := viper.GetViper()
++
++	if _, err := configVersion(v); err != nil {
++		// A version this binary cannot act on. writeConfig refuses such a file
++		// outright, so rewriting its layout is not on the table either.
++		return false
++	}
++
++	if !isMigrated(v) {
++		return true
++	}
++
++	return hasFlatProfileTable(v)
++}
++
++// hasFlatProfileTable reports whether a migrated config file still holds a
++// profile at the top level. An older CLI or plugin writing the same file does not
++// know about the profiles table, so it leaves one behind; folding it back in is
++// what stops the two copies from diverging.
++//
++// This mirrors the rule planMigration applies, so that NeedsMigration and the
++// migration itself always agree on whether there is work to do.
++func hasFlatProfileTable(v *viper.Viper) bool {
++	for key, value := range v.AllSettings() {
++		if reservedTopLevelKeys[key] {
++			continue
++		}
++
++		if table, ok := toStringMap(value); ok && looksLikeProfile(table) {
++			return true
++		}
++	}
++
++	return false
++}
++
++// MigrateConfigFile rewrites the config file at path in the v2 layout, moving
++// every profile under the reserved profiles table and recording
++// config_version = 2. It reports whether the file changed.
++//
++// The original file is copied to path + ConfigBackupSuffix first. The migrated
++// document is verified in memory and again after the write; a failure at either
++// point restores the backup and returns an error, so a partial or mangled file
++// is never left behind.
++//
++// A file whose config_version is newer than this binary understands is left
++// untouched and returns an error.
++//
++// This function does not decide *whether* to migrate. Callers own that.
++func MigrateConfigFile(path string) (bool, error) {
++	if err := fsutil.RefuseWriteThroughSymlinkOS(path, filepath.Dir(filepath.Dir(path)), filepath.Base(path)); err != nil {
++		return false, err
++	}
++
++	original, err := os.ReadFile(path)
++	if os.IsNotExist(err) {
++		// Nothing to migrate. A file written from scratch gets its layout from
++		// the normal write path.
++		return false, nil
++	} else if err != nil {
++		return false, err
++	}
++
++	plan, changed, err := planMigration(original)
++	if err != nil {
++		return false, err
++	}
++
++	if !changed {
++		return false, nil
++	}
++
++	migrated, err := encodePlan(plan)
++	if err != nil {
++		return false, err
++	}
++
++	// Verify before touching the file at all, so an encoding bug costs the user
++	// nothing.
++	if err := verifyPlan(plan, migrated); err != nil {
++		return false, err
++	}
++
++	backupPath := path + ConfigBackupSuffix
++	if err := writeFileSync(backupPath, original); err != nil {
++		return false, fmt.Errorf("could not back up %s: %w", path, err)
++	}
++
++	if err := replaceFileAtomically(path, migrated); err != nil {
++		return false, err
++	}
++
++	// Re-read what actually landed on disk. A truncated write or a rename that
++	// did not take is worth catching here rather than on the next command.
++	written, err := os.ReadFile(path)
++	if err == nil {
++		err = verifyPlan(plan, written)
++	}
++
++	if err != nil {
++		if restoreErr := writeFileSync(path, original); restoreErr != nil {
++			return false, fmt.Errorf("config migration failed (%v) and the original could not be restored: %w; a copy is at %s", err, restoreErr, backupPath)
++		}
++
++		return false, fmt.Errorf("config migration failed and was rolled back: %w", err)
++	}
++
++	return true, nil
++}
++
++// planMigration reads a config document and returns the v2 document to write.
++// changed is false when there is nothing to do: an already-migrated file with no
++// stray top-level profiles. A config_version newer than this binary understands
++// returns an error.
++func planMigration(contents []byte) (*migrationPlan, bool, error) {
++	// Decode raw TOML rather than going through viper, which lowercases every
++	// key. Round-tripping profile names through viper would rename a profile the
++	// user created with capitals in it.
++	var doc map[string]interface{}
++	if err := toml.Unmarshal(contents, &doc); err != nil {
++		return nil, false, fmt.Errorf("could not parse config file: %w", err)
++	}
++
++	version := configVersionOf(doc)
++	if version > MaxSupportedConfigVersion {
++		return nil, false, unsupportedConfigVersionError(version)
++	}
++
++	plan := &migrationPlan{
++		profiles: make(map[string]map[string]interface{}),
++		settings: make(map[string]interface{}),
++	}
++
++	alreadyV2 := version == ConfigVersionV2
++
++	// Start from the profiles already in the v2 table, if there are any.
++	nested, nestedIsContainer := profilesContainer(doc, alreadyV2)
++	if nestedIsContainer {
++		for name, value := range nested {
++			if table, ok := toStringMap(value); ok {
++				plan.profiles[name] = table
++			}
++		}
++	}
++
++	moved := 0
++
++	for key, value := range doc {
++		if key == ConfigVersionName {
++			continue
++		}
++
++		if key == ProfilesTableName && nestedIsContainer {
++			continue
++		}
++
++		table, isTable := toStringMap(value)
++		if !isTable || reservedProfileNameException(key, nestedIsContainer) || !looksLikeProfile(table) {
++			plan.settings[key] = value
++			continue
++		}
++
++		// A field already present in the v2 table wins: it is the copy the
++		// current CLI reads and writes, so the top-level table is the stale one.
++		if existing, ok := plan.profiles[key]; ok {
++			for field, fieldValue := range table {
++				if _, taken := existing[field]; !taken {
++					existing[field] = fieldValue
++				}
++			}
++		} else {
++			plan.profiles[key] = table
++		}
++
++		moved++
++	}
++
++	return plan, moved > 0 || !alreadyV2, nil
++}
++
++// reservedProfileNameException reports whether a top-level key must be treated
++// as a setting rather than as a profile. Only the profiles table itself
++// qualifies, and only when it is acting as the v2 container.
++func reservedProfileNameException(key string, nestedIsContainer bool) bool {
++	if key == ProfilesTableName {
++		return nestedIsContainer
++	}
++
++	return reservedTopLevelKeys[key]
++}
++
++// profilesContainer returns the v2 profiles table, if the document has one.
++//
++// A v1 file can contain a profile literally named "profiles", which occupies the
++// same key as the v2 container: nothing stops `stripe login --project-name
++// profiles`. The two are distinguishable because a profile holds scalar fields
++// while the container holds only tables, and because a migrated file says so
++// with config_version.
++func profilesContainer(doc map[string]interface{}, alreadyV2 bool) (map[string]interface{}, bool) {
++	table, ok := toStringMap(doc[ProfilesTableName])
++	if !ok {
++		return nil, false
++	}
++
++	if alreadyV2 {
++		return table, true
++	}
++
++	// In a v1 file, treat it as the container only if it cannot be a profile.
++	if looksLikeProfile(table) {
++		return nil, false
++	}
++
++	for _, value := range table {
++		if _, isTable := toStringMap(value); !isTable {
++			return nil, false
++		}
++	}
++
++	return table, true
++}
++
++// looksLikeProfile reports whether a table holds at least one recognized profile
++// field.
++func looksLikeProfile(table map[string]interface{}) bool {
++	for field := range table {
++		if profileFieldNames[field] {
++			return true
++		}
++	}
++
++	return false
++}
++
++// configVersionOf reads config_version out of a raw TOML document. TOML integers
++// decode as int64.
++func configVersionOf(doc map[string]interface{}) int {
++	switch version := doc[ConfigVersionName].(type) {
++	case int64:
++		return int(version)
++	case int:
++		return version
++	}
++
++	return 0
++}
++
++// encodePlan serializes a plan as a v2 TOML document.
++func encodePlan(plan *migrationPlan) ([]byte, error) {
++	doc := make(map[string]interface{}, len(plan.settings)+2)
++	for key, value := range plan.settings {
++		doc[key] = value
++	}
++
++	doc[ConfigVersionName] = ConfigVersionV2
++
++	profiles := make(map[string]interface{}, len(plan.profiles))
++	for name, table := range plan.profiles {
++		profiles[name] = table
++	}
++	doc[ProfilesTableName] = profiles
++
++	var buf bytes.Buffer
++	if err := toml.NewEncoder(&buf).Encode(doc); err != nil {
++		return nil, fmt.Errorf("could not encode migrated config: %w", err)
++	}
++
++	return buf.Bytes(), nil
++}
++
++// verifyPlan re-parses an encoded document and checks that it says exactly what
++// the plan intended: every profile field under the profiles table with its
++// original value, every setting still at the top level, and nothing extra.
++//
++// This is what makes the migration safe to run unattended. A serialization bug
++// that folded a profile name's case or dropped a field would otherwise silently
++// cost the user a credential.
++func verifyPlan(plan *migrationPlan, encoded []byte) error {
++	var doc map[string]interface{}
++	if err := toml.Unmarshal(encoded, &doc); err != nil {
++		return fmt.Errorf("migrated config does not parse: %w", err)
++	}
++
++	if got := configVersionOf(doc); got != ConfigVersionV2 {
++		return errorcategory.Errorf(errorcategory.Filesystem, "migrated config has config_version %d, want %d", got, ConfigVersionV2)
++	}
++
++	profiles, ok := toStringMap(doc[ProfilesTableName])
++	if !ok {
++		return errorcategory.Errorf(errorcategory.Filesystem, "migrated config has no %s table", ProfilesTableName)
++	}
++
++	for _, name := range sortedProfileNames(plan.profiles) {
++		table, ok := toStringMap(profiles[name])
++		if !ok {
++			return errorcategory.Errorf(errorcategory.Filesystem, "profile %q is missing from the migrated config", name)
++		}
++
++		for _, field := range sortedKeys(plan.profiles[name]) {
++			want := plan.profiles[name][field]
++			got, present := table[field]
++			if !present {
++				return errorcategory.Errorf(errorcategory.Filesystem, "profile %q lost field %q in the migrated config", name, field)
++			}
++
++			if !reflect.DeepEqual(want, got) {
++				return errorcategory.Errorf(errorcategory.Filesystem, "profile %q field %q changed value in the migrated config", name, field)
++			}
++		}
++
++		if len(table) != len(plan.profiles[name]) {
++			return errorcategory.Errorf(errorcategory.Filesystem, "profile %q gained fields in the migrated config", name)
++		}
++	}
++
++	if len(profiles) != len(plan.profiles) {
++		return errorcategory.Errorf(errorcategory.Filesystem, "migrated config has %d profiles, want %d", len(profiles), len(plan.profiles))
++	}
++
++	for _, key := range sortedKeys(plan.settings) {
++		got, present := doc[key]
++		if !present {
++			return errorcategory.Errorf(errorcategory.Filesystem, "setting %q is missing from the migrated config", key)
++		}
++
++		if !reflect.DeepEqual(plan.settings[key], got) {
++			return errorcategory.Errorf(errorcategory.Filesystem, "setting %q changed value in the migrated config", key)
++		}
++	}
++
++	// The settings, plus config_version and the profiles table.
++	if len(doc) != len(plan.settings)+2 {
++		return errorcategory.Errorf(errorcategory.Filesystem, "migrated config has %d top-level keys, want %d", len(doc), len(plan.settings)+2)
++	}
++
++	return nil
++}
++
++func sortedKeys(m map[string]interface{}) []string {
++	keys := make([]string, 0, len(m))
++	for key := range m {
++		keys = append(keys, key)
++	}
++	sort.Strings(keys)
++
++	return keys
++}
++
++func sortedProfileNames(m map[string]map[string]interface{}) []string {
++	names := make([]string, 0, len(m))
++	for name := range m {
++		names = append(names, name)
++	}
++	sort.Strings(names)
++
++	return names
++}
++
++// replaceFileAtomically writes contents to a temp file in the same directory and
++// renames it over path, so a reader either sees the old file or the new one.
++func replaceFileAtomically(path string, contents []byte) error {
++	dir := filepath.Dir(path)
++
++	temp, err := os.CreateTemp(dir, filepath.Base(path)+".tmp")
++	if err != nil {
++		return err
++	}
++	tempPath := temp.Name()
++
++	// Best effort: a failure below leaves the temp file behind, but the config
++	// file itself is untouched.
++	defer os.Remove(tempPath)
++
++	if err := writeAndSync(temp, contents); err != nil {
++		temp.Close()
++		return err
++	}
++
++	if err := temp.Chmod(os.FileMode(0600)); err != nil {
++		temp.Close()
++		return err
++	}
++
++	if err := temp.Close(); err != nil {
++		return err
++	}
++
++	return os.Rename(tempPath, path)
++}
++
++// writeFileSync writes contents to path with the config file's permissions and
++// flushes them to disk before returning.
++func writeFileSync(path string, contents []byte) error {
++	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.FileMode(0600))
++	if err != nil {
++		return err
++	}
++
++	if err := writeAndSync(file, contents); err != nil {
++		file.Close()
++		return err
++	}
++
++	return file.Close()
++}
++
++func writeAndSync(file *os.File, contents []byte) error {
++	if _, err := file.Write(contents); err != nil {
++		return err
++	}
++
++	return file.Sync()
++}
+diff --git a/pkg/config/migrate_test.go b/pkg/config/migrate_test.go
+new file mode 100644
+index 0000000..1c9ba38
+--- /dev/null
++++ b/pkg/config/migrate_test.go
+@@ -0,0 +1,398 @@
++package config
++
++import (
++	"os"
++	"path/filepath"
++	"runtime"
++	"testing"
++
++	"github.com/spf13/viper"
++	"github.com/stretchr/testify/require"
++)
++
++// writeConfigFileForMigration writes a config file to migrate and returns its
++// path. It deliberately does not initialize viper: the migration reads the file
++// directly.
++func writeConfigFileForMigration(t *testing.T, contents string) string {
++	t.Helper()
++
++	path := filepath.Join(t.TempDir(), "config.toml")
++	require.NoError(t, os.WriteFile(path, []byte(contents), 0600))
++
++	return path
++}
++
++const v1ConfigFileToMigrate = `installed_plugins = ['apps', 'projects']
++machine_uuid = 'f4a1c7de-0000-0000-0000-000000000000'
++
++[plugin_configs.__global]
++  updates = 'off'
++
++[user_info]
++  compartments = []
++
++[default]
++  account_id = 'acct_1'
++  device_name = 'device-1'
++  display_name = 'Account One'
++  test_mode_api_key = 'sk_test_one_key'
++
++["acme corp"]
++  account_id = 'acct_2'
++  display_name = 'Account Two'
++  test_mode_api_key = 'sk_test_two_key'
++`
++
++func TestMigrateConfigFileMovesProfilesUnderProfilesTable(t *testing.T) {
++	path := writeConfigFileForMigration(t, v1ConfigFileToMigrate)
++
++	changed, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++	require.True(t, changed)
++
++	contents := string(helperLoadBytes(t, path))
++	require.Contains(t, contents, "config_version = 2")
++	require.Contains(t, contents, "[profiles.default]")
++	require.Contains(t, contents, `[profiles."acme corp"]`)
++	require.NotContains(t, contents, "\n[default]")
++}
++
++func TestMigrateConfigFileKeepsSettingsAtTopLevel(t *testing.T) {
++	path := writeConfigFileForMigration(t, v1ConfigFileToMigrate)
++
++	_, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++
++	v := viper.New()
++	v.SetConfigFile(path)
++	require.NoError(t, v.ReadInConfig())
++
++	require.Equal(t, []string{"apps", "projects"}, v.GetStringSlice(InstalledPluginsKey))
++	require.Equal(t, "f4a1c7de-0000-0000-0000-000000000000", v.GetString(MachineUUIDKey))
++	require.Equal(t, "off", v.GetString(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField)))
++	require.True(t, v.IsSet(UserInfoName))
++	require.Equal(t, ConfigVersionV2, v.GetInt(ConfigVersionName))
++}
++
++// The CLI has to be able to read what the migration writes. This is the seam
++// between the two, so assert it directly rather than through the file contents.
++func TestMigratedConfigIsReadableByProfile(t *testing.T) {
++	path := writeConfigFileForMigration(t, v1ConfigFileToMigrate)
++
++	_, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++
++	setupProfileConfig(t, string(helperLoadBytes(t, path)))
++
++	p := Profile{ProfileName: "default"}
++	apiKey, err := p.GetAPIKey(false)
++	require.NoError(t, err)
++	require.Equal(t, "sk_test_one_key", apiKey)
++	require.Equal(t, "Account One", p.GetDisplayName())
++
++	second := Profile{ProfileName: "acme corp"}
++	require.Equal(t, "Account Two", second.GetDisplayName())
++}
++
++func TestMigrateConfigFileLeavesBackup(t *testing.T) {
++	path := writeConfigFileForMigration(t, v1ConfigFileToMigrate)
++
++	_, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++
++	backup := helperLoadBytes(t, path+ConfigBackupSuffix)
++	require.Equal(t, v1ConfigFileToMigrate, string(backup))
++
++	// Windows has no Unix permission bits, so the mode the file was created with
++	// does not survive a Stat there.
++	if runtime.GOOS != "windows" {
++		info, err := os.Stat(path)
++		require.NoError(t, err)
++		require.Equal(t, os.FileMode(0600), info.Mode().Perm())
++	}
++}
++
++func TestMigrateConfigFileIsIdempotent(t *testing.T) {
++	path := writeConfigFileForMigration(t, v1ConfigFileToMigrate)
++
++	changed, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++	require.True(t, changed)
++
++	firstPass := helperLoadBytes(t, path)
++
++	changed, err = MigrateConfigFile(path)
++	require.NoError(t, err)
++	require.False(t, changed)
++	require.Equal(t, firstPass, helperLoadBytes(t, path))
++}
++
++// viper lowercases every key it reads, so the migration reads raw TOML. A
++// profile named with capitals must come out the other side unchanged.
++func TestMigrateConfigFilePreservesProfileNameCase(t *testing.T) {
++	path := writeConfigFileForMigration(t, `[AcmeCorp]
++  display_name = 'Acme Corp'
++  test_mode_api_key = 'sk_test_acme_key'
++`)
++
++	_, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++
++	require.Contains(t, string(helperLoadBytes(t, path)), "[profiles.AcmeCorp]")
++}
++
++// An older CLI or plugin writing a migrated file does not know about the
++// profiles table, so it leaves a v1 table behind. Folding it in is the only way
++// the file converges back to one copy of each profile.
++func TestMigrateConfigFileFoldsShadowTable(t *testing.T) {
++	path := writeConfigFileForMigration(t, `config_version = 2
++
++[profiles.default]
++  device_name = 'nested-device'
++  display_name = 'Nested Account'
++
++[default]
++  device_name = 'shadow-device'
++  test_mode_api_key = 'sk_test_shadow_key'
++`)
++
++	changed, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++	require.True(t, changed)
++
++	v := viper.New()
++	v.SetConfigFile(path)
++	require.NoError(t, v.ReadInConfig())
++
++	// The nested copy is the one the current CLI reads and writes, so it wins.
++	require.Equal(t, "nested-device", v.GetString("profiles.default.device_name"))
++	// A field only the old writer knew about is not thrown away.
++	require.Equal(t, "sk_test_shadow_key", v.GetString("profiles.default.test_mode_api_key"))
++	require.False(t, v.IsSet("default.device_name"))
++}
++
++// Nothing stops `stripe login --project-name profiles` on a v1 CLI, so the
++// reserved table name can already be taken by a profile.
++func TestMigrateConfigFileHandlesProfileNamedProfiles(t *testing.T) {
++	path := writeConfigFileForMigration(t, `[profiles]
++  display_name = 'Confusing Account'
++  test_mode_api_key = 'sk_test_confusing_key'
++`)
++
++	changed, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++	require.True(t, changed)
++
++	v := viper.New()
++	v.SetConfigFile(path)
++	require.NoError(t, v.ReadInConfig())
++
++	require.Equal(t, "sk_test_confusing_key", v.GetString("profiles.profiles.test_mode_api_key"))
++}
++
++// An unrecognized table might be anything, including a setting a newer CLI
++// writes. Dual-read means leaving it alone costs nothing, while guessing wrong
++// would move a setting into the profiles table.
++func TestMigrateConfigFileLeavesUnrecognizedTableAlone(t *testing.T) {
++	path := writeConfigFileForMigration(t, `[some_future_setting]
++  enabled = true
++
++[default]
++  display_name = 'Account One'
++  test_mode_api_key = 'sk_test_one_key'
++`)
++
++	_, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++
++	v := viper.New()
++	v.SetConfigFile(path)
++	require.NoError(t, v.ReadInConfig())
++
++	require.True(t, v.GetBool("some_future_setting.enabled"))
++	require.Equal(t, "Account One", v.GetString("profiles.default.display_name"))
++}
++
++// A dotted profile name parses as a nested table, so it is not recognizable as a
++// profile. It stays where it is and keeps working through the v1 read fallback.
++func TestMigrateConfigFileLeavesDottedProfileAlone(t *testing.T) {
++	path := writeConfigFileForMigration(t, `[example.project]
++  display_name = 'Dotted Account'
++  test_mode_api_key = 'sk_test_dotted_key'
++`)
++
++	_, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++
++	v := viper.New()
++	v.SetConfigFile(path)
++	require.NoError(t, v.ReadInConfig())
++
++	require.Equal(t, "sk_test_dotted_key", v.GetString("example.project.test_mode_api_key"))
++	require.False(t, v.IsSet("profiles.example"))
++}
++
++// A profile abandoned part-way through login has no display_name, so the
++// migration cannot use isProfile's rule to find it.
++func TestMigrateConfigFileMovesProfileWithoutDisplayName(t *testing.T) {
++	path := writeConfigFileForMigration(t, `[default]
++  device_name = 'partial-device'
++`)
++
++	_, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++
++	require.Contains(t, string(helperLoadBytes(t, path)), "[profiles.default]")
++}
++
++func TestMigrateConfigFileStampsVersionOnFileWithNoProfiles(t *testing.T) {
++	path := writeConfigFileForMigration(t, "installed_plugins = ['apps']\n")
++
++	changed, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++	require.True(t, changed)
++
++	contents := string(helperLoadBytes(t, path))
++	require.Contains(t, contents, "config_version = 2")
++	require.Contains(t, contents, "installed_plugins")
++}
++
++// Stop migrating if the file's version is greater than the maximum this CLI
++// understands (currently 2).
++func TestMigrateConfigFileRefusesNewerThanSupportedVersion(t *testing.T) {
++	contents := `config_version = 3
++
++[profiles.default]
++  display_name = 'V3 Account'
++  test_mode_api_key = 'sk_test_v3_key'
++
++[default]
++  display_name = 'Shadow'
++  test_mode_api_key = 'sk_test_shadow'
++`
++	path := writeConfigFileForMigration(t, contents)
++
++	changed, err := MigrateConfigFile(path)
++	require.ErrorContains(t, err, "understands up to 2")
++	require.False(t, changed)
++
++	require.Equal(t, contents, string(helperLoadBytes(t, path)))
++	require.NoFileExists(t, path+ConfigBackupSuffix)
++}
++
++func TestMigrateConfigFileMissingFile(t *testing.T) {
++	changed, err := MigrateConfigFile(filepath.Join(t.TempDir(), "config.toml"))
++	require.NoError(t, err)
++	require.False(t, changed)
++}
++
++func TestMigrateConfigFileRejectsUnparseableFile(t *testing.T) {
++	contents := "this is not = = toml\n"
++	path := writeConfigFileForMigration(t, contents)
++
++	changed, err := MigrateConfigFile(path)
++	require.Error(t, err)
++	require.False(t, changed)
++
++	// The file the CLI cannot parse is still the file the user has.
++	require.Equal(t, contents, string(helperLoadBytes(t, path)))
++	require.NoFileExists(t, path+ConfigBackupSuffix)
++}
++
++func TestNeedsMigrationForV1Config(t *testing.T) {
++	setupProfileConfig(t, v1ConfigFile)
++
++	require.True(t, NeedsMigration())
++	require.False(t, IsMigrated())
++}
++
++func TestNeedsMigrationForV2Config(t *testing.T) {
++	setupProfileConfig(t, v2ConfigFile)
++
++	require.False(t, NeedsMigration())
++	require.True(t, IsMigrated())
++}
++
++// A migrated file that has picked up a top-level profile still has work to do:
++// folding the stray copy back in is what stops the two from diverging.
++func TestNeedsMigrationForV2ConfigWithShadowTable(t *testing.T) {
++	setupProfileConfig(t, v2ConfigFile+`
++[legacy]
++  display_name = 'Written By An Old Plugin'
++`)
++
++	require.True(t, NeedsMigration())
++}
++
++// A setting that happens to be a table is not a profile, so it is not work.
++func TestNeedsMigrationIgnoresSettingTables(t *testing.T) {
++	setupProfileConfig(t, `config_version = 2
++
++[profiles.default]
++  display_name = 'V2 Account'
++
++[plugin_configs.__global]
++  updates = 'off'
++
++[user_info]
++  compartments = []
++`)
++
++	require.False(t, NeedsMigration())
++}
++
++func TestMigrateConfigFileRefusesSymlink(t *testing.T) {
++	profilesFile, victimFile := setupSymlinkedProfilesFile(t)
++
++	changed, err := MigrateConfigFile(profilesFile)
++	require.ErrorContains(t, err, "symlink")
++	require.False(t, changed)
++
++	require.Equal(t, "original = true\n", string(helperLoadBytes(t, victimFile)))
++	require.NoFileExists(t, profilesFile+ConfigBackupSuffix)
++}
++
++func TestMigrateConfigFileRefusesSymlinkedParent(t *testing.T) {
++	profilesFile, victimDir := setupProfilesFileWithSymlinkedParent(t)
++	require.NoError(t, os.WriteFile(profilesFile, []byte(v1ConfigFileToMigrate), 0600))
++
++	changed, err := MigrateConfigFile(profilesFile)
++	require.ErrorContains(t, err, "symlink")
++	require.False(t, changed)
++
++	require.Equal(t, v1ConfigFileToMigrate, string(helperLoadBytes(t, filepath.Join(victimDir, "config.toml"))))
++}
++
++func TestVerifyPlanCatchesADroppedField(t *testing.T) {
++	plan := &migrationPlan{
++		profiles: map[string]map[string]interface{}{
++			"default": {"display_name": "Account One", "test_mode_api_key": "sk_test_one_key"},
++		},
++		settings: map[string]interface{}{},
++	}
++
++	err := verifyPlan(plan, []byte("config_version = 2\n\n[profiles.default]\n  display_name = 'Account One'\n"))
++	require.ErrorContains(t, err, "lost field")
++}
++
++func TestVerifyPlanCatchesAChangedProfileName(t *testing.T) {
++	plan := &migrationPlan{
++		profiles: map[string]map[string]interface{}{
++			"AcmeCorp": {"display_name": "Acme Corp"},
++		},
++		settings: map[string]interface{}{},
++	}
++
++	err := verifyPlan(plan, []byte("config_version = 2\n\n[profiles.acmecorp]\n  display_name = 'Acme Corp'\n"))
++	require.ErrorContains(t, err, "missing from the migrated config")
++}
++
++func TestVerifyPlanCatchesADroppedSetting(t *testing.T) {
++	plan := &migrationPlan{
++		profiles: map[string]map[string]interface{}{},
++		settings: map[string]interface{}{InstalledPluginsKey: []interface{}{"apps"}},
++	}
++
++	err := verifyPlan(plan, []byte("config_version = 2\n\n[profiles]\n"))
++	require.ErrorContains(t, err, "is missing from the migrated config")
++}
+diff --git a/pkg/config/plugin_configs.go b/pkg/config/plugin_configs.go
+index 5cf37ae..5f31ed2 100644
+--- a/pkg/config/plugin_configs.go
++++ b/pkg/config/plugin_configs.go
+@@ -6,6 +6,10 @@ const (
+ 
+ 	// PluginConfigUpdatesField is the config field name controlling automatic updates.
+ 	PluginConfigUpdatesField = "updates"
++
++	// PluginConfigsKey is the top-level table holding every plugin config
++	// section. It is a CLI setting, not a profile.
++	PluginConfigsKey = "plugin_configs"
+ )
+ 
+ // isPluginConfigSection reports whether v is a plugin config section,
+@@ -25,5 +29,5 @@ func isPluginConfigSection(v interface{}) bool {
+ // Example: PluginConfigKey("__global", "updates") to read or set the global updates setting
+ // Example: PluginConfigKey("apps", "updates") to read or set the updates setting for the "apps" plugin
+ func PluginConfigKey(scope, field string) string {
+-	return "plugin_configs." + scope + "." + field
++	return PluginConfigsKey + "." + scope + "." + field
+ }
+diff --git a/pkg/config/profile.go b/pkg/config/profile.go
+index ce3722e..2f73a2f 100644
+--- a/pkg/config/profile.go
++++ b/pkg/config/profile.go
+@@ -89,8 +89,39 @@ const (
+ 	SandboxClaimURLName        = "sandbox_claim_url"
+ 	SandboxExpiresAtName       = "sandbox_expires_at"
+ 	UserInfoName               = "user_info" // TODO: remove with legacy RAK/OIDC flow
++
++	// ConfigVersionName is the top-level key recording the config file's schema
++	// version. It is absent from v1 files, which is how an unmigrated file is
++	// recognized.
++	ConfigVersionName = "config_version"
++
++	// ProfilesTableName is the reserved top-level table that holds every profile
++	// in a v2 config file.
++	ProfilesTableName = "profiles"
+ )
+ 
++// ConfigVersionV1 is the original layout, with each profile as a top-level table.
++// A v1 file records no config_version key at all; the constant exists so that
++// version comparisons don't have to spell out that absence.
++const ConfigVersionV1 = 1
++
++// ConfigVersionV2 is the schema version in which every profile moved under the
++// reserved ProfilesTableName table, so that profile names can no longer collide
++// with top-level CLI settings.
++const ConfigVersionV2 = 2
++
++// MaxSupportedConfigVersion is the newest config.toml layout this binary can act
++// on. A file recording a higher version was written by a newer CLI, whose layout
++// this build has no way to know.
++const MaxSupportedConfigVersion = ConfigVersionV2
++
++func unsupportedConfigVersionError(version int) error {
++	return errorcategory.Errorf(errorcategory.Filesystem,
++		"%s is %d, but this Stripe CLI understands up to %d. Upgrade the CLI: https://docs.stripe.com/stripe-cli/upgrade",
++		ConfigVersionName, version, MaxSupportedConfigVersion,
++	)
++}
++
+ const UATKeychainItemKey = "uat"
+ 
+ // OAuthActiveContextKeychainKey is the keyring key for the active OAuth context.
+@@ -154,7 +185,7 @@ var authFieldNames = []string{
+ // field, so that a partially written profile (one with no display_name, which a
+ // profile abandoned part-way through login can be) is still recognized.
+ func (p *Profile) profileExists() bool {
+-	return viper.IsSet(p.ProfileName)
++	return viper.IsSet(p.nestedProfileTable()) || viper.IsSet(p.ProfileName)
+ }
+ 
+ // warnLegacyProfileNameOnce guards the deprecation warning so it prints at most
+@@ -191,8 +222,54 @@ recommend migrating it: log in under a new name and remove the old one.
+ 	})
+ }
+ 
++// ValidateProfileName reports whether name can be used as a profile name.
++//
++// A period is rejected because it is viper's path separator, which hides the
++// profile from every operation that enumerates top-level tables; see
++// WarnIfLegacyProfileName for the full explanation. An empty name produces a
++// leading-period key that viper silently drops, so writes to it are discarded
++// without error.
++//
++// Every other character round-trips correctly and is allowed.
++func ValidateProfileName(name string) error {
++	if name == "" {
++		return errorcategory.UserInputErrorf("profile name cannot be empty")
++	}
++
++	if strings.Contains(name, ".") {
++		return errorcategory.UserInputErrorf("profile name %q cannot contain a period; use a hyphen or underscore instead", name)
++	}
++
++	return nil
++}
++
++// ValidateProfileNameForWrite validates the profile name before writing to it.
++//
++// Profiles that already exist are allowed through unchanged: reads against them
++// work correctly, and refusing to write would leave users unable to update a
++// profile they are actively using. Only the creation of new invalid names is
++// blocked.
++//
++// This grandfather clause can be dropped once the config migration renames
++// existing dotted profiles, at which point the rule becomes unconditional.
++func (p *Profile) ValidateProfileNameForWrite() error {
++	if p.profileExists() {
++		return nil
++	}
++
++	return ValidateProfileName(p.ProfileName)
++}
++
+ // CreateProfile creates a profile when logging in
+ func (p *Profile) CreateProfile() error {
++	// Validate up front so a rejected name leaves both the config file and the
++	// keyring untouched: the calls below delete existing credentials before
++	// anything is written back. writeProfile revalidates as the backstop for the
++	// write paths that do not go through here.
++	if err := p.ValidateProfileNameForWrite(); err != nil {
++		return err
++	}
++
+ 	// Remove only auth-related keys under existing profile first
+ 	v := p.deleteAuthFields(viper.GetViper())
+ 
+@@ -219,14 +296,11 @@ func (p *Profile) CreateProfile() error {
+ 
+ func (p *Profile) deleteAuthFields(v *viper.Viper) *viper.Viper {
+ 	for _, field := range authFieldNames {
+-		key := p.GetConfigField(field)
+-		if v.IsSet(key) {
+-			newViper, err := removeKey(v, key)
+-			if err == nil {
+-				// failure to remove a key should not break the login flow
+-				v = newViper
+-			}
+-		}
++		// safeRemove clears the field from whichever layouts it appears in, so a
++		// file that a v2 CLI migrated (or that this CLI wrote a shadow copy into)
++		// is fully cleared rather than half-cleared. Failure to remove a key
++		// should not break the login flow.
++		v = p.safeRemove(v, field)
+ 	}
+ 	return v
+ }
+@@ -234,12 +308,12 @@ func (p *Profile) deleteAuthFields(v *viper.Viper) *viper.Viper {
+ // GetColor gets the color setting for the user based on the flag or the
+ // persisted color stored in the config file
+ func (p *Profile) GetColor() (string, error) {
+-	color := viper.GetString("color")
++	color := viper.GetString(ColorName)
+ 	if color != "" {
+ 		return color, nil
+ 	}
+ 
+-	color = viper.GetString(p.GetConfigField("color"))
++	color = p.ReadProfileString(ColorName)
+ 	switch color {
+ 	case "", ColorAuto:
+ 		return ColorAuto, nil
+@@ -263,7 +337,7 @@ func (p *Profile) GetDeviceName() (string, error) {
+ 	}
+ 
+ 	if err := viper.ReadInConfig(); err == nil {
+-		return viper.GetString(p.GetConfigField(DeviceNameName)), nil
++		return p.ReadProfileString(DeviceNameName), nil
+ 	}
+ 
+ 	return "", validators.ErrDeviceNameNotConfigured
+@@ -276,7 +350,7 @@ func (p *Profile) GetAccountID() (string, error) {
+ 	}
+ 
+ 	if err := viper.ReadInConfig(); err == nil {
+-		return viper.GetString(p.GetConfigField(AccountIDName)), nil
++		return p.ReadProfileString(AccountIDName), nil
+ 	}
+ 
+ 	return "", validators.ErrAccountIDNotConfigured
+@@ -289,7 +363,7 @@ func (p *Profile) GetUserID() (string, error) {
+ 	}
+ 
+ 	if err := viper.ReadInConfig(); err == nil {
+-		return viper.GetString(p.GetConfigField(UserIDName)), nil
++		return p.ReadProfileString(UserIDName), nil
+ 	}
+ 
+ 	return "", nil
+@@ -323,12 +397,12 @@ func (p *Profile) HasAPIKey(livemode bool) bool {
+ 		if err := viper.ReadInConfig(); err != nil {
+ 			return false
+ 		}
+-		if viper.IsSet(p.GetConfigField("secret_key")) {
++		if p.profileFieldIsSet("secret_key") {
+ 			p.RegisterAlias(TestModeAPIKeyName, "secret_key")
+-		} else if viper.IsSet(p.GetConfigField("api_key")) {
++		} else if p.profileFieldIsSet("api_key") {
+ 			p.RegisterAlias(TestModeAPIKeyName, "api_key")
+ 		}
+-		return viper.GetString(p.GetConfigField(TestModeAPIKeyName)) != ""
++		return p.ReadProfileString(TestModeAPIKeyName) != ""
+ 	}
+ 
+ 	if KeyRing == nil {
+@@ -366,14 +440,14 @@ func (p *Profile) GetAPIKey(livemode bool) (string, error) {
+ 	if !livemode {
+ 		// If the user doesn't have an api_key field set, they might be using an
+ 		// old configuration so try to read from secret_key
+-		if viper.IsSet(p.GetConfigField("secret_key")) {
++		if p.profileFieldIsSet("secret_key") {
+ 			p.RegisterAlias(TestModeAPIKeyName, "secret_key")
+-		} else if viper.IsSet(p.GetConfigField("api_key")) {
++		} else if p.profileFieldIsSet("api_key") {
+ 			p.RegisterAlias(TestModeAPIKeyName, "api_key")
+ 		}
+ 
+ 		if err := viper.ReadInConfig(); err == nil {
+-			key = viper.GetString(p.GetConfigField(TestModeAPIKeyName))
++			key = p.ReadProfileString(TestModeAPIKeyName)
+ 		}
+ 	} else {
+ 		p.redactAllLivemodeValues()
+@@ -399,9 +473,9 @@ func (p *Profile) GetExpiresAt(livemode bool) (time.Time, error) {
+ 	var timeString string
+ 
+ 	if livemode {
+-		timeString = viper.GetString(p.GetConfigField(LiveModeKeyExpiresAtName))
++		timeString = p.ReadProfileString(LiveModeKeyExpiresAtName)
+ 	} else {
+-		timeString = viper.GetString(p.GetConfigField(TestModeKeyExpiresAtName))
++		timeString = p.ReadProfileString(TestModeKeyExpiresAtName)
+ 	}
+ 
+ 	if timeString != "" {
+@@ -425,12 +499,12 @@ func (p *Profile) GetPublishableKey(livemode bool) (string, error) {
+ 	} else {
+ 		fieldID = TestModePubKeyName
+ 
+-		if viper.IsSet(p.GetConfigField("publishable_key")) {
++		if p.profileFieldIsSet("publishable_key") {
+ 			p.RegisterAlias(TestModePubKeyName, "publishable_key")
+ 		}
+ 		// there is a bug with viper.GetStringMapString when the key name is too long, which makes
+ 		// `config --list --project-name <project_name>` unable to read the project specific config
+-		if viper.IsSet(p.GetConfigField("test_mode_publishable_key")) {
++		if p.profileFieldIsSet("test_mode_publishable_key") {
+ 			p.RegisterAlias(TestModePubKeyName, "test_mode_publishable_key")
+ 		}
+ 	}
+@@ -440,7 +514,7 @@ func (p *Profile) GetPublishableKey(livemode bool) (string, error) {
+ 		return "", err
+ 	}
+ 
+-	key = viper.GetString(p.GetConfigField(fieldID))
++	key = p.ReadProfileString(fieldID)
+ 	if key != "" {
+ 		return key, nil
+ 	}
+@@ -451,7 +525,7 @@ func (p *Profile) GetPublishableKey(livemode bool) (string, error) {
+ // GetDisplayName returns the account display name of the user
+ func (p *Profile) GetDisplayName() string {
+ 	if err := viper.ReadInConfig(); err == nil {
+-		return viper.GetString(p.GetConfigField(DisplayNameName))
++		return p.ReadProfileString(DisplayNameName)
+ 	}
+ 
+ 	return ""
+@@ -460,20 +534,113 @@ func (p *Profile) GetDisplayName() string {
+ // GetTerminalPOSDeviceID returns the device id from the config for Terminal quickstart to use
+ func (p *Profile) GetTerminalPOSDeviceID() string {
+ 	if err := viper.ReadInConfig(); err == nil {
+-		return viper.GetString(p.GetConfigField("terminal_pos_device_id"))
++		return p.ReadProfileString("terminal_pos_device_id")
+ 	}
+ 
+ 	return ""
+ }
+ 
+-// GetConfigField returns the configuration field for the specific profile
++// GetConfigField returns the flat (v1) configuration path for a profile field,
++// e.g. "default.account_id".
++//
++// This same string is used verbatim as the keyring item ID for livemode
++// secrets, so it must not gain the v2 "profiles." prefix: changing it would
++// orphan every credential already stored in the OS keychain. To read a config
++// value, use ReadProfileString or profileFieldIsSet, which understand both the
++// v1 and v2 layouts. To write one, use configFieldForWrite.
+ func (p *Profile) GetConfigField(field string) string {
+ 	return p.ProfileName + "." + field
+ }
+ 
+-// RegisterAlias registers an alias for a given key.
++// nestedProfileTable returns the v2 key of this profile's table, e.g.
++// "profiles.default". In v2, profiles live under a reserved top-level "profiles"
++// table so that profile names can no longer collide with CLI settings.
++func (p *Profile) nestedProfileTable() string {
++	return ProfilesTableName + "." + p.ProfileName
++}
++
++// nestedConfigField returns the v2 configuration path for a profile field,
++// e.g. "profiles.default.account_id".
++func (p *Profile) nestedConfigField(field string) string {
++	return p.nestedProfileTable() + "." + field
++}
++
++// ReadProfileString reads a profile field from the config file, preferring the
++// v2 nested layout and falling back to the v1 flat layout.
++//
++// Both layouts are supported indefinitely. A config file that has never been
++// migrated stays fully readable, and one that a v2 CLI migrated is readable from
++// this release line without the user having to undo anything.
++func (p *Profile) ReadProfileString(field string) string {
++	if value := viper.GetString(p.nestedConfigField(field)); value != "" {
++		return value
++	}
++
++	return viper.GetString(p.GetConfigField(field))
++}
++
++// ReadProfileStringMap reads a nested table inside a profile, such as the docs
++// preferences, from whichever layout holds it.
++func (p *Profile) ReadProfileStringMap(field string) map[string]string {
++	if value := viper.GetStringMapString(p.nestedConfigField(field)); len(value) > 0 {
++		return value
++	}
++
++	return viper.GetStringMapString(p.GetConfigField(field))
++}
++
++// profileFieldIsSet reports whether a profile field is present in either layout.
++func (p *Profile) profileFieldIsSet(field string) bool {
++	return viper.IsSet(p.nestedConfigField(field)) || viper.IsSet(p.GetConfigField(field))
++}
++
++// configFieldForWrite returns the path a profile field should be written to,
++// matching the layout the config file already uses.
++//
++// Reads tolerate either layout, but a write has to pick one. Writing a flat
++// field into a migrated file would create a second, shadow copy of the profile
++// at the top level, which the read above would then shadow in turn — so the
++// user's own write would be invisible to the CLI that just made it. An
++// unmigrated file has no config_version key, so GetInt returns 0 and writes stay
++// flat. Nothing here ever sets config_version: this release line follows the
++// layout it finds and never migrates.
++func (p *Profile) configFieldForWrite(field string) string {
++	// The layout is read from the global viper, which is the instance that has
++	// the config file loaded. writeProfile is handed a scratch viper that has not
++	// merged the file in yet at the point the fields are set.
++	if isMigrated(viper.GetViper()) {
++		return p.nestedConfigField(field)
++	}
++
++	return p.GetConfigField(field)
++}
++
++// deleteProfileField removes a profile field from both the v2 nested layout and
++// the v1 flat layout, so a delete cannot leave a stale copy of the field behind
++// in a file that happens to contain both.
++func (p *Profile) deleteProfileField(v *viper.Viper, field string) (*viper.Viper, error) {
++	for _, path := range []string{p.nestedConfigField(field), p.GetConfigField(field)} {
++		if !v.IsSet(path) {
++			continue
++		}
++
++		newViper, err := removeKey(v, path)
++		if err != nil {
++			return nil, err
++		}
++
++		v = newViper
++	}
++
++	return v, nil
++}
++
++// RegisterAlias registers an alias for a given key in both layouts, so that
++// legacy field names (secret_key, api_key, publishable_key) keep resolving in a
++// migrated config file as well as an unmigrated one.
+ func (p *Profile) RegisterAlias(alias, key string) {
+ 	viper.RegisterAlias(p.GetConfigField(alias), p.GetConfigField(key))
++	viper.RegisterAlias(p.nestedConfigField(alias), p.nestedConfigField(key))
+ }
+ 
+ // WriteConfigField updates a configuration field and writes the updated
+@@ -481,13 +648,17 @@ func (p *Profile) RegisterAlias(alias, key string) {
+ func (p *Profile) WriteConfigField(field, value string) error {
+ 	viper.ReadInConfig()
+ 
+-	viper.Set(p.GetConfigField(field), value)
++	if err := p.ValidateProfileNameForWrite(); err != nil {
++		return err
++	}
++
++	viper.Set(p.configFieldForWrite(field), value)
+ 	return writeConfig(viper.GetViper())
+ }
+ 
+ // DeleteConfigField deletes a configuration field.
+ func (p *Profile) DeleteConfigField(field string) error {
+-	v, err := removeKey(viper.GetViper(), p.GetConfigField(field))
++	v, err := p.deleteProfileField(viper.GetViper(), field)
+ 	if err != nil {
+ 		return err
+ 	}
+@@ -503,21 +674,29 @@ func (p *Profile) DeleteConfigField(field string) error {
+ func (p *Profile) writeProfile(runtimeViper *viper.Viper) error {
+ 	profilesFile := viper.ConfigFileUsed()
+ 
++	// Validate before any mutation so a rejected name leaves the config file and
++	// the keyring untouched. This is the single funnel every profile write goes
++	// through, so commands cannot reintroduce an invalid name by bypassing the
++	// earlier checks in `stripe login` and `stripe sandbox create`.
++	if err := p.ValidateProfileNameForWrite(); err != nil {
++		return err
++	}
++
+ 	err := makePath(profilesFile)
+ 	if err != nil {
+ 		return err
+ 	}
+ 
+ 	if p.DeviceName != "" {
+-		runtimeViper.Set(p.GetConfigField(DeviceNameName), strings.TrimSpace(p.DeviceName))
++		runtimeViper.Set(p.configFieldForWrite(DeviceNameName), strings.TrimSpace(p.DeviceName))
+ 	}
+ 
+ 	if p.LiveModeAPIKey != "" {
+ 		expiresAt := getKeyExpiresAt()
+-		runtimeViper.Set(p.GetConfigField(LiveModeKeyExpiresAtName), expiresAt)
++		runtimeViper.Set(p.configFieldForWrite(LiveModeKeyExpiresAtName), expiresAt)
+ 
+ 		// // store redacted key in config
+-		runtimeViper.Set(p.GetConfigField(LiveModeAPIKeyName), RedactAPIKey(strings.TrimSpace(p.LiveModeAPIKey)))
++		runtimeViper.Set(p.configFieldForWrite(LiveModeAPIKeyName), RedactAPIKey(strings.TrimSpace(p.LiveModeAPIKey)))
+ 
+ 		// // store actual key in secure keyring
+ 		if err := p.saveLivemodeValue(LiveModeAPIKeyName, strings.TrimSpace(p.LiveModeAPIKey), "Live mode API key"); err != nil {
+@@ -526,36 +705,36 @@ func (p *Profile) writeProfile(runtimeViper *viper.Viper) error {
+ 	}
+ 
+ 	if p.LiveModePublishableKey != "" {
+-		runtimeViper.Set(p.GetConfigField(LiveModePubKeyName), strings.TrimSpace(p.LiveModePublishableKey))
++		runtimeViper.Set(p.configFieldForWrite(LiveModePubKeyName), strings.TrimSpace(p.LiveModePublishableKey))
+ 	}
+ 
+ 	if p.TestModeAPIKey != "" {
+-		runtimeViper.Set(p.GetConfigField(TestModeAPIKeyName), strings.TrimSpace(p.TestModeAPIKey))
+-		runtimeViper.Set(p.GetConfigField(TestModeKeyExpiresAtName), getKeyExpiresAt())
++		runtimeViper.Set(p.configFieldForWrite(TestModeAPIKeyName), strings.TrimSpace(p.TestModeAPIKey))
++		runtimeViper.Set(p.configFieldForWrite(TestModeKeyExpiresAtName), getKeyExpiresAt())
+ 	}
+ 
+ 	if p.TestModePublishableKey != "" {
+-		runtimeViper.Set(p.GetConfigField(TestModePubKeyName), strings.TrimSpace(p.TestModePublishableKey))
++		runtimeViper.Set(p.configFieldForWrite(TestModePubKeyName), strings.TrimSpace(p.TestModePublishableKey))
+ 	}
+ 
+ 	if p.DisplayName != "" {
+-		runtimeViper.Set(p.GetConfigField(DisplayNameName), strings.TrimSpace(p.DisplayName))
++		runtimeViper.Set(p.configFieldForWrite(DisplayNameName), strings.TrimSpace(p.DisplayName))
+ 	}
+ 
+ 	if p.AccountID != "" {
+-		runtimeViper.Set(p.GetConfigField(AccountIDName), strings.TrimSpace(p.AccountID))
++		runtimeViper.Set(p.configFieldForWrite(AccountIDName), strings.TrimSpace(p.AccountID))
+ 	}
+ 
+ 	if p.UserID != "" {
+-		runtimeViper.Set(p.GetConfigField(UserIDName), strings.TrimSpace(p.UserID))
++		runtimeViper.Set(p.configFieldForWrite(UserIDName), strings.TrimSpace(p.UserID))
+ 	}
+ 
+ 	if p.SandboxClaimURL != "" {
+-		runtimeViper.Set(p.GetConfigField(SandboxClaimURLName), strings.TrimSpace(p.SandboxClaimURL))
++		runtimeViper.Set(p.configFieldForWrite(SandboxClaimURLName), strings.TrimSpace(p.SandboxClaimURL))
+ 	}
+ 
+ 	if p.SandboxExpiresAt != "" {
+-		runtimeViper.Set(p.GetConfigField(SandboxExpiresAtName), strings.TrimSpace(p.SandboxExpiresAt))
++		runtimeViper.Set(p.configFieldForWrite(SandboxExpiresAtName), strings.TrimSpace(p.SandboxExpiresAt))
+ 	}
+ 
+ 	if KeyRing != nil {
+@@ -591,16 +770,14 @@ func (p *Profile) writeProfile(runtimeViper *viper.Viper) error {
+ }
+ 
+ func (p *Profile) safeRemove(v *viper.Viper, key string) *viper.Viper {
+-	if v.IsSet(p.GetConfigField(key)) {
+-		newViper, err := removeKey(v, p.GetConfigField(key))
+-		if err == nil {
+-			// I don't want to fail the entire login process on not being able to remove
+-			// the old secret_key field so if there's no error
+-			return newViper
+-		}
++	newViper, err := p.deleteProfileField(v, key)
++	if err != nil {
++		// I don't want to fail the entire login process on not being able to remove
++		// the old secret_key field, so keep the viper we already have.
++		return v
+ 	}
+ 
+-	return v
++	return newViper
+ }
+ 
+ // redactAllLivemodeValues redacts all livemode values in the local config file
+@@ -609,8 +786,8 @@ func (p *Profile) redactAllLivemodeValues() {
+ 
+ 	if err := viper.ReadInConfig(); err == nil {
+ 		// if the config file has expires at date, then it is using the new livemode key storage
+-		if viper.IsSet(p.GetConfigField(LiveModeAPIKeyName)) {
+-			key := viper.GetString(p.GetConfigField(LiveModeAPIKeyName))
++		if p.profileFieldIsSet(LiveModeAPIKeyName) {
++			key := p.ReadProfileString(LiveModeAPIKeyName)
+ 			if key == "" || len(key) < 12 {
+ 				p.DeleteConfigField(LiveModeAPIKeyName)
+ 				return
+diff --git a/pkg/config/profile_test.go b/pkg/config/profile_test.go
+index 3b6aad0..7abfea7 100644
+--- a/pkg/config/profile_test.go
++++ b/pkg/config/profile_test.go
+@@ -15,6 +15,8 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/keyring"
+ )
+ 
++const dottedNameError = `profile name "example.project" cannot contain a period; use a hyphen or underscore instead`
++
+ // setupProfileConfig writes contents to a temp config file and initializes the
+ // global viper from it, so tests exercise the same read path as the CLI rather
+ // than viper's override layer, which nests keys by splitting on ".".
+@@ -38,6 +40,108 @@ func setupProfileConfig(t *testing.T, contents string) (*Config, string) {
+ 	return c, profilesFile
+ }
+ 
++func TestValidateProfileName(t *testing.T) {
++	tests := []struct {
++		name        string
++		profileName string
++		wantError   string
++	}{
++		{name: "hyphenated", profileName: "example-project"},
++		{name: "underscored", profileName: "example_project"},
++		// Every character other than "." round-trips correctly through viper and
++		// TOML, so the rule stays as narrow as the actual constraint.
++		{name: "spaces", profileName: "example project"},
++		{name: "whitespace only", profileName: " "},
++		{name: "double quote", profileName: `example"project`},
++		{name: "single quote", profileName: "example'project"},
++		{name: "equals", profileName: "example=project"},
++		{name: "hash", profileName: "example#project"},
++		{name: "brackets", profileName: "example[project]"},
++		{name: "slashes", profileName: `example/\project`},
++		{name: "unicode", profileName: "ünïcode"},
++		{name: "uppercase", profileName: "ExampleProject"},
++
++		{name: "dotted", profileName: "example.project", wantError: dottedNameError},
++		{name: "leading dot", profileName: ".example", wantError: `profile name ".example" cannot contain a period; use a hyphen or underscore instead`},
++		// An empty name produces a ".<field>" key, which viper drops silently, so
++		// every write to it is discarded without an error.
++		{name: "empty", profileName: "", wantError: "profile name cannot be empty"},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			err := ValidateProfileName(tt.profileName)
++			if tt.wantError == "" {
++				require.NoError(t, err)
++				return
++			}
++
++			require.EqualError(t, err, tt.wantError)
++		})
++	}
++}
++
++func TestValidateProfileNameForWriteAllowsExistingProfiles(t *testing.T) {
++	tests := []struct {
++		name        string
++		profileName string
++		contents    string
++		wantExists  bool
++		wantError   string
++	}{
++		{
++			name:        "new dotted profile is rejected",
++			profileName: "example.project",
++			contents:    "[default]\ndisplay_name = 'Default'\n",
++			wantError:   dottedNameError,
++		},
++		{
++			name:        "existing dotted profile is allowed",
++			profileName: "example.project",
++			contents:    "[\"example.project\"]\ndisplay_name = 'Existing profile'\n",
++			wantExists:  true,
++		},
++		{
++			// A dotted profile written before this rule existed may have no
++			// display_name. It must still be recognized as existing, or it becomes
++			// unreachable: not writable, not listable, and not removable.
++			name:        "existing dotted profile without display_name is allowed",
++			profileName: "example.project",
++			contents:    "[\"example.project\"]\ncolor = 'on'\n",
++			wantExists:  true,
++		},
++		{
++			name:        "already-nested form is allowed",
++			profileName: "example.project",
++			contents:    "[example]\n[example.project]\ncolor = 'on'\n",
++			wantExists:  true,
++		},
++		{
++			name:        "space-separated profile is not equivalent",
++			profileName: "example.project",
++			contents:    "['example project']\ndisplay_name = 'Existing profile'\n",
++			wantError:   dottedNameError,
++		},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			setupProfileConfig(t, tt.contents)
++
++			p := Profile{ProfileName: tt.profileName}
++			require.Equal(t, tt.wantExists, p.profileExists())
++
++			err := p.ValidateProfileNameForWrite()
++			if tt.wantError == "" {
++				require.NoError(t, err)
++				return
++			}
++
++			require.EqualError(t, err, tt.wantError)
++		})
++	}
++}
++
+ func TestWarnIfLegacyProfileName(t *testing.T) {
+ 	tests := []struct {
+ 		name        string
+@@ -122,6 +226,73 @@ func captureStderr(t *testing.T, fn func()) string {
+ 	return string(out)
+ }
+ 
++func TestCreateProfileRejectsNewDottedNameBeforeMutation(t *testing.T) {
++	initialConfig := "[default]\ndisplay_name = 'Default'\n"
++
++	KeyRing = keyring.NewMemoryStore(map[string][]byte{
++		"example.project.live_mode_api_key": []byte("existing-value"),
++	})
++	_, profilesFile := setupProfileConfig(t, initialConfig)
++
++	p := Profile{
++		ProfileName:    "example.project",
++		DisplayName:    "New profile",
++		LiveModeAPIKey: "new-value",
++	}
++	require.EqualError(t, p.CreateProfile(), dottedNameError)
++
++	require.Equal(t, []byte(initialConfig), helperLoadBytes(t, profilesFile))
++	storedValue, err := KeyRing.Get("example.project.live_mode_api_key")
++	require.NoError(t, err)
++	require.Equal(t, []byte("existing-value"), storedValue)
++}
++
++// WriteConfigField is a separate write path from CreateProfile, reached by
++// `stripe config --set`, docs preferences, and the Terminal quickstart. It must
++// enforce the same rule, otherwise the ban can be bypassed entirely.
++func TestWriteConfigFieldRejectsNewDottedName(t *testing.T) {
++	initialConfig := "[default]\ndisplay_name = 'Default'\n"
++	_, profilesFile := setupProfileConfig(t, initialConfig)
++
++	p := Profile{ProfileName: "example.project"}
++	require.EqualError(t, p.WriteConfigField("color", "off"), dottedNameError)
++
++	require.Equal(t, []byte(initialConfig), helperLoadBytes(t, profilesFile))
++}
++
++func TestWriteConfigFieldRejectsEmptyProfileName(t *testing.T) {
++	initialConfig := "[default]\ndisplay_name = 'Default'\n"
++	_, profilesFile := setupProfileConfig(t, initialConfig)
++
++	p := Profile{ProfileName: ""}
++	require.EqualError(t, p.WriteConfigField("color", "off"), "profile name cannot be empty")
++
++	require.Equal(t, []byte(initialConfig), helperLoadBytes(t, profilesFile))
++}
++
++// A dotted profile that predates this rule must stay writable, or it becomes
++// permanently stuck: unusable and unfixable.
++func TestCreateProfileAllowsExistingDottedName(t *testing.T) {
++	setupProfileConfig(t, "[\"example.project\"]\ndisplay_name = 'Existing profile'\n")
++
++	p := Profile{
++		ProfileName: "example.project",
++		DisplayName: "Updated profile",
++		DeviceName:  "test-device",
++	}
++	require.NoError(t, p.CreateProfile())
++	require.Equal(t, "Updated profile", viper.GetString("example.project.display_name"))
++	require.Equal(t, "test-device", viper.GetString("example.project.device_name"))
++}
++
++func TestWriteConfigFieldAllowsExistingDottedNameWithoutDisplayName(t *testing.T) {
++	setupProfileConfig(t, "[example]\n[example.project]\ncolor = 'on'\n")
++
++	p := Profile{ProfileName: "example.project"}
++	require.NoError(t, p.WriteConfigField("device_name", "test-device"))
++	require.Equal(t, "test-device", viper.GetString("example.project.device_name"))
++}
++
+ func TestWriteProfile(t *testing.T) {
+ 	profilesFile := filepath.Join(t.TempDir(), "config.toml")
+ 	p := Profile{
+diff --git a/pkg/login/switch_context.go b/pkg/login/switch_context.go
+index d42e617..e5127c9 100644
+--- a/pkg/login/switch_context.go
++++ b/pkg/login/switch_context.go
+@@ -12,21 +12,35 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+-// SwitchContext updates the active OAuth context. If accountID is non-empty
+-// it selects that account directly (test mode by default, live if livemode is
+-// true). Otherwise it shows an interactive list.
+-func SwitchContext(ctx context.Context, accessBaseURL string, cfg *config.Config, accountID string, livemode bool) error {
++// SwitchResult describes the account and mode a SwitchContext call activated.
++type SwitchResult struct {
++	Account config.AuthorizedAccount
++	// Mode is the API's mode value ("test" or "live"); use DisplayMode for the CLI's
++	// user-facing terminology.
++	Mode string
++}
++
++// DisplayMode maps Mode to the CLI's user-facing terminology, e.g. "test" -> "sandbox".
++func (r *SwitchResult) DisplayMode() string {
++	return displayMode(r.Mode)
++}
++
++// SwitchContext updates the active OAuth context and returns the account and mode that became
++// active. If accountID is non-empty it selects that account directly (test mode by default, live
++// if livemode is true). Otherwise it shows an interactive list, returning a nil result if the
++// user cancels it.
++func SwitchContext(ctx context.Context, accessBaseURL string, cfg *config.Config, accountID string, livemode bool) (*SwitchResult, error) {
+ 	uat, err := cfg.Profile.GetUAT()
+ 	if err != nil {
+-		return err
++		return nil, err
+ 	}
+ 	if !strings.HasPrefix(uat, "oak_") {
+-		return errorcategory.Errorf(errorcategory.Auth, "not logged in with OAuth; run 'stripe login' first")
++		return nil, errorcategory.Errorf(errorcategory.Auth, "not logged in with OAuth; run 'stripe login' first")
+ 	}
+ 
+ 	accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, uat)
+ 	if err != nil {
+-		return fmt.Errorf("failed to fetch authorized accounts: %w", err)
++		return nil, fmt.Errorf("failed to fetch authorized accounts: %w", err)
+ 	}
+ 
+ 	if accountID != "" {
+@@ -35,7 +49,7 @@ func SwitchContext(ctx context.Context, accessBaseURL string, cfg *config.Config
+ 	return runSwitchContextTUI(cfg, accounts)
+ }
+ 
+-func switchByID(cfg *config.Config, accounts []config.AuthorizedAccount, accountID string, livemode bool) error {
++func switchByID(cfg *config.Config, accounts []config.AuthorizedAccount, accountID string, livemode bool) (*SwitchResult, error) {
+ 	wantMode := "test"
+ 	if livemode {
+ 		wantMode = "live"
+@@ -46,15 +60,18 @@ func switchByID(cfg *config.Config, accounts []config.AuthorizedAccount, account
+ 		}
+ 		for _, m := range a.Modes {
+ 			if m == wantMode {
+-				return applyContext(cfg, a, m)
++				if err := applyContext(cfg, a, m); err != nil {
++					return nil, err
++				}
++				return &SwitchResult{Account: a, Mode: m}, nil
+ 			}
+ 		}
+ 		if livemode {
+-			return errorcategory.Errorf(errorcategory.Auth, "Account %s does not have live mode access", accountID)
++			return nil, errorcategory.Errorf(errorcategory.Auth, "Account %s does not have live mode access", accountID)
+ 		}
+-		return errorcategory.Errorf(errorcategory.Auth, "Account %s does not have sandbox access; use --live to switch to live mode", accountID)
++		return nil, errorcategory.Errorf(errorcategory.Auth, "Account %s does not have sandbox access; use --live to switch to live mode", accountID)
+ 	}
+-	return errorcategory.Errorf(errorcategory.Auth, "Account %s not found in your authorized accounts", accountID)
++	return nil, errorcategory.Errorf(errorcategory.Auth, "Account %s not found in your authorized accounts", accountID)
+ }
+ 
+ func applyContext(cfg *config.Config, account config.AuthorizedAccount, mode string) error {
+@@ -67,11 +84,7 @@ func applyContext(cfg *config.Config, account config.AuthorizedAccount, mode str
+ 	cfg.Profile.UAT = uat
+ 	cfg.Profile.AccountID = account.ID
+ 	cfg.Profile.DisplayName = account.Name
+-	if err := cfg.Profile.CreateProfile(); err != nil {
+-		return err
+-	}
+-	fmt.Printf("Active context: %s · %s (%s)\n", account.Name, displayMode(mode), account.ID)
+-	return nil
++	return cfg.Profile.CreateProfile()
+ }
+ 
+ // --- TUI ---
+@@ -248,28 +261,31 @@ func (m switchContextModel) View() tea.View {
+ 	return tea.NewView(sb.String())
+ }
+ 
+-func runSwitchContextTUI(cfg *config.Config, accounts []config.AuthorizedAccount) error {
++func runSwitchContextTUI(cfg *config.Config, accounts []config.AuthorizedAccount) (*SwitchResult, error) {
+ 	if len(accounts) == 0 {
+-		return errorcategory.Errorf(errorcategory.Auth, "no authorized accounts found")
++		return nil, errorcategory.Errorf(errorcategory.Auth, "no authorized accounts found")
+ 	}
+ 	m := newSwitchContextModel(accounts)
+ 
+ 	final, err := tea.NewProgram(m).Run()
+ 	if err != nil {
+-		return fmt.Errorf("context selector: %w", err)
++		return nil, fmt.Errorf("context selector: %w", err)
+ 	}
+ 	result, ok := final.(switchContextModel)
+ 	if !ok || result.quit || !result.done {
+-		return nil
++		return nil, nil
+ 	}
+ 	if result.cursor < 0 || result.cursor >= len(result.rows) {
+-		return nil
++		return nil, nil
+ 	}
+ 	sel := result.rows[result.cursor]
+ 	for _, a := range accounts {
+ 		if a.ID == sel.id {
+-			return applyContext(cfg, a, sel.mode)
++			if err := applyContext(cfg, a, sel.mode); err != nil {
++				return nil, err
++			}
++			return &SwitchResult{Account: a, Mode: sel.mode}, nil
+ 		}
+ 	}
+-	return errorcategory.Errorf(errorcategory.Auth, "selected account not found")
++	return nil, errorcategory.Errorf(errorcategory.Auth, "selected account not found")
+ }
+diff --git a/pkg/proxy/proxy.go b/pkg/proxy/proxy.go
+index d5d405e..4439752 100644
+--- a/pkg/proxy/proxy.go
++++ b/pkg/proxy/proxy.go
+@@ -288,7 +288,7 @@ func (p *Proxy) createSession(ctx context.Context) (*stripeauth.StripeCLISession
+ 
+ 			if clientError, ok := stripeauth.IsAuthorizationClientError(err); ok {
+ 				if clientError.StatusCode == http.StatusTooManyRequests {
+-					err = errorcategory.New(errorcategory.API, "you have too many `stripe listen` sessions open, please close some and try again")
++					err = errorcategory.New(errorcategory.RateLimit, "you have too many `stripe listen` sessions open, please close some and try again")
+ 				}
+ 				exitCh <- struct{}{}
+ 				return
+diff --git a/pkg/proxy/proxy_test.go b/pkg/proxy/proxy_test.go
+index f20475b..c008905 100644
+--- a/pkg/proxy/proxy_test.go
++++ b/pkg/proxy/proxy_test.go
+@@ -9,6 +9,7 @@ import (
+ 
+ 	"github.com/stretchr/testify/require"
+ 
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/requests"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/websocket"
+@@ -287,4 +288,9 @@ func TestRun_NoRetryOnAuthorizationClientError_TooManyRequests(t *testing.T) {
+ 	err = p.Run(context.Background())
+ 	require.ErrorContains(t, err, "you have too many `stripe listen` sessions open, please close some and try again")
+ 	require.Equal(t, 1, nAttempts)
++
++	// RateLimit keeps this expected, self-serviceable failure out of Sentry.
++	category, ok := errorcategory.Get(err)
++	require.True(t, ok)
++	require.Equal(t, errorcategory.RateLimit, category)
+ }
+diff --git a/pkg/stripe/url.go b/pkg/stripe/url.go
+index 39b60d0..7fcde84 100644
+--- a/pkg/stripe/url.go
++++ b/pkg/stripe/url.go
+@@ -1,6 +1,7 @@
+ package stripe
+ 
+ import (
++	"net"
+ 	"net/url"
+ 	"regexp"
+ 	"strings"
+@@ -10,60 +11,96 @@ import (
+ 
+ const (
+ 	// DefaultAPIBaseURL is the default base URL for API requests
+-	DefaultAPIBaseURL   = "https://api.stripe.com"
+-	APIBaseURLRegexp    = `^https:\/\/api\.stripe\.com\/v\d+$`
+-	qaAPIBaseURL        = "https://qa-api.stripe.com"
+-	devAPIBaseURLRegexp = `http(s)?:\/\/[A-Za-z0-9\-]+.dev.stripe.me`
++	DefaultAPIBaseURL = "https://api.stripe.com"
++	qaAPIBaseURL      = "https://qa-api.stripe.com"
+ 
+ 	// DefaultFilesAPIBaseURL is the default base URL for Files API requsts
+ 	DefaultFilesAPIBaseURL = "https://files.stripe.com/"
+ 
+ 	// DefaultDashboardBaseURL is the default base URL for dashboard requests
+-	DefaultDashboardBaseURL   = "https://dashboard.stripe.com"
+-	qaDashboardBaseURL        = "https://qa-dashboard.stripe.com"
+-	devDashboardBaseURLRegexp = `http(s)?:\/\/[A-Za-z0-9\-]+\.dev\.stripe\.me`
++	DefaultDashboardBaseURL = "https://dashboard.stripe.com"
++	qaDashboardBaseURL      = "https://qa-dashboard.stripe.com"
+ 
+-	// localhostURLRegexp is used in tests
+-	localhostURLRegexp = `http:\/\/127\.0\.0\.1(:[0-9]+)?`
++	// devHostSuffix matches Stripe's per-developer dev domains, e.g.
++	// foo-lv5r9y--api-mydev.dev.stripe.me
++	devHostSuffix = ".dev.stripe.me"
+ )
+ 
+ var (
+ 	errInvalidAPIBaseURL       = errorcategory.New(errorcategory.UserInput, "invalid API base URL")
+ 	errInvalidDashboardBaseURL = errorcategory.New(errorcategory.UserInput, "invalid dashboard base URL")
++
++	devHostLabelRegexp   = regexp.MustCompile(`^[A-Za-z0-9-]+$`)
++	apiVersionPathRegexp = regexp.MustCompile(`^/v\d+$`)
+ )
+ 
+-func isValid(url string, exactStrings []string, regexpStrings []string) bool {
+-	for _, s := range exactStrings {
+-		if url == s {
+-			return true
+-		}
++// parseBaseURL parses raw as a URL and rejects forms that let the parsed
++// host diverge from what a quick read of the string would suggest, namely
++// userinfo (`user@host`), which is never legitimate in a base URL flag.
++func parseBaseURL(raw string) (*url.URL, bool) {
++	u, err := url.Parse(raw)
++	if err != nil || u.User != nil || u.Hostname() == "" {
++		return nil, false
+ 	}
+-	for _, r := range regexpStrings {
+-		matched, err := regexp.Match(r, []byte(url))
+-		if err == nil && matched {
+-			return true
+-		}
++	if u.Scheme != "http" && u.Scheme != "https" {
++		return nil, false
+ 	}
+-	return false
++	return u, true
++}
++
++func isDevHost(host string) bool {
++	label, ok := strings.CutSuffix(strings.ToLower(host), devHostSuffix)
++	return ok && devHostLabelRegexp.MatchString(label)
++}
++
++func isLoopbackHost(host string) bool {
++	ip := net.ParseIP(host)
++	return ip != nil && ip.IsLoopback()
+ }
+ 
+ // ValidateAPIBaseURL returns an error if apiBaseURL isn't allowed
+ func ValidateAPIBaseURL(apiBaseURL string) error {
+-	exactStrings := []string{DefaultAPIBaseURL, qaAPIBaseURL, DefaultFilesAPIBaseURL}
+-	regexpStrings := []string{APIBaseURLRegexp, devAPIBaseURLRegexp, localhostURLRegexp}
+-	if isValid(apiBaseURL, exactStrings, regexpStrings) {
++	if apiBaseURL == DefaultAPIBaseURL || apiBaseURL == qaAPIBaseURL || apiBaseURL == DefaultFilesAPIBaseURL {
++		return nil
++	}
++
++	u, ok := parseBaseURL(apiBaseURL)
++	if !ok {
++		return errInvalidAPIBaseURL
++	}
++
++	host := strings.ToLower(u.Hostname())
++	switch {
++	case host == "api.stripe.com" && u.Scheme == "https" && apiVersionPathRegexp.MatchString(u.Path):
++		return nil
++	case isDevHost(host):
++		return nil
++	case isLoopbackHost(host) && u.Scheme == "http":
+ 		return nil
+ 	}
++
+ 	return errInvalidAPIBaseURL
+ }
+ 
+ // ValidateDashboardBaseURL returns an error if dashboardBaseURL isn't allowed
+ func ValidateDashboardBaseURL(dashboardBaseURL string) error {
+-	exactStrings := []string{DefaultDashboardBaseURL, qaDashboardBaseURL}
+-	regexpStrings := []string{devDashboardBaseURLRegexp, localhostURLRegexp}
+-	if isValid(dashboardBaseURL, exactStrings, regexpStrings) {
++	if dashboardBaseURL == DefaultDashboardBaseURL || dashboardBaseURL == qaDashboardBaseURL {
+ 		return nil
+ 	}
++
++	u, ok := parseBaseURL(dashboardBaseURL)
++	if !ok {
++		return errInvalidDashboardBaseURL
++	}
++
++	host := strings.ToLower(u.Hostname())
++	switch {
++	case isDevHost(host):
++		return nil
++	case isLoopbackHost(host) && u.Scheme == "http":
++		return nil
++	}
++
+ 	return errInvalidDashboardBaseURL
+ }
+ 
+diff --git a/pkg/stripe/url_test.go b/pkg/stripe/url_test.go
+index b0737e4..f5a5f5a 100644
+--- a/pkg/stripe/url_test.go
++++ b/pkg/stripe/url_test.go
+@@ -43,6 +43,36 @@ func TestValidateDashboardBaseURLWorks(t *testing.T) {
+ 	assert.ErrorIs(t, ValidateDashboardBaseURL("anything_else"), errInvalidDashboardBaseURL)
+ }
+ 
++// TestValidateBaseURLRejectsAllowlistBypasses covers URLs where the raw
++// string contains an allowlisted substring (e.g. "foo.dev.stripe.me" or
++// "127.0.0.1") but net/url resolves the actual request host to something
++// else entirely — via userinfo, a suffix-grafted hostname, an unescaped
++// regex dot, or a query/fragment placement. Each of these previously
++// bypassed the byte-level regex allowlist.
++func TestValidateBaseURLRejectsAllowlistBypasses(t *testing.T) {
++	cases := []struct {
++		name string
++		url  string
++	}{
++		{"suffix_graft_on_dev_domain", "https://foo.dev.stripe.me.evil.example"},
++		{"userinfo_dev_domain_to_loopback", "http://foo.dev.stripe.me@127.0.0.1:18080"},
++		{"userinfo_dev_domain_to_attacker", "http://foo.dev.stripe.me@attacker.example"},
++		{"dev_domain_in_query_string", "https://evil.example/?u=https://foo.dev.stripe.me"},
++		{"unescaped_dot_in_dev_regex", "https://fooXdevXstripeXme.evil.example"},
++		{"suffix_graft_on_loopback", "http://127.0.0.1.evil.example"},
++		{"userinfo_loopback_to_attacker", "http://127.0.0.1@attacker.example:80"},
++		{"dev_domain_in_fragment", "http://attacker.example/#http://foo.dev.stripe.me"},
++		{"suffix_graft_with_path", "http://foo-dev.stripe.me.attacker.test:8443/v1/customers"},
++	}
++
++	for _, tc := range cases {
++		t.Run(tc.name, func(t *testing.T) {
++			assert.ErrorIs(t, ValidateAPIBaseURL(tc.url), errInvalidAPIBaseURL, "ValidateAPIBaseURL should reject %q", tc.url)
++			assert.ErrorIs(t, ValidateDashboardBaseURL(tc.url), errInvalidDashboardBaseURL, "ValidateDashboardBaseURL should reject %q", tc.url)
++		})
++	}
++}
++
+ func TestIsV2PathRequiresTrailingSlash(t *testing.T) {
+ 	assert.True(t, IsV2Path("/v2/core/events"))
+ 	assert.True(t, IsV2Path("/v2/billing/meters"))

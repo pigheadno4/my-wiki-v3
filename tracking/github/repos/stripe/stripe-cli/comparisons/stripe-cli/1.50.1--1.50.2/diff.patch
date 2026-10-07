@@ -1,0 +1,1146 @@
+diff --git a/pkg/cmd/config.go b/pkg/cmd/config.go
+index 3ce2b26..351d4df 100644
+--- a/pkg/cmd/config.go
++++ b/pkg/cmd/config.go
+@@ -1,19 +1,29 @@
+ package cmd
+ 
+ import (
++	"bufio"
++	"errors"
++	"fmt"
++	"os"
++	"strings"
++
+ 	"github.com/spf13/cobra"
++	"golang.org/x/term"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+ type configCmd struct {
+ 	cmd    *cobra.Command
+ 	config *config.Config
+ 
+-	list  bool
+-	edit  bool
+-	unset string
+-	set   bool
++	list          bool
++	edit          bool
++	unset         string
++	set           bool
++	removeProfile string
++	autoConfirm   bool
+ }
+ 
+ func newConfigCmd() *configCmd {
+@@ -27,7 +37,8 @@ func newConfigCmd() *configCmd {
+ you need more granular control over the configuration.`,
+ 		Example: `stripe config --list
+   stripe config --set color off
+-  stripe config --unset color`,
++  stripe config --unset color
++  stripe config --remove-profile my-project`,
+ 		RunE: cc.runConfigCmd,
+ 	}
+ 
+@@ -35,6 +46,8 @@ you need more granular control over the configuration.`,
+ 	cc.cmd.Flags().BoolVarP(&cc.edit, "edit", "e", false, "Open an editor to the config file")
+ 	cc.cmd.Flags().StringVar(&cc.unset, "unset", "", "Unset a specific config field")
+ 	cc.cmd.Flags().BoolVar(&cc.set, "set", false, "Set a config field to some value")
++	cc.cmd.Flags().StringVar(&cc.removeProfile, "remove-profile", "", "Remove a profile and its stored credentials from the config file")
++	cc.cmd.Flags().BoolVarP(&cc.autoConfirm, "confirm", "c", false, "Skip the confirmation prompt for --remove-profile")
+ 
+ 	cc.cmd.Flags().SetInterspersed(false) // allow args to happen after flags to enable 2 arguments to --set
+ 
+@@ -47,6 +60,8 @@ func (cc *configCmd) runConfigCmd(cmd *cobra.Command, args []string) error {
+ 		return cc.config.Profile.WriteConfigField(args[0], args[1])
+ 	case cc.unset != "":
+ 		return cc.config.Profile.DeleteConfigField(cc.unset)
++	case cc.removeProfile != "":
++		return cc.runRemoveProfile(cmd)
+ 	case cc.list:
+ 		return cc.config.PrintConfig()
+ 	case cc.edit:
+@@ -56,3 +71,61 @@ func (cc *configCmd) runConfigCmd(cmd *cobra.Command, args []string) error {
+ 		return cc.cmd.Help()
+ 	}
+ }
++
++func (cc *configCmd) runRemoveProfile(cmd *cobra.Command) error {
++	profileName := cc.removeProfile
++
++	confirmed, err := cc.confirmRemoveProfile(cmd, profileName)
++	if err != nil {
++		return err
++	}
++	if !confirmed {
++		fmt.Fprintln(cmd.OutOrStdout(), "Aborted. No changes were made.")
++		return nil
++	}
++
++	if err := cc.config.RemoveProfile(profileName); err != nil {
++		if errors.Is(err, config.ErrProfileNotFound) {
++			return errorcategory.UserInputErrorf("no profile named %q was found in %s", profileName, cc.config.ProfilesFile)
++		}
++		return err
++	}
++
++	fmt.Fprintf(cmd.OutOrStdout(), "Removed profile %q and cleared its stored credentials.\n", profileName)
++
++	return nil
++}
++
++// confirmRemoveProfile asks before removing, because a profile can hold an API
++// key the user pasted in by hand rather than one `stripe login` can reissue.
++// Non-interactive runs must pass --confirm rather than silently proceeding.
++func (cc *configCmd) confirmRemoveProfile(cmd *cobra.Command, profileName string) (bool, error) {
++	if cc.autoConfirm {
++		return true, nil
++	}
++
++	if !cc.isInteractive(cmd) {
++		return false, errorcategory.UserInputErrorf("refusing to remove profile %q without confirmation; re-run with --confirm", profileName)
++	}
++
++	fmt.Fprintf(cmd.OutOrStdout(), "This removes the profile %q and its stored credentials from %s.\nEnter 'yes' to confirm: ", profileName, cc.config.ProfilesFile)
++
++	input, err := bufio.NewReader(cmd.InOrStdin()).ReadString('\n')
++	if err != nil {
++		return false, err
++	}
++
++	return strings.ToLower(strings.Trim(input, " \r\n")) == "yes", nil
++}
++
++// isInteractive reports whether there is a user on the other end to answer the
++// prompt. The terminal check applies to os.Stdin only: when a caller has
++// substituted the command's input, that input is the thing being read, so it is
++// what decides, not the process's real stdin.
++func (cc *configCmd) isInteractive(cmd *cobra.Command) bool {
++	if cmd.InOrStdin() != os.Stdin {
++		return true
++	}
++
++	return term.IsTerminal(int(os.Stdin.Fd()))
++}
+diff --git a/pkg/cmd/delete.go b/pkg/cmd/delete.go
+index be7c066..0d2ba7c 100644
+--- a/pkg/cmd/delete.go
++++ b/pkg/cmd/delete.go
+@@ -32,7 +32,7 @@ func newDeleteCmd(isPreview bool) *requests.Base {
+ 		Use:   "delete <path>",
+ 		Args:  validators.ExactArgs(1),
+ 		Short: "Make a " + verb + " request to the Stripe API",
+-		Long: `Make ` + verb + ` requests to the Stripe API using your test mode key.
++		Long: `Make ` + verb + ` requests to the Stripe API using your sandbox key.
+ ` + previewNote + `
+ For a full list of supported paths, see the API reference:
+ https://stripe.com/docs/api
+diff --git a/pkg/cmd/listen.go b/pkg/cmd/listen.go
+index 870c249..31c78c2 100644
+--- a/pkg/cmd/listen.go
++++ b/pkg/cmd/listen.go
+@@ -144,9 +144,9 @@ func (lc *listenCmd) runListenCmd(cmd *cobra.Command, args []string) error {
+ 	var mismatch *config.ActiveContextLivemodeMismatchError
+ 	if errors.As(err, &mismatch) {
+ 		if mismatch.ActiveLivemode {
+-			return errorcategory.UserInputErrorf("your active context is livemode; add --live to match it, or run 'stripe switch context' to select a test mode context")
++			return errorcategory.UserInputErrorf("You're in live mode. Add --live to run the command, or run 'stripe switch context' to select a sandbox.")
+ 		}
+-		return errorcategory.UserInputErrorf("your active context is test mode; remove --live to match it, or run 'stripe switch context' to select a livemode context")
++		return errorcategory.UserInputErrorf("You're in a sandbox. Remove --live to run the command, or run 'stripe switch context' to select a live account.")
+ 	}
+ 	if err != nil {
+ 		return err
+diff --git a/pkg/cmd/login.go b/pkg/cmd/login.go
+index 22907ae..938277a 100644
+--- a/pkg/cmd/login.go
++++ b/pkg/cmd/login.go
+@@ -51,8 +51,8 @@ func newLoginCmd() *loginCmd {
+ 	lc.cmd = &cobra.Command{
+ 		Use:   "login",
+ 		Args:  validators.NoArgs,
+-		Short: "Login to your Stripe account",
+-		Long: `Login to your Stripe account to set up the CLI.
++		Short: "Log in to your Stripe account",
++		Long: `Log in to your Stripe account to set up the CLI.
+ 
+ By default (when stdin is a terminal), this opens a browser-based OAuth flow: it
+ prints a pairing code, launches your browser to the Stripe Dashboard, and waits for
+@@ -138,7 +138,7 @@ For agents and scripts, use the two-step non-interactive flow:
+ 		Example: `stripe login switch\n  stripe login switch acct_1234\n  stripe login switch acct_1234 --live`,
+ 		RunE:    switchCmd.switchLoggedInAccountCmd,
+ 	}
+-	switchCmd.cmd.Flags().BoolVar(&switchCmd.livemode, "live", false, "Select livemode for the given account")
++	switchCmd.cmd.Flags().BoolVar(&switchCmd.livemode, "live", false, "Select live mode for the given account")
+ 	switchCmd.cmd.Flags().StringVar(&switchCmd.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	switchCmd.cmd.Flags().MarkHidden("access-base") // #nosec G104
+ 
+diff --git a/pkg/cmd/logout.go b/pkg/cmd/logout.go
+index 7d905fa..9c566dd 100644
+--- a/pkg/cmd/logout.go
++++ b/pkg/cmd/logout.go
+@@ -20,8 +20,8 @@ func newLogoutCmd() *logoutCmd {
+ 	lc.cmd = &cobra.Command{
+ 		Use:   "logout",
+ 		Args:  validators.NoArgs,
+-		Short: "Logout of your Stripe account",
+-		Long:  `Logout of your Stripe account from the CLI`,
++		Short: "Log out of your Stripe account",
++		Long:  `Log out of your Stripe account from the CLI`,
+ 		RunE:  lc.runLogoutCmd,
+ 	}
+ 
+diff --git a/pkg/cmd/post.go b/pkg/cmd/post.go
+index 03dd0f2..d1418a5 100644
+--- a/pkg/cmd/post.go
++++ b/pkg/cmd/post.go
+@@ -32,7 +32,7 @@ func newPostCmd(isPreview bool) *requests.Base {
+ 		Use:   "post <path>",
+ 		Args:  validators.ExactArgs(1),
+ 		Short: "Make a " + verb + " request to the Stripe API",
+-		Long: `Make ` + verb + ` requests to the Stripe API using your test mode key.
++		Long: `Make ` + verb + ` requests to the Stripe API using your sandbox key.
+ 
+ The post command supports API features like idempotency keys and expand flags.
+ ` + previewNote + `
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index b6a0d62..af95959 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -88,6 +88,11 @@ var rootCmd = &cobra.Command{
+ 
+ 		reporting.SetCommandPath(cmd.CommandPath())
+ 
++		// Warn here rather than in InitConfig: the profile name can come from the
++		// persisted project-name key or STRIPE_PROJECT_NAME, and ReBindKeys applies
++		// both of those after InitConfig has already run.
++		Config.Profile.WarnIfLegacyProfileName()
++
+ 		// if getting the config errors, don't fail running the command
+ 		merchant, _ := Config.Profile.GetAccountID()
+ 		telemetryMetadata := stripe.GetEventMetadata(cmd.Context())
+diff --git a/pkg/cmd/switch.go b/pkg/cmd/switch.go
+index ba48186..e2dacab 100644
+--- a/pkg/cmd/switch.go
++++ b/pkg/cmd/switch.go
+@@ -34,14 +34,13 @@ func newSwitchCmd() *switchCmd {
+ Without an argument, shows an interactive list of your authorized accounts and
+ modes. Navigate with ↑↓, confirm with enter, or cancel with esc.
+ 
+-With an account ID, switches directly to that account in test mode by default.
+-Use --live to switch to livemode instead.`,
++With an account ID, switches directly to that account. Add --live to switch to live mode.`,
+ 		Example: `  stripe switch context
+   stripe switch context acct_1234
+   stripe switch context acct_1234 --live`,
+ 		RunE: ctxCmd.run,
+ 	}
+-	ctxCmd.cmd.Flags().BoolVar(&ctxCmd.livemode, "live", false, "Select livemode for the given account")
++	ctxCmd.cmd.Flags().BoolVar(&ctxCmd.livemode, "live", false, "Select live mode for the given account")
+ 	ctxCmd.cmd.Flags().StringVar(&ctxCmd.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	ctxCmd.cmd.Flags().MarkHidden("access-base") //nolint:errcheck
+ 
+diff --git a/pkg/cmd/trigger.go b/pkg/cmd/trigger.go
+index a535013..ccd98e3 100644
+--- a/pkg/cmd/trigger.go
++++ b/pkg/cmd/trigger.go
+@@ -50,7 +50,7 @@ needed to create the triggered event as well as the corresponding API objects.
+ 		Annotations: map[string]string{
+ 			AIAgentHelpAnnotationKey: "  Use `--override` to customize event data, e.g. `--override customer:email=test@example.com`.\n" +
+ 				"  Use `--skip` to skip specific steps in the trigger sequence.\n" +
+-				"  Triggers create real API objects in test mode that you can inspect afterward.",
++				"  Triggers create real API objects in your sandbox that you can inspect afterward.",
+ 		},
+ 		RunE: tc.runTriggerCmd,
+ 	}
+diff --git a/pkg/cmd/whoami.go b/pkg/cmd/whoami.go
+index a832c0c..f446439 100644
+--- a/pkg/cmd/whoami.go
++++ b/pkg/cmd/whoami.go
+@@ -53,14 +53,14 @@ func newWhoamiCmd() *whoamiCmd {
+ 	wc.cmd = &cobra.Command{
+ 		Use:   "whoami",
+ 		Args:  validators.NoArgs,
+-		Short: "Show the current Stripe auth state",
+-		Long: `Display the current authentication state for the Stripe CLI.
++		Short: "Show the current Stripe auth context",
++		Long: `Display the current authentication context for the Stripe CLI.
+ 
+ Reads credentials from the config file and keychain — no API calls are made.
+ 
+ Use --format json for output suitable for scripting or agent consumption. The
+ schema is stable: test_mode_key and live_mode_key are always present regardless
+-of auth state, and authenticated: false indicates no usable credentials exist.
++of auth context, and authenticated: false indicates no usable credentials exist.
+ 
+ Exit codes:
+   0  Authenticated (at least one key is available)
+@@ -133,7 +133,7 @@ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 	ac, _ := config.GetActiveContext()
+ 	if ac != nil {
+ 		displayName := wc.profile.GetDisplayName()
+-		mode := "test"
++		mode := "sandbox"
+ 		if ac.Livemode {
+ 			mode = "live"
+ 		}
+@@ -175,7 +175,7 @@ func printWhoamiText(out io.Writer, data whoamiOutput) {
+ 		fmt.Fprintf(w, "Device name:\t%s\n", data.DeviceName)
+ 	}
+ 
+-	fmt.Fprintf(w, "Test mode key:\t%s\n", keyAvailabilityText(data.TestModeKey))
++	fmt.Fprintf(w, "Sandbox key:\t%s\n", keyAvailabilityText(data.TestModeKey))
+ 	fmt.Fprintf(w, "Live mode key:\t%s\n", keyAvailabilityText(data.LiveModeKey))
+ 	fmt.Fprintf(w, "API version:\t%s\n", data.APIVersion)
+ 	fmt.Fprintf(w, "Preview API version:\t%s\n", data.PreviewAPIVersion)
+diff --git a/pkg/config/config.go b/pkg/config/config.go
+index 195e6d9..c5512eb 100644
+--- a/pkg/config/config.go
++++ b/pkg/config/config.go
+@@ -363,11 +363,50 @@ func (c *Config) SwitchProfile(profileName string) error {
+ 	return nil
+ }
+ 
++// reservedTopLevelKeys are config keys that sit alongside profiles at the top
++// level of the file but are not profiles. They are excluded from profile removal
++// so that a name collision cannot destroy machine-wide settings.
++var reservedTopLevelKeys = map[string]bool{
++	"color":             true,
++	"installed_plugins": true,
++	"machine_uuid":      true,
++	"plugin_configs":    true,
++	"project-name":      true,
++	UserInfoName:        true,
++}
++
++// ErrProfileNotFound is returned when no profile matches the requested name.
++var ErrProfileNotFound = errorcategory.New(errorcategory.UserInput, "profile not found")
++
++// isReservedConfigKey reports whether name addresses machine-wide config rather
++// than a profile.
++//
++// The first path segment is what matters: a name like "plugin_configs.apps"
++// resolves to a real table, so without this it would look like a legacy profile
++// whose name contains a period and be removable as one.
++func isReservedConfigKey(name string) bool {
++	first, _, _ := strings.Cut(strings.ToLower(name), ".")
++	return reservedTopLevelKeys[first]
++}
++
+ // RemoveProfile removes the profile whose name matches the provided
+ // profileName from the config file.
++//
++// It returns ErrProfileNotFound when there is nothing to remove, so a caller
++// acting on a name a user typed can tell the difference between a removal and a
++// no-op. Callers that treat removal as best effort can ignore it.
+ func (c *Config) RemoveProfile(profileName string) error {
++	if profileName == "" {
++		return errorcategory.Errorf(errorcategory.UserInput, "profile name cannot be empty")
++	}
++
++	if isReservedConfigKey(profileName) {
++		return errorcategory.Errorf(errorcategory.UserInput, "%q is a reserved config key, not a profile", profileName)
++	}
++
+ 	runtimeViper := viper.GetViper()
+ 	var err error
++	var matched bool
+ 
+ 	for field, value := range runtimeViper.AllSettings() {
+ 		if isProfile(value) {
+@@ -381,6 +420,8 @@ func (c *Config) RemoveProfile(profileName string) error {
+ 				profileNameAttr = v["profile_name"]
+ 			}
+ 			if field == profileName || profileNameAttr == profileName {
++				matched = true
++
+ 				runtimeViper, err = removeKey(runtimeViper, field)
+ 				if err != nil {
+ 					return err
+@@ -391,9 +432,50 @@ func (c *Config) RemoveProfile(profileName string) error {
+ 		}
+ 	}
+ 
++	// The enumeration above only finds tables that isProfile recognizes, which
++	// requires a display_name, and it cannot see a profile whose name contains a
++	// period at all because viper reads that back as nesting. Fall back to
++	// addressing the table by its full key path, which hits exactly that profile
++	// and leaves siblings intact.
++	if !matched && isProfileTable(runtimeViper, profileName) {
++		matched = true
++
++		runtimeViper, err = removeKey(runtimeViper, profileName)
++		if err != nil {
++			return err
++		}
++
++		deleteLivemodeKey(LiveModeAPIKeyName, profileName)
++	}
++
++	if !matched {
++		return ErrProfileNotFound
++	}
++
+ 	return writeConfig(runtimeViper)
+ }
+ 
++// isProfileTable reports whether profileName addresses a table in the config
++// file. It deliberately does not require a display_name: a profile written
++// before display_name was always set, or one whose write was interrupted, still
++// needs to be removable.
++//
++// Get is used rather than AllSettings because Get returns the raw, unflattened
++// sub-map, so a name containing a period resolves to the table the user wrote
++// rather than being split into a path.
++func isProfileTable(v *viper.Viper, profileName string) bool {
++	if !v.IsSet(profileName) {
++		return false
++	}
++
++	switch v.Get(profileName).(type) {
++	case map[string]interface{}, map[string]string:
++		return true
++	}
++
++	return false
++}
++
+ // RemoveAllProfiles removes all the profiles from the config file.
+ func (c *Config) RemoveAllProfiles() error {
+ 	runtimeViper := viper.GetViper()
+@@ -417,6 +499,7 @@ func (c *Config) RemoveAllProfiles() error {
+ // preserving non-auth settings like color.
+ func (c *Config) RemoveAuthFields(profileName string) error {
+ 	runtimeViper := viper.GetViper()
++	var matched bool
+ 
+ 	for field, value := range runtimeViper.AllSettings() {
+ 		if isProfile(value) {
+@@ -430,6 +513,8 @@ func (c *Config) RemoveAuthFields(profileName string) error {
+ 				profileNameAttr = v["profile_name"]
+ 			}
+ 			if field == profileName || profileNameAttr == profileName {
++				matched = true
++
+ 				p := &Profile{ProfileName: field}
+ 				runtimeViper = p.deleteAuthFields(runtimeViper)
+ 				deleteLivemodeKey(LiveModeAPIKeyName, field)
+@@ -437,6 +522,15 @@ func (c *Config) RemoveAuthFields(profileName string) error {
+ 		}
+ 	}
+ 
++	// Profiles with a period in the name are nested tables that the enumeration
++	// above cannot see. Clearing them by name is the only way for a user to log
++	// out of one, so handle that case explicitly.
++	if !matched && isNestedProfileName(profileName) && runtimeViper.IsSet(profileName) {
++		p := &Profile{ProfileName: profileName}
++		runtimeViper = p.deleteAuthFields(runtimeViper)
++		deleteLivemodeKey(LiveModeAPIKeyName, profileName)
++	}
++
+ 	deleteTopLevelLivemodeKey(UATKeychainItemKey)
+ 	deleteTopLevelLivemodeKey(OAuthRefreshTokenKeychainKey)
+ 	deleteTopLevelLivemodeKey(OAuthActiveContextKeychainKey)
+@@ -493,6 +587,14 @@ func deleteTopLevelLivemodeKey(key string) error {
+ 	return err
+ }
+ 
++// isNestedProfileName reports whether a profile name would be read back from
++// the config file as a nested table rather than a single top-level one. Such
++// profiles are skipped by every loop over AllSettings(), because viper joins and
++// splits keys on "." and so cannot distinguish ["a.b"] from [a] -> [b].
++func isNestedProfileName(profileName string) bool {
++	return profileName != "" && strings.Contains(profileName, ".")
++}
++
+ // isProfile identifies whether a config entry pertains to a user profile.
+ // A profile is a map that contains a display_name field.
+ func isProfile(value interface{}) bool {
+diff --git a/pkg/config/config_test.go b/pkg/config/config_test.go
+index 8a23f39..c994720 100644
+--- a/pkg/config/config_test.go
++++ b/pkg/config/config_test.go
+@@ -257,6 +257,65 @@ func TestRemoveProfile(t *testing.T) {
+ 	require.False(t, v.IsSet("to-remove"))
+ }
+ 
++// setupLegacyDottedProfile writes a config file containing a dotted profile
++// alongside a normal one. Dotted names are no longer accepted for new profiles,
++// but ones written before the ban must stay manageable.
++func setupLegacyDottedProfile(t *testing.T) (*Config, string, func()) {
++	t.Helper()
++
++	profilesFile := filepath.Join(t.TempDir(), "config.toml")
++	contents := "[\"example.project\"]\n" +
++		"display_name = 'Legacy'\n" +
++		"test_mode_api_key = 'sk_test_legacy'\n\n" +
++		"[example]\n" +
++		"display_name = 'Sibling'\n" +
++		"test_mode_api_key = 'sk_test_sibling'\n"
++	require.NoError(t, os.WriteFile(profilesFile, []byte(contents), 0600))
++
++	c := &Config{
++		LogLevel:     "info",
++		ProfilesFile: profilesFile,
++		Profile:      Profile{ProfileName: "example.project"},
++	}
++	KeyRing = keyring.NewMemoryStore(nil)
++	c.InitConfig()
++
++	return c, profilesFile, func() {
++		KeyRing = nil
++		viper.Reset()
++	}
++}
++
++// A dotted profile is read back as a nested table, so the enumeration in
++// RemoveProfile never sees it. It must still be removable by name, and removing
++// it must not take the profile that shares its first segment with it.
++func TestRemoveProfileWithDottedName(t *testing.T) {
++	c, _, cleanup := setupLegacyDottedProfile(t)
++	defer cleanup()
++
++	require.NoError(t, c.RemoveProfile("example.project"))
++
++	c.InitConfig()
++	v := viper.GetViper()
++	require.False(t, v.IsSet("example.project.display_name"))
++	require.Equal(t, "sk_test_sibling", v.GetString("example.test_mode_api_key"))
++}
++
++// `stripe logout --project-name example.project` is the documented way out of a
++// legacy dotted profile, so it has to actually clear the credentials rather than
++// report success and leave them on disk.
++func TestRemoveAuthFieldsWithDottedName(t *testing.T) {
++	c, _, cleanup := setupLegacyDottedProfile(t)
++	defer cleanup()
++
++	require.NoError(t, c.RemoveAuthFields("example.project"))
++
++	c.InitConfig()
++	v := viper.GetViper()
++	require.Empty(t, v.GetString("example.project.test_mode_api_key"))
++	require.Equal(t, "sk_test_sibling", v.GetString("example.test_mode_api_key"))
++}
++
+ func TestSwitchProfile(t *testing.T) {
+ 	c, _, cleanup := setupTestConfig(t)
+ 	defer cleanup()
+diff --git a/pkg/config/profile.go b/pkg/config/profile.go
+index 5a94c7b..ce3722e 100644
+--- a/pkg/config/profile.go
++++ b/pkg/config/profile.go
+@@ -149,6 +149,48 @@ var authFieldNames = []string{
+ 	"experimental",
+ }
+ 
++// profileExists reports whether the config file already contains a table for
++// this profile. This checks for the table itself rather than any particular
++// field, so that a partially written profile (one with no display_name, which a
++// profile abandoned part-way through login can be) is still recognized.
++func (p *Profile) profileExists() bool {
++	return viper.IsSet(p.ProfileName)
++}
++
++// warnLegacyProfileNameOnce guards the deprecation warning so it prints at most
++// once per process.
++var warnLegacyProfileNameOnce sync.Once
++
++// WarnIfLegacyProfileName tells the user when the active profile has a period in
++// its name.
++//
++// Profile fields are addressed as <profile>.<field> keys in viper, which uses
++// "." as its path separator. A profile name containing a period is therefore
++// indistinguishable from a nested table: viper reads ["a.b"] back as a -> b, so
++// the profile becomes invisible to every operation that enumerates top-level
++// tables, even though reads against it keep working. That makes this warning the
++// only signal the user gets that the profile cannot be listed by name.
++//
++// It only fires for a profile that is actually in the config file, so that a
++// period in a name nobody is using stays silent.
++func (p *Profile) WarnIfLegacyProfileName() {
++	if !strings.Contains(p.ProfileName, ".") || !p.profileExists() {
++		return
++	}
++
++	warnLegacyProfileNameOnce.Do(func() {
++		color := ansi.Color(os.Stderr)
++		fmt.Fprintln(os.Stderr, color.Yellow(fmt.Sprintf(`
++(!) The profile %[1]q contains a period, which can cause unexpected
++behavior and will stop being accepted in a future release. We strongly
++recommend migrating it: log in under a new name and remove the old one.
++  stripe login --project-name %[2]s
++  stripe config --remove-profile %[1]s`,
++			p.ProfileName,
++			strings.ReplaceAll(p.ProfileName, ".", "-"))))
++	})
++}
++
+ // CreateProfile creates a profile when logging in
+ func (p *Profile) CreateProfile() error {
+ 	// Remove only auth-related keys under existing profile first
+@@ -438,6 +480,7 @@ func (p *Profile) RegisterAlias(alias, key string) {
+ // configuration to disk.
+ func (p *Profile) WriteConfigField(field, value string) error {
+ 	viper.ReadInConfig()
++
+ 	viper.Set(p.GetConfigField(field), value)
+ 	return writeConfig(viper.GetViper())
+ }
+@@ -736,7 +779,7 @@ func (p *Profile) PrintActiveContextBanner() {
+ 		if ac == nil {
+ 			return
+ 		}
+-		mode := "test"
++		mode := "sandbox"
+ 		if ac.Livemode {
+ 			mode = "live"
+ 		}
+@@ -791,9 +834,9 @@ type ActiveContextLivemodeMismatchError struct {
+ 
+ func (e *ActiveContextLivemodeMismatchError) Error() string {
+ 	if e.ActiveLivemode {
+-		return "your active context is livemode; run 'stripe switch context' to select a test mode context"
++		return "You're in live mode. Run 'stripe switch context' to select a sandbox."
+ 	}
+-	return "your active context is test mode; run 'stripe switch context' to select a livemode context"
++	return "You're in a sandbox. Run 'stripe switch context' to select a live account."
+ }
+ 
+ // ResolveCredentials returns the credentials for the given mode. If an OAK
+@@ -844,7 +887,7 @@ func (p *Profile) ResolveCredentials(livemode bool) (stripe.Credentials, error)
+ 				return stripe.Credentials{}, err
+ 			}
+ 			if livemode && compartmentID == "" {
+-				return stripe.Credentials{}, errorcategory.UserInputErrorf("you're logged in to a sandbox; to access livemode, reauthenticate with 'stripe login' and select your live account")
++				return stripe.Credentials{}, errorcategory.UserInputErrorf("You're logged in to a sandbox. To access live mode, reauthenticate with 'stripe login' and select your live account.")
+ 			}
+ 			return stripe.NewOAKCredentials(uat, compartmentID, livemode), nil
+ 		}
+diff --git a/pkg/config/profile_test.go b/pkg/config/profile_test.go
+index b46adde..3b6aad0 100644
+--- a/pkg/config/profile_test.go
++++ b/pkg/config/profile_test.go
+@@ -2,8 +2,10 @@ package config
+ 
+ import (
+ 	"encoding/json"
++	"io"
+ 	"os"
+ 	"path/filepath"
++	"sync"
+ 	"testing"
+ 
+ 	"github.com/spf13/viper"
+@@ -13,6 +15,113 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/keyring"
+ )
+ 
++// setupProfileConfig writes contents to a temp config file and initializes the
++// global viper from it, so tests exercise the same read path as the CLI rather
++// than viper's override layer, which nests keys by splitting on ".".
++func setupProfileConfig(t *testing.T, contents string) (*Config, string) {
++	t.Helper()
++
++	profilesFile := filepath.Join(t.TempDir(), "config.toml")
++	require.NoError(t, os.WriteFile(profilesFile, []byte(contents), 0600))
++
++	if KeyRing == nil {
++		KeyRing = keyring.NewMemoryStore(nil)
++	}
++	t.Cleanup(func() {
++		KeyRing = nil
++		viper.Reset()
++	})
++
++	c := &Config{LogLevel: "info", ProfilesFile: profilesFile}
++	c.InitConfig()
++
++	return c, profilesFile
++}
++
++func TestWarnIfLegacyProfileName(t *testing.T) {
++	tests := []struct {
++		name        string
++		profileName string
++		contents    string
++		wantWarning bool
++	}{
++		{
++			name:        "existing dotted profile warns",
++			profileName: "example.project",
++			contents:    "[\"example.project\"]\ndisplay_name = 'Legacy'\n",
++			wantWarning: true,
++		},
++		{
++			// Nothing is broken until such a profile is actually written, so
++			// warning here would only be noise.
++			name:        "dotted profile that is not in the config file is silent",
++			profileName: "example.project",
++			contents:    "[default]\ndisplay_name = 'Default'\n",
++		},
++		{
++			name:        "valid profile is silent",
++			profileName: "default",
++			contents:    "[default]\ndisplay_name = 'Default'\n",
++		},
++		{
++			name:     "empty profile name is silent",
++			contents: "[default]\ndisplay_name = 'Default'\n",
++		},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			setupProfileConfig(t, tt.contents)
++
++			warnLegacyProfileNameOnce = sync.Once{}
++			t.Cleanup(func() { warnLegacyProfileNameOnce = sync.Once{} })
++
++			p := Profile{ProfileName: tt.profileName}
++			stderr := captureStderr(t, p.WarnIfLegacyProfileName)
++
++			if !tt.wantWarning {
++				require.Empty(t, stderr)
++				return
++			}
++
++			require.Contains(t, stderr, `The profile "example.project" contains a period`)
++			require.Contains(t, stderr, "stripe login --project-name example-project")
++			require.Contains(t, stderr, "stripe config --remove-profile example.project")
++		})
++	}
++}
++
++// The warning is printed once per process so it does not repeat for every
++// command in a session.
++func TestWarnIfLegacyProfileNameOnlyWarnsOnce(t *testing.T) {
++	setupProfileConfig(t, "[\"example.project\"]\ndisplay_name = 'Legacy'\n")
++
++	warnLegacyProfileNameOnce = sync.Once{}
++	t.Cleanup(func() { warnLegacyProfileNameOnce = sync.Once{} })
++
++	p := Profile{ProfileName: "example.project"}
++	require.NotEmpty(t, captureStderr(t, p.WarnIfLegacyProfileName))
++	require.Empty(t, captureStderr(t, p.WarnIfLegacyProfileName))
++}
++
++func captureStderr(t *testing.T, fn func()) string {
++	t.Helper()
++
++	r, w, err := os.Pipe()
++	require.NoError(t, err)
++
++	original := os.Stderr
++	os.Stderr = w
++	fn()
++	os.Stderr = original
++	require.NoError(t, w.Close())
++
++	out, err := io.ReadAll(r)
++	require.NoError(t, err)
++
++	return string(out)
++}
++
+ func TestWriteProfile(t *testing.T) {
+ 	profilesFile := filepath.Join(t.TempDir(), "config.toml")
+ 	p := Profile{
+@@ -278,7 +387,7 @@ func TestResolveCredentialsOAKLivemodeNoCompartment(t *testing.T) {
+ 	p := Profile{ProfileName: "default"}
+ 	_, err := p.ResolveCredentials(true)
+ 	require.Error(t, err)
+-	require.Contains(t, err.Error(), "you're logged in to a sandbox")
++	require.Contains(t, err.Error(), "You're logged in to a sandbox")
+ 	require.Contains(t, err.Error(), "stripe login")
+ }
+ 
+diff --git a/pkg/login/login.go b/pkg/login/login.go
+index 0e0dfee..be796e8 100644
+--- a/pkg/login/login.go
++++ b/pkg/login/login.go
+@@ -196,7 +196,7 @@ func PollPendingDeviceAuth(ctx context.Context, cfg *config.Config) error {
+ 		return fmt.Errorf("failed to save account info: %w", err)
+ 	}
+ 
+-	printLoginSuccess(accounts, activeID, activeLivemode)
++	printAuthorizedSummary(accounts, activeID, activeLivemode)
+ 	warnIfInsecureStorage()
+ 	return nil
+ }
+diff --git a/pkg/login/oauth_accounts.go b/pkg/login/oauth_accounts.go
+index 070bfc2..7551acb 100644
+--- a/pkg/login/oauth_accounts.go
++++ b/pkg/login/oauth_accounts.go
+@@ -86,7 +86,7 @@ func PrintAuthorizedContexts(ctx context.Context, accessBaseURL, accessToken str
+ 			rows = append(rows, row{
+ 				name:   a.Name,
+ 				id:     a.ID,
+-				mode:   m,
++				mode:   displayMode(m),
+ 				active: a.ID == activeID && m == activeMode,
+ 			})
+ 			if len(a.Name) > nameW {
+@@ -110,6 +110,14 @@ func PrintAuthorizedContexts(ctx context.Context, accessBaseURL, accessToken str
+ 	return nil
+ }
+ 
++// displayMode maps the API's "test" mode value to the CLI's "sandbox" terminology.
++func displayMode(m string) string {
++	if m == "test" {
++		return "sandbox"
++	}
++	return m
++}
++
+ // pickActiveContext selects the active account and livemode from the list of
+ // authorized accounts. It prefers the first test-mode account; if none is
+ // found it falls back to the first account's first mode.
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index f825d55..9b8bc50 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -220,7 +220,7 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 		return fmt.Errorf("failed to save account info: %w", err)
+ 	}
+ 
+-	printLoginSuccess(accounts, activeID, activeLivemode)
++	printAuthorizedSummary(accounts, activeID, activeLivemode)
+ 	warnIfInsecureStorage()
+ 	return nil
+ }
+@@ -255,7 +255,9 @@ func buildContextRows(accounts []config.AuthorizedAccount, activeID string, acti
+ 	return rows
+ }
+ 
+-func printLoginSuccess(accounts []config.AuthorizedAccount, activeID string, activeLivemode bool) {
++// printAuthorizedSummary prints the "Done! The Stripe CLI is authorized for
++// ..." banner and context table shared by login and reauth.
++func printAuthorizedSummary(accounts []config.AuthorizedAccount, activeID string, activeLivemode bool) {
+ 	color := ansi.Color(os.Stdout)
+ 	rows := buildContextRows(accounts, activeID, activeLivemode)
+ 
+@@ -266,7 +268,7 @@ func printLoginSuccess(accounts []config.AuthorizedAccount, activeID string, act
+ 
+ 	if len(rows) == 1 {
+ 		r := rows[0]
+-		ctx := fmt.Sprintf("%s · %s", r.name, r.mode)
++		ctx := fmt.Sprintf("%s · %s", r.name, displayMode(r.mode))
+ 		fmt.Printf("%s Done! The Stripe CLI is authorized for %s (%s)\n", color.Green("✓"), ctx, r.id)
+ 		fmt.Printf("  Active context: %s\n\n", ctx)
+ 		fmt.Println("Run 'stripe reauth' to change permissions or authorize access to additional accounts or sandboxes.")
+@@ -280,8 +282,8 @@ func printLoginSuccess(accounts []config.AuthorizedAccount, activeID string, act
+ 		if len(r.name) > nameW {
+ 			nameW = len(r.name)
+ 		}
+-		if len(r.mode) > modeW {
+-			modeW = len(r.mode)
++		if dl := len(displayMode(r.mode)); dl > modeW {
++			modeW = dl
+ 		}
+ 		if len(r.id) > idW {
+ 			idW = len(r.id)
+@@ -289,10 +291,11 @@ func printLoginSuccess(accounts []config.AuthorizedAccount, activeID string, act
+ 	}
+ 
+ 	for _, r := range rows {
++		mode := displayMode(r.mode)
+ 		if r.active {
+-			fmt.Printf("  %-*s  %-*s  %-*s  %s active\n", nameW, r.name, modeW, r.mode, idW, r.id, color.Green("●"))
++			fmt.Printf("  %-*s  %-*s  %-*s  %s active\n", nameW, r.name, modeW, mode, idW, r.id, color.Green("●"))
+ 		} else {
+-			fmt.Printf("  %-*s  %-*s  %s\n", nameW, r.name, modeW, r.mode, r.id)
++			fmt.Printf("  %-*s  %-*s  %s\n", nameW, r.name, modeW, mode, r.id)
+ 		}
+ 	}
+ 
+diff --git a/pkg/login/oauth_reauth.go b/pkg/login/oauth_reauth.go
+index b65cc81..f71b249 100644
+--- a/pkg/login/oauth_reauth.go
++++ b/pkg/login/oauth_reauth.go
+@@ -3,25 +3,48 @@ package login
+ import (
+ 	"context"
+ 	"encoding/json"
++	"errors"
+ 	"fmt"
+ 	"io"
+ 	"net/http"
+ 	"os"
++	"os/signal"
++	"sort"
+ 	"strings"
++	"time"
+ 
++	"github.com/stripe/stripe-cli/pkg/config"
+ 	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+ const reauthPath = accessAPNPath + "/token/reauth"
+ 
++const (
++	reauthPollInterval = 3 * time.Second
++	reauthPollTimeout  = 10 * time.Minute
++)
++
++// errReauthTimeout is returned by waitForAccountsChange when reauthPollTimeout
++// elapses with no detected change.
++var errReauthTimeout = errorcategory.New(errorcategory.Auth, "timed out waiting for the reauthorization to finish")
++
+ type reauthResponse struct {
+ 	ReauthURL string `json:"reauth_url"`
+ }
+ 
+ // Reauth fetches a reauthentication URL for the active OAuth session and
+ // directs the user to it. If a browser is available it is opened automatically;
+-// otherwise the URL is printed for the user to visit manually.
++// otherwise the URL is printed for the user to visit manually. It then waits
++// for the authorized-accounts list to change before printing the updated list
++// of authorized contexts; access-srv has no dedicated signal for "the user
++// finished reauthorizing," so a change to the accounts/scopes returned for the
++// token is used as a proxy for completion.
+ func Reauth(ctx context.Context, accessBaseURL, accessToken string) error {
++	before, err := ListAuthorizedAccounts(ctx, accessBaseURL, accessToken)
++	if err != nil {
++		return err
++	}
++
+ 	reauthURL, err := fetchReauthURL(ctx, accessBaseURL, accessToken)
+ 	if err != nil {
+ 		return err
+@@ -39,9 +62,79 @@ func Reauth(ctx context.Context, accessBaseURL, accessToken string) error {
+ 	} else {
+ 		fmt.Printf("Visit the following URL to re-authorize the CLI:\n  %s\n", reauthURL)
+ 	}
++	fmt.Println("Waiting for you to finish in the browser. Press ^C to cancel.")
++
++	waitCtx, stop := signal.NotifyContext(ctx, os.Interrupt)
++	defer stop()
++
++	after, err := waitForAccountsChange(waitCtx, accessBaseURL, accessToken, before, reauthPollInterval, reauthPollTimeout)
++	if err != nil {
++		switch {
++		case errors.Is(err, context.Canceled):
++			fmt.Println("Canceled. Run 'stripe whoami' to check your authorized contexts.")
++			return nil
++		case errors.Is(err, errReauthTimeout):
++			fmt.Println("Still waiting on the re-authorization. Run 'stripe whoami' once you've finished.")
++			return nil
++		default:
++			return err
++		}
++	}
++
++	ac, _ := config.GetActiveContext()
++	activeID, activeLivemode := "", false
++	if ac != nil {
++		activeID = ac.AccountID
++		activeLivemode = ac.Livemode
++	}
++	printAuthorizedSummary(after, activeID, activeLivemode)
+ 	return nil
+ }
+ 
++// waitForAccountsChange polls the authorized-accounts list on interval until
++// it differs from before, ctx is canceled, or timeout elapses.
++func waitForAccountsChange(ctx context.Context, accessBaseURL, accessToken string, before []config.AuthorizedAccount, interval, timeout time.Duration) ([]config.AuthorizedAccount, error) {
++	beforeSig := accountsSignature(before)
++
++	deadline := time.NewTimer(timeout)
++	defer deadline.Stop()
++	ticker := time.NewTicker(interval)
++	defer ticker.Stop()
++
++	for {
++		select {
++		case <-ctx.Done():
++			return nil, ctx.Err()
++		case <-deadline.C:
++			return nil, errReauthTimeout
++		case <-ticker.C:
++			accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, accessToken)
++			if err != nil {
++				return nil, err
++			}
++			if accountsSignature(accounts) != beforeSig {
++				return accounts, nil
++			}
++		}
++	}
++}
++
++// accountsSignature returns a stable string representation of accounts,
++// used to detect whether the authorized-accounts list has changed.
++func accountsSignature(accounts []config.AuthorizedAccount) string {
++	sorted := make([]config.AuthorizedAccount, len(accounts))
++	copy(sorted, accounts)
++	sort.Slice(sorted, func(i, j int) bool { return sorted[i].ID < sorted[j].ID })
++
++	var sb strings.Builder
++	for _, a := range sorted {
++		modes := append([]string{}, a.Modes...)
++		sort.Strings(modes)
++		fmt.Fprintf(&sb, "%s|%s|%s;", a.ID, a.Name, strings.Join(modes, ","))
++	}
++	return sb.String()
++}
++
+ func fetchReauthURL(ctx context.Context, accessBaseURL, accessToken string) (string, error) {
+ 	endpoint := accessBaseURL + reauthPath
+ 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
+diff --git a/pkg/login/oauth_reauth_test.go b/pkg/login/oauth_reauth_test.go
+new file mode 100644
+index 0000000..2ea4494
+--- /dev/null
++++ b/pkg/login/oauth_reauth_test.go
+@@ -0,0 +1,93 @@
++package login
++
++import (
++	"context"
++	"encoding/json"
++	"net/http"
++	"net/http/httptest"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"github.com/stretchr/testify/assert"
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++)
++
++func TestAccountsSignature_orderIndependent(t *testing.T) {
++	a := []config.AuthorizedAccount{
++		{ID: "acct_1", Name: "One", Modes: []string{"live", "test"}},
++		{ID: "acct_2", Name: "Two", Modes: []string{"test"}},
++	}
++	b := []config.AuthorizedAccount{
++		{ID: "acct_2", Name: "Two", Modes: []string{"test"}},
++		{ID: "acct_1", Name: "One", Modes: []string{"test", "live"}},
++	}
++	assert.Equal(t, accountsSignature(a), accountsSignature(b))
++}
++
++func TestAccountsSignature_detectsDifference(t *testing.T) {
++	a := []config.AuthorizedAccount{{ID: "acct_1", Name: "One", Modes: []string{"test"}}}
++	b := []config.AuthorizedAccount{{ID: "acct_1", Name: "One", Modes: []string{"test", "live"}}}
++	assert.NotEqual(t, accountsSignature(a), accountsSignature(b))
++}
++
++func TestWaitForAccountsChange_detectsChange(t *testing.T) {
++	before := []config.AuthorizedAccount{{ID: "acct_1", Name: "One", Modes: []string{"test"}}}
++	after := []config.AuthorizedAccount{{ID: "acct_1", Name: "One", Modes: []string{"test", "live"}}}
++
++	var calls atomic.Int32
++	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		resp := before
++		if calls.Add(1) >= 3 {
++			resp = after
++		}
++		json.NewEncoder(w).Encode(listAccountsResponse{Accounts: resp}) //nolint:errcheck
++	}))
++	defer srv.Close()
++
++	got, err := waitForAccountsChange(context.Background(), srv.URL, "oak_test", before, time.Millisecond, time.Second)
++	require.NoError(t, err)
++	assert.Equal(t, after, got)
++	assert.GreaterOrEqual(t, calls.Load(), int32(3))
++}
++
++func TestWaitForAccountsChange_timesOut(t *testing.T) {
++	before := []config.AuthorizedAccount{{ID: "acct_1", Name: "One", Modes: []string{"test"}}}
++	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(listAccountsResponse{Accounts: before}) //nolint:errcheck
++	}))
++	defer srv.Close()
++
++	_, err := waitForAccountsChange(context.Background(), srv.URL, "oak_test", before, time.Millisecond, 20*time.Millisecond)
++	assert.ErrorIs(t, err, errReauthTimeout)
++}
++
++func TestWaitForAccountsChange_contextCanceled(t *testing.T) {
++	before := []config.AuthorizedAccount{{ID: "acct_1", Name: "One", Modes: []string{"test"}}}
++	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(listAccountsResponse{Accounts: before}) //nolint:errcheck
++	}))
++	defer srv.Close()
++
++	ctx, cancel := context.WithCancel(context.Background())
++	cancel()
++
++	_, err := waitForAccountsChange(ctx, srv.URL, "oak_test", before, time.Millisecond, time.Second)
++	assert.ErrorIs(t, err, context.Canceled)
++}
++
++func TestWaitForAccountsChange_propagatesRequestError(t *testing.T) {
++	before := []config.AuthorizedAccount{{ID: "acct_1", Name: "One", Modes: []string{"test"}}}
++	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		http.Error(w, "unauthorized", http.StatusUnauthorized)
++	}))
++	defer srv.Close()
++
++	_, err := waitForAccountsChange(context.Background(), srv.URL, "oak_test", before, time.Millisecond, time.Second)
++	assert.ErrorContains(t, err, "401")
++}
+diff --git a/pkg/login/switch_context.go b/pkg/login/switch_context.go
+index f6ccd66..d42e617 100644
+--- a/pkg/login/switch_context.go
++++ b/pkg/login/switch_context.go
+@@ -50,11 +50,11 @@ func switchByID(cfg *config.Config, accounts []config.AuthorizedAccount, account
+ 			}
+ 		}
+ 		if livemode {
+-			return errorcategory.Errorf(errorcategory.Auth, "account %s is not authorized for livemode", accountID)
++			return errorcategory.Errorf(errorcategory.Auth, "Account %s does not have live mode access", accountID)
+ 		}
+-		return errorcategory.Errorf(errorcategory.Auth, "account %s is not authorized for test mode; use --live to switch to livemode", accountID)
++		return errorcategory.Errorf(errorcategory.Auth, "Account %s does not have sandbox access; use --live to switch to live mode", accountID)
+ 	}
+-	return errorcategory.Errorf(errorcategory.Auth, "account %s not found in your authorized accounts", accountID)
++	return errorcategory.Errorf(errorcategory.Auth, "Account %s not found in your authorized accounts", accountID)
+ }
+ 
+ func applyContext(cfg *config.Config, account config.AuthorizedAccount, mode string) error {
+@@ -70,7 +70,7 @@ func applyContext(cfg *config.Config, account config.AuthorizedAccount, mode str
+ 	if err := cfg.Profile.CreateProfile(); err != nil {
+ 		return err
+ 	}
+-	fmt.Printf("Active context: %s · %s (%s)\n", account.Name, mode, account.ID)
++	fmt.Printf("Active context: %s · %s (%s)\n", account.Name, displayMode(mode), account.ID)
+ 	return nil
+ }
+ 
+@@ -234,7 +234,7 @@ func (m switchContextModel) View() tea.View {
+ 			if r.active {
+ 				activeMarker = "  " + switchActiveStyle.Render("● active")
+ 			}
+-			line := fmt.Sprintf("%s%-*s  %-*s  %-7s%s", pointer, m.nameW, r.name, m.idW, r.id, r.mode, activeMarker)
++			line := fmt.Sprintf("%s%-*s  %-*s  %-7s%s", pointer, m.nameW, r.name, m.idW, r.id, displayMode(r.mode), activeMarker)
+ 			line = strings.TrimRight(line, " ")
+ 			if i == m.cursor {
+ 				line = switchCursorStyle.Render(line)
+diff --git a/pkg/requests/base.go b/pkg/requests/base.go
+index 4402121..b3f0b86 100644
+--- a/pkg/requests/base.go
++++ b/pkg/requests/base.go
+@@ -235,9 +235,9 @@ func (rb *Base) ResolveCredentials() (stripe.Credentials, error) {
+ 	var mismatch *config.ActiveContextLivemodeMismatchError
+ 	if errors.As(err, &mismatch) {
+ 		if mismatch.ActiveLivemode {
+-			return stripe.Credentials{}, errorcategory.UserInputErrorf("your active context is livemode; add --live to match it, or run 'stripe switch context' to select a test mode context")
++			return stripe.Credentials{}, errorcategory.UserInputErrorf("You're in live mode. Add --live to run the command, or run 'stripe switch context' to select a sandbox.")
+ 		}
+-		return stripe.Credentials{}, errorcategory.UserInputErrorf("your active context is test mode; remove --live to match it, or run 'stripe switch context' to select a livemode context")
++		return stripe.Credentials{}, errorcategory.UserInputErrorf("You're in a sandbox. Remove --live to run the command, or run 'stripe switch context' to select a live account.")
+ 	}
+ 	return creds, err
+ }

@@ -91,7 +91,11 @@ The `stripe/ai` repository supplies independently versioned LLM token-billing pa
 
 ### Stripe CLI
 
+Latest curated release: `stripe-cli@1.53.0`; version --notes announcement with an explicit implementation evidence gap. History and limitations: [[source-github-stripe-cli]], [[changelog-github-stripe-cli]].
+
 `stripe-cli@1.50.0` is Stripe's command-line developer and test tool for direct API requests, fixtures, synthetic event triggers, local webhook forwarding, request-log streaming, and account or sandbox contexts. Its embedded trigger payloads are test recipes rather than canonical API lifecycle evidence. The exact `1.50.0` release note adds agent identity metadata to telemetry; it does not establish the rest of the baseline as new in that release. See [[source-github-stripe-cli]], [[changelog-github-stripe-cli]], and [[stripe-cli]].
+
+The additive `1.50.1` ingest adds exact OAuth access-service destination checks, disabled redirects and trusted browser-host checks, attempted old-session revocation on `--new-session`, error categories, raw agent-host telemetry, and internal proxy/Unix-socket routing. It does not establish a new merchant checkout capability. Feedback-command and credential-RPC details remain outside the retained capsule. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
 
 ### Link CLI for Agents
 
@@ -190,8 +194,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[changelog-github-stripe-react-native]] — package-qualified release history through v0.80.0, including platform migrations and implementation boundaries
 - [[source-github-ai]] — exact-SHA Stripe AI implementation baseline: LLM token billing, MCP bridge, agent toolkits, skills/plugins, and benchmarks
 - [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future comparison rules
-- [[source-github-stripe-cli]] — `stripe-cli@1.50.0` baseline: API commands, fixtures, triggers, webhook forwarding, authentication contexts, and telemetry
-- [[changelog-github-stripe-cli]] — package-qualified Stripe CLI history and exact `1.50.0` telemetry change
+- [[source-github-stripe-cli]] — additive Stripe CLI history from `1.50.0` through `1.53.0`, including authentication, webhooks, request headers and tooling evidence boundaries
+- [[changelog-github-stripe-cli]] — package-qualified Stripe CLI history through `1.53.0`, retaining baseline and evidence gaps
 - [[source-github-link-cli]] — `@stripe/link-cli@0.13.0` agent wallet baseline: virtual cards, SPT/MPP, Link Pay Token, spend requests, MCP, and financial insights
 - [[changelog-github-link-cli]] — package-qualified Link CLI baseline and exact `0.13.0` financial-insight and duplicate-request messaging changes
 - [[source-github-sync-engine]] — `default-branch@93321ab` operational data baseline: Stripe discovery, backfill, live events, Postgres destination, state, and Temporal workflows

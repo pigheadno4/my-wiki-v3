@@ -1,0 +1,67 @@
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index 9b8bc50..8f0dd79 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -179,12 +179,14 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 		return err
+ 	}
+ 
+-	color := ansi.Color(os.Stdout)
+-	fmt.Printf("Your pairing code is: %s\n", color.Bold(authResp.UserCode))
+-	fmt.Printf("To authorize the CLI, visit: %s\n", authResp.VerificationURI)
++	fmt.Printf("To authorize, visit %s\n\n", authResp.VerificationURI)
++	fmt.Println("When prompted, enter your verification code:")
++	fmt.Println()
++	fmt.Println(ansi.Purple(authResp.UserCode))
++	fmt.Println()
+ 
+ 	if !isSSH() && canOpenBrowser() {
+-		fmt.Printf("Press Enter to open the browser (^C to quit)\n")
++		fmt.Printf("Press enter to open the browser (^C to quit)\n")
+ 		go func() {
+ 			fmt.Scanln() //nolint:errcheck
+ 			if err := openBrowser(authResp.VerificationURI); err != nil {
+diff --git a/pkg/stripe/analytics_telemetry_test.go b/pkg/stripe/analytics_telemetry_test.go
+index 2629d44..4ed1dec 100644
+--- a/pkg/stripe/analytics_telemetry_test.go
++++ b/pkg/stripe/analytics_telemetry_test.go
+@@ -409,3 +409,39 @@ func TestNewEventMetadata_ReportsRawHostWhenUncategorized(t *testing.T) {
+ 	require.Equal(t, "other", tel.AgentHostKind)
+ 	require.Equal(t, "some-future-surface", tel.AgentHostRaw)
+ }
++
++func TestNewEventMetadata_InfersCodexTerminalFromAbsentOriginator(t *testing.T) {
++	// Codex sets its originator override only from non-default surfaces, so a terminal
++	// session reports no host at all. Without the inference this is indistinguishable
++	// from a CLI too old to report a host, and terminal Codex is invisible.
++	clearAgentEnv(t)
++	t.Setenv("CODEX_SANDBOX", "1")
++
++	tel := stripe.NewEventMetadata()
++	require.Equal(t, "codex_cli", tel.AIAgent)
++	require.Equal(t, "terminal", tel.AgentHostKind)
++	require.Equal(t, "codex-cli", tel.AgentHostRaw)
++}
++
++func TestNewEventMetadata_InfersAgentFromHostAlone(t *testing.T) {
++	// A Claude Code entrypoint with no CLAUDECODE: hosted and SDK surfaces do not always
++	// set it. The entrypoint names the agent, so the two fields stay consistent.
++	clearAgentEnv(t)
++	t.Setenv("CLAUDE_CODE_ENTRYPOINT", "remote-trigger")
++
++	tel := stripe.NewEventMetadata()
++	require.Equal(t, "claude_code", tel.AIAgent)
++	require.Equal(t, "remote", tel.AgentHostKind)
++	require.Equal(t, "remote-trigger", tel.AgentHostRaw)
++}
++
++func TestNewEventMetadata_CategorizesCodexVSCode(t *testing.T) {
++	clearAgentEnv(t)
++	t.Setenv("CODEX_CI", "1")
++	t.Setenv("CODEX_INTERNAL_ORIGINATOR_OVERRIDE", "codex_vscode")
++
++	tel := stripe.NewEventMetadata()
++	require.Equal(t, "codex_cli", tel.AIAgent)
++	require.Equal(t, "ide", tel.AgentHostKind)
++	require.Equal(t, "codex-vscode", tel.AgentHostRaw)
++}

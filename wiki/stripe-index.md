@@ -468,8 +468,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-react-stripejs]] — React Stripe.js: CheckoutElementsProvider + useCheckoutElements (Checkout path), Elements + useStripe/useElements/ElementsConsumer (advanced) (webpage, 2026-05-08)
 - [[source-github-stripe-node]] — cumulative `stripe` Node SDK through `22.6.2`: checkout resources, thin-event handlers, context caveat, request/upload hardening and query coercion (github-repo, updated 2026-09-21)
 - [[changelog-github-stripe-node]] — package-qualified stripe-node history retaining `22.1.1`, `22.4.0`, `22.5.0`, `22.6.0` `22.6.1` and `22.6.2`; Dahlia API and runtime changes (github-repo, updated 2026-09-21)
-- [[source-github-stripe-cli]] — `stripe-cli@1.50.0`: API commands, fixtures, synthetic triggers, local webhook forwarding, OAuth/account contexts, and telemetry (github-repo, 2026-08-14)
-- [[changelog-github-stripe-cli]] — package-qualified Stripe CLI baseline and exact `1.50.0` agent-identity telemetry change (github-repo, 2026-08-14)
+- [[source-github-stripe-cli]] — Stripe CLI history through `1.53.0`: API/webhook baseline, OAuth safeguards, profile cleanup, reauthorization and tooling (github-repo, updated 2026-10-07)
+- [[changelog-github-stripe-cli]] — package-qualified Stripe CLI history through `1.53.0`; older findings preserved (github-repo, updated 2026-10-07)
 - [[source-github-link-cli]] — `@stripe/link-cli@0.13.0`: consumer Link wallet agent, virtual cards, SPT/MPP, Link Pay Token, approval lifecycle, MCP, and financial insights (github-repo, 2026-08-15)
 - [[changelog-github-link-cli]] — package-qualified Link CLI baseline and exact `0.13.0` financial-insight and duplicate-request messaging changes (github-repo, 2026-08-15)
 - [[source-github-sync-engine]] — `default-branch@93321ab`: experimental Stripe-to-Postgres discovery, backfill, live events, state, destination, and Temporal orchestration (github-repo, 2026-08-27)
@@ -720,7 +720,7 @@ Operations history: [[stripe-log]]
 - [[stripe-dispute-monitoring-programs]] — Card network monitoring programs: VAMP, ECM/HECM/EFM, AusPayNet FMP thresholds and fines
 - [[stripe-high-risk-merchant-lists]] — MATCH/VMSS TMF databases: qualitative + quantitative criteria, removal rules, Stripe position
 - [[stripe-node-sdk]] — Stripe Node.js SDK through `22.6.2`: notification handlers/context limits, request/upload hardening, query coercion, retries/idempotency and checkout contracts
-- [[stripe-cli]] — Stripe CLI `1.50.0`: direct API requests, fixture and trigger testing, webhook forwarding, contexts, and evidence boundaries
+- [[stripe-cli]] — Stripe CLI history from `1.50.0` through `1.53.0`; authentication, webhook/request tooling and checkout evidence boundaries
 - [[stripe-link-cli]] — Link CLI `0.13.0`: agent-facing Link wallet, approval-gated virtual cards, SPT/MPP, Link Pay Token, MCP, and financial-data access
 - [[stripe-php-sdk]] — Stripe PHP SDK `21.2.0`: client services, request modes, retries/idempotency, webhook verification, and checkout-focused server API surface
 - [[stripe-currencies]] — Stripe Currencies: presentment/settlement/payment method, minor units, special cases (ISK/HUF/TWD/UGX), min/max charge amounts

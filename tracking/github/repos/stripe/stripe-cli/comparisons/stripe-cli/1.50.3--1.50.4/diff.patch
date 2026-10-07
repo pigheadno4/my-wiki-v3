@@ -1,0 +1,257 @@
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index af95959..893347d 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -307,6 +307,7 @@ func init() {
+ 	rootCmd.AddCommand(newVersionCmd().cmd)
+ 	rootCmd.AddCommand(newWhoamiCmd().cmd)
+ 	rootCmd.AddCommand(newPostinstallCmd(&Config).cmd)
++	rootCmd.AddCommand(newProvisionCmd().cmd)
+ 	rootCmd.AddCommand(newCommunityCmd().cmd)
+ 	rootCmd.AddCommand(newSandboxCmd().cmd)
+ 	rootCmd.AddCommand(newPluginCmd().cmd)
+diff --git a/pkg/cmd/whoami.go b/pkg/cmd/whoami.go
+index f446439..faff4e4 100644
+--- a/pkg/cmd/whoami.go
++++ b/pkg/cmd/whoami.go
+@@ -13,6 +13,7 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login"
+ 	"github.com/stripe/stripe-cli/pkg/requests"
++	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/validators"
+ )
+ 
+@@ -26,6 +27,7 @@ type whoamiCmd struct {
+ 	profile       *config.Profile
+ 	format        string
+ 	accessBaseURL string
++	apiBaseURL    string
+ }
+ 
+ type whoamiKeyInfo struct {
+@@ -74,6 +76,8 @@ Exit codes:
+ 	wc.cmd.Flags().StringVar(&wc.format, "format", "", "Output format: 'json' for a stable JSON schema (suitable for scripting)")
+ 	wc.cmd.Flags().StringVar(&wc.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	wc.cmd.Flags().MarkHidden("access-base") //nolint:errcheck
++	wc.cmd.Flags().StringVar(&wc.apiBaseURL, "api-base", stripe.DefaultAPIBaseURL, "Sets the API base URL")
++	wc.cmd.Flags().MarkHidden("api-base") //nolint:errcheck
+ 
+ 	return wc
+ }
+@@ -86,6 +90,9 @@ func (wc *whoamiCmd) runWhoamiCmd(cmd *cobra.Command, args []string) error {
+ 		if err := login.ValidateAccessBaseURL(wc.accessBaseURL); err != nil {
+ 			return err
+ 		}
++		if err := stripe.ValidateAPIBaseURL(wc.apiBaseURL); err != nil {
++			return err
++		}
+ 		return wc.runWhoamiOAuth(cmd, uat)
+ 	}
+ 
+@@ -130,15 +137,43 @@ const expiryDisplayFormat = "Jan 2, 2006 at 3:04 PM"
+ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 	w := cmd.OutOrStdout()
+ 
++	accounts, err := login.ListAuthorizedAccounts(cmd.Context(), wc.accessBaseURL, uat)
++	if err != nil {
++		return fmt.Errorf("failed to fetch authorized accounts: %w", err)
++	}
++
+ 	ac, _ := config.GetActiveContext()
+ 	if ac != nil {
+-		displayName := wc.profile.GetDisplayName()
+ 		mode := "sandbox"
+ 		if ac.Livemode {
+ 			mode = "live"
+ 		}
++
++		creds := stripe.NewOAKCredentials(uat, ac.AccountID, ac.Livemode)
++
++		// Fail open: the user's info is less important than the authorized contexts
++		info, _ := requests.GetUserInfo(cmd.Context(), wc.apiBaseURL, wc.profile, creds, ac.Livemode)
++
++		displayName := ac.AccountID
++		for _, a := range accounts {
++			if a.ID == ac.AccountID && a.Name != "" {
++				displayName = a.Name
++				break
++			}
++		}
++
+ 		tw := tabwriter.NewWriter(w, 0, 0, 3, ' ', 0)
+-		fmt.Fprintf(tw, "Context\t%s · %s (%s)\n", displayName, mode, ac.AccountID)
++		if info.Email != "" {
++			fmt.Fprintf(tw, "User\t%s\n", info.Email)
++		}
++		if displayName != ac.AccountID {
++			fmt.Fprintf(tw, "Context\t%s · %s (%s)\n", displayName, mode, ac.AccountID)
++		} else {
++			fmt.Fprintf(tw, "Context\t%s · %s\n", displayName, mode)
++		}
++		if info.Role != "" {
++			fmt.Fprintf(tw, "Role\t%s\n", info.Role)
++		}
+ 		if t, err := config.GetUATExpiresAt(); err == nil {
+ 			fmt.Fprintf(tw, "Expires\t%s\n", t.Local().Format(expiryDisplayFormat))
+ 		}
+@@ -146,7 +181,8 @@ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 		fmt.Fprintln(w)
+ 	}
+ 
+-	return login.PrintAuthorizedContexts(cmd.Context(), wc.accessBaseURL, uat)
++	login.PrintAuthorizedContextsList(accounts)
++	return nil
+ }
+ 
+ func printWhoamiText(out io.Writer, data whoamiOutput) {
+diff --git a/pkg/login/main_test.go b/pkg/login/main_test.go
+new file mode 100644
+index 0000000..3f53bbe
+--- /dev/null
++++ b/pkg/login/main_test.go
+@@ -0,0 +1,13 @@
++package login
++
++import (
++	"os"
++	"testing"
++
++	zkr "github.com/zalando/go-keyring"
++)
++
++func TestMain(m *testing.M) {
++	zkr.MockInit()
++	os.Exit(m.Run())
++}
+diff --git a/pkg/login/oauth_accounts.go b/pkg/login/oauth_accounts.go
+index 7551acb..8311dae 100644
+--- a/pkg/login/oauth_accounts.go
++++ b/pkg/login/oauth_accounts.go
+@@ -60,6 +60,13 @@ func PrintAuthorizedContexts(ctx context.Context, accessBaseURL, accessToken str
+ 		return fmt.Errorf("failed to fetch authorized accounts: %w", err)
+ 	}
+ 
++	PrintAuthorizedContextsList(accounts)
++	return nil
++}
++
++// PrintAuthorizedContextsList prints already-fetched authorized accounts as a
++// formatted list, marking the active context.
++func PrintAuthorizedContextsList(accounts []config.AuthorizedAccount) {
+ 	ac, _ := config.GetActiveContext()
+ 	activeID, activeMode := "", "test"
+ 	if ac != nil {
+@@ -107,7 +114,6 @@ func PrintAuthorizedContexts(ctx context.Context, accessBaseURL, accessToken str
+ 			fmt.Printf("  %-*s  %-*s  %s\n", nameW, r.name, idW, r.id, r.mode)
+ 		}
+ 	}
+-	return nil
+ }
+ 
+ // displayMode maps the API's "test" mode value to the CLI's "sandbox" terminology.
+diff --git a/pkg/requests/user_info.go b/pkg/requests/user_info.go
+new file mode 100644
+index 0000000..220ae6b
+--- /dev/null
++++ b/pkg/requests/user_info.go
+@@ -0,0 +1,40 @@
++package requests
++
++import (
++	"context"
++	"encoding/json"
++	"fmt"
++	"net/http"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++// UserInfo is the response from GET /v1/stripecli/user_info.
++type UserInfo struct {
++	ID    string `json:"id"`
++	Email string `json:"email,omitempty"`
++	Role  string `json:"role,omitempty"`
++}
++
++// GetUserInfo fetches identity information for the OAuth user associated with creds.
++func GetUserInfo(ctx context.Context, apiBaseURL string, profile *config.Profile, creds stripe.Credentials, livemode bool) (UserInfo, error) {
++	base := &Base{
++		Profile:        profile,
++		Method:         http.MethodGet,
++		SuppressOutput: true,
++		APIBaseURL:     apiBaseURL,
++		Livemode:       livemode,
++	}
++
++	resp, err := base.MakeRequest(ctx, creds, "/v1/stripecli/user_info", &RequestParameters{}, nil, true, nil)
++	if err != nil {
++		return UserInfo{}, err
++	}
++
++	var info UserInfo
++	if err := json.Unmarshal(resp, &info); err != nil {
++		return UserInfo{}, fmt.Errorf("failed to decode user info response: %w", err)
++	}
++	return info, nil
++}
+diff --git a/pkg/requests/user_info_test.go b/pkg/requests/user_info_test.go
+new file mode 100644
+index 0000000..4ba5228
+--- /dev/null
++++ b/pkg/requests/user_info_test.go
+@@ -0,0 +1,53 @@
++package requests
++
++import (
++	"context"
++	"net/http"
++	"net/http/httptest"
++	"testing"
++
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++func TestGetUserInfo(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		require.Equal(t, http.MethodGet, r.Method)
++		require.Equal(t, "/v1/stripecli/user_info", r.URL.Path)
++		require.Equal(t, "Bearer oak_test_123", r.Header.Get("Authorization"))
++		w.WriteHeader(http.StatusOK)
++		w.Write([]byte(`{"id": "usr_123", "email": "dwood@stripe.com", "role": "Administrator"}`)) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	info, err := GetUserInfo(context.Background(), ts.URL, nil, creds, true)
++	require.NoError(t, err)
++	require.Equal(t, UserInfo{ID: "usr_123", Email: "dwood@stripe.com", Role: "Administrator"}, info)
++}
++
++func TestGetUserInfo_OmitsOptionalFields(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusOK)
++		w.Write([]byte(`{"id": "usr_123"}`)) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	info, err := GetUserInfo(context.Background(), ts.URL, nil, creds, true)
++	require.NoError(t, err)
++	require.Equal(t, UserInfo{ID: "usr_123"}, info)
++}
++
++func TestGetUserInfo_ErrOnStatus(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusUnauthorized)
++		w.Write([]byte(`{"error": {"message": "invalid token"}}`)) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	_, err := GetUserInfo(context.Background(), ts.URL, nil, creds, true)
++	require.Error(t, err)
++}

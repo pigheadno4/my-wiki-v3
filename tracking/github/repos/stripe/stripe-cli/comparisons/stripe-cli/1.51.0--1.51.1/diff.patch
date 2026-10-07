@@ -1,0 +1,1393 @@
+diff --git a/pkg/config/migrate.go b/pkg/config/migrate.go
+index 7dff0b4..f55c030 100644
+--- a/pkg/config/migrate.go
++++ b/pkg/config/migrate.go
+@@ -91,7 +91,8 @@ func NeedsMigration() bool {
+ // migration itself always agree on whether there is work to do.
+ func hasFlatProfileTable(v *viper.Viper) bool {
+ 	for key, value := range v.AllSettings() {
+-		if reservedTopLevelKeys[key] {
++		if key == ProfilesTableName {
++			// The v2 container: everything inside it is already migrated.
+ 			continue
+ 		}
+ 
+@@ -203,6 +204,8 @@ func planMigration(contents []byte) (*migrationPlan, bool, error) {
+ 	alreadyV2 := version == ConfigVersionV2
+ 
+ 	// Start from the profiles already in the v2 table, if there are any.
++	// nestedIsContainer tells the v2 container apart from a v1 profile named
++	// "profiles"; only the container holds profiles that are already in place.
+ 	nested, nestedIsContainer := profilesContainer(doc, alreadyV2)
+ 	if nestedIsContainer {
+ 		for name, value := range nested {
+@@ -250,15 +253,16 @@ func planMigration(contents []byte) (*migrationPlan, bool, error) {
+ // reservedProfileNameException reports whether a top-level key must be treated
+ // as a setting rather than as a profile. Only the profiles table itself
+ // qualifies, and only when it is acting as the v2 container.
++//
++// Every other key is judged on contents rather than on its name: a table holding
++// profile fields is a profile even when a settings key already owns that name, and
++// separating the two is what the v2 layout is for.
+ func reservedProfileNameException(key string, nestedIsContainer bool) bool {
+-	if key == ProfilesTableName {
+-		return nestedIsContainer
+-	}
+-
+-	return reservedTopLevelKeys[key]
++	return key == ProfilesTableName && nestedIsContainer
+ }
+ 
+-// profilesContainer returns the v2 profiles table, if the document has one.
++// profilesContainer returns the v2 profiles table and whether the document has
++// one at all.
+ //
+ // A v1 file can contain a profile literally named "profiles", which occupies the
+ // same key as the v2 container: nothing stops `stripe login --project-name
+@@ -480,3 +484,36 @@ func writeAndSync(file *os.File, contents []byte) error {
+ 
+ 	return file.Sync()
+ }
++
++// StampNewConfigFile creates a config file that records the v2 layout, so that the
++// first write into it nests profiles under the profiles table instead of writing
++// the flat layout and needing a migration on the next command.
++//
++// The document is the one encodePlan produces for an empty plan, so a file created
++// here is indistinguishable from one the migration would have produced.
++//
++// It refuses to touch a file that already exists: picking the layout of a file that
++// already holds something is MigrateConfigFile's job, and it has a backup and a
++// verification pass for exactly that reason.
++func StampNewConfigFile(path string) error {
++	if _, err := os.Stat(path); err == nil {
++		return errorcategory.Errorf(errorcategory.Filesystem,
++			"refusing to stamp %s: the file already exists", path)
++	} else if !os.IsNotExist(err) {
++		return err
++	}
++
++	if err := makePath(path); err != nil {
++		return err
++	}
++
++	contents, err := encodePlan(&migrationPlan{
++		profiles: make(map[string]map[string]interface{}),
++		settings: make(map[string]interface{}),
++	})
++	if err != nil {
++		return err
++	}
++
++	return writeFileSync(path, contents)
++}
+diff --git a/pkg/config/migrate_test.go b/pkg/config/migrate_test.go
+index 1c9ba38..33fdfe8 100644
+--- a/pkg/config/migrate_test.go
++++ b/pkg/config/migrate_test.go
+@@ -396,3 +396,121 @@ func TestVerifyPlanCatchesADroppedSetting(t *testing.T) {
+ 	err := verifyPlan(plan, []byte("config_version = 2\n\n[profiles]\n"))
+ 	require.ErrorContains(t, err, "is missing from the migrated config")
+ }
++
++func TestStampNewConfigFileWritesTheV2Layout(t *testing.T) {
++	path := filepath.Join(t.TempDir(), "nested", "config.toml")
++
++	require.NoError(t, StampNewConfigFile(path))
++
++	v := viper.New()
++	v.SetConfigFile(path)
++	require.NoError(t, v.ReadInConfig())
++	require.Equal(t, ConfigVersionV2, v.GetInt(ConfigVersionName))
++	require.True(t, isMigrated(v), "a write into this file has to nest")
++
++	// Windows has no Unix permission bits, so the mode the file was created with
++	// does not survive a Stat there.
++	if runtime.GOOS != "windows" {
++		info, err := os.Stat(path)
++		require.NoError(t, err)
++		require.Equal(t, os.FileMode(0600), info.Mode().Perm())
++	}
++}
++
++// Choosing the layout of a file that already holds something is
++// MigrateConfigFile's job: it takes a backup and verifies the result first.
++func TestStampNewConfigFileRefusesAnExistingFile(t *testing.T) {
++	path := writeConfigFileForMigration(t, "[default]\n  display_name = 'Acme'\n")
++
++	require.Error(t, StampNewConfigFile(path))
++	require.Contains(t, string(helperLoadBytes(t, path)), "display_name = 'Acme'")
++}
++
++// `stripe login --project-name installed_plugins` is allowed, so a profile can sit
++// on a settings key. Moving it out is what keeps the next plugin install from
++// overwriting it.
++func TestMigrateConfigFileMovesProfileNamedAfterAReservedKey(t *testing.T) {
++	for _, name := range []string{"installed_plugins", "plugin_configs", "color", "user_info", "project-name"} {
++		t.Run(name, func(t *testing.T) {
++			path := writeConfigFileForMigration(t, "["+name+"]\n"+
++				"  display_name = 'Collided Account'\n"+
++				"  test_mode_api_key = 'sk_test_collided_key'\n")
++
++			changed, err := MigrateConfigFile(path)
++			require.NoError(t, err)
++			require.True(t, changed)
++
++			v := viper.New()
++			v.SetConfigFile(path)
++			require.NoError(t, v.ReadInConfig())
++
++			require.Equal(t, "sk_test_collided_key",
++				v.GetString(ProfilesTableName+"."+name+".test_mode_api_key"))
++			require.False(t, v.IsSet(name+".test_mode_api_key"))
++		})
++	}
++}
++
++// The flip side: a settings key holding its real value has no profile field in it,
++// so it stays at the top level.
++func TestMigrateConfigFileLeavesRealReservedSettingsAlone(t *testing.T) {
++	path := writeConfigFileForMigration(t, `installed_plugins = ['apps']
++machine_uuid = 'uuid-reserved'
++
++[plugin_configs.__global]
++  updates = 'on'
++
++[user_info]
++  compartments = []
++
++[default]
++  display_name = 'Acme'
++  test_mode_api_key = 'sk_test_acme_key'
++`)
++
++	changed, err := MigrateConfigFile(path)
++	require.NoError(t, err)
++	require.True(t, changed)
++
++	v := viper.New()
++	v.SetConfigFile(path)
++	require.NoError(t, v.ReadInConfig())
++
++	require.Equal(t, []string{"apps"}, v.GetStringSlice("installed_plugins"))
++	require.Equal(t, "on", v.GetString("plugin_configs.__global.updates"))
++	require.True(t, v.IsSet("user_info"))
++	require.False(t, v.IsSet(ProfilesTableName+".plugin_configs"))
++	require.False(t, v.IsSet(ProfilesTableName+".user_info"))
++	require.Equal(t, "sk_test_acme_key", v.GetString(ProfilesTableName+".default.test_mode_api_key"))
++}
++
++// NeedsMigration has to agree with the migration about what counts as work, or the
++// file never converges.
++func TestNeedsMigrationSeesProfileNamedAfterAReservedKey(t *testing.T) {
++	setupProfileConfig(t, `config_version = 2
++
++[profiles.default]
++  display_name = 'Acme'
++
++[installed_plugins]
++  display_name = 'Collided Account'
++  test_mode_api_key = 'sk_test_collided_key'
++`)
++
++	require.True(t, NeedsMigration())
++}
++
++// ...while a fully migrated file with only real settings at the top level is done.
++func TestNeedsMigrationIsFalseForAMigratedFile(t *testing.T) {
++	setupProfileConfig(t, `config_version = 2
++installed_plugins = ['apps']
++
++[plugin_configs.__global]
++  updates = 'on'
++
++[profiles.default]
++  display_name = 'Acme'
++`)
++
++	require.False(t, NeedsMigration())
++}
+diff --git a/pkg/login/login.go b/pkg/login/login.go
+index 6912f3a..b2eab39 100644
+--- a/pkg/login/login.go
++++ b/pkg/login/login.go
+@@ -90,31 +90,103 @@ func InitiateLogin(ctx context.Context, baseURL, accessBaseURL string, cfg *conf
+ 	return nil
+ }
+ 
+-// initiateOAuthDeviceLogin calls the device authorization endpoint, saves the
+-// pending state to disk, and prints the JSON session output.
+-func initiateOAuthDeviceLogin(ctx context.Context, accessBaseURL string) error {
++// OAuthLoginSession describes a non-interactive OAuth device-code login that's ready for the
++// user to complete out-of-band, whether just minted or resumed from a still-valid pending one.
++type OAuthLoginSession struct {
++	BrowserURL       string
++	VerificationCode string
++	ExpiresIn        int // seconds remaining until the device code expires
++}
++
++// InitiateOAuthLogin starts (or resumes) a non-interactive OAuth device-code login for
++// accessBaseURL, without printing anything. Unlike `stripe login --non-interactive` (see
++// initiateOAuthDeviceLogin), which always mints a fresh device code, this resumes a
++// still-valid pending one instead of minting a new one - see initiateOrResumeOAuthDeviceLogin.
++// This is the resume behavior exposed to plugins via the OAuthInitiateLogin RPC.
++func InitiateOAuthLogin(ctx context.Context, accessBaseURL string) (*OAuthLoginSession, error) {
++	return initiateOrResumeOAuthDeviceLogin(ctx, accessBaseURL)
++}
++
++// FindPendingOAuthLogin looks for an OAuth device-code login already in progress for
++// accessBaseURL (started by this process or another one, e.g. `stripe login
++// --non-interactive`), without starting a new one. Returns nil, nil if there is no pending
++// login attempt, it's for a different accessBaseURL, or it has expired.
++func FindPendingOAuthLogin(accessBaseURL string) (*OAuthLoginSession, error) {
++	return findPendingOAuthLoginSession(accessBaseURL), nil
++}
++
++func findPendingOAuthLoginSession(accessBaseURL string) *OAuthLoginSession {
++	cont, err := loadPendingDeviceAuth()
++	if err != nil || cont.AccessBaseURL != accessBaseURL {
++		return nil
++	}
++	remaining := time.Until(cont.deadline())
++	if remaining <= 0 {
++		return nil
++	}
++	return &OAuthLoginSession{
++		BrowserURL:       cont.VerificationURI,
++		VerificationCode: cont.UserCode,
++		ExpiresIn:        int(remaining.Seconds()),
++	}
++}
++
++// initiateOrResumeOAuthDeviceLogin returns the still-valid pending device code for
++// accessBaseURL if one exists, instead of minting a new one - so repeated calls to the
++// OAuthInitiateLogin RPC (e.g. a retrying plugin) converge on one browser_url/
++// verification_code rather than orphaning the previous one every retry. `stripe login
++// --non-interactive` does not use this - see mintOAuthDeviceLogin.
++func initiateOrResumeOAuthDeviceLogin(ctx context.Context, accessBaseURL string) (*OAuthLoginSession, error) {
++	if session := findPendingOAuthLoginSession(accessBaseURL); session != nil {
++		return session, nil
++	}
++	return mintOAuthDeviceLogin(ctx, accessBaseURL)
++}
++
++// mintOAuthDeviceLogin always requests a fresh device code from accessBaseURL and saves it as
++// the new pending state, overwriting any still-valid pending login that may already exist.
++func mintOAuthDeviceLogin(ctx context.Context, accessBaseURL string) (*OAuthLoginSession, error) {
+ 	clientID := clientIDForAccessBaseURL(accessBaseURL)
+ 	authResp, err := RequestDeviceCode(ctx, accessBaseURL, clientID)
+ 	if err != nil {
+-		return fmt.Errorf("failed to request device code: %w", err)
++		return nil, fmt.Errorf("failed to request device code: %w", err)
+ 	}
+ 	if err := validateBrowserURL(authResp.VerificationURI, accessBaseURL); err != nil {
+-		return err
++		return nil, err
+ 	}
+ 
+ 	cont := &oauthContinuation{
+-		DeviceCode:    authResp.DeviceCode,
+-		Interval:      authResp.Interval,
+-		ExpiresIn:     authResp.ExpiresIn,
+-		AccessBaseURL: accessBaseURL,
++		DeviceCode:      authResp.DeviceCode,
++		Interval:        authResp.Interval,
++		ExpiresIn:       authResp.ExpiresIn,
++		AccessBaseURL:   accessBaseURL,
++		VerificationURI: authResp.VerificationURI,
++		UserCode:        authResp.UserCode,
++		IssuedAt:        time.Now(),
+ 	}
+ 	if err := savePendingDeviceAuth(cont); err != nil {
+-		return fmt.Errorf("failed to save pending auth state: %w", err)
++		return nil, fmt.Errorf("failed to save pending auth state: %w", err)
+ 	}
+ 
+-	out := loginSessionOutput{
++	return &OAuthLoginSession{
+ 		BrowserURL:       authResp.VerificationURI,
+ 		VerificationCode: authResp.UserCode,
++		ExpiresIn:        authResp.ExpiresIn,
++	}, nil
++}
++
++// initiateOAuthDeviceLogin always mints a fresh device code (see mintOAuthDeviceLogin - unlike
++// the OAuthInitiateLogin RPC, this does not resume a still-valid pending login), saves it as
++// the pending state, and prints the JSON session output.
++func initiateOAuthDeviceLogin(ctx context.Context, accessBaseURL string) error {
++	session, err := mintOAuthDeviceLogin(ctx, accessBaseURL)
++	if err != nil {
++		return err
++	}
++
++	out := loginSessionOutput{
++		BrowserURL:       session.BrowserURL,
++		VerificationCode: session.VerificationCode,
+ 		NextStep:         "stripe login --complete-device",
+ 	}
+ 	b, err := json.MarshalIndent(out, "", "  ")
+@@ -153,43 +225,121 @@ func PollForLogin(ctx context.Context, pollURL string, cfg *config.Config) error
+ 	return nil
+ }
+ 
+-// PollPendingDeviceAuth loads the OAuth device auth state saved by
+-// InitiateLogin and polls the token endpoint until the user approves.
+-func PollPendingDeviceAuth(ctx context.Context, cfg *config.Config) error {
++// loadValidatedPendingDeviceAuth loads the pending device auth state and checks that its
++// AccessBaseURL is one ValidateAccessBaseURL accepts, since requests built from it carry OAuth
++// bearer/refresh tokens.
++func loadValidatedPendingDeviceAuth() (*oauthContinuation, error) {
+ 	cont, err := loadPendingDeviceAuth()
+ 	if err != nil {
+-		return err
++		return nil, err
+ 	}
+-	// Remove the pending file whether polling succeeds or fails.
+-	defer clearPendingDeviceAuth()
+-
+ 	if err := ValidateAccessBaseURL(cont.AccessBaseURL); err != nil {
+-		return err
++		return nil, err
++	}
++	return cont, nil
++}
++
++// PollPendingOAuthLogin waits for the login started by InitiateOAuthLogin (or InitiateLogin's
++// OAuth path) to complete. Returns (nil, nil) if ctx is done before the user completes
++// authentication and the device code's own expiry hasn't been reached yet - callers should
++// call this again to keep waiting. Returns an error and clears the pending state if the
++// device code has actually expired or the server returned a terminal OAuth error (e.g.
++// access_denied); on success, also clears the pending state.
++func PollPendingOAuthLogin(ctx context.Context, cfg *config.Config) (*DeviceCodeLoginResult, error) {
++	cont, err := loadValidatedPendingDeviceAuth()
++	if err != nil {
++		return nil, err
+ 	}
+ 
+ 	clientID := clientIDForAccessBaseURL(cont.AccessBaseURL)
+ 	interval := max(time.Duration(cont.Interval)*time.Second, 5*time.Second)
+-	expiresIn := max(time.Duration(cont.ExpiresIn)*time.Second, 10*time.Minute)
++	deadline := cont.deadline()
+ 
+-	pollCtx, cancel := context.WithTimeout(ctx, expiresIn)
++	pollCtx, cancel := context.WithDeadline(ctx, deadline)
+ 	defer cancel()
+-	waitCtx, stop := signal.NotifyContext(pollCtx, os.Interrupt)
++
++	result, err := PollAndSaveDeviceCredentials(pollCtx, cont.AccessBaseURL, clientID, cont.DeviceCode, interval, cfg)
++	if err != nil {
++		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
++			if time.Now().After(deadline) {
++				clearPendingDeviceAuth()
++				return nil, errorcategory.Errorf(errorcategory.Auth, "device code expired; please run 'stripe login --non-interactive' again")
++			}
++			// The caller's own ctx stopped waiting this time (e.g. ^C or its own timeout);
++			// the device code is still good, so leave the pending state for a later retry.
++			return nil, nil
++		}
++		// Terminal OAuth error (access_denied, expired_token, ...): the device code is dead.
++		clearPendingDeviceAuth()
++		return nil, err
++	}
++
++	clearPendingDeviceAuth()
++	return result, nil
++}
++
++// CheckPendingOAuthLogin makes a single, non-blocking check on the login started by
++// InitiateOAuthLogin (or InitiateLogin's OAuth path). Unlike PollPendingOAuthLogin, it never
++// waits for the user - it makes one request and returns immediately, so callers that want to
++// wait (e.g. a plugin driving its own retry loop) should call this repeatedly on their own
++// schedule instead. Returns (nil, nil) if the device code is still valid but the user hasn't
++// completed authentication yet. Returns an error and clears the pending state if the device
++// code has actually expired, the server returned a terminal OAuth error (e.g. access_denied),
++// or the token exchange succeeded but saving the resulting credentials failed (the device code
++// is already consumed at that point, so it can't be retried); on success, also clears the
++// pending state.
++func CheckPendingOAuthLogin(ctx context.Context, cfg *config.Config) (*DeviceCodeLoginResult, error) {
++	cont, err := loadValidatedPendingDeviceAuth()
++	if err != nil {
++		return nil, err
++	}
++
++	if time.Now().After(cont.deadline()) {
++		clearPendingDeviceAuth()
++		return nil, errorcategory.Errorf(errorcategory.Auth, "device code expired; please run 'stripe login --non-interactive' again")
++	}
++
++	clientID := clientIDForAccessBaseURL(cont.AccessBaseURL)
++	tokenResp, err := CheckDeviceToken(ctx, cont.AccessBaseURL, clientID, cont.DeviceCode)
++	if err != nil {
++		var oauthErr *OAuthError
++		if errors.As(err, &oauthErr) && (oauthErr.Code == "authorization_pending" || oauthErr.Code == "slow_down") {
++			// The user hasn't completed authentication yet; the device code is still good.
++			return nil, nil
++		}
++		// Terminal OAuth error (access_denied, expired_token, ...): the device code is dead.
++		clearPendingDeviceAuth()
++		return nil, err
++	}
++
++	result, err := saveDeviceCredentials(context.WithoutCancel(ctx), cont.AccessBaseURL, tokenResp, cfg)
++	if err != nil {
++		// The device code has already been redeemed for tokenResp, so it can't be used again -
++		// retrying with the same pending state would just fail with a confusing OAuth error
++		// instead of surfacing this one. Matches PollPendingOAuthLogin's behavior.
++		clearPendingDeviceAuth()
++		return nil, err
++	}
++	clearPendingDeviceAuth()
++	return result, nil
++}
++
++// PollPendingDeviceAuth loads the OAuth device auth state saved by InitiateLogin and polls
++// the token endpoint until the user approves.
++func PollPendingDeviceAuth(ctx context.Context, cfg *config.Config) error {
++	waitCtx, stop := signal.NotifyContext(ctx, os.Interrupt)
+ 	defer stop()
+ 
+ 	s := ansi.StartNewSpinner("Waiting for confirmation...", os.Stdout)
+-	result, err := PollAndSaveDeviceCredentials(waitCtx, cont.AccessBaseURL, clientID, cont.DeviceCode, interval, cfg)
++	result, err := PollPendingOAuthLogin(waitCtx, cfg)
+ 	ansi.StopSpinner(s, "", os.Stdout)
+ 	if err != nil {
+-		switch {
+-		case errors.Is(err, context.Canceled):
+-			ansi.ClearLine(os.Stdout)
+-			fmt.Println("Canceled. Run 'stripe login --non-interactive' again to try again.")
+-			return nil
+-		case pollCtx.Err() != nil:
+-			return errorcategory.Errorf(errorcategory.Auth, "device code expired; please run 'stripe login --non-interactive' again")
+-		default:
+-			return err
+-		}
++		return err
++	}
++	if result == nil {
++		ansi.ClearLine(os.Stdout)
++		fmt.Println("Canceled. Run 'stripe login --non-interactive' again to try again.")
++		return nil
+ 	}
+ 
+ 	printAuthorizedSummary(result.Accounts, result.ActiveAccountID, result.ActiveLivemode)
+diff --git a/pkg/login/login_test.go b/pkg/login/login_test.go
+new file mode 100644
+index 0000000..71d3521
+--- /dev/null
++++ b/pkg/login/login_test.go
+@@ -0,0 +1,559 @@
++package login
++
++import (
++	"context"
++	"encoding/json"
++	"net/http"
++	"net/http/httptest"
++	"net/url"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"github.com/stretchr/testify/assert"
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++)
++
++// rewriteHostTransport redirects every request to target, regardless of the URL it was built
++// with. This lets tests exercise code paths gated by ValidateAccessBaseURL (which only accepts
++// the real access.stripe.com/qa-access.stripe.com origins) against a local httptest server,
++// without weakening that validation.
++type rewriteHostTransport struct {
++	target *url.URL
++	base   http.RoundTripper
++}
++
++func (t rewriteHostTransport) RoundTrip(req *http.Request) (*http.Response, error) {
++	req = req.Clone(req.Context())
++	req.URL.Scheme = t.target.Scheme
++	req.URL.Host = t.target.Host
++	return t.base.RoundTrip(req)
++}
++
++// stubAccessSrv points accessSrvHTTPClient at ts for the duration of the test.
++func stubAccessSrv(t *testing.T, ts *httptest.Server) {
++	t.Helper()
++	target, err := url.Parse(ts.URL)
++	require.NoError(t, err)
++
++	orig := accessSrvHTTPClient
++	accessSrvHTTPClient = &http.Client{
++		CheckRedirect: orig.CheckRedirect,
++		Transport:     rewriteHostTransport{target: target, base: http.DefaultTransport},
++	}
++	t.Cleanup(func() { accessSrvHTTPClient = orig })
++}
++
++func TestInitiateOrResumeOAuthDeviceLogin_MintsWhenNoPending(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	var mintCount atomic.Int32
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		mintCount.Add(1)
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(DeviceAuthResponse{ //nolint:errcheck
++			DeviceCode:      "device-code",
++			UserCode:        "ABCD-EFGH",
++			VerificationURI: "https://access.stripe.com/verify",
++			ExpiresIn:       300,
++			Interval:        5,
++		})
++	}))
++	defer ts.Close()
++
++	session, err := initiateOrResumeOAuthDeviceLogin(context.Background(), ts.URL)
++	require.NoError(t, err)
++	assert.Equal(t, "https://access.stripe.com/verify", session.BrowserURL)
++	assert.Equal(t, "ABCD-EFGH", session.VerificationCode)
++	assert.Equal(t, int32(1), mintCount.Load())
++}
++
++func TestInitiateOrResumeOAuthDeviceLogin_ResumesStillValidPending(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	var mintCount atomic.Int32
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		mintCount.Add(1)
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(DeviceAuthResponse{ //nolint:errcheck
++			DeviceCode:      "device-code",
++			UserCode:        "ABCD-EFGH",
++			VerificationURI: "https://access.stripe.com/verify",
++			ExpiresIn:       300,
++			Interval:        5,
++		})
++	}))
++	defer ts.Close()
++
++	first, err := initiateOrResumeOAuthDeviceLogin(context.Background(), ts.URL)
++	require.NoError(t, err)
++
++	second, err := initiateOrResumeOAuthDeviceLogin(context.Background(), ts.URL)
++	require.NoError(t, err)
++
++	assert.Equal(t, int32(1), mintCount.Load(), "a second call within the expiry window must not mint a new device code")
++	assert.Equal(t, first.BrowserURL, second.BrowserURL)
++	assert.Equal(t, first.VerificationCode, second.VerificationCode)
++}
++
++func TestInitiateOrResumeOAuthDeviceLogin_MintsFreshWhenPendingExpired(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	var mintCount atomic.Int32
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		mintCount.Add(1)
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(DeviceAuthResponse{ //nolint:errcheck
++			DeviceCode:      "new-device-code",
++			UserCode:        "NEW1-CODE",
++			VerificationURI: "https://access.stripe.com/verify",
++			ExpiresIn:       300,
++			Interval:        5,
++		})
++	}))
++	defer ts.Close()
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:      "stale-device-code",
++		AccessBaseURL:   ts.URL,
++		VerificationURI: "https://access.stripe.com/stale",
++		UserCode:        "STALE-CODE",
++		ExpiresIn:       1,
++		IssuedAt:        time.Now().Add(-11 * time.Minute), // past the 10-minute deadline floor
++	}))
++
++	session, err := initiateOrResumeOAuthDeviceLogin(context.Background(), ts.URL)
++	require.NoError(t, err)
++	assert.Equal(t, int32(1), mintCount.Load())
++	assert.Equal(t, "NEW1-CODE", session.VerificationCode)
++}
++
++func TestInitiateOrResumeOAuthDeviceLogin_MintsFreshForDifferentAccessBaseURL(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	var mintCount atomic.Int32
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		mintCount.Add(1)
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(DeviceAuthResponse{ //nolint:errcheck
++			DeviceCode:      "new-device-code",
++			UserCode:        "NEW1-CODE",
++			VerificationURI: "https://access.stripe.com/verify",
++			ExpiresIn:       300,
++			Interval:        5,
++		})
++	}))
++	defer ts.Close()
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:      "other-env-device-code",
++		AccessBaseURL:   "https://a-different-env.example.com",
++		VerificationURI: "https://access.stripe.com/other",
++		UserCode:        "OTHER-CODE",
++		ExpiresIn:       300,
++		IssuedAt:        time.Now(),
++	}))
++
++	session, err := initiateOrResumeOAuthDeviceLogin(context.Background(), ts.URL)
++	require.NoError(t, err)
++	assert.Equal(t, int32(1), mintCount.Load())
++	assert.Equal(t, "NEW1-CODE", session.VerificationCode)
++}
++
++func TestMintOAuthDeviceLogin_AlwaysMintsFreshEvenWithValidPending(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	var mintCount atomic.Int32
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		mintCount.Add(1)
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(DeviceAuthResponse{ //nolint:errcheck
++			DeviceCode:      "new-device-code",
++			UserCode:        "NEW1-CODE",
++			VerificationURI: "https://access.stripe.com/verify",
++			ExpiresIn:       300,
++			Interval:        5,
++		})
++	}))
++	defer ts.Close()
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:      "still-valid-device-code",
++		AccessBaseURL:   ts.URL,
++		VerificationURI: "https://access.stripe.com/still-valid",
++		UserCode:        "STILL-VALID",
++		ExpiresIn:       300,
++		IssuedAt:        time.Now(),
++	}))
++
++	// `stripe login --non-interactive` (initiateOAuthDeviceLogin) calls mintOAuthDeviceLogin
++	// directly, not initiateOrResumeOAuthDeviceLogin, so it must mint a new device code even
++	// though the pending one saved above is still well within its expiry window.
++	session, err := mintOAuthDeviceLogin(context.Background(), ts.URL)
++	require.NoError(t, err)
++	assert.Equal(t, int32(1), mintCount.Load())
++	assert.Equal(t, "NEW1-CODE", session.VerificationCode)
++
++	cont, err := loadPendingDeviceAuth()
++	require.NoError(t, err)
++	assert.Equal(t, "new-device-code", cont.DeviceCode, "the fresh device code must overwrite the still-valid pending one")
++}
++
++func TestFindPendingOAuthLogin_NoneExists(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	session, err := FindPendingOAuthLogin("https://example.com")
++	require.NoError(t, err)
++	assert.Nil(t, session)
++}
++
++func TestFindPendingOAuthLogin_FindsStillValidPending(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:      "device-code",
++		AccessBaseURL:   "https://example.com",
++		VerificationURI: "https://access.stripe.com/verify",
++		UserCode:        "ABCD-EFGH",
++		ExpiresIn:       300,
++		IssuedAt:        time.Now(),
++	}))
++
++	session, err := FindPendingOAuthLogin("https://example.com")
++	require.NoError(t, err)
++	require.NotNil(t, session)
++	assert.Equal(t, "https://access.stripe.com/verify", session.BrowserURL)
++	assert.Equal(t, "ABCD-EFGH", session.VerificationCode)
++}
++
++func TestFindPendingOAuthLogin_IgnoresExpiredPending(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		AccessBaseURL: "https://example.com",
++		ExpiresIn:     1,
++		IssuedAt:      time.Now().Add(-11 * time.Minute), // past the 10-minute deadline floor
++	}))
++
++	session, err := FindPendingOAuthLogin("https://example.com")
++	require.NoError(t, err)
++	assert.Nil(t, session)
++}
++
++func TestFindPendingOAuthLogin_IgnoresDifferentAccessBaseURL(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		AccessBaseURL: "https://a-different-env.example.com",
++		ExpiresIn:     300,
++		IssuedAt:      time.Now(),
++	}))
++
++	session, err := FindPendingOAuthLogin("https://example.com")
++	require.NoError(t, err)
++	assert.Nil(t, session)
++}
++
++func TestPollPendingOAuthLogin_CallerTimeoutLeavesPendingState(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusBadRequest)
++		json.NewEncoder(w).Encode(tokenErrorResponse{Error: "authorization_pending"}) //nolint:errcheck
++	}))
++	defer ts.Close()
++	stubAccessSrv(t, ts)
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      5,
++		ExpiresIn:     300,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now(),
++	}))
++
++	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
++	defer cancel()
++
++	result, err := PollPendingOAuthLogin(ctx, cfg)
++	require.NoError(t, err)
++	assert.Nil(t, result)
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.NoError(t, loadErr, "pending state must survive a caller-side timeout so a later poll can resume")
++}
++
++func TestPollPendingOAuthLogin_DeviceCodeExpiryClearsPendingState(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusBadRequest)
++		json.NewEncoder(w).Encode(tokenErrorResponse{Error: "authorization_pending"}) //nolint:errcheck
++	}))
++	defer ts.Close()
++	stubAccessSrv(t, ts)
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      5,
++		ExpiresIn:     1,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now().Add(-11 * time.Minute), // past the 10-minute deadline floor
++	}))
++
++	_, err := PollPendingOAuthLogin(context.Background(), cfg)
++	require.Error(t, err)
++	assert.Contains(t, err.Error(), "expired")
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.Error(t, loadErr, "pending state must be cleared once the device code has actually expired")
++}
++
++func TestPollPendingOAuthLogin_TerminalOAuthErrorClearsPendingState(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusBadRequest)
++		json.NewEncoder(w).Encode(tokenErrorResponse{Error: "access_denied"}) //nolint:errcheck
++	}))
++	defer ts.Close()
++	stubAccessSrv(t, ts)
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      5,
++		ExpiresIn:     300,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now(),
++	}))
++
++	_, err := PollPendingOAuthLogin(context.Background(), cfg)
++	require.Error(t, err)
++	assert.Contains(t, err.Error(), "access_denied")
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.Error(t, loadErr, "pending state must be cleared once the server returns a terminal error")
++}
++
++func TestPollPendingOAuthLogin_SuccessClearsPendingStateAndReturnsResult(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		switch r.URL.Path {
++		case "/stripecli/oauth2/token":
++			json.NewEncoder(w).Encode(OAuthTokenResponse{ //nolint:errcheck
++				AccessToken:  "oaac_test_access",
++				RefreshToken: "oart_test_refresh",
++				TokenType:    "Bearer",
++				ExpiresIn:    3600,
++			})
++		case "/stripecli/oauth2/token/accounts":
++			json.NewEncoder(w).Encode(listAccountsResponse{Accounts: []config.AuthorizedAccount{ //nolint:errcheck
++				{ID: "acct_123", Name: "Test Account", Modes: []string{"test", "live"}},
++			}})
++		default:
++			http.NotFound(w, r)
++		}
++	}))
++	defer ts.Close()
++	stubAccessSrv(t, ts)
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      1,
++		ExpiresIn:     300,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now(),
++	}))
++
++	result, err := PollPendingOAuthLogin(context.Background(), cfg)
++	require.NoError(t, err)
++	require.NotNil(t, result)
++	assert.Equal(t, "acct_123", result.ActiveAccountID)
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.Error(t, loadErr, "pending state must be cleared once login succeeds")
++}
++
++func TestCheckPendingOAuthLogin_NotYetLoggedInLeavesPendingState(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	var callCount atomic.Int32
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		callCount.Add(1)
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusBadRequest)
++		json.NewEncoder(w).Encode(tokenErrorResponse{Error: "authorization_pending"}) //nolint:errcheck
++	}))
++	defer ts.Close()
++	stubAccessSrv(t, ts)
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      5,
++		ExpiresIn:     300,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now(),
++	}))
++
++	result, err := CheckPendingOAuthLogin(context.Background(), cfg)
++	require.NoError(t, err)
++	assert.Nil(t, result)
++	assert.Equal(t, int32(1), callCount.Load(), "a single check must make exactly one request, never loop or sleep")
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.NoError(t, loadErr, "pending state must survive a not-yet-completed check")
++}
++
++func TestCheckPendingOAuthLogin_DeviceCodeExpiryClearsPendingState(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      5,
++		ExpiresIn:     1,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now().Add(-11 * time.Minute), // past the 10-minute deadline floor
++	}))
++
++	_, err := CheckPendingOAuthLogin(context.Background(), cfg)
++	require.Error(t, err)
++	assert.Contains(t, err.Error(), "expired")
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.Error(t, loadErr, "pending state must be cleared once the device code has actually expired")
++}
++
++func TestCheckPendingOAuthLogin_TerminalOAuthErrorClearsPendingState(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusBadRequest)
++		json.NewEncoder(w).Encode(tokenErrorResponse{Error: "access_denied"}) //nolint:errcheck
++	}))
++	defer ts.Close()
++	stubAccessSrv(t, ts)
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      5,
++		ExpiresIn:     300,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now(),
++	}))
++
++	_, err := CheckPendingOAuthLogin(context.Background(), cfg)
++	require.Error(t, err)
++	assert.Contains(t, err.Error(), "access_denied")
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.Error(t, loadErr, "pending state must be cleared once the server returns a terminal error")
++}
++
++func TestCheckPendingOAuthLogin_SuccessClearsPendingStateAndReturnsResult(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		switch r.URL.Path {
++		case "/stripecli/oauth2/token":
++			json.NewEncoder(w).Encode(OAuthTokenResponse{ //nolint:errcheck
++				AccessToken:  "oaac_test_access",
++				RefreshToken: "oart_test_refresh",
++				TokenType:    "Bearer",
++				ExpiresIn:    3600,
++			})
++		case "/stripecli/oauth2/token/accounts":
++			json.NewEncoder(w).Encode(listAccountsResponse{Accounts: []config.AuthorizedAccount{ //nolint:errcheck
++				{ID: "acct_123", Name: "Test Account", Modes: []string{"test", "live"}},
++			}})
++		default:
++			http.NotFound(w, r)
++		}
++	}))
++	defer ts.Close()
++	stubAccessSrv(t, ts)
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      1,
++		ExpiresIn:     300,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now(),
++	}))
++
++	result, err := CheckPendingOAuthLogin(context.Background(), cfg)
++	require.NoError(t, err)
++	require.NotNil(t, result)
++	assert.Equal(t, "acct_123", result.ActiveAccountID)
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.Error(t, loadErr, "pending state must be cleared once login succeeds")
++}
++
++func TestCheckPendingOAuthLogin_SaveFailureAfterTokenExchangeClearsPendingState(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		switch r.URL.Path {
++		case "/stripecli/oauth2/token":
++			json.NewEncoder(w).Encode(OAuthTokenResponse{ //nolint:errcheck
++				AccessToken:  "oaac_test_access",
++				RefreshToken: "oart_test_refresh",
++				TokenType:    "Bearer",
++				ExpiresIn:    3600,
++			})
++		case "/stripecli/oauth2/token/accounts":
++			// The token exchange succeeded (the device code is now consumed), but fetching
++			// account info fails.
++			w.WriteHeader(http.StatusInternalServerError)
++		default:
++			http.NotFound(w, r)
++		}
++	}))
++	defer ts.Close()
++	stubAccessSrv(t, ts)
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{
++		DeviceCode:    "device-code",
++		Interval:      1,
++		ExpiresIn:     300,
++		AccessBaseURL: QAAccessBaseURL,
++		IssuedAt:      time.Now(),
++	}))
++
++	result, err := CheckPendingOAuthLogin(context.Background(), cfg)
++	require.Error(t, err)
++	assert.Nil(t, result)
++
++	_, loadErr := loadPendingDeviceAuth()
++	assert.Error(t, loadErr, "pending state must be cleared once the (single-use) device code has been consumed, even if saving the resulting credentials failed")
++}
+diff --git a/pkg/login/oauth_accounts.go b/pkg/login/oauth_accounts.go
+index 52a2a5f..7932bfb 100644
+--- a/pkg/login/oauth_accounts.go
++++ b/pkg/login/oauth_accounts.go
+@@ -7,6 +7,7 @@ import (
+ 	"io"
+ 	"net/http"
+ 	"os"
++	"strings"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
+@@ -52,6 +53,39 @@ func fetchAuthorizedAccounts(ctx context.Context, accessBaseURL, accessToken str
+ 	return result.Accounts, nil
+ }
+ 
++// AuthorizedAccountsResult bundles the accounts a user has authorized with which account and
++// mode are currently active.
++type AuthorizedAccountsResult struct {
++	Accounts        []config.AuthorizedAccount
++	ActiveAccountID string
++	ActiveLivemode  bool
++}
++
++// ListAuthorizedAccountsForActiveSession fetches the accounts authorized for cfg's stored OAuth
++// session, along with which account and mode are currently active. Returns an error if cfg
++// isn't logged in via OAuth.
++func ListAuthorizedAccountsForActiveSession(ctx context.Context, accessBaseURL string, cfg *config.Config) (*AuthorizedAccountsResult, error) {
++	uat, err := cfg.Profile.GetUAT()
++	if err != nil {
++		return nil, err
++	}
++	if !strings.HasPrefix(uat, "oak_") {
++		return nil, errorcategory.Errorf(errorcategory.Auth, "not logged in; run 'stripe login' first")
++	}
++
++	accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, uat)
++	if err != nil {
++		return nil, fmt.Errorf("failed to fetch authorized accounts: %w", err)
++	}
++
++	result := &AuthorizedAccountsResult{Accounts: accounts}
++	if ac, _ := config.GetActiveContext(); ac != nil {
++		result.ActiveAccountID = ac.AccountID
++		result.ActiveLivemode = ac.Livemode
++	}
++	return result, nil
++}
++
+ // PrintAuthorizedContexts fetches the authorized accounts for accessToken and
+ // prints them as a formatted list, marking the active context.
+ func PrintAuthorizedContexts(ctx context.Context, accessBaseURL, accessToken string) error {
+diff --git a/pkg/login/oauth_accounts_test.go b/pkg/login/oauth_accounts_test.go
+index 0265607..57bb7c3 100644
+--- a/pkg/login/oauth_accounts_test.go
++++ b/pkg/login/oauth_accounts_test.go
+@@ -56,3 +56,35 @@ func TestListAuthorizedAccounts_returnsRealDataWhenAvailable(t *testing.T) {
+ 	require.NoError(t, err)
+ 	assert.Equal(t, want, got)
+ }
++
++func TestListAuthorizedAccountsForActiveSession_NotLoggedIn(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	_, err := ListAuthorizedAccountsForActiveSession(context.Background(), "https://access.example", cfg)
++	assert.ErrorContains(t, err, "not logged in")
++}
++
++func TestListAuthorizedAccountsForActiveSession_ReturnsAccountsAndActiveContext(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	want := []config.AuthorizedAccount{
++		{ID: "acct_123", Name: "Test Co", Modes: []string{"test"}},
++		{ID: "acct_456", Name: "Live Co", Modes: []string{"live", "test"}},
++	}
++	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(listAccountsResponse{Accounts: want}) //nolint:errcheck
++	}))
++	defer srv.Close()
++
++	require.NoError(t, config.KeyRing.Set(config.UATKeychainItemKey, []byte("oak_test"), ""))
++	require.NoError(t, config.SaveActiveContext("acct_456", true))
++
++	result, err := ListAuthorizedAccountsForActiveSession(context.Background(), srv.URL, cfg)
++	require.NoError(t, err)
++	assert.Equal(t, want, result.Accounts)
++	assert.Equal(t, "acct_456", result.ActiveAccountID)
++	assert.True(t, result.ActiveLivemode)
++}
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index 553a562..d46c9ed 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -97,18 +97,50 @@ func RequestDeviceCode(ctx context.Context, accessBaseURL, clientID string) (*De
+ 	return &authResp, nil
+ }
+ 
+-// PollDeviceToken polls the token endpoint until the user approves, ctx is
+-// canceled or times out, or a terminal error is returned.
+-//
+-// Callers should create ctx with a deadline matching DeviceAuthResponse.ExpiresIn
+-// to automatically stop polling when the device code expires.
+-func PollDeviceToken(ctx context.Context, accessBaseURL, clientID, deviceCode string, interval time.Duration) (*OAuthTokenResponse, error) {
++// CheckDeviceToken makes a single, non-blocking request to the token endpoint and returns
++// immediately with whatever the server reports right now - unlike PollDeviceToken, it never
++// loops or sleeps waiting for the user to complete authentication. A non-nil *OAuthError with
++// Code "authorization_pending" or "slow_down" means the user hasn't completed authentication
++// yet, not that the device code is dead.
++func CheckDeviceToken(ctx context.Context, accessBaseURL, clientID, deviceCode string) (*OAuthTokenResponse, error) {
+ 	endpoint := accessBaseURL + accessAPNPath + "/token"
+ 	data := url.Values{}
+ 	data.Set("grant_type", "urn:ietf:params:oauth:grant-type:device_code")
+ 	data.Set("client_id", clientID)
+ 	data.Set("device_code", deviceCode)
+ 
++	resp, err := doPostForm(ctx, endpoint, data)
++	if err != nil {
++		return nil, err
++	}
++	defer resp.Body.Close()
++
++	body, err := io.ReadAll(resp.Body)
++	if err != nil {
++		return nil, err
++	}
++
++	if resp.StatusCode == http.StatusOK {
++		var tokenResp OAuthTokenResponse
++		if err := json.Unmarshal(body, &tokenResp); err != nil {
++			return nil, fmt.Errorf("failed to parse token response: %w", err)
++		}
++		return &tokenResp, nil
++	}
++
++	var errResp tokenErrorResponse
++	if jsonErr := json.Unmarshal(body, &errResp); jsonErr != nil || errResp.Error == "" {
++		return nil, errorcategory.Errorf(errorcategory.Auth, "token request failed (status %d): %s", resp.StatusCode, string(body))
++	}
++	return nil, &OAuthError{Code: errResp.Error, Description: errResp.ErrorDescription, HTTPStatus: resp.StatusCode}
++}
++
++// PollDeviceToken polls the token endpoint until the user approves, ctx is
++// canceled or times out, or a terminal error is returned.
++//
++// Callers should create ctx with a deadline matching DeviceAuthResponse.ExpiresIn
++// to automatically stop polling when the device code expires.
++func PollDeviceToken(ctx context.Context, accessBaseURL, clientID, deviceCode string, interval time.Duration) (*OAuthTokenResponse, error) {
+ 	for {
+ 		select {
+ 		case <-ctx.Done():
+@@ -116,34 +148,18 @@ func PollDeviceToken(ctx context.Context, accessBaseURL, clientID, deviceCode st
+ 		default:
+ 		}
+ 
+-		resp, err := doPostForm(ctx, endpoint, data)
+-		if err != nil {
+-			return nil, err
++		tokenResp, err := CheckDeviceToken(ctx, accessBaseURL, clientID, deviceCode)
++		if err == nil {
++			return tokenResp, nil
+ 		}
+ 
+-		body, err := io.ReadAll(resp.Body)
+-		resp.Body.Close()
+-		if err != nil {
++		var oauthErr *OAuthError
++		if !errors.As(err, &oauthErr) {
+ 			return nil, err
+ 		}
+ 
+-		if resp.StatusCode == http.StatusOK {
+-			var tokenResp OAuthTokenResponse
+-			if err := json.Unmarshal(body, &tokenResp); err != nil {
+-				return nil, fmt.Errorf("failed to parse token response: %w", err)
+-			}
+-			return &tokenResp, nil
+-		}
+-
+-		var errResp tokenErrorResponse
+-		if jsonErr := json.Unmarshal(body, &errResp); jsonErr != nil || errResp.Error == "" {
+-			return nil, errorcategory.Errorf(errorcategory.Auth, "token request failed (status %d): %s", resp.StatusCode, string(body))
+-		}
+-
+-		oauthErr := &OAuthError{Code: errResp.Error, Description: errResp.ErrorDescription, HTTPStatus: resp.StatusCode}
+-
+ 		var wait time.Duration
+-		switch errResp.Error {
++		switch oauthErr.Code {
+ 		case "authorization_pending":
+ 			wait = interval
+ 		case "slow_down":
+@@ -203,8 +219,13 @@ func PollAndSaveDeviceCredentials(ctx context.Context, accessBaseURL, clientID,
+ 	// cancellation/deadline: a caller-side timeout (or the natural device-code expiry) firing at
+ 	// this exact moment shouldn't leave a valid token saved but the account list and active
+ 	// context unpopulated.
+-	ctx = context.WithoutCancel(ctx)
++	return saveDeviceCredentials(context.WithoutCancel(ctx), accessBaseURL, tokenResp, cfg)
++}
+ 
++// saveDeviceCredentials persists a token endpoint response as the active credentials: it clears
++// any stale credentials, saves the new OAuth tokens, fetches the authorized accounts, and
++// populates cfg's profile with the active account/mode.
++func saveDeviceCredentials(ctx context.Context, accessBaseURL string, tokenResp *OAuthTokenResponse, cfg *config.Config) (*DeviceCodeLoginResult, error) {
+ 	// Clear all stale credentials before saving new ones, so this succeeds even if a
+ 	// previously stored credential is expired or revoked.
+ 	_ = cfg.RemoveAuthFields(cfg.Profile.ProfileName)
+diff --git a/pkg/login/oauth_pending.go b/pkg/login/oauth_pending.go
+index 85fbca6..ca0cf57 100644
+--- a/pkg/login/oauth_pending.go
++++ b/pkg/login/oauth_pending.go
+@@ -6,34 +6,69 @@ import (
+ 	"fmt"
+ 	"os"
+ 	"path/filepath"
++	"time"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
+ 	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+-// oauthContinuation holds the data needed to poll for an OAuth device token.
+-// It is written to disk by InitiateLogin and read by PollPendingDeviceAuth.
++// oauthContinuation holds the data needed to poll for an OAuth device token, plus enough of
++// the original device-authorization response to resume (rather than restart) a login attempt.
++// It is written to disk by InitiateLogin/InitiateOAuthLogin and read by PollPendingDeviceAuth/
++// PollPendingOAuthLogin.
+ type oauthContinuation struct {
+-	DeviceCode    string `json:"device_code"`
+-	Interval      int    `json:"interval"`
+-	ExpiresIn     int    `json:"expires_in"`
+-	AccessBaseURL string `json:"access_base"`
++	DeviceCode      string    `json:"device_code"`
++	Interval        int       `json:"interval"`
++	ExpiresIn       int       `json:"expires_in"`
++	AccessBaseURL   string    `json:"access_base"`
++	VerificationURI string    `json:"verification_uri"`
++	UserCode        string    `json:"user_code"`
++	IssuedAt        time.Time `json:"issued_at"`
++}
++
++// deadline returns the absolute time at which this device code expires. It's computed from
++// the persisted IssuedAt rather than "now", so it stays correct across a login attempt that's
++// resumed (via InitiateOAuthLogin) or polled (via PollPendingOAuthLogin) well after it started.
++func (c *oauthContinuation) deadline() time.Time {
++	return c.IssuedAt.Add(max(time.Duration(c.ExpiresIn)*time.Second, 10*time.Minute))
+ }
+ 
+ func pendingDeviceAuthPath() string {
+ 	return filepath.Join(filepath.Dir(config.CredentialsFilePath()), "oauth_pending.json")
+ }
+ 
++// savePendingDeviceAuth writes cont via a temp file + rename, so a concurrent read (or a
++// concurrent write from another process racing to mint its own device code) never observes a
++// partially-written file. It does not otherwise coordinate between concurrent writers: if two
++// processes mint at once, the second write wins and the first process's caller ends up holding
++// a browser_url/verification_code for a device code no longer on disk. That's a narrow,
++// single-user-CLI race that isn't worth solving with cross-process locking.
+ func savePendingDeviceAuth(cont *oauthContinuation) error {
+ 	path := pendingDeviceAuthPath()
+-	if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
++	dir := filepath.Dir(path)
++	if err := os.MkdirAll(dir, 0700); err != nil {
+ 		return err
+ 	}
+ 	data, err := json.Marshal(cont)
+ 	if err != nil {
+ 		return err
+ 	}
+-	return os.WriteFile(path, data, 0600)
++	tmp, err := os.CreateTemp(dir, ".oauth_pending-*.tmp")
++	if err != nil {
++		return err
++	}
++	defer os.Remove(tmp.Name())
++	if _, err := tmp.Write(data); err != nil {
++		tmp.Close()
++		return err
++	}
++	if err := tmp.Close(); err != nil {
++		return err
++	}
++	if err := os.Chmod(tmp.Name(), 0600); err != nil {
++		return err
++	}
++	return os.Rename(tmp.Name(), path)
+ }
+ 
+ func loadPendingDeviceAuth() (*oauthContinuation, error) {
+diff --git a/pkg/login/oauth_pending_test.go b/pkg/login/oauth_pending_test.go
+new file mode 100644
+index 0000000..5756d4d
+--- /dev/null
++++ b/pkg/login/oauth_pending_test.go
+@@ -0,0 +1,59 @@
++package login
++
++import (
++	"testing"
++	"time"
++
++	"github.com/stretchr/testify/assert"
++	"github.com/stretchr/testify/require"
++)
++
++func TestOauthContinuationDeadline(t *testing.T) {
++	issuedAt := time.Now().Add(-1 * time.Minute)
++	cont := &oauthContinuation{IssuedAt: issuedAt, ExpiresIn: 1800}
++	assert.WithinDuration(t, issuedAt.Add(1800*time.Second), cont.deadline(), time.Second)
++}
++
++func TestOauthContinuationDeadline_MinimumTenMinutes(t *testing.T) {
++	issuedAt := time.Now()
++	cont := &oauthContinuation{IssuedAt: issuedAt, ExpiresIn: 30}
++	assert.WithinDuration(t, issuedAt.Add(10*time.Minute), cont.deadline(), time.Second)
++}
++
++func TestSaveAndLoadPendingDeviceAuth(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	issuedAt := time.Now().Truncate(time.Second)
++	cont := &oauthContinuation{
++		DeviceCode:      "device-code",
++		Interval:        5,
++		ExpiresIn:       300,
++		AccessBaseURL:   QAAccessBaseURL,
++		VerificationURI: "https://qa-access.stripe.com/verify",
++		UserCode:        "ABCD-EFGH",
++		IssuedAt:        issuedAt,
++	}
++	require.NoError(t, savePendingDeviceAuth(cont))
++
++	loaded, err := loadPendingDeviceAuth()
++	require.NoError(t, err)
++	assert.Equal(t, cont.DeviceCode, loaded.DeviceCode)
++	assert.Equal(t, cont.VerificationURI, loaded.VerificationURI)
++	assert.Equal(t, cont.UserCode, loaded.UserCode)
++	assert.True(t, cont.IssuedAt.Equal(loaded.IssuedAt))
++
++	clearPendingDeviceAuth()
++	_, err = loadPendingDeviceAuth()
++	require.Error(t, err)
++}
++
++func TestSavePendingDeviceAuth_OverwritesPrevious(t *testing.T) {
++	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
++
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{DeviceCode: "first", AccessBaseURL: QAAccessBaseURL, IssuedAt: time.Now(), ExpiresIn: 300}))
++	require.NoError(t, savePendingDeviceAuth(&oauthContinuation{DeviceCode: "second", AccessBaseURL: QAAccessBaseURL, IssuedAt: time.Now(), ExpiresIn: 300}))
++
++	loaded, err := loadPendingDeviceAuth()
++	require.NoError(t, err)
++	assert.Equal(t, "second", loaded.DeviceCode)
++}

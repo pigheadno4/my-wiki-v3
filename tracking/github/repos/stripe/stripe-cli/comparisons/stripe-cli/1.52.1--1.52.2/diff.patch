@@ -1,0 +1,224 @@
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index 4933fc8..375ad70 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -9,6 +9,7 @@ import (
+ 	"errors"
+ 	"fmt"
+ 	"os"
++	"slices"
+ 	"strings"
+ 	"unicode"
+ 
+@@ -184,6 +185,11 @@ func Execute(ctx context.Context) {
+ 		return
+ 	}
+ 
++	args := os.Args[1:]
++	if normalized := resource.NormalizeBooleanRequestArgs(rootCmd, args); !slices.Equal(args, normalized) {
++		rootCmd.SetArgs(normalized)
++	}
++
+ 	if err := rootCmd.ExecuteContext(updatedCtx); err != nil {
+ 		errString := err.Error()
+ 
+diff --git a/pkg/fixtures/fixtures.go b/pkg/fixtures/fixtures.go
+index d3b4d2d..2fe3521 100644
+--- a/pkg/fixtures/fixtures.go
++++ b/pkg/fixtures/fixtures.go
+@@ -309,7 +309,7 @@ func (fxt *Fixture) Execute(ctx context.Context, apiVersion string) ([]string, e
+ 		fmt.Printf("Running fixture for: %s\n", data.Name)
+ 		resp, err := fxt.makeRequest(ctx, data, apiVersion)
+ 		if err != nil && !errWasExpected(err, data.ExpectedErrorType) {
+-			return nil, err
++			return nil, fixtureRequestError(data, err)
+ 		}
+ 
+ 		fxt.Responses[data.Name] = gjson.ParseBytes(resp)
+@@ -317,6 +317,15 @@ func (fxt *Fixture) Execute(ctx context.Context, apiVersion string) ([]string, e
+ 	return requestNames, nil
+ }
+ 
++func fixtureRequestError(data FixtureRequest, err error) error {
++	var requestErr requests.RequestError
++	if data.Path == "/v1/accounts" && strings.EqualFold(data.Method, http.MethodPost) &&
++		errors.As(err, &requestErr) && requestErr.StatusCode == http.StatusBadRequest {
++		return fmt.Errorf("fixture %q requires Accounts v1 account creation support (POST /v1/accounts). If Accounts v1 creation is disabled, use an account with Accounts v1 support or a custom fixture for Accounts v2 events: https://docs.stripe.com/cli/fixtures. Original error: %w", data.Name, err)
++	}
++	return err
++}
++
+ func errWasExpected(err error, expectedErrorType string) bool {
+ 	if expectedErrorType == "" {
+ 		return false
+diff --git a/pkg/login/login.go b/pkg/login/login.go
+index b2eab39..059cc3f 100644
+--- a/pkg/login/login.go
++++ b/pkg/login/login.go
+@@ -125,7 +125,7 @@ func findPendingOAuthLoginSession(accessBaseURL string) *OAuthLoginSession {
+ 		return nil
+ 	}
+ 	return &OAuthLoginSession{
+-		BrowserURL:       cont.VerificationURI,
++		BrowserURL:       cont.browserURL(),
+ 		VerificationCode: cont.UserCode,
+ 		ExpiresIn:        int(remaining.Seconds()),
+ 	}
+@@ -151,25 +151,27 @@ func mintOAuthDeviceLogin(ctx context.Context, accessBaseURL string) (*OAuthLogi
+ 	if err != nil {
+ 		return nil, fmt.Errorf("failed to request device code: %w", err)
+ 	}
+-	if err := validateBrowserURL(authResp.VerificationURI, accessBaseURL); err != nil {
++	browserURL := authResp.BrowserURL()
++	if err := validateBrowserURL(browserURL, accessBaseURL); err != nil {
+ 		return nil, err
+ 	}
+ 
+ 	cont := &oauthContinuation{
+-		DeviceCode:      authResp.DeviceCode,
+-		Interval:        authResp.Interval,
+-		ExpiresIn:       authResp.ExpiresIn,
+-		AccessBaseURL:   accessBaseURL,
+-		VerificationURI: authResp.VerificationURI,
+-		UserCode:        authResp.UserCode,
+-		IssuedAt:        time.Now(),
++		DeviceCode:              authResp.DeviceCode,
++		Interval:                authResp.Interval,
++		ExpiresIn:               authResp.ExpiresIn,
++		AccessBaseURL:           accessBaseURL,
++		VerificationURI:         authResp.VerificationURI,
++		VerificationURIComplete: authResp.VerificationURIComplete,
++		UserCode:                authResp.UserCode,
++		IssuedAt:                time.Now(),
+ 	}
+ 	if err := savePendingDeviceAuth(cont); err != nil {
+ 		return nil, fmt.Errorf("failed to save pending auth state: %w", err)
+ 	}
+ 
+ 	return &OAuthLoginSession{
+-		BrowserURL:       authResp.VerificationURI,
++		BrowserURL:       browserURL,
+ 		VerificationCode: authResp.UserCode,
+ 		ExpiresIn:        authResp.ExpiresIn,
+ 	}, nil
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index d46c9ed..87db44f 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -48,11 +48,23 @@ func (e *OAuthError) Error() string {
+ 
+ // DeviceAuthResponse holds the device authorization endpoint response.
+ type DeviceAuthResponse struct {
+-	DeviceCode      string `json:"device_code"`
+-	UserCode        string `json:"user_code"`
+-	VerificationURI string `json:"verification_uri"`
+-	ExpiresIn       int    `json:"expires_in"`
+-	Interval        int    `json:"interval"`
++	DeviceCode              string `json:"device_code"`
++	UserCode                string `json:"user_code"`
++	VerificationURI         string `json:"verification_uri"`
++	VerificationURIComplete string `json:"verification_uri_complete"`
++	ExpiresIn               int    `json:"expires_in"`
++	Interval                int    `json:"interval"`
++}
++
++// BrowserURL returns the URL to display/open for the user to complete
++// authorization: VerificationURIComplete (which already has UserCode baked
++// in, so the user doesn't have to type it) when access-srv provides one,
++// falling back to VerificationURI otherwise.
++func (r *DeviceAuthResponse) BrowserURL() string {
++	if r.VerificationURIComplete != "" {
++		return r.VerificationURIComplete
++	}
++	return r.VerificationURI
+ }
+ 
+ // OAuthTokenResponse holds the token endpoint response.
+@@ -257,11 +269,12 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 	if err != nil {
+ 		return fmt.Errorf("failed to request device code: %w", err)
+ 	}
+-	if err := validateBrowserURL(authResp.VerificationURI, accessBaseURL); err != nil {
++	browserURL := authResp.BrowserURL()
++	if err := validateBrowserURL(browserURL, accessBaseURL); err != nil {
+ 		return err
+ 	}
+ 
+-	fmt.Printf("To authorize, visit %s\n\n", authResp.VerificationURI)
++	fmt.Printf("To authorize, visit %s\n\n", browserURL)
+ 	fmt.Println("When prompted, enter your verification code:")
+ 	fmt.Println()
+ 	fmt.Println(ansi.Purple(authResp.UserCode))
+@@ -273,7 +286,7 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 		fmt.Printf("Press enter to open the browser (^C to quit)\n")
+ 		go func() {
+ 			fmt.Scanln() //nolint:errcheck
+-			if err := openBrowser(authResp.VerificationURI); err != nil {
++			if err := openBrowser(browserURL); err != nil {
+ 				fmt.Fprintf(os.Stderr, "Failed to open browser: %s\n", err)
+ 			}
+ 			close(browserOpened)
+diff --git a/pkg/login/oauth_device_test.go b/pkg/login/oauth_device_test.go
+index a9636ae..b5120e7 100644
+--- a/pkg/login/oauth_device_test.go
++++ b/pkg/login/oauth_device_test.go
+@@ -55,6 +55,23 @@ func TestRequestDeviceCode_NonOK(t *testing.T) {
+ 	assert.Contains(t, err.Error(), "404")
+ }
+ 
++func TestDeviceAuthResponse_BrowserURL(t *testing.T) {
++	t.Run("prefers verification_uri_complete when present", func(t *testing.T) {
++		resp := &DeviceAuthResponse{
++			VerificationURI:         "https://qa-access.stripe.com/stripecli/oauth2/device",
++			VerificationURIComplete: "https://qa-access.stripe.com/stripecli/oauth2/device?user_code=BZFN-KXNJ",
++		}
++		assert.Equal(t, "https://qa-access.stripe.com/stripecli/oauth2/device?user_code=BZFN-KXNJ", resp.BrowserURL())
++	})
++
++	t.Run("falls back to verification_uri when absent", func(t *testing.T) {
++		resp := &DeviceAuthResponse{
++			VerificationURI: "https://qa-access.stripe.com/stripecli/oauth2/device",
++		}
++		assert.Equal(t, "https://qa-access.stripe.com/stripecli/oauth2/device", resp.BrowserURL())
++	})
++}
++
+ func TestPollDeviceToken_Success(t *testing.T) {
+ 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+ 		require.NoError(t, r.ParseForm())
+diff --git a/pkg/login/oauth_pending.go b/pkg/login/oauth_pending.go
+index ca0cf57..1c8806f 100644
+--- a/pkg/login/oauth_pending.go
++++ b/pkg/login/oauth_pending.go
+@@ -17,13 +17,24 @@ import (
+ // It is written to disk by InitiateLogin/InitiateOAuthLogin and read by PollPendingDeviceAuth/
+ // PollPendingOAuthLogin.
+ type oauthContinuation struct {
+-	DeviceCode      string    `json:"device_code"`
+-	Interval        int       `json:"interval"`
+-	ExpiresIn       int       `json:"expires_in"`
+-	AccessBaseURL   string    `json:"access_base"`
+-	VerificationURI string    `json:"verification_uri"`
+-	UserCode        string    `json:"user_code"`
+-	IssuedAt        time.Time `json:"issued_at"`
++	DeviceCode              string    `json:"device_code"`
++	Interval                int       `json:"interval"`
++	ExpiresIn               int       `json:"expires_in"`
++	AccessBaseURL           string    `json:"access_base"`
++	VerificationURI         string    `json:"verification_uri"`
++	VerificationURIComplete string    `json:"verification_uri_complete"`
++	UserCode                string    `json:"user_code"`
++	IssuedAt                time.Time `json:"issued_at"`
++}
++
++// browserURL returns the URL to display/open for the user to complete
++// authorization, preferring VerificationURIComplete over VerificationURI -
++// see DeviceAuthResponse.BrowserURL.
++func (c *oauthContinuation) browserURL() string {
++	if c.VerificationURIComplete != "" {
++		return c.VerificationURIComplete
++	}
++	return c.VerificationURI
+ }
+ 
+ // deadline returns the absolute time at which this device code expires. It's computed from

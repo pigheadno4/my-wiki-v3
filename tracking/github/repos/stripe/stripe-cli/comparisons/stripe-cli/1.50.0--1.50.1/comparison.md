@@ -1,0 +1,87 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-cli`
+- Package: `stripe-cli`
+- From: `1.50.0` (`a6f40658b99e4142fd63b2e4b560aa9c7ae337b1`)
+- To: `1.50.1` (`4a89968de966ca1978eb4c8da558367233769b4c`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `go.mod`
+- `pkg/cmd/listen.go`
+- `pkg/cmd/login.go`
+- `pkg/cmd/logout.go`
+- `pkg/cmd/root.go`
+- `pkg/cmd/switch.go`
+- `pkg/cmd/whoami.go`
+- `pkg/config/config.go`
+- `pkg/config/profile.go`
+- `pkg/config/profile_test.go`
+- `pkg/fixtures/fixtures.go`
+- `pkg/fixtures/triggers.go`
+- `pkg/login/access_base.go`
+- `pkg/login/access_base_test.go`
+- `pkg/login/interactive_login.go`
+- `pkg/login/keys/polling.go`
+- `pkg/login/links.go`
+- `pkg/login/login.go`
+- `pkg/login/oauth_accounts.go`
+- `pkg/login/oauth_credentials.go`
+- `pkg/login/oauth_credentials_test.go`
+- `pkg/login/oauth_device.go`
+- `pkg/login/oauth_device_test.go`
+- `pkg/login/oauth_pending.go`
+- `pkg/login/oauth_reauth.go`
+- `pkg/login/oauth_refresh.go`
+- `pkg/login/switch_context.go`
+- `pkg/proxy/proxy.go`
+- `pkg/requests/base.go`
+- `pkg/requests/plugin.go`
+- `pkg/requests/webhook_endpoints.go`
+- `pkg/rpcservice/listen.go`
+- `pkg/stripe/analytics_telemetry.go`
+- `pkg/stripe/analytics_telemetry_test.go`
+- `pkg/stripe/client.go`
+- `pkg/stripe/url.go`
+- `pkg/websocket/client.go`
+
+## Upstream changes
+
+- `modified`: `go.mod`
+- `modified`: `pkg/cmd/listen.go`
+- `modified`: `pkg/cmd/login.go`
+- `modified`: `pkg/cmd/logout.go`
+- `modified`: `pkg/cmd/root.go`
+- `modified`: `pkg/cmd/switch.go`
+- `modified`: `pkg/cmd/whoami.go`
+- `modified`: `pkg/config/config.go`
+- `modified`: `pkg/config/profile.go`
+- `modified`: `pkg/config/profile_test.go`
+- `modified`: `pkg/fixtures/fixtures.go`
+- `modified`: `pkg/fixtures/triggers.go`
+- `added`: `pkg/login/access_base.go`
+- `added`: `pkg/login/access_base_test.go`
+- `modified`: `pkg/login/interactive_login.go`
+- `modified`: `pkg/login/keys/polling.go`
+- `modified`: `pkg/login/links.go`
+- `modified`: `pkg/login/login.go`
+- `modified`: `pkg/login/oauth_accounts.go`
+- `modified`: `pkg/login/oauth_credentials.go`
+- `modified`: `pkg/login/oauth_credentials_test.go`
+- `modified`: `pkg/login/oauth_device.go`
+- `modified`: `pkg/login/oauth_device_test.go`
+- `modified`: `pkg/login/oauth_pending.go`
+- `modified`: `pkg/login/oauth_reauth.go`
+- `modified`: `pkg/login/oauth_refresh.go`
+- `modified`: `pkg/login/switch_context.go`
+- `modified`: `pkg/proxy/proxy.go`
+- `modified`: `pkg/requests/base.go`
+- `modified`: `pkg/requests/plugin.go`
+- `modified`: `pkg/requests/webhook_endpoints.go`
+- `modified`: `pkg/rpcservice/listen.go`
+- `modified`: `pkg/stripe/analytics_telemetry.go`
+- `modified`: `pkg/stripe/analytics_telemetry_test.go`
+- `modified`: `pkg/stripe/client.go`
+- `modified`: `pkg/stripe/url.go`
+- `modified`: `pkg/websocket/client.go`

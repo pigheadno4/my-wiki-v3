@@ -1,0 +1,1679 @@
+diff --git a/go.mod b/go.mod
+index 49689fc..06a7045 100644
+--- a/go.mod
++++ b/go.mod
+@@ -60,6 +60,7 @@ require (
+ 	github.com/yuin/goldmark v1.8.5
+ 	github.com/zalando/go-keyring v0.2.8
+ 	golang.org/x/sync v0.22.0
++	golang.org/x/tools v0.47.0
+ )
+ 
+ require (
+@@ -98,6 +99,7 @@ require (
+ 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
+ 	github.com/yuin/goldmark-emoji v1.0.6 // indirect
+ 	go.yaml.in/yaml/v3 v3.0.5 // indirect
++	golang.org/x/mod v0.37.0 // indirect
+ 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260729162451-8efbd57d26e0 // indirect
+ 	gopkg.in/yaml.v3 v3.0.1 // indirect
+ )
+diff --git a/pkg/cmd/listen.go b/pkg/cmd/listen.go
+index fbccaab..870c249 100644
+--- a/pkg/cmd/listen.go
++++ b/pkg/cmd/listen.go
+@@ -362,7 +362,7 @@ func (lc *listenCmd) createVisitor(logger *log.Logger, format string, printJSON
+ 				fmt.Println(outputStr)
+ 				return nil
+ 			default:
+-				return fmt.Errorf("VisitData received unexpected type for DataElement, got %T", de)
++				return errorcategory.Errorf(errorcategory.Internal, "VisitData received unexpected type for DataElement, got %T", de)
+ 			}
+ 		},
+ 	}
+diff --git a/pkg/cmd/login.go b/pkg/cmd/login.go
+index 8405d9d..22907ae 100644
+--- a/pkg/cmd/login.go
++++ b/pkg/cmd/login.go
+@@ -9,12 +9,20 @@ import (
+ 	"golang.org/x/term"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/useragent"
+ 	"github.com/stripe/stripe-cli/pkg/validators"
+ )
+ 
++// revokeToken and initiateLogin are package variables so tests can stub out
++// the network calls made by runLoginCmd.
++var (
++	revokeToken   = login.RevokeToken
++	initiateLogin = login.InitiateLogin
++)
++
+ type loginCmd struct {
+ 	cmd              *cobra.Command
+ 	interactive      bool
+@@ -142,6 +150,9 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 	if err := stripe.ValidateDashboardBaseURL(lc.dashboardBaseURL); err != nil {
+ 		return err
+ 	}
++	if err := login.ValidateAccessBaseURL(lc.accessBaseURL); err != nil {
++		return err
++	}
+ 
+ 	if lc.completeDevice {
+ 		return login.PollPendingDeviceAuth(cmd.Context(), &Config)
+@@ -151,8 +162,8 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 		return login.PollForLogin(cmd.Context(), lc.completeURL, &Config)
+ 	}
+ 
++	uat, _ := Config.Profile.GetUAT()
+ 	if !lc.newSession {
+-		uat, _ := Config.Profile.GetUAT()
+ 		if strings.HasPrefix(uat, "oak_") {
+ 			identity := Config.Profile.GetDisplayName()
+ 			if identity == "" {
+@@ -169,13 +180,18 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 			fmt.Fprintln(cmd.OutOrStdout(), "To log in as a different user, run: stripe login --new-session")
+ 			return nil
+ 		}
++	} else if strings.HasPrefix(uat, "oak_") {
++		// Revoke the previous OAuth session before starting a new one, same as `stripe logout`.
++		if err := revokeToken(cmd.Context(), lc.accessBaseURL); err != nil {
++			fmt.Fprintf(os.Stderr, "Warning: token revocation failed: %s\n", err)
++		}
+ 	}
+ 
+ 	if lc.nonInteractive || !shouldAutoLogin(os.Getenv, term.IsTerminal(int(os.Stdin.Fd()))) {
+ 		if useragent.DetectAIAgent(os.Getenv) != "" {
+ 			fmt.Fprintln(os.Stderr, "If you do not have an account, run `stripe sandbox create` instead (provisions a claimable sandbox without a browser).")
+ 		}
+-		return login.InitiateLogin(cmd.Context(), lc.dashboardBaseURL, lc.accessBaseURL, &Config)
++		return initiateLogin(cmd.Context(), lc.dashboardBaseURL, lc.accessBaseURL, &Config)
+ 	}
+ 
+ 	if lc.interactive {
+@@ -189,6 +205,9 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ func (lc *loginListCmd) listLoggedInAccountsCmd(cmd *cobra.Command, args []string) error {
+ 	uat, _ := Config.Profile.GetUAT()
+ 	if strings.HasPrefix(uat, "oak_") {
++		if err := login.ValidateAccessBaseURL(lc.accessBaseURL); err != nil {
++			return err
++		}
+ 		return login.PrintAuthorizedContexts(cmd.Context(), lc.accessBaseURL, uat)
+ 	}
+ 	return Config.ListProfiles()
+@@ -197,6 +216,9 @@ func (lc *loginListCmd) listLoggedInAccountsCmd(cmd *cobra.Command, args []strin
+ func (lc *loginSwitchCmd) switchLoggedInAccountCmd(cmd *cobra.Command, args []string) error {
+ 	uat, _ := Config.Profile.GetUAT()
+ 	if strings.HasPrefix(uat, "oak_") {
++		if err := login.ValidateAccessBaseURL(lc.accessBaseURL); err != nil {
++			return err
++		}
+ 		accountID := ""
+ 		if len(args) > 0 {
+ 			accountID = args[0]
+@@ -204,7 +226,7 @@ func (lc *loginSwitchCmd) switchLoggedInAccountCmd(cmd *cobra.Command, args []st
+ 		return login.SwitchContext(cmd.Context(), lc.accessBaseURL, &Config, accountID, lc.livemode)
+ 	}
+ 	if len(args) == 0 {
+-		return fmt.Errorf("account name required")
++		return errorcategory.Errorf(errorcategory.UserInput, "account name required")
+ 	}
+ 	return Config.SwitchProfile(args[0])
+ }
+diff --git a/pkg/cmd/logout.go b/pkg/cmd/logout.go
+index 297b7d1..7d905fa 100644
+--- a/pkg/cmd/logout.go
++++ b/pkg/cmd/logout.go
+@@ -33,6 +33,9 @@ func newLogoutCmd() *logoutCmd {
+ }
+ 
+ func (lc *logoutCmd) runLogoutCmd(cmd *cobra.Command, args []string) error {
++	if err := login.ValidateAccessBaseURL(lc.accessBaseURL); err != nil {
++		return err
++	}
+ 	if lc.all {
+ 		return logout.All(cmd.Context(), lc.accessBaseURL, &Config)
+ 	}
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index 6d8fa3c..b6a0d62 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -68,11 +68,20 @@ var rootCmd = &cobra.Command{
+ %s`,
+ 		getLogin(&fs, &Config),
+ 	),
+-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
++	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+ 		if cmd.Name() == "help" {
+ 			fullHelpMode = true
+ 		}
+ 
++		// --access-base is a hidden persistent flag accepted by every command, and
++		// feeds the OAuth token refresher below, which runs silently on any command
++		// using a stored OAuth session. Reject anything other than the real
++		// access-srv origins before it's used for that (or any other) purpose, so
++		// it can't be used to exfiltrate the UAT or refresh token.
++		if err := login.ValidateAccessBaseURL(rootAccessBaseURL); err != nil {
++			return err
++		}
++
+ 		// Make the --access-base value available to the OAuth token refresher,
+ 		// which runs inside ResolveCredentials without access to cobra flags.
+ 		Config.Profile.OAuthAccessBaseURL = rootAccessBaseURL
+@@ -104,6 +113,7 @@ var rootCmd = &cobra.Command{
+ 			// record command invocation
+ 			sendCommandInvocationEvent(cmd.Context())
+ 		}
++		return nil
+ 	},
+ }
+ 
+@@ -273,7 +283,7 @@ func init() {
+ 	rootCmd.AddCommand(newCompletionCmd().cmd)
+ 	rootCmd.AddCommand(newConfigCmd().cmd)
+ 	rootCmd.AddCommand(newDaemonCmd(&Config).cmd)
+-	rootCmd.AddCommand(newFeedbackdCmd().cmd)
++	rootCmd.AddCommand(newFeedbackCmd().cmd)
+ 	rootCmd.AddCommand(newFixturesCmd(&Config).Cmd)
+ 	rootCmd.AddCommand(newListenCmd().cmd)
+ 	rootCmd.AddCommand(newLoginCmd().cmd)
+diff --git a/pkg/cmd/switch.go b/pkg/cmd/switch.go
+index 0e9ccd1..ba48186 100644
+--- a/pkg/cmd/switch.go
++++ b/pkg/cmd/switch.go
+@@ -50,6 +50,9 @@ Use --live to switch to livemode instead.`,
+ }
+ 
+ func (sc *switchContextCmd) run(cmd *cobra.Command, args []string) error {
++	if err := login.ValidateAccessBaseURL(sc.accessBaseURL); err != nil {
++		return err
++	}
+ 	accountID := ""
+ 	if len(args) > 0 {
+ 		accountID = args[0]
+diff --git a/pkg/cmd/whoami.go b/pkg/cmd/whoami.go
+index 3be89f0..a832c0c 100644
+--- a/pkg/cmd/whoami.go
++++ b/pkg/cmd/whoami.go
+@@ -2,7 +2,6 @@ package cmd
+ 
+ import (
+ 	"encoding/json"
+-	"errors"
+ 	"fmt"
+ 	"io"
+ 	"strings"
+@@ -11,6 +10,7 @@ import (
+ 	"github.com/spf13/cobra"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login"
+ 	"github.com/stripe/stripe-cli/pkg/requests"
+ 	"github.com/stripe/stripe-cli/pkg/validators"
+@@ -19,7 +19,7 @@ import (
+ // errNotAuthenticated is returned by whoami when no credentials are found.
+ // root.go recognizes this sentinel to suppress duplicate error output while
+ // still exiting non-zero.
+-var errNotAuthenticated = errors.New("not authenticated")
++var errNotAuthenticated = errorcategory.New(errorcategory.Auth, "not authenticated")
+ 
+ type whoamiCmd struct {
+ 	cmd           *cobra.Command
+@@ -83,6 +83,9 @@ func (wc *whoamiCmd) runWhoamiCmd(cmd *cobra.Command, args []string) error {
+ 
+ 	uat, _ := profile.GetUAT()
+ 	if strings.HasPrefix(uat, "oak_") {
++		if err := login.ValidateAccessBaseURL(wc.accessBaseURL); err != nil {
++			return err
++		}
+ 		return wc.runWhoamiOAuth(cmd, uat)
+ 	}
+ 
+diff --git a/pkg/config/config.go b/pkg/config/config.go
+index 85739cc..195e6d9 100644
+--- a/pkg/config/config.go
++++ b/pkg/config/config.go
+@@ -20,6 +20,7 @@ import (
+ 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/ansi"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/fsutil"
+ 	"github.com/stripe/stripe-cli/pkg/git"
+ 	"github.com/stripe/stripe-cli/pkg/keyring"
+@@ -212,24 +213,24 @@ func (c *Config) EditConfig() error {
+ 
+ func (c *Config) CopyProfile(source string, target string) error {
+ 	if source == "" {
+-		return fmt.Errorf("source profile name cannot be empty")
++		return errorcategory.Errorf(errorcategory.UserInput, "source profile name cannot be empty")
+ 	}
+ 	if target == "" {
+-		return fmt.Errorf("target profile name cannot be empty")
++		return errorcategory.Errorf(errorcategory.UserInput, "target profile name cannot be empty")
+ 	}
+ 
+ 	if source == target {
+-		return fmt.Errorf("cannot copy profile to itself")
++		return errorcategory.Errorf(errorcategory.UserInput, "cannot copy profile to itself")
+ 	}
+ 
+ 	runtimeViper := viper.GetViper()
+ 	safeSource := strings.ReplaceAll(source, ".", " ")
+ 	if !runtimeViper.IsSet(safeSource) {
+-		return fmt.Errorf("source profile '%s' does not exist", source)
++		return errorcategory.Errorf(errorcategory.UserInput, "source profile '%s' does not exist", source)
+ 	}
+ 	existing := runtimeViper.Get(safeSource)
+ 	if !isProfile(existing) {
+-		return fmt.Errorf("source '%s' is not a profile", source)
++		return errorcategory.Errorf(errorcategory.UserInput, "source '%s' is not a profile", source)
+ 	}
+ 
+ 	safeTarget := strings.ReplaceAll(target, ".", " ")
+diff --git a/pkg/config/profile.go b/pkg/config/profile.go
+index af25538..5a94c7b 100644
+--- a/pkg/config/profile.go
++++ b/pkg/config/profile.go
+@@ -206,7 +206,7 @@ func (p *Profile) GetColor() (string, error) {
+ 	case ColorOff:
+ 		return ColorOff, nil
+ 	default:
+-		return "", fmt.Errorf("color value not supported: %s", color)
++		return "", errorcategory.Errorf(errorcategory.Filesystem, "color value not supported: %s", color)
+ 	}
+ }
+ 
+@@ -337,7 +337,7 @@ func (p *Profile) GetAPIKey(livemode bool) (string, error) {
+ 		p.redactAllLivemodeValues()
+ 		key, err = p.retrieveLivemodeValue(LiveModeAPIKeyName)
+ 		if err != nil {
+-			return "", errors.New("your live mode API key needs to be re-configured. Run `stripe login` to re-authenticate")
++			return "", errorcategory.New(errorcategory.Auth, "your live mode API key needs to be re-configured. Run `stripe login` to re-authenticate")
+ 		}
+ 	}
+ 
+@@ -856,13 +856,25 @@ func (p *Profile) ResolveCredentials(livemode bool) (stripe.Credentials, error)
+ 	return stripe.NewAPIKeyCredentials(key), nil
+ }
+ 
++// ResolveCredentialsForAnyMode resolves credentials for specified mode, but if that
++// doesn't match the OAuth active context, resolves credentials for whichever
++// mode is actually active instead of failing.
++func (p *Profile) ResolveCredentialsForAnyMode(livemode bool) (stripe.Credentials, error) {
++	creds, err := p.ResolveCredentials(livemode)
++	var mismatch *ActiveContextLivemodeMismatchError
++	if errors.As(err, &mismatch) {
++		return p.ResolveCredentials(mismatch.ActiveLivemode)
++	}
++	return creds, err
++}
++
+ // GetSessionCredentials retrieves the session credentials from the keyring
+ func (p *Profile) GetSessionCredentials() (*SessionCredentials, error) {
+ 	key := p.GetConfigField("stripe_cli_session")
+ 	data, err := KeyRing.Get(key)
+ 	if err != nil {
+ 		if errors.Is(err, keyring.ErrKeyNotFound) {
+-			return nil, errors.New("no session")
++			return nil, errorcategory.New(errorcategory.Auth, "no session")
+ 		}
+ 		return nil, err
+ 	}
+@@ -878,7 +890,7 @@ func (p *Profile) GetSessionCredentials() (*SessionCredentials, error) {
+ 	}
+ 
+ 	if creds.AccountID == "" || creds.AccountID != currentAccountID {
+-		return nil, errors.New("found a session, but it doesn't match your current account")
++		return nil, errorcategory.New(errorcategory.Auth, "found a session, but it doesn't match your current account")
+ 	}
+ 
+ 	return &creds, nil
+diff --git a/pkg/config/profile_test.go b/pkg/config/profile_test.go
+index 73a687a..b46adde 100644
+--- a/pkg/config/profile_test.go
++++ b/pkg/config/profile_test.go
+@@ -337,6 +337,27 @@ func TestResolveCredentialsOAKLivemodeMismatchReturnsTypedError(t *testing.T) {
+ 	require.Equal(t, "oak_live_1234567890", creds.Token)
+ }
+ 
++func TestResolveCredentialsForAnyModeRetriesOnLivemodeMismatch(t *testing.T) {
++	profilesFile := filepath.Join(t.TempDir(), "config.toml")
++	require.NoError(t, os.WriteFile(profilesFile, []byte{}, 0600))
++	activeCtxJSON, err := json.Marshal(ActiveContext{AccountID: "acct_live123", Livemode: true})
++	require.NoError(t, err)
++	KeyRing = keyring.NewMemoryStore(map[string][]byte{
++		UATKeychainItemKey:            []byte("oak_live_1234567890"),
++		OAuthActiveContextKeychainKey: activeCtxJSON,
++	})
++	t.Cleanup(func() {
++		KeyRing = nil
++		viper.Reset()
++	})
++	(&Config{LogLevel: "info", ProfilesFile: profilesFile}).InitConfig()
++
++	p := Profile{ProfileName: "default"}
++	creds, err := p.ResolveCredentialsForAnyMode(false)
++	require.NoError(t, err)
++	require.Equal(t, "oak_live_1234567890", creds.Token)
++}
++
+ func helperLoadBytes(t *testing.T, name string) []byte {
+ 	bytes, err := os.ReadFile(name)
+ 	if err != nil {
+diff --git a/pkg/fixtures/fixtures.go b/pkg/fixtures/fixtures.go
+index e59d503..d3b4d2d 100644
+--- a/pkg/fixtures/fixtures.go
++++ b/pkg/fixtures/fixtures.go
+@@ -17,6 +17,7 @@ import (
+ 	"github.com/spf13/afero"
+ 	"github.com/tidwall/gjson"
+ 
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/fsutil"
+ 	"github.com/stripe/stripe-cli/pkg/git"
+ 	"github.com/stripe/stripe-cli/pkg/parsers"
+@@ -130,7 +131,7 @@ func NewFixtureFromFile(fs afero.Fs, creds stripe.Credentials, stripeAccount, ba
+ 	}
+ 
+ 	if fxt.FixtureData.Meta.Version > SupportedVersions {
+-		return nil, fmt.Errorf("Fixture version not supported: %s", fmt.Sprint(fxt.FixtureData.Meta.Version))
++		return nil, errorcategory.Errorf(errorcategory.UserInput, "Fixture version not supported: %s", fmt.Sprint(fxt.FixtureData.Meta.Version))
+ 	}
+ 
+ 	return &fxt, nil
+@@ -153,7 +154,7 @@ func NewFixtureFromRawString(fs afero.Fs, creds stripe.Credentials, stripeAccoun
+ 	}
+ 
+ 	if fxt.FixtureData.Meta.Version > SupportedVersions {
+-		return nil, fmt.Errorf("Fixture version not supported: %s", fmt.Sprint(fxt.FixtureData.Meta.Version))
++		return nil, errorcategory.Errorf(errorcategory.UserInput, "Fixture version not supported: %s", fmt.Sprint(fxt.FixtureData.Meta.Version))
+ 	}
+ 
+ 	return &fxt, nil
+@@ -373,11 +374,11 @@ func (fxt *Fixture) makeRequest(ctx context.Context, data FixtureRequest, apiVer
+ 	}
+ 
+ 	if !stripe.IsValidAPIPath(path) {
+-		return make([]byte, 0), fmt.Errorf("fixture path %q is not a valid Stripe API path (must start with /v1/ or /v2/)", data.Path)
++		return make([]byte, 0), errorcategory.Errorf(errorcategory.UserInput, "fixture path %q is not a valid Stripe API path (must start with /v1/ or /v2/)", data.Path)
+ 	}
+ 
+ 	if fxt.unsupportedAPIKey(path) {
+-		return make([]byte, 0), fmt.Errorf("this trigger must be run with a secret API key (starts with 'sk_')")
++		return make([]byte, 0), errorcategory.Errorf(errorcategory.Auth, "this trigger must be run with a secret API key (starts with 'sk_')")
+ 	}
+ 
+ 	params, err := fxt.createParams(data.Params, apiVersion, path, data.Method)
+diff --git a/pkg/fixtures/triggers.go b/pkg/fixtures/triggers.go
+index f1234b7..263d973 100644
+--- a/pkg/fixtures/triggers.go
++++ b/pkg/fixtures/triggers.go
+@@ -12,6 +12,7 @@ import (
+ 
+ 	"github.com/spf13/afero"
+ 
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ )
+ 
+@@ -297,7 +298,7 @@ func buildEventsMap() map[string]string {
+ func FixtureContents(eventName string) (string, error) {
+ 	path, ok := getEvents()[eventName]
+ 	if !ok {
+-		return "", fmt.Errorf("event %q is not supported", eventName)
++		return "", errorcategory.Errorf(errorcategory.UserInput, "event %q is not supported", eventName)
+ 	}
+ 	f, err := NewFixtureFromFile(nil, stripe.Credentials{}, "", "", path, nil, nil, nil, nil, false)
+ 	if err != nil {
+@@ -365,7 +366,7 @@ func Trigger(ctx context.Context, event string, stripeAccount string, baseURL st
+ 		} else {
+ 			exists, _ := afero.Exists(fs, event)
+ 			if !exists {
+-				return nil, fmt.Errorf("%s", fmt.Sprintf("The event `%s` is not supported by Stripe CLI. To trigger unsupported events, use the Stripe API or Dashboard to perform actions that lead to the event you want to trigger (for example, create a Customer to generate a `customer.created` event). You can also create a custom fixture: https://docs.stripe.com/cli/fixtures", event))
++				return nil, errorcategory.Errorf(errorcategory.UserInput, "%s", fmt.Sprintf("The event `%s` is not supported by Stripe CLI. To trigger unsupported events, use the Stripe API or Dashboard to perform actions that lead to the event you want to trigger (for example, create a Customer to generate a `customer.created` event). You can also create a custom fixture: https://docs.stripe.com/cli/fixtures", event))
+ 			}
+ 
+ 			fixture, err = BuildFromFixtureFile(fs, creds, stripeAccount, baseURL, event, skip, override, add, remove, edit)
+@@ -382,7 +383,7 @@ func Trigger(ctx context.Context, event string, stripeAccount string, baseURL st
+ 
+ 	requestNames, err := fixture.Execute(ctx, apiVersion)
+ 	if err != nil {
+-		return nil, fmt.Errorf("%s", fmt.Sprintf("Trigger failed: %s\n", err))
++		return nil, fmt.Errorf("Trigger failed: %w", err)
+ 	}
+ 
+ 	return requestNames, nil
+diff --git a/pkg/login/access_base.go b/pkg/login/access_base.go
+new file mode 100644
+index 0000000..782611e
+--- /dev/null
++++ b/pkg/login/access_base.go
+@@ -0,0 +1,69 @@
++package login
++
++import (
++	"net/http"
++	"net/url"
++
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
++)
++
++var errInvalidAccessBaseURL = errorcategory.New(errorcategory.UserInput,
++	"invalid access base URL: must be exactly https://access.stripe.com or https://qa-access.stripe.com")
++
++// ValidateAccessBaseURL returns an error unless accessBaseURL is exactly the
++// production or QA access-srv origin.
++//
++// Requests built from this value carry the OAuth user access token
++// (Authorization: Bearer) or the stored refresh token (form body), so unlike
++// --api-base/--dashboard-base there is no dev-host, localhost, or path
++// allowance: any scheme, host, port, userinfo, path, query, or fragment
++// other than these two exact strings risks sending live credentials to an
++// attacker-controlled destination.
++func ValidateAccessBaseURL(accessBaseURL string) error {
++	if accessBaseURL == DefaultAccessBaseURL || accessBaseURL == QAAccessBaseURL {
++		return nil
++	}
++	return errInvalidAccessBaseURL
++}
++
++// accessSrvHTTPClient is used for every request to access-srv. Redirects are
++// disabled: an access-srv redirect response could otherwise cause the
++// Authorization header or POST body (which may carry the OAuth access or
++// refresh token) to be forwarded to a different, redirect-controlled origin.
++var accessSrvHTTPClient = &http.Client{
++	CheckRedirect: func(req *http.Request, via []*http.Request) error {
++		return http.ErrUseLastResponse
++	},
++}
++
++// trustedBrowserHosts returns the hosts that may legitimately appear in a
++// browser URL for the given access-srv origin: the access-srv host itself
++// (device-code verification URIs are hosted there) and the corresponding
++// dashboard host (reauthentication URIs are hosted there).
++func trustedBrowserHosts(accessBaseURL string) []string {
++	if accessBaseURL == QAAccessBaseURL {
++		return []string{"qa-access.stripe.com", "qa-dashboard.stripe.com"}
++	}
++	return []string{"access.stripe.com", "dashboard.stripe.com"}
++}
++
++// validateBrowserURL returns an error unless rawURL is an https URL on a host
++// trusted for accessBaseURL. access-srv responses that embed a browser URL
++// (device-code verification, reauth) are checked here before the CLI
++// displays or opens them, so a compromised or misconfigured access-srv can't
++// redirect the user's browser to an arbitrary destination.
++func validateBrowserURL(rawURL, accessBaseURL string) error {
++	u, err := url.Parse(rawURL)
++	if err != nil {
++		return errorcategory.Errorf(errorcategory.Auth, "access-srv returned an unparseable URL: %s", rawURL)
++	}
++	if u.Scheme != "https" {
++		return errorcategory.Errorf(errorcategory.Auth, "refusing to display or open untrusted URL returned by access-srv: %s", rawURL)
++	}
++	for _, host := range trustedBrowserHosts(accessBaseURL) {
++		if u.Host == host {
++			return nil
++		}
++	}
++	return errorcategory.Errorf(errorcategory.Auth, "refusing to display or open untrusted URL returned by access-srv: %s", rawURL)
++}
+diff --git a/pkg/login/access_base_test.go b/pkg/login/access_base_test.go
+new file mode 100644
+index 0000000..b63317b
+--- /dev/null
++++ b/pkg/login/access_base_test.go
+@@ -0,0 +1,66 @@
++package login
++
++import (
++	"testing"
++
++	"github.com/stretchr/testify/assert"
++)
++
++func TestValidateAccessBaseURL_AllowsExactProdAndQAOrigins(t *testing.T) {
++	assert.NoError(t, ValidateAccessBaseURL(DefaultAccessBaseURL))
++	assert.NoError(t, ValidateAccessBaseURL(QAAccessBaseURL))
++}
++
++func TestValidateAccessBaseURL_RejectsArbitraryBases(t *testing.T) {
++	cases := map[string]string{
++		"http scheme":             "http://access.stripe.com",
++		"userinfo":                "https://attacker@access.stripe.com",
++		"unexpected port":         "https://access.stripe.com:8443",
++		"path suffix":             "https://access.stripe.com/../attacker.com",
++		"query string":            "https://access.stripe.com?redirect=evil.com",
++		"fragment":                "https://access.stripe.com#evil.com",
++		"lookalike host suffix":   "https://access.stripe.com.evil.com",
++		"lookalike host prefix":   "https://evil-access.stripe.com",
++		"arbitrary attacker host": "https://evil.example.com",
++		"trailing slash":          "https://access.stripe.com/",
++		"empty string":            "",
++		"local dev override":      "http://localhost:8080",
++		"qa lookalike":            "https://qa-access.stripe.com.evil.com",
++	}
++
++	for name, base := range cases {
++		t.Run(name, func(t *testing.T) {
++			assert.Error(t, ValidateAccessBaseURL(base))
++		})
++	}
++}
++
++func TestValidateBrowserURL_AllowsMatchingAccessSrvOrDashboardHost(t *testing.T) {
++	// Device-code verification URIs are hosted on access-srv itself.
++	assert.NoError(t, validateBrowserURL("https://access.stripe.com/stripecli/oauth2/device", DefaultAccessBaseURL))
++	assert.NoError(t, validateBrowserURL("https://qa-access.stripe.com/stripecli/oauth2/device", QAAccessBaseURL))
++	// Reauthentication URIs are hosted on the dashboard.
++	assert.NoError(t, validateBrowserURL("https://dashboard.stripe.com/verify", DefaultAccessBaseURL))
++	assert.NoError(t, validateBrowserURL("https://qa-dashboard.stripe.com/verify", QAAccessBaseURL))
++}
++
++func TestValidateBrowserURL_RejectsMismatchedOrUntrustedURLs(t *testing.T) {
++	cases := map[string]struct {
++		url           string
++		accessBaseURL string
++	}{
++		"wrong scheme":               {"http://dashboard.stripe.com/verify", DefaultAccessBaseURL},
++		"arbitrary host":             {"https://evil.example.com/verify", DefaultAccessBaseURL},
++		"qa access used for prod":    {"https://qa-access.stripe.com/verify", DefaultAccessBaseURL},
++		"qa dashboard used for prod": {"https://qa-dashboard.stripe.com/verify", DefaultAccessBaseURL},
++		"prod access used for qa":    {"https://access.stripe.com/verify", QAAccessBaseURL},
++		"prod dashboard used for qa": {"https://dashboard.stripe.com/verify", QAAccessBaseURL},
++		"unparseable URL":            {"https://[::1", DefaultAccessBaseURL},
++	}
++
++	for name, tc := range cases {
++		t.Run(name, func(t *testing.T) {
++			assert.Error(t, validateBrowserURL(tc.url, tc.accessBaseURL))
++		})
++	}
++}
+diff --git a/pkg/login/interactive_login.go b/pkg/login/interactive_login.go
+index 69b7b74..1075db4 100644
+--- a/pkg/login/interactive_login.go
++++ b/pkg/login/interactive_login.go
+@@ -3,7 +3,6 @@ package login
+ import (
+ 	"bufio"
+ 	"context"
+-	"errors"
+ 	"fmt"
+ 	"io"
+ 	"os"
+@@ -15,6 +14,7 @@ import (
+ 
+ 	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login/acct"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/validators"
+@@ -79,7 +79,7 @@ func getConfigureAPIKey(input io.Reader) (string, error) {
+ 
+ 	apiKey = strings.TrimSpace(apiKey)
+ 	if apiKey == "" {
+-		return "", errors.New("API key is required, please provide your API key")
++		return "", errorcategory.New(errorcategory.Auth, "API key is required, please provide your API key")
+ 	}
+ 
+ 	err = validators.APIKey(apiKey)
+diff --git a/pkg/login/keys/polling.go b/pkg/login/keys/polling.go
+index ba656eb..b286ae4 100644
+--- a/pkg/login/keys/polling.go
++++ b/pkg/login/keys/polling.go
+@@ -3,13 +3,12 @@ package keys
+ import (
+ 	"context"
+ 	"encoding/json"
+-	"errors"
+-	"fmt"
+ 	"io"
+ 	"net/http"
+ 	"net/url"
+ 	"time"
+ 
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login/acct"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ )
+@@ -70,7 +69,7 @@ func PollForKey(ctx context.Context, pollURL string, interval time.Duration, max
+ 		res.Body.Close()
+ 
+ 		if res.StatusCode != http.StatusOK {
+-			return nil, nil, fmt.Errorf("unexpected http status code: %d %s", res.StatusCode, string(bodyBytes))
++			return nil, nil, errorcategory.Errorf(errorcategory.API, "unexpected http status code: %d %s", res.StatusCode, string(bodyBytes))
+ 		}
+ 
+ 		jsonErr := json.Unmarshal(bodyBytes, &response)
+@@ -92,5 +91,5 @@ func PollForKey(ctx context.Context, pollURL string, interval time.Duration, max
+ 		time.Sleep(interval)
+ 	}
+ 
+-	return nil, nil, errors.New("exceeded max attempts")
++	return nil, nil, errorcategory.New(errorcategory.Auth, "exceeded max attempts")
+ }
+diff --git a/pkg/login/links.go b/pkg/login/links.go
+index 5839bcb..daccc7e 100644
+--- a/pkg/login/links.go
++++ b/pkg/login/links.go
+@@ -3,11 +3,11 @@ package login
+ import (
+ 	"context"
+ 	"encoding/json"
+-	"fmt"
+ 	"io"
+ 	"net/http"
+ 	"net/url"
+ 
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/version"
+ )
+@@ -60,7 +60,7 @@ func GetLinks(ctx context.Context, baseURL string, deviceName string, machineUUI
+ 	}
+ 
+ 	if res.StatusCode != http.StatusOK {
+-		return nil, false, fmt.Errorf("unexpected http status code: %d %s", res.StatusCode, string(bodyBytes))
++		return nil, false, errorcategory.Errorf(errorcategory.API, "unexpected http status code: %d %s", res.StatusCode, string(bodyBytes))
+ 	}
+ 
+ 	var links Links
+diff --git a/pkg/login/login.go b/pkg/login/login.go
+index 053b3e1..0e0dfee 100644
+--- a/pkg/login/login.go
++++ b/pkg/login/login.go
+@@ -11,6 +11,7 @@ import (
+ 
+ 	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/keyring"
+ 	"github.com/stripe/stripe-cli/pkg/login/keys"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+@@ -95,6 +96,9 @@ func initiateOAuthDeviceLogin(ctx context.Context, accessBaseURL string) error {
+ 	if err != nil {
+ 		return fmt.Errorf("failed to request device code: %w", err)
+ 	}
++	if err := validateBrowserURL(authResp.VerificationURI, accessBaseURL); err != nil {
++		return err
++	}
+ 
+ 	cont := &oauthContinuation{
+ 		DeviceCode:    authResp.DeviceCode,
+@@ -157,6 +161,10 @@ func PollPendingDeviceAuth(ctx context.Context, cfg *config.Config) error {
+ 	// Remove the pending file whether polling succeeds or fails.
+ 	defer clearPendingDeviceAuth()
+ 
++	if err := ValidateAccessBaseURL(cont.AccessBaseURL); err != nil {
++		return err
++	}
++
+ 	clientID := clientIDForAccessBaseURL(cont.AccessBaseURL)
+ 	interval := max(time.Duration(cont.Interval)*time.Second, 5*time.Second)
+ 	expiresIn := max(time.Duration(cont.ExpiresIn)*time.Second, 10*time.Minute)
+@@ -167,7 +175,7 @@ func PollPendingDeviceAuth(ctx context.Context, cfg *config.Config) error {
+ 	tokenResp, err := PollDeviceToken(pollCtx, cont.AccessBaseURL, clientID, cont.DeviceCode, interval)
+ 	if err != nil {
+ 		if pollCtx.Err() != nil {
+-			return fmt.Errorf("device code expired; please run 'stripe login --non-interactive' again")
++			return errorcategory.Errorf(errorcategory.Auth, "device code expired; please run 'stripe login --non-interactive' again")
+ 		}
+ 		return err
+ 	}
+diff --git a/pkg/login/oauth_accounts.go b/pkg/login/oauth_accounts.go
+index 0672646..070bfc2 100644
+--- a/pkg/login/oauth_accounts.go
++++ b/pkg/login/oauth_accounts.go
+@@ -10,6 +10,7 @@ import (
+ 
+ 	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+ type listAccountsResponse struct {
+@@ -29,7 +30,7 @@ func fetchAuthorizedAccounts(ctx context.Context, accessBaseURL, accessToken str
+ 	}
+ 	req.Header.Set("Authorization", "Bearer "+accessToken)
+ 
+-	resp, err := http.DefaultClient.Do(req)
++	resp, err := accessSrvHTTPClient.Do(req)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -41,7 +42,7 @@ func fetchAuthorizedAccounts(ctx context.Context, accessBaseURL, accessToken str
+ 	}
+ 
+ 	if resp.StatusCode != http.StatusOK {
+-		return nil, fmt.Errorf("accounts request failed (status %d): %s", resp.StatusCode, string(body))
++		return nil, errorcategory.Errorf(errorcategory.Auth, "accounts request failed (status %d): %s", resp.StatusCode, string(body))
+ 	}
+ 
+ 	var result listAccountsResponse
+@@ -134,7 +135,7 @@ func pickActiveContext(accounts []config.AuthorizedAccount) (accountID string, l
+ // profile with the active account's display info.
+ func populateProfileFromAccounts(cfg *config.Config, accounts []config.AuthorizedAccount, activeID string, activeLivemode bool) error {
+ 	if len(accounts) == 0 {
+-		return fmt.Errorf("no authorized accounts returned")
++		return errorcategory.Errorf(errorcategory.Auth, "no authorized accounts returned")
+ 	}
+ 
+ 	if err := config.SaveActiveContext(activeID, activeLivemode); err != nil {
+diff --git a/pkg/login/oauth_credentials.go b/pkg/login/oauth_credentials.go
+index c20c625..3c89b40 100644
+--- a/pkg/login/oauth_credentials.go
++++ b/pkg/login/oauth_credentials.go
+@@ -3,13 +3,13 @@ package login
+ import (
+ 	"context"
+ 	"errors"
+-	"fmt"
+ 	"net/http"
+ 	"net/url"
+ 	"strings"
+ 	"time"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/keyring"
+ )
+ 
+@@ -71,14 +71,14 @@ func RevokeToken(ctx context.Context, accessBaseURL string) error {
+ 	}
+ 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+ 
+-	resp, err := http.DefaultClient.Do(req)
++	resp, err := accessSrvHTTPClient.Do(req)
+ 	if err != nil {
+ 		return err
+ 	}
+ 	resp.Body.Close()
+ 
+ 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+-		return fmt.Errorf("token revocation failed (status %d)", resp.StatusCode)
++		return errorcategory.Errorf(errorcategory.Auth, "token revocation failed (status %d)", resp.StatusCode)
+ 	}
+ 	return nil
+ }
+diff --git a/pkg/login/oauth_credentials_test.go b/pkg/login/oauth_credentials_test.go
+index 89a14af..4ff67a5 100644
+--- a/pkg/login/oauth_credentials_test.go
++++ b/pkg/login/oauth_credentials_test.go
+@@ -1,6 +1,9 @@
+ package login
+ 
+ import (
++	"context"
++	"net/http"
++	"net/http/httptest"
+ 	"path/filepath"
+ 	"testing"
+ 
+@@ -120,6 +123,32 @@ func TestClearOAuthCredentials(t *testing.T) {
+ 	assert.Error(t, err, "refresh token should be removed")
+ }
+ 
++func TestRevokeToken_DoesNotFollowRedirectToAttackerHost(t *testing.T) {
++	_, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	var attackerReceivedRefreshToken bool
++	attacker := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		_ = r.ParseForm()
++		if r.FormValue("token") == "oart_secret_refresh" {
++			attackerReceivedRefreshToken = true
++		}
++		w.WriteHeader(http.StatusOK)
++	}))
++	defer attacker.Close()
++
++	accessSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		http.Redirect(w, r, attacker.URL+"/stripecli/oauth2/revoke", http.StatusTemporaryRedirect)
++	}))
++	defer accessSrv.Close()
++
++	require.NoError(t, config.KeyRing.Set(OAuthRefreshTokenKeychainKey, []byte("oart_secret_refresh"), ""))
++
++	err := RevokeToken(context.Background(), accessSrv.URL)
++	require.Error(t, err, "the disabled redirect must surface as a non-2xx/redirect response, not a followed request")
++	assert.False(t, attackerReceivedRefreshToken, "the refresh token must never reach a redirect-controlled host")
++}
++
+ func TestClearOAuthCredentials_NoExistingTokens(t *testing.T) {
+ 	cfg, cleanup := setupOAuthTestConfig(t)
+ 	defer cleanup()
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index 8ec4b8d..f825d55 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -13,6 +13,7 @@ import (
+ 
+ 	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+ const (
+@@ -84,7 +85,7 @@ func RequestDeviceCode(ctx context.Context, accessBaseURL, clientID string) (*De
+ 	}
+ 
+ 	if resp.StatusCode != http.StatusOK {
+-		return nil, fmt.Errorf("device authorization request failed (status %d): %s", resp.StatusCode, string(body))
++		return nil, errorcategory.Errorf(errorcategory.Auth, "device authorization request failed (status %d): %s", resp.StatusCode, string(body))
+ 	}
+ 
+ 	var authResp DeviceAuthResponse
+@@ -134,7 +135,7 @@ func PollDeviceToken(ctx context.Context, accessBaseURL, clientID, deviceCode st
+ 
+ 		var errResp tokenErrorResponse
+ 		if jsonErr := json.Unmarshal(body, &errResp); jsonErr != nil || errResp.Error == "" {
+-			return nil, fmt.Errorf("token request failed (status %d): %s", resp.StatusCode, string(body))
++			return nil, errorcategory.Errorf(errorcategory.Auth, "token request failed (status %d): %s", resp.StatusCode, string(body))
+ 		}
+ 
+ 		oauthErr := &OAuthError{Code: errResp.Error, Description: errResp.ErrorDescription, HTTPStatus: resp.StatusCode}
+@@ -174,6 +175,9 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 	if err != nil {
+ 		return fmt.Errorf("failed to request device code: %w", err)
+ 	}
++	if err := validateBrowserURL(authResp.VerificationURI, accessBaseURL); err != nil {
++		return err
++	}
+ 
+ 	color := ansi.Color(os.Stdout)
+ 	fmt.Printf("Your pairing code is: %s\n", color.Bold(authResp.UserCode))
+@@ -198,7 +202,7 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 	tokenResp, err := PollDeviceToken(pollCtx, accessBaseURL, clientID, authResp.DeviceCode, interval)
+ 	if err != nil {
+ 		if pollCtx.Err() != nil {
+-			return fmt.Errorf("device code expired; please run 'stripe login' again")
++			return errorcategory.Errorf(errorcategory.Auth, "device code expired; please run 'stripe login' again")
+ 		}
+ 		return err
+ 	}
+@@ -335,7 +339,7 @@ func RefreshAccessToken(ctx context.Context, accessBaseURL, clientID, refreshTok
+ 		return nil, &OAuthError{Code: errResp.Error, Description: errResp.ErrorDescription, HTTPStatus: resp.StatusCode}
+ 	}
+ 
+-	return nil, fmt.Errorf("refresh token request failed (status %d): %s", resp.StatusCode, string(body))
++	return nil, errorcategory.Errorf(errorcategory.Auth, "refresh token request failed (status %d): %s", resp.StatusCode, string(body))
+ }
+ 
+ func doPostForm(ctx context.Context, endpoint string, data url.Values) (*http.Response, error) {
+@@ -344,5 +348,5 @@ func doPostForm(ctx context.Context, endpoint string, data url.Values) (*http.Re
+ 		return nil, err
+ 	}
+ 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+-	return http.DefaultClient.Do(req)
++	return accessSrvHTTPClient.Do(req)
+ }
+diff --git a/pkg/login/oauth_device_test.go b/pkg/login/oauth_device_test.go
+index 7c0a78d..a9636ae 100644
+--- a/pkg/login/oauth_device_test.go
++++ b/pkg/login/oauth_device_test.go
+@@ -241,7 +241,7 @@ func TestLoginWithDeviceCodeFailsWhenAccountsFetchFails(t *testing.T) {
+ 			json.NewEncoder(w).Encode(DeviceAuthResponse{ //nolint:errcheck
+ 				DeviceCode:      "device-code",
+ 				UserCode:        "ABCD-EFGH",
+-				VerificationURI: "https://example.com/verify",
++				VerificationURI: "https://dashboard.stripe.com/verify",
+ 				ExpiresIn:       30,
+ 				Interval:        1,
+ 			})
+diff --git a/pkg/login/oauth_pending.go b/pkg/login/oauth_pending.go
+index f64ae1e..ebaa487 100644
+--- a/pkg/login/oauth_pending.go
++++ b/pkg/login/oauth_pending.go
+@@ -8,6 +8,7 @@ import (
+ 	"path/filepath"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+ // oauthContinuation holds the data needed to poll for an OAuth device token.
+@@ -39,7 +40,7 @@ func loadPendingDeviceAuth() (*oauthContinuation, error) {
+ 	data, err := os.ReadFile(pendingDeviceAuthPath())
+ 	if err != nil {
+ 		if errors.Is(err, os.ErrNotExist) {
+-			return nil, errors.New("no pending OAuth login found; run 'stripe login --non-interactive' first")
++			return nil, errorcategory.New(errorcategory.UserInput, "no pending OAuth login found; run 'stripe login --non-interactive' first")
+ 		}
+ 		return nil, err
+ 	}
+diff --git a/pkg/login/oauth_reauth.go b/pkg/login/oauth_reauth.go
+index 6dd11d8..b65cc81 100644
+--- a/pkg/login/oauth_reauth.go
++++ b/pkg/login/oauth_reauth.go
+@@ -8,6 +8,8 @@ import (
+ 	"net/http"
+ 	"os"
+ 	"strings"
++
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+ const reauthPath = accessAPNPath + "/token/reauth"
+@@ -24,6 +26,9 @@ func Reauth(ctx context.Context, accessBaseURL, accessToken string) error {
+ 	if err != nil {
+ 		return err
+ 	}
++	if err := validateBrowserURL(reauthURL, accessBaseURL); err != nil {
++		return err
++	}
+ 
+ 	if !isSSH() && canOpenBrowser() {
+ 		fmt.Println("Opening the Stripe Dashboard to re-authorize the CLI...")
+@@ -45,7 +50,7 @@ func fetchReauthURL(ctx context.Context, accessBaseURL, accessToken string) (str
+ 	}
+ 	req.Header.Set("Authorization", "Bearer "+accessToken)
+ 
+-	resp, err := http.DefaultClient.Do(req)
++	resp, err := accessSrvHTTPClient.Do(req)
+ 	if err != nil {
+ 		return "", err
+ 	}
+@@ -63,14 +68,14 @@ func fetchReauthURL(ctx context.Context, accessBaseURL, accessToken string) (str
+ 			return "", fmt.Errorf("failed to parse reauth response: %w", err)
+ 		}
+ 		if r.ReauthURL == "" {
+-			return "", fmt.Errorf("reauth response missing reauth_url")
++			return "", errorcategory.Errorf(errorcategory.Auth, "reauth response missing reauth_url")
+ 		}
+ 		return r.ReauthURL, nil
+ 	case http.StatusUnauthorized:
+-		return "", fmt.Errorf("session expired or revoked; run 'stripe login' to authenticate again")
++		return "", errorcategory.Errorf(errorcategory.Auth, "session expired or revoked; run 'stripe login' to authenticate again")
+ 	case http.StatusBadRequest:
+-		return "", fmt.Errorf("invalid reauth request (invalid_request); check your configuration")
++		return "", errorcategory.Errorf(errorcategory.Auth, "invalid reauth request (invalid_request); check your configuration")
+ 	default:
+-		return "", fmt.Errorf("reauth request failed (status %d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
++		return "", errorcategory.Errorf(errorcategory.Auth, "reauth request failed (status %d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
+ 	}
+ }
+diff --git a/pkg/login/oauth_refresh.go b/pkg/login/oauth_refresh.go
+index 411eead..f3c4370 100644
+--- a/pkg/login/oauth_refresh.go
++++ b/pkg/login/oauth_refresh.go
+@@ -10,6 +10,7 @@ import (
+ 	"time"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/keyring"
+ )
+ 
+@@ -22,13 +23,13 @@ func init() {
+ // the next ResolveCredentials call surfaces an actionable re-login error.
+ func refreshOAuthToken(p *config.Profile) error {
+ 	if config.KeyRing == nil {
+-		return errors.New("keyring unavailable; run 'stripe login' to re-authenticate")
++		return errorcategory.New(errorcategory.Auth, "keyring unavailable; run 'stripe login' to re-authenticate")
+ 	}
+ 
+ 	refreshTokenBytes, err := config.KeyRing.Get(config.OAuthRefreshTokenKeychainKey)
+ 	if err != nil {
+ 		if errors.Is(err, keyring.ErrKeyNotFound) {
+-			return errors.New("session expired; run 'stripe login' to re-authenticate")
++			return errorcategory.New(errorcategory.Auth, "session expired; run 'stripe login' to re-authenticate")
+ 		}
+ 		return err
+ 	}
+@@ -47,7 +48,7 @@ func refreshOAuthToken(p *config.Profile) error {
+ 			// clear "run stripe login" error on the next attempt rather than an
+ 			// opaque 401 from the Stripe API.
+ 			_ = clearOAuthCredentialsForProfile(p)
+-			return errors.New("session expired; run 'stripe login' to re-authenticate")
++			return errorcategory.New(errorcategory.Auth, "session expired; run 'stripe login' to re-authenticate")
+ 		}
+ 		return fmt.Errorf("failed to refresh session: %w", err)
+ 	}
+@@ -103,7 +104,7 @@ func doRefreshToken(ctx context.Context, accessBaseURL, clientID, refreshToken s
+ 		if jsonErr := json.Unmarshal(body, &errResp); jsonErr == nil && errResp.Error != "" {
+ 			return nil, &OAuthError{Code: errResp.Error, Description: errResp.ErrorDescription, HTTPStatus: resp.StatusCode}
+ 		}
+-		return nil, fmt.Errorf("token refresh failed (status %d)", resp.StatusCode)
++		return nil, errorcategory.Errorf(errorcategory.Auth, "token refresh failed (status %d)", resp.StatusCode)
+ 	}
+ 
+ 	var tokenResp OAuthTokenResponse
+diff --git a/pkg/login/switch_context.go b/pkg/login/switch_context.go
+index 1d108ad..f6ccd66 100644
+--- a/pkg/login/switch_context.go
++++ b/pkg/login/switch_context.go
+@@ -9,6 +9,7 @@ import (
+ 	"charm.land/lipgloss/v2"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+ // SwitchContext updates the active OAuth context. If accountID is non-empty
+@@ -20,7 +21,7 @@ func SwitchContext(ctx context.Context, accessBaseURL string, cfg *config.Config
+ 		return err
+ 	}
+ 	if !strings.HasPrefix(uat, "oak_") {
+-		return fmt.Errorf("not logged in with OAuth; run 'stripe login' first")
++		return errorcategory.Errorf(errorcategory.Auth, "not logged in with OAuth; run 'stripe login' first")
+ 	}
+ 
+ 	accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, uat)
+@@ -49,11 +50,11 @@ func switchByID(cfg *config.Config, accounts []config.AuthorizedAccount, account
+ 			}
+ 		}
+ 		if livemode {
+-			return fmt.Errorf("account %s is not authorized for livemode", accountID)
++			return errorcategory.Errorf(errorcategory.Auth, "account %s is not authorized for livemode", accountID)
+ 		}
+-		return fmt.Errorf("account %s is not authorized for test mode; use --live to switch to livemode", accountID)
++		return errorcategory.Errorf(errorcategory.Auth, "account %s is not authorized for test mode; use --live to switch to livemode", accountID)
+ 	}
+-	return fmt.Errorf("account %s not found in your authorized accounts", accountID)
++	return errorcategory.Errorf(errorcategory.Auth, "account %s not found in your authorized accounts", accountID)
+ }
+ 
+ func applyContext(cfg *config.Config, account config.AuthorizedAccount, mode string) error {
+@@ -249,7 +250,7 @@ func (m switchContextModel) View() tea.View {
+ 
+ func runSwitchContextTUI(cfg *config.Config, accounts []config.AuthorizedAccount) error {
+ 	if len(accounts) == 0 {
+-		return fmt.Errorf("no authorized accounts found")
++		return errorcategory.Errorf(errorcategory.Auth, "no authorized accounts found")
+ 	}
+ 	m := newSwitchContextModel(accounts)
+ 
+@@ -270,5 +271,5 @@ func runSwitchContextTUI(cfg *config.Config, accounts []config.AuthorizedAccount
+ 			return applyContext(cfg, a, sel.mode)
+ 		}
+ 	}
+-	return fmt.Errorf("selected account not found")
++	return errorcategory.Errorf(errorcategory.Auth, "selected account not found")
+ }
+diff --git a/pkg/proxy/proxy.go b/pkg/proxy/proxy.go
+index 836d126..d5d405e 100644
+--- a/pkg/proxy/proxy.go
++++ b/pkg/proxy/proxy.go
+@@ -3,7 +3,6 @@ package proxy
+ import (
+ 	"context"
+ 	"encoding/json"
+-	"errors"
+ 	"fmt"
+ 	"io"
+ 	"net/http"
+@@ -17,6 +16,7 @@ import (
+ 
+ 	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/requests"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/stripeauth"
+@@ -162,7 +162,7 @@ func (p *Proxy) Run(ctx context.Context) error {
+ 		session, err := p.createSession(ctx)
+ 		if err != nil {
+ 			p.cfg.OutCh <- websocket.ErrorElement{
+-				Error: fmt.Errorf("Error while authenticating with Stripe: %v", err),
++				Error: errorcategory.Errorf(errorcategory.Auth, "Error while authenticating with Stripe: %v", err),
+ 			}
+ 			return err
+ 		}
+@@ -212,7 +212,7 @@ func (p *Proxy) Run(ctx context.Context) error {
+ 					State: websocket.Reconnecting,
+ 				}
+ 			} else {
+-				err := fmt.Errorf("session expired, terminating after %d failed attempts to reauthorize", nAttempts)
++				err := errorcategory.Errorf(errorcategory.Auth, "session expired, terminating after %d failed attempts to reauthorize", nAttempts)
+ 				p.cfg.OutCh <- websocket.ErrorElement{
+ 					Error: err,
+ 				}
+@@ -288,7 +288,7 @@ func (p *Proxy) createSession(ctx context.Context) (*stripeauth.StripeCLISession
+ 
+ 			if clientError, ok := stripeauth.IsAuthorizationClientError(err); ok {
+ 				if clientError.StatusCode == http.StatusTooManyRequests {
+-					err = errors.New("you have too many `stripe listen` sessions open, please close some and try again")
++					err = errorcategory.New(errorcategory.API, "you have too many `stripe listen` sessions open, please close some and try again")
+ 				}
+ 				exitCh <- struct{}{}
+ 				return
+@@ -340,13 +340,13 @@ func Init(ctx context.Context, cfg *Config) (*Proxy, error) {
+ 	// validate forward-urls args
+ 	if cfg.UseConfiguredWebhooks && len(cfg.ForwardURL) > 0 {
+ 		if strings.HasPrefix(cfg.ForwardURL, "/") {
+-			return nil, errors.New("forward_to cannot be a relative path when loading webhook endpoints from the API")
++			return nil, errorcategory.New(errorcategory.UserInput, "forward_to cannot be a relative path when loading webhook endpoints from the API")
+ 		}
+ 		if strings.HasPrefix(cfg.ForwardConnectURL, "/") {
+-			return nil, errors.New("forward_connect_to cannot be a relative path when loading webhook endpoints from the API")
++			return nil, errorcategory.New(errorcategory.UserInput, "forward_connect_to cannot be a relative path when loading webhook endpoints from the API")
+ 		}
+ 	} else if cfg.UseConfiguredWebhooks && len(cfg.ForwardURL) == 0 {
+-		return nil, errors.New("load_from_webhooks_api requires a location to forward to with forward_to")
++		return nil, errorcategory.New(errorcategory.UserInput, "load_from_webhooks_api requires a location to forward to with forward_to")
+ 	}
+ 
+ 	// if no events are passed, listen for all events
+@@ -393,7 +393,7 @@ func Init(ctx context.Context, cfg *Config) (*Proxy, error) {
+ 		// build from user's API config
+ 		endpoints := getEndpointsFromAPI(ctx, cfg.Client)
+ 		if len(endpoints.Data) == 0 {
+-			return nil, errors.New("you have not defined any webhook endpoints on your account, go to the Stripe Dashboard to add some: https://dashboard.stripe.com/test/webhooks")
++			return nil, errorcategory.New(errorcategory.UserInput, "you have not defined any webhook endpoints on your account, go to the Stripe Dashboard to add some: https://dashboard.stripe.com/test/webhooks")
+ 		}
+ 		var err error
+ 		endpointRoutes, err = buildEndpointRoutes(endpoints, parseURL(cfg.ForwardURL), parseURL(cfg.ForwardConnectURL), cfg.ForwardHeaders, cfg.ForwardConnectHeaders)
+@@ -493,7 +493,7 @@ func ExtractRequestData(data interface{}) (StripeRequest, error) {
+ 		return StripeRequest{}, nil
+ 	}
+ 
+-	return StripeRequest{}, errors.New("received malformed event from Stripe")
++	return StripeRequest{}, errorcategory.New(errorcategory.API, "received malformed event from Stripe")
+ }
+ 
+ //
+@@ -634,7 +634,7 @@ func buildEndpointRoutes(endpoints requests.WebhookEndpointList, forwardURL, for
+ func buildForwardURL(forwardURL string, destination *url.URL) (string, error) {
+ 	f, err := url.Parse(forwardURL)
+ 	if err != nil {
+-		return "", fmt.Errorf("provided forward url cannot be parsed: %s", forwardURL)
++		return "", errorcategory.Errorf(errorcategory.UserInput, "provided forward url cannot be parsed: %s", forwardURL)
+ 	}
+ 
+ 	newForwardURL := fmt.Sprintf(
+diff --git a/pkg/requests/base.go b/pkg/requests/base.go
+index bbf3b1e..4402121 100644
+--- a/pkg/requests/base.go
++++ b/pkg/requests/base.go
+@@ -149,7 +149,7 @@ func (rb *Base) RunRequestsCmd(cmd *cobra.Command, args []string) error {
+ 	rb.Profile.PrintActiveContextBanner()
+ 
+ 	if len(args) > 1 {
+-		return fmt.Errorf("this command only supports one argument. Run with the --help flag to see usage and examples")
++		return errorcategory.Errorf(errorcategory.UserInput, "this command only supports one argument. Run with the --help flag to see usage and examples")
+ 	}
+ 
+ 	if len(args) == 0 {
+@@ -527,7 +527,7 @@ func parseV1DataForDryRun(data []string) (map[string]interface{}, error) {
+ 	for _, datum := range data {
+ 		split := strings.SplitN(datum, "=", 2)
+ 		if len(split) < 2 {
+-			return nil, fmt.Errorf("invalid data argument: %s", datum)
++			return nil, errorcategory.Errorf(errorcategory.UserInput, "invalid data argument: %s", datum)
+ 		}
+ 		setNestedValue(result, split[0], split[1])
+ 	}
+@@ -662,11 +662,11 @@ func createV1Params(requestParams *RequestParameters, additionalParams map[strin
+ 	for _, datum := range requestParams.data {
+ 		split := strings.SplitN(datum, "=", 2)
+ 		if len(split) < 2 {
+-			return nil, fmt.Errorf("invalid data argument: %s", datum)
++			return nil, errorcategory.Errorf(errorcategory.UserInput, "invalid data argument: %s", datum)
+ 		}
+ 
+ 		if _, ok := additionalParams[split[0]]; ok {
+-			return nil, fmt.Errorf("flag %q already set", split[0])
++			return nil, errorcategory.Errorf(errorcategory.UserInput, "flag %q already set", split[0])
+ 		}
+ 
+ 		dataFlagParams = append(dataFlagParams, datum)
+@@ -708,7 +708,7 @@ func (rb *Base) BuildDataForRequest(params *RequestParameters) (string, error) {
+ 			splitDatum := strings.SplitN(datum, "=", 2)
+ 
+ 			if len(splitDatum) < 2 {
+-				return "", fmt.Errorf("invalid data argument: %s", datum)
++				return "", errorcategory.Errorf(errorcategory.UserInput, "invalid data argument: %s", datum)
+ 			}
+ 
+ 			keys = append(keys, splitDatum[0])
+@@ -792,7 +792,7 @@ func BuildDataForV2Request(method string, path string, data []string, additional
+ 	return params, nil
+ }
+ 
+-var errJSONDataFlagInvalid = errors.New("v2 API takes a single 'data' param containing a full JSON string")
++var errJSONDataFlagInvalid = errorcategory.New(errorcategory.UserInput, "v2 API takes a single 'data' param containing a full JSON string")
+ 
+ func parseJSONDataFlag(data []string) (map[string]interface{}, error) {
+ 	dataFlagParams := make(map[string]interface{})
+@@ -807,7 +807,7 @@ func parseJSONDataFlag(data []string) (map[string]interface{}, error) {
+ 	}
+ 
+ 	if err := json.Unmarshal([]byte(jsonData), &dataFlagParams); err != nil {
+-		return nil, fmt.Errorf("data is invalid json: %s", data)
++		return nil, errorcategory.Errorf(errorcategory.UserInput, "data is invalid json: %s", data)
+ 	}
+ 
+ 	return dataFlagParams, nil
+@@ -844,7 +844,7 @@ func (rb *Base) buildMultiPartRequest(params *RequestParameters) (*bytes.Buffer,
+ 		splitDatum := strings.SplitN(datum, "=", 2)
+ 
+ 		if len(splitDatum) < 2 {
+-			return nil, "", fmt.Errorf("invalid data argument: %s", datum)
++			return nil, "", errorcategory.Errorf(errorcategory.UserInput, "invalid data argument: %s", datum)
+ 		}
+ 
+ 		key := splitDatum[0]
+@@ -965,7 +965,7 @@ func createOrNormalizePath(arg string) (string, error) {
+ 			return path + arg, nil
+ 		}
+ 
+-		return "", fmt.Errorf("unrecognized object id: %s", arg)
++		return "", errorcategory.Errorf(errorcategory.UserInput, "unrecognized object id: %s", arg)
+ 	}
+ 
+ 	return normalizePath(arg), nil
+@@ -998,6 +998,6 @@ func toString(value interface{}) (string, error) {
+ 	case reflect.Bool:
+ 		return strconv.FormatBool(val.Bool()), nil
+ 	default:
+-		return "", fmt.Errorf("unsupported query param type: %s", val.Kind().String())
++		return "", errorcategory.Errorf(errorcategory.UserInput, "unsupported query param type: %s", val.Kind().String())
+ 	}
+ }
+diff --git a/pkg/requests/plugin.go b/pkg/requests/plugin.go
+index f357ff4..8c677ff 100644
+--- a/pkg/requests/plugin.go
++++ b/pkg/requests/plugin.go
+@@ -3,7 +3,6 @@ package requests
+ import (
+ 	"context"
+ 	"encoding/json"
+-	"errors"
+ 	"fmt"
+ 	"net/http"
+ 
+@@ -13,24 +12,6 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ )
+ 
+-// resolveCredentialsForAnyMode resolves credentials for livemode, but if that
+-// doesn't match the OAuth active context, resolves credentials for whichever
+-// mode is actually active instead of failing. Plugin metadata/list requests
+-// don't expose their own mode selection, so any usable credential will do.
+-func resolveCredentialsForAnyMode(profile *config.Profile, livemode bool, apiKey string) stripe.Credentials {
+-	creds, err := profile.ResolveCredentials(livemode)
+-	var mismatch *config.ActiveContextLivemodeMismatchError
+-	if errors.As(err, &mismatch) {
+-		if retried, retryErr := profile.ResolveCredentials(mismatch.ActiveLivemode); retryErr == nil {
+-			return retried
+-		}
+-	}
+-	if err != nil {
+-		return stripe.NewAPIKeyCredentials(apiKey)
+-	}
+-	return creds
+-}
+-
+ // PluginMetadata contains plugin-specific manifest and binary information.
+ type PluginMetadata struct {
+ 	BinaryURL      string `json:"binary_url"`
+@@ -90,7 +71,10 @@ func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVer
+ 		APIBaseURL:     metadataBaseURL,
+ 	}
+ 
+-	resolvedCreds := resolveCredentialsForAnyMode(profile, base.Livemode, apiKey)
++	resolvedCreds, err := profile.ResolveCredentialsForAnyMode(base.Livemode)
++	if err != nil {
++		resolvedCreds = stripe.NewAPIKeyCredentials(apiKey)
++	}
+ 
+ 	resp, err := base.MakeRequest(ctx, resolvedCreds, metadataPath, params, map[string]interface{}{
+ 		"plugin":  pluginName,
+@@ -137,7 +121,10 @@ func GetPluginList(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVersion
+ 		APIBaseURL:     listBaseURL,
+ 	}
+ 
+-	resolvedCreds := resolveCredentialsForAnyMode(profile, base.Livemode, apiKey)
++	resolvedCreds, err := profile.ResolveCredentialsForAnyMode(base.Livemode)
++	if err != nil {
++		resolvedCreds = stripe.NewAPIKeyCredentials(apiKey)
++	}
+ 
+ 	resp, err := base.MakeRequest(ctx, resolvedCreds, listPath, params, map[string]interface{}{
+ 		"os":   os,
+diff --git a/pkg/requests/webhook_endpoints.go b/pkg/requests/webhook_endpoints.go
+index 191c884..00ae22a 100644
+--- a/pkg/requests/webhook_endpoints.go
++++ b/pkg/requests/webhook_endpoints.go
+@@ -8,6 +8,7 @@ import (
+ 	"strings"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ )
+ 
+@@ -70,7 +71,7 @@ func WebhookEndpointsListWithClient(ctx context.Context, client stripe.RequestPe
+ // WebhookEndpointCreate creates a new webhook endpoint
+ func WebhookEndpointCreate(ctx context.Context, baseURL, apiVersion, url, description string, connect bool, profile *config.Profile) error {
+ 	if strings.TrimSpace(url) == "" {
+-		return fmt.Errorf("url cannot be empty")
++		return errorcategory.Errorf(errorcategory.UserInput, "url cannot be empty")
+ 	}
+ 
+ 	data := []string{
+diff --git a/pkg/rpcservice/listen.go b/pkg/rpcservice/listen.go
+index e54b7f1..dc14b2d 100644
+--- a/pkg/rpcservice/listen.go
++++ b/pkg/rpcservice/listen.go
+@@ -2,7 +2,6 @@ package rpcservice
+ 
+ import (
+ 	"context"
+-	"fmt"
+ 	"net/http"
+ 	"net/url"
+ 
+@@ -11,6 +10,7 @@ import (
+ 	"google.golang.org/grpc/status"
+ 	"google.golang.org/protobuf/types/known/structpb"
+ 
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/proxy"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/websocket"
+@@ -139,7 +139,7 @@ func createProxyVisitor(stream *rpc.StripeCLI_ListenServer) *websocket.Visitor {
+ 				(*stream).Send(resp)
+ 				return nil
+ 			default:
+-				return fmt.Errorf("VisitData received unexpected type for DataElement, got %T", de)
++				return errorcategory.Errorf(errorcategory.Internal, "VisitData received unexpected type for DataElement, got %T", de)
+ 			}
+ 		},
+ 		VisitStatus: func(se websocket.StateElement) error {
+@@ -181,7 +181,7 @@ func buildEndpointResponseResp(raw *proxy.EndpointResponse) (*rpc.ListenResponse
+ 			},
+ 		}, nil
+ 	}
+-	return nil, fmt.Errorf("received unexpected endpoint response")
++	return nil, errorcategory.Errorf(errorcategory.API, "received unexpected endpoint response")
+ }
+ 
+ func buildEndpointResponseErrorResp(raw error) *rpc.ListenResponse {
+diff --git a/pkg/stripe/analytics_telemetry.go b/pkg/stripe/analytics_telemetry.go
+index 6fcf7ad..3258f3e 100644
+--- a/pkg/stripe/analytics_telemetry.go
++++ b/pkg/stripe/analytics_telemetry.go
+@@ -50,7 +50,8 @@ type CLIAnalyticsEventMetadata struct {
+ 	MachineUUID       string `url:"machine_uuid,omitempty"`     // the persistent machine UUID
+ 	GeneratedResource bool   `url:"generated_resource"`         // whether or not this was a generated resource
+ 	AIAgent           string `url:"ai_agent,omitempty"`         // the AI coding agent that invoked the CLI, if any
+-	AgentHostKind     string `url:"agent_host_kind,omitempty"`  // where the agent ran: desktop, terminal, ide, remote, sdk, mcp, chat, ci, or other
++	AgentHostKind     string `url:"agent_host_kind,omitempty"`  // where the agent ran: desktop, terminal, ide, remote, sdk, mcp, or other
++	AgentHostRaw      string `url:"agent_host_raw,omitempty"`   // the normalized host underneath agent_host_kind, so a coarsely mapped or unmapped host stays recoverable
+ 	AgentVersion      string `url:"agent_version,omitempty"`    // the agent's own version, when it reports one
+ 	InstallMethod     string `url:"install_method,omitempty"`   // how the CLI was installed
+ 	InTmux            bool   `url:"in_tmux"`                    // whether the CLI was invoked from within tmux
+@@ -81,13 +82,16 @@ type NoOpTelemetryClient struct {
+ 
+ // NewEventMetadata initializes an instance of CLIAnalyticsEventContext
+ func NewEventMetadata() *CLIAnalyticsEventMetadata {
++	agentHostKind, agentHostRaw := useragent.DetectAgentHost(os.Getenv)
++
+ 	return &CLIAnalyticsEventMetadata{
+ 		InvocationID:  uuid.NewString(),
+ 		CLIVersion:    version.Version,
+ 		OS:            runtime.GOOS,
+ 		Arch:          runtime.GOARCH,
+ 		AIAgent:       useragent.DetectAIAgent(os.Getenv),
+-		AgentHostKind: useragent.DetectAgentHostKind(os.Getenv),
++		AgentHostKind: agentHostKind,
++		AgentHostRaw:  agentHostRaw,
+ 		AgentVersion:  useragent.DetectAgentVersion(os.Getenv),
+ 		InstallMethod: useragent.DetectInstallMethod(
+ 			os.Getenv,
+diff --git a/pkg/stripe/analytics_telemetry_test.go b/pkg/stripe/analytics_telemetry_test.go
+index c3e8f71..2629d44 100644
+--- a/pkg/stripe/analytics_telemetry_test.go
++++ b/pkg/stripe/analytics_telemetry_test.go
+@@ -260,6 +260,7 @@ func TestSendEvent_OmitsUnsetAgentFields(t *testing.T) {
+ 		bodyString := string(body)
+ 		require.NotContains(t, bodyString, "agent_version")
+ 		require.NotContains(t, bodyString, "agent_host_kind")
++		require.NotContains(t, bodyString, "agent_host_raw")
+ 	}))
+ 	defer ts.Close()
+ 	baseURL, _ := url.Parse(ts.URL)
+@@ -394,4 +395,17 @@ func TestNewEventMetadata_FromObservedDesktopSession(t *testing.T) {
+ 	require.Equal(t, "claude_code", tel.AIAgent)
+ 	require.Equal(t, "desktop", tel.AgentHostKind)
+ 	require.Equal(t, "2.1.227", tel.AgentVersion)
++	require.Equal(t, "claude-desktop", tel.AgentHostRaw)
++}
++
++func TestNewEventMetadata_ReportsRawHostWhenUncategorized(t *testing.T) {
++	// The debugging case: a host neither vendor had shipped when this CLI was released.
++	// The category cannot identify it; the raw value can.
++	clearAgentEnv(t)
++	t.Setenv("CLAUDECODE", "1")
++	t.Setenv("CLAUDE_CODE_ENTRYPOINT", "some-future-surface")
++
++	tel := stripe.NewEventMetadata()
++	require.Equal(t, "other", tel.AgentHostKind)
++	require.Equal(t, "some-future-surface", tel.AgentHostRaw)
+ }
+diff --git a/pkg/stripe/client.go b/pkg/stripe/client.go
+index 1dc3417..7468b73 100644
+--- a/pkg/stripe/client.go
++++ b/pkg/stripe/client.go
+@@ -218,10 +218,20 @@ func sendTelemetryEvent(ctx context.Context, requestID string, livemode bool) {
+ 	}
+ }
+ 
++func expandUnixSocket(path string) string {
++	if strings.HasPrefix(path, "~/") {
++		if home, err := os.UserHomeDir(); err == nil {
++			return home + path[1:]
++		}
++	}
++	return path
++}
++
+ func newHTTPClient(verbose bool, printableHeaders []string, unixSocket string) *http.Client {
+ 	var httpTransport http.RoundTripper
+ 
+ 	if unixSocket != "" {
++		unixSocket = expandUnixSocket(unixSocket)
+ 		dialFunc := func(network, addr string) (net.Conn, error) {
+ 			return net.Dial("unix", unixSocket)
+ 		}
+diff --git a/pkg/stripe/url.go b/pkg/stripe/url.go
+index 4a948d6..39b60d0 100644
+--- a/pkg/stripe/url.go
++++ b/pkg/stripe/url.go
+@@ -1,10 +1,11 @@
+ package stripe
+ 
+ import (
+-	"errors"
+ 	"net/url"
+ 	"regexp"
+ 	"strings"
++
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ )
+ 
+ const (
+@@ -27,8 +28,8 @@ const (
+ )
+ 
+ var (
+-	errInvalidAPIBaseURL       = errors.New("invalid API base URL")
+-	errInvalidDashboardBaseURL = errors.New("invalid dashboard base URL")
++	errInvalidAPIBaseURL       = errorcategory.New(errorcategory.UserInput, "invalid API base URL")
++	errInvalidDashboardBaseURL = errorcategory.New(errorcategory.UserInput, "invalid dashboard base URL")
+ )
+ 
+ func isValid(url string, exactStrings []string, regexpStrings []string) bool {
+diff --git a/pkg/websocket/client.go b/pkg/websocket/client.go
+index 76eb3ed..de0fe98 100644
+--- a/pkg/websocket/client.go
++++ b/pkg/websocket/client.go
+@@ -2,12 +2,15 @@
+ package websocket
+ 
+ import (
++	"bufio"
+ 	"context"
++	"crypto/tls"
+ 	"encoding/json"
+-	"errors"
++	"fmt"
+ 	"io"
+ 	"net"
+ 	"net/http"
++	"net/url"
+ 	"os"
+ 	"strings"
+ 	"sync"
+@@ -16,6 +19,7 @@ import (
+ 	ws "github.com/gorilla/websocket"
+ 	log "github.com/sirupsen/logrus"
+ 
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/useragent"
+ )
+ 
+@@ -277,7 +281,7 @@ func readWSConnectErrorMessage(resp *http.Response) string {
+ var unknownIDMessage = "Unknown WebSocket ID."
+ 
+ // ErrUnknownID can occur when the websocket session is expired or invalid
+-var ErrUnknownID = errors.New(unknownIDMessage)
++var ErrUnknownID = errorcategory.New(errorcategory.Network, unknownIDMessage)
+ 
+ // connect makes a single attempt to connect to the websocket URL. It returns
+ // the success of the attempt.
+@@ -637,25 +641,110 @@ var nullEventHandler = EventHandlerFunc(func(IncomingMessage) {})
+ // Private functions
+ //
+ 
++func expandUnixSocket(path string) string {
++	if strings.HasPrefix(path, "~/") {
++		if home, err := os.UserHomeDir(); err == nil {
++			return home + path[1:]
++		}
++	}
++	return path
++}
++
++// wsIsDevHost reports whether host should be routed through the unix socket
++// proxy (stripeproxy) rather than HTTPS_PROXY. Dev environment hosts on
++// *.dev.stripe.me are only reachable via stripeproxy; public hosts use the
++// HTTP proxy.
++func wsIsDevHost(host string) bool {
++	return strings.HasSuffix(host, ".dev.stripe.me")
++}
++
++// wsDialThroughProxy opens a TCP tunnel to addr through an HTTP CONNECT proxy.
++func wsDialThroughProxy(ctx context.Context, proxyURL *url.URL, addr string) (net.Conn, error) {
++	conn, err := (&net.Dialer{}).DialContext(ctx, "tcp", proxyURL.Host)
++	if err != nil {
++		return nil, err
++	}
++	if _, err := fmt.Fprintf(conn, "CONNECT %s HTTP/1.1\r\nHost: %s\r\n\r\n", addr, addr); err != nil {
++		conn.Close()
++		return nil, err
++	}
++	resp, err := http.ReadResponse(bufio.NewReader(conn), &http.Request{Method: "CONNECT"})
++	if err != nil {
++		conn.Close()
++		return nil, err
++	}
++	resp.Body.Close()
++	if resp.StatusCode != http.StatusOK {
++		conn.Close()
++		return nil, errorcategory.Errorf(errorcategory.Network, "proxy CONNECT %s: %s", addr, resp.Status)
++	}
++	return conn, nil
++}
++
+ func newWebSocketDialer(unixSocket string) *ws.Dialer {
+-	var dialer *ws.Dialer
++	httpsProxy := os.Getenv("HTTPS_PROXY")
++	if httpsProxy == "" {
++		httpsProxy = os.Getenv("https_proxy")
++	}
+ 
+ 	if unixSocket != "" {
+-		dialFunc := func(network, addr string) (net.Conn, error) {
+-			return net.Dial("unix", unixSocket)
+-		}
+-		dialer = &ws.Dialer{
+-			HandshakeTimeout: 10 * time.Second,
+-			NetDial:          dialFunc,
+-			Subprotocols:     subprotocols[:],
++		expandedSocket := expandUnixSocket(unixSocket)
++
++		if httpsProxy == "" {
++			// Only unix socket: route all WebSocket through it. NetDialTLSContext
++			// tells gorilla TLS is handled externally (by the proxy), so it skips
++			// tls.Client() wrapping and sends a plain connection to stripeproxy.
++			dialFunc := func(ctx context.Context, network, addr string) (net.Conn, error) {
++				return (&net.Dialer{}).DialContext(ctx, "unix", expandedSocket)
++			}
++			return &ws.Dialer{
++				HandshakeTimeout:  10 * time.Second,
++				NetDialContext:    dialFunc,
++				NetDialTLSContext: dialFunc,
++				Subprotocols:      subprotocols[:],
++			}
+ 		}
+-	} else {
+-		dialer = &ws.Dialer{
+-			HandshakeTimeout: 10 * time.Second,
+-			Proxy:            http.ProxyFromEnvironment,
+-			Subprotocols:     subprotocols[:],
++
++		// Both unix socket and HTTPS proxy are set. Route by host:
++		//   *.dev.stripe.me → unix socket (stripeproxy), no TLS wrapping
++		//   everything else → HTTPS_PROXY via HTTP CONNECT, with TLS for wss://
++		if proxyURL, err := url.Parse(httpsProxy); err == nil {
++			return &ws.Dialer{
++				HandshakeTimeout: 10 * time.Second,
++				NetDialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
++					host, _, _ := net.SplitHostPort(addr)
++					if wsIsDevHost(host) {
++						return (&net.Dialer{}).DialContext(ctx, "unix", expandedSocket)
++					}
++					return wsDialThroughProxy(ctx, proxyURL, addr)
++				},
++				// NetDialTLSContext is set so gorilla skips its own tls.Client() call.
++				// We do TLS ourselves for non-dev wss:// connections; dev connections
++				// get a plain unix socket and let stripeproxy handle TLS forwarding.
++				NetDialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
++					host, _, _ := net.SplitHostPort(addr)
++					if wsIsDevHost(host) {
++						return (&net.Dialer{}).DialContext(ctx, "unix", expandedSocket)
++					}
++					conn, err := wsDialThroughProxy(ctx, proxyURL, addr)
++					if err != nil {
++						return nil, err
++					}
++					tlsConn := tls.Client(conn, &tls.Config{ServerName: host})
++					if err := tlsConn.HandshakeContext(ctx); err != nil {
++						conn.Close()
++						return nil, err
++					}
++					return tlsConn, nil
++				},
++				Subprotocols: subprotocols[:],
++			}
+ 		}
+ 	}
+ 
+-	return dialer
++	return &ws.Dialer{
++		HandshakeTimeout: 10 * time.Second,
++		Proxy:            http.ProxyFromEnvironment,
++		Subprotocols:     subprotocols[:],
++	}
+ }

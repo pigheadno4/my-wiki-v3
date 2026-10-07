@@ -1,0 +1,97 @@
+diff --git a/cmd/stripe/main.go b/cmd/stripe/main.go
+index 5427412..7755db1 100644
+--- a/cmd/stripe/main.go
++++ b/cmd/stripe/main.go
+@@ -9,6 +9,7 @@ import (
+ 
+ 	goversion "github.com/hashicorp/go-version"
+ 
++	"github.com/stripe/stripe-cli/pkg/autoupdate"
+ 	"github.com/stripe/stripe-cli/pkg/cmd"
+ 	"github.com/stripe/stripe-cli/pkg/reporting"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+@@ -18,6 +19,16 @@ import (
+ const sentryDSN = "https://0e1c83fa780a5946e14bfc0f6d0a7ddd@errors.stripe.com/11762"
+ 
+ func main() {
++	// Apply a pending update before anything else: this re-execs the new binary,
++	// so the command the user typed runs on the version they are being moved to.
++	autoupdate.ApplyIfPending()
++
++	// Check for the next update after the command has run, so the network call
++	// never delays it. Deferred rather than called at the end of main because
++	// every branch below returns early, and the check has to happen on all of
++	// them. This still does not cover cmd.Execute's os.Exit on command failure.
++	defer autoupdate.CheckForUpdate()
++
+ 	ctx := context.Background()
+ 
+ 	if stripe.TelemetryOptedOut(os.Getenv("STRIPE_CLI_TELEMETRY_OPTOUT")) || stripe.TelemetryOptedOut(os.Getenv("DO_NOT_TRACK")) {
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index fa4633c..4933fc8 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -64,10 +64,7 @@ var rootCmd = &cobra.Command{
+ 		AIAgentHelpAnnotationKey: "  If you do not have an account, run `stripe sandbox create` (provisions a claimable sandbox without a browser).\n" +
+ 			"  Visit https://docs.stripe.com/llms.txt?utm_source=cli for latest guidance on how to integrate correctly.\n" +
+ 			"  Run `npx skills add --all stripe/ai` to add all Stripe AI skills to your agent.\n" +
+-			// `stripe directory` installs itself on first use once the auto-install
+-			// rollout reaches a machine, but until that flag is fully rolled out the
+-			// prompt is still what most callers get, so describe that.
+-			"  Additional commands (apps, directory, generate, projects) are available as installable plugins — run the command directly to be prompted, or use `stripe plugin install <name>`.",
++			"  Additional commands (apps, directory, generate, projects) are available as installable plugins — run the command directly to install, or use `stripe plugin install <name>`.",
+ 	},
+ 	Version: version.Version,
+ 	Short:   "A CLI to help you integrate Stripe with your application",
+diff --git a/pkg/requests/plugin.go b/pkg/requests/plugin.go
+index 07c488c..2f99666 100644
+--- a/pkg/requests/plugin.go
++++ b/pkg/requests/plugin.go
+@@ -61,11 +61,7 @@ func getPluginEndpointBaseURL(apiKey, apiBaseURL, dashboardBaseURL string) strin
+ // GetPluginMetadata returns plugin-specific manifest and binary information.
+ // It uses the authenticated endpoint when an API key is available and the
+ // anonymous endpoint otherwise.
+-//
+-// machineUUID is the CLI's persistent per-installation identifier. The server
+-// keys the auto-install rollout on it so a machine stays on the same side of that
+-// rollout across invocations rather than flipping between prompting and not.
+-func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVersion, apiKey string, profile *config.Profile, pluginName, version, os, arch, machineUUID string) (PluginMetadata, error) {
++func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVersion, apiKey string, profile *config.Profile, pluginName, version, os, arch string) (PluginMetadata, error) {
+ 	params := &RequestParameters{
+ 		data:    []string{},
+ 		version: apiVersion,
+@@ -82,9 +78,6 @@ func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVer
+ 		"version":  version,
+ 		"os":       os,
+ 		"arch":     arch,
+-		// Logged so a machine that is not being auto-installed to can be told apart
+-		// from one that never sent the identifier the rollout is keyed on.
+-		"machine_uuid": machineUUID,
+ 	}).Debug("Fetching plugin metadata")
+ 
+ 	base := &Base{
+@@ -105,11 +98,6 @@ func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVer
+ 		"os":      os,
+ 		"arch":    arch,
+ 	}
+-	// Left out when there is no uuid to send: the server reads absent and empty
+-	// identically, as "this caller keeps prompting".
+-	if machineUUID != "" {
+-		requestParams["machine_uuid"] = machineUUID
+-	}
+ 
+ 	resp, err := base.MakeRequest(ctx, resolvedCreds, metadataPath, params, requestParams, true, nil)
+ 	if err != nil {
+diff --git a/pkg/requests/plugin_test.go b/pkg/requests/plugin_test.go
+index 7c54fbf..8ee68e0 100644
+--- a/pkg/requests/plugin_test.go
++++ b/pkg/requests/plugin_test.go
+@@ -122,7 +122,7 @@ func TestGetPluginMetadataSurfacesRequiresNewerCLI(t *testing.T) {
+ 
+ 	profile := &config.Profile{APIKey: "sk_test_1234"}
+ 
+-	_, err := GetPluginMetadata(context.Background(), server.URL, server.URL, "2020-08-27", "sk_test_1234", profile, "appA", "2.0.1", "darwin", "arm64", "uuid")
++	_, err := GetPluginMetadata(context.Background(), server.URL, server.URL, "2020-08-27", "sk_test_1234", profile, "appA", "2.0.1", "darwin", "arm64")
+ 	require.Error(t, err)
+ 
+ 	minCoreVersion, ok := PluginRequiresNewerCLI(err)

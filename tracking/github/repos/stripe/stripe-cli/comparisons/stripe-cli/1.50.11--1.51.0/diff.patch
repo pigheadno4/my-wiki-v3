@@ -1,0 +1,2039 @@
+diff --git a/README.md b/README.md
+index 37a16d4..9a12087 100644
+--- a/README.md
++++ b/README.md
+@@ -305,9 +305,6 @@ The Stripe CLI supports a broad range of commands. Below are some of the most us
+ - [`trigger`](https://stripe.com/docs/cli/trigger)
+ - [`logs tail`](https://stripe.com/docs/cli/logs/tail)
+ - [`events resend`](https://stripe.com/docs/cli/events/resend)
+-- [`samples`](https://stripe.com/docs/cli/intro_stripe_samples)
+-- [`serve`](https://stripe.com/docs/cli/serve)
+-- [`status`](https://stripe.com/docs/cli/status)
+ - [`config`](https://stripe.com/docs/cli/config)
+ - [`open`](https://stripe.com/docs/cli/open)
+ - [`get`, `post` & `delete` commands](https://stripe.com/docs/cli/get)
+diff --git a/cmd/stripe/main.go b/cmd/stripe/main.go
+index 50dd0fb..5427412 100644
+--- a/cmd/stripe/main.go
++++ b/cmd/stripe/main.go
+@@ -33,14 +33,9 @@ func main() {
+ 
+ 	reporting.Init(sentryDSN, version.Version) //nolint:errcheck
+ 	defer reporting.Flush()
+-	defer func() {
+-		if r := recover(); r != nil {
+-			reporting.RecoverAndReport(r)
+-			panic(r)
+-		}
+-	}()
+ 
+-	// Set up the telemetry client and add it to the context.
++	// Set up the telemetry client and add it to the context before installing
++	// the panic handler below, so a recovered panic can also report telemetry.
+ 	httpClient := &http.Client{
+ 		Timeout: time.Second * 3,
+ 	}
+@@ -50,9 +45,23 @@ func main() {
+ 			telemetryClient.BaseURL = parsed
+ 		}
+ 	}
+-	contextWithTelemetry := stripe.WithTelemetryClient(ctx, telemetryClient)
++	ctx = stripe.WithTelemetryClient(ctx, telemetryClient)
++
++	// Attach event metadata here, before cmd.Execute, and let it populate the
++	// same pointer throughout the command run: that way a panic recovered
++	// below still sees the command path Execute set, instead of empty
++	// metadata freshly built from this pre-command ctx.
++	telemetryMetadata := stripe.NewEventMetadata()
++	ctx = stripe.WithEventMetadata(ctx, telemetryMetadata)
++
++	defer func() {
++		if r := recover(); r != nil {
++			reporting.RecoverAndReport(ctx, r)
++			panic(r)
++		}
++	}()
+ 
+-	cmd.Execute(contextWithTelemetry)
++	cmd.Execute(ctx)
+ 
+ 	// Wait for all telemetry calls to finish before exiting the process.
+ 	telemetryClient.Wait()
+diff --git a/go.mod b/go.mod
+index 06a7045..3a1fb8e 100644
+--- a/go.mod
++++ b/go.mod
+@@ -6,21 +6,16 @@ require (
+ 	github.com/BurntSushi/toml v1.6.0
+ 	github.com/briandowns/spinner v1.23.2
+ 	github.com/fatih/color v1.19.0 // indirect
+-	github.com/felixge/httpsnoop v1.1.0 // indirect
+ 	github.com/google/go-querystring v1.2.0
+ 	github.com/google/uuid v1.6.0
+-	github.com/gorilla/handlers v1.5.2
+ 	github.com/gorilla/websocket v1.5.3
+ 	github.com/iancoleman/strcase v0.3.0
+ 	github.com/imdario/mergo v0.3.16
+-	github.com/kevinburke/ssh_config v1.6.0 // indirect
+ 	github.com/logrusorgru/aurora v2.0.3+incompatible
+ 	github.com/manifoldco/promptui v0.9.0
+ 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
+ 	github.com/mitchellh/go-homedir v1.1.0
+ 	github.com/onsi/ginkgo v1.16.5 // indirect
+-	github.com/otiai10/copy v1.14.1
+-	github.com/sergi/go-diff v1.4.0 // indirect
+ 	github.com/sirupsen/logrus v1.9.4
+ 	github.com/spf13/afero v1.15.0
+ 	github.com/spf13/cast v1.10.0 // indirect
+@@ -31,7 +26,6 @@ require (
+ 	github.com/tidwall/gjson v1.19.0
+ 	github.com/tidwall/pretty v1.2.1
+ 	github.com/x-cray/logrus-prefixed-formatter v0.5.2
+-	github.com/xanzy/ssh-agent v0.3.3 // indirect
+ 	golang.org/x/crypto v0.54.0 // indirect
+ 	golang.org/x/net v0.57.0 // indirect
+ 	golang.org/x/sys v0.47.0
+@@ -50,7 +44,6 @@ require (
+ 	github.com/charmbracelet/harmonica v0.2.0
+ 	github.com/charmbracelet/x/ansi v0.11.7
+ 	github.com/getsentry/sentry-go v0.48.0
+-	github.com/go-git/go-git/v5 v5.19.2
+ 	github.com/google/go-github/v72 v72.0.0
+ 	github.com/hashicorp/go-hclog v1.6.3
+ 	github.com/hashicorp/go-plugin v1.8.0
+@@ -64,8 +57,6 @@ require (
+ )
+ 
+ require (
+-	dario.cat/mergo v1.0.2 // indirect
+-	github.com/ProtonMail/go-crypto v1.4.1 // indirect
+ 	github.com/alecthomas/chroma/v2 v2.27.0 // indirect
+ 	github.com/aymerick/douceur v0.2.0 // indirect
+ 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
+@@ -76,44 +67,34 @@ require (
+ 	github.com/charmbracelet/x/windows v0.2.2 // indirect
+ 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
+ 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
+-	github.com/cloudflare/circl v1.6.4 // indirect
+-	github.com/cyphar/filepath-securejoin v0.7.0 // indirect
+ 	github.com/danieljoos/wincred v1.2.3 // indirect
+ 	github.com/dlclark/regexp2/v2 v2.5.2 // indirect
+-	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
+-	github.com/go-git/go-billy/v5 v5.9.1 // indirect
+ 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
+ 	github.com/godbus/dbus/v5 v5.2.2 // indirect
+-	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
+ 	github.com/gorilla/css v1.0.1 // indirect
+-	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
+ 	github.com/lucasb-eyer/go-colorful v1.4.0 // indirect
+ 	github.com/mattn/go-runewidth v0.0.27 // indirect
+ 	github.com/microcosm-cc/bluemonday v1.0.27 // indirect
+ 	github.com/muesli/cancelreader v0.2.2 // indirect
+-	github.com/otiai10/mint v1.6.3 // indirect
+-	github.com/pjbgf/sha1cd v0.6.0 // indirect
++	github.com/onsi/gomega v1.34.1 // indirect
+ 	github.com/rivo/uniseg v0.4.7 // indirect
+ 	github.com/sagikazarmark/locafero v0.12.0 // indirect
+-	github.com/skeema/knownhosts v1.3.2 // indirect
+ 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
+ 	github.com/yuin/goldmark-emoji v1.0.6 // indirect
+ 	go.yaml.in/yaml/v3 v3.0.5 // indirect
++	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f // indirect
+ 	golang.org/x/mod v0.37.0 // indirect
+ 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260729162451-8efbd57d26e0 // indirect
+ 	gopkg.in/yaml.v3 v3.0.1 // indirect
+ )
+ 
+ require (
+-	github.com/Microsoft/go-winio v0.6.2 // indirect
+ 	github.com/chzyer/readline v1.5.1 // indirect
+ 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+-	github.com/emirpasic/gods v1.18.1 // indirect
+ 	github.com/fsnotify/fsnotify v1.10.1 // indirect
+ 	github.com/golang/protobuf v1.5.4 // indirect
+ 	github.com/hashicorp/yamux v0.1.2 // indirect
+ 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+-	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
+ 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
+ 	github.com/mattn/go-colorable v0.1.15 // indirect
+ 	github.com/mattn/go-isatty v0.0.24 // indirect
+@@ -123,5 +104,4 @@ require (
+ 	github.com/subosito/gotenv v1.6.0 // indirect
+ 	github.com/tidwall/match v1.2.0 // indirect
+ 	golang.org/x/text v0.40.0 // indirect
+-	gopkg.in/warnings.v0 v0.1.2 // indirect
+ )
+diff --git a/pkg/cmd/listen.go b/pkg/cmd/listen.go
+index 31c78c2..1f31600 100644
+--- a/pkg/cmd/listen.go
++++ b/pkg/cmd/listen.go
+@@ -7,6 +7,7 @@ import (
+ 	"net/url"
+ 	"os"
+ 	"os/signal"
++	"regexp"
+ 	"strings"
+ 	"syscall"
+ 	"time"
+@@ -26,24 +27,41 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/websocket"
+ )
+ 
++// thinEventPattern matches thin event types, which are namespaced by API
++// version (e.g. v1.billing.meter.no_meter_found, v2.core.account.created).
++var thinEventPattern = regexp.MustCompile(`^v\d+\.`)
++
+ const (
+ 	webhooksWebSocketFeature     = "webhooks"
+ 	destinationsWebSocketFeature = "v2_events"
+ 	timeLayout                   = "2006-01-02 15:04:05"
+ 	outputFormatJSON             = "JSON"
++
++	// Accepted values for --events-from.
++	eventsFromSelf     = "@self"
++	eventsFromAccounts = "@accounts"
++	eventsFromAll      = "all"
+ )
+ 
+ type listenCmd struct {
+ 	cmd *cobra.Command
+ 
+ 	forwardURL            string
+-	forwardThinURL        string
+ 	forwardHeaders        []string
+ 	forwardConnectHeaders []string
+ 	forwardConnectURL     string
+-	forwardThinConnectURL string
++	eventsFrom            string
+ 	events                []string
++	allSnapshot           bool
++	allThin               bool
++
++	// Deprecated event flags. Still functional so that published commands keep
++	// working; they also cover the one case --forward-to can't express, a
++	// separate destination per payload style.
+ 	thinEvents            []string
++	forwardThinURL        string
++	forwardThinConnectURL string
++
+ 	latestAPIVersion      bool
+ 	livemode              bool
+ 	useConfiguredWebhooks bool
+@@ -70,10 +88,14 @@ local machine by connecting directly to Stripe's API. You can test the latest
+ API version, filter events, or even load your saved webhook endpoints from your
+ Stripe account.`,
+ 		Example: `stripe listen
+-  stripe listen --events charge.captured,charge.updated \
++  stripe listen --all-snapshot --forward-to localhost:3000/events
++  stripe listen --all-thin --forward-to localhost:3000/events
++  stripe listen --events charge.captured,customer.created \
++    --forward-to localhost:3000/events
++  stripe listen --events v1.billing.meter.no_meter_found \
+     --forward-to localhost:3000/events
+-  stripe listen --thin-events v1.billing.meter.no_meter_found \
+-    --forward-thin-to localhost:3000/thin-events`,
++  stripe listen --all-thin --events-from @accounts \
++    --forward-to localhost:3000/events`,
+ 		Annotations: map[string]string{
+ 			AIAgentHelpAnnotationKey: "  Use `--forward-to` to specify where events are sent, e.g. localhost:4242/webhook.\n" +
+ 				"  Use `--events` to filter to specific event types, e.g. `--events checkout.session.completed`.\n" +
+@@ -84,15 +106,25 @@ Stripe account.`,
+ 	}
+ 
+ 	lc.cmd.Flags().StringSliceVar(&lc.forwardConnectHeaders, "connect-headers", []string{}, "A comma-separated list of custom headers to forward for Connect. Ex: \"Key1:Value1, Key2:Value2\"")
+-	lc.cmd.Flags().StringSliceVarP(&lc.events, "events", "e", []string{"*"}, "A comma-separated list of specific events to listen for. For a list of all possible events, see: https://stripe.com/docs/api/events/types")
+-	lc.cmd.Flags().StringVarP(&lc.forwardURL, "forward-to", "f", "", "The URL to forward webhook events to")
++	lc.cmd.Flags().StringSliceVarP(&lc.events, "events", "e", []string{}, "A comma-separated list of specific events to listen for. Accepts both snapshot events (e.g. charge.captured) and thin events (e.g. v1.billing.meter.no_meter_found). For a list of all possible events, see: https://stripe.com/docs/api/events/types")
++	lc.cmd.Flags().BoolVar(&lc.allSnapshot, "all-snapshot", false, "Subscribe to all snapshot events")
++	lc.cmd.Flags().BoolVar(&lc.allThin, "all-thin", false, "Subscribe to all thin events")
++	lc.cmd.Flags().StringVar(&lc.eventsFrom, "events-from", eventsFromAll, "Which accounts to receive events from: '@self' (your account only), '@accounts' (connected accounts only), or 'all'")
++	lc.cmd.Flags().StringVarP(&lc.forwardURL, "forward-to", "f", "", "The URL to forward events to")
+ 	lc.cmd.Flags().StringSliceVarP(&lc.forwardHeaders, "headers", "H", []string{}, "A comma-separated list of custom headers to forward. Ex: \"Key1:Value1, Key2:Value2\"")
+-	lc.cmd.Flags().StringVarP(&lc.forwardConnectURL, "forward-connect-to", "c", "", "The URL to forward Connect webhook events to (default: same as normal events)")
++	lc.cmd.Flags().StringVarP(&lc.forwardConnectURL, "forward-connect-to", "c", "", "The URL to forward Connect events to (default: same as --forward-to)")
++
++	// Deprecated flags. MarkDeprecated warns on use and hides them from help,
++	// but they keep working; they'll be removed once the docs have migrated.
+ 	lc.cmd.Flags().StringSliceVar(&lc.thinEvents, "thin-events", []string{}, "A comma-separated list of thin events to listen for.")
++	lc.cmd.Flags().MarkDeprecated("thin-events", "use --events, which accepts both snapshot and thin event types, or --all-thin for all thin events.")
+ 	lc.cmd.Flags().StringVar(&lc.forwardThinURL, "forward-thin-to", "", "The URL to forward thin events to")
++	lc.cmd.Flags().MarkDeprecated("forward-thin-to", "use --forward-to together with --all-thin (or --events naming thin event types). Snapshot and thin events cannot share one destination.")
+ 	lc.cmd.Flags().StringVar(&lc.forwardThinConnectURL, "forward-thin-connect-to", "", "The URL to forward thin Connect events to")
++	lc.cmd.Flags().MarkDeprecated("forward-thin-connect-to", "use --events-from @accounts with --all-thin (or --events naming thin event types) and --forward-to <url>.")
++
+ 	lc.cmd.Flags().BoolVarP(&lc.latestAPIVersion, "latest", "l", false, "Receive events formatted with the latest API version (default: your account's default API version)")
+-	lc.cmd.Flags().BoolVar(&lc.livemode, "live", false, "Receive live events (default: test)")
++	lc.cmd.Flags().BoolVar(&lc.livemode, "live", false, "Receive live events (default: test). Requires that you're logged in to live mode — check with 'stripe whoami', switch with 'stripe switch'")
+ 	lc.cmd.Flags().BoolVarP(&lc.printJSON, "print-json", "j", false, "Print full JSON objects to stdout.")
+ 	lc.cmd.Flags().MarkDeprecated("print-json", "Please use `--format json` instead and use `jq` if you need to process the JSON in the terminal.")
+ 	lc.cmd.Flags().StringVar(&lc.format, "format", "", `Specifies the output format of webhook events
+@@ -127,6 +159,12 @@ Stripe account.`,
+ // Normally, this function would be listed alphabetically with the others declared in this file,
+ // but since it's acting as the core functionality for the cmd above, I'm keeping it close.
+ func (lc *listenCmd) runListenCmd(cmd *cobra.Command, args []string) error {
++	// Validate flags before touching credentials or the network, so a bad flag
++	// combination reports itself rather than failing on something downstream.
++	if err := lc.validateFlags(); err != nil {
++		return err
++	}
++
+ 	if err := stripe.ValidateAPIBaseURL(lc.apiBaseURL); err != nil {
+ 		return err
+ 	}
+@@ -144,9 +182,9 @@ func (lc *listenCmd) runListenCmd(cmd *cobra.Command, args []string) error {
+ 	var mismatch *config.ActiveContextLivemodeMismatchError
+ 	if errors.As(err, &mismatch) {
+ 		if mismatch.ActiveLivemode {
+-			return errorcategory.UserInputErrorf("You're in live mode. Add --live to run the command, or run 'stripe switch context' to select a sandbox.")
++			return errorcategory.UserInputErrorf("You're in live mode. Add --live to run the command, or run 'stripe switch' to select a sandbox.")
+ 		}
+-		return errorcategory.UserInputErrorf("You're in a sandbox. Remove --live to run the command, or run 'stripe switch context' to select a live account.")
++		return errorcategory.UserInputErrorf("You're in a sandbox. Remove --live to run the command, or run 'stripe switch' to select a live account.")
+ 	}
+ 	if err != nil {
+ 		return err
+@@ -189,15 +227,20 @@ func (lc *listenCmd) runListenCmd(cmd *cobra.Command, args []string) error {
+ 	proxyVisitor := lc.createVisitor(logger, lc.format, lc.printJSON)
+ 	proxyOutCh := make(chan websocket.IElement)
+ 
++	snapshotEvents, thinEvents := lc.resolveEvents()
++	directURL, connectURL := lc.resolveForwardURLs()
++	thinURL, thinConnectURL := lc.resolveThinForwardURLs(directURL, connectURL)
++	lc.warnUnforwardedThinEvents(logger)
++
+ 	p, err := proxy.Init(ctx, &proxy.Config{
+ 		Client:                client,
+ 		DeviceName:            deviceName,
+ 		DeviceToken:           &lc.deviceToken,
+-		ForwardURL:            lc.forwardURL,
+-		ForwardThinURL:        lc.forwardThinURL,
++		ForwardURL:            directURL,
++		ForwardThinURL:        thinURL,
+ 		ForwardHeaders:        lc.forwardHeaders,
+-		ForwardConnectURL:     lc.forwardConnectURL,
+-		ForwardThinConnectURL: lc.forwardThinConnectURL,
++		ForwardConnectURL:     connectURL,
++		ForwardThinConnectURL: thinConnectURL,
+ 		ForwardConnectHeaders: lc.forwardConnectHeaders,
+ 		UseConfiguredWebhooks: lc.useConfiguredWebhooks,
+ 		WebSocketFeatures:     lc.getFeatures(),
+@@ -207,10 +250,11 @@ func (lc *listenCmd) runListenCmd(cmd *cobra.Command, args []string) error {
+ 		Log:                   logger,
+ 		NoWSS:                 lc.noWSS,
+ 		Timeout:               lc.timeout,
+-		Events:                lc.events,
+-		ThinEvents:            lc.thinEvents,
++		Events:                snapshotEvents,
++		ThinEvents:            thinEvents,
+ 		OutCh:                 proxyOutCh,
+ 		LoggedInAccountID:     accountID,
++		EventsFrom:            lc.eventsFrom,
+ 	})
+ 	if err != nil {
+ 		return err
+@@ -277,6 +321,9 @@ func (lc *listenCmd) createVisitor(logger *log.Logger, format string, printJSON
+ 				// Don't exit program
+ 				return nil
+ 			default:
++				if isMorePermissionsRequiredError(ee.Error) {
++					return ee.Error
++				}
+ 				logger.Fatal(ee.Error)
+ 				return ee.Error
+ 			}
+@@ -368,16 +415,243 @@ func (lc *listenCmd) createVisitor(logger *log.Logger, format string, printJSON
+ 	}
+ }
+ 
++// getFeatures derives the websocket features from the resolved subscription, so
++// that the channels opened always match the events actually subscribed to.
+ func (lc *listenCmd) getFeatures() []string {
+-	features := []string{}
++	snapshotEvents, thinEvents := lc.resolveEvents()
+ 
+-	if len(lc.events) > 0 {
++	features := []string{}
++	if len(snapshotEvents) > 0 {
+ 		features = append(features, webhooksWebSocketFeature)
+ 	}
+-
+-	if len(lc.thinEvents) > 0 {
++	if len(thinEvents) > 0 {
+ 		features = append(features, destinationsWebSocketFeature)
+ 	}
+ 
+ 	return features
+ }
++
++func isThinEvent(eventType string) bool {
++	return thinEventPattern.MatchString(eventType)
++}
++
++// usesDeprecatedThinFlags reports whether the invocation drives the thin side
++// through the deprecated flags rather than --events / --forward-to.
++func (lc *listenCmd) usesDeprecatedThinFlags() bool {
++	return len(lc.thinEvents) > 0 || lc.forwardThinURL != "" || lc.forwardThinConnectURL != ""
++}
++
++// namesSnapshotEvents reports whether --events named any snapshot event type.
++func (lc *listenCmd) namesSnapshotEvents() bool {
++	for _, e := range lc.events {
++		if !isThinEvent(e) {
++			return true
++		}
++	}
++
++	return false
++}
++
++// resolveEvents splits the event flags into the snapshot and thin event lists
++// the proxy subscribes with.
++func (lc *listenCmd) resolveEvents() (snapshotEvents []string, thinEvents []string) {
++	allSnapshot := lc.allSnapshot
++	allThin := lc.allThin
++
++	// Deprecated --thin-events folds into the thin subscription. Its values are
++	// thin by declaration, so they skip the event-type sniffing below.
++	var legacyThin []string
++	for _, e := range lc.thinEvents {
++		if e == "*" {
++			allThin = true
++			continue
++		}
++		legacyThin = append(legacyThin, e)
++	}
++
++	// The deprecated flags ran alongside an --events default of "*", so a legacy
++	// invocation that never named snapshot events still subscribed to them all.
++	if lc.usesDeprecatedThinFlags() && !allSnapshot && !lc.namesSnapshotEvents() {
++		allSnapshot = true
++	}
++
++	return splitEventsByType(lc.events, allSnapshot, allThin, legacyThin...)
++}
++
++// splitEventsByType separates an event list into snapshot and thin event lists.
++// extraThin holds event types already known to be thin.
++func splitEventsByType(events []string, allSnapshot, allThin bool, extraThin ...string) (snapshotEvents []string, thinEvents []string) {
++	if allSnapshot {
++		snapshotEvents = append(snapshotEvents, "*")
++	}
++	if allThin {
++		thinEvents = append(thinEvents, "*")
++	}
++
++	for _, e := range events {
++		if isThinEvent(e) {
++			thinEvents = append(thinEvents, e)
++		} else {
++			snapshotEvents = append(snapshotEvents, e)
++		}
++	}
++
++	thinEvents = append(thinEvents, extraThin...)
++
++	// A bare "stripe listen" with no event flags subscribes to everything.
++	if len(snapshotEvents) == 0 && len(thinEvents) == 0 {
++		snapshotEvents = []string{"*"}
++		thinEvents = []string{"*"}
++	}
++
++	return
++}
++
++// resolveForwardURLs determines the direct and Connect forwarding URLs from
++// --events-from, --forward-to, and --forward-connect-to.
++func (lc *listenCmd) resolveForwardURLs() (directURL, connectURL string) {
++	switch lc.eventsFrom {
++	case eventsFromSelf:
++		directURL = lc.forwardURL
++		connectURL = ""
++	case eventsFromAccounts:
++		directURL = ""
++		connectURL = lc.forwardURL
++		if lc.forwardConnectURL != "" {
++			connectURL = lc.forwardConnectURL
++		}
++	default: // eventsFromAll
++		directURL = lc.forwardURL
++		connectURL = lc.forwardConnectURL
++		if connectURL == "" {
++			connectURL = lc.forwardURL
++		}
++	}
++
++	return
++}
++
++// resolveThinForwardURLs determines where thin events go. Normally they follow
++// --forward-to alongside snapshot events.
++//
++// A deprecated invocation instead forwards thin events only to the destinations
++// --forward-thin-to / --forward-thin-connect-to name. That covers the one
++// arrangement the unified --forward-to can't express, a separate endpoint per
++// payload style, and it keeps --thin-events with a bare --forward-to behaving as
++// it always did: thin events were printed but never forwarded there.
++func (lc *listenCmd) resolveThinForwardURLs(directURL, connectURL string) (thinURL, thinConnectURL string) {
++	if !lc.usesDeprecatedThinFlags() {
++		return directURL, connectURL
++	}
++
++	thinURL = lc.forwardThinURL
++	thinConnectURL = lc.forwardThinConnectURL
++	if thinConnectURL == "" {
++		thinConnectURL = thinURL
++	}
++
++	return
++}
++
++// warnUnforwardedThinEvents flags the one deprecated shape that silently drops
++// events: --thin-events with a forwarding destination that only snapshot events
++// reach. Previously this printed thin events and forwarded nothing; say so
++// rather than leaving the user to notice the gap.
++func (lc *listenCmd) warnUnforwardedThinEvents(logger *log.Logger) {
++	if !lc.usesDeprecatedThinFlags() || lc.forwardThinURL != "" || lc.forwardThinConnectURL != "" {
++		return
++	}
++
++	directURL, connectURL := lc.resolveForwardURLs()
++	if directURL == "" && connectURL == "" {
++		return
++	}
++
++	logger.Warn("--thin-events without --forward-thin-to does not forward thin events; they are only printed here. Use --all-thin (or --events with thin event types) and --forward-to to forward them.")
++}
++
++// validateFlags rejects flag combinations that are contradictory, ambiguous, or
++// no longer supported.
++func (lc *listenCmd) validateFlags() error {
++	if err := lc.validateEvents(); err != nil {
++		return err
++	}
++
++	if err := lc.validateEventsFrom(); err != nil {
++		return err
++	}
++
++	// --print-secret exits before forwarding anything, so don't hold it to the
++	// forwarding rules.
++	if lc.onlyPrintSecret {
++		return nil
++	}
++
++	return lc.validateForwardingConfig()
++}
++
++// validateEvents rejects the "*" wildcard, which used to mean "all snapshot
++// events" and is ambiguous now that --events also accepts thin events.
++func (lc *listenCmd) validateEvents() error {
++	for _, e := range lc.events {
++		if e == "*" {
++			return errorcategory.UserInputErrorf("--events '*' is no longer supported. Use --all-snapshot for all snapshot events, or --all-thin for all thin events.")
++		}
++	}
++
++	return nil
++}
++
++func (lc *listenCmd) validateEventsFrom() error {
++	switch lc.eventsFrom {
++	case eventsFromSelf, eventsFromAccounts, eventsFromAll:
++		return nil
++	default:
++		return errorcategory.UserInputErrorf("invalid --events-from value %q: must be one of '@self', '@accounts', or 'all'", lc.eventsFrom)
++	}
++}
++
++// validateForwardingConfig checks that the forwarding flags name exactly one
++// destination for exactly one payload style.
++func (lc *listenCmd) validateForwardingConfig() error {
++	if lc.forwardURL == "" && lc.forwardConnectURL == "" {
++		return nil
++	}
++
++	// Forwarding requires an explicit subscription. Defaulting to everything
++	// would POST every event on the account to the user's endpoint. The
++	// deprecated flags carry their own subscription, so they satisfy this too.
++	if !lc.allSnapshot && !lc.allThin && len(lc.events) == 0 && !lc.usesDeprecatedThinFlags() {
++		return errorcategory.UserInputErrorf("must specify events to forward using --events, --all-snapshot, or --all-thin")
++	}
++
++	// --events-from @self drops Connect events, so a Connect destination would
++	// never receive anything.
++	if lc.eventsFrom == eventsFromSelf && lc.forwardConnectURL != "" {
++		return errorcategory.UserInputErrorf("--forward-connect-to cannot be used with --events-from @self, which excludes events from connected accounts")
++	}
++
++	// Under @accounts both flags name the same destination, so two different
++	// URLs is ambiguous.
++	if lc.eventsFrom == eventsFromAccounts &&
++		lc.forwardURL != "" && lc.forwardConnectURL != "" && lc.forwardURL != lc.forwardConnectURL {
++		return errorcategory.UserInputErrorf("--forward-to and --forward-connect-to name the same destination when --events-from is @accounts: specify only one")
++	}
++
++	// The two payload styles are framed differently, so a single endpoint can't
++	// receive both. Distinct destinations are fine, which is what the deprecated
++	// --forward-thin-to still buys.
++	snapshotEvents, thinEvents := lc.resolveEvents()
++	if len(snapshotEvents) > 0 && len(thinEvents) > 0 {
++		directURL, connectURL := lc.resolveForwardURLs()
++		thinURL, thinConnectURL := lc.resolveThinForwardURLs(directURL, connectURL)
++		if directURL != "" && directURL == thinURL {
++			return errorcategory.UserInputErrorf("cannot forward both snapshot and thin events to the same destination")
++		}
++		if connectURL != "" && connectURL == thinConnectURL {
++			return errorcategory.UserInputErrorf("cannot forward both snapshot and thin events to the same connect destination")
++		}
++	}
++
++	return nil
++}
+diff --git a/pkg/cmd/login.go b/pkg/cmd/login.go
+index b65d566..f94d29c 100644
+--- a/pkg/cmd/login.go
++++ b/pkg/cmd/login.go
+@@ -64,7 +64,7 @@ func newLoginCmd() *loginCmd {
+ 		Short: "Log in to your Stripe account",
+ 		Long: `Log in to your Stripe account to set up the CLI.
+ 
+-By default (when stdin is a terminal), this opens a browser-based OAuth flow: it
++By default (when stdin is a terminal), this opens a browser-based login flow: it
+ prints a pairing code, launches your browser to the Stripe Dashboard, and waits for
+ you to approve the request before saving your credentials.
+ 
+@@ -119,7 +119,7 @@ works here too, printing a browser_url and a next_step of
+ 	lc.cmd.Flags().BoolVarP(&lc.interactive, "interactive", "i", false, "Run interactive configuration mode if you cannot open a browser")
+ 	lc.cmd.Flags().BoolVar(&lc.nonInteractive, "non-interactive", false, "Print login URL and verification code as JSON and exit; immediately run the next_step command from the output to poll while the user approves in the browser")
+ 	lc.cmd.Flags().StringVar(&lc.completeURL, "complete", "", "Complete a browser login by polling the given URL (from 'stripe login --non-interactive')")
+-	lc.cmd.Flags().BoolVar(&lc.completeDevice, "complete-device", false, "Complete an OAuth device authorization started by 'stripe login --non-interactive'")
++	lc.cmd.Flags().BoolVar(&lc.completeDevice, "complete-device", false, "Complete a device authorization started by 'stripe login --non-interactive'")
+ 	lc.cmd.Flags().MarkHidden("complete-device") // #nosec G104
+ 	lc.cmd.Flags().BoolVar(&lc.completeReauth, "complete-reauth", false, "Complete a reauthorization started by 'stripe login --non-interactive'")
+ 	lc.cmd.Flags().MarkHidden("complete-reauth") // #nosec G104
+@@ -155,7 +155,7 @@ works here too, printing a browser_url and a next_step of
+ 	switchCmd.cmd = &cobra.Command{
+ 		Use:     "switch [account_id]",
+ 		Args:    validators.MaximumNArgs(1),
+-		Short:   "Alias for 'stripe switch context'",
++		Short:   "Alias for 'stripe switch'",
+ 		Example: `stripe login switch\n  stripe login switch acct_1234\n  stripe login switch acct_1234 --live`,
+ 		RunE:    switchCmd.switchLoggedInAccountCmd,
+ 	}
+@@ -359,7 +359,7 @@ func (lc *loginSwitchCmd) switchLoggedInAccountCmd(cmd *cobra.Command, args []st
+ 			return err
+ 		}
+ 		if result != nil {
+-			fmt.Fprintf(cmd.OutOrStdout(), "Active context: %s · %s (%s)\n", result.Account.Name, result.DisplayMode(), result.Account.ID)
++			fmt.Fprintf(cmd.OutOrStdout(), "Logged in to: %s · %s (%s)\n", result.Account.Name, result.DisplayMode(), result.Account.ID)
+ 		}
+ 		return nil
+ 	}
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index 33856e3..fa4633c 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -31,6 +31,7 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/plugins"
+ 	"github.com/stripe/stripe-cli/pkg/requests"
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
++	"github.com/stripe/stripe-cli/pkg/stripeauth"
+ 	"github.com/stripe/stripe-cli/pkg/useragent"
+ 	"github.com/stripe/stripe-cli/pkg/validators"
+ 	"github.com/stripe/stripe-cli/pkg/version"
+@@ -59,7 +60,6 @@ var rootCmd = &cobra.Command{
+ 		"trigger":   "webhooks",
+ 		"listen":    "webhooks",
+ 		"logs":      "stripe",
+-		"status":    "stripe",
+ 		"resources": "resources",
+ 		AIAgentHelpAnnotationKey: "  If you do not have an account, run `stripe sandbox create` (provisions a claimable sandbox without a browser).\n" +
+ 			"  Visit https://docs.stripe.com/llms.txt?utm_source=cli for latest guidance on how to integrate correctly.\n" +
+@@ -162,7 +162,13 @@ func Execute(ctx context.Context) {
+ 
+ 	reporting.SetAccountIDProvider(Config.Profile.GetAccountID)
+ 
+-	telemetryMetadata := stripe.NewEventMetadata()
++	// Reuse metadata the caller already attached to ctx (main.go does this so
++	// a panic recovered outside Execute still shares the same populated
++	// metadata pointer) rather than always creating a fresh one.
++	telemetryMetadata := stripe.GetEventMetadata(ctx)
++	if telemetryMetadata == nil {
++		telemetryMetadata = stripe.NewEventMetadata()
++	}
+ 	updatedCtx := stripe.WithEventMetadata(ctx, telemetryMetadata)
+ 
+ 	rootCmd.SetUsageTemplate(getUsageTemplate())
+@@ -190,8 +196,12 @@ func Execute(ctx context.Context) {
+ 		switch {
+ 		case errors.Is(err, errNotAuthenticated):
+ 			// whoami already printed output; just exit non-zero
++		case errors.Is(err, errCommandRemoved):
++			// the shim already printed the downgrade guidance; just exit non-zero
+ 		case requests.IsAPIKeyExpiredError(err):
+ 			fmt.Fprintln(os.Stderr, apiKeyExpiredMessage(projectNameFlag))
++		case isMorePermissionsRequiredError(err):
++			fmt.Fprintln(os.Stderr, morePermissionsRequiredMessage(err))
+ 		case isLoginRequiredError && projectNameFlag != "default":
+ 			fmt.Fprintf(os.Stderr, "You provided the project name \"%[1]s\" (either via the \"--project-name\" flag or the \"STRIPE_PROJECT_NAME\" environment variable), but no config for that project was found.\nPlease run `stripe login --project-name=%[1]s` to enable commands for this project.\n", projectNameFlag)
+ 		case isLoginRequiredError:
+@@ -218,10 +228,10 @@ func Execute(ctx context.Context) {
+ 
+ 		case strings.Contains(errString, "unknown command"):
+ 			showSuggestion()
+-			recordUnknownCommand(updatedCtx, strings.Join(os.Args[1:], " "))
++			recordUnknownCommand(updatedCtx, sanitizeUnknownCommand(os.Args[1:]))
+ 
+ 		default:
+-			reporting.CaptureException(err)
++			reporting.CaptureException(updatedCtx, err)
+ 			fmt.Fprintln(os.Stderr, err)
+ 		}
+ 
+@@ -244,6 +254,36 @@ func apiKeyExpiredMessage(profileName string) string {
+ 	return fmt.Sprintf("The API key for profile %q has expired. Run `stripe login --project-name=%s` to re-authenticate.", profileName, profileName)
+ }
+ 
++// isMorePermissionsRequiredError reports whether err was caused by a Stripe
++// API request failing because the API key's role lacks the permissions
++// required for that request. Requests made through pkg/requests surface this
++// as a requests.RequestError; the websocket session-auth flows used by
++// `stripe listen` and `stripe logs tail` surface it as a
++// stripeauth.AuthorizeHTTPError instead.
++func isMorePermissionsRequiredError(err error) bool {
++	return requests.IsMorePermissionsRequiredError(err) || stripeauth.IsMorePermissionsRequiredError(err)
++}
++
++// morePermissionsRequiredMessage returns the message to show the user for a
++// more_permissions_required error. Requests authenticated with a plain API
++// key have no notion of "role", so the raw message from the Stripe API is
++// shown instead of the role-reassignment message.
++func morePermissionsRequiredMessage(err error) string {
++	var reqErr requests.RequestError
++	if errors.As(err, &reqErr) && !reqErr.HasOAKContext {
++		return reqErr.Message
++	}
++
++	var authErr *stripeauth.AuthorizeHTTPError
++	if errors.As(err, &authErr) && !authErr.HasOAKContext {
++		return authErr.Message
++	}
++
++	return morePermissionsRequiredRoleMessage
++}
++
++const morePermissionsRequiredRoleMessage = "You don't have permission to do this with your current role. Ask an account administrator to assign you a different role with more permissions."
++
+ var keysToReBind []string
+ 
+ // ReBindKeys applies the value found in viper config to the cobra flag when viper has a value (possibly from env)
+@@ -275,7 +315,7 @@ func bindEnv(key, envKey string) {
+ func init() {
+ 	cobra.OnInitialize(Config.InitConfig, ReBindKeys)
+ 
+-	rootCmd.PersistentFlags().StringVar(&Config.Profile.APIKey, "api-key", "", "Your API key to use for the command")
++	rootCmd.PersistentFlags().StringVar(&Config.Profile.APIKey, "api-key", "", "Your API key to use for the command, instead of your logged in session. Overridden by the STRIPE_API_KEY environment variable, if set")
+ 	rootCmd.PersistentFlags().StringVar(&Config.Color, "color", "", "turn on/off color output (on, off, auto)")
+ 	rootCmd.PersistentFlags().StringVar(&Config.ProfilesFile, "config", "", "config file (default is $HOME/.config/stripe/config.toml)")
+ 	rootCmd.PersistentFlags().StringVar(&Config.Profile.DeviceName, "device-name", "", "device name")
+@@ -319,12 +359,10 @@ func init() {
+ 	rootCmd.AddCommand(newOpenCmd().cmd)
+ 	rootCmd.AddCommand(newReauthCmd().cmd)
+ 	rootCmd.AddCommand(newResourcesCmd().cmd)
+-	rootCmd.AddCommand(newSamplesCmd().cmd)
+-	rootCmd.AddCommand(newServeCmd().cmd)
++	rootCmd.AddCommand(newSamplesCmd())
++	rootCmd.AddCommand(newServeCmd())
++	rootCmd.AddCommand(newStatusCmd())
+ 	rootCmd.AddCommand(newSwitchCmd().cmd)
+-	// current stripe status site is being deprecated
+-	// hide status command until status site v2 is released
+-	// rootCmd.AddCommand(newStatusCmd().cmd)
+ 	rootCmd.AddCommand(newTriggerCmd().cmd)
+ 	rootCmd.AddCommand(newVersionCmd().cmd)
+ 	rootCmd.AddCommand(newWhoamiCmd().cmd)
+diff --git a/pkg/cmd/switch.go b/pkg/cmd/switch.go
+index 505a0ac..3b41c2e 100644
+--- a/pkg/cmd/switch.go
++++ b/pkg/cmd/switch.go
+@@ -1,10 +1,13 @@
+ package cmd
+ 
+ import (
++	"encoding/json"
+ 	"fmt"
++	"strings"
+ 
+ 	"github.com/spf13/cobra"
+ 
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login"
+ 	"github.com/stripe/stripe-cli/pkg/validators"
+ )
+@@ -17,39 +20,61 @@ type switchContextCmd struct {
+ 	cmd           *cobra.Command
+ 	livemode      bool
+ 	accessBaseURL string
++	format        string
++}
++
++// switchOutput is the stable JSON schema for `stripe switch --format json`.
++type switchOutput struct {
++	AccountID   string `json:"account_id"`
++	DisplayName string `json:"display_name"`
++	Mode        string `json:"mode"`
+ }
+ 
+ func newSwitchCmd() *switchCmd {
+ 	sc := &switchCmd{}
+-	sc.cmd = &cobra.Command{
+-		Use:   "switch",
+-		Short: "Switch active context or profile",
+-	}
+-
+ 	ctxCmd := &switchContextCmd{}
+-	ctxCmd.cmd = &cobra.Command{
+-		Use:   "context [account_id]",
++
++	sc.cmd = &cobra.Command{
++		Use:   "switch [account_id]",
+ 		Args:  validators.MaximumNArgs(1),
+-		Short: "Switch to a different authorized account context",
+-		Long: `Switch to a different authorized account context.
++		Short: "Switch to a different authorized account in live mode or a sandbox",
++		Long: `Switch to a different authorized account in live mode or a sandbox.
+ 
+ Without an argument, shows an interactive list of your authorized accounts and
+ modes. Navigate with ↑↓, confirm with enter, or cancel with esc.
+ 
+ With an account ID, switches directly to that account. Add --live to switch to live mode.`,
+-		Example: `  stripe switch context
+-  stripe switch context acct_1234
+-  stripe switch context acct_1234 --live`,
++		Example: `stripe switch
++  stripe switch acct_1234
++  stripe switch acct_1234 --live
++  stripe switch acct_1234 --format json`,
+ 		RunE: ctxCmd.run,
+ 	}
+-	ctxCmd.cmd.Flags().BoolVar(&ctxCmd.livemode, "live", false, "Select live mode for the given account")
+-	ctxCmd.cmd.Flags().StringVar(&ctxCmd.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+-	ctxCmd.cmd.Flags().MarkHidden("access-base") //nolint:errcheck
++	ctxCmd.cmd = sc.cmd
++	addSwitchContextFlags(sc.cmd, ctxCmd)
+ 
+-	sc.cmd.AddCommand(ctxCmd.cmd)
++	// Kept as a hidden alias for backwards compatibility; 'stripe switch' is
++	// now the preferred way to switch context.
++	legacyCtxCmd := &cobra.Command{
++		Use:    "context [account_id]",
++		Args:   validators.MaximumNArgs(1),
++		Short:  "Switch to a different authorized account in live mode or a sandbox",
++		Hidden: true,
++		RunE:   ctxCmd.run,
++	}
++	addSwitchContextFlags(legacyCtxCmd, ctxCmd)
++
++	sc.cmd.AddCommand(legacyCtxCmd)
+ 	return sc
+ }
+ 
++func addSwitchContextFlags(cmd *cobra.Command, ctxCmd *switchContextCmd) {
++	cmd.Flags().BoolVar(&ctxCmd.livemode, "live", false, "Select live mode for the given account")
++	cmd.Flags().StringVar(&ctxCmd.format, "format", "", "Output format: 'json' for a stable JSON schema (suitable for scripting)")
++	cmd.Flags().StringVar(&ctxCmd.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
++	cmd.Flags().MarkHidden("access-base") //nolint:errcheck
++}
++
+ func (sc *switchContextCmd) run(cmd *cobra.Command, args []string) error {
+ 	if err := login.ValidateAccessBaseURL(sc.accessBaseURL); err != nil {
+ 		return err
+@@ -58,12 +83,31 @@ func (sc *switchContextCmd) run(cmd *cobra.Command, args []string) error {
+ 	if len(args) > 0 {
+ 		accountID = args[0]
+ 	}
++	if accountID == "" && strings.EqualFold(sc.format, "json") {
++		return errorcategory.UserInputErrorf("--format json requires an account_id argument; the interactive selector isn't scriptable")
++	}
+ 	result, err := login.SwitchContext(cmd.Context(), sc.accessBaseURL, &Config, accountID, sc.livemode)
+ 	if err != nil {
+ 		return err
+ 	}
+-	if result != nil {
+-		fmt.Printf("Active context: %s · %s (%s)\n", result.Account.Name, result.DisplayMode(), result.Account.ID)
++	if result == nil {
++		return nil
+ 	}
++
++	if strings.EqualFold(sc.format, "json") {
++		out := switchOutput{
++			AccountID:   result.Account.ID,
++			DisplayName: result.Account.Name,
++			Mode:        result.Mode,
++		}
++		b, err := json.MarshalIndent(out, "", "  ")
++		if err != nil {
++			return err
++		}
++		fmt.Fprintln(cmd.OutOrStdout(), string(b))
++		return nil
++	}
++
++	fmt.Printf("Logged in to: %s · %s (%s)\n", result.Account.Name, result.DisplayMode(), result.Account.ID)
+ 	return nil
+ }
+diff --git a/pkg/cmd/whoami.go b/pkg/cmd/whoami.go
+index 6d6c622..a38e51d 100644
+--- a/pkg/cmd/whoami.go
++++ b/pkg/cmd/whoami.go
+@@ -70,17 +70,13 @@ func newWhoamiCmd() *whoamiCmd {
+ 	wc.cmd = &cobra.Command{
+ 		Use:   "whoami",
+ 		Args:  validators.NoArgs,
+-		Short: "Show the current Stripe auth context",
+-		Long: `Display the current authentication context for the Stripe CLI.
++		Short: "Show what account you're logged in to and accounts you've authorized",
++		Long: `Show what account you're logged in to and the accounts you've authorized.
+ 
+-Reads credentials from the config file and keychain — no API calls are made.
+-
+-Use --format json for output suitable for scripting or agent consumption. The
+-schema is stable: test_mode_key and live_mode_key are always present regardless
+-of auth context, and authenticated: false indicates no usable credentials exist.
++Use --format json for output suitable for scripting or agent consumption.
+ 
+ Exit codes:
+-  0  Authenticated (at least one key is available)
++  0  Authenticated
+   1  Not authenticated, or an error occurred`,
+ 		Example: `stripe whoami
+   stripe whoami --format json
+@@ -108,6 +104,10 @@ func (wc *whoamiCmd) runWhoamiCmd(cmd *cobra.Command, args []string) error {
+ 		if err := stripe.ValidateAPIBaseURL(wc.apiBaseURL); err != nil {
+ 			return err
+ 		}
++		uat, err := config.RefreshUATIfNeeded(profile, uat)
++		if err != nil {
++			return err
++		}
+ 		return wc.runWhoamiOAuth(cmd, uat)
+ 	}
+ 
+@@ -184,9 +184,9 @@ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 			fmt.Fprintf(tw, "User\t%s\n", out.Email)
+ 		}
+ 		if out.DisplayName != ac.AccountID {
+-			fmt.Fprintf(tw, "Context\t%s · %s (%s)\n", out.DisplayName, displayModeText(out.Mode), ac.AccountID)
++			fmt.Fprintf(tw, "Account\t%s · %s (%s)\n", out.DisplayName, displayModeText(out.Mode), ac.AccountID)
+ 		} else {
+-			fmt.Fprintf(tw, "Context\t%s · %s\n", out.DisplayName, displayModeText(out.Mode))
++			fmt.Fprintf(tw, "Account\t%s · %s\n", out.DisplayName, displayModeText(out.Mode))
+ 		}
+ 		if out.Role != "" {
+ 			fmt.Fprintf(tw, "Role\t%s\n", out.Role)
+@@ -199,6 +199,9 @@ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 	}
+ 
+ 	login.PrintAuthorizedContextsList(accounts)
++	fmt.Fprintln(w)
++	fmt.Fprintln(w, "Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
++	fmt.Fprintln(w, "Run 'stripe switch' to switch to a different account, or between live mode and a sandbox.")
+ 	return nil
+ }
+ 
+diff --git a/pkg/config/plugin_configs.go b/pkg/config/plugin_configs.go
+index 5f31ed2..4229430 100644
+--- a/pkg/config/plugin_configs.go
++++ b/pkg/config/plugin_configs.go
+@@ -1,5 +1,7 @@
+ package config
+ 
++import "github.com/spf13/viper"
++
+ const (
+ 	// PluginConfigGlobalScope is used as the scope when a setting applies to all plugins.
+ 	PluginConfigGlobalScope = "__global"
+@@ -10,6 +12,12 @@ const (
+ 	// PluginConfigsKey is the top-level table holding every plugin config
+ 	// section. It is a CLI setting, not a profile.
+ 	PluginConfigsKey = "plugin_configs"
++
++	// PluginConfigOn and PluginConfigOff are the values a plugin config toggle
++	// holds. They are named because the writer and the reader live in different
++	// packages and have to agree on the exact string.
++	PluginConfigOn  = "on"
++	PluginConfigOff = "off"
+ )
+ 
+ // isPluginConfigSection reports whether v is a plugin config section,
+@@ -31,3 +39,40 @@ func isPluginConfigSection(v interface{}) bool {
+ func PluginConfigKey(scope, field string) string {
+ 	return PluginConfigsKey + "." + scope + "." + field
+ }
++
++// PluginUpdatesEnabled reports whether automatic updates are enabled for the
++// named plugin, per `stripe plugin auto-update`.
++//
++// Updates are off unless the user turned them on. Nothing should download a new
++// plugin version on its own just because no one said otherwise.
++func PluginUpdatesEnabled(pluginName string) bool {
++	return pluginUpdatesEnabled(viper.GetViper(), pluginName)
++}
++
++func pluginUpdatesEnabled(v *viper.Viper, pluginName string) bool {
++	// A setting on the plugin itself answers alone, so `--disable` on one plugin
++	// holds under a global `--enable` and the reverse. A value that is neither "on"
++	// nor "off" counts as set: the user configured this plugin, which is enough to
++	// keep the global setting from speaking for it, and anything unreadable as "on"
++	// leaves updates off.
++	if pluginName != "" {
++		if enabled, isSet := pluginConfigToggle(v, pluginName, PluginConfigUpdatesField); isSet {
++			return enabled
++		}
++	}
++
++	enabled, _ := pluginConfigToggle(v, PluginConfigGlobalScope, PluginConfigUpdatesField)
++	return enabled
++}
++
++// pluginConfigToggle reads one on/off plugin config field. isSet distinguishes a
++// field the user turned off from one they never touched, which is what lets a
++// per-plugin setting take precedence over the global one.
++func pluginConfigToggle(v *viper.Viper, scope, field string) (enabled, isSet bool) {
++	key := PluginConfigKey(scope, field)
++	if !v.IsSet(key) {
++		return false, false
++	}
++
++	return v.GetString(key) == PluginConfigOn, true
++}
+diff --git a/pkg/config/plugin_configs_test.go b/pkg/config/plugin_configs_test.go
+new file mode 100644
+index 0000000..2e7bf41
+--- /dev/null
++++ b/pkg/config/plugin_configs_test.go
+@@ -0,0 +1,119 @@
++package config
++
++import (
++	"testing"
++
++	"github.com/spf13/viper"
++	"github.com/stretchr/testify/require"
++)
++
++func TestPluginUpdatesEnabledPrecedence(t *testing.T) {
++	const plugin = "apps"
++
++	tests := []struct {
++		name         string
++		pluginValue  interface{}
++		globalValue  interface{}
++		wantForApps  bool
++		wantForOther bool
++	}{
++		{
++			name:         "unset defaults to off",
++			wantForApps:  false,
++			wantForOther: false,
++		},
++		{
++			name:         "global on applies to every plugin",
++			globalValue:  PluginConfigOn,
++			wantForApps:  true,
++			wantForOther: true,
++		},
++		{
++			name:         "global off applies to every plugin",
++			globalValue:  PluginConfigOff,
++			wantForApps:  false,
++			wantForOther: false,
++		},
++		{
++			name:         "plugin on with no global setting",
++			pluginValue:  PluginConfigOn,
++			wantForApps:  true,
++			wantForOther: false,
++		},
++		{
++			name:         "plugin off overrides global on",
++			pluginValue:  PluginConfigOff,
++			globalValue:  PluginConfigOn,
++			wantForApps:  false,
++			wantForOther: true,
++		},
++		{
++			name:         "plugin on overrides global off",
++			pluginValue:  PluginConfigOn,
++			globalValue:  PluginConfigOff,
++			wantForApps:  true,
++			wantForOther: false,
++		},
++		{
++			// A value we cannot read as "on" leaves updates off, and still keeps the
++			// global setting from answering for a plugin the user configured.
++			name:         "unrecognized plugin value does not fall through to global on",
++			pluginValue:  "yes",
++			globalValue:  PluginConfigOn,
++			wantForApps:  false,
++			wantForOther: true,
++		},
++		{
++			// Hand-editing the config file is how a non-string value gets here.
++			name:         "non-string plugin value is not on",
++			pluginValue:  true,
++			wantForApps:  false,
++			wantForOther: false,
++		},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			v := viper.New()
++			if tt.pluginValue != nil {
++				v.Set(PluginConfigKey(plugin, PluginConfigUpdatesField), tt.pluginValue)
++			}
++			if tt.globalValue != nil {
++				v.Set(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField), tt.globalValue)
++			}
++
++			require.Equal(t, tt.wantForApps, pluginUpdatesEnabled(v, plugin))
++			require.Equal(t, tt.wantForOther, pluginUpdatesEnabled(v, "projects"))
++		})
++	}
++}
++
++// An empty plugin name would build the key "plugin_configs..updates", so it has
++// to be dropped rather than looked up. Callers should always name a plugin; this
++// pins the behavior if one ever doesn't.
++func TestPluginUpdatesEnabledIgnoresEmptyPluginName(t *testing.T) {
++	v := viper.New()
++	v.Set(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField), PluginConfigOn)
++
++	require.True(t, pluginUpdatesEnabled(v, ""))
++
++	v.Set(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField), PluginConfigOff)
++
++	require.False(t, pluginUpdatesEnabled(v, ""))
++}
++
++// The setting is written by `stripe plugin auto-update` and read here, from two
++// different packages. Go through the real write path to prove they agree.
++func TestPluginUpdatesEnabledReadsWhatAutoUpdateWrites(t *testing.T) {
++	c, _, cleanup := setupTestConfig(t)
++	defer cleanup()
++
++	require.False(t, PluginUpdatesEnabled("apps"))
++
++	require.NoError(t, c.WriteConfigField(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField), PluginConfigOn))
++	require.True(t, PluginUpdatesEnabled("apps"))
++
++	require.NoError(t, c.WriteConfigField(PluginConfigKey("apps", PluginConfigUpdatesField), PluginConfigOff))
++	require.False(t, PluginUpdatesEnabled("apps"))
++	require.True(t, PluginUpdatesEnabled("projects"))
++}
+diff --git a/pkg/config/profile.go b/pkg/config/profile.go
+index 2f73a2f..f24f19f 100644
+--- a/pkg/config/profile.go
++++ b/pkg/config/profile.go
+@@ -919,7 +919,7 @@ func SaveActiveContext(accountID string, livemode bool) error {
+ 	if err != nil {
+ 		return err
+ 	}
+-	return KeyRing.Set(OAuthActiveContextKeychainKey, data, "Stripe CLI OAuth active context")
++	return KeyRing.Set(OAuthActiveContextKeychainKey, data, "Stripe CLI active context")
+ }
+ 
+ // SaveUATExpiresAt persists the UAT expiry time in the keyring.
+@@ -927,7 +927,7 @@ func SaveUATExpiresAt(t time.Time) error {
+ 	if KeyRing == nil {
+ 		return nil
+ 	}
+-	return KeyRing.Set(OAuthUATExpiresAtKeychainKey, []byte(t.UTC().Format(time.RFC3339)), "Stripe CLI OAuth token expiry")
++	return KeyRing.Set(OAuthUATExpiresAtKeychainKey, []byte(t.UTC().Format(time.RFC3339)), "Stripe CLI token expiry")
+ }
+ 
+ // GetUATExpiresAt retrieves the stored UAT expiry time from the keyring.
+@@ -1011,9 +1011,37 @@ type ActiveContextLivemodeMismatchError struct {
+ 
+ func (e *ActiveContextLivemodeMismatchError) Error() string {
+ 	if e.ActiveLivemode {
+-		return "You're in live mode. Run 'stripe switch context' to select a sandbox."
++		return "You're in live mode. Run 'stripe switch' to select a sandbox."
+ 	}
+-	return "You're in a sandbox. Run 'stripe switch context' to select a live account."
++	return "You're in a sandbox. Run 'stripe switch' to select a live account."
++}
++
++// RefreshUATIfNeeded returns uat as-is unless it's expired or about to expire
++// (within 60 seconds), in which case it refreshes the token via
++// OAuthTokenRefresher and returns the new value. Callers that read the UAT
++// outside of ResolveCredentials (e.g. whoami) should route it through here so
++// an expired token doesn't surface as an opaque auth failure.
++func RefreshUATIfNeeded(p *Profile, uat string) (string, error) {
++	if OAuthTokenRefresher == nil {
++		return uat, nil
++	}
++	t, tErr := GetUATExpiresAt()
++	if tErr != nil || time.Until(t) >= 60*time.Second {
++		return uat, nil
++	}
++
++	refreshMu.Lock()
++	defer refreshMu.Unlock()
++	// Re-check after acquiring the lock; another goroutine may have already
++	// refreshed, bumping the expiry forward.
++	t2, tErr2 := GetUATExpiresAt()
++	if tErr2 == nil && time.Until(t2) < 60*time.Second {
++		if err := OAuthTokenRefresher(p); err != nil {
++			return uat, err
++		}
++		uat = p.UAT
++	}
++	return uat, nil
+ }
+ 
+ // ResolveCredentials returns the credentials for the given mode. If an OAK
+@@ -1030,20 +1058,9 @@ func (p *Profile) ResolveCredentials(livemode bool) (stripe.Credentials, error)
+ 			return stripe.Credentials{}, err
+ 		}
+ 		if strings.HasPrefix(uat, "oak_") {
+-			if OAuthTokenRefresher != nil {
+-				if t, tErr := GetUATExpiresAt(); tErr == nil && time.Until(t) < 60*time.Second {
+-					refreshMu.Lock()
+-					// Re-check after acquiring the lock; another goroutine may have
+-					// already refreshed, bumping the expiry forward.
+-					if t2, tErr2 := GetUATExpiresAt(); tErr2 == nil && time.Until(t2) < 60*time.Second {
+-						if refreshErr := OAuthTokenRefresher(p); refreshErr != nil {
+-							refreshMu.Unlock()
+-							return stripe.Credentials{}, refreshErr
+-						}
+-						uat = p.UAT
+-					}
+-					refreshMu.Unlock()
+-				}
++			uat, err = RefreshUATIfNeeded(p, uat)
++			if err != nil {
++				return stripe.Credentials{}, err
+ 			}
+ 			ac, err := GetActiveContext()
+ 			if err != nil {
+diff --git a/pkg/config/profile_test.go b/pkg/config/profile_test.go
+index 7abfea7..c5d33e7 100644
+--- a/pkg/config/profile_test.go
++++ b/pkg/config/profile_test.go
+@@ -2,11 +2,13 @@ package config
+ 
+ import (
+ 	"encoding/json"
++	"errors"
+ 	"io"
+ 	"os"
+ 	"path/filepath"
+ 	"sync"
+ 	"testing"
++	"time"
+ 
+ 	"github.com/spf13/viper"
+ 	"github.com/stretchr/testify/require"
+@@ -638,6 +640,75 @@ func TestResolveCredentialsForAnyModeRetriesOnLivemodeMismatch(t *testing.T) {
+ 	require.Equal(t, "oak_live_1234567890", creds.Token)
+ }
+ 
++func TestRefreshUATIfNeededSkipsWhenNotExpiring(t *testing.T) {
++	KeyRing = keyring.NewMemoryStore(nil)
++	t.Cleanup(func() { KeyRing = nil })
++	require.NoError(t, SaveUATExpiresAt(time.Now().Add(time.Hour)))
++
++	previousRefresher := OAuthTokenRefresher
++	t.Cleanup(func() { OAuthTokenRefresher = previousRefresher })
++	OAuthTokenRefresher = func(p *Profile) error {
++		t.Fatal("refresher should not be called when the token isn't near expiry")
++		return nil
++	}
++
++	p := &Profile{UAT: "oak_live_original"}
++	uat, err := RefreshUATIfNeeded(p, "oak_live_original")
++	require.NoError(t, err)
++	require.Equal(t, "oak_live_original", uat)
++}
++
++func TestRefreshUATIfNeededRefreshesWhenNearExpiry(t *testing.T) {
++	KeyRing = keyring.NewMemoryStore(nil)
++	t.Cleanup(func() { KeyRing = nil })
++	require.NoError(t, SaveUATExpiresAt(time.Now().Add(30*time.Second)))
++
++	previousRefresher := OAuthTokenRefresher
++	t.Cleanup(func() { OAuthTokenRefresher = previousRefresher })
++	OAuthTokenRefresher = func(p *Profile) error {
++		p.UAT = "oak_live_refreshed"
++		return nil
++	}
++
++	p := &Profile{UAT: "oak_live_original"}
++	uat, err := RefreshUATIfNeeded(p, "oak_live_original")
++	require.NoError(t, err)
++	require.Equal(t, "oak_live_refreshed", uat)
++}
++
++func TestRefreshUATIfNeededPropagatesRefreshError(t *testing.T) {
++	KeyRing = keyring.NewMemoryStore(nil)
++	t.Cleanup(func() { KeyRing = nil })
++	require.NoError(t, SaveUATExpiresAt(time.Now().Add(30*time.Second)))
++
++	previousRefresher := OAuthTokenRefresher
++	t.Cleanup(func() { OAuthTokenRefresher = previousRefresher })
++	refreshErr := errors.New("session expired")
++	OAuthTokenRefresher = func(p *Profile) error {
++		return refreshErr
++	}
++
++	p := &Profile{UAT: "oak_live_original"}
++	uat, err := RefreshUATIfNeeded(p, "oak_live_original")
++	require.ErrorIs(t, err, refreshErr)
++	require.Equal(t, "oak_live_original", uat)
++}
++
++func TestRefreshUATIfNeededNoopWithoutRefresher(t *testing.T) {
++	KeyRing = keyring.NewMemoryStore(nil)
++	t.Cleanup(func() { KeyRing = nil })
++	require.NoError(t, SaveUATExpiresAt(time.Now().Add(30*time.Second)))
++
++	previousRefresher := OAuthTokenRefresher
++	t.Cleanup(func() { OAuthTokenRefresher = previousRefresher })
++	OAuthTokenRefresher = nil
++
++	p := &Profile{UAT: "oak_live_original"}
++	uat, err := RefreshUATIfNeeded(p, "oak_live_original")
++	require.NoError(t, err)
++	require.Equal(t, "oak_live_original", uat)
++}
++
+ func helperLoadBytes(t *testing.T, name string) []byte {
+ 	bytes, err := os.ReadFile(name)
+ 	if err != nil {
+diff --git a/pkg/login/oauth_accounts.go b/pkg/login/oauth_accounts.go
+index 8311dae..52a2a5f 100644
+--- a/pkg/login/oauth_accounts.go
++++ b/pkg/login/oauth_accounts.go
+@@ -106,7 +106,7 @@ func PrintAuthorizedContextsList(accounts []config.AuthorizedAccount) {
+ 	}
+ 
+ 	color := ansi.Color(os.Stdout)
+-	fmt.Printf("Authorized contexts (%d):\n", len(rows))
++	fmt.Printf("Authorized (%d accounts):\n", len(rows))
+ 	for _, r := range rows {
+ 		if r.active {
+ 			fmt.Printf("  %-*s  %-*s  %-7s  %s\n", nameW, r.name, idW, r.id, r.mode, color.Green("● active"))
+diff --git a/pkg/login/oauth_credentials.go b/pkg/login/oauth_credentials.go
+index 3c89b40..6c8f017 100644
+--- a/pkg/login/oauth_credentials.go
++++ b/pkg/login/oauth_credentials.go
+@@ -30,7 +30,7 @@ func UpdateOAuthTokens(cfg *config.Config, resp *OAuthTokenResponse) error {
+ 	}
+ 
+ 	if resp.RefreshToken != "" {
+-		if err := config.KeyRing.Set(OAuthRefreshTokenKeychainKey, []byte(resp.RefreshToken), "Stripe CLI OAuth refresh token"); err != nil {
++		if err := config.KeyRing.Set(OAuthRefreshTokenKeychainKey, []byte(resp.RefreshToken), "Stripe CLI refresh token"); err != nil {
+ 			return err
+ 		}
+ 	}
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index a80d052..553a562 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -325,20 +325,19 @@ func printAuthorizedSummary(accounts []config.AuthorizedAccount, activeID string
+ 	rows := buildContextRows(accounts, activeID, activeLivemode)
+ 
+ 	if len(rows) == 0 {
+-		fmt.Printf("%s Done! The Stripe CLI is configured with your OAuth credentials.\n", color.Green("✓"))
++		fmt.Printf("%s Done! The Stripe CLI is configured with your credentials.\n", color.Green("✓"))
+ 		return
+ 	}
+ 
+ 	if len(rows) == 1 {
+ 		r := rows[0]
+ 		ctx := fmt.Sprintf("%s · %s", r.name, displayMode(r.mode))
+-		fmt.Printf("%s Done! The Stripe CLI is authorized for %s (%s)\n", color.Green("✓"), ctx, r.id)
+-		fmt.Printf("  Active context: %s\n\n", ctx)
++		fmt.Printf("%s Done! The Stripe CLI is authorized for %s (%s)\n\n", color.Green("✓"), ctx, r.id)
+ 		fmt.Println("Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
+ 		return
+ 	}
+ 
+-	fmt.Printf("%s Done! The Stripe CLI is authorized for %d contexts.\n\n", color.Green("✓"), len(rows))
++	fmt.Printf("%s Done! The Stripe CLI is authorized for:\n\n", color.Green("✓"))
+ 
+ 	nameW, modeW, idW := 0, 0, 0
+ 	for _, r := range rows {
+@@ -353,9 +352,11 @@ func printAuthorizedSummary(accounts []config.AuthorizedAccount, activeID string
+ 		}
+ 	}
+ 
++	var active contextRow
+ 	for _, r := range rows {
+ 		mode := displayMode(r.mode)
+ 		if r.active {
++			active = r
+ 			fmt.Printf("  %-*s  %-*s  %-*s  %s active\n", nameW, r.name, modeW, mode, idW, r.id, color.Green("●"))
+ 		} else {
+ 			fmt.Printf("  %-*s  %-*s  %s\n", nameW, r.name, modeW, mode, r.id)
+@@ -363,7 +364,8 @@ func printAuthorizedSummary(accounts []config.AuthorizedAccount, activeID string
+ 	}
+ 
+ 	fmt.Println()
+-	fmt.Println("Run 'stripe switch context' to change your active context.")
++	fmt.Printf("Currently active: %s · %s (%s)\n\n", active.name, displayMode(active.mode), active.id)
++	fmt.Println("Run 'stripe switch' to switch to a different account, or between live mode and a sandbox.")
+ 	fmt.Println("Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
+ }
+ 
+diff --git a/pkg/login/oauth_pending.go b/pkg/login/oauth_pending.go
+index 1a8b54f..85fbca6 100644
+--- a/pkg/login/oauth_pending.go
++++ b/pkg/login/oauth_pending.go
+@@ -40,13 +40,13 @@ func loadPendingDeviceAuth() (*oauthContinuation, error) {
+ 	data, err := os.ReadFile(pendingDeviceAuthPath())
+ 	if err != nil {
+ 		if errors.Is(err, os.ErrNotExist) {
+-			return nil, errorcategory.New(errorcategory.UserInput, "no pending OAuth login found; run 'stripe login --non-interactive' first")
++			return nil, errorcategory.New(errorcategory.UserInput, "no pending login found; run 'stripe login --non-interactive' first")
+ 		}
+ 		return nil, err
+ 	}
+ 	var cont oauthContinuation
+ 	if err := json.Unmarshal(data, &cont); err != nil {
+-		return nil, fmt.Errorf("invalid pending OAuth state: %w", err)
++		return nil, fmt.Errorf("invalid pending login state: %w", err)
+ 	}
+ 	return &cont, nil
+ }
+diff --git a/pkg/login/oauth_reauth.go b/pkg/login/oauth_reauth.go
+index d24af70..deb2bcf 100644
+--- a/pkg/login/oauth_reauth.go
++++ b/pkg/login/oauth_reauth.go
+@@ -56,7 +56,7 @@ func Reauth(ctx context.Context, accessBaseURL, accessToken string) error {
+ 	fmt.Println()
+ 	if !isSSH() && canOpenBrowser() {
+ 		browserOpened = make(chan struct{})
+-		fmt.Printf("To authorize more contexts, visit %s\n\n", reauthURL)
++		fmt.Printf("To authorize more accounts in live mode or a sandbox, visit %s\n\n", reauthURL)
+ 		fmt.Println("Press enter to open the browser (^C to quit)")
+ 		go func() {
+ 			fmt.Scanln() //nolint:errcheck
+@@ -162,7 +162,7 @@ func waitForReauthCompletion(ctx context.Context, accessBaseURL, accessToken str
+ 		switch {
+ 		case errors.Is(err, context.Canceled):
+ 			ansi.ClearLine(os.Stdout)
+-			fmt.Println("Canceled. Run 'stripe whoami' to see your authorized contexts or 'stripe login --new-session' to log in as a different user.")
++			fmt.Println("Canceled. Run 'stripe whoami' to see the accounts you're logged in to or 'stripe login --new-session' to log in as a different user.")
+ 			return nil
+ 		case errors.Is(err, errReauthTimeout):
+ 			fmt.Println("Still waiting on the re-authorization. Run 'stripe whoami' once you've finished.")
+diff --git a/pkg/login/oauth_refresh.go b/pkg/login/oauth_refresh.go
+index 6f896f4..577650c 100644
+--- a/pkg/login/oauth_refresh.go
++++ b/pkg/login/oauth_refresh.go
+@@ -60,7 +60,7 @@ func refreshOAuthToken(p *config.Profile) error {
+ 	}
+ 
+ 	if tokenResp.RefreshToken != "" {
+-		if err := config.KeyRing.Set(config.OAuthRefreshTokenKeychainKey, []byte(tokenResp.RefreshToken), "Stripe CLI OAuth refresh token"); err != nil {
++		if err := config.KeyRing.Set(config.OAuthRefreshTokenKeychainKey, []byte(tokenResp.RefreshToken), "Stripe CLI refresh token"); err != nil {
+ 			return err
+ 		}
+ 	} else {
+diff --git a/pkg/login/switch_context.go b/pkg/login/switch_context.go
+index e5127c9..5d4e292 100644
+--- a/pkg/login/switch_context.go
++++ b/pkg/login/switch_context.go
+@@ -35,7 +35,7 @@ func SwitchContext(ctx context.Context, accessBaseURL string, cfg *config.Config
+ 		return nil, err
+ 	}
+ 	if !strings.HasPrefix(uat, "oak_") {
+-		return nil, errorcategory.Errorf(errorcategory.Auth, "not logged in with OAuth; run 'stripe login' first")
++		return nil, errorcategory.Errorf(errorcategory.Auth, "not logged in; run 'stripe login' first")
+ 	}
+ 
+ 	accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, uat)
+@@ -257,7 +257,8 @@ func (m switchContextModel) View() tea.View {
+ 		}
+ 	}
+ 
+-	sb.WriteString("\n↑↓ to navigate · enter to select · esc to cancel")
++	sb.WriteString("\nRun 'stripe login' to authorize additional accounts or sandboxes.\n\n")
++	sb.WriteString("↑↓ to navigate · enter to select · esc to cancel")
+ 	return tea.NewView(sb.String())
+ }
+ 
+diff --git a/pkg/proxy/filter_by_source_test.go b/pkg/proxy/filter_by_source_test.go
+new file mode 100644
+index 0000000..1593672
+--- /dev/null
++++ b/pkg/proxy/filter_by_source_test.go
+@@ -0,0 +1,128 @@
++package proxy
++
++import (
++	"testing"
++
++	log "github.com/sirupsen/logrus"
++	"github.com/stretchr/testify/assert"
++
++	"github.com/stripe/stripe-cli/pkg/websocket"
++)
++
++func newProcessorWithEventsFrom(eventsFrom string) *WebhookEventProcessor {
++	return &WebhookEventProcessor{
++		cfg: &WebhookEventProcessorConfig{
++			Log:        log.StandardLogger(),
++			OutCh:      make(chan websocket.IElement, 1),
++			EventsFrom: eventsFrom,
++		},
++	}
++}
++
++func TestFilterBySource(t *testing.T) {
++	tests := []struct {
++		name       string
++		eventsFrom string
++		account    string
++		wantSkip   bool
++	}{
++		{
++			name:       "@self skips connect events",
++			eventsFrom: "@self",
++			account:    "acct_123",
++			wantSkip:   true,
++		},
++		{
++			name:       "@self allows self events",
++			eventsFrom: "@self",
++			account:    "",
++			wantSkip:   false,
++		},
++		{
++			name:       "@accounts skips self events",
++			eventsFrom: "@accounts",
++			account:    "",
++			wantSkip:   true,
++		},
++		{
++			name:       "@accounts allows connect events",
++			eventsFrom: "@accounts",
++			account:    "acct_123",
++			wantSkip:   false,
++		},
++		{
++			name:       "all allows self events",
++			eventsFrom: "all",
++			account:    "",
++			wantSkip:   false,
++		},
++		{
++			name:       "all allows connect events",
++			eventsFrom: "all",
++			account:    "acct_123",
++			wantSkip:   false,
++		},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			p := newProcessorWithEventsFrom(tt.eventsFrom)
++			evt := &StripeEvent{Account: tt.account}
++			assert.Equal(t, tt.wantSkip, p.filterBySource(evt))
++		})
++	}
++}
++
++func TestFilterByV2Source(t *testing.T) {
++	tests := []struct {
++		name       string
++		eventsFrom string
++		context    string
++		wantSkip   bool
++	}{
++		{
++			name:       "@self skips connect v2 events",
++			eventsFrom: "@self",
++			context:    "acct_123",
++			wantSkip:   true,
++		},
++		{
++			name:       "@self allows self v2 events",
++			eventsFrom: "@self",
++			context:    "",
++			wantSkip:   false,
++		},
++		{
++			name:       "@accounts skips self v2 events",
++			eventsFrom: "@accounts",
++			context:    "",
++			wantSkip:   true,
++		},
++		{
++			name:       "@accounts allows connect v2 events",
++			eventsFrom: "@accounts",
++			context:    "acct_123",
++			wantSkip:   false,
++		},
++		{
++			name:       "all allows self v2 events",
++			eventsFrom: "all",
++			context:    "",
++			wantSkip:   false,
++		},
++		{
++			name:       "all allows connect v2 events",
++			eventsFrom: "all",
++			context:    "acct_123",
++			wantSkip:   false,
++		},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			p := newProcessorWithEventsFrom(tt.eventsFrom)
++			evt := &V2EventPayload{Context: tt.context}
++			assert.Equal(t, tt.wantSkip, p.filterByV2Source(evt))
++		})
++	}
++}
+diff --git a/pkg/proxy/proxy.go b/pkg/proxy/proxy.go
+index 4439752..2360be8 100644
+--- a/pkg/proxy/proxy.go
++++ b/pkg/proxy/proxy.go
+@@ -117,6 +117,9 @@ type Config struct {
+ 
+ 	// LoggedInAccountID is the currently logged-in account ID
+ 	LoggedInAccountID string
++
++	// EventsFrom filters events by source: "@self", "@accounts", or "all"
++	EventsFrom string
+ }
+ 
+ // A Proxy opens a websocket connection with Stripe, listens for incoming
+@@ -162,7 +165,7 @@ func (p *Proxy) Run(ctx context.Context) error {
+ 		session, err := p.createSession(ctx)
+ 		if err != nil {
+ 			p.cfg.OutCh <- websocket.ErrorElement{
+-				Error: errorcategory.Errorf(errorcategory.Auth, "Error while authenticating with Stripe: %v", err),
++				Error: errorcategory.Errorf(errorcategory.Auth, "Error while authenticating with Stripe: %w", err),
+ 			}
+ 			return err
+ 		}
+@@ -362,14 +365,13 @@ func Init(ctx context.Context, cfg *Config) (*Proxy, error) {
+ 
+ 	if len(cfg.ThinEvents) > 0 {
+ 		for _, event := range cfg.ThinEvents {
++			if event == "*" {
++				cfg.Log.Infof("Subscribing to all thin events is only supported in the CLI; thin event destinations do not support selecting all event types")
++				continue
++			}
+ 			if _, found := validThinEvents[event]; !found {
+-				// If not found in validThinEvents, check in validPreviewThinEvents
+ 				if _, foundInPreview := validPreviewThinEvents[event]; !foundInPreview {
+-					if event == "*" {
+-						cfg.Log.Infof("* is only supported in the CLI, thin event destinations do not support selecting all event types\n")
+-					} else {
+-						cfg.Log.Warningf("You're attempting to listen for \"%s\", which isn't a valid thin event or preview event\n", event)
+-					}
++					cfg.Log.Warningf("You're attempting to listen for \"%s\", which isn't a valid thin event or preview event\n", event)
+ 				}
+ 			}
+ 		}
+@@ -391,11 +393,13 @@ func Init(ctx context.Context, cfg *Config) (*Proxy, error) {
+ 	var endpointRoutes []EndpointRoute
+ 	if cfg.UseConfiguredWebhooks {
+ 		// build from user's API config
+-		endpoints := getEndpointsFromAPI(ctx, cfg.Client)
++		endpoints, err := getEndpointsFromAPI(ctx, cfg.Client)
++		if err != nil {
++			return nil, err
++		}
+ 		if len(endpoints.Data) == 0 {
+ 			return nil, errorcategory.New(errorcategory.UserInput, "you have not defined any webhook endpoints on your account, go to the Stripe Dashboard to add some: https://dashboard.stripe.com/test/webhooks")
+ 		}
+-		var err error
+ 		endpointRoutes, err = buildEndpointRoutes(endpoints, parseURL(cfg.ForwardURL), parseURL(cfg.ForwardConnectURL), cfg.ForwardHeaders, cfg.ForwardConnectHeaders)
+ 		if err != nil {
+ 			return nil, err
+@@ -453,6 +457,7 @@ func Init(ctx context.Context, cfg *Config) (*Proxy, error) {
+ 		SkipVerify:          cfg.SkipVerify,
+ 		Timeout:             cfg.Timeout,
+ 		LoggedInAccountID:   cfg.LoggedInAccountID,
++		EventsFrom:          cfg.EventsFrom,
+ 	}
+ 
+ 	p := &Proxy{
+@@ -583,7 +588,7 @@ func parseURL(url string) string {
+ 	return url
+ }
+ 
+-func getEndpointsFromAPI(ctx context.Context, client stripe.RequestPerformer) requests.WebhookEndpointList {
++func getEndpointsFromAPI(ctx context.Context, client stripe.RequestPerformer) (requests.WebhookEndpointList, error) {
+ 	return requests.WebhookEndpointsListWithClient(ctx, client, stripe.APIVersion, &config.Profile{})
+ }
+ 
+diff --git a/pkg/proxy/proxy_test.go b/pkg/proxy/proxy_test.go
+index c008905..f70cf9e 100644
+--- a/pkg/proxy/proxy_test.go
++++ b/pkg/proxy/proxy_test.go
+@@ -91,6 +91,48 @@ func TestBuildEndpointRoutes(t *testing.T) {
+ 	require.Equal(t, []string{"*"}, output[1].EventTypes)
+ }
+ 
++func TestInit_UseConfiguredWebhooks_APIError(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		require.Equal(t, "/v1/webhook_endpoints", r.URL.Path)
++		w.WriteHeader(http.StatusInternalServerError)
++		w.Write([]byte(`{"error":"internal_server_error"}`))
++	}))
++	defer ts.Close()
++
++	baseURL, _ := url.Parse(ts.URL)
++
++	cfg := Config{
++		Client:                &stripe.Client{Credentials: stripe.NewAPIKeyCredentials("sk_test_123"), BaseURL: baseURL},
++		UseConfiguredWebhooks: true,
++		ForwardURL:            "http://localhost:1234",
++	}
++
++	_, err := Init(context.Background(), &cfg)
++	require.Error(t, err)
++	require.NotContains(t, err.Error(), "you have not defined any webhook endpoints")
++}
++
++func TestInit_UseConfiguredWebhooks_NoEndpoints(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		require.Equal(t, "/v1/webhook_endpoints", r.URL.Path)
++		w.WriteHeader(http.StatusOK)
++		w.Write([]byte(`{"data":[]}`))
++	}))
++	defer ts.Close()
++
++	baseURL, _ := url.Parse(ts.URL)
++
++	cfg := Config{
++		Client:                &stripe.Client{Credentials: stripe.NewAPIKeyCredentials("sk_test_123"), BaseURL: baseURL},
++		UseConfiguredWebhooks: true,
++		ForwardURL:            "http://localhost:1234",
++	}
++
++	_, err := Init(context.Background(), &cfg)
++	require.Error(t, err)
++	require.Contains(t, err.Error(), "you have not defined any webhook endpoints")
++}
++
+ func TestBuildForwardURL(t *testing.T) {
+ 	f, err := url.Parse("http://example.com/foo/bar.php")
+ 	require.NoError(t, err)
+diff --git a/pkg/proxy/webhook_event_processor.go b/pkg/proxy/webhook_event_processor.go
+index 2a12b82..fd76b0a 100644
+--- a/pkg/proxy/webhook_event_processor.go
++++ b/pkg/proxy/webhook_event_processor.go
+@@ -38,6 +38,9 @@ type WebhookEventProcessorConfig struct {
+ 
+ 	// LoggedInAccountID is the currently logged-in account ID
+ 	LoggedInAccountID string
++
++	// EventsFrom filters events by source: "@self", "@accounts", or "all"
++	EventsFrom string
+ }
+ 
+ // WebhookEventProcessor encapsulates logic around processing and forwarding
+@@ -150,6 +153,10 @@ func (p *WebhookEventProcessor) processEvent(webhookEvent *websocket.WebhookEven
+ 		return
+ 	}
+ 
++	if p.filterBySource(&evt) {
++		return
++	}
++
+ 	evtCtx := eventContext{
+ 		webhookID:             webhookEvent.WebhookID,
+ 		webhookConversationID: webhookEvent.WebhookConversationID,
+@@ -196,6 +203,10 @@ func (p *WebhookEventProcessor) processV2Event(v2Event *websocket.StripeV2Event)
+ 		return
+ 	}
+ 
++	if p.filterByV2Source(&evt) {
++		return
++	}
++
+ 	// notify consumers
+ 	p.cfg.OutCh <- websocket.DataElement{
+ 		Data: evt,
+@@ -237,6 +248,28 @@ func (p *WebhookEventProcessor) filterWebhookEvent(msg *websocket.WebhookEvent)
+ 	return false
+ }
+ 
++func (p *WebhookEventProcessor) filterBySource(evt *StripeEvent) bool {
++	switch p.cfg.EventsFrom {
++	case "@self":
++		return evt.IsConnect()
++	case "@accounts":
++		return !evt.IsConnect()
++	default:
++		return false
++	}
++}
++
++func (p *WebhookEventProcessor) filterByV2Source(evt *V2EventPayload) bool {
++	switch p.cfg.EventsFrom {
++	case "@self":
++		return evt.IsConnect()
++	case "@accounts":
++		return !evt.IsConnect()
++	default:
++		return false
++	}
++}
++
+ func (p *WebhookEventProcessor) processEndpointResponse(evtCtx eventContext, forwardURL string, resp *http.Response) {
+ 	buf, err := io.ReadAll(resp.Body)
+ 	if err != nil {
+diff --git a/pkg/requests/base.go b/pkg/requests/base.go
+index b3f0b86..f08e515 100644
+--- a/pkg/requests/base.go
++++ b/pkg/requests/base.go
+@@ -76,11 +76,13 @@ func (r *RequestParameters) SetVersion(value string) {
+ 
+ // RequestError captures the response of the request that resulted in an error
+ type RequestError struct {
+-	msg        string
+-	StatusCode int
+-	ErrorType  string
+-	ErrorCode  string
+-	Body       interface{} // the raw response body
++	msg           string
++	StatusCode    int
++	ErrorType     string
++	ErrorCode     string
++	Message       string      // the human-readable "message" field from the error response body
++	HasOAKContext bool        // true if the request was authenticated with an OAuth/UAT token rather than a plain API key
++	Body          interface{} // the raw response body
+ }
+ 
+ func (e RequestError) Error() string {
+@@ -99,6 +101,20 @@ func IsAPIKeyExpiredError(err error) bool {
+ 	return false
+ }
+ 
++// MorePermissionsRequiredErrorCode is the Stripe API error code returned
++// when the API key's role does not have permission to perform a request.
++const MorePermissionsRequiredErrorCode = "more_permissions_required"
++
++// IsMorePermissionsRequiredError returns true if the provided error was
++// caused by a request returning a `more_permissions_required` error code.
++func IsMorePermissionsRequiredError(err error) bool {
++	var reqErr RequestError
++	if errors.As(err, &reqErr) {
++		return reqErr.StatusCode == http.StatusForbidden && reqErr.ErrorCode == MorePermissionsRequiredErrorCode
++	}
++	return false
++}
++
+ // Base encapsulates the required information needed to make requests to the API
+ type Base struct {
+ 	Cmd *cobra.Command
+@@ -203,7 +219,7 @@ func (rb *Base) InitFlags() {
+ 	rb.Cmd.Flags().StringVar(&rb.Parameters.stripeAccount, "stripe-account", "", "Set a header identifying the connected account")
+ 	rb.Cmd.Flags().StringVar(&rb.Parameters.stripeContext, "stripe-context", "", "Set a header identifying the compartment context")
+ 	rb.Cmd.Flags().BoolVarP(&rb.showHeaders, "show-headers", "s", false, "Show response headers")
+-	rb.Cmd.Flags().BoolVar(&rb.Livemode, "live", false, "Make a live request (default: test)")
++	rb.Cmd.Flags().BoolVar(&rb.Livemode, "live", false, "Make a live request (default: test). Requires that you're logged in to live mode — check with 'stripe whoami', switch with 'stripe switch'")
+ 	rb.Cmd.Flags().BoolVar(&rb.DarkStyle, "dark-style", false, "Use a darker color scheme better suited for lighter command-lines")
+ 	rb.Cmd.Flags().BoolVar(&rb.DryRun, "dry-run", false, "Preview the request without sending it")
+ 
+@@ -235,9 +251,9 @@ func (rb *Base) ResolveCredentials() (stripe.Credentials, error) {
+ 	var mismatch *config.ActiveContextLivemodeMismatchError
+ 	if errors.As(err, &mismatch) {
+ 		if mismatch.ActiveLivemode {
+-			return stripe.Credentials{}, errorcategory.UserInputErrorf("You're in live mode. Add --live to run the command, or run 'stripe switch context' to select a sandbox.")
++			return stripe.Credentials{}, errorcategory.UserInputErrorf("You're in live mode. Add --live to run the command, or run 'stripe switch' to select a sandbox.")
+ 		}
+-		return stripe.Credentials{}, errorcategory.UserInputErrorf("You're in a sandbox. Remove --live to run the command, or run 'stripe switch context' to select a live account.")
++		return stripe.Credentials{}, errorcategory.UserInputErrorf("You're in a sandbox. Remove --live to run the command, or run 'stripe switch' to select a live account.")
+ 	}
+ 	return creds, err
+ }
+@@ -354,6 +370,7 @@ func (rb *Base) performRequest(ctx context.Context, client stripe.RequestPerform
+ 
+ 	if resp.StatusCode == 401 || (errOnStatus && resp.StatusCode >= 300) {
+ 		requestError := compileRequestError(body, resp.StatusCode)
++		requestError.HasOAKContext = creds.OAKContext != ""
+ 
+ 		// For OAK tokens, "unauthorized" means the token was manually revoked
+ 		// or otherwise invalidated server-side. Attempt a transparent refresh
+@@ -581,8 +598,9 @@ func setNestedValue(m map[string]interface{}, key string, value string) {
+ 
+ func compileRequestError(body []byte, statusCode int) RequestError {
+ 	type requestErrorContent struct {
+-		Code string `json:"code"`
+-		Type string `json:"type"`
++		Code    string `json:"code"`
++		Type    string `json:"type"`
++		Message string `json:"message"`
+ 	}
+ 
+ 	type requestErrorBody struct {
+@@ -598,6 +616,7 @@ func compileRequestError(body []byte, statusCode int) RequestError {
+ 		StatusCode: statusCode,
+ 		ErrorType:  errorBody.Content.Type,
+ 		ErrorCode:  errorBody.Content.Code,
++		Message:    errorBody.Content.Message,
+ 		Body:       string(body),
+ 	}
+ }
+diff --git a/pkg/requests/base_test.go b/pkg/requests/base_test.go
+index 20d715b..babdb10 100644
+--- a/pkg/requests/base_test.go
++++ b/pkg/requests/base_test.go
+@@ -3,6 +3,7 @@ package requests
+ import (
+ 	"bufio"
+ 	"context"
++	"errors"
+ 	"fmt"
+ 	"io"
+ 	"net/http"
+@@ -401,6 +402,72 @@ func TestIsAPIKeyExpiredError(t *testing.T) {
+ 	})
+ }
+ 
++func TestIsMorePermissionsRequiredError(t *testing.T) {
++	for _, tt := range []struct {
++		statusCode int
++		errorCode  string
++		want       bool
++	}{
++		{200, "", false},
++		{403, "resource_missing", false},
++		{500, "more_permissions_required", false},
++		{403, "more_permissions_required", true},
++	} {
++		t.Run(fmt.Sprintf("status=%v,code=%q", tt.statusCode, tt.errorCode), func(t *testing.T) {
++			err := RequestError{
++				StatusCode: tt.statusCode,
++				ErrorCode:  tt.errorCode,
++			}
++			require.Equal(t, tt.want, IsMorePermissionsRequiredError(err))
++		})
++	}
++
++	t.Run("non-RequestError", func(t *testing.T) {
++		require.False(t, IsMorePermissionsRequiredError(fmt.Errorf("other")))
++	})
++
++	t.Run("wrapped", func(t *testing.T) {
++		err := fmt.Errorf("could not fetch resource: %w", RequestError{StatusCode: 403, ErrorCode: "more_permissions_required"})
++		require.True(t, IsMorePermissionsRequiredError(err))
++	})
++}
++
++func TestMakeRequest_MorePermissionsRequired(t *testing.T) {
++	body := `{"error":{"code":"more_permissions_required","message":"The provided key does not have the required permissions for this endpoint.","type":"invalid_request_error"}}`
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusForbidden)
++		w.Write([]byte(body))
++	}))
++	defer ts.Close()
++
++	rb := Base{APIBaseURL: ts.URL}
++	rb.Method = http.MethodGet
++	params := &RequestParameters{}
++
++	t.Run("api key", func(t *testing.T) {
++		_, err := rb.MakeRequest(context.Background(), stripe.NewAPIKeyCredentials("sk_test_1234"), "/foo/bar", params, make(map[string]interface{}), true, nil)
++		require.Error(t, err)
++		require.True(t, IsMorePermissionsRequiredError(err))
++
++		var reqErr RequestError
++		require.True(t, errors.As(err, &reqErr))
++		require.False(t, reqErr.HasOAKContext)
++		require.Equal(t, "The provided key does not have the required permissions for this endpoint.", reqErr.Message)
++	})
++
++	t.Run("oak credentials", func(t *testing.T) {
++		creds := stripe.NewOAKCredentials("oak_test_123", "acct_a", false)
++		_, err := rb.MakeRequest(context.Background(), creds, "/foo/bar", params, make(map[string]interface{}), true, nil)
++		require.Error(t, err)
++		require.True(t, IsMorePermissionsRequiredError(err))
++
++		var reqErr RequestError
++		require.True(t, errors.As(err, &reqErr))
++		require.True(t, reqErr.HasOAKContext)
++	})
++}
++
+ func TestComputeVersionHeader(t *testing.T) {
+ 	t.Run("explicit version", func(t *testing.T) {
+ 		rb := Base{}
+diff --git a/pkg/requests/webhook_endpoints.go b/pkg/requests/webhook_endpoints.go
+index 00ae22a..60373a0 100644
+--- a/pkg/requests/webhook_endpoints.go
++++ b/pkg/requests/webhook_endpoints.go
+@@ -50,7 +50,7 @@ func WebhookEndpointsList(ctx context.Context, baseURL, apiVersion string, profi
+ }
+ 
+ // WebhookEndpointsListWithClient returns all the webhook endpoints on a users' account
+-func WebhookEndpointsListWithClient(ctx context.Context, client stripe.RequestPerformer, apiVersion string, profile *config.Profile) WebhookEndpointList {
++func WebhookEndpointsListWithClient(ctx context.Context, client stripe.RequestPerformer, apiVersion string, profile *config.Profile) (WebhookEndpointList, error) {
+ 	params := &RequestParameters{
+ 		data:    []string{"limit=30"},
+ 		version: apiVersion,
+@@ -61,11 +61,16 @@ func WebhookEndpointsListWithClient(ctx context.Context, client stripe.RequestPe
+ 		Method:         http.MethodGet,
+ 		SuppressOutput: true,
+ 	}
+-	resp, _ := base.MakeRequestWithClient(ctx, client, "/v1/webhook_endpoints", params, make(map[string]interface{}), true, nil)
++	resp, err := base.MakeRequestWithClient(ctx, client, "/v1/webhook_endpoints", params, make(map[string]interface{}), true, nil)
++	if err != nil {
++		return WebhookEndpointList{}, err
++	}
+ 	data := WebhookEndpointList{}
+-	json.Unmarshal(resp, &data)
++	if err := json.Unmarshal(resp, &data); err != nil {
++		return WebhookEndpointList{}, err
++	}
+ 
+-	return data
++	return data, nil
+ }
+ 
+ // WebhookEndpointCreate creates a new webhook endpoint
+diff --git a/pkg/stripe/client.go b/pkg/stripe/client.go
+index 7468b73..c18d702 100644
+--- a/pkg/stripe/client.go
++++ b/pkg/stripe/client.go
+@@ -101,6 +101,13 @@ func (c Credentials) SetRequestHeaders(req *http.Request) {
+ 	}
+ }
+ 
++// IsOAK reports whether these credentials are an OAK (User Access Token)
++// rather than a plain API key. Callers that validate the shape of an API key
++// need to skip that check for an OAK, whose permissions come from the user.
++func (c Credentials) IsOAK() bool {
++	return c.OAKLivemode != nil
++}
++
+ // Livemode reports the effective livemode for the credentials. For OAK tokens
+ // this is explicit; for plain API keys it is inferred from the key string.
+ func (c Credentials) Livemode() bool {
+diff --git a/pkg/stripe/client_test.go b/pkg/stripe/client_test.go
+index 3fb6a49..596f702 100644
+--- a/pkg/stripe/client_test.go
++++ b/pkg/stripe/client_test.go
+@@ -235,3 +235,9 @@ func TestPerformRequest_ConfigureFuncReturnsError(t *testing.T) {
+ 		resp.Body.Close()
+ 	}
+ }
++
++func TestIsOAK(t *testing.T) {
++	require.True(t, NewOAKCredentials("oak_test_123", "acct_a", false).IsOAK())
++	require.False(t, NewAPIKeyCredentials("sk_test_123").IsOAK())
++	require.False(t, Credentials{}.IsOAK())
++}

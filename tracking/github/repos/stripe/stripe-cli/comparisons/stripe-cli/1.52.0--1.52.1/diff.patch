@@ -1,0 +1,807 @@
+diff --git a/pkg/config/config.go b/pkg/config/config.go
+index 66b09a5..e65c68b 100644
+--- a/pkg/config/config.go
++++ b/pkg/config/config.go
+@@ -160,13 +160,6 @@ func (c *Config) InitConfig() {
+ 		viper.SetConfigType("toml")
+ 		viper.SetConfigFile(configFile)
+ 		viper.SetConfigPermissions(os.FileMode(0600))
+-
+-		// Try to change permissions manually, because we used to create files
+-		// with default permissions (0644)
+-		err := os.Chmod(configFile, os.FileMode(0600))
+-		if err != nil && !os.IsNotExist(err) {
+-			log.Fatalf("%s", err)
+-		}
+ 	}
+ 
+ 	// If a profiles file is found, read it in.
+@@ -803,6 +796,24 @@ func (c *Config) WriteConfigField(field string, value interface{}) error {
+ 	return writeConfig(runtimeViper)
+ }
+ 
++// DeleteConfigField removes a configuration field and writes the updated
++// configuration to disk. A field that is not set leaves the file untouched.
++func (c *Config) DeleteConfigField(field string) error {
++	runtimeViper := viper.GetViper()
++	if !runtimeViper.IsSet(field) {
++		return nil
++	}
++
++	// removeKey walks AllSettings, where viper has lowercased every key, but only
++	// lowercases the last segment of the path it is given.
++	runtimeViper, err := removeKey(runtimeViper, strings.ToLower(field))
++	if err != nil {
++		return err
++	}
++
++	return writeConfig(runtimeViper)
++}
++
+ // writeConfig writes a viper instance to the config file and syncs the global viper.
+ func writeConfig(runtimeViper *viper.Viper) error {
+ 	// Refuse to write a file whose layout version this binary does not know. Both
+diff --git a/pkg/config/config_test.go b/pkg/config/config_test.go
+index c994720..4099887 100644
+--- a/pkg/config/config_test.go
++++ b/pkg/config/config_test.go
+@@ -24,6 +24,42 @@ func TestRemoveKey(t *testing.T) {
+ 	require.ElementsMatch(t, []string{"stay", "remove"}, v.AllKeys())
+ }
+ 
++// The table name is mixed case on purpose: viper stores it lowercased, and the
++// delete has to find that table rather than drop the whole thing.
++func TestDeleteConfigFieldRemovesOnlyThatField(t *testing.T) {
++	c, profilesFile, cleanup := setupTestConfig(t)
++	defer cleanup()
++
++	pluginKey := PluginConfigKey("appA", PluginConfigUpdatesField)
++	siblingKey := PluginConfigKey("appA", "sibling")
++	globalKey := PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField)
++	require.NoError(t, c.WriteConfigField(pluginKey, PluginConfigOn))
++	require.NoError(t, c.WriteConfigField(siblingKey, "kept"))
++	require.NoError(t, c.WriteConfigField(globalKey, PluginConfigOff))
++
++	require.NoError(t, c.DeleteConfigField(pluginKey))
++
++	onDisk := viper.New()
++	onDisk.SetConfigFile(profilesFile)
++	require.NoError(t, onDisk.ReadInConfig())
++	require.False(t, onDisk.IsSet(pluginKey))
++	require.Equal(t, "kept", onDisk.GetString(siblingKey))
++	require.Equal(t, PluginConfigOff, onDisk.GetString(globalKey))
++
++	require.False(t, viper.IsSet(pluginKey))
++}
++
++func TestDeleteConfigFieldLeavesAnUnsetFieldAlone(t *testing.T) {
++	c, profilesFile, cleanup := setupTestConfig(t)
++	defer cleanup()
++
++	require.NoError(t, c.DeleteConfigField(PluginConfigKey("apps", PluginConfigUpdatesField)))
++
++	// Nothing to remove means nothing to write, so the file is never created.
++	_, err := os.Stat(profilesFile)
++	require.ErrorIs(t, err, os.ErrNotExist)
++}
++
+ func setupTestConfig(t *testing.T) (*Config, string, func()) {
+ 	t.Helper()
+ 	profilesFile := filepath.Join(t.TempDir(), "config.toml")
+diff --git a/pkg/config/plugin_configs.go b/pkg/config/plugin_configs.go
+index 4229430..9a608b0 100644
+--- a/pkg/config/plugin_configs.go
++++ b/pkg/config/plugin_configs.go
+@@ -41,15 +41,15 @@ func PluginConfigKey(scope, field string) string {
+ }
+ 
+ // PluginUpdatesEnabled reports whether automatic updates are enabled for the
+-// named plugin, per `stripe plugin auto-update`.
++// named plugin, per `stripe plugin auto-update`. A per-plugin choice overrides a
++// global choice; defaultEnabled applies only when neither is set.
+ //
+-// Updates are off unless the user turned them on. Nothing should download a new
+-// plugin version on its own just because no one said otherwise.
+-func PluginUpdatesEnabled(pluginName string) bool {
+-	return pluginUpdatesEnabled(viper.GetViper(), pluginName)
++// Pass the backend's auto_update_default when deciding whether to install an update.
++func PluginUpdatesEnabled(pluginName string, defaultEnabled bool) bool {
++	return pluginUpdatesEnabled(viper.GetViper(), pluginName, defaultEnabled)
+ }
+ 
+-func pluginUpdatesEnabled(v *viper.Viper, pluginName string) bool {
++func pluginUpdatesEnabled(v *viper.Viper, pluginName string, defaultEnabled bool) bool {
+ 	// A setting on the plugin itself answers alone, so `--disable` on one plugin
+ 	// holds under a global `--enable` and the reverse. A value that is neither "on"
+ 	// nor "off" counts as set: the user configured this plugin, which is enough to
+@@ -61,8 +61,10 @@ func pluginUpdatesEnabled(v *viper.Viper, pluginName string) bool {
+ 		}
+ 	}
+ 
+-	enabled, _ := pluginConfigToggle(v, PluginConfigGlobalScope, PluginConfigUpdatesField)
+-	return enabled
++	if enabled, isSet := pluginConfigToggle(v, PluginConfigGlobalScope, PluginConfigUpdatesField); isSet {
++		return enabled
++	}
++	return defaultEnabled
+ }
+ 
+ // pluginConfigToggle reads one on/off plugin config field. isSet distinguishes a
+diff --git a/pkg/config/plugin_configs_test.go b/pkg/config/plugin_configs_test.go
+index 2e7bf41..1b35ad6 100644
+--- a/pkg/config/plugin_configs_test.go
++++ b/pkg/config/plugin_configs_test.go
+@@ -1,6 +1,7 @@
+ package config
+ 
+ import (
++	"fmt"
+ 	"testing"
+ 
+ 	"github.com/spf13/viper"
+@@ -18,7 +19,7 @@ func TestPluginUpdatesEnabledPrecedence(t *testing.T) {
+ 		wantForOther bool
+ 	}{
+ 		{
+-			name:         "unset defaults to off",
++			name:         "unset follows backend default",
+ 			wantForApps:  false,
+ 			wantForOther: false,
+ 		},
+@@ -70,6 +71,14 @@ func TestPluginUpdatesEnabledPrecedence(t *testing.T) {
+ 			wantForApps:  false,
+ 			wantForOther: false,
+ 		},
++		{
++			name:        "unrecognized global value overrides the backend",
++			globalValue: "yes",
++		},
++		{
++			name:        "non-string global value overrides the backend",
++			globalValue: true,
++		},
+ 	}
+ 
+ 	for _, tt := range tests {
+@@ -82,8 +91,19 @@ func TestPluginUpdatesEnabledPrecedence(t *testing.T) {
+ 				v.Set(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField), tt.globalValue)
+ 			}
+ 
+-			require.Equal(t, tt.wantForApps, pluginUpdatesEnabled(v, plugin))
+-			require.Equal(t, tt.wantForOther, pluginUpdatesEnabled(v, "projects"))
++			for _, backendDefault := range []bool{false, true} {
++				t.Run(fmt.Sprintf("backend_default=%t", backendDefault), func(t *testing.T) {
++					wantForApps, wantForOther := tt.wantForApps, tt.wantForOther
++					if tt.globalValue == nil {
++						wantForOther = backendDefault
++						if tt.pluginValue == nil {
++							wantForApps = backendDefault
++						}
++					}
++					require.Equal(t, wantForApps, pluginUpdatesEnabled(v, plugin, backendDefault))
++					require.Equal(t, wantForOther, pluginUpdatesEnabled(v, "projects", backendDefault))
++				})
++			}
+ 		})
+ 	}
+ }
+@@ -95,11 +115,11 @@ func TestPluginUpdatesEnabledIgnoresEmptyPluginName(t *testing.T) {
+ 	v := viper.New()
+ 	v.Set(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField), PluginConfigOn)
+ 
+-	require.True(t, pluginUpdatesEnabled(v, ""))
++	require.True(t, pluginUpdatesEnabled(v, "", false))
+ 
+ 	v.Set(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField), PluginConfigOff)
+ 
+-	require.False(t, pluginUpdatesEnabled(v, ""))
++	require.False(t, pluginUpdatesEnabled(v, "", true))
+ }
+ 
+ // The setting is written by `stripe plugin auto-update` and read here, from two
+@@ -108,12 +128,22 @@ func TestPluginUpdatesEnabledReadsWhatAutoUpdateWrites(t *testing.T) {
+ 	c, _, cleanup := setupTestConfig(t)
+ 	defer cleanup()
+ 
+-	require.False(t, PluginUpdatesEnabled("apps"))
++	require.False(t, PluginUpdatesEnabled("apps", false))
++	require.True(t, PluginUpdatesEnabled("apps", true))
+ 
+ 	require.NoError(t, c.WriteConfigField(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField), PluginConfigOn))
+-	require.True(t, PluginUpdatesEnabled("apps"))
++	require.True(t, PluginUpdatesEnabled("apps", false))
+ 
+ 	require.NoError(t, c.WriteConfigField(PluginConfigKey("apps", PluginConfigUpdatesField), PluginConfigOff))
+-	require.False(t, PluginUpdatesEnabled("apps"))
+-	require.True(t, PluginUpdatesEnabled("projects"))
++	require.False(t, PluginUpdatesEnabled("apps", true))
++	require.True(t, PluginUpdatesEnabled("projects", false))
++
++	// `--unset` walks back down the same precedence: the plugin to the global
++	// choice, then the global choice to the plugin's default.
++	require.NoError(t, c.DeleteConfigField(PluginConfigKey("apps", PluginConfigUpdatesField)))
++	require.True(t, PluginUpdatesEnabled("apps", false))
++
++	require.NoError(t, c.DeleteConfigField(PluginConfigKey(PluginConfigGlobalScope, PluginConfigUpdatesField)))
++	require.False(t, PluginUpdatesEnabled("apps", false))
++	require.True(t, PluginUpdatesEnabled("apps", true))
+ }
+diff --git a/pkg/proxy/events_list.go b/pkg/proxy/events_list.go
+index 702ff16..62641a4 100644
+--- a/pkg/proxy/events_list.go
++++ b/pkg/proxy/events_list.go
+@@ -13,6 +13,9 @@ var validEvents = map[string]bool{
+ 	"application_fee.created":                               true,
+ 	"application_fee.refund.updated":                        true,
+ 	"application_fee.refunded":                              true,
++	"apps.install.created":                                  true,
++	"apps.install.deleted":                                  true,
++	"apps.install.updated":                                  true,
+ 	"balance.available":                                     true,
+ 	"balance_settings.updated":                              true,
+ 	"billing.alert.triggered":                               true,
+@@ -272,30 +275,246 @@ var validEvents = map[string]bool{
+ }
+ 
+ var validThinEvents = map[string]bool{
+-	"v1.billing.meter.error_report_triggered":                            true,
+-	"v1.billing.meter.no_meter_found":                                    true,
+-	"v2.commerce.product_catalog.imports.failed":                         true,
+-	"v2.commerce.product_catalog.imports.processing":                     true,
+-	"v2.commerce.product_catalog.imports.succeeded":                      true,
+-	"v2.commerce.product_catalog.imports.succeeded_with_errors":          true,
+-	"v2.core.account.closed":                                             true,
+-	"v2.core.account.created":                                            true,
+-	"v2.core.account.updated":                                            true,
+-	"v2.core.account[configuration.customer].capability_status_updated":  true,
+-	"v2.core.account[configuration.customer].updated":                    true,
+-	"v2.core.account[configuration.merchant].capability_status_updated":  true,
+-	"v2.core.account[configuration.merchant].updated":                    true,
+-	"v2.core.account[configuration.recipient].capability_status_updated": true,
+-	"v2.core.account[configuration.recipient].updated":                   true,
+-	"v2.core.account[defaults].updated":                                  true,
+-	"v2.core.account[future_requirements].updated":                       true,
+-	"v2.core.account[identity].updated":                                  true,
+-	"v2.core.account[requirements].updated":                              true,
+-	"v2.core.account_link.returned":                                      true,
+-	"v2.core.account_person.created":                                     true,
+-	"v2.core.account_person.deleted":                                     true,
+-	"v2.core.account_person.updated":                                     true,
+-	"v2.core.event_destination.ping":                                     true,
++	"v1.account.application.authorized":                                       true,
++	"v1.account.application.deauthorized":                                     true,
++	"v1.account.external_account.created":                                     true,
++	"v1.account.external_account.deleted":                                     true,
++	"v1.account.external_account.updated":                                     true,
++	"v1.account.updated":                                                      true,
++	"v1.application_fee.created":                                              true,
++	"v1.application_fee.refund.updated":                                       true,
++	"v1.application_fee.refunded":                                             true,
++	"v1.balance.available":                                                    true,
++	"v1.balance_settings.updated":                                             true,
++	"v1.billing.alert.triggered":                                              true,
++	"v1.billing.credit_balance_transaction.created":                           true,
++	"v1.billing.credit_grant.created":                                         true,
++	"v1.billing.credit_grant.updated":                                         true,
++	"v1.billing.meter.created":                                                true,
++	"v1.billing.meter.deactivated":                                            true,
++	"v1.billing.meter.error_report_triggered":                                 true,
++	"v1.billing.meter.no_meter_found":                                         true,
++	"v1.billing.meter.reactivated":                                            true,
++	"v1.billing.meter.updated":                                                true,
++	"v1.billing_portal.configuration.created":                                 true,
++	"v1.billing_portal.configuration.updated":                                 true,
++	"v1.billing_portal.session.created":                                       true,
++	"v1.capability.updated":                                                   true,
++	"v1.cash_balance.funds_available":                                         true,
++	"v1.charge.captured":                                                      true,
++	"v1.charge.dispute.closed":                                                true,
++	"v1.charge.dispute.created":                                               true,
++	"v1.charge.dispute.funds_reinstated":                                      true,
++	"v1.charge.dispute.funds_withdrawn":                                       true,
++	"v1.charge.dispute.updated":                                               true,
++	"v1.charge.expired":                                                       true,
++	"v1.charge.failed":                                                        true,
++	"v1.charge.pending":                                                       true,
++	"v1.charge.refund.updated":                                                true,
++	"v1.charge.refunded":                                                      true,
++	"v1.charge.succeeded":                                                     true,
++	"v1.charge.updated":                                                       true,
++	"v1.checkout.session.async_payment_failed":                                true,
++	"v1.checkout.session.async_payment_succeeded":                             true,
++	"v1.checkout.session.completed":                                           true,
++	"v1.checkout.session.expired":                                             true,
++	"v1.climate.order.canceled":                                               true,
++	"v1.climate.order.created":                                                true,
++	"v1.climate.order.delayed":                                                true,
++	"v1.climate.order.delivered":                                              true,
++	"v1.climate.order.product_substituted":                                    true,
++	"v1.climate.product.created":                                              true,
++	"v1.climate.product.pricing_updated":                                      true,
++	"v1.coupon.created":                                                       true,
++	"v1.coupon.deleted":                                                       true,
++	"v1.coupon.updated":                                                       true,
++	"v1.credit_note.created":                                                  true,
++	"v1.credit_note.updated":                                                  true,
++	"v1.credit_note.voided":                                                   true,
++	"v1.customer.created":                                                     true,
++	"v1.customer.deleted":                                                     true,
++	"v1.customer.discount.created":                                            true,
++	"v1.customer.discount.deleted":                                            true,
++	"v1.customer.discount.updated":                                            true,
++	"v1.customer.subscription.created":                                        true,
++	"v1.customer.subscription.deleted":                                        true,
++	"v1.customer.subscription.paused":                                         true,
++	"v1.customer.subscription.pending_update_applied":                         true,
++	"v1.customer.subscription.pending_update_expired":                         true,
++	"v1.customer.subscription.resumed":                                        true,
++	"v1.customer.subscription.trial_will_end":                                 true,
++	"v1.customer.subscription.updated":                                        true,
++	"v1.customer.tax_id.created":                                              true,
++	"v1.customer.tax_id.deleted":                                              true,
++	"v1.customer.tax_id.updated":                                              true,
++	"v1.customer.updated":                                                     true,
++	"v1.customer_cash_balance_transaction.created":                            true,
++	"v1.entitlements.active_entitlement_summary.updated":                      true,
++	"v1.file.created":                                                         true,
++	"v1.financial_connections.account.account_numbers_updated":                true,
++	"v1.financial_connections.account.created":                                true,
++	"v1.financial_connections.account.deactivated":                            true,
++	"v1.financial_connections.account.disconnected":                           true,
++	"v1.financial_connections.account.expected_deactivation_date_updated":     true,
++	"v1.financial_connections.account.reactivated":                            true,
++	"v1.financial_connections.account.refreshed_balance":                      true,
++	"v1.financial_connections.account.refreshed_ownership":                    true,
++	"v1.financial_connections.account.refreshed_transactions":                 true,
++	"v1.financial_connections.account.supported_payment_method_types_updated": true,
++	"v1.financial_connections.account.upcoming_account_number_expiry":         true,
++	"v1.financial_connections.account.upcoming_deactivation":                  true,
++	"v1.identity.verification_session.canceled":                               true,
++	"v1.identity.verification_session.created":                                true,
++	"v1.identity.verification_session.processing":                             true,
++	"v1.identity.verification_session.redacted":                               true,
++	"v1.identity.verification_session.requires_input":                         true,
++	"v1.identity.verification_session.verified":                               true,
++	"v1.invoice.created":                                                      true,
++	"v1.invoice.deleted":                                                      true,
++	"v1.invoice.finalization_failed":                                          true,
++	"v1.invoice.finalized":                                                    true,
++	"v1.invoice.marked_uncollectible":                                         true,
++	"v1.invoice.overdue":                                                      true,
++	"v1.invoice.overpaid":                                                     true,
++	"v1.invoice.paid":                                                         true,
++	"v1.invoice.payment_action_required":                                      true,
++	"v1.invoice.payment_attempt_required":                                     true,
++	"v1.invoice.payment_failed":                                               true,
++	"v1.invoice.payment_succeeded":                                            true,
++	"v1.invoice.sent":                                                         true,
++	"v1.invoice.upcoming":                                                     true,
++	"v1.invoice.updated":                                                      true,
++	"v1.invoice.voided":                                                       true,
++	"v1.invoice.will_be_due":                                                  true,
++	"v1.invoice_payment.paid":                                                 true,
++	"v1.invoiceitem.created":                                                  true,
++	"v1.invoiceitem.deleted":                                                  true,
++	"v1.issuing_authorization.created":                                        true,
++	"v1.issuing_authorization.request":                                        true,
++	"v1.issuing_authorization.updated":                                        true,
++	"v1.issuing_card.created":                                                 true,
++	"v1.issuing_card.updated":                                                 true,
++	"v1.issuing_cardholder.created":                                           true,
++	"v1.issuing_cardholder.updated":                                           true,
++	"v1.issuing_dispute.closed":                                               true,
++	"v1.issuing_dispute.created":                                              true,
++	"v1.issuing_dispute.funds_reinstated":                                     true,
++	"v1.issuing_dispute.funds_rescinded":                                      true,
++	"v1.issuing_dispute.submitted":                                            true,
++	"v1.issuing_dispute.updated":                                              true,
++	"v1.issuing_personalization_design.activated":                             true,
++	"v1.issuing_personalization_design.deactivated":                           true,
++	"v1.issuing_personalization_design.rejected":                              true,
++	"v1.issuing_personalization_design.updated":                               true,
++	"v1.issuing_token.created":                                                true,
++	"v1.issuing_token.updated":                                                true,
++	"v1.issuing_transaction.created":                                          true,
++	"v1.issuing_transaction.purchase_details_receipt_updated":                 true,
++	"v1.issuing_transaction.updated":                                          true,
++	"v1.mandate.updated":                                                      true,
++	"v1.payment_intent.amount_capturable_updated":                             true,
++	"v1.payment_intent.canceled":                                              true,
++	"v1.payment_intent.created":                                               true,
++	"v1.payment_intent.partially_funded":                                      true,
++	"v1.payment_intent.payment_failed":                                        true,
++	"v1.payment_intent.processing":                                            true,
++	"v1.payment_intent.requires_action":                                       true,
++	"v1.payment_intent.succeeded":                                             true,
++	"v1.payment_link.created":                                                 true,
++	"v1.payment_link.updated":                                                 true,
++	"v1.payment_method.attached":                                              true,
++	"v1.payment_method.automatically_updated":                                 true,
++	"v1.payment_method.detached":                                              true,
++	"v1.payment_method.updated":                                               true,
++	"v1.payout.canceled":                                                      true,
++	"v1.payout.created":                                                       true,
++	"v1.payout.failed":                                                        true,
++	"v1.payout.paid":                                                          true,
++	"v1.payout.reconciliation_completed":                                      true,
++	"v1.payout.updated":                                                       true,
++	"v1.person.created":                                                       true,
++	"v1.person.deleted":                                                       true,
++	"v1.person.updated":                                                       true,
++	"v1.plan.created":                                                         true,
++	"v1.plan.deleted":                                                         true,
++	"v1.plan.updated":                                                         true,
++	"v1.price.created":                                                        true,
++	"v1.price.deleted":                                                        true,
++	"v1.price.updated":                                                        true,
++	"v1.product.created":                                                      true,
++	"v1.product.deleted":                                                      true,
++	"v1.product.updated":                                                      true,
++	"v1.promotion_code.created":                                               true,
++	"v1.promotion_code.updated":                                               true,
++	"v1.quote.accepted":                                                       true,
++	"v1.quote.canceled":                                                       true,
++	"v1.quote.created":                                                        true,
++	"v1.quote.finalized":                                                      true,
++	"v1.radar.early_fraud_warning.created":                                    true,
++	"v1.radar.early_fraud_warning.updated":                                    true,
++	"v1.refund.created":                                                       true,
++	"v1.refund.failed":                                                        true,
++	"v1.refund.updated":                                                       true,
++	"v1.review.closed":                                                        true,
++	"v1.review.opened":                                                        true,
++	"v1.setup_intent.canceled":                                                true,
++	"v1.setup_intent.created":                                                 true,
++	"v1.setup_intent.requires_action":                                         true,
++	"v1.setup_intent.setup_failed":                                            true,
++	"v1.setup_intent.succeeded":                                               true,
++	"v1.sigma.scheduled_query_run.created":                                    true,
++	"v1.source.canceled":                                                      true,
++	"v1.source.chargeable":                                                    true,
++	"v1.source.failed":                                                        true,
++	"v1.source.refund_attributes_required":                                    true,
++	"v1.subscription_schedule.aborted":                                        true,
++	"v1.subscription_schedule.canceled":                                       true,
++	"v1.subscription_schedule.completed":                                      true,
++	"v1.subscription_schedule.created":                                        true,
++	"v1.subscription_schedule.expiring":                                       true,
++	"v1.subscription_schedule.released":                                       true,
++	"v1.subscription_schedule.updated":                                        true,
++	"v1.tax.settings.updated":                                                 true,
++	"v1.tax_rate.created":                                                     true,
++	"v1.tax_rate.updated":                                                     true,
++	"v1.terminal.reader.action_failed":                                        true,
++	"v1.terminal.reader.action_succeeded":                                     true,
++	"v1.terminal.reader.action_updated":                                       true,
++	"v1.test_helpers.test_clock.advancing":                                    true,
++	"v1.test_helpers.test_clock.created":                                      true,
++	"v1.test_helpers.test_clock.deleted":                                      true,
++	"v1.test_helpers.test_clock.internal_failure":                             true,
++	"v1.test_helpers.test_clock.ready":                                        true,
++	"v1.topup.canceled":                                                       true,
++	"v1.topup.created":                                                        true,
++	"v1.topup.failed":                                                         true,
++	"v1.topup.reversed":                                                       true,
++	"v1.topup.succeeded":                                                      true,
++	"v1.transfer.created":                                                     true,
++	"v1.transfer.reversed":                                                    true,
++	"v1.transfer.updated":                                                     true,
++	"v2.commerce.product_catalog.imports.failed":                              true,
++	"v2.commerce.product_catalog.imports.processing":                          true,
++	"v2.commerce.product_catalog.imports.succeeded":                           true,
++	"v2.commerce.product_catalog.imports.succeeded_with_errors":               true,
++	"v2.core.account.closed":                                                  true,
++	"v2.core.account.created":                                                 true,
++	"v2.core.account.updated":                                                 true,
++	"v2.core.account[configuration.customer].capability_status_updated":       true,
++	"v2.core.account[configuration.customer].updated":                         true,
++	"v2.core.account[configuration.merchant].capability_status_updated":       true,
++	"v2.core.account[configuration.merchant].updated":                         true,
++	"v2.core.account[configuration.recipient].capability_status_updated":      true,
++	"v2.core.account[configuration.recipient].updated":                        true,
++	"v2.core.account[defaults].updated":                                       true,
++	"v2.core.account[future_requirements].updated":                            true,
++	"v2.core.account[identity].updated":                                       true,
++	"v2.core.account[requirements].updated":                                   true,
++	"v2.core.account_link.returned":                                           true,
++	"v2.core.account_person.created":                                          true,
++	"v2.core.account_person.deleted":                                          true,
++	"v2.core.account_person.updated":                                          true,
++	"v2.core.event_destination.ping":                                          true,
+ }
+ 
+ var validPreviewThinEvents = map[string]bool{
+@@ -369,4 +588,6 @@ var validPreviewThinEvents = map[string]bool{
+ 	"v2.orchestrated_commerce.agreement.partially_confirmed":                 true,
+ 	"v2.orchestrated_commerce.agreement.terminated":                          true,
+ 	"v2.signals.account_evaluation.complete":                                 true,
++	"v2.signals.account_signal.fraudulent_merchant_ready":                    true,
++	"v2.signals.account_signal.fraudulent_website_ready":                     true,
+ }
+diff --git a/pkg/requests/base.go b/pkg/requests/base.go
+index f08e515..c8048c7 100644
+--- a/pkg/requests/base.go
++++ b/pkg/requests/base.go
+@@ -35,6 +35,7 @@ import (
+ type RequestParameters struct {
+ 	data          []string
+ 	expand        []string
++	headers       []string
+ 	startingAfter string
+ 	endingBefore  string
+ 	idempotency   string
+@@ -54,6 +55,11 @@ func (r *RequestParameters) AppendExpand(fields []string) {
+ 	r.expand = append(r.expand, fields...)
+ }
+ 
++// AppendHeaders appends custom headers to the request parameters.
++func (r *RequestParameters) AppendHeaders(headers []string) {
++	r.headers = append(r.headers, headers...)
++}
++
+ // SetIdempotency sets the value for the `Idempotency-Key` header.
+ func (r *RequestParameters) SetIdempotency(value string) {
+ 	r.idempotency = value
+@@ -214,6 +220,7 @@ func (rb *Base) InitFlags() {
+ 
+ 	rb.Cmd.Flags().StringArrayVarP(&rb.Parameters.data, "data", "d", []string{}, "Data for the API request")
+ 	rb.Cmd.Flags().StringArrayVarP(&rb.Parameters.expand, "expand", "e", []string{}, "Response attributes to expand inline")
++	rb.Cmd.Flags().StringArrayVarP(&rb.Parameters.headers, "request-header", "H", []string{}, "Set a custom request header (format: name: value)")
+ 	rb.Cmd.Flags().StringVarP(&rb.Parameters.idempotency, "idempotency", "i", "", "Set the idempotency key for the request, prevents replaying the same requests within 24 hours")
+ 	rb.Cmd.Flags().StringVarP(&rb.Parameters.version, "stripe-version", "v", "", "Set the Stripe API version to use for your request")
+ 	rb.Cmd.Flags().StringVar(&rb.Parameters.stripeAccount, "stripe-account", "", "Set a header identifying the connected account")
+@@ -338,11 +345,23 @@ func credentialsFromPerformer(client stripe.RequestPerformer) stripe.Credentials
+ }
+ 
+ func (rb *Base) performRequest(ctx context.Context, client stripe.RequestPerformer, path string, params *RequestParameters, data string, errOnStatus bool, additionalConfigure func(req *http.Request) error) ([]byte, error) {
++	customHeaders, err := parseCustomHeaders(params.headers)
++	if err != nil {
++		return []byte{}, err
++	}
++	if stripeClient, ok := client.(*stripe.Client); ok && len(customHeaders) > 0 {
++		if stripeClient.VerbosePrintableHeaders == nil {
++			stripeClient.VerbosePrintableHeaders = stripe.DefaultPrintableHeaders()
++		}
++		stripeClient.VerbosePrintableHeaders = appendUniqueHeaderNames(stripeClient.VerbosePrintableHeaders, customHeaders)
++	}
++
+ 	creds := credentialsFromPerformer(client)
+ 	configure := func(req *http.Request) error {
+ 		rb.setIdempotencyHeader(req, params)
+ 		creds.ApplyAccountContextHeaders(req.Header, params.stripeAccount, params.stripeContext)
+ 		rb.setVersionHeader(req, params, path)
++		setCustomHeaders(req.Header, customHeaders)
+ 		if additionalConfigure != nil {
+ 			if err := additionalConfigure(req); err != nil {
+ 				return err
+@@ -522,6 +541,14 @@ func (rb *Base) BuildDryRunOutput(creds stripe.Credentials, baseURL, path string
+ 		headers["Authorization"] = "Bearer " + creds.Token
+ 	}
+ 
++	customHeaders, err := parseCustomHeaders(params.headers)
++	if err != nil {
++		return nil, err
++	}
++	for name, values := range customHeaders {
++		headers[name] = values[len(values)-1]
++	}
++
+ 	return &DryRunOutput{
+ 		DryRun: DryRunDetails{
+ 			Method:  rb.Method,
+@@ -945,6 +972,62 @@ func (rb *Base) computeVersionHeader(params *RequestParameters, path string) str
+ 	return ""
+ }
+ 
++func parseCustomHeaders(headers []string) (http.Header, error) {
++	parsed := make(http.Header)
++	for _, header := range headers {
++		name, value, ok := strings.Cut(header, ":")
++		if !ok {
++			return nil, errorcategory.New(errorcategory.UserInput, "invalid header: expected name: value")
++		}
++		if !isValidHeaderName(name) {
++			return nil, errorcategory.New(errorcategory.UserInput, "invalid header name")
++		}
++		if strings.ContainsAny(value, "\r\n") {
++			return nil, errorcategory.New(errorcategory.UserInput, "invalid header value")
++		}
++		value = strings.Trim(value, " \t")
++		parsed.Set(name, value)
++	}
++	return parsed, nil
++}
++
++func isValidHeaderName(name string) bool {
++	if name == "" {
++		return false
++	}
++	for _, char := range name {
++		if (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || (char >= '0' && char <= '9') || strings.ContainsRune("!#$%&'*+-.^_`|~", char) {
++			continue
++		}
++		return false
++	}
++	return true
++}
++
++func setCustomHeaders(destination, custom http.Header) {
++	for name, values := range custom {
++		for _, value := range values {
++			destination.Set(name, value)
++		}
++	}
++}
++
++func appendUniqueHeaderNames(names []string, headers http.Header) []string {
++	seen := make(map[string]struct{}, len(names)+len(headers))
++	for _, name := range names {
++		seen[strings.ToLower(name)] = struct{}{}
++	}
++	for name := range headers {
++		key := strings.ToLower(name)
++		if _, ok := seen[key]; ok {
++			continue
++		}
++		names = append(names, name)
++		seen[key] = struct{}{}
++	}
++	return names
++}
++
+ func (rb *Base) setVersionHeader(request *http.Request, params *RequestParameters, path string) {
+ 	if v := rb.computeVersionHeader(params, path); v != "" {
+ 		request.Header.Set("Stripe-Version", v)
+diff --git a/pkg/requests/base_test.go b/pkg/requests/base_test.go
+index babdb10..bdec367 100644
+--- a/pkg/requests/base_test.go
++++ b/pkg/requests/base_test.go
+@@ -98,6 +98,7 @@ func TestMakeRequest(t *testing.T) {
+ 		require.Equal(t, http.MethodGet, r.Method)
+ 		require.Equal(t, "/foo/bar", r.URL.Path)
+ 		require.Equal(t, "Bearer sk_test_1234", r.Header.Get("Authorization"))
++		require.Equal(t, "value:with:colons", r.Header.Get("X-Test-Header"))
+ 		require.NotEmpty(t, r.UserAgent())
+ 		require.NotEmpty(t, r.Header.Get("X-Stripe-Client-User-Agent"))
+ 		require.Equal(t, "bender=robot&fry=human&expand[]=futurama.employees&expand[]=futurama.ships", r.URL.RawQuery)
+@@ -109,14 +110,48 @@ func TestMakeRequest(t *testing.T) {
+ 	rb.Method = http.MethodGet
+ 
+ 	params := &RequestParameters{
+-		data:   []string{"bender=robot", "fry=human"},
+-		expand: []string{"futurama.employees", "futurama.ships"},
++		data:    []string{"bender=robot", "fry=human"},
++		expand:  []string{"futurama.employees", "futurama.ships"},
++		headers: []string{"X-Test-Header: value:with:colons"},
+ 	}
+ 
+ 	_, err := rb.MakeRequest(context.Background(), stripe.NewAPIKeyCredentials("sk_test_1234"), "/foo/bar", params, make(map[string]interface{}), true, nil)
+ 	require.NoError(t, err)
+ }
+ 
++func TestParseCustomHeaders(t *testing.T) {
++	t.Run("valid", func(t *testing.T) {
++		headers, err := parseCustomHeaders([]string{"x-test-header: value:with:colons", "X-Other: other"})
++		require.NoError(t, err)
++		require.Equal(t, "value:with:colons", headers.Get("X-Test-Header"))
++		require.Equal(t, "other", headers.Get("X-Other"))
++	})
++
++	for _, testCase := range []struct {
++		name   string
++		header string
++	}{
++		{name: "missing separator", header: "X-Test-Header"},
++		{name: "empty name", header: ": value"},
++		{name: "invalid name", header: "Test Header: value"},
++		{name: "invalid value", header: "X-Test-Header: line1\nline2"},
++	} {
++		t.Run(testCase.name, func(t *testing.T) {
++			_, err := parseCustomHeaders([]string{testCase.header})
++			require.Error(t, err)
++		})
++	}
++}
++
++func TestAppendUniqueHeaderNames(t *testing.T) {
++	names := appendUniqueHeaderNames(
++		[]string{"Stripe-Version", "X-Existing"},
++		http.Header{"stripe-version": []string{"2020-08-27"}, "X-New": []string{"value"}},
++	)
++
++	require.Equal(t, []string{"Stripe-Version", "X-Existing", "X-New"}, names)
++}
++
+ func TestMakeRequest_RefusesWriteThroughPDFSymlink(t *testing.T) {
+ 	tempDir := t.TempDir()
+ 	oldWD, err := os.Getwd()
+@@ -706,6 +741,17 @@ func TestBuildDryRunOutput_OptionalHeaders(t *testing.T) {
+ 	}}, *output)
+ }
+ 
++func TestBuildDryRunOutput_CustomHeaders(t *testing.T) {
++	rb := Base{Method: http.MethodPost}
++	params := &RequestParameters{}
++	params.AppendHeaders([]string{"X-Test-Header: first", "X-Other-Header: value", "X-Test-Header: last"})
++
++	output, err := rb.BuildDryRunOutput(stripe.Credentials{}, "https://api.stripe.com", "/v1/customers", params, map[string]interface{}{})
++	require.NoError(t, err)
++	require.Equal(t, "last", output.DryRun.Headers["X-Test-Header"])
++	require.Equal(t, "value", output.DryRun.Headers["X-Other-Header"])
++}
++
+ func TestBuildDryRunOutput_OAKStripeAccount(t *testing.T) {
+ 	rb := Base{Method: http.MethodPost}
+ 	params := &RequestParameters{stripeAccount: "acct_b"}
+diff --git a/pkg/requests/plugin.go b/pkg/requests/plugin.go
+index 2f99666..0a52009 100644
+--- a/pkg/requests/plugin.go
++++ b/pkg/requests/plugin.go
+@@ -32,6 +32,9 @@ type PluginMetadata struct {
+ 	// had — so losing the signal can only cost a prompt, never cause a surprise
+ 	// download.
+ 	AutoInstall bool `json:"auto_install"`
++	// AutoUpdateDefault enables automatic updates when the user has not chosen a
++	// per-plugin or global setting. Older responses that omit it default to false.
++	AutoUpdateDefault bool `json:"auto_update_default"`
+ }
+ 
+ func getPluginMetadataPath(apiKey string) string {
+diff --git a/pkg/requests/stripe_version_header.go b/pkg/requests/stripe_version_header.go
+index 7ae8974..60c317b 100644
+--- a/pkg/requests/stripe_version_header.go
++++ b/pkg/requests/stripe_version_header.go
+@@ -3,7 +3,7 @@
+ package requests
+ 
+ // StripeVersionHeaderValue is the api version header value
+-const StripeVersionHeaderValue = "2026-08-26.dahlia"
++const StripeVersionHeaderValue = "2026-09-30.endive"
+ 
+ // StripePreviewVersionHeaderValue is the api version header value for preview features
+-const StripePreviewVersionHeaderValue = "2026-08-26.preview"
++const StripePreviewVersionHeaderValue = "2026-09-30.preview"
+diff --git a/pkg/stripe/verbosetransport.go b/pkg/stripe/verbosetransport.go
+index f4eda99..7c7bf6c 100644
+--- a/pkg/stripe/verbosetransport.go
++++ b/pkg/stripe/verbosetransport.go
+@@ -24,6 +24,11 @@ var inspectHeaders = []string{
+ 	"Stripe-Version",
+ }
+ 
++// DefaultPrintableHeaders returns the headers printed in verbose mode by default.
++func DefaultPrintableHeaders() []string {
++	return append([]string(nil), inspectHeaders...)
++}
++
+ type verboseTransport struct {
+ 	Transport        http.RoundTripper
+ 	Out              io.Writer
+diff --git a/pkg/stripe/verbosetransport_test.go b/pkg/stripe/verbosetransport_test.go
+index c6761da..eec64f7 100644
+--- a/pkg/stripe/verbosetransport_test.go
++++ b/pkg/stripe/verbosetransport_test.go
+@@ -24,13 +24,14 @@ func TestVerboseTransport(t *testing.T) {
+ 	tr := &verboseTransport{
+ 		Transport:        httpTransport,
+ 		Out:              &b,
+-		PrintableHeaders: inspectHeaders,
++		PrintableHeaders: append(DefaultPrintableHeaders(), "X-Test-Header"),
+ 	}
+ 	client := &http.Client{Transport: tr}
+ 	req, err := http.NewRequest("POST", ts.URL+"/test", nil)
+ 	require.NoError(t, err)
+ 	req.Header.Set("Authorization", "Bearer token")
+ 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
++	req.Header.Set("X-Test-Header", "custom-value")
+ 
+ 	resp, err := client.Do(req)
+ 	require.NoError(t, err)
+@@ -41,6 +42,7 @@ func TestVerboseTransport(t *testing.T) {
+ 	require.Regexp(t, regexp.MustCompile("> POST http://(.+)/test\n"), out)
+ 	require.Contains(t, out, "> Authorization: Bearer [REDACTED]\n")
+ 	require.Contains(t, out, "> Content-Type: application/x-www-form-urlencoded\n")
++	require.Contains(t, out, "> X-Test-Header: custom-value\n")
+ 	require.Contains(t, out, "< HTTP 200\n")
+ 	require.Contains(t, out, "< Request-Id: req_123\n")
+ 	require.NotContains(t, out, "Non-Whitelisted-Header")

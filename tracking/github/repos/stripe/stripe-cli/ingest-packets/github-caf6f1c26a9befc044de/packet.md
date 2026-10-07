@@ -1,0 +1,157 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-cli`
+- Work item: `github-caf6f1c26a9befc044de`
+- Snapshot: `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `stripe-cli`
+
+- Version: `1.50.11` -> `1.51.0`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `98`
+
+### Required reading
+
+- `raw/github/stripe/stripe-cli/releases/stripe-cli/1.51.0/2026-10-06/manifest.json`
+- `raw/github/stripe/stripe-cli/releases/stripe-cli/1.51.0/2026-10-06/release-notes.md`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c78e4ab/manifest.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/README.md`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/cmd/stripe/main.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/go.mod`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/cmd/listen.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/cmd/login.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/cmd/root.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/cmd/switch.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/cmd/whoami.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/config/plugin_configs.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/config/profile.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/login/oauth_accounts.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/login/oauth_credentials.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/login/oauth_device.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/login/oauth_pending.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/login/oauth_reauth.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/login/oauth_refresh.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/login/switch_context.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/proxy/proxy.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/proxy/webhook_event_processor.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/requests/base.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/requests/webhook_endpoints.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/files/pkg/stripe/client.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/manifest.json`
+- `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.11--1.51.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.11--1.51.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.11--1.51.0/diff.patch`
+
+### Upstream changes
+
+- `added` `.github/actions/generate-release-notes/action.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/release.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.gitignore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.goreleaser/linux.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.goreleaser/mac.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.goreleaser/windows.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `README.md`: `retained-evidence` (snapshot-file)
+- `modified` `canary/listen_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `cmd/stripe/main.go`: `retained-evidence` (snapshot-file)
+- `modified` `go.mod`: `retained-evidence` (snapshot-file)
+- `modified` `go.sum`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/releasenotes/cmd/main.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/releasenotes/releasenotes.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/releasenotes/releasenotes_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/agentsetup/codex.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/agentsetup/codex_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/agent.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/agent_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/data.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/listen.go`: `retained-evidence` (snapshot-file)
+- `added` `pkg/cmd/listen_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/login.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/cmd/logs/tail.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin/auto_update.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin/install.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin/uninstall.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin/upgrade.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin_cmds.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin_cmds_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/reauth.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/reporting.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/resource/terminal_quickstart.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/root.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/cmd/root_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/samples.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/cmd/samples/create.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/cmd/samples/list.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/cmd/samples_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/sandbox.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/cmd/serve.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/cmd/status.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/switch.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/cmd/unknown_cmd_telemetry.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/unknown_cmd_telemetry_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/whoami.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/config/plugin_configs.go`: `retained-evidence` (snapshot-file)
+- `added` `pkg/config/plugin_configs_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/config/profile.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/config/profile_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `deleted` `pkg/git/git.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/login/oauth_accounts.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_credentials.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_device.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_pending.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_reauth.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_refresh.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/switch_context.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/logout/logout.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/logtailing/tailer.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/plugins/auto_upgrade.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/plugins/auto_upgrade_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/core_cli_helper.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/plugin.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/plugin_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/plugins/telemetry.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/plugins/telemetry_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/utilities.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/utilities_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/proxy/filter_by_source_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/proxy/proxy.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/proxy/proxy_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/proxy/webhook_event_processor.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/reporting/reporting.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/reporting/reporting_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/requests/base.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/requests/base_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/requests/webhook_endpoints.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/rpcservice/login.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/rpcservice/sample_configs.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/rpcservice/sample_configs_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/rpcservice/sample_create.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/rpcservice/sample_create_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/rpcservice/samples_list.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/rpcservice/samples_list_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/samples/create.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/samples/list.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/samples/os.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/samples/os_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/samples/samples.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/samples/samples_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/status/status.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `pkg/status/status_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/stripe/client.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/stripe/client_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/stripeauth/client.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/stripeauth/client_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/terminal/p400/rabbit_service_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/terminal/p400/reader_methods.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/terminal/p400/stripe_requests.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/terminal/quickstart_p400.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `rpc/commands.pb.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `rpc/commands.proto`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `rpc/commands_grpc.pb.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `rpc/sample_configs.pb.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `rpc/sample_configs.proto`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `rpc/sample_create.pb.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `rpc/sample_create.proto`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `rpc/samples_list.pb.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `rpc/samples_list.proto`: `intentional-policy-exclusion` (outside-capsule-policy)

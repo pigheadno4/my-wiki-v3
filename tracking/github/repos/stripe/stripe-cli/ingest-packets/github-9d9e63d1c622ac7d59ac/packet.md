@@ -1,0 +1,235 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-cli`
+- Work item: `github-9d9e63d1c622ac7d59ac`
+- Snapshot: `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `stripe-cli`
+
+- Version: `1.50.0` -> `1.50.1`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `85`
+
+### Required reading
+
+- `raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.1/2026-10-06/manifest.json`
+- `raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.1/2026-10-06/release-notes.md`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/config_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/main_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/profile_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/symlink_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/acct/retrieve_account_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/client_login_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/interactive_login_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/configurer_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/keytransfer_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/main_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/polling_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/links_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/login_message_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_accounts_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_credentials_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_device_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/endpoint_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/proxy_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/stripeevent_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/requests/base_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/analytics_telemetry_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/client_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/url_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/verbosetransport_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/client_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/messages_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/request_log_messages_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/webhook_messages_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/manifest.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/go.mod`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/cmd/listen.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/cmd/login.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/cmd/logout.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/cmd/root.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/cmd/switch.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/cmd/whoami.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/config/config.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/config/profile.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/fixtures/fixtures.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/fixtures/triggers.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/access_base.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/interactive_login.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/keys/polling.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/links.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/login.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/oauth_accounts.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/oauth_credentials.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/oauth_device.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/oauth_pending.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/oauth_reauth.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/oauth_refresh.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/login/switch_context.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/proxy/proxy.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/requests/base.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/requests/plugin.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/requests/webhook_endpoints.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/rpcservice/listen.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/stripe/analytics_telemetry.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/stripe/client.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/stripe/url.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/files/pkg/websocket/client.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/manifest.json`
+- `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.0--1.50.1/comparison.json`
+- `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.0--1.50.1/comparison.md`
+- `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.0--1.50.1/diff.patch`
+
+### Files absent from current snapshot
+
+Snapshot absence is not proof of upstream deletion. `not-listed` refers only to the supplied upstream change inventory.
+
+- `pkg/config/config_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/config/main_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/config/profile_test.go`: `not-retained-in-current-snapshot`; upstream: `modified`
+- `pkg/config/symlink_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/acct/retrieve_account_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/client_login_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/interactive_login_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/keys/configurer_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/keys/keytransfer_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/keys/main_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/keys/polling_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/links_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/login_message_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/oauth_accounts_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/login/oauth_credentials_test.go`: `not-retained-in-current-snapshot`; upstream: `modified`
+- `pkg/login/oauth_device_test.go`: `not-retained-in-current-snapshot`; upstream: `modified`
+- `pkg/proxy/endpoint_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/proxy/proxy_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/proxy/stripeevent_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/requests/base_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/stripe/analytics_telemetry_test.go`: `not-retained-in-current-snapshot`; upstream: `modified`
+- `pkg/stripe/client_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/stripe/url_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/stripe/verbosetransport_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/websocket/client_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/websocket/messages_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/websocket/request_log_messages_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+- `pkg/websocket/webhook_messages_test.go`: `not-retained-in-current-snapshot`; upstream: `not-listed`
+
+### Upstream changes
+
+- `modified` `.github/workflows/test.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CONTRIBUTING.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Makefile`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `canary/testutil/runner.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `go.mod`: `retained-evidence` (snapshot-file)
+- `modified` `go.sum`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/lint/errorcategory/analyzer.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/lint/errorcategory/analyzer_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/lint/errorcategory/cmd/main.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/lint/errorcategory/testdata/src/a/a.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/lint/errorcategory/testdata/src/generated/generated.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/lint/errorcategory/testdata/src/github.com/stripe/stripe-cli/pkg/errorcategory/errorcategory.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/lint/errorcategory/testdata/src/testfiles/testfiles.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `internal/lint/errorcategory/testdata/src/testfiles/testfiles_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/agentsetup/claude.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/agentsetup/codex.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/agentsetup/scanner.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/agentskills/agentskills.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/agent.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/completion.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/data.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/docs/prefs.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/docs/root.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/docs/search.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/feedback.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/cmd/feedback_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/listen.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/cmd/login.go`: `retained-evidence` (snapshot-file)
+- `added` `pkg/cmd/login_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/logout.go`: `retained-evidence` (snapshot-file)
+- `added` `pkg/cmd/logout_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/logs/tail.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/open.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin/auto_update.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin/install.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/plugin_cmds.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/pluginhints/pluginhints.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/pluginhints/pluginhints_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/reauth.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/cmd/reauth_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/reporting.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/resource/databases.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/resource/events.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/resource/keys_permissions.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/resource/operation.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/resource/terminal.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/resource/terminal_quickstart.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/root.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/cmd/samples/create.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/sandbox.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/switch.go`: `retained-evidence` (snapshot-file)
+- `added` `pkg/cmd/switch_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/cmd/whoami.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/cmd/whoami_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/config/config.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/config/profile.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/config/profile_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/docs/client.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/errorcategory/category.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/errorcategory/category_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/fixtures/fixtures.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/fixtures/triggers.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/fsutil/symlink.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/git/editor.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/keyring/keyring.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `pkg/login/access_base.go`: `retained-evidence` (snapshot-file)
+- `added` `pkg/login/access_base_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/login/interactive_login.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/keys/polling.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/links.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/login.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_accounts.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_credentials.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_credentials_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/login/oauth_device.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_device_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/login/oauth_pending.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_reauth.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/oauth_refresh.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/login/switch_context.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/logtailing/tailer.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/open/open.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/parsers/parsers.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/parsers/parsers_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/core_cli_helper.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/plugin.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/proto/main.pb.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/proto/main.proto`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/proto/main_grpc.pb.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/plugins/utilities.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/proxy/proxy.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/requests/base.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/requests/plugin.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/requests/webhook_endpoints.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/rpcservice/listen.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/rpcservice/login.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/rpcservice/logs_tail.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/samples/create.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/samples/os.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/samples/samples.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/samples/samples_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/sandbox/sandbox.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/spec/spec.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/stripe/analytics_telemetry.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/stripe/analytics_telemetry_test.go`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `pkg/stripe/client.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/stripe/url.go`: `retained-evidence` (snapshot-file)
+- `modified` `pkg/terminal/p400/rabbit_service.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/terminal/p400/reader_errors.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/terminal/quickstart_p400.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/useragent/useragent.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/useragent/useragent_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/validators/cmds.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/validators/validate.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/validators/validate_test.go`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `pkg/websocket/client.go`: `retained-evidence` (snapshot-file)

@@ -1,5 +1,75 @@
 # Wiki Log
 
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.52.2 to 1.53.0
+
+Approved focused serial ingest; Notes announce stripe version --notes; 120 retained files unchanged. Version command/library/tests are excluded upstream changes, so detailed command behavior requires a pinned supplement. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Qualified the empty comparison upstream list against the packet's four excluded upstream changes; prior warnings preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.52.1 to 1.52.2
+
+Approved focused serial ingest; OAuth server-provided user-code-prefilled URLs with validated fresh flows and pending-session fallback; qualified Accounts v1 fixture error guidance. Boolean normalization/OpenAPI announcements retain excluded-implementation boundaries. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Qualified the fixture guidance as a broad 400-error hint rather than a verified eligibility diagnosis; earlier warnings preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.52.0 to 1.52.1
+
+Approved focused serial ingest; Custom request headers with overwrite and output-disclosure limits; Endive/preview defaults and expanded snapshot/thin event names. Backend plugin-update defaults follow local override precedence; config field deletion and removed invocation-time chmod. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Version-qualified older plugin default-off behavior and recorded custom-header output/precedence limits; prior warnings preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub additive full ingest: stripe-cli@1.51.1 to 1.52.0
+
+Approved focused serial ingest; Automatic binary-update entrypoint hooks; updater verification/recovery is note-backed with excluded implementation. Plugin metadata no longer sends machine_uuid; auto_install remains. Grok setup announced. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Version-qualified the earlier plugin rollout parameter and separated update wiring from unverified internals; historical warnings preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub additive full ingest: stripe-cli@1.51.0 to 1.51.1
+
+Approved focused serial ingest; Reusable pending-login discovery/resume/single-check helpers; caller-cancel preservation and persisted expiry. Legacy pending files need a fresh login; network-error cleanup, expiry floor and uncoordinated writers are qualified. Reserved-name profile migration and new-v2-file stamping library added. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Qualified comments against broader error cleanup, local expiry floor and nonexclusive file creation; earlier contradictions preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub additive full ingest: stripe-cli@1.50.11 to 1.51.0
+
+Approved focused serial ingest; Explicit webhook payload/source selection and incompatible forwarding/wildcard validation; deprecated thin flags preserved. Preferred switch command with JSON/legacy alias; OAuth whoami near-expiry refresh and corrected help. Configured-endpoint errors propagate, role errors gain guidance; removed-command shims and other excluded tooling remain qualified. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Historical whoami wording correction and recursive-refresh retry-bound contradiction recorded; reauthorization scope/signature warning preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub additive full ingest: stripe-cli@1.50.10 to 1.50.11
+
+Approved focused serial ingest; Existing-session login now reauthorizes with a separate non-interactive continuation; completion proxy/cancel limits preserved. Shared device poll/save detaches cancellation after token issuance. API default headers advance, preview events added and uninstall steps documented. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Qualified the scope-change comment against the actual ID/name/mode signature and distinguished current login behavior from historical informational returns. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.50.9 to 1.50.10
+
+Approved focused serial ingest; Release-note announcement of agent report_usage telemetry command; retained capsule unchanged and detailed command behavior outside collection policy. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. No new contradiction identified; an empty retained diff is explicitly not an unchanged-repository claim. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.50.8 to 1.50.9
+
+Approved focused serial ingest; Telemetry delegates installation detection to a shared helper. Docs context headers, pre-run/telemetry restoration and upgrade-command guidance are note-backed with excluded implementation. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. No new contradiction identified; earlier evidence limitations preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.50.7 to 1.50.8
+
+Approved focused serial ingest; Plugin metadata recognizes minimum-core-version errors and optionally extracts the upgrade floor; installation enforcement is note-backed with excluded implementation. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. No new contradiction identified; prior qualified findings preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub additive full ingest: stripe-cli@1.50.6 to 1.50.7
+
+Approved focused serial ingest; Config-v2 migration library and dual-layout compatibility, unchanged keyring identities, new-profile validation, parsed-host base-URL checks, explicit OAuth switch results and listen 429 classification. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Qualified the stale no-migration comment and excluded orchestration/plugin/reporting evidence. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.50.5 to 1.50.6
+
+Approved focused serial ingest; OAuth JSON support added with an auth-specific schema; no-network/universal-key help claims remain inaccurate. Refresh preserves profile metadata. Plugin metadata carries auto_install/machine_uuid; actual installer and preview Data API guidance are excluded. Scripts should distinguish OAuth and API-key output. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Prior whoami contradiction is version-qualified: JSON support is fixed, help/schema/network mismatch remains. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.50.4 to 1.50.5
+
+Approved focused serial ingest; OAuth login prompt reordered/reformatted; retained auth-flow logic unchanged. Notes announce Codex detection and docs scroll restoration, with implementation gaps explicit. No payment integration migration established. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. No new factual contradiction identified; prior whoami warning preserved. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.50.3 to 1.50.4
+
+Approved focused serial ingest; OAuth whoami adds optional identity/role and fetched account names. Optional identity failures are ignored, account-fetch errors fail; OAuth bypasses --format json and contradicts the no-network help claim. Provision alias, docs-search rendering, sandbox messaging and plugin hints are note-backed with excluded implementations. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. The whoami help/implementation contradiction is flagged in both source and concept. No cross-company comparison warranted.
+
+## 2026-10-07 - GitHub delta ingest: stripe-cli@1.50.2 to 1.50.3
+
+Approved focused serial ingest; inventories and 117 unchanged retained files verified. Recorded the plugin RPC announcement as note-only, with the excluded handler/protocol boundary explicit. Updated existing concept, cumulative source/changelog, company and provider index; preserved history and source count. No cross-company comparison or contradiction identified.
+
+## [2026-10-07] ingest | Stripe CLI `1.50.1 -> 1.50.2`
+
+- Serial delta with approved loop-wide focused reading: 18 changed files fully read; 99 unchanged paths hash-checked. Profile cleanup, reauthorization limitations and sandbox terminology captured; older evidence retained. Source/changelog, concept, company and index updated. No commit/push.
+
+## [2026-10-07] ingest | GitHub stripe/stripe-cli `stripe-cli@1.50.1`
+
+- Additive full ingest of SHA `4a89968de966ca1978eb4c8da558367233769b4c` from `1.50.0`, with the user-approved one-time focused-reading exception: all 32 changed/new retained files and affected prior code read; unchanged evidence and inventories hash-checked. Prior history and immutable raw preserved.
+- Updated [[stripe-cli]], [[source-github-stripe-cli]], [[changelog-github-stripe-cli]], company and provider catalog. Captured OAuth destination/redirect safeguards, attempted session revocation, shared credential helper, error categories, telemetry and internal transport. Qualified note-only feedback/RPC/host-mapping details and 28 policy-excluded tests.
+- No cross-company comparison or factual contradiction identified. Stop before `1.50.2`; no commit/push authorized.
+
 ## [2026-10-07] ingest | Braintree website C43
 
 - Fifty retrieval sources and twelve existing reciprocal concepts; initial review45/50, six targeted reviews, no repeated full review. One supplemental-quote handoff mechanically corrected; fixed queries100/100 without source amendments. Catalog652=635website+17GitHub; raw unchanged. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-43/`. No commit/push.

@@ -429,6 +429,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-php-api-library/releases/adyen-php-api-library/30.0.2/2026-08-19/manifest.json)
   Comparison: Not applicable
 
+## `github-1f7a048a5773d4777236`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `150fa3f95fe7117561f645878b044f888814242e`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-150fa3f/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-1f7a048a5773d4777236/packet.md)
+- Review priority: `normal`
+- Required reading: `9` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.10` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.10/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.9--1.50.10/comparison.json)
+
 ## `github-21eb12ac207dc1342925`
 
 - Repository: `stripe/react-stripe-js`
@@ -786,6 +811,56 @@
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.5.0/2026-09-20/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.4.0--2.5.0/comparison.json)
 
+## `github-30e591eb05618f8c9c5e`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `f5f390bc37295ec9b69b94a0ca1c195448a30042`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-f5f390b/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-30e591eb05618f8c9c5e/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.5` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.5/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.4--1.50.5/comparison.json)
+
+## `github-31650eba29ec951da332`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `07050f2f66ec753b37d42671b87e29b4bd5e1253`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-07050f2/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-31650eba29ec951da332/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.8` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.8/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.7--1.50.8/comparison.json)
+
 ## `github-318cfc2eff0d537cfc99`
 
 - Repository: `adyen/adyen-react-native`
@@ -1038,6 +1113,31 @@
 - `braintree@3.40.0` (recommended `delta`)
   Release: [manifest](../../raw/github/braintree/braintree_node/releases/braintree/3.40.0/2026-10-06/manifest.json)
   Comparison: [manifest](repos/braintree/braintree_node/comparisons/braintree/3.39.0--3.40.0/comparison.json)
+
+## `github-44e88a61f7c5c719af0a`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `14c9c5475d3dbcc73414f743f078cb2287de873b`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-14c9c54/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-44e88a61f7c5c719af0a/packet.md)
+- Review priority: `normal`
+- Required reading: `19` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.7` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.7/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.6--1.50.7/comparison.json)
 
 ## `github-459cb24ea09ef7b97664`
 
@@ -1453,6 +1553,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.41.1/2026-08-09/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.0--6.41.1/comparison.json)
 
+## `github-6142e6edfb7b02322f4b`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `4a5d9d6c1bb2c70b9403f42847bffc918b7ef6da`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a5d9d6/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-6142e6edfb7b02322f4b/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.52.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.52.0/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.51.1--1.52.0/comparison.json)
+
 ## `github-62b2da34c81f87c986c9`
 
 - Repository: `stripe/link-cli`
@@ -1758,6 +1883,31 @@
 - `@paypal/sdk-release@5.0.574` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.574/2026-10-04/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.573--5.0.574/comparison.json)
+
+## `github-6f28a665749d03e55161`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `ba4ee1f3a94ee871280cf56724b36e3d0259bc7b`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-ba4ee1f/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-6f28a665749d03e55161/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.6` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.6/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.5--1.50.6/comparison.json)
 
 ## `github-71f4eb08ef220f23aba9`
 
@@ -2293,6 +2443,31 @@
   Release: [manifest](../../raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.47.0/2026-07-28/manifest.json)
   Comparison: Not applicable
 
+## `github-8ba6e3cf576bb06e5fa9`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `eea8a7190796cca941af52fdd36c8eda0291198c`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-eea8a71/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-8ba6e3cf576bb06e5fa9/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.52.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.52.2/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.52.1--1.52.2/comparison.json)
+
 ## `github-8bf8fabdfdc1687790bd`
 
 - Repository: `braintree/braintree_android`
@@ -2736,6 +2911,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.1--10.3.0/comparison.json)
 
+## `github-9d9e63d1c622ac7d59ac`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `4a89968de966ca1978eb4c8da558367233769b4c`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-4a89968/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-9d9e63d1c622ac7d59ac/packet.md)
+- Review priority: `normal`
+- Required reading: `69` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.1/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.0--1.50.1/comparison.json)
+
 ## `github-9ddbf78a69c5ce3ccc94`
 
 - Repository: `adyen/adyen-web`
@@ -2837,6 +3037,31 @@
 - `adyen-3ds2-ios-swift@3.0.1` (recommended `full`)
   Release: [manifest](../../raw/github/adyen/adyen-3ds2-ios-swift/releases/adyen-3ds2-ios-swift/3.0.1/2026-08-29/manifest.json)
   Comparison: Not applicable
+
+## `github-a243b054a19fc4d40e6c`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `2f3420a7e878cd883a04be5ba3d47e47243e1214`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-2f3420a/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-a243b054a19fc4d40e6c/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.4` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.4/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.3--1.50.4/comparison.json)
 
 ## `github-a27781ae2df9a769c19b`
 
@@ -3507,6 +3732,56 @@
   To SHA: `a3b0ffe7931cde179f8b0dfdd5162979adf81683`
   Comparison: Not applicable
 
+## `github-c1bd61b683d3fee0dc59`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `d9aaa685aae64dbb32ab735c6e1f7d9c765ed8e4`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-d9aaa68/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-c1bd61b683d3fee0dc59/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.51.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.51.1/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.51.0--1.51.1/comparison.json)
+
+## `github-c213c2e3977a49267ebd`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `a915fc6d89c7d301e0135a97c11656894d66e674`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-a915fc6/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-c213c2e3977a49267ebd/packet.md)
+- Review priority: `normal`
+- Required reading: `9` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.53.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.0/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.52.2--1.53.0/comparison.json)
+
 ## `github-c2ebe224d536e16acded`
 
 - Repository: `paypal/paypal-android`
@@ -3610,6 +3885,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-node/releases/stripe/22.6.2/2026-09-21/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-node/comparisons/stripe/22.6.1--22.6.2/comparison.json)
 
+## `github-c88c49cb6c8cce4a9dab`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `1090068baae4c3d732fd500a9d3dbe4b94bc91a0`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-1090068/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-c88c49cb6c8cce4a9dab/packet.md)
+- Review priority: `normal`
+- Required reading: `16` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.52.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.52.1/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.52.0--1.52.1/comparison.json)
+
 ## `github-c9338f57d905235adf30`
 
 - Repository: `paypal/paypal-messaging-components`
@@ -3659,6 +3959,31 @@
 - `@paypal/react-paypal-js@10.2.1` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.0--10.2.1/comparison.json)
+
+## `github-caf6f1c26a9befc044de`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `c856abae2df6f8a32c54b1c0e1bbfbf2abdf261f`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-c856aba/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-caf6f1c26a9befc044de/packet.md)
+- Review priority: `normal`
+- Required reading: `31` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.51.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.51.0/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.11--1.51.0/comparison.json)
 
 ## `github-cb3904e11eff1c98f76d`
 
@@ -3734,6 +4059,31 @@
 - `@paypal/checkout-components@4.1.47` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/4.1.47/2026-07-23/manifest.json)
   Comparison: Not applicable
+
+## `github-cc1be29962b247433d0c`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `6056ace7517ccb15c74ceac40d9c619a96e72cde`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-6056ace/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-cc1be29962b247433d0c/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.9` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.9/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.8--1.50.9/comparison.json)
 
 ## `github-cc917488260ace966c80`
 
@@ -4018,6 +4368,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.78.0/2026-10-04/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.77.0--0.78.0/comparison.json)
 
+## `github-da5ad4b39b1b83dcefa6`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `8348b889fb48c1cf3ed36452ad1885cc195e9330`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-8348b88/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-da5ad4b39b1b83dcefa6/packet.md)
+- Review priority: `normal`
+- Required reading: `27` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.2/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.1--1.50.2/comparison.json)
+
 ## `github-dac96e3489eeeca5d8e0`
 
 - Repository: `paypal/paypal-checkout-components`
@@ -4067,6 +4442,31 @@
 - `@stripe/stripe-js@9.13.0` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/9.13.0/2026-08-21/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.12.1--9.13.0/comparison.json)
+
+## `github-dbcbeb38b2ea59951263`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `c78e4ab82bc58dc816d0fc7edaaeb3792f8e541c`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-c78e4ab/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-dbcbeb38b2ea59951263/packet.md)
+- Review priority: `normal`
+- Required reading: `19` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.11` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.11/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.10--1.50.11/comparison.json)
 
 ## `github-ddb53c093685674310ef`
 
@@ -4496,6 +4896,31 @@
 - `@paypal/paypal-js@11.0.0` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.0/2026-08-30/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/10.1.0--11.0.0/comparison.json)
+
+## `github-fc967272a8fae56ffc53`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `53f08e96b9dfa82bd86670aa34ff50bab60abaac`
+- Collection date: `2026-10-06`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-53f08e9/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-fc967272a8fae56ffc53/packet.md)
+- Review priority: `normal`
+- Required reading: `9` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.3` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.3/2026-10-06/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.2--1.50.3/comparison.json)
 
 ## `github-fdb611aa510b593685f6`
 

@@ -1,0 +1,354 @@
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index 893347d..cefaf21 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -60,6 +60,9 @@ var rootCmd = &cobra.Command{
+ 		AIAgentHelpAnnotationKey: "  If you do not have an account, run `stripe sandbox create` (provisions a claimable sandbox without a browser).\n" +
+ 			"  Visit https://docs.stripe.com/llms.txt?utm_source=cli for latest guidance on how to integrate correctly.\n" +
+ 			"  Run `npx skills add --all stripe/ai` to add all Stripe AI skills to your agent.\n" +
++			// `stripe directory` installs itself on first use once the auto-install
++			// rollout reaches a machine, but until that flag is fully rolled out the
++			// prompt is still what most callers get, so describe that.
+ 			"  Additional commands (apps, directory, generate, projects) are available as installable plugins — run the command directly to be prompted, or use `stripe plugin install <name>`.",
+ 	},
+ 	Version: version.Version,
+@@ -273,6 +276,7 @@ func init() {
+ 	rootCmd.Flags().BoolP("version", "v", false, "Get the version of the Stripe CLI")
+ 	rootCmd.PersistentFlags().StringVar(&rootAccessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	rootCmd.PersistentFlags().MarkHidden("access-base") //nolint:errcheck
++	rootCmd.SetFlagErrorFunc(flagErrorWithNestedAPIHint)
+ 
+ 	// tell viper to monitor the following flags:
+ 	// they will be available via viper.get(KEY), but not mapped back to the Config (by default; see below)
+@@ -330,8 +334,9 @@ func init() {
+ 	installedPluginSet := registerInstalledPlugins(rootCmd, &Config, afero.NewOsFs())
+ 
+ 	// For known plugins not yet installed, add a hint command so users get
+-	// a helpful message instead of "unknown command".
+-	pluginhints.AddHintCommands(rootCmd, &Config, installedPluginSet)
++	// a helpful message instead of "unknown command". Plugins that auto-install
++	// use runPluginByName to run the user's command once the install finishes.
++	pluginhints.AddHintCommands(rootCmd, &Config, installedPluginSet, runPluginByName)
+ }
+ 
+ func registerInstalledPlugins(root *cobra.Command, cfg *config.Config, fs afero.Fs) map[string]bool {
+diff --git a/pkg/cmd/whoami.go b/pkg/cmd/whoami.go
+index faff4e4..6d6c622 100644
+--- a/pkg/cmd/whoami.go
++++ b/pkg/cmd/whoami.go
+@@ -6,6 +6,7 @@ import (
+ 	"io"
+ 	"strings"
+ 	"text/tabwriter"
++	"time"
+ 
+ 	"github.com/spf13/cobra"
+ 
+@@ -47,6 +48,20 @@ type whoamiOutput struct {
+ 	PreviewAPIVersion string        `json:"preview_api_version"`
+ }
+ 
++// whoamiOAuthOutput mirrors exactly what the OAuth text output shows: the
++// active context (account, mode, email, role, expiry) and the list of
++// authorized accounts. Fields not surfaced in the text output (e.g. profile
++// name, API version) are intentionally omitted here.
++type whoamiOAuthOutput struct {
++	DisplayName        string                     `json:"display_name,omitempty"`
++	AccountID          string                     `json:"account_id,omitempty"`
++	Mode               string                     `json:"mode,omitempty"`
++	Email              string                     `json:"email,omitempty"`
++	Role               string                     `json:"role,omitempty"`
++	ExpiresAt          *int64                     `json:"expires_at,omitempty"`
++	AuthorizedAccounts []config.AuthorizedAccount `json:"authorized_accounts,omitempty"`
++}
++
+ func newWhoamiCmd() *whoamiCmd {
+ 	wc := &whoamiCmd{
+ 		profile: &Config.Profile,
+@@ -143,39 +158,41 @@ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 	}
+ 
+ 	ac, _ := config.GetActiveContext()
+-	if ac != nil {
+-		mode := "sandbox"
+-		if ac.Livemode {
+-			mode = "live"
+-		}
+ 
++	var info requests.UserInfo
++	if ac != nil {
+ 		creds := stripe.NewOAKCredentials(uat, ac.AccountID, ac.Livemode)
+-
+ 		// Fail open: the user's info is less important than the authorized contexts
+-		info, _ := requests.GetUserInfo(cmd.Context(), wc.apiBaseURL, wc.profile, creds, ac.Livemode)
+-
+-		displayName := ac.AccountID
+-		for _, a := range accounts {
+-			if a.ID == ac.AccountID && a.Name != "" {
+-				displayName = a.Name
+-				break
+-			}
++		info, _ = requests.GetUserInfo(cmd.Context(), wc.apiBaseURL, wc.profile, creds, ac.Livemode)
++	}
++	expiresAt, expiresAtErr := config.GetUATExpiresAt()
++
++	out := buildOAuthWhoamiOutput(accounts, ac, info, expiresAt, expiresAtErr == nil)
++
++	if strings.EqualFold(wc.format, "json") {
++		b, err := json.MarshalIndent(out, "", "  ")
++		if err != nil {
++			return err
+ 		}
++		fmt.Fprintln(w, string(b))
++		return nil
++	}
+ 
++	if ac != nil {
+ 		tw := tabwriter.NewWriter(w, 0, 0, 3, ' ', 0)
+-		if info.Email != "" {
+-			fmt.Fprintf(tw, "User\t%s\n", info.Email)
++		if out.Email != "" {
++			fmt.Fprintf(tw, "User\t%s\n", out.Email)
+ 		}
+-		if displayName != ac.AccountID {
+-			fmt.Fprintf(tw, "Context\t%s · %s (%s)\n", displayName, mode, ac.AccountID)
++		if out.DisplayName != ac.AccountID {
++			fmt.Fprintf(tw, "Context\t%s · %s (%s)\n", out.DisplayName, displayModeText(out.Mode), ac.AccountID)
+ 		} else {
+-			fmt.Fprintf(tw, "Context\t%s · %s\n", displayName, mode)
++			fmt.Fprintf(tw, "Context\t%s · %s\n", out.DisplayName, displayModeText(out.Mode))
+ 		}
+-		if info.Role != "" {
+-			fmt.Fprintf(tw, "Role\t%s\n", info.Role)
++		if out.Role != "" {
++			fmt.Fprintf(tw, "Role\t%s\n", out.Role)
+ 		}
+-		if t, err := config.GetUATExpiresAt(); err == nil {
+-			fmt.Fprintf(tw, "Expires\t%s\n", t.Local().Format(expiryDisplayFormat))
++		if expiresAtErr == nil {
++			fmt.Fprintf(tw, "Expires\t%s\n", expiresAt.Local().Format(expiryDisplayFormat))
+ 		}
+ 		tw.Flush()
+ 		fmt.Fprintln(w)
+@@ -185,6 +202,52 @@ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 	return nil
+ }
+ 
++// buildOAuthWhoamiOutput assembles the OAuth whoami JSON output. It's a pure
++// function so the mapping can be unit tested without making network calls.
++func buildOAuthWhoamiOutput(accounts []config.AuthorizedAccount, ac *config.ActiveContext, info requests.UserInfo, expiresAt time.Time, hasExpiry bool) whoamiOAuthOutput {
++	out := whoamiOAuthOutput{
++		AuthorizedAccounts: accounts,
++	}
++
++	if ac == nil {
++		return out
++	}
++
++	out.AccountID = ac.AccountID
++	out.DisplayName = ac.AccountID
++	for _, a := range accounts {
++		if a.ID == ac.AccountID && a.Name != "" {
++			out.DisplayName = a.Name
++			break
++		}
++	}
++
++	out.Email = info.Email
++	out.Role = info.Role
++
++	if ac.Livemode {
++		out.Mode = "live"
++	} else {
++		out.Mode = "test"
++	}
++
++	if hasExpiry {
++		ts := expiresAt.Unix()
++		out.ExpiresAt = &ts
++	}
++
++	return out
++}
++
++// displayModeText maps the internal "test"/"live" mode value to the CLI's
++// sandbox-oriented display terminology.
++func displayModeText(mode string) string {
++	if mode == "test" {
++		return "sandbox"
++	}
++	return mode
++}
++
+ func printWhoamiText(out io.Writer, data whoamiOutput) {
+ 	w := tabwriter.NewWriter(out, 0, 0, 2, ' ', 0)
+ 	defer w.Flush()
+diff --git a/pkg/login/oauth_refresh.go b/pkg/login/oauth_refresh.go
+index f3c4370..6f896f4 100644
+--- a/pkg/login/oauth_refresh.go
++++ b/pkg/login/oauth_refresh.go
+@@ -54,6 +54,7 @@ func refreshOAuthToken(p *config.Profile) error {
+ 	}
+ 
+ 	p.UAT = tokenResp.AccessToken
++	preserveProfileMetadata(p)
+ 	if err := p.CreateProfile(); err != nil {
+ 		return err
+ 	}
+@@ -79,6 +80,32 @@ func refreshOAuthToken(p *config.Profile) error {
+ 	return nil
+ }
+ 
++// preserveProfileMetadata carries forward the display name, account ID, user
++// ID, and device name already persisted for this profile. CreateProfile
++// deletes those fields before rewriting them from p, so unless they're
++// populated here first, a refresh (which only knows the new UAT) would wipe
++// them from the config file.
++func preserveProfileMetadata(p *config.Profile) {
++	if p.DisplayName == "" {
++		p.DisplayName = p.GetDisplayName()
++	}
++	if p.AccountID == "" {
++		if accountID, err := p.GetAccountID(); err == nil {
++			p.AccountID = accountID
++		}
++	}
++	if p.UserID == "" {
++		if userID, err := p.GetUserID(); err == nil {
++			p.UserID = userID
++		}
++	}
++	if p.DeviceName == "" {
++		if deviceName, err := p.GetDeviceName(); err == nil {
++			p.DeviceName = deviceName
++		}
++	}
++}
++
+ // doRefreshToken calls the token endpoint with grant_type=refresh_token.
+ func doRefreshToken(ctx context.Context, accessBaseURL, clientID, refreshToken string) (*OAuthTokenResponse, error) {
+ 	endpoint := accessBaseURL + accessAPNPath + "/token"
+diff --git a/pkg/login/oauth_refresh_test.go b/pkg/login/oauth_refresh_test.go
+new file mode 100644
+index 0000000..ac71c70
+--- /dev/null
++++ b/pkg/login/oauth_refresh_test.go
+@@ -0,0 +1,56 @@
++package login
++
++import (
++	"encoding/json"
++	"net/http"
++	"net/http/httptest"
++	"testing"
++
++	"github.com/spf13/viper"
++	"github.com/stretchr/testify/assert"
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++)
++
++// TestRefreshOAuthToken_PreservesProfileMetadata guards against a regression
++// where refreshing the UAT wiped display_name/account_id/user_id: the refresh
++// path only learns the new access token, but CreateProfile deletes those
++// fields before rewriting whatever is (or isn't) set on the Profile struct.
++func TestRefreshOAuthToken_PreservesProfileMetadata(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	// Simulate a completed login: display name, account ID, and user ID are
++	// persisted alongside the access token.
++	cfg.Profile.UAT = "oaac_old_access"
++	cfg.Profile.DisplayName = "Acme Inc"
++	cfg.Profile.AccountID = "acct_123"
++	cfg.Profile.UserID = "user_123"
++	require.NoError(t, cfg.Profile.CreateProfile())
++
++	require.NoError(t, config.KeyRing.Set(config.OAuthRefreshTokenKeychainKey, []byte("oart_old_refresh"), "test"))
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusOK)
++		json.NewEncoder(w).Encode(OAuthTokenResponse{ //nolint:errcheck
++			AccessToken:  "oaac_new_access",
++			RefreshToken: "oart_new_refresh",
++			TokenType:    "Bearer",
++			ExpiresIn:    3600,
++		})
++	}))
++	defer ts.Close()
++
++	p := &config.Profile{
++		ProfileName:        cfg.Profile.ProfileName,
++		OAuthAccessBaseURL: ts.URL,
++	}
++	require.NoError(t, refreshOAuthToken(p))
++
++	assert.Equal(t, "oaac_new_access", p.UAT)
++	assert.Equal(t, "Acme Inc", viper.GetString(p.GetConfigField(config.DisplayNameName)))
++	assert.Equal(t, "acct_123", viper.GetString(p.GetConfigField(config.AccountIDName)))
++	assert.Equal(t, "user_123", viper.GetString(p.GetConfigField(config.UserIDName)))
++}
+diff --git a/pkg/requests/plugin.go b/pkg/requests/plugin.go
+index 8c677ff..0831a8f 100644
+--- a/pkg/requests/plugin.go
++++ b/pkg/requests/plugin.go
+@@ -16,6 +16,12 @@ import (
+ type PluginMetadata struct {
+ 	BinaryURL      string `json:"binary_url"`
+ 	PluginManifest string `json:"plugin_manifest"`
++	// AutoInstall reports whether the server wants this plugin installed on first
++	// use without asking. The endpoints always send the field, and a response that
++	// omits it decodes to false, which is the prompting behavior the CLI has always
++	// had — so losing the signal can only cost a prompt, never cause a surprise
++	// download.
++	AutoInstall bool `json:"auto_install"`
+ }
+ 
+ func getPluginMetadataPath(apiKey string) string {
+@@ -45,7 +51,11 @@ func getPluginEndpointBaseURL(apiKey, apiBaseURL, dashboardBaseURL string) strin
+ // GetPluginMetadata returns plugin-specific manifest and binary information.
+ // It uses the authenticated endpoint when an API key is available and the
+ // anonymous endpoint otherwise.
+-func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVersion, apiKey string, profile *config.Profile, pluginName, version, os, arch string) (PluginMetadata, error) {
++//
++// machineUUID is the CLI's persistent per-installation identifier. The server
++// keys the auto-install rollout on it so a machine stays on the same side of that
++// rollout across invocations rather than flipping between prompting and not.
++func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVersion, apiKey string, profile *config.Profile, pluginName, version, os, arch, machineUUID string) (PluginMetadata, error) {
+ 	params := &RequestParameters{
+ 		data:    []string{},
+ 		version: apiVersion,
+@@ -62,6 +72,9 @@ func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVer
+ 		"version":  version,
+ 		"os":       os,
+ 		"arch":     arch,
++		// Logged so a machine that is not being auto-installed to can be told apart
++		// from one that never sent the identifier the rollout is keyed on.
++		"machine_uuid": machineUUID,
+ 	}).Debug("Fetching plugin metadata")
+ 
+ 	base := &Base{
+@@ -76,12 +89,19 @@ func GetPluginMetadata(ctx context.Context, apiBaseURL, dashboardBaseURL, apiVer
+ 		resolvedCreds = stripe.NewAPIKeyCredentials(apiKey)
+ 	}
+ 
+-	resp, err := base.MakeRequest(ctx, resolvedCreds, metadataPath, params, map[string]interface{}{
++	requestParams := map[string]interface{}{
+ 		"plugin":  pluginName,
+ 		"version": version,
+ 		"os":      os,
+ 		"arch":    arch,
+-	}, true, nil)
++	}
++	// Left out when there is no uuid to send: the server reads absent and empty
++	// identically, as "this caller keeps prompting".
++	if machineUUID != "" {
++		requestParams["machine_uuid"] = machineUUID
++	}
++
++	resp, err := base.MakeRequest(ctx, resolvedCreds, metadataPath, params, requestParams, true, nil)
+ 	if err != nil {
+ 		return PluginMetadata{}, err
+ 	}
