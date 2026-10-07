@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-deprecated-client-side-encryption-javascript-library",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Deprecated Client-Side Encryption JavaScript Library\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/deprecated/client-side-encryption/javascript-library\"\nraw_files:\n  - \"braintree/docs/deprecated/client-side-encryption/javascript-library-2026-09-16.md\"\ntags: [braintree, javascript, client-side-encryption, deprecated]\n---\n\n## Overview\n\nThis historical Braintree website snapshot describes the deprecated Client-Side Encryption JavaScript library. The documented flow encrypts sensitive payment input on the client with the public key of an asymmetric key pair, sends the encrypted values to the merchant server, and has a Braintree client library forward them to the gateway, where the corresponding private key is stored for decryption and ordinary gateway processing. The page directs readers to an upgrade route rather than presenting this method as a current integration.\n\n## Key takeaways\n\n- The page names card number, CVV, and expiration date as payment-method information that should be encrypted.\n- Its client/server split has the client collect input, encrypt it with the Braintree client-side encryption library, and send ciphertext over HTTPS to the merchant server; the merchant server then forwards the encrypted request through a Braintree client library and returns gateway response information.\n- `onSubmitEncryptForm` installs a form submit handler that encrypts fields carrying `data-encrypted-name` and then submits the form to its configured action. An optional callback runs after encryption, including for an AJAX submission path.\n- The page explicitly says there is no cross-browser guarantee that multiple submit handlers run in the intended order. `encryptForm` is the lower-level path for a custom pre-encryption submit callback and immediately encrypts every marked field in the selected form.\n\n## Material limitations\n\n- Braintree labels the entire integration method deprecated and links to an SDK upgrade route. This snapshot does not establish current support, browser compatibility, merchant eligibility, or availability.\n- The submit helpers mutate marked form fields before submission, and the documented multiple-handler ordering limitation can matter when validation or other form logic is attached.\n- This historical description is not evidence of PCI scope, compliance, security certification, successful tokenization, authorization, payment processing, settlement, or any other payment outcome.\n\n## Detail locators\n\n- `How it works` and the asymmetric encryption/gateway flow: raw lines 21-29.\n- Fields named for encryption: raw lines 30-36.\n- Client and merchant-server responsibilities: raw lines 39-57.\n- `create` and its encryption-key argument: raw lines 58-65.\n- `onSubmitEncryptForm`, marked fields, callback timing, and handler-order warning: raw lines 66-75.\n- Immediate marked-field encryption through `encryptForm`: raw lines 76-85.\n- Single-string `encrypt` compatibility/customization method: raw lines 86-93.\n\n## Related\n\n- [[braintree]]\n- [[braintree-web-sdk]] - provider concept for the modular browser SDK, historical lifecycle policy, and exact-version evidence boundaries\n- [[source-braintree-upgrade]] - upgrade route linked by this deprecated page\n\n## Raw Sources\n\n- [[raw/braintree/docs/deprecated/client-side-encryption/javascript-library-2026-09-16|pinned Braintree Client-Side Encryption JavaScript library snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The integration method outlined below is deprecated. [Learn more about upgrading to the Braintree SDKs.](/braintree/docs/reference/general/upgrade)",
+      "location": "NOTE, raw lines 17-18"
+    },
+    {
+      "text": "Client-Side Encryption allows you to encrypt sensitive payment information for processing by the\nBraintree payment gateway. It is designed for use in conjunction with Braintree\u2019s client libraries.\nThe encryption libraries will take data (usually submitted through a form on a mobile device or\nmerchant-hosted website) and encrypt it using the public key of an asymmetric key pair. On your\nserver, you will use our client library to send the encrypted data to the Braintree Gateway. Once\nencrypted, the data may only be decrypted using the private key stored on the Braintree gateway.\nWhen encrypted data is transmitted to the Braintree gateway, it is decrypted and processed as usual.",
+      "location": "How it works, raw lines 23-29"
+    },
+    {
+      "text": "Whether the client is an application on a mobile device using iOS/Android, or a web browser, the\nclient has the following minimum requirements:\n- gets user input (typically via a form)\n- uses Braintree client side encryption library to encrypt sensitive user input\n- forwards encrypted data via HTTPS request to the merchant server.",
+      "location": "Client, raw lines 41-45"
+    },
+    {
+      "text": "onSubmitEncryptFormadds anonSubmithandler to the form specified as its\nargument. It accepts an element ID, a jQuery object, or a DOM element. TheonSubmithandler encrypts any field with a data-encrypted-name attribute, then the form\nis submitted to the path specified in the form\u2019s action attribute. Optionally,onSubmitEncryptFormcan be passed a function as a second argument. It will call this\nfunction after encrypting the form fields. The most common use case is to submit your payment form\nusing AJAX. This feature is provided because there is no cross-browser guarantee that multipleonSubmithandlers will be run in the intended order.",
+      "location": "onSubmitEncryptForm, raw lines 71-75"
+    },
+    {
+      "text": "encryptFormis used internally byonSubmitEncryptForm. It can be used if\nyou\u2019d like to write your ownonSubmitcallback that runs before fields are encrypted \u2013\nfor example to do client-side validations on the credit card number. It immediately encrypts all\nfields with a data-encrypted-name attribute within a form. It accepts an element ID, a jQuery\nobject, or a DOM element.",
+      "location": "encryptForm, raw lines 81-85"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-deprecated-cse-javascript-web-sdk-route",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-deprecated-client-side-encryption-javascript-library]] - historical, deprecated Client-Side Encryption JavaScript library for encrypting marked client input before merchant-server forwarding; includes automatic form submission and multiple-handler ordering limits, not current SDK support, PCI/compliance, or payment-outcome evidence",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this deprecated pre-modern integration separate from exact-version braintree-web behavior and current lifecycle claims."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/deprecated/client-side-encryption/javascript-library-2026-09-16.md",
+  "raw_sha256": "c7caf1d40e95c28e5ca6114c8c62993fbf600da279a01a35e3e53136081b663b",
+  "status": "candidate_ready"
+}

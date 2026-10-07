@@ -16,6 +16,59 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+#### SDK, payment-method and In-Person integration guides (C43)
+
+- [[source-braintree-docs-guides-ach-overview]] - Braintree ACH Direct Debit Overview
+- [[source-braintree-docs-guides-paypal-client-side-ios-v7]] - Braintree PayPal Client-Side Implementation for iOS v7
+- [[source-braintree-docs-deprecated-client-side-encryption-javascript-library]] - Braintree Deprecated Client-Side Encryption JavaScript Library
+- [[source-braintree-docs-guides-disputes-testing-go-live-node]] - Braintree Dispute Testing and Go Live (Node.js webpage)
+- [[source-braintree-in-person-post-launch-activities-contact-us]] - Braintree In-Person Support and Contact Routes
+- [[source-braintree-in-person-guides-testing-your-integration]] - Braintree In-Person Testing Your Integration
+- [[source-braintree-in-person-hardware-verifone-e285]] - Braintree In-Person Verifone E285 Hardware
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-getting-product-information]] - Braintree PayPal Commerce Channel API — Getting Product Information
+- [[source-braintree-docs-guides-apple-pay-configuration-javascript-v3]] - Braintree Apple Pay Configuration for JavaScript v3
+- [[source-braintree-docs-guides-reports-custom-node]] - Braintree Custom Reports (Node.js)
+- [[source-braintree-docs-reference-general-class-level-vs-instance-methods-node]] - Braintree Class-Level vs Instance Methods (Node.js route)
+- [[source-braintree-in-person-guides-making-a-transaction-passing-lodging-data]] - Braintree In-Person Passing Lodging Data
+- [[source-braintree-docs-guides-shopper-insights-android-v5]] - Braintree Shopper Insights (Beta) — Android v5
+- [[source-braintree-docs-guides-venmo-submit-for-partial-settlement-node]] - Braintree Venmo Submit for Partial Settlement (Node.js)
+- [[source-braintree-docs-guides-unionpay-client-side-android-v5]] - Braintree UnionPay Client-Side Implementation for Android v5
+- [[source-braintree-docs-guides-customers-node]] - Braintree Customers Guide (Node.js)
+- [[source-braintree-docs-guides-fastlane-server-side-node]] - Braintree Fastlane Server-side Integration (Node.js)
+- [[source-braintree-docs-guides-sepa-direct-debit-client-side-android-v5]] - Braintree SEPA Direct Debit Client-Side Implementation (Android v5)
+- [[source-braintree-docs-guides-amex-express-checkout-client-side-android-v5]] - Braintree Amex Express Checkout Client-Side Implementation (Android v5)
+- [[source-braintree-docs-guides-amex-express-checkout-client-side-ios-v7]] - Braintree Amex Express Checkout Profile Retrieval (iOS v7 Route)
+- [[source-braintree-docs-guides-network-tokens-bring-your-own-token-node]] - Braintree Bring Your Own Token (Node.js)
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-managing-authorization]] - Braintree PINless Debit Optimized Routing: Managing Authorizations
+- [[source-braintree-docs-reference-general-enterprise-third-party-plugins]] - Braintree Enterprise Third-Party Plugins Directory
+- [[source-braintree-docs-reference-client-reference-javascript-v2-credit-cards]] - Braintree JavaScript v2 Credit Cards Client Reference
+- [[source-braintree-docs-guides-functions-import-data]] - Braintree Functions: Import Data
+- [[source-braintree-docs-guides-payment-methods-node]] - Braintree Payment Methods Guide (Node.js)
+- [[source-braintree-docs-guides-paypal-checkout-with-vault-android-v5]] - Braintree PayPal Checkout with Vault (Android v5)
+- [[source-braintree-docs-reference-client-reference-javascript-v2-browser-support]] - Braintree JavaScript v2 Browser Support
+- [[source-braintree-docs-guides-masterpass-server-side-node]] - Braintree Masterpass Server-Side Implementation (Node.js)
+- [[source-braintree-docs-guides-paypal-commerce-ios-overview]] - Braintree PayPal Commerce iOS SDK Overview
+- [[source-braintree-docs-guides-disputes-overview]] - Braintree Disputes Overview
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-integration]] - Braintree PINless Debit Optimized Debit Routing Integration
+- [[source-braintree-docs-guides-venmo-overview]] - Braintree Venmo Overview
+- [[source-braintree-docs-guides-paypal-commerce-ios-launch-checklist]] - Braintree PayPal Commerce iOS Launch Checklist
+- [[source-braintree-docs-guides-paypal-checkout-with-vault-ios-v7]] - Braintree PayPal Checkout with Vault - iOS v7
+- [[source-braintree-in-person-post-launch-activities-troubleshooting]] - Braintree In-Person Troubleshooting
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-test-and-go-live]] - Braintree PINless Debit Optimized Routing: Test and Go Live
+- [[source-braintree-graphql-integration-guides]] - Braintree GraphQL Integration Guides Overview
+- [[source-braintree-docs-guides-google-pay-testing-go-live-javascript-v3]] - Braintree Google Pay Testing and Go Live (JavaScript v3)
+- [[source-braintree-docs-guides-network-tokens-how-it-works]] - Braintree How Network Tokens Work
+- [[source-braintree-docs-guides-amex-direct-industry-specific-node]] - Braintree Amex Direct Industry-Specific Fields (Node.js)
+- [[source-braintree-docs-guides-paypal-commerce-ios-initial-theming-and-configuration]] - Braintree PayPal Commerce iOS Initial Theming and Configuration
+- [[source-braintree-docs-guides-google-pay-testing-go-live-android-v5]] - Braintree Google Pay Testing and Go Live for Android v5
+- [[source-braintree-in-person-post-launch-activities-managing-firmware-updates]] - Braintree In-Person Managing Firmware Updates
+- [[source-braintree-docs-guides-package-tracking-server-side-node]] - Braintree Package Tracking Server-Side Configuration (Node.js)
+- [[source-braintree-docs-start-drop-in]] - Braintree Drop-in UI Overview
+- [[source-braintree-docs-start-example-integrations-drop-in-using-the-examples]] - Braintree Drop-in Example Integrations
+- [[source-braintree-in-person-reference-verifone-p400-reference]] - Braintree In-Person Verifone P400 Device Reference
+- [[source-braintree-docs-guides-amex-express-checkout-amex-brand-requirements]] - Braintree Amex Express Checkout Brand Requirements
+- [[source-braintree-docs-guides-google-pay-overview]] - Braintree Google Pay Overview
+
 #### PayPal, wallets, client integration and Node references (C42)
 
 - [[source-braintree-docs-guides-paypal-testing-go-live-javascript-v3]] - Braintree PayPal Testing and Go Live (JavaScript v3)

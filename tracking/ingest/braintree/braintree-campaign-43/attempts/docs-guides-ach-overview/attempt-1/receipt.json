@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-ach-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree ACH Direct Debit Overview\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/ach/overview\"\nraw_files:\n  - \"braintree/docs/guides/ach/overview-2026-09-16.md\"\ntags: [braintree, ach, direct-debit, javascript-v3, tokenization, vaulting, verification]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of an unversioned [[braintree]] website overview describes ACH Direct Debit as a US payment method that debits a customer's bank account through the ACH network rather than a card brand. Its captured availability statement limits the route to eligible merchants using a custom JavaScript v3 client-side integration, alongside a server-side SDK, and says the method is unavailable in Drop-in UI. These statements are snapshot qualifications, not proof of current availability, merchant eligibility, account enablement, exact SDK behavior or successful payment execution. See [[braintree-payment-methods]] for the provider-wide payment-method route.\n\n## Key takeaways\n\n- The page organizes ACH acceptance around tokenizing, vaulting, verifying and transacting. It says their overlap depends on the chosen verification approach; this overview is an orientation rather than an exact implementation contract.\n- Tokenization exchanges collected bank details, including account and routing numbers, for a one-time-use payment-method nonce. The resulting nonce neither verifies the bank account nor supports a transaction by itself; the page requires vaulting and successful verification before transaction creation.\n- Vaulting exchanges the nonce for a persistent payment-method token. A merchant can initiate verification while vaulting or vault without attempting verification, but the vaulted method becomes transactable only after successful verification.\n- The captured overview lists network check, micro-transfers, independent check and Instant Verification as bank-account verification methods. It describes network check as an immediate rules-based result, micro-transfers as two sub-dollar credits whose amounts the customer confirms, independent check as a merchant-owned method followed by manually marking the payment method verified, and Instant Verification as customer bank authentication through secure open-banking connections. Use the exact raw section and dedicated implementation guides to determine applicable setup and qualifications; this list is not proof that any option is currently available or enabled for a merchant.\n- The page says verification methods may be combined and gives network check followed by micro-transfers as a recommended example. That example is guidance, not a requirement or a success guarantee.\n\n## Material boundaries\n\n- This source is a captured website overview, not current eligibility or availability authority, package-qualified SDK evidence, exact API-schema evidence, bank-account ownership proof, or evidence of a successful debit, transaction, settlement or funding.\n- The client-side condition is specifically a custom JavaScript v3 integration, and the captured page excludes Drop-in UI. Do not generalize the overview to other client surfaces.\n- The page names verification methods but does not establish that every listed method has identical eligibility, environment, setup or lifecycle behavior. Follow the applicable detailed guide before relying on one.\n\n## Detail locators\n\n- ACH Direct Debit identity and US network scope: `# Overview`, line 16.\n- Eligible-merchant, custom JavaScript v3, server-side SDK and Drop-in UI qualifications: `**AVAILABILITY**`, lines 18\u201321.\n- Four-stage lifecycle and verification-dependent overlap: lines 23\u201333.\n- Tokenization, nonce identity and non-transactable-before-vault-and-verification boundary: `## Tokenizing`, lines 36\u201338.\n- Vaulting with or without an immediate verification attempt and successful-verification prerequisite: `## Vaulting`, lines 41\u201353.\n- Verification-method descriptions and combination example: `## Verifying`, lines 56\u201372.\n- Configuration navigation: `Next Page: Configuration`, line 74; navigation only, not evidence for configuration behavior.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-methods]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/ach/overview-2026-09-16|Braintree ACH Direct Debit Overview (captured 2026-09-16)]]",
+  "quotes": [
+    {
+      "text": "ACH Direct Debit is a payment method that runs on the ACH (Automated Clearing House) network in the United States. It allows customers to pay for transactions by debiting directly from their bank account, as opposed to processing through a card brand.",
+      "location": "# Overview, line 16"
+    },
+    {
+      "text": "ACH Direct Debit is available to [eligible merchants](/braintree/articles/guides/payment-methods/ach/#availability) who can implement a custom client-side integration using our [JavaScript v3 SDK](/braintree/docs/guides/client-sdk/setup/javascript/#v3). It's currently not available in our Drop-in UI.",
+      "location": "**AVAILABILITY**, line 19"
+    },
+    {
+      "text": "At a high level, accepting ACH payments consists of four concepts:\n\n\n- Tokenizing\n- Vaulting\n- Verifying\n- Transacting\n\n\n\nDepending on how you wish to verify your customer's bank account, these concepts will overlap in different ways.",
+      "location": "# Overview, lines 23-33"
+    },
+    {
+      "text": "Tokenizing is the process of exchanging raw payment information for a secure, one-time-use token called a payment method nonce. For our ACH integration, you can tokenize a bank account by collecting a customer's **bank details**, including account and routing numbers. However, this will not verify the bank account, and the resulting nonce will not be transactable. Before you can create a transaction, you will need to use the nonce to vault the bank account and successfully verify it.",
+      "location": "## Tokenizing, line 38"
+    },
+    {
+      "text": "When vaulting a bank account, you can choose to specify a verification method. This creates a vaulted payment method and initiates a verification in a single step. If the verification fails, you can keep retrying verifications on the same payment method. A vaulted payment method will only be transactable once it has had a successful verification.",
+      "location": "### Vaulting with verification, line 48"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "concept-braintree-payment-methods-add-ach-overview",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-ach-overview]] - 2026-09-16 unversioned Braintree website overview of ACH Direct Debit identity and its tokenizing, vaulting, verifying and transacting lifecycle, with eligible-merchant, custom-JavaScript-v3 and Drop-in exclusion qualifications; the snapshot lists four verification options but is not current availability, enablement, exact SDK behavior or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/ach/overview-2026-09-16.md",
+  "raw_sha256": "52b171d41ec7fcb3cf2b4e29876a0d3c7f586007379097958e876d595ceacc37",
+  "status": "candidate_ready"
+}

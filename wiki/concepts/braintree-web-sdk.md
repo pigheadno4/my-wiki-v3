@@ -77,6 +77,12 @@ The release also forwards `autoRedirect` and `fullPageOverlay` session-start opt
 
 ## Related
 
+- [[source-braintree-docs-reference-client-reference-javascript-v2-browser-support]] - historical JavaScript v2 browser-support snapshot covering tested desktop/mobile inventory, IE/TLS constraints, PayPal webview limitations and no-fix guidance, and the untested/undeveloped hybrid-runtime boundary; not current browser, package or runtime proof
+
+- [[source-braintree-docs-reference-client-reference-javascript-v2-credit-cards]] - JavaScript v2 direct credit-card tokenization and 3D Secure UI reference covering the SAQ A field-hosting warning, three-hour nonce lifetime, validation responsibility and pre-modal lookup callback; not current SDK support or deprecation-status, PCI-certification, server-processing or payment-outcome evidence
+
+- [[source-braintree-docs-deprecated-client-side-encryption-javascript-library]] - historical, deprecated Client-Side Encryption JavaScript library for encrypting marked client input before merchant-server forwarding; includes automatic form submission and multiple-handler ordering limits, not current SDK support, PCI/compliance, or payment-outcome evidence
+
 - [[source-braintree-docs-guides-payment-request-setup-and-integration-javascript-v3]] - Braintree-hosted JavaScript v3 Payment Request setup guide covering browser/HTTPS fallback prerequisites, payment-method enablement, component tokenization and server nonce handoff, with Google Pay consent/vaulting cautions and an unresolved direct-link script mismatch; not current availability, merchant eligibility, transaction, settlement or exact-version implementation proof
 
 - [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-javascript-v3]] - JavaScript v3 custom PayPal migration guide mapping `checkout.js` v4 to PayPal JS SDK v5 loading, rendering and Checkout/Vault callbacks, with explicit Drop-in and new-integration exclusions; not current package or v6 evidence

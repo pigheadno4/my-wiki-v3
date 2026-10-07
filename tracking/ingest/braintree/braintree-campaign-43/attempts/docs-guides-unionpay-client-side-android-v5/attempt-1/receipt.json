@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-unionpay-client-side-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree UnionPay Client-Side Implementation for Android v5\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/unionpay/client-side/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/unionpay/client-side/android/v5-2026-09-16.md\"\ntags: [braintree, unionpay, android, client-sdk, enrollment, tokenization]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of a [[braintree]] Android v5-routed client-side guide documents checking a UnionPay card's capabilities, enrolling the card and, when required, collecting an SMS authorization code before tokenization through [[braintree-android-sdk]]. It is snapshot guidance, not evidence of current SDK support, merchant or card eligibility, enrollment success, server transaction completion, or payment execution.\n\n## Key takeaways\n\n- For a business outside China, the page says checkout must let the customer select the processing brand for a dual-branded UnionPay card. It directs the merchant to use the UnionPay network only when the customer chooses it; otherwise the other card-brand network is used.\n- The page says this UnionPay path supports authorization only through a client token. It directs the client to check card capabilities after card-number entry so the form can respond to whether the card is credit or debit. Credit cards require CVV and expiration date and support immediate or delayed settlement; debit cards do not always require those fields and support only immediate settlement. These server-processing descriptions are not proof of a particular transaction outcome.\n- A UnionPay card must be enrolled before tokenization. Enrollment may cause UnionPay to send an SMS authorization code, which the integration collects and supplies with the enrollment ID during tokenization; when enrollment says no SMS code is required, tokenization can proceed immediately.\n\n> [!warning] Post-enrollment and validation conditions\n> Once enrollment is completed, the page says the card number and expiration fields can no longer be updated. It also says UnionPay validation occurs during enrollment, so the `validate` property should not be passed during tokenization; enabled AVS and CVV rules are ignored because enrollment handles card validation.\n\n> [!warning] Snapshot scope\n> Although the URL and slug route this page as Android v5, the collected raw does not state a dependency version, runtime/environment prerequisite, or mobile-certificate condition. Do not import such conditions from sibling guides or treat this page as proof of current package compatibility, environment readiness, certificate state, enrollment eligibility, or payment success.\n\n## Detail locators\n\n- Dual-branded card-network selection for businesses outside China: `## Checkout form > ### Dual-branded cards`, raw lines 20-31.\n- Credit/debit form fields and settlement distinctions: `## Checkout form > ### Card capabilities`, raw lines 34-49.\n- Client-token-only authorization and card-capability check timing: `## Check card capabilities`, raw lines 57-62.\n- Enrollment, conditional SMS collection, enrollment ID, post-enrollment field immutability and omitted `validate` property: `## Enrollment and tokenization`, raw lines 65-84.\n- AVS/CVV rule behavior: `## Special considerations > ### AVS and CVV validation does not apply`, raw lines 89-96.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-android-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/unionpay/client-side/android/v5-2026-09-16|Braintree UnionPay client-side implementation (Android v5)]] - complete collected snapshot for checkout brand selection, card-capability checks, enrollment, conditional SMS authorization and tokenization conditions\n",
+  "quotes": [
+    {
+      "text": "If your\nbusiness is based outside of China, card network rules around dual-branded UnionPay cards dictate\nthat your customers must be able to select which card brand they want their transaction to process\nthrough at checkout.",
+      "location": "raw lines 23-26 under ## Checkout form > ### Dual-branded cards"
+    },
+    {
+      "text": "UnionPay only supports authorization via [client tokens](/braintree/docs/guides/authorization/client-token).",
+      "location": "raw line 59 under ## Check card capabilities"
+    },
+    {
+      "text": "UnionPay cards require enrollment before they can be tokenized. The enrollment process may require customer action, where UnionPay sends an authorization code via SMS to the customer's mobile phone number. Your integration then collects the SMS auth code from the customer and provides it to us to tokenize the card.\n\nIf the enrollment indicates that the SMS code is not required, you can tokenize it immediately.",
+      "location": "raw lines 67-69 under ## Enrollment and tokenization"
+    },
+    {
+      "text": "When an enrollment is completed for a UnionPay card, you will no longer be able to update the card number, expiration date, expiration month, or expiration year.",
+      "location": "raw line 73 under ## Enrollment and tokenization"
+    },
+    {
+      "text": "Validating UnionPay is performed during the [enrollment](/braintree/docs/guides/unionpay/client-side#enrollment-and-tokenization) process. As such, there is no extra validation process that can be performed\nduring tokenization and the validate property should not be passed when\ntokenizing a UnionPay card.",
+      "location": "raw lines 82-84 under ## Enrollment and tokenization"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-w15-android-sdk-unionpay-reciprocal",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-unionpay-client-side-android-v5]] - 2026-09-16 Android v5-routed website guide for UnionPay card-capability checks, client-token authorization, conditional SMS enrollment and tokenization; preserves post-enrollment field immutability and validation conditions, and is not current environment, certificate, package-support, eligibility or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw is routed as Android v5 but states no dependency version, runtime environment prerequisite, or mobile-certificate condition; do not infer these from sibling pages."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/unionpay/client-side/android/v5-2026-09-16.md",
+  "raw_sha256": "dc2ea31d1c5444246d21596522be24f747a7ba341343d8b4583f7a124f82408d",
+  "status": "candidate_ready"
+}

@@ -46,6 +46,17 @@ These findings belong specifically to the Node repository, not Ruby's identicall
 
 ## Related
 
+- [[source-braintree-docs-guides-package-tracking-server-side-node]] - 2026-09-16 unversioned Node.js website example for creating transaction line items, submitting package metadata through `gateway.transaction.packageTracking()` and later retrieving package tracker fields; preserves an unresolved submitting-for-settlement versus settled-state conflict and is not exact package/runtime, eligibility, fulfillment or payment-outcome proof
+
+
+- [[source-braintree-docs-guides-amex-direct-industry-specific-node]] - 2026-09-16 unversioned Braintree website Node.js guide to optional Travel/Cruise or Lodging data on Amex Direct transactions, preserving the processor-connection and one-industry-type conditions plus field/example locators; not current eligibility, exact package/runtime behavior, interchange treatment or payment-execution proof
+
+- [[source-braintree-docs-guides-customers-node]] - 2026-09-16 unversioned Braintree website Node.js guide to the customer object's Vault-organizing purpose and create, update, ID-lookup and destructive delete lifecycle, preserving validation and card-verification conditions, primary-guide payment-method deletion and the dedicated delete authority's additional cancellation of all associated recurring billing subscriptions; not exact package behavior, current account enablement, API-success or payment-outcome proof, and no cancellation timing, refund, proration or paid-term effect is established
+
+- [[source-braintree-docs-guides-venmo-submit-for-partial-settlement-node]] - 2026-09-16 unversioned Braintree Venmo-routed Node.js website guide for parent/child `submitForPartialSettlement()` requests, cumulative amount limits, terminal-parent restrictions and child-refund boundaries, with damaged lifecycle fields and no current-eligibility or settlement/funding proof
+
+- [[source-braintree-docs-reference-general-class-level-vs-instance-methods-node]] - 2026-09-16 unversioned Node-routed website page for the PHP, Python and Ruby SDKs' historical shared class-level configuration versus configurable gateway-instance distinction; it says Node already defaulted to instance methods and was unaffected, while all displayed construction and sale examples are Ruby, so it supplies no exact Node package, method, constructor, runtime or environment behavior
+
 - [[source-braintree-docs-guides-server-side-tokenization-node]] - 2026-09-16 unversioned Node-routed website guide to non-vaulted raw-card tokenization through the Server SDK's GraphQL client, preserving the missing query-definition block plus example, schema, package-version and environment boundaries; not payment-execution proof
 
 - [[source-braintree-docs-reference-general-level-2-and-3-processing-required-fields-node]] - 2026-09-16 unversioned Braintree Node.js website reference for Level 2/3 sale data, line-item and amount-validation locators, and the internally approved settlement-submission route that overrides sale-time Level 2/3 data; incomplete captured field lists and examples are not a complete executable API contract, current eligibility, interchange-result or payment-outcome proof

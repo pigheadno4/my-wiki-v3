@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-pinless-debit-optimized-debit-routing-test-and-go-live",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PINless Debit Optimized Routing: Test and Go Live\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/pinless-debit/optimized-debit-routing/test-and-go-live\"\nraw_files:\n  - \"braintree/docs/guides/pinless-debit/optimized-debit-routing/test-and-go-live-2026-09-16.md\"\ntags: [braintree, pinless-debit, optimized-debit-routing, sandbox-testing, auto-retry]\n---\n\n## Overview\n\nThis captured unversioned [[braintree|Braintree]] webpage describes Sandbox testing and the move toward a live environment for PINless debit optimized routing. It covers Sandbox enablement, documented test fixtures, amount- and merchant-category-code-dependent debit-network routing, and an optionally enabled retry path from an unsuccessful debit-network transaction to Visa or Mastercard. The snapshot does not establish current availability, account eligibility or enablement, exact SDK or runtime behavior, Production behavior, or a successful authorization, payment, settlement or funding outcome. [[braintree-payment-methods]]\n\n## Key takeaways\n\n- PINless debit is not automatically enabled in a Sandbox account; the page directs the merchant to a Technical account manager for enablement and recommends Sandbox testing before moving to a live environment. Neither the recommendation nor a Sandbox result proves Production readiness or behavior.\n- The page supplies two test card values and says optimized routing selects one of STAR, STAR_ACCESS, ACCEL, NYCE or PULSE based on the transaction-sale amount and the merchant account's merchant category code. Those values are testing fixtures from the captured page, not general card data, a routing guarantee outside the stated setup, or evidence that a payment ran.\n- If debit-network routing is unsuccessful, Braintree can retry over Visa or Mastercard, but auto-retries require separate enablement through the technical account manager. For a successful retry the page says the debit-network field is empty because the retry uses Visa or Mastercard; when the retry also fails, it describes retained original and subsequent retry transaction IDs.\n- The Sandbox auto-retry fixture uses amount `2046` as a negative test: both the debit-network attempt and the Visa-or-Mastercard retry are described as failing. This synthetic failure path is not a Production test or proof of an actual transaction outcome.\n\n## Detail locators\n\n- **Sandbox enablement and before-live recommendation:** `Test and go live`, raw lines 17-22.\n- **Test card values:** `Test and go live`, raw lines 22-27.\n- **Optimized-routing networks and amount/MCC inputs:** raw line 28.\n- **Auto-retry scope, enablement and successful/failed retry semantics:** `Auto-retry`, raw lines 29-35.\n- **Displayed Java accessor list and illustrative successful/failed retry payloads:** raw lines 38-78.\n- **Sandbox negative auto-retry amount and expected failures:** `Testing auto-retry`, raw lines 80-82.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-methods]] \u2014 main provider concept route for PINless debit optimized-routing documentation.\n- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-network-response-codes]] \u2014 supplemental debit-network response-value reference.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/pinless-debit/optimized-debit-routing/test-and-go-live-2026-09-16|Braintree \u2014 PINless Debit Optimized Routing: Test and Go Live (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "PINless debit is not automatically enabled in your sandbox account. Reach out to your Technical account manager to get enabled for PINless.",
+      "location": "Test and go live, raw line 18"
+    },
+    {
+      "text": "We recommended testing PINless debit in the sandbox before moving to a live environment.",
+      "location": "Test and go live, raw line 20"
+    },
+    {
+      "text": "Transactions are routed to any one of the STAR, STAR_ACCESS, ACCEL, NYCE or PULSE debit networks based on the optimized debit routing. The network depends on the transaction amount sent in the transaction sale request and the merchant category code (MCC) of the merchant account.",
+      "location": "Test and go live, raw line 28"
+    },
+    {
+      "text": "If a transaction routed to the debit network is not successful, Braintree can retry the transaction over Visa or Mastercard networks. Reach out to your technical account manager to get enabled for auto-retries.",
+      "location": "Auto-retry, raw line 31"
+    },
+    {
+      "text": "To test a retry of a PINless debit transaction in a sandbox environment, set the transaction amount to 2046. Please note that this is a negative test-case, the transaction will be unsuccessfully routed to a debit network, and the retry will be over Visa, or Mastercard network, and this will also result in failure.",
+      "location": "Testing auto-retry, raw line 82"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-w37-payment-methods-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-test-and-go-live]] - 2026-09-16 unversioned Braintree PINless debit optimized-routing test/go-live guide for Sandbox enablement, test fixtures, amount/MCC-dependent debit-network routing, separately enabled Visa/Mastercard auto-retry and a negative retry simulation; not current availability, account enablement, exact SDK/runtime or Production behavior, or authorization, payment, settlement or funding proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the Sandbox/live-environment distinction and account-manager enablement qualifications; the snapshot is not Production behavior or payment-execution proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/pinless-debit/optimized-debit-routing/test-and-go-live-2026-09-16.md",
+  "raw_sha256": "e2862d97ed9a2e41578807db6259426d3f72e3934a31a85c5890fefb6df56970",
+  "status": "candidate_ready"
+}

@@ -80,6 +80,17 @@ The v7 migration moves request properties into initializers, changes feature cli
 
 ## Related
 
+- [[source-braintree-docs-guides-paypal-commerce-ios-initial-theming-and-configuration]] - 2026-09-16 unversioned PayPal Commerce iOS snapshot for optional initial plist and asset theming that PayPal Commerce Panel settings can override; distinct from the modern modular `braintree-ios` package and not current SDK, runtime-theme, availability or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-checkout-with-vault-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for a PayPal checkout request that combines an immediate charge with Billing Agreement consent and future-use vaulting, distinct from Billing Without Purchase; preserves the optional recurring metadata and `amountBreakdown` exclusions, and is not exact-package, current eligibility/enablement, runtime or payment-execution proof
+
+
+- [[source-braintree-docs-guides-paypal-commerce-ios-launch-checklist]] - historical, unversioned PayPal Commerce iOS launch-checklist snapshot grouping page-labelled required, recommended and optional setup, with a credential-obfuscation warning and separate OAuth clients for multiple apps sharing one store; distinct from modular `braintree-ios` and not current eligibility, enablement, exact-SDK, runtime or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-commerce-ios-overview]] - historical, unversioned PayPal Commerce iOS SDK overview snapshot for its closed-beta mobile-store purpose, standalone/embedded/product-button use cases, ecommerce-platform operating boundary and iOS 8.0–10.0 requirements; distinct from modular `braintree-ios`, and not current eligibility, enablement, exact-package, runtime or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-client-side-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for PayPal client setup and SDK-managed buttons that present web authentication and tokenize to a nonce callback, preserving the historical 6.17.0+ certificate notice and its traffic-failure warning; not current exact-package, fallback, eligibility or payment-execution proof
+
 - [[source-braintree-docs-guides-shopper-insights-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for beta Shopper Insights customer-session creation/update, PayPal or Venmo recommendations, qualified checkout presentment and display/selection analytics; preserves consent, client-token, SDK-availability and historical certificate conditions, and is not current availability, merchant eligibility, recommendation-result or payment-execution proof
 
 - [[source-braintree-docs-guides-paypal-vault-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for PayPal vault-request tokenization and nonce handoff, with required device data for non-recurring Vault transactions, separately qualified App Switch navigation, merchant-displayed amount/currency and a dated certificate warning; not current SDK support, enablement or payment-execution proof

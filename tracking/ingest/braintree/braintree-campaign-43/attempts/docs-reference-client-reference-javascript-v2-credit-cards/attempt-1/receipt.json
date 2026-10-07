@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-reference-client-reference-javascript-v2-credit-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree JavaScript v2 Credit Cards Client Reference\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/client-reference/javascript/v2/credit-cards\"\nraw_files:\n  - \"braintree/docs/reference/client-reference/javascript/v2/credit-cards-2026-09-16.md\"\ntags: [braintree, credit-cards, javascript-v2, client-reference, tokenization, 3d-secure]\n---\n\n## Overview\n\nThis collected [[braintree]] website snapshot is the JavaScript v2 client reference for lower-level credit-card tokenization and limited 3D Secure UI options. It documents browser-side nonce creation and UI callbacks for [[braintree-web-sdk]]; it does not establish current SDK support or deprecation status, PCI certification, server-side transaction processing, authorization, settlement, or a successful payment.\n\n## Key takeaways\n\n- For custom form behavior such as merchant-owned submit callbacks or validation, the page recommends creating a Braintree client and calling `client.tokenizeCard(...)`; its example sends the resulting nonce to the merchant server. The example is a client handoff pattern, not evidence that a server processed a transaction.\n- The page states that payment fields cannot be hosted on the merchant checkout page for eligibility for the easiest PCI compliance level, SAQ A, and points to Hosted Fields as the hosted approach. This is page-specific integration framing, not a PCI certification or general compliance determination.\n- Payment-method nonces are stated to expire after three hours. A nonce may still be created when inputs are empty or invalid, while a failed `tokenizeCard` call that returns no nonce yields the string `Unable to tokenize card.`; the page says gateway unreachability is one possible cause.\n- Drop-in and Hosted Fields are described as handling validation and card-type detection, but a custom credit-card integration must perform client-side validation and present suitable UI. Routine tokenization fields and the sample values remain in the raw snapshot.\n- The 3D Secure section documents `useDefaultLoader`, `onLookupComplete`, and `onUserClose`. `onLookupComplete` occurs after a successful lookup and before the authorization modal, while `onUserClose` follows a user-initiated modal close; neither callback is payment-success evidence.\n- The page is explicitly scoped to JavaScript v2 but does not state that version's current support or deprecation status. Consult separately retained lifecycle or migration evidence before making a current-SDK recommendation.\n\n## Detail locators\n\n- `Credit card direct tokenization` lines 17-21: SAQ A field-hosting statement and Hosted Fields navigation.\n- `Tokenize card` lines 24-41: lower-level client tokenization example, merchant-server nonce handoff comment and three-hour nonce lifetime.\n- `Options` lines 44-74: tokenization option example, nonce creation despite input-validation issues and no-nonce error behavior.\n- `Client-side validation` lines 77-85: Drop-in/Hosted Fields validation comparison and custom-integration responsibility.\n- `3D Secure UI options` lines 88-106: `verify3DS` example and loader, lookup-complete and user-close callback semantics.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-web-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/client-reference/javascript/v2/credit-cards-2026-09-16|Braintree JavaScript v2 Credit Cards client-reference snapshot (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "For a merchant to be eligible for the easiest level of PCI compliance (SAQ A), payment fields can't be hosted on your checkout page. To learn how to implement our hosted solution within a custom integration, [visit the Hosted Fields guide](/braintree/docs/guides/hosted-fields/overview) .",
+      "location": "Credit card direct tokenization, line 21"
+    },
+    {
+      "text": "If you are doing more complex things with your form, such as your own submit callbacks or custom validation, we recommend using a lower-level integration. To do that, create a Braintree client and use it to tokenize card data:",
+      "location": "Tokenize card, line 26"
+    },
+    {
+      "text": "Payment method nonces expire after 3 hours.",
+      "location": "Tokenize card, line 41"
+    },
+    {
+      "text": "A nonce will be created even if there are input validation issues like empty fields or invalid input (see [Client-side validation](/braintree/docs/reference/client-reference/javascript/v2/credit-cards/#client-side-validation) ). ",
+      "location": "Options, line 72"
+    },
+    {
+      "text": "- onLookupCompleteis invoked after a successful lookup and before the authorization modal is displayed. If using a custom loading indicator, this callback can be used to remove necessary DOM elements.",
+      "location": "3D Secure UI options, line 105"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-w24-web-sdk-reciprocal",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-reference-client-reference-javascript-v2-credit-cards]] - JavaScript v2 direct credit-card tokenization and 3D Secure UI reference covering the SAQ A field-hosting warning, three-hour nonce lifetime, validation responsibility and pre-modal lookup callback; not current SDK support or deprecation-status, PCI-certification, server-processing or payment-outcome evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the reciprocal link scoped to the collected JavaScript v2 page; the raw does not establish current support, deprecation status, PCI certification, server processing or payment outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/client-reference/javascript/v2/credit-cards-2026-09-16.md",
+  "raw_sha256": "2440b1bbbeb5eea3c0c11b2048302a03f111e3034b86b185c77ce8c464ee1bed",
+  "status": "candidate_ready"
+}

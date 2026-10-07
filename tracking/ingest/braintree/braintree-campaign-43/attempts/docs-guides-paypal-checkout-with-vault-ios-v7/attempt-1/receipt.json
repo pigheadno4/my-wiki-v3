@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-paypal-checkout-with-vault-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Checkout with Vault - iOS v7\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/checkout-with-vault/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/paypal/checkout-with-vault/ios/v7-2026-09-16.md\"\ntags: [braintree, paypal, ios-v7, checkout-with-vault, billing-agreements]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot documents PayPal Checkout with Vault for iOS v7. It describes a single checkout session that charges the customer while requesting Billing Agreement consent so the PayPal account can be vaulted for later merchant-initiated payments. It is Braintree-hosted guidance for the [[braintree]] iOS route, not direct PayPal API documentation.\n\nThe page is a version-family guide, not evidence for an exact `braintree-ios` package release, current merchant or buyer eligibility, account enablement, runtime behavior, or a completed payment or vault operation. See [[braintree-ios-sdk]] for the provider-owned native SDK route and separately retained exact-release boundaries.\n\n## Key takeaways\n\n- The guide distinguishes Checkout with Vault from Recurring Payments: its documented purpose is an immediate charge plus storage for future use, whereas the linked Recurring Payments flow uses Billing Without Purchase and performs no transaction at signup.\n- The iOS request is a `BTPayPalCheckoutRequest` with `requestBillingAgreement` set to `true`; the parameter defaults to `false`, and the page says the customer is prompted to consent during checkout.\n- `billingAgreementDescription` is optional. `recurringBillingDetails` and `recurringBillingPlanType` are also optional when checkout begins a recurring arrangement; their presence is request metadata, not proof that recurring charging is scheduled or enabled.\n- The parameter table says `amountBreakdown` is optional but does not accept `discountTotal`, `handlingTotal`, `insuranceTotal`, or `shippingDiscount` when `recurringBillingDetails` is supplied. The displayed Swift values are examples, not guaranteed production results or universal field requirements.\n\n## Detail locators\n\n- Flow identity, immediate-charge-plus-vault purpose, and distinction from Billing Without Purchase: `### Overview`, raw lines 17-21.\n- Required Checkout-with-Vault request switch and minimal Swift construction: `### Integration` and the first `### Swift` block, raw lines 24-35.\n- Optional billing-agreement description and recurring-arrangement fields: paragraph before the second `### Swift` block, raw line 36; illustrative construction at raw lines 39-84.\n- Parameter types, defaults, consent behavior, and the recurring-details `amountBreakdown` exclusion: `### Parameters`, raw lines 86-94.\n\n## Related\n\n- [[braintree-ios-sdk]] - native iOS SDK retrieval hub with PayPal, nonce-handoff and exact-release boundaries\n- [[source-braintree-docs-guides-paypal-recurring-payments-ios-v7]] - separate iOS v7 Recurring Payments route referenced by this page\n- [[source-braintree-docs-guides-paypal-checkout-with-paypal-ios-v7]] - separate iOS v7 one-time PayPal checkout route\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/checkout-with-vault/ios/v7-2026-09-16|Braintree PayPal Checkout with Vault - iOS v7]] - fully read 2026-09-16 website snapshot\n",
+  "quotes": [
+    {
+      "text": "The Checkout with Vault flow allows you to collect a payment and create a billing agreement in a single checkout session. The customer completes a standard PayPal checkout, and their PayPal account is simultaneously vaulted for future merchant-initiated payments.",
+      "location": "### Overview, raw line 19"
+    },
+    {
+      "text": "This is distinct from the Recurring Payments flow, which uses a Billing Without Purchase checkout (no transaction occurs at signup). Use Checkout with Vault when you want to charge the customer immediately and store their payment method for future use.",
+      "location": "### Overview, raw line 21"
+    },
+    {
+      "text": "To enable this flow, construct a BTPayPalCheckoutRequest with requestBillingAgreement set to true.",
+      "location": "### Integration, raw line 26"
+    },
+    {
+      "text": "You can optionally provide a billingAgreementDescription to display a custom message to the customer during checkout, and pass recurringBillingDetails and recurringBillingPlanType if this checkout is the entry point for a recurring arrangement:",
+      "location": "paragraph before the second ### Swift block, raw line 36"
+    },
+    {
+      "text": "| amountBreakdown | BTAmountBreakdown? | nil | Breakdown of items associated with the total cost. Note:discountTotal,handlingTotal,insuranceTotal, andshippingDiscountare not accepted when passingrecurringBillingDetails. |",
+      "location": "### Parameters table, raw line 94"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-w35-ios-checkout-vault-reciprocal",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-checkout-with-vault-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for a PayPal checkout request that combines an immediate charge with Billing Agreement consent and future-use vaulting, distinct from Billing Without Purchase; preserves the optional recurring metadata and `amountBreakdown` exclusions, and is not exact-package, current eligibility/enablement, runtime or payment-execution proof\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this website version-family snapshot separate from exact braintree-ios release evidence and from proof of merchant enablement or successful payment and vault execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/checkout-with-vault/ios/v7-2026-09-16.md",
+  "raw_sha256": "8d184940ca03649540c81cf2d04a84469509fb72dce06a6a1c31c6f1f9f3d28e",
+  "status": "candidate_ready"
+}

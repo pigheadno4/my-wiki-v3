@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-masterpass-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Masterpass Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/masterpass/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/masterpass/server-side/node-2026-09-16.md\"\ntags: [braintree, masterpass, nodejs, server-side, transactions, vaulting]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of an unversioned [[braintree]] website guide documents historical Node.js server-side routes for creating a Masterpass transaction from a client nonce and device data, and for approval-gated Vault use limited to recurring transactions. The page says Masterpass was replaced by Secure Remote Commerce (SRC); it is historical website guidance, not proof of current availability, exact Node package behavior, merchant approval or payment execution. See [[braintree-payment-methods]] for the provider-wide payment-method route.\n\n> [!warning] Unresolved SRC support conflict\n> This snapshot directs former Masterpass users to limited-release SRC, while the separately retained SRC authority carries a January 20, 2026 end-of-support notice. The retained routes do not establish present Masterpass or SRC support or a safe executable migration path; consult [[source-braintree-payment-methods-secure-remote-commerce]] before relying on the replacement direction.\n\n## Key takeaways\n\n- Under **Creating transactions**, the page says a Masterpass transaction is created like another nonce transaction. Its callback and Promise examples pass an amount, the client nonce, client-collected device data and `submitForSettlement: true` to `gateway.transaction.sale()`. These are request examples, not evidence of authorization, submission, settlement or funding.\n- Masterpass Vault use is restricted to recurring transactions and requires Masterpass approval. The page says attempting to vault without approval produces the validation error `Nonce is not vaultable.`\n- After approval, the page routes storage through `gateway.paymentMethod.create()` with a customer ID and client nonce, or through transaction-time Vault options. It separately routes recurring use through `Transaction: Sale` with `recurring`; exact option names and examples remain in the raw locators.\n- The page says vaulted Masterpass information does not support split shipments or one-off transactions. It gives a validation error for a non-recurring transaction using a vaulted Masterpass card.\n- Gateway card verification is not supported with Masterpass; the page instead says Masterpass verifies a card when the customer adds it to the wallet. This is a page-scoped historical statement, not current wallet or gateway behavior proof.\n\n## Material boundaries\n\n> [!warning] Historical website and runtime boundary\n> The route is labeled Node.js but states no exact Node SDK package version. The retained page does not establish current Masterpass or SRC availability, account eligibility, Masterpass approval, client-side nonce or device-data behavior, exact SDK runtime behavior, successful vaulting, authorization, settlement or funding.\n\n## Detail locators\n\n- Masterpass replacement direction, SRC limited-release eligibility, API-change warning, client-SDK introduction and access request: opening `**AVAILABILITY**`, raw lines 17-18.\n- Transaction instruction plus callback and Promise examples: `## Creating transactions`, raw lines 21-61.\n- Recurring-only Vault restriction and approval prerequisite: `## Vaulting Masterpass`, raw lines 63-71.\n- Callback and Promise examples for `gateway.paymentMethod.create()`: `## Vaulting Masterpass`, raw lines 72-90.\n- Transaction-time storage navigation, recurring flag, split-shipment and vaulted one-off exclusions, and validation error: `## Vaulting Masterpass`, raw lines 91-95.\n- Card-verification exclusion and wallet-verification statement: `## Card verification`, raw lines 96-99.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Separate SRC support-status authority: [[source-braintree-payment-methods-secure-remote-commerce]]\n- Complementary client route: [[source-braintree-docs-guides-masterpass-client-side-javascript-v3]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/masterpass/server-side/node-2026-09-16|Braintree Masterpass server-side Node.js guide (captured 2026-09-16)]] - fully read pinned website snapshot covering transaction creation, approval-gated recurring Vault use, unsupported vaulted uses and card-verification behavior\n",
+  "quotes": [
+    {
+      "text": "Masterpass has been replaced with the latest unified checkout experience offered through Visa known as Secure Remote Commerce (SRC). If you were previously using Masterpass, you will need to [integrate with SRC](/braintree/docs/guides/secure-remote-commerce/overview) . SRC is currently in a limited release to [eligible merchants](/braintree/articles/guides/payment-methods/secure-remote-commerce#availability) , and the API is subject to change. It was introduced in Android v2, iOS v4, and JavaScript v3 of our Client SDKs. [Contact us](/braintree/help) to request access to the release.",
+      "location": "opening **AVAILABILITY**, raw line 18"
+    },
+    {
+      "text": "Creating a Masterpass transaction is the same as creating any other transaction with a nonce.",
+      "location": "## Creating transactions, raw line 23"
+    },
+    {
+      "text": "Vaulting can only be used to support recurring transactions. You will need to obtain approval from Masterpass in order to do so.",
+      "location": "## Vaulting Masterpass, **IMPORTANT**, raw lines 66-67"
+    },
+    {
+      "text": "If you attempt to vault a Masterpass card without first going\nthrough the approval process, you will get a validation error: \"Nonce is not vaultable.\"",
+      "location": "## Vaulting Masterpass, raw lines 70-71"
+    },
+    {
+      "text": "Masterpass does not support split shipments or one-off transactions\nwith vaulted payment information.",
+      "location": "## Vaulting Masterpass, raw lines 92-93"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-masterpass-server-node-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-masterpass-server-side-node]] - 2026-09-16 unversioned Node.js website guide for historical Masterpass nonce-and-device-data transaction requests plus approval-gated recurring-only Vault use, preserving split-shipment and vaulted one-off exclusions, unsupported gateway card verification, and the unresolved replacement-by-SRC versus SRC end-of-support conflict; not current availability, approval, exact package behavior or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page directs former Masterpass users to limited-release SRC, while the retained SRC source says Visa Click to Pay/SRC is unsupported after January 20, 2026; present support and a safe migration path remain unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/masterpass/server-side/node-2026-09-16.md",
+  "raw_sha256": "0d1fb939534c9194af9fde96a1449516f328ce24fd61ac9696e2c3b026783c41",
+  "status": "candidate_ready"
+}

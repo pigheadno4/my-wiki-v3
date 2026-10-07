@@ -25,6 +25,14 @@ PayPal transactions follow a separate collected funding route: by default PayPal
 
 ## Sources
 
+- [[source-braintree-graphql-integration-guides]] - 2026-09-16 unversioned Braintree GraphQL integration-guide overview for feature-specific end-to-end guide navigation, per-guide merchant/region/use-case availability checks, intentionally pared-down examples, Sandbox Explorer and missing-guide fallback routes; not current eligibility, enablement, exact deployed schema, SDK/runtime behavior, request execution or payment proof
+
+- [[source-braintree-docs-guides-functions-import-data]] - 2026-09-16 Braintree Functions documentation-preview example for a `dataImport` Function that transforms an incoming payload into returned transaction attributes, with normal-validation, local-test and environment-qualified deployment routes; not current support, account eligibility, exact package/runtime or successful payment proof
+
+- [[source-braintree-docs-reference-general-enterprise-third-party-plugins]] - 2026-09-16 captured Braintree enterprise third-party plugin directory for SAP Commerce Cloud, Salesforce Commerce Cloud, NetSuite ERP and IBM WebSphere Commerce, routing snapshot platform/version and capability inventories plus marketplace/support contacts; not plugin-maintainer, current-compatibility, security-review, endorsement, merchant-enablement or payment-execution evidence
+
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-getting-product-information]] - 2026-09-16 collected, unversioned Braintree website guide for retailer-scoped product search and variant/SKU selection through the PayPal Commerce Channel API, including short caching guidance and a hosted web-buy alternative; not current API availability, merchant or channel eligibility, production enablement, inventory or price assurance, order success, fulfillment, settlement, or funding proof
+
 - [[source-braintree-docs-guides-functions-act-on-fraud]] - 2026-09-16 Braintree Functions documentation-preview example for a `paymentMethod` / `beforeAuthorization` Function that calls an external fraud-score service and maps the illustrated vendor decision into transaction custom fields or `GatewayRejected`; the snapshot is not proof of current availability, account eligibility, a runnable example, successful payment execution or authorization, settlement, or funding
 
 - [[source-braintree-docs-guides-functions-accept-new-payment-method]] - 2026-09-16 Braintree website Functions payment-method integration preview for template-generated lifecycle handlers, merchant-authored payment-service API calls and response mapping, local tests, environment-qualified deployment and transaction routing; examples are not current availability, deployed-runtime, security-completeness or successful-payment proof

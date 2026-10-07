@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-google-pay-testing-go-live-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Google Pay Testing and Go Live (JavaScript v3)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/google-pay/testing-go-live/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/google-pay/testing-go-live/javascript/v3-2026-09-16.md\"\ntags: [braintree, google-pay, javascript-v3, sandbox, production, testing]\n---\n\n## Overview\n\nThis collected [[braintree]] guide at the Google Pay JavaScript v3 testing-and-go-live route describes an Android-device user-flow prerequisite, Sandbox nonce and transaction-display behavior, and the separate production enablement and Google merchant-registration steps. It is a website snapshot, not evidence of current browser support, merchant or buyer eligibility, account enablement, an exact `braintree-web` package or runtime behavior, successful payment execution, settlement, or funding.\n\n## Key takeaways\n\n- Testing the entire user flow on an Android device requires the user to have at least one card or PayPal account stored in Google Pay or the user's Google account. The page says a user without one can add a payment method to Google Pay during checkout. It also instructs merchants to test on the latest version of a supported browser, while routing the actual browser list to Google documentation.\n- In Sandbox, the page says Google Pay returns valid testing nonces pointing to either a test virtual account number or a PayPal account. It routes simulation of server behavior to Braintree test amounts and test nonces; fixtures and returned nonces remain Sandbox evidence rather than live authorization or payment proof.\n- Completed Sandbox transactions are described as appearing immediately in the Braintree gateway as Google Pay transactions, except PayPal-via-Google-Pay transactions appear as PayPal transactions. The page also says Sandbox `payer_email` will not match the PayPal account email added to Google Pay, whereas it will match in production. These are environment-qualified display and data statements, not a timing guarantee or evidence that an individual transaction completed.\n- After integration testing, production requires Google Pay to be enabled in the Braintree Control Panel. The documented route is **Processing** \u2192 **Payment Methods** \u2192 the **Google Pay** toggle. A separate production step follows Google's documentation to register the domain and receive a merchant ID, which the page says to use when creating the payment data request.\n- The production example supplies the Google merchant ID, selects Google's `PRODUCTION` environment, parses the returned payment data through the Braintree Google Pay instance, and comments that the resulting nonce should be sent to the merchant server. It is illustrative rather than package-qualified API or transaction proof, and the captured example has an unmatched extra closing parenthesis after `PaymentsClient(...)`.\n- If Google Pay is active in the Control Panel but needs to be enabled for a specific merchant account, the page directs the merchant to contact Braintree. General Control Panel activation therefore does not establish merchant-account-specific enablement.\n\n> [!warning] Sandbox, configuration, and sample code are not production proof\n> Test nonces and Sandbox gateway display do not prove production eligibility, account or merchant-account enablement, authorization, payment completion, settlement, or funding. Production separately requires Control Panel activation, Google domain registration and a merchant ID; the displayed JavaScript also contains an unmatched extra closing parenthesis at raw line 59 and should not be treated as verified copy-ready code.\n\n## Detail locators\n\n- Android-device stored-method prerequisite, checkout-time addition option, and supported-browser testing instruction: `# Testing and Go Live`, lines 17-26.\n- Sandbox nonce targets, test-amount/test-nonce navigation, gateway display distinction and environment-qualified `payer_email` behavior: `# Testing and Go Live`, line 28.\n- Production Control Panel enablement sequence: `## Go live`, lines 31-40.\n- Google domain registration, merchant ID acquisition and payment-data-request instruction: `## Go live`, lines 42-44.\n- Illustrative merchant-ID request, `PRODUCTION` environment, parsing, server nonce handoff, error branch and unmatched closing parenthesis: `### Javascript`, lines 46-69.\n- Specific-merchant-account enablement contact route: paragraph after `### Javascript`, line 71.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Payment-method context: [[source-braintree-payment-methods-google-pay]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/general/testing/node-2026-09-16|Braintree general transaction testing reference (Node.js route)]] - navigation only; not read as factual evidence for this source\n- [[raw/braintree/docs/guides/google-pay/configuration/javascript/v3-2026-09-16|Braintree Google Pay configuration guide for JavaScript v3]] - navigation only; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/google-pay/testing-go-live/javascript/v3-2026-09-16|Braintree Google Pay Testing and Go Live for JavaScript v3]] - complete collected guide covering Android-device test prerequisites, Sandbox nonce and gateway behavior, and production enablement, domain-registration and merchant-ID steps\n",
+  "quotes": [
+    {
+      "text": "In order to test the entire user flow on an Android device, the user must have at least one card or PayPal account stored in either Google Pay or their Google account. The user can also add a payment method to their Google Pay account during the checkout process if none is present.",
+      "location": "# Testing and Go Live, line 22"
+    },
+    {
+      "text": "In the sandbox environment, Google Pay will return valid testing nonces that point to a test virtual account number or a PayPal account. You can simulate server behaviors by using [test amounts on your transactions](/braintree/docs/reference/general/testing#transaction-amounts) and [test nonces](/braintree/docs/reference/general/testing#payment-method-nonces). Transactions will show in the Braintree gateway as Google Pay transactions immediately upon completion, however, PayPal via Google Pay transactions will show as PayPal transactions. The payer_email will not match the email of the PayPal account added to Google Pay; in production, the email will match.",
+      "location": "# Testing and Go Live, line 28"
+    },
+    {
+      "text": "After you've tested your integration, you'll need to enable Google Pay in your production account via the Control Panel. If you haven't done so already, here's how:",
+      "location": "## Go live, line 33"
+    },
+    {
+      "text": "In production, you'll also need to [follow Google's documentation](https://developers.google.com/pay/api/web/guides/test-and-deploy/integration-checklist) to register your domain and receive a merchant ID.\n\nUse this merchant ID when creating the payment data request.",
+      "location": "## Go live, lines 42-44"
+    },
+    {
+      "text": "If Google Pay is already active in your Control Panel but you need it enabled for a specific merchant account, [contact us](/braintree/help/acceptPaymentTypes).",
+      "location": "Paragraph after ### Javascript, line 71"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-w39-concept-1",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-google-pay-testing-go-live-javascript-v3]] - 2026-09-16 JavaScript v3 website testing-and-go-live snapshot for Android-device user-flow prerequisites, Sandbox Google Pay nonce, gateway-display and email behavior, plus production Control Panel enablement, Google domain and merchant-ID setup, and merchant-account-specific activation routing; not current browser support, eligibility, enablement, exact package or runtime behavior, or payment-execution proof\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The displayed production JavaScript contains an unmatched extra closing parenthesis after PaymentsClient at raw line 59, so it is not copy-ready runtime evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/google-pay/testing-go-live/javascript/v3-2026-09-16.md",
+  "raw_sha256": "d479e5241c46f72c7fe27bb9d6759e1242f0d394ee1c934ef7c79cb99934b0bb",
+  "status": "candidate_ready"
+}

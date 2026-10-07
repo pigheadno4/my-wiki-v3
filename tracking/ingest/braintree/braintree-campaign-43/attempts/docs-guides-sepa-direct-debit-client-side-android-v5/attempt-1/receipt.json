@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-sepa-direct-debit-client-side-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree SEPA Direct Debit Client-Side Implementation (Android v5)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/sepa-direct-debit/client-side/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/sepa-direct-debit/client-side/android/v5-2026-09-16.md\"\ntags: [braintree, sepa, direct-debit, android, client-sdk, tokenization]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot is the Android v5-routed client-side implementation guide for SEPA Direct Debit. It covers collecting the customer's bank and customer information, creating and launching a SEPA payment-authorization request, handling the app return, and tokenizing the successful result into a nonce for a separate server-side transaction. The request example supplies a one-off mandate type, but the example is not proof of mandate acceptance, a debit, transaction success, settlement or funding.\n\nThe page limits SEPA Direct Debit to eligible merchants using a custom client-side integration, states Android v4.13+ availability, excludes Drop-in and directs qualifying merchants to request Sandbox or Production enablement. These are snapshot-scoped statements, not evidence of current SDK support, merchant eligibility or account enablement.\n\n## Key takeaways\n\n- The page's dependency example uses the Android SEPA Direct Debit module at `5.8.0`. Its separate availability notice says Android v4.13+, while this canonical route is Android v5; preserve those as page-scoped version statements rather than inferring support for another package version.\n- The documented sequence constructs `SEPADirectDebitClient`, `SEPADirectDebitLauncher` and `SEPADirectDebitRequest`, calls `createPaymentAuthRequest()`, launches when required, handles the returned authorization result and then calls `tokenize()`. Required bank/customer fields and the complete request example remain in the raw locators.\n- For a launched flow, the example stores the `SEPADirectDebitPendingRequest.Started` value and later supplies it to `handleReturnToApp`. It routes non-`singleTop` activity launch modes through `onResume` and `singleTop` through `onNewIntent`; a return can be success, no result or failure, so returning to the app is not itself success.\n- A successful payment-authorization result is passed to `tokenize`. Tokenization can separately succeed, fail or be canceled; only the success branch sends the nonce string to the merchant server to create a transaction. A `LaunchNotRequired` payment-authorization response instead exposes a nonce for that same separate server action. Neither client branch proves server acceptance or payment outcome.\n\n> [!warning] Snapshot, version and enablement boundary\n> This is Android v5-routed website guidance collected on 2026-09-16, with a `5.8.0` dependency example and separate Android v4.13+ availability wording. It is not current package-support evidence, exact commit-qualified SDK behavior, merchant enablement, buyer or bank-account eligibility, or environment availability proof.\n\n> [!warning] Return, mandate and payment boundary\n> A started request, app return, payment-authorization result, one-off mandate-type example or nonce is not proof of accepted mandate terms, a successful debit or a final transaction. Preserve the result branches and the separate merchant-server transaction step.\n\n## Detail locators\n\n- Eligible-merchant, custom-integration, platform/version, Drop-in exclusion and account-enablement statements: `# Client-Side Implementation > AVAILABILITY`, raw lines 17-20.\n- Android module dependency example at `5.8.0`: `## Get the SDK`, raw lines 25-41.\n- Required bank-account and customer information: `## Collect information`, raw lines 44-59.\n- Client, launcher, request, payment-authorization and tokenization sequence: `## Invoking the SEPA Direct Debit flow`, raw lines 61-64.\n- Client authorization, return URL scheme and activity-launch-mode return handling: example at raw lines 66-116.\n- Successful authorization tokenization, success/failure/cancel branches and server nonce handoff: example at raw lines 118-128.\n- Request fields, billing-address example and one-off mandate-type example: raw lines 130-145.\n- Ready-to-launch, pending-request storage, launch-not-required nonce and failure branches: raw lines 147-170.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Broader SEPA mandate and lifecycle route: [[source-braintree-docs-guides-sepa-direct-debit-overview]]\n- JavaScript v3 client route: [[source-braintree-docs-guides-sepa-direct-debit-client-side-javascript-v3]]\n\n## Related raw API references\n\nThe page links a server-side next step. That target was not read for this entry and is navigation only; it does not establish an exact server request, successful transaction, debit, settlement or funding.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/sepa-direct-debit/client-side/android/v5-2026-09-16|Braintree SEPA Direct Debit client-side implementation for Android v5]] - complete collected page covering availability, SDK setup, customer-data collection, payment authorization, app-return handling and nonce tokenization\n",
+  "quotes": [
+    {
+      "text": "SEPA Direct Debit is available to\u202feligible merchants\u202fusing a custom client-side integration. It is only available in\u202fAndroid v4.13+, iOS v5.11+, and JavaScript v3 SDK. It's not currently available in Drop-in.",
+      "location": "# Client-Side Implementation > AVAILABILITY, raw line 18"
+    },
+    {
+      "text": "Construct a SEPADirectDebitClient, SEPADirectDebitLauncher and a SEPADirectDebitRequest. Call SEPADirectDebitClient.createPaymentAuthRequest() to launch the SEPA Direct Debit flow and call SEPADirectDebitLauncher.launch(). Finally, handle the result and call SEPADirectDebitClient.tokenize() and handle its result.",
+      "location": "## Invoking the SEPA Direct Debit flow, raw line 63"
+    },
+    {
+      "text": "// ALL OTHER ACTIVITY LAUNCH MODES\n    override fun onResume() {\n        super.onResume()\n        handleReturnToApp(intent)\n    }\n\n    // ONLY REQUIRED IF YOUR ACTIVITY LAUNCH MODE IS SINGLE_TOP\n    override fun onNewIntent(intent: Intent) {\n        super.onNewIntent(intent)\n        handleReturnToApp(intent)\n    }",
+      "location": "Kotlin example under ## Invoking the SEPA Direct Debit flow, raw lines 84-94"
+    },
+    {
+      "text": "sepaDirectDebitClient.tokenize(paymentAuthResult) { result ->\n            when (result) {\n                is SEPADirectDebitResult.Success -> {\n                    // send result.nonce.string to server and create a transaction\n                }\n                is SEPADirectDebitResult.Failure -> { /* handle result.error */ }\n                is SEPADirectDebitResult.Cancel -> { /* handle user canceled */ }",
+      "location": "Kotlin completeSepaFlow example, raw lines 119-125"
+    },
+    {
+      "text": "val request = SEPADirectDebitRequest(\n            accountHolderName = \"John Doe\",\n            customerId = \"1234\",\n            iban = \"FR7618106000321234566666608\",\n            mandateType = SEPADirectDebitMandateType.ONE_OFF,\n            billingAddress = billingAddress,\n        )",
+      "location": "Kotlin startSEPADirectDebit request example, raw lines 139-145"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-w18-braintree-payment-methods-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-sepa-direct-debit-client-side-android-v5]] - 2026-09-16 Android v5-routed Braintree website client guide for SEPA payment-authorization launch and app-return handling, one-off mandate request example, and nonce tokenization for a separate server transaction; preserves eligible-merchant, Android v4.13+, custom-integration, Drop-in exclusion, account-enablement and execution-evidence boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/sepa-direct-debit/client-side/android/v5-2026-09-16.md",
+  "raw_sha256": "616d8e7141ad94a4eaf8248d509b629a3661dd22362b8b862f5c6eb769a6552d",
+  "status": "candidate_ready"
+}

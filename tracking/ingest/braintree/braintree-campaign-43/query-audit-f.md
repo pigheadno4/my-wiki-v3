@@ -1,0 +1,53 @@
+# Braintree C43 fixed-query audit F — positions 21–24
+
+- Campaign: `braintree-campaign-43`
+- Mode: read-only independent query audit
+- UTC start: `2026-10-07T11:34:27Z`
+- UTC completion: `2026-10-07T11:38:35Z`
+- Scope: manifest positions 21–24; exactly two fixed questions per page (8 total)
+- Result: **8 PASS / 0 FAIL**
+
+## Shared checks, bounded gap sweep, and extra authority
+
+- **Manifest identity, pins, URLs, and primary ownership — PASS.** All source frontmatter URLs, raw line-1 Source URLs, manifest URLs, and manifest paths agree. Recomputed pins are: BYOT Node `a7b342202c86fef8acfd692872092ff5fe6c761cbe511543fa188f7305fcbe51` at `raw/braintree/docs/guides/network-tokens/bring-your-own-token/node-2026-09-16.md` / `https://developer.paypal.com/braintree/docs/guides/network-tokens/bring-your-own-token/node`; PINless authorization management `1115b4560993a247af71eb59b9f30eedf6283135ef785993059dd9f6b4c2d7da` at `raw/braintree/docs/guides/pinless-debit/optimized-debit-routing/managing-authorization-2026-09-16.md` / `https://developer.paypal.com/braintree/docs/guides/pinless-debit/optimized-debit-routing/managing-authorization`; enterprise plugins `1154b269e1017f808515b13d7b75d35115d5ac5a658e788faf7486a6d34e10c6` at `raw/braintree/docs/reference/general/enterprise-third-party-plugins-2026-09-16.md` / `https://developer.paypal.com/braintree/docs/reference/general/enterprise-third-party-plugins`; JavaScript v2 cards `2440b1bbbeb5eea3c0c11b2048302a03f111e3034b86b185c77ce8c464ee1bed` at `raw/braintree/docs/reference/client-reference/javascript/v2/credit-cards-2026-09-16.md` / `https://developer.paypal.com/braintree/docs/reference/client-reference/javascript/v2/credit-cards`. Exact raw-path and canonical-URL lookup finds one source owner for each.
+- **Full reads and reciprocal routes — PASS.** `CLAUDE.md`, `rules/query-and-synthesis.md`, C43 selection questions/manifest positions, root/provider route entries, the three main concepts, all four canonical sources, and all four pinned raws were read. Every route resolves root index → Braintree index → main concept → canonical source → exact raw, and each source/main-concept pair links reciprocally.
+- **Bounded supporting authority — PASS.** A retained PINless honor-period claim warranted one full supporting read of `raw/braintree/docs/reference/general/statuses-2026-09-16.md` (owned as supplemental evidence by `source-braintree-transaction-void-node.md`, also read fully). That general statuses reference gives transaction-type-qualified Visa and Mastercard expiry values at lines 32–58, while the selected PINless page gives route-specific debit-network values at lines 19–31 and separately routes Visa/Mastercard authorization management at line 73. The scopes are not interchangeable; the selected source accurately attributes its captured table and does not generalize it into current network policy, so no correction is required.
+- **One bounded gap sweep — PASS.** The filename/claim sweep found other Network Tokens pages, PINless overview/eligibility/integration/test/workflow/code/reference pages, JavaScript v2 configuration/Hosted Fields/best-practices pages, and JavaScript v3 lifecycle/migration/3DS pages. Apart from the fully read statuses authority above, these and the BYOT Transaction Sale reference, linked Visa/Mastercard article, plugin marketplace/contact targets, and external platform pages remain **unread navigation only**. No sibling platform/package/current-site/GitHub behavior was transferred.
+- **Deferred aggregate edges — PASS, not a content failure.** Direct provider/company catalog rows and the `602` → `652` company/count close are coordinator-owned campaign-close work. Their current absence does not break the actual concept-mediated routes.
+
+## Position 21 — `docs-guides-network-tokens-bring-your-own-token-node` — PASS / PASS
+
+**Actual route/page:** `wiki/index.md:11` → `wiki/braintree-index.md:760` → `wiki/concepts/braintree-payment-methods.md:33` → `wiki/sources/braintree/source-braintree-docs-guides-network-tokens-bring-your-own-token-node.md` → `raw/braintree/docs/guides/network-tokens/bring-your-own-token/node-2026-09-16.md`.
+
+1. **Exact scope and non-inference — PASS.** This is a 2026-09-16 capture of an unversioned Braintree website guide on the Node-routed BYOT path for merchants bringing network tokens created by another PSP or self-vaulted by the merchant. It documents Braintree `Transaction Sale` request shapes, not a Node package version, current availability, account enablement, token validity, Vault state, authorization, capture, settlement, or funding. Evidence: source lines 12–21; raw lines 1–21.
+2. **Central action, consequential conditions/warnings, and raw detail — PASS.** Amount, token-as-card-number, token expiry, and cryptogram are always listed; ecommerce indicator and token requestor ID are listed as optional. CIT/first-recurring requires a network cryptogram and only recommends the snapshot-optional `external_vault.status = vaulted`; MIT/subsequent requires NTI-related fields and a present cryptogram field containing `STATIC_RECURRING`. Callback/Promise blocks are illustrative, not execution proof. Exact fields and examples remain at raw lines 24–45, 48–100, and 102–170; source locators are lines 23–31.
+
+## Position 22 — `docs-guides-pinless-debit-optimized-debit-routing-managing-authorization` — PASS / PASS
+
+**Actual route/page:** `wiki/index.md:11` → `wiki/braintree-index.md:760` → `wiki/concepts/braintree-payment-methods.md:31` → `wiki/sources/braintree/source-braintree-docs-guides-pinless-debit-optimized-debit-routing-managing-authorization.md` → `raw/braintree/docs/guides/pinless-debit/optimized-debit-routing/managing-authorization-2026-09-16.md`.
+
+3. **Exact scope and non-inference — PASS.** This captured unversioned Braintree page covers authorization workflow options for transactions routed to debit networks under PINless Debit Optimized Routing. Its displayed honor periods and adjustment tables are page-scoped and must not be transferred to generic Visa/Mastercard, current network rules, a merchant configuration, account eligibility, approval, authorization result, settlement, or funding. The separately collected general status table has different transaction-type-qualified Visa/Mastercard values, reinforcing the need to keep the selected debit-routing subject exact. Evidence: source lines 12–21; raw lines 14–31; supporting statuses raw lines 32–58.
+4. **Central action, consequential conditions/warnings, and raw detail — PASS.** The page gives debit-network honor periods, permits pre-settlement amount adjustment only when industry, BIN, and network support it, and requires settlement amounts above zero. Over-authorization settlement needs industry/network percentage support; lower settlement returns the settled amount. Network/MCC/limit values and the separate Visa/Mastercard route remain in raw lines 34–73; source locators are lines 23–29. These are eligibility/limit statements, not lifecycle completion proof.
+
+## Position 23 — `docs-reference-general-enterprise-third-party-plugins` — PASS / PASS
+
+**Actual route/page:** `wiki/index.md:11` → `wiki/braintree-index.md:759` → `wiki/concepts/braintree-payment-platform.md:30` → `wiki/sources/braintree/source-braintree-docs-reference-general-enterprise-third-party-plugins.md` → `raw/braintree/docs/reference/general/enterprise-third-party-plugins-2026-09-16.md`.
+
+5. **Exact scope and non-inference — PASS.** This 2026-09-16 unversioned Braintree directory covers enterprise connections for SAP Commerce Cloud/Hybris, Salesforce Commerce Cloud/Demandware, NetSuite ERP, and IBM WebSphere Commerce. Its platform/version labels and capability lists are snapshot directory claims; they do not establish plugin authorship, ownership, maintenance, security review, endorsement, current compatibility, account enablement, or payment execution. Evidence: source lines 12–29; raw lines 14–17 and 18–169.
+6. **Central action, consequential conditions/warnings, and raw detail — PASS.** The page orients enterprise merchants to four named ecommerce/ERP integrations, their captured versions/categories, integration/capability inventories, marketplaces, and Braintree Plugins-team contact paths. NetSuite has no captured supported-version field. Exact per-platform methods, processing/settlement functions, and marketplace/contact locators remain at raw lines 18–58, 60–98, 100–128, and 130–169; source locators are lines 31–38. Listed capabilities are not installation, configuration, authorization, settlement, or funding proof.
+
+## Position 24 — `docs-reference-client-reference-javascript-v2-credit-cards` — PASS / PASS
+
+**Actual route/page:** `wiki/index.md:11` → `wiki/braintree-index.md:769` → `wiki/concepts/braintree-web-sdk.md:82` → `wiki/sources/braintree/source-braintree-docs-reference-client-reference-javascript-v2-credit-cards.md` → `raw/braintree/docs/reference/client-reference/javascript/v2/credit-cards-2026-09-16.md`.
+
+7. **Exact scope and non-inference — PASS.** This is a collected Braintree JavaScript v2 browser client reference for lower-level card tokenization and limited 3D Secure UI callbacks. It does not establish current v2 support/deprecation status, exact package/runtime behavior, PCI certification, server-side transaction handling, authorization, settlement, or payment success. The nonce is sent from the client to the merchant server; that handoff is not server processing proof. Evidence: source lines 12–23; raw lines 14–41 and 88–106.
+8. **Central action, consequential conditions/warnings, and raw detail — PASS.** For custom forms the page creates a Braintree client and calls `tokenizeCard`; it says nonces expire after three hours, can still be created with empty/invalid inputs, and may fail with `Unable to tokenize card.` when no nonce returns. Custom integrations own validation/UI, whereas Drop-in and Hosted Fields handle validation/card detection. For 3DS, `onLookupComplete` is after lookup and before the authorization modal; `onUserClose` follows user-initiated modal closure. Neither callback proves authorization/payment. Exact options, examples, SAQ-A field-hosting warning, validation behavior, and modal callbacks remain at raw lines 17–85 and 88–106; source locators are lines 25–31.
+
+## Handoff
+
+- Corrections requested: none.
+- Content blockers: none.
+- Closure follow-up: coordinator adds/checks the four direct provider/company catalog rows and shared source-count aggregates.
+- Repository files modified: none. Audit artifact only: `/tmp/braintree-c43-query-audit-f.md`.
+
+**Verdict: PASS — 4/4 pages and 8/8 fixed questions.**

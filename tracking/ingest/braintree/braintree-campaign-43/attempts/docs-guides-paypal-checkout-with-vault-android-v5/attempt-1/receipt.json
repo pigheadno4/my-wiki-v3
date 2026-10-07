@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-paypal-checkout-with-vault-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Checkout with Vault (Android v5)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/checkout-with-vault/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/paypal/checkout-with-vault/android/v5-2026-09-16.md\"\ntags: [braintree, paypal, checkout-with-vault, android-v5, billing-agreements]\n---\n\n## Overview\n\nThis collected Android v5-routed [[braintree]] website guide describes PayPal Checkout with Vault: one standard PayPal checkout that both collects an immediate payment and creates a Billing Agreement so the PayPal account can be used for future merchant-initiated payments. It distinguishes this combined flow from the separate Recurring Payments flow, whose Billing Without Purchase checkout has no transaction at signup.\n\nThis is a 2026-09-16 website snapshot for the Android v5 documentation family. It does not identify an exact SDK artifact version or establish current package support, merchant or buyer eligibility, account enablement, runtime behavior, successful Billing Agreement creation, payment execution, settlement, or funding.\n\n## Key takeaways\n\n- The documented enabling action is to construct `PayPalCheckoutRequest` with `shouldRequestBillingAgreement = true`; the parameter table says the default is `false` and that enabling it prompts the customer to consent to a Billing Agreement during checkout.\n- `billingAgreementDescription` is optional and supplies a custom customer-facing Billing Agreement description. If the checkout begins a recurring arrangement, the page also permits optional `recurringBillingDetails` and `recurringBillingPlanType`; the example values are illustrative, not universal requirements.\n- The parameter table notes that `discountTotal`, `handlingTotal`, `insuranceTotal`, and `shippingDiscount` are not accepted in `amountBreakdown` when `recurringBillingDetails` is passed. Keep the exact optional types, defaults, example construction, and restriction at the raw locators.\n\n> [!warning] Request and outcome boundary\n> The captured page documents request construction and the customer-consent purpose. It does not show the authorization return, tokenization, server transaction, storage/association step, or any later merchant-initiated charge. Do not infer those stages or a successful payment from `shouldRequestBillingAgreement = true`.\n\n## Detail locators\n\n- Combined immediate-payment and Billing Agreement purpose, future merchant-initiated use, and distinction from Billing Without Purchase Checkout: `### Overview`, raw lines 17-21.\n- Enabling action: `### Integration`, raw lines 24-26.\n- Minimal Kotlin request example: first `### Kotlin` block, raw lines 29-36.\n- Optional Billing Agreement description and recurring-arrangement fields: paragraph and second `### Kotlin` block, raw lines 37-87.\n- Parameter types, defaults, consent description, and the `amountBreakdown` exclusions when recurring details are supplied: `### Parameters`, raw lines 89-97.\n\n## Related\n\n- Company: [[braintree]]\n- Main SDK concept: [[braintree-android-sdk]]\n- Vault concept: [[paypal-vault]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/paypal/recurring-payments/android/v5-2026-09-16|Braintree PayPal Recurring Payments - Android v5]] - unread navigation-only route for the separate Billing Without Purchase flow; no sibling behavior is inferred here\n- [[raw/braintree/docs/guides/paypal/checkout-with-paypal/android/v5-2026-09-16|Braintree PayPal One-time Payments - Android v5]] - unread navigation-only route for ordinary one-time checkout; no sibling behavior is inferred here\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/checkout-with-vault/android/v5-2026-09-16|Braintree PayPal Checkout with Vault - Android v5]] - fully read pinned website snapshot covering the combined checkout-and-Billing-Agreement purpose, Android request flag, optional recurring fields, and parameter restrictions\n",
+  "quotes": [
+    {
+      "text": "The Checkout with Vault flow allows you to collect a payment and create a billing agreement in a single checkout session. The customer completes a standard PayPal checkout, and their PayPal account is simultaneously vaulted for future merchant-initiated payments.",
+      "location": "raw line 19 under ### Overview"
+    },
+    {
+      "text": "This is distinct from the Recurring Payments flow, which uses a Billing Without Purchase checkout (no transaction occurs at signup). Use Checkout with Vault when you want to charge the customer immediately and store their payment method for future use.",
+      "location": "raw line 21 under ### Overview"
+    },
+    {
+      "text": "To enable this flow, construct a PayPalCheckoutRequest with shouldRequestBillingAgreement set to true.",
+      "location": "raw line 26 under ### Integration"
+    },
+    {
+      "text": "You can optionally provide a billingAgreementDescription to display a custom message to the customer during checkout, and pass recurringBillingDetails and recurringBillingPlanType if this checkout is the entry point for a recurring arrangement:",
+      "location": "raw line 37 after the first Kotlin example"
+    },
+    {
+      "text": "| amountBreakdown | AmountBreakdown? | null | Breakdown of items associated with the total cost. Note:discountTotal,handlingTotal,insuranceTotal, andshippingDiscountare not accepted when passingrecurringBillingDetails. |",
+      "location": "raw line 97 in ### Parameters"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-w27-android-sdk-route",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-checkout-with-vault-android-v5]] - 2026-09-16 Android v5-routed website guide for one checkout that both charges and requests Billing Agreement consent for future merchant-initiated payments, with optional recurring detail fields and documented exclusions; not current exact-package support, eligibility, enablement, runtime or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/checkout-with-vault/android/v5-2026-09-16.md",
+  "raw_sha256": "e4bbf5c6b66fb5c731248b5c1a3a7322feac2d6c827dad18bb4a255200313f63",
+  "status": "candidate_ready"
+}

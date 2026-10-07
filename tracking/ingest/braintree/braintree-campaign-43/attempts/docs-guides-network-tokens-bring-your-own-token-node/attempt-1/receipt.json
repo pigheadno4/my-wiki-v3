@@ -1,0 +1,47 @@
+{
+  "job_id": "docs-guides-network-tokens-bring-your-own-token-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Bring Your Own Token (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/network-tokens/bring-your-own-token/node\"\nraw_files:\n  - \"braintree/docs/guides/network-tokens/bring-your-own-token/node-2026-09-16.md\"\ntags: [braintree, nodejs, network-tokens, byot, cit, mit]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide is a Node-routed Bring Your Own Token (BYOT) path for merchants that already have network tokens because another payment service provider tokenized the cards or because the merchants vault network tokens themselves. It describes passing those existing tokens in a Braintree Transaction Sale request. The snapshot does not establish a Node SDK package version, current availability, merchant-account enablement, token validity, or a successful authorization, payment, capture, settlement or funding outcome.\n\n## Key takeaways\n\n- The guide creates a BYOT transaction through Transaction Sale. It lists amount, the token as the card number, the token expiration date and a cryptogram as always required; exact request-field paths and the separately listed optional ecommerce indicator and token requestor ID remain in **Required parameters** and **Optional parameters**, raw lines 19\u201345.\n- For a customer-initiated transaction (CIT), including the first transaction in a recurring series, the page requires a network-issued cryptogram. It recommends an `external_vault` object whose status is `vaulted`, while explicitly saying that object is optional in this snapshot and may become required in a future update; the recommendation is not a present requirement or proof of Vault state. The Node examples render that object as `externalVault`. See **Customer initiated transactions**, raw lines 48\u2013100.\n- For a merchant-initiated transaction (MIT) or a subsequent transaction, the page requires a network transaction identifier and related parameters. The cryptogram field must still be present, but the guide directs the integration to use `STATIC_RECURRING` instead of a network-issued cryptogram. Exact required fields and allowed transaction-source values remain in **Merchant initiated transactions / Required parameters**, raw lines 102\u2013114.\n- The callback and Promise blocks are illustrative Node request shapes. They are not a complete API contract, package-qualified implementation evidence, confirmation that an account is enabled for BYOT, or evidence that any displayed request was accepted or processed with a network token.\n\n## Detail locators\n\n- BYOT identity and externally tokenized or self-vaulted network-token scope: raw lines 14\u201316.\n- Transaction Sale action and type-dependent network-token parameters: raw lines 19\u201321.\n- Always-required and always-optional field lists: raw lines 24\u201345.\n- CIT or first-recurring network-issued cryptogram and snapshot-optional `external_vault.status = vaulted` recommendation: raw lines 48\u201350.\n- CIT callback and Promise examples, including Node `externalVault`: raw lines 53\u2013100.\n- MIT or subsequent-transaction NTI, related-parameter and `STATIC_RECURRING` cryptogram conditions: raw lines 102\u2013114.\n- MIT callback and Promise examples: raw lines 116\u2013170.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n\n## Related raw API references\n\nThe page links to the Node Transaction Sale request reference for field definitions, complete transaction options and examples. That target was not read for this entry and is navigation only; it does not establish exact schema, package behavior, current BYOT availability, merchant-account enablement or payment outcomes.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/network-tokens/bring-your-own-token/node-2026-09-16|Braintree Bring Your Own Token Node guide]] - complete collected page covering BYOT Transaction Sale parameters and distinct CIT/first-recurring and MIT/subsequent cryptogram context\n",
+  "quotes": [
+    {
+      "text": "Through Bring Your Own Token (BYOT), merchants who tokenize cards with another Payment Service Provider (PSP) or who vault Network Tokens themselves can use their existing Network Tokens with Braintree.",
+      "location": "raw line 16 under # Bring Your Own Token"
+    },
+    {
+      "text": "A BYOT transaction can be created using [``](/braintree/docs/reference/request/transaction/sale/node) with the required network token parameters. The required parameters differ based on the type of BYOT transaction being created.",
+      "location": "raw line 21 under ## Creating transactions"
+    },
+    {
+      "text": "When creating a customer initiated transaction (CIT) or the first in a recurring series, a network-issued cryptogram is required. We also recommend including the external_vault object with status: \"vaulted\". While this is currently optional, it may become required in future updates to support proper transaction context.",
+      "location": "raw line 50 under ### Customer initiated transactions"
+    },
+    {
+      "text": "When creating a merchant initiated transaction (MIT) or subsequent transaction, a network transaction identifier (NTI) and related parameters are required. The [`cryptogram`](/braintree/docs/reference/request/transaction/sale/node#credit_card-network_tokenization_attributes-cryptogram) must still be present, but a static cryptogram value of \"STATIC_RECURRING\" should be included in place of a network-issued cryptogram.",
+      "location": "raw line 104 under ### Merchant initiated transactions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-byot-node-payment-methods-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-network-tokens-bring-your-own-token-node]] - 2026-09-16 unversioned Braintree website Node-routed guide for submitting externally tokenized or self-vaulted network tokens through Transaction Sale, with CIT/MIT cryptogram and Vault-context qualifications; not current account enablement, package behavior or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/network-tokens/bring-your-own-token/node-2026-09-16.md",
+  "raw_sha256": "a7b342202c86fef8acfd692872092ff5fe6c761cbe511543fa188f7305fcbe51",
+  "status": "candidate_ready"
+}

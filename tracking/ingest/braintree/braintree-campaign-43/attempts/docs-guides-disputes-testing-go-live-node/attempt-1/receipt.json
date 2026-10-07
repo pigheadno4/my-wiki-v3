@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-disputes-testing-go-live-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Dispute Testing and Go Live (Node.js webpage)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/disputes/testing-go-live/node\"\nraw_files:\n  - \"braintree/docs/guides/disputes/testing-go-live/node-2026-09-16.md\"\ntags: [braintree, disputes, testing, sandbox, node-js]\n---\n\n## Overview\n\nThis unversioned Braintree Node.js webpage, captured 2026-09-16, explains how a merchant with Braintree Control Panel dispute access can create instantly disputed sale transactions in the sandbox and simulate `won` or `lost` statuses by finalizing specific text evidence. It is sandbox test guidance, not proof of a real dispute outcome or an exact Node SDK/package-version contract.\n\n## Key takeaways\n\n- Managing disputes through the API is available only to merchants who can access disputes in the Braintree Control Panel. Braintree strongly recommends testing dispute workflows in the sandbox before production use.\n- The central test action is to create a sandbox sale with the listed test card. The page says the result is a settled sale transaction with an `open` dispute; the same route can exercise email notification, a configured Dispute Opened webhook, lookup, and response flows. Exact card, amount, reason-code, callback and Promise examples remain in the raw locators below.\n- Some sandbox transaction amounts select specific dispute reason-code behavior. Those values are test fixtures, not production card-network rules. Separate Venmo and linked-PayPal-sandbox routes are navigation only on this page and do not make it direct PayPal Disputes API authority.\n- For a sandbox dispute, adding the exact text `compelling_evidence` and then finalizing simulates a `won` status; adding `losing_evidence` and then finalizing simulates a `lost` status. These deterministic sandbox transitions do not establish evidence acceptance, bank/card-network adjudication, returned funds, or the outcome of a real dispute.\n- This page does not state the production reply-by deadline. Use [[source-braintree-docs-guides-disputes-managing]] for the deadline-bound production response and evidence-finalization workflow; access, timely submission and a successful API call still do not guarantee a win.\n\n## Detail locators\n\n- Control Panel dispute-access condition and recommendation to test in sandbox before production: `# Testing and Go Live > AVAILABILITY`, lines 17-20.\n- Sandbox test card, settled-sale and `open`-dispute behavior, plus amount-specific qualification: opening test section, lines 22-28.\n- Email, configured webhook, lookup and evidence-response test coverage: opening test section, lines 30-36.\n- Amount-to-reason-code test fixtures: `##### Creating test disputes that require compelling evidence`, lines 39-49.\n- Enabled Venmo and linked-PayPal-sandbox navigation: `### Creating test Venmo disputes` and `### Creating test PayPal disputes`, lines 51-57.\n- Transaction Sale action and callback/Promise examples: `## Creating a disputed test transaction`, lines 60-97.\n- Sandbox `compelling_evidence` finalization and simulated `won` transition: `## Simulating a won dispute`, lines 101-125.\n- Sandbox `losing_evidence` finalization and simulated `lost` transition: `## Simulating a lost dispute`, lines 130-154.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n- Production dispute handling: [[source-braintree-docs-guides-disputes-managing]]\n\n## Related raw API references\n\n- Transaction Sale, Dispute Add Text Evidence, dispute response reason codes, dispute management, Venmo testing and PayPal testing are linked navigation targets in the captured page; they were not used here as independent behavioral evidence.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/disputes/testing-go-live/node-2026-09-16|Braintree Dispute Testing and Go Live (Node route)]] - complete captured webpage covering sandbox disputed-sale creation, test notifications and lookup, amount-specific reason fixtures, and evidence-finalization simulations for `won` and `lost` statuses\n",
+  "quotes": [
+    {
+      "text": "Managing disputes via the API is only available to merchants who can access disputes in the Braintree Control Panel.",
+      "location": "# Testing and Go Live > AVAILABILITY, line 18"
+    },
+    {
+      "text": "We strongly recommend that you test your dispute workflows in the sandbox before using them in production.",
+      "location": "# Testing and Go Live, line 20"
+    },
+    {
+      "text": "You can use the following test card number in the sandbox to create sale transactions of any amount* that are instantly disputed:",
+      "location": "# Testing and Go Live, line 22"
+    },
+    {
+      "text": "Specify the string \"compelling_evidence\" when [adding text evidence](/braintree/docs/reference/request/dispute/add-text-evidence) in the sandbox. Once finalized, this will update the dispute status to won.",
+      "location": "## Simulating a won dispute, line 103"
+    },
+    {
+      "text": "Specify the string \"losing_evidence\" when [adding text evidence](/braintree/docs/reference/request/dispute/add-text-evidence) in the sandbox. Once finalized, this will update the dispute status to lost.",
+      "location": "## Simulating a lost dispute, line 132"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-disputes-testing-go-live-node-reciprocal",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-disputes-testing-go-live-node]] - 2026-09-16 unversioned Braintree Node route for sandbox-only disputed-sale creation and deterministic `won`/`lost` simulations through evidence finalization, with Control Panel access qualification and a separate production deadline and real-adjudication boundary; not an exact Node SDK-version contract, direct PayPal Disputes API authority, current card-network policy, or real dispute outcome proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured page documents Braintree sandbox simulations only; it does not establish a real dispute outcome, direct PayPal Disputes API behavior, current card-network policy, or an exact Node SDK/package version."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/disputes/testing-go-live/node-2026-09-16.md",
+  "raw_sha256": "471f05d17d858a9fc80becae6082bcb7c0ed0b9262ddc7b0e18ad15314c2251c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,48 @@
+# Braintree C43 fixed-query audit I — positions 33–36
+
+- Campaign: `braintree-campaign-43`
+- Mode: independent repository-read-only selection review
+- Assigned manifest positions: 33–36
+- Fixed questions: 8 total, exactly 2 per page
+- Started (UTC): `2026-10-07T11:37:00Z`
+- Completed (UTC): `2026-10-07T11:48:34Z`
+- Verdict: **PASS — 8/8 fixed questions passed**
+
+## Shared checks
+
+- **Pins, URLs, primary ownership, and reciprocity — PASS.** Recomputed SHA-256 values match the manifest: Venmo overview `e9d80f61…b0581`, PayPal Commerce iOS launch checklist `30f3b578…bc869`, PayPal Checkout with Vault iOS v7 `8d184940…d28e`, and In-Person troubleshooting `9b571103…f0d7c`. The four jobs have four unique raw paths, canonical URLs, and source targets. Each source `canonical_url` matches the manifest and raw Source URL; each pinned raw has one primary `raw_files` owner and an exact path-qualified Raw Sources link. Every source/main-concept pair is reciprocal, and every main concept is linked from `wiki/braintree-index.md`.
+- **Full reads and bounded gap sweep — PASS.** Read all four source pages and pinned raws completely. The filename/content sweep found adjacent Venmo implementation, PayPal Commerce setup, sibling Checkout-with-Vault/Recurring Payments, firmware, endpoint, and network-test pages. They remain navigation-only because the pinned raws answer the fixed questions. The one consequential retained cross-page qualification was read in full: `source-braintree-in-person-reference-app-version-release-notes.md` and its raw. The troubleshooting source lists that release-notes raw as secondary factual authority while the release-notes source remains its canonical owner; this does not create a second primary owner for the pinned troubleshooting raw.
+- **Scope and evidence boundaries — PASS.** Answers preserve the captured Braintree website, SDK-family, client/server, historical-product, environment, and device scope. They do not infer present support, exact-package behavior, merchant/account enablement, deployed runtime state, or successful tokenization, authorization, payment, vaulting, settlement, funding, diagnostics, or repair. Routine procedures, tables, parameter values, and examples remain at precise raw locators; no optional/style/runnable-code obligation is imposed.
+- **Deferred close edges — not content failures.** Direct source rows are not yet present in `wiki/braintree-index.md` or `wiki/companies/braintree.md`; campaign-wide company/provider catalog aggregation is coordinator-owned close work. The required concept-mediated routes below are live.
+
+## Position 33 — `docs-guides-venmo-overview`
+
+Actual route: `wiki/index.md:11` → `wiki/braintree-index.md:760` → `wiki/concepts/braintree-payment-methods.md:30` → `wiki/sources/braintree/source-braintree-docs-guides-venmo-overview.md:12-49` → `raw/braintree/docs/guides/venmo/overview-2026-09-16.md:1-85`.
+
+1. **PASS — exact scope and non-inference.** This is a captured Braintree Venmo overview for processing or receiving customer Venmo payments through a Braintree integration. It names Android v5, iOS v6, and JavaScript v3 route families; app/browser/OS floors; mobile-browser behavior; and a United-States-based-business-entity eligibility limit. It is not an end-to-end client/server flow, exact package evidence, present availability or account/buyer eligibility, deployed browser behavior, or payment execution proof. Evidence: source `:14-16,20-24`; raw `:14-26,30-55,73-82`.
+2. **PASS — purpose, conditions, warnings, and detail route.** The page orients merchants to Venmo eligibility, platform routes, and pre-launch testing. It says Venmo does not work in an iframe and must not be shown in a WebView or similar custom browser; alternatives are native SDKs, a system browser, or the named popup-bridge/browser-view routes. Its US-entity restriction and test-before-go-live instruction are consequential, but do not prove enablement or a successful test. Exact version floors and browser matrix remain in raw `:30-55`; browser-container safeguards and alternatives at `:58-70`; eligibility/setup routes at `:73-82`.
+
+## Position 34 — `docs-guides-paypal-commerce-ios-launch-checklist`
+
+Actual route: `wiki/index.md:11` → `wiki/braintree-index.md:772` → `wiki/concepts/braintree-ios-sdk.md:88` → `wiki/sources/braintree/source-braintree-docs-guides-paypal-commerce-ios-launch-checklist.md:12-42` → `raw/braintree/docs/guides/paypal-commerce-ios/launch-checklist-2026-09-16.md:1-47`.
+
+3. **PASS — exact scope and non-inference.** This is a Braintree-hosted, historical and unversioned PayPal Commerce iOS SDK launch-checklist snapshot. It covers app/store preparation and a multiple-iOS-apps-to-one-store OAuth-client condition; it names no SDK release, environment, merchant account, payment API, or transaction object. It is distinct from the modern modular Braintree iOS SDK and does not establish current product availability, account eligibility, exact-SDK behavior, runtime configuration, or payment execution. Evidence: source `:14-16`; raw `:14-18,41-47`.
+4. **PASS — purpose, conditions, warnings, and detail route.** The page groups readiness work as required for basic functionality, optional but highly recommended, and totally optional. Consequentially, it warns that the client ID and secret must be obfuscated; a custom URL scheme supports login and product/category deep links; and multiple apps sharing one store require multiple OAuth clients so email verification remains functional, with a separate scheme/client ID/secret per client. Exact installation, attribution, app-delegate, presentation, plist, platform-feature, notification, login, product-card, and scanning items remain in raw `:18-40`; the multi-app condition and Commerce Panel route are at `:41-47`.
+
+## Position 35 — `docs-guides-paypal-checkout-with-vault-ios-v7`
+
+Actual route: `wiki/index.md:11` → `wiki/braintree-index.md:772` → `wiki/concepts/braintree-ios-sdk.md:85` → `wiki/sources/braintree/source-braintree-docs-guides-paypal-checkout-with-vault-ios-v7.md:12-40` → `raw/braintree/docs/guides/paypal/checkout-with-vault/ios/v7-2026-09-16.md:1-95`.
+
+5. **PASS — exact scope and non-inference.** This is a captured Braintree website guide at the iOS v7 route for `BTPayPalCheckoutRequest` Checkout with Vault: one checkout session requests an immediate PayPal payment plus Billing Agreement consent for future merchant-initiated use. It distinguishes this from Billing Without Purchase/Recurring Payments signup. It is a client request/version-family guide, not direct PayPal API or exact `braintree-ios` release authority, current eligibility/enablement, server charging configuration, runtime behavior, or proof that payment or vaulting completed. Evidence: source `:14-16,20`; raw `:17-26`.
+6. **PASS — purpose, conditions, warnings, and detail route.** The central action is constructing `BTPayPalCheckoutRequest` with `requestBillingAgreement: true`; its default is `false`, and the customer is prompted for billing-agreement consent. The billing-agreement description and recurring-arrangement details/plan type are optional metadata, not proof that recurring charges are scheduled. When recurring details are supplied, `amountBreakdown` does not accept the four named discount/handling/insurance/shipping-discount totals. Minimal and expanded Swift examples remain illustrative. Evidence: source `:21-30`; raw `:24-36,39-94`.
+
+## Position 36 — `in-person-post-launch-activities-troubleshooting`
+
+Actual route: `wiki/index.md:11` → `wiki/braintree-index.md:738` → `wiki/concepts/braintree-in-person.md:16` → `wiki/sources/braintree/source-braintree-in-person-post-launch-activities-troubleshooting.md:13-52` → primary `raw/braintree/in-person/post-launch-activities/troubleshooting-2026-09-16.md:1-56`; retained version authority `raw/braintree/in-person/reference/app-version-release-notes-2026-09-16.md:1-506`.
+
+7. **PASS — exact scope and non-inference.** This is an unversioned Braintree In-Person post-launch reader troubleshooting snapshot covering firmware, payment-app restart, device reboot/shutdown, Sandbox connection checks, firewall reachability, reader-admin diagnostics, and support escalation. It names no reader model, API schema, merchant account, installed version, or live transaction. The troubleshooting page's `5.1.0` diagnostics statement is environment-qualified by the fully read release notes: 5.1.0 is Sandbox-only and 5.2.0 is the production release for those features. Neither historical page establishes current availability, enablement, installed state, reader health, or payment outcome. Evidence: source `:15-17,25`; troubleshooting raw `:14-19,37-54`; release raw `:14-27,176-239`.
+8. **PASS — purpose, conditions, warnings, and detail route.** The guide says a firmware update can sometimes resolve a known fixed bug, distinguishes restarting the payment app from rebooting or shutting down the reader, checks Sandbox credentials and Wi-Fi, identifies a possible onsite-firewall block, routes to endpoint allowlisting, and runs Network Diagnostics from the admin menu (`2+8`, password, **Run Connection Test**) to locate a communication breakdown before support escalation. These are diagnostic actions, not repair or payment guarantees. Exact restart/shutdown actions are at troubleshooting raw `:17-34`; Sandbox/firewall/diagnostic/support steps at `:37-54`; the 5.1.0 Sandbox-only/5.2.0 Production qualification and diagnostics feature authority at release raw `:218-239`.
+
+## Close result
+
+No affected-question correction is required. Result: **8 PASS / 0 FAIL**. Company/provider direct catalog rows remain deferred coordinator-close work, not a source-content or retrieval failure.

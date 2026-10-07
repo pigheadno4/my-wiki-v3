@@ -332,6 +332,10 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 
 ## Sources
 
+- [[source-braintree-docs-guides-disputes-overview]] - unversioned Braintree webpage captured 2026-09-16 introducing account-qualified access to API dispute management and the accept-or-respond flow through evidence finalization and bank review; not current merchant eligibility, independent current bank/card-network policy, successful API execution, evidence acceptance, dispute outcome, settlement, or recovered-funds proof
+
+- [[source-braintree-docs-guides-disputes-testing-go-live-node]] - 2026-09-16 unversioned Braintree Node route for sandbox-only disputed-sale creation and deterministic `won`/`lost` simulations through evidence finalization, with Control Panel access qualification and a separate production deadline and real-adjudication boundary; not an exact Node SDK-version contract, direct PayPal Disputes API authority, current card-network policy, or real dispute outcome proof
+
 - [[source-braintree-docs-guides-disputes-paypal-disputes-node]] - unversioned Braintree Node.js webpage captured 2026-09-16 for Control Panel-eligible merchants responding to PayPal disputes reflected in the Braintree gateway, with categorized evidence and deadline-bound finalization; not direct PayPal Disputes API authority, current access proof or outcome proof
 
 - [[source-braintree-docs-guides-disputes-managing]] - unversioned Braintree website guide captured 2026-09-16 for API dispute management by Control Panel-eligible merchants, covering open-dispute discovery, acceptance versus evidence response, the reply-by cutoff, expiration and loss of contest rights, and required finalization before evidence is forwarded for bank review; not independent current bank/card-network policy, GitHub implementation evidence, current merchant eligibility, execution proof, or evidence of a win, settlement, or returned funds

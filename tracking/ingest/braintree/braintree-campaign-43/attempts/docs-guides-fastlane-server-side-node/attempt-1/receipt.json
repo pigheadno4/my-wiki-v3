@@ -1,0 +1,47 @@
+{
+  "job_id": "docs-guides-fastlane-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Fastlane Server-side Integration (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/fastlane/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/fastlane/server-side/node-2026-09-16.md\"\ntags: [braintree, paypal, fastlane, server-side, nodejs, graphql, shipping]\n---\n\n## Overview\n\nThis collected [[braintree]] webpage is an unversioned Node-routed server-side guide for [[paypal-fastlane]]. It covers generating a Fastlane client token with root-domain input and, when processing a payment, including the customer's shipping address so it is saved to the Fastlane profile. Its Braintree SDK and GraphQL blocks are examples, not proof of current availability, merchant or buyer eligibility, direct PayPal Orders API behavior, Vault success, or an executed payment.\n\n## Key takeaways\n\n- The guide says the client-token request must include the root domain; omission prevents Fastlane from working. It rejects domain entries that contain a subdomain, wildcard, or HTTP/HTTPS protocol.\n- When processing a payment after generating a Fastlane token, the page directs the merchant to include the customer's shipping address in the request so it is saved to the customer's Fastlane profile for future use.\n- The Node.js sale example passes a client-supplied payment-method nonce and device data along with customer, billing, and shipping data. The GraphQL charge example instead passes a payment-method ID, `riskData.deviceData`, shipping, email, and billing-address input; these are example request shapes, not evidence of a successful transaction.\n- The GraphQL example requests `vaultPaymentMethodAfterTransacting` with `when: 'ON_SUCCESSFUL_TRANSACTION'`. This is a success-conditioned example input and does not establish that vaulting occurred or will succeed.\n\n## Detail locators\n\n- **Snapshot identity:** raw lines 1-10 record the canonical URL, fetch date, page title, route slug, and source create/update timestamps.\n- **Client-token action and root-domain requirement:** `Step 1: Generate client token`, raw lines 17-24.\n- **Braintree Node.js client-token example:** raw lines 28-52 show Sandbox gateway construction, `clientToken.generate`, the `domains` array, error branch, and response-token extraction.\n- **GraphQL client-token example:** raw lines 53-74 show the `CreateClientTokenInput` mutation and its nested domain input.\n- **Domain input restrictions and error condition:** raw lines 76-82 exclude subdomains, wildcards, and protocols and state that those inputs produce an error.\n- **Payment-time shipping action and purpose:** `Step 2: Update Fastlane with Consumer's shipping address`, raw lines 85-91.\n- **Node.js sale material inputs and routine fields:** raw lines 96-143 show the amount, payment-method nonce, device data, customer, billing, shipping, and result-handling example.\n- **GraphQL charge material inputs and conditional vault option:** raw lines 144-185 show `ChargeCreditCardInput`, payment-method ID, risk/device data, shipping, email, success-conditioned vaulting, and billing-address inputs.\n\n## Related\n\n- [[braintree]]\n- [[paypal-fastlane]]\n- [[source-braintree-docs-guides-fastlane-client-side-node|Braintree Fastlane Client-side Integration (Node route)]]\n- [[source-braintree-docs-guides-fastlane-advanced-option|Braintree Fastlane Advanced Options]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/fastlane/server-side/node-2026-09-16|Braintree Fastlane Server-side Integration \u2014 Node.js route (2026-09-16 snapshot)]]",
+  "quotes": [
+    {
+      "text": "You must include your root domain in the client token request. Omitting the root domain will cause Fastlane to malfunction and will prevent it from working entirely.",
+      "location": "raw lines 22-23, IMPORTANT notice under Step 1: Generate client token"
+    },
+    {
+      "text": "Error Handling: If you specify subdomains, wildcards, or protocols, the system will generate an error.",
+      "location": "raw line 82, immediately after Restrictions on Domain Names"
+    },
+    {
+      "text": "After generating a Fastlane token, if you're processing a payment, make sure to include the customer's shipping address in the request.This ensures the address is saved to their Fastlane profile for future use.",
+      "location": "raw line 87, under Step 2: Update Fastlane with Consumer's shipping address"
+    },
+    {
+      "text": "vaultPaymentMethodAfterTransacting: {\n        when: 'ON_SUCCESSFUL_TRANSACTION',\n      },",
+      "location": "raw lines 176-178, GraphQL ChargeCreditCardInput example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-w17-paypal-fastlane-reciprocal",
+        "target_path": "wiki/concepts/paypal-fastlane.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-fastlane-server-side-node]] - unversioned Braintree Node-routed server-side guide for root-domain-qualified client-token generation and payment-time shipping-profile updates, with Braintree SDK and GraphQL material-input, device-data and success-conditioned vault-option locators; examples are not direct PayPal Orders API, current eligibility, Vault-outcome or payment-execution evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/fastlane/server-side/node-2026-09-16.md",
+  "raw_sha256": "8e96b64c46c30923c0997a24e2c2625501a6b2408a2f79511e03ea8d2647cde0",
+  "status": "candidate_ready"
+}

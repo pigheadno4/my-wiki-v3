@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-apple-pay-configuration-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Apple Pay Configuration for JavaScript v3\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/apple-pay/configuration/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/apple-pay/configuration/javascript/v3-2026-09-16.md\"\ntags: [braintree, apple-pay, javascript-v3, web-payments, domain-registration]\n---\n\n## Overview\n\nThis collected [[braintree]] website guide is the JavaScript v3 configuration route for Apple Pay on the web. It says configuration finishes with environment-appropriate iCloud account setup and registration of every web domain planned for Apple Pay use. It is a dated setup snapshot linked from [[braintree-apple-pay]], not native iOS provisioning, current merchant or device eligibility, or evidence of a completed payment.\n\n## Key takeaways\n\n- Testing requires an iCloud account corresponding to the environment: the page calls for an iTunes Connect sandbox tester account in sandbox and a production iCloud account in production.\n- Each domain intended for Apple Pay on the web must be registered with Apple through the Braintree Control Panel or the linked registration API route. The page explicitly says not to register the domain through the Apple Developer Portal.\n- For Apple Pay on the web in this Braintree route, the page says a merchant does not need to generate and upload a Payment Processing Certificate because transactions use Braintree's shared certificate. This qualification is web-specific and must not be carried over to native iOS provisioning.\n- Sandbox and production domains are entered separately and must exactly match the fully qualified domain name, including `www` when applicable. Production additionally requires hosting the domain-association file at `/.well-known/apple-developer-merchantid-domain-association` before the domain is added.\n- For production verification, the page requires the association file to avoid 3xx redirects, be served over HTTPS 1.1, return as a binary object rather than HTML or plain text, use `Content-Type: application/octet-stream`, and remain accessible outside a firewall.\n\n## Detail locators\n\n- Page purpose and two remaining configuration areas: raw lines 14-16.\n- Sandbox versus production iCloud accounts: `## iCloud account setup`, raw lines 17-19.\n- Optional `apple-touch-icon` recommendation: `## Specify an icon`, raw lines 20-22.\n- Web-domain registration routes, Apple Developer Portal exclusion and Braintree shared-certificate qualification: `## Domain registration`, raw lines 23-25.\n- Sandbox Control Panel path and exact fully qualified domain-name matching: `### Sandbox environment`, raw lines 26-40.\n- Production Control Panel path, exact domain matching and domain-association file location: `### Production environment`, raw lines 43-58.\n- Apple's production verification request conditions, binary response media type and firewall-access qualification: raw lines 60-68.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-apple-pay]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/apple-pay/configuration/javascript/v3-2026-09-16|Braintree Apple Pay configuration - JavaScript v3]] - complete collected web configuration page for iCloud environment alignment and Apple Pay domain registration\n",
+  "quotes": [
+    {
+      "text": "To finish your configuration, you will only need to complete the iCloud account and domain registration steps below.",
+      "location": "raw line 16, Configuration introduction"
+    },
+    {
+      "text": "When testing, you will need to be logged into an iCloud account that corresponds to your environment. Testing in sandbox requires you to be logged into an[iTunes Connect sandbox tester account](https://developer.apple.com/support/apple-pay-sandbox/), which you can create with an[Apple Developer account](https://developer.apple.com/programs/how-it-works/). Similarly, you will need to be logged into a production iCloud account when testing in production.",
+      "location": "raw line 19, iCloud account setup"
+    },
+    {
+      "text": "In order to test and accept Apple Pay on the web, you'll need to register any domains you plan to use with Apple. You can do this through the Braintree Control Panel using the instructions below, or via the API using[Apple Pay: Register Domain](/braintree/docs/reference/request/apple-pay/register-domain). You should not register your domain through the Apple Developer Portal. Additionally, you will not need to generate and upload a Payment Processing Certificate for Apple Pay on the web, as these transactions will be processed using our shared certificate.",
+      "location": "raw line 25, Domain registration"
+    },
+    {
+      "text": "Download the[domain association file](https://assets.braintreegateway.com/web/static/apple-pay/apple-developer-merchantid-domain-association)and host it at/.well-known/apple-developer-merchantid-domain-associationon your site",
+      "location": "raw line 57, Production environment"
+    },
+    {
+      "text": "When Apple verifies a domain, it makes a request to retrieve the domain verification file. Ensure that:\n- The file is not served with a 3xx status code. Apple does not support HTTP URL redirects for the domain association file.\n- This file is served via HTTPS 1.1\n- The HTTP response for this request returns this file as a binary object and not as HTML or plain text\n**IMPORTANT**\nThis file should be served with Content-Type: application/octet-stream to indicate that this is a binary file download.",
+      "location": "raw lines 60-65, production domain verification conditions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-apple-pay-web-js-v3-configuration-route",
+        "target_path": "wiki/concepts/braintree-apple-pay.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-apple-pay-configuration-javascript-v3]] - 2026-09-16 captured Braintree JavaScript v3/web configuration route for environment-matched iCloud testing accounts, sandbox and production domain registration, the web shared-certificate qualification, and production domain-association-file verification conditions",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the shared-certificate statement scoped to Apple Pay on the web; do not merge it into the separate native iOS certificate-provisioning route or infer current eligibility, successful domain verification, or payment execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/apple-pay/configuration/javascript/v3-2026-09-16.md",
+  "raw_sha256": "101f2e60c97abb5a917081369199bab35aadcef4d0422e4ffae7f2a0be36675e",
+  "status": "candidate_ready"
+}

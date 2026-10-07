@@ -36,6 +36,10 @@ The repository schedules deprecated status for 2026-09-01 and unsupported status
 
 ## Related
 
+- [[source-braintree-docs-start-example-integrations-drop-in-using-the-examples]] - 2026-09-16 website snapshot routing server-language example repositories that use Web Drop-in, with Sandbox credential, setup, and testing routes plus an October lifecycle warning; example and snapshot evidence only, not exact package/runtime, current support, runnable-environment, or successful-payment proof
+
+- [[source-braintree-docs-start-drop-in]] - 2026-09-16 Braintree website landing snapshot for ready-made Drop-in positioning, complementary client/server SDK roles, integration navigation, and a source-qualified October 2026/2027 lifecycle notice that conflicts with retained exact-version repository dates
+
 - [[source-braintree-docs-start-tutorial-drop-in-node]] - Node.js/Express website tutorial for browser Drop-in nonce collection and a separate Sandbox transaction-sale route; preserves tutorial prerequisites, October lifecycle notice, example-only execution boundary and absent exact Node SDK package version
 - [[source-braintree-start-checkout-ui-comparison]] - 2026-09-16 website snapshot comparing ready-made Drop-in with custom checkout UI across platform, customization, qualified SAQ A, translation, payment-method and fraud-tool dimensions; selection guidance only, with current Drop-in lifecycle status requiring separate verification
 - [[source-braintree-drop-in-customization-javascript-v3]] - Braintree JavaScript v3 Drop-in customization guide for saved-method, event, fraud-tool, and UI configuration routes; its October lifecycle dates conflict with the retained exact-version repository's September dates and do not establish current support

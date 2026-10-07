@@ -1,0 +1,47 @@
+{
+  "job_id": "docs-guides-network-tokens-how-it-works",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree How Network Tokens Work\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/network-tokens/how-it-works\"\nraw_files:\n  - \"braintree/docs/guides/network-tokens/how-it-works-2026-09-16.md\"\ntags: [braintree, network-tokens, vault, cards, lifecycle-management]\n---\n\n## Overview\n\nThis unversioned Braintree website snapshot explains how Braintree acts as Token Service Provider and Acquirer to provision a merchant-specific network token from a card PAN, use the token with a one-time cryptogram for a payment, and receive card-network lifecycle updates for Vault card details. It is retrieval evidence for the described flow, not proof of current availability, account or card eligibility, merchant enablement, exact SDK/package behavior, or successful payment processing. See [[braintree]] and [[braintree-payment-methods]].\n\n## Key takeaways\n\n- For provisioning, Braintree sends a PAN from the merchant's Braintree Vault to a card network; the network provisions a token tied to that card and merchant, returns it to Braintree, and Braintree stores it in that merchant's Vault.\n- For a transaction, Braintree sends the merchant's vaulted token and a one-time-use cryptogram to the card network; the network exchanges the token for a PAN and sends the PAN to the issuer for processing. The described path does not establish an approval or other transaction outcome.\n- Lifecycle Management updates can pass issuer card-detail changes through the card network to Braintree, which updates the details in the merchant's Vault. The page says this can help avoid a failed transaction; it does not guarantee continuity or success.\n- Tokenization remains subject to each card network's eligibility criteria. A network may run a $0 verification that can appear on the cardholder's statement but is not a monetary charge; Braintree says it does not control whether the network runs that verification.\n\n## Detail locators\n\n- Provisioning roles, PAN submission, token storage and merchant-specific binding: raw line 16.\n- Payment request, one-time cryptogram and token-to-PAN exchange: raw line 18.\n- Reissue, theft or loss lifecycle updates and the qualified failed-transaction benefit: raw line 20.\n- Network eligibility criteria and network-controlled $0 verification behavior: raw line 22.\n\n## Related\n\n- [[braintree-payment-methods]]\n- [[source-braintree-docs-guides-network-tokens-bring-your-own-token-node]] - separate route for submitting externally tokenized or self-vaulted network tokens through Transaction Sale\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/network-tokens/how-it-works-2026-09-16|Braintree How Network Tokens Work (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "To create a network token, Braintree, acting as a Token Service Provider and Acquirer, sends a card (the PAN) from a merchant's Braintree vault to a card network such as Visa or Mastercard. The card network provisions a network token and sends it back to Braintree, which stores it in the merchant's vault. The card network ties each network token to a specific card and merchant, so no other merchant can use it.",
+      "location": "line 16, paragraph following the process diagram"
+    },
+    {
+      "text": "After the card network provisions a network token, Braintree can use it to process a transaction. When a customer goes to checkout, Braintree sends the token from a merchant's vault along with a one-time-use cryptogram to the card network. The network exchanges the token for a PAN and sends it to the issuer to process the transaction.",
+      "location": "line 18"
+    },
+    {
+      "text": "With network tokens, the card network passes any update from a card issuer through to Braintree, which updates the card details in the merchant's Braintree vault. Now, when a cardholder goes to checkout, the updated card and token are ready to use and can help avoid a failed transaction which may lead to churn or cart abandonment.",
+      "location": "line 20, final two sentences"
+    },
+    {
+      "text": "Card networks that issue network tokens have their own set of eligibility criteria when they receive a request for card tokenization. Card networks will sometimes run a $0 verification before issuing a network token to ensure the card is active and not fraudulent, similar to the regular verifications card networks run when Braintree vaults a card. These $0 verifications may show up in the cardholder's credit card statement but are not monetary charges and do not affect merchant operations in any way. When Braintree sends a card to a card network for tokenization, it has no control over whether or not the card network runs a $0 verification on the card as part of tokenization.",
+      "location": "line 22"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "network-tokens-how-it-works-payment-methods-source-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-network-tokens-how-it-works]] - 2026-09-16 unversioned Braintree website snapshot of merchant-specific network-token provisioning, token-plus-one-time-cryptogram payment routing, Vault lifecycle updates and card-network-controlled eligibility/$0 verification; not current availability, enablement, exact SDK/package behavior or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/network-tokens/how-it-works-2026-09-16.md",
+  "raw_sha256": "f197e7702a96161839b31983e07dd903a2856a625274e172b4773de44461fb14",
+  "status": "candidate_ready"
+}

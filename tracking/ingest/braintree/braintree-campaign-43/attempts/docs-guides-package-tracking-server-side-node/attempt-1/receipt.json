@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-guides-package-tracking-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Package Tracking Server-Side Configuration (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/package-tracking/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/package-tracking/server-side/node-2026-09-16.md\"\ntags: [braintree, package-tracking, nodejs, server-sdk, paypal, transactions]\n---\n\n## Overview\n\nThis collected Braintree server-side Node.js guide shows a three-step package-tracking example: place a transaction with line items and immediate settlement submission, call `gateway.transaction.packageTracking()` with a transaction ID and package metadata, then retrieve the transaction with `gateway.transaction.find()` to inspect package trackers and the later-populated PayPal tracker ID.\n\nThis is a 2026-09-16 unversioned website snapshot. It is not current availability, merchant or transaction eligibility, product enablement, exact Node package-version or runtime evidence, a complete runnable integration, or proof of payment authorization, capture, settlement, funding, shipment, carrier acceptance, delivery, buyer notification, dispute resolution or hold release.\n\n## Key takeaways\n\n- The displayed sale request sets `submitForSettlement: true` and includes transaction line items. The next displayed step creates a package object with example carrier and tracking-number values, `notifyPayer: true`, and optional line items, then passes `transactionId` and that object to `gateway.transaction.packageTracking()`. These are examples, not universal required values or proof that the request succeeded.\n- The package-tracking callback reads `response.transaction.packages[0].id`, `.carrier`, and `.trackingNumber`. Its comment says the PayPal tracker ID is not immediately available in the package-tracking response and should instead be present after a later transaction lookup; that timing is snapshot guidance, not a guaranteed propagation time or outcome.\n- The retrieval example calls `gateway.transaction.find()` and reads the first package's `id`, `carrier`, `trackingNumber`, and `paypalTrackerId`. Array index `0`, the placeholder identifiers, the carrier value, notification choice, quantities and product fields are example details; use the raw locators for their exact rendering.\n- The snippets depend on surrounding values not defined inside the shown functions: `transactionId` is referenced by `sampleIntegration()`, and `response.transaction.id` is referenced by `retrievePackageTrackers()` even though `response` is not introduced in that function. The page therefore does not establish a standalone executable program, error-path safety, exact SDK signature for a specific package version, or a successful provider response.\n\n> [!warning] Preserve the settlement-state conflict\n> This Node page labels tracking creation as occurring \"after submitting for settlement,\" while the fully read package-tracking overview says to add tracking details \"after the transaction settles.\" Do not use the example's looser wording to weaken the overview's settled-state condition. This snapshot does not resolve which transaction statuses the gateway currently accepts.\n\n> [!warning] Metadata submission is not fulfillment or payment proof\n> A package-tracking request, returned package entry or later PayPal tracker ID does not itself prove shipment, carrier acceptance, delivery, buyer notice, dispute outcome, hold release, authorization, capture, settlement or funding.\n\n## Detail locators\n\n- Transaction-sale request, immediate settlement-submission option and line-item example: raw lines 18-60 under `1. Place transaction`.\n- Package object, example carrier/tracking values, payer notification and optional line items: raw lines 63-96 under `2. Create tracking for transaction after submitting for settlement`.\n- `gateway.transaction.packageTracking()` invocation, callback package fields and delayed PayPal tracker-ID comment: raw lines 98-111.\n- Later `gateway.transaction.find()` lookup and package fields, including `paypalTrackerId`: raw lines 115-130 under `3. Retrieve transactions with package trackers`.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Package-tracking lifecycle, eligibility, request/response fields and captured SDK-version prerequisites: [[source-braintree-docs-guides-package-tracking-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/package-tracking/server-side/node-2026-09-16|Braintree package-tracking server-side Node.js guide]] - complete collected snapshot of the transaction, package-tracking and later transaction-lookup examples\n",
+  "quotes": [
+    {
+      "text": "2. Create tracking for transaction after submitting for settlement:",
+      "location": "raw line 63 under the page's numbered flow"
+    },
+    {
+      "text": "// Create a Package Tracking request with optional line items\n    let package = {\n        carrier: \"UPS\",\n        trackingNumber: \"tracking_number_1\",\n        notifyPayer: true,\n        lineItems: [",
+      "location": "raw lines 68-73 in the Node.js block under step 2"
+    },
+    {
+      "text": "gateway.transaction.packageTracking(\n        transactionId,\n        package,\n        function (err, response) {\n            // handle error and response\n            id = response.transaction.packages[0].id;\n            carrier = response.transaction.packages[0].carrier;\n            trackingNumber = response.transaction.packages[0].trackingNumber;\n            //The PayPal tracker ID will not be immediately available in response to\n            //package_tracking(). But should be there when merchant does a findTransaction\n            //request at a later stage.",
+      "location": "raw lines 99-109 in the Node.js block under step 2"
+    },
+    {
+      "text": "gateway.transaction.find(response.transaction.id, function (err, transaction) {\n        // Get more details of the individual packages like so, replace 0 with the element #:\n        id = transaction.packages[0].id;\n        carrier = transaction.packages[0].carrier;\n        trackingNumber = transaction.packages[0].trackingNumber;\n        paypalTrackerId = transaction.packages[0].paypalTrackerId;\n        //The PayPal tracker ID will not be immediately available in response to\n        //package_tracking(). But should be there when merchant does a findTransaction\n        //request at a later stage.",
+      "location": "raw lines 120-128 in the Node.js block under step 3"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-w45-server-sdk-reciprocal",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-package-tracking-server-side-node]] - 2026-09-16 unversioned Node.js website example for creating transaction line items, submitting package metadata through `gateway.transaction.packageTracking()` and later retrieving package tracker fields; preserves an unresolved submitting-for-settlement versus settled-state conflict and is not exact package/runtime, eligibility, fulfillment or payment-outcome proof\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The Node page says tracking creation occurs after submitting for settlement, while the fully read package-tracking overview requires adding tracking after the transaction settles; retain this unresolved conflict and do not weaken the overview condition.",
+          "The displayed functions reference surrounding transactionId and response values that are not defined within the snippets, so the source is not standalone executable or exact package-version evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/package-tracking/server-side/node-2026-09-16.md",
+  "raw_sha256": "6a867f000b837d013e4abeee22e6a4a2f7e33396d937103ff2c535f054206aab",
+  "status": "candidate_ready"
+}

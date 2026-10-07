@@ -1,0 +1,21 @@
+{
+  "job_id": "docs-guides-shopper-insights-android-v5",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full independent first review verified the complete 139-line pinned raw and SHA-256 42827e8fa7c0e799f1d9b741c334e7aa6013001921c339bf2215076581ab325e against the trusted order. receipt.json, candidate.md and suggestions.json agree, no format-repair artifacts are present, all five literal quote substrings resolve at the stated raw locators, and the canonical URL and raw provenance are correct. The source accurately preserves the beta Android v5 route, consent before generateCustomerRecommendations, Client Token requirement and Tokenization Key exclusion, PayPal-or-Venmo recommendation claim, eligibility-conditioned preferential presentment/preselection/parity terms, customer-session/recommendation/presented/selected example calls, and the dated March 30, 2026 mobile-certificate notice with 4.45.0+/5.0.0+ thresholds and historical-status limits. It does not infer current package support, customer eligibility, recommendation results, event receipt, authorization or payment execution. Two bounded material issues block approval. First, the captured availability scope at line 18 is only labeled in a locator and never retained: the page says the beta is available only to merchants using iOS v6+ or Android v4+ and unavailable to JavaScript or Drop-in SDK merchants. Concrete query: 'Does this Shopper Insights snapshot support JavaScript or Drop-in merchants, and what native SDK floors does it name?' The source page cannot answer or select the right integration path without reopening and rereading the raw; its generic availability locator does not expose the exclusions or SDK floors. Second, the reciprocal line says 'consent-conditioned customer-session creation/update', but the raw places consent immediately before generateCustomerRecommendations, not before session creation or update, so the shared line broadens the condition to the wrong actions. The blocker-completeness pass found no other material false claim, missing warning, broken route, locator, quote or provenance issue; dependency/example details and optional field inventory remain nonblocking in the verified raw locators.",
+  "required_changes": [
+    "Add one compact availability takeaway stating that this captured page says Shopper Insights is available only to merchants using iOS SDK v6+ or Android SDK v4+, and not to merchants using the JavaScript or Drop-in SDK. Preserve the beta, dated-snapshot and merchant-specific current-availability boundaries; the existing lines 14-18 locator may remain.",
+    "Revise the reciprocal proposal so consent qualifies recommendation generation rather than customer-session creation/update, for example: 'customer-session creation/update and consent-conditioned PayPal-or-Venmo recommendation retrieval'. Keep the Android v5 route, Client Token, presentment/events, dated certificate/version, current-availability, eligibility, event-receipt and payment-execution limits. Raw, hash, quotes, other source claims and routes may remain unchanged; targeted retry is sufficient."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "braintree-c43-shopper-insights-android-v5-reciprocal",
+      "verdict": "rejected",
+      "reason": "The target and reciprocal source route are relevant, but 'consent-conditioned customer-session creation/update' misapplies the raw's consent condition: lines 36-38 require consent before generateCustomerRecommendations, not before the session create/update examples. A narrow modifier move makes the line accurate."
+    }
+  ],
+  "reviewer_identity": "braintree-c43-r-13",
+  "reviewer_model": "gpt-5.6-sol"
+}

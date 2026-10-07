@@ -71,6 +71,14 @@ Release `5.30.0` makes the principal Kotlin suspend functions public, removes th
 
 ## Related
 
+- [[source-braintree-docs-guides-google-pay-testing-go-live-android-v5]] - 2026-09-16 Android v5-routed Google Pay testing/go-live snapshot for sandbox nonce behavior, production Control Panel enablement and Google's separate production-access/app-review route; preserves a dated mobile-certificate warning and is not current eligibility, enablement, exact package/runtime, review-approval or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-checkout-with-vault-android-v5]] - 2026-09-16 Android v5-routed website guide for one checkout that both charges and requests Billing Agreement consent for future merchant-initiated payments, with optional recurring detail fields and documented exclusions; not current exact-package support, eligibility, enablement, runtime or payment-execution proof
+
+- [[source-braintree-docs-guides-shopper-insights-android-v5]] - 2026-09-16 Android v5-routed Shopper Insights beta guide for customer-session creation/update and consent-conditioned PayPal-or-Venmo recommendation retrieval, required Client Token initialization, recommendation presentment and presented/selected event calls; preserves the captured mobile-certificate warning and is not current availability, customer-eligibility, recommendation, event-receipt or payment-execution proof
+
+- [[source-braintree-docs-guides-unionpay-client-side-android-v5]] - 2026-09-16 Android v5-routed website guide for UnionPay card-capability checks, client-token authorization, conditional SMS enrollment and tokenization; preserves post-enrollment field immutability and validation conditions, and is not current environment, certificate, package-support, eligibility or payment-execution proof
+
 - [[source-braintree-docs-guides-google-pay-client-side-android-v5]] - 2026-09-16 Android v5-routed website guide for Google Pay readiness gating, authorization-request launch and callback tokenization into a nonce; preserves a request-versus-result tokenization wording mismatch and dated mobile-certificate warning, and is not current package-support, merchant/device eligibility, server-transaction, or payment-execution proof
 
 - [[source-braintree-docs-guides-paypal-messaging-android-v5]] - 2026-09-16 Android v5-routed website guide for eligible merchants adding Pay Later offer messaging with request/view rendering and optional lifecycle callbacks; excludes Drop-in and preserves internal constructor/callback naming conflicts; not current package-support, merchant-eligibility, offer-availability, credit-approval or payment-execution evidence

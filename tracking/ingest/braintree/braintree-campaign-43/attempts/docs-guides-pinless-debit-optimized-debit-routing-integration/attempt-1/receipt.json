@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-pinless-debit-optimized-debit-routing-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PINless Debit Optimized Debit Routing Integration\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/pinless-debit/optimized-debit-routing/integration\"\nraw_files:\n  - \"braintree/docs/guides/pinless-debit/optimized-debit-routing/integration-2026-09-16.md\"\ntags: [braintree, pinless-debit, optimized-debit-routing, network-transaction-identifier, credential-on-file]\n---\n\n## Overview\n\nThis unversioned Braintree website integration page describes enabling PINless debit optimized routing and the Network Transaction Identifier (NTI) behavior relevant to stored-credential transactions. It distinguishes merchants using Braintree's Vault from merchants using a third-party vault or payment orchestration provider. [[braintree]] [[braintree-payment-methods]]\n\n## Key takeaways\n\n- The page says enabling PINless debit requires no integration modification, but the merchant must contact PayPal to enable PINless debit routing. It separately says merchants seeking the routed low-cost debit network without waiting for a merchant report must update to one of the listed SDK versions.\n- It defines an NTI as a value returned by signature card-brand networks for use with subsequent stored-credential transactions, and says PINless debit networks do not support the Credential on File (CoF) framework or issue network-generated NTIs. A successful PINless-routed authorization therefore may lack a network-generated value in the NTI field.\n- The later authorization-response section also says Braintree returns an NTI value for PINless debit transactions, subject to network-specific processing rules and CoF participation. Treat that Braintree-returned value separately from a network-generated NTI: the snapshot does not resolve the exact value semantics or guarantee population for every authorization.\n- Merchants vaulting with Braintree require no integration changes under this page. For an external vault, the page says the ODR engine returns an NTI where applicable and in accordance with network CoF mandates, and the merchant must pass the NTI from the original customer-initiated transaction in `previous_network_transaction_id` to link later recurring transactions.\n- This snapshot is documentation evidence only; it does not prove current availability, merchant eligibility or enablement, exact installed package/runtime behavior, authorization success, payment execution, settlement or funding.\n\n## Detail locators\n\n- Enablement and report-versus-integration-version distinction: raw lines 17-32.\n- NTI definition, network participation and successful-authorization qualification: raw lines 35-43.\n- PINless authorization-response wording and network/CoF qualification: raw lines 46-57.\n- Braintree Vault versus external-vault integration impact and recurring-link field: raw lines 60-68.\n- Authorization-workflow and routed-network code-sample navigation: raw lines 17-18 and 68.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-methods]]\n- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-network-response-codes]] - separate supplemental network-response-code reference; its processor response code remains the source of truth\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/pinless-debit/optimized-debit-routing/integration-2026-09-16|Braintree PINless Debit optimized debit routing integration (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Enabling PINless debit\u202fdoesn't require any modifications to your integration. Contact PayPal to enable PINless debit routing for your integration.",
+      "location": "raw line 20 under Integration"
+    },
+    {
+      "text": "Merchants can identify which debit network was used for transactions in their merchant report. If the merchant wants to know which low-cost debit network was used for a transaction without waiting for a report, update their integration to the following version.",
+      "location": "raw line 22 under Integration, immediately before the SDK Availability table"
+    },
+    {
+      "text": "The **Network Transaction Identifier (NTI)** is a unique value returned by signature card brand networks in an authorization response. It is used to improve authorization approval rates for subsequent stored credential (Credential on File \u2013 CoF) transactions.   Not all networks participate equally in this framework. At this moment, PINless debit networks do not support the CoF framework and therefore do not issue NTIs.",
+      "location": "raw line 37 under Network Transaction Identifier"
+    },
+    {
+      "text": "- Braintree returns an NTI value authorization response for PINless Debit transactions.\n- Behavior is consistent with existing signature processing flows.\n\n\n**NOTE**\nNTI return behavior is subject to network-specific processing rules and Credential on File (CoF) participation requirements.",
+      "location": "raw lines 52-57 under Authorization response behavior > PINless debit network transactions"
+    },
+    {
+      "text": "The Optimized Debit Routing (ODR) engine returns an NTI in the authorization response, where applicable, in accordance with network CoF mandates. Merchants using an external vault must pass the NTI from the original CIT transaction in the[:previous_network_transaction_id:](https://developer.paypal.com/braintree/docs/reference/request/transaction/sale/ruby#external_vault-previous_network_transaction_id)to link subsequent recurring transactions.",
+      "location": "raw line 67 under Integration Impact > Merchants integrated through a third-party vault or payment orchestration provider"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c43-w32-pinless-odr-integration-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-integration]] - 2026-09-16 unversioned Braintree website integration snapshot for PINless debit routing enablement, SDK-version-qualified routed-network visibility and Vault-dependent NTI handling, preserving network/CoF applicability and the page's unresolved network-generated-versus-Braintree-returned NTI wording; not current eligibility, enablement, package/runtime behavior or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw says PINless debit networks do not issue network-generated NTIs, then says Braintree returns an NTI value for PINless debit transactions; preserve the distinction and do not infer identical value semantics or universal field population."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/pinless-debit/optimized-debit-routing/integration-2026-09-16.md",
+  "raw_sha256": "ede7798e520c57e223c3ea38ecd7b7b7a3028605de204487ac70c699c611f8d0",
+  "status": "candidate_ready"
+}
