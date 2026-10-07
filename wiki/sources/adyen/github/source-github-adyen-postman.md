@@ -2,8 +2,10 @@
 title: "GitHub: adyen/adyen-postman"
 type: source
 date_ingested: 2026-08-12
+date_updated: 2026-10-07
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-postman/snapshots/2026-10-07-78874d7/manifest.json"
   - "github/adyen/adyen-postman/snapshots/2026-08-12-ecb2907/manifest.json"
 tags: [adyen, postman, checkout-api, terminal-api, recurring-payments, bin-lookup, github-repository]
 ---
@@ -14,9 +16,11 @@ tags: [adyen, postman, checkout-api, terminal-api, recurring-payments, bin-looku
 
 Repository: <https://github.com/adyen/adyen-postman>
 
+An additive delta ingested on 2026-10-07 extends this history to `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (commit date 2026-09-28). The original baseline remains below; this repository uses commit identities, not package releases.
+
 ## Evidence boundary
 
-- This page describes request examples and explanatory text retained at exact commit `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`. It does not prove current merchant eligibility, account enablement, payment-method availability, or production behavior.
+- Baseline findings describe exact commit `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`; the additive update below describes `78874d7b10d8cb438ed15eb01dd732c8d86540a7`. Neither proves current merchant eligibility, account enablement, payment-method availability, or production behavior.
 - The four versioned API collections are generated from `adyen-openapi`; the Terminal API collection is maintained separately and is commit-qualified rather than API-version-qualified.
 - Example requests can demonstrate payload shape and intended flow, but the current API reference, merchant configuration, shopper context, and actual API response remain authoritative.
 - Secrets belong in a private Postman environment. No retained example value should be treated as a production credential or merchant identifier.
@@ -51,7 +55,7 @@ Requests use environment variables such as `X-API-Key`, merchant account, compan
 
 ## Checkout API v72
 
-The 60 retained Checkout requests cover the core online-payment lifecycle:
+The `ecb2907` baseline's 60 retained Checkout requests cover the core online-payment lifecycle. The later `78874d7` collection contains 58 requests; the two removed donation examples are preserved in the historical snapshot and documented below.
 
 | Area | Example operations |
 | --- | --- |
@@ -89,6 +93,49 @@ The collection also demonstrates terminal interaction and operations: login/logo
 
 The boundary between API families is explicit. Terminal API owns terminal messages and interactions. Capture, token-based recurring charges, and authorization adjustments use Checkout API examples; store and terminal-fleet administration belong to Management API. The collection's Postman scripts persist in-process identifiers, inspect result/error fields, parse receipts, and route multi-step examples, but they are demonstration orchestration rather than a production POS state machine.
 
+## Update `ecb2907` to `78874d7`: Stored-Method Roles and Donation Examples
+
+Only `postman/CheckoutService-v72.json` changed among the 11 retained files. All ten other files, including the Terminal API collection, have identical hashes. The upstream comparison lists only this Checkout file; no API-version upgrade is established.
+
+### Stored-payment-method credential role
+
+The descriptions for GET and POST `/storedPaymentMethods`, and DELETE `/storedPaymentMethods/{storedPaymentMethodId}`, now explicitly require the `API tokenise payment details` role on the API credential. The description is also updated in retained original-request response examples. Existing request methods, URLs, headers, bodies, query configuration and example responses are otherwise unchanged.
+
+This is a newly documented requirement in this repository comparison, not proof that the role or server-side enforcement was newly introduced on the commit date. The original query flags and idempotency-header defaults are not changed or repaired by this update. Merchant integrations should verify credential permissions rather than assume that an API key alone suffices; no live permission or payment test was performed.
+
+### Donation example history
+
+The collection removes two named requests, reducing Checkout examples from 60 to 58:
+
+- `Make a donation to a donation account`: the historical payload combines `donationAccount`, a payment-generated `donationToken` and `donationOriginalPspReference`, with `shopperInteraction: ContAuth`.
+- `Make a donation to a donation account with a token`: the historical payload uses `donationAccount`, `paymentMethod.recurringDetailReference`, `shopperReference`, `shopperInteraction: ContAuth` and `recurringProcessingModel: CardOnFile`.
+
+Both are retained in the [old Checkout collection](../../../../raw/github/adyen/adyen-postman/snapshots/2026-08-12-ecb2907/files/postman/CheckoutService-v72.json). Their removal from Postman is not evidence that the endpoint, parameters or payment capabilities were removed or deprecated by the API.
+
+`Make a donation to a campaign` remains at POST `/donations`, using `donationCampaignId`, `donationToken` and `donationOriginalPspReference`. Its request and example response are unchanged; it was already present in the old collection and must not be described as a new donation flow. See the [new Checkout collection](../../../../raw/github/adyen/adyen-postman/snapshots/2026-10-07-78874d7/files/postman/CheckoutService-v72.json).
+
+### Reading and grounding
+
+The user approved delta mode over the collector's path-based `payment-behavior-signal` full recommendation, plus a one-time focused-reading exception. The complete affected stored-method and donation sections in both snapshots, complete comparison and cumulative source/changelog were read; snapshot inventories, ten unchanged files and unaffected Checkout request structures were checked mechanically. This does not claim a complete reread of either snapshot or every Checkout description.
+
+> "API tokenise payment details"
+>
+> `raw/github/adyen/adyen-postman/snapshots/2026-10-07-78874d7/files/postman/CheckoutService-v72.json:2327` (list), `:2441` (create), `:2663` (delete).
+
+> "Make a donation to a donation account"
+>
+> `raw/github/adyen/adyen-postman/snapshots/2026-08-12-ecb2907/files/postman/CheckoutService-v72.json:2950`
+
+> "Make a donation to a donation account with a token"
+>
+> `raw/github/adyen/adyen-postman/snapshots/2026-08-12-ecb2907/files/postman/CheckoutService-v72.json:3058`
+
+> "Make a donation to a campaign"
+>
+> `raw/github/adyen/adyen-postman/snapshots/2026-10-07-78874d7/files/postman/CheckoutService-v72.json:2842`
+
+[Snapshot record](../../../../raw/github/adyen/adyen-postman/snapshots/2026-10-07-78874d7/manifest.json), [comparison record](../../../../tracking/github/repos/adyen/adyen-postman/comparisons/default-branch/ecb2907--78874d7/comparison.json), [comparison](../../../../tracking/github/repos/adyen/adyen-postman/comparisons/default-branch/ecb2907--78874d7/comparison.md), [full patch](../../../../tracking/github/repos/adyen/adyen-postman/comparisons/default-branch/ecb2907--78874d7/diff.patch), [ingest packet](../../../../tracking/github/repos/adyen/adyen-postman/ingest-packets/github-1b49bd6b9d94ec92f190/packet.md).
+
 ## Related
 
 - [[changelog-github-adyen-postman]] - commit-qualified repository history
@@ -99,6 +146,9 @@ The boundary between API families is explicit. Terminal API owns terminal messag
 
 ## Raw Sources
 
+- [2026-10-07 snapshot manifest](../../../../raw/github/adyen/adyen-postman/snapshots/2026-10-07-78874d7/manifest.json) - immutable inventory; focused read of stored-method and donation sections only, unchanged files verified by hash.
+- [2026-10-07 Checkout v72 collection](../../../../raw/github/adyen/adyen-postman/snapshots/2026-10-07-78874d7/files/postman/CheckoutService-v72.json) - affected sections used for this approved focused delta.
+- [Historical Checkout v72 collection](../../../../raw/github/adyen/adyen-postman/snapshots/2026-08-12-ecb2907/files/postman/CheckoutService-v72.json) - baseline and prior affected sections, including removed donation examples.
 - Snapshot manifest: `raw/github/adyen/adyen-postman/snapshots/2026-08-12-ecb2907/manifest.json`
 - Repository and generation: `files/README.md`, `files/generateAll.sh`, `files/.github/workflows/sync-collections.yml`, and `files/adyendev-postman-release-notes.md`
 - API collections: `files/postman/CheckoutService-v72.json`, `RecurringService-v68.json`, `BinLookupService-v54.json`, and `TestCardService-v1.json`

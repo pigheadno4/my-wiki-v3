@@ -404,6 +404,33 @@
   Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.143.0/2026-07-27/manifest.json)
   Comparison: Not applicable
 
+## `github-1b49bd6b9d94ec92f190`
+
+- Repository: `adyen/adyen-postman`
+- SHA: `78874d7b10d8cb438ed15eb01dd732c8d86540a7`
+- Collection date: `2026-10-07`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-postman/snapshots/2026-10-07-78874d7/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-postman/ingest-packets/github-1b49bd6b9d94ec92f190/packet.md)
+- Review priority: `high`
+- Required reading: `33` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@78874d7` (recommended `full`)
+  Ref: `main`
+  From SHA: `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
+  To SHA: `78874d7b10d8cb438ed15eb01dd732c8d86540a7`
+  Comparison: [manifest](repos/adyen/adyen-postman/comparisons/default-branch/ecb2907--78874d7/comparison.json)
+
 ## `github-1ef004e332164a8359d6`
 
 - Repository: `adyen/adyen-php-api-library`

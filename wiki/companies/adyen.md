@@ -102,6 +102,8 @@ The retained `adyen/adyen-postman` baseline at commit `ecb2907c79a0aef2208aa2796
 
 These examples show request shape and intended flow, not current account eligibility. The legacy Recurring collection recommends Checkout recurring endpoints when possible. Terminal capture, recurring token charges, and authorization adjustments belong to Checkout API, while fleet and store administration belong to Management API.
 
+The additive `default-branch@78874d7` delta (ingested 2026-10-07) names the `API tokenise payment details` credential role in stored-method create/list/delete descriptions. This documents a prerequisite, not a newly proven enforcement change. Two donation-account examples are removed (Checkout requests 60 to 58); the existing campaign donation example remains unchanged, and example removal does not establish API withdrawal. All ten other retained files, including Terminal API, are unchanged. See [[source-github-adyen-postman]] and [[changelog-github-adyen-postman]] for preserved historical payloads and reading boundaries.
+
 ## SDK generation automation
 
 The retained `adyen-sdk-automation` baseline at exact commit `2f180b958babc6bbd6f0b6b73d7e4c6feefe256e` explains how Adyen OpenAPI specifications are transformed and generated into Java, Python, .NET, Go, Node.js, PHP, and Ruby API libraries. It records language-specific OpenAPI Generator versions, the central API/service inventory, webhook transformations, service-specific pull requests, and generation provenance logs.
@@ -129,7 +131,7 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
 - Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`, `@adyen/adyen-web@6.46.0`.
 - Additional retained and ingested Node releases: `@adyen/api-library@32.1.0`, `@adyen/api-library@32.2.0`.
-- Latest ingest: `adyen/adyen-node-api-library` at `@adyen/api-library@32.2.0`, exact SHA `134f50078ca8889ff21e6c76f71c6377ddcb2120`
+- Latest ingest: `adyen/adyen-postman` at `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
 
 ## Sources
 

@@ -9,13 +9,13 @@ Generated: `2026-10-07`
 | adyen | `adyen/adyen-pos-mobile-ios` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-react-native` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-04 | ingested | 2026-10-11 | `wait` |
 | adyen | `adyen/adyen-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-02 | ingested | 2026-10-09 | `wait` |
-| adyen | `adyen/adyen-3ds2-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | ingested | 2026-09-17 | `collect-baseline` |
-| adyen | `adyen/adyen-3ds2-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | ingested | 2026-09-17 | `collect-baseline` |
-| adyen | `adyen/adyen-3ds2-ios-swift` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-29 | ingested | 2026-09-29 | `collect-baseline` |
+| adyen | `adyen/adyen-3ds2-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
+| adyen | `adyen/adyen-3ds2-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
+| adyen | `adyen/adyen-3ds2-ios-swift` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | adyen | `adyen/adyen-magento2` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-25 | ingested | 2026-09-25 | `collect-baseline` |
 | adyen | `adyen/adyen-node-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `wait` |
 | adyen | `adyen/adyen-php-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-19 | ingested | 2026-09-19 | `collect-baseline` |
-| adyen | `adyen/adyen-postman` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `collect-baseline` |
+| adyen | `adyen/adyen-postman` | tier2 | commit / commit-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | adyen | `adyen/adyen-wechatpay-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-26 | ingested | 2026-09-26 | `collect-baseline` |
 | adyen | `adyen/adyen-pos-mobile-ios-test` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | adyen | `adyen/adyen-sdk-automation` | tier3 | commit / commit-tree-v1 | on-demand | 2026-08-25 | ingested | - | `wait` |

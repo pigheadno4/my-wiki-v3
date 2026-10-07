@@ -6,6 +6,12 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-07] ingest | adyen/adyen-postman `default-branch@78874d7`
+
+- Approved serial delta of `github-1b49bd6b9d94ec92f190`, overriding the collector's payment-path full signal. One-time focused reading covers complete affected stored-method/donation sections in old/new Checkout collections, full diff/records and cumulative history; all snapshot file hashes verified, ten unchanged files and unaffected request structures checked mechanically.
+- Added credential-role documentation and qualified two removed donation examples (60 to 58 requests), while preserving historical payloads and the unchanged campaign donation request. Terminal API unchanged; no runtime/API withdrawal or newly introduced permission inferred. Updated recurring concept before source, company/catalog/logs; 14 repository sources and package-release counts unchanged.
+- Packet limit repaired 30 to 40, old policy registered as historical, scope/byte limits and raw evidence preserved. No live API test, commit or push. Details [[source-github-adyen-postman]] and [[changelog-github-adyen-postman]].
+
 ## [2026-10-04] ingest | `@adyen/api-library@32.2.0`
 
 - Serial delta of `github-a2a0fe409a7c3a95ab90`, SHA `134f50078ca8889ff21e6c76f71c6377ddcb2120`, only after 32.1.0 completed. Approved focused reading: three changed retained files and prior HTTP/dependency context, full patch/records and cumulative source/changelog read; 563 unchanged files and manifests checked mechanically. All 1,132 prior/current retained file hashes and packet/release/comparison hashes verified.

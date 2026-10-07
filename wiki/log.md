@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-07] ingest | Adyen Postman `ecb2907` to `78874d7`
+
+- Approved focused-reading delta records stored-method credential-role documentation and two removed donation examples; prior payloads preserved, Terminal API unchanged. Packet-file limit corrected with historical policy retained. Source count unchanged. Details [[adyen-log]] and [[changelog-github-adyen-postman]]. No commit/push.
+
 ## 2026-10-07 - GitHub delta ingest: stripe-cli@1.52.2 to 1.53.0
 
 Approved focused serial ingest; Notes announce stripe version --notes; 120 retained files unchanged. Version command/library/tests are excluded upstream changes, so detailed command behavior requires a pinned supplement. Updated cumulative source/changelog, existing concept, company/catalog; preserved prior history and source count. Qualified the empty comparison upstream list against the packet's four excluded upstream changes; prior warnings preserved. No cross-company comparison warranted.
