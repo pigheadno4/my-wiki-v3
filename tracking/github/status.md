@@ -2395,6 +2395,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.21.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.20.0--23.21.0/comparison.json)
 
+## `github-8518b2c2ef4872ccfe4e`
+
+- Repository: `paypal/paypal-messages-ios`
+- SHA: `e3ee08c5310096457ea709f49b8b22b6b385a916`
+- Collection date: `2026-10-07`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-ios/ingest-packets/github-8518b2c2ef4872ccfe4e/packet.md)
+- Review priority: `normal`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-messages-ios@2.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/2.0.0/2026-10-07/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-messages-ios/comparisons/paypal-messages-ios/1.2.0--2.0.0/comparison.json)
+
 ## `github-86090f84b479de0419dc`
 
 - Repository: `paypal/paypal-sdk-release`

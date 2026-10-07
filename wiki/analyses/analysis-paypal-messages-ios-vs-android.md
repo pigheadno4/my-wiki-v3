@@ -2,11 +2,14 @@
 title: "PayPal Messages: iOS vs Android"
 type: analysis
 date_created: 2026-08-12
-date_updated: 2026-08-13
+date_updated: 2026-10-07
 tags: [paypal, pay-later, messaging, ios, android, mobile-sdk, github-repository]
 ---
 
 ## Decision Summary
+
+> [!info] Historical comparison with a later iOS update
+> The parity matrix below preserves the August comparison of iOS `1.2.0` and Android `1.3.0`. The October 7 addendum records iOS `2.0.0`; Android was not recollected in this ingest. Statements about the earlier baselines and untagged policy evidence are historical, not a latest-version claim.
 
 The PayPal Messages iOS and Android repositories implement the same product role: they render native Pay Later or PayPal Credit promotional content and open a web-backed learn-more/application modal. Neither library executes checkout. A mobile application still needs a separate PayPal checkout integration to create, approve, authorize, or capture a payment.
 
@@ -18,12 +21,18 @@ Both repositories now have untagged `develop` README evidence stating that nativ
 
 | Platform | Package baseline | Exact SHA | Release date | Evidence status |
 | --- | --- | --- | --- | --- |
-| iOS | `paypal-messages-ios@1.2.0` | `432d6b832714b2615106c3f2a748ac61654d8bbd` | 2026-03-25 | Latest ingested; stable history retained through `1.2.0` |
+| iOS | `paypal-messages-ios@1.2.0` | `432d6b832714b2615106c3f2a748ac61654d8bbd` | 2026-03-25 | Historical baseline; later `2.0.0` retained in the addendum |
 | Android | `paypal-messages-android@1.3.0` | `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2` | 2026-03-25 | Latest ingested; repository still recommends sandbox use |
 
 Both releases add rendered-language analytics and `%bold%` message rendering. The different package versions do not imply that Android has a newer product contract than iOS; the repositories are independently versioned.
 
 The policy histories also differ. iOS `fdd1868` is directly based on its released `1.2.0` tree. Android `0424354` is directly based on historical SHA `1d2238c`, not released `1.3.0` SHA `f1aa138`. Both comparisons change only `README.md`, so neither establishes a code-level compatibility change or a package version that enforces the policy.
+
+## October 7 Addendum - iOS `2.0.0`
+
+The September 10 release `paypal-messages-ios@2.0.0` at `e3ee08c5310096457ea709f49b8b22b6b385a916` now has a fully read managed source capsule. It raises the minimum iOS target from 14 to 15 in retained SPM/CocoaPods files and carries the Braintree-only README disclaimer previously retained at untagged `fdd1868`. Swift 5.8+ and Xcode 14.3+ remain documented. The policy is now evidenced in a tagged iOS release, but no new runtime account-validation check is established.
+
+All 60 unchanged retained files are hash-identical to `1.2.0`, including views, configuration, modal, cache, delegates, analytics implementation and demo integrations. The six changed files are changelog, README, SPM/podspec, library version and equivalent Swift pattern binding. The earlier iOS config-replacement risk therefore persists in `2.0.0`; no new messaging or checkout API was found. The historical matrix remains useful for old-version queries, but new iOS integrations must apply the v2 deployment/policy requirements. No later Android release conclusion follows from this iOS-only update. See [[source-github-paypal-messages-ios]] and [[changelog-github-paypal-messages-ios]].
 
 ## Shared Product Contract
 
@@ -96,7 +105,7 @@ For a question about current behavior, first search the cumulative source page a
 ## Evidence Boundary
 
 - This analysis compares the two exact managed snapshots above; it does not claim they remain latest upstream.
-- The Braintree-only conclusions come from separate untagged README snapshots. They are documentation-policy evidence, not additions to the managed package baselines.
+- The original Braintree-only conclusions came from separate untagged README snapshots. The later iOS `2.0.0` addendum now has tagged README evidence; Android's retained policy boundary remains untagged. Neither establishes a new runtime account check.
 - Repository source establishes implementation behavior, not merchant enablement, buyer eligibility, or general availability.
 - Android publication coordinates and licensing remain unresolved because retained release, Gradle, POM, and license metadata conflict.
 - Tests were excluded from the managed capsules by collection policy, so source review does not replace application or artifact testing.
@@ -113,6 +122,9 @@ For a question about current behavior, first search the cumulative source page a
 
 ## Key Raw Evidence
 
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/README.md:5` - Braintree-only policy in tagged `2.0.0`
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/Package.swift:8` - iOS 15 deployment minimum
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/Sources/PayPalMessages/PayPalMessageViewModel.swift:174` - unchanged config replacement risk
 - `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/files/Sources/PayPalMessages/PayPalMessageViewModel.swift:174` - iOS config replacement fields
 - `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/files/README.md:5` - iOS Braintree-only policy
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/files/README.md:5` - Android Braintree-only policy

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-07] ingest | paypal-messages-ios@1.2.0 to 2.0.0
+
+- Approved additive full serial ingest; all 66 assigned current-capsule files, source/changelog, release records, comparisons and manifests read completely. Both release snapshots verified: 132 file hashes/sizes. Six retained files changed and 60 unchanged; twelve upstream paths have dispositions, with Xcode/Carthage/test exclusions preserved. iOS floor rises to 15 in SPM/CocoaPods and the Braintree-only policy now appears in a tagged release; no new runtime account check, messaging API or checkout API established. Existing config-replacement risk and v1/untagged history retained. Updated two existing concepts, cumulative source/changelog, company/catalog and historical analysis addendum; source count unchanged. No commit/push or device/binary QA.
+
 ## [2026-10-07] ingest | Adyen Postman `ecb2907` to `78874d7`
 
 - Approved focused-reading delta records stored-method credential-role documentation and two removed donation examples; prior payloads preserved, Terminal API unchanged. Packet-file limit corrected with historical policy retained. Source count unchanged. Details [[adyen-log]] and [[changelog-github-adyen-postman]]. No commit/push.

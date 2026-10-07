@@ -92,6 +92,8 @@ The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal
 
 An untagged `develop` documentation commit after `1.2.0`, `fdd1868`, changes the native iOS integration policy to Braintree-only: a merchant must have a Braintree account and integrate the Braintree SDK, and PPCP SDK integrations are unsupported. Only `README.md` changed, so this is policy evidence rather than a demonstrated runtime compatibility change or package release.
 
+The September 10, 2026 release `paypal-messages-ios@2.0.0` now includes that Braintree-only README policy in a tagged package. It raises the deployment minimum from iOS 14 to iOS 15 in both Swift Package Manager and CocoaPods; Swift 5.8+ and Xcode 14.3+ remain documented. The retained configuration, view, modal and demo implementations are unchanged from `1.2.0`, including the `setConfig` omission of environment and partner identity. The release does not establish a new runtime Braintree-account check, buyer eligibility or payment-execution API. Preserve `1.2.0` for iOS 14 history; see [[source-github-paypal-messages-ios]] and [[changelog-github-paypal-messages-ios]].
+
 This package is promotional presentment, not payment execution. Its click opens a learn-more/application modal; checkout still requires a separate payment integration. See [[source-github-paypal-messages-ios]].
 
 ### Native Android Messages

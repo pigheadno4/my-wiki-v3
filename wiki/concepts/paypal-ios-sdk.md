@@ -123,9 +123,11 @@ Existing 1.x integrations may still use `CardDelegate`, `CardVaultDelegate`, `Pa
 
 ## Messages Module
 
-Pay Later messaging is a separate package, [paypal/paypal-messages-ios](https://github.com/paypal/paypal-messages-ios). The latest ingested package is `paypal-messages-ios@1.2.0` at SHA `432d6b8`; it is independently versioned from `paypal-ios`.
+Pay Later messaging is a separate package, [paypal/paypal-messages-ios](https://github.com/paypal/paypal-messages-ios). The latest ingested package is `paypal-messages-ios@2.0.0` at SHA `e3ee08c`; the `1.2.0` baseline at `432d6b8` remains retained. It is independently versioned from `paypal-ios`.
 
-The later untagged `develop` commit `fdd1868` changes the Messages README policy without changing source code: it requires a Braintree account and Braintree SDK integration, and says PPCP SDK integrations are unsupported. This does not rename `fdd1868` as a release or prove which future package version will carry the policy.
+The untagged `develop` commit `fdd1868` changed the Messages README policy without changing source code: it requires a Braintree account and Braintree SDK integration, and says PPCP SDK integrations are unsupported. Release `2.0.0` now carries this policy in its README; `fdd1868` remains a separate documentation-history boundary, not a package version. No new runtime account-validation mechanism is established by this update.
+
+Messages `2.0.0` requires iOS 15+, while `1.2.0` supports iOS 14+. Its README retains Swift 5.8+ and Xcode 14.3+. These requirements belong to Messages and must not be substituted for the independently versioned checkout SDK requirements above. The rendering/configuration implementations are unchanged, including incomplete environment/partner-identity replacement through `setConfig`; see [[changelog-github-paypal-messages-ios]].
 
 `PayPalMessageView` is a UIKit control with a SwiftUI `UIViewRepresentable` wrapper. Configuration covers merchant identity, transaction context, preferred offer, placement, localization, cache behavior, and branding. The SDK reports loading/success/error plus click/application events and opens a web-backed learn-more modal after successful rendering.
 

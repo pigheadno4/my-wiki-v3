@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-messages-ios"
 type: source
 date_ingested: 2026-04-14
-date_updated: 2026-08-13
+date_updated: 2026-10-07
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/manifest.json"
   - "github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json"
   - "github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/manifest.json"
   - "github-paypal-messages-ios.md"
@@ -13,7 +14,7 @@ tags: [paypal, ios, swift, messaging, pay-later, paypal-credit, uikit, swiftui, 
 
 ## Overview
 
-`paypal/paypal-messages-ios` is PayPal's standalone native iOS package for rendering promotional Pay Later and PayPal Credit messages. The approved baseline is package-qualified `paypal-messages-ios@1.2.0` at exact SHA `432d6b832714b2615106c3f2a748ac61654d8bbd`.
+`paypal/paypal-messages-ios` is PayPal's standalone native iOS package for rendering promotional Pay Later and PayPal Credit messages. The latest ingested release is package-qualified `paypal-messages-ios@2.0.0` at exact SHA `e3ee08c5310096457ea709f49b8b22b6b385a916`. The approved `1.2.0` baseline at `432d6b832714b2615106c3f2a748ac61654d8bbd` remains preserved below.
 
 This package displays financing messages and a learn-more/application modal. It is not a checkout SDK: the retained source does not create, approve, authorize, or capture a payment.
 
@@ -22,9 +23,9 @@ Repository: <https://github.com/paypal/paypal-messages-ios>
 ## Evidence Boundary
 
 - The capsule retains 66 source, demo, build, documentation, and release-history files. Tests, fixtures, and binary artwork are excluded by policy.
-- The managed capsule uses the same exact SHA as the April 2026 manual collection. This page migrates that earlier source into the canonical hierarchy and preserves its raw stub; it does not represent a newer upstream release.
+- The managed `1.2.0` capsule uses the same exact SHA as the April 2026 manual collection. That earlier source and raw stub remain preserved; the October collection adds the independently retained `2.0.0` release.
 - Public API and source establish integration behavior, not merchant approval, buyer eligibility, geography, or the offer PayPal will return for a transaction.
-- `1.2.0` is the latest ingested release, not a claim that it remains latest upstream.
+- `2.0.0` is the latest ingested release. The October 7 tag check found it as the latest stable tag; this is not a perpetual latest-upstream guarantee.
 - The untagged `develop` commit `fdd1868` changes only `README.md`. It is documentation-policy evidence, not a package release or proof of a code-level compatibility change.
 
 ## Grounding Excerpts
@@ -55,8 +56,53 @@ Repository: <https://github.com/paypal/paypal-messages-ios>
 
 At released baseline `1.2.0`, the README recommended integrating through the broader [[source-github-paypal-ios|PayPal iOS SDK]]. Untagged `develop` commit `fdd1868` removes that recommendation and instead says the component is intended only for the Braintree SDK: merchants must have a Braintree account and integrate the Braintree SDK, while PPCP SDK integrations are unsupported.
 
-> [!warning] Untagged policy boundary
-> This Braintree-only statement is present on `develop` after `1.2.0`, not in a collected semantic release. Treat it as the current repository documentation policy at `fdd1868`, while retaining `1.2.0` behavior as released history. Because only `README.md` changed, the evidence does not establish a code-level compatibility change or the first package version enforcing the policy.
+> [!warning] Versioned policy boundary
+> At the August ingest, the Braintree-only statement was evidenced only on untagged `develop@fdd1868`. The newly retained `2.0.0` README includes it in a tagged release. Preserve the earlier boundary as documentation history; neither the README-only commit nor the retained v2 implementation diff establishes a new runtime account-enforcement mechanism.
+
+## Major Version 2 - `paypal-messages-ios@2.0.0`
+
+Released September 10, 2026; collected and fully ingested October 7, 2026. The complete assigned 66-file capsule was read, not the entire upstream repository. Against `1.2.0`, six retained files changed and 60 are hash-identical. All twelve upstream changed paths have a packet disposition; Carthage metadata, Xcode project files and a test mock remain outside the reviewed capsule.
+
+### Requirements and Merchant Policy
+
+| Requirement | Historical `1.2.0` | `2.0.0` |
+| --- | --- | --- |
+| Minimum iOS | 14.0 | 15.0, enforced in retained SPM and CocoaPods configuration |
+| Swift / Xcode | Swift 5.8+ / Xcode 14.3+ | Same documented minimums |
+| README integration guidance | Recommended the PayPal iOS SDK | Requires a Braintree account and Braintree SDK integration; PPCP SDK integrations unsupported |
+
+The tagged v2 README carries the earlier `fdd1868` policy. `2.0.0` is the first retained managed release containing this statement; the snapshot evidence distinguishes a released integration policy from proof of code-level account validation. The changelog attributes the disclaimer to the same documentation commit. Keeping v1 for iOS 14 compatibility does not itself prove current merchant eligibility or support under the newer policy.
+
+### Implementation and Migration
+
+- `Package.swift` selects the `2.0.0` binary release URL, updates its checksum and raises `.iOS(.v14)` to `.iOS(.v15)`. `PayPalMessages.podspec` advances its version and iOS floor as well. The release notes report matching Xcode project updates; those excluded projects were not read as raw implementation evidence.
+- `BuildInfo.version` advances to `2.0.0`. Existing request, modal and analytics code consumes this value, so outgoing version attribution changes without new APIs in those files.
+- `Environment.swift` replaces `if case .develop(_, let devTouchpoint, let stageTag)` with the equivalent combined-binding syntax `if case let .develop(_, devTouchpoint, stageTag)`. The retained patch shows no endpoint or query-selection change.
+- Configuration, public views, delegates, message/modal request logic, merchant-profile caching, rendering, analytics implementation and retained demos are unchanged. No new messaging feature or checkout-payment API is established by the retained changes.
+- The existing `setConfig` omission of `environment`, `merchantID` and `partnerAttributionID` remains in `2.0.0`. Set the public properties explicitly or rebuild the view when these contexts change; upgrading does not fix this risk.
+- Before adopting v2, raise the app's supported iOS floor, confirm the documented Braintree integration prerequisites and test the exact packaged artifact. The SPM checksum is retained metadata, not proof that the binary was downloaded, built or exercised; no device/runtime QA was performed.
+
+### Version 2 Grounding Excerpts
+
+> "you must have a Braintree account and the Braintree SDK integrated. PPCP SDK integrations are not supported."
+>
+> `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/README.md:5`
+
+> `platforms: [.iOS(.v15)],`
+>
+> `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/Package.swift:8`
+
+> `s.platform        = :ios, "15.0"`
+>
+> `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/PayPalMessages.podspec:11`
+
+> `public internal(set) static var version: String = "2.0.0"`
+>
+> `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/Sources/PayPalMessages/Enums/BuildInfo.swift:5`
+
+## Major Version 1 - Preserved Integration Knowledge
+
+The following configuration, rendering, modal, demo and privacy description was grounded at `1.2.0`. The corresponding retained implementation is unchanged at `2.0.0`, except for the version attribution and equivalent environment pattern binding noted above; deployment and merchant-policy boundaries are versioned separately.
 
 ## Configuration Contract
 
@@ -110,7 +156,7 @@ The included privacy manifest declares UserDefaults access for app functionality
 
 ## Version History Boundary
 
-The retained changelog establishes the stable `1.0.0`, `1.1.0`, and `1.2.0` history, but only `1.2.0` has an immutable managed release snapshot. See [[changelog-github-paypal-messages-ios]].
+The retained changelog establishes the stable `1.0.0`, `1.1.0`, `1.2.0` and `2.0.0` history. Only `1.2.0` and `2.0.0` have immutable managed release snapshots; earlier releases remain cumulative context. See [[changelog-github-paypal-messages-ios]].
 
 The separate untagged `432d6b8` to `fdd1868` comparison records the later Braintree-only documentation policy without fabricating a package version.
 
@@ -125,6 +171,17 @@ The separate untagged `432d6b8` to `fdd1868` comparison records the later Braint
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/manifest.json` - full assigned v2 source capsule, 66 retained files
+- `raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/2.0.0/2026-10-07/manifest.json` - package-qualified release identity
+- `raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/2.0.0/2026-10-07/release-notes.md` - major migration and documentation history
+- `tracking/github/repos/paypal/paypal-messages-ios/comparisons/paypal-messages-ios/1.2.0--2.0.0/comparison.json` - retained capsule comparison metadata
+- `tracking/github/repos/paypal/paypal-messages-ios/comparisons/paypal-messages-ios/1.2.0--2.0.0/diff.patch` - six retained changed files; full upstream dispositions are in the ingest packet
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/README.md` - released Braintree-only policy and toolchain requirements
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/Package.swift` - iOS 15 floor and versioned binary target
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/PayPalMessages.podspec` - CocoaPods iOS 15 floor
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/Sources/PayPalMessages/Enums/BuildInfo.swift` - v2 version attribution
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/Sources/PayPalMessages/Enums/Environment.swift` - equivalent development pattern binding
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-10-07-e3ee08c/files/Sources/PayPalMessages/PayPalMessageViewModel.swift` - unchanged configuration replacement risk
 - `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json` - untagged `develop` documentation-policy snapshot
 - `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/files/README.md` - Braintree-account, Braintree-SDK, and PPCP-support boundary
 - `tracking/github/repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/comparison.json` - exact ref comparison metadata
