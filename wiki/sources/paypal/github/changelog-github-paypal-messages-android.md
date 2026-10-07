@@ -2,9 +2,12 @@
 title: "GitHub changelog: paypal/paypal-messages-android"
 type: source
 date_ingested: 2026-08-12
-date_updated: 2026-08-13
+date_updated: 2026-10-07
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/manifest.json"
+  - "github/paypal/paypal-messages-android/supplements/2026-10-07-aede075-f13aea70/manifest.json"
+  - "github/paypal/paypal-messages-android/supplements/2026-10-07-0424354-6920d3ec/manifest.json"
   - "github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json"
   - "github/paypal/paypal-messages-android/snapshots/2026-08-13-1d2238c/manifest.json"
   - "github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json"
@@ -14,6 +17,20 @@ tags: [paypal, android, kotlin, messaging, pay-later, changelog, github-reposito
 ## Overview
 
 Package-qualified release ledger for `paypal/paypal-messages-android`. Durable integration and architecture guidance belongs in [[source-github-paypal-messages-android]].
+
+## Untagged `default-branch@aede075` (`develop`) - Demo Container Sizing (2026-09-01)
+
+| Ref | From | To | Ingest mode | Ingested |
+| --- | --- | --- | --- | --- |
+| `develop` | `0424354a5fa0ab697275186fe101d105838ac03e` | `aede0756347db6a50dee0e77da2f228ff6260641` | Delta, approved focused reading | 2026-10-07 |
+
+Three upstream demo paths change for CCD2 disclaimer container sizing: `JetpackActivity.kt` has one 40dp-to-100dp height change, `JetpackComposableActivity.kt` has two, and `activity_message.xml` changes its wrapper from 80dp to 100dp. Kotlin whitespace cleanup is otherwise non-behavioral. The generated comparison covers only the two selected Kotlin paths; XML is grounded in approved immutable supplements at both SHAs, with the new XML linked through a canonical evidence attachment.
+
+The two 123-file capsules have 121 hash-unchanged files. Library implementation, README, configuration and development guidance are unchanged across this ref boundary; it does not fix the preserved Compose compatibility warnings, introduce a payment API, or establish compliance. No application/device QA was run. Merchants should allow room for returned content, but 100dp is a demo setting, not an established universal requirement.
+
+This is a direct descendant of the earlier untagged policy ref, not a released SDK version or a comparison from `paypal-messages-android@1.3.0`. All prior release/policy knowledge is retained. Updated the source's demo-layout section and existing Android/Pay Later concepts; source count unchanged.
+
+Evidence: `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/manifest.json`, `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/0424354--aede075/comparison.json`, and both XML supplement manifests listed below.
 
 ## Untagged `default-branch@0424354` (`develop`) - Braintree Policy Boundary (2026-05-29)
 
@@ -61,6 +78,14 @@ These conflicts are preserved for future release comparisons. They are not resol
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/manifest.json`
+- `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/0424354--aede075/comparison.json`
+- `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/0424354--aede075/diff.patch`
+- `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-aede075-f13aea70/manifest.json`
+- `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-aede075-f13aea70/files/demo/src/main/res/layout/activity_message.xml`
+- `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-0424354-6920d3ec/manifest.json`
+- `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-0424354-6920d3ec/files/demo/src/main/res/layout/activity_message.xml`
+- `tracking/github/repos/paypal/paypal-messages-android/evidence-attachments/github-8d08ec8d57312948fb18/attachment.json`
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json`
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/files/README.md`
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-1d2238c/manifest.json`

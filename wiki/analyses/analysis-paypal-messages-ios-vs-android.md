@@ -8,8 +8,8 @@ tags: [paypal, pay-later, messaging, ios, android, mobile-sdk, github-repository
 
 ## Decision Summary
 
-> [!info] Historical comparison with a later iOS update
-> The parity matrix below preserves the August comparison of iOS `1.2.0` and Android `1.3.0`. The October 7 addendum records iOS `2.0.0`; Android was not recollected in this ingest. Statements about the earlier baselines and untagged policy evidence are historical, not a latest-version claim.
+> [!info] Historical comparison with later evidence
+> The parity matrix below preserves the August comparison of iOS `1.2.0` and Android `1.3.0`. The October 7 addenda record iOS `2.0.0` and the separate untagged Android demo ref `aede075`. Statements about the earlier baselines and untagged policy evidence are historical, not a latest-version claim.
 
 The PayPal Messages iOS and Android repositories implement the same product role: they render native Pay Later or PayPal Credit promotional content and open a web-backed learn-more/application modal. Neither library executes checkout. A mobile application still needs a separate PayPal checkout integration to create, approve, authorize, or capture a payment.
 
@@ -33,6 +33,10 @@ The policy histories also differ. iOS `fdd1868` is directly based on its release
 The September 10 release `paypal-messages-ios@2.0.0` at `e3ee08c5310096457ea709f49b8b22b6b385a916` now has a fully read managed source capsule. It raises the minimum iOS target from 14 to 15 in retained SPM/CocoaPods files and carries the Braintree-only README disclaimer previously retained at untagged `fdd1868`. Swift 5.8+ and Xcode 14.3+ remain documented. The policy is now evidenced in a tagged iOS release, but no new runtime account-validation check is established.
 
 All 60 unchanged retained files are hash-identical to `1.2.0`, including views, configuration, modal, cache, delegates, analytics implementation and demo integrations. The six changed files are changelog, README, SPM/podspec, library version and equivalent Swift pattern binding. The earlier iOS config-replacement risk therefore persists in `2.0.0`; no new messaging or checkout API was found. The historical matrix remains useful for old-version queries, but new iOS integrations must apply the v2 deployment/policy requirements. No later Android release conclusion follows from this iOS-only update. See [[source-github-paypal-messages-ios]] and [[changelog-github-paypal-messages-ios]].
+
+## October 7 Addendum - Android Untagged Demo `aede075`
+
+The September 1 commit `aede0756347db6a50dee0e77da2f228ff6260641` directly follows the retained Android policy ref `0424354`. Three demo paths enlarge message containers for CCD2 disclaimers: Compose settings increase from 40dp to 100dp, and an XML wrapper from 80dp to 100dp. Two Kotlin paths are in the capsule; approved XML supplements retain both comparison versions. Library code, documentation and the Compose compatibility warning are unchanged across this boundary. This is neither a new Android package release nor evidence resolving earlier rollout risks. The historical platform matrix and independent iOS release history remain intact. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
 
 ## Shared Product Contract
 

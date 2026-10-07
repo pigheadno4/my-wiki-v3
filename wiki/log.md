@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-07] ingest | Android Messages untagged `aede075`
+
+- Approved focused-reading serial delta: demo Compose containers 40dp to 100dp and XML wrapper 80dp to 100dp; two capsules plus XML supplements hash-verified (248 files). Preserved `1.3.0` release and policy history; no library/API change or readiness proof. Source count unchanged. Details [[paypal-log]] and [[changelog-github-paypal-messages-android]]. No device QA, commit or push.
+
 ## [2026-10-07] ingest | paypal-messages-ios@1.2.0 to 2.0.0
 
 - Approved additive full serial ingest; all 66 assigned current-capsule files, source/changelog, release records, comparisons and manifests read completely. Both release snapshots verified: 132 file hashes/sizes. Six retained files changed and 60 unchanged; twelve upstream paths have dispositions, with Xcode/Carthage/test exclusions preserved. iOS floor rises to 15 in SPM/CocoaPods and the Braintree-only policy now appears in a tagged release; no new runtime account check, messaging API or checkout API established. Existing config-replacement risk and v1/untagged history retained. Updated two existing concepts, cumulative source/changelog, company/catalog and historical analysis addendum; source count unchanged. No commit/push or device/binary QA.

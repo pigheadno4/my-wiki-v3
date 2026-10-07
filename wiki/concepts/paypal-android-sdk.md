@@ -92,6 +92,8 @@ The retained release/build metadata conflicts: GitHub identifies `1.3.0`, Gradle
 
 See [[source-github-paypal-messages-android]] for the full evidence boundary and [[changelog-github-paypal-messages-android]] for release history.
 
+The later untagged Messages demo commit `develop@aede075` changes Compose message containers from 40dp to 100dp and the XML wrapper from 80dp to 100dp to accommodate CCD2 disclaimers. It is a direct descendant of the retained `0424354` policy ref, not a new package release. The library and its Compose compatibility warnings are unchanged; larger demo containers do not establish a readiness fix or a universal sizing requirement. See [[source-github-paypal-messages-android]].
+
 ## PayPal Wallet Vault (Save During Purchase)
 
 Uses `PayPalWebCheckoutClient` - the same client as non-vault web payments, with vault payload added:

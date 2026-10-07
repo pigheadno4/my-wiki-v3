@@ -104,6 +104,8 @@ A parallel untagged `develop` README commit, `0424354`, documents the same Brain
 
 Like iOS, Android Messages is promotional presentment rather than payment execution. The `1.3.0` capsule adds rendered-language analytics and `%bold%` message styling, but also preserves version-qualified callback, environment-update, and shared-state risks. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
 
+Untagged `develop@aede075` (September 1, 2026), directly after `0424354`, enlarges only demo message containers for CCD2 disclaimers: three Compose height settings change from 40dp to 100dp, and the XML wrapper changes from 80dp to 100dp. Library code and documentation are unchanged across this ref comparison. This is layout guidance, not a released SDK feature, a Compose compatibility fix, or compliance proof; `100dp` is a demo choice, not a documented universal merchant requirement. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
+
 ### Checkout Button Runtime
 
 At `@paypal/checkout-components@5.0.427`, an eligible backend-provided Pay Later variant of `AT` joins `DE` in rendering the German-language `Später Bezahlen` button label. The normal responsive and disable-max-height sizing paths also treat `AT` as a label requiring the smaller size calculation. This is version-qualified browser presentation evidence; it does not establish Austrian merchant enablement, buyer eligibility, purchase limits, or current product availability.

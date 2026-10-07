@@ -2620,6 +2620,34 @@
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-10/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.3.0--2.4.0/comparison.json)
 
+## `github-8d08ec8d57312948fb18`
+
+- Repository: `paypal/paypal-messages-android`
+- SHA: `aede0756347db6a50dee0e77da2f228ff6260641`
+- Collection date: `2026-10-07`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-android/ingest-packets/github-8d08ec8d57312948fb18/packet.md)
+- Evidence attachment: [manifest](repos/paypal/paypal-messages-android/evidence-attachments/github-8d08ec8d57312948fb18/attachment.json)
+- Review priority: `normal`
+- Required reading: `16` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@aede075` (recommended `delta`)
+  Ref: `develop`
+  From SHA: `0424354a5fa0ab697275186fe101d105838ac03e`
+  To SHA: `aede0756347db6a50dee0e77da2f228ff6260641`
+  Comparison: [manifest](repos/paypal/paypal-messages-android/comparisons/default-branch/0424354--aede075/comparison.json)
+
 ## `github-8de40f116989bb397efc`
 
 - Repository: `paypal/paypal-js`

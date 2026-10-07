@@ -132,8 +132,8 @@ Operations history: [[paypal-log]]
 - [[source-paypal-pay-later]] — Pay Later by country (US/AU/CA/FR/DE): product tables, purchase ranges, eligibility; CA bilingual; DE Pay in 30 unique (webpage, 2026-04-13)
 - [[source-github-paypal-messages-ios]] — cumulative Messages through `2.0.0`: iOS 15 minimum, tagged Braintree-only policy and preserved `1.2.0` behavior/configuration risks (github-repo, updated 2026-10-07)
 - [[changelog-github-paypal-messages-ios]] — iOS Messages ledger: additive `1.2.0` to `2.0.0` major ingest, earlier context and untagged `develop@fdd1868` history (github-repo, updated 2026-10-07)
-- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: released `1.3.0` behavior plus parallel untagged `0424354` Braintree-only policy (github-repo, 2026-08-13)
-- [[changelog-github-paypal-messages-android]] — Android Messages ledger: managed `1.3.0`, cumulative context, and untagged `develop@0424354` policy boundary (github-repo, 2026-08-13)
+- [[source-github-paypal-messages-android]] — released `1.3.0` behavior, untagged Braintree-only policy and `aede075` demo sizing; no library/API change (github-repo, updated 2026-10-07)
+- [[changelog-github-paypal-messages-android]] — managed `1.3.0`, earlier history and untagged `0424354` to `aede075` demo delta with XML supplements (github-repo, updated 2026-10-07)
 - [[source-paypal-pay-with-venmo]] — Pay with Venmo: mobile app-switch + desktop QR code flows, US/USD only, supported features table; enable-funding=venmo required (webpage, 2026-04-14)
 - [[source-paypal-save-payment-methods]] — Save payment methods overview + JS SDK PayPal/Venmo vault + purchase-later overview: 4 paths (JS SDK/Tokens API/Android/iOS), no Venmo for purchase-later (webpage, 2026-04-14)
 - [[source-paypal-save-applepay-js-sdk]] — Save Apple Pay JS SDK: vault flow, APPROVED vs VAULTED status, VAULT.PAYMENT-TOKEN.CREATED webhook, merchant-initiated recurring, go-live onboarding (webpage, 2026-04-14)
@@ -232,7 +232,7 @@ Operations history: [[paypal-log]]
 
 - [[analysis-paypal-v5-v6-returning-buyer-frontend-gap]] - September 27 gap plus October 4 direct-v6 HTML evidence; typed/React and tested parity remain separate
 
-- [[analysis-paypal-messages-ios-vs-android]] — historical iOS `1.2.0` vs Android `1.3.0` matrix, with iOS `2.0.0` deployment/policy addendum; platform risks preserved
+- [[analysis-paypal-messages-ios-vs-android]] — historical iOS `1.2.0` vs Android `1.3.0` matrix, with iOS `2.0.0` and untagged Android demo addenda; platform risks preserved
 - [[analysis-paypal-react-apple-pay-10-3-to-10-4-migration]] — React Apple Pay 10.3→10.4 migration: core 11 dependency, native `ApplePaySession`, `@types/applepayjs`, prebuilt button integration, and server boundaries
 
 ## Comparisons involving PayPal

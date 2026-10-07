@@ -2,9 +2,12 @@
 title: "GitHub: paypal/paypal-messages-android"
 type: source
 date_ingested: 2026-04-14
-date_updated: 2026-08-13
+date_updated: 2026-10-07
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/manifest.json"
+  - "github/paypal/paypal-messages-android/supplements/2026-10-07-aede075-f13aea70/manifest.json"
+  - "github/paypal/paypal-messages-android/supplements/2026-10-07-0424354-6920d3ec/manifest.json"
   - "github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json"
   - "github/paypal/paypal-messages-android/snapshots/2026-08-13-1d2238c/manifest.json"
   - "github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json"
@@ -28,6 +31,7 @@ Repository: <https://github.com/paypal/paypal-messages-android>
 - `1.3.0` is the latest ingested release, not a claim that it remains latest upstream.
 - Public offer enums and buyer-country inputs do not establish merchant approval, buyer eligibility, geography, or the offer PayPal will return.
 - Untagged `develop` commit `0424354` changes only `README.md` from historical SHA `1d2238c`. It is a parallel documentation-policy line, not a descendant comparison from released `1.3.0` SHA `f1aa138`.
+- Later untagged `develop@aede075` directly descends from `0424354` and changes demo sizing only. Its 123-file capsule retains two changed Kotlin files and 121 unchanged files; approved XML supplements at both SHAs cover the third upstream path. The generated comparison covers selected capsule paths only and omits that XML change. No new package release is inferred.
 
 ## Grounding Excerpts
 
@@ -113,6 +117,32 @@ The SDK batches render, click, error, and modal events for five seconds before s
 
 Merchant-profile data uses soft and hard TTL behavior: fresh cache is reused, soft-expired cache is reused while refreshed, hard-expired cache is replaced before use, and a server flag can disable the cache flow. Because Android stores one unkeyed record, this lifecycle is not equivalent to the iOS cache keyed by client and merchant identity.
 
+## Untagged September 1 Demo Layout Update
+
+Approved delta ingest on October 7 covers `0424354a5fa0ab697275186fe101d105838ac03e` to `aede0756347db6a50dee0e77da2f228ff6260641` on `develop`. This continues the historical documentation/demo line, not the separate released `1.3.0` tree. The upstream commit describes accommodating new CCD2 disclaimers.
+
+| Demo surface | Prior height | New height |
+| --- | --- | --- |
+| `JetpackActivity` AndroidView | 40dp | 100dp |
+| `JetpackComposableActivity` AndroidView and composable call | 40dp each | 100dp each |
+| XML `messageWrapper` | 80dp | 100dp |
+
+The remaining Kotlin edits remove whitespace. `XmlActivity` still inserts a `PayPalMessageView` with match-parent width/height into the wrapper; the extra XML height is container sizing, not a new SDK API. The library implementation, configuration, README and development guidance are hash-unchanged from `0424354`. The Compose demo still warns about compatibility issues, so the increased height does not demonstrate that rendering/readiness defects are fixed. No device, live-content or accessibility testing was performed. The demo's 100dp value is not established as a universal merchant layout requirement or compliance guarantee.
+
+Grounding at the new exact SHA:
+
+> `.height(100.dp)`
+>
+> `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/files/demo/src/main/java/com/paypal/messagesdemo/JetpackActivity.kt:349`
+
+> `android:layout_height="100dp"`
+>
+> `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-aede075-f13aea70/files/demo/src/main/res/layout/activity_message.xml:302`
+
+> `// Note: This composable implementation might not display properly due to compatibility issues`
+>
+> `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/files/demo/src/main/java/com/paypal/messagesdemo/JetpackComposableActivity.kt:244`
+
 ## Version History Boundary
 
 The retained cumulative changelog establishes stable history from `1.0.0` through `1.1.0`, while the managed release record establishes `1.3.0` and compares it to `1.2.0`. Only `1.3.0` has an immutable managed release snapshot. See [[changelog-github-paypal-messages-android]].
@@ -130,6 +160,18 @@ The separate `1d2238c` to `0424354` comparison records the Braintree-only README
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/manifest.json` - later untagged demo capsule; 123 retained files
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/files/demo/src/main/java/com/paypal/messagesdemo/JetpackActivity.kt` - enlarged AndroidView container
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/files/demo/src/main/java/com/paypal/messagesdemo/JetpackComposableActivity.kt` - enlarged demo wrappers and unchanged compatibility warning
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/files/demo/src/main/java/com/paypal/messagesdemo/XmlActivity.kt` - unchanged match-parent child view insertion
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-10-07-aede075/files/library/src/main/java/com/paypal/messages/PayPalComposableMessage.kt` - unchanged wrapper implementation
+- `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-aede075-f13aea70/manifest.json` - approved new-SHA XML evidence
+- `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-aede075-f13aea70/files/demo/src/main/res/layout/activity_message.xml` - 100dp wrapper
+- `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-0424354-6920d3ec/manifest.json` - approved prior-SHA XML evidence
+- `raw/github/paypal/paypal-messages-android/supplements/2026-10-07-0424354-6920d3ec/files/demo/src/main/res/layout/activity_message.xml` - prior 80dp wrapper
+- `tracking/github/repos/paypal/paypal-messages-android/evidence-attachments/github-8d08ec8d57312948fb18/attachment.json` - lifecycle-validated new-SHA XML attachment; prior XML retained separately
+- `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/0424354--aede075/comparison.json` - selected-path comparison; XML supplement comparison described above
+- `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/0424354--aede075/diff.patch` - retained Kotlin changes
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json` - untagged `develop` policy snapshot
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/files/README.md` - Braintree-account, Braintree-SDK, and PPCP-support boundary
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-1d2238c/manifest.json` - direct prior snapshot for the policy comparison

@@ -6,6 +6,12 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-07] ingest | Android Messages untagged `0424354` to `aede075`
+
+- Approved serial delta `github-8d08ec8d57312948fb18` with focused reading: changed/prior Kotlin and XML read fully, affected wrapper/host code read, shared-page relevant sections checked, 248 file hashes/sizes verified across two capsules and two XML supplements.
+- Three demo paths enlarge containers for CCD2 disclaimers; 121 retained files unchanged. Generated comparison omits the XML path, explicitly covered by supplements; the new-SHA XML attachment is lifecycle-validated, prior XML retained separately.
+- Updated two concepts first, cumulative source/changelog, company/catalog and historical analysis addendum. Released `1.3.0` and untagged policy history preserved; no new API, release, readiness fix or universal 100dp requirement claimed. Source count unchanged; no device QA, commit or push.
+
 ## [2026-10-04] ingest | Direct v6 saved-method sample `a318bcf`
 
 - Full additive `github-9765a512b0b7925416d4`, approved focused reading: fourteen changed files, twelve prior versions and affected dependencies; all 526 retained hashes checked. Saved-method editing, token/order branches and demo limitations recorded, older history retained. Receipt: `tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-review-9765a512.md`. No runtime test, commit or push.

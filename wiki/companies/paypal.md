@@ -73,6 +73,8 @@ The newly ingested `paypal-messages-ios@2.0.0` release (September 10, 2026) incl
 
 The Android counterpart, `paypal-messages-android@1.3.0`, provides a native message view and a Compose wrapper, but its README still recommends sandbox use and its development guide says the Jetpack view does not currently work. The exact source also preserves modal callback, environment-update, and shared-state risks. A parallel untagged `develop` README commit, `0424354`, requires a Braintree account and Braintree SDK integration and excludes PPCP SDK integrations; it descends from historical SHA `1d2238c`, not the `1.3.0` release tree, and changes no implementation file. GitHub, Gradle, POM, and license metadata conflict, so package installation and licensing require live verification.
 
+The subsequent untagged Android `develop@aede075` commit enlarges demo containers for CCD2 disclaimers: Compose 40dp to 100dp, XML 80dp to 100dp. Only demos change; library implementation and documentation remain unchanged from `0424354`, with no new release or demonstrated Compose compatibility fix. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
+
 ### Braintree PayPal v6
 
 Braintree merchants use a separate React provider backed by Braintree's `paypalCheckoutV6` module and a server-generated Braintree client token. React 9.3.0 provides one-time, billing-agreement, and checkout-with-vault flows; React 10.1.0 adds eligibility-gated Pay Later with a prebuilt button and custom hook; React 10.2.0 adds promotional and BNPL Messages with asynchronous instance creation and content fetching. Approval flows are tokenized into a Braintree payment-method nonce and completed with a Braintree server SDK, not PayPal's Orders API. See [[paypal-braintree-integration]].
@@ -377,8 +379,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-save-cards-ios-sdk]] — Save Cards iOS SDK: SwiftUI Toggle, `CardDelegate`, US-only availability (contradicts Android/JS SDK 35-country support)
 - [[source-paypal-save-paypal-android-sdk]] — Save PayPal Wallet Android SDK: `PayPalWebCheckoutClient`, deep link scheme, `vault.id` for returning payers
 - [[source-paypal-save-cards-android-sdk]] — Save Cards Android SDK: Compose checkbox, `customer.id` in Create Order for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU
-- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: released `1.3.0` behavior plus parallel untagged Braintree-only policy
-- [[changelog-github-paypal-messages-android]] — managed `1.3.0`, cumulative stable context, metadata conflicts, and untagged policy boundary
+- [[source-github-paypal-messages-android]] — released `1.3.0` behavior, parallel untagged Braintree-only policy, and `aede075` demo sizing
+- [[changelog-github-paypal-messages-android]] — managed `1.3.0`, earlier history/metadata conflicts, and untagged policy/demo changes
 - [[source-github-paypal-messages-ios]] — cumulative Messages history through `2.0.0`: iOS 15 minimum and released Braintree-only policy; preserved `1.2.0` rendering/configuration, caching, modal and analytics
 - [[changelog-github-paypal-messages-ios]] — managed `1.2.0` and additive `2.0.0` release history, earlier cumulative context and untagged documentation boundary
 - [[source-paypal-subscriptions-overview]] — Subscriptions: 6-step flow, REST API vs dashboard, 12 customization capabilities, 4 pricing models (fixed/quantity/volume/tiered); volume vs tiered distinction; single currency per plan
