@@ -4,8 +4,8 @@ Generated: `2026-10-07`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| adyen | `adyen/adyen-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-04 | ingested | 2026-10-11 | `wait` |
-| adyen | `adyen/adyen-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-04 | ingested | 2026-10-11 | `wait` |
+| adyen | `adyen/adyen-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-07 | ingested | 2026-10-14 | `wait` |
+| adyen | `adyen/adyen-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-07 | ingested | 2026-10-14 | `wait` |
 | adyen | `adyen/adyen-pos-mobile-ios` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-react-native` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-04 | ingested | 2026-10-11 | `wait` |
 | adyen | `adyen/adyen-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-02 | ingested | 2026-10-09 | `wait` |
@@ -42,7 +42,7 @@ Generated: `2026-10-07`
 | metronome | `metronome-industries/mintlify-docs` | tier2 | commit | monthly | - | - | - | `disabled` |
 | metronome | `metronome-industries/terraform-provider-metronome` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | metronome | `metronome-industries/ai-eval` | tier3 | commit | on-demand | - | - | - | `disabled` |
-| paypal | `paypal-examples/paypal-android-sdk-demo-app` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-16 | ingested | 2026-09-16 | `collect-baseline` |
+| paypal | `paypal-examples/paypal-android-sdk-demo-app` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | paypal | `paypal-examples/paypal-ios-sdk-demo-app` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-16 | ingested | 2026-09-16 | `collect-baseline` |
 | paypal | `paypal-examples/paypal-sdk-server-side-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-04 | ingested | 2026-09-04 | `collect-baseline` |
 | paypal | `paypal-examples/v6-web-sdk-sample-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `wait` |
