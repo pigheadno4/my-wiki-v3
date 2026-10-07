@@ -89,6 +89,8 @@ The v7 migration moves request properties into initializers, changes feature cli
 
 - [[source-braintree-docs-guides-paypal-commerce-ios-overview]] - historical, unversioned PayPal Commerce iOS SDK overview snapshot for its closed-beta mobile-store purpose, standalone/embedded/product-button use cases, ecommerce-platform operating boundary and iOS 8.0–10.0 requirements; distinct from modular `braintree-ios`, and not current eligibility, enablement, exact-package, runtime or payment-execution proof
 
+- [[source-braintree-docs-guides-paypal-commerce-ios-product-cards]] - historical, unversioned PayPal Commerce iOS product-card snapshot for SDK-provided search-term or product-group views and app-owned `PPCProduct` purchase initiation; distinct from modular `braintree-ios`, and not current availability, exact-SDK, runtime or completed-purchase proof
+
 - [[source-braintree-docs-guides-paypal-client-side-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for PayPal client setup and SDK-managed buttons that present web authentication and tokenize to a nonce callback, preserving the historical 6.17.0+ certificate notice and its traffic-failure warning; not current exact-package, fallback, eligibility or payment-execution proof
 
 - [[source-braintree-docs-guides-shopper-insights-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for beta Shopper Insights customer-session creation/update, PayPal or Venmo recommendations, qualified checkout presentment and display/selection analytics; preserves consent, client-token, SDK-availability and historical certificate conditions, and is not current availability, merchant eligibility, recommendation-result or payment-execution proof

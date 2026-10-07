@@ -23,6 +23,8 @@ In the collected Node.js onboarding guide, the master merchant creates a merchan
 
 - [[source-braintree-marketplace-guide-confirmation-node]] - Node.js route for the post-verification approval-or-decline webhook confirmation step, returned account-state examples, validation-error navigation, and follow-up boundary; not account-creation, complete-onboarding, or current-availability proof.
 
+- [[source-braintree-docs-reference-response-merchant-account-node]] - captured Node.js Merchant Account result-response route for pending production verification, confirmation-webhook handoff, validation-failure errors, and active/suspended processing consequences; distinct from account creation or update requests
+
 Related routes: [[braintree-server-sdk]] for Node gateway integration context and [[braintree-webhooks]] for notification context. Neither substitutes for the onboarding guide's raw page.
 
 ## Article-level onboarding

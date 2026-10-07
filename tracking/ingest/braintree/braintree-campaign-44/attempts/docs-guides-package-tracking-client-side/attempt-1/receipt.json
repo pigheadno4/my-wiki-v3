@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-package-tracking-client-side",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Package Tracking Client-Side Configuration\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/package-tracking/client-side\"\nraw_files:\n  - \"braintree/docs/guides/package-tracking/client-side-2026-09-16.md\"\ntags: [braintree, package-tracking, paypal, client-sdk, line-items]\n---\n\n## Overview\n\nThis collected Braintree package-tracking client-side guide provides JavaScript, Swift and Kotlin examples for placing PayPal order line-item metadata into the client integration used to create user approval. Its consequential handoff rule says line-item information may be omitted from the server integration only when it was already submitted through the Client SDK integration and has not changed.\n\nThis is a 2026-09-16 unversioned website snapshot. It does not identify exact client-SDK package versions, mobile OS or language runtime versions, a server SDK, or an execution environment; the page also says its code is incomplete. It is therefore not current-support, end-to-end order, user-approval, server-acceptance, package-tracking, fulfillment or payment-outcome proof.\n\n## Key takeaways\n\n- The JavaScript example selects PayPal funding and calls `paypalCheckoutInstance.createPayment()` with checkout flow, amount, currency, capture intent, shipping-address settings and a line item. The line item illustrates UPC code/type, product URL and image URL in addition to quantity, amount, name and debit kind; exact example values and matching comments remain at the raw locator.\n- The Swift example creates `BTPayPalCheckoutRequest` and `BTPayPalLineItem` values, then assigns an image URL. The Kotlin example creates `PayPalCheckoutRequest` and `PayPalLineItem` values and assigns the item list to the request; it illustrates image and UPC fields. These platform snippets do not establish identical field coverage or compatibility across SDKs.\n- The permission to omit server-side line items is conditional on the Client SDK integration having already submitted them with no changes. The page does not say that all client data, changed line items, product/order state, or the later package-tracking request may be omitted.\n\n> [!warning] Treat the snippets as scoped examples\n> The page expressly says the displayed code is not the entire integration. Preserve the PayPal, client-side, user-approval and line-item scope; use the linked package-tracking overview and server-side guide for their separate lifecycle stages rather than treating these snippets as the tracking submission itself.\n\n## Detail locators\n\n- Client-integration purpose and use with a server integration for creating user approval: raw line 16.\n- Unchanged-line-item condition for omitting line items from the server integration, plus the incomplete-integration warning and JavaScript v3 guide route: raw lines 17-18.\n- JavaScript PayPal checkout request and line-item fields: `### javascript`, raw lines 21-45.\n- Swift request, line item and image URL example: `### swift`, raw lines 47-52.\n- Kotlin request, line item, image/UPC fields and request assignment: `### kotlin`, raw lines 54-72.\n- Next-page navigation to a server-side Java route: raw line 73; this label is navigation, not behavioral evidence for that unread target.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- Package-tracking lifecycle, eligibility and SDK-prerequisite context: [[source-braintree-docs-guides-package-tracking-overview]]\n- Separate Node.js server-side example route: [[source-braintree-docs-guides-package-tracking-server-side-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/package-tracking/client-side-2026-09-16|Braintree package-tracking client-side configuration]] - complete collected snapshot of the client-side line-item examples and conditional client/server handoff note\n",
+  "quotes": [
+    {
+      "text": "Here is an example that demonstrates client integration and can be used for any Server integration for creating user approval.",
+      "location": "raw line 16 under # Client-side configuration"
+    },
+    {
+      "text": "If you have already submitted line item information in the Client SDK integration and there have been no changes to it, you can skip line item information in the server integration.",
+      "location": "raw line 18 immediately after **NOTE**"
+    },
+    {
+      "text": "lineItems: [{\n      quantity: 1,\n      unitAmount: 10.00,\n      name: \"item name\",\n      kind: \"debit\",\n      upcCode: \"012345678912\",\n      upcType: \"UPC-A\", //New field\n      url: \"https://example.com\", //New field\n      imageUrl: \"https://example.com/product1.jpeg\", //New field\n    }]",
+      "location": "raw lines 33-42 in the ### javascript code block"
+    },
+    {
+      "text": "let request = BTPayPalCheckoutRequest(amount: \"1.00\")\nlet lineItem = BTPayPalLineItem(quantity: \"1\", unitAmount: \"1\", name: \"item\", kind:.debit)\nlineItem.imageURL = URL(string: \"http://example/image.jpg\")",
+      "location": "raw lines 49-51 in the ### swift code block"
+    },
+    {
+      "text": "val item = PayPalLineItem(\n    kind = PayPalLineItemKind.DEBIT,\n    name = \"An Item\",\n    quantity = \"1\",\n    unitAmount = \"1\",\n    imageUrl = \"http://example.com/image.jpg\",\n    upcCode = \"upc-code\",\n    upcType = PayPalLineItemUpcType.UPC_TYPE_2\n)\n\nrequest.lineItems = listOf(item)",
+      "location": "raw lines 61-71 in the ### kotlin code block"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c44-client-package-tracking-source-link",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-package-tracking-client-side]] - 2026-09-16 unversioned website client-configuration examples for supplying PayPal order line-item metadata during user-approval creation across JavaScript, Swift and Kotlin, with a conditional unchanged-line-item client/server handoff and no exact SDK, runtime or environment version",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/package-tracking/client-side-2026-09-16.md",
+  "raw_sha256": "7f9802a48428090a67176673ab32450ce0467f0ee646989f05d3cfe747cbe463",
+  "status": "candidate_ready"
+}

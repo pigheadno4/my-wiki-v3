@@ -88,6 +88,8 @@ The independent `braintree-web@3.145.0` adapter still depends on `@paypal/fastla
 
 ## Sources
 
+- [[source-braintree-docs-guides-fastlane-setup-integration]] - collected unversioned Braintree website setup page for Sandbox-account creation, Account Settings enablement, CSP-update orientation and the client-side next-step route; not SDK-version, saved-method/profile lifecycle, current eligibility, deployed client/server behavior or payment-execution evidence
+
 - [[source-braintree-docs-guides-fastlane-server-side-node]] - unversioned Braintree Node-routed server-side guide for root-domain-qualified client-token generation and payment-time shipping-profile updates, with Braintree SDK and GraphQL material-input, device-data and success-conditioned vault-option locators; examples are not direct PayPal Orders API, current eligibility, Vault-outcome or payment-execution evidence
 
 - [[source-braintree-docs-guides-fastlane-client-side-node]] - collected Braintree website client-side integration guide at the `/node` route for same-version Web `3.120.0`+ initialization, email lookup/authentication and guest fallback, conditional watermark/compliance notice, member/guest payment-component rendering, the example's payment-token plus previously captured device-data handoff to the merchant server to complete checkout, and the separate statement that the payment token can be used like a `paymentMethodNonce` for Transact or Vault; browser HTML/JavaScript guidance, not a Node runtime implementation, current eligibility, direct PayPal Orders API, or payment/Vault outcome evidence
@@ -95,6 +97,8 @@ The independent `braintree-web@3.145.0` adapter still depends on `@paypal/fastla
 - [[source-braintree-docs-guides-fastlane-overview]] - collected unversioned Braintree website overview for Fastlane identity, guest versus authenticated-profile framing, merchant integration conditions and the snapshot country matrix; not current availability, eligibility, exact-version GitHub or payment-execution evidence
 
 - [[source-braintree-docs-guides-fastlane-faq]] - collected unversioned Braintree FAQ for provisioning/disablement diagnostics, guest fallback, token lifetime and refresh, delivery/pickup controls, CSP guidance, integration-pattern responsibilities and an unresolved internal vaulting contradiction; not current eligibility, country-support, compliance or payment/Vault-outcome evidence
+
+- [[source-braintree-docs-guides-fastlane-appendix]] - collected unversioned Braintree Fastlane appendix for profile-field priority, client-returned payment-token lifetime, transaction-time vaulting limitations, allowed-location input and checkout-reload authentication guidance; preserves the captured vault-ordering inconsistency and does not identify an SDK version or environment
 
 - [[source-braintree-docs-guides-fastlane-best-practices]] - collected unversioned Braintree website best-practices guide for guest/member checkout UX, refresh authentication, server-side profile-change handoff and accessible styling; recommendations are not runtime or payment guarantees
 

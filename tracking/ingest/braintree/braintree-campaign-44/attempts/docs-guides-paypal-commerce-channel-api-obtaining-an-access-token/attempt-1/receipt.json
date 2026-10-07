@@ -1,0 +1,47 @@
+{
+  "job_id": "docs-guides-paypal-commerce-channel-api-obtaining-an-access-token",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Commerce Channel API \u2014 Obtaining an Access Token\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal-commerce-channel-api/obtaining-an-access-token\"\nraw_files:\n  - \"braintree/docs/guides/paypal-commerce-channel-api/obtaining-an-access-token-2026-09-16.md\"\ntags: [braintree, paypal-commerce-channel-api, access-token, authorization, retailer]\n---\n\n## Overview\n\nThis collected, unversioned Braintree website guide describes obtaining the retailer-scoped access token that authorizes requests between a retailer and a PayPal Commerce Channel API channel. It covers the channel credentials and retailer domain used in the token request, the sandbox-only example environment, returned validity duration, expiry refresh, and permission or revocation failures. The 2026-09-16 snapshot does not establish current API availability, production endpoints, channel or retailer eligibility, credential issuance, an active grant, or successful request or payment execution. See [[braintree]] and the provider-level route [[braintree-payment-platform]].\n\n## Key takeaways\n\n- The token request combines the channel's client ID and secret with the retailer domain received through onboarding. The page's request example targets the Braintree Commerce sandbox endpoint and uses credential placeholders; it does not document a production endpoint or authorize exposing credential values.\n- In sandbox, the guide says the channel is automatically connected to a test retailer at `YOUR_BRAINTREE_MERCHANT_ID.retailer.com`; this is an environment-qualified example, not evidence of a production retailer relationship or grant.\n- If the retailer has granted the integration permission to access its products, the response contains an access token and its validity duration in seconds. The shown token and `3600` duration are example values, not credentials or a universal lifetime.\n- The guide recommends caching the token. After expiry, Channel API requests begin returning HTTP 403, at which point the code should obtain and cache a new token. This expiry path is distinct from missing permission, which produces HTTP 400 on the token request.\n- A retailer may revoke its grant at any time. After revocation, requests using the existing token return HTTP 403 and requests for a new token return HTTP 400; refreshing is therefore not stated to restore revoked authorization.\n\n## Detail locators\n\n- **Token purpose, channel credentials, retailer domain, and sandbox retailer:** `Overview` (raw lines 16\u201320).\n- **Sandbox token request shape and credential placeholders:** `Obtain an access token` (raw lines 22\u201332).\n- **Grant condition, returned token, and validity duration:** raw lines 33\u201344.\n- **Cache recommendation and expiry-conditioned HTTP 403 refresh action:** raw lines 45\u201346.\n- **Missing-permission and revoked-grant outcomes:** `Unsuccessful requests` (raw lines 47\u201352).\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-platform]]\n- [[source-braintree-docs-guides-paypal-commerce-channel-api-overview|Braintree PayPal Commerce Channel API Overview]]\n- [[source-braintree-docs-guides-paypal-commerce-channel-api-keeping-track-of-retailers|Braintree PayPal Commerce Channel API \u2014 Keeping Track of Retailers]]\n- [[source-braintree-docs-guides-paypal-commerce-channel-api-getting-product-information|Braintree PayPal Commerce Channel API \u2014 Getting Product Information]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal-commerce-channel-api/obtaining-an-access-token-2026-09-16|Braintree PayPal Commerce Channel API \u2014 Obtaining an Access Token (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Before you can make requests to the Channel API, you'll need to obtain an access token which serves\nas an authorization between the retailer and your channel.\n\nTo do this, pass your channel's client ID\nand secret along with the retailer's domain from the[onboarding webhook](/braintree/docs/guides/paypal-commerce-channel-api/keeping-track-of-retailers#onboarding). In the sandbox, we'll automatically connect you to a retailer for testing with the domainYOUR_BRAINTREE_MERCHANT_ID.retailer.com.",
+      "location": "Overview, raw lines 16-20"
+    },
+    {
+      "text": "Assuming the retailer has granted your integration permission to access their products, the API will\nreturn a response containing an access token as well as how long the token will be valid (in\nseconds):",
+      "location": "raw lines 33-35"
+    },
+    {
+      "text": "We recommend caching this token. Once the token expires the API will begin returning a 403 HTTP\nstatus, at which point your code should fetch a new access token and re-cache it.",
+      "location": "raw lines 45-46"
+    },
+    {
+      "text": "If the retailer has not granted their permission yet, the token request will result in a 400 HTTP\nstatus. If the retailer has revoked the grant \u2013 which they may do at any time \u2013 any request you make\nwith the token after access has been revoked will result in a 403, and any request for a new token\nwill result in a 400.",
+      "location": "Unsuccessful requests, raw lines 49-52"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c44-channel-api-access-token-source-link",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-commerce-channel-api-obtaining-an-access-token]] - 2026-09-16 collected, unversioned Braintree website guide to obtaining a retailer-authorized PayPal Commerce Channel API access token with channel credentials and retailer domain, sandbox-qualified request scope, returned lifetime, expiry refresh, and permission or revocation failure states",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal-commerce-channel-api/obtaining-an-access-token-2026-09-16.md",
+  "raw_sha256": "681950c351dab302b113b4e5a949243608bb81fed330224334b6d11fc4227c04",
+  "status": "candidate_ready"
+}

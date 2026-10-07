@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-google-pay-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Google Pay Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/google-pay/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/google-pay/server-side/node-2026-09-16.md\"\ntags: [braintree, google-pay, server-side, node-js, digital-wallets]\n---\n\n## Overview\n\nThis Braintree Google Pay server-side guide is a Node.js-routed webpage for turning a client-produced Google Pay card nonce into a server transaction request. It also records the gateway's legacy `AndroidPayCard` representation and separates conditionally supported Google Pay card storage from unsupported vaulting of PayPal accounts returned through Google Pay.\n\n## Key takeaways\n\n- The page says Google Pay is available with Braintree's latest Android and JavaScript SDKs, then instructs the merchant to send the Google Pay card nonce and collected device data from the client to the server.\n- Callback and Promise examples call `gateway.transaction.sale()` with an amount, `paymentMethodNonce`, `deviceData`, a billing postal code and `submitForSettlement: true`.\n- Braintree says Google Pay cards remain represented as Android Pay cards in its API to avoid breaking changes; the example consequence is an `AndroidPayCard` response object from Payment Method Create.\n- Google Pay cards may be saved in the Vault only for specific use cases. The page separately says PayPal accounts from Google Pay cannot be vaulted, so transaction options `store_in_vault` and `store_in_vault_on_success` are unsupported for that case.\n- The page links to a separate GraphQL implementation, while this entry retains the Node.js-routed server SDK family path.\n\n## Detail locators\n\n- GraphQL alternative and SDK-family availability statement: `# Server-Side Implementation`, lines 17-22.\n- Client nonce/device-data handoff instruction: `## Creating transactions > ### Using card nonces`, line 30.\n- Callback and Promise `gateway.transaction.sale()` examples: lines 31-67.\n- Legacy `AndroidPayCard` API representation note: lines 69-70.\n- Google Pay card and PayPal-account Vault conditions, plus listed card-storage routes: `## Vaulting Google Pay`, lines 73-84.\n\n## Scope and evidence boundary\n\nThis is a 2026-09-16 snapshot of an unversioned Braintree website route selected for Node.js server-side documentation. It covers Braintree Google Pay client-to-server handoff and illustrative sale/Vault paths, not a direct PayPal Orders or Google API integration; the opening nonce instruction is rendering-damaged, no exact Node package or runtime is identified, and the page does not establish current merchant enablement, environment behavior, or a transaction, settlement, funding or Vault outcome.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/google-pay/server-side/node-2026-09-16|Braintree Google Pay Server-Side Implementation - Node.js]] - complete collected webpage for nonce-based sale examples, legacy response naming and Vault qualifications\n",
+  "quotes": [
+    {
+      "text": "Google Pay is currently available with our latest Android and JavaScript SDKs.",
+      "location": "# Server-Side Implementation, line 22"
+    },
+    {
+      "text": "Include the Google Pay card nonce in thecall on your server:[Collect device data](/braintree/docs/guides/premium-fraud-management-tools/client-side)from the client and include the`device_data_from_the_client`in the transaction.",
+      "location": "## Creating transactions > ### Using card nonces, line 30"
+    },
+    {
+      "text": "gateway.transaction.sale({\n  amount: \"10.00\",\n  paymentMethodNonce: nonceFromTheClient,\n  deviceData: deviceDataFromTheClient,\n  options: {\n    submitForSettlement: true,\n  },\n  billing: {\n    postalCode: postalCodeFromTheClient,\n  },",
+      "location": "## Creating transactions > ### Promise, lines 54-63"
+    },
+    {
+      "text": "Google Pay cards are represented as Android Pay cards in our API to prevent breaking changes. For example, the response from a [Payment Method: Create](/braintree/docs/reference/request/payment-method/create) call with a card from Google Pay will include the [AndroidPayCard](/braintree/docs/reference/response/android-pay-card) response object.",
+      "location": "## Creating transactions, line 70"
+    },
+    {
+      "text": "Google Pay cards can only be[saved to your Vault](/braintree/docs/guides/payment-methods#create)for specific use cases;[see the support article for details](/braintree/articles/guides/payment-methods/google-pay#recurring-billing-and-vaulting).\n\nVaulting of PayPal accounts from Google Pay is currently not supported. This means the[`options.store_in_vault`](/braintree/docs/reference/request/transaction/sale#options-store_in_vault)and[`options.store_in_vault_on_success`](/braintree/docs/reference/request/transaction/sale#options-store_in_vault_on_success)options are not supported when creating a transaction.",
+      "location": "## Vaulting Google Pay, lines 75-77"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "google-pay-server-side-node-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-google-pay-server-side-node]] - 2026-09-16 unversioned Braintree Google Pay Node.js-routed server-side guide for client nonce/device-data handoff into `transaction.sale()` examples, legacy `AndroidPayCard` response naming and qualified card-versus-PayPal-account Vault behavior",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured route is unversioned and its opening instruction is rendering-damaged; keep this family-level Node.js route separate from exact package/runtime claims and do not convert the examples into execution guarantees."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/google-pay/server-side/node-2026-09-16.md",
+  "raw_sha256": "ff79e6cd43c643052f17dc520dbc080c07de7ed9c8cd31c4ea5c8ec923d1ff07",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-sepa-direct-debit-vaulting-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree SEPA Direct Debit Vaulting (Node.js Route)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/sepa-direct-debit/vaulting/node\"\nraw_files:\n  - \"braintree/docs/guides/sepa-direct-debit/vaulting/node-2026-09-16.md\"\ntags: [braintree, sepa, direct-debit, vault, node-js, payment-methods]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot is a Node.js-routed server guide to storing a customer's SEPA Direct Debit authorization as a Vault payment method, retrieving that method, using its token in a later sale, and deleting it. The page does not name an exact server SDK package or version or distinguish Sandbox from Production, so its gateway examples are historical webpage evidence rather than current environment, merchant-enablement, or successful-payment evidence.\n\n## Key takeaways\n\n- A Vault payment method belongs to a customer and represents transactable information such as authorization to charge a SEPA Direct Debit account. The page says its token can be stored by the merchant server with reduced PCI compliance burden and later supplied to create transactions.\n- For an existing customer, the documented create action accepts that customer's ID and a payment-method nonce received from the client. The page also routes an alternative that creates a new customer and payment method together from a nonce.\n- After successful creation, the documented next action is a Transaction Sale using the payment-method token. Creation and token storage do not by themselves establish that a later transaction succeeds.\n- The find action looks up a payment method by token, returns a PaymentMethod response object, and also returns a link to the associated mandate. A missing method produces the page's linked not-found error route.\n- Deleting a payment method by token also revokes its associated mandate. This is a consequential server-side lifecycle action; the page does not document restoration or a replacement mandate in this snapshot.\n\n## Material warning\n\n> [!warning] Deletion also revokes the mandate\n> The page explicitly couples payment-method deletion to revocation of the customer's associated mandate. Treat the operation as more than removal of a stored token.\n\n## Detail locators\n\n- Vault payment-method identity, customer ownership, token storage and later transaction use: `# Vaulting`, raw line 16.\n- Existing-customer creation from a client nonce, callback and Promise examples, and the new-customer alternative: `## Create`, raw lines 17-45.\n- Post-create Transaction Sale route using the payment-method token: `## Create`, raw lines 47-50.\n- Token lookup, callback and Promise examples, missing-method behavior, response-object route and associated-mandate link: `## Find`, raw lines 51-82.\n- Token deletion, callback and Promise examples, missing-method behavior and mandate revocation: `## Delete`, raw lines 85-118.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Server integration concept: [[braintree-server-sdk]]\n- SEPA mandate and lifecycle overview: [[source-braintree-docs-guides-sepa-direct-debit-overview]]\n- Client nonce route: [[source-braintree-docs-guides-sepa-direct-debit-client-side-javascript-v3]]\n- Testing and environment transition route: [[source-braintree-docs-guides-sepa-direct-debit-testing-go-live-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/sepa-direct-debit/vaulting/node-2026-09-16|Braintree SEPA Direct Debit vaulting guide (Node.js route)]] - complete collected page covering Vault payment-method creation, token-based transaction use, lookup and mandate-coupled deletion\n",
+  "quotes": [
+    {
+      "text": "A payment method represents transactable payment information such as a customer's authorization to charge a SEPA Direct Debit account. Payment methodsbelong toa[customer](/braintree/docs/guides/customers), are securely stored in the Braintree Vault, and have a[`payment_method_token`](/braintree/docs/reference/request/transaction/sale/node#payment_method_token)attribute that you can store on your servers (with reduced PCI compliance burden) and later use to[create transactions](/braintree/docs/reference/request/transaction/sale).",
+      "location": "# Vaulting, raw line 16"
+    },
+    {
+      "text": "](/braintree/docs/reference/request/payment-method/create)to create a payment method for an existing customer using[a payment method nonce received from the client](/braintree/docs/guides/sepa-direct-debit/client-side):",
+      "location": "## Create, raw line 22"
+    },
+    {
+      "text": "Once successfully created, you can use[```syntax-inline\nTransaction: Sale\n```\n](/braintree/docs/reference/request/transaction/sale)with the[`payment_method_token`](/braintree/docs/reference/request/transaction/sale/node#payment_method_token)parameter to create a transaction.",
+      "location": "## Create, raw lines 47-50"
+    },
+    {
+      "text": "The find action will also return a link to the mandate associated with the customer's payment method.",
+      "location": "## Find > NOTE, raw line 82"
+    },
+    {
+      "text": "The delete action will also revoke the mandate associated with the customer's payment method.",
+      "location": "## Delete > NOTE, raw line 118"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-direct-debit-vaulting-node-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-braintree-docs-guides-sepa-direct-debit-testing-go-live-node]] - 2026-09-16 unversioned Braintree Node.js website guide distinguishing mocked and linked-PayPal-account SEPA Direct Debit Sandbox testing from separate Production credentials, settings and limited real-payment checks; Sandbox/configuration evidence is not current availability, merchant enablement, successful debit, settlement or funding proof",
+        "proposed_markdown": "- [[source-braintree-docs-guides-sepa-direct-debit-vaulting-node]] - 2026-09-16 Node.js-routed Braintree website guide to customer-owned SEPA Direct Debit Vault payment-method creation from a client nonce, token-based sale and lookup, and deletion that also revokes the associated mandate; no exact server SDK package/version or environment is specified",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Website route and examples do not establish an exact Node SDK package/version, current environment availability, merchant enablement, or payment outcome.",
+          "Preserve the mandate-revocation consequence when summarizing deletion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/sepa-direct-debit/vaulting/node-2026-09-16.md",
+  "raw_sha256": "c87122babc300bf4f03db0e7916a15b36b0663ed0f021a2f5aa847c0a25f0ff5",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-apple-pay-testing-go-live",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Apple Pay Testing and Go Live\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/apple-pay/testing-go-live\"\nraw_files:\n  - \"braintree/docs/guides/apple-pay/testing-go-live-2026-09-16.md\"\ntags: [braintree, apple-pay, testing, sandbox, production]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of an unversioned [[braintree]] guide covers testing and go-live checks for [[braintree-apple-pay]] across device, web, sandbox, development troubleshooting, and production contexts. It is not exact-version SDK evidence and does not by itself prove current eligibility, environment configuration, or payment execution.\n\n## Key takeaways\n\n- To test the entire Apple Pay flow, the page requires an Apple Pay-capable device; for web testing, it names Safari or Chrome.\n- In Braintree's sandbox, Apple Pay Sandbox test cards require the device to be signed into an iCloud sandbox tester account. The returned payment-method nonce contains dummy \"Jane Doe\" data even after successful decryption, while separate test amounts and test nonces can simulate server behavior.\n- In production, the page says Braintree decrypts payment data using an Apple Pay certificate stored on its servers and says the device account number (DPAN) should match between Wallet and the Braintree Control Panel. During development, it identifies certificate mismatch as a likely cause of tokenization failure and routes certificate identification to the token `publicKeyHash` field, with separate iOS and web token objects.\n- The go-live checklist tells the merchant to run a few real transactions covering all supported card types. It notes that Apple Pay requires coordination among acquiring banks, issuing banks, and card networks, and directs the merchant to email Braintree if live transactions are declined.\n\n> [!warning] Live transaction boundary\n> The real-transaction step is captured provider guidance, not authorization to initiate payments. Its result is merchant-, environment-, card-, device-, and time-dependent, and this source does not establish a transaction budget or successful processing.\n\n## Detail locators\n\n- Full-flow device condition and Safari/Chrome web-testing statement: raw line 16.\n- Sandbox cards, iCloud sandbox tester account, dummy nonce data, and server-behavior simulation routes: raw line 18.\n- Production certificate custody and Wallet/Control Panel DPAN expectation: raw line 20.\n- Development certificate-mismatch diagnosis and platform-specific `publicKeyHash` token routes: raw line 22.\n- Real-transaction go-live check and decline-coordination note: `## Go live`, raw lines 23\u201327.\n\n## Related\n\n- [[braintree]]\n- [[braintree-apple-pay]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/apple-pay/testing-go-live-2026-09-16|Braintree Apple Pay Testing and Go Live (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "In order to test the entire Apple Pay user flow, use a[device that supports Apple Pay](https://support.apple.com/en-us/HT208531). To test Apple Pay on the web, use the Safari or Chrome browser.",
+      "location": "line 16 under `# Testing and Go Live`"
+    },
+    {
+      "text": "In the sandbox environment, Braintree accepts[Apple Pay Sandbox test cards](https://developer.apple.com/apple-pay/sandbox-testing)from the device. Using these test cards requires that your device is signed into an[iCloud sandbox tester account](https://help.apple.com/app-store-connect/#/dev8b997bee1). Please note that the Braintree sandbox environment returns a payment method nonce with dummy data (\"Jane Doe\"), even when decryption is successful. You can simulate server behaviors by using[test amounts on your transactions](/braintree/docs/reference/general/testing#transaction-amounts)and[test nonces](/braintree/docs/reference/general/testing#payment-method-nonces).",
+      "location": "line 18 under `# Testing and Go Live`"
+    },
+    {
+      "text": "In our production environment, the payment data is decrypted with an Apple Pay certificate that is securely stored on our servers. You should expect to see the same device account number (DPAN) in Wallet (formerly Passbook) and in the Braintree Control Panel.",
+      "location": "line 20 under `# Testing and Go Live`"
+    },
+    {
+      "text": "If Apple Pay tokenization fails during development, it is likely caused by a certificate mismatch. You can determine which certificate was used for encryption based on thePKPaymentToken(payment.token.paymentDataheader.publicKeyHashfield) on iOS orApplePayPaymentToken(payment.token.paymentDataheader.publicKeyHashfield) on the web.",
+      "location": "line 22 under `# Testing and Go Live`"
+    },
+    {
+      "text": "- Run a few real transactions to ensure that you are able to process Apple Pay for all[supported card types](/braintree/articles/guides/payment-methods/apple-pay#availability).\n- Apple Pay requires coordination from acquiring banks, issuing banks, and card networks. Please email us if your live transactions are declined.",
+      "location": "lines 26\u201327 under `## Go live`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c44-w32-apple-pay-testing-go-live-reciprocal",
+        "target_path": "wiki/concepts/braintree-apple-pay.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-apple-pay-testing-go-live]] - 2026-09-16 captured unversioned Braintree Apple Pay testing and go-live webpage for sandbox and production validation boundaries and launch checks",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/apple-pay/testing-go-live-2026-09-16.md",
+  "raw_sha256": "00151334b29d61829afadba3ad5d45fa3896b08cc51955f4a9ced58fcdb65652",
+  "status": "candidate_ready"
+}

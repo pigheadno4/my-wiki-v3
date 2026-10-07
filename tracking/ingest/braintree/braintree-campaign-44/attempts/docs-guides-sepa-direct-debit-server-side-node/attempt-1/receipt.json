@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-guides-sepa-direct-debit-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree SEPA Direct Debit Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/sepa-direct-debit/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/sepa-direct-debit/server-side/node-2026-09-16.md\"\ntags: [braintree, sepa, direct-debit, node-js, server-sdk, transactions]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot is a Node.js-routed server-side implementation guide for creating a SEPA Direct Debit transaction through Transaction Sale with a nonce or vaulted payment method and client-collected device data. It reports EUR-only support and routes transaction-status webhook setup. The page names no exact Node package version and does not establish current availability, merchant enablement, environment success, a completed debit, settlement or funding.\n\n## Key takeaways\n\n- The page says transaction creation accepts a nonce or vaulted payment method and instructs the merchant to include device data collected on the client side. This is the server-processing step after a separate client collection flow; it does not document client tokenization or mandate acceptance.\n- Callback and Promise examples invoke `gateway.transaction.sale()` with amount, payment-method nonce, EUR merchant-account identifier, order and descriptor values, client-collected device data and `submitForSettlement: true`. Both examples label settlement submission `Required`; because that wording is an inline example comment rather than a separately stated universal rule, retain it as specific to this SEPA guide rather than generalizing it to every Braintree transaction.\n- The prose identifies merchant-generated order ID and the bank-statement descriptor as optional fields. Exact field spellings and both complete request/result-handling examples remain at the raw locators.\n- The captured page says SEPA Direct Debit supports only EUR and points to general and transaction-specific webhook documentation for transaction status changes, including sales and refunds. Those links are navigation rather than evidence that a webhook is configured, delivered or successfully handled.\n\n## Material warning\n\n> [!warning] Method-specific settlement instruction\n> Both displayed SEPA sale examples mark `submitForSettlement: true` as required, while the generic [[braintree-server-sdk]] concept says immediate settlement submission is optional across the broader transaction model. Treat the example annotation as this guide's SEPA-specific instruction unless a fully read authority resolves the scope; do not convert it into a provider-wide SDK requirement.\n\n## Detail locators\n\n- Nonce-or-vaulted-method transaction creation and client-collected device-data instruction: `## Creating transactions`, raw line 19.\n- Optional order ID and statement-descriptor fields: `### Optional fields`, raw lines 20\u201326.\n- Callback Transaction Sale example and its settlement-submission annotation: `### Callback`, raw lines 27\u201350.\n- Promise Transaction Sale example and its settlement-submission annotation: `### Promise`, raw lines 52\u201375.\n- EUR-only statement: `## Currency support`, raw lines 77\u201379.\n- Status-change webhook statement and sales/refunds reference routes: `## SEPA Direct Debit webhooks`, raw lines 80\u201384.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Supporting server concept: [[braintree-server-sdk]]\n- Supporting notification concept: [[braintree-webhooks]]\n- SEPA lifecycle and mandate overview: [[source-braintree-docs-guides-sepa-direct-debit-overview]]\n- Complementary client route: [[source-braintree-docs-guides-sepa-direct-debit-client-side-javascript-v3]]\n\n## Related raw API references\n\nThe linked Transaction Sale and webhook targets were not read for this entry and are navigation only; they do not establish exact request or response contracts beyond this page's displayed examples.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/sepa-direct-debit/server-side/node-2026-09-16|Braintree SEPA Direct Debit server-side implementation for Node.js]] - complete collected page covering transaction creation, displayed callback and Promise examples, EUR currency scope and webhook navigation\n",
+  "quotes": [
+    {
+      "text": "Creating a SEPA Direct debit transaction is the same as creating any other transaction with a nonce or a[vaulted payment method](/braintree/docs/reference/request/transaction/sale/node#using-a-vaulted-payment-method). Be sure to pass the device data you collected on the client side when you create the transaction.",
+      "location": "raw line 19 under `## Creating transactions`"
+    },
+    {
+      "text": "submitForSettlement: true // Required",
+      "location": "raw line 37 in the Callback example; repeated at raw line 62 in the Promise example"
+    },
+    {
+      "text": "SEPA Direct Debit only supports EUR currency.",
+      "location": "raw line 79 under `## Currency support`"
+    },
+    {
+      "text": "You can set up webhooks to notify you of changes in status to SEPA Direct Debit transactions.",
+      "location": "raw line 82 under `## SEPA Direct Debit webhooks`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c44-w16-sepa-server-node-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-braintree-docs-guides-sepa-direct-debit-testing-go-live-node]] - 2026-09-16 unversioned Braintree Node.js website guide distinguishing mocked and linked-PayPal-account SEPA Direct Debit Sandbox testing from separate Production credentials, settings and limited real-payment checks; Sandbox/configuration evidence is not current availability, merchant enablement, successful debit, settlement or funding proof",
+        "proposed_markdown": "- [[source-braintree-docs-guides-sepa-direct-debit-server-side-node]] - 2026-09-16 unversioned Braintree Node.js-routed website guide for creating SEPA Direct Debit transactions from a nonce or vaulted payment method with client-collected device data, EUR-only support and status-webhook navigation; the displayed sale examples label immediate settlement submission required, without establishing exact SDK package behavior, current enablement or payment outcome",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The displayed sale examples label `submitForSettlement: true` as required, while the generic `braintree-server-sdk` concept says immediate settlement submission is optional; retain this as a SEPA-guide-specific example annotation rather than a provider-wide SDK rule."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/sepa-direct-debit/server-side/node-2026-09-16.md",
+  "raw_sha256": "403b5669a9967f60ed3139a4665839ef83938b8b0d26a56e5c708bb0baa7f663",
+  "status": "candidate_ready"
+}

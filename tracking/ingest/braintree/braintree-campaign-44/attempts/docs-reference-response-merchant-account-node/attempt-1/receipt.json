@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-reference-response-merchant-account-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Merchant Account Result Response Reference (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/response/merchant-account/node\"\nraw_files:\n  - \"braintree/docs/reference/response/merchant-account/node-2026-09-16.md\"\ntags: [braintree, node-js, merchant-accounts, marketplace, response-objects]\n---\n\n## Overview\n\nThis collected 2026-09-16 Braintree website page is the Node.js response-reference route for a Merchant Account result object. It distinguishes successful and unsuccessful results: the shown successful sub-merchant result is returned with `pending` status and its master merchant account, while validation failures return `success` as false with errors. In production, the page describes third-party verification after the pending result and directs the integrator to use a confirmation webhook for the later response.\n\n## Key takeaways\n\n- A successful result exposes the sub-merchant and master merchant account and shows the sub-merchant as `pending`; the page says to expect a confirmation webhook within several minutes and separately describes a minute-or-two production delay, so those captured timings are guidance rather than a guaranteed completion time.\n- The production explanation attributes the pending state to third-party verification, risk checks and underwriting; webhook handling is the documented way to receive and confirm the later outcome.\n- An unsuccessful result has `success` set to false when validations prevent onboarding, and invalid parameters place validation errors on the result object.\n- The status reference calls `pending` transitory and says verification leads to `active` or `suspended`: `active` can process transactions, while `suspended` cannot.\n\n## Detail locators\n\n- Result-object identity and successful/unsuccessful split: `## Result Object`, lines 17-20.\n- Successful pending result, confirmation-webhook expectation and returned sub/master merchant accounts: `### Successful result`, lines 20-26; Node example at lines 29-36.\n- Production verification rationale, stated timing and webhook handoff: `### Successful result`, line 28.\n- Unsuccessful validation condition, sandbox-test navigation and validation-error behavior: `### Unsuccessful result`, lines 38-48.\n- Pending, active and suspended status meanings and processing consequences: `### Statuses`, lines 53-64.\n\n## Scope and boundaries\n\n> [!warning] This is a captured Node.js documentation-family response page, not evidence for an exact SDK package or version, current Marketplace availability, or merchant eligibility. It describes result states and a later confirmation handoff rather than an account-create or update request; neither a returned object nor the captured timing text proves account creation, approval, webhook delivery, processing readiness, a transaction outcome, settlement or funding for an individual account.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-marketplace]]\n- Separate confirmation-step guide: [[source-braintree-marketplace-guide-confirmation-node]]\n- Separate webhook event reference: [[source-braintree-webhooks-sub-merchant-account-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/response/merchant-account/node-2026-09-16|Braintree Merchant Account response reference - Node.js]] - complete collected page covering result success/failure, pending verification and the three documented status consequences\n",
+  "quotes": [
+    {
+      "text": "A merchant account result may be successful or unsuccessful.",
+      "location": "## Result Object, line 19"
+    },
+    {
+      "text": "If the result was successful, the merchant account will have a\n\n`pending`status. Within several minutes you should expect to receive a[confirmation webhook](/braintree/docs/guides/braintree-marketplace/confirmation).",
+      "location": "### Successful result, lines 22-24"
+    },
+    {
+      "text": "The sub-merchant status is pending at this point because (in production) we are taking the data provided, securely contacting a number of third-party services to verify the information, and making sure there are no red flags. This provides you with fraud protection while also satisfying our standard risk and underwriting process for new merchants. This means that a response will be delayed by just a minute or two (in production), so you will need to use[webhooks](/braintree/docs/guides/braintree-marketplace/confirmation)to listen for a response and confirm that the sub-merchant has successfully passed these checks.",
+      "location": "### Successful result, line 28"
+    },
+    {
+      "text": "Success will return false if[validations](/braintree/docs/reference/general/validation-errors/all#braintree-marketplace)prevent the merchant account from on-boarding.",
+      "location": "### Unsuccessful result, line 40"
+    },
+    {
+      "text": "#### Active\n\nThe merchant account has been approved. It can be used for processing transactions.\n#### Suspended\n\nThe merchant account has been declined. It can't be used for processing transactions.",
+      "location": "### Statuses > #### Active / #### Suspended, lines 59-64"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "merchant-account-response-node-marketplace-source-route",
+        "target_path": "wiki/concepts/braintree-marketplace.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Model and onboarding, after the existing confirmation source entry",
+        "proposed_markdown": "- [[source-braintree-docs-reference-response-merchant-account-node]] - captured Node.js Merchant Account result-response route for pending production verification, confirmation-webhook handoff, validation-failure errors, and active/suspended processing consequences; distinct from account creation or update requests",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep result/response states and validation handling distinct from merchant-account create or update request behavior.",
+          "Treat Node.js as the documentation-family route, not proof for an exact SDK package or version.",
+          "The production timing is captured guidance, not a guarantee; the snapshot does not prove current Marketplace availability, merchant eligibility, an individual onboarding outcome, webhook delivery or transaction processing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/response/merchant-account/node-2026-09-16.md",
+  "raw_sha256": "9445416ea5f4fdc44a9e62d96c0b7426209227ca9337e8cbabb97cafe334a88f",
+  "status": "candidate_ready"
+}

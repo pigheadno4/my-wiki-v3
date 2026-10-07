@@ -332,6 +332,8 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 
 ## Sources
 
+- [[source-braintree-docs-guides-disputes-automating-node]] - unversioned Braintree Node.js webpage captured 2026-09-16 presenting an account-qualified, webhook-triggered dispute automation pattern and a reason-conditioned shipping-confirmation example; not an exact SDK package/version contract, current availability, lifecycle-transition, execution or outcome proof
+
 - [[source-braintree-docs-guides-disputes-overview]] - unversioned Braintree webpage captured 2026-09-16 introducing account-qualified access to API dispute management and the accept-or-respond flow through evidence finalization and bank review; not current merchant eligibility, independent current bank/card-network policy, successful API execution, evidence acceptance, dispute outcome, settlement, or recovered-funds proof
 
 - [[source-braintree-docs-guides-disputes-testing-go-live-node]] - 2026-09-16 unversioned Braintree Node route for sandbox-only disputed-sale creation and deterministic `won`/`lost` simulations through evidence finalization, with Control Panel access qualification and a separate production deadline and real-adjudication boundary; not an exact Node SDK-version contract, direct PayPal Disputes API authority, current card-network policy, or real dispute outcome proof

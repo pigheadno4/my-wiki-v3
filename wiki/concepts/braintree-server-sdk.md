@@ -46,6 +46,12 @@ These findings belong specifically to the Node repository, not Ruby's identicall
 
 ## Related
 
+- [[source-braintree-docs-reference-response-credit-card-verification-node]] - 2026-09-16 unversioned Braintree Node.js website Credit Card Verification response reference for product-ID meaning and supplemental network diagnostics whose processor response code remains authoritative; its captured object/request lists and product-ID inventory are blank, and it is response evidence rather than exact package, request, charge, environment, enablement or individual-status proof
+
+- [[source-braintree-docs-reference-response-payment-method-node]] - 2026-09-16 unversioned Braintree Node.js website response reference for orienting generic Payment Method objects to type-specific response pages and inspecting the returned default flag and runtime class; not a package-qualified implementation contract
+
+- [[source-braintree-docs-reference-general-association-filtering-node]] - 2026-09-16 unversioned Braintree Node.js-routed website reference for select-merchant limited-release association filters that omit configured customer associations while leaving empty arrays or nulls in the response; the snapshot does not establish an exact package/runtime, environment availability or measured latency gain
+
 - [[source-braintree-docs-guides-package-tracking-server-side-node]] - 2026-09-16 unversioned Node.js website example for creating transaction line items, submitting package metadata through `gateway.transaction.packageTracking()` and later retrieving package tracker fields; preserves an unresolved submitting-for-settlement versus settled-state conflict and is not exact package/runtime, eligibility, fulfillment or payment-outcome proof
 
 
@@ -56,6 +62,8 @@ These findings belong specifically to the Node repository, not Ruby's identicall
 - [[source-braintree-docs-guides-venmo-submit-for-partial-settlement-node]] - 2026-09-16 unversioned Braintree Venmo-routed Node.js website guide for parent/child `submitForPartialSettlement()` requests, cumulative amount limits, terminal-parent restrictions and child-refund boundaries, with damaged lifecycle fields and no current-eligibility or settlement/funding proof
 
 - [[source-braintree-docs-reference-general-class-level-vs-instance-methods-node]] - 2026-09-16 unversioned Node-routed website page for the PHP, Python and Ruby SDKs' historical shared class-level configuration versus configurable gateway-instance distinction; it says Node already defaulted to instance methods and was unaffected, while all displayed construction and sale examples are Ruby, so it supplies no exact Node package, method, constructor, runtime or environment behavior
+
+- [[source-braintree-docs-reference-general-countries-node]] - 2026-09-16 unversioned Braintree Node.js website reference for country-name, alpha-2, alpha-3 and numeric inputs in displayed transaction-billing examples and the separate BIN-derived issuance-country `Unknown` fallback; the captured country-list section is empty, and the page is not package-, environment-, merchant-coverage- or payment-outcome authority
 
 - [[source-braintree-docs-guides-server-side-tokenization-node]] - 2026-09-16 unversioned Node-routed website guide to non-vaulted raw-card tokenization through the Server SDK's GraphQL client, preserving the missing query-definition block plus example, schema, package-version and environment boundaries; not payment-execution proof
 

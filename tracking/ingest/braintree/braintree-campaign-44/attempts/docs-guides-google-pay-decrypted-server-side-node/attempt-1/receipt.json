@@ -1,0 +1,47 @@
+{
+  "job_id": "docs-guides-google-pay-decrypted-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Google Pay Decrypted Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/google-pay/decrypted-server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/google-pay/decrypted-server-side/node-2026-09-16.md\"\ntags: [braintree, google-pay, decrypted-payment-data, server-side, node-js]\n---\n\n## Overview\n\nThis Braintree Google Pay guide is a Node.js-routed server-side webpage for creating a sale transaction when the merchant server has already decrypted the encrypted Google Pay payment data. It uses the decrypted card values in an `androidPayCard` request rather than the normal client-produced nonce handoff described by the sibling server-side route.\n\n## Key takeaways\n\n- Braintree warns that server-side decryption is not recommended because it increases risk and compliance burden, and points to the Google Pay getting-started route for its recommended integration method.\n- The Callback and Promise examples pass decrypted card values to `gateway.transaction.sale()` under `androidPayCard` and request settlement submission; if the decrypted data contains an electronic commerce indicator (ECI), the page says it must be included.\n- The page says the amount in the client-side payment request should reflect the amount actually authorized and submitted for settlement, while noting that transactions can still process when the amount changes during order fulfillment.\n\n## Detail locators\n\n- Server-side decryption risk/compliance warning and recommended-method route: opening `IMPORTANT`, lines 17-18.\n- Decrypted-parameter transaction purpose and conditional ECI requirement: `## Creating transactions`, lines 21-26.\n- Callback `gateway.transaction.sale()` example and decrypted `androidPayCard` fields: `### Callback`, lines 29-55.\n- Promise variant of the same sale request: `### Promise`, lines 57-83.\n- Client-request versus authorization/settlement amount guidance: lines 84-86.\n\n## Scope and evidence boundary\n\nThis is a 2026-09-16 snapshot of an unversioned Braintree webpage selected through its Node.js documentation route. It assumes that the merchant server has already decrypted Google Pay payment data and is distinct from the normal Braintree client-nonce/device-data server handoff; it does not identify an exact Node package or runtime, establish environment or merchant applicability, prove current availability, or demonstrate authorization or settlement success.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- [[source-braintree-docs-guides-google-pay-server-side-node]] - separate normal server-side route for a client-produced Google Pay nonce and device data\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/google-pay/decrypted-server-side/node-2026-09-16|Braintree Google Pay Decrypted Server-Side Implementation - Node.js]] - complete collected webpage for merchant-decrypted card transaction parameters and warnings\n",
+  "quotes": [
+    {
+      "text": "Decrypting Google Pay payment data on your server is not recommended, as it increases your risk and compliance burden. See [Getting Started](/braintree/docs/guides/google-pay/overview#getting-started) for our recommended integration method.",
+      "location": "opening IMPORTANT, line 18"
+    },
+    {
+      "text": "If you decrypt the encrypted Google Pay payment data on your server, you can create a transaction\nwith the decrypted parameters.",
+      "location": "Creating transactions, lines 23-24"
+    },
+    {
+      "text": "If there is an electronic commerce indicator (ECI) within the decrypted payment data, it must be included below.",
+      "location": "Creating transactions IMPORTANT, line 26"
+    },
+    {
+      "text": "The amount you specify in your client-side payment request should reflect the actual amount you\nauthorize and submit for settlement; transactions will still process in cases where the amount\nchanges during order fulfillment.",
+      "location": "lines 84-86"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c44-google-pay-decrypted-node-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-braintree-docs-guides-google-pay-server-side-node]] - 2026-09-16 unversioned Braintree Google Pay Node.js-routed server-side guide for client nonce/device-data handoff into `transaction.sale()` examples, legacy `AndroidPayCard` response naming and qualified card-versus-PayPal-account Vault behavior",
+        "proposed_markdown": "- [[source-braintree-docs-guides-google-pay-decrypted-server-side-node]] - 2026-09-16 unversioned Braintree Google Pay Node.js-routed webpage for merchant-server sale creation from already-decrypted card values, with decryption-risk, ECI and amount-alignment qualifications; distinct from the normal client-nonce handoff route and not exact package/runtime, merchant/environment applicability, current availability or execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/google-pay/decrypted-server-side/node-2026-09-16.md",
+  "raw_sha256": "7a80dd4586d180f4235c80880a0468fc16bfc8d12663ebdbbbde8f818bc0c6c1",
+  "status": "candidate_ready"
+}

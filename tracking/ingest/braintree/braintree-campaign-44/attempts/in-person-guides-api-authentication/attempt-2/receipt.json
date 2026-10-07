@@ -1,0 +1,54 @@
+{
+  "job_id": "in-person-guides-api-authentication",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree In-Person API Authentication Options\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/in-person/guides/api-authentication\"\nraw_files:\n  - \"braintree/in-person/guides/api-authentication-2026-09-16.md\"\ntags: [braintree, in-person, graphql, api-authentication, oauth]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide compares two authentication options for GraphQL requests that invoke Braintree In-Person mutations: first-party API keys for a custom application serving one merchant or merchant-responsible API-calling code and surrounding infrastructure, and OAuth bearer authentication for one application or codebase serving multiple merchants. It is authentication-selection and credential-lifecycle guidance; the snapshot does not establish current availability, account eligibility or successful API/payment execution.\n\n## Key takeaways\n\n- For the first-party Basic Authentication option, the guide frames API keys as appropriate when a custom application serves one merchant or the merchant is fully responsible for the API-calling code and surrounding infrastructure. The merchant generates public and private keys in the Braintree Control Panel, stores them securely, and uses them in the page's linked GraphQL request pattern. The page does not publish credential values or establish that any credential is valid.\n- For the third-party Bearer Authentication option, the guide frames OAuth as appropriate for a single application or codebase used by multiple merchants. A web-based permission-granting flow replaces merchants copying and pasting credentials.\n- The multi-merchant application must create an OAuth application, implement the merchant-facing web OAuth flow, store each merchant's access and refresh tokens, monitor token expiry, and refresh tokens before expiry as needed. The linked configuration, flow and token pages own the exact environment, permission, exchange and lifecycle details; this page does not supply token lifetimes.\n- A third-party application cannot grant permissions to its own account. For testing and development, the guide requires two Braintree Sandbox accounts: one application owner and one simulated test merchant. This Sandbox arrangement does not establish Production access or eligibility.\n\n> [!warning] Keep credentials secure and merchant-scoped\n> The page requires secure storage for first-party API keys and per-merchant storage plus expiry monitoring for OAuth tokens. Do not place real keys or tokens in wiki content, and do not treat one merchant's credentials as authority for another merchant.\n\n> [!warning] OAuth testing requires separate Sandbox roles\n> The application owner cannot grant third-party permissions to its own account. The documented two-account Sandbox setup is a testing and development condition, not Production authorization.\n\n## Detail locators\n\n- Two authentication options for Braintree In-Person GraphQL mutations: `## Choosing an Authentication Option for your POS Solution`, line 19.\n- Single-merchant or merchant-responsible API-calling code and surrounding infrastructure condition, public/private API-key generation, secure storage and linked GraphQL request route: `### 1st Party API Caller (API Keys) - Basic Authentication`, lines 22-24.\n- Multi-merchant application/codebase condition and web permission-granting purpose: `### 3rd Party Application (OAuth) - Bearer Authentication`, lines 27-29.\n- OAuth application, merchant-facing flow, per-merchant token custody, expiry monitoring and refresh responsibility: `### 3rd Party Application (OAuth) - Bearer Authentication`, line 31.\n- Own-account permission prohibition and separate application-owner/test-merchant Sandbox accounts: `**NOTE**`, lines 33-34.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-in-person]]\n- Connected-merchant OAuth routes: [[braintree-auth]] and [[braintree-extend-oauth]]\n\n## Related raw API references\n\n- [[raw/braintree/articles/control-panel/important-gateway-credentials-2026-09-16|Important Gateway Credentials]] - unread API-key navigation\n- [[raw/braintree/graphql/guides/making_api_calls-2026-09-16|Making GraphQL API Calls]] - unread GraphQL request-requirements navigation\n- [[raw/braintree/docs/guides/extend/oauth/configuration-2026-09-16|Extend OAuth Configuration]] - unread OAuth-application navigation\n- [[raw/braintree/docs/guides/braintree-auth/overview-2026-09-16|Braintree Auth Overview]] - unread merchant-facing OAuth-flow navigation\n- [[raw/braintree/docs/guides/extend/oauth/access-tokens/node-2026-09-16|Extend OAuth Access Tokens (Node.js)]] - unread token-lifecycle navigation\n- [[raw/braintree/in-person/get-started-1/account-structure-2026-09-16|In-Person Account Structure]] - unread final-page navigation\n- [[raw/braintree/in-person/guides/setup-reader-2026-09-16|In-Person Setup Reader]] - unread final-page navigation\n\n## Raw Sources\n\n- [[raw/braintree/in-person/guides/api-authentication-2026-09-16|Braintree In-Person API Authentication]] - complete collected guide comparing first-party API-key and third-party OAuth authentication options\n",
+  "quotes": [
+    {
+      "text": "GraphQL requests (Braintree In-Person mutations) can be authenticated in one of two ways.",
+      "location": "## Choosing an Authentication Option for your POS Solution, line 19"
+    },
+    {
+      "text": "This is the ideal method if you're developing a custom application for a single merchant or offering a solution in which the merchant is fully responsible for the code calling the API and infrastructure surrounding it. In this model, a merchant logs in to the Braintree Control Panel to [generate API Keys](/braintree/articles/control-panel/important-gateway-credentials#api-keys) (public and private keys), copies and securely stores them, and makes API calls with them as a base64-encoded string, [as outlined here for GraphQL](/braintree/graphql/guides/making_api_calls/#request-requirements).",
+      "location": "### 1st Party API Caller (API Keys) - Basic Authentication, line 24"
+    },
+    {
+      "text": "This is the ideal method if you're developing a single application or codebase leveraged by multiple merchants. This method removes the need for merchants to copy and paste credentials by replacing them with a web-based permission-granting flow within your application.",
+      "location": "### 3rd Party Application (OAuth) - Bearer Authentication, line 29"
+    },
+    {
+      "text": "You will need to [create an OAuth Application](/braintree/docs/guides/extend/oauth/configuration), [implement the merchant-facing web-based OAuth Flow](/braintree/docs/guides/braintree-auth/overview), and [store theAccessTokenandRefreshToken](/braintree/docs/guides/extend/oauth/access-tokens) on behalf of each of your merchants. Your application will also need to monitor token expiry and refresh them behind the scenes prior to expiry as needed.",
+      "location": "### 3rd Party Application (OAuth) - Bearer Authentication, line 31"
+    },
+    {
+      "text": "You cannot grant 3rd Party permissions to your own account. For testing and development, you will need to [create two Braintree sandbox accounts](https://www.braintreepayments.com/sandbox?locale=us). One account will act as the application owner, and the other account to simulate a test merchant.",
+      "location": "**NOTE**, lines 33-34"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "in-person-api-authentication-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-in-person.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-in-person-guides-api-authentication]] - 2026-09-16 unversioned Braintree In-Person website guide comparing first-party API-key authentication for a single merchant or merchant-responsible API-calling code and surrounding infrastructure with OAuth bearer authentication for a multi-merchant application, including per-merchant token custody and a two-Sandbox-account testing boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Purpose-only reciprocal route; retain Braintree Auth and Extend OAuth as distinct linked authorities."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/in-person/guides/api-authentication-2026-09-16.md",
+  "raw_sha256": "0bd33a1ccb03fb89e1b03fec4ccec86e643101fff8f7755d731274fc58432a78",
+  "status": "candidate_ready"
+}

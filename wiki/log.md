@@ -74,6 +74,10 @@ Approved focused serial ingest; inventories and 117 unchanged retained files ver
 - Updated [[stripe-cli]], [[source-github-stripe-cli]], [[changelog-github-stripe-cli]], company and provider catalog. Captured OAuth destination/redirect safeguards, attempted session revocation, shared credential helper, error categories, telemetry and internal transport. Qualified note-only feedback/RPC/host-mapping details and 28 policy-excluded tests.
 - No cross-company comparison or factual contradiction identified. Stop before `1.50.2`; no commit/push authorized.
 
+## [2026-10-07] ingest | Braintree website C44
+
+- Fifty retrieval sources and thirteen existing reciprocal concepts; initial accepted review47/50, three targeted reviews, no repeated full review. One mechanical concept insertion repair, no semantic source amendment. Catalog702=685website+17GitHub; raw unchanged. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-44/`. No commit/push.
+
 ## [2026-10-07] ingest | Braintree website C43
 
 - Fifty retrieval sources and twelve existing reciprocal concepts; initial review45/50, six targeted reviews, no repeated full review. One supplemental-quote handoff mechanically corrected; fixed queries100/100 without source amendments. Catalog652=635website+17GitHub; raw unchanged. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-43/`. No commit/push.

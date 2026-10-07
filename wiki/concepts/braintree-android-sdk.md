@@ -71,6 +71,8 @@ Release `5.30.0` makes the principal Kotlin suspend functions public, removes th
 
 ## Related
 
+- [[source-braintree-docs-guides-google-pay-configuration-android-v5]] - 2026-09-16 Android v5-routed website configuration guide for environment-specific Control Panel enablement, merchant-account activation routing, separate Google production work and PayPal-via-Google-Pay dual enablement; preserves a dated mobile-certificate warning and is not exact-package, current account/eligibility, client/server lifecycle or payment-execution proof
+
 - [[source-braintree-docs-guides-google-pay-testing-go-live-android-v5]] - 2026-09-16 Android v5-routed Google Pay testing/go-live snapshot for sandbox nonce behavior, production Control Panel enablement and Google's separate production-access/app-review route; preserves a dated mobile-certificate warning and is not current eligibility, enablement, exact package/runtime, review-approval or payment-execution proof
 
 - [[source-braintree-docs-guides-paypal-checkout-with-vault-android-v5]] - 2026-09-16 Android v5-routed website guide for one checkout that both charges and requests Billing Agreement consent for future merchant-initiated payments, with optional recurring detail fields and documented exclusions; not current exact-package support, eligibility, enablement, runtime or payment-execution proof

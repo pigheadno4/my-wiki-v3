@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-07] ingest | Braintree website C44
+
+- Fifty English website raws fully read and independently reviewed through ten shared rolling child slots. Fifty retrieval sources and thirteen existing reciprocal concepts; no new concept. Catalog702=685website+17GitHub. Raw unchanged.
+- Initial accepted review47/50; fifty full initial reviews and three targeted correction reviews, no repeated full review or terminal rejection. Corrections preserve Channel API versus generic webhook contracts, merchant responsibility versus ownership, and optional report grouping plus central reporting discoverability. A raw Swift syntax observation was independently reconsidered nonblocking without a worker retry; original evidence retained.
+- One coordinator mechanical promotion repair restored a historical reciprocal line split by a partial anchor and installed the exact approved new entry separately; no semantic source amendment. Shared catalogs/counts/logs aggregated once. Fixed queries100/100PASS;65-file typed validation and structural close passed. Runtime56m06s. Evidence: `tracking/ingest/braintree/braintree-campaign-44/`.
+- No collection, GitHub ingestion, code/rule/schema change, full unit suite, worktree, commit, push or next-campaign execution.
+
 ## [2026-10-07] ingest | Braintree website C43
 
 - Fifty pinned English website raws fully read and independently reviewed through ten shared rolling child slots. Fifty retrieval sources and twelve existing reciprocal concepts; no new concept. Catalog652=635website+17GitHub. Raw unchanged.

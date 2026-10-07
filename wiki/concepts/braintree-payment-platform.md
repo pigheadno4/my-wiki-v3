@@ -25,6 +25,27 @@ PayPal transactions follow a separate collected funding route: by default PayPal
 
 ## Sources
 
+- [[source-braintree-docs-guides-overview]] - 2026-09-16 captured, unversioned Braintree website navigation overview separating quick-start guides from API-reference mechanics and routing Basics, Payment Method Types, Tools and Additional Features; documentation orientation only, not SDK-version, product-prerequisite, integration-procedure, environment, timing or operational-guarantee evidence
+
+- [[source-braintree-docs-reference-general-braintree-ip-addresses]] - 2026-09-16 collected, unversioned Braintree website reference for merchant/server firewall allowlisting of Braintree Production and Sandbox destination domains and changing IP ranges, with separate environment locators and a payment-connectivity warning; not current IP inventory, inbound-origin authority or payment/security proof
+
+- [[source-braintree-docs-guides-package-tracking-client-side]] - 2026-09-16 unversioned website client-configuration examples for supplying PayPal order line-item metadata during user-approval creation across JavaScript, Swift and Kotlin, with a conditional unchanged-line-item client/server handoff and no exact SDK, runtime or environment version
+
+- [[source-braintree-docs-reference-general-level-2-and-3-processing-overview]] - 2026-09-16 unversioned Braintree general webpage overview for Level 2/3 credit-card sale data, conditional lower-interchange qualification for certain Visa/Mastercard corporate or purchasing cards, and US Tax-ID or EU/UK VAT-ID plus qualifying-MCC prerequisites; not environment/version/current-network-policy, actual-eligibility, interchange-result or transaction-outcome proof
+
+
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-obtaining-an-access-token]] - 2026-09-16 collected, unversioned Braintree website guide to obtaining a retailer-authorized PayPal Commerce Channel API access token with channel credentials and retailer domain, sandbox-qualified request scope, returned lifetime, expiry refresh, and permission or revocation failure states
+
+- [[source-braintree-docs-guides-functions-advanced]] - 2026-09-16 Braintree Functions advanced-topics documentation preview for generated-configuration environment variables and the single-argument JavaScript runtime context; it identifies sandbox/production environment metadata plus invocation/request tracing IDs, while a separate JSON example uses unexplained alternate field names and no client/server SDK or exact runtime version is identified
+
+- [[source-braintree-docs-guides-functions-overview]] - 2026-09-16 Braintree Functions overview documentation preview for Braintree-platform triggers that execute provided code for partner/vendor workflows and conditional response mapping, with an existing-integration orientation; it does not establish beta status, current availability, account eligibility, an exact runtime/SDK, client/server placement, environment or execution success
+
+- [[source-braintree-docs-reference-client-api-overview]] - 2026-09-16 unversioned Braintree Client API overview for the shared HTTP payment-method nonce layer used by iOS, Android and JavaScript SDKs, with authorization-fingerprint, request, response and error locators; distinct from package-qualified SDK behavior, client-token issuance, environment selection, downstream server processing and payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-keeping-track-of-retailers]] - 2026-09-16 collected, unversioned Braintree website guide for maintaining a channel's authorized-retailer list through server-delivered onboarding and offboarding messages, with offboarding credential invalidation and response-conditioned redelivery; no environment or SDK version is named, and the snapshot is not current availability, eligibility, setup, delivery, or payment/order-execution proof
+
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-overview]] - 2026-09-16 collected, unversioned Braintree website overview for the PayPal Commerce Channel API's social-network, marketplace and mobile-app channel proposition, onboarding prerequisites, channel credentials, Vault/SDK token dependency and retailer authorization transition; the manual one-time versus future self-managed authorization wording is historical snapshot scope, not current availability, eligibility, enablement or transaction proof
+
 - [[source-braintree-graphql-integration-guides]] - 2026-09-16 unversioned Braintree GraphQL integration-guide overview for feature-specific end-to-end guide navigation, per-guide merchant/region/use-case availability checks, intentionally pared-down examples, Sandbox Explorer and missing-guide fallback routes; not current eligibility, enablement, exact deployed schema, SDK/runtime behavior, request execution or payment proof
 
 - [[source-braintree-docs-guides-functions-import-data]] - 2026-09-16 Braintree Functions documentation-preview example for a `dataImport` Function that transforms an incoming payload into returned transaction attributes, with normal-validation, local-test and environment-qualified deployment routes; not current support, account eligibility, exact package/runtime or successful payment proof

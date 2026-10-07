@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-disputes-automating-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Automating Dispute Management (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/disputes/automating/node\"\nraw_files:\n  - \"braintree/docs/guides/disputes/automating/node-2026-09-16.md\"\ntags: [braintree, disputes, automation, webhooks, node-js]\n---\n\n## Overview\n\nThis unversioned Braintree Node.js webpage, captured 2026-09-16, presents a webhook-triggered pattern for automating part or all of a merchant dispute-management workflow. API dispute management is available only to merchants who can access disputes in the Braintree Control Panel.\n\n## Key takeaways\n\n- The basic sequence is to inspect an incoming webhook, confirm that it represents a newly opened dispute, take the dispute ID from the payload, retrieve the dispute object, gather and submit evidence under merchant-defined criteria, and finalize the dispute.\n- The Node example narrows automation to a `DisputeOpened` notification whose retrieved dispute reason is `ProductNotReceived`. It uploads a transaction-associated shipping-confirmation PDF as an evidence document; only when that upload reports success does the example attach the uploaded document to the dispute and call finalize.\n- When the retrieved dispute does not match that reason, the example instead comments that the webhook should be persisted and handled by another workflow. The shipped-goods and shipping-confirmation assumptions are specific to the illustrated ecommerce merchant rather than universal evidence requirements.\n\nScope and evidence boundary: this captured Node.js-family website example is not an exact SDK package/version or runtime contract, does not identify sandbox versus production, and does not itself establish current account or product availability, webhook delivery guarantees, a dispute-status transition, successful evidence submission or finalization, or a dispute outcome.\n\n## Detail locators\n\n- Control Panel dispute-access condition and automation purpose: opening `AVAILABILITY` block and introduction, lines 17-20.\n- Basic webhook-to-finalization sequence: `## Automation with webhooks`, lines 23-32.\n- Shipped-product example condition and shipping-confirmation evidence rationale: example introduction, line 34.\n- Node.js `DisputeOpened` and `ProductNotReceived` checks, evidence-document upload, success-conditioned attachment and finalization, and alternate persistence branch: `### Node`, lines 37-68.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n- Notification concept: [[braintree-webhooks]]\n\n## Related raw API references\n\n- Webhook parsing, Dispute Find and Dispute Finalize are linked navigation targets in the captured page; they were not used here as independent behavioral evidence.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/disputes/automating/node-2026-09-16|Braintree Automating Dispute Management (Node.js) guide]] - complete captured webpage covering eligibility, the webhook-triggered dispute automation sequence, and a reason-conditioned shipping-confirmation example",
+  "quotes": [
+    {
+      "text": "Managing disputes via the API is only available to merchants who can access disputes in the Braintree Control Panel.",
+      "location": "line 18, AVAILABILITY block"
+    },
+    {
+      "text": "A key benefit of managing disputes via the API is the option to automate part or all of your dispute management workflow.",
+      "location": "line 20, introduction"
+    },
+    {
+      "text": "- If the webhook is for a newly-opened dispute, get the dispute ID from the webhook payload",
+      "location": "line 29, Automation with webhooks step list"
+    },
+    {
+      "text": "Below is an example of an automation workflow for an ecommerce merchant whose products are typically shipped to customers. Because this merchant has a shipping confirmation attached to each transaction, they can automatically submit these confirmations as evidence for chargebacks with the reason Product not received.",
+      "location": "line 34, example introduction"
+    },
+    {
+      "text": "// Persist the webhook and follow another workflow to address the dispute",
+      "location": "line 66, Node example alternate branch"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c44-w18-disputes-source-link",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-disputes-automating-node]] - unversioned Braintree Node.js webpage captured 2026-09-16 presenting an account-qualified, webhook-triggered dispute automation pattern and a reason-conditioned shipping-confirmation example; not an exact SDK package/version contract, current availability, lifecycle-transition, execution or outcome proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/disputes/automating/node-2026-09-16.md",
+  "raw_sha256": "6651c5565216f22a6897012e0cf03189fbb7323332e4975f19cb5fe14d691381",
+  "status": "candidate_ready"
+}

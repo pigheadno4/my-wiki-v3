@@ -108,6 +108,8 @@ Metronome documents a billing-data reconciliation pattern that extends beyond ma
 
 ## Sources
 
+- [[source-braintree-docs-guides-reports-overview]] — 2026-09-16 unversioned Braintree website overview routing among API settlement batch summaries, merchant-built custom reports, webhook-based reports, and additional Control Panel report information; collected navigation snapshot, not a detailed API, eligibility, timing, completeness, settlement, disbursement, funding, or execution contract
+
 - [[source-braintree-docs-guides-reports-custom-node]] - 2026-09-16 unversioned Braintree Node.js website guide to merchant-built API transaction-search and CSV reporting, with integration, API-key, selectable-field/date-window, sample-only and search-cap boundaries; not current account or report availability, actual generation, or payment, settlement or funding proof
 - [[source-braintree-articles-nab-statements-reconciliation]] - 2026-09-16 Braintree-hosted NAB account/processor statement and reconciliation snapshot covering two monthly statements, permission-gated access, pricing-qualified fee sections, Settlement Batch Summary comparison and bank-dependent deposit delays; not independent NAB policy or proof of settlement or deposit arrival
 

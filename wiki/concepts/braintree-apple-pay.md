@@ -21,6 +21,8 @@ The page says Apple Pay cards can be vaulted and used for recurring billing and 
 
 ## Sources
 
+- [[source-braintree-docs-guides-apple-pay-testing-go-live]] - 2026-09-16 captured unversioned Braintree Apple Pay testing and go-live webpage for sandbox and production validation boundaries and launch checks
+
 - [[source-braintree-docs-guides-apple-pay-configuration-javascript-v3]] - 2026-09-16 captured Braintree JavaScript v3/web configuration route for environment-matched iCloud testing accounts, sandbox and production domain registration, the web shared-certificate qualification, and production domain-association-file verification conditions
 
 - [[source-braintree-docs-guides-apple-pay-configuration-ios-v7]] - 2026-09-16 captured Braintree iOS v7 configuration route for Apple Merchant ID, payment processing certificate, separate sandbox/production provisioning, renewal, and Xcode setup, with a dated mobile-SDK certificate warning and enterprise-provisioning exclusion

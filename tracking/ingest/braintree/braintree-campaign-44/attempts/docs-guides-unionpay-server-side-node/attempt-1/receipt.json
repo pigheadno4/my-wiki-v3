@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-guides-unionpay-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree UnionPay Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/unionpay/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/unionpay/server-side/node-2026-09-16.md\"\ntags: [braintree, unionpay, nodejs, server-side, transactions, deprecated]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of an unversioned [[braintree]] Node.js-routed server-side guide documents the deprecated dedicated UnionPay flow: after the client successfully tokenizes payment information, the server receives the payment-method nonce and client-collected device data and uses them to create a transaction. The page directs UnionPay processing to the credit-card path through Discover, while its retained examples still describe the deprecated flow. It identifies no exact Node SDK package or version, environment, processing time, or Vault behavior, and does not establish current merchant or card eligibility or a successful transaction. See [[braintree-payment-methods]] for the provider-wide route.\n\n> [!warning] Deprecated dedicated integration\n> The page says this dedicated UnionPay integration is deprecated because UnionPay can now be processed as a credit card through Discover. Treat the transaction examples as historical route documentation, not proof that the dedicated path remains available or that the replacement has executed successfully.\n\n## Key takeaways\n\n- Under **Creating transactions**, the page places tokenization on the client and transaction creation on the server: send the client-produced nonce to the server, collect device data on the client and include both in the transaction request.\n- The callback and Promise examples call `gateway.transaction.sale()` with an amount, `paymentMethodNonce`, `deviceData` and `submitForSettlement: true`. The examples branch on `result.success`; they are request-shape evidence, not a transaction-result guarantee.\n- Delayed settlement is presented only when the UnionPay card is not a debit card. In that condition, the page says submission for settlement may occur separately, including for delayed fulfillment.\n\n## Detail locators\n\n- Dedicated UnionPay deprecation and Discover credit-card replacement: opening `**AVAILABILITY**`, raw lines 17-18.\n- Client tokenization, nonce handoff, device-data collection and server transaction instruction: `## Creating transactions`, raw lines 21-25.\n- Callback `gateway.transaction.sale()` example: `### Callbacks`, raw lines 26-42.\n- Promise `gateway.transaction.sale()` example: `### Promises`, raw lines 44-60.\n- Non-debit condition and separate settlement for delayed fulfillment: `### Delayed settlement`, raw lines 62-67.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- UnionPay product and processing scope: [[source-braintree-payment-methods-unionpay]]\n- Replacement credit-card route: [[source-braintree-credit-cards-server-side-node]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/unionpay/server-side/node-2026-09-16|Braintree UnionPay server-side Node.js guide (captured 2026-09-16)]] - fully read pinned website snapshot covering deprecation, client-to-server nonce and device-data handoff, transaction examples and the non-debit delayed-settlement condition\n",
+  "quotes": [
+    {
+      "text": "This integration for UnionPay has been deprecated, as UnionPay can now be processed as a credit card through their partnership with Discover. See our [credit card guide](/braintree/docs/guides/credit-cards/overview) for more information.",
+      "location": "opening AVAILABILITY notice, raw line 18"
+    },
+    {
+      "text": "You will receive a payment method nonce when your client successfully tokenizes your customer's\npayment information. Pass this nonce to your server and create a transaction.[Collect device data](/braintree/docs/guides/premium-fraud-management-tools/client-side)from the client and include the`device_data_from_the_client`in the\ntransaction.",
+      "location": "## Creating transactions, raw lines 23-25"
+    },
+    {
+      "text": "gateway.transaction.sale({\n    amount: \"10.00\",\n    paymentMethodNonce: nonceFromTheClient,\n    deviceData: deviceDataFromTheClient,\n    options: {\n        submitForSettlement: true\n    }",
+      "location": "### Callbacks code block, raw lines 28-34"
+    },
+    {
+      "text": "If the UnionPay card[is not a debit card](/braintree/docs/guides/unionpay/client-side),\nyou can choose to submit the transaction for settlement separately. This can be helpful if you have\na delayed order fulfillment process and prefer to wait to settle the transaction until you're ready\nto provide your goods or services.",
+      "location": "### Delayed settlement, raw lines 64-67"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c44-unionpay-server-node-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-unionpay-server-side-node]] - 2026-09-16 unversioned Braintree Node.js-routed server-side guide for the deprecated dedicated UnionPay client-nonce and device-data transaction path, Discover credit-card replacement direction, and non-debit delayed-settlement condition; no exact package/version, environment, Vault behavior or payment outcome is established",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the dedicated-flow deprecation and Discover replacement visible; do not turn the retained sale examples into current support or execution proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/unionpay/server-side/node-2026-09-16.md",
+  "raw_sha256": "f95e2953ed8c82d8f8a5fa9822f6d859421c50bfe6b2f98c7edd309cabea807c",
+  "status": "candidate_ready"
+}

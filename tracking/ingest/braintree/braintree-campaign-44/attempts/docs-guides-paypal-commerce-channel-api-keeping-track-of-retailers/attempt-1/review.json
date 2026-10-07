@@ -1,0 +1,16 @@
+{
+  "job_id": "docs-guides-paypal-commerce-channel-api-keeping-track-of-retailers",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The pinned SHA-256 matches and the raw was fully read. The source page accurately preserves the Channel API retailer authorization boundary, payload examples, credential invalidation, destination, acknowledgement threshold and redelivery window; all five quotes are literal at the stated locations, and provenance resolves. One material retrieval conflict remains: the existing [[braintree-webhooks]] route documents a different guide-specific 2xx-within-30-seconds and sandbox/production retry contract, while this Channel API guide requires HTTP 200 in under 10 seconds and describes retries over the next 12 hours. Routing only through [[braintree-payment-platform]] leaves a webhook-focused query liable to select the wrong contract and provides no reciprocal path from the webhook concept to this fully read source.",
+  "required_changes": [
+    "Add [[braintree-webhooks]] as a relevant source-page route and propose a reciprocal source entry under wiki/concepts/braintree-webhooks.md#Sources. Explicitly distinguish this PayPal Commerce Channel API retailer-message contract (destination supplied during Channel API setup; HTTP 200 in under 10 seconds; several retries over the next 12 hours) from the generic Node webhook parsing guide's successful HTTPS 2xx within 30 seconds and environment-specific 3-hour/24-hour windows; do not transfer signature, transport, environment, cadence, or parsing semantics between them. For the query 'What acknowledgement and retry rules apply to PayPal Commerce Channel API retailer onboarding/offboarding webhooks?', the present payment-platform-only route is insufficient because the dedicated webhook concept can return the conflicting generic contract without exposing this source. Keep the already-correct [[braintree-payment-platform]] route and reciprocal update."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "c44-w06-braintree-payment-platform-reciprocal"
+  ],
+  "reviewer_identity": "braintree-c44-r-06",
+  "reviewer_model": "gpt-5.6-sol"
+}

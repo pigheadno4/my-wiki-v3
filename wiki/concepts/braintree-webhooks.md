@@ -18,6 +18,12 @@ Braintree states that it strives to send notifications as quickly as events occu
 The dedicated Node.js parsing guide documents parsing the `bt_signature` parameter together with the signed `bt_payload` parameter, an invalid-signature exception, non-sequential arrival, and hourly retries when the handler does not return a successful HTTPS `2xx` response within 30 seconds; the retry window is up to 3 hours in sandbox and 24 hours in production. These guide-specific conditions do not establish a general delivery-time or sequential-delivery guarantee. [[source-braintree-webhooks-parse-node]]
 
 ## Sources
+
+- [[source-braintree-docs-guides-reports-overview]] — unversioned website overview routing to settlement batch summaries, merchant-built custom reports, webhook-based reports, and additional Control Panel report information
+
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-keeping-track-of-retailers]] - PayPal Commerce Channel API retailer onboarding/offboarding messages sent to the Channel API setup destination, with an HTTP 200-in-under-10-seconds acknowledgement condition and several redeliveries over the next 12 hours; this contract is distinct from the generic Node webhook parsing guide's successful HTTPS `2xx` within 30 seconds and environment-specific hourly retry windows, whose signature, transport, environment, cadence and parsing semantics do not transfer
+
+- [[source-braintree-docs-guides-reports-webhooks-node]] — unversioned Node.js website guide to merchant-owned reporting from stored webhook notifications, with Braintree-managed-funding eligibility and disbursement/transaction lookup routes
 - [[source-braintree-premium-fraud-management-tools-webhooks-node]] - Node.js Fraud Protection Advanced reviewed-transaction webhook guide, with Advanced-only availability, server-side parsing examples, optional Transaction Find lookup and explicit lifecycle-evidence boundaries
 - [[source-braintree-control-panel-webhooks]] - Control Panel webhook purpose and event-family overview, exact Manage Webhooks permission, destination and notification-selection setup, separate server-parsing boundary, and production test-kind warning
 - [[source-braintree-control-panel-audit-webhooks]] - select-partner Audit Webhooks that push gateway authentication and administration event notifications to a designated destination across API, Login, AuthZ, OAuth and Fraud Protection; the collected article does not state a required Control Panel permission or setup procedure, or further transport, endpoint, timing, ordering, retry, duplicate, signature, acknowledgement, replay or failure-recovery semantics
@@ -57,3 +63,5 @@ The dedicated Node.js parsing guide documents parsing the `bt_signature` paramet
 - [[source-braintree-webhooks-parse-node]] — Node.js `bt_signature` plus signed-`bt_payload` parsing, invalid-signature failure, non-sequential arrival, and response-conditioned retry timing
 
 - [[source-braintree-webhooks-overview]] — notification purpose, HTTPS delivery, event-family routing, permissions, and burst-volume warning
+
+- [[source-braintree-docs-reference-general-webhooks-overview]] - unversioned generic reference index for notification-kind trigger routing, common notification attributes, and invalid-signature parsing failure; distinct from product-specific Channel API, SDK, environment, and delivery contracts

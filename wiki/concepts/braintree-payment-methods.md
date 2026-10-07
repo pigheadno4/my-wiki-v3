@@ -20,18 +20,52 @@ Card scope also varies by account and use case: the page distinguishes US from m
 
 ## Sources
 
+- [[source-braintree-docs-guides-elo-testing]] - 2026-09-16 unversioned Braintree Elo testing webpage for limited-release, page-relative latest JavaScript v3 and server SDK merchants, with Sandbox card and verification/enrollment error fixtures; not Production card data or payment-execution proof
+
+- [[source-braintree-docs-guides-elo-client-side-javascript-v3]] - 2026-09-16 Braintree-hosted JavaScript v3 Elo client-side guide for limited-release access, outside-Brazil Discover routing of dual-branded Elo cards, credit-only checkout inputs and immediate-or-delayed server settlement choices; not current availability, an exact package requirement, merchant or environment enablement, network-coverage timing, or payment-execution proof
+
+- [[source-braintree-docs-guides-masterpass-testing-go-live]] - 2026-09-16 unversioned Braintree website testing reference for server-side Masterpass Sandbox simulation with a test-card-only validation rule and static card-brand nonces; despite the title, the captured body provides no Production or go-live procedure, and its Masterpass-to-limited-release-SRC direction conflicts with the retained January 20, 2026 SRC end-of-support notice, leaving current support and a safe migration path unresolved
+
+- [[source-braintree-docs-guides-amex-express-checkout-configuration]] - 2026-09-16 unversioned Braintree website configuration page for legacy Amex Express Checkout Control Panel enablement, signup, checkout-tag client-credential purpose and separate sandbox-account setup; preserves replacement-by-SRC, current-configuration and unresolved SRC support-status tensions without asserting current availability, merchant enablement, exact SDK/runtime behavior or payment execution
+
+- [[source-braintree-docs-reference-general-network-tokenization-node]] - 2026-09-16 Braintree website Node-routed response-field reference distinguishing a vaulted card's managed-network-token state from transaction-level token use, with Visa/Mastercard and merchant-account-eligibility qualifications; not Apple Pay or another product response, BYOT request guidance, exact Node package/version, environment, present enablement or payment-execution proof
+
+- [[source-braintree-docs-guides-unionpay-server-side-node]] - 2026-09-16 unversioned Braintree Node.js-routed server-side guide for the deprecated dedicated UnionPay client-nonce and device-data transaction path, Discover credit-card replacement direction, and non-debit delayed-settlement condition; no exact package/version, environment, Vault behavior or payment outcome is established
+
+- [[source-braintree-docs-guides-amex-express-checkout-testing-go-live]] - 2026-09-16 unversioned Braintree website guide for legacy Amex Express Checkout Sandbox fixtures and the JavaScript `amex:init` `qa`-to-`production` environment switch, preserving the replaced-versus-currently-available Amex tension and the unresolved SRC end-of-support conflict; not current product availability, exact SDK behavior, Production enablement or payment-execution proof
+
+- [[source-braintree-docs-guides-amex-express-checkout-server-side-node]] - 2026-09-16 unversioned Braintree Node-routed website guide for legacy Amex Express Checkout nonce handoff and card-identification fields; preserves replacement-by-SRC direction and the unresolved SRC availability conflict without asserting an exact Node package/runtime, current enablement or payment outcome
+
+- [[source-braintree-docs-guides-amex-express-checkout-overview]] - 2026-09-16 unversioned Braintree website overview of legacy Amex Express Checkout merchant/cardmember eligibility, merchant-specific vaulted card-number handling, nonce handoff and client/server setup routing; preserves the page's replaced-versus-currently-available tension and SRC limited-release, API-change and access qualifications, without establishing current support, exact SDK/environment behavior or payment execution
+
+- [[source-braintree-docs-guides-google-pay-server-side-node]] - 2026-09-16 unversioned Braintree Google Pay Node.js-routed server-side guide for client nonce/device-data handoff into `transaction.sale()` examples, legacy `AndroidPayCard` response naming and qualified card-versus-PayPal-account Vault behavior
+
+- [[source-braintree-docs-guides-google-pay-decrypted-server-side-node]] - 2026-09-16 unversioned Braintree Google Pay Node.js-routed webpage for merchant-server sale creation from already-decrypted card values, with decryption-risk, ECI and amount-alignment qualifications; distinct from the normal client-nonce handoff route and not exact package/runtime, merchant/environment applicability, current availability or execution proof
+
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-code-samples-graphql]] - 2026-09-16 unversioned Braintree GraphQL code-sample snapshot for retrieving optimized-routing transactions by transaction ID or debit network; the shown example filters `STAR` plus a creation window and is illustrative rather than a current runnable-schema guarantee
+
 - [[source-braintree-docs-guides-google-pay-overview]] - 2026-09-16 Braintree Google Pay overview for Android/JavaScript route orientation, the staged client/server integration path, production Google merchant-ID prerequisite and standalone-button versus Payment Request API web options; not current availability, eligibility, enablement, exact-SDK, runtime or payment-execution proof
 
 - [[source-braintree-docs-guides-amex-express-checkout-amex-brand-requirements]] - 2026-09-16 unversioned Braintree website brand-requirements snapshot for legacy Amex Express Checkout button and acceptance-mark presentation, carrying explicit replacement-by-SRC plus limited-release, API-change and access-request qualifications; not current Amex or SRC support, migration, eligibility, enablement, exact SDK/runtime behavior or payment-execution proof
 
 - [[source-braintree-docs-guides-network-tokens-how-it-works]] - 2026-09-16 unversioned Braintree website snapshot of merchant-specific network-token provisioning, token-plus-one-time-cryptogram payment routing, Vault lifecycle updates and card-network-controlled eligibility/$0 verification; not current availability, enablement, exact SDK/package behavior or payment-execution proof
 
+- [[source-braintree-docs-guides-network-tokens-getting-started]] - 2026-09-16 unversioned Braintree website getting-started route for eligibility-gated enablement, attempted Vault-card enrollment, transaction-level token-use checks and provider-managed lifecycle; not current eligibility, enablement, exact SDK/API behavior or payment-execution proof
+
+- [[source-braintree-docs-guides-network-tokens-overview]] - 2026-09-16 unversioned Braintree website overview defining Vault card tokenization and merchant-specific network tokenization, including cross-merchant restriction and lost/stolen/expired-card refresh framing; not an SDK or client/server implementation guide or execution proof
+
+- [[source-braintree-docs-guides-network-tokens-value-to-merchants]] - 2026-09-16 unversioned Braintree website benefits page for provider-stated authorization, checkout, interchange and security value plus Braintree-managed provisioning, Vault lifecycle updates and checkout use; not measured merchant outcomes, current enablement, exact SDK behavior or payment-execution proof
+
 - [[source-braintree-docs-guides-google-pay-testing-go-live-javascript-v3]] - 2026-09-16 JavaScript v3 website testing-and-go-live snapshot for Android-device user-flow prerequisites, Sandbox Google Pay nonce, gateway-display and email behavior, plus production Control Panel enablement, Google domain and merchant-ID setup, and merchant-account-specific activation routing; not current browser support, eligibility, enablement, exact package or runtime behavior, or payment-execution proof
+
+- [[source-braintree-docs-guides-google-pay-configuration-javascript-v3]] - 2026-09-16 Braintree Google Pay JavaScript v3 configuration webpage for environment-specific Control Panel enablement, merchant-account activation routing, separate Google production work and PayPal-via-Google-Pay dual enablement; not exact-package, current account/eligibility, client/server lifecycle or payment-execution proof
 
 
 - [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-test-and-go-live]] - 2026-09-16 unversioned Braintree PINless debit optimized-routing test/go-live guide for Sandbox enablement, test fixtures, amount/MCC-dependent debit-network routing, separately enabled Visa/Mastercard auto-retry and a negative retry simulation; not current availability, account enablement, exact SDK/runtime or Production behavior, or authorization, payment, settlement or funding proof
 
 - [[source-braintree-docs-guides-venmo-overview]] - 2026-09-16 Braintree Venmo developer overview for Android v5, iOS v6 and JavaScript v3 route labels, US-business-entity eligibility, mobile browser behavior and iframe/WebView restrictions; not current availability, enablement, exact-package, runtime or payment-execution proof
+
+- [[source-braintree-docs-guides-venmo-testing-go-live]] - 2026-09-16 unversioned Venmo testing/go-live snapshot for limited Sandbox app-switch, nonce and dispute fixtures plus approval-dependent Production enablement; product-level rather than mobile-SDK-family authority
 
 - [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-integration]] - 2026-09-16 unversioned Braintree website integration snapshot for PINless debit routing enablement, SDK-version-qualified routed-network visibility and Vault-dependent NTI handling, preserving network/CoF applicability and the page's unresolved network-generated-versus-Braintree-returned NTI wording; not current eligibility, enablement, package/runtime behavior or payment-execution proof
 
@@ -49,6 +83,8 @@ Card scope also varies by account and use case: the page distinguishes US from m
 
 - [[source-braintree-docs-guides-sepa-direct-debit-client-side-android-v5]] - 2026-09-16 Android v5-routed Braintree website client guide for SEPA payment-authorization launch and app-return handling, one-off mandate request example, and nonce tokenization for a separate server transaction; preserves eligible-merchant, Android v4.13+, custom-integration, Drop-in exclusion, account-enablement and execution-evidence boundaries
 
+- [[source-braintree-docs-guides-sepa-direct-debit-client-side-ios-v7]] - 2026-09-16 iOS v7-routed Braintree website client guide for required SEPA customer and bank inputs, mandate display and payment-method tokenization with nonce handoff to the merchant server; preserves eligible-merchant, iOS v5.11+ SDK-family, custom-integration, Drop-in, account-enablement and client/server scope boundaries
+
 - [[source-braintree-docs-guides-ach-overview]] - 2026-09-16 unversioned Braintree website overview of ACH Direct Debit identity and its tokenizing, vaulting, verifying and transacting lifecycle, with eligible-merchant, custom-JavaScript-v3 and Drop-in exclusion qualifications; the snapshot lists four verification options but is not current availability, enablement, exact SDK behavior or payment-execution proof
 
 - [[source-braintree-docs-guides-masterpass-client-side-javascript-v3]] - 2026-09-16 JavaScript v3 website client guide for legacy Masterpass component initialization, customer-triggered popup tokenization and nonce handoff to a server transaction, with explicit replacement-by-SRC plus limited-release, API-change and access-request qualifications; its migration direction conflicts with the separate retained SRC end-of-support notice, so present support and a safe migration path remain unresolved; not current availability, merchant enablement, exact SDK behavior or payment-execution proof
@@ -58,6 +94,10 @@ Card scope also varies by account and use case: the page distinguishes US from m
 - [[source-braintree-docs-guides-amex-express-checkout-client-side-javascript-v3]] - 2026-09-16 JavaScript v3 website guide for legacy Amex Express Checkout button/script setup, global nonce callback and optional cardmember-profile lookup, carrying an explicit replacement-by-SRC notice plus limited-release, merchant-approval and field-availability qualifications; not current support, enablement, exact SDK behavior, profile-data availability or payment-execution proof
 
 - [[source-braintree-docs-guides-sepa-direct-debit-testing-go-live-node]] - 2026-09-16 unversioned Braintree Node.js website guide distinguishing mocked and linked-PayPal-account SEPA Direct Debit Sandbox testing from separate Production credentials, settings and limited real-payment checks; Sandbox/configuration evidence is not current availability, merchant enablement, successful debit, settlement or funding proof
+
+- [[source-braintree-docs-guides-sepa-direct-debit-server-side-node]] - 2026-09-16 unversioned Braintree Node.js-routed website guide for creating SEPA Direct Debit transactions from a nonce or vaulted payment method with client-collected device data, EUR-only support and status-webhook navigation; the displayed sale examples label immediate settlement submission required, without establishing exact SDK package behavior, current enablement or payment outcome
+
+- [[source-braintree-docs-guides-sepa-direct-debit-vaulting-node]] - 2026-09-16 Node.js-routed Braintree website guide to customer-owned SEPA Direct Debit Vault payment-method creation from a client nonce, token-based sale and lookup, and deletion that also revokes the associated mandate; no exact server SDK package/version or environment is specified
 
 - [[source-braintree-docs-guides-ach-server-side-node]] - 2026-09-16 unversioned Braintree website Node.js ACH Direct Debit server-side guide for Vault-first network-check, micro-transfer and independent-check flows, with method-coupled verification, token-transaction, retry and webhook routes; preserves eligible-merchant, custom-JavaScript-v3, Drop-in exclusion, vaulted-bank-detail immutability and damaged verification-status-rendering boundaries, and is not current availability, enablement, exact SDK implementation or execution proof
 
@@ -142,6 +182,8 @@ Card scope also varies by account and use case: the page distinguishes US from m
 - [[source-braintree-payment-methods-paypal-pay-later-offers]] - Braintree PayPal Pay Later route for country-dependent offer identity, merchant-versus-customer eligibility, Checkout with Vault enablement, and messaging/button and promotional-content boundaries
 
 - [[source-braintree-payment-methods-unionpay]] - UnionPay-specific deprecation and limited-release tension; European-merchant, SDK-version and settlement-currency conditions; SMS verification and vaulted-card behavior; processing, chargeback-fee and CVV/AVS-bypass boundaries
+
+- [[source-braintree-docs-guides-unionpay-testing]] - 2026-09-16 unversioned Braintree website reference for deprecated dedicated UnionPay integration Sandbox card and verification/enrollment error fixtures; not Production or replacement credit-card-path behavior
 
 - [[source-braintree-payment-methods-paypal-credit]] - deprecated PayPal Credit guide covering the legacy reusable credit-line identity, US/UK currency and regulatory qualifications, customer credit approval, named financing options and existing-PayPal-setup boundary, with a separate Pay Later offers redirect
 
