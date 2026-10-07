@@ -54,6 +54,8 @@ Retrieval route for Braintree-specific recurring-billing documentation. Keep art
 
 ## Related routes
 
+- [[source-braintree-docs-guides-paypal-recurring-payments-javascript-v3]] - JavaScript v3 Braintree website guide for PayPal Billing Without Purchase Checkout, creation-time recurring indicators and plan disclosure, client tokenization and the later merchant-initiated payment handoff; distinct from Braintree's plan-and-subscription engine and not current enablement, direct PayPal API or payment-execution evidence.
+
 - [[recurring-payments]] - generic recurring-payments mechanics and cross-platform context
 - [[source-braintree-recurring-billing-plans-node]] - separate Node.js recurring-billing plans guide
 - [[source-braintree-plan-create-node]] - separate Node.js Plan Create request reference

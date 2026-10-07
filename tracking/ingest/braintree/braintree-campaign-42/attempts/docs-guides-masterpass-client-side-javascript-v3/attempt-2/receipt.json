@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-masterpass-client-side-javascript-v3",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Masterpass Client-Side Implementation (JavaScript v3)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/masterpass/client-side/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/masterpass/client-side/javascript/v3-2026-09-16.md\"\ntags: [braintree, masterpass, javascript-v3, tokenization, secure-remote-commerce]\n---\n\n## Overview\n\nThis Braintree website snapshot documents the JavaScript v3 client-side flow for a legacy Masterpass component: create the Braintree client and Masterpass component, reveal the button after availability is reported, invoke tokenization from a customer action, and send the resulting nonce to the server to create a transaction. The page states that Masterpass has been replaced by Secure Remote Commerce (SRC), so it is historical integration evidence rather than proof of current availability, enablement, exact hosted or SDK behavior, or successful payment execution. [[braintree]] [[braintree-payment-methods]]\n\n> [!warning] Unresolved SRC support conflict\n> This snapshot directs former Masterpass users to limited-release SRC, while the separately retained SRC authority carries an end-of-support notice. The retained routes do not resolve present SRC support or establish a safe migration path; consult [[source-braintree-payment-methods-secure-remote-commerce]] before relying on this migration direction.\n\n## Key takeaways\n\n- The page says former Masterpass users need to integrate with SRC. It simultaneously describes SRC as a limited release for eligible merchants, says its API is subject to change, and directs merchants to contact Braintree to request access.\n- Client setup uses either a tokenization key or a client token from the server. The page has the merchant create a Masterpass component and display the initially hidden button only after the component reports availability.\n- To request payment, the page calls `masterpassInstance.tokenize` with `subtotal` and `currencyCode`; the Masterpass popup prompts the customer to authorize, and a successful `payload.nonce` is sent to the server to create the transaction.\n- Because tokenization opens a popup, the guide requires the call to result from a customer action such as a button click; it cannot be invoked arbitrarily.\n\n## Detail locators\n\n- Replacement, SRC limited-release eligibility, API-change qualification and access request: raw lines 17\u201322.\n- JavaScript v3 setup and the example `client.min.js` and `masterpass.min.js` URLs at version `3.88.1`: raw lines 27\u201335.\n- Masterpass branding note plus the example button and initially hidden CSS: raw lines 37\u201359.\n- Client authorization choices, component creation and availability-gated button display, with callback and Promise examples: raw lines 61\u2013135.\n- Tokenization inputs, popup authorization, successful nonce handoff and the optional-configuration reference: raw lines 137\u2013144.\n- Callback example, including the customer-action constraint and popup-closed error branch: raw lines 146\u2013180.\n- Promise example of the same tokenization flow and popup-closed error branch: raw lines 182\u2013212.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-methods]]\n- [[source-braintree-payment-methods-secure-remote-commerce]] - separate retained SRC authority for the unresolved support-status conflict\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/masterpass/client-side/javascript/v3-2026-09-16|Braintree Masterpass Client-Side Implementation \u2014 JavaScript v3 (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Masterpass has been replaced with the latest unified checkout experience offered through Visa known as Secure Remote Commerce (SRC). If you were previously using Masterpass, you will need to [integrate with SRC](/braintree/docs/guides/secure-remote-commerce/overview)",
+      "location": "lines 17-18 under AVAILABILITY"
+    },
+    {
+      "text": "SRC is currently in a limited release to [eligible merchants](/braintree/articles/guides/payment-methods/secure-remote-commerce#availability), and the API is subject to change. It was introduced in Android v2, iOS v4, and JavaScript v3 of our Client SDKs.",
+      "location": "line 20 under AVAILABILITY"
+    },
+    {
+      "text": "To request a Masterpass payment from the customer, callmasterpassInstance.tokenizewithsubtotalandcurrencyCode",
+      "location": "line 140 under Launching Masterpass and tokenizing"
+    },
+    {
+      "text": "Because tokenization opens a popup, this has to be called as a result of\n        // customer action, like clicking a button\u2014you can't call this at any time.",
+      "location": "lines 162-163 in the Callbacks example under Launching Masterpass and tokenizing"
+    },
+    {
+      "text": "Send payload.nonce to your server, and create a transaction there.",
+      "location": "line 175 in the Callbacks example under Launching Masterpass and tokenizing"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-w43-payment-methods-source-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-masterpass-client-side-javascript-v3]] - 2026-09-16 JavaScript v3 website client guide for legacy Masterpass component initialization, customer-triggered popup tokenization and nonce handoff to a server transaction, with explicit replacement-by-SRC plus limited-release, API-change and access-request qualifications; its migration direction conflicts with the separate retained SRC end-of-support notice, so present support and a safe migration path remain unresolved; not current availability, merchant enablement, exact SDK behavior or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The client guide directs former Masterpass users to limited-release SRC, while the separate retained SRC authority carries an end-of-support notice; do not infer present support, merchant eligibility or a safe migration path."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/masterpass/client-side/javascript/v3-2026-09-16.md",
+  "raw_sha256": "12763b2331aba2a0a51bae162c32610f9bcd38ec8f52e6a20a31cfa97459e226",
+  "status": "candidate_ready"
+}

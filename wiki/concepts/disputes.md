@@ -332,6 +332,8 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 
 ## Sources
 
+- [[source-braintree-docs-guides-disputes-paypal-disputes-node]] - unversioned Braintree Node.js webpage captured 2026-09-16 for Control Panel-eligible merchants responding to PayPal disputes reflected in the Braintree gateway, with categorized evidence and deadline-bound finalization; not direct PayPal Disputes API authority, current access proof or outcome proof
+
 - [[source-braintree-docs-guides-disputes-managing]] - unversioned Braintree website guide captured 2026-09-16 for API dispute management by Control Panel-eligible merchants, covering open-dispute discovery, acceptance versus evidence response, the reply-by cutoff, expiration and loss of contest rights, and required finalization before evidence is forwarded for bank review; not independent current bank/card-network policy, GitHub implementation evidence, current merchant eligibility, execution proof, or evidence of a win, settlement, or returned funds
 - [[source-braintree-graphql-integration-guides-uploading-files]] - 2026-09-16 unversioned Braintree GraphQL guide for the single-file multipart transport used by `createDisputeFileEvidence`, including PNG/JPG/JPEG/PDF and 4 MB limits, required `operations`/`map` parts and standard GraphQL version/authorization headers; not current service-support, merchant-access, evidence-acceptance, finalization, business-approval or dispute-outcome proof
 - [[source-braintree-articles-nab-chargebacks-retrievals-prearbs]] - captured 2026-09-16 Braintree-hosted NAB account/processor article for credit-card dispute notifications, response deadlines, chargeback/retrieval/pre-arbitration handling, statuses and reporting

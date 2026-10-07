@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-guides-disputes-paypal-disputes-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Managing PayPal Disputes via the API (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/disputes/paypal-disputes/node\"\nraw_files:\n  - \"braintree/docs/guides/disputes/paypal-disputes/node-2026-09-16.md\"\ntags: [braintree, paypal, disputes, node-js, evidence]\n---\n\n## Overview\n\nThis unversioned Braintree Node.js webpage, captured 2026-09-16, explains the PayPal-specific evidence requirements for managing a PayPal dispute after it is reflected in the Braintree gateway. It applies only to merchants who can access disputes in the Braintree Control Panel and uses Braintree dispute operations rather than documenting the direct PayPal Disputes API.\n\n## Key takeaways\n\n- Once a PayPal dispute is reflected in the Braintree gateway, the page says merchants can use the same Braintree API calls used for credit-card disputes to find or search for it, check its status and respond. The differentiating requirement is the evidence: the response must declare an evidence type and use categorized evidence through the Add Text Evidence call.\n- Set the evidence category to `EVIDENCE_TYPE` and its content to `PROOF_OF_FULFILLMENT`, `PROOF_OF_REFUND` or `OTHER`. Additional text evidence uses the applicable category; file evidence is first uploaded to Braintree and then attached to the dispute. The full category inventory and Node examples remain in the raw locators below.\n- Evidence can be added repeatedly, but the dispute must be finalized before the reply-by date in its details. Only after finalization does the page say the response and evidence are sent for review; Braintree warns that an unfinalized response will not be forwarded to the deciding party after the deadline. This snapshot does not prove current merchant access, successful forwarding, review outcome or a dispute win.\n- `PROOF_OF_FULFILLMENT` applies when a shipped product was reported as fraud or not received and additionally requires `CARRIER_NAME` plus `TRACKING_NUMBER` and/or `TRACKING_URL`. Multiple tracking sets need integer `sequence_number` values so related information can be grouped.\n- `PROOF_OF_REFUND` applies when the transaction has already been refunded and additionally requires a Braintree or PayPal `REFUND_ID`; multiple refunds are added in separate Add Text Evidence requests. The page directs merchants to use `OTHER` only when they lack the required evidence for the other types; its additional categories are optional, and the page's comparative win-language is guidance rather than an outcome guarantee.\n\n## Detail locators\n\n- Control Panel dispute-access prerequisite: `# Managing PayPal Disputes via the API > AVAILABILITY`, lines 17-18.\n- Braintree-gateway scope, shared dispute operations and PayPal-specific categorized-evidence requirement: opening paragraphs, lines 20-25.\n- Evidence-type declaration, text/file evidence sequence, repetition, finalization deadline and forwarding warning: `## Responding with evidence`, lines 26-45.\n- Three evidence types and the qualification that some types require additional evidence: `### Specifying an evidence type`, lines 48-58.\n- Fulfillment conditions, required carrier/tracking categories and grouping with integer `sequence_number`: `#### Proof of fulfillment evidence type`, lines 59-67.\n- Node.js fulfillment example with two tracking groups: first `### Node`, lines 68-113.\n- Refund condition, required refund identifier, multiple-refund handling and Node.js example: `#### Proof of refund evidence type`, lines 115-138.\n- `OTHER` condition, optional additional categories, qualified comparative guidance and Node.js example: `#### Other evidence type`, lines 140-157.\n- Complete category/content values and `sequence_number` purpose: `### Argument reference`, lines 159-171.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[disputes]]\n\n## Related raw API references\n\n- Dispute Add Text Evidence, Document Upload Create, Dispute Add File Evidence and Dispute Finalize are linked navigation targets in the captured guide; those targets are not evidence for this entry.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/disputes/paypal-disputes/node-2026-09-16|Braintree Managing PayPal Disputes via the API (Node.js) guide]] - complete captured webpage covering eligibility, categorized PayPal evidence, Node examples, file-evidence navigation and deadline-bound finalization\n",
+  "quotes": [
+    {
+      "text": "Managing disputes via the API is only available to merchants who can access disputes in the Braintree Control Panel.",
+      "location": "# Managing PayPal Disputes via the API > AVAILABILITY, line 18"
+    },
+    {
+      "text": "Once a PayPal dispute is reflected in the Braintree gateway, managing it via the API is similar to\nmanaging a credit card dispute. You can use the same API calls to find or search for the dispute,\ncheck its status, and respond to it. You can also[take advantage of webhooks to automate your workflow](/braintree/docs/guides/disputes/automating). The key difference with managing PayPal disputes via the API is the evidence you must provide.\nFor PayPal disputes, you must declare an evidence type and submit additional categorized evidence\nusing the optional arguments in the[Dispute: Add Text Evidence](/braintree/docs/reference/request/dispute/add-text-evidence)call.",
+      "location": "opening paragraphs, lines 20-24 (unique occurrence beginning line 20)"
+    },
+    {
+      "text": "Braintree will not forward your response to the deciding party unless you have finalized it before the reply-by date passes.",
+      "location": "## Responding with evidence > IMPORTANT, line 45"
+    },
+    {
+      "text": "UsePROOF_OF_FULFILLMENTif you shipped the product to the customer, but the customer\nreported fraud or did not receive the product. When you specify this evidence type, you'll also need\nto include the following additional evidence:\n- CARRIER_NAME\n- TRACKING_NUMBERand/orTRACKING_URL",
+      "location": "#### Proof of fulfillment evidence type, lines 61-65"
+    },
+    {
+      "text": "UsePROOF_OF_REFUNDif the transaction has already been refunded. When you specify this\nevidence type, you'll also need to include aREFUND_ID. You can provide either the\nBraintree Refund ID or the PayPal Refund ID. If there is more than one refund associated with the\ndisputed transaction, add each one in a separate[Dispute: Add Text Evidence](/braintree/docs/reference/request/dispute/add-text-evidence)request.",
+      "location": "#### Proof of refund evidence type, lines 117-120"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-paypal-disputes-node-reciprocal-source",
+        "target_path": "wiki/concepts/disputes.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-disputes-paypal-disputes-node]] - unversioned Braintree Node.js webpage captured 2026-09-16 for Control Panel-eligible merchants responding to PayPal disputes reflected in the Braintree gateway, with categorized evidence and deadline-bound finalization; not direct PayPal Disputes API authority, current access proof or outcome proof",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/disputes/paypal-disputes/node-2026-09-16.md",
+  "raw_sha256": "809f22b60d84373bf16393f80f99674460ef220175d3e8592b9414f89f74356a",
+  "status": "candidate_ready"
+}

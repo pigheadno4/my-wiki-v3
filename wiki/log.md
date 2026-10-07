@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-07] ingest | Braintree website C42
+
+- Fifty retrieval sources and thirteen existing reciprocal concepts; initial review34/50, sixteen targeted corrections, no repeated full review. Fixed queries100/100 after three bounded source amendments; unchanged raw retained. Catalog602=585website+17GitHub. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-42/`. No commit/push.
+
 ## [2026-10-06] ingest | Braintree website C41
 
 - Fifty retrieval sources; first pass41/50, initial-review pass43/50, seven targeted corrections and two pre-review quote-handoff fixes, no repeated full review. Fixed queries100/100. Catalog552=535website+17GitHub. New In-Person and Custom Prompts retrieval routes; raw unchanged. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-41/`. No commit/push.

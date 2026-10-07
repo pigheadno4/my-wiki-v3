@@ -80,6 +80,20 @@ The v7 migration moves request properties into initializers, changes feature cli
 
 ## Related
 
+- [[source-braintree-docs-guides-shopper-insights-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for beta Shopper Insights customer-session creation/update, PayPal or Venmo recommendations, qualified checkout presentment and display/selection analytics; preserves consent, client-token, SDK-availability and historical certificate conditions, and is not current availability, merchant eligibility, recommendation-result or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-vault-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for PayPal vault-request tokenization and nonce handoff, with required device data for non-recurring Vault transactions, separately qualified App Switch navigation, merchant-displayed amount/currency and a dated certificate warning; not current SDK support, enablement or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-messaging-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for adding Pay Later messages through `BTPayPalMessagingView`, preserving the page's latest-native-SDK wording, Drop-in exclusion, eligible-country and merchant/integration conditions, message-editing prohibition, category restrictions, and optional lifecycle callbacks; not current availability, eligibility, runtime-rendering or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-app-switch-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for beta PayPal App Switch setup and checkout/vault opt-in, including US/custom-integration eligibility, authentication-session fallback, Universal Link returns and specially conditioned Sandbox testing; preserves the website-versus-implementation environment conflict and does not establish current support, enablement or payment execution
+
+- [[source-braintree-docs-guides-paypal-testing-go-live-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for mocked versus linked PayPal sandbox testing, eligibility-qualified App Switch with `ASWebAuthenticationSession` fallback, and production credentials kept in server-side configuration with a dedicated Account Admin API-user warning and unchanged client-token configuration; preserves real-card/fee warnings and the unresolved website-versus-exact-SHA App Switch environment scope, and is not sibling-platform, current-availability, direct-PayPal, execution, settlement or funding proof
+
+- [[source-braintree-docs-guides-paypal-checkout-with-paypal-ios-v7]] - 2026-09-16 website iOS v7 route for PayPal one-time checkout request tokenization, optional customization and App Switch navigation, preserving the historical mobile-certificate warning and the linked iOS v6 App Switch boundary; not current exact-package behavior, direct PayPal authority or payment-execution proof
+
+- [[source-braintree-docs-guides-venmo-client-side-ios-v7]] - 2026-09-16 Braintree website iOS v7 Venmo client guide for app/browser return callbacks, single-use versus multi-use tokenization, nonce and device-data handoff to separate server transaction creation, and eligibility/Sandbox prerequisites; preserves the page's iOS `7.0.0+` versus `6.17.0+` certificate-notice conflict and does not establish current support, enablement or payment execution
+
 - [[source-braintree-docs-guides-paypal-commerce-ios-setup]] - historical, unversioned PayPal Commerce iOS SDK setup snapshot for CocoaPods, Commerce Panel OAuth configuration, URL/app-delegate callbacks, optional platform integrations and store presentation; distinct from modular `braintree-ios` and its GitHub evidence, and not current enablement or payment proof
 
 - [[source-braintree-docs-deprecated-client-side-encryption-ios-library]] - deprecated legacy iOS payment-form and client-side-encryption snapshot with merchant-server/gateway and production-versus-sandbox key boundaries; not current SDK support, PCI-compliance, authorization, or payment proof

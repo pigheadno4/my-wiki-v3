@@ -51,6 +51,10 @@ This hook presents messaging content; it is not a payment session and does not p
 
 ## Server Boundary
 
+- [[source-braintree-docs-reference-general-paypal-advanced-options-paypal-order-payee-email-node]] - 2026-09-16 Braintree-hosted Node.js reference for creating a PayPal Order payment method with `payee_email` so transactions against that method route to a specified merchant-owned PayPal account, with setup, currency, refund and Control Panel reporting qualifications; not direct PayPal Orders API authority or proof of current eligibility or payment outcomes.
+
+- [[source-braintree-docs-reference-general-paypal-advanced-options-paypal-order-server-side-node]] - 2026-09-16 Braintree-hosted Node-routed PayPal Order server-side reference for creating or attaching a Vault payment method after buyer authentication, updating an approved payment resource before customer creation with a replacement nonce, transaction-operation navigation and payment-method deletion as the documented void path; preserves missing-method rendering, SDK-version, eligibility and execution-proof boundaries.
+
 Unlike standard PayPal buttons, merchants pass amount and currency rather than implementing `createOrder`. The Braintree SDK creates the payment session. After approval, the merchant calls `tokenizePayment()` and sends the resulting payment-method nonce to its server for processing with a Braintree server SDK, not PayPal's Orders API.
 
 The independently retained `braintree@3.39.0` Node.js, `braintree_php@6.37.0` PHP, and `braintree@4.40.0` Ruby sources confirm the server half: each language SDK accepts a payment-method nonce or vaulted token for a transaction sale and can submit the transaction for settlement. Their PayPal account and payment-resource gateways remain Braintree operations; they do not turn this flow into a direct PayPal Orders API integration. Exact methods and release findings remain package-qualified under [[braintree-server-sdk]].
@@ -67,6 +71,10 @@ The static examples load Braintree Web `3.142.0`, create `paypalCheckoutV6` from
 The README asks merchants to enable a PayPal/Venmo feature setting, but the retained implementation demonstrates PayPal, Pay Later, PayPal Credit, and Messages rather than a Venmo payment session. Do not infer a working Venmo flow from that account-setting instruction alone.
 
 ## Braintree iOS Evidence
+
+- [[source-braintree-docs-guides-paypal-pay-later-offers-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for requesting eligibility-gated Pay Later offers through `BTPayPalCheckoutRequest.offerPayLater`, preserving merchant location/integration qualifications, the captured JavaScript v3 prerequisite link and the prohibition on merchant-created additional messaging; not current availability, exact-package behavior or payment-execution proof.
+
+- [[source-braintree-docs-guides-paypal-recurring-payments-ios-v7]] - 2026-09-16 Braintree website route for iOS v7 PayPal recurring Billing Agreement creation and later Payment Token server handoff; separate from direct PayPal APIs and exact-SHA SDK evidence.
 
 The independently retained `braintree-ios@7.9.0` source exposes native `BTPayPalCheckoutRequest` and `BTPayPalVaultRequest` flows. Checkout can request billing-agreement consent and carry recurring-plan metadata; Vault can also carry recurring-plan metadata. Both return a Braintree PayPal account nonce for server processing rather than a PayPal Orders API order.
 
@@ -121,6 +129,20 @@ The independent Android `popup-bridge@5.3.0` library provides the corresponding 
 PopupBridge does not create a Braintree payment session or nonce and does not establish merchant eligibility. The Braintree Web or PayPal web integration remains responsible for checkout behavior, and the merchant server remains responsible for processing the resulting Braintree nonce or approved payment state. See [[source-github-popup-bridge-ios]] and [[source-github-popup-bridge-android]] for the independent platform implementations.
 
 ## Related
+
+- [[source-braintree-docs-reference-general-paypal-advanced-options-payee-node]] - 2026-09-16 Braintree-hosted Node-routed reference for using `payee_id` or `payee_email` on PayPal transaction sale requests to route funds among merchant-owned PayPal accounts, with separate currency-account, refund and Control Panel reporting boundaries; the captured restriction note is damaged, and the page is not current eligibility, direct PayPal API, exact SDK-version or payment-execution evidence.
+
+- Source: [[source-braintree-docs-guides-paypal-server-side-node]] - 2026-09-16 Braintree Node.js website guide for PayPal-backed transaction sale submission, post-approval payment-resource update before vaulting, conditional device data, settlement limits and recurring transaction-source handling; captured rendering gaps prevent reconstructing the missing opening parameter/call, shipping-field list or partial-settlement method.
+
+- Source: [[source-braintree-docs-guides-paypal-recurring-payments-android-v5]] - Android v5-routed Braintree website guide for PayPal Billing Without Purchase Checkout agreement creation, recurring classifications, plan-information display, account enablement and the later merchant-initiated token route; distinct from direct PayPal, current package evidence and payment-lifecycle proof
+
+- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-javascript-v3]] - 2026-09-16 Braintree JavaScript v3 custom-integration migration route from PayPal `checkout.js` v4 to PayPal JS SDK v5, covering SDK loading, button/callback mappings and setup-time Checkout/Vault selection; excludes Drop-in and new integrations and is not PayPal Web SDK v6 or current-support evidence
+
+- Source: [[source-braintree-docs-guides-paypal-recurring-payments-javascript-v3]] - collected JavaScript v3 website guide for PayPal recurring Billing Agreement creation, checkout disclosure, Braintree client tokenization and the later payment-method-token handoff; not an exact SDK release, current merchant enablement, direct PayPal Orders integration or payment-outcome proof.
+
+- Source: [[source-braintree-docs-guides-paypal-testing-go-live-javascript-v3]] - collected JavaScript v3-routed Braintree website guide for mocked versus linked PayPal Sandbox testing, App Switch and dispute test navigation, and the isolated Production transition; not direct PayPal authority, current eligibility, exact-version SDK evidence, or payment-lifecycle proof
+
+- [[source-braintree-docs-guides-paypal-checkout-with-paypal-javascript-v3]] - 2026-09-16 Braintree JavaScript v3 website route for non-vault one-time PayPal Checkout, client payment-resource creation, approval-to-nonce tokenization and server `Transaction.sale` handoff, with currency/intent matching and optional checkout-module locators; not PayPal Checkout v6, direct PayPal Orders API or payment-outcome proof
 - Source: [[source-braintree-payment-methods-paypal-shared-data]] - Braintree article-level route to the contact, business-entity, PayPal-credential, legal-agreement-consent and approved-volume categories it says are shared with PayPal to create and/or link a merchant PayPal account, with TLS/SSL transport and explicit consent-authority boundaries
 - Source: [[source-braintree-payment-methods-paypal-overview]] - article-level orientation for Braintree PayPal checkout, One-Time/Vaulted/Recurring route selection, Braintree Direct eligibility, merchant-account currency scope, fee ownership, dispute routes and sandbox choices
 - Source: [[source-braintree-payment-methods-paypal-processing]] - Braintree article-level route for PayPal authorization/capture, non-batch per-transaction processing with immediate capture after settlement submission and a later `Settling`-to-`Settled` transition within two hours, partial-settlement structure, refunds and the legacy vaulted-agreement boundary

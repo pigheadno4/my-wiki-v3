@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-sepa-direct-debit-testing-go-live-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree SEPA Direct Debit Testing and Go Live (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/sepa-direct-debit/testing-go-live/node\"\nraw_files:\n  - \"braintree/docs/guides/sepa-direct-debit/testing-go-live/node-2026-09-16.md\"\ntags: [braintree, sepa, direct-debit, node-js, sandbox, production, testing]\n---\n\n## Overview\n\nThis collected Braintree Node.js website guide distinguishes mocked and linked-PayPal-account Sandbox testing for a SEPA Direct Debit integration, then documents the separate server and account changes for Production. The page has no exact Node package version. Its Sandbox flows and configuration instructions are not proof of current SEPA availability, merchant enablement, a successful live debit, settlement, or funding.\n\n## Key takeaways\n\n- Mocked SEPA Direct Debit testing is the default route. It uses Braintree Sandbox test values to simulate PayPal responses and can check client- and server-side configuration and request responses, but it does not support end-to-end testing, does not send data to a PayPal Sandbox account, and does not work with the PayPal Checkout component of the JavaScript v3 SDK.\n- Linked-PayPal-account testing requires additional setup, connects the Braintree Sandbox account directly to a PayPal Sandbox account, returns data to both Sandbox accounts, and supports fuller integration checks such as transaction reporting and email receipts. The page says this route has no negative-testing support; linked-Sandbox results remain Sandbox evidence rather than live-payment proof.\n- Linking requires API credentials from a PayPal business Sandbox account created for the same country as the Braintree Sandbox account; the app must use the same Sandbox developer account as that test account. The page warns that some fake nonces may stop working after a successful link. It also warns not to use the PayPal business account as the PayPal customer account for linked-flow or Production test payments because doing so results in declines.\n- Sandbox and Production accounts are not linked: created objects, processing options and recurring-billing settings do not transfer, and Production uses different login information, merchant ID and API keys. The guide recommends a dedicated API user instead of an individual user's credentials, with a non-employee-specific email and Account Admin permissions. Production merchant ID, public key and private key must be placed in server-side code; public and private keys are environment- and user-specific.\n- The Production account should mirror the tested Sandbox settings, with recurring-billing plans or settings recreated when applicable. The Node.js example switches the gateway to `braintree.Environment.Production` and Production credentials. The page says the client needs no configuration update for this switch because it obtains its client token from the server.\n- The Production check calls for a limited number of low-value sale transactions for each intended payment-method type, submitted for settlement and followed through to bank deposit. Real payment methods are required, and settled tests debit the associated payment method and incur fees.\n\n## Material warnings\n\n> [!warning] Sandbox testing is not Production payment proof\n> Mocked responses and linked-Sandbox data do not establish current Production availability, enablement, a completed bank debit, settlement, or funding. Production uses separate credentials and settings, and its test transactions use real payment methods that can move funds and incur fees.\n\n> [!warning] Do not pay with the linked business account\n> The page says using the PayPal business account as the PayPal customer account for linked-flow or Production test transactions results in declines.\n\n## Detail locators\n\n- Mocked versus linked-PayPal Sandbox modes, supported checks and limits: `# Testing and Go Live`, raw lines 16\u201332.\n- PayPal business-account-as-customer decline warning: `# Testing and Go Live > IMPORTANT`, raw lines 37\u201338.\n- Mocked-flow credentials and no-PayPal-Sandbox-data boundary: `## Mocked SEPA Direct Debit testing`, raw lines 41\u201345.\n- Linked-account prerequisites, same-country and same-developer-account conditions, and credential fields: `## SEPA Direct Debit testing with linked PayPal account`, raw lines 46\u201369.\n- Fake-nonce warning and Braintree Sandbox Control Panel linking actions: `## SEPA Direct Debit testing with linked PayPal account > NOTE`, raw lines 74\u201384.\n- Sandbox/Production isolation and non-transfer warning: `## Go live > IMPORTANT`, raw lines 87\u201391.\n- Dedicated API-user recommendation and Production credentials: `### Create an API user` through `### Get production credentials`, raw lines 94\u2013110.\n- Production settings recreation, Node.js gateway environment switch and client-token boundary: `### Update production account settings` through `### Update live server configuration`, raw lines 111\u2013128.\n- Low-value Production sales, settlement/deposit check and real-payment debit/fee warning: `## Test transactions in production`, raw lines 129\u2013135.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- SEPA Direct Debit lifecycle overview: [[source-braintree-docs-guides-sepa-direct-debit-overview]]\n- Supporting server concept: [[braintree-server-sdk]]\n- Supporting administration concept: [[braintree-control-panel]]\n\n## Related raw API references\n\nThe page links general Sandbox test values, credential and user administration, processor-decline responses, transaction sale and settlement, payment-method types, and Sandbox-versus-Production material. Those targets were not read for this entry and are navigation only; they do not establish exact SDK behavior, current availability or enablement, or a successful payment lifecycle.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/sepa-direct-debit/testing-go-live/node-2026-09-16|Braintree SEPA Direct Debit Testing and Go Live for Node.js]] - complete collected page covering mocked and linked-PayPal Sandbox routes, account-linking conditions, separate Production credentials and settings, the Node.js server transition, and limited real-payment Production checks\n",
+  "quotes": [
+    {
+      "text": "You can test your SEPA Direct Debit integration in the Braintree sandbox environment in 2 ways:",
+      "location": "# Testing and Go Live, raw line 16"
+    },
+    {
+      "text": "Do not use your PayPal business account as the PayPal customer account when paying for test transactions in the linked PayPal flow or in production. Doing so will result in [declines](/braintree/docs/reference/general/processor-responses/authorization-responses) .",
+      "location": "# Testing and Go Live > IMPORTANT, raw line 38"
+    },
+    {
+      "text": "After successful link of your PayPal account with your Braintree account, some fake nonces (e.g. fake-paypal-one-time-nonce ) may stop working.",
+      "location": "## SEPA Direct Debit testing with linked PayPal account > NOTE, raw line 75"
+    },
+    {
+      "text": " **Your sandbox account is not linked to your production account in any way** . Nothing created in the sandbox will transfer to production. This includes processing options and recurring billing settings. Your login information, merchant ID, and API keys will also be different.",
+      "location": "## Go live > IMPORTANT, raw line 91"
+    },
+    {
+      "text": "Real payment methods must be used in the production environment. Test values from the sandbox testing page will not work. This means that every test transaction that you allow to settle in your production account will debit funds from the associated payment method and fees will be assessed. Be sure to test with reasonable amounts and only run a limited number of transactions.",
+      "location": "## Test transactions in production > IMPORTANT, raw line 135"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-sepa-testing-go-live-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-sepa-direct-debit-testing-go-live-node]] - 2026-09-16 unversioned Braintree Node.js website guide distinguishing mocked and linked-PayPal-account SEPA Direct Debit Sandbox testing from separate Production credentials, settings and limited real-payment checks; Sandbox/configuration evidence is not current availability, merchant enablement, successful debit, settlement or funding proof",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this testing-and-go-live route distinct from the SEPA Direct Debit overview's mandate, settlement-mode, return and dispute lifecycle authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/sepa-direct-debit/testing-go-live/node-2026-09-16.md",
+  "raw_sha256": "5a98841daf21cffc89eb38a043014dd97ba2eaf72dff43788d12a8d44b801a81",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,72 @@
+{
+  "job_id": "docs-guides-paypal-recurring-payments-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Recurring Payments (Android v5)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/recurring-payments/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/paypal/recurring-payments/android/v5-2026-09-16.md\"\ntags: [braintree, paypal, android, android-v5, recurring-payments, billing-agreements]\n---\n\n## Overview\n\nThis collected Android v5-routed [[braintree]] website guide documents client-side creation of a PayPal recurring Billing Agreement through PayPal's Billing Without Purchase Checkout flow and the later Braintree token route for merchant-initiated payments. The page describes merchant-initiated charging based on a schedule or other service-usage criteria and distinguishes subscription, recurring, unscheduled and installment arrangements.\n\nThis is a captured Braintree Android v5 website route, not evidence for a sibling platform, a current Android package implementation or support state, the standalone PayPal Android SDK, a direct PayPal Orders API integration, or any successful authorization, charge, settlement or funding outcome. Its PayPal Billing Agreement flow is also distinct from Braintree's separate plan-and-subscription recurring-billing product.\n\n## Key takeaways\n\n- The guide presents a two-stage Billing Without Purchase Checkout flow. After customer checkout creates the Billing Agreement, the returned Payment Token is described as a proxy for the PayPal Billing Agreement ID and should be stored against that customer's account. A later merchant-initiated payment uses that token against the customer's PayPal account.\n- The recurring classification must represent the customer's arrangement. During Billing Agreement creation the guide sets the Recurring Indicator through Braintree `plan_type`; during later transactions it uses Braintree `transaction_source`. The clean classification matrix for subscription, recurring, unscheduled and installment arrangements, including first-versus-later transaction values, remains at the verified raw locator rather than being reconstructed here.\n- RBA plan information is sent through `plan_metadata` to show a key-information summary on PayPal's Checkout review page. The guide says it is only required during Billing Agreement creation and should not be sent on later merchant-initiated payment requests. Passing `plan_type` without `plan_metadata` still triggers the recurring checkout experience without plan details, and the merchant remains required to communicate the plan terms clearly on its own site before signup completes.\n- Merchants must classify transactions as prepaid or postpaid for card-network compliance and contact their Account Manager to enable PREPAID or POSTPAID as the recurring-billing default. This is an account-configuration prerequisite, not proof that a merchant is enabled.\n- The Android v5 example constructs `PayPalVaultRequest` with `PayPalRecurringBillingDetails` and a `PayPalRecurringBillingPlanType`. Its dates, amounts, currency, product data, cycle counts and enum comments are illustrative example inputs, not universal requirements or guarantees.\n- If the merchant wants to collect a payment and create a Billing Agreement in one checkout session, the page directs it to the separate Checkout with Vault flow. For later payments, the page describes a server-side continuation: save the customer's PayPal account, pass the returned single-use token to Braintree Payment Method Create, and use the returned payment-method token for payment creation. Those handoffs do not themselves prove a completed payment.\n\n> [!warning] Client/server and outcome boundary\n> `PayPalVaultRequest` constructs the Android-side Billing Agreement request. The stored Payment Token and later single-use/payment-method-token handoffs cross into Braintree server operations; none of these states alone proves a successful merchant-initiated transaction, settlement or funding. The page's linked JavaScript vault and Ruby request references are navigation, not Android or server implementation evidence fully read for this entry.\n\n> [!warning] Malformed duplicate subsequent-transaction table\n> The final table at raw lines 195-200 contains concatenated strings such as `transaction_sourcerecurring`, `recurring_firstrecurring`, `recurring_firstunscheduled` and `recurring_firstinstallment`. Do not infer those strings as literal API values. Use the earlier RBA matrix at lines 76-81 for the page's legible `plan_type` and `transaction_source` classifications, and verify exact request fields against the applicable API reference before implementation.\n\n> [!warning] Product boundary\n> This source concerns PayPal Billing Agreements and merchant-initiated PayPal payments. It does not establish Braintree plan/subscription creation, monthly billing-cycle behavior, retry policy or Marketplace compatibility; those belong to the separate [[braintree-recurring-billing]] evidence route.\n\n## Detail locators\n\n- Client-side availability list naming Android v5+: `# Recurring payments > **AVAILABILITY**`, raw lines 17-25.\n- Merchant-initiated recurring-payment definition and example categories: `## Overview`, raw lines 30-39.\n- Amount, frequency and duration classification table: `## Subscription type details`, raw lines 42-49.\n- Two-stage Billing Without Purchase Checkout flow, returned Payment Token storage and later-payment action: paragraph and bullets before `## Create a billing agreement.`, raw lines 51-55.\n- Recurring-indicator purpose and creation-versus-subsequent Braintree fields: `#### Recurring indicator`, raw lines 65-67.\n- Legible RBA type matrix with `plan_type` and `transaction_source` values: `## RBA type information`, raw lines 72-81.\n- RBA plan-information purpose, creation-only condition, `plan_metadata` transport and three presentation choices: `## Recurring Billing Agreement (RBA) plan information`, raw lines 84-101.\n- Supported plan-information elements and plan-name customer-comprehension guidance: `## Understanding the RBA data structure` through `## Data element information`, raw lines 106-132.\n- Prepaid/postpaid classification and Account Manager enablement condition: `## Integrating flow within Braintree`, raw lines 135-137.\n- Illustrative Android `PayPalVaultRequest`, billing-cycle, pricing and recurring-plan-type construction: `## Create the billing agreement > ### kotlin`, raw lines 140-179.\n- Separate combined charge-and-agreement route: `## Checkout with Vault`, raw lines 181-183.\n- Later-payment server handoff through saved PayPal account, single-use token, Payment Method Create and payment-method token: `## Initiate a payment against the billing agreement:`, raw lines 186-188.\n- Duplicate malformed subsequent-transaction table: `## RBA type information during subsequent transactions`, raw lines 191-200.\n\n## Related\n\n- Company: [[braintree]]\n- Main integration concept: [[paypal-braintree-integration]]\n- Android SDK concept: [[braintree-android-sdk]]\n- Separate Braintree subscription concept: [[braintree-recurring-billing]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/paypal/checkout-with-vault/android/v5-2026-09-16|Braintree PayPal Checkout with Vault - Android v5]] - navigation-only route for the combined charge-and-agreement flow; not read as factual evidence for this source\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/recurring-payments/android/v5-2026-09-16|Braintree PayPal recurring payments for Android v5]] - fully read pinned website snapshot covering Billing Agreement creation, recurring classifications, plan metadata, Android request construction and subsequent-payment handoff\n",
+  "quotes": [
+    {
+      "text": "Android: v5+",
+      "location": "raw line 23 under # Recurring payments > **AVAILABILITY**"
+    },
+    {
+      "text": "Recurring payments with PayPal utilize PayPal Billing Agreements through PayPal's Billing Without Purchase Checkout flow. PayPal's Billing Without Purchase Checkout flow is a two-stage process:",
+      "location": "raw line 51 before ## Create a billing agreement."
+    },
+    {
+      "text": "When setting the recurring indicator, ensure you send the value most appropriate to the type of Recurring Billing Arrangement (RBA). This information is used to set indicators sent to payment networks, accurately representing the nature of the customer's agreement with you to ensure compliance with payment network regulations. During billing agreement creation, the Recurring Indicator is set through the Braintree plan_type value. During subsequent transactions, the Recurring Indicator is set through the Braintree transaction_source value:",
+      "location": "raw line 67 under #### Recurring indicator"
+    },
+    {
+      "text": "RBA Plan Information is only required to be passed to PayPal during Billing Agreement creation so that this is visible to the customer when they're interacting with PayPal Checkout. It should not be passed in subsequent merchant initiated payment requests to PayPal.",
+      "location": "raw line 86 under ## Recurring Billing Agreement (RBA) plan information"
+    },
+    {
+      "text": "Merchants must classify all transactions as either prepaid or postpaid to ensure PayPal transactions comply with card network rules. To set your preferred transaction type, contact your Account Manager to enable PREPAID or POSTPAID as the default for recurring billing.",
+      "location": "raw line 137 under ## Integrating flow within Braintree"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-w15-paypal-recurring-android-integration-route",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- Source: [[source-braintree-docs-guides-paypal-recurring-payments-android-v5]] - Android v5-routed Braintree website guide for PayPal Billing Without Purchase Checkout agreement creation, recurring classifications, plan-information display, account enablement and the later merchant-initiated token route; distinct from direct PayPal, current package evidence and payment-lifecycle proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source is PayPal Billing Agreement guidance, not Braintree plan/subscription recurring-billing behavior.",
+          "The final duplicate transaction_source table is malformed; preserve the clean earlier matrix as the source locator rather than reconstructing concatenated values."
+        ]
+      },
+      {
+        "update_id": "braintree-c42-w15-paypal-recurring-android-sdk-route",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-recurring-payments-android-v5]] - 2026-09-16 Android v5-routed website guide for constructing a PayPal recurring Billing Agreement request with plan metadata and routing its token to later Braintree server payment operations; not current package-support, direct PayPal or transaction-outcome evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page's Kotlin block is an illustrative request example and does not establish current SDK implementation or compatibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/recurring-payments/android/v5-2026-09-16.md",
+  "raw_sha256": "e3a3801f45c2df127639b718763d789c4455f33abd895b174c98e424c48aa512",
+  "status": "candidate_ready"
+}

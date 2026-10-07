@@ -1,0 +1,69 @@
+{
+  "job_id": "docs-guides-paypal-paypal-sdk-migration-guide-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal checkout.js to PayPal JS SDK Migration - JavaScript v3\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/paypal-sdk-migration-guide/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/paypal/paypal-sdk-migration-guide/javascript/v3-2026-09-16.md\"\ntags: [braintree, paypal, javascript-v3, migration, checkout-js]\n---\n\n## Overview\n\nThis collected [[braintree]] website guide documents the migration of a JavaScript v3 custom PayPal integration from PayPal `checkout.js` (identified by the page as PayPal JavaScript SDK version 4) to the PayPal JS SDK (identified as version 5). The older integration is described as still supported in this snapshot; the page is an old-to-new integration map, not a deprecation notice or proof of current support.\n\nThe route applies only to Braintree JavaScript v3 custom PayPal integrations. It explicitly excludes Drop-in UI, JavaScript v2, Android, iOS and new PayPal web integrations. It does not establish behavior for direct PayPal integrations, PayPal Web SDK v6, current hosted runtime behavior, merchant eligibility, or any separately retained package version.\n\n## Key takeaways\n\n- The loader changes from a separately included `checkout.js` script to either `paypalCheckoutInstance.loadPayPalSDK()` or a directly loaded PayPal JS SDK script. When loading the script directly, the page says the PayPal client ID comes from the Braintree Control Panel and differs between Sandbox and Production; configuration and query-parameter examples remain in the raw locators.\n- Button rendering changes from `paypal.Button.render(config, selector)` to `paypal.Buttons(config).render(selector)`. To request only a PayPal button, the new configuration uses `fundingSource: paypal.FUNDING.PAYPAL`; otherwise the guide says the integration tries to render all eligible payment methods.\n- The old `payment` callback maps to `createOrder` for Checkout or `createBillingAgreement` for Vault, while the Braintree adapter continues to call `createPayment` inside those callbacks. The old `onAuthorize` callback is renamed `onApprove`, which still calls `tokenizePayment`; `onCancel` and `onError` are described as unchanged.\n- The environment no longer needs to be passed in button configuration because it is derived from the PayPal client ID. This is a page-scoped migration statement, not evidence that any supplied client ID, account or environment is valid.\n- Checkout versus Vault can no longer be chosen dynamically at payment time in the migrated pattern: the guide says the choice must be made while setting up the SDK. Checkout uses `createOrder`; Vault passes `vault: true` to `loadPayPalSDK` and uses `createBillingAgreement`.\n\n> [!warning] Preserve the old/new version boundary\n> This snapshot maps PayPal `checkout.js` v4 to PayPal JS SDK v5 inside a Braintree JavaScript v3 custom integration. Do not reinterpret it as a migration to PayPal Web SDK v6, a Braintree JavaScript v2 migration, a Drop-in procedure, a native SDK guide, a direct PayPal Orders API integration, or current package-support evidence.\n\n> [!warning] Setup-time flow selection is consequential\n> In the migrated pattern, Checkout and Vault use different SDK setup and callback names. Preserve the `vault: true` plus `createBillingAgreement` condition for Vault and the `createOrder` mapping for Checkout; do not combine the two example flows.\n\n## Detail locators\n\n- Scope and explicit exclusions: availability notice and list at raw lines 17-26.\n- `checkout.js` v4 versus PayPal JS SDK v5 identity and the statement that the older integration remained supported: raw lines 30-32.\n- Separate-script old pattern, `loadPayPalSDK` new pattern, callback/Promise alternatives and configuration-object examples: `## Script tag`, raw lines 35-120.\n- Direct script-loading alternative, Braintree Control Panel client-ID route, Sandbox/Production distinction and query-parameter navigation: raw lines 122-138.\n- `paypal.Button.render` to `paypal.Buttons(...).render(...)` mapping: `### How to initialize the PayPal SDK`, raw lines 144-163.\n- PayPal-only funding-source setting, default eligible-method rendering statement and style example: `### How to render a PayPal button`, raw lines 165-197.\n- `payment` to `createOrder` or `createBillingAgreement` mappings and separate Checkout/Vault examples: `### Creating a payment resource`, raw lines 199-243.\n- `onAuthorize` to `onApprove` mapping and tokenization examples: `### Tokenizing the PayPal account`, raw lines 245-302.\n- Unchanged cancellation/error callbacks and removal of explicit `env`: `### Other considerations`, raw lines 304-308.\n- Setup-time Checkout/Vault selection, `vault: true` condition and callback names: `## Checkout flow vs Vault flow`, raw lines 311-315.\n- End-to-end old and new Checkout examples, including the example-only currency/intent matching comments: `### Checkout flow`, raw lines 318-464.\n- Vault requirement and callback/Promise examples: `### Vault flow`, raw lines 466-537.\n\n## Related\n\n- Company: [[braintree]]\n- Main integration concept: [[paypal-braintree-integration]]\n- Browser SDK concept: [[braintree-web-sdk]]\n- Distinct one-time checkout route: [[source-braintree-docs-guides-paypal-checkout-with-paypal-javascript-v3]]\n- Distinct Checkout-with-Vault route: [[source-braintree-paypal-checkout-with-vault-javascript-v3]]\n- Distinct Braintree JavaScript v2-to-v3 migration: [[source-braintree-client-sdk-migration-javascript-v3]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/paypal-sdk-migration-guide/javascript/v3-2026-09-16|Braintree PayPal checkout.js to PayPal JS SDK migration - JavaScript v3]] - complete collected old/new migration guide for Braintree custom PayPal integrations\n",
+  "quotes": [
+    {
+      "text": "This page is only relevant for JavaScript v3 PayPal custom integrations (not Drop-in UI).",
+      "location": "raw line 18, availability notice"
+    },
+    {
+      "text": "Previously, Braintree documented how to integrate with version 4 of PayPal's JavaScript SDK, called checkout.js. While that integration is still supported, Braintree now offers support for version 5 of the PayPal JavaScript SDK.",
+      "location": "raw line 30, introductory version framing"
+    },
+    {
+      "text": "With the PayPal JS SDK, all you need to do is load the Braintree SDK and then call loadPayPalSDK on the paypalCheckoutInstance that is created.",
+      "location": "raw line 49, Script tag section"
+    },
+    {
+      "text": "The payment function has been renamed to createOrder for the Checkout flow or createBillingAgreement for the Vault flow.",
+      "location": "raw line 216, Creating a payment resource"
+    },
+    {
+      "text": "With checkout.js, you could dynamically choose whether the Checkout flow or the Vault flow would be used. With the PayPal JS SDK, this decision needs to be made during the setup of the SDK.",
+      "location": "raw line 313, Checkout flow vs Vault flow"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-paypal-js-v3-v4-v5-migration-route",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-javascript-v3]] - 2026-09-16 Braintree JavaScript v3 custom-integration migration route from PayPal `checkout.js` v4 to PayPal JS SDK v5, covering SDK loading, button/callback mappings and setup-time Checkout/Vault selection; excludes Drop-in and new integrations and is not PayPal Web SDK v6 or current-support evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a reciprocal website-source route; do not merge its v4-to-v5 migration claims into the concept's PayPal Web SDK v6 implementation sections."
+        ]
+      },
+      {
+        "update_id": "braintree-web-sdk-paypal-v4-v5-migration-route",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-javascript-v3]] - JavaScript v3 custom PayPal migration guide mapping `checkout.js` v4 to PayPal JS SDK v5 loading, rendering and Checkout/Vault callbacks, with explicit Drop-in and new-integration exclusions; not current package or v6 evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/paypal-sdk-migration-guide/javascript/v3-2026-09-16.md",
+  "raw_sha256": "c9bde88318a9f98c95e1bfbf21b049827674aef5a1e579a1a1cde2b9d58fa5a1",
+  "status": "candidate_ready"
+}

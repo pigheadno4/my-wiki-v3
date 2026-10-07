@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-reference-general-paypal-advanced-options-paypal-order-payee-email-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Order Payee Email (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/paypal-advanced-options/paypal-order/payee-email/node\"\nraw_files:\n  - \"braintree/docs/reference/general/paypal-advanced-options/paypal-order/payee-email/node-2026-09-16.md\"\ntags: [braintree, paypal, paypal-order, payee-email, node, vault]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree-hosted Node.js reference explains how a merchant can set `payee_email` while creating a payment method for a PayPal Order so transactions processed against that payment method route to a different merchant-owned PayPal account instead of the PayPal account linked in the Braintree Control Panel. It is a captured documentation route, not proof of current account eligibility, configuration, payment execution, settlement, or reporting results. See [[braintree]] and [[paypal-braintree-integration]].\n\n## Key takeaways\n\n- Without `payee_email`, Braintree sends funds from transactions against the created payment method to the PayPal account linked in the Control Panel. With `payee_email`, the specified merchant-owned PayPal account receives all funds for all transactions processed against that payment method, and the linked Control Panel account does not see those transactions in its account or reporting.\n- The Node examples place `payeeEmail` under `options.paypal` in `gateway.customer.create` and `gateway.customer.update`, with callback and Promise variants. These examples show request shape; their illustrated `result.success` comments are not a guarantee of a successful operation.\n- Depending on the processing setup, the receiving PayPal accounts may need additional configuration for `payee_email`. The page does not establish that a particular account is configured or eligible.\n- `payee_email` does not select transaction currency. The captured multi-currency sentence says a Braintree item must be configured for the currency but omits the item's noun; it separately says the specified `merchant_account_id` must have PayPal payments enabled. Do not reconstruct the missing term from this snapshot.\n- Refunds use the normal Braintree refund path without supplying `payee_email`; Braintree says it withdraws the funds from the same PayPal account that received the original transaction. The parameter is not exposed in Control Panel transaction reporting; the page directs merchants needing separate reporting to request a unique `merchant_account_id` for each planned `payee_email`.\n\n## Detail locators\n\n- **Purpose, ownership condition, and routing target:** opening paragraph, lines 14\u201321.\n- **Default versus payee-email transaction and reporting behavior:** `How it works`, lines 22\u201338.\n- **New-customer request shapes:** `Create new customer with payment method and payee email`, lines 42\u201390.\n- **Existing-customer update shapes and captured missing-method text:** `Update existing customer with new payment method and payee email`, lines 92\u2013126. The page identifies a not-found error when the customer cannot be found, but its following alternative-operation sentence is incomplete in the capture.\n- **PayPal configuration and multi-currency qualifications:** `Setup`, lines 127\u2013138.\n- **Refund account behavior:** `Refunds`, lines 139\u2013142.\n- **Control Panel reporting limitation and separate-reporting route:** `Reporting in the Braintree Control Panel`, lines 143\u2013147.\n\n## Related\n\n- [[paypal-braintree-integration]] \u2014 Braintree-specific PayPal integration and server-boundary retrieval hub; keep this page distinct from direct PayPal Orders API authority.\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/paypal-advanced-options/paypal-order/payee-email/node-2026-09-16|Braintree PayPal Order payee-email Node page (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "When creating a payment method to use with a PayPal Order, you can pass the`payee_email`parameter to automatically route all payments processed on\nthat payment method to a PayPal account other than the one linked in your Braintree Control Panel.",
+      "location": "Opening paragraph, lines 16\u201317"
+    },
+    {
+      "text": "The PayPal account you\nspecify gets all the funds for all the transactions processed against this payment method, as if\nthose transactions were processed entirely on that account. The PayPal account linked in your\nBraintree Control Panel does not see these transactions in its account or reporting.",
+      "location": "Using payee email with PayPal Order, lines 35\u201338"
+    },
+    {
+      "text": "Depending on your processing setup, your PayPal accounts may need some additional configuration to\nsupport`payee_email`.\n### Multi-currency configuration\n\nCurrency is not controlled by the`payee_email`parameter. In order to set a\nspecific currency for the transaction, you will need to use a Braintreethat's been set up for that currency. Be sure the`merchant_account_id`you\nspecify also has PayPal payments enabled.",
+      "location": "PayPal permissions and Multi-currency configuration, lines 132\u2013138"
+    },
+    {
+      "text": "Refunds are processed the same way as a normal refund via Braintree, with no reference to the`payee_email`. Braintree will automatically withdraw the funds from the same\nPayPal account that received them from the original transaction.",
+      "location": "Refunds, lines 141\u2013142"
+    },
+    {
+      "text": "The`payee_email`parameter is not exposed in transaction reporting in the\nBraintree Control Panel. If you need to report on these transactions separately, let us know and we\ncan set up a unique`merchant_account_id`for each`payee_email`you plan to use.",
+      "location": "Reporting in the Braintree Control Panel, lines 145\u2013147"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c42-w45-paypal-braintree-integration-reciprocal",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Server Boundary",
+        "proposed_markdown": "- [[source-braintree-docs-reference-general-paypal-advanced-options-paypal-order-payee-email-node]] - 2026-09-16 Braintree-hosted Node.js reference for creating a PayPal Order payment method with `payee_email` so transactions against that method route to a specified merchant-owned PayPal account, with setup, currency, refund and Control Panel reporting qualifications; not direct PayPal Orders API authority or proof of current eligibility or payment outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured multi-currency sentence omits the noun after 'a Braintree'; preserve that rendering gap and rely only on the separate explicit merchant_account_id qualification."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/paypal-advanced-options/paypal-order/payee-email/node-2026-09-16.md",
+  "raw_sha256": "1703115df132653ccad00ded5ceadf8f749af4b3449d47123a58963b6baf8989",
+  "status": "candidate_ready"
+}

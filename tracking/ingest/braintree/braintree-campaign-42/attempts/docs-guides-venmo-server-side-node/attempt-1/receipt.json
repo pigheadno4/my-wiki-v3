@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-venmo-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Venmo Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/venmo/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/venmo/server-side/node-2026-09-16.md\"\ntags: [braintree, venmo, nodejs, server-side, vaulting, transactions]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of an unversioned [[braintree]] website guide describes the Node.js server-side steps for storing a client-supplied Venmo payment-method nonce in the Vault and creating a Venmo transaction from a nonce. The transaction route couples the nonce with client-collected device data, and a non-default Venmo business profile requires the same profile identifier used during client-side tokenization. See [[braintree-payment-methods]] for the provider-wide payment-method route.\n\n## Key takeaways\n\n- The Vault example calls `gateway.paymentMethod.create()` with a customer ID and the payment-method nonce received from the client. The page also says a Venmo account can be saved during a transaction, but the captured sentence that should name the applicable options is damaged; see **Vaulting the Venmo account** (lines 21-39).\n- Deleting a vaulted Venmo payment method also deletes the customer's merchant connection in the Venmo app, except that duplicate vaulted methods for the same Venmo account delay connection deletion until the last method is deleted. A customer can independently delete the connection in Venmo, which automatically removes the method from the merchant Vault; the page routes that event to the `PaymentMethodRevokedByCustomer` webhook. See **Deleting a Vaulted Payment Method** (lines 40-44).\n- The transaction examples call `gateway.transaction.sale()` with an amount, client nonce, `submitForSettlement: true`, and client-collected device data. The page says device data is required for transaction creation but not for customer or payment-method creation. These examples are request patterns, not proof of authorization, settlement or funding. See **Creating transactions** (lines 47-75).\n- For a particular Venmo business profile, the server must pass the profile identifier associated with that profile, matching the identifier used during client-side tokenization. If it is omitted, the page says the transaction is associated with the default business profile. See **Specifying the business profile** (lines 78-112).\n- The page routes multiple partial settlements of one authorization to the separate Venmo partial-settlement guide. For production transactions, it says the gateway requests a transactable token from a PayPal service; inability to obtain the token causes a gateway rejection with reason `token_issuance`, after which the page directs the integration to retry the transaction request. See **Settlement** and **Gateway rejections** (lines 122-132).\n\n## Material boundaries\n\n> [!warning] Snapshot, version and execution boundaries\n> This retained website page is routed to Node.js but does not state an exact Node SDK package version. It does not establish current support, merchant enablement, profile eligibility, exact package behavior, successful vaulting, authorization, capture, settlement or funding. Client-side tokenization and device-data collection are separate prerequisites referenced by this server-side page.\n\n> [!warning] Damaged vault-at-transaction condition\n> The captured line 39 says a Venmo account can be saved to the Vault during a transaction \"by usingwithor.\" The option names and conditions are missing from the capture, so this source cannot establish how transaction-time vaulting must be requested. Use the precise raw locator and do not reconstruct the missing fields.\n\n- The page's retry direction is specific to its documented production `token_issuance` gateway rejection. It does not define a general retry policy or establish duplicate-safety for other failures.\n- Deleting a vaulted Venmo payment method has the coupled merchant-connection effect described above, subject to the duplicate-method condition; customer-side revocation independently removes the method from the merchant Vault.\n\n## Detail locators\n\n- GraphQL alternative navigation: `# Server-Side Implementation`, raw line 18.\n- Vault creation callback and Promise examples plus damaged transaction-time vaulting sentence: `## Vaulting the Venmo account`, raw lines 21-39.\n- Merchant-connection deletion, duplicate-method condition, customer revocation and webhook route: `## Deleting a Vaulted Payment Method`, raw lines 40-44.\n- Transaction callback and Promise examples and device-data scope: `## Creating transactions`, raw lines 47-75.\n- Business-profile identifier coupling and default-profile fallback: `### Specifying the business profile`, raw lines 78-112.\n- Repeated connection-removal guidance: `### Removing connections`, raw lines 115-119.\n- Multiple partial-settlement navigation: `### Capturing multiple partial amounts against the same authorization`, raw lines 125-127.\n- Production transactable-token request, `token_issuance` rejection and page-directed retry: `## Gateway rejections`, raw lines 128-132.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- Server-side SDK boundary: [[braintree-server-sdk]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/guides/payment-methods/node-2026-09-16|Braintree Node.js payment-method guide]] - unread navigation-only Vault route\n- [[raw/braintree/docs/reference/general/webhooks/payment-method/node-2026-09-16|Braintree Node.js payment-method webhook reference]] - unread navigation-only revocation-event route\n- [[raw/braintree/docs/guides/venmo/submit-for-partial-settlement/node-2026-09-16|Braintree Venmo partial-settlement guide for Node.js]] - unread navigation-only partial-settlement route\n- [[raw/braintree/articles/control-panel/transactions/gateway-rejections-2026-09-16|Braintree gateway-rejections article]] - unread navigation-only rejection reference\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/venmo/server-side/node-2026-09-16|Braintree Venmo server-side Node.js guide (captured 2026-09-16)]] - fully read pinned website snapshot covering Vault storage, connection deletion, transaction creation, profile selection, partial-settlement navigation and token-issuance rejection\n",
+  "quotes": [
+    {
+      "text": "You can also save the customer's Venmo account to your Vault at the same time as your transaction by usingwithor.",
+      "location": "## Vaulting the Venmo account, raw line 39"
+    },
+    {
+      "text": "If a customer deletes a vaulted Venmo payment method on a merchant website or app, it will also delete the Venmo customer's merchant connection within their Venmo app on the Connected Businesses page. However, if your Venmo vault has duplicate payment methods for the same Venmo account, the merchant connection will not be deleted until the last payment method is deleted.",
+      "location": "## Deleting a Vaulted Payment Method, raw line 42"
+    },
+    {
+      "text": "Creating a Venmo transaction is the same as creating any other transaction with a nonce. Be sure to pass[the device data you collected on the client side](/braintree/docs/guides/venmo/client-side)when you create the transaction:",
+      "location": "## Creating transactions, raw line 49"
+    },
+    {
+      "text": "You will need to pass theprofile_idassociated with the Venmo business profile that you want to create the transaction for. This should be the sameprofile_idused when[tokenizing the Venmo account on the client side](/braintree/docs/guides/venmo/client-side#multiple-profiles).",
+      "location": "### Specifying the business profile, raw line 80"
+    },
+    {
+      "text": "In order to process a Venmo transaction in production, the Braintree gateway makes a request to a PayPal service for a transactable token that represents the Venmo account. If we are unable to get that token, the gateway will reject the transaction with a reason of \"token_issuance\". If you receive this rejection, try the transaction request again.",
+      "location": "## Gateway rejections, raw line 130"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-venmo-server-side-node-reciprocal",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-venmo-server-side-node]] - 2026-09-16 unversioned Braintree website Node.js Venmo server-side guide for Vault storage, deletion-coupled merchant connections, nonce and device-data transaction creation, profile-ID coupling, partial-settlement navigation and production `token_issuance` rejection; the transaction-time vault-option names are damaged, and the snapshot is not current support, package behavior, enablement or execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page is routed to Node.js but states no exact SDK package version.",
+          "The captured transaction-time vaulting sentence omits the option names and must remain unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/venmo/server-side/node-2026-09-16.md",
+  "raw_sha256": "fcad761693e58c0b86679a0f3b27ce469de503e001bef494cbaca310c17bda36",
+  "status": "candidate_ready"
+}

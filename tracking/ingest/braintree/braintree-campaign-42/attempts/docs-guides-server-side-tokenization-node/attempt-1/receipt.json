@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-server-side-tokenization-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Server-Side Tokenization (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/server-side-tokenization/node\"\nraw_files:\n  - \"braintree/docs/guides/server-side-tokenization/node-2026-09-16.md\"\ntags: [braintree, nodejs, server-sdk, graphql, tokenization, credit-cards, payment-method-nonce]\n---\n\n## Overview\n\nThis 2026-09-16 collected, unversioned [[braintree]] website guide is a Node-routed walkthrough for creating a non-vaulted single-use payment method (nonce) from raw credit-card details through the GraphQL client exposed on a configured Braintree Gateway instance. It describes a tokenization request and result-access pattern, not a package-qualified SDK implementation or exact GraphQL schema baseline, and tokenization does not establish authorization, verification, Vault storage, payment success, settlement or funding.\n\n## Key takeaways\n\n- The documented sequence is to create a Braintree gateway instance, execute a GraphQL query with a query definition and input variables, and retrieve the resulting single-use payment method. The page names the operation as `TokenizeCreditCard` and the input as `TokenizeCreditCardInput`; the collected query-definition code block contains only `undefined`, so this snapshot does not preserve an executable mutation or its exact field selection.\n- The input example nests raw card details under `input.creditCard`, with `number`, `expirationYear`, `expirationMonth` and `cardholderName`. These are illustrative values and fields, not evidence of the complete schema, requiredness, production-valid data, or a successful request. The guide routes schema discovery to the GraphQL API Explorer, introspection and the GraphQL schema rather than enumerating the full input contract.\n- A configured gateway issues the operation through `gateway.graphQLClient.query(query, variables)`; the page shows both callback and Promise forms. It does not identify a Node package version, and the website example is not proof that any particular installed SDK version exposes identical behavior.\n- The result examples access `result.data.tokenizeCreditCard.paymentMethod.id` as a typical nonce. The sample JSON also displays `usage: \"SINGLE_USE\"` and selected card-detail fields, but the page states that response fields correspond to those requested, so the example is not a guarantee that all displayed fields are returned.\n- The final section uses a Braintree Sandbox and the GraphQL API Explorer for interactive field discovery and autocomplete. That sandbox workflow does not establish Production availability, merchant enablement, PCI scope, credential suitability, or execution of a real payment.\n\n> [!warning] Captured query and scope boundaries\n> The central GraphQL query-definition block is rendered as `undefined` in the collected page. Do not reconstruct the mutation text, exact selection set, required fields or runtime contract from the surrounding variable and response examples. The page accepts raw card details but states no PCI qualification or handling requirements in the captured text; use separate applicable authority before treating this walkthrough as security or compliance guidance.\n\n## Detail locators\n\n- Purpose, non-vaulted raw-card scope, built-in Server SDK GraphQL-client statement and three-step outline: `## Using Braintree Server SDK to create single-use payment methods (nonces) without vaulting`, raw lines 17-25.\n- Named mutation, configurable response fields, schema-discovery routes and missing `undefined` Node query block: `## Execute a GraphQL query`, raw lines 28-37.\n- `TokenizeCreditCardInput` variable explanation plus illustrative Node and JSON raw-card shapes: raw lines 38-69.\n- Configured-gateway invocation in callback and Promise forms: raw lines 70-85.\n- Result ID access as a typical nonce, callback/Promise forms and illustrative response shape with `SINGLE_USE`: `## Retrieve the single-use payment method (nonce)`, raw lines 87-133.\n- Sandbox API Explorer iteration, billing-address example and autocomplete/documentation navigation: `## Going further`, raw lines 135-161.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Shared nonce and single-use-payment-method terminology/lifecycle: [[source-braintree-payment-method-nonces]]\n\n## Related raw API references\n\nThe page links to gateway setup, the Braintree GraphQL API Explorer, introspection guidance and the GraphQL schema. Those targets were not read for this entry and are navigation only; they do not fill the missing query definition or establish exact schema, package behavior, current availability, compliance scope or execution outcomes.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/server-side-tokenization/node-2026-09-16|Braintree Server-Side Tokenization Node guide]] - complete collected page covering the non-vaulted raw-card input, Server SDK GraphQL-client invocation and single-use payment-method result pattern\n",
+  "quotes": [
+    {
+      "text": "In this document, we'll demonstrate how to create a single-use payment method, also referred to as a\nnonce, from raw credit card details. In order to provide the fastest access to this feature, it is\navailable now via the GraphQL client that comes built into each Braintree Server SDK.",
+      "location": "raw lines 19-21 under `## Using Braintree Server SDK to create single-use payment methods (nonces) without vaulting`"
+    },
+    {
+      "text": "- Create a new[Braintree gateway instance](/braintree/docs/start/hello-server/node#install-and-configure)\n- Execute a GraphQL query with a provided query definition and set of inputs\n- Retrieve the single-use payment method from the query results",
+      "location": "raw lines 23-25 under `## Using Braintree Server SDK to create single-use payment methods (nonces) without vaulting`"
+    },
+    {
+      "text": "To create the single-use payment method, we'll execute a GraphQL query using aTokenizeCreditCardmutation. The fields in the query indicate which fields you'd like\nreturned in the query results. You can customize this list to your convenience;",
+      "location": "raw lines 30-31 under `## Execute a GraphQL query`"
+    },
+    {
+      "text": "To issue the query against the Braintree Gateway, use the GraphQL client included on your configured\nBraintree Gateway instance:",
+      "location": "raw lines 70-71 under `## Execute a GraphQL query`"
+    },
+    {
+      "text": "With the result from the previous step, assign the result to a Dictionary and begin accessing the\nrelevant parts of the response; the fields will correspond to those requested in the GraphQL query.\nAccess the value from theidfield as you would a typical nonce.",
+      "location": "raw lines 89-91 under `## Retrieve the single-use payment method (nonce)`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-server-sdk-reciprocal-server-side-tokenization-node",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-server-side-tokenization-node]] - 2026-09-16 unversioned Node-routed website guide to non-vaulted raw-card tokenization through the Server SDK's GraphQL client, preserving the missing query-definition block plus example, schema, package-version and environment boundaries; not payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured Node query-definition block contains only `undefined`; do not infer or reconstruct the exact mutation selection set.",
+          "The page states that the GraphQL client is built into each Braintree Server SDK, but this Node-routed website snapshot does not establish package-specific or current SDK behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/server-side-tokenization/node-2026-09-16.md",
+  "raw_sha256": "c49f18facad37481afc0bd761cd11be07de8f5de19eb9f0e8892920a19f694ce",
+  "status": "candidate_ready"
+}

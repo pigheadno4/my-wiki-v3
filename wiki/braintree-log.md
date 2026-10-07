@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-07] ingest | Braintree website C42
+
+- Fifty pinned website raws: 49 Docs and one In-Person, fully read and independently reviewed through ten shared rolling child slots. Fifty retrieval sources and thirteen existing reciprocal concepts; no new concept. Catalog602=585website+17GitHub. Raw unchanged.
+- Initial independent-review pass34/50; fifty full initial reviews and sixteen bounded targeted reviews, no repeated full review. One coordinator stale-artifact handoff error caused an extra worker attempt without rereading; three review-schema handoffs were mechanically corrected without another review. Original evidence and failures remain retained.
+- Fixed queries100/100 passed in thirteen disjoint groups, overlapping later ingestion. Group D required three single-line source amendments and affected-question rechecks; Group H's two illustrative-code observations were adjudicated nonblocking without source changes. Catalog/company counts aggregated once. Structural close and65-file typed validation passed. Audit and timing evidence: `tracking/ingest/braintree/braintree-campaign-42/`.
+- No collection, GitHub ingestion, code/rule/schema change, commit, push or next-campaign execution.
+
 ## [2026-10-06] ingest | Braintree website C41
 
 - Fifty pinned website raws: 25 In-Person, 24 Docs and one GraphQL landing guide; fully read and independently reviewed through ten shared rolling child slots. Fifty exact retrieval sources, eight existing reciprocal concepts and two new retrieval concepts promoted: [[braintree-in-person]] and [[braintree-in-person-custom-prompts]]. Catalog552=535website+17GitHub; raw unchanged.

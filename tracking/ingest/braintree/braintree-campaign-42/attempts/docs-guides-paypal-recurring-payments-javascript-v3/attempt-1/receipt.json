@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-guides-paypal-recurring-payments-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Recurring Payments - JavaScript v3\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/recurring-payments/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/paypal/recurring-payments/javascript/v3-2026-09-16.md\"\ntags: [braintree, paypal, recurring-payments, billing-agreements, javascript-v3]\n---\n\n## Overview\n\nThis collected [[braintree]] website guide is the JavaScript v3 client-integration route for PayPal recurring payments through PayPal Billing Agreements and the Billing Without Purchase Checkout flow. It describes creating the agreement and retaining its returned Payment Token, then using that agreement-derived credential in a later merchant-initiated payment path. It is not the Braintree plan-and-subscription recurring-billing engine, a direct PayPal Orders API integration, exact-version `braintree-web` implementation evidence, proof of current account enablement, or proof that a payment was created or completed.\n\n## Key takeaways\n\n- The page classifies recurring billing arrangements by amount, frequency and duration, then presents the PayPal Billing Without Purchase Checkout flow as two stages: create a Billing Agreement and receive a Payment Token associated with the customer; later use the token to initiate payments against that PayPal account. This is a merchant-initiated later-payment model, not an on-page subscription scheduler.\n- The recurring indicator has different Braintree fields at different stages: `plan_type` during Billing Agreement creation and `transaction_source` during subsequent transactions. The page says the chosen arrangement type represents the customer's agreement to payment networks for compliance purposes; use the exact type/value matrix in the raw locator rather than generalizing one arrangement's values to another.\n- RBA plan information is creation-time checkout disclosure. Passing `plan_type` with `plan_metadata` triggers the recurring checkout experience with plan details; passing only `plan_type` triggers a generic recurring experience and leaves the merchant responsible for clearly communicating terms on its own site; passing neither produces the non-recurring experience and is not recommended by the page for recurring transactions. The page says not to send RBA plan information again in later merchant-initiated payment requests.\n- The guide requires merchants to classify transactions as prepaid or postpaid and directs them to an Account Manager to enable PREPAID or POSTPAID as the recurring-billing default. This is a setup requirement stated by the snapshot, not evidence that a merchant is enabled.\n- The JavaScript examples show browser-side Billing Agreement creation and approval tokenization, followed by a merchant-server handoff. The later-payment section says the customer PayPal account must first be saved, passes the returned single-use token to Braintree Payment Method Create, and uses the returned payment-method token for payment creation. These snippets and links describe the documented handoff; they do not prove vault persistence, authorization, capture, settlement or a complete runnable integration.\n\n## Evidence boundaries\n\n> [!warning] JavaScript v3 website snapshot\n> The URL and page body are scoped to JavaScript v3 client integration, while the availability box also names other platform major versions. This 2026-09-16 collection does not establish current SDK lifecycle, an exact `braintree-web` release, merchant eligibility, PayPal runtime behavior or support for a sibling integration.\n\n> [!warning] PayPal agreement versus Braintree subscriptions\n> This page's recurring subject is a PayPal Billing Agreement plus later merchant-initiated payments. Do not treat it as evidence for Braintree plan creation, subscription scheduling, retries, proration or subscription-status transitions.\n\n> [!warning] Example and extracted-table limits\n> The page contains separate `flow: 'checkout'` and `flow: 'vault'` examples, and its final repeated subsequent-transaction table contains concatenated identifiers such as `transaction_sourcerecurring` and `recurring_firstrecurring`. Do not merge the examples into one guaranteed request or derive field values from the malformed repeated table; use the earlier RBA type table and verify current implementation requirements before coding.\n\n## Detail locators\n\n- Client-side availability wording and the page's comparison with Vaulted Payments: `# Recurring payments > AVAILABILITY`, lines 17-25.\n- Recurring-payment definition, examples and arrangement categories: `## Overview`, lines 30-39, and `## Subscription type details`, lines 44-53.\n- Billing Without Purchase Checkout identity and its agreement-creation/later-payment stages: `## Subscription type details`, lines 55-59.\n- Recurring-indicator purpose, stage-specific fields and the clean arrangement type/value matrix: `#### Recurring indicator`, line 71, and `## RBA type information`, lines 76-85.\n- Creation-time RBA plan-information purpose and the three checkout-experience choices: `## Recurring Billing Agreement (RBA) plan information`, lines 88-105.\n- Supported plan-information categories, plan-name customer-facing guidance and the page's data-element table: `## Understanding the RBA data structure`, lines 110-140.\n- Prepaid/postpaid classification and Account Manager enablement instruction: `## Integrating flow within Braintree`, lines 143-145.\n- Checkout-style request example with `requestBillingAgreement`, `planType` and `planMetadata`: `## Merchant Integration`, lines 148-199.\n- Vault-style Billing Agreement creation, PayPal button callbacks, approval tokenization and nonce-to-server comment: `## Create the billing agreement`, lines 201-259.\n- Saving the PayPal account, later Payment Token use, single-use-token-to-Payment-Method-Create handoff and returned token role: `## Initiate a payment against the billing agreement`, lines 262-264.\n- Repeated subsequent-transaction table, including its concatenated identifier text: `## RBA type information during subsequent transactions`, lines 267-276.\n\n## Related\n\n- Company: [[braintree]]\n- Main recurring-billing route: [[braintree-recurring-billing]]\n- PayPal-through-Braintree client/server boundary: [[paypal-braintree-integration]]\n- JavaScript SDK context: [[braintree-web-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/recurring-payments/javascript/v3-2026-09-16|Braintree PayPal Recurring Payments - JavaScript v3]] - complete collected guide covering Billing Agreement creation, recurring checkout disclosure, client tokenization and the later merchant-initiated payment handoff\n",
+  "quotes": [
+    {
+      "text": "Recurring payments with PayPal utilize PayPal Billing Agreements through PayPal's Billing Without Purchase Checkout flow. PayPal's Billing Without Purchase Checkout flow is a two-stage process:\n\n\n- Create a billing agreement:After a customer completes PayPal Checkout, a Payment Token, a proxy for the PayPal Billing Agreement ID, will be returned to you. This Payment Token should be stored against that customer's account and can subsequently be used to initiate payments whenever necessary.\n- Initiating a payment against the billing agreement:When you need to take a payment from your customer, use the Payment Token returned during Billing Agreement creation to initiate a payment against that PayPal account.",
+      "location": "lines 55-59, immediately before ## Create a billing agreement."
+    },
+    {
+      "text": "When setting the recurring indicator, ensure you send the value most appropriate to the type of Recurring Billing Arrangement (RBA). This information is used to set indicators sent to payment networks, accurately representing the nature of the customer's agreement with you to ensure compliance with payment network regulations. During billing agreement creation, the Recurring Indicator is set through the Braintree plan_type value. During subsequent transactions, the Recurring Indicator is set through the Braintree transaction_source value:",
+      "location": "line 71 under #### Recurring indicator"
+    },
+    {
+      "text": "Setting the RBA Plan Information will result in your customer being presented with a key information summary about the RBA they are entering into with you on PayPal's Checkout review page. This is intended to increase conversion at checkout by maintaining customer confidence about the nature of the agreement when they enter PayPal's Checkout. RBA Plan Information is only required to be passed to PayPal during Billing Agreement creation so that this is visible to the customer when they're interacting with PayPal Checkout. It should not be passed in subsequent merchant initiated payment requests to PayPal. PayPal's RBA Plan Information structure is a flexible data structure designed to support use cases from simple to complex multi-tier arrangements. It is passed using the object plan_metadata. A merchant has three choices regarding passing details about the recurring plan:",
+      "location": "line 90 under ## Recurring Billing Agreement (RBA) plan information"
+    },
+    {
+      "text": "Merchants must classify all transactions as either prepaid or postpaid to ensure PayPal transactions comply with card network rules. To set your preferred transaction type, contact your Account Manager to enable PREPAID or POSTPAID as the default for recurring billing.",
+      "location": "line 145 under ## Integrating flow within Braintree"
+    },
+    {
+      "text": "To process a payment, it is first necessary to save the customer's PayPal account. [Vaulted Payments](https://developer.paypal.com/braintree/docs/guides/paypal/vault/javascript/v3/) allows you to charge the account in the future without requiring your customer to be present during the transaction or re-authenticate with PayPal when they are present during the transaction. You can then use the Payment Token returned during billing agreement creation to initiate a payment against the customer's PayPal account. The returned payment single-use token is passed to [Payment Method: Create](https://developer.paypal.com/braintree/docs/reference/request/payment-method/create/ruby), and the returned payment method token is used for payment creation.",
+      "location": "line 264 under ## Initiate a payment against the billing agreement:"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-w13-recurring-billing-route",
+        "target_path": "wiki/concepts/braintree-recurring-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related routes",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-recurring-payments-javascript-v3]] - JavaScript v3 Braintree website guide for PayPal Billing Without Purchase Checkout, creation-time recurring indicators and plan disclosure, client tokenization and the later merchant-initiated payment handoff; distinct from Braintree's plan-and-subscription engine and not current enablement, direct PayPal API or payment-execution evidence.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a related route: the source concerns PayPal Billing Agreements and later merchant-initiated payments, not the Braintree subscription scheduler or lifecycle."
+        ]
+      },
+      {
+        "update_id": "braintree-c42-w13-paypal-braintree-route",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- Source: [[source-braintree-docs-guides-paypal-recurring-payments-javascript-v3]] - collected JavaScript v3 website guide for PayPal recurring Billing Agreement creation, checkout disclosure, Braintree client tokenization and the later payment-method-token handoff; not an exact SDK release, current merchant enablement, direct PayPal Orders integration or payment-outcome proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/recurring-payments/javascript/v3-2026-09-16.md",
+  "raw_sha256": "712f62d8162aee310e107b1056ff51a6d07d2d0d4fabc92a036f29a57aad1a25",
+  "status": "candidate_ready"
+}

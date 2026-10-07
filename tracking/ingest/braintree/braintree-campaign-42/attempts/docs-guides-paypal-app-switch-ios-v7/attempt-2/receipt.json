@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-paypal-app-switch-ios-v7",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree PayPal App Switch (Beta) for iOS v7\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/app-switch/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/paypal/app-switch/ios/v7-2026-09-16.md\"\ntags: [braintree, paypal, ios, app-switch, vault, checkout, beta]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot documents the beta PayPal App Switch route for custom iOS v7 client integrations using [[braintree-ios-sdk]]. It covers one-time PayPal Checkout and PayPal Vault requests: after `tokenize` is called, the SDK attempts to open the PayPal app when it is installed and the user meets the documented eligibility conditions, and otherwise falls back to `ASWebAuthenticationSession`. This is Braintree integration evidence, not standalone `paypal/paypal-ios` behavior, current availability, merchant enablement, or successful payment execution.\n\n## Key takeaways\n\n- The page limits eligibility to US merchants and US customers using a custom client-side integration, and names both PayPal Vault and PayPal Checkout flows. Its availability statement also names one-time and vaulted payments across JavaScript, iOS, and Android; those statements remain qualifications from this dated snapshot, not proof of current account eligibility.\n- The app must allowlist `paypal-app-switch-checkout`, configure a Universal Link with a dedicated Braintree return path, add that URL to the app association file, and register the fully qualified domain in the Braintree Control Panel. The registered value must match exactly, including `www.` when applicable.\n- Initialize `BTPayPalClient` with the Universal Link and forward the returning URL to `BTAppContextSwitcher.sharedInstance.handleOpen(_:)` from the appropriate SwiftUI, scene-delegate, or app-delegate callback.\n- To opt in, construct either `BTPayPalVaultRequest` or `BTPayPalCheckoutRequest` with `enablePayPalAppSwitch: true` and `userAuthenticationEmail`, then pass it to `BTPayPalClient.tokenize(_:completion:)`. The sample sends the returned PayPal nonce to the merchant server; it does not demonstrate the server transaction or its outcome.\n- The page advises disabling the payment button immediately after a click and showing a loading indicator while the network call is in progress as duplicate-submission prevention and processing feedback; it does not present this UX guidance as an eligibility, SDK, or tokenization prerequisite.\n\n> [!warning] Historical certificate notice\n> The snapshot carries a March 30, 2026 mobile-SDK certificate-expiry warning and names iOS SDK `6.17.0+`, even though this URL is routed as iOS v7. Preserve that dated version tension: the notice does not establish current v7 support, certificate state, or a current upgrade target.\n\n> [!warning] Environment documentation conflict\n> This website snapshot documents Sandbox testing through a separately obtained TestFlight PayPal Sandbox app and requires removal of the Production PayPal app from the device. Independently retained implementation evidence summarized in [[braintree-ios-sdk]] records source comments limiting the beta app-switch API to production. Treat this as an environment/version documentation conflict; do not infer current Sandbox or Production operability from either route alone.\n\n## Detail locators\n\n- `IMPORTANT` (raw lines 17\u201318): historical mobile SDK certificate-expiry notice and its embedded iOS/Android version strings.\n- `AVAILABILITY` and `ELIGIBILITY` (raw lines 23\u201340): stated platform/payment coverage, US/custom-integration conditions, installed-app attempt, and authentication-session fallback.\n- Duplicate-submission UX guidance (raw line 42): button disabling and loading-indicator advice, not an eligibility, SDK, or tokenization prerequisite.\n- `Using a custom UI` \u2192 `Get the SDK` (raw lines 45\u201374): optional custom button and CocoaPods, Swift Package Manager, and Carthage module setup.\n- `Allowlist PayPal URL Scheme` (raw lines 77\u201390): `LSApplicationQueriesSchemes` entry.\n- `Set Up Universal Links` and `Register Universal Link in Control Panel` (raw lines 92\u2013137): dedicated return-path association and exact-domain registration procedure.\n- `Set Universal Link in SDK` and `Handle App Context Switching` (raw lines 142\u2013198): `BTPayPalClient` initialization and SwiftUI/scene/app delegate return handling.\n- `Invoking the PayPal App Switch Flow` (raw lines 200\u2013256): request opt-in fields, checkout/vault examples, completion result, and example nonce handoff.\n- `Testing` (raw lines 258\u2013260): Sandbox-only TestFlight app access and Production-app removal conditions.\n\n## Related\n\n- [[braintree]]\n- [[braintree-ios-sdk]]\n- [[paypal-braintree-integration]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/app-switch/ios/v7-2026-09-16|Braintree PayPal App Switch (Beta), iOS v7 \u2014 2026-09-16 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade theiOS SDK\u202fto version 6.17.0+Android SDK to version 4.45.0+ or version 5.0.0+for the new SSL certifications.  If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "lines 17\u201318 under IMPORTANT (quoted text is line 18)"
+    },
+    {
+      "text": "PayPal App Switch is eligible for:\n\n  \n- Merchants in the US\n- Customers in the US\n- Merchants using a custom client side integration\n- Merchants using the PayPal Vault flow and PayPal Checkout flow",
+      "location": "lines 29\u201336 under ELIGIBILITY"
+    },
+    {
+      "text": "In this experience the SDK will attempt to switch to the PayPal App after calling tokenize if the PayPal App is installed and the user meets eligibility requirements. If the switch into the PayPal App cannot be completed, we will fall back to the ASWebAuthenticationSession experience.",
+      "location": "line 40 under ELIGIBILITY"
+    },
+    {
+      "text": "Construct a BTPayPalVaultRequest or a BTPayPalCheckoutRequest with enablePayPalAppSwitch set to true and a userAuthenticationEmail included. Use this with your BTPayPalClient from above to call BTPayPalClient.tokenize(_:completion:) to launch the PayPal App Switch flow.",
+      "location": "line 205 under Invoking the PayPal App Switch Flow \u2192 Opt In to The App Switch Flow"
+    },
+    {
+      "text": "In order to test this flow in Sandbox, you will first need access to the TestFlight PayPal Sandbox app. Additionally, you are required to remove the Production PayPal app from your device to complete the App Switch flow successfully in Sandbox.",
+      "location": "line 260 under Testing (first two sentences)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-app-switch-ios-v7-reciprocal",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-app-switch-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for beta PayPal App Switch setup and checkout/vault opt-in, including US/custom-integration eligibility, authentication-session fallback, Universal Link returns and specially conditioned Sandbox testing; preserves the website-versus-implementation environment conflict and does not establish current support, enablement or payment execution\n",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The website snapshot documents Sandbox testing, while independently retained implementation evidence summarized in this concept records production-only source comments; preserve the conflict without choosing a current environment.",
+          "The page's historical certificate notice names iOS 6.17.0+ on an iOS v7 route; do not treat it as current package-version guidance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/app-switch/ios/v7-2026-09-16.md",
+  "raw_sha256": "eeff8023bdc4193aebb980e54dc7193ae111ad18cc93a1066607a57e362d195a",
+  "status": "candidate_ready"
+}

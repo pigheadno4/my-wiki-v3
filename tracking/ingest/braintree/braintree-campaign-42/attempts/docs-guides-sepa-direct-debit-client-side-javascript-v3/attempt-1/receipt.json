@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-guides-sepa-direct-debit-client-side-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree SEPA Direct Debit Client-Side Implementation (JavaScript v3)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/sepa-direct-debit/client-side/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/sepa-direct-debit/client-side/javascript/v3-2026-09-16.md\"\ntags: [braintree, sepa, direct-debit, javascript, client-sdk, tokenization]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot is the JavaScript v3 client-side implementation guide for SEPA Direct Debit. It covers creation of the SEPA component, customer bank-data collection and client tokenization into a nonce for a separate server-side path. It also documents an optional redirect flow that returns to the merchant page and can expose a successful tokenization payload. Component setup, a return to the page or a nonce is not proof of a debit, transaction success, settlement or funding.\n\nThe page limits SEPA Direct Debit to eligible merchants using a custom client-side integration, names Android v4.13+, iOS v5.11+ and JavaScript v3 SDK availability, excludes Drop-in and directs qualifying merchants to request account enablement for Sandbox or Production. These are snapshot-scoped statements and prerequisites, not evidence of current availability, merchant eligibility or account enablement.\n\n## Key takeaways\n\n- The client initializes the Braintree JavaScript v3 SDK and SEPA component with client authorization and a merchant ID. The merchant then collects the customer's bank and customer information and invokes `tokenize` from a customer action such as a button click. The returned nonce belongs to the subsequent server-side path; exact example fields and callback/Promise forms remain in the raw locators.\n- The redirect flow is documented as available starting with Braintree JS SDK 3.110.0. Instead of opening the existing popup flow, it sends the user away on the current page when `redirectUrl` is passed to `braintree.sepa.create`; the page says that URL should be the same merchant page that initiated the redirect so the SDK can finish tokenization after return.\n- Before using the redirect flow, the merchant must register every intended redirect domain with PayPal through the Braintree Control Panel in both Sandbox and Production. The page defines domain-name formatting rules and separate environment-specific registration steps; registration is configuration, not proof that a redirect, tokenization or payment succeeded.\n- A successful redirect tokenization makes a nonce available on `sepaInstance.tokenizePayload`; the page also lists `ibanLastFour`, `customerId` and `mandateType` in that payload. Its query-parameter convention distinguishes `success=true` from a cancellation carrying `cancel=1` and `error_code=USER_DECLINED`, but those page-return signals are not evidence of a completed debit or final payment outcome.\n- The redirect flow does not work with a tokenization key because of its reduced authorization. This is narrower than the page's ordinary initialization route, which allows either a tokenization key or a server-generated client token; integrations that require a tokenization key are directed to a Braintree representative.\n\n> [!warning] Redirect authorization and environment boundary\n> Do not generalize the ordinary client-authorization options to the redirect flow. The captured page specifically excludes tokenization keys from redirect use and separately requires redirect-domain registration in both Sandbox and Production.\n\n> [!warning] Snapshot, SDK and execution boundary\n> This is JavaScript v3 website guidance collected on 2026-09-16, including a redirect-flow floor of SDK 3.110.0. It is not current package-support evidence, exact commit-qualified SDK behavior, merchant enablement, buyer or bank-account eligibility, mandate acceptance, server processing, debit success, settlement or funding proof.\n\n## Detail locators\n\n- Eligible-merchant, custom-integration, platform/version, Drop-in exclusion and account-enablement statements: `# Client-Side Implementation > AVAILABILITY`, raw lines 17-20.\n- JavaScript v3 setup and SEPA component assets: `## Installation`, raw lines 25-38.\n- Client-authorization and SEPA-component initialization examples: `## Initialization`, raw lines 40-86.\n- Redirect-flow SDK floor, popup rationale and current-page redirect description: `## Redirect Flow > AVAILABILITY`, raw lines 88-96.\n- Dual-environment redirect-domain registration requirement and domain rules: `### Domain Registration`, raw lines 99-117; Control Panel steps continue at raw lines 120-177.\n- `redirectUrl` same-page condition and callback/Promise examples: `### Code examples for redirect flow`, raw lines 182-240.\n- Returned `tokenizePayload` values, redirect query parameters and tokenization-key limitation: raw lines 241-251.\n- Required bank/customer inputs and optional billing address: `## Collect information`, raw lines 254-269.\n- Customer-action tokenization role and reference route: `## Tokenize`, raw lines 272-276; callback/Promise and billing-address examples continue at raw lines 279-463.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-methods]]\n- SEPA lifecycle and mandate overview: [[source-braintree-docs-guides-sepa-direct-debit-overview]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/sepa-direct-debit/client-side/javascript/v3-2026-09-16|Braintree SEPA Direct Debit client-side implementation for JavaScript v3]] - complete collected page covering SEPA component setup, redirect configuration, customer-data collection and client tokenization\n",
+  "quotes": [
+    {
+      "text": "SEPA Direct Debit is available to\u202feligible merchants\u202fusing a custom client-side integration. It is only available in\u202fAndroid v4.13+, iOS v5.11+, and JavaScript v3 SDK. It's not currently available in Drop-in.\n\n  If you meet the criteria, [Contact us](/braintree/help) to enable SEPA Direct Debit in your Sandbox or Production account.",
+      "location": "raw lines 17-20 under # Client-Side Implementation > AVAILABILITY"
+    },
+    {
+      "text": "SEPA Direct Debit redirect flow is available in the Braintree JS SDK starting in version 3.110.0",
+      "location": "raw lines 91-92 under ## Redirect Flow > AVAILABILITY"
+    },
+    {
+      "text": "In order to use the redirect flow, you'll need to register any domains you plan to use as a redirectUrl with PayPal. You can do this through the Braintree control panel using the instructions below. You will have to do this in both your sandbox and production environments.",
+      "location": "raw line 101 under ### Domain Registration"
+    },
+    {
+      "text": "To utilize the new redirect flow, you need to pass the redirectUrl parameter when calling braintree.sepa.create. This redirectUrl should point to the same page of your merchant website where you redirect the user from, so that when redirected back, the Braintree SDK can finish tokenizing and provide you with a nonce.",
+      "location": "raw line 184 under ### Code examples for redirect flow"
+    },
+    {
+      "text": "After redirecting back from the mandate page, if tokenization was successful, you will be able to access a nonce on the sepaInstance (see example above). The 3 other values available in the tokenizePayload are ibanLastFour, customerId, and mandateType.\n\n\n### Error Handling\n\nIf the payment was successful, the redirect URL will have the param success=true. In the case where the user cancels out of the payment flow, the redirect URL will have the params cancel=1 as well as error_code=USER_DECLINED.\n\n\n### Tokenization Key Limitation\n\nPlease note that the redirect flow will not work with a tokenization key as tokenization keys have reduced authorization. If using a tokenization key is a requirement for your integration, please reach out to a Braintree representative.",
+      "location": "raw lines 241-251 under redirect-flow result, Error Handling and Tokenization Key Limitation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-client-javascript-v3-braintree-payment-methods-route",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-sepa-direct-debit-client-side-javascript-v3]] - 2026-09-16 JavaScript v3 website client guide for custom SEPA component setup and nonce tokenization, including the 3.110.0+ redirect path, dual-environment domain registration and redirect-specific tokenization-key exclusion; not current support, enablement or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this JavaScript v3 client implementation distinct from the unversioned SEPA lifecycle overview, payment-method article, server-side processing and exact SDK implementation history.",
+          "Preserve the redirect-only SDK floor, domain-registration and tokenization-key qualifications; do not apply them indiscriminately to the ordinary component path.",
+          "A returned nonce or redirect query parameter is not proof of mandate acceptance, debit success, settlement or funding."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/sepa-direct-debit/client-side/javascript/v3-2026-09-16.md",
+  "raw_sha256": "4e942e49fb0b6f3767bf63e0cd867029f6e02c1908eeb35a5bd6b06879402365",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-reference-general-paypal-advanced-options-paypal-order-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Order: Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/paypal-advanced-options/paypal-order/server-side/node\"\nraw_files:\n  - \"braintree/docs/reference/general/paypal-advanced-options/paypal-order/server-side/node-2026-09-16.md\"\ntags: [braintree, paypal, paypal-order, node-js, vault, transactions]\n---\n\n## Overview\n\nThis [[braintree]] website-reference snapshot, collected 2026-09-16 and routed to Node.js, covers the server-side steps after a customer authenticates with PayPal for a PayPal Order. It documents turning the client nonce into a Vault payment method for a new or existing customer, optionally updating the approved PayPal payment resource before vaulting, processing the Order through Braintree transaction operations, and voiding the Order by deleting its representing payment method. The captured page does not state an exact Node SDK package version.\n\n## Key takeaways\n\n- After successful PayPal authentication, the page directs the merchant to create a payment method for processing transactions against the PayPal Order. It shows separate callback and Promise examples for creating a new Vault customer with `paymentMethodNonce` and for adding a payment method to an existing customer. The prose that should name some methods and parameters is damaged in the collected rendering, so use the displayed code and exact reference routes rather than reconstructing the missing text.\n- For an edge case in which transaction parameters change after buyer approval, the server-side `PayPalPaymentResource.update()` call must occur after payment-resource tokenization and before `Customer.create()`. If the total changes, the page says updated line items are essential so the final amount reflects the correct total. The required `paymentMethodNonce` is supplied to the update call, which returns a new nonce that must be passed to `Customer.create()` for the updated resource to be vaulted.\n- The update example displays amount, amount breakdown, currency, custom field, description, line items, order ID, payee email, shipping address and shipping options. These are sample values and supported-parameter navigation, not a claim that every field is required or that the example executed successfully.\n- The page routes PayPal Order payment processing through Braintree transaction operations for sale, settlement submission, lookup, search, void and refund. Examples and navigation are not proof of successful authorization, settlement, funding, refund or payment execution.\n- Currency is tied to the merchant account ID supplied in the transaction call. Passing a shipping address may make a transaction eligible for PayPal Seller Protection, and the status can be inspected on the transaction's PayPal account; neither the address nor the displayed `ELIGIBLE` example guarantees protection.\n- The page says a PayPal Order is represented by a customer payment method and that voiding the Order requires deleting that payment method. Deletion is consequential. The captured sentence omits the method name after `calling`, so this source does not establish the exact deletion invocation.\n\n## Evidence limitations\n\n> [!warning] Snapshot, rendering and execution boundaries\n> This is a 2026-09-16 Braintree-hosted, Node-routed website snapshot, not direct PayPal Orders API documentation, exact package-version evidence, current merchant eligibility or execution proof. Several collected sentences omit method or parameter names, and the final void sentence omits the deletion call; those gaps are not reconstructed here.\n\n## Detail locators\n\n- Payment-method purpose after PayPal authentication: `## Create payment method`, line 19.\n- New-customer callback and Promise examples: `### Create a new customer with a payment method`, lines 20-57.\n- Existing-customer callback and Promise examples, plus not-found navigation: `### Update an existing customer with a payment method`, lines 59-81.\n- Post-approval update use case, line-item condition and update timing: `### Updating PayPal Payment Resource After Buyer Approval`, lines 82-86.\n- Required input nonce, returned replacement nonce and optional-field boundary: note under `### Updating PayPal Payment Resource After Buyer Approval`, lines 89-90.\n- Displayed update request fields and values: `### node`, lines 93-157.\n- Transaction operation navigation: `## Process transactions`, lines 159-167.\n- Merchant-account currency behavior and foreign-currency navigation: `### Currency support`, lines 170-172.\n- Conditional Seller Protection eligibility and status examples: `### Seller Protection`, lines 173-190.\n- Payment-method deletion requirement and missing invocation text: `## Void an order`, lines 192-194.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[paypal-braintree-integration]]\n- Server SDK context: [[braintree-server-sdk]]\n- Payment-method context: [[braintree-payment-methods]]\n\n## Related raw API references\n\n- [[raw/braintree/docs/reference/request/transaction/sale/node-2026-09-16|Node.js Transaction Sale request]] - unread navigation-only reference\n- [[raw/braintree/docs/reference/request/transaction/submit-for-settlement/node-2026-09-16|Node.js Submit for Settlement request]] - unread navigation-only reference\n- [[raw/braintree/docs/reference/request/transaction/find/node-2026-09-16|Node.js Transaction Find request]] - unread navigation-only reference\n- [[raw/braintree/docs/reference/request/transaction/search/node-2026-09-16|Node.js Transaction Search request]] - unread navigation-only reference\n- [[raw/braintree/docs/reference/request/transaction/void/node-2026-09-16|Node.js Transaction Void request]] - unread navigation-only reference\n- [[raw/braintree/docs/reference/request/transaction/refund/node-2026-09-16|Node.js Transaction Refund request]] - unread navigation-only reference\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/paypal-advanced-options/paypal-order/server-side/node-2026-09-16|Braintree PayPal Order server-side implementation for Node.js]] - fully read pinned website snapshot\n",
+  "quotes": [
+    {
+      "text": "Once the customer has successfully authenticated with PayPal, you can use one of the following calls to create a payment method. You will be using this payment method for processing transactions against the PayPal Order.",
+      "location": "## Create payment method, line 19"
+    },
+    {
+      "text": "To complete an update, use the `PayPalPaymentResource.update()` method on the server side **after** tokenization of the payment resource and **before** calling `Customer.create()` to vault the payment method.",
+      "location": "### Updating PayPal Payment Resource After Buyer Approval, line 86"
+    },
+    {
+      "text": "The `paymentMethodNonce` is a required parameter. The `update()` call returns a new nonce, which must be used with `Customer.create()` to ensure the updated payment resource is properly vaulted.",
+      "location": "NOTE under ### Updating PayPal Payment Resource After Buyer Approval, line 90"
+    },
+    {
+      "text": "Use the transaction API to process customer payments against the PayPal Order:",
+      "location": "## Process transactions, line 161"
+    },
+    {
+      "text": "As the PayPal Order is represented by a customer's payment method, to void an order you need to delete the payment method by calling.",
+      "location": "## Void an order, line 194"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-w38-paypal-order-server-node-reciprocal",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Server Boundary",
+        "proposed_markdown": "- [[source-braintree-docs-reference-general-paypal-advanced-options-paypal-order-server-side-node]] - 2026-09-16 Braintree-hosted Node-routed PayPal Order server-side reference for creating or attaching a Vault payment method after buyer authentication, updating an approved payment resource before customer creation with a replacement nonce, transaction-operation navigation and payment-method deletion as the documented void path; preserves missing-method rendering, SDK-version, eligibility and execution-proof boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The collected void sentence omits the exact deletion method name after `calling`; do not reconstruct an invocation from sibling or current documentation.",
+          "This website snapshot is Node-routed but does not identify an exact Node SDK package version and is not direct PayPal Orders API evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/paypal-advanced-options/paypal-order/server-side/node-2026-09-16.md",
+  "raw_sha256": "fbfc8f39b876e70b2a3931ccc28ebe2f1243b1f7e46df6d996358d67d0300cd7",
+  "status": "candidate_ready"
+}

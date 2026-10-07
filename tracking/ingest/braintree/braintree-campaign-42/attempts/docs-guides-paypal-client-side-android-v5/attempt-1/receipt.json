@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-paypal-client-side-android-v5",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Client-Side Implementation for Android v5\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/client-side/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/paypal/client-side/android/v5-2026-09-16.md\"\ntags: [braintree, paypal, android, mobile, client-sdk, tokenization]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of Braintree's Android v5-routed client-side PayPal guide covers account and return-routing setup, direct `PayPalClient` initialization, and SDK-managed XML or Jetpack Compose PayPal buttons that launch authentication and tokenize the result into a nonce. It is website guidance and example code, not proof of current package support, merchant eligibility, or a successful payment transaction. See [[braintree-android-sdk]] and [[braintree]].\n\n> [!warning] Captured certificate deadline\n> The page says Braintree Mobile SDK SSL certificates were set to expire on March 30, 2026, directs Android integrations to 4.45.0+ or 5.0.0+, and warns that traffic from app versions retaining older SDK certificates would fail unless those versions were decommissioned or force-upgraded before the deadline. This dated snapshot does not establish current certificate or support status.\n\n## Key takeaways\n\n- Before adding PayPal, the guide requires a PayPal account created, verified, and linked in the Braintree Control Panel, Android SDK setup with a client token, and a URL scheme declared in `AndroidManifest`.\n- The direct-client path initializes `PayPalLauncher` in the Activity's `onCreate`, then constructs `PayPalClient` with either a tokenization key or client token plus an app-link return URL.\n- The captured dependency examples use `com.braintreepayments.api:paypal:5.8.0` and, for SDK payment buttons, `com.braintreepayments.api:ui-components:5.25.0`; the latter example itself says to replace the version with the latest version. These examples do not prove current package compatibility.\n- For the XML/Fragment button example, the button is initialized with authorization and return-routing values, receives a `PayPalRequest`, reports launch failure or a pending request, and later handles success, failure, or cancellation after the app resumes. The example comments call for persisting the pending request and clearing it after return handling.\n- For Jetpack Compose, the guide says the SDK handles `handleReturnToApp()` internally; the composable takes the request, authorization, app-link return URL, deep-link fallback scheme, and a callback that distinguishes success, cancellation, and failure.\n- Further configuration branches into One-Time Payments, Vaulted Payments, or Recurring Payments; those linked pages are navigation rather than evidence read for this entry.\n\n## Detail locators\n\n- Certificate-expiry notice and failure warning: raw lines 17-20.\n- PayPal account, client token, and Android manifest prerequisites: raw lines 25-32.\n- PayPal module dependency samples: raw lines 35-52.\n- `PayPalLauncher`/`PayPalClient` initialization and return URL: raw lines 54-74.\n- SDK-managed payment-button responsibility and UIComponents dependency: raw lines 76-93.\n- XML/Fragment button initialization, pending-request persistence, return handling, and result branches: raw lines 94-157.\n- Button colors: raw lines 158-175.\n- Jetpack Compose return-handling distinction and callback example: raw lines 176-215.\n- One-Time, Vaulted, and Recurring next-step routes: raw lines 217-226.\n\n## Related\n\n- [[braintree-android-sdk]]\n- [[braintree]]\n\n## Related raw API references\n\n- The One-Time Payments, Vaulted Payments, Recurring Payments, and comparison links at raw lines 217-226 were not read for this entry and are retained only as navigation.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/client-side/android/v5-2026-09-16|Braintree PayPal Client-Side Implementation for Android v5 (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "**IMPORTANT**\n The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the Android SDK to version 4.45.0+ or version 5.0.0+ for the new SSL certifications.\n\n  If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "lines 17-20 under Client-Side Implementation (IMPORTANT notice)"
+    },
+    {
+      "text": "Before you can add PayPal, you will need to:\n\n\n- [Create, verify, and link](/braintree/articles/guides/payment-methods/paypal/setup-guide)your PayPal account in the Braintree Control Panel\n- [Set up your Android SDK and obtain your client token](/braintree/docs/start/hello-client)\n- [Declare a URL scheme in your AndroidManifest](/braintree/docs/guides/client-sdk/setup/android/v5#browser-switch-setup)",
+      "location": "lines 27-32 under Setup"
+    },
+    {
+      "text": "Create a PayPalLauncher inside of your Activity's onCreate(). Then, create a PayPalClient with a Tokenization Key or Client Token and an appLinkReturnUrl that is used to return to your app from the PayPal payment flows.",
+      "location": "line 56 under Initialization"
+    },
+    {
+      "text": "Alternatively, you can add PayPalpayment buttons in your app through the Braintree SDK. The SDK will handle the loading and disable state of the button, call the tokenize methods with your request, and allow you a seamless branded experience in your mobile apps.\n\nThis SDK module handles the complete payment flow internally, from launching the PayPalauthentication to tokenizing the result, so you only need to provide your request configuration and handle the final nonce.",
+      "location": "lines 78-80 under Use our Payment Buttons"
+    },
+    {
+      "text": "Similar to the XML buttons, the Braintree Android SDK now allows merchants to draw and render both PayPal and Venmo payment buttons using a discrete set of parameters. The SDK will handle the loading and disable state of the button and allow you to display and offer buttons meeting the current brand guidelines versus maintaining responsibility on your own. We will call the tokenize() methods with your request and allow you a seamless branded experience in your mobile apps. The call to handleReturnToApp() when the control is returned to the merchant app is handled within the SDK. You are no longer required to add this logic to your code for Jetpack Compose integration.",
+      "location": "line 180 under Jetpack Compose buttons"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-android-v5-paypal-client-source-route",
+        "target_path": "wiki/concepts/braintree-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-client-side-android-v5]] - 2026-09-16 Android v5-routed website guide for PayPal account/return-routing prerequisites, direct client initialization, and SDK-managed XML or Compose button tokenization into a nonce; includes a dated mobile-certificate warning and is not current package-support, eligibility, or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The certificate deadline and dependency versions are preserved as dated snapshot claims, not current support or runtime status.",
+          "The guide ends at client-side tokenization and a final nonce; it does not prove a successful payment transaction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/client-side/android/v5-2026-09-16.md",
+  "raw_sha256": "f882d5029f7adf0dab285731cedf25d5812eee1a73ad836b2b04e0868f582ca8",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-reference-general-lodging-data-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Lodging Industry Data (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/lodging-data/node\"\nraw_files:\n  - \"braintree/docs/reference/general/lodging-data/node-2026-09-16.md\"\ntags: [braintree, node-js, lodging, industry-data, interchange, transactions]\n---\n\n## Overview\n\nThis captured [[braintree]] Node.js website reference describes optional lodging-specific industry data for transactions and displays callback and Promise examples that pass an `industry` object through `gateway.transaction.sale()`. It says a transaction that qualifies for the lodging-industry format under card-network standards may obtain a discounted interchange rate, but limits the captured capability statement to US merchants with Visa and Mastercard transactions and directs merchants to Customer Success to determine whether their merchant account is eligible. This snapshot is not current eligibility, a guaranteed rate, or evidence that a transaction qualified or succeeded.\n\n## Key takeaways\n\n- The displayed examples set `industry.industryType` to `Transaction.IndustryData.Lodging` and place lodging values under `industry.data`. The damaged prose immediately before the parameter table says only that fields can be included \"inthecall\" and does not identify an operation; therefore the examples support the shown `gateway.transaction.sale()` route, not an inferred broader operation set.\n- The table says only one industry type may be sent per transaction. It labels check-in date, check-out date, folio number and property phone as required **to qualify for reduced interchange**; that qualification condition is not presented as unconditional request-body requiredness. The date formats, folio length, phone shape and optional room-rate/tax constraints remain at the raw locators below.\n- The table uses snake_case labels such as `industry_type`, `data.check_in_date` and `data.additional_charge`, while the Node examples use camelCase names such as `industryType`, `checkInDate` and `additionalCharges`. Treat the table spellings as captured documentation labels, not as proof that those snake_case names are executable Node request properties; use the displayed Node examples as the page evidence for Node request-key spelling. The snapshot does not resolve whether the table describes an underlying wire representation.\n- Multiple additional charges may be supplied, but each charge kind may appear only once and each specified charge requires a kind and amount. The allowed kinds, positive-amount and formatting rules, nine-digit limit, and currency-without-decimals qualification are routed to the raw tables.\n- The validation catalog separately requires check-out after check-in and records errors for invalid or unknown lodging fields, dates, boolean indicators, property phone, charge kinds and charge amounts. These cataloged errors do not establish current SDK implementation behavior or successful authorization, settlement, funding, or reduced-interchange assessment.\n\n## Detail locators\n\n- Optional lodging-data purpose, possible discounted-interchange outcome, US merchant and Visa/Mastercard scope, and merchant-account eligibility contact: introductory prose, raw lines 16-23.\n- `industry_type` and one-industry-type limit: `## Parameters`, raw lines 26-34.\n- Check-in/check-out formats, reduced-interchange qualification fields, folio and property-phone limits, and room-rate/tax constraints: `## Parameters`, raw lines 35-64.\n- No-show, advance-deposit and fire-safety indicators: `## Parameters`, raw lines 65-91.\n- Additional-charge multiplicity, uniqueness, allowed kinds and required amount: `## Parameters`, raw lines 92-118.\n- Callback `gateway.transaction.sale()` example and camelCase Node request keys: `## Example > ### callback`, raw lines 121-155.\n- Promise `gateway.transaction.sale()` example: `## Example > ### Promise`, raw lines 157-189.\n- Lodging validation codes, including date order, amount, format, size, boolean and phone checks: `## Validation errors > ### Lodging data`, raw lines 191-215.\n- Additional-charge kind, uniqueness, amount, format, size, required-attribute and type errors: `## Validation errors > ### Lodging data additional charges`, raw lines 217-262.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/lodging-data/node-2026-09-16|Braintree Lodging Industry Data (Node.js)]] \u2014 fully read 2026-09-16 website snapshot\n",
+  "quotes": [
+    {
+      "text": "Braintree supports optional fields that can be used to collect lodging-specific industry data on\ntransactions. If a transaction is qualified for the lodging industry transaction format per the card\nnetwork standards, you may obtain a discounted interchange rate for that transaction. This\ncapability is currently supported for US merchants with Visa and Mastercard transactions.\n**IMPORTANT**\nTo ensure that your merchant account is eligible to qualify for these lower interchange rates, contact our [Customer Success team](/help?issue=feeHelp) .",
+      "location": "Introductory prose, raw lines 16-21"
+    },
+    {
+      "text": "You can include lodging data fields in thecall.",
+      "location": "Introductory prose immediately before ## Parameters, raw line 23"
+    },
+    {
+      "text": "Information for only one industry type may be sent per transaction.",
+      "location": "## Parameters, industry_type row, raw line 34"
+    },
+    {
+      "text": "Multiple additional charges may be specified for a single transaction. Each kind of additional charge may only be specified once per transaction. If specified, each additional charge must include the fields shown below.",
+      "location": "## Parameters, data.additional_charge row, raw line 94"
+    },
+    {
+      "text": "Check out date must occur after the check in date.",
+      "location": "## Validation errors > ### Lodging data, code 93406 row (Text and Explanation), raw line 203"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-lodging-node-reciprocal",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-reference-general-lodging-data-node]] - 2026-09-16 unversioned Braintree website Node.js lodging-data reference for optional transaction industry data and displayed `gateway.transaction.sale()` examples, preserving US Visa/Mastercard and merchant-account qualification, possible-interchange-outcome, table-versus-Node naming, validation and damaged-prose boundaries; not package-qualified SDK behavior, current eligibility or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the table's snake_case labels distinct from the camelCase Node example keys; the snapshot does not resolve whether the table labels are wire names or executable Node properties."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/lodging-data/node-2026-09-16.md",
+  "raw_sha256": "f4ec942848e243f306fff228a9f67cd6131d5af1a559e441bb6ca8ff67406712",
+  "status": "candidate_ready"
+}

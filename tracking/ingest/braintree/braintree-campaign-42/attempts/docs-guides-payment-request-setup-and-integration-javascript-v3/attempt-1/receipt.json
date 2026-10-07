@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-payment-request-setup-and-integration-javascript-v3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Payment Request Setup and Integration (JavaScript v3)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/payment-request/setup-and-integration/javascript/v3\"\nraw_files:\n  - \"braintree/docs/guides/payment-request/setup-and-integration/javascript/v3-2026-09-16.md\"\ntags: [braintree, payment-request, javascript, google-pay, payment-method-nonce]\n---\n\n## Overview\n\nBraintree-hosted JavaScript v3 setup guide for using the browser Payment Request API through Braintree's `PaymentRequestComponent`. It covers browser and transport prerequisites, payment-method configuration, component loading and initialization, tokenization, and the payment-method nonce handoff to a merchant server. This is a fetched website snapshot, not proof of current browser support, merchant enablement, successful authorization, transaction creation, settlement, or vaulting. See [[braintree]] and [[braintree-web-sdk]].\n\n## Key takeaways\n\n- The merchant should provide a fallback UI such as Hosted Fields when the browser does not support Payment Request, serve the site over HTTPS (with localhost allowed for sandbox testing), and check `window.PaymentRequest` before displaying the Payment Request button. The guide also warns that Braintree's implementation does not expose every feature of the underlying Payment Request API.\n- Credit cards need no additional configuration when the merchant account is already configured to accept them. Google Pay requires Control Panel enablement, a completed client-side integration, and browser support; PayPal via Google Pay requires both PayPal and Google Pay enabled in the Control Panel. These are stated prerequisites and presentation conditions, not proof that a particular merchant or buyer is eligible.\n- The illustrated flow creates a Braintree Payment Request component and invokes `tokenize` with payment details after a button click. The requested amount should reflect the amount intended for authorization and settlement, although the guide says transactions still process when that amount changes during order fulfillment. The callback and Promise examples are examples, not guarantees of outcome.\n- After successful customer authorization, the client receives a payment-method nonce and passes it to the merchant server, where it can be used to create a transaction. Authorization and nonce receipt are therefore distinct from server-side transaction creation and settlement.\n- Each unique Google Pay transaction requires checkout consent. The guide says vaulting Google Pay payment methods for future transactions results in declines and is not recommended, while distinguishing Google Pay cards used for recurring billing or split shipments after checkout consent; PayPal accounts from Google Pay cannot be vaulted.\n- Snapshot ambiguity: under `Using direct links`, the prose says to load the Payment Request component, but the displayed script example loads `client.min.js` and `local-payment.min.js` at version `3.111.0`. The snapshot does not resolve whether the second script is correct, so consult an appropriate verified component reference before implementing that loading path.\n\n## Detail locators\n\n- `Before you get started` (raw lines 21\u201330): overview route, fallback UI, HTTPS/localhost condition, `PaymentRequestComponent` reference, and the warning that Braintree does not expose all Payment Request API functionality.\n- `Configure payment methods` (raw lines 33\u201357): credit-card condition, Google Pay Control Panel steps and presentation conditions, and the dual-enablement condition for PayPal via Google Pay.\n- `Load the component` (raw lines 60\u201384): direct-link and CommonJS examples; includes the unresolved `local-payment.min.js` direct-link example.\n- `Initialize the component` \u2192 `Check browser capabilities and create Payment Request component` (raw lines 86\u2013103): `window.PaymentRequest` capability check and fallback branch.\n- `Initialize the component` \u2192 `Set up your Payment Request button` (raw lines 105\u2013176): amount note plus callback and Promise examples for component creation and tokenization.\n- `Send the payment method nonce to your server` (raw lines 178\u2013186): successful-authorization nonce handoff, server-side transaction creation route, reuse guidance, and Google Pay vaulting/consent qualifications.\n\n## Related\n\n- [[braintree-web-sdk]] \u2014 modular browser SDK boundary and version-qualified Payment Request route\n- [[braintree]] \u2014 provider capsule and source catalog\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/payment-request/setup-and-integration/javascript/v3-2026-09-16|Braintree Payment Request Setup and Integration \u2014 JavaScript v3 (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "- Make sure you have a fallback UI in place \u2013 such as[Hosted Fields](/braintree/docs/guides/hosted-fields/overview)\u2013in case the customer's browser doesn't support the Payment Request API.\n- Make sure your website is served over HTTPS (or localhost if testing in sandbox).\n\nOur JavaScript [PaymentRequestComponent](https://braintree.github.io/braintree-web/3.92.1/PaymentRequestComponent.html) is made to work in tandem with [Google's Payment Request API reference](https://developers.google.com/web/fundamentals/payments/merchant-guide/deep-dive-into-payment-request). However, not all of the possible features and functionality are available through Braintree's implementation. If you have questions about what's available, please [contact us](/braintree/help?issue=HelpIntegration).",
+      "location": "Before you get started, lines 27-30"
+    },
+    {
+      "text": "In order to accept payments via Google Pay in sandbox or production, you will need to enable it in the Control Panel. As long as Google Pay is enabled, you complete the client-side integration, and the customer's browser supports it, Google Pay will be offered as a payment option. If you already accept Android Pay, your account is already enabled to accept Google Pay. If not:",
+      "location": "Configure payment methods > Google Pay, line 43"
+    },
+    {
+      "text": "Add a button to your page that will trigger the Payment Request flow by creating a new Payment Request component.\n\n\n**NOTE**\nThe amount you specify in your client-side payment request object should reflect the actual amount you plan to authorize and submit for settlement. Transactions will still process in cases where the amount changes during order fulfillment.",
+      "location": "Initialize the component > Set up your Payment Request button, lines 107-111"
+    },
+    {
+      "text": "Like all Braintree SDK integrations, you will receive a payment method nonce when your customer successfully authorizes payment. Pass this nonce to your server, where you can use it to create a transaction.",
+      "location": "Send the payment method nonce to your server, line 180"
+    },
+    {
+      "text": "Because each unique Google Pay transaction requires consent from the customer during the checkout flow, vaulting Google Pay payment methods for future transactions will result in declines and is not recommended. However, Google Pay cards can be used for [recurring billing](/braintree/articles/guides/recurring-billing/overview) and split shipment transactions because the customer consents to future transactions during checkout. PayPal accounts from Google Pay cannot be vaulted.",
+      "location": "Send the payment method nonce to your server > IMPORTANT, line 186"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-payment-request-js-v3-reciprocal",
+        "target_path": "wiki/concepts/braintree-web-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-payment-request-setup-and-integration-javascript-v3]] - Braintree-hosted JavaScript v3 Payment Request setup guide covering browser/HTTPS fallback prerequisites, payment-method enablement, component tokenization and server nonce handoff, with Google Pay consent/vaulting cautions and an unresolved direct-link script mismatch; not current availability, merchant eligibility, transaction, settlement or exact-version implementation proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The direct-link prose identifies the Payment Request component, but its displayed version 3.111.0 example loads local-payment.min.js; the snapshot does not resolve the mismatch.",
+          "The page links a version 3.92.1 component reference while its direct-link example uses version 3.111.0 assets; do not infer compatibility or current SDK behavior from those mixed locators."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/payment-request/setup-and-integration/javascript/v3-2026-09-16.md",
+  "raw_sha256": "d754ff66018339b2a84fe70520f262dcc3812c479d877ad4b63b255b57693abf",
+  "status": "candidate_ready"
+}

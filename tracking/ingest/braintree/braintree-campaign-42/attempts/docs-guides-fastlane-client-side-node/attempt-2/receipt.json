@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-guides-fastlane-client-side-node",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree Fastlane Client-side Integration (Node route)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/fastlane/client-side/node\"\nraw_files:\n  - \"braintree/docs/guides/fastlane/client-side/node-2026-09-16.md\"\ntags: [braintree, paypal, fastlane, client-side, javascript, tokenization]\n---\n\n## Overview\n\nThis collected [[braintree]] webpage, at the exact `/braintree/docs/guides/fastlane/client-side/node` route, describes a browser-side HTML and JavaScript integration for [[paypal-fastlane]]. It connects same-version Braintree Web module initialization and device-data collection to email lookup, member authentication or guest fallback, address handling, payment-component rendering, and a payment-token plus device-data handoff to merchant-server processing. The route name is not evidence of a Node.js runtime implementation, and the snapshot does not establish current availability, merchant eligibility, direct PayPal Orders API behavior, or a successful transaction or Vault result.\n\n## Key takeaways\n\n- The page instructs merchants to load the Braintree client, Fastlane, and data-collector modules at the same version, `3.120.0` or greater; initialize a client and data collector; then create Fastlane with the client token, client instance, device data, and optional styling. It exposes identity, profile, and event handles from the created component.\n- After email collection, `identity.lookupCustomerByEmail(email)` checks whether the email is associated with a Fastlane or PayPal member. The page says Fastlane profile information is available only after authentication; its example treats `authenticationState === \"succeeded\"` as the member experience and failed, cancelled, or no-profile cases as the guest experience. In Sandbox, only the documented `111111` or `222222` OTP values succeed.\n- The page says certain countries and regulations require the Fastlane watermark when email is shared with Fastlane. It also identifies PayPal as a data controller and Business under the California Consumer Privacy Act, recommends rendering the Fastlane by PayPal logo and information tooltip, and directs compliance questions to legal advisors.\n- A member profile may have no shipping address. The integration must handle that case, allow address selection where applicable, and send the shipping address in the server-side request. Guest users instead enter their information manually through the merchant experience.\n- The Fastlane payment component is to be rendered for both members and guests. Guests enter the information needed to generate the payment token; members see their primary method and can switch saved cards. The example obtains the token on order submission and sends it with previously captured device data to the server. The page says the token can be used like a `paymentMethodNonce` to transact or vault, but provides no execution or outcome evidence.\n\n## Detail locators\n\n- **Page identity and snapshot metadata:** raw lines 5\u201310 give the title, `/docs/guides/fastlane/client-side/node/` slug, create time, and update time.\n- **Module and Fastlane initialization:** raw lines 17\u201381 specify the same-version `3.120.0` minimum, script modules, client/data-collector creation, optional styles/locale/card brands, and identity/profile/event extraction.\n- **Watermark and data-sharing notice:** raw lines 83\u2013110 cover placement, the country/regulation qualification, PayPal's stated role, the recommendation and legal-advisor notice, plus the SDK render example.\n- **Lookup, authentication, and guest fallback:** raw lines 114\u2013169 cover email lookup, the member/profile-access condition, Sandbox OTP behavior, the authentication example, and the succeeded-versus-guest branches.\n- **Member address handling:** raw lines 174\u2013227 cover missing shipping addresses, server-side address submission, member-versus-form rendering, and `showShippingAddressSelector()` result handling.\n- **Guest data entry:** raw lines 229\u2013234 state that the guest manually enters information through billing address and card details.\n- **Payment component and token acquisition:** raw lines 237\u2013316 cover the always-render rule, guest/member component roles, optional shipping-address/style/field inputs, rendering, and `getPaymentToken()` plus device-data server handoff.\n- **Downstream processing route:** raw lines 318\u2013326 say to use the Fastlane payment token like a `paymentMethodNonce` for Transact or Vault and point to server-side integration; these links and statements do not prove a payment or vaulting outcome.\n\n## Related\n\n- [[braintree]]\n- [[paypal-fastlane]]\n- [[source-braintree-docs-guides-fastlane-reference|Braintree Fastlane Reference Types]]\n- [[source-braintree-docs-guides-fastlane-advanced-option|Braintree Fastlane Advanced Options]]\n- [[source-braintree-docs-guides-fastlane-flexible-payment|Braintree Fastlane Flexible Payment Integration]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/fastlane/client-side/node-2026-09-16|Braintree Fastlane Client-side Integration \u2014 Node route (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "- Ensure all modules are the same version (3.120.0 or greater).",
+      "location": "raw/braintree/docs/guides/fastlane/client-side/node-2026-09-16.md:21 under Step 1: Initialize the Braintree SDK"
+    },
+    {
+      "text": "When sharing the email with Fastlane, certain countries and regulations require you to [display the Fastlane watermark](https://developer.paypal.com/braintree/docs/guides/fastlane/advanced-option/#rendering-fastlane-watermark) to inform consumers about the data sharing.",
+      "location": "raw/braintree/docs/guides/fastlane/client-side/node-2026-09-16.md:89 under Step 3: Render Fastlane Watermark"
+    },
+    {
+      "text": "Fastlane members must authenticate themselves before their profile information can be accessed. They will receive an OTP on their registered mobile number or alternate methods to complete the authentication.",
+      "location": "raw/braintree/docs/guides/fastlane/client-side/node-2026-09-16.md:123 under Step 4: Customer Lookup and Authentication"
+    },
+    {
+      "text": "Always render the Fastlane payment component, regardless of whether the customer is a Fastlane member or a guest.",
+      "location": "raw/braintree/docs/guides/fastlane/client-side/node-2026-09-16.md:250 under Step 6: Render Payment Component"
+    },
+    {
+      "text": "- Use the Fastlane Payment token the same as a paymentMethodNonce to:",
+      "location": "raw/braintree/docs/guides/fastlane/client-side/node-2026-09-16.md:318 immediately before the Transact and Vault links"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-fastlane-client-side-node-reciprocal",
+        "target_path": "wiki/concepts/paypal-fastlane.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-fastlane-client-side-node]] - collected Braintree website client-side integration guide at the `/node` route for same-version Web `3.120.0`+ initialization, email lookup/authentication and guest fallback, conditional watermark/compliance notice, member/guest payment-component rendering, the example's payment-token plus previously captured device-data handoff to the merchant server to complete checkout, and the separate statement that the payment token can be used like a `paymentMethodNonce` for Transact or Vault; browser HTML/JavaScript guidance, not a Node runtime implementation, current eligibility, direct PayPal Orders API, or payment/Vault outcome evidence",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The canonical path ends in /node, but the raw content is browser-side HTML and JavaScript; do not treat the route label as Node runtime implementation evidence.",
+          "The collected webpage snapshot does not establish current availability or merchant eligibility and does not prove a transaction or Vault outcome.",
+          "Keep this Braintree processing route separate from the direct PayPal Orders API pattern already documented on the concept page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/fastlane/client-side/node-2026-09-16.md",
+  "raw_sha256": "f20e80c198ae0d5c8b9106699f2269b43cf3baba38ef52a9d21263618bdcd798",
+  "status": "candidate_ready"
+}

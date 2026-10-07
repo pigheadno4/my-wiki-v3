@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-guides-apple-pay-configuration-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Apple Pay Configuration for iOS v7\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/apple-pay/configuration/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/apple-pay/configuration/ios/v7-2026-09-16.md\"\ntags: [braintree, apple-pay, ios, configuration, certificates]\n---\n\n## Overview\n\nThis captured Braintree website guide documents Apple Pay configuration for an iOS v7 route. It covers Apple Pay Merchant ID and payment-processing-certificate provisioning across Braintree sandbox and production, certificate renewal, and the Xcode capability and provisioning-profile setup needed for an app. The page frames Apple Pay as securely passing payment data from the device Secure Element to Braintree's Vault. This is a dated configuration snapshot, not evidence of current certificate status, merchant eligibility, completed provisioning, or successful payment processing. See [[braintree]] and [[braintree-apple-pay]].\n\n## Key takeaways\n\n- For Apple Pay on a real device, the page requires an Apple Pay Merchant ID and Apple Pay payment processing certificate configured in Apple's Developer Center. Because Braintree sandbox and production are separate, the provisioning steps must be completed once for each environment; the page recommends separate Merchant IDs so a sandbox app cannot create production transactions.\n- The certificate flow starts with a certificate signing request downloaded from the Braintree Control Panel. The page says the Braintree-provided CSR must be used rather than a self-created CSR; access may require a different Control Panel role. The resulting Apple payment processing certificate is uploaded to the Control Panel.\n- A Merchant Identity Certificate is not required for in-app Apple Pay processing according to this page. Payment processing certificates are stated to expire after 25 months, and renewal requires a new certificate before expiry, upload to the Control Panel, activation with Apple, and repetition for both sandbox and production.\n- In Xcode, the app enables the Apple Pay capability and both Merchant IDs, and must be compiled with an Apple development-team provisioning profile containing an Apple Pay Merchant ID. The page says Apple Pay does not support enterprise provisioning.\n- The page also retains a critical Braintree Mobile SDK certificate notice stating a March 30, 2026 expiry, naming iOS SDK 7.0.0+ as the upgrade path, and warning that traffic from app versions left on older certificates will fail. Because this raw snapshot was fetched after that stated date while the notice still uses prospective wording, preserve it as captured page wording rather than proof of present certificate state or traffic behavior.\n\n## Detail locators\n\n- **Purpose and dated mobile-SDK certificate warning:** raw lines 14-20.\n- **Real-device prerequisites and environment separation:** raw lines 21-26.\n- **Merchant ID, Braintree-issued CSR, certificate generation, and Control Panel upload:** raw lines 27-75.\n- **In-app Merchant Identity Certificate exclusion and 25-month renewal condition:** raw lines 76-82.\n- **Renewal procedure, including Control Panel upload and Apple activation:** raw lines 83-123.\n- **Xcode capability, both Merchant IDs, development-team provisioning profile, and enterprise-provisioning exclusion:** raw lines 124-126.\n\n## Related\n\n- [[braintree]]\n- [[braintree-apple-pay]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/apple-pay/configuration/ios/v7-2026-09-16|Braintree Apple Pay configuration for iOS v7 (captured 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the iOS SDK to version 7.0.0+ for the new SSL certifications. If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "raw line 18 under Configuration (IMPORTANT)"
+    },
+    {
+      "text": "In order to use Apple Pay on a real device, you must configure an Apple Pay Merchant ID and an Apple Pay payment processing certificate in Apple's Developer Center.",
+      "location": "raw line 23 under Apple Pay certificate request and provisioning"
+    },
+    {
+      "text": "Note: You **must** use the CSR we provide. Do not create a CSR file yourself.",
+      "location": "raw line 58 under Provisioning, Step 4 (NOTE)"
+    },
+    {
+      "text": "Apple Pay certificates expire after 25 months. To avoid any disruptions in processing, you'll need to generate a new certificate before your current one expires, and upload it to the Control Panel. As with the original request and provisioning,**you'll need to complete this process for both sandbox and production**.",
+      "location": "raw line 82 under Certificate renewal"
+    },
+    {
+      "text": "It is important that you compile your app with a provisioning profile for the Apple development team with an Apple Pay Merchant ID. Apple Pay does not support enterprise provisioning.",
+      "location": "raw line 126 under Xcode setup"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "concept-braintree-apple-pay-reciprocal-ios-v7-configuration",
+        "target_path": "wiki/concepts/braintree-apple-pay.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-apple-pay-configuration-ios-v7]] - 2026-09-16 captured Braintree iOS v7 configuration route for Apple Merchant ID, payment processing certificate, separate sandbox/production provisioning, renewal, and Xcode setup, with a dated mobile-SDK certificate warning and enterprise-provisioning exclusion",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Snapshot-only configuration route; it does not establish current certificate status, merchant eligibility, completed provisioning, or successful Apple Pay processing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/apple-pay/configuration/ios/v7-2026-09-16.md",
+  "raw_sha256": "7f332f901c207917e3bd8544520a159e03764d91196caae366352c3c7f2640a6",
+  "status": "candidate_ready"
+}

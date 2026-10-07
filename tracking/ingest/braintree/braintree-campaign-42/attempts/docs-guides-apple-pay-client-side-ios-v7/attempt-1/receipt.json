@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-apple-pay-client-side-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Apple Pay Client-Side Implementation for iOS v7\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/apple-pay/client-side/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/apple-pay/client-side/ios/v7-2026-09-16.md\"\ntags: [braintree, apple-pay, ios, client-sdk, payment-method-nonce]\n---\n\n## Overview\n\nThis captured Braintree website guide documents a custom client-side Apple Pay integration for the Braintree iOS v7 SDK. After the Apple Pay certificate and Merchant ID are configured, the app coordinates PassKit and Braintree configuration, presents a `PKPaymentRequest`, tokenizes the authorized `PKPayment` with the Braintree SDK, and sends the returned payment method nonce to its server for transaction processing. This is versioned implementation guidance and a dated website snapshot, not evidence of current certificate status, merchant eligibility, or a successful payment. See [[braintree]] and [[braintree-apple-pay]].\n\n## Key takeaways\n\n- The iOS v7 path is a custom UI integration. The page says iOS v7 is not supported through Drop-in and points Drop-in users to the v5 implementation guide; it separately records Drop-in deprecation on July 14, 2025 and unsupported status beginning July 14, 2026.\n- The app initializes Braintree client authorization, checks device/payment-network availability before showing Apple Pay, and creates a `PKPaymentRequest` either through `BTApplePayClient.paymentRequest` or manually. A manually created request must remain synchronized with gateway settings.\n- The client-side authorization is not the terminal payment result: the app tokenizes `PKPayment` into a payment method nonce, sends that nonce to its server, and reports Apple Pay success or failure based on the server-side `Transaction.sale` result.\n- For recurring payments, the page recommends MPANs over device-bound DPANs, says MPAN support is available only on iOS 16+, and calls MPAN support a Visa recurring-payments requirement. It also warns that networks without MPAN support may still return DPANs.\n- The page carries a critical certificate notice: older Braintree Mobile SDK certificates were stated to expire on March 30, 2026, with iOS SDK 7.0.0+ named as the upgrade path and complete customer-traffic failure stated for app versions left on the older certificates. Because the raw was fetched on September 16, 2026 while the notice still describes that date prospectively, treat it as captured page wording rather than verified current certificate state.\n\n## Detail locators\n\n- **SDK and Drop-in boundary:** raw lines 32\u201369 (`Get the SDK`) list the custom Apple Pay module/framework options and the dated Drop-in lifecycle and v7-support notices.\n- **Client initialization and division of responsibility:** raw lines 74\u201394 (`Initialization` and `PassKit integration and payment tokenization`) cover client authorization, nonce return, PassKit integration, and the merchant's responsibility for coordinating request and gateway configuration.\n- **Availability and payment-request configuration:** raw lines 97\u2013196 cover the Apple Pay button, device/network availability check, request construction, field recommendations, and synchronization with server environment and merchant configuration.\n- **Recurring-payment token qualification:** raw lines 199\u2013258 (`Recurring Payments (Transition to MPANs)`) preserve the iOS 16+, Visa, network-support, and DPAN-fallback conditions and locate the recurring, automatic-reload, and deferred request examples.\n- **Presentation, tokenization, and server-result handoff:** raw lines 261\u2013324 cover presenting the authorization controller, tokenizing the authorized payment, sending the nonce server-side, reflecting the `Transaction.sale` result, and dismissing the Apple Pay sheet.\n\n## Related\n\n- [[braintree]]\n- [[braintree-apple-pay]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/apple-pay/client-side/ios/v7-2026-09-16|Braintree Apple Pay client-side iOS v7 guide (captured 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the iOS SDK\u202fto version 7.0.0+ for the new SSL certifications.",
+      "location": "lines 17-18, IMPORTANT notice"
+    },
+    {
+      "text": "Your app will submit an Apple Pay authorization to Braintree and [receive a payment method nonce](/braintree/docs/guides/payment-method-nonces) in return, which can be used for server-side processing.",
+      "location": "line 86, Initialization"
+    },
+    {
+      "text": "You are responsible for coordinating Apple Pay (PKPaymentRequest) and Braintree configurations",
+      "location": "line 94, PassKit integration and payment tokenization"
+    },
+    {
+      "text": "This is a requirement for Visa recurring payments. You must update your integration to support MPANs to ensure continued Apple Pay functionality. Although, please note that not all card networks support MPAN tokens and DPAN tokens may still be returned for those networks.",
+      "location": "line 205, Recurring Payments (Transition to MPANs) IMPORTANT notice"
+    },
+    {
+      "text": "Implement the PKPaymentAuthorizationViewControllerDelegate protocol methods. In your implementation of paymentAuthorizationViewController:didAuthorizePayment:handler:, create a nonce by tokenizing the PKPayment via the Braintree SDK:",
+      "location": "line 293, Implement PKPaymentAuthorizationViewControllerDelegate"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-apple-pay-ios-v7-client-source-route",
+        "target_path": "wiki/concepts/braintree-apple-pay.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-apple-pay-client-side-ios-v7]] - 2026-09-16 captured Braintree iOS v7 custom Apple Pay client flow from PassKit request through Braintree nonce handoff, with Drop-in exclusion, a dated certificate warning and qualified MPAN guidance",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw was fetched on 2026-09-16 but still describes the March 30, 2026 certificate expiry prospectively; preserve it as captured wording, not verified current certificate status.",
+          "This source documents the custom iOS v7 path and explicitly says iOS v7 is not supported via Drop-in; do not generalize it to Drop-in behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/apple-pay/client-side/ios/v7-2026-09-16.md",
+  "raw_sha256": "e8b6fc6bec578b1c5590c533c74ab910bef129f4b5afc7f1dba026a0c438627c",
+  "status": "candidate_ready"
+}

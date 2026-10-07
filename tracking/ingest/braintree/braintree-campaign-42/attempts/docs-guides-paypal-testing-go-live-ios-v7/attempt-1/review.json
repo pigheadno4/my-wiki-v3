@@ -1,0 +1,21 @@
+{
+  "job_id": "docs-guides-paypal-testing-go-live-ios-v7",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The pinned raw SHA-256 matches and the candidate otherwise preserves the iOS v7 website identity, mocked-versus-linked Sandbox split, App Switch eligibility and fallback, US/Firebase qualifications, destructive app replacement, real-card and Production-fee warnings, Sandbox/Production isolation, client-token boundary, exact quotes and locators, raw provenance, and unresolved website-versus-exact-SHA App Switch scope. One material Production-credential issue remains: the source summary says only that keys are user-specific and server-side, while the reciprocal proposal calls them `server-owned`. The raw instead recommends keys belonging to a dedicated Account Admin API user and warns that using an individual user's keys can break the gateway connection and cause failed transactions if that user is deleted or suspended. For the concrete query `Whose Production API keys should the integration use, and what happens if that user is removed?`, the current source summary does not supply the consequential answer and the concept route gives a misleading ownership answer; the broad raw locator does not neutralize that retained concept wording without an extra traversal.",
+  "required_changes": [
+    "Narrowly revise the Production-credentials takeaway to preserve the raw lines 270-274 recommendation and consequence: use a dedicated API user with Account Admin permissions rather than an individual employee's credentials, because deleting or suspending that individual can break the Braintree connection and cause failed transactions. Keep the existing environment/user specificity, server-side placement, unchanged client-token configuration, and real-payment/fee boundaries.",
+    "Revise shared update `c42-w14-braintree-ios-sdk-paypal-testing-go-live` so it no longer says `server-owned production credentials`. Use accurate placement/ownership wording such as `production credentials kept in server-side configuration, with a dedicated API-user warning`; retain the route, App Switch conflict warning, and all existing scope exclusions unchanged."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "c42-w14-braintree-ios-sdk-paypal-testing-go-live",
+      "verdict": "rejected",
+      "reason": "The reciprocal target and route are relevant, but `server-owned production credentials` misstates user-specific credential ownership and omits the dedicated API-user failure warning that the raw assigns to the Production transition."
+    }
+  ],
+  "reviewer_identity": "braintree-c42-r-14",
+  "reviewer_model": "gpt-5.6-sol"
+}

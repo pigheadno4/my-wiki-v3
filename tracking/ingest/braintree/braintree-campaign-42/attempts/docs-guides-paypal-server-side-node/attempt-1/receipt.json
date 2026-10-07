@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-guides-paypal-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Server-Side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/paypal/server-side/node-2026-09-16.md\"\ntags: [braintree, paypal, node, server-side, transactions, settlement]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot is a Node.js server-side guide for creating PayPal-backed Braintree transactions, updating a PayPal payment resource after buyer approval and before vaulting, and handling related device-data, currency, shipping, settlement and recurring-transaction conditions. It is snapshot documentation, not proof of current SDK behavior, merchant eligibility, account configuration, transaction success, capture, settlement or funding. [[braintree]] [[paypal-braintree-integration]]\n\n## Key takeaways\n\n- The callback and Promise examples build a sale request with `paymentMethodNonce`, optional `deviceData`, `orderId`, `options.submitForSettlement: true` and PayPal-specific custom-field/description values, then submit it through `gateway.transaction.sale(...)`. The introductory sentence at line 25 has lost the parameter and call names, so the examples are the precise captured locator rather than a reconstruction of that sentence.\n- For edge cases where transaction values such as the total change after buyer approval, the guide says updated line items are essential so the final amount is correct. It places `PayPalPaymentResource.update()` after payment-resource tokenization and before `Customer.create()` vaulting. `paymentMethodNonce` is required, and the new nonce returned by `update()` must be passed to `Customer.create()` for the updated resource to be vaulted. Optional fields should be limited to what the use case changes.\n- When a PayPal transaction comes from a Vault record and is not recurring, the guide advises collecting client device data and submitting it as top-level `deviceData`/`device_data` to help reduce declines. This is a conditional recommendation, not a guarantee of approval.\n- The charged currency follows the `merchant_account_id` used by the transaction call. A collected shipping address must be passed with the transaction and must follow PayPal address conventions, but the captured required-field list is blank; use the linked transaction reference rather than reconstructing those fields from this snapshot.\n- PayPal funds are described as captured immediately when each transaction is submitted for settlement rather than settling in batches. Settlement above the authorized amount is unavailable unless the merchant's industry and processor support settlement adjustment; exceeding the permitted limit produces a settlement response code. The page also states that multiple partial settlements can cover the total authorization for multiple physical-goods shipments, but the method name is missing from the captured sentence.\n- For merchant-initiated transactions from a vaulted PayPal record while the customer is absent, custom recurring logic must include `transactionSource: \"recurring\"`; Braintree recurring billing is described as setting that parameter automatically.\n\n## Detail locators\n\n- **Creating transactions and post-approval update:** lines 23-34.\n- **Supported update request example:** lines 37-101.\n- **Vault-origin device-data condition and callback/Promise sale examples:** lines 103-167.\n- **Vault-on-success navigation and currency behavior:** lines 169-174.\n- **Shipping-address requirement, damaged field list and Seller Protection lookup:** lines 177-216.\n- **Settlement timing, over-authorization limit and partial-settlement statement:** lines 218-230.\n- **Recurring transaction classification and callback/Promise examples:** lines 231-266.\n\n## Related\n\n- Company: [[braintree]]\n- Concept: [[paypal-braintree-integration]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/server-side/node-2026-09-16|Braintree PayPal server-side Node.js guide (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "To complete an update, use the `PayPalPaymentResource.update()` method on the server side **after** tokenization of the payment resource and **before** calling `Customer.create()` to vault the payment method.",
+      "location": "line 30, under `### Updating PayPal Payment Resource After Buyer Approval`"
+    },
+    {
+      "text": "The `paymentMethodNonce` is a required parameter. The `update()` call returns a new nonce, which must be used with `Customer.create()` to ensure the updated payment resource is properly vaulted.",
+      "location": "line 34, `NOTE` under `### Updating PayPal Payment Resource After Buyer Approval`"
+    },
+    {
+      "text": "If the PayPal transaction was initiated from a Vault record and is not a recurring transaction,[collect device data](/braintree/docs/guides/premium-fraud-management-tools/client-side)from the client and include the collected client device data via the top-level`device_data`parameter.",
+      "location": "line 105, under `### Using device data`"
+    },
+    {
+      "text": "Unlike most payment types that settle in batches, [we capture PayPal funds immediately when you submit each transaction for settlement](/braintree/articles/guides/payment-methods/paypal/processing#settlement).",
+      "location": "line 220, under `## Settlement`"
+    },
+    {
+      "text": "You can't settle more than the authorized amount unless your industry and processor support settlement adjustment (settling a certain percentage over the authorized amount); [contact us](/braintree/help) for details.",
+      "location": "line 225, under `### Capturing greater than authorization amount`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-w28-paypal-node-reciprocal",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- Source: [[source-braintree-docs-guides-paypal-server-side-node]] - 2026-09-16 Braintree Node.js website guide for PayPal-backed transaction sale submission, post-approval payment-resource update before vaulting, conditional device data, settlement limits and recurring transaction-source handling; captured rendering gaps prevent reconstructing the missing opening parameter/call, shipping-field list or partial-settlement method.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured opening transaction sentence omits the parameter and server-call names; retain the examples as the exact locator instead of reconstructing the prose.",
+          "The captured shipping required-field list is blank and the partial-settlement sentence omits its method name; do not infer either from sibling documentation.",
+          "This dated website snapshot does not establish current SDK behavior, account enablement, transaction success, capture, settlement or funding."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/server-side/node-2026-09-16.md",
+  "raw_sha256": "0be2294896b9c747b987ca7da0e1bb6a1948abc0b483561c18d01be9b6b77a5d",
+  "status": "candidate_ready"
+}

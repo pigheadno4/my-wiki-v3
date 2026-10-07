@@ -18,6 +18,12 @@ The guide makes merchant availability conditional on business location and proce
 The page says Apple Pay cards can be vaulted and used for recurring billing and split shipment transactions. Separately, it says vaulting Apple Pay cards should only be used when the customer consents during checkout to future merchant-initiated transactions. It warns against using the vaulted card for a future transaction when the customer is present and can authorize the payment, saying that use results in declines. Setup requires Apple Pay certificates and Merchant IDs configured with Braintree and Apple, an iOS and/or JavaScript v3 client integration, and a server integration. For Braintree's iOS client SDK, the page gives the Apple Pay certificate a 25-month expiry and requires keeping it current. Exact device, iframe, processing, liability, fraud-tool and renewal details remain in the source's raw locators. [[source-braintree-payment-methods-apple-pay]]
 
 ## Sources
+
+- [[source-braintree-docs-guides-apple-pay-configuration-ios-v7]] - 2026-09-16 captured Braintree iOS v7 configuration route for Apple Merchant ID, payment processing certificate, separate sandbox/production provisioning, renewal, and Xcode setup, with a dated mobile-SDK certificate warning and enterprise-provisioning exclusion
+
+- [[source-braintree-docs-guides-apple-pay-client-side-ios-v7]] - 2026-09-16 captured Braintree iOS v7 custom Apple Pay client flow from PassKit request through Braintree nonce handoff, with Drop-in exclusion, a dated certificate warning and qualified MPAN guidance
+
+- [[source-braintree-docs-reference-response-apple-pay-card-node]] - 2026-09-16 collected Node.js website response reference for Apple Pay Card product-ID metadata and its code-to-name table; not native-client or direct-Apple authority, current availability, authentication, acceptance or payment-lifecycle proof
 - [[source-braintree-graphql-integration-guides-apple-pay]] - 2026-09-16 unversioned Braintree website GraphQL guide to Apple Pay environment accounts, web-domain setup, authorized single-use payment-method charging and qualified Vault routes; distinct from exact-version SDK/schema evidence, current enablement or execution proof
 
 - [[source-braintree-payment-methods-apple-pay]] - Braintree Apple Pay identity and DPAN model, conditional availability and platform scope, vaulting consent guidance, integration roles and certificate renewal

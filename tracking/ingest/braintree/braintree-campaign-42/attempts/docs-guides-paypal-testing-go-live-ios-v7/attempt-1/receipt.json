@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-paypal-testing-go-live-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Testing and Go Live (iOS v7)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/testing-go-live/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/paypal/testing-go-live/ios/v7-2026-09-16.md\"\ntags: [braintree, paypal, ios, ios-v7, testing, sandbox, production, app-switch]\n---\n\n## Overview\n\nThis 2026-09-16 Braintree website snapshot is the PayPal Testing and Go Live guide routed under iOS v7. It distinguishes mocked from linked PayPal sandbox testing, documents an eligibility-qualified PayPal App Switch test path with browser-session fallback, and separates the production server credential/environment change from the unchanged iOS client-token configuration. It is Braintree-hosted website guidance for this route, not evidence for sibling platforms or versions, current availability or account eligibility, a standalone direct PayPal integration, exact-SHA SDK behavior, or successful payment, settlement, or funding.\n\n## Key takeaways\n\n- Mocked testing uses Braintree sandbox credentials and test values to check client- and server-side configuration and simulated responses, but it does not send data to a PayPal sandbox account or provide end-to-end testing. Linked testing requires separate setup, connects the Braintree and PayPal sandbox accounts, returns data to both, and is the route described for fuller functionality such as reporting and email receipts.\n- The page warns not to use the merchant's PayPal business account as the customer account in linked testing or production because the transaction will decline. It also notes that linking a PayPal sandbox account can cause some fake nonces to stop working.\n- For App Switch, after `tokenize` the SDK attempts to open the PayPal app only when it is installed and the user is eligible; otherwise it falls back to `ASWebAuthenticationSession`. The production-app test path is limited to US developers and requires the sign-in email to match `userAuthenticationEmail`; the separate sandbox-app path requires Firebase access and is presented for teams inside or outside the US.\n- The sandbox build overrides an installed production PayPal app, so the page directs testers to delete existing PayPal apps first. It also warns that selecting **Complete Transaction** after returning to the merchant app can charge a real card linked to the test account. System errors, app-launch failure, activity-feed updates, and non-App-Switch screens are listed as unavailable sandbox-app test cases.\n- Sandbox artifacts do not transfer to production. Production merchant ID and public/private API keys are environment- and user-specific and belong in server-side configuration; the iOS client needs no production configuration change because it receives a client token from the server. Production checks use real payment methods, limited low-value sales submitted for settlement, and can debit the payment method and incur fees; the described bank-deposit confirmation is an instructed check, not proof that any deposit occurred.\n\n> [!warning] Unresolved App Switch scope\n> This website snapshot documents testing App Switch with both the PayPal production app and a PayPal sandbox app. The independently retained exact-SHA iOS SDK concept records source comments that call the optional v7 app-switch API beta and production-only. Preserve both source-qualified statements; this page does not establish which scope is current or reconcile the website and implementation evidence.\n\n## Detail locators\n\n- Mocked versus linked sandbox behavior and the business-account decline warning: raw lines 16-37.\n- Linked PayPal sandbox account, app, credential, Control Panel, and fake-nonce setup: raw lines 42-89.\n- App Switch eligibility, `ASWebAuthenticationSession` fallback, production-app prerequisites, email match, and post-transaction checks: raw lines 92-132.\n- Sandbox-app prerequisites, destructive app replacement, Firebase installation, certificate trust, and verification: raw lines 134-182.\n- Sandbox-app FAQ, real-card charge warning, demo settings, supported use cases, and unavailable cases: raw lines 185-256.\n- Sandbox/production isolation, API-user guidance, credential scope, production account recreation, server examples, and unchanged client-token configuration: raw lines 259-375.\n- Limited production sales, settlement/deposit check, real-payment-method requirement, debits, and fees: raw lines 378-382.\n\n## Related\n\n- Company: [[braintree]]\n- Concepts: [[braintree-ios-sdk]], [[paypal-braintree-integration]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/testing-go-live/ios/v7-2026-09-16|Braintree PayPal Testing and Go Live \u2014 iOS v7 (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "You can test your PayPal integration in the Braintree sandbox environment in 2 ways:",
+      "location": "Testing and Go Live, line 16"
+    },
+    {
+      "text": "Do not use your PayPal business account as the PayPal customer account when paying for test transactions in the linked PayPal flow or in production. Doing so will result in [declines](/braintree/docs/reference/general/processor-responses/authorization-responses).",
+      "location": "Testing and Go Live IMPORTANT, lines 36-37"
+    },
+    {
+      "text": "In this experience the SDK will attempt to switch to the PayPal App after calling tokenize if the PayPal App is installed and the user meets eligibility requirements. If the switch into the PayPal App cannot be completed, the SDK will fall back to the ASWebAuthenticationSession experience.",
+      "location": "Testing App Switch, line 94"
+    },
+    {
+      "text": "After App Switch, when you are redirected back to the merchant app, do not select Complete Transaction. If you have a real credit card linked to the test account, selecting Complete Transaction will charge the credit card.",
+      "location": "Testing App Switch FAQ, lines 192-193"
+    },
+    {
+      "text": "**Your sandbox account is not linked to your production account in any way**. Nothing created in the sandbox will transfer to production. This includes processing options and recurring billing settings. Your login information, merchant ID, and API keys will also be different.",
+      "location": "Go Live IMPORTANT, lines 262-263"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c42-w14-braintree-ios-sdk-paypal-testing-go-live",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-testing-go-live-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for mocked versus linked PayPal sandbox testing, eligibility-qualified App Switch with `ASWebAuthenticationSession` fallback, and server-owned production credentials with unchanged client-token configuration; preserves real-card/fee warnings and the unresolved website-versus-exact-SHA App Switch environment scope, and is not sibling-platform, current-availability, direct-PayPal, execution, settlement or funding proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The website snapshot documents App Switch testing through both the PayPal production app and a PayPal sandbox app, while the existing exact-SHA iOS concept records beta API source comments limiting the optional app-switch API to production; retain both source-qualified routes without resolving current scope."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/testing-go-live/ios/v7-2026-09-16.md",
+  "raw_sha256": "aaa7beec0ba17fed34a81d5153e978aa1de17e9a14a2f048078ef743610a5235",
+  "status": "candidate_ready"
+}

@@ -25,6 +25,8 @@ PayPal transactions follow a separate collected funding route: by default PayPal
 
 ## Sources
 
+- [[source-braintree-docs-guides-functions-act-on-fraud]] - 2026-09-16 Braintree Functions documentation-preview example for a `paymentMethod` / `beforeAuthorization` Function that calls an external fraud-score service and maps the illustrated vendor decision into transaction custom fields or `GatewayRejected`; the snapshot is not proof of current availability, account eligibility, a runnable example, successful payment execution or authorization, settlement, or funding
+
 - [[source-braintree-docs-guides-functions-accept-new-payment-method]] - 2026-09-16 Braintree website Functions payment-method integration preview for template-generated lifecycle handlers, merchant-authored payment-service API calls and response mapping, local tests, environment-qualified deployment and transaction routing; examples are not current availability, deployed-runtime, security-completeness or successful-payment proof
 
 - [[source-braintree-graphql-guides]] - 2026-09-16 unversioned Braintree GraphQL landing and basic-orientation guide for intent-based documentation routes, query/mutation and schema/introspection concepts, API Explorer navigation, and stated Relay compatibility; examples and linked unread guides are not exact-schema, SDK, current-scope, eligibility, execution or payment-outcome evidence

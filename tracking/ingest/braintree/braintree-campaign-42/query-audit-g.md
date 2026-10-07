@@ -1,0 +1,46 @@
+# Braintree C42 fixed-query audit — Group G
+
+- Campaign: `braintree-campaign-42`
+- Assigned manifest positions: 25–28
+- Started (UTC): `2026-10-07T01:05:00Z`
+- Completed (UTC): `2026-10-07T01:12:00Z`
+- Verdict: **PASS — 8/8 fixed questions passed**
+
+## Shared checks
+
+- **Pins, URLs, and ownership — PASS.** Recomputed SHA-256 values match the manifest for Fastlane client-side `f20e80c1…d798`, ACH server-side `b5179ebd…2221`, PayPal App Switch iOS v7 `eeff8023…195a`, and PayPal server-side Node `0be22948…7a5d`. Each source `canonical_url` equals its raw Source URL and manifest URL, and each pinned raw has exactly one `raw_files` owner.
+- **Full reads, bounded sweep, and routes — PASS.** The four canonical source pages and all 1,160 lines of the four pinned raws were read completely. Exact URL/path sweeps found no alternate source owner or duplicate evidence copy; none of the four sources has a `Related raw API references` section. One actual root → Braintree index → main concept → source → raw route is recorded per page below, and every source/main-concept pair is reciprocal now.
+- **Scope, conflicts, and non-inference — PASS.** Answers use only the captured Braintree website variant: no current-provider, sibling SDK/platform, direct-PayPal, GitHub/package, eligibility, enablement, successful tokenization, Vault, transaction, authorization, capture, settlement, or funding behavior was inferred. The ACH damaged verification sentence, PayPal server-side rendering gaps, App Switch certificate/version tension, and App Switch website-versus-implementation environment conflict remain explicit and unresolved. Routine fields, examples, code, setup sequences, and linked-reference details remain retrievable at raw locators. Extra factual authority reads: none.
+- **Deferred close work — not a content failure.** Direct provider-index source rows plus new company/provider catalog aggregation remain the campaign-wide coordinator-close task. Their absence does not break the required concept-mediated routes below and is not counted as an affected-question failure.
+
+## Position 25 — `docs-guides-fastlane-client-side-node`
+
+Actual route: `wiki/index.md:11` → `wiki/braintree-index.md:687` → `wiki/concepts/paypal-fastlane.md:91` → `wiki/sources/braintree/source-braintree-docs-guides-fastlane-client-side-node.md:12-45` → `raw/braintree/docs/guides/fastlane/client-side/node-2026-09-16.md:1-327`.
+
+1. **PASS — Exact scope and non-inference.** This is a captured Braintree Fastlane **browser HTML/JavaScript client integration** at the `/node` route, using same-version Braintree Web client, Fastlane, and data-collector modules at `3.120.0` or greater. The route label is not Node.js runtime evidence, and the snapshot does not establish current availability, merchant/customer eligibility, direct PayPal Orders behavior, profile existence, authentication/tokenization success, or transaction/Vault outcome. Evidence: source `:14-22`; raw `:17-81,114-169,307-326`.
+2. **PASS — Central action, material conditions/warnings, and detail route.** The client initializes Braintree and device data, creates Fastlane, conditionally displays the data-sharing watermark, looks up email, authenticates a member or falls back to guest, handles missing/selectable shipping addresses, always renders the payment component, and hands its token plus previously captured device data to the merchant server. Same-version modules, Sandbox-only success OTPs, conditional privacy/watermark notice, missing-address handling, and member/guest branching are preserved. The separate statement that the token can be used like a `paymentMethodNonce` for Transact or Vault does not establish device data as a Vault input or either outcome. Exact styling, locale, address, field, event, and code detail remains at source `:24-33` and raw `:17-110,114-227,229-326`.
+
+## Position 26 — `docs-guides-ach-server-side-node`
+
+Actual route: `wiki/index.md:11` → `wiki/braintree-index.md:707` → `wiki/concepts/braintree-payment-methods.md:27` → `wiki/sources/braintree/source-braintree-docs-guides-ach-server-side-node.md:12-52` → `raw/braintree/docs/guides/ach/server-side/node-2026-09-16.md:1-305`.
+
+3. **PASS — Exact scope and non-inference.** This is an unversioned captured Braintree **Node.js server-side ACH Direct Debit website guide** after an eligible merchant's custom JavaScript v3 client supplies a nonce; the page explicitly excludes Drop-in UI. It is not exact Node package evidence and does not prove current availability, merchant enablement, bank ownership, verification, debit, settlement, or funding. Evidence: source `:14,25-30`; raw `:18-22,25-74,205-250`.
+4. **PASS — Central action, material conditions/warnings, and detail route.** The server vaults the US bank account to begin verification/transacting, chooses network check, micro-transfers, or independent check, and later uses the vaulted token for a sale request. Successful vaulting is not successful network-check verification; micro-transfers require merchant UI collection, confirmation, settlement wait, and status lookup; customer verification is an optional network-check-only add-on; retries cannot replace vaulted bank details, and webhooks cover all three methods. The damaged raw sentence after “marked” is not reconstructed. Exact calls, statuses, retry examples, response codes, and webhook navigation remain at source `:18-23,32-43` and raw `:68-167,170-250,255-302`.
+
+## Position 27 — `docs-guides-paypal-app-switch-ios-v7`
+
+Actual route: `wiki/index.md:11` → `wiki/braintree-index.md:719` → `wiki/concepts/braintree-ios-sdk.md:83` → `wiki/sources/braintree/source-braintree-docs-guides-paypal-app-switch-ios-v7.md:12-50` → `raw/braintree/docs/guides/paypal/app-switch/ios/v7-2026-09-16.md:1-261`.
+
+5. **PASS — Exact scope and non-inference.** This is Braintree's captured **beta iOS v7 custom-client website route** for PayPal Checkout and Vault App Switch. It states US merchant/customer eligibility, attempts the installed PayPal app after `tokenize`, and falls back to `ASWebAuthenticationSession` when switching cannot complete. It is not standalone `paypal/paypal-ios`, current iOS package/support or certificate evidence, merchant enablement, buyer eligibility, or successful nonce/payment evidence. Evidence: source `:14-18,24-28`; raw `:17-40,258-260`.
+6. **PASS — Central action, material conditions/warnings, and detail route.** The app allowlists the PayPal scheme, configures a dedicated Universal Link return path and exact registered domain, initializes `BTPayPalClient`, forwards the return URL, opts a Vault or Checkout request into App Switch with `userAuthenticationEmail`, and sends a returned nonce to the merchant server. Button disabling/loading is advice, not an eligibility or tokenization prerequisite. The source preserves the expired-date certificate notice's `6.17.0+` wording despite the v7 route and the unresolved Sandbox-TestFlight website versus production-only implementation conflict; it infers neither environment works currently. Exact package-manager, Control Panel, return-handler, request, sample, and testing steps remain at source `:30-40` and raw `:42-260`.
+
+## Position 28 — `docs-guides-paypal-server-side-node`
+
+Actual route: `wiki/index.md:11` → `wiki/braintree-index.md:729` → `wiki/concepts/paypal-braintree-integration.md:127` → `wiki/sources/braintree/source-braintree-docs-guides-paypal-server-side-node.md:12-42` → `raw/braintree/docs/guides/paypal/server-side/node-2026-09-16.md:1-267`.
+
+7. **PASS — Exact scope and non-inference.** This is a captured Braintree **Node.js server-side PayPal website guide** for Braintree transaction sale requests and a separate post-buyer-approval payment-resource update-before-vault path. It is not direct PayPal Orders API, exact Node package/current behavior, account configuration, merchant/buyer eligibility, or proof of transaction, authorization, capture, settlement, or funding success. Evidence: source `:14-20`; raw `:18-34,103-174,218-266`.
+8. **PASS — Central action, material conditions/warnings, and detail route.** Sale examples submit a nonce, optional conditionally relevant device data, order and PayPal values through `gateway.transaction.sale()` with settlement submission. If values change after buyer approval, line items must reflect the final amount; `PayPalPaymentResource.update()` occurs after tokenization and before `Customer.create()`, requires the old nonce, and returns the new nonce that must be vaulted. Currency follows `merchant_account_id`; collected shipping must be sent under PayPal conventions; over-authorization settlement needs industry/processor support; and absent-customer custom recurring sales use `transactionSource: "recurring"`. The missing opening call/parameter, blank shipping-field list, and missing partial-settlement method are not reconstructed. Exact fields, examples, Seller Protection lookup, settlement, and recurring details remain at source `:18-33` and raw `:23-101,103-216,218-266`.
+
+## Close result
+
+No affected-question correction is required. All four pages preserve exact Braintree website/SDK-family and client/server scope, central action, material qualifications and warnings, bounded conflicts, non-inference boundaries, reciprocal main-concept discoverability, and a precise raw detail route.

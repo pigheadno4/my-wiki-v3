@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-reference-general-level-2-and-3-processing-required-fields-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Level 2 and 3 Required Fields (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/level-2-and-3-processing/required-fields/node\"\nraw_files:\n  - \"braintree/docs/reference/general/level-2-and-3-processing/required-fields/node-2026-09-16.md\"\ntags: [braintree, node-js, transactions, level-2, level-3, line-items]\n---\n\n## Overview\n\nThis collected Braintree website reference describes Level 2 and Level 3 data supplied in Node.js transaction requests. It shows `gateway.transaction.sale()` callback and Promise examples and a separately approval-gated `gateway.transaction.submitForSettlement()` route. The page is an unversioned website snapshot with body metadata updated 2026-06-09 and raw fetched 2026-09-16; it is not package-version, exact deployed-schema, current eligibility, interchange-result or transaction-outcome evidence.\n\n## Key takeaways\n\n- The page says a transaction must include the Level 2 fields to qualify for Level 2 processing. Its captured required-field bullets are blank, while the Node sale examples show `purchaseOrderNumber` and `taxAmount`; use the raw code locator as an example, not as proof of a complete field contract. The page also says the required-field values determine lower-interchange qualification, but the captured sentence that gives Visa and Mastercard percentage ranges omits the field name, so this source does not reconstruct that missing subject.\n- To qualify for Level 3 processing, the page requires Level 2 data plus additional Level 3 data and line items. The visible raw list names `line_items.name`, `line_items.kind`, `line_items.quantity`, `line_items.unit_amount`, `line_items.unit_of_measure`, `line_items.total_amount`, `line_items.tax_amount`, `line_items.discount_amount`, `line_items.product_code` and `line_items.commodity_code`; adjacent Level 3 field bullets are blank. The Node examples use camelCase request keys. Preserve those displayed naming contexts rather than treating the field labels as a complete executable API contract.\n- Processor amount validation compares line-item totals with the root transaction amount, and a discrepancy may decline the transaction. The page gives a calculation using item totals, tax, shipping, shipping tax and discount; it separately warns that EU and UK transactions with non-zero shipping amount may be rejected when shipping tax is zero. Use the raw formula and Node example for the exact displayed arithmetic and values.\n- For selected line-item fields, the page limits statement-safe characters to letters, digits, apostrophe, period, hyphen and spaces. Other characters may still qualify for Level 3 processing, but the page says unsupported characters are converted to spaces on the cardholder statement. The captured bullets naming the affected fields are blank, so their identities are not reconstructed here.\n- Supplying Level 2/3 data through `submitForSettlement()` requires internal approval. This route applies the data at settlement submission instead of the sale call, overrides all Level 2/3 data previously supplied in the sale request, and is recommended as an either/or choice rather than using both request points.\n- A transaction result may contain Level 3-field or line-item validation errors when a value's format or length is outside expected bounds. This validation statement does not establish that all semantic, processor, eligibility or amount problems produce the same error route.\n\n> [!warning] Snapshot, eligibility and outcome boundaries\n> Field supply and example calls do not establish merchant, account, processor, card or region eligibility; internal approval for the settlement-submission route; lower interchange; current Node SDK support; exact gateway acceptance; or authorization, settlement and funding of an individual transaction. Several captured required-field bullets and one Level 2 range sentence are incomplete, so consult the exact raw locators and current Braintree authority rather than filling those gaps from field labels or examples.\n\n## Detail locators\n\n- Level 2 qualification statement, blank captured field bullets and incomplete interchange-range sentence: `## Level 2 data`, lines 17-30.\n- Node callback and Promise sale examples for the displayed Level 2 request keys: `### Creating a transaction`, lines 31-54.\n- Level 3 dependency on Level 2, CEDP context, blank additional-field bullets and visible `line_items.*` labels: `## Level 3 data`, lines 56-85.\n- Character-set behavior and the missing affected-field bullets: `### Supported characters`, lines 89-99.\n- Processor total comparison, possible decline, EU/UK shipping-tax condition and displayed formula: `### Amount validation`, lines 100-106.\n- Full amount-validation Node example and its exact camelCase names and values: `### Amount validation > ### node`, lines 108-147.\n- Callback and Promise examples described by the page as using minimum required Level 3 fields: `### Creating a transaction`, lines 149-230.\n- Internal-approval requirement, settlement-time purpose, override effect and either/or recommendation: `### Specifying level 2 and 3 data when submitting for settlement`, lines 232-240.\n- Full callback and Promise settlement-submission examples: lines 243-315.\n- Qualified validation-error behavior and separate error-reference route: `## Validation errors`, lines 317-321.\n\n## Related raw API references\n\nThe captured page links to the transaction sale tax-amount route, Braintree contact route and Level 3 validation-errors reference. Those linked targets are navigation only here and are not imported as behavioral evidence for this entry.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-server-sdk]]\n- Overlapping settlement-operation route: [[source-braintree-transaction-submit-for-settlement-node]]\n- In-Person comparison route: [[source-braintree-in-person-guides-making-a-transaction-level-2-and-level-3-data-processing]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/level-2-and-3-processing/required-fields/node-2026-09-16|Braintree Node.js Level 2 and Level 3 required-fields reference]] - complete collected page covering sale-time examples, line-item and amount rules, approval-gated settlement-time override behavior and validation-error navigation\n",
+  "quotes": [
+    {
+      "text": "To qualify for Level 2 processing on a given transaction, include the following fields in thecall:",
+      "location": "## Level 2 data, line 19"
+    },
+    {
+      "text": "To qualify for Level 3 processing on a given transaction, you must pass[Level 2 data](#level-2-data), along with specific additional Level 3 data and line items. In the US, Visa has introduced or mandated a quality check on Level 3 data (CEDP). Line items are similar to the details you would find on an itemized invoice.",
+      "location": "## Level 3 data, line 58"
+    },
+    {
+      "text": "Each processor verifies that the total of the line-item amounts matches the root transaction amount. If there's a discrepancy, the transaction may be declined. For US Visa transactions (CEDP), to ensure these amounts match, it's advisable to sum the per-item tax, subtotal amounts, shipping tax, shipping amount, and subtract the discount amount to calculate the total transaction amount. In the EU and UK regions, transactions with a non-zero shipping amount may be rejected if the shipping tax amount is zero.",
+      "location": "### Amount validation, line 102"
+    },
+    {
+      "text": "Level 2 and 3 processing via submit for settlement requires internal approval. Please [contact us](/braintree/help?issue=TransactionProcessingQuestion) if you\u2019re interested in this functionality.",
+      "location": "### Specifying level 2 and 3 data when submitting for settlement > AVAILABILITY, lines 235-236"
+    },
+    {
+      "text": "Level 2 and 3 data provided via submit for settlement will override all Level 2 and 3 data previously provided in a sale request. If you wish to pass Level 2 and 3 data, we recommend utilizing either [transaction.sale](/braintree/docs/reference/request/transaction/sale/ruby/node#tax_amount) or transaction.submit_for_settlement, but not both at the same time.",
+      "location": "### Specifying level 2 and 3 data when submitting for settlement > NOTE, lines 239-240"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-required-fields-node-server-sdk-link",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-reference-general-level-2-and-3-processing-required-fields-node]] - 2026-09-16 unversioned Braintree Node.js website reference for Level 2/3 sale data, line-item and amount-validation locators, and the internally approved settlement-submission route that overrides sale-time Level 2/3 data; incomplete captured field lists and examples are not a complete executable API contract, current eligibility, interchange-result or payment-outcome proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw has blank captured required-field bullets and an incomplete Level 2 range sentence; do not reconstruct missing field identities.",
+          "The existing submit-for-settlement source overlaps the approval, override and either/or behavior; keep this new route focused on the required-fields reference and its precise detail locators."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/level-2-and-3-processing/required-fields/node-2026-09-16.md",
+  "raw_sha256": "ecee90954bdd844d53740534c06da8cf05134d8749bdc6a0b8fc93227679be63",
+  "status": "candidate_ready"
+}

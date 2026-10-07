@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-guides-ach-server-side-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree ACH Direct Debit Server-side Implementation (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/ach/server-side/node\"\nraw_files:\n  - \"braintree/docs/guides/ach/server-side/node-2026-09-16.md\"\ntags: [braintree, ach, direct-debit, nodejs, server-side, vaulting, verification]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of an unversioned [[braintree]] website guide describes the Node.js server-side flow for ACH Direct Debit after a custom JavaScript v3 client supplies a payment-method nonce. The page limits availability to eligible merchants that can build that custom client integration and states that ACH Direct Debit is not available in Drop-in UI; the snapshot does not establish current eligibility or enablement. It routes three verification choices\u2014network check, micro-transfers and independent check\u2014through Vault storage before a vaulted token is used for a transaction. See [[braintree-payment-methods]] for the provider-wide method route.\n\n## Key takeaways\n\n- Vaulting is required to begin verification and transacting: the server calls Payment Method Create with the client nonce, customer ID and the selected US bank-account verification method. The callback and Promise examples are under **Vaulting the payment method** (lines 68\u201395).\n- Network check requires a separate verification decision after vaulting. A successful vaulting result does not prove the bank account was verified; the page directs the integration to inspect the payment method's verification status and optionally its most recent processor response code. The customer-verification add-on is optional and applies only to network check. See **Verification Add Ons** (lines 97\u2013125) and **Checking for successful verification** (lines 128\u2013144).\n- Micro-transfers require the merchant to collect the two micro-deposit amounts in its own UI, confirm them in a separate call, wait for settlement, and then look up the verification until it is verified, pending or failed. Before confirmation, the vaulted bank account is neither verified nor transactable. See **Confirming micro-deposit amounts** (lines 145\u2013167) and **Looking up individual verification status** (lines 170\u2013204).\n- Once the relevant verification path permits transacting, the all-method transaction example passes the vaulted payment-method token and client-collected device data to Transaction Sale and requests settlement submission. This is an example request, not proof of a successful debit, settlement or funding. See **Creating transactions / From payment method tokens** (lines 205\u2013250).\n- Retrying verification applies to network check and micro-transfers. The page permits repeated attempts with the same or a different verification method, but Payment Method Update cannot replace the bank-account details on a vaulted US bank account; new bank information requires creation of a new payment method. See **Retrying verifications** (lines 255\u2013289).\n- Webhooks apply to all three verification methods and can notify the merchant of ACH transaction-status changes. General setup and transaction-notification detail remain in the linked webhook documents. See **Setting up webhooks** (lines 294\u2013302).\n\n## Material boundaries\n\n- This source is a captured, unversioned website guide for the Node.js server-side route. It is not package-qualified SDK implementation evidence, current service availability, merchant or buyer eligibility, account enablement, bank-account ownership proof, or successful transaction, settlement or funding evidence.\n- The client-side prerequisite is specifically a custom JavaScript v3 integration, and the captured page says the method is unavailable in Drop-in UI. Do not generalize this page to other client SDKs or interfaces.\n- At line 144, the captured sentence reads, \"If the payment method has been markedon any attempt, it will be transactable\"; the status word or formatting after \"marked\" is missing. This damaged rendering is not sufficient to reconstruct which mark makes the method transactable.\n- The retry examples and backup-method discussion are guidance and examples. They do not guarantee that a particular verification attempt or transaction will succeed.\n\n## Detail locators\n\n- Availability and client/UI qualification: lines 21\u201322\n- Verification-method flow map: lines 25\u201365\n- Vault creation and verification-method selection examples: lines 68\u201395\n- Network-check-only verification add-on: lines 97\u2013125\n- Network-check success inspection and damaged transactable sentence: lines 128\u2013144\n- Micro-transfer amount confirmation and settlement wait: lines 145\u2013167\n- Micro-transfer verification-status polling: lines 170\u2013204\n- Vaulted-token transaction examples: lines 205\u2013250\n- Retry choices and vaulted-bank-detail immutability: lines 255\u2013289\n- ACH transaction-status webhooks: lines 294\u2013302\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-methods]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/ach/server-side/node-2026-09-16|Braintree ACH server-side Node.js guide (captured 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "ACH Direct Debit is available to [eligible merchants](/braintree/articles/guides/payment-methods/ach#availability) who can implement a custom client-side integration using our [JavaScript v3 SDK](/braintree/docs/guides/client-sdk/setup/javascript/v3) . It's currently not available in our Drop-in UI.",
+      "location": "lines 21\u201322 under AVAILABILITY"
+    },
+    {
+      "text": "This step is required in order to verify the payment method and begin transacting on it.",
+      "location": "line 72 under Vaulting the payment method"
+    },
+    {
+      "text": "However, the successful vaulting call does not mean that the bank account has been verified.",
+      "location": "line 134 under Checking for successful verification"
+    },
+    {
+      "text": "Until micro-deposit amounts are confirmed, the vaulted bank account will not be verified or transactable.",
+      "location": "line 149 under Confirming micro-deposit amounts"
+    },
+    {
+      "text": "You can't change the details of a vaulted US Bank Account payment method using [Payment Method: Update](/braintree/docs/reference/request/payment-method/update) . If you need to retry verification with new bank account information, [create a new payment method](#vaulting-the-payment-method) .",
+      "location": "lines 288\u2013289 under NOTE in Retrying verifications"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-ach-server-side-node-reciprocal-source",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-ach-server-side-node]] - 2026-09-16 unversioned Braintree website Node.js ACH Direct Debit server-side guide for Vault-first network-check, micro-transfer and independent-check flows, with method-coupled verification, token-transaction, retry and webhook routes; preserves eligible-merchant, custom-JavaScript-v3, Drop-in exclusion, vaulted-bank-detail immutability and damaged verification-status-rendering boundaries, and is not current availability, enablement, exact SDK implementation or execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured line 144 omits the status or formatting after 'marked'; do not reconstruct the condition that makes a payment method transactable."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/ach/server-side/node-2026-09-16.md",
+  "raw_sha256": "b5179ebd06f98340be0c6d1aa069f2acd50fcc62979c970f47a2b9a7f7c12221",
+  "status": "candidate_ready"
+}

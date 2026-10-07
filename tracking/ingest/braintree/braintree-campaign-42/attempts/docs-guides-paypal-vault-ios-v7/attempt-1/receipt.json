@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-paypal-vault-ios-v7",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Vaulted Payments for iOS v7\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/vault/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/paypal/vault/ios/v7-2026-09-16.md\"\ntags: [braintree, paypal, vault, ios, sdk-v7]\n---\n\n## Overview\n\nThis collected [[braintree]] website guide documents PayPal vaulted payments through the Braintree iOS v7 documentation route. It describes tokenizing a PayPal vault request to obtain a payment-method nonce for server-side transaction creation, so the PayPal account can be charged later without the customer being present or re-authenticating. The snapshot does not establish current SDK support, merchant enablement, buyer eligibility or successful payment execution.\n\n## Key takeaways\n\n- The Swift example creates `BTPayPalVaultRequest`, optionally supplies a billing-agreement description, and calls `BTPayPalClient.tokenize`. A successful result exposes a nonce that the example directs the integration to send to its server to create a transaction; errors and buyer cancellation are separate outcomes.\n- The page carries a dated mobile-certificate warning: it says certificates were set to expire on March 30, 2026, directs iOS integrations to SDK `6.17.0+`, and says traffic from app versions left on older certificates will fail. This iOS-v7-routed snapshot was fetched after that stated date; it preserves the warning as captured rather than proving current certificate or SDK status.\n- Device-data collection is required when initiating a non-recurring transaction from a Vault record. The linked Premium Fraud Management Tools route is iOS v6; it is navigation, not evidence read for this entry.\n- After `tokenize`, App Switch is attempted only when the PayPal app is installed and the user meets eligibility requirements; if switching cannot be completed, the page says the flow falls back to `ASWebAuthenticationSession`. A separate note says `BTAPIClient` must be instantiated during app load rather than on button click.\n- Shipping addresses may or may not be collected during the Vault flow. The transaction amount and currency are not displayed in the Vault flow, so the merchant must display them elsewhere in checkout.\n\n## Detail locators\n\n- `Launch the flow` (raw lines 53-60): optional user-authentication email on `BTPayPalVaultRequest`.\n- `Invoking the Vault flow` (raw lines 62-93): `BTPayPalClient` authorization, request construction, tokenization, nonce handoff, error and cancellation branches.\n- `Collecting device data` (raw lines 95-97): device-data requirement for non-recurring transactions initiated from Vault records and the linked iOS v6 guide route.\n- `App Switch` (raw lines 100-123): installed-app and user-eligibility conditions, `ASWebAuthenticationSession` fallback, app-load initialization note and linked iOS v6 integration route.\n- `Shipping address`, `Country and language support`, and `Currency presentment` (raw lines 126-138): optional address collection, captured geographic statement, and merchant responsibility to display amount and currency.\n\n## Related\n\n- [[braintree]]\n- [[braintree-ios-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/vault/ios/v7-2026-09-16|Braintree PayPal Vaulted Payments \u2014 iOS v7 (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "[Vaulted payments](/braintree/docs/guides/payment-methods) with PayPal account will allow you to charge the account in the future without requiring your customer to be present during the transaction or re-authenticate with PayPal when they are present during the transaction.",
+      "location": "raw line 16 under `# Vaulted Payments`"
+    },
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the iOS SDK\u202fto version 6.17.0+ for the new SSL certifications.",
+      "location": "raw line 20 under `**IMPORTANT**` (leading layout space omitted; text verified exactly)"
+    },
+    {
+      "text": "Collecting device data from your customers is **required when initiating non-recurring transactions from Vault records**. For instructions, see the [Premium Fraud Management Tools Guide](/braintree/docs/guides/premium-fraud-management-tools/client-side/ios/v6).",
+      "location": "raw line 97 under `## Collecting device data`"
+    },
+    {
+      "text": "In this experience the SDK will attempt to switch to the PayPal App after calling tokenize if the PayPal App is installed and the user meets eligibility requirements. If the switch into the PayPal App cannot be completed, we will fall back to the ASWebAuthenticationSession experience.",
+      "location": "raw line 104 under `## App Switch`"
+    },
+    {
+      "text": "In the Vault flow itself, the transaction currency and amount are not displayed to the customer. It is up to you to display these details in your checkout flow somewhere (e.g. cart page, order review page, etc.). Our [Server-Side guide](/braintree/docs/guides/paypal/server-side#currency-support) outlines which currencies are supported for PayPal transactions.",
+      "location": "raw line 138 under `## Currency presentment`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-docs-guides-paypal-vault-ios-v7-reciprocal",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-vault-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for PayPal vault-request tokenization and nonce handoff, with required device data for non-recurring Vault transactions, eligibility-qualified App Switch fallback, merchant-displayed amount/currency and a dated certificate warning; not current SDK support, enablement or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the page's iOS v7 route separately from its captured instruction to upgrade the iOS SDK to 6.17.0+; the snapshot does not reconcile or establish current SDK/certificate status.",
+          "The page links iOS v6 Premium Fraud Management Tools and App Switch material; those unread links are navigation only and do not support additional behavior claims."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/vault/ios/v7-2026-09-16.md",
+  "raw_sha256": "477f524ca3d36bf85296778431952a75b8191b12db434e77df33bae0e5f5ccaf",
+  "status": "candidate_ready"
+}

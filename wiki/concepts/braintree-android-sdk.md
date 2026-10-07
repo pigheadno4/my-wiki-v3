@@ -70,6 +70,22 @@ At this Drop-in baseline, PayPal defaults to vaulting, Venmo defaults to single 
 Release `5.30.0` makes the principal Kotlin suspend functions public, removes the unsupported Visa Checkout module, deprecates its remaining configuration fields, targets Android API 37 for compilation, and fixes PayPal/Venmo button sizing. Historical migration and removal notes remain context until their exact versions are separately retained.
 
 ## Related
+
+- [[source-braintree-docs-guides-google-pay-client-side-android-v5]] - 2026-09-16 Android v5-routed website guide for Google Pay readiness gating, authorization-request launch and callback tokenization into a nonce; preserves a request-versus-result tokenization wording mismatch and dated mobile-certificate warning, and is not current package-support, merchant/device eligibility, server-transaction, or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-messaging-android-v5]] - 2026-09-16 Android v5-routed website guide for eligible merchants adding Pay Later offer messaging with request/view rendering and optional lifecycle callbacks; excludes Drop-in and preserves internal constructor/callback naming conflicts; not current package-support, merchant-eligibility, offer-availability, credit-approval or payment-execution evidence
+
+- [[source-braintree-docs-guides-paypal-pay-later-offers-android-v5]] - 2026-09-16 Android v5-routed website guide for requesting Pay Later presentation with `PayPalCheckoutRequest.shouldOfferPayLater`, subject to buyer and merchant eligibility and a prohibition on extra promotional messaging; not current package-support, offer-availability, or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-client-side-android-v5]] - 2026-09-16 Android v5-routed website guide for PayPal account/return-routing prerequisites, direct client initialization, and SDK-managed XML or Compose button tokenization into a nonce; includes a dated mobile-certificate warning and is not current package-support, eligibility, or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-testing-go-live-android-v5]] - 2026-09-16 Android v5-routed Braintree PayPal testing/go-live snapshot for mocked versus linked sandbox testing, eligibility-conditioned app-switch fallback, sandbox/production isolation, server credential transition and limited real-payment production checks; not current eligibility, SDK/runtime behavior, linked-account state or execution/settlement/deposit proof
+
+- [[source-braintree-docs-guides-paypal-recurring-payments-android-v5]] - 2026-09-16 Android v5-routed website guide for constructing a PayPal recurring Billing Agreement request with plan metadata and routing its token to later Braintree server payment operations; not current package-support, direct PayPal or transaction-outcome evidence
+
+- [[source-braintree-docs-guides-venmo-client-side-android-v5]] - 2026-09-16 Android v5 website guide for SDK-managed buttons and custom Venmo request/launch/return/tokenization, with usage-scoped consent and vaulting, order-summary compliance, device-data and server-handoff conditions; not current SDK support or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-checkout-with-paypal-android-v5]] - 2026-09-16 Android v5 website guide for PayPal one-time checkout request, launch, activity-return handling, tokenization and eligibility-conditioned app-switch browser fallback; nonce receipt is a client handoff, not current package-support or transaction-lifecycle proof
 - [[source-braintree-premium-fraud-management-tools-client-side-android-v5]] - Android v5-routed Data Collector guide for device-data collection, server-request handoff, consent and location-disclosure responsibility, plus a historical mobile-certificate notice; not current package-support or named fraud-product evidence
 - [[source-braintree-3d-secure-advanced-options-android-v5]] - Android v5-routed advanced 3DS webpage snapshot for client liability-result handling and specialized verification options; its embedded Drop-in lifecycle notice is not modular SDK package-compatibility evidence
 - [[source-braintree-drop-in-customization-android-v5]] - Android v5-routed Drop-in customization guide for saved-method, Vault Manager, card-form, and fraud-tool configuration; source-specific lifecycle and package-version boundaries apply

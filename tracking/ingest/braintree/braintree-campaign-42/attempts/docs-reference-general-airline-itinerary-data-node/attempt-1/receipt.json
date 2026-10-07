@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-reference-general-airline-itinerary-data-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Airline-Itinerary Data Reference (Node.js)\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/airline-itinerary-data/node\"\nraw_files:\n  - \"braintree/docs/reference/general/airline-itinerary-data/node-2026-09-16.md\"\ntags: [braintree, node-js, airline-industry-data, transactions, interchange]\n---\n\n## Overview\n\nThis collected, unversioned Braintree website reference describes the Node.js request shape for sending Airline Industry Data (AID) with a transaction sale or capture. The page presents AID as additional information passed to card networks for interchange-rate assessment and covers Pay with PayPal, card, and Apple Pay/Google Pay transactions while naming Visa, Mastercard, and Discover. It is snapshot documentation, not proof of current availability, merchant eligibility, a particular SDK package version, a lower assessed fee, or successful authorization, settlement or funding.\n\n## Key takeaways\n\n- The page limits the merchant route to merchants recognized as airline merchants by card schemes. It states that AID is available globally for PayPal and in the US for card and Apple Pay/Google Pay, and that those merchants can pass it on sale or submit-for-settlement transactions for those payment-method categories.\n- The request uses `industry_type` with the only listed value `travel_flight`; the page says only one industry type can be sent per transaction and identifies that field as required for PayPal and card transactions, including Apple Pay or Google Pay.\n- Field requiredness and length or value conditions vary by PayPal, card and Discover. The complete table is retained at `## Required Fields`, raw lines 25-141; do not treat one method's or network's conditions as universal.\n- For the page's AS1 two-step case, its instruction is to pass lead-passenger data on `Transaction:Sale` when available and otherwise pass passenger data on `Transaction:SubmitForPartialSettlement` for each passenger. The callback and Promise blocks are request-construction examples with empty result handlers; they do not establish that input was consumed or that authorization, capture, settlement or payment succeeded.\n- The validation catalog says PayPal transactions with `travel_flight` industry data require `submit_for_settlement` to be true. It also documents a maximum of 12 legs and routes the remaining field-, format-, value- and type-specific errors to the raw tables.\n\n## Detail locators\n\n- Purpose, transaction stage and interchange-assessment description: `## Overview`, raw lines 17-21.\n- Airline-merchant, geography, payment-method and operation qualifications: `## Merchant requirements`, raw lines 22-24.\n- `industry_type`, payment-method/network-specific required fields, limits and full field inventory: `## Required Fields`, raw lines 25-141.\n- Node.js callback and Promise sale examples: `## Examples` > `### Sale`, raw lines 144-296.\n- AS1 lead-passenger instruction and Node.js partial-settlement examples: `### AS1 (2 Step Transaction)`, raw lines 301-448.\n- PayPal settlement-submission condition and airline-data validation errors, including the 12-leg maximum: `## Validation errors`, raw lines 450-488.\n- Per-leg validation codes and explanations: `### Airline-itinerary data legs`, raw lines 490-565.\n\n## Related\n\n- Company: [[braintree]]\n- Server integration boundary: [[braintree-server-sdk]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/airline-itinerary-data/node-2026-09-16|Braintree Airline-Itinerary Data reference for Node.js]] - complete collected Node.js website variant covering AID purpose, merchant and payment-method qualifications, request fields, sale and AS1 examples, and validation errors\n",
+  "quotes": [
+    {
+      "text": "To qualify for Airline Industry Data processing (AID), you need to pass additional information when creating a sale or capturing transactions. Braintree passes these details to the card networks which assess a transaction fee based on Airline Industry Data interchange rates.",
+      "location": "## Overview, raw line 21"
+    },
+    {
+      "text": "Airline Industry Data (AID) is available globally when the payment method is PayPal and US when the payment method is card or Apple Pay/Google Pay. These merchants who are recognized as airline merchants by card schemes can pass AID on sale or submit-for-settlement transactions when the payment method is PayPal, card, or Apple Pay/Google Pay.",
+      "location": "## Merchant requirements, raw line 24"
+    },
+    {
+      "text": "Information for only one industry type may be sent per transaction. Required for PayPal and card transactions including Apple Pay or Google Pay.",
+      "location": "## Required Fields, industry_type row, raw lines 31-36"
+    },
+    {
+      "text": "If available, pass lead passenger data on`Transaction:Sale`. If not available, pass passenger data on`Transaction:SubmitForPartialSettlement`for each passenger data. Below is a full example of passing airline data on",
+      "location": "### AS1 (2 Step Transaction), raw line 303"
+    },
+    {
+      "text": "For PayPal transactions with travel_flight industry data, submit_for_settlement is required and must be true.",
+      "location": "## Validation errors > ### Transaction, raw lines 455-459"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "airline-itinerary-data-node-server-sdk-source-route",
+        "target_path": "wiki/concepts/braintree-server-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-reference-general-airline-itinerary-data-node]] - 2026-09-16 unversioned Braintree website Node.js reference for passing airline-industry data when creating a sale or capturing, plus sale and AS1 partial-settlement request examples, preserving airline-merchant, geography, payment-method/network, field and PayPal settlement-submission qualifications; not package-qualified SDK behavior or execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as the exact collected Node.js website variant; do not treat it as authority for parent, sibling-language, direct-provider, current-service or GitHub package behavior.",
+          "Preserve the airline-merchant recognition, geography, payment-method and card-network qualifications instead of generalizing AID availability.",
+          "The example requests and empty handlers do not prove that inputs were consumed or that authorization, capture, settlement, funding or a lower interchange rate occurred."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/airline-itinerary-data/node-2026-09-16.md",
+  "raw_sha256": "3a1d92edfa2b85f796b0878c48ae582ee646cf861749a5a08a924ee8056b388d",
+  "status": "candidate_ready"
+}

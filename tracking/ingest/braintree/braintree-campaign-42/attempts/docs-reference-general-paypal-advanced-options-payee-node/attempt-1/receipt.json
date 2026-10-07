@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-reference-general-paypal-advanced-options-payee-node",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Node PayPal Payee Advanced Options\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/general/paypal-advanced-options/payee/node\"\nraw_files:\n  - \"braintree/docs/reference/general/paypal-advanced-options/payee/node-2026-09-16.md\"\ntags: [braintree, paypal, node, transactions, payee, routing]\n---\n\n## Overview\n\nThis 2026-09-16 snapshot of a [[braintree]] Node-routed PayPal advanced-options reference describes supplying `payee_id` or `payee_email` on a PayPal transaction sale request to route the payment to a different PayPal account owned by the merchant. It is a Braintree website reference route within [[paypal-braintree-integration]], not direct PayPal API, current account-eligibility, exact SDK-version, or successful-payment evidence.\n\n## Key takeaways\n\n- Without a payee override, Braintree sends the PayPal payment to the PayPal business account linked in the Braintree Control Panel. With `payee_id` or `payee_email`, the specified PayPal account receives all transaction funds as though the transaction were processed entirely on that account; the linked Control Panel account does not see that transaction in its account or reporting.\n- The page limits the routing use case to different PayPal accounts the merchant owns. `payee_id` is the receiving account's Merchant account ID and is described as preferable because that identifier cannot be changed; `payee_email` uses the receiving account's email. The captured NOTE between the two variants has missing identifiers, so its parameter/method restrictions cannot be reconstructed safely from this raw.\n- Depending on the processing setup, the receiving PayPal accounts may need additional permissions or configuration. Neither payee parameter controls currency: choose a Braintree `merchant_account_id` configured for the required currency and with PayPal payments enabled.\n- Refunds use the ordinary Braintree refund path without supplying either payee parameter; Braintree withdraws the funds from the PayPal account that received the original transaction.\n- The payee parameters are not exposed in Braintree Control Panel transaction reporting. The page directs merchants that need separate reporting to ask for a unique `merchant_account_id` for each planned payee ID and email.\n\n## Detail locators\n\n- Normal linked-account flow and callback/Promise sale examples: raw lines 23-47.\n- Dynamic receiver effect: raw lines 49-54.\n- `payee_id` meaning, preference, examples, and the damaged restriction note: raw lines 55-92.\n- `payee_email` meaning and examples: raw lines 95-128.\n- PayPal-permission and multi-currency setup, including callback/Promise examples: raw lines 130-173.\n- Refund and Control Panel reporting behavior: raw lines 175-184.\n\n## Related\n\n- [[paypal-braintree-integration]]\n- [[braintree-server-sdk]]\n- [[braintree-control-panel]]\n- [[braintree-currencies]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/general/paypal-advanced-options/payee/node-2026-09-16|Braintree Node PayPal Payee advanced-options reference (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "By passing the`payee_id`or`payee_email`parameter\nwith PayPal transaction sale requests, you can dynamically route PayPal payments to different PayPal\naccounts that you own.",
+      "location": "lines 16-19 under Payee"
+    },
+    {
+      "text": "When you specify a`payee_id`or`payee_email`, that PayPal account gets all the funds for the transaction,\nas if it was processed entirely on that account. The PayPal account linked in your Braintree Control\nPanel does not see this transaction in its account or reporting.",
+      "location": "lines 51-54 under Payment flow using payee"
+    },
+    {
+      "text": "Currency is not controlled by the`payee_id`nor`payee_email`parameter. In order to set a specific currency for the\ntransaction, you will need to use a Braintree`merchant_account_id`that's\nbeen set up for that currency. Be sure the`merchant_account_id`you specify\nalso has PayPal payments enabled.",
+      "location": "lines 139-142 under Multi-currency configuration"
+    },
+    {
+      "text": "Refunds are processed the same way as a normal refund via Braintree, with no reference to the`payee_id`or`payee_email`. Braintree will\nautomatically withdraw the funds from the same PayPal account that received them from the original\ntransaction.",
+      "location": "lines 177-179 under Refunds"
+    },
+    {
+      "text": "The`payee_id`and`payee_email`parameters are not\nexposed in transaction reporting in the Braintree Control Panel. If you need to report on these\ntransactions separately, let us know and we can set up a unique`merchant_account_id`for each`payee_id`and`payee_email`you plan to use.",
+      "location": "lines 182-184 under Reporting in the Braintree Control Panel"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-payee-node-reciprocal",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-reference-general-paypal-advanced-options-payee-node]] - 2026-09-16 Braintree-hosted Node-routed reference for using `payee_id` or `payee_email` on PayPal transaction sale requests to route funds among merchant-owned PayPal accounts, with separate currency-account, refund and Control Panel reporting boundaries; the captured restriction note is damaged, and the page is not current eligibility, direct PayPal API, exact SDK-version or payment-execution evidence.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw NOTE at lines 91-92 omits the parameter and method identifiers, so its payee_id restriction cannot be reconstructed or attributed to a specific operation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/general/paypal-advanced-options/payee/node-2026-09-16.md",
+  "raw_sha256": "65a367ccecab5f979e0c5ba1aa6ca4e9efe06ddb0d2cbca3095172fe47968aa9",
+  "status": "candidate_ready"
+}

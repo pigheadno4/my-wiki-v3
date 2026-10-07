@@ -11,6 +11,8 @@ Retrieval entry for collected Braintree In-Person website documentation. Follow 
 
 ## Sources
 
+- [[source-braintree-in-person-get-started-1-configure-sandbox]] - 2026-09-16 unversioned Braintree In-Person website preparation guide for a Dev Kit P400 Sandbox account, authentication selection, GraphQL connectivity and test-operation sequence, with one-Sandbox-account reader binding and United States Sandbox-only qualifications; preparation and request steps are not current availability, reader-pairing, production-enablement or payment/refund outcome proof
+
 - [[source-braintree-in-person-partners-overview]] - 2026-09-16 unversioned Braintree In-Person website overview of partner-specific GraphQL integration considerations for multi-merchant software providers, including per-merchant basic-authentication keys, flexible account hierarchy guidance and the official-partner BN-code requirement; sales contact, setup, configuration and requests are not partner approval, country or merchant eligibility, provisioning, feature availability, reader-state or payment-outcome proof
 - [[source-braintree-in-person-hardware-verifone-m400]] - 2026-09-16 unversioned Braintree In-Person website hardware overview for the fixed-lane Verifone M400, its kit and fixed-stand privacy condition, captured entry modes and Ethernet/WiFi support, and idle-screen customization workflow; not GitHub evidence or current availability, certification, account enablement, pairing, reader-online or payment-outcome proof, and not evidence for other readers
 

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-paypal-recurring-payments-ios-v7",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree PayPal Recurring Payments for iOS v7\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/recurring-payments/ios/v7\"\nraw_files:\n  - \"braintree/docs/guides/paypal/recurring-payments/ios/v7-2026-09-16.md\"\ntags: [braintree, paypal, ios, recurring-payments, billing-agreements, vault]\n---\n\n## Overview\n\nThis collected [[braintree]] webpage is the iOS v7-routed guide to creating a PayPal recurring Billing Agreement through Braintree and later using its Payment Token for merchant-initiated payments. It describes the client request and the later Braintree server handoff; it is not a direct PayPal Orders or Vault API guide. Use [[paypal-braintree-integration]] for the provider boundary and [[braintree-ios-sdk]] for independently retained exact-version implementation evidence.\n\n> [!warning] Snapshot, SDK and environment boundary\n> This is a 2026-09-16 website snapshot at an iOS v7 URL, while its availability notice says client-side recurring payments are available for iOS v6+. The page does not name a sandbox or production environment, prove current SDK behavior or merchant eligibility, or demonstrate successful Billing Agreement creation or a later payment.\n\n## Key takeaways\n\n- The guide describes PayPal recurring payments as a two-stage Billing Without Purchase Checkout flow: the buyer first approves a Billing Agreement and the merchant stores the returned Payment Token against the customer; later merchant-initiated payments use that token. This is a Braintree PayPal flow, not proof of direct PayPal API behavior.\n- At Billing Agreement creation, the recurring indicator is supplied through Braintree `plan_type`; for subsequent transactions, the page assigns the indicator to `transaction_source`. The exact Subscription, Recurring, Unscheduled and Installment mappings remain in the raw tables because first-versus-subsequent values are material and the captured rendering joins some field names and values.\n- `plan_metadata` supplies buyer-facing recurring-plan information on PayPal's checkout review page. The page says to pass it during Billing Agreement creation, not during later merchant-initiated payment requests. Passing `plan_type` without metadata still triggers a generic recurring checkout, but the merchant must clearly communicate the plan terms to the buyer on the merchant site before signup is completed; passing neither produces non-recurring checkout UX and is not recommended for recurring transactions.\n- Merchants must classify transactions as prepaid or postpaid and contact their Account Manager to enable PREPAID or POSTPAID as the recurring-billing default. The snapshot does not establish that this configuration is enabled for any merchant.\n- The Swift section constructs `BTPayPalRecurringBillingDetails` and supplies it to `BTPayPalVaultRequest` with a recurring plan type. Its pricing, cycle and amount values are examples, not universal requirements.\n- For collecting a payment and Billing Agreement consent in one checkout, the guide routes to Checkout with Vault and identifies `BTPayPalCheckoutRequest` with `requestBillingAgreement = true`. Its later-payment section separately routes through Vaulted Payments and Payment Method: Create before payment creation; those linked documents remain separate authorities.\n\n## Detail locators\n\n- Client-side availability notice and comparison with vaulted payments: raw lines 17-25.\n- Recurring-payment categories and RBA type dimensions: raw lines 30-53.\n- Two-stage Billing Agreement creation and later Payment Token use: raw lines 55-59.\n- Recurring indicator purpose and the `plan_type` / `transaction_source` boundary: raw lines 62-85.\n- Buyer-facing RBA Plan Information, creation-only `plan_metadata`, and the three metadata choices: raw lines 88-105.\n- Optional plan name and warning against generic, SKU or internal-ID content: raw lines 110-140.\n- Required prepaid/postpaid classification and Account Manager enablement: raw lines 143-145.\n- Swift `BTPayPalVaultRequest` construction and example recurring-billing fields: raw lines 148-187.\n- Checkout with Vault alternative and later-payment server-route navigation: raw lines 190-202.\n- Subsequent-transaction RBA mappings: raw lines 200-209; consult the raw because the captured table contains joined tokens.\n\n## Related raw API references\n\nThe following links are navigation preserved from the fully read page; their targets were not used as behavioral evidence for this entry.\n\n- [Checkout with Vault for iOS v7](https://developer.paypal.com/braintree/docs/guides/paypal/checkout-with-vault/ios/v7/)\n- [Vaulted Payments for JavaScript v3](https://developer.paypal.com/braintree/docs/guides/paypal/vault/javascript/v3/)\n- [Payment Method: Create for Ruby](https://developer.paypal.com/braintree/docs/reference/request/payment-method/create/ruby)\n\n## Related\n\n- [[braintree]] - provider and collected-source catalog.\n- [[paypal-braintree-integration]] - main Braintree-to-PayPal client, nonce/token and merchant-server boundary.\n- [[braintree-ios-sdk]] - separately retained exact-SHA native SDK evidence; this website snapshot does not replace it.\n- [[braintree-recurring-billing]] - separate Braintree subscription-plan product route, not ownership of this PayPal Billing Agreement flow.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/recurring-payments/ios/v7-2026-09-16|Braintree PayPal Recurring Payments for iOS v7 snapshot (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "iOS: v6+",
+      "location": "raw line 22 under AVAILABILITY"
+    },
+    {
+      "text": "Recurring payments with PayPal utilize PayPal Billing Agreements through PayPal's Billing Without Purchase Checkout flow. PayPal's Billing Without Purchase Checkout flow is a two-stage process:",
+      "location": "raw line 55 under Subscription type details"
+    },
+    {
+      "text": "When setting the recurring indicator, ensure you send the value most appropriate to the type of Recurring Billing Arrangement (RBA). This information is used to set indicators sent to payment networks, accurately representing the nature of the customer's agreement with you to ensure compliance with payment network regulations. During billing agreement creation, the Recurring Indicator is set through the Braintree plan_type value. During subsequent transactions, the Recurring Indicator is set through the Braintree transaction_source value:",
+      "location": "raw line 71 under Recurring indicator"
+    },
+    {
+      "text": "RBA Plan Information is only required to be passed to PayPal during Billing Agreement creation so that this is visible to the customer when they're interacting with PayPal Checkout. It should not be passed in subsequent merchant initiated payment requests to PayPal.",
+      "location": "raw line 90 under Recurring Billing Agreement (RBA) plan information"
+    },
+    {
+      "text": "Merchants must classify all transactions as either prepaid or postpaid to ensure PayPal transactions comply with card network rules. To set your preferred transaction type, contact your Account Manager to enable PREPAID or POSTPAID as the default for recurring billing.",
+      "location": "raw line 145 under Integrating flow within Braintree"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-w17-paypal-recurring-ios-v7-route",
+        "target_path": "wiki/concepts/paypal-braintree-integration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Braintree iOS Evidence",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-recurring-payments-ios-v7]] - 2026-09-16 Braintree website route for iOS v7 PayPal recurring Billing Agreement creation and later Payment Token server handoff; separate from direct PayPal APIs and exact-SHA SDK evidence.\n",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep this as a concise reciprocal website-source route; do not merge it into direct PayPal API, current-package, GitHub implementation, or Braintree subscription-plan claims."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/recurring-payments/ios/v7-2026-09-16.md",
+  "raw_sha256": "52a33727d75478a11dfa0877715653d0baf74ded948173370122a02946d60f31",
+  "status": "candidate_ready"
+}

@@ -16,6 +16,59 @@ Operations history: [[braintree-log]]
 
 ### Website documentation
 
+#### PayPal, wallets, client integration and Node references (C42)
+
+- [[source-braintree-docs-guides-paypal-testing-go-live-javascript-v3]] - Braintree PayPal Testing and Go Live (JavaScript v3)
+- [[source-braintree-docs-reference-general-airline-itinerary-data-node]] - Braintree Airline-Itinerary Data Reference (Node.js)
+- [[source-braintree-docs-guides-paypal-checkout-with-paypal-javascript-v3]] - Braintree PayPal One-time Payments - JavaScript v3
+- [[source-braintree-docs-guides-paypal-checkout-with-paypal-android-v5]] - Braintree PayPal One-time Payments (Android v5)
+- [[source-braintree-docs-guides-venmo-client-side-android-v5]] - Braintree Venmo Client-Side Implementation (Android v5)
+- [[source-braintree-docs-reference-response-android-pay-card-node]] - Braintree Android Pay Card Response (Node.js)
+- [[source-braintree-docs-reference-response-credit-card-node]] - Braintree Credit Card Response Reference (Node.js)
+- [[source-braintree-docs-reference-response-apple-pay-card-node]] - Braintree Apple Pay Card Response (Node.js)
+- [[source-braintree-docs-reference-response-samsung-pay-card-node]] - Braintree Node.js Samsung Pay Card Response Reference
+- [[source-braintree-docs-reference-response-visa-checkout-card-node]] - Braintree Visa Checkout Card Response (Node.js)
+- [[source-braintree-docs-reference-response-masterpass-card-node]] - Braintree Masterpass Card Response Reference (Node.js)
+- [[source-braintree-docs-reference-response-payment-method-nonce-node]] - Braintree Payment Method Nonce Response Reference (Node.js)
+- [[source-braintree-docs-guides-paypal-recurring-payments-javascript-v3]] - Braintree PayPal Recurring Payments - JavaScript v3
+- [[source-braintree-docs-guides-paypal-testing-go-live-ios-v7]] - Braintree PayPal Testing and Go Live (iOS v7)
+- [[source-braintree-docs-guides-paypal-recurring-payments-android-v5]] - Braintree PayPal Recurring Payments (Android v5)
+- [[source-braintree-docs-guides-venmo-client-side-ios-v7]] - Braintree Venmo Client-Side Implementation for iOS v7
+- [[source-braintree-docs-guides-paypal-recurring-payments-ios-v7]] - Braintree PayPal Recurring Payments for iOS v7
+- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-javascript-v3]] - Braintree PayPal checkout.js to PayPal JS SDK Migration - JavaScript v3
+- [[source-braintree-docs-guides-paypal-checkout-with-paypal-ios-v7]] - Braintree PayPal One-Time Payments for iOS v7
+- [[source-braintree-docs-guides-sepa-direct-debit-client-side-javascript-v3]] - Braintree SEPA Direct Debit Client-Side Implementation (JavaScript v3)
+- [[source-braintree-docs-guides-paypal-testing-go-live-android-v5]] - Braintree PayPal Testing and Go Live for Android v5
+- [[source-braintree-docs-guides-paypal-vault-android-v5]] - Braintree PayPal Vaulted Payments for Android v5
+- [[source-braintree-docs-guides-apple-pay-client-side-ios-v7]] - Braintree Apple Pay Client-Side Implementation for iOS v7
+- [[source-braintree-docs-reference-general-lodging-data-node]] - Braintree Lodging Industry Data (Node.js)
+- [[source-braintree-docs-guides-fastlane-client-side-node]] - Braintree Fastlane Client-side Integration (Node route)
+- [[source-braintree-docs-guides-ach-server-side-node]] - Braintree ACH Direct Debit Server-side Implementation (Node.js)
+- [[source-braintree-docs-guides-paypal-app-switch-ios-v7]] - Braintree PayPal App Switch (Beta) for iOS v7
+- [[source-braintree-docs-guides-paypal-server-side-node]] - Braintree PayPal Server-Side Implementation (Node.js)
+- [[source-braintree-docs-reference-general-level-2-and-3-processing-required-fields-node]] - Braintree Level 2 and 3 Required Fields (Node.js)
+- [[source-braintree-docs-guides-sepa-direct-debit-testing-go-live-node]] - Braintree SEPA Direct Debit Testing and Go Live (Node.js)
+- [[source-braintree-docs-guides-amex-express-checkout-client-side-javascript-v3]] - Braintree Amex Express Checkout Client-Side Implementation (JavaScript v3)
+- [[source-braintree-docs-guides-paypal-client-side-android-v5]] - Braintree PayPal Client-Side Implementation for Android v5
+- [[source-braintree-docs-guides-payment-request-setup-and-integration-javascript-v3]] - Braintree Payment Request Setup and Integration (JavaScript v3)
+- [[source-braintree-docs-guides-apple-pay-configuration-ios-v7]] - Braintree Apple Pay Configuration for iOS v7
+- [[source-braintree-docs-guides-disputes-paypal-disputes-node]] - Braintree Managing PayPal Disputes via the API (Node.js)
+- [[source-braintree-docs-guides-paypal-pay-later-offers-ios-v7]] - Braintree PayPal Pay Later Offers for iOS v7
+- [[source-braintree-docs-guides-paypal-pay-later-offers-android-v5]] - Braintree PayPal Pay Later Offers for Android v5
+- [[source-braintree-docs-reference-general-paypal-advanced-options-paypal-order-server-side-node]] - Braintree PayPal Order: Server-Side Implementation (Node.js)
+- [[source-braintree-docs-guides-paypal-vault-ios-v7]] - Braintree PayPal Vaulted Payments for iOS v7
+- [[source-braintree-docs-guides-paypal-messaging-ios-v7]] - Braintree PayPal Pay Later Messaging for iOS v7
+- [[source-braintree-docs-guides-paypal-messaging-android-v5]] - Braintree PayPal Pay Later Messaging — Android v5
+- [[source-braintree-docs-guides-server-side-tokenization-node]] - Braintree Server-Side Tokenization (Node.js)
+- [[source-braintree-docs-guides-masterpass-client-side-javascript-v3]] - Braintree Masterpass Client-Side Implementation (JavaScript v3)
+- [[source-braintree-docs-guides-google-pay-client-side-android-v5]] - Braintree Google Pay Client-Side Implementation for Android v5
+- [[source-braintree-docs-reference-general-paypal-advanced-options-paypal-order-payee-email-node]] - Braintree PayPal Order Payee Email (Node.js)
+- [[source-braintree-docs-reference-general-paypal-advanced-options-payee-node]] - Braintree Node PayPal Payee Advanced Options
+- [[source-braintree-docs-guides-venmo-server-side-node]] - Braintree Venmo Server-Side Implementation (Node.js)
+- [[source-braintree-in-person-get-started-1-configure-sandbox]] - Braintree In-Person Configure Sandbox
+- [[source-braintree-docs-guides-functions-act-on-fraud]] - Braintree Functions: Act on a Fraud Score from a Vendor
+- [[source-braintree-docs-guides-shopper-insights-ios-v7]] - Braintree Shopper Insights (Beta) for iOS v7
+
 #### In-Person, payment methods, legacy clients and GraphQL orientation (C41)
 
 - [[source-braintree-in-person-guides-making-a-transaction]] - Braintree In-Person Sale and Refund Transactions

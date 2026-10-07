@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-functions-act-on-fraud",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Functions: Act on a Fraud Score from a Vendor\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/functions/act-on-fraud\"\nraw_files:\n  - \"braintree/docs/guides/functions/act-on-fraud-2026-09-16.md\"\ntags: [braintree, functions, fraud-scoring, before-authorization, gateway-rejection]\n---\n\n## Overview\n\nThis captured [[braintree|Braintree]] webpage is a documentation-preview walkthrough for a payment-method Function that runs at `beforeAuthorization`, sends transaction-derived data to an external fraud service, and maps the illustrated vendor decision back into transaction data. It is a custom Functions example rather than evidence for the built-in products routed through [[braintree-fraud-tools]]. The snapshot does not establish current availability, account eligibility, or successful execution.\n\n## Key takeaways\n\n- The page initializes `MyFraudCheck` with the `paymentMethod` template and `beforeAuthorization` trigger, then says transaction-call details are shared with the Function so its JavaScript can construct a request to a fraud service.\n- In the illustrated response mapping, a vendor decision equal to `YES` returns `fraudDecision` in transaction custom fields; the other branch also returns that custom field and sets the transaction status to `braintree.Transaction.Status.GatewayRejected`. Both branches in the example return HTTP status code `200`. This is example behavior, not proof of a live vendor contract or a completed authorization.\n- The page advises local testing before deployment, shows `btfns test` and optional custom mock-data generation, and says deployment defaults to the sandbox account. Production is a separately selected prompt option or the explicit `btfns deploy --production` command.\n- A sale request can select the Function by `functionName`; the page says that selection calls it at every trigger defined in the Function configuration. It directs integrations to Custom Fields when the Function needs additional data unavailable in the Transaction API.\n- The displayed code is illustrative and contains unresolved identifier inconsistencies, so the raw sample should not be treated as an executable guarantee.\n\n## Detail locators\n\n- **Preview availability:** `AVAILABILITY`, lines 17\u201318.\n- **Function initialization and trigger:** `Initialize a New Function`, lines 21\u201328.\n- **External request and response mapping:** `Write Code`, lines 29\u2013135.\n- **Local test and environment-qualified deployment:** `Test and Deploy Your Function`, lines 137\u2013170.\n- **Sale invocation and additional-data route:** `Create a Transaction`, lines 171\u2013192.\n\n## Related\n\n- [[braintree]]\n- [[braintree-fraud-tools]] \u2014 provider-specific fraud-tool retrieval route; keep its built-in mechanisms distinct from this custom external-vendor Function example.\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/functions/act-on-fraud-2026-09-16|Braintree \u2014 Act on a Fraud Score from a Vendor (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "We're building functions with the same proven expertise and rock solid foundations you expect from Braintree. Take a look at our documentation preview to get a jump start on what you'll make with functions. Email [functions-requests@braintreepayments.com](mailto:functions-requests@braintreepayments.com) to learn more.",
+      "location": "AVAILABILITY, line 18"
+    },
+    {
+      "text": "To obtain a fraud score you will write Javascript code within theindex.jsfile to\ncommunicate with the API for your fraud service. Details from the transaction call will be shared\nwith the function for use in obtaining the result. Create the payload and HTTP options for your\nrequest.",
+      "location": "Write Code, lines 31\u201334"
+    },
+    {
+      "text": "if (result.decision === \"YES\") {\n            return {\n                statusCode: 200,\n                body: JSON.stringify({\n                    transaction: {\n                        customFields: {\n                            fraudDecision: result.decision\n                        }\n                    }\n                })\n            };\n        } else {\n            return {\n                statusCode: 200,\n                body: JSON.stringify({\n                    transaction: {\n                        status: braintree.Transaction.Status.GatewayRejected,\n                        customFields: {\n                            fraudDecision: result.decision\n                        }\n                    }\n                })\n            };\n        }",
+      "location": "Write Code, first response-mapping example, lines 61\u201383"
+    },
+    {
+      "text": "By default this will be deployed to your sandbox account, but you can select theproductionoption in the prompt or run:btfns deploy --production.",
+      "location": "Test and Deploy Your Function > Deployment, line 170"
+    },
+    {
+      "text": "Passing thefunctionNamewill automatically call your function at each of triggers\ndefined in your configuration file. If you need to pass additional data to your function that is not\navailable in the Transaction API, use Custom Fields.",
+      "location": "Create a Transaction, lines 190\u2013192"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-w49-fraud-tools-source-route",
+        "target_path": "wiki/concepts/braintree-fraud-tools.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-functions-act-on-fraud]] - 2026-09-16 documentation-preview example for a custom `beforeAuthorization` Function that calls an external fraud-score vendor and maps the illustrated response into transaction custom fields or `GatewayRejected`; this is distinct from Braintree's built-in fraud products, and its displayed code is not an executable guarantee",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this custom external-vendor Functions example distinct from evidence about Braintree's built-in fraud products.",
+          "The captured page labels Functions as a documentation preview and does not prove current availability, account eligibility, or successful execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/functions/act-on-fraud-2026-09-16.md",
+  "raw_sha256": "05bb7862b4f03e90ab83a6138085e485f0ece4ae4137dc7c8370b822fa29b07a",
+  "status": "candidate_ready"
+}

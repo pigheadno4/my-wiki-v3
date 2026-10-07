@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-guides-paypal-vault-android-v5",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree PayPal Vaulted Payments for Android v5\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal/vault/android/v5\"\nraw_files:\n  - \"braintree/docs/guides/paypal/vault/android/v5-2026-09-16.md\"\ntags: [braintree, paypal, vault, android, sdk-v5]\n---\n\n## Overview\n\nThis collected [[braintree]] website guide documents PayPal vaulted payments through the Braintree Android SDK v5. It describes creating a PayPal pre-approved payment so the merchant can charge the account later without requiring the customer to be present or re-authenticate, and routes the topic to [[paypal-vault]].\n\n## Key takeaways\n\n- Initialize `PayPalLauncher` in the Activity's `onCreate`, then configure `PayPalClient` with a tokenization key or client token and return URLs. After the customer selects PayPal, create a `PayPalVaultRequest`, request payment authorization, launch a ready request, and persist the pending request string when launch returns `Started`.\n- On return, pass the persisted pending request and Intent to `PayPalLauncher.handleReturnToApp()`. A successful authorization result is then passed to `PayPalClient.tokenize()`; successful tokenization returns a nonce in `PayPalAccountNonce`. Cancellation/no-result and failure are distinct outcomes that the integration must handle.\n- The snapshot carries a high-impact certificate warning: Braintree Mobile SDK certificates were set to expire on March 30, 2026, it directs Android integrations to 4.45.0+ or 5.0.0+, and says traffic on app versions left on older certificates will fail. This is a dated snapshot warning, not proof of current SDK status.\n- Device-data collection is required when initiating non-recurring transactions from Vault records. The guide also says shipping addresses may or may not be collected during the Vault flow.\n- The raw has an unresolved return-handling inconsistency: its prose says `onNewIntent()` applies when the Activity launch mode is `>SINGLE_TOP`, while the code comment says it is required only for `SINGLE_TOP`. The source is preserved as written; verify the intended Android launch-mode condition before implementation.\n- The Vault flow does not display the transaction amount or currency to the customer; the merchant must display them elsewhere in checkout.\n\n## Detail locators\n\n- `Launch the flow` and `Invoking the Vault flow` (raw lines 55-140): dependency snippet, initialization, request launch, pending-request persistence, return handling, tokenization, and nonce result.\n- `Complete Integration` (raw lines 193-280): consolidated Kotlin example.\n- `Collecting device data` (raw lines 283-287): non-recurring Vault transaction requirement and `DataCollector` purpose.\n- `Integrating App Switch` (raw lines 290-309): separate redirect-flow orientation and link to its implementation guide.\n- `Shipping address`, `Country and language support`, and `Currency presentment` (raw lines 312-324): address handling, stated geographic reach, and merchant display responsibility.\n\n## Related\n\n- [[braintree]]\n- [[paypal-vault]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal/vault/android/v5-2026-09-16|Braintree PayPal Vaulted Payments \u2014 Android v5 (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "[Vaulted payments](/braintree/docs/guides/payment-methods) with PayPal account will allow you to charge the account in the future without requiring your customer to be present during the transaction or re-authenticate with PayPal when they are present during the transaction.",
+      "location": "raw line 16 under # Vaulted Payments"
+    },
+    {
+      "text": "The SSL certificates for Braintree Mobile (iOS and Android) SDKs are set to expire on March 30, 2026. This will impact existing versions of the SDK in published versions of your app. To reduce the impact, upgrade the Android SDK to version 4.45.0+ or version 5.0.0+ for the new SSL certifications.\n\n  If you do not decommission your app versions that include the older SDK versions or force upgrade your app with the updated certificates by the expiration date, 100% of your customer traffic will fail.",
+      "location": "raw lines 22-24 in the IMPORTANT callout"
+    },
+    {
+      "text": "After the user clicks the PayPal button, create a PayPalVaultRequest and call PayPalClient.createPaymentAuthRequest() and handle its result. If the result is Failure, handle the error. If the result is ReadyToLaunch, invoke PayPalLauncher.launch() and check the returned PayPalPendingRequest.\n\nIf Started is returned, the PayPal flow was launched and the Started.pendingRequestString needs to be persisted. If Failure was returned, handle the error.",
+      "location": "raw lines 102-104 under Request a payment"
+    },
+    {
+      "text": "If NoResult is returned, the user has canceled the payment flow or returned to the app without completing the payPal flow. If Failure is returned, handle the error. If Success is returned, pass the Success object to PayPalClient.tokenize().\n\nThe PayPalClient.tokenize() function takes a PayPalTokenizeCallback which returns a PayPalResult. When the result is Cancel, the user canceled the flow. When the result is Failure, handle the error. When the result is Success, a nonce value is returned inside of PayPalAccountNonce.",
+      "location": "raw lines 136-138 under Handle the payment result"
+    },
+    {
+      "text": "Collecting device data from your customers is **required when initiating non-recurring transactions from Vault records**. Collecting and passing this data with transactions will help reduce decline rates.",
+      "location": "raw line 285 under Collecting device data"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c42-w22-paypal-vault-reciprocal",
+        "target_path": "wiki/concepts/paypal-vault.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-vault-android-v5]] \u2014 Braintree website guide for PayPal vaulted payments with Android SDK v5, including the authorization-to-nonce flow and consequential certificate and device-data conditions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this Braintree Android SDK v5 website guide distinct from the direct PayPal Android SDK and Payment Method Tokens routes already described on the concept page.",
+          "The raw disagrees with itself about the exact Activity launch-mode condition for onNewIntent; do not resolve that condition from this source alone."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal/vault/android/v5-2026-09-16.md",
+  "raw_sha256": "16c02b57b9d4e76e67de394a2b5d896e80f81af0e1a25e4e8b5c0690a1a65fd2",
+  "status": "candidate_ready"
+}

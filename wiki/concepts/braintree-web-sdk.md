@@ -77,6 +77,10 @@ The release also forwards `autoRedirect` and `fullPageOverlay` session-start opt
 
 ## Related
 
+- [[source-braintree-docs-guides-payment-request-setup-and-integration-javascript-v3]] - Braintree-hosted JavaScript v3 Payment Request setup guide covering browser/HTTPS fallback prerequisites, payment-method enablement, component tokenization and server nonce handoff, with Google Pay consent/vaulting cautions and an unresolved direct-link script mismatch; not current availability, merchant eligibility, transaction, settlement or exact-version implementation proof
+
+- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-javascript-v3]] - JavaScript v3 custom PayPal migration guide mapping `checkout.js` v4 to PayPal JS SDK v5 loading, rendering and Checkout/Vault callbacks, with explicit Drop-in and new-integration exclusions; not current package or v6 evidence
+
 - [[source-braintree-docs-reference-client-reference-javascript-v2-configuration]] - historical Braintree.js JavaScript v2 `braintree.setup` configuration snapshot covering client authorization inputs, Drop-in/Custom conditions, readiness and tokenization callbacks, merchant-owned server handoff, and returned-detail eligibility limits; not current-support, runtime-enablement, payment-execution or exact-version GitHub evidence
 
 - [[source-braintree-docs-reference-client-reference-javascript-v2-hosted-fields]] - historical JavaScript v2 Hosted Fields client reference for field events, iframe-internal CSS support and field configuration requirements, including the vaulted-card CVV-only exception; not tokenization, client/server processing, PCI certification, current lifecycle/support, environment availability or payment-outcome proof

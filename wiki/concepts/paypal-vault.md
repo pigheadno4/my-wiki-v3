@@ -331,6 +331,10 @@ A distinct vault path that uses the Orders v2 API rather than the setup token fl
 The `customer.id` is a PayPal-generated identifier — store it against the payer in your system. On return visits, pass it via `target_customer_id` in the token request; the SDK renders saved methods as one-click buttons automatically.
 
 ## Sources
+
+- [[source-braintree-docs-guides-paypal-vault-ios-v7]] — Braintree iOS v7 website guide for PayPal vault-request tokenization and nonce handoff, preserving the dated certificate warning, required device data for non-recurring Vault transactions, and merchant-displayed amount/currency conditions; this Braintree nonce path is distinct from direct PayPal Payment Method Tokens or Orders API vaulting and is not current exact-package, enablement or payment-execution proof.
+
+- [[source-braintree-docs-guides-paypal-vault-android-v5]] — Braintree website guide for PayPal vaulted payments with Android SDK v5, including the authorization-to-nonce flow and consequential certificate and device-data conditions.
 - [[source-braintree-paypal-checkout-with-vault-javascript-v3]] - Braintree JavaScript v3 one-time checkout plus Billing Agreement consent, with distinct single-use and implicitly vaulted tokens, server-side customer association, and a returning-customer switch to One-time Payments
 
 - [[source-paypal-checkout-recurring-payment]] — Full recurring payments integration guide
