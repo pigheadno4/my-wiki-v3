@@ -25,6 +25,22 @@ PayPal transactions follow a separate collected funding route: by default PayPal
 
 ## Sources
 
+- [[source-braintree-docs-reference-client-api-jsonp]] - 2026-09-16 unversioned Braintree website Client API reference for invoking most ordinarily POST-based methods through a JSONP GET override, callback delivery, and mapped response status; not a browser-support matrix, exact-version Web SDK behavior, current-support or endpoint authority, GitHub history, server-side processing, or payment-execution proof
+
+- [[source-braintree-docs-guides-functions-download-cli-tool]] - 2026-09-16 Braintree website Functions CLI download preview for generate/test/deploy tooling, a global npm install example and account login; the same snapshot says access was request-only and the CLI was not yet on npm, and it provides no exact CLI/runtime version, current-support, GitHub-implementation or successful execution proof
+
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-receiving-order-updates]] - 2026-09-16 collected, unversioned Braintree website guide for Channel API order-update webhooks after retailer-confirmed fulfillment of a channel-initiated purchase, with destination reuse, an illustrative fulfilled-order payload and product-specific retry delegation; not current availability, delivery, fulfillment or payment-lifecycle proof
+
+- [[source-braintree-docs-reference-client-api-authorization]] - 2026-09-16 Braintree website Client API authorization-fingerprint and client-token representation reference for client requests; not Braintree Auth OAuth, server-side gateway or payment authorization, merchant/account or environment enablement, payment success, current endpoint or SDK support, or exact-version SDK/GitHub history proof
+
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-handling-error-responses]] - 2026-09-16 collected, unversioned Braintree website guide for recognizing non-2XX PayPal Commerce Channel API responses, updating a request before retrying a 4XX client error, and routing a non-exhaustive example list; not a complete error contract, per-error remedy, generic retry rule, current availability, eligibility, environment/version, request execution or payment-outcome proof
+
+- [[source-braintree-docs-guides-functions-publishing]] - 2026-09-16 Braintree website documentation preview stating that Function deployments are private by default and that sharing a Function with other users requires packaging and versioned publishing to Braintree's function ecosystem; the CLI prompts and output are examples, not current availability, merchant/account eligibility, exact runtime/package, environment, GitHub implementation, publication-success or payment-execution proof
+
+- [[source-braintree-docs-reference-overview]] - 2026-09-16 captured, unversioned Braintree reference-directory overview separating client SDK links, server request and response references, eligibility-qualified Forward API material and general references, with a certificate-change warning; documentation navigation only, not exact-version, current-support, merchant-enablement, API-contract or payment-execution evidence
+
+- [[source-braintree-docs-deprecated-client-side-encryption-windows-phone]] - 2026-09-16 deprecated Braintree Windows Phone client-side-encryption webpage snapshot with GitHub-hosted class-library/source/example navigation and a placeholder-key encryption quick start; no exact library or Windows Phone version, current GitHub availability, server/gateway flow, PCI/compliance or payment-outcome proof
+
 - [[source-braintree-docs-guides-overview]] - 2026-09-16 captured, unversioned Braintree website navigation overview separating quick-start guides from API-reference mechanics and routing Basics, Payment Method Types, Tools and Additional Features; documentation orientation only, not SDK-version, product-prerequisite, integration-procedure, environment, timing or operational-guarantee evidence
 
 - [[source-braintree-docs-reference-general-braintree-ip-addresses]] - 2026-09-16 collected, unversioned Braintree website reference for merchant/server firewall allowlisting of Braintree Production and Sandbox destination domains and changing IP ranges, with separate environment locators and a payment-connectivity warning; not current IP inventory, inbound-origin authority or payment/security proof

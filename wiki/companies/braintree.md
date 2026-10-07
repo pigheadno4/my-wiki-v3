@@ -2,7 +2,7 @@
 title: "Braintree"
 type: company
 tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, uuid, secure-random, developer-tooling, github-actions]
-source_count: 702
+source_count: 752
 ---
 
 ## Overview
@@ -11,9 +11,62 @@ Braintree is represented in this wiki by seventeen independently tracked reposit
 
 ## Website Documentation
 
-685 independently reviewed website sources complement the seventeen repository
+735 independently reviewed website sources complement the seventeen repository
 sources. Their collected documentation scope remains separate from exact-SHA
 implementation evidence:
+
+### Client references, migration and historical integration guides (C45)
+
+- [[source-braintree-docs-deprecated-client-side-encryption-android-library]] - Braintree Deprecated Client-Side Encryption Android Library
+- [[source-braintree-docs-deprecated-client-side-encryption-windows-phone]] - Braintree Deprecated Client-Side Encryption for Windows Phone
+- [[source-braintree-docs-guides-masterpass-overview]] - Braintree Masterpass Overview
+- [[source-braintree-docs-reference-overview]] - Braintree Reference Overview
+- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-android-v5]] - Braintree PayPal SDK Migration Route - Android v5 (JavaScript v3-only notice)
+- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-ios-v7]] - Braintree iOS v7 PayPal Migration Route with JavaScript v3 Body
+- [[source-braintree-docs-guides-apple-pay-overview]] - Braintree Apple Pay Overview
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-overview]] - Braintree PINless Debit Optimized Debit Routing Overview
+- [[source-braintree-docs-guides-unionpay-overview]] - Braintree UnionPay Overview
+- [[source-braintree-docs-guides-functions-publishing]] - Braintree Functions Packaging and Publishing
+- [[source-braintree-docs-guides-paypal-commerce-ios-facebook-login]] - Braintree PayPal Commerce iOS Facebook Login Configuration
+- [[source-braintree-docs-guides-paypal-commerce-ios-paypal-commerce-delegate]] - Braintree PayPal Commerce iOS PayPalCommerceDelegate
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-handling-error-responses]] - Braintree PayPal Commerce Channel API — Handling Error Responses
+- [[source-braintree-docs-guides-elo-server-side-node]] - Braintree Elo Server-Side Implementation (Node.js Route)
+- [[source-braintree-docs-guides-paypal-paypal-credit-android-v5]] - Braintree PayPal Credit — Android v5 Route
+- [[source-braintree-docs-guides-paypal-commerce-ios-url-specs]] - Braintree PayPal Commerce iOS URL Specs
+- [[source-braintree-docs-guides-reports-settlement-batch-summaries-node]] - Braintree Settlement Batch Summaries Guide (Node.js)
+- [[source-braintree-docs-reference-client-api-authorization]] - Braintree Client API Authorization Reference
+- [[source-braintree-docs-guides-paypal-mobile-checkout-javascript-v3]] - Braintree PayPal Mobile Checkout - JavaScript v3 route
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-receiving-order-updates]] - Braintree PayPal Commerce Channel API — Receiving Order Updates
+- [[source-braintree-docs-guides-sepa-direct-debit-configuration-ios-v7]] - Braintree SEPA Direct Debit Configuration (iOS v7 Route)
+- [[source-braintree-docs-guides-sepa-direct-debit-configuration-javascript-v3]] - Braintree SEPA Direct Debit Configuration — JavaScript v3
+- [[source-braintree-docs-guides-google-pay-testing-go-live-ios-v7]] - Braintree Google Pay Testing and Go Live — iOS v7 Availability Notice
+- [[source-braintree-docs-guides-venmo-configuration]] - Braintree Venmo Configuration
+- [[source-braintree-docs-guides-google-pay-configuration-ios-v7]] - Braintree Google Pay Configuration — iOS v7 Availability Notice
+- [[source-braintree-in-person-get-started-1-integration-checklist]] - Braintree In-Person Integration Checklist
+- [[source-braintree-docs-guides-ach-client-side-android-v5]] - Braintree ACH Direct Debit Client-Side Availability (Android v5 Route)
+- [[source-braintree-docs-guides-ach-client-side-ios-v7]] - Braintree ACH Client-Side Implementation (iOS v7 Route)
+- [[source-braintree-docs-guides-paypal-mobile-checkout-android-v5]] - Braintree PayPal Mobile Checkout — Android v5 Route
+- [[source-braintree-docs-guides-functions-download-cli-tool]] - Braintree Functions CLI Tool Download
+- [[source-braintree-docs-guides-paypal-commerce-ios-installation-without-cocoapods]] - Braintree PayPal Commerce iOS Installation without CocoaPods
+- [[source-braintree-in-person-reference-emv-receipt-reference]] - Braintree In-Person EMV Receipt Reference
+- [[source-braintree-docs-guides-google-pay-client-side-ios-v7]] - Braintree Google Pay Client-Side iOS v7 Availability Notice
+- [[source-braintree-docs-guides-apple-pay-client-side-android-v5]] - Braintree Apple Pay Client-Side Availability (Android v5 Route)
+- [[source-braintree-docs-guides-local-payment-methods-wechat-pay]] - Braintree WeChat Pay Local Payment Method
+- [[source-braintree-docs-guides-masterpass-configuration]] - Braintree Masterpass Configuration
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-eligibility]] - Braintree PINless Debit Optimized Debit Routing Eligibility
+- [[source-braintree-docs-guides-paypal-mobile-checkout-ios-v7]] - Braintree PayPal Mobile Checkout - iOS v7 Route
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-code-samples-sdk-node]] - Braintree PINless Debit Optimized Routing Node SDK Code Sample
+- [[source-braintree-docs-guides-paypal-commerce-ios-barcode-scanning]] - Braintree PayPal Commerce iOS Barcode Scanning
+- [[source-braintree-docs-reference-response-settlement-batch-summary-node]] - Braintree Settlement Batch Summary Response (Node.js)
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-code-samples-sdk-ruby]] - Braintree PINless Debit Optimized Routing Ruby SDK Code Samples
+- [[source-braintree-docs-reference-client-api-jsonp]] - Braintree Client API JSONP Reference
+- [[source-braintree-docs-guides-hipercard-and-hiper-testing]] - Braintree Hipercard and Hiper Testing
+- [[source-braintree-docs-guides-paypal-commerce-ios-examples]] - Braintree PayPal Commerce iOS Examples
+- [[source-braintree-docs-guides-masterpass-client-side-android-v5]] - Braintree Masterpass Client-Side Implementation (Android v5)
+- [[source-braintree-docs-guides-masterpass-client-side-ios-v7]] - Braintree Masterpass Client-Side Availability Notice (iOS v7 Route)
+- [[source-braintree-docs-guides-samsung-pay-server-side-node]] - Braintree Samsung Pay Server-Side Implementation (Node.js)
+- [[source-braintree-in-person-reference-graphql-docs]] - Braintree In-Person GraphQL Docs
+- [[source-braintree-in-person-reference-paypal-braintree-sub-processors]] - PayPal Braintree In-Person Custom Prompts Sub-processors
 
 ### Product orientation, configuration and response references (C44)
 

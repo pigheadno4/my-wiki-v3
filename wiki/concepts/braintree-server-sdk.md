@@ -46,6 +46,8 @@ These findings belong specifically to the Node repository, not Ruby's identicall
 
 ## Related
 
+- [[source-braintree-docs-reference-response-settlement-batch-summary-node]] - unversioned Braintree Node.js website response reference showing callback and Promise access to Settlement Batch Summary records plus an example-only record structure; not exact package behavior, account eligibility, current support, response completeness, report-generation proof, settlement, funding or reconciliation evidence
+
 - [[source-braintree-docs-reference-response-credit-card-verification-node]] - 2026-09-16 unversioned Braintree Node.js website Credit Card Verification response reference for product-ID meaning and supplemental network diagnostics whose processor response code remains authoritative; its captured object/request lists and product-ID inventory are blank, and it is response evidence rather than exact package, request, charge, environment, enablement or individual-status proof
 
 - [[source-braintree-docs-reference-response-payment-method-node]] - 2026-09-16 unversioned Braintree Node.js website response reference for orienting generic Payment Method objects to type-specific response pages and inspecting the returned default flag and runtime class; not a package-qualified implementation contract

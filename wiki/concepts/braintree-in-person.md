@@ -11,6 +11,12 @@ Retrieval entry for collected Braintree In-Person website documentation. Follow 
 
 ## Sources
 
+- [[source-braintree-in-person-reference-graphql-docs]] - 2026-09-16 unversioned Braintree website GraphQL landing page under the In-Person reference hierarchy, routing to the separate schema reference and a launch article; navigation and positioning are not exact-schema, In-Person-operation, account/environment, current-support, SDK/GitHub-implementation or payment-outcome evidence
+
+- [[source-braintree-in-person-reference-emv-receipt-reference]] - 2026-09-16 unversioned Braintree In-Person website reference for a merchant-varying example receipt and visual overlay explaining data elements in relation to EMV compliance; the example is not a complete textual field specification or proof of receipt compliance, current market/card/network/account/device/environment support, SDK/GitHub parity, printing or payment outcomes
+
+- [[source-braintree-in-person-get-started-1-integration-checklist]] - 2026-09-16 unversioned Braintree In-Person onboarding checklist for sales/engineering coordination and navigation through Sandbox, Dev Kit, Postman collection and reader-setup steps before the page’s start-building prompt and Production transition; checklist and navigation state are not retailer/platform or account approval, device pairing or certification, current support or availability, production enablement, or payment-outcome proof
+
 - [[source-braintree-in-person-get-started-1-get-started]] - 2026-09-16 unversioned Braintree In-Person Dev Kit onboarding page for approval-gated requesting, signed-NDA or existing-merchant eligibility, Sandbox reader and test-card scope, and the readers' production-environment and production-card incompatibility; request or preparation state is not kit receipt, reader readiness, SDK/client-server credential configuration, or payment-outcome proof
 
 - [[source-braintree-in-person-guides-api-authentication]] - 2026-09-16 unversioned Braintree In-Person website guide comparing first-party API-key authentication for a single merchant or merchant-responsible API-calling code and surrounding infrastructure with OAuth bearer authentication for a multi-merchant application, including per-merchant token custody and a two-Sandbox-account testing boundary

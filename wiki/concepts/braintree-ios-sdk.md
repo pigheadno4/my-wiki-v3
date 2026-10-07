@@ -80,6 +80,22 @@ The v7 migration moves request properties into initializers, changes feature cli
 
 ## Related
 
+- [[source-braintree-docs-guides-paypal-commerce-ios-examples]] - historical, unversioned PayPal Commerce iOS examples snapshot illustrating a store purchase image sequence and routing to GitHub example directories for standalone, modal and parent-controlled tab-bar store presentation; distinct from modular `braintree-ios`, and not current repository-content, build, SDK-support, runtime or completed-payment proof
+
+- [[source-braintree-docs-guides-paypal-commerce-ios-barcode-scanning]] - historical, unversioned PayPal Commerce iOS barcode-scanning snapshot for a UPC-search store's plist enablement, device-support check, scanner presentation, match-result navigation and captured QR URL examples; distinct from modular `braintree-ios`, and not current availability, exact-SDK, runtime-device support, inventory-result, purchase or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-mobile-checkout-ios-v7]] - 2026-09-16 iOS v7-routed Braintree website snapshot whose brief cross-platform body describes PayPal Mobile Checkout for eligible custom client integrations, names Android v4.13+/iOS v5.11+, excludes Drop-in and JavaScript, and says customers outside the named regions see the standard web experience; the capture ends before its unsupported-flow list and is not current support, exact-SDK/GitHub behavior, merchant enablement or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-commerce-ios-installation-without-cocoapods]] - historical, unversioned PayPal Commerce iOS manual-installation snapshot for copying the `PayPalCommerce` directory, installing its tested dependency versions and retaining acknowledgements attribution; distinct from modular `braintree-ios` and not current dependency, exact-package, build, runtime or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-commerce-ios-url-specs]] - historical, unversioned PayPal Commerce iOS custom-URL formatting snapshot for product, variant, category and search deep links using an app-specific Commerce Panel scheme; distinct from modular `braintree-ios` and not current availability, exact-SDK, runtime-navigation or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-commerce-ios-facebook-login]] - historical, unversioned PayPal Commerce iOS Facebook Login client-configuration snapshot for Commerce Panel App ID, plist URL/query schemes and captured transport exceptions; distinct from modular `braintree-ios` and not current SDK, Facebook-authentication, security, availability, runtime-login or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-commerce-ios-paypal-commerce-delegate]] - historical, unversioned PayPal Commerce iOS delegate snapshot for modal dismissal callbacks and app-owned visibility handling in embedded or custom-button presentation; distinct from modular `braintree-ios` and separately versioned GitHub evidence, and not current availability, exact-SDK, runtime or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-ios-v7]] - `/ios/v7` website route whose collected body is a sparse JavaScript v3 custom PayPal migration notice that explicitly excludes iOS; navigation and mismatch evidence only, not iOS v7 migration, current support, or exact-version GitHub implementation evidence
+
 - [[source-braintree-docs-guides-paypal-commerce-ios-initial-theming-and-configuration]] - 2026-09-16 unversioned PayPal Commerce iOS snapshot for optional initial plist and asset theming that PayPal Commerce Panel settings can override; distinct from the modern modular `braintree-ios` package and not current SDK, runtime-theme, availability or payment-execution proof
 
 - [[source-braintree-docs-guides-paypal-checkout-with-vault-ios-v7]] - 2026-09-16 Braintree website iOS v7 route for a PayPal checkout request that combines an immediate charge with Billing Agreement consent and future-use vaulting, distinct from Billing Without Purchase; preserves the optional recurring metadata and `amountBreakdown` exclusions, and is not exact-package, current eligibility/enablement, runtime or payment-execution proof

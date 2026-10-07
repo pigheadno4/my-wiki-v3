@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-reference-client-api-jsonp",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree Client API JSONP Reference\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/reference/client-api/jsonp\"\nraw_files:\n  - \"braintree/docs/reference/client-api/jsonp-2026-09-16.md\"\ntags: [braintree, client-api, jsonp, http]\n---\n\n## Overview\n\nThis narrow, unversioned [[braintree]] website-reference snapshot documents a JSONP calling pattern for most Braintree Client API methods. Instead of the method's ordinary POST request, the displayed example sends an HTTP GET with `_method=POST` and a callback name; the response invokes that callback with the API's JSON.\n\n## Key takeaways\n\n- The page says **most**, not all, Client API methods can be accessed through JSONP. Its example uses `GET` plus the `_method=POST` query parameter rather than issuing the ordinary POST directly.\n- A `callback` query parameter names the function invoked with the returned JSON. The response object also contains a `status` key corresponding to the HTTP status code that the non-JSONP request would have returned.\n- The page says unsuccessful requests return an error response. It does not define the error object's fields or handling, so those details must not be inferred from this example.\n\n## Scope and boundaries\n\nThe shown `curl` command uses placeholder endpoint and callback values and demonstrates the HTTP request shape; it is not browser-execution proof. The snapshot does not name browser requirements, an exact Braintree Web SDK or other client-SDK version, authentication, environment selection, callback-safety requirements, current endpoint availability, current JSONP support, merchant enablement, or payment success. It is website documentation for the Client API transport pattern, not package-qualified SDK behavior, server-side gateway processing, or GitHub implementation and release history.\n\n## Detail locators\n\n- JSONP availability qualification and POST-replacement framing: `# Accessing the Client API via JSONP`, line 16.\n- Example HTTP GET with `_method=POST` and `callback=myCallbackName`: `### curl`, lines 17-20.\n- Callback invocation and returned JSON: paragraph after the curl example, line 21.\n- Synthetic `status` key mapped to the non-JSONP HTTP status and unsuccessful-request error response: paragraph after the curl example, lines 21-24.\n- Captured page create/update metadata: frontmatter, lines 5-10.\n\n## Related\n\n- Company: [[braintree]]\n- Main concept: [[braintree-payment-platform]]\n- Client API orientation: [[source-braintree-docs-reference-client-api-overview]]\n- Client API request authorization: [[source-braintree-docs-reference-client-api-authorization]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/reference/client-api/jsonp-2026-09-16|Braintree Client API JSONP reference]] - fully read pinned webpage snapshot for the JSONP GET override, callback invocation, response status mapping and unsuccessful-request behavior\n",
+  "quotes": [
+    {
+      "text": "Most methods in the Client API can be accessed via JSONP.",
+      "location": "# Accessing the Client API via JSONP, line 16"
+    },
+    {
+      "text": "Instead of issuing aPOSTrequest, methods are invoked as:",
+      "location": "# Accessing the Client API via JSONP, line 16"
+    },
+    {
+      "text": "curl -X GET http://client-api.endpoint?_method=POST&callback=myCallbackName",
+      "location": "### curl, line 19"
+    },
+    {
+      "text": "Responses will invokemyCallbackNamewith the JSON returned by the API.",
+      "location": "paragraph after ### curl, line 21"
+    },
+    {
+      "text": "In addition to\ntheir normal content, response objects will contain astatuskey\ncorresponding to the HTTP status code the request would have returned if the request had not been a\nJSONP request. An error response will be returned for unsuccessful requests.",
+      "location": "paragraph after ### curl, lines 21-24"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c45-jsonp-payment-platform-source-link",
+        "target_path": "wiki/concepts/braintree-payment-platform.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-reference-client-api-jsonp]] - 2026-09-16 unversioned Braintree website Client API reference for invoking most ordinarily POST-based methods through a JSONP GET override, callback delivery, and mapped response status; not a browser-support matrix, exact-version Web SDK behavior, current-support or endpoint authority, GitHub history, server-side processing, or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw qualifies JSONP access as applying to most Client API methods, not every method.",
+          "The example is a website-documented Client API HTTP pattern and must not be promoted to package-qualified Braintree Web SDK behavior or GitHub implementation history.",
+          "The snapshot does not establish current browser compatibility, endpoint availability, JSONP support, merchant enablement, or payment execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/reference/client-api/jsonp-2026-09-16.md",
+  "raw_sha256": "fc5a31b71c78a797be87380670905693353e72a656289687071e8d7fee004043",
+  "status": "candidate_ready"
+}

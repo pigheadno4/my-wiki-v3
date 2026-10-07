@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-guides-pinless-debit-optimized-debit-routing-code-samples-sdk-node",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Braintree PINless Debit Optimized Routing Node SDK Code Sample\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/pinless-debit/optimized-debit-routing/code-samples/sdk/node\"\nraw_files:\n  - \"braintree/docs/guides/pinless-debit/optimized-debit-routing/code-samples/sdk/node-2026-09-16.md\"\ntags: [braintree, pinless-debit, optimized-debit-routing, node, transaction-search]\n---\n\n## Overview\n\nThis captured, unversioned [[braintree|Braintree]] website Node SDK-route code-sample page labels two snippets as Node examples. It illustrates reading routed debit-network metadata from a transaction response and searching optimized-routing transactions by transaction ID or the debit network used during the transaction. The visible search snippet demonstrates only the debit-network path, using `STAR` as an example filter. [[braintree-payment-methods]]\n\nThe page does not identify an exact Braintree Node SDK package or version, establish client/server ownership, or provide credentials, gateway configuration, environment, error handling, merchant eligibility or enablement. Treat it as illustrative website evidence rather than GitHub implementation/history or a guarantee of current SDK/API support, network availability, matching results, authorization success, settlement or funding. Its `debit_network` field concerns the routed debit network; the snapshot provides no network-token behavior.\n\n> [!warning] Node property-name conflict\n> The captured website response snippet literally uses `result.transaction.debit_network`, but retained exact-version `braintree@3.40.0` server-SDK evidence parses XML gateway responses through `Util.convertNodeToObject`, which camel-cases keys, and defines the transaction-search field as `debitNetwork`; its cumulative changelog also records `debitNetwork` for `Transaction.sale` and `Transaction.search`. Do not treat the website's snake_case response accessor as verified runnable or current Node SDK syntax. Keep the unversioned website statement separate from the versioned implementation evidence in [[source-github-braintree-node]]; exact code locators are `lib/braintree/http.js:151-171`, `lib/braintree/util.js:67-121`, `lib/braintree/transaction_search.js:71-74` and `CHANGELOG.md:166-173` in the retained 2026-10-06 `deb5227` snapshot.\n\n## Key takeaways\n\n- The page says the debit-network field is populated for transactions routed on debit networks during authorization and remains available for later actions named on the page. This is conditional on debit-network routing; it is not a promise that every transaction receives a value. The raw prose has damaged spacing around the later action names, so use the raw locator for exact captured wording.\n- The first Node snippet reads `result.transaction.debit_network` alongside transaction ID and status. It shows result access only, not the request that created or authorized the transaction.\n- The prose says transactions can be retrieved by transaction ID or by the network used for optimized debit routing. The displayed Node search demonstrates only `gateway.transaction.search` with `search.debitNetwork().is(\"STAR\")`; `STAR` is an example value, not a guarantee of merchant, account or environment availability.\n- The callback iterates returned transactions and logs `transaction.amount`. The example does not establish that a search will match, define pagination/completeness, or provide production-ready error handling.\n\n## Detail locators\n\n- Routed-debit-network population and later-action availability: `## Fetch the routed debit network of a transaction`, raw lines 14-17.\n- Node transaction-result field access, including `result.transaction.debit_network`: raw lines 18-24.\n- Transaction-ID-or-routed-network retrieval statement: `## Transaction search with debit network`, raw lines 26-29.\n- Node `gateway.transaction.search` example, `STAR` filter, callback iteration and amount logging: raw lines 30-38.\n\n## Related\n\n- [[braintree]]\n- [[braintree-payment-methods]]\n- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-code-samples-graphql]] - separate GraphQL transaction-search example\n- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-integration]] - separate optimized-routing integration and enablement route\n- [[source-github-braintree-node]] - separate exact-version Node server-SDK implementation and history route\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/pinless-debit/optimized-debit-routing/code-samples/sdk/node-2026-09-16|Braintree PINless Debit optimized-routing Node code sample (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "For transactions routed on debit networks, \u201cdebit network\u201d field will be populated in the response\nobject during the authorization step and, will be available for subsequent actions, such assubmit_for_settlementandvoid.",
+      "location": "## Fetch the routed debit network of a transaction, raw lines 16-17"
+    },
+    {
+      "text": "result.transaction.debit_network;",
+      "location": "### Node under ## Fetch the routed debit network of a transaction, raw line 23"
+    },
+    {
+      "text": "Transactions can be retrieved using either the transaction ID or the network used for optimized\ndebit routing during the transaction.",
+      "location": "## Transaction search with debit network, raw lines 28-29"
+    },
+    {
+      "text": "    search.debitNetwork().is(\"STAR\");",
+      "location": "### Node under ## Transaction search with debit network, raw line 33"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c45-w39-payment-methods-source-link",
+        "target_path": "wiki/concepts/braintree-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-code-samples-sdk-node]] - 2026-09-16 unversioned Braintree website Node SDK-route code-sample snapshot for conditionally reading the routed `debit_network` from a transaction response and searching optimized-routing transactions by transaction ID or routed debit network; the website's snake_case response accessor conflicts with retained exact-version `braintree@3.40.0` camel-cased gateway-response keys and `debitNetwork` search spelling and must not be treated as verified runnable/current Node SDK syntax; the shown `STAR` filter remains illustrative, not current API/merchant/environment support, network-token behavior, eligibility, matching-result or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Raw line 17 has damaged spacing around the later action names; retain the conditional meaning but use the source detail locator for exact captured wording.",
+          "The website literally shows result.transaction.debit_network, while retained exact-version braintree@3.40.0 evidence camel-cases XML gateway-response keys and defines debitNetwork for transaction search; keep the two sources separately attributed and do not present the snake_case accessor as verified runnable or current Node SDK syntax."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/pinless-debit/optimized-debit-routing/code-samples/sdk/node-2026-09-16.md",
+  "raw_sha256": "662b95d816d4f9f5f9b2f45f71c003fcfb97e4ae0a90e60a32bdc6bf6ebafd96",
+  "status": "candidate_ready"
+}

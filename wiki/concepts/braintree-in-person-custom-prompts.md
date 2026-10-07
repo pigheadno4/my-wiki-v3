@@ -11,4 +11,6 @@ Braintree Custom Prompts are reader interactions outside payment collection. A c
 
 ## Sources
 
+- [[source-braintree-in-person-reference-paypal-braintree-sub-processors]] - 2026-09-16 collected Braintree reference listing named sub-processors, services and entity countries for personal-data processing tied specifically to In-Person Custom Prompts; not payments-execution guidance or proof of current vendor coverage
+
 - [[source-braintree-in-person-guides-custom-prompts]] - unversioned Braintree website guide collected 2026-09-16 for reader prompt purpose, prompt/result families, enablement and hardware/version conditions, cancellation, offline exclusion and result-lifecycle boundaries

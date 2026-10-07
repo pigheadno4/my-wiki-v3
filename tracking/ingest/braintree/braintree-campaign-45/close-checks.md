@@ -1,0 +1,13 @@
+# Braintree C45 structural close
+
+Completed 2026-10-07 13:22:41–14:20:11 UTC: 3,450 seconds (57m30s). Fifty of fifty approved, no terminal rejection; 100/100 fixed queries PASS across thirteen disjoint groups. Fifty full first reviews and seven targeted correction reviews; no repeated full review or default coordinator third full read.
+
+One structural close passed: all fifty immutable primary SHA-256 pins and Source URL/canonical metadata; exact approved receipt/candidate/canonical equality allowing only terminal newline; primary raw and canonical URL ownership; factual path-qualified raw links; approved concept suggestions and source/concept reciprocity; root/provider/concept discovery; all historical reciprocal rows retained. Every one of the 735 website sources has exactly one company and provider catalog row. Company count752=735website+17GitHub; changelogs excluded. Fifty sources, ten existing concepts, no new concept. Canonical source volume20,837 whitespace-delimited words; primary raw6,629 words. Supporting evidence and markup make this sizing, not semantic compression.
+
+Shared company/provider catalogs and counts aggregated once; provider/root logs retain the separate history. Existing typed validator checked62touched typed pages with zero issues. Scoped git diff --check passed; structural checks included new canonical whitespace. No code/rule change, full unit suite, additional audit layer, raw mutation or GitHub ingestion.
+
+Operational exceptions retained: one supplemental quote outside the primary-only receipt contract removed before acceptance with no source change; one coordinator stale-artifact submission failed closed at attempt2 and was recovered using the existing retry operation, copying the already-correct candidate with only the attempt number advanced. There were58worker-start events,57accepted candidates, and one invalid old-artifact handoff. This extra attempt is not another semantic drafting retry. Failure, the correct unused attempt2 candidate, and cause are recorded under that job. No coordinator semantic source amendment or canonical promotion repair; coordinator_repairs0 has that narrower runtime meaning.
+
+One query-report object attribution was corrected in group C without changing a source or redoing the full audit. All other query groups passed without content correction. Completed state and timestamps were read back from campaign.json/monitor.md after the completion call; a return-payload printing KeyError did not undo the successful completion and was not retried.
+
+Unrelated shared-checkout work preserved. No commit/push or next-campaign execution authorized. Detailed timing and next small decisions: retrospective.md.

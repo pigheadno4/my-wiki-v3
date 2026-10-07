@@ -21,6 +21,11 @@ The page says Apple Pay cards can be vaulted and used for recurring billing and 
 
 ## Sources
 
+- [[source-braintree-docs-guides-apple-pay-client-side-android-v5]] - 2026-09-16 captured Android v5 website route whose body directs Apple Pay client integration to iOS v5 or JavaScript SDK v3 and preserves a dated mobile-certificate warning; no Android Apple Pay procedure, current support, exact-package status, or payment-execution proof
+
+
+- [[source-braintree-docs-guides-apple-pay-overview]] - 2026-09-16 captured Braintree website overview routing iOS SDK in-app and JavaScript SDK v3 Safari web-checkout paths; a snapshot navigation route, not current availability, exact-package history, complete client/server lifecycle, or payment-execution proof
+
 - [[source-braintree-docs-guides-apple-pay-testing-go-live]] - 2026-09-16 captured unversioned Braintree Apple Pay testing and go-live webpage for sandbox and production validation boundaries and launch checks
 
 - [[source-braintree-docs-guides-apple-pay-configuration-javascript-v3]] - 2026-09-16 captured Braintree JavaScript v3/web configuration route for environment-matched iCloud testing accounts, sandbox and production domain registration, the web shared-certificate qualification, and production domain-association-file verification conditions

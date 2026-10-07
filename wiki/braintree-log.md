@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-07] ingest | Braintree website C45
+
+- Fifty pinned English website raws fully read and independently reviewed through ten shared rolling child slots; overview/migration/deprecated pages dispatched early. Fifty retrieval sources and ten existing reciprocal concepts, no new concept. Catalog752=735website+17GitHub; raw unchanged.
+- Initial review43/50; fifty full first reviews and seven targeted correction reviews, no repeated full review or terminal rejection. Corrections preserve Function versus deployment sharing, generic Client API routing, product-specific webhook retries, ordinary checklist steps, unresolved currency semantics, Node website versus exact-package syntax, and landing-page versus unread-link provenance.
+- One supplemental-quote handoff was mechanically corrected before acceptance without changing source content. One coordinator stale-artifact submission failed closed and was recovered through the existing retry operation without another semantic analysis; original correct candidate and failure evidence retained. No coordinator semantic source amendment or canonical promotion repair.
+- Fixed queries100/100PASS in thirteen disjoint groups; one audit-report object attribution corrected without source changes. Shared company/provider catalogs and counts aggregated once. Closure and timing evidence: `tracking/ingest/braintree/braintree-campaign-45/`.
+- No collection, GitHub ingestion, code/rule/schema change, new framework, full unit suite, worktree, commit, push or next-campaign execution.
+
 ## [2026-10-07] ingest | Braintree website C44
 
 - Fifty English website raws fully read and independently reviewed through ten shared rolling child slots. Fifty retrieval sources and thirteen existing reciprocal concepts; no new concept. Catalog702=685website+17GitHub. Raw unchanged.

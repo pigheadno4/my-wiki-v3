@@ -19,6 +19,8 @@ The dedicated Node.js parsing guide documents parsing the `bt_signature` paramet
 
 ## Sources
 
+- [[source-braintree-docs-guides-paypal-commerce-channel-api-receiving-order-updates]] - PayPal Commerce Channel API fulfilled-order update messages sent to the retailer-message destination after retailer confirmation, with the Channel API retailer guide owning acknowledgement and redelivery behavior; generic Node webhook signature, parsing, environment, cadence and ordering semantics do not transfer
+
 - [[source-braintree-docs-guides-reports-overview]] — unversioned website overview routing to settlement batch summaries, merchant-built custom reports, webhook-based reports, and additional Control Panel report information
 
 - [[source-braintree-docs-guides-paypal-commerce-channel-api-keeping-track-of-retailers]] - PayPal Commerce Channel API retailer onboarding/offboarding messages sent to the Channel API setup destination, with an HTTP 200-in-under-10-seconds acknowledgement condition and several redeliveries over the next 12 hours; this contract is distinct from the generic Node webhook parsing guide's successful HTTPS `2xx` within 30 seconds and environment-specific hourly retry windows, whose signature, transport, environment, cadence and parsing semantics do not transfer

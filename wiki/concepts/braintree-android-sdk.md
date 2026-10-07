@@ -71,6 +71,14 @@ Release `5.30.0` makes the principal Kotlin suspend functions public, removes th
 
 ## Related
 
+- [[source-braintree-docs-guides-paypal-mobile-checkout-android-v5]] - 2026-09-16 Android v5-routed website snapshot of cross-platform PayPal Mobile Checkout eligibility, captured Android/iOS version floors, regional standard-web fallback, and Drop-in/JavaScript, point-of-sale and multi-seller exclusions; not current package support, exact native/GitHub behavior, merchant or buyer eligibility, server lifecycle, or payment-execution evidence
+
+- [[source-braintree-docs-guides-paypal-paypal-credit-android-v5]] - 2026-09-16 deprecated Android v5-routed website overview of PayPal Credit checkout presentment and PayPal integration prerequisites; its generic body and unread `3.17.2` Javadoc navigation do not establish current Android SDK support, account enablement, financing availability, server processing or payment execution
+
+- [[source-braintree-docs-guides-paypal-paypal-sdk-migration-guide-android-v5]] - 2026-09-16 Android v5-routed website snapshot whose retained body is only a JavaScript v3 custom PayPal migration availability notice that explicitly excludes Android, iOS, Drop-in, JavaScript v2 and new web integrations; not an Android migration procedure, current SDK-support evidence or exact-version implementation evidence
+
+- [[source-braintree-docs-deprecated-client-side-encryption-android-library]] - 2026-09-16 historical website snapshot for the deprecated Android client-side encryption library, its jar/library-project installation routes, and quick-start field-encryption example; not current Android SDK or GitHub support, server-flow, or payment-execution proof
+
 - [[source-braintree-docs-guides-google-pay-configuration-android-v5]] - 2026-09-16 Android v5-routed website configuration guide for environment-specific Control Panel enablement, merchant-account activation routing, separate Google production work and PayPal-via-Google-Pay dual enablement; preserves a dated mobile-certificate warning and is not exact-package, current account/eligibility, client/server lifecycle or payment-execution proof
 
 - [[source-braintree-docs-guides-google-pay-testing-go-live-android-v5]] - 2026-09-16 Android v5-routed Google Pay testing/go-live snapshot for sandbox nonce behavior, production Control Panel enablement and Google's separate production-access/app-review route; preserves a dated mobile-certificate warning and is not current eligibility, enablement, exact package/runtime, review-approval or payment-execution proof

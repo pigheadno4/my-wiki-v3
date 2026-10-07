@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-guides-paypal-commerce-ios-paypal-commerce-delegate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Braintree PayPal Commerce iOS PayPalCommerceDelegate\"\ntype: source\ndate_ingested: 2026-10-07\noriginal_format: webpage\ncanonical_url: \"https://developer.paypal.com/braintree/docs/guides/paypal-commerce-ios/paypal-commerce-delegate\"\nraw_files:\n  - \"braintree/docs/guides/paypal-commerce-ios/paypal-commerce-delegate-2026-09-16.md\"\ntags: [braintree, paypal-commerce, ios, sdk, delegate]\n---\n\n## Overview\n\nThis Braintree-hosted snapshot documents `PayPalCommerceDelegate` for the historical PayPal Commerce iOS SDK. After client configuration, the delegate can receive store-dismissal callbacks when the store is presented modally, or tell an app using an embedded store and custom purchase buttons to make that store visible. These are client-side presentation and lifecycle responsibilities, not a server-side payment flow.\n\nThe page was fetched on 2026-09-16 and carries source frontmatter timestamps from 2025-04-01, but identifies no SDK release or environment. Treat its Objective-C protocol methods as historical, unversioned snapshot evidence distinct from the modern modular [[braintree-ios-sdk]] and its separately versioned GitHub implementation evidence; the page does not establish current availability, exact-package support, runtime behavior, store provisioning, or successful payment execution.\n\n## Key takeaways\n\n- For a modally presented store, the page says to set the delegate after configuring the client. An implementation may provide either or both of `paypalCommerceWillDismissWithTransitionDuration:` and `paypalCommerceDidDismiss` to receive dismissal lifecycle callbacks.\n- For a store embedded in a tab bar controller or similar container where custom buttons trigger purchases, the app is responsible for displaying the store. After setting the delegate, it implements `paypalCommerceShouldBeVisible` and makes the store visible in that callback.\n- The tab-bar example says to make the store's view controller the `selectedViewController`. This is an example of fulfilling the visibility responsibility, not a universal container requirement or proof that a purchase completed.\n\n## Detail locators\n\n- **Modal presentation condition and post-configuration delegate setup:** raw lines 16-23.\n- **Optional modal dismissal protocol callbacks:** raw lines 24-29.\n- **Embedded/custom-button condition and app-owned display responsibility:** raw lines 31-37.\n- **Visibility callback and tab-bar example:** raw lines 38-44.\n\n## Related\n\n- [[braintree]]\n- [[braintree-ios-sdk]] \u2014 modern modular Braintree iOS SDK retrieval route; do not transfer this historical PayPal Commerce delegate API to that package.\n- [[source-braintree-docs-guides-paypal-commerce-ios-overview|Braintree PayPal Commerce iOS SDK Overview]]\n- [[source-braintree-docs-guides-paypal-commerce-ios-setup|Braintree PayPal Commerce iOS SDK Setup]]\n\n## Raw Sources\n\n- [[raw/braintree/docs/guides/paypal-commerce-ios/paypal-commerce-delegate-2026-09-16|Braintree PayPal Commerce iOS PayPalCommerceDelegate snapshot (fetched 2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "- If you present the store modally, and you would like to be notified when the store is dismissed by the user. Then after you configure the client, call:",
+      "location": "raw line 17"
+    },
+    {
+      "text": "And then implement one or both of these protocol methods:\n### Objective-C\n```objectivec\n-(void)paypalCommerceWillDismissWithTransitionDuration:(NSTimeInterval)transitionDuration;\n-(void)paypalCommerceDidDismiss;\n```",
+      "location": "raw lines 24-29"
+    },
+    {
+      "text": "- If you present the store within a tab bar controller or other such embedded system, and you have custom buttons to trigger purchases, then you\u2019re responsible for displaying the store. After you configure the client, call:",
+      "location": "raw line 31"
+    },
+    {
+      "text": "And then implement this protocol method:\n### Objective-C\n```objectivec\n-(void)paypalCommerceShouldBeVisible;\n```",
+      "location": "raw lines 38-42"
+    },
+    {
+      "text": "Within that call, make sure the store is visible. For example, if you have embedded the store within\na tab bar controller, you would make sure the store\u2019s view controller is theselectedViewController.",
+      "location": "raw lines 43-44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "braintree-c45-paypal-commerce-delegate-ios-route",
+        "target_path": "wiki/concepts/braintree-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-braintree-docs-guides-paypal-commerce-ios-paypal-commerce-delegate]] - historical, unversioned PayPal Commerce iOS delegate snapshot for modal dismissal callbacks and app-owned visibility handling in embedded or custom-button presentation; distinct from modular `braintree-ios` and separately versioned GitHub evidence, and not current availability, exact-SDK, runtime or payment-execution proof",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/braintree/docs/guides/paypal-commerce-ios/paypal-commerce-delegate-2026-09-16.md",
+  "raw_sha256": "977b4a49f3e3930fca3b5649d5bdfdd0c294afb670434ef26e1c00ba828f5d3a",
+  "status": "candidate_ready"
+}

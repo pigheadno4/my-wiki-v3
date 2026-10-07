@@ -108,6 +108,10 @@ Metronome documents a billing-data reconciliation pattern that extends beyond ma
 
 ## Sources
 
+- [[source-braintree-docs-reference-response-settlement-batch-summary-node]] - Braintree Node.js response route illustrating callback and Promise access to settlement-batch-summary records and an example-only record shape, without proving response completeness, report generation, settlement, funding or completed reconciliation
+
+- [[source-braintree-docs-guides-reports-settlement-batch-summaries-node]] - 2026-09-16 unversioned Braintree Node.js website guide to generating date-scoped settlement batch totals, with optional single-custom-field aggregation and callback or Promise records examples; the displayed fields are an example structure, not account eligibility, completeness, settlement, funding or deposit proof
+
 - [[source-braintree-docs-guides-reports-overview]] — 2026-09-16 unversioned Braintree website overview routing among API settlement batch summaries, merchant-built custom reports, webhook-based reports, and additional Control Panel report information; collected navigation snapshot, not a detailed API, eligibility, timing, completeness, settlement, disbursement, funding, or execution contract
 
 - [[source-braintree-docs-guides-reports-custom-node]] - 2026-09-16 unversioned Braintree Node.js website guide to merchant-built API transaction-search and CSV reporting, with integration, API-key, selectable-field/date-window, sample-only and search-cap boundaries; not current account or report availability, actual generation, or payment, settlement or funding proof
