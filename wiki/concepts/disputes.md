@@ -332,6 +332,8 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 
 ## Sources
 
+- [[source-braintree-docs-reference-response-dispute-node]] - 2026-09-16 unversioned Braintree Node.js website response-reference route for the Dispute object, preserving the results-limitation policy notice and Control Panel access qualification; not a request-operation contract, exact SDK package/version evidence, current merchant eligibility, successful execution, lifecycle transition, or dispute outcome proof
+
 - [[source-braintree-docs-guides-disputes-automating-node]] - unversioned Braintree Node.js webpage captured 2026-09-16 presenting an account-qualified, webhook-triggered dispute automation pattern and a reason-conditioned shipping-confirmation example; not an exact SDK package/version contract, current availability, lifecycle-transition, execution or outcome proof
 
 - [[source-braintree-docs-guides-disputes-overview]] - unversioned Braintree webpage captured 2026-09-16 introducing account-qualified access to API dispute management and the accept-or-respond flow through evidence finalization and bank review; not current merchant eligibility, independent current bank/card-network policy, successful API execution, evidence acceptance, dispute outcome, settlement, or recovered-funds proof

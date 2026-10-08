@@ -80,6 +80,18 @@ The v7 migration moves request properties into initializers, changes feature cli
 
 ## Related
 
+- [[source-braintree-docs-guides-hosted-fields-examples-ios-v7]] - 2026-09-16 iOS v7-routed Hosted Fields examples snapshot whose entire substantive body says Hosted Fields is available only for JavaScript; route and availability navigation only, not a native iOS example, setup, current-support, exact-SDK behavior, runtime or payment-execution proof
+
+- [[source-braintree-docs-guides-hosted-fields-events-ios-v7]] - 2026-09-16 iOS v7-routed Hosted Fields Events snapshot whose only substantive body says Hosted Fields is available only for JavaScript; route and availability navigation only, not native iOS event behavior, current support, exact-SDK/GitHub behavior or payment-execution proof
+
+- [[source-braintree-docs-guides-hosted-fields-setup-and-integration-ios-v7]] - 2026-09-16 iOS v7-routed website snapshot titled Setup and Integration whose captured body only says Hosted Fields is available for JavaScript; route and platform-availability navigation only, not an iOS setup procedure, native API, current-support, exact-SDK or GitHub behavior, merchant eligibility, runtime, or payment-execution proof
+
+- [[source-braintree-docs-guides-hosted-fields-faq-ios-v7]] - 2026-09-16 iOS v7-routed Hosted Fields FAQ snapshot whose complete body says Hosted Fields is available only for JavaScript; route and platform-scope navigation only, not iOS troubleshooting, native API, current-support, exact-SDK/GitHub-behavior or payment-execution proof
+
+- [[source-braintree-docs-guides-paypal-paypal-credit-ios-v7]] - 2026-09-16 Braintree website iOS v7-routed availability snapshot whose only substantive body says PayPal Credit is unavailable in the captured `iOS v5v6v7 SDK` wording and directs readers to an unread Pay Later offers guide; navigation and availability-notice evidence only, not a discrete-version claim, current-support statement, exact-package or GitHub behavior, account eligibility, financing approval, server processing, or payment-execution proof
+
+- [[source-braintree-docs-guides-hosted-fields-upgrading-from-custom-ios-v7]] - 2026-09-16 iOS v7-routed website snapshot whose captured body says Hosted Fields is available only for JavaScript; route and availability navigation only, not iOS migration, native API, current-support, exact-SDK/GitHub-behavior or payment-execution proof
+
 - [[source-braintree-docs-guides-paypal-commerce-ios-examples]] - historical, unversioned PayPal Commerce iOS examples snapshot illustrating a store purchase image sequence and routing to GitHub example directories for standalone, modal and parent-controlled tab-bar store presentation; distinct from modular `braintree-ios`, and not current repository-content, build, SDK-support, runtime or completed-payment proof
 
 - [[source-braintree-docs-guides-paypal-commerce-ios-barcode-scanning]] - historical, unversioned PayPal Commerce iOS barcode-scanning snapshot for a UPC-search store's plist enablement, device-support check, scanner presentation, match-result navigation and captured QR URL examples; distinct from modular `braintree-ios`, and not current availability, exact-SDK, runtime-device support, inventory-result, purchase or payment-execution proof

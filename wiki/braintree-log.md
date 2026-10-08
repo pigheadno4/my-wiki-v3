@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-08] ingest | Braintree website C46
+
+- Forty-five pinned English website raws fully read and independently reviewed through ten shared rolling child slots. Forty-five retrieval sources and seven existing reciprocal concepts, no new concept. Catalog797=780website+17GitHub; raw unchanged.
+- First review44/45; forty-five full first reviews and one bounded targeted correction review, no repeated full review or terminal rejection. The correction removes an unsupported JavaScript-v3-only implication from a Payment Request raw locator while preserving its iOS-route/body mismatch. No coordinator semantic source amendment or canonical promotion repair.
+- Fixed queries90/90PASS across twelve disjoint groups, overlapping ingestion; no query-source correction. Company/provider catalogs and counts aggregated once. Evidence and timing: `tracking/ingest/braintree/braintree-campaign-46/`.
+- Collected website inventory785raws:784referenced; only the separately deferred27,225-word validation-errors/all/node page remains unreferenced. No collection, GitHub ingestion, code/rule/schema change, new framework, full unit suite, worktree, commit, push or next-campaign execution.
+
 ## [2026-10-07] ingest | Braintree website C45
 
 - Fifty pinned English website raws fully read and independently reviewed through ten shared rolling child slots; overview/migration/deprecated pages dispatched early. Fifty retrieval sources and ten existing reciprocal concepts, no new concept. Catalog752=735website+17GitHub; raw unchanged.

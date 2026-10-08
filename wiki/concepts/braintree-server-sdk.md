@@ -46,6 +46,19 @@ These findings belong specifically to the Node repository, not Ruby's identicall
 
 ## Related
 
+- [[source-braintree-docs-reference-response-customer-node]] - 2026-09-16 unversioned Braintree Node.js website `Customer` response-reference route whose captured body supplies only a policy-based results-limitation note and no operation, containing-object list or property schema; not exact-package behavior, current result visibility, successful retrieval or payment-outcome proof
+
+
+- [[source-braintree-docs-reference-response-transaction-line-item-node]] - 2026-09-16 unversioned Braintree Node.js website response-reference route identifying `Transaction Line Item`; the captured stub provides no field schema, containing-response list, example or action that returns the object, and preserves a policy-based results-limitation notice, so it is not exact package/runtime behavior, a complete result contract or transaction-execution proof
+
+- [[source-braintree-docs-reference-response-transaction-level-fee-report-row-node]] - 2026-09-16 unversioned Braintree Node.js website response-reference route identifying the `Transaction Level Fee Report Row`; the snapshot provides no returning or generation action and no field schema, and says the report is beta for US merchants and the API is subject to change, so it is not exact package/runtime behavior or report-generation, fee-assessment, settlement, funding or reconciliation evidence
+
+- [[source-braintree-docs-reference-response-venmo-account-node]] - 2026-09-16 unversioned Braintree Node.js website Venmo Account response-reference route with a select-merchant limited-release warning and blank containing-response list; not exact-package, response-schema, current-availability, enablement or payment-execution proof
+
+- [[source-braintree-docs-reference-response-google-pay-card-node]] - 2026-09-16 unversioned Braintree Node.js-routed response-reference stub that redirects Google Pay Card readers to `AndroidPayCard` and preserves the Ruby SDK 3.0.1-and-later exception; not exact Node package behavior, a request contract or payment-outcome evidence
+
+- [[source-braintree-docs-reference-request-credit-card-verification-create-node]] - 2026-09-16 unversioned Braintree Node.js website request reference for standalone credit-card verification without Vault storage, preserving the raw-card-data PCI condition and damaged standard-verification-plus-vault fallback; not exact-package, sale, authorization, settlement, funding, compliance or execution proof
+
 - [[source-braintree-docs-reference-response-settlement-batch-summary-node]] - unversioned Braintree Node.js website response reference showing callback and Promise access to Settlement Batch Summary records plus an example-only record structure; not exact package behavior, account eligibility, current support, response completeness, report-generation proof, settlement, funding or reconciliation evidence
 
 - [[source-braintree-docs-reference-response-credit-card-verification-node]] - 2026-09-16 unversioned Braintree Node.js website Credit Card Verification response reference for product-ID meaning and supplemental network diagnostics whose processor response code remains authoritative; its captured object/request lists and product-ID inventory are blank, and it is response evidence rather than exact package, request, charge, environment, enablement or individual-status proof

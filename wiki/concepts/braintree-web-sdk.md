@@ -77,6 +77,17 @@ The release also forwards `autoRedirect` and `fullPageOverlay` session-start opt
 
 ## Related
 
+- [[source-braintree-docs-guides-hosted-fields-styling-ios-v7]] - 2026-09-16 iOS v7-routed Hosted Fields styling availability notice whose retained body points only to JavaScript v3; not native iOS styling, SDK lifecycle, current availability, or runtime evidence
+
+- [[source-braintree-docs-guides-hosted-fields-setup-and-integration-android-v5]] - 2026-09-16 Android v5-routed setup snapshot whose captured body only says Hosted Fields is available for JavaScript; route/body mismatch evidence, not native Android setup, current availability, exact-package behavior or payment-execution proof
+
+- [[source-braintree-docs-guides-shopper-insights-javascript-v3]] - sparse 2026-09-16 JavaScript v3-routed Shopper Insights beta page whose body is only an availability notice excluding JavaScript and Drop-in while naming iOS v6+ and Android v4+; not implementation, exact-package or current-support evidence
+
+- [[source-braintree-docs-guides-payment-request-setup-and-integration-android-v5]] - 2026-09-16 Android v5-routed setup page whose retained body is only a JavaScript v3 availability notice plus testing and Google Pay navigation; not native Android setup, lifecycle, current-support or payment-execution evidence
+
+- [[source-braintree-docs-guides-payment-request-setup-and-integration-ios-v7]] - 2026-09-16 iOS v7-routed Braintree website snapshot whose body only states Payment Request availability through JavaScript v3; navigation and route/body-mismatch evidence, not native iOS implementation, SDK lifecycle, current availability, or payment-execution proof
+
+
 - [[source-braintree-docs-reference-client-reference-javascript-v2-browser-support]] - historical JavaScript v2 browser-support snapshot covering tested desktop/mobile inventory, IE/TLS constraints, PayPal webview limitations and no-fix guidance, and the untested/undeveloped hybrid-runtime boundary; not current browser, package or runtime proof
 
 - [[source-braintree-docs-reference-client-reference-javascript-v2-credit-cards]] - JavaScript v2 direct credit-card tokenization and 3D Secure UI reference covering the SAQ A field-hosting warning, three-hour nonce lifetime, validation responsibility and pre-modal lookup callback; not current SDK support or deprecation-status, PCI-certification, server-processing or payment-outcome evidence

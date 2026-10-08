@@ -20,6 +20,38 @@ Card scope also varies by account and use case: the page distinguishes US from m
 
 ## Sources
 
+- [[source-braintree-docs-guides-samsung-pay-configuration]] - 2026-09-16 unversioned Braintree Configuration route whose retained body supplies no configuration procedure; it deprecates Samsung Pay and the guide and redirects to distinct Pay Later offers documentation, without establishing technical equivalence, migration steps, exact SDK/platform/environment behavior, current availability, merchant eligibility or payment execution
+
+- [[source-braintree-docs-guides-samsung-pay-client-side-javascript-v3]] - 2026-09-16 Braintree JavaScript v3-routed client-side snapshot whose complete retained body deprecates Samsung Pay and the guide and redirects to the distinct Pay Later offers guide; it provides no JavaScript setup or payment lifecycle procedure and does not establish technical equivalence, migration behavior, current availability, exact SDK/GitHub implementation, merchant enablement or payment execution
+
+- [[source-braintree-docs-guides-samsung-pay-client-side-ios-v7]] - 2026-09-16 Braintree website snapshot at a Samsung Pay client-side iOS v7 route whose body only deprecates Samsung Pay and the guide and directs readers to the distinct Pay Later offers guide; no native iOS procedure, technical equivalence, migration flow, exact SDK behavior, current availability, eligibility or payment execution is established
+
+- [[source-braintree-articles-guides-payment-methods-samsung-pay]] - 2026-09-16 article-level Braintree Samsung Pay lifecycle notice that deprecates Samsung Pay and the guide and redirects to the distinct Pay Later offers guide; it supplies no migration procedure or SDK/client-server detail and does not establish technical equivalence, current support, merchant enablement, or payment execution
+
+- [[source-braintree-docs-guides-samsung-pay-testing-go-live]] - 2026-09-16 unversioned Braintree Testing and Go Live route whose retained body supplies no testing, Sandbox or Production procedure; it deprecates Samsung Pay and the guide and redirects to distinct Pay Later offers documentation, without establishing technical equivalence, a migration path, exact SDK/environment behavior, current availability, merchant eligibility or payment-execution proof
+
+- [[source-braintree-docs-guides-unionpay-configuration]] - 2026-09-16 unversioned Braintree configuration snapshot containing only the dedicated UnionPay integration deprecation and Discover credit-card-guide redirect; no configuration procedure, exact SDK/version, merchant or environment conditions, current enablement, or payment-execution proof
+
+- [[source-braintree-docs-guides-venmo-one-touch]] - 2026-09-16 Braintree One Touch for Venmo lifecycle notice stating that the route/body product is no longer the preferred method and redirecting to the separate Venmo overview; not product-removal, migration-equivalence, current-availability, enablement, SDK-behavior or payment-execution proof
+
+- [[source-braintree-docs-guides-unionpay-client-side-ios-v7]] - 2026-09-16 iOS v7-routed Braintree website notice deprecating the dedicated UnionPay integration in favor of processing UnionPay through Discover as a credit card; its body contains no iOS procedure, so the route is not exact SDK/GitHub or payment-execution evidence
+
+- [[source-braintree-docs-guides-elo-client-side-ios-v7]] - 2026-09-16 iOS v7-routed Braintree Elo availability notice for select limited-release merchants using page-relative latest JavaScript v3 and server SDKs, with no native iOS procedure or exact SDK-version evidence
+
+- [[source-braintree-docs-guides-elo-client-side-android-v5]] - 2026-09-16 Android v5-routed Braintree Elo client-side webpage whose retained body contains only limited-release availability for select merchants using page-relative latest JavaScript v3 and server SDKs, with an access-request route and no Android procedure; not exact Android, JavaScript or server package behavior, current availability or enablement, or payment-execution proof
+
+- [[source-braintree-docs-reference-response-us-bank-account-verification-node]] - 2026-09-16 Node-routed response-reference snapshot identifying the US Bank Account Verification response object and a data-limitation notice; its sparse body does not enumerate containing response objects or establish exact-package behavior, a verified bank account, or payment execution
+
+- [[source-braintree-docs-guides-ach-configuration]] - 2026-09-16 unversioned Braintree website configuration notice limiting ACH Direct Debit to eligible merchants using a custom JavaScript v3 integration, excluding Drop-in UI and directing qualifying merchants to request Sandbox enablement; the request is not current-support, account-enablement, exact SDK/GitHub behavior or payment-execution proof
+
+- [[source-braintree-docs-guides-elo-configuration]] - 2026-09-16 unversioned Braintree Elo configuration notice for limited-release access requests and nonautomatic Sandbox/Production account enablement; not exact SDK/package or GitHub implementation evidence, current availability or merchant approval, environment behavior, or payment-execution proof
+
+- [[source-braintree-docs-guides-samsung-pay-overview]] - 2026-09-16 unversioned Braintree website overview snapshot whose retained body deprecates Samsung Pay and the guide, then redirects to the distinct Pay Later offers guide; it supplies no Samsung Pay procedure, so the redirect is not technical equivalence or migration guidance and does not establish SDK/GitHub implementation, client/server flow or current availability
+
+- [[source-braintree-docs-guides-pinless-debit-optimized-debit-routing-transaction-workflow]] - 2026-09-16 unversioned Braintree website workflow snapshot for initial PINless-debit eligibility fallback and same-network sale-refund routing with unsuccessful-refund retry through Visa/Mastercard; not current availability, account or environment behavior, SDK/API instructions, or transaction-outcome proof
+
+- [[source-braintree-docs-guides-elo-overview]] - 2026-09-16 unversioned Braintree website overview for Elo identity and limited-release access routing; not exact SDK/version, current support or merchant enablement, GitHub implementation/history, or payment-execution proof
+
 - [[source-braintree-docs-guides-samsung-pay-server-side-node]] - 2026-09-16 unversioned Braintree Node.js-routed website snapshot whose retained body deprecates Samsung Pay, redirects the guide to the distinct Pay Later offers guide, and lists three vault-storage request contexts; the damaged reference-link rendering and absence of Node code mean it does not establish exact SDK/package behavior, Android/client integration, account or environment prerequisites, current support, or payment-execution proof
 
 - [[source-braintree-docs-guides-masterpass-client-side-ios-v7]] - 2026-09-16 iOS v7-routed website snapshot whose body contains only a qualified direction from historical Masterpass to limited-release SRC, with no iOS procedure; preserves the unresolved SRC end-of-support conflict and is not current availability, exact SDK/GitHub behavior, client/server or environment guidance, safe-migration evidence, or payment-execution proof

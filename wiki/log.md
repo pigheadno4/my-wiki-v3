@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-08] ingest | Braintree website C46
+
+- Forty-five retrieval sources and seven existing reciprocal concepts; first review44/45, one targeted review, no repeated full review or terminal rejection. Fixed queries90/90PASS; catalog797=780website+17GitHub; raw unchanged. Of785collected website raws,784are referenced; the single heavy validation-errors page remains separately deferred. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-46/`. No commit/push.
+
 ## [2026-10-07] ingest | Android Messages untagged `aede075`
 
 - Approved focused-reading serial delta: demo Compose containers 40dp to 100dp and XML wrapper 80dp to 100dp; two capsules plus XML supplements hash-verified (248 files). Preserved `1.3.0` release and policy history; no library/API change or readiness proof. Source count unchanged. Details [[paypal-log]] and [[changelog-github-paypal-messages-android]]. No device QA, commit or push.

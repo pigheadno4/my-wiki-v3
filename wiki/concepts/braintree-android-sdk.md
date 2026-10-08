@@ -71,6 +71,17 @@ Release `5.30.0` makes the principal Kotlin suspend functions public, removes th
 
 ## Related
 
+- [[source-braintree-docs-guides-hosted-fields-styling-android-v5]] - 2026-09-16 Android v5-routed styling-page snapshot whose captured body only says Hosted Fields is available for JavaScript; route/body mismatch evidence, not native Android styling behavior, current exact-package support, hosted rendering, tokenization or payment execution
+
+
+- [[source-braintree-docs-guides-hosted-fields-examples-android-v5]] - 2026-09-16 Android v5-routed Examples snapshot whose retained body only says Hosted Fields is available for JavaScript; route/body mismatch evidence, not native Android examples, exact-package support, current availability or payment-execution proof
+
+- [[source-braintree-docs-guides-hosted-fields-events-android-v5]] - 2026-09-16 Android v5-routed website snapshot whose only substantive body statement says Hosted Fields is available only for JavaScript; route and availability navigation only, not native Android Hosted Fields event behavior, current exact-package support, lifecycle or payment-execution proof
+
+- [[source-braintree-docs-guides-hosted-fields-faq-android-v5]] - 2026-09-16 Android v5-routed troubleshooting/FAQ snapshot whose captured body only says Hosted Fields is available for JavaScript; route/body mismatch evidence and navigation, not an Android FAQ, native API, current exact-package support or payment-execution proof
+
+- [[source-braintree-docs-guides-hosted-fields-upgrading-from-custom-android-v5]] - 2026-09-16 Android v5-routed website snapshot whose captured body only says Hosted Fields is available for JavaScript; route/body mismatch evidence, not native Android behavior or current exact-package support
+
 - [[source-braintree-docs-guides-paypal-mobile-checkout-android-v5]] - 2026-09-16 Android v5-routed website snapshot of cross-platform PayPal Mobile Checkout eligibility, captured Android/iOS version floors, regional standard-web fallback, and Drop-in/JavaScript, point-of-sale and multi-seller exclusions; not current package support, exact native/GitHub behavior, merchant or buyer eligibility, server lifecycle, or payment-execution evidence
 
 - [[source-braintree-docs-guides-paypal-paypal-credit-android-v5]] - 2026-09-16 deprecated Android v5-routed website overview of PayPal Credit checkout presentment and PayPal integration prerequisites; its generic body and unread `3.17.2` Javadoc navigation do not establish current Android SDK support, account enablement, financing availability, server processing or payment execution

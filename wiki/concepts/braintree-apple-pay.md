@@ -21,6 +21,18 @@ The page says Apple Pay cards can be vaulted and used for recurring billing and 
 
 ## Sources
 
+- [[source-braintree-docs-guides-apple-pay-configuration-android-v5]] - 2026-09-16 captured Braintree Apple Pay configuration page at an Android v5 route whose body provides no Android configuration and instead directs readers to iOS or JavaScript SDK v3; snapshot navigation only, not native Android support, current platform or SDK availability, environment enablement, completed configuration, or payment-execution proof
+
+- [[source-braintree-docs-guides-apple-pay-provision-for-decrypted-node]] - 2026-09-16 captured Braintree Apple Pay decrypted-processing provisioning page at a Node route whose body says API provisioning is available only through the linked Ruby SDK route; no Node procedure, decryption mechanics, current account eligibility or enablement, completed provisioning, or payment-execution proof
+
+- [[source-braintree-docs-reference-request-apple-pay-unregister-domain-node]] - 2026-09-16 captured Node request-reference route titled Apple Pay: Unregister Domain; the body documents no Node request object, method, route body, or result and says only the PHP and Ruby SDKs currently support managing Apple Pay web domains through the API
+
+- [[source-braintree-docs-reference-request-apple-pay-registered-domains-node]] - 2026-09-16 captured Node.js request-reference route titled "Registered Domains" whose body only identifies PHP and Ruby SDK support for managing Apple Pay web domains through the API; no Node.js method, request body, returned-domain result, current availability, completed domain configuration, or payment-execution proof
+
+- [[source-braintree-docs-reference-response-apple-pay-options-node]] - 2026-09-16 Braintree Node.js-routed Apple Pay Options response-reference stub whose captured availability note says only the PHP and Ruby SDKs support API-based web-domain management; it exposes no response fields or Node runtime behavior and is not current-support, configuration-completion or payment-execution proof
+
+- [[source-braintree-docs-reference-request-apple-pay-register-domain-node]] - 2026-09-16 captured Node-routed request-reference stub for registering an Apple Pay web domain; its body limits API domain management to the PHP and Ruby SDKs and provides no Node request object, method, body schema, response schema, or example; not current-support, successful-registration, eligibility, or payment-execution proof
+
 - [[source-braintree-docs-guides-apple-pay-client-side-android-v5]] - 2026-09-16 captured Android v5 website route whose body directs Apple Pay client integration to iOS v5 or JavaScript SDK v3 and preserves a dated mobile-certificate warning; no Android Apple Pay procedure, current support, exact-package status, or payment-execution proof
 
 
