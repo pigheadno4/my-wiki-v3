@@ -55,7 +55,7 @@ Generated: `2026-10-07`
 | paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `wait` |
 | paypal | `paypal/paypal-messages-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | paypal | `paypal/paypal-messages-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
-| paypal | `paypal/paypal-php-server-sdk` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-24 | ingested | 2026-09-24 | `collect-baseline` |
+| paypal | `paypal/paypal-php-server-sdk` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | paypal | `paypal/paypal-sdk-logos` | tier2 | commit / commit-tree-v1 | monthly | 2026-10-06 | ingested | 2026-11-06 | `wait` |
 | paypal | `paypal/paypal-sdk-release` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `wait` |
 | paypal | `paypal/paypal-typescript-server-sdk` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-09-20 | ingested | 2026-10-20 | `wait` |
