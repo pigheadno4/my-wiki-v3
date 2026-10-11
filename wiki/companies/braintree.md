@@ -928,6 +928,8 @@ The Node `braintree@3.40.0` update expands local path-ID/token validation to a n
 
 The PHP package requires PHP 7.3 or later and supports key credentials or OAuth credentials without mixing them. Webhook signature verification specifically requires public/private API keys. The exact release hardens Address and Dispute path IDs, adds PayPal email validation codes, and adds preferred-payment-method context to client-token generation.
 
+The separately retained `braintree_php@6.38.0` delta extends the existing path-segment helper across 14 gateway classes, with method-specific `InvalidArgumentException` or `NotFound` failures before HTTP dispatch. It adds settlement shipping fields (inherited by partial settlement), ACH-type search and explicit refund `surchargeAmount` acceptance plus validation code `97605`. These are PHP implementation changes, not gateway acceptance or merchant enablement proof. The `6.37.0` baseline remains preserved in [[source-github-braintree-php]] and [[changelog-github-braintree-php]].
+
 ## Ruby Server SDK Surface
 
 `braintree@4.40.0` provides Ruby gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, plans and subscriptions, and signed webhook parsing.
@@ -1045,7 +1047,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.40.0` at `deb5227f1c4824b1f622115caf2ba4302134d375` (ingested 2026-10-06; `3.39.0` preserved)
-- Latest retained Braintree PHP release: `braintree_php@6.37.0` at `0f53ece38397c9fed05b94620634a5a23ef8ee48`
+- Latest ingested Braintree PHP release: `braintree_php@6.38.0` at `2a97c3d516a1ee66e710db8140a835d79789627a` (ingested 2026-10-11; `6.37.0` preserved)
 - Latest retained Braintree Ruby release: `braintree@4.40.0` at `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`
 - Latest retained Braintree Web release: `braintree-web@3.146.0` at `893d4e786f4161c3b96c5d34425752c5b63ff84d`
 - Latest retained card-brand detector release: `credit-card-type@10.3.0` at `fbd8ed80a411fa9b238055208c19a7323cd38e21`

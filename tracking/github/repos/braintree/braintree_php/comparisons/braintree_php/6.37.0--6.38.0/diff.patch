@@ -1,0 +1,376 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5c5d862..8c8c368 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # Changelog
+ 
++## 6.38.0
++* Fix path traversal vulnerability in `CreditCard`, `Customer`, `MerchantAccount`, `PayPalAccount`, `PaymentMethod`, `PaymentMethodNonce`, `Plan`, `SepaDirectDebitAccount`, `Subscription`, `Testing`, `Transaction`, `TransactionLineItem`, `UsBankAccount`, and `UsBankAccountVerification` gateways by validating that IDs used in request paths do not contain path separators or relative-path segments
++* Add `shipping`(including `company`, `countryCodeAlpha2`, `countryCodeAlpha3`, `countryCodeNumeric`, `countryName`, `extendedAddress`, `firstName`, `lastName`, `locality`, `phoneNumber`, `internationalPhone`, `postalCode`, `region`, `streetAddress`) and `shippingAddressId` to `Transaction::submitForSettlement()`
++* Add `ach_type` to transaction search
++* Add `surchargeAmount` to `Transaction::refund()`
++
+ ## 6.37.0
+ * Fix path traversal vulnerability in `Dispute` and `Address` gateways by validating that IDs used in request paths do not contain path separators or relative-path segments
+ * Add `PAYPAL_ACCOUNT_EMAIL_FORMAT_IS_INVALID (92963)` and `PAYPAL_ACCOUNT_EMAIL_IS_TOO_LONG (92964)` validation error codes
+diff --git a/lib/Braintree/CreditCardGateway.php b/lib/Braintree/CreditCardGateway.php
+index aae3750..d34e323 100644
+--- a/lib/Braintree/CreditCardGateway.php
++++ b/lib/Braintree/CreditCardGateway.php
+@@ -456,7 +456,7 @@ class CreditCardGateway
+                 'expected credit card id to be set'
+             );
+         }
+-        if (!preg_match('/^[0-9A-Za-z_-]+$/', $identifier)) {
++        if (Util::isInvalidPathSegment($identifier)) {
+             throw new InvalidArgumentException(
+                 $identifier . ' is an invalid credit card ' . $identifierType . '.'
+             );
+diff --git a/lib/Braintree/CustomerGateway.php b/lib/Braintree/CustomerGateway.php
+index ac09aed..bdbf685 100644
+--- a/lib/Braintree/CustomerGateway.php
++++ b/lib/Braintree/CustomerGateway.php
+@@ -547,7 +547,7 @@ class CustomerGateway
+                 'expected customer id to be set'
+             );
+         }
+-        if (!preg_match('/^[0-9A-Za-z_-]+$/', $id)) {
++        if (Util::isInvalidPathSegment($id)) {
+             throw new InvalidArgumentException(
+                 $id . ' is an invalid customer id.'
+             );
+diff --git a/lib/Braintree/Error/Codes.php b/lib/Braintree/Error/Codes.php
+index b16906e..184a07a 100644
+--- a/lib/Braintree/Error/Codes.php
++++ b/lib/Braintree/Error/Codes.php
+@@ -630,6 +630,7 @@ class Codes
+     const TRANSACTION_SUBSCRIPTION_DOES_NOT_BELONG_TO_CUSTOMER                        = '91529';
+     const TRANSACTION_SUBSCRIPTION_ID_IS_INVALID                                      = '91528';
+     const TRANSACTION_SUBSCRIPTION_STATUS_MUST_BE_PAST_DUE                            = '91531';
++    const TRANSACTION_SURCHARGE_NOT_ON_ORIGINAL_SALE                                  = '97605';
+ 
+     const TRANSACTION_TAX_AMOUNT_CANNOT_BE_NEGATIVE                                   = '81534';
+     const TRANSACTION_TAX_AMOUNT_FORMAT_IS_INVALID                                    = '81535';
+diff --git a/lib/Braintree/MerchantAccountGateway.php b/lib/Braintree/MerchantAccountGateway.php
+index 2d60e42..f461386 100644
+--- a/lib/Braintree/MerchantAccountGateway.php
++++ b/lib/Braintree/MerchantAccountGateway.php
+@@ -19,6 +19,9 @@ class MerchantAccountGateway
+ 
+     public function find($merchant_account_id)
+     {
++        if (Util::isInvalidPathSegment($merchant_account_id)) {
++            throw new Exception\NotFound('merchant account with id ' . $merchant_account_id . ' not found');
++        }
+         try {
+             $path = $this->_config->merchantPath() . '/merchant_accounts/' . $merchant_account_id;
+             $response = $this->_http->get($path);
+diff --git a/lib/Braintree/PayPalAccountGateway.php b/lib/Braintree/PayPalAccountGateway.php
+index b968cea..e699c2c 100644
+--- a/lib/Braintree/PayPalAccountGateway.php
++++ b/lib/Braintree/PayPalAccountGateway.php
+@@ -164,7 +164,7 @@ class PayPalAccountGateway
+                 'expected paypal account id to be set'
+             );
+         }
+-        if (!preg_match('/^[0-9A-Za-z_-]+$/', $identifier)) {
++        if (Util::isInvalidPathSegment($identifier)) {
+             throw new InvalidArgumentException(
+                 $identifier . ' is an invalid paypal account ' . $identifierType . '.'
+             );
+diff --git a/lib/Braintree/PaymentMethodGateway.php b/lib/Braintree/PaymentMethodGateway.php
+index bb1d6c5..0bf61cb 100644
+--- a/lib/Braintree/PaymentMethodGateway.php
++++ b/lib/Braintree/PaymentMethodGateway.php
+@@ -76,6 +76,7 @@ class PaymentMethodGateway
+     {
+         Util::verifyKeys(self::updateSignature(), $attribs);
+         $this->_checkForDeprecatedAttributes($attribs);
++        $this->_validateId($token);
+         return $this->_doUpdate('/payment_methods/any/' . $token, ['payment_method' => $attribs]);
+     }
+ 
+@@ -349,7 +350,7 @@ class PaymentMethodGateway
+                 'expected payment method id to be set'
+             );
+         }
+-        if (!preg_match('/^[0-9A-Za-z_-]+$/', $identifier)) {
++        if (Util::isInvalidPathSegment($identifier)) {
+             throw new InvalidArgumentException(
+                 $identifier . ' is an invalid payment method ' . $identifierType . '.'
+             );
+diff --git a/lib/Braintree/PaymentMethodNonceGateway.php b/lib/Braintree/PaymentMethodNonceGateway.php
+index a158ebf..643712a 100644
+--- a/lib/Braintree/PaymentMethodNonceGateway.php
++++ b/lib/Braintree/PaymentMethodNonceGateway.php
+@@ -29,6 +29,11 @@ class PaymentMethodNonceGateway
+      */
+     public function create($token, $params = [])
+     {
++        if (Util::isInvalidPathSegment($token)) {
++            throw new Exception\NotFound(
++                'payment method with token ' . $token . ' not found'
++            );
++        }
+         $subPath = '/payment_methods/' . $token . '/nonces';
+         $fullPath = $this->_config->merchantPath() . $subPath;
+         $schema = [[
+@@ -62,6 +67,11 @@ class PaymentMethodNonceGateway
+      */
+     public function find($nonce)
+     {
++        if (Util::isInvalidPathSegment($nonce)) {
++            throw new Exception\NotFound(
++                'payment method nonce with id ' . $nonce . ' not found'
++            );
++        }
+         try {
+             $path = $this->_config->merchantPath() . '/payment_method_nonces/' . $nonce;
+             $response = $this->_http->get($path);
+diff --git a/lib/Braintree/PlanGateway.php b/lib/Braintree/PlanGateway.php
+index 5bf696b..6227185 100644
+--- a/lib/Braintree/PlanGateway.php
++++ b/lib/Braintree/PlanGateway.php
+@@ -90,6 +90,7 @@ class PlanGateway
+     public function update($planId, $attributes)
+     {
+         Util::verifyKeys(self::_updateSignature(), $attributes);
++        $this->_validateId($planId);
+         $path = $this->_config->merchantPath() . '/plans/' . $planId;
+         $response = $this->_http->put($path, ['plan' => $attributes]);
+         return $this->_verifyGatewayResponse($response);
+@@ -167,7 +168,7 @@ class PlanGateway
+                 'expected plan id to be set'
+             );
+         }
+-        if (!preg_match('/^[0-9A-Za-z_-]+$/', $id)) {
++        if (Util::isInvalidPathSegment($id)) {
+             throw new InvalidArgumentException(
+                 $id . ' is an invalid plan id.'
+             );
+diff --git a/lib/Braintree/SepaDirectDebitAccountGateway.php b/lib/Braintree/SepaDirectDebitAccountGateway.php
+index ab7ea1f..66616b2 100644
+--- a/lib/Braintree/SepaDirectDebitAccountGateway.php
++++ b/lib/Braintree/SepaDirectDebitAccountGateway.php
+@@ -93,5 +93,10 @@ class SepaDirectDebitAccountGateway
+                 'expected SEPA direct debit account id to be set'
+             );
+         }
++        if (Util::isInvalidPathSegment($identifier)) {
++            throw new InvalidArgumentException(
++                $identifier . ' is an invalid SEPA direct debit account ' . $identifierType . '.'
++            );
++        }
+     }
+ }
+diff --git a/lib/Braintree/SubscriptionGateway.php b/lib/Braintree/SubscriptionGateway.php
+index 4163ecc..b6a4a22 100644
+--- a/lib/Braintree/SubscriptionGateway.php
++++ b/lib/Braintree/SubscriptionGateway.php
+@@ -121,6 +121,7 @@ class SubscriptionGateway
+     public function update($subscriptionId, $attributes)
+     {
+         Util::verifyKeys(self::_updateSignature(), $attributes);
++        $this->_validateId($subscriptionId);
+         $path = $this->_config->merchantPath() . '/subscriptions/' . $subscriptionId;
+         $response = $this->_http->put($path, ['subscription' => $attributes]);
+         return $this->_verifyGatewayResponse($response);
+@@ -160,6 +161,7 @@ class SubscriptionGateway
+      */
+     public function cancel($subscriptionId)
+     {
++        $this->_validateId($subscriptionId);
+         $path = $this->_config->merchantPath() . '/subscriptions/' . $subscriptionId . '/cancel';
+         $response = $this->_http->put($path);
+         return $this->_verifyGatewayResponse($response);
+@@ -240,7 +242,7 @@ class SubscriptionGateway
+                 'expected subscription id to be set'
+             );
+         }
+-        if (!preg_match('/^[0-9A-Za-z_-]+$/', $id)) {
++        if (Util::isInvalidPathSegment($id)) {
+             throw new InvalidArgumentException(
+                 $id . ' is an invalid subscription id.'
+             );
+diff --git a/lib/Braintree/TestingGateway.php b/lib/Braintree/TestingGateway.php
+index 84a2714..2b30cbc 100644
+--- a/lib/Braintree/TestingGateway.php
++++ b/lib/Braintree/TestingGateway.php
+@@ -39,6 +39,11 @@ class TestingGateway
+     private function _doTestRequest($testPath, $transactionId)
+     {
+         self::_checkEnvironment();
++        if (Util::isInvalidPathSegment($transactionId)) {
++            throw new Exception\NotFound(
++                'transaction with id ' . $transactionId . ' not found'
++            );
++        }
+         $path = $this->_config->merchantPath() . '/transactions/' . $transactionId . $testPath;
+         $response = $this->_http->put($path);
+         return $this->_verifyGatewayResponse($response);
+diff --git a/lib/Braintree/Transaction.php b/lib/Braintree/Transaction.php
+index 69cdc1e..f8625cd 100644
+--- a/lib/Braintree/Transaction.php
++++ b/lib/Braintree/Transaction.php
+@@ -168,6 +168,10 @@ class Transaction extends Base
+     const FULL_INFORMATION = 'full_information';
+     const TOKEN            = 'token';
+ 
++    // Ach Type
++    const ACH_TYPE_SAME_DAY = 'same_day';
++    const ACH_TYPE_STANDARD = 'standard';
++
+     // Transaction Sources
+     const API           = 'api';
+     const CONTROL_PANEL = 'control_panel';
+diff --git a/lib/Braintree/TransactionGateway.php b/lib/Braintree/TransactionGateway.php
+index 1ed38c0..c211478 100644
+--- a/lib/Braintree/TransactionGateway.php
++++ b/lib/Braintree/TransactionGateway.php
+@@ -44,6 +44,7 @@ class TransactionGateway
+     {
+         Util::verifyKeys(self::cloneSignature(), $attribs);
+         $this->_checkForDeprecatedAttributes($attribs);
++        $this->_validateId($transactionId);
+         return $this->_doCreate('/transactions/' . $transactionId . '/clone', ['transactionClone' => $attribs]);
+     }
+ 
+@@ -574,6 +575,13 @@ class TransactionGateway
+             ],
+             'discountAmount',
+             'purchaseOrderNumber',
++            ['shipping' =>
++                [
++                    'company', 'countryCodeAlpha2', 'countryCodeAlpha3', 'countryCodeNumeric', 'countryName',
++                    'extendedAddress', 'firstName', 'lastName', 'locality', 'phoneNumber', ['internationalPhone' => ['countryCode', 'nationalNumber']],
++                    'postalCode', 'region', 'streetAddress'],
++            ],
++            'shippingAddressId',
+             'shippingAmount',
+             'shippingTaxAmount',
+             'shipsFromPostalCode',
+@@ -616,7 +624,8 @@ class TransactionGateway
+             'amount',
+             'apiRequestKey',
+             'merchantAccountId',
+-            'orderId'
++            'orderId',
++            'surchargeAmount'
+         ];
+     }
+ 
+@@ -951,6 +960,11 @@ class TransactionGateway
+                 'expected transaction id to be set'
+             );
+         }
++        if (Util::isInvalidPathSegment($id)) {
++            throw new InvalidArgumentException(
++                $id . ' is an invalid transaction id.'
++            );
++        }
+     }
+ 
+     /**
+diff --git a/lib/Braintree/TransactionLineItemGateway.php b/lib/Braintree/TransactionLineItemGateway.php
+index d914eae..c887378 100644
+--- a/lib/Braintree/TransactionLineItemGateway.php
++++ b/lib/Braintree/TransactionLineItemGateway.php
+@@ -62,7 +62,7 @@ class TransactionLineItemGateway
+         if (empty($id)) {
+             throw new InvalidArgumentException('expected transaction id to be set');
+         }
+-        if (!preg_match('/^[0-9a-z]+$/', $id)) {
++        if (Util::isInvalidPathSegment($id)) {
+             throw new InvalidArgumentException($id . ' is an invalid transaction id.');
+         }
+     }
+diff --git a/lib/Braintree/TransactionSearch.php b/lib/Braintree/TransactionSearch.php
+index 9754de6..4319f6b 100644
+--- a/lib/Braintree/TransactionSearch.php
++++ b/lib/Braintree/TransactionSearch.php
+@@ -17,6 +17,19 @@ class TransactionSearch
+         return new RangeNode("achReturnResponsesCreatedAt");
+     }
+ 
++    /*
++     * Create a new multiple value node for ach type
++     *
++     * @return MultipleValueNode
++     */
++    public static function achType()
++    {
++        return new MultipleValueNode('ach_type', [
++            Transaction::ACH_TYPE_SAME_DAY,
++            Transaction::ACH_TYPE_STANDARD
++        ]);
++    }
++
+     /*
+      * Create a new range node for acquirer reference number (ARN)
+      *
+diff --git a/lib/Braintree/UsBankAccountGateway.php b/lib/Braintree/UsBankAccountGateway.php
+index 2687ac2..fd631b6 100644
+--- a/lib/Braintree/UsBankAccountGateway.php
++++ b/lib/Braintree/UsBankAccountGateway.php
+@@ -36,6 +36,11 @@ class UsBankAccountGateway
+      */
+     public function find($token)
+     {
++        if (Util::isInvalidPathSegment($token)) {
++            throw new Exception\NotFound(
++                'US bank account with token ' . $token . ' not found'
++            );
++        }
+         try {
+             $path = $this->_config->merchantPath() . '/payment_methods/us_bank_account/' . $token;
+             $response = $this->_http->get($path);
+diff --git a/lib/Braintree/UsBankAccountVerificationGateway.php b/lib/Braintree/UsBankAccountVerificationGateway.php
+index 03ba5a9..78f4231 100644
+--- a/lib/Braintree/UsBankAccountVerificationGateway.php
++++ b/lib/Braintree/UsBankAccountVerificationGateway.php
+@@ -39,13 +39,18 @@ class UsBankAccountVerificationGateway
+      */
+     public function find($token)
+     {
++        if (Util::isInvalidPathSegment($token)) {
++            throw new Exception\NotFound(
++                'US bank account verification with token ' . $token . ' not found'
++            );
++        }
+         try {
+             $path = $this->_config->merchantPath() . '/us_bank_account_verifications/' . $token;
+             $response = $this->_http->get($path);
+             return UsBankAccountVerification::factory($response['usBankAccountVerification']);
+         } catch (Exception\NotFound $e) {
+             throw new Exception\NotFound(
+-                'US bank account with token ' . $token . ' not found'
++                'US bank account verification with token ' . $token . ' not found'
+             );
+         }
+     }
+@@ -87,6 +92,11 @@ class UsBankAccountVerificationGateway
+      */
+     public function confirmMicroTransferAmounts($token, $amounts)
+     {
++        if (Util::isInvalidPathSegment($token)) {
++            throw new Exception\NotFound(
++                'US bank account verification with token ' . $token . ' not found'
++            );
++        }
+         try {
+             // phpcs:ignore Generic.Files.LineLength
+             $path = $this->_config->merchantPath() . '/us_bank_account_verifications/' . $token . '/confirm_micro_transfer_amounts';
+diff --git a/lib/Braintree/Version.php b/lib/Braintree/Version.php
+index f9f8af1..34e1547 100644
+--- a/lib/Braintree/Version.php
++++ b/lib/Braintree/Version.php
+@@ -9,7 +9,7 @@ namespace Braintree;
+ class Version
+ {
+     const MAJOR = 6;
+-    const MINOR = 37;
++    const MINOR = 38;
+     const TINY = 0;
+ 
+     protected function __construct()

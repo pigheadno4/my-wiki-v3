@@ -2,8 +2,10 @@
 title: "GitHub: braintree/braintree_php"
 type: source
 date_ingested: 2026-08-19
+date_updated: 2026-10-11
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/manifest.json"
   - "github/braintree/braintree_php/snapshots/2026-08-19-0f53ece/manifest.json"
 tags: [braintree, php-sdk, server-sdk, checkout, paypal, venmo, subscriptions, webhooks, github-repository]
 ---
@@ -16,7 +18,7 @@ Repository: <https://github.com/braintree/braintree_php>
 
 ## Evidence Boundary
 
-- This source proves implementation present in `braintree_php@6.37.0`; it does not replace current product documentation or prove merchant, buyer, country, currency, or payment-method eligibility.
+- This source retains the `braintree_php@6.37.0` baseline and the `6.38.0` delta; it does not replace current product documentation or prove merchant, buyer, country, currency, or payment-method eligibility. Unqualified baseline sections below remain `6.37.0` knowledge; the explicit version section owns the newer findings.
 - The SDK performs server-side gateway operations. Browser and native SDKs independently collect payment details or wallet approval and return a payment-method nonce or vaulted token.
 - The snapshot retains the complete `lib` implementation, package metadata, README, changelog, security policy, and CA certificate bundle. Tests and fixtures are intentionally excluded.
 - Checkout, vaulting, subscriptions, webhooks, and payment-method processing receive detailed treatment. Disputes, OAuth, onboarding, reporting, disbursement, facilitator operations, and other API domains remain searchable inventory-level evidence.
@@ -79,6 +81,42 @@ The exact release rejects path separators and relative-path segments in Address 
 
 All broader sections above describe cumulative implementation present at `6.37.0`, not features introduced by this patch release.
 
+## `6.38.0` Release Findings (2026-09-16)
+
+Approved serial delta from `6.37.0` to `6.38.0`, exact SHA `2a97c3d516a1ee66e710db8140a835d79789627a`, collected 2026-10-10 and ingested 2026-10-11. Nineteen retained files changed, 207 are unchanged. The upstream release-note body is empty; the repository changelog and exact source comparison establish the findings. No package dependency change appears in this capsule comparison.
+
+### Path IDs and Error Handling
+
+The release extends the existing, unchanged `Util::isInvalidPathSegment()` helper to 14 gateway classes: CreditCard, Customer, MerchantAccount, PayPalAccount, PaymentMethod, PaymentMethodNonce, Plan, SepaDirectDebitAccount, Subscription, Testing, Transaction, TransactionLineItem, UsBankAccount and UsBankAccountVerification.
+
+- The helper rejects non-strings and strings outside `^[A-Za-z0-9_-]+$`; separators, relative-path segments and empty strings fail. Several callers additionally use PHP `empty()`, rejecting `"0"`. Some prior regex checks accepted numeric scalars through coercion; the shared helper now requires strings. This is not universal validation of body IDs or merchant authorization.
+- New checks cover payment-method update, plan update, subscription update/cancel, transaction cloning, nonce create/find, merchant-account find, US-bank-account find, verification find/confirm and testing requests. Transaction's shared validator also protects existing find, adjust, void, settlement, partial-settlement, detail-update, tracking and refund callers. SEPA's existing validator gains the helper.
+- CreditCard, Customer, PayPalAccount, PaymentMethod, Plan, Subscription, SEPA, Transaction and TransactionLineItem private validators throw `InvalidArgumentException`; newly guarded inline lookup/nonce/verification/testing methods use `Braintree\Exception\NotFound`. A local `NotFound` does not prove a gateway lookup occurred.
+- TransactionLineItem previously allowed only lowercase letters/digits; it now also allows uppercase letters, underscore and hyphen. Do not describe every change as a narrower character allowlist.
+- Subscription `retryCharge()` remains a POST with a body `subscriptionId`; it does not gain the new path-ID guard. Request-body IDs are not universally covered.
+
+### Settlement, Refunds and ACH Search
+
+`TransactionGateway::submitForSettlement($transactionId, $amount, $attribs)` now permits `shipping` address/contact fields, nested `internationalPhone` (`countryCode`, `nationalNumber`), and `shippingAddressId` in its third argument. `submitForPartialSettlementSignature()` merges that same signature with `finalCapture`, so partial-settlement requests inherit the additions. The new settlement shipping signature does not include sale's `shippingMethod` field. SDK request acceptance does not prove gateway permission, shipping persistence or successful capture/settlement.
+
+`refund($transactionId, $amount_or_options)` now permits `surchargeAmount` in the options array alongside `amount`, `apiRequestKey`, `merchantAccountId` and `orderId`. Unlike an SDK that already forwards arbitrary refund options, this PHP release changes the explicit signature used by `Util::verifyKeys()`. It also adds `Error\Codes::TRANSACTION_SURCHARGE_NOT_ON_ORIGINAL_SALE = '97605'`. The constant identifies a validation response; it does not establish all surcharge-refund eligibility rules or a successful refund.
+
+`TransactionSearch::achType()` returns a multiple-value node named `ach_type`, limited to `Transaction::ACH_TYPE_SAME_DAY` (`same_day`) and `ACH_TYPE_STANDARD` (`standard`). Use `.is()` for one value or `.in()` for an array. This filters search, not ACH enablement or a settlement-speed guarantee.
+
+### Grounding Excerpts
+
+- `return !is_string($value)` - `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/files/lib/Braintree/Util.php:473` (read with the following regex condition).
+- `$this->_validateId($subscriptionId);` - same snapshot, `files/lib/Braintree/SubscriptionGateway.php:164`, before cancel dispatch.
+- `'shippingAddressId',` - same snapshot, `files/lib/Braintree/TransactionGateway.php:584`, settlement signature.
+- `return new MultipleValueNode('ach_type', [` - same snapshot, `files/lib/Braintree/TransactionSearch.php:27`.
+- `const TRANSACTION_SURCHARGE_NOT_ON_ORIGINAL_SALE` - same snapshot, `files/lib/Braintree/Error/Codes.php:633`, value `97605`.
+
+### Migration and Reading Boundary
+
+Audit externally supplied IDs and tokens plus exception handling before adopting the release. Keep trusted identifiers intact rather than stripping rejected characters. Shipping and surcharge fields are optional SDK additions, not a merchant enablement promise. No application or gateway execution was performed.
+
+The user approved focused reading for this work item: all changed implementation files were read completely, with affected prior code and unchanged `Util.php`/`MultipleValueNode.php` dependencies. Both inventories were verified mechanically (452 file hash/size checks); unchanged cumulative changelog history was checked for exact equality. Tests and fixtures remain intentionally excluded. This is not a full upstream repository read.
+
 ## Related
 
 - [[changelog-github-braintree-php]] - package-qualified release ledger
@@ -90,6 +128,17 @@ All broader sections above describe cumulative implementation present at `6.37.0
 
 ## Raw Sources
 
+- Current snapshot manifest: `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/manifest.json`
+- Current release manifest: `raw/github/braintree/braintree_php/releases/braintree_php/6.38.0/2026-10-10/manifest.json`
+- Current release notes: `raw/github/braintree/braintree_php/releases/braintree_php/6.38.0/2026-10-10/release-notes.md` (empty upstream body)
+- Comparison: `tracking/github/repos/braintree/braintree_php/comparisons/braintree_php/6.37.0--6.38.0/comparison.json`, `comparison.md`, and `diff.patch`
+- Current changelog: `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/files/CHANGELOG.md`
+- Path helper: `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/files/lib/Braintree/Util.php`
+- Current transaction gateway: `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/files/lib/Braintree/TransactionGateway.php`
+- Current transaction constants and search: `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/files/lib/Braintree/Transaction.php` and `files/lib/Braintree/TransactionSearch.php`
+- Search-node dependency: `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/files/lib/Braintree/MultipleValueNode.php`
+- Current subscription gateway: `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/files/lib/Braintree/SubscriptionGateway.php`
+- Current validation codes: `raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/files/lib/Braintree/Error/Codes.php`
 - Snapshot manifest: `raw/github/braintree/braintree_php/snapshots/2026-08-19-0f53ece/manifest.json`
 - Release manifest: `raw/github/braintree/braintree_php/releases/braintree_php/6.37.0/2026-08-19/manifest.json`
 - Release notes: `raw/github/braintree/braintree_php/releases/braintree_php/6.37.0/2026-08-19/release-notes.md` (empty upstream body)

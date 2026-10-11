@@ -1861,6 +1861,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.13.0/2026-10-04/manifest.json)
   Comparison: [manifest](repos/braintree/braintree_ios/comparisons/braintree-ios/7.12.0--7.13.0/comparison.json)
 
+## `github-6714266673554498ace5`
+
+- Repository: `braintree/braintree_php`
+- SHA: `2a97c3d516a1ee66e710db8140a835d79789627a`
+- Collection date: `2026-10-10`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_php/ingest-packets/github-6714266673554498ace5/packet.md)
+- Review priority: `normal`
+- Required reading: `28` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree_php@6.38.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_php/releases/braintree_php/6.38.0/2026-10-10/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_php/comparisons/braintree_php/6.37.0--6.38.0/comparison.json)
+
 ## `github-674c25ce833e37536ebc`
 
 - Repository: `braintree/popup-bridge-android`

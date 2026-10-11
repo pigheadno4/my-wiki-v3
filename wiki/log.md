@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-11] ingest | braintree_php@6.37.0 to 6.38.0
+
+- Approved focused-reading serial delta: path-ID checks across 14 gateways, settlement shipping inherited by partial settlement, ACH search and explicit surcharge-refund options. Both snapshots verified (452 hashes/sizes); `6.37.0` history preserved. Updated existing concept, source/changelog, company and provider catalog; source count unchanged. Details [[braintree-log]] and [[changelog-github-braintree-php]]. No live gateway execution, commit or push.
+
 ## [2026-10-08] ingest | Braintree website C46
 
 - Forty-five retrieval sources and seven existing reciprocal concepts; first review44/45, one targeted review, no repeated full review or terminal rejection. Fixed queries90/90PASS; catalog797=780website+17GitHub; raw unchanged. Of785collected website raws,784are referenced; the single heavy validation-errors page remains separately deferred. Details [[braintree-log]] and `tracking/ingest/braintree/braintree-campaign-46/`. No commit/push.

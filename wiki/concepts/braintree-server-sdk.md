@@ -44,6 +44,14 @@ Transaction search adds `achType` with `braintree.Transaction.AchType.SameDay` (
 
 These findings belong specifically to the Node repository, not Ruby's identically named `braintree` package. Historical baselines above remain valid. See [[source-github-braintree-node]] and [[changelog-github-braintree-node]].
 
+## PHP `6.38.0` Security and Transaction Boundary
+
+`braintree_php@6.38.0` at SHA `2a97c3d516a1ee66e710db8140a835d79789627a` extends use of the existing `Util::isInvalidPathSegment()` helper across 14 gateway classes. It requires a string matching `^[A-Za-z0-9_-]+$`; several gateway validators additionally reject PHP `empty()` values. Numeric IDs must therefore be passed as valid strings, and the string `"0"` is rejected by the validators using `empty()`. Existing regex checks are replaced in some classes, while others gain new checks before HTTP dispatch. Transaction-line-item lookup broadens its previous lowercase-only allowlist. These checks do not establish merchant authorization, object existence, or validation of every identifier in request bodies.
+
+PHP does not use a uniform exception for these failures: private ID validators throw `InvalidArgumentException`, while the new inline checks in merchant-account, nonce, US-bank-account/verification and testing operations throw `Braintree\Exception\NotFound`. Preserve these distinctions when adapting error handling; do not sanitize a rejected ID into a different identity. Subscription `retryCharge()` still sends its subscription ID in the request body rather than through the path helper.
+
+Settlement submission gains `shipping` and `shippingAddressId`; partial-settlement requests inherit the same signature. Refund options gain an explicitly allowed `surchargeAmount` field and the validation-code constant `TRANSACTION_SURCHARGE_NOT_ON_ORIGINAL_SALE` (`97605`). Search gains `TransactionSearch::achType()` with `Transaction::ACH_TYPE_SAME_DAY` and `ACH_TYPE_STANDARD`. These are package-specific request/search surfaces, not proof of gateway acceptance, ACH enablement, settlement timing or refund success. The `6.37.0` baseline is preserved. See [[source-github-braintree-php]] and [[changelog-github-braintree-php]].
+
 ## Related
 
 - [[source-braintree-docs-reference-response-customer-node]] - 2026-09-16 unversioned Braintree Node.js website `Customer` response-reference route whose captured body supplies only a policy-based results-limitation note and no operation, containing-object list or property schema; not exact-package behavior, current result visibility, successful retrieval or payment-outcome proof

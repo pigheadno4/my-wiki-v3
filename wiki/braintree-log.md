@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-11] ingest | braintree_php@6.37.0 to 6.38.0
+
+- Approved serial delta `github-6714266673554498ace5`, exact SHA `2a97c3d516a1ee66e710db8140a835d79789627a`; released 2026-09-16, collected 2026-10-10. User-approved focused reading: all changed implementation, affected prior code and helper/search dependencies; inventories and unchanged changelog history checked mechanically. Both snapshots verified: 452 file hashes/sizes, 19 changed and 207 unchanged retained files. Tests/fixtures intentionally excluded; empty upstream release-note body.
+- Extended the existing path-ID helper across 14 gateway classes; method-specific local exception behavior and numeric-string/`empty()` boundaries retained. Added settlement shipping inherited by partial settlement, ACH-type search/constants, refund surcharge signature and validation code `97605`. No gateway acceptance, merchant enablement or payment-outcome proof.
+- Existing concept audited and updated before cumulative source/changelog. Preserved the `6.37.0` baseline and old raw links; updated company, provider index and logs without adding source pages or changing source count. No cross-company comparison needed; version additions do not contradict baseline-qualified knowledge. No live PHP/gateway execution, commit or push.
+
 ## [2026-10-08] ingest | Braintree website C46
 
 - Forty-five pinned English website raws fully read and independently reviewed through ten shared rolling child slots. Forty-five retrieval sources and seven existing reciprocal concepts, no new concept. Catalog797=780website+17GitHub; raw unchanged.
