@@ -63,7 +63,7 @@ Generated: `2026-10-12`
 | stripe | `stripe/react-stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-04 | ingested | 2026-10-11 | `collect-baseline` |
 | stripe | `stripe/stripe-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-09-29 | ingested | 2026-10-06 | `collect-baseline` |
 | stripe | `stripe/stripe-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-09-30 | ingested | 2026-10-07 | `collect-baseline` |
-| stripe | `stripe/stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-04 | ingested | 2026-10-11 | `collect-baseline` |
+| stripe | `stripe/stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-12 | ingested | 2026-10-19 | `wait` |
 | stripe | `stripe/stripe-react-native` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-04 | ingested | 2026-10-11 | `collect-baseline` |
 | stripe | `stripe/stripe-terminal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-31 | ingested | 2026-09-07 | `collect-baseline` |
 | stripe | `stripe/stripe-terminal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-31 | ingested | 2026-09-07 | `collect-baseline` |
