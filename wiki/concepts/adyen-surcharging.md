@@ -17,4 +17,7 @@ The guide says surcharges cannot be applied to authorization adjustments or over
 
 ## Sources
 
+- [[source-adyen-docs-development-resources-surcharge-compliance]] — Adyen general and regional surcharge-compliance guidance across ecommerce and in-person reporting, disclosure, notifications, and dated restrictions (webpage snapshot, 2026-09-15).
+
+
 - [[source-adyen-docs-online-payments-surcharge]] - 2026-09-15 Adyen guide to the pilot API-only card surcharge flow, merchant-owned eligibility logic, legal and payment-method boundaries, request arithmetic, and capture/refund handling

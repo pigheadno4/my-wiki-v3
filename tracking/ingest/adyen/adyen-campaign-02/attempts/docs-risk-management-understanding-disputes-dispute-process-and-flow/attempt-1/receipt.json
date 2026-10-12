@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-understanding-disputes-dispute-process-and-flow",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Dispute flow | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/understanding-disputes/dispute-process-and-flow\"\nraw_files:\n  - \"adyen/docs/risk-management/understanding-disputes/dispute-process-and-flow/2026-09-15.md\"\ntags: [adyen, disputes, chargebacks, risk-management, webhooks]\n---\n\n## Overview\n\nThis Adyen webpage explains the merchant-facing dispute flow: how a cardholder's issuer initiates a chargeback, when Adyen debits the merchant, how the merchant may accept or defend, and how to follow later stages in Customer Area or dispute webhooks. The page says flows vary by card scheme and payment method. This is a 2026-09-15 documentation snapshot whose own `last_modified` metadata is 2024-04-12, not independent current scheme-policy or merchant-account evidence.\n\n## Key takeaways\n\n- A Notification of Fraud and a Request for Information are optional early stages and do not withdraw funds at that stage. A Notification of Chargeback marks the defense period; depending on the payment method, the chargeback debit may occur days after that notification or after a defense. At the Chargeback stage, the disputed amount is withdrawn. Adyen's overview also says it debits a chargeback processing fee.\n- The merchant can accept or defend through Customer Area or the Disputes API. A defense requires supporting documents. Once Adyen receives and forwards documents at Information Supplied, they can no longer be changed. Accepting a chargeback or missing the document deadline makes the Chargeback stage final in the described flow.\n- Chargeback Reversed means the disputed amount returns to the merchant, but the webhook table warns that `CHARGEBACK_REVERSED` can remain `Pending` during issuer review and may be followed by a second chargeback; a `Won` final status is specifically qualified there to the Visa allocation flow after issuer acceptance in pre-arbitration. Do not treat a returned amount or that event alone as a final win.\n- Pre-arbitration applies only to some flows. Merchant self-acceptance or self-decline requires eligibility, a supported dispute flow, and additional Adyen configuration and approval. Acceptance loses the case and brings a second chargeback; declining can lead to scheme arbitration. The page says an issuer-favoring arbitration decision can add a fee of up to USD 600 to the second chargeback. A second chargeback is final and does not permit new defense documents.\n- Following dispute events by webhook requires the Standard webhook with dispute events enabled. Customer Area visibility and dispute-webhook management depend on the listed roles. Status and event names are navigation into the raw tables; they are not guarantees that every stage or webhook occurs for every dispute.\n\n## Detail locators\n\n- `## Requirements` \u2014 online-payments prerequisite, role-specific Customer Area access, Standard webhook setup, and Customer Area versus Disputes API management routes.\n- `## Dispute flow overview` \u2014 cardholder, issuer, Adyen, and merchant roles; debit, defense, issuer review, fund return, and monitoring routes.\n- `## Dispute stages` \u2014 optional NOF/RFI, NoC defense start, Chargeback, Information Supplied, Chargeback Reversed, conditional pre-arbitration and arbitration, and final Second Chargeback.\n- `## Follow a dispute through the flow` / `### Customer Area` \u2014 notifications, payment lifecycle journal entries, dispute details/history, dashboard, and example statuses.\n- `### Dispute webhooks` \u2014 event codes and example statuses for fraud, information requests, chargeback, reversal, pre-arbitration, arbitration, deadline expiry, and issuer comments.\n\n## Related\n\n- Company: [[adyen]]\n- Provider concept: [[adyen-risk-management]]\n- Generic background: [[disputes]]\n- Related event concept: [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/understanding-disputes/dispute-process-and-flow/2026-09-15|2026-09-15 snapshot \u2014 Adyen dispute flow]]\n",
+  "quotes": [
+    {
+      "text": "The dispute flow can differ between card schemes and payment methods, but the general flow is the same for most.",
+      "location": "raw/adyen/docs/risk-management/understanding-disputes/dispute-process-and-flow/2026-09-15.md:38, ## Dispute flow overview"
+    },
+    {
+      "text": "Adyen processes the chargeback and debits the payment amount and the chargeback processing fee from your account.",
+      "location": "raw/adyen/docs/risk-management/understanding-disputes/dispute-process-and-flow/2026-09-15.md:40, ## Dispute flow overview"
+    },
+    {
+      "text": "It is no longer possible to change these documents.",
+      "location": "raw/adyen/docs/risk-management/understanding-disputes/dispute-process-and-flow/2026-09-15.md:66, ## Dispute stages / Information Supplied"
+    },
+    {
+      "text": "This requires additional configuration and approval from Adyen.",
+      "location": "raw/adyen/docs/risk-management/understanding-disputes/dispute-process-and-flow/2026-09-15.md:68, ## Dispute stages / Pre-arbitration"
+    },
+    {
+      "text": "This stage is\u00a0not\u00a0final and a second chargeback can be presented by the issuing bank, resulting in losing the chargeback case.",
+      "location": "raw/adyen/docs/risk-management/understanding-disputes/dispute-process-and-flow/2026-09-15.md:133, ### Dispute webhooks / CHARGEBACK_REVERSED"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c2-dispute-flow-source-link",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-understanding-disputes-dispute-process-and-flow]] \u2014 Adyen dispute-stage and monitoring guide, including chargeback debit, defense, conditional pre-arbitration, and the nonfinal `CHARGEBACK_REVERSED` event (webpage snapshot, 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/understanding-disputes/dispute-process-and-flow/2026-09-15.md",
+  "raw_sha256": "b3771daf1c6ab501dc0a9dd23fe3f136f6dec02391e5ab5dbe1cff716a8b8ef6",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-development-resources-error-codes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Error Codes and Messages\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/error-codes\"\nraw_files:\n  - \"adyen/docs/development-resources/error-codes/2026-09-15.md\"\ntags: [adyen, online-payments, api, error-handling]\n---\n\n## Overview\n\nThis Adyen development-resources snapshot is a diagnostic catalog for API errors in an online-payments integration. It identifies generic codes that any integration can receive and codes tied to Checkout, 3DS2, Amazon Pay, Apple Pay, Google Pay, and network tokens. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- For the page's described error response, a non-`2xx` HTTP status accompanies `errorCode` and `message`; its example also illustrates `status`, `errorType`, and `pspReference`. The example is illustrative, not a promise that every response has every field. Use [[source-adyen-docs-development-resources-response-handling]] for HTTP request handling and payment-outcome boundaries.\n- Look up the exact code and message in the relevant section. Several codes have more than one possible cause, including generic `000` and `905`; a code alone does not uniquely diagnose the request or merchant configuration. The catalog's causes and solutions are scoped to their particular code, flow, or payment method.\n- Consequential split warning: under generic `185`, an invalid or missing `splitPayment` in `additionalData` can leave a modification without a valid split even when the payment goes through. Do not infer that payment success proves the split was applied.\n- Idempotency warning: generic `703` describes an unavailable comparison data store and suggests retrying later or omitting the `idempotency-key` header. Omitting the header removes that request's idempotency guard; consult [[adyen-api-idempotency]] for the retry boundary. Generic `704` covers an already processed or in-progress request, while `705` is rate limiting.\n- Checkout `14_0475` says a MOTO payment cannot be processed until that integration's PCI compliance has been validated; the page directs the merchant to Adyen Support. Checkout `14_0493` states that UPI Collect transactions on Android are no longer supported and directs use of UPI Intent or UPI QR. These are code-specific snapshot statements, not proof of current merchant enablement.\n- 3DS2 `15_023` flags a likely deprecated-flow combination of `threeDS2RequestData` and `threeDS2InMDFlow`; the page says to remove the object or use the native flow rather than rely on redirect.\n\n## Detail locators\n\n- Purpose, online-payments requirement, example error response, and field descriptions: lines 15\u201348.\n- Generic code catalog and code-specific cause/solution entries: `## Generic error codes`, lines 50\u20131258; `185` split behavior at lines 588\u2013595; `703`\u2013`705` at lines 816\u2013833; `905` configuration variants at lines 943\u20131026.\n- Checkout code catalog: `## Checkout error codes`, lines 1259\u20131887; channel-specific `returnUrl` diagnosis at `14_0391`, lines 1458\u20131468; authentication-only `14_0392` at lines 1472\u20131474; MOTO PCI block `14_0475` at lines 1790\u20131810; Android UPI Collect `14_0493` at line 1882.\n- 3DS2 code catalog: `## 3DS2 error codes`, lines 1888\u20132000; `15_023` deprecated-flow warning at lines 1980\u20131983.\n- Payment-method and token catalogs: Amazon Pay lines 2001\u20132068, Apple Pay lines 2069\u20132121, Google Pay lines 2122\u20132146, and network tokens lines 2147\u20132204.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-online-payments]] \u2014 online-payments concept and reciprocal source route.\n- [[adyen-api-idempotency]] \u2014 qualified retry and duplicate-request handling for `703` and `704`.\n- [[source-adyen-docs-development-resources-response-handling]] \u2014 HTTP status and error-field interpretation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/error-codes/2026-09-15|Adyen error codes and messages (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "When you make an API call to Adyen and there is an error, you will receive a response with [HTTP status code](/development-resources/response-handling) different from `2xx`. This response includes `errorCode` and `message` fields that help you diagnose and resolve the error.",
+      "location": "raw/adyen/docs/development-resources/error-codes/2026-09-15.md:19"
+    },
+    {
+      "text": "All integrations can receive generic error codes. There are also error codes specific to an integration type or a payment method.",
+      "location": "raw/adyen/docs/development-resources/error-codes/2026-09-15.md:21"
+    },
+    {
+      "text": "For example, a payment can go through, but a split will not.",
+      "location": "raw/adyen/docs/development-resources/error-codes/2026-09-15.md:593, under `### 185 - Invalid additionalData`"
+    },
+    {
+      "text": "**Solution**: Retry your request later or do not include the `idempotency-key` HTTP header in your request.",
+      "location": "raw/adyen/docs/development-resources/error-codes/2026-09-15.md:819, under `### 703 - Required resource temporarily unavailable`"
+    },
+    {
+      "text": "* The [Mail Order/Telephone Order (MOTO)](/unified-commerce/mail-order-telephone-order) payment cannot be processed, because the PCI compliance of your MOTO integration has not been validated.",
+      "location": "raw/adyen/docs/development-resources/error-codes/2026-09-15.md:1806, under `### 14\\_0475 - shopperInteraction Moto not allowed due to PCI regulations`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-error-codes-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-error-codes]] \u2014 unversioned Adyen API error-code catalog for an online-payments integration, covering generic, Checkout, 3DS2, wallet, and network-token diagnostics (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/error-codes/2026-09-15.md",
+  "raw_sha256": "2bc387ee19cae6995dfead2bfd69f6bc778a90b7e99286719bbae60a2f646cd1",
+  "status": "candidate_ready"
+}

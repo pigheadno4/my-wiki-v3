@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-3d-secure-redirect-3ds2-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Redirect 3DS2 iOS Drop-in integration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-drop-in/2026-09-15.md\"\ntags: [adyen, ios, drop-in, cards, 3d-secure, 3ds2, redirect, checkout-api]\n---\n\n## Overview\n\nThis Adyen webpage describes redirect 3D Secure 2 card authentication in an existing iOS Drop-in integration. It routes the merchant from card-field configuration and server-side `/payments` parameters through Drop-in's redirect action, app return, server-side `/payments/details`, result presentation, and asynchronous payment webhook. The captured page is a 2026-09-15 snapshot whose own `last_modified` metadata is 2021-05-11; its SDK links and multi-language API examples are versioned examples, not evidence of current SDK behavior.\n\n## Key takeaways\n\n- The merchant first needs its iOS Drop-in and backend integration and cards enabled in the test Customer Area. The guide recommends collecting holder name and billing address for authentication performance. Drop-in supplies `data.paymentMethod` in `didSubmit`; the app passes it to the merchant server, which makes `/payments` with the iOS channel, an app return URL, browser information, and other required or conditionally required 3DS fields. Consult the parameter table for scheme-specific conditions, including Visa and JCB.\n- If `/payments` has no `action`, this guide describes the transaction as exempt or out of scope for 3DS authentication and routes the `resultCode` to shopper presentation. For `action.type=redirect`, the merchant passes the action to the iOS app; Drop-in handles the redirect. The app informs Drop-in of its custom-URL return through `RedirectComponent.applicationDidOpen(from:)`, then `didProvide` supplies details for the merchant server's `/payments/details` request.\n- The page distinguishes Checkout API v67 and later, where it says authorization happens after shopper authentication and `/payments/details` obtains the payment result, from earlier versions where the request containing payment data completes the payment. Use the returned `resultCode` for the shopper-facing result; an asynchronous webhook also reports the outcome. An `Authorised` card result still requires capture when manual capture is configured.\n- On live endpoints, all API requests for one payment session must use the same live endpoint region. Mixing regions between `/payments` and `/payments/details` may cause 3DS authentication errors.\n\n## Detail locators\n\n- `## Requirements`, `## Collect additional parameters in your payment form`, and `## Show the available cards in your payment form` \u2014 existing integration, card setup, holder-name and billing-address guidance, `/paymentMethods`, and iOS configuration.\n- `## Make a payment` \u2014 client/server handoff, parameter table with unconditional and conditional fields, versioned sample requests, and no-action versus redirect-action response routing.\n- `## Handle the redirect result` \u2014 iOS app-delegate callback, `didProvide` data, server-side `/payments/details`, and Checkout API version distinction.\n- `## Present the payment result` \u2014 synchronous result codes, asynchronous webhook, and manual-capture qualification.\n- `## Test and go live` \u2014 test scenario navigation, go-live route, and same-region live endpoint warning.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-3d-secure]]\n- Related native integration concept: [[adyen-ios-sdk]]\n- Web counterpart: [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-drop-in]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-drop-in/2026-09-15|2026-09-15 snapshot \u2014 iOS Drop-in redirect 3DS2 guide]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add cards with redirect 3D Secure authentication to your existing iOS Drop-in integration.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-drop-in/2026-09-15.md:29, ## Requirements"
+    },
+    {
+      "text": "When the shopper proceeds to pay, Drop-in invokes the `didSubmit` method which contains `data.paymentMethod`.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-drop-in/2026-09-15.md:70, ## Make a payment"
+    },
+    {
+      "text": "On Checkout API v67 and later, the payment is authorized after the shopper completes authentication. You make a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request to get the payment result. On earlier versions, you need to complete the payment by making a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request containing payment data.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-drop-in/2026-09-15.md:630, ## Handle the redirect result"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-drop-in/2026-09-15.md:766, ## Present the payment result"
+    },
+    {
+      "text": "Using different regions for [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) and [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) requests may result in errors when authenticating with 3D Secure.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-drop-in/2026-09-15.md:783, ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c2-ios-redirect-3ds2-source-link",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios-drop-in]] \u2014 iOS Drop-in redirect 3DS guide for the app-return and advanced `/payments` \u2192 `/payments/details` route, with Checkout API version and live-region qualifications (webpage snapshot, 2026-09-15)\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "cbbe192d145988c0e583bcb9dcb778826000776ed3a1391713e75db4287ebb30",
+  "status": "candidate_ready"
+}

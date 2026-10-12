@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-ach-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: ACH Direct Debit chargebacks\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/ach-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/ach-chargebacks/2026-09-15.md\"\ntags: [adyen, ach-direct-debit, ach-returns, chargebacks, risk-management]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide covers ACH Direct Debit *returns*, which it also calls chargebacks, after an ACH payment has been authorized, captured, and settled. It explains return notices and webhooks, a three-day refund delay, and reason-code-specific retry decisions. Adyen says an ACH return cannot be defended; a permitted retry is a separate action and must not be inferred from an initial `Authorised` payment result. The guide belongs under [[adyen-risk-management|Adyen risk management]].\n\n## Key takeaways\n\n- The guide says ACH has no real-time authorization guarantee: an authorized debit can later reverse for insufficient funds, usually three to five days after payment. It gives consumer dispute windows of up to two years and business windows of up to one year after settlement for authorization-related returns. These are claims in the dated documentation snapshot, not a live determination of an individual return's deadline.\n- Adyen delays refunds for three days after settlement. If a refund is requested but a customer initiates a return within that period, Adyen cancels the refund request automatically and sends a `CHARGEBACK` webhook. In the return flow, the optional request-for-permission and information-supplied stages do not yet deduct funds; at the Chargeback stage Adyen debits the merchant account.\n- A bank-account Notice of Change can precede a return. If subscribed to the Direct Debit Notice of Change Notification webhook, the merchant receives an `ach.notificationOfChange` event. Adyen says it updates saved details as much as possible, including an existing recurring-payment `shopperReference` in many cases, but the merchant should inspect the event for missing details and ask the customer to update its own records when needed.\n- Return reason codes appear in `NOTIFICATION_OF_CHARGEBACK` and `CHARGEBACK` webhooks and Customer Area. The guide's table covers common codes, not all cases: R01 and R09 allow at most two retries within 30 days of original authorization; R11 permits a retry within 60 days of original settlement while directing merchants to suspend recurring transactions and resolve the authorization issue; codes such as R02 (closed account) and R07 (revoked authorization) prohibit retry. Check the code and required remediation before acting. Adyen warns that repeated retries of transactions that cannot succeed can lead to Nacha fines and a block on new ACH Direct Debit transactions.\n- In Adyen's test environment, an ACH payment with `ownerName` set to `chargeback:[REASON_CODE]` triggers the selected return scenario after capture and settlement. The test path skips the optional stages and Notification of Chargeback, going directly to Chargeback; the guide tells readers to wait for the `CHARGEBACK` webhook and verify the code in Customer Area.\n\n## Detail locators\n\n- **Scope, return timing, and prevention** \u2014 opening text and `## Causes of ACH chargebacks` through `## Reduce the chargeback risk`, raw lines 15-35; external account validation is recommended for a first transaction.\n- **Refund effect and return stages** \u2014 `## Refunding disputed payments` through `## Chargeback`, raw lines 37-99; includes the refund-cancellation webhook, optional Notice of Change, optional bank-document stages, notification, and account debit.\n- **Reason-code decisions and penalty** \u2014 `## Decide if you can retry the payment`, raw lines 101-130; read the full table for code-specific retry limits and customer or bank follow-up.\n- **Test-only return scenario** \u2014 `## Test a chargeback scenario`, raw lines 132-557; versioned language examples, `ownerName` fixture, test-stage shortcut, and the webhook/Customer Area check.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-risk-management]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/ach-chargebacks/2026-09-15|Adyen Docs \u2014 ACH Direct Debit chargebacks (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "ACH refers to chargebacks as *returns*. It is not possible to defend ACH returns.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/ach-chargebacks/2026-09-15.md:19"
+    },
+    {
+      "text": "If you try to issue a refund but a customer initiates a chargeback within those three days, the refund request is canceled automatically and you will receive a [CHARGEBACK](https://docs.adyen.com/api-explorer/Webhooks/latest/post/CHARGEBACK) webhook.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/ach-chargebacks/2026-09-15.md:39"
+    },
+    {
+      "text": "However, you should still inspect the Direct Debit Notice of Change Notification webhook to see if details are missing and you need ask the customer to update their account details in your system.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/ach-chargebacks/2026-09-15.md:58"
+    },
+    {
+      "text": "If you repeatedly retry transactions that will never succeed, the [National Automated Clearinghouse Association](https://www.nacha.org/) (Nacha) imposes fines, and we have to block you from sending any new ACH Direct Debit transactions.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/ach-chargebacks/2026-09-15.md:105"
+    },
+    {
+      "text": "You can retry the transaction up to two times within 30 days of the original authorization date.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/ach-chargebacks/2026-09-15.md:111"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-ach-returns-risk-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-ach-chargebacks]] \u2014 2026-09-15 Adyen webpage guide to non-defensible ACH Direct Debit returns, return-stage webhooks, refund overlap, reason-code retry limits, and test fixtures.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/ach-chargebacks/2026-09-15.md",
+  "raw_sha256": "a27ddf92c7a7e1fbf8445b039be5edcec33989c15a4f8d9d840c9c034d118ff2",
+  "status": "candidate_ready"
+}

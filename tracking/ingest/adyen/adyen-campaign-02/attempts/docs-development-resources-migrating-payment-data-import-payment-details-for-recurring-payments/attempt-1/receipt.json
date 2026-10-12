@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-development-resources-migrating-payment-data-import-payment-details-for-recurring-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Import Payment Details for Recurring Payments\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments\"\nraw_files:\n  - \"adyen/docs/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments/2026-09-15.md\"\ntags: [adyen, tokenization, recurring-payments, migration]\n---\n\n## Overview\n\nThis Adyen migration guide describes importing recurring payment details from another payment service provider. The merchant supplies a CSV of recurring contracts, encrypts it with a PGP public key from Adyen Support or an Adyen contact, and sends it to Adyen; Adyen performs the import and sends an output file with per-detail results. It is a provider-assisted file migration, not an API call or proof that any specific contract was imported or can be charged.\n\n## Key takeaways\n\n- Input is RFC 4180 CSV in UTF-8, one recurring contract per data line. Field names and values are case-sensitive; multi-line fields are disallowed; the stated limits are 1,000,000 lines and 1 GB. `ShopperReference` is shopper-unique, at least three characters, case-sensitive, and should not contain name, email or other PII. Fields vary by payment method, so the common table and method-specific sections must be read together.\n- Card imports require card number and expiry data. For Visa and Mastercard Subscription or UnscheduledCardOnFile series, the guide marks initial-transaction `networkTxReference` as required and warns that missing scheme identifiers may cause soft declines and non-compliance assessment fees. Mastercard `transactionLinkId` is imported only if `networkTxReference` is also provided. For other schemes the guide recommends the initial-transaction reference and describes temporary static-value handling; that should not be generalized to Visa or Mastercard.\n- Separate input sections cover card, address, SEPA, ACH, PayPal and Klarna details, plus an optional auxiliary CSV to remap old shopper references to new references. For example, Klarna recurring support varies by payment method and country/region. The `RecurringContract` input describes ONECLICK, RECURRING and PAYOUT uses; an example CSV row is not evidence of a currently eligible payment method or payout route.\n- The output reports migration status, identifiers and method/card metadata. `Success` means a line imported; `Skipped` can reflect missing essential data, and `statusMessage` describes an import failure. Adyen warns that it will add output fields, so parsers must tolerate new headers. Optional output status fields require contacting Support. An encrypted output file requires providing Adyen with the merchant's public key.\n\n## Detail locators\n\n- `## Input file format` and `## Input file fields`: CSV format, encryption, shared fields, and `RecurringContract` semantics.\n- `### Card fields`: card expiry alternatives, scheme transaction identifiers and Mastercard linkage. `### Address fields` through `### Recurring Klarna payment fields`: conditional method-specific input; `### Shopper reference re-mapping (optional auxiliary file)` describes the second file.\n- `## Output file`: `Success`/`Skipped`, returned references, optional status columns, evolving headers and sample output.\n\n## Related\n\n- [[adyen]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments/2026-09-15|Adyen recurring payment detail import guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "To migrate recurring payment contracts from another payment service provider to the\u00a0Adyen payments platform, you need to provide us with a CSV file containing the recurring payment details. We will then import this file. After importing, we will send you an output file with the migration results.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments/2026-09-15.md:19"
+    },
+    {
+      "text": "Encrypt the file using the PGP public key provided to you by either our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other), or your Adyen contact.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments/2026-09-15.md:37"
+    },
+    {
+      "text": "Not providing the Visa Transaction ID might result in soft declines and non-compliance assessment fees.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments/2026-09-15.md:103 (Card fields table, Visa networkTxReference row)"
+    },
+    {
+      "text": "This means that `transactionLinkId` will only be imported if `networkTxReference` is also provided.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments/2026-09-15.md:105 (Card fields table, Mastercard transactionLinkId row)"
+    },
+    {
+      "text": "To provide more information about the migration, we will start adding new fields to the output file. Make sure that your parsing logic can handle changes such as new headers.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments/2026-09-15.md:206"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-tokenization-recurring-import-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-migrating-payment-data-import-payment-details-for-recurring-payments]] \u2014 2026-09-15 Adyen webpage guide to provider-assisted encrypted CSV import of recurring payment details, method-specific input and output-result handling.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments/2026-09-15.md",
+  "raw_sha256": "65384246928760bb49633eacb661373733d958f704a8900f4d1c0060bec95bad",
+  "status": "candidate_ready"
+}

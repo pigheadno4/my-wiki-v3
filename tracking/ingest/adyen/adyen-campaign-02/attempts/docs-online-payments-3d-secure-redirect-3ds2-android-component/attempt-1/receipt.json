@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-3d-secure-redirect-3ds2-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Redirect 3DS2 Android Component Integration\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/android-component\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, android, redirect, components, advanced-flow]\n---\n\n## Overview\n\nThis Adyen Docs snapshot describes redirect 3D Secure 2 for cards in an Android app, specifically an API-only card integration using Redirect Component v5.0.0 with the Advanced flow. It directs v4.13.3 and earlier users to a separate guide. In a Components integration already using the Card Component, the page says that Component can handle redirect 3DS2 without extra integration; the separate 3DS2 Component is not needed for that case. See [[adyen]] and [[adyen-3d-secure]].\n\nThis merchant integration guide is distinct from the version-qualified [[adyen-android-sdk]] checkout implementation and [[adyen-3ds2-android-sdk]] native challenge runtime. The snapshot does not establish account enablement, successful authentication, authorization, or completed payment for a transaction.\n\n## Key takeaways\n\n- The API-only path assumes the merchant builds its own card-entry UI and imports `com.adyen.checkout:redirect`. The merchant sends card and 3DS2 parameters to its server for `/payments`, including `channel: \"Android\"`, browser information, and the `returnUrl` obtained from `RedirectComponent.getReturnUrl(context)`. The field table marks holder name, shopper IP, and email or phone conditionally required for Visa and JCB; the page also recommends collecting billing address and email and says the schemes require those parameters.\n- The merchant checks the `/payments` response. With no `action`, this guide describes the transaction as exempt or outside 3DS2 scope and routes it to the payment-outcome step. With `action.type: redirect`, the merchant passes the action to the Redirect Component, which sends the shopper to a separate authentication page and returns them to the app.\n- This page links to the Android Advanced-flow guide for the detailed redirect handler and payment-outcome steps; it does not itself spell out the app-return callback or `/payments/details` request sequence. A redirect action or return to the app is not a successful payment result.\n- For live payment sessions, Adyen warns that `/payments` and `/payments/details` requests must use the same live endpoint region; mixing regions can cause 3DS authentication errors.\n\n## Detail locators\n\n- Opening and `## Requirements`, raw lines 15\u201328 \u2014 API-only versus Card Component paths, Redirect Component v5.0.0 and Advanced-flow scope, earlier-version route, and merchant card UI.\n- `## Collect additional parameters in your payment form` and `## Import the Redirect Component`, raw lines 30\u201343 \u2014 billing/email guidance and library import.\n- `## Make a payment`, raw lines 44\u2013583 \u2014 request field requirements, Android return URL, test/API-library examples, and response routing by `action`.\n- `## Handle the redirect`, raw lines 584\u2013589 \u2014 action handoff, shopper return, and links to detailed Advanced-flow outcome handling.\n- `## Test and go live`, raw lines 590\u2013597 \u2014 test/go-live routes and live-region consistency warning.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-3d-secure]] \u2014 merchant-facing 3DS2 routes.\n- [[adyen-android-sdk]] \u2014 separate package-qualified checkout SDK architecture.\n- [[adyen-3ds2-android-sdk]] \u2014 separate native 3DS2 runtime evidence.\n- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios-component]] \u2014 iOS Components redirect guide with different app-return handling.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/2026-09-15|Adyen Docs \u2014 Redirect 3DS2 Android Component (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "You can use the Redirect Component to handle Redirect 3D Secure 2 authentication if you have an API-only integration.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/2026-09-15.md:19"
+    },
+    {
+      "text": "If you have a Components integration that uses the Card Component, the Card Component can handle Redirect 3D Secure 2 authentication without additional integration. You do not need to use the 3D Secure 2 Component in this case.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/2026-09-15.md:21"
+    },
+    {
+      "text": "This guide is for integrations using Redirect Component v5.0.0 with the [Advanced flow](/online-payments/build-your-integration).",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/2026-09-15.md:23"
+    },
+    {
+      "text": "Pass the `action` object to the Component to [handle the redirect](/online-payments/build-your-integration/advanced-flow?platform=Android\\&integration=Components\\&version=5.0.0#handle-the-redirect). The shopper is redirected to a separate page to perform 3D Secure 2 authentication and returns to your app after.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/2026-09-15.md:586"
+    },
+    {
+      "text": "Using different regions for [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) and [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) requests may result in errors when authenticating with 3D Secure.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/2026-09-15.md:596"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-3d-secure-android-redirect-component-source",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-component]] \u2014 Redirect Component v5.0.0 Advanced-flow Android guide for API-only card integrations, Card Component route distinction, redirect action, and live-region warning (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/2026-09-15.md",
+  "raw_sha256": "b243e8dd31537e57695b232f2db468fc83b868b23e3ef7efb9c7992dddd22560",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-testing-3d-secure-2-authentication",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Testing 3D Secure 2 authentication\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/testing/3d-secure-2-authentication\"\nraw_files:\n  - \"adyen/docs/development-resources/testing/3d-secure-2-authentication/2026-09-15.md\"\ntags: [adyen, testing, 3d-secure, authentication, test-cards]\n---\n\n## Overview\n\nThis Adyen test-platform guide provides 3D Secure 2 cards, challenge inputs, and scenario triggers for checking an integration before going live. It routes through [[adyen-payment-testing]] and [[adyen-3d-secure]]. These fixtures test integration handling; they do not prove live issuer behavior, payment approval, or liability shift.\n\n## Key takeaways\n\n- If a configured Dynamic 3D Secure default rule is **Prefer Not**, the page lists three ways to trigger test 3DS2 scenarios: set the default to **Always**, include `authenticationData.attemptAuthentication`, or use an amount that triggers authentication. For text challenges, browser integrations use `password`; native app integrations use `1234`. A different value is the stated failed-challenge fixture.\n- The enrolled-card table covers redirect, native identify, and native challenge result-code paths. Specific challenge-action and frictionless fixtures are explicitly for **Advanced flow**, not Sessions. In the frictionless example, the integration supplies a device fingerprint without a further client UI challenge.\n- Native-app fixtures include text, single- and multi-select, out-of-band, malformed ACS content, empty challenge response, and timeout cases. To test a native-app route into redirect 3DS2, the guide says to omit `paymentMethod.threeDS2SdkVersion` from the test payment request.\n- For ordinary test payments, the page points to test Customer Area or the `AUTHORISATION` webhook's `success` field. **Standalone authentication** is different: this guide says it uses an `AUTHENTICATION` webhook instead of `AUTHORISATION`. An authentication webhook is not itself a live payment authorization or a liability-shift guarantee.\n- A separate fixture tests authentication **without liability shift** using the `NoLiabilityShift` challenge password. The advanced-scenario cards exercise `ARes.transStatus` values and transport/error cases; those are authentication response fixtures, not a general mapping from `transStatus` to payment or settlement outcome.\n\n## Detail locators\n\n- **Introduction, raw lines 17\u201337** \u2014 Dynamic 3D Secure condition, trigger choices, browser/native challenge passwords, and test-payment outcome routes.\n- **Test cards, raw lines 39\u201368** \u2014 enrolled card table and redirect, identify, and challenge result-code descriptions.\n- **3D Secure 2 challenge action / Frictionless flow, raw lines 69\u201392** \u2014 Advanced-only card fixtures and required action or fingerprint handling.\n- **Mobile app integration, raw lines 93\u2013116** \u2014 native challenge, OOB, malformed response, timeout fixtures, and omission of `threeDS2SdkVersion` for redirect simulation.\n- **Standalone authentication / Authentication without liability shift, raw lines 118\u2013133** \u2014 webhook-type separation and no-liability-shift fixture.\n- **Advanced scenarios, raw lines 134\u2013164** \u2014 `ARes.transStatus` and error-scenario test cards.\n\n## Related\n\n- [[adyen]]\n- [[adyen-payment-testing]]\n- [[adyen-3d-secure]]\n- [[adyen-3ds2-android-sdk]]\n- [[adyen-3ds2-ios-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/testing/3d-secure-2-authentication/2026-09-15|Adyen Docs \u2014 Testing 3D Secure 2 authentication (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "If you configured [Dynamic 3D Secure](/risk-management/dynamic-3d-secure/) and your default rule is set to **Prefer Not**",
+      "location": "raw/adyen/docs/development-resources/testing/3d-secure-2-authentication/2026-09-15.md:21"
+    },
+    {
+      "text": "For web and mobile browser integrations, use password: **password**.",
+      "location": "raw/adyen/docs/development-resources/testing/3d-secure-2-authentication/2026-09-15.md:29"
+    },
+    {
+      "text": "This does not apply to integrations using the Sessions flow.",
+      "location": "raw/adyen/docs/development-resources/testing/3d-secure-2-authentication/2026-09-15.md:71"
+    },
+    {
+      "text": "make a test payment without the [paymentMethod.threeDS2SdkVersion]",
+      "location": "raw/adyen/docs/development-resources/testing/3d-secure-2-authentication/2026-09-15.md:116"
+    },
+    {
+      "text": "In this flow, you receive an **AUTHENTICATION** webhook, instead of the **AUTHORISATION** webhook",
+      "location": "raw/adyen/docs/development-resources/testing/3d-secure-2-authentication/2026-09-15.md:122"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-payment-testing-3ds2-source",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-testing-3d-secure-2-authentication]] \u2014 Adyen 3DS2 test-scenario and card fixture guide (webpage snapshot, 2026-09-15) for browser/native challenges, Advanced-flow actions, standalone-authentication webhooks, and no-liability-shift simulation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced-flow action and frictionless fixtures explicitly exclude Sessions; standalone authentication reports an AUTHENTICATION rather than AUTHORISATION webhook.",
+          "Test cards, transStatus values and the NoLiabilityShift challenge are simulation evidence, not live liability-shift or payment outcome authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/testing/3d-secure-2-authentication/2026-09-15.md",
+  "raw_sha256": "7c6ba3cc49f0d838e15ea21ecf14bcdfb92a7a54dd841a205bda86665f7bfdfb",
+  "status": "candidate_ready"
+}

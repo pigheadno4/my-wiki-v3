@@ -17,4 +17,7 @@ The snapshot contains two ambiguities that require current-contract confirmation
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-tokenization-forward-payment-details]] — 2026-09-15 Adyen webpage guide to forwarding network tokens to a PCI-compliant third party through `/forward`, with a same-card Adyen token and conditional fallback.
+
+
 - [[source-adyen-docs-online-payments-network-tokenization]] - 2026-09-15 guide to network-token identity, Adyen-managed and merchant-managed routes, acquisition limits, retry behavior, routing, and request-contract ambiguities

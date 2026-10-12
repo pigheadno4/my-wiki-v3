@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-upgrade-your-integration-upgrade-to-web-v6-from-v4",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Web v4 to v6 Upgrade Guide\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4\"\nraw_files:\n  - \"adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4/2026-09-15.md\"\ntags: [adyen, online-payments, adyen-web, migration, web-v6, drop-in, components]\n---\n\n## Overview\n\nThis Adyen Docs snapshot is a migration guide for Web Drop-in or Components from v4.x.x to v6.x.x. It identifies API, import, initialization, configuration, event, styling, and optional payment-method changes; the page sends v3 and v5 users to separate guides. See [[adyen]] and [[adyen-online-payments]]. This guide describes a version transition, not the behavior of every later Web 6 release or proof of a merchant's successful upgrade.\n\n## Key takeaways\n\n- Web Drop-in/Components v6.0.0 requires Checkout API v69 or later. The guide shows an npm package route and an embedded-script route with environment-specific CDN hosts and integrity hashes. Its `@latest` install command and 6.0.0 script example are snapshot examples; choose assets and API versions for the actual deployment.\n- npm `/auto` imports Drop-in with payment methods already included, trading simpler additions for a larger bundle. Tree-shakable imports require importing the chosen payment-method Components and registering them through `paymentMethodComponents`. Embedded scripts expose `AdyenCheckout`, Drop-in, and Components under `window.AdyenWeb`.\n- v6 makes `countryCode` mandatory at `AdyenCheckout` initialization or, for Sessions, in `/sessions`. Initialization is awaited, and Drop-in or individual Components are constructed directly instead of through `checkout.create()`. The page also lists removed or relocated configuration properties.\n- In v6, `onSubmit` and `onAdditionalDetails` receive `actions`: resolve with a `resultCode` even for an unsuccessful payment, while reject is reserved here for an Adyen API request failure or network issue. `onPaymentCompleted` no longer handles failed payments; `onPaymentFailed` covers the listed `Cancelled`, `Error`, and `Refused` results. Treat the guide's event rules as version-specific SDK control flow, not payment finality on their own.\n- Advanced-flow partial payments rename `onOrderCreated` to `onOrderUpdated` and use `onPaymentMethodsRequest` to fetch methods for a remaining balance; the latter callback is not needed for this purpose in Sessions. If Adyen Giving is used, the guide says v6 requires the Giving Campaign Manager Component. Express Apple Pay, Google Pay, and PayPal callback changes, CSS/DOM changes, and placeholder migration are located in the raw.\n\n## Detail locators\n\n- Opening and `## Required API version`, raw lines 15\u201332 \u2014 v4-to-v6 scope, alternative guides, and Checkout API minimum.\n- `## Step 1: Use the new package`, raw lines 34\u201369 \u2014 npm and embedded assets, CDN regions, and example integrity values.\n- `## Step 2: Upgrade import statements`, raw lines 70\u2013179 \u2014 npm auto versus granular imports, payment-method registration, and `window.AdyenWeb`.\n- `## Step 3: Upgrade your configuration` and `## Step 4: Upgrade creating an instance`, raw lines 180\u2013261 \u2014 `countryCode`, removed or moved settings, awaited checkout initialization, and constructors.\n- `## Step 5: Upgrade your event handlers`, raw lines 262\u2013353 \u2014 resolve/reject, completion/failure events, Advanced-flow partial payments, and `onError`.\n- `## Step 6: Upgrade your styling`, raw lines 354\u2013411 \u2014 CSS custom properties, changed DOM/class names, and placeholder configuration.\n- `## Step 7` through `## Step 9`, raw lines 412\u2013507 \u2014 optional express methods, Giving, and Advanced-flow partial-payment examples.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-online-payments]] \u2014 online checkout architecture and source routes.\n- [[source-github-adyen-web]] \u2014 separately versioned repository implementation evidence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4/2026-09-15|Adyen Docs \u2014 Upgrade Web v4 to v6 (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Make the changes required to upgrade from Web Drop-in/Components v4.x.x to v6.x.x.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4/2026-09-15.md:17"
+    },
+    {
+      "text": "Using Web Drop-in/Components v6.0.0 requires [Checkout API v69](/online-payments/release-notes/?title%5B0%5D=Checkout%2BAPI\\&version%5B0%5D=69#releaseNote=2022-05-24-checkout-api-69) or later.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4/2026-09-15.md:32"
+    },
+    {
+      "text": "* `countryCode` is now a mandatory configuration property. Set it during the `AdyenCheckout` initialization.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4/2026-09-15.md:184"
+    },
+    {
+      "text": "* Continue the payment flow: `actions.resolve()`. Call `actions.resolve()` and pass the `resultCode`, also when the payment is unsuccessful.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4/2026-09-15.md:274"
+    },
+    {
+      "text": "This event is no longer triggered for failed payments. For failed payments, we now use the [`onPaymentFailed` ](#onpaymentfailed)event handler instead.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4/2026-09-15.md:309"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-online-payments-web-v4-v6-upgrade-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-web-v6-from-v4]] \u2014 v4-to-v6 Web Drop-in/Components migration guide for the Checkout API v69 minimum, import and initialization changes, event handling, and optional method or styling migrations (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/from-v4/2026-09-15.md",
+  "raw_sha256": "a778601a3af987220ab56067973ef85d62cdd94192ec34ed92453c9f012fe8c3",
+  "status": "candidate_ready"
+}

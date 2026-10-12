@@ -15,6 +15,18 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-account-updater-real-time-account-updater]] — Adyen Real Time Account Updater guide for eligible in-processing card updates and retry, optional response data, statuses, and test scenarios (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-development-resources-migrating-payment-data-import-payment-details-for-recurring-payments]] — 2026-09-15 Adyen webpage guide to provider-assisted encrypted CSV import of recurring payment details, method-specific input and output-result handling.
+
+
+- [[source-adyen-docs-online-payments-tokenization-forward-payment-details]] — 2026-09-15 Adyen webpage guide to Checkout API v70-or-later forwarding of stored card details or network tokens to a PCI-compliant third party, including setup and fallback conditions.
+
+
+- [[source-adyen-docs-online-payments-account-updater]] — 2026-09-15 Adyen webpage overview of Account Updater as a tokenization extension, distinguishing synchronous Real Time payment processing from asynchronous merchant-file Batch updates.
+
+
 - [[source-adyen-docs-development-resources-testing-tokenization]] — 2026-09-15 pre-live test guide for one-off CardOnFile and optional Subscription token storage/reuse, stored-detail update and removal routes, and Real Time Account Updater fixtures; preserves the Step 4 one-off/subscription wording conflict and PCI/encrypted-test credential boundary
 
 - [[source-adyen-docs-online-payments-tokenization-managing-tokens]] — 2026-09-15 guide to listing tokens, CardOnFile-only and API v70-or-later eligibility-gated updates, deletion with merchant-side cleanup, and recurring-token lifecycle webhooks

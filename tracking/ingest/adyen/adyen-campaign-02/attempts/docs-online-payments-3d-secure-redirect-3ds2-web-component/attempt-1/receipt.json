@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-3d-secure-redirect-3ds2-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Redirect 3D Secure Web Component Integration\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/web-component\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/redirect-3ds2/web-component/2026-09-15.md\"\ntags: [adyen, web-component, cards, 3d-secure, 3ds2, redirect, checkout-api]\n---\n\n## Overview\n\nThis [[adyen]] guide adds redirect 3D Secure authentication to an existing Web Card Component integration using Checkout API v49 or later and the Advanced `/payments` and `/payments/details` flow. The Card Component handles the shopper redirect after the merchant passes it a redirect action. An integration using only `/sessions` needs no additional 3D Secure configuration under this guide; Checkout API v46 or earlier is routed to a separate guide. See [[adyen-3d-secure]].\n\n## Key takeaways\n\n- The merchant collects payment-form and browser data, sends a server-side `/payments` request with the web 3DS parameters, and checks the response. The guide strongly recommends collecting email, cardholder name, billing address, and IP address for higher authentication rates; its request table distinguishes universally required fields from Visa/JCB or other conditional fields. The Card Component has no shopper-email form configuration, so email is collected outside it.\n- If `/payments` returns `action.type: redirect`, the merchant passes the action to the Card Component's `handleAction(action)`, which redirects the shopper to the issuer and then back to the merchant's `returnUrl`. The page describes a response without an action as exempt or out of scope for 3DS, with `resultCode` used for shopper presentation.\n- **Checkout API v67 and later:** the return uses HTTP GET with URL-encoded `redirectResult`; the merchant decodes it and sends it server-side in `/payments/details`. If the shopper completes payment but does not return to the site, wait for the `AUTHORISATION` webhook to learn the result.\n- **Checkout API v49\u2013v66:** store `action.paymentData` on the server. The return normally uses HTTP POST with `MD` and `PaRes`; the server sends decoded values plus `paymentData` in `/payments/details`. The page provides a conditional `redirectFromIssuerMethod` option when technical limits require GET instead.\n- Use `/payments` or `/payments/details` `resultCode` to present the shopper result; the outcome also arrives asynchronously by webhook. If manual capture is configured, an `Authorised` payment still needs capture. In live use, requests for the same payment session must use the same live endpoint region; mixing regions between `/payments` and `/payments/details` may cause 3DS authentication errors.\n\n## Detail locators\n\n- **Opening scope and Requirements**, raw lines 26\u201343 \u2014 Card Component prerequisite, Checkout API version and endpoint selection, Sessions exception, earlier-version route, and PSD2 SCA guide.\n- **Step 1**, raw lines 45\u201363 \u2014 recommended shopper data and Card Component collection options.\n- **Step 2**, raw lines 65\u201387 \u2014 required versus conditionally required request fields, including `origin`, `returnUrl`, and Visa/JCB cases; raw lines 89\u2013653 contain test-environment and library-version examples.\n- **Step 2 response tabs**, raw lines 655\u2013726 \u2014 action handling and the v67 versus v66-and-earlier `paymentData` split.\n- **Step 3**, raw lines 728\u20131233 \u2014 `handleAction`, test-only credentials, redirect return methods, server-side `/payments/details` requests and responses for each version branch.\n- **Step 4 and Test and go live**, raw lines 1244\u20131263 \u2014 result codes, webhook outcome, manual capture, test route, and live-region warning.\n\n## Related\n\n- [[adyen-3d-secure]]\n- [[adyen-psd2-sca-and-3d-secure]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-component/2026-09-15|Adyen Redirect 3DS Web Component guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Follow the instructions on this page if your integration uses the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) or [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) endpoint, and Checkout API 49 or later.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-component/2026-09-15.md:28"
+    },
+    {
+      "text": "| `action` object `type`:**redirect** | The payment qualifies for 3D Secure.                                              | 1. Store `action.paymentData` on your server. 2. Call `handleAction`, passing the `action` object from the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response. 3. [Handle the redirect](#handle-the-redirect). |",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-component/2026-09-15.md:693"
+    },
+    {
+      "text": "If a shopper completed the payment but failed to return to your website, wait for the [AUTHORISATION webhook](/development-resources/webhooks/webhook-types#webhook-structure) to know the payment result.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-component/2026-09-15.md:744"
+    },
+    {
+      "text": "When the shopper has completed the authentication, the issuer (or our back end, if you are using the test environment) redirects them back to the `returnUrl` from your [/payments](https://docs.adyen.com/api-explorer/Checkout/66/post/payments) request. The redirect uses HTTP POST, and is appended with the `MD` and `PaRes` variables:",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-component/2026-09-15.md:965"
+    },
+    {
+      "text": "When using our [live endpoints](/development-resources/live-endpoints/), make sure that all API requests you make for the same payment session use the same live endpoint region. Using different regions for [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) and [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) requests may result in errors when authenticating with 3D Secure.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-component/2026-09-15.md:1263"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "redirect-3ds-web-component-source-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-component]] \u2014 2026-09-15 Web Card Component redirect 3DS guide for Checkout API v49+ Advanced `/payments` and `/payments/details`, including version-specific return handling and live-region consistency.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-component/2026-09-15.md",
+  "raw_sha256": "2764fb347db3481df37a243f24ef13d7af4e5b242c4af448ab2bc201ec72899b",
+  "status": "candidate_ready"
+}

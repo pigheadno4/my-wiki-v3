@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-risk-management-dynamic-3d-secure",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Dynamic 3D Secure\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/dynamic-3d-secure\"\nraw_files:\n  - \"adyen/docs/risk-management/dynamic-3d-secure/2026-09-15.md\"\ntags: [adyen, risk-management, 3d-secure, authentication, rules]\n---\n\n## Overview\n\nThis Adyen documentation snapshot explains how an online-payments integration with 3D Secure 2 can set default and conditional Dynamic 3D Secure preferences for card transactions. Rules can request authentication and, in selected cases, express a preference for a challenge. It also describes payment-request overrides and Protect premium risk-based authentication and exemptions. See [[adyen]], [[adyen-3d-secure]], and [[adyen-risk-management]].\n\n## Key takeaways\n\n- The prerequisite is an online-payments integration with 3D Secure 2. Changing Dynamic 3D Secure rules requires an eligible Customer Area role. Risk management must be enabled when Dynamic 3D Secure is used with it; Protect premium is required for risk-based authentication and for custom risk rules linked to Dynamic 3D Secure rules.\n- The default rule begins at **Prefer not** for a new company or merchant account. **Prefer not** does not preclude 3D Secure where regulation, issuer requirements, or performance handling call for it. **Always** requests 3D Secure wherever possible, but does not ensure that authentication occurs when, for example, the issuer lacks support or the card is not enrolled. A request to authenticate also does not choose the eventual frictionless or challenge flow; the issuer determines that path.\n- Dynamic rules evaluate in order and stop at the first triggered rule. Merchant-account rules have priority over company-account rules and affect that merchant only. Conditions within a rule combine as AND, while multiple selected values within one condition match as alternatives. The page warns that the **Risk score** criterion belongs to the classic risk engine and does not apply to Protect.\n- Requesting a challenge is a preference that adds shopper friction and may reduce conversion; the page recommends an **Always** challenge preference only in special circumstances. Both successful frictionless and challenge authentication are discussed in relation to liability shift, subject to the separate scheme, issuer, and transaction qualifications in [[adyen-3d-secure]].\n- Payment-request parameters override configured Dynamic 3D Secure rules. The page identifies `authenticationData.attemptAuthentication` for an authentication request and `threeDS2RequestData.threeDSRequestorChallengeInd` for a challenge preference, with different fields for Checkout API v68-and-earlier and v67-and-earlier respectively. The challenge field is used only if 3D Secure is requested.\n- Protect premium risk-based authentication routes transactions that its machine-learning fraud rule would otherwise block to 3D Secure 2. In the described path, failed authentication leaves the transaction blocked; if 3D Secure is unavailable, Protect reverts to a decline without an authentication fee. These are documented flow statements, not proof of an individual authorization, liability shift, or merchant enablement.\n- **Risk-based exemptions are limited availability in this snapshot**: Adyen says it began rolling them out to select Protect premium companies in July 2026, subject to business and region availability. For low-risk payments, the described behavior uses a TRA exemption inside PSD2 markets or skips 3D Secure outside them. The page's performance language is an estimate, not a guaranteed authorization improvement.\n\n## Detail locators\n\n- Purpose, 3DS2 and role/tier prerequisites, and setup sequence: lines 15\u201338.\n- Regulatory/default preference context and issuer distinction: `## How Dynamic 3D Secure works`, lines 40\u201351; `## Default 3D Secure rule`, lines 53\u201359.\n- Authentication and challenge preferences, conversion trade-off, rule precedence and condition semantics: `## Dynamic 3D Secure rules`, lines 61\u201388. Configuration criteria, including the classic-engine **Risk score** caveat and premium **Risk check** prerequisite: lines 90\u2013121.\n- Fictional rule scenarios: `## Example scenarios`, lines 123\u2013159; these illustrate configurations rather than guarantee outcomes.\n- Payment-request precedence and Checkout API version-specific fields: `## Override using the payment request`, lines 161\u2013172.\n- Protect premium risk-based authentication outcomes, settings, and analytics: lines 174\u2013186. Limited-availability risk-based exemptions, PSD2/out-of-scope paths, and enablement guidance: lines 188\u2013205.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-3d-secure]] \u2014 merchant 3DS2 concept and reciprocal source route.\n- [[adyen-risk-management]] \u2014 Protect and premium-feature context.\n- [[adyen-psd2-sca-and-3d-secure]] \u2014 qualified regulatory, issuer, exemption, and API-preference boundaries.\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/dynamic-3d-secure/2026-09-15|Adyen Dynamic 3D Secure (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Set up rules to determine which card payments are routed through 3D Secure authentication, and if they should be challenged.",
+      "location": "raw/adyen/docs/risk-management/dynamic-3d-secure/2026-09-15.md:17"
+    },
+    {
+      "text": "* **Always**: Use 3D Secure whenever possible. With this rule, there will still be transactions that do not go through 3D Secure authentication, for example, when the issuer doesn't support 3D Secure yet, or when the card isn't enrolled.",
+      "location": "raw/adyen/docs/risk-management/dynamic-3d-secure/2026-09-15.md:58, `## Default 3D Secure rule`"
+    },
+    {
+      "text": "* You can configure rules on the company account, or on a merchant account. Rules configured on the merchant account have priority and only affect payments for that specific merchant account.",
+      "location": "raw/adyen/docs/risk-management/dynamic-3d-secure/2026-09-15.md:85, `### Configure a Dynamic 3D Secure rule`"
+    },
+    {
+      "text": "Parameters sent in the payment request override any Dynamic 3D Secure rules that you have configured.",
+      "location": "raw/adyen/docs/risk-management/dynamic-3d-secure/2026-09-15.md:165, `## Override using the payment request`"
+    },
+    {
+      "text": "From July 2026, Adyen is rolling out risk-based exemptions to select companies using Protect premium. To find out if this feature is available for your business and region, reach out to your Adyen contact.",
+      "location": "raw/adyen/docs/risk-management/dynamic-3d-secure/2026-09-15.md:193, `## Risk-based exemptions`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-dynamic-3ds-reciprocal",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-dynamic-3d-secure]] \u2014 Adyen default and conditional 3DS2 authentication/challenge preferences, payment-request precedence, and Protect premium risk-based paths (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/dynamic-3d-secure/2026-09-15.md",
+  "raw_sha256": "b02c0f209838c7b29c936ab9556c04ae0ba1037df1e848ef66a85c4ac7ccb47a",
+  "status": "candidate_ready"
+}

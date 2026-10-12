@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-online-payments-3d-secure-redirect-3ds2-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Redirect 3DS Android Drop-in Integration\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/android-drop-in\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/redirect-3ds2/android-drop-in/2026-09-15.md\"\ntags: [adyen, android, drop-in, 3d-secure, 3ds2, redirect, checkout-api]\n---\n\n## Overview\n\nThis [[adyen]] guide describes adding redirect 3D Secure 2 card authentication to an existing Android Drop-in integration, for Android Drop-in v4.0.0 or later. It covers client configuration, server `/payments` parameters, redirect action handling, the shopper's return to the app, `/payments/details`, result presentation, and live endpoint routing. It is an integration guide for [[adyen-3d-secure]], not evidence of a particular payment outcome.\n\n## Key takeaways\n\n- The merchant configures Android Drop-in to collect the cardholder name, passes `paymentComponentData.paymentMethod` from the app to the server, and sends a `/payments` request with `channel=Android`, a Drop-in return URL, and the documented 3DS2 data. The guide's request table marks `browserInfo` with `acceptHeader` and `userAgent` as required here; it conditionally requires Visa/JCB cardholder name, shopper IP, and email or a qualifying phone number. See the raw table for precise conditions and formats.\n- On `/payments`, no `action` means the guide treats the transaction as exempt or out of scope for 3DS2 and has Drop-in finish with the returned `resultCode`. With `action.type=redirect`, return `DropInServiceResult.Action` and the action so Drop-in redirects the shopper. After return to the app, send `actionComponentData.details` to the server for `/payments/details`. Do not infer authorization from the presence or absence of a redirect; use the result and asynchronous webhook outcome.\n- Checkout API v67+ and v66-or-earlier have different completion steps. The guide says v67+ authorizes after shopper authentication and calls `/payments/details` to obtain the payment result; earlier versions need `paymentData` in `/payments/details` to complete payment. For v66 or earlier, its response table says to store `action.paymentData` on the server, while its later details instruction describes that value as stored locally in the client app. The snapshot therefore leaves the storage location internally inconsistent; verify the applicable version-specific integration before implementing that older handoff.\n- The examples use test endpoints and test environment. For live traffic, the guide warns that `/payments` and `/payments/details` for the same payment session must use the same live endpoint region, or 3DS authentication errors may result. An `Authorised` result may still require capture when manual capture is configured.\n\n## Detail locators\n\n- **Scope, prerequisites, and Drop-in card configuration:** raw lines 15\u201366.\n- **Payment request conditions and return URL:** raw lines 68\u201393. Multi-language request examples, with test values and library versions, occupy raw lines 95\u2013587.\n- **`/payments` action handling by Checkout API version:** raw lines 589\u2013651.\n- **Return to app and `/payments/details` version split:** raw lines 653\u2013664. Request/response examples occupy raw lines 666\u2013794.\n- **Result codes, webhook outcome, testing, and live region warning:** raw lines 798\u2013817.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[source-adyen-docs-online-payments-3d-secure]]\n- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-drop-in]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-drop-in/2026-09-15|Adyen Redirect 3DS Android Drop-in \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page describes the integration steps for [Android Drop-in v4.0.0 or later](/online-payments/release-notes).",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-drop-in/2026-09-15.md:27"
+    },
+    {
+      "text": "1. Store the `action.paymentData` on your server. 2. Return `DropInServiceResult.Action`, and the `action` object. 3. [Handle the redirect](#handle-the-redirect).",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-drop-in/2026-09-15.md:623"
+    },
+    {
+      "text": "`paymentData`: Required if using Checkout API version 66 or earlier: the value from the last API response that you stored locally in the client-side app.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-drop-in/2026-09-15.md:662"
+    },
+    {
+      "text": "On Checkout API v67 and later, the payment is authorized after the shopper completes authentication. You make a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request to get the payment result. On earlier versions, you need to complete the payment by making a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request containing payment data.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-drop-in/2026-09-15.md:664"
+    },
+    {
+      "text": "Using different regions for [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) and [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) requests may result in errors when authenticating with 3D Secure.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-drop-in/2026-09-15.md:817"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-3ds2-android-dropin-redirect-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-drop-in]] \u2014 Android Drop-in v4+ redirect 3DS2 integration, with Checkout API version-specific result handling and live endpoint region guidance (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-drop-in/2026-09-15.md",
+  "raw_sha256": "41aabdc08d9fbd84f3e78f650b1727800b94e61b3553adeedcef341c8bd51b04",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-risk-management-disputes-api-dispute-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Dispute Webhooks\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/disputes-api/dispute-notifications\"\nraw_files:\n  - \"adyen/docs/risk-management/disputes-api/dispute-notifications/2026-09-15.md\"\ntags: [adyen, disputes, chargebacks, webhooks, risk-management]\n---\n\n## Overview\n\nThis [[adyen]] documentation snapshot catalogs dispute events delivered through a configured Standard webhook. It describes event codes and possible dispute statuses, reference fields, setup for optional reference data, and example payloads. Merchants can use the events to alert staff and manage disputes through the Disputes API or Customer Area; the page does not itself establish account-specific eligibility, a successful defense, or final funds movement. See [[adyen-risk-management]] for the provider route and [[disputes]] for cross-provider context.\n\n## Key takeaways\n\n- `eventCode` identifies the dispute event. `pspReference` identifies the dispute across its events, while `originalReference` identifies the disputed payment. Most messages can include `additionalData.disputeStatus`; Adyen says that status is absent for disputed payments processed in Brazil. Do not require it for every event or geography.\n- The merchant must configure a Standard webhook and select dispute events; some event types need additional setup. For `CHARGEBACK_REVERSED`, `SECOND_CHARGEBACK`, `PREARBITRATION_WON`, and `PREARBITRATION_LOST`, the guide gives a Customer Area additional setting to include the payment's `originalReference` alongside the dispute `pspReference`. Do not assume the optional reference is present for those events before that setting is enabled.\n- `NOTIFICATION_OF_CHARGEBACK` marks the start of the defense period: the merchant can evaluate and begin a defense then, without waiting for `CHARGEBACK`. `INFORMATION_SUPPLIED` means defense documents were uploaded or Adyen auto-defended; it is not a win signal.\n- `CHARGEBACK_REVERSED` means the disputed amount was transferred back after defense, but the status can remain `Pending` while the issuer reviews, and a second chargeback can still cause a loss. The page limits a final `Won` status at that stage to the Visa allocation flow when the issuer accepts the defense in pre-arbitration.\n- Self-handled pre-arbitration events depend on eligibility and a supported dispute flow. `PREARBITRATION_OPEN` says accepting or declining such a case requires additional configuration and Adyen approval. The event/status table distinguishes later issuer withdrawal, scheme arbitration, defense-period end, and issuer-response expiry; their possible status values are in the raw.\n\n## Detail locators\n\n- **Message identity, status field, Brazil limitation, and requirements:** raw lines 19\u201344.\n- **Event-code meanings and possible statuses:** raw lines 46\u201381, including notification, reversal, pre-arbitration, arbitration, deadlines, and issuer comments.\n- **Standard webhook subscription and original-reference setting:** raw lines 83\u201399.\n- **Per-event example payloads and conditional notes:** raw lines 101\u2013665. These are examples, not universal payload guarantees.\n\n## Related\n\n- [[adyen]]\n- [[adyen-risk-management]]\n- [[adyen-webhooks]]\n- [[disputes]]\n- [[source-adyen-docs-risk-management-disputes-api-disputes-api-reference]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/disputes-api/dispute-notifications/2026-09-15|Adyen Dispute webhooks \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`pspReference`: The PSP reference of the dispute. All events related to a dispute have the same PSP reference.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/dispute-notifications/2026-09-15.md:24"
+    },
+    {
+      "text": "The `disputeStatus` is not returned in webhook messages for disputed payments processed in Brazil.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/dispute-notifications/2026-09-15.md:29"
+    },
+    {
+      "text": "This is your starting point for the defense, and marks the start of the defense period.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/dispute-notifications/2026-09-15.md:56"
+    },
+    {
+      "text": "This stage is\u00a0not\u00a0final and a \"second\" chargeback can be presented by the issuing bank, resulting in losing the chargeback case.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/dispute-notifications/2026-09-15.md:65"
+    },
+    {
+      "text": "To return the PSP reference of the payment in the `originalReference` field, and the PSP reference of the dispute in the `pspReference` for the event types **CHARGEBACK\\_REVERSED**, **SECOND\\_CHARGEBACK**, **PREARBITRATION\\_WON** and **PREARBITRATION\\_LOST**, follow these steps:",
+      "location": "raw/adyen/docs/risk-management/disputes-api/dispute-notifications/2026-09-15.md:92"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-dispute-webhooks-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-disputes-api-dispute-notifications]] \u2014 Standard dispute webhook events, reference fields, statuses, and setup; includes Brazil and non-final reversal qualifications (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/disputes-api/dispute-notifications/2026-09-15.md",
+  "raw_sha256": "63dbae5dc2ba0cd971e6baceaf17e9cd70c4bd91a0c230634e9b20ab81bcdc16",
+  "status": "candidate_ready"
+}

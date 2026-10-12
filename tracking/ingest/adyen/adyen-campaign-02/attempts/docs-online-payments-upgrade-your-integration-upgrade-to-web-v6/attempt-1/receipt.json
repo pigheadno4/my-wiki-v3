@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-online-payments-upgrade-your-integration-upgrade-to-web-v6",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Upgrade to Adyen Web v6\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/upgrade-your-integration/upgrade-to-web-v6\"\nraw_files:\n  - \"adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/2026-09-15.md\"\ntags: [adyen, web, drop-in, components, migration, checkout]\n---\n\n## Overview\n\nThis Adyen website guide maps the required changes when upgrading **Web** Drop-in or Components from v5.x.x to v6.x.x. It routes v3 and v4 starting points to separate guides. The migration covers Checkout API compatibility, package/import shape, configuration and construction, payment-event handling, styling, and optional express, Giving, and partial-payment integrations. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- Web Drop-in/Components v6.0.0 requires Checkout API v69 or later. The guide recommends npm; embedded scripts need version-appropriate integrity hashes and an environment-specific CDN. The `@adyen/adyen-web/auto` import includes all methods with a larger bundle, while tree-shakable imports require explicit Components and `paymentMethodComponents` registration when used with Drop-in.\n- V6 moves embedded globals under `window.AdyenWeb`, makes `countryCode` mandatory at checkout initialization or in a Sessions request, and replaces `checkout.create(...)` with Component/Drop-in constructors. Several old configuration options are removed or moved; see the raw configuration table and before/after examples.\n- In `onSubmit` and `onAdditionalDetails`, the new `actions` parameter controls continuation. The prose says to call `actions.resolve()` with `resultCode` even for an unsuccessful payment, and to use `actions.reject()` for API-request or network failures. `onPaymentCompleted` no longer fires for failed payments; `onPaymentFailed` covers `Cancelled`, `Error`, and `Refused`.\n- The example handler calls `actions.reject()` when `resultCode` is missing and then can proceed to `actions.resolve()` without returning (raw lines 293\u2013307; repeated at 482\u2013496). Treat the snippet as illustrative and settle the control flow before copying it.\n- The optional migration sections have consequential route-specific changes: Apple Pay and Google Pay express `onAuthorized` must resolve or reject before `onSubmit`; PayPal renames authorization and shipping callbacks; v6 Giving uses the Giving Campaign Manager Component; and Advanced-flow partial payments use `onPaymentMethodsRequest` when an order remains unpaid. These are version-scoped Web integration instructions, not evidence of live method availability or successful payment execution.\n\n## Detail locators\n\n- **Introduction / Required API version, raw lines 17\u201332** \u2014 v5-to-v6 scope, separate v3/v4 routes, Checkout API v69 minimum.\n- **Steps 1\u20132, raw lines 34\u2013179** \u2014 npm versus embedded resources, region-specific CDN list, `/auto` versus tree-shakable imports, Redirect fallback, and `window.AdyenWeb`.\n- **Steps 3\u20134, raw lines 180\u2013268** \u2014 mandatory `countryCode`, removed or relocated configuration, constructors, and conditional `paymentMethodComponents`.\n- **Step 5, raw lines 269\u2013353** \u2014 `actions` behavior, success/failure callback split, renamed `onOrderUpdated`, and Advanced-only `onPaymentMethodsRequest`.\n- **Step 6, raw lines 354\u2013409** \u2014 CSS custom properties, retained class overrides, and placeholder behavior.\n- **Steps 7\u20139, raw lines 410\u2013505** \u2014 optional Apple Pay, Google Pay, PayPal, Giving, and Advanced-flow partial-payment migrations, including their callback and flow boundaries.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-web-disclaimers]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/2026-09-15|Adyen Docs \u2014 Upgrade to Adyen Web v6 (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Make the changes required to upgrade from Web Drop-in/Components v5.x.x to v6.x.x.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/2026-09-15.md:17"
+    },
+    {
+      "text": "Using Web Drop-in/Components v6.0.0 requires [Checkout API v69]",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/2026-09-15.md:32"
+    },
+    {
+      "text": "`countryCode` is now a mandatory configuration property.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/2026-09-15.md:184"
+    },
+    {
+      "text": "Call `actions.resolve()` and pass the `resultCode`, also when the payment is unsuccessful.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/2026-09-15.md:281"
+    },
+    {
+      "text": "From v6 onwards, your Adyen Giving integration must use the [Giving Campaign Manager Component](/online-payments/donations/campaign-manager-web-component/).",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/2026-09-15.md:466"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-online-payments-web-v6-upgrade-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-web-v6]] \u2014 Web Drop-in/Components v5-to-v6 migration guide (webpage snapshot, 2026-09-15) for Checkout API v69+, configuration, constructors, payment callbacks, and conditional method-specific upgrades.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's v6 Giving Campaign Manager requirement is version-specific; reconcile it with any older Giving Component source before writing a consolidated Adyen Giving concept.",
+          "The guide's onSubmit examples may call actions.resolve after actions.reject on a missing resultCode because no return is shown; keep prose/control-flow caveat in the source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-web-v6/2026-09-15.md",
+  "raw_sha256": "848922ae727e260e1aa92bb30815abae6fb9796e57428d911bb7c65cbaf70af9",
+  "status": "candidate_ready"
+}

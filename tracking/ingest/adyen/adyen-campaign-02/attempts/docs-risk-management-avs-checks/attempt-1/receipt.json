@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-avs-checks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Address Verification System (AVS) Checks\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/avs-checks\"\nraw_files:\n  - \"adyen/docs/risk-management/avs-checks/2026-09-15.md\"\ntags: [adyen, risk-management, avs, cards, fraud]\n---\n\n## Overview\n\nThis [[adyen]] guide explains Address Verification System (AVS) checks for card-not-present payments. With AVS enabled, the merchant sends the shopper's billing address in the authorization request and receives an Adyen AVS response indicating how it matches the card issuer's record. The guide covers an online-payments integration while also naming point-of-sale MOTO as a card-not-present use case; its separate POS response mapping is linked for that route. A match makes cardholder identity more likely in the guide's wording, not certain. See [[adyen-risk-management]].\n\n## Key takeaways\n\n- Setup requires an online-payments integration, enabled risk management, and a Customer Area user with a listed risk-settings role. AVS is supported for Visa, Mastercard, Discover, and American Express cards. The stated issuer support obligation applies in the US, Canada, UK, and Europe for Visa only; issuer support elsewhere is not assured. Merchant use of AVS is optional.\n- AVS rules run **after authorization** and cannot be linked to Dynamic 3D Secure. The Adyen-provided AVS post-authorization rule can act on a mismatch; creating a custom post-authorization rule requires Protect premium features. Based on the result, the merchant can accept, make an exception, or cancel the transaction.\n- For AVS, send the full `billingAddress` in the payment authorization request. The field table marks `country`, `city`, `street`, `houseNumberOrName`, and `postalCode` required when submitting that object; `stateOrProvince` is required for US or Canada shoppers. The page says an invalid country code rejects the transaction or request. Its special `ZZ` country guidance, address-line formatting, postal limits, and test fixtures are at the locators below.\n- Adyen maps scheme/acquirer raw AVS responses to its own response codes; meanings and applicability vary by card scheme and acquirer. The test-environment Adyen AVS response is simulated because test payments do not pass through a live acquirer. The page says live responses include both raw acquirer and Adyen AVS codes, with Customer Area settings for exposing actual card/network response data.\n\n## Detail locators\n\n- **Requirements**, raw lines 22\u201333 \u2014 integration, risk setting, Customer Area roles, premium custom-rule boundary, post-authorization timing, card schemes, and issuer regions.\n- **How does AVS work?**, raw lines 35\u201345 \u2014 billing-address comparison, mapped response, rule and merchant action, optional merchant use.\n- **AVS in API requests**, raw lines 51\u201371 \u2014 `billingAddress` children and conditional requirements, invalid-country effect, `ZZ`, and non-guaranteed interchange note.\n- **Test AVS results / Use AVS risk rules**, raw lines 73\u201386 \u2014 test-card setup, code selection, default post-authorization rule, and premium custom rule.\n- **AVS responses and mapping**, raw lines 88\u2013131 \u2014 Customer Area data settings, simulated versus live result, and scheme/acquirer-specific code table.\n\n## Related\n\n- [[adyen-risk-management]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/avs-checks/2026-09-15|Adyen AVS checks guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Protect [premium features](/risk-management/configure-risk-settings/#risk-general) must be enabled to create custom risk rules.",
+      "location": "raw/adyen/docs/risk-management/avs-checks/2026-09-15.md:31"
+    },
+    {
+      "text": "Because AVS rules run after authorization, it is not possible to link an AVS rule to [Dynamic 3D Secure](/risk-management/dynamic-3d-secure/).",
+      "location": "raw/adyen/docs/risk-management/avs-checks/2026-09-15.md:32"
+    },
+    {
+      "text": "AVS is supported for card payments with Visa, Mastercard, Discover or American Express. Credit card issuers in the United States, Canada, the United Kingdom, and Europe (Visa only) must support AVS verification requests. In other countries or regions, this is not the case.",
+      "location": "raw/adyen/docs/risk-management/avs-checks/2026-09-15.md:33"
+    },
+    {
+      "text": "When a shopper pays for a transaction, you can collect their billing address details. Then, you send that data in the `billingAddress` object in the payment authorization request. When you have enabled AVS, the system checks if and to what extent these billing address details match the information that the issuing bank has on file about the holder of the credit card.",
+      "location": "raw/adyen/docs/risk-management/avs-checks/2026-09-15.md:37"
+    },
+    {
+      "text": "The Adyen AVS response in your test environment is a simulated value because the test payments are not processed via a live acquirer. In your live environment, you will receive both a raw AVS response from the acquirer, and the Adyen AVS response.",
+      "location": "raw/adyen/docs/risk-management/avs-checks/2026-09-15.md:101"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "avs-risk-management-source-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-avs-checks]] \u2014 2026-09-15 Adyen AVS guide for billing-address checks, post-authorization rules, card/issuer limits, and simulated test versus live response mapping.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/avs-checks/2026-09-15.md",
+  "raw_sha256": "847cf06c682aa67bba108501c1e6b210f7cd6f23b2255bbb555aa014d4f7c177",
+  "status": "candidate_ready"
+}

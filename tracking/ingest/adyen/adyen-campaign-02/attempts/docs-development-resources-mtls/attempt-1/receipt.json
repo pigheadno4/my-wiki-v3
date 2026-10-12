@@ -1,0 +1,67 @@
+{
+  "job_id": "docs-development-resources-mtls",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Mutual authentication\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/mtls\"\nraw_files:\n  - \"adyen/docs/development-resources/mtls/2026-09-15.md\"\ntags: [adyen, mtls, api-authentication, client-certificates, api-credentials]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide describes mutual TLS authentication for supported API calls. A client certificate adds client identity verification to the server certificate and API key. Adyen can sign a merchant-generated certificate signing request (CSR); the private key stays on the merchant's system. The signed certificate's subject DN is linked to a company-level API credential, and requests to supported APIs then present the certificate and full chain at an mTLS endpoint. See [[adyen-api-access]].\n\n## Key takeaways\n\n- The documented enrollment path needs Management API client-certificate read and read/write roles as applicable, an API key, a CSR tool, and a company-level `ws_*@Company.*` credential. Merchant-level and balance-platform credentials are excluded. The page limits a company account to 10 valid client certificates and states 397-day validity. Test-issued certificates work only with test mTLS endpoints.\n- Adyen constructs the signed certificate's `subjectDN` from the company account and API credential, not from the CSR subject supplied in the example. The enrollment response contains a Base64 DER leaf, a CA chain, and `subjectDN`. Present the PEM bundle with the leaf first and all returned chain entries after it, together with the private key; a leaf-only presentation causes an `unknown_ca` TLS alert before any HTTP response.\n- Linking `subjectDN` to the API credential is an operational cutover: the guide says subsequent requests using that credential to supported APIs must include the client certificate or fail. It directs merchants to test enrollment, linking, and a certificate-authenticated request in the test environment before linking a live credential.\n- The supported mTLS APIs listed are Checkout, classic Payment, Recurring, Payout, and BinLookup. Management, Balance Platform, Transfers, Legal Entity Management, and Terminal Management are listed as unsupported and continue to use API-key authentication at standard endpoints. Checkout mTLS endpoints differ by test/live region; the Payment/Recurring/Payout/BinLookup group uses separate `palcert` endpoints. The live Checkout mTLS route is not the ordinary prefixed API-key endpoint.\n- Adyen recommends its own CA enrollment but permits a certificate signed by another CA that Adyen trusts when its subject DN matches the credential's stored subject DN. The guide's `prime256v1` EC private-key/CSR example concerns mTLS client authentication. A separate JWE card-encryption guide contains an EC-certificate sample paired with `RSA-OAEP-256` code; this mTLS example does not reconcile or validate that different encryption recipe.\n\n## Detail locators\n\n- **Purpose and certificate authority options** \u2014 opening text, raw lines 15-23; client certificate supplements server certificate and API key, with Adyen CA recommended and external CA separately allowed.\n- **Roles, account scope, count, and validity** \u2014 `## Requirements`, raw lines 25-39.\n- **Enrollment and certificate bundle** \u2014 `## Generate a client certificate`, raw lines 53-134; EC CSR example, DN construction, Management API request, test/live separation, leaf/chain assembly, and `unknown_ca` effect.\n- **Credential linking and cutover** \u2014 `## Link the certificate to your API credential`, raw lines 136-168; Customer Area and Management API routes, username-versus-ID distinction, and no-certificate failure after linking.\n- **Test procedure and supported API boundary** \u2014 `## Test your setup` and `## Supported APIs`, raw lines 170-215.\n- **mTLS endpoint mapping and request examples** \u2014 `## Endpoints for mutual authentication` through `## Make a request with your client certificate`, raw lines 217-312; regional Checkout and `palcert` hostnames, curl and Java examples.\n- **External CA conditions** \u2014 raw lines 314-321.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-api-access]]\n- Separate certificate purpose: [[adyen-card-encryption]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/mtls/2026-09-15|Adyen Docs \u2014 Mutual authentication (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen verifies your certificate on every API request. This adds security on top of your API key. You can use mutual authentication with [supported APIs](#supported-apis).",
+      "location": "raw/adyen/docs/development-resources/mtls/2026-09-15.md:19"
+    },
+    {
+      "text": "You send a certificate signing request (CSR) to the Management API. Adyen returns a signed certificate. You then link the certificate to an API credential. Your private key never leaves your system.",
+      "location": "raw/adyen/docs/development-resources/mtls/2026-09-15.md:21"
+    },
+    {
+      "text": "You can only use a company-level API credential, in the format: `ws_*@Company.*`. Merchant-level and balance platform API credentials are not supported.",
+      "location": "raw/adyen/docs/development-resources/mtls/2026-09-15.md:38"
+    },
+    {
+      "text": "Send your certificate and the chain together. If you send only your certificate, the TLS handshake fails with an **unknown\\_ca** alert, and you get no HTTP response.",
+      "location": "raw/adyen/docs/development-resources/mtls/2026-09-15.md:132"
+    },
+    {
+      "text": "After you link a certificate, every request that uses this API credential to access an API that supports mutual authentication must present the certificate. Requests to those APIs without it fail. Make sure your integration is ready before you save.",
+      "location": "raw/adyen/docs/development-resources/mtls/2026-09-15.md:168"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-api-access-mtls-cutover",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Sources",
+        "proposed_markdown": "## Mutual authentication\n\nAdyen's 2026-09-15 mTLS guide adds a client certificate to API-key authentication for supported APIs using a company-level API credential. The merchant keeps the private key, links the certificate subject DN to the credential, and presents the leaf plus full CA chain at an mTLS endpoint. Linking is a cutover: supported-API requests with that credential fail without the certificate. The guide excludes merchant-level and balance-platform credentials and identifies separate supported/unsupported APIs and endpoints; see the source for scope and regions. This TLS client certificate is distinct from the JWE card-encryption certificate, whose retained EC/RSA sample conflict remains unresolved.\n\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat the EC mTLS CSR example as resolution of the separate JWE guide's EC certificate versus RSA-OAEP-256 example conflict."
+        ]
+      },
+      {
+        "update_id": "adyen-api-access-mtls-source-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-mtls]] \u2014 2026-09-15 Adyen webpage guide to company-credential mTLS enrollment, certificate linking, supported APIs and endpoint routes, and the post-link certificate requirement.\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/mtls/2026-09-15.md",
+  "raw_sha256": "5c97ed1be2b13513e38e7a5296132a73ec398aeb6ae4be02d033e5275d5a5b8a",
+  "status": "candidate_ready"
+}

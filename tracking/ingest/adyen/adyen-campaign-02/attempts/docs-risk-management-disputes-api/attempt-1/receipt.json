@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-risk-management-disputes-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Manage disputes with the Disputes API\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/disputes-api\"\nraw_files:\n  - \"adyen/docs/risk-management/disputes-api/2026-09-15.md\"\ntags: [adyen, risk-management, disputes, chargebacks, api]\n---\n\n## Overview\n\nThis Adyen guide explains the merchant's Defend Disputes API workflow: receive dispute webhooks, retrieve applicable defense reasons and evidence requirements, then either accept the dispute or upload an eligible evidence package and make a final defend request. Manual handling through Customer Area is a separate route. The page is a 2026-09-15 captured documentation snapshot whose own `last_modified` metadata is 2020-05-27; it is not proof of current account access, a successful API call, or a won dispute.\n\n## Key takeaways\n\n- The guide calls for an online payments integration and an API credential with API key and **API dispute management** role. To follow disputes by webhook, subscribe to the Standard webhook and enable dispute events. Not all dispute types can be defended. Scheme-specific chargeback rules and Adyen automatic handling are linked as separate checks. See **Requirements**.\n- `REQUEST_FOR_INFORMATION` asks for information before a chargeback debit, while `NOTIFICATION_OF_CHARGEBACK` marks an incoming defendable chargeback and the start of the defense period; the page says debit usually follows days later. These are distinct triggers for the merchant's response. See **Handle dispute webhooks**.\n- `/retrieveApplicableDefenseReasons` returns dispute-specific reason codes and document types with requirement levels. The guide distinguishes `Required`, `OneOrMore`, `Optional`, and support-enabled `AlternativeRequired`; its JSON is an example for an account where `AlternativeDefenseMaterial` is enabled. A defense using a chosen reason needs evidence meeting that reason's document requirements. See **Retrieve defense reasons and evidence requirements**.\n- Uploading with `/supplyDefenseDocument` only stores the documents for the defense; it does not submit them to the issuer. Adyen says it refuses material containing sensitive data such as passports, social security numbers, PAN, or sensitive authentication data. File type, size, and page limits vary by scheme and use case; check **Upload dispute defense documents** before sending evidence. Previously uploaded documents can be deleted and replaced before the final defense.\n- `/defendDispute` submits the complete defense to the scheme. After defending, the merchant can no longer supply additional information; the merchant then follows dispute status through webhooks. An API `success` result for document upload or defend submission is not a scheme decision. See **Defend the dispute**.\n- Pre-arbitration handling is optional only when the merchant is eligible and the dispute flow supports it, and requires extra Adyen configuration and approval. Accepting or partially accepting leads to a lost or partially lost dispute and second chargeback. Declining may lead to scheme arbitration; this page warns of a fee up to USD 600 if the scheme rules for the issuer and says arbitration can take several months. Treat these fee and timing statements as captured documentation, not current scheme policy. See **Optional: Handle pre-arbitration cases**.\n\n## Detail locators\n\n- **Requirements, lines 23\u201336** \u2014 access, webhook qualification, non-defendable disputes, and scheme/automatic-handling links.\n- **How it works / Handle dispute webhooks, lines 38\u201369** \u2014 stages and RFI versus notification-of-chargeback events.\n- **Retrieve defense reasons and evidence requirements, lines 71\u2013141** \u2014 identity fields, applicable reasons, document codes, requirement levels, and support-enabled alternative material.\n- **Optional: Accept the dispute / Upload dispute defense documents, lines 143\u2013239** \u2014 accept path, sensitive-data prohibition, formats and limits, upload versus submission, and replace-before-defend path.\n- **Defend the dispute, lines 241\u2013265** \u2014 final API request, no further evidence, and status-webhook follow-up.\n- **Optional: Handle pre-arbitration cases, lines 267\u2013363** \u2014 eligibility and approval, accept/partial-accept/decline paths, second chargeback, fee and timing warning.\n\n## Related\n\n- [[adyen]]\n- [[adyen-risk-management]]\n- [[disputes]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/disputes-api/2026-09-15|Adyen Docs \u2014 Manage disputes with the Disputes API (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "You can retrieve dispute information, defend or accept disputes, and upload defense documents.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/2026-09-15.md:19, under Manage disputes with the Disputes API"
+    },
+    {
+      "text": "Make sure that your defense documents do not contain sensitive data. Adyen will refuse defense material that contains data such as copies of passports, social security numbers, tax records, unrelated legal documents, Primary Account Numbers ([PAN](/get-started-with-adyen/adyen-glossary/#card-number-pan)), and [sensitive authentication data](/get-started-with-adyen/adyen-glossary/#sensitive-authentication-data).",
+      "location": "raw/adyen/docs/risk-management/disputes-api/2026-09-15.md:157, Upload dispute defense documents"
+    },
+    {
+      "text": "After you finish this step, the documents are not automatically submitted to the issuer. The documents will only be submitted after you send the final [defend dispute](#defend-dispute) API request.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/2026-09-15.md:213, Upload dispute defense documents"
+    },
+    {
+      "text": "After you defend the dispute, you can no longer supply additional information.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/2026-09-15.md:243, Defend the dispute"
+    },
+    {
+      "text": "If the scheme rules in favor of the issuer, you can incur a fee of up to USD 600. This fee is added to the second chargeback.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/2026-09-15.md:338, Optional: Handle pre-arbitration cases \u2192 Decline a pre-arbitration case"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "disputes-api-risk-management-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-disputes-api]] \u2014 Adyen Defend Disputes API workflow for webhook-triggered retrieval, evidence upload, final defense submission, and approval-qualified pre-arbitration (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/disputes-api/2026-09-15.md",
+  "raw_sha256": "286c9c101316153116acd01f91dd35d0ced3db12dfc225203abc4fca5b9620d1",
+  "status": "candidate_ready"
+}

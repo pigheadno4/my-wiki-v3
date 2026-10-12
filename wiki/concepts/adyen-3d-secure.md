@@ -23,6 +23,27 @@ This concept covers the high-level merchant website guide across web and mobile 
 
 ## Related
 
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-component]] — Redirect Component v5.0.0 Advanced-flow Android guide for API-only card integrations, Card Component route distinction, redirect action, and live-region warning (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-component-earlier-versions]] — earlier-version Android Redirect Component guide (2026-09-15 webpage snapshot) for the Checkout API v66/v67 details transition and qualified v4.x.x integration route.
+
+
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios-component]] — iOS Components redirect 3DS2 guide for merchant-server Checkout API, app return and `didProvide` handoff, v67 result boundary, and live endpoint region consistency (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios-drop-in]] — iOS Drop-in redirect 3DS guide for the app-return and advanced `/payments` → `/payments/details` route, with Checkout API version and live-region qualifications (webpage snapshot, 2026-09-15)
+
+
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-drop-in]] — Android Drop-in v4+ redirect 3DS2 integration, with Checkout API version-specific result handling and live endpoint region guidance (webpage snapshot, 2026-09-15)
+
+
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-component]] — 2026-09-15 Web Card Component redirect 3DS guide for Checkout API v49+ Advanced `/payments` and `/payments/details`, including version-specific return handling and live-region consistency.
+
+
+- [[source-adyen-docs-online-payments-3d-secure-api-reference]] — Checkout API v41+ 3DS2 request-object, status, challenge, and third-party MPI parameter reference (webpage snapshot, 2026-09-15)
+
+
 - [[source-adyen-docs-online-payments-3d-secure-authorize-mpidata]] — Checkout `/payments` v46+ guide for using third-party 3DS2 authentication data in a separate Adyen authorization request, including scheme-specific mapping and co-badged-card consistency warnings (webpage snapshot, 2026-09-15)
 
 - [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-drop-in]] — Web Drop-in redirect 3DS guide for the advanced `/payments` and `/payments/details` flow, including version-specific return handling and live-region consistency
@@ -41,5 +62,8 @@ Adyen's regulation-compliance overview is region-, actor-, scheme-, period-, tra
 
 
 ## Sources
+
+- [[source-adyen-docs-risk-management-dynamic-3d-secure]] — Adyen default and conditional 3DS2 authentication/challenge preferences, payment-request precedence, and Protect premium risk-based paths (webpage snapshot, 2026-09-15).
+
 
 - [[source-adyen-docs-online-payments-3d-secure-data-only]] — unversioned Adyen webpage snapshot for the Visa and Mastercard 3DS2 data-only flow (collected 2026-09-15)

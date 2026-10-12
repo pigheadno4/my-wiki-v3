@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-currency-codes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Currency Codes, Minor Units, and FX Fees\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/currency-codes\"\nraw_files:\n  - \"adyen/docs/development-resources/currency-codes/2026-09-15.md\"\ntags: [adyen, currencies, minor-units, amounts, foreign-exchange, fx-fees]\n---\n\n## Overview\n\nThis Adyen Docs snapshot lists currency codes and decimal counts for API amount values and explains how Adyen describes currency conversion rates and FX management fees. It is a provider-specific amount-formatting reference, linked to [[adyen]] and [[adyen-currencies-and-fx]]. Its currency table and fee categories are snapshot evidence, not a determination of current account, payment-method, or currency availability or a fee quote for a transaction.\n\n## Key takeaways\n\n- Most Adyen APIs expect the amount `value` in the currency's minor units; Terminal API is the stated exception. The raw gives GBP 10 \u2192 1000, JPY 10 \u2192 10, and BHD 10 \u2192 10000 as examples for two-, zero-, and three-decimal currencies.\n- Adyen's table, rather than ISO 4217 decimals, governs minor-unit submission for four named differences: CLP uses 2 decimals, CVE 0, IDR 0, and ISK 2 in this snapshot. In particular, ISO lists ISK with zero decimals, while this Adyen request convention uses two.\n- When Adyen converts currencies, the page describes an FX reference rate and an FX management fee or spread. The fee calculation is specified in the merchant's Adyen contract. By default, the page groups currencies into two categories for the fee; it also describes an optional scheme-rate setup for Visa and Mastercard, while other methods use the currency category. The document supplies no universal numeric rate or merchant-specific fee.\n- The full code/decimal table and category-one currency list are in the raw locators below; applying either list to a later payment should use current Adyen documentation and the merchant's configured terms.\n\n## Detail locators\n\n- Opening, raw lines 15\u201319 \u2014 currency-code and amount-value purpose.\n- `## Currency codes`, raw lines 21\u2013162 \u2014 snapshot code, currency-name, and decimal table, including CLP/CVE/IDR/ISK.\n- `## Minor units`, raw lines 164\u2013172 \u2014 Terminal API exception and GBP/JPY/BHD amount examples.\n- `### Different number of decimals`, raw lines 174\u2013178 \u2014 ISO-versus-Adyen differences and ISK example.\n- `## Currency conversion rates and fees`, raw lines 180\u2013197 \u2014 FX reference rate, contract-specific management fee, default currency categories, and optional Visa/Mastercard scheme-rate setup.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-currencies-and-fx]] \u2014 Adyen-specific amount and FX concept.\n- [[adyen-terminal-api]] \u2014 separately documented Terminal API surface, named as the minor-unit exception here.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/currency-codes/2026-09-15|Adyen Docs \u2014 Currency codes and minor units (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "In your API requests, you need to provide transaction amounts by specifying a currency code and a value. For most APIs the value must be specified in minor units, given the number of decimals of the currency.",
+      "location": "raw/adyen/docs/development-resources/currency-codes/2026-09-15.md:19"
+    },
+    {
+      "text": "With the exception of [Terminal API](/point-of-sale/design-your-integration/terminal-api), our APIs expect you to submit transaction amount values in **minor units**: the smallest unit of a currency, depending on the number of decimals.",
+      "location": "raw/adyen/docs/development-resources/currency-codes/2026-09-15.md:166"
+    },
+    {
+      "text": "For CLP, CVE, IDR, and ISK the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) standard has a different number of decimals than shown in our [currency codes table](#currency-codes). When submitting amounts in minor units, the decimals in the table on this page are leading.",
+      "location": "raw/adyen/docs/development-resources/currency-codes/2026-09-15.md:176"
+    },
+    {
+      "text": "Adyen also charges a fee for managing the exchange of currency conversions. This is called the FX management fee, or spread. How this fee is calculated is included in your contract with Adyen.",
+      "location": "raw/adyen/docs/development-resources/currency-codes/2026-09-15.md:190"
+    },
+    {
+      "text": "Your company can also choose an alternative setup, where the FX management fee is based on a scheme rate. This is currently available for Visa and Mastercard. The FX management fee for other payment methods is based on the currency category.",
+      "location": "raw/adyen/docs/development-resources/currency-codes/2026-09-15.md:197"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-currencies-and-fx-new-concept",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page",
+        "proposed_markdown": "---\ntitle: \"Adyen Currencies and FX\"\ntype: concept\ncategory: technology\ntags: [adyen, currencies, minor-units, foreign-exchange]\n---\n\n## Overview\n\nAdyen's API currency reference pairs each currency code with an amount decimal count. In the 2026-09-15 snapshot, most Adyen APIs require amount values in minor units; Terminal API is the stated exception. For CLP, CVE, IDR, and ISK, Adyen says its table's decimals take precedence over the differing ISO 4217 counts when submitting minor-unit amounts. The snapshot lists CLP 2, CVE 0, IDR 0, and ISK 2.\n\nWhere Adyen converts a transaction amount between currencies, it describes an FX reference rate plus an FX management fee or spread. The fee calculation comes from the merchant's Adyen contract; the default currency-category route and optional Visa/Mastercard scheme-rate route are detailed in the source. The snapshot does not establish a current currency's availability or a merchant-specific conversion rate or fee.\n\n## Sources\n\n- [[source-adyen-docs-development-resources-currency-codes]] \u2014 Adyen currency-code and decimal table, Terminal API exception, four ISO differences, and contract-qualified FX fee structure (webpage snapshot, 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "New provider concept proposed because the Adyen index has no currency/minor-unit concept; keep Adyen decimal conventions and FX contract terms separate from other providers."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/currency-codes/2026-09-15.md",
+  "raw_sha256": "4d8cb2b4e6a3e87ceba4bcd252b8b38810c7f1fc4fcc2d2f32bac46b59ce2064",
+  "status": "candidate_ready"
+}

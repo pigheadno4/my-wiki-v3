@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-auto-rescue-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Auto Rescue for Card Payments\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/auto-rescue/cards\"\nraw_files:\n  - \"adyen/docs/online-payments/auto-rescue/cards/2026-09-15.md\"\ntags: [adyen, auto-rescue, cards, recurring-payments, retries, webhooks]\n---\n\n## Overview\n\nThis Adyen guide covers Auto Rescue for refused shopper-not-present card payments. It explains account-level and per-transaction enablement, retry updates and final outcomes, optional payment-link recovery, cancellation, test scenarios, and reconciliation. Its card flow is separate from the overview's SEPA direct debit terminology issue.\n\n## Key takeaways\n\n- Adyen or its Support Team must enable the feature. Account-level enablement applies to eligible payments with `shopperInteraction: ContAuth` and a positive value, using a one-calendar-month rescue window. Per-transaction enablement requires Adyen configuration, an `autoRescue` flag, and a unique `merchantOrderReference` tied to the relevant billing cycle or subscription; `maxDaysToRescue` can specify 1\u201348 days. The guide recommends 30 days, while its example uses 40; neither number is a guaranteed retry duration.\n- A refused payment response distinguishes `retry.rescueScheduled: true` from `false` and provides a `retry.rescueReference`. A scheduled rescue is a plan to attempt a later payment, not an authorization or successful collection. Ineligible failures such as fraud or account closure may not be rescued.\n- Individual retry attempts are reported by `AUTHORISATION` webhooks; `success` and `retry.rescueScheduled` distinguish a successful retry, a failed retry with another attempt scheduled, and a failed retry without another scheduled attempt. An `AUTORESCUE` webhook reports the process end and whether rescue succeeded; in that event, `eventDate` is documented as the date the process started. If the merchant uses manual capture, each rescued payment still needs capture to transfer funds to its account.\n- If a shopper supplies new payment details or cancels a subscription during rescue, the guide directs the merchant to cancel the rescue using the Payment API `/cancel` with the rescue reference as `originalReference` and `cancellationType: autoRescue`. The immediate `[cancel-received]` response is receipt of the request; the later `CANCEL_AUTORESCUE` webhook reports whether cancellation succeeded.\n- After an unsuccessful process, a separately activated Pay by Link option can include a five-day payment link in the end webhook. The guide also supplies test-only `autoRescueScenario` values. Every retry attempt is a separate transaction with its own `pspReference`; `merchantOrderReference` connects attempts for reporting.\n\n## Detail locators\n\n- `## Step 1: Enable Auto Rescue` (raw lines 35\u201375): Adyen configuration, account/transaction eligibility, unique order reference, flags, and rescue-window range. Version-qualified Checkout request examples occupy raw lines 77\u2013461.\n- Payment response after the request (raw lines 464\u2013497): refused result, scheduled versus unscheduled rescue, and rescue reference.\n- `## Step 2: Receive Auto Rescue updates` (raw lines 499\u2013654): retry `AUTHORISATION` webhooks, manual-capture warning, final `AUTORESCUE` outcome, and reason codes.\n- `## Send a payment link` (raw lines 656\u2013701): separately enabled post-failure link, expiry, and subsequent payment notification.\n- `## Cancel Auto Rescue` (raw lines 703\u2013777): cancellation conditions, Payment API request, distinct cancellation PSP reference, and eventual cancellation webhook.\n- `## Test Auto Rescue and go live` and `## Auto Rescue reports` (raw lines 779\u2013857): test scenarios, reporting configuration, distinct retry transactions, and order-reference correlation.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-card-auto-rescue]]\n- Related concept: [[recurring-payments]]\n- Overview source: [[source-adyen-docs-online-payments-auto-rescue]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/auto-rescue/cards/2026-09-15|2026-09-15 Adyen Auto Rescue card guide]]\n",
+  "quotes": [
+    {
+      "text": "Automatically retry shopper-not-present card transactions when they are refused.",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/cards/2026-09-15.md:17"
+    },
+    {
+      "text": "If you enable Auto Rescue at account level, a rescue window of one calendar month is used.",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/cards/2026-09-15.md:51"
+    },
+    {
+      "text": "In the payment request, provide a unique `merchantOrderReference`. This should represent a specific billing cycle or subscription, and will appear in any [Auto Rescue updates](#step-2-receive-auto-rescue-updates) or [reports](#auto-rescue-reports).",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/cards/2026-09-15.md:61"
+    },
+    {
+      "text": "If you use manual capture, you need to [capture](/online-payments/capture#manual-capture) each rescued payment to transfer it to your account.",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/cards/2026-09-15.md:553"
+    },
+    {
+      "text": "After we have processed your cancel request, you receive a webhook event with:",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/cards/2026-09-15.md:745"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-card-auto-rescue-new-concept",
+        "target_path": "wiki/concepts/adyen-card-auto-rescue.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page",
+        "proposed_markdown": "---\ntitle: \"Adyen Card Auto Rescue\"\ntype: concept\ncategory: technology\ntags: [adyen, auto-rescue, cards, recurring-payments, retries]\n---\n\n## Overview\n\nAdyen Auto Rescue can retry eligible refused shopper-not-present card payments after account-level or transaction-level enablement by Adyen. A scheduled retry is not a successful payment: the merchant must handle per-attempt `AUTHORISATION` webhooks and a final `AUTORESCUE` outcome. Each retry is a distinct transaction. For manual-capture merchants, a rescued authorization still requires capture. The card guide also describes cancellation of an active rescue when payment details change or a subscription ends; success is reported by the later `CANCEL_AUTORESCUE` webhook.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-auto-rescue-cards]] \u2014 Adyen card-specific Auto Rescue guide for enablement, retries and outcome webhooks, cancellation, tests, and reporting (webpage snapshot, 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Card-specific concept proposed because the existing Adyen Online Payments concept routes only the general Auto Rescue overview. Keep this card flow distinct from the overview's unresolved SEPA direct debit terminology difference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/auto-rescue/cards/2026-09-15.md",
+  "raw_sha256": "3424600d4b8e931413a12291edbc60bd90b6c04dfcaf0d4cf87ec68925b6b95f",
+  "status": "candidate_ready"
+}

@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-13] ingest | Adyen website C02
+
+- Exact approved 50-page General Docs manifest, with Sol medium workers and independent Sol high first reviewers in a shared pool of at most ten child slots. Full pinned raw reads and 3–5 located quotes per source; coordinator-only writes, concept-before-source promotion, and one aggregate catalog/count close.
+- All 50 sources approved. First full review approved 47/50; three bounded targeted second attempts corrected a card-import error scope, a Visa dispute finality qualifier, and incomplete language samples. No rejected jobs or repeated full reviews. Original attempts and independent decisions retained.
+- Added 50 website sources; touched 17 concepts, including 9 new provider concepts. Company source_count 114 = 100 website + 14 GitHub summaries. Preserved GitHub histories, raw snapshots, payment actor/flow/version scope, material warnings and unresolved snapshot inconsistencies.
+- The 100 fixed retrieval answers and three coordinator full-read exemplars are retained in the campaign evidence. Two bounded shared reconciliations qualify Giving Web versions and Account Updater response data; canonical-route, hash, count, provenance and typed checks are recorded in close-validation.md. No live payments, collection, API Explorer/GitHub ingestion, commit or push.
+
 ## [2026-10-11] ingest | Adyen website C01
 
 - Exact approved 50-page General Docs campaign; Sol medium workers and different Sol high first reviewers in ten shared rolling child slots. Full pinned raw reads; repository-read-only delegates; coordinator-only concept/source promotion and aggregate updates. No API Explorer or GitHub ingestion.

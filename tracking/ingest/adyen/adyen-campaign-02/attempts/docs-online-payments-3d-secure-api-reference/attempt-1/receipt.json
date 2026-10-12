@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-online-payments-3d-secure-api-reference",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen 3D Secure 2 API reference\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/api-reference\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/api-reference/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, checkout-api, authentication, api-reference]\n---\n\n## Overview\n\nThis [[adyen]] 3D Secure 2 parameter reference covers Checkout API v41 or later, including additional data for `/payments`, `/payments/details`, and `/sessions`. It distinguishes required, conditionally required, recommended, and optional request data, then gives object fields, challenge-flow data, authentication statuses, and third-party MPI data combinations. Classic integrations are routed to a separate reference. Use [[adyen-3d-secure]] for the wider merchant integration context.\n\n## Key takeaways\n\n- Requiredness varies by integration, scheme, issuer, and use case. Some omitted objects can cause authentication failure. The top-level table marks `browserInfo` required, while its dedicated section says the full object except `javaScriptEnabled` is required for Web and recommends the object for iOS/Android to support possible redirect routing. Consult the relevant table and channel-specific section together.\n- For browser-based Web transactions, the reference conditionally requires `origin` and warns that an absent or incorrect value prevents proper handling of the 3DS2 action. For Visa and JCB it calls for `shopperEmail` or a qualifying phone number, and `shopperIP` across web and mobile; it says malformed phone numbers are dropped from authentication submission. See the exact conditions and formats in the raw object table.\n- `authenticationData.authenticationOnly=true` triggers standalone 3DS2 authentication without proceeding to payment authorization. `authenticationData.threeDSRequestData.dataOnly` is available from Checkout API v69; v68 or earlier uses `additionalData.threeDSDataOnly`. `nativeThreeDS=preferred` indicates native when available, but Adyen may still select redirect; the `/payments` and `/sessions` trigger contexts differ.\n- Adyen discourages `authenticationData.attemptAuthentication`, which overrides Dynamic 3D Secure settings; `never` can lead to decline where regulations require authentication. It also discourages `scaExemption` because it overrides Adyen's exemption logic. These are conditional request choices, not general requirements to force an exemption or native flow.\n- For a separate Adyen authorization using third-party 3DS2 authentication, `mpiData` is required and the reference says to include all fields received from that provider. The raw lists `transStatus` and scheme-specific `transStatusReason`, `challengeCancel`, and expected MPI value combinations. Authentication status here does not establish payment authorization.\n\n## Detail locators\n\n- **Scope, endpoints, and requiredness legend:** raw lines 17\u201342.\n- **Top-level object conditions:** raw lines 44\u201369, including `origin`, `returnUrl`, email/phone/IP, and exemption behavior.\n- **Account and authentication controls:** raw lines 71\u2013155, including v68 phone-field deprecations, authentication-only, data-only, and native/redirect selection.\n- **Browser and other object fields:** raw lines 157\u2013259, including channel-specific `browserInfo`, addresses, installments, and merchant risk data.\n- **Third-party MPI and status values:** raw lines 260\u2013379, including scheme-specific combinations and EMVCo mappings.\n- **Card, app/browser 3DS request fields, and challenge objects:** raw lines 380\u2013460, including native SDK version, external-acquirer standalone conditions, `notificationURL`, and `/payments/details` data.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[source-adyen-docs-online-payments-3d-secure]]\n- [[source-adyen-docs-online-payments-3d-secure-authorize-mpidata]]\n- [[source-adyen-docs-online-payments-3d-secure-standalone-authentication]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/api-reference/2026-09-15|Adyen 3D Secure 2 API reference \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page describes payload structures and objects for [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview) **v41** or later.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/api-reference/2026-09-15.md:25"
+    },
+    {
+      "text": "Some of these objects are mandatory for some issuers and card schemes, and not providing them in your payment request can result in a failed authentication.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/api-reference/2026-09-15.md:42"
+    },
+    {
+      "text": "When set to **true**, you only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/api-reference/2026-09-15.md:143"
+    },
+    {
+      "text": "For web integrations ( [channel](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-channel): **Web**): the full object, except `javaScriptEnabled`, is required.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/api-reference/2026-09-15.md:174"
+    },
+    {
+      "text": "The [mpiData](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-mpiData) object is required in your authorization requests with Adyen if you use authentication data from a [third-party](/online-payments/3d-secure/authorize-mpidata/) to authorize payments.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/api-reference/2026-09-15.md:262"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-3ds2-api-reference-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-api-reference]] \u2014 Checkout API v41+ 3DS2 request-object, status, challenge, and third-party MPI parameter reference (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/api-reference/2026-09-15.md",
+  "raw_sha256": "96c27728e46899cd07345a887591f2d44fd17d4737c30cc4d9e7adbf1a9f40ed",
+  "status": "candidate_ready"
+}

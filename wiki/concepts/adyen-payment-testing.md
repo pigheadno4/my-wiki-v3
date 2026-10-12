@@ -15,6 +15,18 @@ These fixtures exercise test integration behavior; they do not prove production 
 
 ## Sources
 
+- [[source-adyen-docs-development-resources-testing-3d-secure-2-authentication]] — Adyen 3DS2 test-scenario and card fixture guide (webpage snapshot, 2026-09-15) for browser/native challenges, Advanced-flow actions, standalone-authentication webhooks, and no-liability-shift simulation.
+
+
+- [[source-adyen-docs-risk-management-disputes-api-test-applicable-dispute-reasons]] — test-environment chargeback simulation through `holderName`, capture, dispute webhooks, and test accept/defend actions, with scenario and timing limits (webpage snapshot, 2026-09-15)
+
+
+- [[source-adyen-docs-development-resources-test-cards-and-credentials-test-card-numbers]] — Adyen test-platform card-number catalog, server-side `test_` fixture route, and 3D Secure 2 enrolled-card table (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-development-resources-test-cards-and-credentials-alternative-payment-method-credentials]] — webpage snapshot (2026-09-15) with alternative-method test credentials and simulator routes, including method-specific TEST limits and live-only penny-test qualifications for iDEAL | Wero and MobilePay.
+
+
 - [[source-adyen-docs-development-resources-testing]] — webpage snapshot (2026-09-15) routing prerequisites and client/server/webhook coverage for full online-payments integration testing before live acceptance
 
 - [[source-adyen-docs-development-resources-testing-payments-and-modifications]] — webpage snapshot (2026-09-15) routing test payment and modification scenarios, prerequisites, expected webhooks, and simulation warnings

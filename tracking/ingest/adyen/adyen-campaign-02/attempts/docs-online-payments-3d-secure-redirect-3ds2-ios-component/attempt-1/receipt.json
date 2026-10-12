@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-online-payments-3d-secure-redirect-3ds2-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Redirect 3DS2 iOS Components Integration\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/ios-component\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-component/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, ios, components, redirect, checkout-api]\n---\n\n## Overview\n\nThis Adyen Docs snapshot explains redirect 3D Secure 2 authentication for card payments in an iOS app using the Redirect Component and the merchant-server Checkout API `/payments` and `/payments/details` calls. It assumes the merchant has integrated the iOS Card Component or built a card-entry UI. See [[adyen]], [[adyen-3d-secure]], and [[adyen-ios-sdk]]. This unversioned website guide is distinct from the separately versioned [[adyen-3ds2-ios-sdk]] native transaction and challenge runtime.\n\n## Key takeaways\n\n- The iOS card flow collects the card details and additional 3DS2 data, then the merchant server sends `/payments` with `channel: \"iOS\"`, an app return URL, and browser information. The page marks some fields conditionally required for Visa and JCB, including holder name and shopper IP; it requires shopper email or a qualifying phone number for those transactions. It recommends collecting billing address in advance and says the card schemes require it. The field table and test request are at the raw locator below.\n- The merchant checks the `/payments` response. With no `action`, this guide describes the transaction as exempt or outside 3DS scope and routes the `resultCode` to shopper presentation. For a `redirect` action, the merchant passes it to the iOS app and the persisted Redirect Component handles the shopper handoff.\n- When the shopper returns to the app, the app delegate informs the Redirect Component. After its `didProvide` callback, the client sends that data to the merchant server, which calls `/payments/details`. The guide distinguishes Checkout API v67 and later, where this call retrieves the result after authentication, from earlier versions, where the call containing payment data completes the payment. Neither the redirect nor the callback alone establishes a successful payment.\n- Present the synchronous `resultCode` from `/payments` or `/payments/details`; the payment outcome also arrives asynchronously through a webhook. If manual capture is in use, an `Authorised` result still requires capture.\n- For live requests in the same payment session, keep `/payments` and `/payments/details` in the same live endpoint region. The guide warns that mixing regions can cause 3DS authentication errors.\n\n## Detail locators\n\n- Opening and `## Requirements`, raw lines 15\u201332 \u2014 iOS redirect purpose, Card Component or merchant UI prerequisite, and PSD2 guide route.\n- `## Collect additional information at checkout`, raw lines 34\u201353 \u2014 holder-name and billing-address guidance.\n- `## Make a payment`, raw lines 54\u2013594 \u2014 required and conditional 3DS2 request fields, test/API-library examples, and response routing by `action`.\n- `## Handle the redirect`, raw lines 595\u2013761 \u2014 component persistence, app-return callback, `didProvide`, server `/payments/details`, and Checkout API v67 boundary.\n- `## Present the payment result`, raw lines 762\u2013774 \u2014 synchronous result codes, webhook, and manual-capture qualification.\n- `## Test and go live`, raw lines 775\u2013782 \u2014 testing route, go-live route, and same-region live endpoint warning.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-3d-secure]] \u2014 merchant 3DS2 integration routes.\n- [[adyen-ios-sdk]] \u2014 separate package-qualified iOS checkout SDK architecture.\n- [[adyen-3ds2-ios-sdk]] \u2014 separate native 3DS2 transaction/challenge runtime evidence.\n- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-drop-in]] \u2014 Web Drop-in redirect guide with a different client return path.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-component/2026-09-15|Adyen Docs \u2014 Redirect 3DS2 iOS Components (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Use our Redirect Component to redirect the shopper to perform 3D Secure 2 authentication.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-component/2026-09-15.md:19"
+    },
+    {
+      "text": "1. Make sure that you have integrated our [Card Component](/payment-methods/cards/ios-component), or [built your own UI](/payment-methods/cards/api-only) for collecting shopper's card details.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-component/2026-09-15.md:31"
+    },
+    {
+      "text": "From your server, make a POST [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request providing the `data` from the `didProvide` method from your client app.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-component/2026-09-15.md:626"
+    },
+    {
+      "text": "On Checkout API v67 and later, the payment is authorized after the shopper completes authentication. You make a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request to get the payment result. On earlier versions, you need to complete the payment by making a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request containing payment data.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-component/2026-09-15.md:628"
+    },
+    {
+      "text": "Using different regions for [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) and [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) requests may result in errors when authenticating with 3D Secure.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-component/2026-09-15.md:781"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-3d-secure-ios-components-redirect-source",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios-component]] \u2014 iOS Components redirect 3DS2 guide for merchant-server Checkout API, app return and `didProvide` handoff, v67 result boundary, and live endpoint region consistency (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios-component/2026-09-15.md",
+  "raw_sha256": "2310718ace0ff2efcc31f61c2aebfea497d25e81d1861be0ee365df69ac35359",
+  "status": "candidate_ready"
+}

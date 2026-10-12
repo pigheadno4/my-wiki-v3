@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-3d-secure-redirect-3ds2-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Android Redirect 3DS2 Component \u2014 earlier versions\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, 3d-secure, android, redirect, components, earlier-versions]\n---\n\n## Overview\n\nThis earlier-version Adyen guide explains redirect 3D Secure 2 for card payments in an Android app using the Redirect Component: collect additional shopper data, send a server-side `/payments` request with Android 3DS parameters, hand a redirect `action` to the app, and submit returned details from the server. It routes to [[adyen-3d-secure]]. The page says it describes **Android Drop-in v4.x.x** even though its title and steps refer to Components; keep that wording distinction when selecting integration guidance.\n\n## Key takeaways\n\n- A Card Component or merchant-built card UI is a prerequisite. The page strongly recommends collecting holder name, billing address, and email in advance for authentication performance; its field table distinguishes generally required fields from conditional Visa/JCB fields. In the Card Component path it instructs `holderNameRequired=true`. See raw lines 29\u201372 for the specific conditions, phone-number fallback and format, `returnUrl` constraints, and browser-information fields.\n- If `/payments` has no `action`, this guide calls the transaction exempt or out of scope for 3DS2 and routes to `resultCode`; this is not itself proof of authorization. A `redirect` action goes to the client Redirect Component, which returns `actionComponentData.details` after the shopper comes back.\n- **Checkout API version changes the server step.** For v67+, the guide says authentication completion authorizes the payment, and the server calls `/payments/details` to obtain the result. For v66 and earlier, the server must include `paymentData` in `/payments/details` to complete the payment. The v66 action table says to store `action.paymentData` on the server, but the later details bullet describes a value stored in the client app; the snapshot is internally inconsistent about storage location. Resolve that version-specific handoff before implementing an old integration.\n- Present the `resultCode` from `/payments` or `/payments/details` and handle the asynchronous payment webhook separately. If the result is `Authorised` and manual capture is configured, capture is still required. The test examples and library snippets in this older guide do not establish current SDK compatibility, live environment configuration, or a completed payment.\n\n## Detail locators\n\n- **Introduction and Requirements, raw lines 17\u201334** \u2014 Android redirect purpose, v4.x.x label, Card Component or own-UI prerequisite, and PSD2 guide route.\n- **Collect additional parameters / Make a payment, raw lines 36\u201372** \u2014 recommended shopper data, Card Component setting, Android channel, return URL, browser info, conditional Visa/JCB fields, and phone-number handling.\n- **Payment examples, raw lines 75\u2013568** \u2014 test endpoint and version-labeled curl, Java, PHP, C#, Node, Go, Python, Ruby, and TypeScript snippets; examples are not version-independent contracts.\n- **Checkout API v67+ and v66-earlier response tabs, raw lines 569\u2013632** \u2014 no-action versus redirect branches and the older `action.paymentData` handoff.\n- **Handle the redirect, raw lines 633\u2013773** \u2014 client return, server `/payments/details`, version-dependent completion/result behavior, and response examples.\n- **Present the payment result / Test and go live, raw lines 774\u2013789** \u2014 result codes, asynchronous webhook, manual-capture follow-up, and test-card route.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[adyen-android-sdk]]\n- [[adyen-3ds2-android-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions/2026-09-15|Adyen Docs \u2014 Redirect 3DS Components integration, earlier versions (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This page describes the integration steps for [Android Drop-in v4.x.x](/online-payments/release-notes).",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions/2026-09-15.md:27"
+    },
+    {
+      "text": "For higher authentication rates, we strongly recommend that you collect the card holder name, the shopper billing address and email address in advance in your payment form.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions/2026-09-15.md:38"
+    },
+    {
+      "text": "Store the `action.paymentData` on your server.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions/2026-09-15.md:603"
+    },
+    {
+      "text": "On Checkout API v67 and later, the payment is authorized after the shopper completes authentication. You make a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request to get the payment result. On earlier versions, you need to complete the payment by making a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request containing payment data.",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions/2026-09-15.md:642"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions/2026-09-15.md:776"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-3d-secure-android-redirect-earlier-source",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-component-earlier-versions]] \u2014 earlier-version Android Redirect Component guide (2026-09-15 webpage snapshot) for the Checkout API v66/v67 details transition and qualified v4.x.x integration route.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide title/steps say Components while the opening version sentence says Android Drop-in v4.x.x; do not silently equate those SDK integration labels.",
+          "For Checkout API v66 and earlier, the action table says store paymentData on the server but the later details bullet says it was stored in the client app; retain this discrepancy in the source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "6865d27b75dffb4cc944240597535a413217b9a62cb70bba5a40445d55a447f7",
+  "status": "candidate_ready"
+}

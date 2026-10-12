@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-online-payments-online-payouts-instant-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Instant Card Payouts\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/online-payouts/instant-payouts\"\nraw_files:\n  - \"adyen/docs/online-payments/online-payouts/instant-payouts/2026-09-15.md\"\ntags: [adyen, payouts, cards, instant-payouts]\n---\n\n## Overview\n\nAdyen's instant card payouts guide describes the legacy Payout API `/payout` flow for paying out to eligible Mastercard and Visa cards, across funds disbursements and money transfers. The 2026-09-15 webpage snapshot explicitly says Adyen is no longer accepting **new Payout API integrations**: new integrations should use the **Transfers API** card-payout guide, while existing Payout API integrations should contact Adyen about migration. This page is evidence for the documented legacy flow, not approval or live execution.\n\n## Key takeaways\n\n- In the documented Payout API flow, Adyen returns the result of the payout attempt immediately; it says funds are made available within 30 minutes, typically within 2 minutes, depending on the issuer. That timing is a documentation claim, not a guarantee for a particular card or account.\n- Enablement requires contacting Adyen, compliance approval and Adyen-side configuration; a local entity is often required. The guide configures additional response data, checks card payout eligibility with a Checkout API zero-value `/payments` request, and tokenizes card details for recurring payouts before calling `/payout`. Raw card data may be passed only when fully PCI compliant; otherwise the guide directs use of Card Component for secure collection and encryption.\n- Funds disbursements pay sellers, customers or freelancers for goods or services. Money transfers move funds between individuals or from a virtual wallet/account onto a card. The latter scenarios use different `fundSource` data for the sender card versus the wallet/account; the Visa money-transfer instructions include the preceding pay-in's `networkTxReference`. These are payout use cases, not checkout purchase flows.\n- The documented service is domestic by default: recipient card use must be in its issuing country/region and currency; EEA card payouts within the EEA count as domestic. Cross-border cases require contacting Adyen, and in most cases a local entity. The guide lists supported recipient countries/regions. Additional validation for transfers between different entities can decline requests with nonconforming data.\n\n## Detail locators\n\n- `## Check if the card is eligible for payouts`: `payoutEligible` values (`Y`, Mastercard domestic-only `D`, `N`, `U`) and `fundsAvailability` (`I`, `N`), including the Mastercard condition; `### Tokenize the card details` gives the recurring setup.\n- `## Funds disbursements`: one-off and recurring `/payout` request and response examples. `## Money transfers`: individual-to-individual, wallet/account-to-card and recurring examples, with `fundSource` and Visa pay-in linkage. The examples use test endpoints and versioned SDK snippets; they are examples, not production qualification.\n- `## Data validation` and `## Supported countries/regions and currencies`: field validation, domestic and cross-border boundary, and recipient list.\n\n## Related\n\n- [[adyen]]\n- [[adyen-card-payouts]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/online-payouts/instant-payouts/2026-09-15|Adyen instant card payouts webpage snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "We are no longer accepting new integrations with the [Payout API](https://docs.adyen.com/api-explorer/Payout/latest/overview); use the [Transfers API](https://docs.adyen.com/api-explorer/transfers/latest/overview) instead.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/instant-payouts/2026-09-15.md:19"
+    },
+    {
+      "text": "Using instant card payouts often requires a [local entity](#supported-countries), and requires compliance approval and additional configuration on our end.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/instant-payouts/2026-09-15.md:46"
+    },
+    {
+      "text": "These two use cases require different fields to be submitted in the payout request, as you can see in the examples.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/instant-payouts/2026-09-15.md:41"
+    },
+    {
+      "text": "The difference between these scenarios is the funding source, and what you send in the `fundSource` object.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/instant-payouts/2026-09-15.md:1463"
+    },
+    {
+      "text": "You can only make domestic payouts. This means that you can only pay out to a card when it is used in the country/region of its issue, and in the currency of that country/region.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/instant-payouts/2026-09-15.md:3494"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-card-payouts-topic",
+        "target_path": "wiki/concepts/adyen-card-payouts.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept: ## Overview",
+        "proposed_markdown": "---\ntitle: \"Adyen Card Payouts\"\ntype: concept\ncategory: technology\ntags: [adyen, payouts, cards]\n---\n\n## Overview\n\nAdyen card payouts send funds to eligible recipient cards for disbursements or money transfers. The 2026-09-15 instant card payouts guide documents a legacy Payout API `/payout` flow, but states Adyen no longer accepts new Payout API integrations and directs new integrations to the Transfers API. Existing Payout API integrators are directed to contact Adyen about migration. The legacy guide is subject to Adyen enablement, compliance approval, card eligibility, data validation and domestic payout limits; cross-border cases require contacting Adyen.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-online-payouts-instant-payouts]] \u2014 Adyen instant card payouts webpage, legacy Payout API guide with Transfers API migration direction, use cases and eligibility/region limits (webpage snapshot, 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "No existing Adyen payout concept appears in the provider index; this proposes a distinct concept because the existing adyen-online-payments concept covers accepting payments, not paying recipients. The coordinator should add its index route if creating the page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/online-payouts/instant-payouts/2026-09-15.md",
+  "raw_sha256": "1cd186fd05c4540763f073fce911f1329e16195500a0542a7c28f4d26e4aa375",
+  "status": "candidate_ready"
+}

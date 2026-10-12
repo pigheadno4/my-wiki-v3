@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-online-payments-donations-integration-options-advanced-flow",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Donations with Advanced flow\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/donations/integration-options/advanced-flow\"\nraw_files:\n  - \"adyen/docs/online-payments/donations/integration-options/advanced-flow/2026-09-15.md\"\ntags: [adyen, donations, giving, advanced-flow, web-components]\n---\n\n## Overview\n\nThis Adyen Giving guide covers donations with Web Components or an API-only Advanced-flow integration. A donation is a separate transaction using the shopper's original payment method. The guide distinguishes the Giving Component, which shows a donation form after the original payment, from a merchant-built API-only form that can offer fixed-amount or round-up donations before or after checkout. See [[adyen-giving]] and the two separately headed routes in the raw snapshot.\n\n## Key takeaways\n\n- The Web Components route specifies Web Components v5.0.0 or later and Checkout API v67 or later; the API-only route specifies Checkout API v67 or later. Both routes also list the Donation campaigns manager Customer Area role, Standard and Adyen Giving merchant webhooks, supported payment-method integration, and an active donation campaign. General Giving requirements remain in a separately linked guide.\n- In the API-only route, the merchant server retrieves active campaigns with POST `/donationCampaigns`, presents the form, and sends POST `/donations` only after the original payment is authorized. For a post-checkout offer, the shopper confirms the donation first. Campaign lookup after payment is conditioned on a `donationToken` in `/payments` or, for iDEAL, `/payments/details`.\n- The donation request uses the original payment reference and donation token. The Apple Pay subsection specifies a different `paymentMethod.type` based on the returned brand variant; use its own field table rather than the general card/iDEAL example.\n- The donation outcome is delivered through the Adyen Giving merchant `DONATION` webhook. A synchronous `/donations` response may be `completed`, `pending`, or `refused`; the guide says to wait for the webhook before showing card success, and says an iDEAL webhook can arrive a day or more later.\n- **Documentation inconsistency:** Under the Advanced-flow Web Components heading, the \u201cHow it works\u201d sequence creates a payment session and links to Sessions-flow setup, while later sections describe explicit campaign lookup and `/donations` requests. Do not combine those descriptions into one assured implementation recipe. The two general `/donations` curl examples also omit a comma before `merchantAccount` (raw lines 314\u2013315 and 718\u2013719), so they are not copy-ready JSON.\n\n## Detail locators\n\n- **Web Components \u2192 Requirements and How it works, raw lines 19\u201390** \u2014 component version, role/webhooks/setup, post-payment presentation, and the Sessions-flow inconsistency.\n- **Web Components \u2192 Get details / Show Giving / Make a donation, raw lines 91\u2013371** \u2014 authorized-payment and `donationToken` condition, campaign lookup, Component configuration, callbacks, request fields, and Apple Pay variant.\n- **Web API only \u2192 Intro / Requirements / How it works, raw lines 429\u2013498** \u2014 merchant-owned form, version/setup, and separate pre-checkout and post-checkout sequences.\n- **Web API only \u2192 Get details / Present the option, raw lines 499\u2013679** \u2014 campaign response shapes, form requirements, round-up calculation, decline route, and iDEAL bank-statement notice.\n- **Web API only \u2192 Make a donation / Get the donation outcome, raw lines 680\u2013820** \u2014 authorization and confirmation timing, field tables, Apple Pay variation, response status, webhook outcome, and iDEAL delay.\n- **Test and go live, raw lines 821\u2013823** \u2014 Adyen's test-card route before live integration.\n\n## Related\n\n- [[adyen]]\n- [[adyen-giving]]\n- [[adyen-online-payments]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/donations/integration-options/advanced-flow/2026-09-15|Adyen Docs \u2014 Donations with Advanced flow (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Accept donations using the Advanced flow with Web Components or API only.",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/advanced-flow/2026-09-15.md:17"
+    },
+    {
+      "text": "Web Components v5.0.0 or later using the Advanced flow",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/advanced-flow/2026-09-15.md:37"
+    },
+    {
+      "text": "2. Your server [creates a payment session](/online-payments/build-your-integration/sessions-flow/?platform=Web\\&integration=Components#create-a-payment-session).",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/advanced-flow/2026-09-15.md:49"
+    },
+    {
+      "text": "With an API-only integration, you can accept donations for fixed amounts, or allow the shopper to round up their transaction amount as a donation. You can present the option to donate before or after the shopper completes the payment for the original transaction.",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/advanced-flow/2026-09-15.md:439"
+    },
+    {
+      "text": "For cards, you can show the shopper if their donation is successful after you get the webhook message. For iDEAL, you get the webhook event a day or more later. You can send the outcome to the shopper using email or mobile messaging.",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/advanced-flow/2026-09-15.md:782"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-giving-new-concept-advanced-flow",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "durable_fact",
+        "anchor": "New Adyen Giving concept; no donation/Giving concept in the inspected root or Adyen index",
+        "proposed_markdown": "---\ntitle: \"Adyen Giving\"\ntype: concept\ncategory: technology\ntags: [adyen, giving, donations, checkout]\n---\n\n## Overview\n\nAdyen Giving lets a shopper make a separate donation transaction using the payment method used for an original purchase. The captured Advanced-flow guide covers fixed-amount and round-up donations through either Web Components or a merchant-built API-only form.\n\n## Advanced-flow routes\n\nThe Web Components route presents the Giving Component after the original payment. The API-only route lets the merchant present a donation option before or after checkout, then sends the donation request after the original payment is authorized; a post-checkout request follows shopper confirmation. Both routes depend on supported payment methods, an active campaign, the documented Customer Area role and webhooks, and their stated minimum integration versions. The Adyen Giving merchant `DONATION` webhook provides the donation outcome; iDEAL delivery may take a day or more. The 2026-09-15 guide's Web Components sequence also points to Sessions-flow setup despite its Advanced-flow heading, so exact implementation steps require route-specific verification.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-donations-integration-options-advanced-flow]] \u2014 Adyen Advanced-flow donations guide for Web Components and API-only presentation, prerequisites, campaign/request flow, and webhook outcome (webpage snapshot, 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Proposed new concept may overlap concurrent Giving-source workers; coordinator should merge one provider concept rather than create duplicates.",
+          "The Web Components section mixes Advanced-flow labeling with Sessions-flow steps; retain this conflict in any consolidated concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/donations/integration-options/advanced-flow/2026-09-15.md",
+  "raw_sha256": "18a304c0e8f14aa8bbe93e224b6290d9b3bb0acecadd844c2e40c8f665c3933c",
+  "status": "candidate_ready"
+}

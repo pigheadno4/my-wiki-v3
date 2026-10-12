@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-handle-risk-rule-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Fraud Results in API Responses and Webhooks\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/handle-risk-rule-notifications\"\nraw_files:\n  - \"adyen/docs/risk-management/handle-risk-rule-notifications/2026-09-15.md\"\ntags: [adyen, risk-management, fraud, api-responses, webhooks]\n---\n\n## Overview\n\nThis Adyen risk-management snapshot explains how to configure fraud and risk-rule results in online-payment API responses and Standard webhooks. Returning fraud results is off by default. Enabling and formatting the additional data changes response and webhook payloads; it does not itself change a payment or risk decision. See [[adyen]], [[adyen-risk-management]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The documented prerequisites are an online-payments integration, enabled risk management, configured and enabled webhooks, and the appropriate Customer Area roles for webhook/response or risk-setting changes. Details about custom risk rules and `fraudRiskLevel` require Protect premium. This snapshot does not establish premium entitlement or live configuration for a particular account.\n- After **Developers > Additional data > Risk > Fraud result** is enabled, the API response carries risk information in `additionalData` and triggered-rule details in `fraudResult`; the webhook carries both risk information and fraud results in `additionalData`. Keep the API response and webhook object paths distinct.\n- Option 1 uses one format for all triggered risk-check lines. Option 2 additionally enables **Change risk result format for custom rules** so triggered custom rules are represented separately. Option 3 is a separate, optional Standard-webhook **Include Risk Data** setting that adds the custom `riskdata` fields and values from the request to webhook `additionalData`; it affects webhooks only.\n- `fraudResultType` can be `GREEN`, `AMBER`, or `RED`; for Protect premium, `AMBER` denotes a transaction sent to case management for manual review. The listed `fraudRiskLevel` classification is tied to the premium machine-learning fraud-risk rule. These values report risk evaluation or review state, not payment authorization or finality.\n- The page provides rule-name and score-value references and examples for each option. Some webhook code blocks omit commas between adjacent `additionalData` properties (for example, lines 119\u2013120 and 212\u2013215), so treat them as illustrative payload shapes rather than valid JSON fixtures.\n\n## Detail locators\n\n- Purpose, default-off behavior, prerequisites, role split, and premium limitation: lines 15\u201336.\n- Enabling Fraud result and response-versus-webhook object placement: lines 38\u201360. The settings matrix and option prerequisites: lines 62\u201394.\n- Option 1 one-format webhook and API examples: `## Option 1: One format for all risk checks`, lines 95\u2013183. Option 2 custom-rule split and examples: lines 184\u2013284.\n- Option 3 webhook-only custom `riskdata` fields and example: lines 285\u2013330. Rule-name/action/premium reference: lines 331\u2013371.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-risk-management]] \u2014 Protect configuration and reciprocal source route.\n- [[adyen-webhooks]] \u2014 Standard webhook delivery and handling concept.\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/handle-risk-rule-notifications/2026-09-15|Adyen fraud results in API responses and webhooks (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Returning fraud results is not turned on by default. When you configure your account to include risk information, it affects the format of both webhooks and the payment response.",
+      "location": "raw/adyen/docs/risk-management/handle-risk-rule-notifications/2026-09-15.md:23"
+    },
+    {
+      "text": "You can only return information about custom risk rules and the fraud risk level when you have enabled [premium features](/risk-management/configure-risk-settings#risk-general).",
+      "location": "raw/adyen/docs/risk-management/handle-risk-rule-notifications/2026-09-15.md:34, `## Requirements` limitations row"
+    },
+    {
+      "text": "* In the API response, the `additionalData` object contains risk information, and the `fraudResult` object shows which risk rules triggered.",
+      "location": "raw/adyen/docs/risk-management/handle-risk-rule-notifications/2026-09-15.md:53, `## Enable risk results in the API response and webhooks`"
+    },
+    {
+      "text": "If you want to break down [custom risk rules separately](#version-2) in the [API response](#api-response-example-1) and [webhooks](#notification-example-1), you also have to enable the following risk setting in your [Customer Area](https://ca-test.adyen.com/):",
+      "location": "raw/adyen/docs/risk-management/handle-risk-rule-notifications/2026-09-15.md:76, `### Option 2`"
+    },
+    {
+      "text": "When you turn on the optional setting **Include Risk Data** in your webhook configuration, if you use custom risk rules, the webhook also contains the custom `riskdata` fields sent in the request, and their values.",
+      "location": "raw/adyen/docs/risk-management/handle-risk-rule-notifications/2026-09-15.md:287, `## Option 3: Return risk data in webhooks`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-rule-results-reciprocal",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-handle-risk-rule-notifications]] \u2014 Adyen online-payment risk results in API responses and Standard webhooks, including optional formatting and Protect premium limits (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/handle-risk-rule-notifications/2026-09-15.md",
+  "raw_sha256": "a69d91d9c349c759e96749937607f575e22e4478d08e97814e670c11937397fb",
+  "status": "candidate_ready"
+}

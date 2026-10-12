@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-risk-management-disputes-api-test-applicable-dispute-reasons",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Test a Chargeback Scenario\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/disputes-api/test-applicable-dispute-reasons\"\nraw_files:\n  - \"adyen/docs/risk-management/disputes-api/test-applicable-dispute-reasons/2026-09-15.md\"\ntags: [adyen, disputes, chargebacks, testing, webhooks, disputes-api]\n---\n\n## Overview\n\nThis [[adyen]] guide explains how to simulate selected chargeback scenarios in the test environment, observe their webhooks, and practice accepting or defending the simulated dispute through the Disputes API or test Customer Area. It is a test fixture route under [[adyen-payment-testing]], with dispute-management context at [[adyen-risk-management]]; it does not establish live chargeback timing, merchant eligibility, or a real defense outcome.\n\n## Key takeaways\n\n- The test sequence is to choose a scenario, send a test payment with a scenario-triggering `paymentMethod.holderName`, capture that payment, monitor the resulting webhook, then use test dispute data to accept or defend. A chargeback with a reason code, without a code, a reversal, and a second chargeback are listed. Not all dispute types can be simulated; ACH Direct Debit is routed to separate instructions.\n- The raw gives `holderName` patterns for a chargeback with the payment's value and currency, or with a specified quantity in minor units and currency. For custom amounts, partial chargebacks have a maximum 50% difference from the test payment; greater-than-payment chargebacks have a maximum 20% difference. Exact trigger strings and example amounts are in the raw, not general production cardholder names.\n- The payment response `pspReference` is used to make the test capture request. The capture response has a distinct capture `pspReference`; a later dispute webhook has its own dispute `pspReference`. Keep these object identities separate when correlating the simulated payment and dispute.\n- After capture, the guide describes a `CAPTURE` webhook and a test payment moving through SentforSettle and Settled to Chargeback; it says that process can take up to 24 hours. A `NOTIFICATION_OF_CHARGEBACK` webhook is the illustrated chargeback signal, and its sample payload is an example rather than a universal promise for every scenario.\n- Disputes API testing requires an API key credential with the **API dispute management** role; Customer Area dispute management needs **Merchant dispute management** or **Risk admin**. The guide also calls for a configured Standard webhook with dispute events, and notes a RevenueProtect classic-risk check that may need temporary adjustment for nonalphabetic `holderName` triggers.\n\n## Detail locators\n\n- **Scope, separate ACH route, prerequisites, and simulation limits:** raw lines 15\u201342.\n- **Test sequence, trigger patterns, custom amount constraints, and examples:** raw lines 43\u2013113.\n- **Test `/payments` example and original payment reference:** raw lines 115\u2013146.\n- **Capture API and distinct capture reference:** raw lines 148\u2013170.\n- **Webhook timing, illustrative dispute payload, and accept/defend routes:** raw lines 172\u2013229.\n\n## Related\n\n- [[adyen]]\n- [[adyen-payment-testing]]\n- [[adyen-risk-management]]\n- [[source-adyen-docs-risk-management-disputes-api-dispute-notifications]]\n- [[source-adyen-docs-risk-management-disputes-api-disputes-api-reference]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/disputes-api/test-applicable-dispute-reasons/2026-09-15|Adyen Test a chargeback scenario \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Not all dispute types can be simulated.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/test-applicable-dispute-reasons/2026-09-15.md:39"
+    },
+    {
+      "text": "To test a chargeback with the same value and currency as the payment request, use the following pattern for the `holderName`:",
+      "location": "raw/adyen/docs/risk-management/disputes-api/test-applicable-dispute-reasons/2026-09-15.md:66"
+    },
+    {
+      "text": "For partial chargebacks, the maximum difference between the chargeback and the test payment amount is 50 percent.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/test-applicable-dispute-reasons/2026-09-15.md:83"
+    },
+    {
+      "text": "`pspReference`: the PSP reference associated with this capture request. Note that this is different from the PSP reference associated with the original payment request.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/test-applicable-dispute-reasons/2026-09-15.md:170"
+    },
+    {
+      "text": "After you capture the test payment, you receive a [CAPTURE](https://docs.adyen.com/api-explorer/Webhooks/latest/post/CAPTURE) webhook message. The test payment then goes through **SentforSettle**, **Settled**, and finally the **Chargeback** status. This process can take up to 24 hours to complete.",
+      "location": "raw/adyen/docs/risk-management/disputes-api/test-applicable-dispute-reasons/2026-09-15.md:174"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-chargeback-test-route",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-disputes-api-test-applicable-dispute-reasons]] \u2014 test-environment chargeback simulation through `holderName`, capture, dispute webhooks, and test accept/defend actions, with scenario and timing limits (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/disputes-api/test-applicable-dispute-reasons/2026-09-15.md",
+  "raw_sha256": "fc8273d1b9ba6145c847b293a9510256c2da2d2b9658116615605de01e77069b",
+  "status": "candidate_ready"
+}

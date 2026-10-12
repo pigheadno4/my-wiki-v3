@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-13] ingest | Adyen website C02
+
+- Fifty approved General Docs retrieval sources; 47 first-pass approvals and three targeted second attempts. Added 9 provider concepts, reconciled Giving and Account Updater scope, and closed catalog/count updates at 114 = 100 website + 14 GitHub. Raw unchanged. Fixed query and exemplar evidence plus validation: `tracking/ingest/adyen/adyen-campaign-02/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-12] maintenance | GitHub monorepo index ordering
 
 - Corrected same-date shared-package/core-only ordering and added a reproducing regression; generated PayPal JS last accepted ref now shows core `11.2.2`. No raw or ingest-policy change. Details [[paypal-log]].

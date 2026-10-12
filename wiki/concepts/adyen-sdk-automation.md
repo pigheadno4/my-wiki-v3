@@ -53,6 +53,9 @@ This repository is distinct from `adyen-sdk-automation`: it provides generic rep
 
 ## Related
 
+- [[source-adyen-docs-development-resources-libraries]] — merchant-facing webpage snapshot (2026-09-15) for optional server API libraries, language installation and TEST request examples, and Terminal API cloud/local library choices; version-specific runtime claims remain with downstream SDK sources.
+
+
 - [[source-github-adyen-sdk-automation]] - cumulative exact-commit source evidence
 - [[changelog-github-adyen-sdk-automation]] - commit-qualified automation history
 - [[source-github-release-automation-action]] - reusable GitHub release-orchestration action

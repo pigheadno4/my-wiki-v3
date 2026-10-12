@@ -1,0 +1,67 @@
+{
+  "job_id": "docs-online-payments-donations-integration-options-sessions-flow",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Donations with Sessions flow\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/donations/integration-options/sessions-flow\"\nraw_files:\n  - \"adyen/docs/online-payments/donations/integration-options/sessions-flow/2026-09-15.md\"\ntags: [adyen, giving, donations, sessions-flow, web-drop-in, web-components]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] Giving guide describes donations in a Web Sessions integration using either Drop-in or Components. After a successful original payment, the UI can offer an eligible shopper an active campaign; a donation uses the same payment method as the original purchase and is a separate transaction. The two routes use Sessions and have their own UI configuration, while the Adyen Giving merchant `DONATION` webhook reports the donation outcome. See [[adyen-giving]].\n\n## Key takeaways\n\n- Both routes specify Web v6.36.0 or later with Sessions and Checkout API v72 or later, the Donation campaigns manager Customer Area role, Standard and Adyen Giving merchant webhooks, a supported payment-method integration, and an active campaign. The guide also points to separate general Giving requirements. It does not prove a particular merchant is configured, that the shopper is eligible, or that a donation succeeds.\n- Neither route requires donation-specific parameters in the merchant's `/sessions` request. Drop-in or the Component handles campaign presentation and donation processing after a successful original payment when the shopper is eligible and an active campaign is present. The offer can be a fixed amount or a round-up.\n- The checkout `donation` configuration is optional. If included to customize behavior and receive client results, both `onDonationSuccess` and `onDonationFailure` handlers are required in the documented configuration. `onDonationSuccess` covers both a completed donation and a shopper decline; its `didDonate` value distinguishes them. The separate `DONATION` webhook carries the donation outcome and `originalReference` for association with the original payment.\n- Drop-in mounts the donation form in its own container by default and handles the full donation flow without separately creating a Donation Component. The Web Component also mounts the form in the original Component container by default; its route additionally shows `donation.autoMount: false` and creation of a new Donation Component in `onPaymentCompleted` to use a separate container when `result.askDonation` is true.\n- The earlier Advanced-flow guide's Web Components section points into Sessions setup despite its Advanced-flow heading. This Sessions guide confirms a distinct Sessions route; do not combine the Advanced-flow request steps with this guide's automatic Sessions handling as one implementation recipe.\n\n## Detail locators\n\n- **Drop-in scope and requirements** \u2014 `## Web Drop-in`, raw lines 19-46; includes version, role, webhook, payment-method, and campaign conditions.\n- **Drop-in sequence and configuration** \u2014 `## How it works` through `## Add Giving configuration`, raw lines 48-148; covers `/sessions`, eligible campaign presentation, optional `donation` object, callbacks, and default mounting.\n- **Drop-in webhook outcome** \u2014 `## Get the donation outcome`, raw lines 150-191; `DONATION`, `success`, and `originalReference`.\n- **Web Component scope and sequence** \u2014 `## Web Components`, raw lines 205-277; its own versions, conditions, and automatic donation flow.\n- **Web Component configuration and alternate container** \u2014 `## Add Giving configuration` through `### Show the donation form in a separate container`, raw lines 279-364; optional configuration, handlers, `autoMount`, and `onPaymentCompleted`.\n- **Web Component webhook and testing route** \u2014 raw lines 366-419.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-giving]]\n- Related source: [[source-adyen-docs-online-payments-donations-integration-options-advanced-flow]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/donations/integration-options/sessions-flow/2026-09-15|Adyen Docs \u2014 Donations with Sessions flow (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "With the Sessions flow, Drop-in handles the donation flow automatically. After a successful payment, if the shopper is eligible to donate, Drop-in shows the donation form to the shopper.",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/sessions-flow/2026-09-15.md:25"
+    },
+    {
+      "text": "You do not need to pass any donation-specific parameters in your `/sessions` request. Drop-in manages the full donation flow, including presenting the campaign and processing the donation.",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/sessions-flow/2026-09-15.md:31"
+    },
+    {
+      "text": "The `donation` configuration is optional, but if you include it, you must include the event handlers to get donation outcomes on your client website.",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/sessions-flow/2026-09-15.md:99"
+    },
+    {
+      "text": "With the Sessions flow, the Component handles the donation flow automatically. After a successful payment, if the shopper is eligible to donate, the Component shows the donation form to the shopper.",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/sessions-flow/2026-09-15.md:211"
+    },
+    {
+      "text": "To receive these webhook messages, enable the [Adyen Giving merchant webhook](/development-resources/webhooks/webhook-types#other-webhooks), which includes `eventCode`: **DONATION**.",
+      "location": "raw/adyen/docs/online-payments/donations/integration-options/sessions-flow/2026-09-15.md:372"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-giving-sessions-principal-flow",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Sources",
+        "proposed_markdown": "## Sessions-flow routes\n\nThe 2026-09-15 Sessions guide covers Web Drop-in and Components on Web v6.36.0 or later with Checkout API v72 or later. After a successful original payment, an eligible shopper can be shown an active donation campaign; the UI handles the separate donation flow without donation-specific `/sessions` parameters. Optional `donation` configuration carries client callbacks, while the Adyen Giving merchant `DONATION` webhook provides the donation outcome. Components can place the donation form in a separate container by disabling `autoMount`; Drop-in manages its form in the Drop-in container. The separate Advanced-flow guide's Component sequence points into Sessions setup, so its explicit API steps should not be read as this Sessions route.\n\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the prior Advanced-flow documentation inconsistency visible; the two route descriptions should not be collapsed into one flow."
+        ]
+      },
+      {
+        "update_id": "adyen-giving-sessions-source-route",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-donations-integration-options-sessions-flow]] \u2014 2026-09-15 Adyen webpage guide to Web Drop-in and Components donations using Sessions, optional UI callbacks and the merchant `DONATION` webhook.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/donations/integration-options/sessions-flow/2026-09-15.md",
+  "raw_sha256": "573b8fdcd62e9503b84d50eb675e6dc19485ca93b2765382c579c8837be81625",
+  "status": "candidate_ready"
+}

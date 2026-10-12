@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 64
+source_count: 114
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, and testing. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; detailed fields and examples remain in each source's immutable raw evidence. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+One hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -130,8 +130,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 50 (Adyen C01).
-- Total source summaries: 64 (50 website + 14 GitHub).
+- Ingested website documentation sources: 100 (Adyen C01 + C02).
+- Total source summaries: 114 (100 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 21
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -193,6 +193,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-online-payments-psd2-sca-compliance-and-implementation-guide]] — Adyen docs: PSD2 SCA compliance guide (webpage, 2026-10-11)
 - [[source-adyen-docs-development-resources-testing]] — Testing your online payments integration (webpage, 2026-10-11)
 - [[source-adyen-docs-development-resources-api-authentication]] — Adyen API Authentication Types (webpage, 2026-10-10)
+
+### Website documentation — Campaign 02
+
+- [[source-adyen-docs-risk-management]] — Adyen Docs: Risk management (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-online-payouts]] — Adyen Online Payouts (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-donations]] — Adyen Docs: Donations using Giving (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-auto-rescue]] — Adyen Docs: Auto Rescue (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-account-updater]] — Adyen Docs: Account Updater (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-online-payouts-instant-payouts]] — Adyen Instant Card Payouts (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-error-codes]] — Adyen Error Codes and Messages (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-3d-secure-api-reference]] — Adyen 3D Secure 2 API reference (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-test-cards-and-credentials-alternative-payment-method-credentials]] — Alternative payment methods test credentials | Adyen Docs (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-online-payouts-payouts-to-bank-accounts-and-wallets]] — Adyen Payouts in Stages to Bank Accounts and Wallets (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-donations-integration-options-advanced-flow]] — Adyen Docs: Donations with Advanced flow (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-pci-dss-compliance-guide]] — Adyen PCI DSS Compliance Guide (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-disputes-api-disputes-api-reference]] — Adyen Docs: Disputes API reference (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-component]] — Adyen Redirect 3D Secure Web Component Integration (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-tokenization-forward-payment-details]] — Adyen Docs: Forward payment details (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-paymentmethodvariant]] — Adyen PaymentMethodVariant Reference (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-dispute-and-fraud-monitoring]] — Adyen Risk and Dispute Analytics Monitoring (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-drop-in]] — Adyen Redirect 3DS Android Drop-in Integration (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios-drop-in]] — Redirect 3DS2 iOS Drop-in integration | Adyen Docs (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios-component]] — Adyen Redirect 3DS2 iOS Components Integration (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-component-earlier-versions]] — Adyen Docs: Android Redirect 3DS2 Component — earlier versions (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-auto-rescue-cards]] — Adyen Auto Rescue for Card Payments (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-auto-rescue-sepa]] — Adyen Docs: Auto Rescue for SEPA payments (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-web-v6-from-v3]] — Adyen Web v3 to v6 Upgrade Guide (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-ach-chargebacks]] — Adyen Docs: ACH Direct Debit chargebacks (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-migrating-payment-data-import-payment-details-for-recurring-payments]] — Adyen Import Payment Details for Recurring Payments (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-dynamic-3d-secure]] — Adyen Dynamic 3D Secure (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-disputes-api-dispute-notifications]] — Adyen Dispute Webhooks (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-understanding-disputes-dispute-process-and-flow]] — Dispute flow | Adyen Docs (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-web-v6-from-v4]] — Adyen Web v4 to v6 Upgrade Guide (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-web-v6]] — Adyen Docs: Upgrade to Adyen Web v6 (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-test-cards-and-credentials-test-card-numbers]] — Adyen Test Card Numbers (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-disputes-api]] — Adyen Docs: Manage disputes with the Disputes API (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-avs-checks]] — Adyen Address Verification System (AVS) Checks (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-donations-integration-options-sessions-flow]] — Adyen Docs: Donations with Sessions flow (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-surcharge-compliance]] — Adyen Surcharge Compliance Guide (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-case-management]] — Adyen Case Management (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-component]] — Adyen Redirect 3DS2 Android Component Integration (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-pci-dss-compliance-guide-script-security]] — Adyen Docs: Script security for ecommerce (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-account-updater-real-time-account-updater]] — Adyen Real Time Account Updater (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-paypal-chargebacks]] — Adyen Docs: PayPal chargeback process for marketplaces (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-visa-chargebacks]] — Adyen Visa Chargebacks Guide (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-mtls]] — Adyen Docs: Mutual authentication (webpage, 2026-10-12)
+- [[source-adyen-docs-online-payments-upgrade-your-integration]] — Adyen Upgrade Your Integration (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-handle-risk-rule-notifications]] — Adyen Fraud Results in API Responses and Webhooks (webpage, 2026-10-12)
+- [[source-adyen-docs-risk-management-disputes-api-test-applicable-dispute-reasons]] — Adyen Test a Chargeback Scenario (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-libraries]] — Libraries | Adyen Docs (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-currency-codes]] — Adyen Currency Codes, Minor Units, and FX Fees (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-testing-3d-secure-2-authentication]] — Adyen Docs: Testing 3D Secure 2 authentication (webpage, 2026-10-12)
+- [[source-adyen-docs-development-resources-security-incidents]] — Adyen Handling Security Incidents (webpage, 2026-10-12)
 
 ### GitHub repository evidence
 

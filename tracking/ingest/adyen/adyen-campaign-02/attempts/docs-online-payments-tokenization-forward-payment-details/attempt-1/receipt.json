@@ -1,0 +1,62 @@
+{
+  "job_id": "docs-online-payments-tokenization-forward-payment-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Forward payment details\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/tokenization/forward-payment-details\"\nraw_files:\n  - \"adyen/docs/online-payments/tokenization/forward-payment-details/2026-09-15.md\"\ntags: [adyen, tokenization, network-tokens, card-details, forwarding]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] webpage describes server-side Checkout `/forward` requests that send card details or network tokens to a PCI-compliant third party, such as another PSP. The merchant specifies the destination and placeholder-based request; Adyen substitutes the payment details, calls the third-party API on the merchant's behalf, and returns that party's response as a string. This is a forwarding route related to [[adyen-tokenization|Adyen tokenization]] and [[adyen-network-tokenization|network tokenization]], not proof of a third-party payment's success.\n\n## Key takeaways\n\n- The documented setup calls for an online-payments integration using Checkout API v70 or later, Checkout webservice and Merchant Recurring credential roles, Recurring tokens life cycle events webhooks, and contacting Adyen Support to enable card-detail or network-token forwarding. For live use, the endpoint region must match the Adyen token vault's storage region. The destination must be PCI compliant.\n- Card-detail forwarding covers an existing Adyen token, an existing token with CVC, or non-tokenized encrypted or unencrypted card details sent to the third party for its own tokenization. The non-tokenized route can optionally store the same card with Adyen via `options.tokenize`; sending unencrypted card details is conditioned on full PCI compliance. The field list and request examples are in the raw sections below.\n- Network-token forwarding requires an Adyen token for the same payment details and a conditional request body that falls back to the Adyen-stored card details if the network token is unavailable. The guide says a network token cannot be forwarded together with card details that have not yet been tokenized by Adyen. Its scenario table distinguishes forwarding a network token with a network transaction reference and cryptogram, a network token alone, and the Adyen-token fallback.\n- The `/forward` result includes the HTTP status Adyen received from the third party and passes the third-party response body as an unmodified string. Adyen-side errors and third-party no-response or timeout cases are separate diagnostic paths; a returned third-party status must be interpreted under that party's contract.\n- `options.dryRun` is described only for the test environment and masks sensitive information in the returned populated request. Several illustrative request/response snippets have incomplete JSON punctuation, so their structure should be checked against the current API reference before implementation.\n\n## Detail locators\n\n- **Scope and prerequisites** \u2014 opening description and `## Requirements`, raw lines 15-35; includes the PCI-compliant destination, Checkout API version, credential roles, webhook, Support enablement, Adyen token prerequisite for network forwarding, and live-region condition.\n- **Request ownership and response route** \u2014 `## How it works`, raw lines 37-46.\n- **Card-detail modes and request fields** \u2014 `## Forward card details`, raw lines 48-97; token, token plus CVC, non-tokenized details, destination parameters, `options.tokenize`, and test-only `options.dryRun`. Examples and the Adyen/third-party exchange follow at raw lines 98-258.\n- **Network-token constraints and fallback** \u2014 `## Forward network tokens`, raw lines 260-323; option fields, conditional body and scenarios. Request and forwarding examples follow at raw lines 324-477.\n- **Result and errors** \u2014 `## Handle the result`, raw lines 478-530; third-party status/body, conditional `storedPaymentMethodId`, separate Adyen and third-party error descriptions.\n- **Placeholder map** \u2014 `## Placeholder reference`, raw lines 532-561.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-tokenization]]\n- Related concept: [[adyen-network-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/tokenization/forward-payment-details/2026-09-15|Adyen Docs \u2014 Forward payment details (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "You can forward payment details that you stored with Adyen to a [PCI compliant](/get-started-with-adyen/adyen-glossary/#pci-compliance) third party, like a payment service provider (PSP). We support forwarding card details, and network tokens.",
+      "location": "raw/adyen/docs/online-payments/tokenization/forward-payment-details/2026-09-15.md:19"
+    },
+    {
+      "text": "To forward network tokens, you must [create a token](/online-payments/tokenization/create-tokens) with Adyen for the same payment details.",
+      "location": "raw/adyen/docs/online-payments/tokenization/forward-payment-details/2026-09-15.md:31"
+    },
+    {
+      "text": "Contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable forwarding card details or network tokens.",
+      "location": "raw/adyen/docs/online-payments/tokenization/forward-payment-details/2026-09-15.md:34"
+    },
+    {
+      "text": "Adyen replaces the placeholders with the payment details and makes a request to the third party API on your behalf to forward the payment details.",
+      "location": "raw/adyen/docs/online-payments/tokenization/forward-payment-details/2026-09-15.md:40"
+    },
+    {
+      "text": "Your condition must introduce a fallback to forward the token you created for the same payment details with Adyen in case the network token cannot be found.",
+      "location": "raw/adyen/docs/online-payments/tokenization/forward-payment-details/2026-09-15.md:313"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-forward-details-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-tokenization-forward-payment-details]] \u2014 2026-09-15 Adyen webpage guide to Checkout API v70-or-later forwarding of stored card details or network tokens to a PCI-compliant third party, including setup and fallback conditions.\n",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-forward-details-network-route",
+        "target_path": "wiki/concepts/adyen-network-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-tokenization-forward-payment-details]] \u2014 2026-09-15 Adyen webpage guide to forwarding network tokens to a PCI-compliant third party through `/forward`, with a same-card Adyen token and conditional fallback.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/tokenization/forward-payment-details/2026-09-15.md",
+  "raw_sha256": "ea149b62453cd13d4d0d1a65b84bf126a4707cf10c85ce03d2f4ca3fffa59cbb",
+  "status": "candidate_ready"
+}

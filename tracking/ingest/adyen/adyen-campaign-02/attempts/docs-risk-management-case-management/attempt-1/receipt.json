@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-case-management",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Case Management\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/case-management\"\nraw_files:\n  - \"adyen/docs/risk-management/case-management/2026-09-15.md\"\ntags: [adyen, risk-management, case-management, manual-review, capture, webhooks]\n---\n\n## Overview\n\nThis [[adyen]] guide describes premium risk case management for manually reviewing eligible online-payment transactions after authorization and before capture. Merchant-defined custom risk rules with a **Review** action send a transaction to the Customer Area queue, where a reviewer can accept or reject it. The guide covers prerequisites, `fraudResultType=AMBER`, configurable payment modifications and notifications, expiry, and case review tools. See [[adyen-risk-management]] for provider context.\n\n## Key takeaways\n\n- Case management requires an online-payments integration, enabled risk and premium features, plus an authorized Customer Area reviewer role. Zero-value authorizations cannot enter case management. A transaction blocked by another risk rule is refused instead of being sent for review.\n- With risk-result data enabled, an in-review payment carries `additionalData.fraudResultType=AMBER` in the payment response and `AUTHORISATION` webhook. For PayPal, the guide says `AMBER` arrives only in that webhook. In this context, `AMBER` means authorized but not automatically captured, so merchant order and fulfillment logic must account for the pending review.\n- If case-management capture delay is enabled, the guide gives up to seven calendar days to reject and says an untouched case expires and is automatically accepted, with funds captured according to capture settings. The same page separately lets the company configure **Expire** as Capture, Cancel, or None, and says manual-capture users must capture an accepted payment themselves. Read the expiry statement together with those settings; do not infer universal automatic capture or a settled payment.\n- Company-level case behavior settings choose payment modifications on Accept, Reject, and Expire: capture, cancel/refund as appropriate for the payment method, or no modification. Notifications are separately selectable; configured `MANUAL_REVIEW_ACCEPT` and `MANUAL_REVIEW_REJECT` webhooks support asynchronous order-state updates. Capturing, canceling, or refunding an open payment outside case management closes its case.\n- Reviewers can assign and decide cases in the queue. Shopper DNA spans merchant accounts in the company, but shopper attributes are masked by default and unmasked data requires the **Merchant View PII** role. A cancellation caused by rejecting a case is a permanent payment decision; changing the closed case's Fraud/Genuine manual status does not reverse it.\n\n## Detail locators\n\n- **Purpose, eligibility, roles, and exclusions:** raw lines 15\u201340.\n- **Review signal, PayPal exception, and merchant follow-up:** raw lines 42\u201365.\n- **Trigger, blocked-risk exclusion, conditional seven-day expiry, and capture behavior:** raw lines 76\u2013134.\n- **Notification settings and example webhook:** raw lines 136\u2013179.\n- **Queue, shopper DNA access, decisions, and irreversible rejected cancellation:** raw lines 181\u2013281.\n\n## Related\n\n- [[adyen]]\n- [[adyen-risk-management]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/case-management/2026-09-15|Adyen Case management \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Case management is only available when you enable premium features. [Zero-value auth](/get-started-with-adyen/adyen-glossary/#zero-value-auth) transactions cannot be sent to case management.",
+      "location": "raw/adyen/docs/risk-management/case-management/2026-09-15.md:38"
+    },
+    {
+      "text": "This means the payment was authorized but not auto-captured, and was set aside for manual review.",
+      "location": "raw/adyen/docs/risk-management/case-management/2026-09-15.md:59"
+    },
+    {
+      "text": "If you have enabled [capture delay for case management](#case-management-settings) in your risk settings, you have up to seven calendar days to reject a transaction after it was sent to case management for manual review. If you do nothing, the transaction is automatically accepted, and the funds are captured based on your [capture](/online-payments/capture) settings. The corresponding case is logged as expired.",
+      "location": "raw/adyen/docs/risk-management/case-management/2026-09-15.md:84"
+    },
+    {
+      "text": "At the time of manual review, the transaction has already been authorized by the issuing bank. From there, the **Case Management behavior** settings determine if the payment is automatically captured, refunded, or canceled when the case is accepted, rejected, or expired.",
+      "location": "raw/adyen/docs/risk-management/case-management/2026-09-15.md:112"
+    },
+    {
+      "text": "If the transaction was canceled because the case was rejected during manual review, this is a permanent decision that cannot be reversed.",
+      "location": "raw/adyen/docs/risk-management/case-management/2026-09-15.md:281"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-case-management-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-case-management]] \u2014 premium manual-review cases after authorization, with capture-delay, configurable decision effects, role, and irreversible-cancellation qualifications (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/case-management/2026-09-15.md",
+  "raw_sha256": "5aeca8536589b27ad035c830f58d2f5981f45827b0f12afd0e9075b6de2f7ebe",
+  "status": "candidate_ready"
+}

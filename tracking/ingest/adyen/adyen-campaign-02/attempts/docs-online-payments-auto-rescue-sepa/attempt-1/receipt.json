@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-online-payments-auto-rescue-sepa",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Auto Rescue for SEPA payments\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/auto-rescue/sepa\"\nraw_files:\n  - \"adyen/docs/online-payments/auto-rescue/sepa/2026-09-15.md\"\ntags: [adyen, online-payments, auto-rescue, sepa, direct-debit]\n---\n\n## Overview\n\nThis [[adyen]] guide describes Auto Rescue for shopper-not-present SEPA direct debit payments. The page title and description call the transactions \"refused,\" while the operative flow says a SEPA payment first returns `AUTHORISED` and Auto Rescue applies after a chargeback with reason **AM04** (insufficient funds) or **MS03** (no reason specified, used in some regions instead of AM04). This resolves which event the SEPA guide acts on without treating a SEPA `AUTHORISED` response as final collection. The 2026-09-15 snapshot describes configuration, two-attempt limit, webhook outcomes, cancellation, testing, and reporting; it does not establish live enablement or a successful recovery.\n\n## Key takeaways\n\n- Adyen Support or an Account Manager must configure Auto Rescue for SEPA at account or transaction level. The account-level rescue window is 42 days. Transaction-level use then flags the payment request with `autoRescue` and a unique `merchantOrderReference`; `maxDaysToRescue` can be 1\u201342 days, with 30 days recommended rather than required. See **Step 1: Enable Auto Rescue**.\n- SEPA rescue has a maximum of two attempts within the rescue window. The guide ties that limit to the longer delay before a first decline message and potential bank fines for chargebacks. Its example `/payments` request is shopper-not-present (`shopperInteraction: ContAuth`) and uses test endpoints and versioned library examples; these examples are not proof of current SDK behavior or a live payment.\n- A later `CHARGEBACK` event with a qualifying reason can start rescue despite the initial `AUTHORISED` response. `AUTORESCUE` webhook outcomes distinguish a successful first attempt with `retryWindowHasElapsed`, a successful second attempt with `maxRetryAttemptsReached`, and failure after chargebacks on both retries with `maxRetryAttemptsReached` and `success: false`. The page says the webhook is received 16 days after a rescue attempt. See **Step 2: Receive Auto Rescue updates**; do not read `maxRetryAttemptsReached` alone as a failure.\n- After unsuccessful rescue, Pay by Link is optional and requires Support activation; the page gives a five-day payment-link validity. To stop rescue when the shopper supplies another method or cancels a subscription, the merchant sends a classic Payment API `/cancel` using the original rescue reference and `cancellationType: autoRescue`; the `cancel-received` response is followed by a `CANCEL_AUTORESCUE` webhook that reports whether cancellation succeeded. See **Send a payment link** and **Cancel Auto Rescue**.\n- Each retry is a separate transaction with a unique `pspReference`. `merchantOrderReference` connects retries to the original billing cycle in updates and configured reports; if omitted, the reporting column falls back to the original request's `pspReference`. See **Auto Rescue reports**.\n\n## Detail locators\n\n- **Opening explanation, lines 17\u201329** \u2014 SEPA authorization versus chargeback trigger, AM04/MS03 reasons, and two-attempt limit.\n- **Step 1: Enable Auto Rescue, lines 47\u201382** \u2014 support configuration, account versus transaction scope, rescue window, unique order reference, and request fields. The examples below it use test URLs and named library versions.\n- **Payment response and CHARGEBACK webhook, lines 445\u2013508** \u2014 initial `Authorised` result, rescue reference, chargeback reason, and scheduled rescue example.\n- **Step 2: Receive Auto Rescue updates, lines 510\u2013644** \u2014 event timing, success/failure combinations, reason codes, and example payloads.\n- **Send a payment link / Cancel Auto Rescue, lines 646\u2013764** \u2014 optional activation, expiration, classic cancellation request, `cancel-received` response, and later cancellation webhook.\n- **Test Auto Rescue and go live / Auto Rescue reports, lines 766\u2013851** \u2014 test scenario controls, distinct retry references, and report linkage.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-webhooks]]\n- [[source-adyen-docs-online-payments-auto-rescue]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/auto-rescue/sepa/2026-09-15|Adyen Docs \u2014 Auto Rescue for SEPA payments (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Because SEPA transactions always have `eventCode` **AUTHORISED** in the response, these require a different rescue logic compared to card transactions.",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/sepa/2026-09-15.md:19, under Auto Rescue for SEPA payments"
+    },
+    {
+      "text": "We apply our rescue logic on two chargeback reasons for SEPA.",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/sepa/2026-09-15.md:21, under Auto Rescue for SEPA payments; reasons AM04/MS03 at lines 23\u201324"
+    },
+    {
+      "text": "Also note that for SEPA payments, we have a maximum of two rescue attempts within the rescue window.",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/sepa/2026-09-15.md:26, under Auto Rescue for SEPA payments"
+    },
+    {
+      "text": "You will receive the webhook 16 days after the rescue attempt.",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/sepa/2026-09-15.md:522, Step 2: Receive Auto Rescue updates"
+    },
+    {
+      "text": "Each Auto Rescue retry attempt is a separate transaction, and thus generates a unique `pspReference`.",
+      "location": "raw/adyen/docs/online-payments/auto-rescue/sepa/2026-09-15.md:819, Auto Rescue reports"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "auto-rescue-sepa-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-auto-rescue-sepa]] \u2014 2026-09-15 SEPA Auto Rescue guide for AM04/MS03 chargeback-triggered shopper-not-present retries, two-attempt limit, and webhook, cancellation, test, and report routes; its title calls the case refused while the body starts from `AUTHORISED` then `CHARGEBACK`.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The Auto Rescue overview calls the SEPA case charged back in prose but refused in navigation; this detailed SEPA guide likewise says refused in its title/description while its operative trigger is a chargeback after initial AUTHORISED. Preserve the terminology distinction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/auto-rescue/sepa/2026-09-15.md",
+  "raw_sha256": "e45ef15033f24615861109c00dad59123643059e5788856414b9f091776a23c4",
+  "status": "candidate_ready"
+}

@@ -19,7 +19,15 @@ A newly generated API key is active immediately while its predecessor remains ac
 
 These snapshot statements do not prove current merchant or user eligibility, successful authentication, endpoint access, correct secret storage, API availability, idempotent processing, or payment execution. Future authentication, role-catalog, idempotency, and API-security sources should extend this route without transferring their claims before review.
 
+
+
+## Mutual authentication
+
+Adyen's 2026-09-15 mTLS guide adds a client certificate to API-key authentication for supported APIs using a company-level API credential. The merchant keeps the private key, links the certificate subject DN to the credential, and presents the leaf plus full CA chain at an mTLS endpoint. Linking is a cutover: supported-API requests with that credential fail without the certificate. The guide excludes merchant-level and balance-platform credentials and identifies separate supported/unsupported APIs and endpoints; see the source for scope and regions. This TLS client certificate is distinct from the JWE card-encryption certificate, whose retained EC/RSA sample conflict remains unresolved.
 ## Sources
+
+- [[source-adyen-docs-development-resources-mtls]] — 2026-09-15 Adyen webpage guide to company-credential mTLS enrollment, certificate linking, supported APIs and endpoint routes, and the post-link certificate requirement.
+
 
 - [[source-adyen-docs-development-resources-api-authentication]] — unversioned documentation snapshot for API-key and Basic request-header authentication, including library-managed versus direct-call responsibility
 

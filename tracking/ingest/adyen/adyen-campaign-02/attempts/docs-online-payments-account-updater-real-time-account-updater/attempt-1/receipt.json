@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-online-payments-account-updater-real-time-account-updater",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Real Time Account Updater\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/account-updater/real-time-account-updater\"\nraw_files:\n  - \"adyen/docs/online-payments/account-updater/real-time-account-updater/2026-09-15.md\"\ntags: [adyen, account-updater, cards, tokenization, recurring-payments]\n---\n\n## Overview\n\nThis Adyen guide describes Real Time Account Updater for Visa, Mastercard, and Cartes Bancaires cards. During processing of a refused eligible payment, Adyen checks for updated card details and, if available, retries with them as part of the same transaction. It explains service enablement, response-data options, updater statuses, reporting, and test fixtures.\n\n## Key takeaways\n\n- The guide requires an online-payments Advanced flow and Adyen Support enablement. Eligibility also requires a nonzero payment amount, `shopperInteraction: ContAuth`, and no security code in the payment. This snapshot does not prove that a specific account is enabled or that an update exists for a particular card.\n- Updated-card information in the payment response is optional and requires Customer Area additional-data configuration. If Adyen Tokenization is used, the stored card details are updated automatically while `storedPaymentMethodId` stays the same. Do not equate this in-processing retry with a later, separate rescue attempt or assume that the payment ultimately authorizes.\n- Receiving a full updated PAN is a separate, Support-enabled path for fully PCI-compliant merchants. Adyen requires a 2048-bit RSA public key and returns the number in JWE-encrypted `realtimeAccountUpdaterSecureData`; the merchant decrypts it with its private key. The guide distinguishes this from selected card summary, expiry, and updater-status response data.\n- `additionalData.realtimeAccountUpdaterStatus` distinguishes card-number change, expiry change, closed account, Visa-only request to contact the cardholder, and no change. For `CloseAccount`, Adyen says it does not automatically remove card details; the merchant should disable them and request new shopper details.\n- The test scenarios provide specific card numbers and expiry dates, plus a `test_` credential route for integrations unable to process raw card data. The examples use Adyen's test environment and pinned SDK versions; they do not prove live account-updater behavior.\n\n## Detail locators\n\n- Opening through `## Requirements` (raw lines 14\u201333): supported schemes, in-processing retry, token behavior, Advanced-flow prerequisite, eligibility limitations, and Support setup.\n- `## How it works` and `## Receive card updates in payment responses` (raw lines 35\u201385): processing steps, optional additional-data configuration, and response example.\n- `## Receive updated card numbers` (raw lines 87\u2013137): fully PCI-compliant PAN path, RSA public-key setup, JWE response field, and decryption details.\n- `## Get account update statuses` and reporting (raw lines 139\u2013157): status table, closed-account handling, and report routes.\n- `## Testing` (raw lines 159\u2013502): test card/expiry matrix, `test_` convention, and version- and environment-qualified API examples.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-tokenization]]\n- Overview source: [[source-adyen-docs-online-payments-account-updater]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/account-updater/real-time-account-updater/2026-09-15|2026-09-15 Adyen Real Time Account Updater guide]]\n",
+  "quotes": [
+    {
+      "text": "When you submit a payment that is refused, our Real Time Account Updater instantly checks for updated card details. If there is an update, we immediately retry the payment with the updated card details. This all happens while the payment is being processed, and appears as a single transaction.",
+      "location": "raw/adyen/docs/online-payments/account-updater/real-time-account-updater/2026-09-15.md:18"
+    },
+    {
+      "text": "If you use [Adyen Tokenization](/online-payments/tokenization), the token storing the card details is updated automatically and the `storedPaymentMethodId` stays the same.",
+      "location": "raw/adyen/docs/online-payments/account-updater/real-time-account-updater/2026-09-15.md:20"
+    },
+    {
+      "text": "The payment does not contain a security code (CVC/CVV/CID).",
+      "location": "raw/adyen/docs/online-payments/account-updater/real-time-account-updater/2026-09-15.md:31"
+    },
+    {
+      "text": "If you are [fully PCI compliant](/development-resources/pci-dss-compliance-guide), you can receive the full updated card number in the payment response. The card number is provided as a [JSON Web Encryption](https://tools.ietf.org/html/rfc7516#section-3) (JWE) encrypted value, that you need to [decrypt](#decrypt-the-card-number) using your private key.",
+      "location": "raw/adyen/docs/online-payments/account-updater/real-time-account-updater/2026-09-15.md:89"
+    },
+    {
+      "text": "We will *not* automatically remove the card details. Disable the card details and ask the shopper to provide new card details.",
+      "location": "raw/adyen/docs/online-payments/account-updater/real-time-account-updater/2026-09-15.md:149"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-tokenization-realtime-account-updater-source-link",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-account-updater-real-time-account-updater]] \u2014 Adyen Real Time Account Updater guide for eligible in-processing card updates and retry, optional response data, statuses, and test scenarios (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The existing Account Updater overview source describes returned card information broadly; this detailed guide qualifies payment-response card data as optional/configured, with full PAN on a separate fully PCI-compliant, Support-enabled path."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/account-updater/real-time-account-updater/2026-09-15.md",
+  "raw_sha256": "ff0ec442e59b4e2b9d80542a635647341a16c56ad5a8cc5a79bf4fc3a0f59e7b",
+  "status": "candidate_ready"
+}

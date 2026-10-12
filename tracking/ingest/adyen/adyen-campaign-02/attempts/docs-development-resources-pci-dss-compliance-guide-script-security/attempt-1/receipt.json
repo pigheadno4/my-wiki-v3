@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-pci-dss-compliance-guide-script-security",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Script security for ecommerce\"\ntype: source\ndate_ingested: 2026-10-12\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/pci-dss-compliance-guide/script-security\"\nraw_files:\n  - \"adyen/docs/development-resources/pci-dss-compliance-guide/script-security/2026-09-15.md\"\ntags: [adyen, pci-dss, script-security, csp, sri, ecommerce]\n---\n\n## Overview\n\nThis Adyen website guide summarizes its PCI DSS v4.0.1 interpretation of payment-page script requirements 6.4.3 and 11.6.1 for **Web online payments** and recommends Content Security Policy (CSP), script inventory and authorization, Subresource Integrity (SRI), and violation reporting. It belongs under [[adyen-pci-dss-compliance]]. It is Adyen's captured guidance, not proof that a merchant page passes PCI assessment or that the example policy is suitable for a particular checkout.\n\n## Key takeaways\n\n- **Applicability is limited.** The page addresses merchants completing SAQ D or an onsite-assessment AoC, Adyen for Platforms partners, and partners implementing Adyen plugins. It says this page does **not** apply if the merchant is eligible for SAQ A; eligibility must be established from the relevant assessment route, not inferred from use of Adyen.\n- Adyen describes requirement 6.4.3 as script authorization, integrity assurance, and an inventory with written justification. Its stated 3DS exemption applies to the **3D Secure script-validation process**; it does not remove the page's other script or tamper-detection responsibilities.\n- Adyen describes requirement 11.6.1 as detection and alerting for unauthorized changes to security-impacting HTTP headers and payment-page script contents as received by the browser, with prompt investigation and resolution. Its CSP reporting recommendation includes collecting alerts through a configured reporting endpoint.\n- A `Content-Security-Policy-Report-Only` header logs violations without blocking loads. Adyen then recommends a blocking CSP and SRI for Adyen-hosted JavaScript/CSS, plus a periodic script-inventory authorization sign-off. The displayed blocking example uses broad `frame-src: *` and other wildcards; the inventory separately lists Mastercard and Visa domains absent from its displayed `script-src` list. Adapt and verify the policy for the actual page and payment methods.\n- **Example mismatch:** the SRI section calls its example v5.59.1 while both sample resource URLs contain `/sdk/5.59.0/` (raw lines 177\u2013189). Use hashes for the exact deployed resources and version; this snapshot does not validate that example or a live CSP configuration.\n\n## Detail locators\n\n- **Requirements, raw lines 25\u201335** \u2014 SAQ D, onsite AoC, platform/plugin partner contexts and SAQ A exclusion.\n- **PCI DSS requirement 6.4.3 / 3DS exemption, raw lines 37\u201349** \u2014 authorization, integrity and inventory controls; narrow 3DS script-validation scope.\n- **PCI DSS requirement 11.6.1, raw lines 51\u201357** \u2014 browser-received header/script change detection and prompt handling.\n- **Implement a Content Security Policy, raw lines 59\u2013146** \u2014 Adyen's CSP/SRI recommendation, report-only versus blocking behavior, displayed domain policy, broad iframe allowance, and rationale.\n- **Create an inventory / Check integrity, raw lines 148\u2013190** \u2014 script source table, periodic authorization, SRI attributes, per-version hashes, and the v5.59.1 versus URL v5.59.0 discrepancy.\n- **Implement detection mechanisms, raw lines 192\u2013218** \u2014 CSP-alert collection, Reporting API endpoint, `Reporting-Endpoints`, and `report-to` route.\n\n## Related\n\n- [[adyen]]\n- [[adyen-pci-dss-compliance]]\n- [[adyen-online-payments]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/pci-dss-compliance-guide/script-security/2026-09-15|Adyen Docs \u2014 Script security for ecommerce (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The information on this page does **not apply** if you are [eligible for Self-Assessment Questionnaire A (SAQ A)](/development-resources/pci-dss-compliance-guide/saq-a-eligibility).",
+      "location": "raw/adyen/docs/development-resources/pci-dss-compliance-guide/script-security/2026-09-15.md:35"
+    },
+    {
+      "text": "The 3D Secure script validation process is exempted from the scope of PCI DSS requirement 6.4.3",
+      "location": "raw/adyen/docs/development-resources/pci-dss-compliance-guide/script-security/2026-09-15.md:49"
+    },
+    {
+      "text": "the browser only logs the violation. It does not block any content from being loaded.",
+      "location": "raw/adyen/docs/development-resources/pci-dss-compliance-guide/script-security/2026-09-15.md:83"
+    },
+    {
+      "text": "The following example shows how include SRI hashes for the `adyen.js` and `adyen.css` resources for v5.59.1:",
+      "location": "raw/adyen/docs/development-resources/pci-dss-compliance-guide/script-security/2026-09-15.md:177"
+    },
+    {
+      "text": "You must collect all CSP alerts in a practical manner.",
+      "location": "raw/adyen/docs/development-resources/pci-dss-compliance-guide/script-security/2026-09-15.md:196"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-pci-dss-script-security-source",
+        "target_path": "wiki/concepts/adyen-pci-dss-compliance.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-pci-dss-compliance-guide-script-security]] \u2014 Adyen PCI DSS v4.0.1 Web payment-page script-security guidance (webpage snapshot, 2026-09-15) for SAQ D/AoC and partner contexts, CSP/SRI inventory and alerting recommendations, and SAQ A exclusion.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source's SRI example heading says v5.59.1 while its resource URLs say v5.59.0; do not promote the example as verified for either release.",
+          "The displayed blocking CSP uses broad wildcards and omits Mastercard/Visa domains that appear in its own inventory table; do not treat it as a ready compliance template."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/pci-dss-compliance-guide/script-security/2026-09-15.md",
+  "raw_sha256": "6cfea6661beb3122059d2528f5dfdebce8e73d736d1844e5cdcb4c26353c734f",
+  "status": "candidate_ready"
+}
