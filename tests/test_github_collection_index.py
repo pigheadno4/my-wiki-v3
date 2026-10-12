@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from dataclasses import replace
 from datetime import date
+from itertools import permutations
 from pathlib import Path
 
 
@@ -70,6 +71,97 @@ def _item(repo_id, state, mode="delta", *, day="2026-08-01"):
 
 
 class CollectionIndexTests(unittest.TestCase):
+    def test_same_day_core_patch_follows_shared_monorepo_release(self):
+        core = replace(
+            _item("alpha/sdk", "ingested").package_changes[0],
+            package="@example/core",
+            from_version="11.2.0",
+            to_version="11.2.1",
+            release_id="@example/core@11.2.1",
+        )
+        react = replace(
+            core,
+            package="@example/react",
+            from_version="10.5.2",
+            to_version="10.6.0",
+            release_id="@example/react@10.6.0",
+        )
+        shared = replace(
+            _item("alpha/sdk", "ingested"),
+            work_item_id="github-ffffffffffffffffffff",
+            package_changes=(core, react),
+        )
+        patch = replace(
+            shared,
+            work_item_id="github-00000000000000000000",
+            package_changes=(replace(
+                core,
+                from_version="11.2.1",
+                to_version="11.2.2",
+                release_id="@example/core@11.2.2",
+            ),),
+        )
+        older_react = replace(
+            shared,
+            work_item_id="github-88888888888888888888",
+            package_changes=(replace(
+                react,
+                from_version="10.5.1",
+                to_version="10.5.2",
+                release_id="@example/react@10.5.2",
+            ),),
+        )
+        for items in permutations((shared, patch, older_react)):
+            with self.subTest(order=[item.work_item_id for item in items]):
+                row = build_collection_index(
+                    (_repo("alpha/sdk"),), items, {}, date(2026, 8, 3)
+                )["repositories"][0]
+                self.assertEqual("@example/core@11.2.2", row["last_accepted_ref"])
+                self.assertEqual("@example/core@11.2.2", row["latest_discovered_ref"])
+                self.assertEqual("@example/core@11.2.1", row["comparison_base"])
+
+        pending = tuple(
+            replace(
+                item,
+                state="collection_failed" if item is older_react else "awaiting_approval",
+                approved_mode=None,
+            )
+            for item in (shared, patch, older_react)
+        )
+        for items in permutations(pending):
+            with self.subTest(pending_order=[item.work_item_id for item in items]):
+                row = build_collection_index(
+                    (_repo("alpha/sdk"),), items, {}, date(2026, 8, 3)
+                )["repositories"][0]
+                self.assertEqual("@example/core@11.2.2", row["latest_discovered_ref"])
+                self.assertEqual("@example/core@11.2.1", row["comparison_base"])
+                self.assertEqual("collection_failed", row["queue_state"])
+                self.assertEqual("retry", row["next_action"])
+
+    def test_conflicting_same_day_package_histories_have_stable_fallback(self):
+        template = _item("alpha/sdk", "ingested")
+
+        def item(item_id, versions):
+            return replace(
+                template,
+                work_item_id=item_id,
+                package_changes=tuple(
+                    replace(template.package_changes[0], package=package,
+                            to_version=version, release_id=package + "@" + version)
+                    for package, version in versions
+                ),
+            )
+
+        # Overlapping partial histories imply a cycle rather than a release order.
+        first = item("github-00000000000000000000", (("core", "1.0.0"), ("react", "3.0.0")))
+        second = item("github-88888888888888888888", (("core", "2.0.0"), ("lpm", "1.0.0")))
+        third = item("github-ffffffffffffffffffff", (("react", "2.0.0"), ("lpm", "2.0.0")))
+        for items in permutations((first, second, third)):
+            row = build_collection_index(
+                (_repo("alpha/sdk"),), items, {}, date(2026, 8, 3)
+            )["repositories"][0]
+            self.assertEqual("react@2.0.0, lpm@2.0.0", row["last_accepted_ref"])
+
     def test_ingested_ref_boundary_does_not_replace_last_package_release(self):
         release = replace(
             _item("alpha/sdk", "ingested", "full", day="2026-08-01"),

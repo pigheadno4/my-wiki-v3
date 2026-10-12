@@ -17,6 +17,10 @@ Standard e-commerce integration that renders PayPal, Venmo, and Debit/Credit Car
 
 ### PayPal JS SDK
 
+Core `11.2.2` (release record October 9 UTC) resolves loading at timeout if the requested namespace is available despite a missing load event. This does not add payment APIs or independently verify namespace version/authenticity. React remains `10.6.0`; its core `^11.2.1` range allows this patch, but installed resolution requires lockfile evidence. Ingested 2026-10-12 after the shared-SHA update below; see [[source-github-paypal-js]] and [[changelog-github-paypal-js]].
+
+The October 5 releases, core `11.2.1` and React `10.6.0`, replace timeout retries with a 30-second per-attempt wait while preserving explicit-error retries. React adds Venmo save-with-purchase forwarding and a save-only button/hook using lazy or eager setup tokens. These are direct v6 wrapper contracts, not permanent-token persistence, native support or a PayPal saved-method editing wrapper; product/account eligibility still requires separate verification. Ingested 2026-10-12; earlier history preserved in [[source-github-paypal-js]] and [[changelog-github-paypal-js]]. See [[paypal-vault]] for token and rejection-handling boundaries.
+
 The September 28 releases, `@paypal/paypal-js@11.2.0` and `@paypal/react-paypal-js@10.5.2`, add bounded v6 script-load retries and selected React own-property guards. The release-note retry limits conflict with the code: pure errors allow two retries, pure timeouts one, with 15 seconds per attempt. This is SDK-loading/configuration behavior, not payment-request retries or a new saved-payment editing wrapper; see [[source-github-paypal-js]], [[changelog-github-paypal-js]], and [[paypal-checkout]]. The release-note security claim has not been independently reproduced.
 
 The separate Braintree v6 sample at `default-branch@06bc2de` (October 1, 2026) adds a static View/Edit Saved Payment path using Braintree Web `3.146.0`, server-side preferred-token GraphQL generation, and nonce-or-vault-token transaction submission. Its React entry remains on Braintree `3.142.0`; this is not a new PayPal JS React wrapper. Browser-supplied identity/amount and unchecked "captured" output remain demo limitations, not production or payment proof. See [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] and [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]].
@@ -297,8 +301,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render, pre-caching, hidden container pattern
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP domains + nonce vs unsafe-inline, COOP same-origin-allow-popups
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
-- [[source-github-paypal-js]] — cumulative GitHub evidence through core `11.2.0` and React `10.5.2`: bounded loader retries, selected React hardening, retry-note contradiction and preserved v8 onward history
-- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `11.2.0` and React `10.5.2`, with impact, migration action, contradictions, and immutable raw links
+- [[source-github-paypal-js]] — cumulative GitHub evidence through core `11.2.2` and React `10.6.0`: timeout/missing-event handling and Venmo purchase/save-only wrappers; preserved v8 onward history and contradictions
+- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js ledger through core `11.2.2` and React `10.6.0`, with impact, migration, contradictions and immutable evidence
 - [[source-github-paypal-checkout-components]] — cumulative checkout runtime through `5.0.436`, including conditional Canadian French Pay Later labeling, iframe-title regression coverage, child window-name monitoring and preserved accessibility history
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.436`
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` baseline through `5.0.580` component bill of materials and release/deployment workflow

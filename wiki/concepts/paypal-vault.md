@@ -69,6 +69,17 @@ Editing starts with an order that omits the vault ID, records the approved order
 
 This package evidence establishes the public TypeScript contract at `10.0.3`; it does not independently prove production eligibility, account enablement, or runtime behavior owned by `paypal/paypal-checkout-components`.
 
+### React `10.6.0` Venmo vault integration
+
+At the October 5, 2026 shared SHA `cbec2ba`, core `11.2.1` adds optional `savePayment` to one-time Venmo session options, while React `10.6.0` explicitly forwards it when creating that session. The existing one-time button inherits the prop through its hook. This requests vaulting with a purchase; it does not replace server-owned order creation, finalization or vault-result verification.
+
+The new `/sdk-v6` exports `VenmoSavePaymentButton` and `useVenmoSavePaymentSession` wrap the core save-without-purchase contract already present at `10.0.3`. Supply exactly one typed token path: lazy `createVaultToken: () => Promise<{ vaultSetupToken: string }>` is invoked on click and passed as the second `start()` argument, or an eager `vaultSetupToken` initializes the session and `start()` receives presentation options only. Approval returns a setup token, not a permanent payment token or proof of storage. The merchant must perform and verify the appropriate server-side token exchange and customer association.
+
+Load `venmo-payments` under `PayPalProvider`, retain explicit environment and eligibility checks, and handle cancellation/errors. The button waits for hydration and disables on SDK loading/error; `isPending` is not a vault-operation lock. Session creation errors enter hook state, but the click handler does not catch rejected token creation or `session.start()` into that state. Custom-hook consumers must handle rejection, and the prebuilt button has no explicit rejection-catching layer. The locally typed temporary `sandboxSupport` flag is not universal sandbox or account availability evidence. Source: [[source-github-paypal-js]]; release history: [[changelog-github-paypal-js]].
+
+> [!warning] Contradiction - historical Venmo availability guidance
+> React `10.6.0` supplies an implemented save-without-purchase wrapper in addition to the older core type. This strengthens repository integration evidence but does not resolve the older product documentation's exclusion or establish deployed runtime and merchant eligibility. Preserve the older warning below; verify the product/account separately before offering this flow.
+
 ### checkout-components `5.0.425` runtime evidence
 
 The matching checkout runtime provides a Venmo `VAULT_WITHOUT_PURCHASE` funding flow and a `createVaultSetupToken` prop on its protected Venmo component. The funding path is disabled unless the `venmoVaultWithoutPurchase` experiment is true, and vaultable display state cannot be combined with shipping callbacks for native app-switch or QR flows.

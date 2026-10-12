@@ -709,6 +709,31 @@
   To SHA: `7f7240ab2d9417a55bf9c68355bf33bf64b1665c`
   Comparison: Not applicable
 
+## `github-294704633f9b426cbd53`
+
+- Repository: `paypal/paypal-js`
+- SHA: `f58396a4cc57552e475fb198234d8e822c25e6b4`
+- Collection date: `2026-10-11`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-294704633f9b426cbd53/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-js@11.2.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/11.2.1--11.2.2/comparison.json)
+
 ## `github-295368ae3c6235174ae0`
 
 - Repository: `stripe/stripe-react-native`
@@ -2938,6 +2963,34 @@
 - `@paypal/react-paypal-js@10.1.1` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.0--10.1.1/comparison.json)
+
+## `github-9a59802f1b9e9778125b`
+
+- Repository: `paypal/paypal-js`
+- SHA: `cbec2ba41ce51129c28608e772f8112de0772f86`
+- Collection date: `2026-10-11`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-9a59802f1b9e9778125b/packet.md)
+- Review priority: `high`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-js@11.2.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.1/2026-10-11/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/11.2.0--11.2.1/comparison.json)
+- `@paypal/react-paypal-js@10.6.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.6.0/2026-10-11/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.2--10.6.0/comparison.json)
 
 ## `github-9b81f89deff88d93db88`
 

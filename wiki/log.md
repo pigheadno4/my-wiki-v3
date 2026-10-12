@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-10-12] maintenance | GitHub monorepo index ordering
+
+- Corrected same-date shared-package/core-only ordering and added a reproducing regression; generated PayPal JS last accepted ref now shows core `11.2.2`. No raw or ingest-policy change. Details [[paypal-log]].
+
+## [2026-10-12] ingest | PayPal JS core `11.2.2`
+
+- Approved focused serial delta after core `11.2.1`/React `10.6.0`: namespace-exists-at-timeout resolves a missing-load-event case; 324 file hashes/sizes verified. Historical sections/counts and warnings preserved. Details [[paypal-log]] and [[changelog-github-paypal-js]]. No runtime/build, commit or push. Next: scoped commit/push approval.
+
+## [2026-10-12] ingest | PayPal JS core `11.2.1` and React `10.6.0`
+
+- Approved focused serial delta: 30-second v6 timeout handling and Venmo purchase/save-only React paths; 328 file hashes/sizes verified. Existing concepts/source/changelog/company/catalog updated; prior knowledge, counts and product-eligibility warnings preserved. Details [[paypal-log]] and [[changelog-github-paypal-js]]. No runtime/build, commit or push. Next: core `11.2.2`.
+
 ## [2026-10-11] ingest | Adyen website C01
 
 - Fifty approved General Docs retrieval sources; initial review40/50, ten targeted retries, no repeated full review or rejection. Three bounded query-audit corrections and six mechanical concept-category corrections retained with evidence. Catalog64=50website+14GitHub; raw unchanged. Details [[adyen-log]] and `tracking/ingest/adyen/adyen-campaign-01/`. Execution interruptions make wall time unsuitable as a throughput comparison. No commit/push.

@@ -1,0 +1,86 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index 4ed8571..6f26970 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # Changelog
+ 
++## 11.2.2
++
++### Patch Changes
++
++- 89827ba: Resolve V6 core script loading when the SDK namespace is available but the script load event is not observed before the timeout.
++
+ ## 11.2.1
+ 
+ ### Patch Changes
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index 9c9cdaa..6f08dd9 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/paypal-js",
+-  "version": "11.2.1",
++  "version": "11.2.2",
+   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+   "main": "index.js",
+   "module": "dist/esm/paypal-js.js",
+diff --git a/packages/paypal-js/src/v6/load-script-with-retry.test.ts b/packages/paypal-js/src/v6/load-script-with-retry.test.ts
+index 82a3682..8dea7fd 100644
+--- a/packages/paypal-js/src/v6/load-script-with-retry.test.ts
++++ b/packages/paypal-js/src/v6/load-script-with-retry.test.ts
+@@ -240,6 +240,34 @@ describe("loadScriptWithRetry()", () => {
+     }
+   });
+ 
++  test("should resolve on timeout when the namespace is available without a load event", async () => {
++    const appendChildSpy = vi
++      .spyOn(document.head, "appendChild")
++      .mockImplementation((node) => {
++        Element.prototype.appendChild.call(document.head, node);
++        return node;
++      });
++
++    vi.useFakeTimers();
++    try {
++      const loadPromise = loadScriptWithRetry(buildParams());
++
++      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS - 1);
++      vi.stubGlobal("paypal", { version: "6" });
++      await vi.advanceTimersByTimeAsync(1);
++
++      await expect(loadPromise).resolves.toBe(window.paypal);
++      expect(appendChildSpy).toHaveBeenCalledTimes(1);
++      expect(
++        document
++          .querySelector('script[src*="/web-sdk/v6/core"]')
++          ?.getAttribute("data-loading-state"),
++      ).toBe("resolved");
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++
+   test("should give an explicit-error retry its own timeout", async () => {
+     vi.spyOn(Math, "random").mockReturnValue(0);
+     let attempts = 0;
+diff --git a/packages/paypal-js/src/v6/load-script-with-retry.ts b/packages/paypal-js/src/v6/load-script-with-retry.ts
+index 02d1e0a..c5b4a2d 100644
+--- a/packages/paypal-js/src/v6/load-script-with-retry.ts
++++ b/packages/paypal-js/src/v6/load-script-with-retry.ts
+@@ -170,6 +170,14 @@ export function loadScriptWithRetry({
+       if (settled) {
+         return;
+       }
++
++      // Treat it as a successful load if the script executed but its load
++      // event was not observed before the timeout fired.
++      if (getPayPalWindowNamespace(namespace)) {
++        handleLoad();
++        return;
++      }
++
+       settled = true;
+       cleanup();
+ 

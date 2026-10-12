@@ -1,0 +1,1092 @@
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index 4d6ba83..b853b3a 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,18 @@
+ # Changelog
+ 
++## 10.6.0
++
++### Minor Changes
++
++- aa4de45: Adds Venmo vault support to the v6 React SDK:
++  - `VenmoOneTimePaymentButton` now accepts a `savePayment` prop to vault the buyer's Venmo account while completing an order (VAULT_WITH_PAYMENT).
++  - New `VenmoSavePaymentButton` component for a vault-only flow with no purchase (VAULT_WITHOUT_PAYMENT), supporting both lazy (`createVaultToken`) and eager (`vaultSetupToken`) vault setup token creation.
++
++### Patch Changes
++
++- Updated dependencies [adc91b9]
++  - @paypal/paypal-js@11.2.1
++
+ ## 10.5.2
+ 
+ ### Patch Changes
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index cfb9209..18b2f6a 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "10.5.2",
++  "version": "10.6.0",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+@@ -66,7 +66,7 @@
+   },
+   "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
+   "dependencies": {
+-    "@paypal/paypal-js": "^11.2.0",
++    "@paypal/paypal-js": "^11.2.1",
+     "@paypal/sdk-constants": "^1.0.122",
+     "server-only": "^0.0.1"
+   },
+diff --git a/packages/react-paypal-js/src/v6/components/VenmoSavePaymentButton.test.tsx b/packages/react-paypal-js/src/v6/components/VenmoSavePaymentButton.test.tsx
+new file mode 100644
+index 0000000..2de30ba
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/components/VenmoSavePaymentButton.test.tsx
+@@ -0,0 +1,136 @@
++import React from "react";
++import { render, fireEvent } from "@testing-library/react";
++
++import { VenmoSavePaymentButton } from "./VenmoSavePaymentButton";
++import { useVenmoSavePaymentSession } from "../hooks/useVenmoSavePaymentSession";
++import { usePayPal } from "../hooks/usePayPal";
++
++jest.mock("../hooks/useVenmoSavePaymentSession", () => ({
++  useVenmoSavePaymentSession: jest.fn(),
++}));
++jest.mock("../hooks/usePayPal", () => ({
++  usePayPal: jest.fn(),
++}));
++
++describe("VenmoSavePaymentButton", () => {
++  const mockHandleClick = jest.fn();
++  const mockUseVenmoSavePaymentSession =
++    useVenmoSavePaymentSession as jest.Mock;
++  const mockUsePayPal = usePayPal as jest.Mock;
++
++  const defaultProps = {
++    vaultSetupToken: "test-vault-token",
++    onApprove: () => Promise.resolve(),
++    presentationMode: "auto" as const,
++  };
++
++  beforeEach(() => {
++    jest.clearAllMocks();
++    mockUseVenmoSavePaymentSession.mockReturnValue({
++      error: null,
++      isPending: false,
++      handleClick: mockHandleClick,
++    });
++    mockUsePayPal.mockReturnValue({
++      isHydrated: true,
++    });
++  });
++
++  it("should render venmo-button when hydrated", () => {
++    const { container } = render(<VenmoSavePaymentButton {...defaultProps} />);
++    expect(container.querySelector("venmo-button")).toBeInTheDocument();
++  });
++
++  it("should render a div when not hydrated", () => {
++    mockUsePayPal.mockReturnValue({
++      isHydrated: false,
++    });
++    const { container } = render(<VenmoSavePaymentButton {...defaultProps} />);
++    expect(container.querySelector("venmo-button")).not.toBeInTheDocument();
++    expect(container.querySelector("div")).toBeInTheDocument();
++  });
++
++  it("should call handleClick when button is clicked", () => {
++    const { container } = render(<VenmoSavePaymentButton {...defaultProps} />);
++    const button = container.querySelector("venmo-button");
++
++    // @ts-expect-error button should be defined at this point, test will error if not
++    fireEvent.click(button);
++
++    expect(mockHandleClick).toHaveBeenCalledTimes(1);
++  });
++
++  it("should disable the button when disabled=true is given as a prop", () => {
++    const { container } = render(
++      <VenmoSavePaymentButton {...defaultProps} disabled={true} />,
++    );
++    const button = container.querySelector("venmo-button");
++    expect(button).toHaveAttribute("disabled");
++  });
++
++  it("should disable button when error is present", () => {
++    jest.spyOn(console, "error").mockImplementation();
++    mockUseVenmoSavePaymentSession.mockReturnValue({
++      error: new Error("Test error"),
++      isPending: false,
++      handleClick: mockHandleClick,
++    });
++    const { container } = render(<VenmoSavePaymentButton {...defaultProps} />);
++    const button = container.querySelector("venmo-button");
++    expect(button).toHaveAttribute("disabled");
++  });
++
++  it("should not disable button when error is null", () => {
++    mockUseVenmoSavePaymentSession.mockReturnValue({
++      error: null,
++      isPending: false,
++      handleClick: mockHandleClick,
++    });
++    const { container } = render(<VenmoSavePaymentButton {...defaultProps} />);
++    const button = container.querySelector("venmo-button");
++    expect(button).not.toHaveAttribute("disabled");
++  });
++
++  it("should disable button when isPending is true", () => {
++    mockUseVenmoSavePaymentSession.mockReturnValue({
++      error: null,
++      isPending: true,
++      handleClick: mockHandleClick,
++    });
++    const { container } = render(<VenmoSavePaymentButton {...defaultProps} />);
++    const button = container.querySelector("venmo-button");
++    expect(button).toBeInTheDocument();
++    expect(button).toHaveAttribute("disabled");
++  });
++
++  it("should pass type prop to venmo-button", () => {
++    const { container } = render(
++      <VenmoSavePaymentButton {...defaultProps} type="subscribe" />,
++    );
++    const button = container.querySelector("venmo-button");
++    expect(button).toHaveAttribute("type", "subscribe");
++  });
++
++  it("should pass hook props to useVenmoSavePaymentSession", () => {
++    const hookProps = {
++      vaultSetupToken: "test-vault-token",
++      onApprove: () => Promise.resolve(),
++      presentationMode: "auto" as const,
++    };
++    render(<VenmoSavePaymentButton {...hookProps} />);
++    expect(mockUseVenmoSavePaymentSession).toHaveBeenCalledWith(hookProps);
++  });
++
++  it("should log error to console when an error from the hook is present", () => {
++    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
++    const testError = new Error("Test error");
++    mockUseVenmoSavePaymentSession.mockReturnValue({
++      error: testError,
++      isPending: false,
++      handleClick: mockHandleClick,
++    });
++    render(<VenmoSavePaymentButton {...defaultProps} />);
++    expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
++    consoleErrorSpy.mockRestore();
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/components/VenmoSavePaymentButton.tsx b/packages/react-paypal-js/src/v6/components/VenmoSavePaymentButton.tsx
+new file mode 100644
+index 0000000..1ed7ee1
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/components/VenmoSavePaymentButton.tsx
+@@ -0,0 +1,64 @@
++import React, { useEffect } from "react";
++
++import { useVenmoSavePaymentSession } from "../hooks/useVenmoSavePaymentSession";
++import { usePayPal } from "../hooks/usePayPal";
++
++import type { ButtonProps } from "../types";
++import type { UseVenmoSavePaymentSessionProps } from "../hooks/useVenmoSavePaymentSession";
++
++type VenmoSavePaymentButtonProps = UseVenmoSavePaymentSessionProps &
++  ButtonProps & {
++    autoRedirect?: never;
++  };
++
++/**
++ * `VenmoSavePaymentButton` is a button that provides a Venmo vault/save payment flow
++ * (without purchase).
++ *
++ * `VenmoSavePaymentButtonProps` combines the arguments for {@link UseVenmoSavePaymentSessionProps}
++ * and {@link ButtonProps}.
++ *
++ * `presentationMode` is optional and defaults to `"auto"`.
++ *
++ * @example
++ * <VenmoSavePaymentButton
++ *   createVaultToken={async () => {
++ *     const response = await fetch('/api/vault/setup-tokens', { method: 'POST' });
++ *     return response.json(); // { vaultSetupToken: '...' }
++ *   }}
++ *   onApprove={({ vaultSetupToken }) => {
++ *      // ... on approve logic
++ *   }}
++ * />
++ *
++ * @remarks
++ * `createVaultToken` is called when the button is clicked, so the setup token is only
++ * created if the buyer actually initiates the save flow. Use the `vaultSetupToken` prop
++ * instead only if the token was already created before this button renders (for example,
++ * fetched by a parent component).
++ */
++export const VenmoSavePaymentButton = ({
++  type = "pay",
++  disabled = false,
++  ...hookProps
++}: VenmoSavePaymentButtonProps): JSX.Element | null => {
++  const { error, isPending, handleClick } =
++    useVenmoSavePaymentSession(hookProps);
++  const { isHydrated } = usePayPal();
++
++  useEffect(() => {
++    if (error) {
++      console.error(error);
++    }
++  }, [error]);
++
++  return isHydrated ? (
++    <venmo-button
++      onClick={handleClick}
++      type={type}
++      disabled={disabled || isPending || error !== null ? true : undefined}
++    ></venmo-button>
++  ) : (
++    <div />
++  );
++};
+diff --git a/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.test.ts b/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.test.ts
+index 61ed586..5daa848 100644
+--- a/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.test.ts
++++ b/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.test.ts
+@@ -234,6 +234,27 @@ describe("useVenmoOneTimePaymentSession", () => {
+       expect(onError).toHaveBeenCalledWith(new Error("test error"));
+     });
+ 
++    test("should forward savePayment to createVenmoOneTimePaymentSession", () => {
++      const onApprove = jest.fn();
++
++      const props: UseVenmoOneTimePaymentSessionProps = {
++        presentationMode: "popup",
++        orderId: "test-order-id",
++        savePayment: true,
++        onApprove,
++      };
++
++      renderHook(() => useVenmoOneTimePaymentSession(props));
++
++      expect(
++        mockSdkInstance.createVenmoOneTimePaymentSession,
++      ).toHaveBeenCalledWith({
++        orderId: "test-order-id",
++        savePayment: true,
++        onApprove,
++      });
++    });
++
+     test("should create Venmo session without orderId when createOrder is provided", () => {
+       const mockCreateOrder = jest
+         .fn()
+diff --git a/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts b/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts
+index 400ea70..f48f2f7 100644
+--- a/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts
++++ b/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts
+@@ -48,6 +48,10 @@ export type UseVenmoOneTimePaymentSessionProps = (
+  *
+  * `presentationMode` is optional and defaults to `"auto"`.
+  *
++ * Pass `savePayment: true` to vault the buyer's Venmo account while also completing
++ * the order (VAULT_WITH_PAYMENT). For a vault-only flow with no purchase, use
++ * {@link useVenmoSavePaymentSession} instead.
++ *
+  * @example
+  * function VenmoCheckout() {
+  *   const { error, isPending, handleClick, handleCancel } = useVenmoOneTimePaymentSession({
+@@ -69,6 +73,7 @@ export function useVenmoOneTimePaymentSession({
+   fullPageOverlay,
+   createOrder,
+   orderId,
++  savePayment,
+   sandboxSupport,
+   ...callbacks
+ }: UseVenmoOneTimePaymentSessionProps): BasePaymentSessionReturn {
+@@ -112,6 +117,7 @@ export function useVenmoOneTimePaymentSession({
+       sessionCreator: () =>
+         sdkInstance.createVenmoOneTimePaymentSession({
+           orderId,
++          savePayment,
+           ...proxyCallbacks,
+         }),
+       failedSdkRef,
+@@ -130,7 +136,7 @@ export function useVenmoOneTimePaymentSession({
+     return () => {
+       newSession.destroy();
+     };
+-  }, [sdkInstance, orderId, proxyCallbacks, setError]);
++  }, [sdkInstance, orderId, savePayment, proxyCallbacks, setError]);
+ 
+   const handleCancel = useCallback(() => {
+     sessionRef.current?.cancel();
+diff --git a/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.test.ts b/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.test.ts
+new file mode 100644
+index 0000000..5f2768f
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.test.ts
+@@ -0,0 +1,549 @@
++import { renderHook, act } from "@testing-library/react-hooks";
++
++import { expectCurrentErrorValue } from "./useErrorTestUtil";
++import { useVenmoSavePaymentSession } from "./useVenmoSavePaymentSession";
++import {
++  mockPayPalContext,
++  mockPayPalRejected,
++  mockPayPalPending,
++} from "./usePayPalTestUtils";
++import { useProxyProps } from "../utils";
++import { INSTANCE_LOADING_STATE, type VenmoSavePaymentSession } from "../types";
++
++import type { UseVenmoSavePaymentSessionProps } from "./useVenmoSavePaymentSession";
++
++jest.mock("./usePayPal");
++
++jest.mock("../utils", () => ({
++  ...jest.requireActual("../utils"),
++  useProxyProps: jest.fn(),
++}));
++
++const mockUseProxyProps = useProxyProps as jest.MockedFunction<
++  typeof useProxyProps
++>;
++
++const createMockVenmoSession = (): VenmoSavePaymentSession => ({
++  start: jest.fn().mockResolvedValue(undefined),
++  cancel: jest.fn(),
++  destroy: jest.fn(),
++});
++
++const createMockSdkInstance = (venmoSession = createMockVenmoSession()) => ({
++  createVenmoSavePaymentSession: jest.fn().mockReturnValue(venmoSession),
++});
++
++describe("useVenmoSavePaymentSession", () => {
++  let mockVenmoSession: VenmoSavePaymentSession;
++  let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
++
++  beforeEach(() => {
++    mockUseProxyProps.mockImplementation((callbacks) => callbacks);
++
++    mockVenmoSession = createMockVenmoSession();
++    mockSdkInstance = createMockSdkInstance(mockVenmoSession);
++
++    mockPayPalContext({ sdkInstance: mockSdkInstance });
++  });
++
++  afterEach(() => {
++    jest.clearAllMocks();
++  });
++
++  describe("initialization", () => {
++    test("should not create session when no SDK instance is available", () => {
++      mockPayPalRejected();
++
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++        onCancel: jest.fn(),
++        onError: jest.fn(),
++      };
++
++      const {
++        result: {
++          current: { error },
++        },
++      } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      expectCurrentErrorValue(error);
++
++      expect(error).toEqual(new Error("no sdk instance available"));
++      expect(
++        mockSdkInstance.createVenmoSavePaymentSession,
++      ).not.toHaveBeenCalled();
++    });
++
++    test("should not error if there is no sdkInstance but loading is still pending", () => {
++      mockPayPalPending();
++
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const {
++        result: {
++          current: { error },
++        },
++      } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      expect(error).toBeNull();
++    });
++
++    test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
++      const mockSession = createMockVenmoSession();
++      const mockSdkInstanceNew = createMockSdkInstance(mockSession);
++
++      mockPayPalRejected();
++
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result, rerender } = renderHook(() =>
++        useVenmoSavePaymentSession(props),
++      );
++
++      expectCurrentErrorValue(result.current.error);
++      expect(result.current.error).toEqual(
++        new Error("no sdk instance available"),
++      );
++
++      mockPayPalContext({ sdkInstance: mockSdkInstanceNew });
++
++      rerender();
++
++      expect(result.current.error).toBeNull();
++    });
++
++    test.each([
++      {
++        description: "Error object",
++        thrownError: new Error("Required components not loaded in SDK"),
++      },
++      {
++        description: "non-Error string",
++        thrownError: "String error message",
++      },
++    ])(
++      "should handle $description thrown by createVenmoSavePaymentSession",
++      ({ thrownError }) => {
++        const mockSdkInstanceWithError = {
++          createVenmoSavePaymentSession: jest.fn().mockImplementation(() => {
++            throw thrownError;
++          }),
++        };
++
++        mockPayPalContext({ sdkInstance: mockSdkInstanceWithError });
++
++        const props: UseVenmoSavePaymentSessionProps = {
++          presentationMode: "popup",
++          vaultSetupToken: "test-vault-token",
++          onApprove: jest.fn(),
++          onCancel: jest.fn(),
++          onError: jest.fn(),
++        };
++
++        const {
++          result: {
++            current: { error },
++          },
++        } = renderHook(() => useVenmoSavePaymentSession(props));
++
++        expectCurrentErrorValue(error);
++
++        expect(error?.message).toContain("Failed to create");
++        expect(error?.message).toContain("session");
++        expect(error?.message).toContain(
++          "This may occur if the required component",
++        );
++        expect((error as Error & { cause: typeof thrownError })?.cause).toBe(
++          thrownError,
++        );
++      },
++    );
++
++    test.each([
++      [INSTANCE_LOADING_STATE.PENDING, true],
++      [INSTANCE_LOADING_STATE.RESOLVED, false],
++      [INSTANCE_LOADING_STATE.REJECTED, false],
++    ])(
++      "should return isPending as %s when loadingStatus is %s",
++      (loadingStatus, expectedIsPending) => {
++        mockPayPalContext({ loadingStatus });
++
++        const props: UseVenmoSavePaymentSessionProps = {
++          presentationMode: "popup",
++          vaultSetupToken: "test-vault-token",
++          onApprove: jest.fn(),
++        };
++
++        const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++        expect(result.current.isPending).toBe(expectedIsPending);
++      },
++    );
++
++    test("should create Venmo save session with vaultSetupToken when provided", () => {
++      const onApprove = jest.fn();
++      const onCancel = jest.fn();
++      const onError = jest.fn();
++
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove,
++        onCancel,
++        onError,
++      };
++
++      renderHook(() => useVenmoSavePaymentSession(props));
++
++      const createSessionCall =
++        mockSdkInstance.createVenmoSavePaymentSession.mock.calls[0][0];
++
++      expect(
++        mockSdkInstance.createVenmoSavePaymentSession,
++      ).toHaveBeenCalledWith({
++        vaultSetupToken: "test-vault-token",
++        onApprove,
++        onCancel,
++        onError,
++      });
++
++      const mockData = { vaultSetupToken: "test-vault-token" };
++      createSessionCall.onApprove(mockData);
++      createSessionCall.onCancel();
++      createSessionCall.onError(new Error("test error"));
++
++      expect(onApprove).toHaveBeenCalledWith(mockData);
++      expect(onCancel).toHaveBeenCalled();
++      expect(onError).toHaveBeenCalledWith(new Error("test error"));
++    });
++
++    test("should create Venmo save session without vaultSetupToken when createVaultToken is provided", () => {
++      const mockCreateVaultToken = jest
++        .fn()
++        .mockReturnValue(Promise.resolve({ vaultSetupToken: "created-token" }));
++      const onApprove = jest.fn();
++
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        createVaultToken: mockCreateVaultToken,
++        onApprove,
++      };
++
++      renderHook(() => useVenmoSavePaymentSession(props));
++
++      expect(
++        mockSdkInstance.createVenmoSavePaymentSession,
++      ).toHaveBeenCalledWith({
++        vaultSetupToken: undefined,
++        onApprove,
++      });
++    });
++  });
++
++  describe("session lifecycle", () => {
++    test("should destroy session on unmount", () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { unmount } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      unmount();
++
++      expect(mockVenmoSession.destroy).toHaveBeenCalled();
++    });
++
++    test("should recreate session when vaultSetupToken changes", () => {
++      const onApprove = jest.fn();
++      const { rerender } = renderHook(
++        ({ vaultSetupToken }) =>
++          useVenmoSavePaymentSession({
++            presentationMode: "popup",
++            vaultSetupToken,
++            onApprove,
++          }),
++        { initialProps: { vaultSetupToken: "test-vault-token-1" } },
++      );
++
++      jest.clearAllMocks();
++
++      rerender({ vaultSetupToken: "test-vault-token-2" });
++
++      expect(mockVenmoSession.destroy).toHaveBeenCalled();
++      expect(
++        mockSdkInstance.createVenmoSavePaymentSession,
++      ).toHaveBeenCalledWith({
++        vaultSetupToken: "test-vault-token-2",
++        onApprove,
++      });
++    });
++
++    test("should recreate session when SDK instance changes", () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { rerender } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      jest.clearAllMocks();
++
++      const newMockSession = createMockVenmoSession();
++      const newMockSdkInstance = createMockSdkInstance(newMockSession);
++
++      mockPayPalContext({ sdkInstance: newMockSdkInstance });
++
++      rerender();
++
++      expect(mockVenmoSession.destroy).toHaveBeenCalled();
++      expect(
++        newMockSdkInstance.createVenmoSavePaymentSession,
++      ).toHaveBeenCalled();
++    });
++
++    test("should NOT recreate session when only callbacks change", () => {
++      mockUseProxyProps.mockImplementation(
++        jest.requireActual("../utils").useProxyProps,
++      );
++
++      const initialOnApprove = jest.fn();
++      const newOnApprove = jest.fn();
++
++      const { rerender } = renderHook(
++        ({ onApprove }) =>
++          useVenmoSavePaymentSession({
++            presentationMode: "popup",
++            vaultSetupToken: "test-vault-token",
++            onApprove,
++          }),
++        { initialProps: { onApprove: initialOnApprove } },
++      );
++
++      jest.clearAllMocks();
++
++      rerender({ onApprove: newOnApprove });
++
++      expect(mockVenmoSession.destroy).not.toHaveBeenCalled();
++      expect(
++        mockSdkInstance.createVenmoSavePaymentSession,
++      ).not.toHaveBeenCalled();
++    });
++  });
++
++  describe("handleClick", () => {
++    test("should start session with presentation mode and vaultSetupToken", async () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockVenmoSession.start).toHaveBeenCalledWith({
++        presentationMode: "popup",
++      });
++    });
++
++    test("should start session with createVaultToken when provided", async () => {
++      const mockCreateVaultToken = jest
++        .fn()
++        .mockReturnValue(Promise.resolve({ vaultSetupToken: "created-token" }));
++
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        createVaultToken: mockCreateVaultToken,
++        onApprove: jest.fn(),
++      };
++
++      const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockVenmoSession.start).toHaveBeenCalledWith(
++        { presentationMode: "popup" },
++        expect.any(Promise),
++      );
++      expect(mockCreateVaultToken).toHaveBeenCalled();
++    });
++
++    test("should do nothing if the click handler is called and the component has been unmounted", async () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result, unmount } = renderHook(() =>
++        useVenmoSavePaymentSession(props),
++      );
++
++      unmount();
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      const { error } = result.current;
++
++      expectCurrentErrorValue(error);
++
++      expect(error).toBeNull();
++      expect(mockVenmoSession.start).not.toHaveBeenCalled();
++    });
++
++    test("should default presentationMode to 'auto' when not provided", async () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockVenmoSession.start).toHaveBeenCalledWith(
++        expect.objectContaining({ presentationMode: "auto" }),
++      );
++    });
++
++    test("should forward sandboxSupport to start", async () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++        sandboxSupport: { enabled: true },
++      };
++
++      const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      expect(mockVenmoSession.start).toHaveBeenCalledWith(
++        expect.objectContaining({
++          presentationMode: "auto",
++          sandboxSupport: { enabled: true },
++        }),
++      );
++    });
++
++    test("should omit sandboxSupport from start options when not provided", async () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      const startOptions = (mockVenmoSession.start as jest.Mock).mock
++        .calls[0][0];
++      expect(startOptions).not.toHaveProperty("sandboxSupport");
++    });
++  });
++
++  describe("handleCancel", () => {
++    test("should cancel session when available", () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      act(() => {
++        result.current.handleCancel();
++      });
++
++      expect(mockVenmoSession.cancel).toHaveBeenCalled();
++    });
++
++    test("should not throw error when session is not available", () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result, unmount } = renderHook(() =>
++        useVenmoSavePaymentSession(props),
++      );
++
++      unmount();
++
++      expect(() => {
++        act(() => {
++          result.current.handleCancel();
++        });
++      }).not.toThrow();
++    });
++  });
++
++  describe("handleDestroy", () => {
++    test("should destroy session and clear reference", () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      act(() => {
++        result.current.handleDestroy();
++      });
++
++      expect(mockVenmoSession.destroy).toHaveBeenCalled();
++    });
++
++    test("should handle manually destroyed session gracefully", async () => {
++      const props: UseVenmoSavePaymentSessionProps = {
++        presentationMode: "popup",
++        vaultSetupToken: "test-vault-token",
++        onApprove: jest.fn(),
++      };
++
++      const { result } = renderHook(() => useVenmoSavePaymentSession(props));
++
++      act(() => {
++        result.current.handleDestroy();
++      });
++
++      await act(async () => {
++        await result.current.handleClick();
++      });
++
++      const { error } = result.current;
++
++      expectCurrentErrorValue(error);
++
++      expect(error).toEqual(new Error("Venmo session not available"));
++    });
++  });
++});
+diff --git a/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.ts b/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.ts
+new file mode 100644
+index 0000000..6aa72fa
+--- /dev/null
++++ b/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.ts
+@@ -0,0 +1,180 @@
++import { useCallback, useEffect, useRef } from "react";
++
++import { usePayPal } from "./usePayPal";
++import { useIsMountedRef } from "./useIsMounted";
++import { useError } from "./useError";
++import { useProxyProps, createPaymentSession } from "../utils";
++import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
++
++import type {
++  VenmoSavePaymentSession,
++  VenmoPresentationModeOptions,
++  VenmoSavePaymentSessionOptions,
++  VenmoSavePaymentSessionPromise,
++  BasePaymentSessionReturn,
++  WithOptionalPresentationMode,
++} from "../types";
++
++/**
++ * `sandboxSupport` is a temporary Venmo sandbox-testing flag that the JS SDK will
++ * remove once it is no longer needed. It is intentionally typed locally here
++ * rather than in `@paypal/paypal-js`, so it can be dropped from react-paypal-js
++ * without a breaking change to the published SDK types.
++ */
++type VenmoSandboxSupport = {
++  sandboxSupport?: { enabled: boolean };
++};
++
++export type UseVenmoSavePaymentSessionProps = (
++  | (Omit<VenmoSavePaymentSessionOptions, "vaultSetupToken"> & {
++      createVaultToken: () => VenmoSavePaymentSessionPromise;
++      vaultSetupToken?: never;
++    })
++  | (VenmoSavePaymentSessionOptions & {
++      createVaultToken?: never;
++      vaultSetupToken: string;
++    })
++) &
++  WithOptionalPresentationMode<VenmoPresentationModeOptions> &
++  VenmoSandboxSupport;
++
++/**
++ * Hook for managing a Venmo save payment session, vault without purchase.
++ *
++ * This hook creates and manages a Venmo save payment session for vaulting a buyer's
++ * Venmo account without completing a purchase. It handles session lifecycle and
++ * provides methods to start, cancel, and destroy the session.
++ *
++ * `presentationMode` is optional and defaults to `"auto"`.
++ *
++ * For a flow that vaults the Venmo account while also completing an order
++ * (VAULT_WITH_PAYMENT), pass `savePayment: true` to {@link useVenmoOneTimePaymentSession} instead.
++ *
++ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
++ *
++ * @example
++ * function SaveVenmoButton() {
++ *   const { error, isPending, handleClick, handleCancel } = useVenmoSavePaymentSession({
++ *     createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
++ *     onApprove: (data) => console.log('Vaulted:', data),
++ *     onCancel: () => console.log('Cancelled'),
++ *   });
++ *
++ *   if (isPending) return null;
++ *   if (error) return <div>Error: {error.message}</div>;
++ *
++ *   return (
++ *     <venmo-button onClick={handleClick} onCancel={handleCancel} />
++ *   );
++ * }
++ */
++export function useVenmoSavePaymentSession({
++  presentationMode = "auto",
++  fullPageOverlay,
++  createVaultToken,
++  vaultSetupToken,
++  sandboxSupport,
++  ...callbacks
++}: UseVenmoSavePaymentSessionProps): BasePaymentSessionReturn {
++  const { sdkInstance, loadingStatus } = usePayPal();
++  const isMountedRef = useIsMountedRef();
++  const sessionRef = useRef<VenmoSavePaymentSession | null>(null);
++  const proxyCallbacks = useProxyProps(callbacks);
++  const [error, setError] = useError();
++
++  // Prevents retrying session creation with a failed SDK instance
++  const failedSdkRef = useRef<unknown>(null);
++
++  const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
++
++  const handleDestroy = useCallback(() => {
++    sessionRef.current?.destroy();
++    sessionRef.current = null;
++  }, []);
++
++  // Handle SDK availability
++  useEffect(() => {
++    // Reset failed SDK tracking when SDK instance changes
++    if (failedSdkRef.current !== sdkInstance) {
++      failedSdkRef.current = null;
++    }
++
++    if (sdkInstance) {
++      setError(null);
++    } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
++      setError(new Error("no sdk instance available"));
++    }
++  }, [sdkInstance, setError, loadingStatus]);
++
++  // Create and manage session lifecycle
++  useEffect(() => {
++    if (!sdkInstance) {
++      return;
++    }
++
++    const newSession = createPaymentSession({
++      sessionCreator: () =>
++        sdkInstance.createVenmoSavePaymentSession({
++          vaultSetupToken,
++          ...proxyCallbacks,
++        }),
++      failedSdkRef,
++      sdkInstance,
++      setError,
++      errorMessage:
++        'Failed to create payment session. This may occur if the required component "venmo-payments" is not included in the SDK components array.',
++    });
++
++    if (!newSession) {
++      return;
++    }
++
++    sessionRef.current = newSession;
++
++    return () => {
++      newSession.destroy();
++    };
++  }, [sdkInstance, vaultSetupToken, proxyCallbacks, setError]);
++
++  const handleCancel = useCallback(() => {
++    sessionRef.current?.cancel();
++  }, []);
++
++  const handleClick = useCallback(async () => {
++    if (!isMountedRef.current) {
++      return;
++    }
++
++    if (!sessionRef.current) {
++      setError(new Error("Venmo session not available"));
++      return;
++    }
++
++    const startOptions = {
++      presentationMode,
++      fullPageOverlay,
++      ...(sandboxSupport && { sandboxSupport }),
++    } as VenmoPresentationModeOptions & VenmoSandboxSupport;
++
++    if (createVaultToken) {
++      await sessionRef.current.start(startOptions, createVaultToken());
++    } else {
++      await sessionRef.current.start(startOptions);
++    }
++  }, [
++    isMountedRef,
++    presentationMode,
++    fullPageOverlay,
++    sandboxSupport,
++    createVaultToken,
++    setError,
++  ]);
++
++  return {
++    error,
++    isPending,
++    handleClick,
++    handleCancel,
++    handleDestroy,
++  };
++}
+diff --git a/packages/react-paypal-js/src/v6/index.ts b/packages/react-paypal-js/src/v6/index.ts
+index f8ff601..8e233eb 100644
+--- a/packages/react-paypal-js/src/v6/index.ts
++++ b/packages/react-paypal-js/src/v6/index.ts
+@@ -58,6 +58,7 @@ export {
+ } from "./components/Braintree/BraintreePayPalPayLaterButton";
+ export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
+ export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
++export { VenmoSavePaymentButton } from "./components/VenmoSavePaymentButton";
+ export {
+   ApplePayOneTimePaymentButton,
+   type ApplePayOneTimePaymentButtonProps,
+@@ -157,6 +158,10 @@ export {
+   useVenmoOneTimePaymentSession,
+   type UseVenmoOneTimePaymentSessionProps,
+ } from "./hooks/useVenmoOneTimePaymentSession";
++export {
++  useVenmoSavePaymentSession,
++  type UseVenmoSavePaymentSessionProps,
++} from "./hooks/useVenmoSavePaymentSession";
+ export {
+   useApplePayOneTimePaymentSession,
+   type UseApplePayOneTimePaymentSessionProps,

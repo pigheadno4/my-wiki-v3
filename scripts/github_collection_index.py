@@ -3,7 +3,8 @@
 from calendar import monthrange
 from dataclasses import asdict, dataclass
 from datetime import date, timedelta
-from functools import cmp_to_key
+from graphlib import CycleError, TopologicalSorter
+from itertools import combinations, groupby
 import json
 import os
 from pathlib import Path
@@ -232,7 +233,8 @@ def _build_row(
     checked: Mapping[str, str],
     today: date,
 ) -> CollectionIndexRow:
-    order = cmp_to_key(_compare_items)
+    ranks = {item.work_item_id: rank for rank, item in enumerate(_ordered_items(items))}
+    order = lambda item: ranks[item.work_item_id]
     latest = max(items, key=order, default=None)
     actionable_items = tuple(
         item
@@ -305,22 +307,47 @@ def _build_row(
     )
 
 
-def _compare_items(left: WorkItem, right: WorkItem) -> int:
-    if left.collection_date != right.collection_date:
-        return -1 if left.collection_date < right.collection_date else 1
-    if len(left.package_changes) == len(right.package_changes) == 1:
-        left_change = left.package_changes[0]
-        right_change = right.package_changes[0]
-        if left_change.package == right_change.package:
-            left_version = parse_semver(left_change.to_version)
-            right_version = parse_semver(right_change.to_version)
-            if left_version is not None and right_version is not None:
-                comparison = compare_semver(left_version, right_version)
-                if comparison:
-                    return comparison
-    if left.work_item_id == right.work_item_id:
-        return 0
-    return -1 if left.work_item_id < right.work_item_id else 1
+def _ordered_items(items: Sequence[WorkItem]) -> list:
+    ordered = []
+    by_date = sorted(items, key=lambda item: (item.collection_date, item.work_item_id))
+    for _, group in groupby(by_date, key=lambda item: item.collection_date):
+        same_day = list(group)
+        by_id = {item.work_item_id: item for item in same_day}
+        predecessors = {item.work_item_id: set() for item in same_day}
+        for left, right in combinations(same_day, 2):
+            comparison = _compare_package_versions(left, right)
+            if comparison:
+                earlier, later = (left, right) if comparison < 0 else (right, left)
+                predecessors[later.work_item_id].add(earlier.work_item_id)
+        sorter = TopologicalSorter(predecessors)
+        try:
+            sorter.prepare()
+        except CycleError:
+            # Conflicting partial histories cannot establish a version order.
+            ordered.extend(same_day)
+            continue
+        while sorter.is_active():
+            ready = sorted(sorter.get_ready())
+            ordered.extend(by_id[item_id] for item_id in ready)
+            sorter.done(*ready)
+    return ordered
+
+
+def _compare_package_versions(left: WorkItem, right: WorkItem) -> int:
+    left_versions = {change.package: change.to_version for change in left.package_changes}
+    right_versions = {change.package: change.to_version for change in right.package_changes}
+    comparisons = set()
+    for package in left_versions.keys() & right_versions.keys():
+        left_version = parse_semver(left_versions[package])
+        right_version = parse_semver(right_versions[package])
+        if left_version is not None and right_version is not None:
+            comparison = compare_semver(left_version, right_version)
+            if comparison:
+                comparisons.add(comparison)
+    # Unrelated or conflicting package changes do not imply a release order.
+    if len(comparisons) == 1:
+        return comparisons.pop()
+    return 0
 
 
 def _next_action(

@@ -6,6 +6,23 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-12] maintenance | Same-date monorepo index ordering
+
+- Fixed generated-index ordering to compare shared package versions when one SHA contains several package releases and a later same-date SHA updates only one. Date precedence and deterministic fallback for unrelated/conflicting changes remain. The regression reproduced the stale result in both input orders before the fix.
+- Regenerated the index: PayPal JS last accepted work item now identifies core `11.2.2`; independently ingested React remains `10.6.0` in cumulative wiki/package records. No raw, registry, collection or ingest-policy change.
+
+## [2026-10-12] ingest | PayPal JS core `11.2.2`
+
+- Approved serial delta `github-294704633f9b426cbd53`, SHA `f58396a4cc57552e475fb198234d8e822c25e6b4`, after completing shared-SHA core `11.2.1`/React `10.6.0`. Collected October 11; focused changed-code/comparison/prior/dependency reading, inventory and unchanged-history mechanical checks (324 file hashes/sizes).
+- Namespace-exists-at-timeout now resolves through the load handler even without a load event. Absent namespace retains prior timeout behavior; no namespace-version/authenticity guarantee or new payment API. React remains independently `10.6.0`; dependency range is not installed-version proof.
+- Checkout concept updated first, then additive source/changelog, company/catalog/logs; three retained modifications, 158 unchanged and two selection-only omissions. All historical knowledge/counts preserved. No new contradiction/cross-company comparison needed; existing warnings remain. No browser/build/payment test, commit or push. Next: scoped commit/push review of the two completed items.
+
+## [2026-10-12] ingest | PayPal JS core `11.2.1` and React `10.6.0`
+
+- Approved serial delta `github-9a59802f1b9e9778125b`, SHA `cbec2ba41ce51129c28608e772f8112de0772f86`, released October 5 and collected October 11. Focused reading fully covered changed implementation, comparisons, affected prior code/dependencies and complete wiki history; inventory/unchanged changelog verified mechanically (328 file hashes/sizes).
+- Core waits 30 seconds without timeout retry; explicit errors still retry. React adds Venmo save-with-purchase forwarding and save-only button/hook with lazy/eager setup tokens; transaction-lock, rejection, permanent-token and merchant-eligibility boundaries retained. Automated export-scan omissions corrected by exact code evidence; snapshot-selection removals are not upstream deletions.
+- Concept audit/updates first; cumulative source/changelog, company, provider index and root log updated without new sources or count changes. Older history and availability/retry contradictions preserved; no cross-company comparison needed. No browser/payment/build execution, commit or push. Next: core `11.2.2` serial delta.
+
 ## [2026-10-07] ingest | Android Messages untagged `0424354` to `aede075`
 
 - Approved serial delta `github-8d08ec8d57312948fb18` with focused reading: changed/prior Kotlin and XML read fully, affected wrapper/host code read, shared-page relevant sections checked, 248 file hashes/sizes verified across two capsules and two XML supplements.

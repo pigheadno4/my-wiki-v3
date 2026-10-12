@@ -2,9 +2,11 @@
 title: "GitHub: paypal/paypal-js"
 type: source
 date_ingested: 2026-04-13
-date_updated: 2026-10-02
+date_updated: 2026-10-12
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json"
+  - "github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json"
   - "github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json"
@@ -28,7 +30,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 ## Overview
 
-Latest ingested releases: `@paypal/paypal-js@11.2.0` and `@paypal/react-paypal-js@10.5.2` (September 28, 2026; collected October 2). Core adds bounded v6 script-load retries and namespace-based in-flight deduplication; React extends selected own-property configuration guards and adopts core `^11.2.0`. The retry documentation conflicts with the retained implementation. Earlier package-qualified knowledge, including the September 23 LPM delta and Storybook supplement, remains below.
+Latest ingested releases: `@paypal/paypal-js@11.2.2` (release record October 9 UTC) and `@paypal/react-paypal-js@10.6.0` (October 5 UTC), collected October 11 and ingested October 12. Core resolves a missing-load-event case when the namespace exists at its 30-second timeout; otherwise it preserves the no-timeout-retry behavior added in `11.2.1`. React adds Venmo save-with-purchase forwarding and a save-without-purchase button/hook. Earlier package-qualified knowledge, including the `11.2.0` retry-documentation contradiction and all prior supplements, remains below.
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
@@ -46,6 +48,20 @@ Repository: <https://github.com/paypal/paypal-js>
 - September 15 work item `github-961c3611b36c6341ad56` was approved as full additive ingest with an explicit item-specific focused reading scope: all 24 changed retained files, relevant dependencies, complete release/comparison records and wiki history, and all six attached Storybook files. The entire capsule remains immutable; unchanged unrelated files and generated schemas were not reread. This does not change the registry's default full-reading policy or claim a whole-repository review.
 
 ## Grounding excerpts
+
+### Core 11.2.2 grounding
+
+- `if (getPayPalWindowNamespace(namespace)) {` - `raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/files/packages/paypal-js/src/v6/load-script-with-retry.ts:176`.
+- `handleLoad();` - same file, line 177; the timeout branch uses the existing handler.
+- `SCRIPT_LOADING_STATE.RESOLVED,` - same file, line 129; the handler marks the script resolved before returning the namespace.
+
+### October 5 grounding
+
+- `export const SCRIPT_LOAD_TIMEOUT_MS = 30_000;` - `raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/paypal-js/src/v6/constants.ts:11`.
+- `observeTimedOutScriptOutcome(scriptElement, namespace);` - same snapshot, `files/packages/paypal-js/src/v6/load-script-with-retry.ts:179`.
+- `savePayment?: boolean;` - same snapshot, `files/packages/paypal-js/types/v6/components/venmo-payments.d.ts:11`.
+- `export { VenmoSavePaymentButton } from "./components/VenmoSavePaymentButton";` - same snapshot, `files/packages/react-paypal-js/src/v6/index.ts:61`.
+- `await sessionRef.current.start(startOptions, createVaultToken());` - same snapshot, `files/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.ts:160`.
 
 ### September 28 grounding
 
@@ -315,8 +331,8 @@ Repository: <https://github.com/paypal/paypal-js>
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `11.2.0` | Delta ingest; v8 through 11.1.1 history retained |
-| `@paypal/react-paypal-js` | `10.5.2` | Same shared-SHA delta; v8 through 10.5.1 and prior Storybook supplements retained |
+| `@paypal/paypal-js` | `11.2.2` | Serial delta ingest; v8 through 11.2.1 history retained |
+| `@paypal/react-paypal-js` | `10.6.0` | Same shared-SHA delta; v8 through 10.5.2 and prior Storybook supplements retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -544,6 +560,29 @@ const sdk = await loadCoreSdkScript({
 ```
 
 This retries loading the SDK only, not payment API requests. Continue handling final loader failure, buyer cancellation, and server-side order finalization separately. The retained HTML/mock files are test harnesses, not new merchant payment features or tests executed by this wiki review.
+
+#### `@paypal/paypal-js@11.2.1`
+
+Released October 5 at `cbec2ba41ce51129c28608e772f8112de0772f86`, compared with `11.2.0`. The [constants](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/paypal-js/src/v6/constants.ts) remove the timeout-retry allowance and raise the per-attempt wait from 15 to 30 seconds. The [retry helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/paypal-js/src/v6/load-script-with-retry.ts) now distinguishes a slow/pending request from an explicit error:
+
+- A timeout rejects the caller without creating another script or removing the pending element. One shared `WeakSet`-controlled late observer updates it to resolved/rejected on a later load or removes it on a later error. An already rejected promise remains rejected.
+- A manual follow-up call can reuse a pending element instead of issuing another request. This reduces duplicate evaluation from timeout retries; it cannot cancel an already sent browser request, and other callers/scripts are not universally controlled.
+- Explicit errors still remove the failed element and allow up to two retries, using the existing backoff/jitter and `paypal-sdk-retry` parameter. Each attempt gets its own 30-second timer; 30 seconds is not a total budget across error retries.
+- A load event without the expected namespace still rejects immediately. The unchanged entry point deduplicates by namespace, not environment/options; pending-element selection is still pathname/state based. Keep namespace configuration consistent.
+
+Core also adds optional `savePayment?: boolean` to [Venmo one-time session options](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/paypal-js/types/v6/components/venmo-payments.d.ts). Save-without-purchase options explicitly omit it along with the one-time approval callback and retain their setup-token approval shape. The save-session method itself predates this release (`10.0.3`); this patch is not its first introduction.
+
+Keep loader failure handling and payment finalization separate. The `11.2.0` retry-note contradiction remains version-qualified history, not the limits for `11.2.1`.
+
+#### `@paypal/paypal-js@11.2.2`
+
+Released at `f58396a4cc57552e475fb198234d8e822c25e6b4` (record 2026-10-09 UTC), compared with `11.2.1`. The [loader](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/files/packages/paypal-js/src/v6/load-script-with-retry.ts) checks `getPayPalWindowNamespace(namespace)` at timeout before setting `settled` or rejecting. If truthy, it calls `handleLoad()`, clears the timer/listeners, marks the script resolved and returns that namespace. This handles a script whose namespace became available without an observed load event.
+
+If the namespace is absent, the earlier 30-second rejection, retained pending element and shared late-result observer remain. Explicit-error retries, namespace-based in-flight deduplication, required environment and payment declarations are unchanged. The timeout check tests existence only, not the namespace's version/authenticity; it is not a security or cross-environment isolation control. A genuinely timed-out promise still is not resurrected by a later load.
+
+React is still independently `10.6.0`; no React release belongs to this work item. Its existing core range `^11.2.1` permits `11.2.2`, but a merchant's actual installed version depends on dependency resolution/lockfile evidence. No new saved-payment, Venmo, or payment-session API is added by this core patch.
+
+**Reading boundary:** approved delta `github-294704633f9b426cbd53`, ingested 2026-10-12 using focused reading. Changed code/metadata, complete patch and affected prior implementation/dependencies read; unchanged history and both inventories verified mechanically (324 file hashes/sizes). Three retained files modified, 158 unchanged; the prior timeout HTML and React changelog are no longer selected, not upstream deletions. Their prior evidence and the `11.2.1`/`10.6.0` knowledge remain. No browser, package build or payment execution.
 
 ## `@paypal/react-paypal-js`
 
@@ -970,6 +1009,53 @@ Selected values supplied only through a prototype are no longer accepted at thes
 
 Work item `github-5b2a7f87f06b9859f5c8` used full reading of all 37 assigned paths, including both complete manifests, cumulative raw and wiki changelogs, release records, changed files, and comparison patches. No focused-reading exception, whole-upstream-repository claim, browser/payment test, or package build is implied.
 
+#### `@paypal/react-paypal-js@10.6.0`
+
+Released October 5 at the same `cbec2ba` SHA, compared with `10.5.2`; the core dependency becomes `^11.2.1`. The `/sdk-v6` barrel adds `VenmoSavePaymentButton`, `useVenmoSavePaymentSession`, and `UseVenmoSavePaymentSessionProps`. The automated public-API scan reports no changes, but the exact barrel and declaration diff establish these additive exports and options; do not interpret that scan as an exhaustive API verdict.
+
+**Save with purchase:** the existing `VenmoOneTimePaymentButton` inherits `savePayment` through its hook props. The [updated hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/react-paypal-js/src/v6/hooks/useVenmoOneTimePaymentSession.ts) explicitly passes it into `createVenmoOneTimePaymentSession({ orderId, savePayment, ...callbacks })`, and changing it recreates the session. `createOrder()` still resolves to `{ orderId }` through the second `start()` argument; this does not create/capture an order or persist the vaulted method itself.
+
+**Save without purchase:** the [new hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.ts) wraps the older core save-session API with mutually exclusive typed token paths:
+
+| Path | Merchant input | Wrapper behavior |
+| --- | --- | --- |
+| Lazy | `createVaultToken: () => Promise<{ vaultSetupToken: string }>` | Called on click; its promise is passed as the second `session.start()` argument |
+| Eager | `vaultSetupToken: string` | Passed into session creation; `start()` gets presentation options only |
+
+Approval provides `{ vaultSetupToken }`, not a permanent payment token or independently verified storage. The merchant must complete and verify the appropriate server-side token exchange and customer association. The wrapper itself contains no token-creation HTTP request, permanent-token exchange, database or account-authorization layer.
+
+The hook defaults presentation to `auto`, forwards `fullPageOverlay` and the locally typed temporary `sandboxSupport` flag to start options, proxies callbacks, recreates the session for a changed SDK/token, and destroys it on effect cleanup. It exposes cancellation and explicit destruction. Missing SDK/session and session-creation errors enter hook state; rejected `createVaultToken()` or `start()` calls are not caught into that state by `handleClick()`. Custom-hook callers should handle rejection; the prebuilt button attaches that async click handler without an explicit catch.
+
+The [button](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/react-paypal-js/src/v6/components/VenmoSavePaymentButton.tsx) renders `<venmo-button>` only after hydration, otherwise a `<div>`. It disables on merchant `disabled`, SDK loading or hook error and logs hook errors to the console. `isPending` means SDK loading, not an operation-in-progress lock or protection against repeated clicks. Load `venmo-payments`, check eligibility, and add application-level operation/error handling where needed.
+
+Illustrative fragments inside an existing `PayPalProvider` with `components={["venmo-payments"]}`, explicit environment, and an eligibility-gated child. The named callbacks below are merchant-owned, not package functions; no browser/compiler/payment test was performed:
+
+```tsx
+import {
+  VenmoOneTimePaymentButton,
+  VenmoSavePaymentButton,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+// Purchase plus save: createMerchantOrder resolves to { orderId }.
+<VenmoOneTimePaymentButton
+  savePayment={true}
+  createOrder={createMerchantOrder}
+  onApprove={finalizeMerchantOrder}
+/>;
+
+// Save only: createMerchantSetupToken resolves to { vaultSetupToken }.
+<VenmoSavePaymentButton
+  createVaultToken={createMerchantSetupToken}
+  onApprove={exchangeAndStoreApprovedSetupToken}
+/>;
+// Alternative: vaultSetupToken={serverCreatedSetupToken}, without createVaultToken.
+```
+
+> [!warning] Contradiction - historical Venmo availability guidance
+> The older product documentation excludes Venmo save-for-purchase-later. React `10.6.0` now adds a concrete wrapper around the older core declaration, strengthening code evidence but not resolving deployed runtime, product/account eligibility, or native-app support. The historical warning is preserved in [[paypal-vault]]. This is not a PayPal View/Edit Saved Payment wrapper or proof of returning-buyer feature parity with v5.
+
+**Reading boundary:** approved delta `github-9a59802f1b9e9778125b`, ingested 2026-10-12 with item-specific focused reading. Changed implementation, comparisons, affected prior code and dependencies were read fully; both snapshot inventories (328 file hashes/sizes) and unchanged raw changelog history were checked mechanically. Twelve added/modified retained paths and 151 unchanged paths are shared between the two package views; four prior harness paths are no longer selected, not upstream-deleted. Current Storybook Venmo examples are outside this capsule and were not collected/read; older supplements remain. No upstream tests, package build, hosted SDK, payment or eligibility test was executed.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -993,6 +1079,15 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 - Sources: [[source-paypal-javascript-sdk-reference]], [[source-paypal-js-sdk-v6-setup]]
 
 ## Raw Sources
+
+- [Core 11.2.2 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/manifest.json), and [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/release-notes.md)
+- [Core 11.2.1 to 11.2.2 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.1--11.2.2/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.1--11.2.2/diff.patch), and [unchanged DOM helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/files/packages/paypal-js/src/v6/dom.ts)
+
+- [October 5 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json)
+- [Core 11.2.1 record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.1/2026-10-11/manifest.json) and [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.1/2026-10-11/release-notes.md)
+- [React 10.6.0 record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.6.0/2026-10-11/manifest.json) and [notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.6.0/2026-10-11/release-notes.md)
+- [Core 11.2.0 to 11.2.1 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.0--11.2.1/comparison.json) and [React 10.5.2 to 10.6.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.2--10.6.0/comparison.json)
+- [Venmo types](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/paypal-js/types/v6/components/venmo-payments.d.ts), [React exports](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/react-paypal-js/src/v6/index.ts), and [unchanged one-time button](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/react-paypal-js/src/v6/components/VenmoOneTimePaymentButton.tsx)
 
 - [September 28 exact-SHA snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json)
 - [Core 11.2.0 record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/manifest.json) and [release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/release-notes.md)

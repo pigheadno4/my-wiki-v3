@@ -2,9 +2,11 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-10-02
+date_updated: 2026-10-12
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json"
+  - "github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-09-26-dfd184b/manifest.json"
   - "github/paypal/paypal-js/supplements/2026-09-26-dfd184b-9ec86477/manifest.json"
@@ -28,6 +30,48 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `f58396a` (2026-10-09 UTC)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `11.2.1` | `11.2.2` | `f58396a4cc57552e475fb198234d8e822c25e6b4` | Delta |
+
+Package-qualified release `@paypal/paypal-js@11.2.2` was collected October 11 and ingested October 12 as approved serial item `github-294704633f9b426cbd53`, after completing the `11.2.1`/React `10.6.0` item.
+
+**Impact:** at the 30-second timeout, a truthy requested namespace now routes through the existing load handler, resolves the loader and marks the script resolved even without an observed load event. If absent, the `11.2.1` rejection/pending-element behavior remains. This existence check does not independently check namespace version/authenticity. Explicit-error retry limits, environment handling, deduplication and payment APIs are unchanged.
+
+**Migration:** upgrade core for this false-timeout case and keep normal failure handling. React remains `10.6.0`; its `^11.2.1` core range permits this patch but does not establish a merchant's installed dependency. No new payment method, Venmo wrapper or saved-method editing contract is introduced here.
+
+**Updated knowledge:** [[paypal-checkout]] first; additive core `11.2.2` source section, package status, company/catalog and logs. Previous sections and contradictions retained; source count unchanged, no cross-company comparison needed.
+
+**Reading boundary:** user-approved focused reading covers complete changed loader, metadata/comparison patch and affected prior code/dependencies. Both inventories verified (324 file hashes/sizes), unchanged cumulative history exact-equal. Three modified retained files, 158 unchanged; two prior paths no longer selected are not upstream deletions. Tests appear in the comparison as intended regression coverage, not executed results. No build/browser/payment test.
+
+Evidence: [snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/manifest.json), [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/release-notes.md), [comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.1--11.2.2/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.1--11.2.2/diff.patch), and [loader](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/files/packages/paypal-js/src/v6/load-script-with-retry.ts).
+
+## Repository change set: `cbec2ba` (2026-10-05)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `11.2.0` | `11.2.1` | 2026-10-05 | `cbec2ba41ce51129c28608e772f8112de0772f86` | Delta |
+| `@paypal/react-paypal-js` | `10.5.2` | `10.6.0` | 2026-10-05 | `cbec2ba41ce51129c28608e772f8112de0772f86` | Delta |
+
+Package-qualified releases `@paypal/paypal-js@11.2.1` and `@paypal/react-paypal-js@10.6.0` were collected October 11 and ingested October 12 as one approved shared-SHA work item `github-9a59802f1b9e9778125b`.
+
+**Core impact:** 30-second per-attempt timeout replaces the old 15-second timeout/retry behavior. Timeout rejects without inserting another script, retaining the pending element and one shared late-result observer. Manual follow-up calls can reuse it; late success does not resurrect an already rejected promise. Explicit errors still allow two retries with existing backoff/cache busting. Namespace/options consistency remains necessary. Venmo one-time options add `savePayment`; save-only options omit it. The older save-session API and `11.2.0` documentation contradiction remain historical evidence.
+
+**React impact:** dependency becomes core `^11.2.1`. One-time Venmo forwards `savePayment` and recreates the session when it changes. New `VenmoSavePaymentButton`/`useVenmoSavePaymentSession` exports support save-without-purchase using either click-time `createVaultToken()` or an eager `vaultSetupToken`. Approval returns a setup token, not permanent storage. The automated export scan misses these additions; the barrel/type/source diff establishes them.
+
+**Migration:** import from `/sdk-v6`, load `venmo-payments`, check eligibility, keep explicit environment and server-owned order/token orchestration. Complete and verify permanent-token exchange/customer association separately. `isPending` means SDK loading, not a transaction lock; the new hook does not catch token/start rejection into error state. Preserve application-level operation/error handling. See [[source-github-paypal-js]] for code fragments.
+
+> [!warning] Contradiction - historical Venmo availability guidance
+> The older docs exclude save-for-purchase-later. This release strengthens wrapper evidence but does not establish deployed runtime, account/product eligibility or native-app support. Preserve the warnings in [[paypal-vault]] and the cumulative source; do not claim PayPal saved-method editing or v5 returning-buyer parity from these Venmo additions.
+
+**Updated knowledge:** concepts [[paypal-checkout]] and [[paypal-vault]] first, additive core/React source sections, company/catalog and logs. No new source page or source-count change; all older releases retained. No cross-company comparison needed.
+
+**Reading boundary:** user-approved focused reading of changed implementation, comparison patches, affected prior source/dependencies and complete wiki history; mechanical inventory and unchanged raw changelog checks. Both snapshots verified (328 file hashes/sizes); 12 added/modified retained paths, 151 unchanged, four prior harness paths no longer selected, not upstream deletions. Two package views do not double the distinct changes. New Storybook Venmo examples remain outside the capsule; older supplements preserved. No upstream test/build, browser, payment or eligibility execution.
+
+Evidence: [snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json), [core release](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.1/2026-10-11/manifest.json), [React release](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.6.0/2026-10-11/manifest.json), [core comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.0--11.2.1/comparison.json), [React comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.5.2--10.6.0/comparison.json), [loader](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/paypal-js/src/v6/load-script-with-retry.ts), [Venmo save hook](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/react-paypal-js/src/v6/hooks/useVenmoSavePaymentSession.ts), and [save button](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/files/packages/react-paypal-js/src/v6/components/VenmoSavePaymentButton.tsx).
 
 ## Repository change set: `d9966e6` (2026-09-28)
 
@@ -528,6 +572,10 @@ The same SHA contains `@paypal/paypal-js@9.0.0`, matching React 8.9.2's declared
 The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is recorded in this change set because the approved work item contains only `@paypal/paypal-js@8.4.2`. A future React release ingest will add its own package-qualified timeline entry.
 
 ## Raw Sources
+
+- [Core 11.2.2 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/manifest.json), and [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/release-notes.md)
+
+- [October 5 shared snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json), [core 11.2.1 notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.1/2026-10-11/release-notes.md), and [React 10.6.0 notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.6.0/2026-10-11/release-notes.md)
 
 - [September 28 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json), [core 11.2.0 notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.0/2026-10-02/release-notes.md), and [React 10.5.2 notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.5.2/2026-10-02/release-notes.md)
 
