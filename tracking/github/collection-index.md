@@ -8,7 +8,7 @@ Generated: `2026-10-12`
 | adyen | `adyen/adyen-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-07 | ingested | 2026-10-14 | `wait` |
 | adyen | `adyen/adyen-pos-mobile-ios` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-react-native` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-04 | ingested | 2026-10-11 | `collect-baseline` |
-| adyen | `adyen/adyen-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-02 | ingested | 2026-10-09 | `collect-baseline` |
+| adyen | `adyen/adyen-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-12 | ingested | 2026-10-19 | `wait` |
 | adyen | `adyen/adyen-3ds2-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | adyen | `adyen/adyen-3ds2-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | adyen | `adyen/adyen-3ds2-ios-swift` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
