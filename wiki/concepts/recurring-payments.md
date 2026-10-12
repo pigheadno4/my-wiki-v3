@@ -92,6 +92,8 @@ See platform-specific concept pages for integration details:
 - What are typical involuntary churn rates by payment method?
 
 ## Sources
+
+- [[source-adyen-docs-online-payments-tokenization]] - Adyen tokenization overview covering consent-based Vault storage, Sessions and Advanced implementation routes, one-click/subscription/non-fixed-schedule models, shopper-reference scope, and the separate `/payments` requirement for shopper-not-present Sessions token payments
 - [[source-braintree-payment-methods-paypal-best-practices]] - Braintree PayPal recurring-experience route for the review page's plan information and recurring indicator, distinct from token storage, scheduled charge execution and subscription lifecycle evidence
 - [[source-braintree-payment-methods-sepa-direct-debit]] - Braintree guide stating that vaulting payment methods and creating recurring transactions are supported for SEPA Direct Debit, with pilot-only availability and linked-PayPal setup qualifications
 

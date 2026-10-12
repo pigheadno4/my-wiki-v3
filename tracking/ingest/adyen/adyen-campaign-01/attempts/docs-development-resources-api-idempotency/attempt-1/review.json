@@ -1,0 +1,20 @@
+{
+  "job_id": "docs-development-resources-api-idempotency",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The independently computed SHA-256 matches the trusted order, and a full read of all 281 raw lines supports the candidate's POST request scope; key format and length; same-key replay; company-account, 7-to-14-day and regional boundaries; UUID-v4 credential-response protection; concurrent-duplicate behavior; error codes 703 and 704; exponential backoff; and non-idempotent fallback warning. The canonical URL and raw provenance are correct, all five quotes are verbatim at their stated lines, all detail locators resolve, candidate.md agrees with receipt.source_page apart from the ordinary terminal newline, and suggestions.json is semantically equal to receipt.suggestions. The root index routes to the Adyen provider index, and the proposed provider-specific idempotency concept fills a genuine topic gap with a reciprocal source route. One central condition ambiguity blocks approval: the source takeaway and proposed concept say to retry later with the same key 'only' when transient-error is true, without limiting that rule to an API response. Raw line 35 separately and explicitly says that when no response is received, such as after a timeout, the request can be safely retried with the same header; raw line 268 governs a returned response whose transient-error header is true, absent, or false. The retained 'only' wording can therefore make the concrete query 'Can I retry the same Adyen POST after a timeout with no response?' produce a contradictory or wrongly negative answer. The blocker-completeness pass found no other false retained claim, wrong object or action identity, missing material warning or conflict, broken route, or undiscoverable central topic. The accounting-rule examples, language-specific /payments snippets, exact sample fields, and linked background pages are routine or ancillary details recoverable through the fully linked raw and accurate locators, with no concrete query or selection impact requiring expansion.",
+  "required_changes": [
+    "In both candidate.md and the proposed adyen-api-idempotency-new-concept, distinguish the two retry conditions explicitly: when no response arrives, for example after a timeout, the raw permits retrying with the same idempotency key; when an API response is received, retry later with the same key only if its transient-error header is true, and do not retry that response when the header is absent or false. Remove or qualify the current unbounded 'only' wording so it cannot override the documented no-response path. Preserve the existing regional, validity, concurrency, backoff, and non-idempotent-fallback warnings. Existing quotes 1 and 4 and their locators already support the correction; no new quote or broader rewrite is required."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "adyen-api-idempotency-new-concept",
+      "verdict": "rejected",
+      "reason": "The provider-specific concept and reciprocal source route are otherwise relevant and supported, but its unqualified rule to retry only when transient-error is true can misanswer the documented timeout/no-response case. Approve after the bounded response-versus-no-response distinction is repaired."
+    }
+  ],
+  "reviewer_identity": "adyen-c01-r28",
+  "reviewer_model": "gpt-5.6-sol"
+}

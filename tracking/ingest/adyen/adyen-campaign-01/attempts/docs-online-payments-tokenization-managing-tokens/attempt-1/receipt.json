@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-online-payments-tokenization-managing-tokens",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Manage tokens\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/tokenization/managing-tokens\"\nraw_files:\n  - \"adyen/docs/online-payments/tokenization/managing-tokens/2026-09-15.md\"\ntags: [adyen, tokenization, stored-payment-methods, recurring-payments, webhooks]\n---\n\n## Overview\n\nThis Adyen guide explains how an online-payments integration manages stored-payment tokens through the Checkout API: listing a shopper's stored details, updating eligible stored card details, deleting a token, and receiving recurring-token lifecycle webhooks. It extends [[adyen-tokenization|Adyen tokenization]] from token creation into ongoing lifecycle operations.\n\nThe page is a 2026-09-15 documentation snapshot, not proof of current merchant eligibility, Adyen-side configuration, webhook delivery, successful updates or deletion, or production payment execution.\n\n## Key takeaways\n\n- The documented prerequisites are an online-payments integration, the Checkout webservice, Merchant Recurring, and API tokenise payment details credential roles, token creation setup, and subscription to Recurring tokens life cycle events webhooks.\n- `GET /storedPaymentMethods` lists details for a `merchantAccount` and `shopperReference`. Its response supplies each stored method's `id` and the recurring-processing models it supports; those values are the guide's route for selecting a token for later use or deletion.\n- Merchant-initiated updates apply only to tokens stored with `recurringProcessingModel: CardOnFile`. On Checkout API v70 and later, API-based updates also require additional Adyen-side configuration and an eligibility discussion with Support.\n- The update flow uses a zero-value `/payments` request and can retain the existing stored-payment-method identifier for the documented expiry, holder-name, and billing-address changes. A new card number instead requires storing new payment details and receiving a new identifier.\n- The update section has an internal request-shape gap: it names `billingAddress` as updateable, but the later table headed \"Also include at least one of the fields you want to update\" lists only `expiryMonth`, `expiryYear`, and `holderName`. Use the API reference or Adyen Support rather than inferring the omitted field shape from this page.\n- Deletion uses `DELETE /storedPaymentMethods/{storedPaymentMethodId}` with the merchant account and shopper reference. After deleting details held by Adyen, the merchant must also delete any remaining shopper details from its own servers. The lifecycle webhook reports this outcome as `recurring.token.disabled`; the same event can also result from a third party disabling the details.\n- Card-network updates follow a separate Account Updater path: the Real Time service updates card details automatically while retaining the token, whereas the Batch service returns updated details that the merchant applies through a zero-value transaction.\n\n## Detail locators\n\n- **Requirements** \u2014 integration type, credential roles, lifecycle-webhook subscription, and prior token creation: raw lines 21-32.\n- **How it works** \u2014 list, update, and delete operations plus update/delete webhook notification: raw lines 34-42.\n- **List stored payment details** \u2014 request parameters, stored token ID, and supported recurring-processing models: raw lines 44-84.\n- **Update stored details** \u2014 CardOnFile scope, Checkout API v70-or-later eligibility configuration, retained-ID fields, new-card-number behavior, zero-value request fields, and the `billingAddress` table gap: raw lines 86-142.\n- **Updates from card networks** \u2014 Real Time and Batch Account Updater handling: raw lines 144-150.\n- **Delete stored payment details** \u2014 token selection, DELETE endpoint parameters, versioned language examples, and required cleanup of remaining shopper details on merchant servers: raw lines 151-322.\n- **Receive token lifecycle webhooks** \u2014 enablement, event fields and types, third-party disablement, and the example disabled event: raw lines 324-363.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-tokenization]]\n- Cross-cutting concept: [[recurring-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/tokenization/managing-tokens/2026-09-15|Adyen Docs \u2014 Manage tokens (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "After you have [created tokens](/online-payments/tokenization/create-tokens), you can use the Checkout API to:\n\n* [Get a list of the shopper's stored payment details](#list-stored-details).\n* [Update stored payment details](#update-stored-details).\n* [Delete stored payment details](#delete-stored-details).\n\nWhen a token is updated, or deleted, you get notified with the [Tokenization webhooks](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/overview).",
+      "location": "raw lines 36-42 under `## How it works`"
+    },
+    {
+      "text": "Only applicable for tokens stored with `recurringProcessingModel`: **CardOnFile**.\\\nOn Checkout API v70 and later, updating stored details with an API request requires additional configuration on our side. Reach out to our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to discuss your eligibility.",
+      "location": "raw lines 88-89 under `## Update stored details`"
+    },
+    {
+      "text": "You can update the following fields without changing the [storedPaymentMethodId](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-paymentMethod-StoredPaymentMethodDetails-storedPaymentMethodId) of the stored payment details:\n\n| Field            | Description               |\n| ---------------- | ------------------------- |\n| `expiryMonth`    | The expiry month.         |\n| `expiryYear`     | The expiry year.          |\n| `holderName`     | The cardholder's name.    |\n| `billingAddress` | The cardholder's address. |\n\nIf the shopper has a new card number, make a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request to store new payment details and receive a new identifier.",
+      "location": "raw lines 91-100 under `## Update stored details`"
+    },
+    {
+      "text": "Also include at least one of the fields you want to update:\n\n| Parameter     | Description            |\n| ------------- | ---------------------- |\n| `expiryMonth` | The expiry month.      |\n| `expiryYear`  | The expiry year.       |\n| `holderName`  | The cardholder's name. |",
+      "location": "raw lines 114-121 under `## Update stored details`"
+    },
+    {
+      "text": "After you delete payment details stored with Adyen, you must also delete any remaining shopper details from your servers.",
+      "location": "raw line 322, final paragraph of `## Delete stored payment details`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-tokenization-manage-tokens-source-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-tokenization-managing-tokens]] \u2014 2026-09-15 guide to listing tokens, CardOnFile-only and API v70-or-later eligibility-gated updates, deletion with merchant-side cleanup, and recurring-token lifecycle webhooks",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "Keep this as a minimal reciprocal source route; the existing concept already defines tokenization and its main scope boundaries.",
+          "The documentation snapshot does not establish current merchant eligibility, Adyen-side configuration, webhook delivery, or successful execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/tokenization/managing-tokens/2026-09-15.md",
+  "raw_sha256": "80c55bcd14c27dbbf6eac2217c74cd67b4b43305794ddbbbc64b1fad4cc87e97",
+  "status": "candidate_ready"
+}

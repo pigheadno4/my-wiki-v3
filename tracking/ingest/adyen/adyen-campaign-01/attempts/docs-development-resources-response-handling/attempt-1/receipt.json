@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-response-handling",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen HTTP Response Handling\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/response-handling\"\nraw_files:\n  - \"adyen/docs/development-resources/response-handling/2026-09-15.md\"\ntags: [adyen, online-payments, http, error-handling]\n---\n\n## Overview\n\nThis Adyen development-resources page explains how an online-payments integration should interpret HTTP responses to API calls and where to look for payment outcomes and error diagnostics. It distinguishes request receipt and processing from successful payment execution. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The page is scoped to an Adyen online-payments integration. It maps common HTTP response codes to request-level meanings and handling guidance; the exact response message still depends on the request method and requested data.\n- A `202 Accepted` response means the request was accepted but has not yet been processed and does not guarantee completion. A `200 OK` confirms correct submission and successful processing by Adyen, but does not necessarily mean the payment or modification itself succeeded. For the capture example, the corresponding webhook reports the later operation outcome.\n- Retry behavior is condition-specific: do not repeat a `400` without correcting the request, do not repeat a `403`, a `408` can be retried, and a `409` should be retried only when the API returns the transient-error header as `true`. For `429`, the page calls for exponential backoff with jitter.\n- Do not interpret every `500` as proof of a provider-side transient failure: the page says an incorrect request, including a missing or empty mandatory field, can also produce `500`. The status table also sets a 10 MB maximum request size for `413`.\n- In the listed validation, security, configuration, and internal-error scenarios, Adyen says the payments platform does not accept or store the request; the response includes an error code and problem description and should generally be handled as an exception. The page says rejected payment requests accompanied by an error message are not charged.\n- Error response fields include `status`, `errorCode`, `message`, and `errorType`; `pspReference` may be absent from the body and then should be checked in the response headers. That request-specific reference can be provided to Adyen Support for debugging.\n\n> [!warning] Outcome boundary\n> An HTTP `200` is request-level evidence, not proof of payment or modification success. This unversioned documentation snapshot also does not establish current endpoint behavior, merchant eligibility, successful retries, or webhook delivery.\n\n## Detail locators\n\n- Purpose and response-dependent handling: `# HTTP status codes`, paragraph beginning \"After submitting an API call\", line 19.\n- Integration scope: `## Requirements`, lines 21\u201325.\n- Status meanings and handling instructions, including conditional retry guidance and the 10 MB request-size limit: `## HTTP responses`, lines 27\u201349.\n- Request processing versus payment or modification outcome, refusal fields, and the capture/webhook example: `## Handle 200 responses`, lines 51\u201371.\n- Rejected-request scenarios, exception handling, and charge statement: `## Handle 4xx and 5xx responses`, lines 73\u201385.\n- Support correlation through the response-header `pspReference`: `## Debugging APIs`, lines 87\u201391.\n- Error-object fields, allowed error types, body-versus-header `pspReference`, example, and complete-error-code route: `## Error response fields`, lines 93\u2013119.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-online-payments]] \u2014 provider-level online-payments architecture and source route.\n- [[adyen-webhooks]] \u2014 asynchronous event and payment-status route referenced by the capture example.\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/refusal-reasons/2026-09-15|Adyen refusal reason messages]]\n- [[raw/adyen/docs/development-resources/error-codes/2026-09-15|Adyen error codes and messages]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/response-handling/2026-09-15|Adyen HTTP status codes and response handling (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "After submitting an API call to Adyen, you receive a response to inform you that your request was received and processed. Depending on the HTTP status code of the response, you can build logic to handle errors.",
+      "location": "# HTTP status codes, line 19"
+    },
+    {
+      "text": "The request was accepted, but has not been processed yet. This is not a guarantee that the request will be completed.",
+      "location": "## HTTP responses, line 33 (202 Accepted row)"
+    },
+    {
+      "text": "Although an HTTP response status code of `200` means that the request was submitted correctly and Adyen processed it successfully, it does not necessarily mean that the payment or modification request was successfully executed.",
+      "location": "## Handle 200 responses, line 53"
+    },
+    {
+      "text": "In the following scenarios, the Adyen payments platform does not accept or store submitted requests:\n\n* The request does not pass validation.\n* The request violates a security constraint.\n* The request violates a configuration constraint.\n* An internal error occurs on the Adyen payments platform.",
+      "location": "## Handle 4xx and 5xx responses, lines 75\u201380"
+    },
+    {
+      "text": "There is no charge for rejected payment requests accompanied by an error message.",
+      "location": "## Handle 4xx and 5xx responses, line 85"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-response-handling-online-payments-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-response-handling]] \u2014 online-payments HTTP response semantics covering request processing versus payment execution, qualified retry/error handling, and diagnostic routes (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/response-handling/2026-09-15.md",
+  "raw_sha256": "887c70d1a8e013117ccd82f9ecc6f2d8c0dcb84015a25a1aa08b26606cc4cabd",
+  "status": "candidate_ready"
+}

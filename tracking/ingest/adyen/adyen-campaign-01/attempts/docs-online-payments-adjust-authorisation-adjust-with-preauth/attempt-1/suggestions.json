@@ -1,0 +1,25 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "adyen-c01-w07-concept-authorization-adjustment",
+      "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+      "update_kind": "durable_fact",
+      "anchor": "new file",
+      "proposed_markdown": "---\ntitle: \"Adyen Authorization Adjustment\"\ntype: concept\ncategory: payments\ntags: [adyen, authorization-adjustment, pre-authorization, capture, webhooks]\n---\n\n## Overview\n\nAdyen authorization adjustment is an online-payments flow for changing the reserved amount on an eligible pre-authorized card or Klarna payment before final capture. It applies only to supported payment methods and Merchant Category Codes, depends on issuer acceptance, and is limited to payments acquired by Adyen.\n\n## Lifecycle\n\nThe merchant pre-authorizes the payment, submits amount updates against the original payment PSP reference, and manually captures after the final intended adjustment. Asynchronous adjustment and capture outcomes are established through webhook events; a request response with a received state is not final outcome evidence.\n\nSynchronous card adjustment requires account enablement and successive use of the latest `adjustAuthorisationData` blob. Klarna supports only asynchronous authorization adjustment and performs another risk assessment or credit lookup when the amount increases.\n\n## Constraints\n\n- Each update expresses the new total authorized amount rather than only the increment.\n- Zero-value adjustments are not allowed, and a payment permits at most 50 adjustments; later adjustment requests are declined while capture remains possible up to the last successfully authorized amount.\n- Pre-authorizations expire according to scheme validity. Extension uses an amount update equal to the current authorized balance and remains issuer-dependent.\n- Capture is asynchronous, so merchants must finish all intended adjustments before starting capture and use webhook outcomes as the authoritative result.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-adjust-authorisation-adjust-with-preauth]] - unversioned Adyen website guide, captured 2026-09-15, for the card and Klarna pre-authorization adjustment and capture procedure\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The source is an unversioned 2026-09-15 website snapshot and does not establish current merchant, MCC, payment-method or issuer eligibility.",
+        "The proposed concept preserves webhook-authoritative outcomes and does not treat immediate request acceptance as adjustment or capture success."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-online-payments-tokenization-create-tokens",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Create tokens\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/tokenization/create-tokens\"\nraw_files:\n  - \"adyen/docs/online-payments/tokenization/create-tokens/2026-09-15.md\"\ntags: [adyen, tokenization, stored-payment-methods, recurring-payments, webhooks]\n---\n\n## Overview\n\nThis Adyen guide explains how an [[adyen-tokenization|Adyen online-payments integration creates tokens]] while a shopper pays, through a zero-value authorization, through Checkout API v70-or-later `/storedPaymentMethods`, or by importing stored details from another provider. For payment-session and payment-request flows, successful tokenization is tied to authorization and the guide directs the merchant to the asynchronous `recurring.token.created` lifecycle webhook for the token used in subsequent payments.\n\nThe page is a documentation snapshot, not proof of current account eligibility, payment-method support, successful authorization, webhook delivery, or production token creation.\n\n## Key takeaways\n\n- Before storing details, the merchant must ask for the shopper's consent and disclose the payment schedule and amount. The integration also needs the documented credential roles, supported recurring payment methods, and the Recurring tokens life cycle events webhook; applicable PSD2 SCA rules depend on the implementation and business model.\n- Token creation is supported through `/sessions`, `/payments`, and Checkout API v70-or-later `/storedPaymentMethods`. The first two attach tokenization parameters to an authorization flow. `/storedPaymentMethods` can create a token without authorization, but Adyen recommends authorization (and specifically a zero-value authorization in that tab) so the payment details have been validated and are linked to an active, chargeable account.\n- `/sessions` can create tokens for all documented recurring-payment types, but subsequent `Subscription` and `UnscheduledCardOnFile` charges must use `/payments`. The required request fields and the storage flag differ by endpoint and Checkout API version; `shopperReference` must not contain personally identifiable information.\n- In `/sessions` and `/payments` flows, the token is created after successful authorization. A pending payment is not tokenized yet, and asynchronous authorization responses do not include a token, so the guide recommends listening for `recurring.token.created`. Depending on `recurringProcessingModel`, SCA can be required; the initial `Subscription` and `UnscheduledCardOnFile` payment requires it, while regulations and scheme rules can require it for `CardOnFile`.\n- Adyen says it is no longer developing the legacy `RECURRING_CONTRACT` webhook and strongly recommends the Recurring tokens life cycle events webhook instead; existing `RECURRING_CONTRACT` integrations remain available.\n- Existing recurring contracts can be migrated by importing stored payment details, avoiding collection of those shopper details again. The output file from a successful migration provides parameters for future token payments.\n\n## Detail locators\n\n- **Requirements** \u2014 integration type, credential roles, lifecycle-webhook subscription, the `/sessions` subsequent-payment limitation, supported-method setup, and SCA preparation.\n- **How it works** \u2014 consent, the three token-creation endpoints, authorization recommendation, and `recurring.token.created` handoff.\n- **Enable the webhook** \u2014 lifecycle event fields and types, token-to-shopper association, and the legacy `RECURRING_CONTRACT` warning.\n- **Create a token \u2192 Tab: `/sessions`** \u2014 version-specific storage flags, zero-value authorization caveat, authorization timing, SCA, and asynchronous token delivery.\n- **Create a token \u2192 Tab: `/payments`** \u2014 tokenization parameters, Checkout API v69-or-earlier automatic-tokenization toggle, zero-value authorization caveat, result-code behavior, SCA, and webhook handling.\n- **Create a token \u2192 Tab: `/storedPaymentMethods`** \u2014 Checkout API v70-or-later boundary, authorization recommendation and exception, server request fields, PCI qualification for raw card data, and direct token ID response.\n- **Import stored payment details** \u2014 migration purpose and output-file handoff.\n- **Test and go live** \u2014 tokenization testing route, live lifecycle-webhook enablement, and end-to-end checklist.\n\n## Related\n\n- [[adyen]]\n- [[adyen-tokenization]]\n- [[recurring-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/tokenization/create-tokens/2026-09-15|Adyen Docs \u2014 Create tokens (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "To tokenize your shopper's payment details, you need to include additional fields when you make an API request to create a payment session or make a payment. When the details are successfully tokenized, you receive a webhook that contains the token you can use for subsequent payments.",
+      "location": "raw/adyen/docs/online-payments/tokenization/create-tokens/2026-09-15.md:19"
+    },
+    {
+      "text": "2. Before the shopper pays on your website or app, ask for their consent to store their payment details for future payments. You must inform the shopper about the payment schedule and the amount that you will charge to reduce the risk of chargebacks.",
+      "location": "raw/adyen/docs/online-payments/tokenization/create-tokens/2026-09-15.md:47"
+    },
+    {
+      "text": "   * **POST** [/storedPaymentMethods](https://docs.adyen.com/api-explorer/Checkout/latest/post/storedPaymentMethods): Only available on Checkout API v70 and later. Lets you create tokens without an authorization. We recommend to create tokens with an authorization, to make sure the tokens you create are linked to active, chargeable accounts.",
+      "location": "raw/adyen/docs/online-payments/tokenization/create-tokens/2026-09-15.md:53"
+    },
+    {
+      "text": "We are no longer working on the development of the [RECURRING\\_CONTRACT](https://docs.adyen.com/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT) webhook. We strongly recommend to use the new [Recurring tokens life cycle events](/development-resources/webhooks/webhook-types/#other-webhooks) webhook instead, because it keeps you informed of more token lifecycle events. If your integration already uses the [RECURRING\\_CONTRACT](https://docs.adyen.com/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT) webhook, the webhook remains available.",
+      "location": "raw/adyen/docs/online-payments/tokenization/create-tokens/2026-09-15.md:99"
+    },
+    {
+      "text": "   For payments where authorization happens asynchronously, the response does not include a token. To make sure you do not miss an update when a token is created, we recommend to always listen to the [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) webhook.",
+      "location": "raw/adyen/docs/online-payments/tokenization/create-tokens/2026-09-15.md:868"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-create-tokens-reciprocal-source",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-tokenization-create-tokens]] \u2014 Adyen guide to creating online-payment tokens, including consent, endpoint and API-version choices, authorization and webhook timing, SCA, and import conditions (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The campaign-proposed target concept did not yet exist during this worker audit; apply this reciprocal route only after the coordinator creates it with the instructed ## Sources anchor."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/tokenization/create-tokens/2026-09-15.md",
+  "raw_sha256": "6c8351f815be5c47db42ca8f59dbe43ed6d5f169133464f716db36462b890cde",
+  "status": "candidate_ready"
+}

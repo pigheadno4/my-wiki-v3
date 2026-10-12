@@ -1,0 +1,16 @@
+{
+  "job_id": "docs-online-payments-3d-secure-redirect-3ds2-web-drop-in",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full independent first review read the complete 1,343-line pinned raw and verified SHA-256 0150ba04bd0d3fb4308b166446353bd426139b7e26592efdc7e0084800046b46 against the trusted order. candidate.md is byte-equal to receipt.source_page, suggestions.json is semantically equal to receipt.suggestions, and all four quotes are exact at the stated raw lines. The candidate accurately preserves the existing-Web-Drop-in and Checkout API 49+ scope, the sessions-only exception, required or conditional 3DS parameter route, redirect action and handleAction lifecycle, version split for payment completion, resultCode and webhook roles, manual-capture qualification, live-region warning, provenance, raw route and material detail locators. The new Adyen 3D Secure concept fills a provider-specific Web redirect topic gap, is correctly separated from the independently versioned native iOS and Android 3DS2 runtimes, and accurately preserves the operational and evidence boundaries. One object/action identity defect blocks approval: the third Key takeaways item says Checkout API v67 and later 'returns a GET redirectResult'. The raw instead says that after authentication the shopper is redirected back to the merchant returnUrl via HTTP GET with redirectResult appended; the merchant URL-decodes it and sends it to the server for the /payments/details request. As written, a query about who produces or transports redirectResult can incorrectly attribute the browser redirect transport to the Checkout API response. The blocker-completeness pass found no other false retained claim, missing material warning or conflict, discoverability defect, quote or locator defect, broken required route, or shared-update issue; routine field and example details remain appropriately reachable in raw.",
+  "required_changes": [
+    "In the third Key takeaways item, replace 'Checkout API v67 and later returns a GET redirectResult' with actor- and transport-accurate wording: for Checkout API v67 and later, the redirect back to returnUrl uses HTTP GET carrying redirectResult, which the merchant sends to its server for /payments/details; for v66 and earlier, the redirect uses HTTP POST carrying MD and PaRes and /payments/details also needs the earlier paymentData. No quote, locator, warning, or concept-suggestion change is required."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "adyen-c01-w10-new-adyen-3d-secure"
+  ],
+  "reviewer_identity": "adyen-c01-r10",
+  "reviewer_model": "gpt-5.6-sol"
+}

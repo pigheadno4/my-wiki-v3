@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-11] ingest | Adyen website C01
+
+- Exact approved 50-page General Docs campaign; Sol medium workers and different Sol high first reviewers in ten shared rolling child slots. Full pinned raw reads; repository-read-only delegates; coordinator-only concept/source promotion and aggregate updates. No API Explorer or GitHub ingestion.
+- Initial independent review 40/50 (80%); ten bounded targeted retries, zero repeated full reviews or rejected jobs. Query audit found three bounded source corrections: `/sessions` versus `/payments` token location, challenge-indicator field-name conflict, and EC-certificate/RSA JWE example conflict. Six concept category values mechanically normalized to the existing enum. Original receipts and correction evidence preserved; raw unchanged.
+- Added 50 website retrieval sources and touched 17 concepts. Company/catalog 64 = 50 website + 14 existing GitHub sources; GitHub histories and package-release counts preserved. Detailed procedures remain behind exact immutable raw links.
+- Fixed queries100/100PASS after corrections; raw hashes/provenance/reciprocal links/catalog counts PASS, typed validation69filesPASS plus bounded changed-scope checks. Campaign crossed an account-usage-limit interruption and later turn interruption, so wall elapsed time is not a continuous throughput benchmark. Evidence and timing qualifications: `tracking/ingest/adyen/adyen-campaign-01/results.md`. No live payment verification, commit or push.
+
 ## [2026-10-07] ingest | adyen/adyen-postman `default-branch@78874d7`
 
 - Approved serial delta of `github-1b49bd6b9d94ec92f190`, overriding the collector's payment-path full signal. One-time focused reading covers complete affected stored-method/donation sections in old/new Checkout collections, full diff/records and cumulative history; all snapshot file hashes verified, ten unchanged files and unaffected request structures checked mechanically.

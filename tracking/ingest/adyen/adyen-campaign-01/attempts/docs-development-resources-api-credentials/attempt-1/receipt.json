@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-development-resources-api-credentials",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen API Credentials\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/api-credentials\"\nraw_files:\n  - \"adyen/docs/development-resources/api-credentials/2026-09-15.md\"\ntags: [adyen, api-credentials, authentication, access-control, key-rotation]\n---\n\n## Overview\n\nThis Adyen documentation page explains how web service API credentials identify an integration and how their API key or basic-authentication password, enabled roles, and account scope control API access. It covers Customer Area prerequisites and credential creation, rotation, environment separation, IP allowlisting, and deactivation.\n\n## Key takeaways\n\n- An API credential consists of a username, an API key used as a password for API requests, and enabled roles that define its permissions. Managing credentials in the Customer Area requires a user with either the **Manage API credentials** or **Merchant admin** role.\n- Credential count is an access-design trade-off: fewer credentials reduce key-management overhead, while separate credentials can narrow permissions across channels, refund handling, systems, legal entities, or websites. These examples are recommendations and design options, not a required credential topology.\n- By default, a credential created on a company account can reach that company account and all linked merchant accounts; one created on a merchant account is limited to that merchant account. The page also documents selecting only particular account groups and merchant accounts.\n- Generating an API key activates the new key immediately and leaves the previous key active for 24 hours so systems can be updated. The previous key's expiry can be reset to 24 hours or forced to expire immediately. A generated key must be stored securely and cannot be copied again after leaving the page.\n- Basic-authentication password rotation has a different cutover: generating a new password deactivates the old one immediately. Creating a separate credential is the documented option when both old and new basic-authentication credentials must remain active during a migration.\n- Test and live credentials are separate: switching to live requires generating a new API key in the live Customer Area or using basic-authentication credentials from that environment.\n- An allowed IP range restricts permitted requests to requests originating from that range. API credentials cannot be deleted; deactivation takes effect immediately, prevents requests using the credential, and can later be reversed by setting it active again.\n\n> [!warning] Evidence boundary\n> This collected, unversioned documentation snapshot describes credential administration and stated access controls. It does not prove current account eligibility, a user's Customer Area permissions, correct secret deployment, successful authentication, endpoint authorization, idempotency, API availability, or payment execution. Consult the separately collected authentication, credential-role, idempotency, and API-security pages for their own behavior and qualifications.\n\n## Detail locators\n\n- Credential identity, parts, and Customer Area management routes: `# API credentials`.\n- Required Customer Area user roles: `## Requirements`.\n- Credential-separation trade-offs and examples: `## Multiple API credentials`.\n- Default company-versus-merchant scope and selectable account access: `## Create additional API credentials` and `## Manage API credential account scope`.\n- API-key rotation, one-time visibility, live-environment generation, and previous-key expiry controls: `## Generate an API key` and `## Reset the expiry time of a previous API key`.\n- Immediate basic-authentication password replacement and migration alternative: `## Generate a basic authentication password`.\n- Role-based permission administration: `## Manage API permissions`.\n- Request-origin restriction: `## Add an allowed IP range`.\n- Non-deletability and immediate, reversible deactivation: `## Deactivate an API credential`.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-api-access]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/api-authentication/2026-09-15|API authentication]]\n- [[raw/adyen/docs/development-resources/api-credentials/roles/2026-09-15|API credential roles]]\n- [[raw/adyen/docs/development-resources/api-idempotency/2026-09-15|API idempotency]]\n- [[raw/adyen/docs/development-resources/security/api-security/2026-09-15|API security]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/api-credentials/2026-09-15|Adyen API credentials]] \u2014 complete collected page for credential identity, creation, permission and account scope, key and password rotation, environment separation, IP allowlisting, and deactivation\n",
+  "quotes": [
+    {
+      "text": "To securely authenticate your requests to Adyen's APIs, you need API credentials. These act as the identity for your integration, and ensures that every request is authorized and linked to the correct account.",
+      "location": "lines 19-19 under # API credentials"
+    },
+    {
+      "text": "Credentials created on a company account can access the company account, including all linked merchant accounts.",
+      "location": "lines 55-58 under ## Create additional API credentials (first occurrence, line 57)"
+    },
+    {
+      "text": "When you generate a new API key, it becomes active immediately. The previous key remains active for 24 hours to allow you to update your systems.",
+      "location": "lines 82-82 under ## Generate an API key"
+    },
+    {
+      "text": "When you generate a new basic authentication password, the previous password is deactivated immediately.",
+      "location": "lines 110-110 under ## Generate a basic authentication password"
+    },
+    {
+      "text": "API credentials cannot be deleted. However, you can deactivate a credential to prevent its API keys from being used.",
+      "location": "lines 204-206 under ## Deactivate an API credential"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-api-access-new-concept",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "durable_fact",
+        "anchor": "new file",
+        "proposed_markdown": "---\ntitle: \"Adyen API Access\"\ntype: concept\ncategory: technology\ntags: [adyen, api-credentials, authentication, access-control]\n---\n\n## Definition\n\nAdyen web service API credentials identify an integration for API requests. A credential combines a username, authentication secret, enabled roles, and an account scope; together these determine which account context and permitted operations the credential can reach. This is a provider-wide access route, separate from endpoint-specific authorization, idempotency, and payment lifecycle behavior.\n\n## Access boundaries\n\nRoles define credential permissions. Account scope defaults to company-wide access, including linked merchant accounts, when the credential is created on a company account, while a credential created on a merchant account is limited to that merchant account; company-level configuration can instead select particular account groups and merchant accounts. More credentials can narrow permissions across channels or systems but increase key-management overhead.\n\n## Credential lifecycle\n\nA newly generated API key is active immediately while its predecessor remains active for 24 hours by default. Basic-authentication password replacement instead deactivates the previous password immediately, so overlapping migration requires a separate credential. Live credentials must come from the live environment. IP allowlisting can restrict request origins, and a credential can be deactivated immediately and later reactivated but cannot be deleted.\n\nThese snapshot statements do not prove current merchant or user eligibility, successful authentication, endpoint access, correct secret storage, API availability, idempotent processing, or payment execution. Future authentication, role-catalog, idempotency, and API-security sources should extend this route without transferring their claims before review.\n\n## Sources\n\n- [[source-adyen-docs-development-resources-api-credentials]] \u2014 unversioned documentation snapshot for web service credential identity, permission and account scope, environment separation, rotation, IP restriction, and deactivation\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "New provider concept is justified because the current Adyen index has no general API credential or access-control route.",
+          "Keep endpoint authentication syntax, exhaustive credential-role details, idempotency semantics, and broader API-security guidance out until their own pinned raws are fully read and reviewed.",
+          "Snapshot configuration statements do not establish current eligibility, successful authentication or authorization, availability, or payment execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/api-credentials/2026-09-15.md",
+  "raw_sha256": "b0abc827d4a0e94f0e8be1f2fb76c4f7d0262b9cf7c530a4a34247a9bf3ff552",
+  "status": "candidate_ready"
+}

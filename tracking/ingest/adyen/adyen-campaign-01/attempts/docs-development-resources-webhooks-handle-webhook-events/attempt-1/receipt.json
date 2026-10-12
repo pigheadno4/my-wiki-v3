@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-webhooks-handle-webhook-events",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Handle webhook events\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/webhooks/handle-webhook-events\"\nraw_files:\n  - \"adyen/docs/development-resources/webhooks/handle-webhook-events/2026-09-15.md\"\ntags: [adyen, webhooks, verification, acknowledgement, ordering, deduplication]\n---\n\n## Overview\n\nThis [[adyen]] documentation page is a 2026-09-15 snapshot of recommended receiver handling for Adyen webhook events. It separates authenticating and storing a message, acknowledging its delivery, and later applying business logic, then gives ordering and duplicate-handling guidance.\n\n## Key takeaways\n\n- Receiving starts with a webhook configured in Customer Area and a publicly accessible endpoint that does not redirect and is highly available. The documented handling sequence is to verify the message, store it in a database or queue, acknowledge it with a successful HTTP response such as `200` or `202`, and then process its data and apply business logic.\n- The page says to verify that the message came from Adyen and was not modified in transit. It presents domain and IP allowlisting or basic authentication as security layers and HMAC signature verification as an additional strong measure; the HMAC signature must be verified before the payload is processed or used.\n- Acknowledgement and business processing are separate. The receiver must return a successful HTTP status, such as `202`, within 10 seconds; the acknowledgement step says not to validate or process data there. If Adyen does not receive the response in time, it marks the webhook **Failing** and puts it in a retry queue. The page's earlier verify-before-accept sequence and its no-validation-at-acknowledgement wording should not be collapsed into an unsupported implementation ordering beyond the stated steps.\n- Payloads contain headers and a JSON body. The body includes an `eventCode` or `type` and a timestamp; the receiver is told to check the timestamp for chronological processing, and some webhooks also provide identifiers such as `sequenceNumber` for ordering.\n- Duplicate delivery is possible. The page characterizes duplicate events as sharing `eventCode` and `pspReference` while `eventDate` and other fields can differ, and directs the server to use details from the latest event. This is source-specific duplicate guidance, not a claim of globally unique keys, exactly-once delivery, or a complete idempotency design.\n- Adyen server libraries are described as providing deserialization, verification, parsing, type-safety, and HMAC-validation tools. The snapshot names no exact library release and directs readers to each library's **Supported webhook versions**; it does not establish behavior for an unverified SDK or version.\n\n> [!warning] Evidence boundary\n> This documentation snapshot describes recommended webhook receiver behavior. It does not prove current endpoint availability, message authenticity before verification, ordered or exactly-once delivery, successful downstream business processing, account eligibility, or any payment or onboarding outcome. A successful acknowledgement is a delivery receipt, not proof that business logic completed.\n\n## Detail locators\n\n- Webhook purpose and secure/accept/process scope: `# Handle webhook events`, line 19.\n- Customer Area configuration prerequisite and endpoint reachability, redirect, and availability requirements: `## How it works`, line 23.\n- Verify, store, acknowledge, then process sequence and business-logic failure rationale: `## How it works`, lines 25-30.\n- Authenticity and integrity verification, security layers, HMAC-before-processing requirement, and insecure-message warning: `## Verify webhooks`, lines 32-36.\n- Successful-response acknowledgement, separation from validation or processing, 10-second deadline, **Failing** status, and retry-queue condition: `## Accept webhooks`, lines 38-40.\n- Payload fields and timestamp or `sequenceNumber` ordering guidance: `### Webhook payload`, lines 46-48.\n- Server-library parsing and verification capabilities plus supported-version route: `### Using an Adyen library to parse the payload`, lines 50-56.\n- Duplicate possibility, identifying field comparison, differing dates or fields, and latest-event instruction: `### Handling duplicates`, lines 58-60.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-webhooks]]\n- Configuration and endpoint setup: [[source-adyen-docs-development-resources-webhooks-configure-and-manage]]\n- Retry-queue behavior and remediation: [[source-adyen-docs-development-resources-webhooks-troubleshoot]]\n- HMAC verification: [[source-adyen-docs-development-resources-webhooks-secure-webhooks-verify-hmac-signatures]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/webhooks/handle-webhook-events/2026-09-15|Adyen Docs \u2014 Handle webhook events (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "1. [Verify the webhook message](#verify-webhooks) by confirming that it was sent by Adyen, and was not modified during transmission. If the webhook message is not secure, we do not recommend accepting it.\n2. Store the webhook message in your database or a queue so you can process it later.\n3. [Accept the webhook message](#accept-webhooks) by responding with a [successful HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#successful_responses), such as **200** or **202**.\n4. [Process the data](#process-webhooks) and apply your business logic. Make sure that you acknowledge the webhook before applying any business logic, because errors in your business logic could lead to [failing webhooks](/development-resources/webhooks/troubleshoot/#retry-queue).",
+      "location": "lines 27-30 under ## How it works"
+    },
+    {
+      "text": "You must verify that the webhook is a genuine message from Adyen and was not modified in transit. Methods like [domain and IP allowlisting](/development-resources/webhooks/secure-webhooks#domain-and-ip-addresses), or basic authentication provide a layer of security. Verifying message integrity using [HMAC signature verification](/development-resources/webhooks/secure-webhooks/verify-hmac-signatures) is another strong security measure. Always verify the HMAC signature before processing the payload and using its data. This ensures the data is authentic and allows you to discard any fraudulent or corrupt messages. If the webhook message is not secure, we do not recommend accepting it.",
+      "location": "line 34 under ## Verify webhooks"
+    },
+    {
+      "text": "When you receive a webhook message from Adyen, you need to respond with a [successful HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#successful_responses), such as **202**, to indicate successful delivery of the webhook message. Do not validate or process the data at this step. If Adyen does not receive this response within 10 seconds, for example because your server is down, we mark the webhook as Failing and put it in a [retry queue](/development-resources/webhooks/troubleshoot/#retry-queue).",
+      "location": "line 40 under ## Accept webhooks"
+    },
+    {
+      "text": "A webhook consists of headers and a JSON body. The body contains the event data, including an `eventCode` or `type` describing what happened, and a timestamp that identifies when the event occurred. To ensure you are processing events in the correct chronological order, always check the timestamp. Some webhooks also contain unique identifiers such as `sequenceNumber` that you can also use to handle the data in the correct order.",
+      "location": "line 48 under ### Webhook payload"
+    },
+    {
+      "text": "In some cases it is possible that you receive the same webhook event twice, so make sure that your system is able to deal with duplicates. These duplicate webhook events have the same values in the `eventCode` and `pspReference` fields, while the `eventDate` and other fields can be different. Your server should use the details from the latest webhook event.",
+      "location": "line 60 under ### Handling duplicates"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-webhooks-source-handle-events",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-webhooks-handle-webhook-events]] \u2014 2026-09-15 webpage handling guide separating verification, persistence, acknowledgement and business processing, with ordering, duplicate-delivery and retry-trigger qualifications",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Reciprocal source link only; detailed receiver protocol, timing, payload, library and duplicate-handling guidance remains in the source page and pinned raw."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/webhooks/handle-webhook-events/2026-09-15.md",
+  "raw_sha256": "22ce521ba347552c0ffa58cdf3c4f97cff07de516fb8a460f651e99bd3da8492",
+  "status": "candidate_ready"
+}

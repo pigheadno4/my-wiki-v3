@@ -10,6 +10,61 @@ Operations history: [[adyen-log]]
 
 ## Sources
 
+### Website documentation — Campaign 01
+
+- [[source-adyen-docs-online-payments]] — Adyen Docs: Online payments (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-build-your-integration]] — Adyen Build Your Integration (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-tokenization]] — Adyen Tokenization (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure]] — Adyen 3D Secure 2 authentication (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks]] — Adyen Webhooks (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-psd2-sca-compliance-and-implementation-guide-sca-options]] — Adyen docs: Implement SCA compliance (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-adjust-authorisation-adjust-with-preauth]] — Adyen Docs: Adjust an authorization with pre-authorization (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-standalone-authentication]] — Adyen Docs: Standalone authentication (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-webhook-types]] — Adyen Webhook Structure and Types (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-drop-in]] — Adyen Redirect 3DS Web Drop-in Integration (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-capture]] — Capture | Adyen Docs (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-tokenization-create-tokens]] — Adyen Docs: Create tokens (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-refund]] — Adyen Online Payments Refund (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-tokenization-make-token-payments]] — Adyen Make Token Payments (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-partial-payments]] — Adyen Docs: Partial payments (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-partial-authorizations]] — Adyen Docs: Partial authorizations (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-network-tokenization]] — Adyen Network Tokenization (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-for-regulation-compliance]] — Adyen 3D Secure for regulation compliance (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-adjust-authorisation]] — Adyen Docs: Authorization adjustment (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-cancel]] — Adyen Docs: Cancel an online payment (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-configure-and-manage]] — Adyen Docs: Configure and manage webhooks (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-webhook-types-additional-settings]] — Adyen Standard Webhook Additional Settings (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-surcharge]] — Adyen Online Payments Surcharge (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-web-best-practices]] — Adyen Best Practices for Web Integrations (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-tokenization-managing-tokens]] — Adyen Docs: Manage tokens (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-secure-webhooks-verify-hmac-signatures]] — Adyen Verify HMAC Signatures (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-api-credentials]] — Adyen API Credentials (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-api-idempotency]] — Adyen Docs: API idempotency (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-response-handling]] — Adyen HTTP Response Handling (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-capture-failure-reasons]] — CAPTURE_FAILED and REFUND_FAILED reasons | Adyen Docs (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-testing-payments-and-modifications]] — Testing payments and modifications | Adyen Docs (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-checkout-settings]] — Adyen Checkout Settings (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-build-your-integration-payment-result-codes]] — Adyen Payment Result Codes (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-two-step-checkout]] — Adyen Docs: Two-step checkout (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-data-only]] — Adyen Docs: Data-only flow (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-co-badged-cards-compliance]] — Adyen Co-badged Cards Compliance (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-api-credentials-roles]] — Adyen API Credential Roles (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-live-endpoints]] — Adyen Docs: Live endpoints (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-troubleshoot]] — Adyen Docs: Troubleshoot webhooks (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-authorize-mpidata]] — Adyen Docs: Third-party authentication (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-secure-webhooks]] — Adyen Docs: Secure webhooks (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-card-encryption-with-jwe]] — Adyen Card Encryption with JWE (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-handle-webhook-events]] — Adyen Docs: Handle webhook events (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-accessibility]] — Adyen Web Drop-in and Components Accessibility (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-testing-tokenization]] — Adyen Docs: Testing tokenization (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-security-api-security]] — Adyen API Security (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-integration-checklist]] — Adyen Online Payments Integration Checklist (webpage, 2026-10-11)
+- [[source-adyen-docs-online-payments-psd2-sca-compliance-and-implementation-guide]] — Adyen docs: PSD2 SCA compliance guide (webpage, 2026-10-11)
+- [[source-adyen-docs-development-resources-testing]] — Testing your online payments integration (webpage, 2026-10-11)
+- [[source-adyen-docs-development-resources-api-authentication]] — Adyen API Authentication Types (webpage, 2026-10-10)
+
+### GitHub repository evidence
+
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
 - [[changelog-github-adyen-3ds2-ios-swift]] — package-qualified Swift-native iOS 3DS2 release ledger beginning at `3.0.1`, including binary and upstream-metadata boundaries (github-repo, 2026-08-29)
 - [[source-github-release-automation-action]] — exact-commit release-action baseline: merged-PR discovery, semantic version selection, prerelease handling, release pull requests, and GitHub releases (github-repo, 2026-08-28)
@@ -40,6 +95,21 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-3d-secure]] — Adyen 3D Secure
+- [[adyen-api-access]] — Adyen API Access
+- [[adyen-api-idempotency]] — Adyen API Idempotency
+- [[adyen-authorization-adjustment]] — Adyen Authorization Adjustment
+- [[adyen-card-encryption]] — Adyen Card Encryption
+- [[adyen-network-tokenization]] — Adyen Network Tokenization
+- [[adyen-online-payments]] — Adyen Online Payments
+- [[adyen-payment-capture]] — Adyen payment capture
+- [[adyen-payment-testing]] — Adyen Payment Testing
+- [[adyen-psd2-sca-and-3d-secure]] — Adyen PSD2 SCA and 3D Secure
+- [[adyen-refunds]] — Adyen Online Payment Refunds
+- [[adyen-surcharging]] — Adyen Surcharging
+- [[adyen-tokenization]] — Adyen Tokenization
+- [[adyen-webhooks]] — Adyen Webhooks
 
 - [[adyen-web-disclaimers]] - shared Pay-button configuration, links and accessibility boundaries
 - [[adyen-review-page-checkout]] - review callback, Sessions confirmation, action ownership, payment-method exceptions and ADR discrepancies from 6.45.0

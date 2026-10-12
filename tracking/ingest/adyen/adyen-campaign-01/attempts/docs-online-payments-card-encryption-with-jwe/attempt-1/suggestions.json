@@ -1,0 +1,25 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "adyen-card-encryption-jwe-concept-gap",
+      "target_path": "wiki/concepts/adyen-card-encryption.md",
+      "update_kind": "durable_fact",
+      "anchor": "new concept page",
+      "proposed_markdown": "---\ntitle: \"Adyen Card Encryption\"\ntype: concept\ncategory: technology\ntags: [adyen, cards, jwe, encryption, api-only]\n---\n\n## Definition\n\nAdyen's JWE card-encryption route supports a custom Web API-only integration in which the merchant's own frontend can access unencrypted card details. The frontend uses a third-party JWT library and a public key derived from a merchant-account-specific X.509 certificate to encrypt the card details on the shopper device. The merchant passes the compact JWE to its server, which supplies it as `paymentMethod.encryptedCard` in a `/payments` request; Adyen says it does not share the decryption keys, so only Adyen can decrypt the payload for payment processing. [[source-adyen-docs-online-payments-card-encryption-with-jwe]]\n\n## Access and compliance boundaries\n\nThe retained guide requires a Web API-only integration, the Checkout webservice API-credential role, the Customer Area **Manage API credentials** role, a backend able to make a payment, and the downloaded client-side-encryption certificate. These access prerequisites connect to [[adyen-api-access]], but the encryption lifecycle is a separate concept. Because the custom frontend can access unencrypted card details and the guide tells implementers to check PCI DSS requirements, encryption does not by itself establish PCI compliance or reduced scope. The snapshot also does not prove current eligibility, certificate validity, successful decryption, payment authorization, capture, settlement, or fulfillment safety.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-card-encryption-with-jwe]] \u2014 unversioned Adyen guide captured 2026-09-15 for custom Web JWE purpose, prerequisites, certificate-derived public-key flow, client/server handoff, `/payments` request shape, and PCI boundary\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This is a genuine concept gap: adyen-api-access covers credential identity, scope, and lifecycle, while this page's central subject is shopper card-data encryption and the client-to-server-to-Adyen handoff.",
+        "Do not infer that encrypted card data makes the integration PCI-compliant or outside PCI scope; the raw says the custom frontend can access unencrypted card details and directs implementers to check PCI DSS requirements."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

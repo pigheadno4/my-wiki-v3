@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-development-resources-testing-tokenization",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Testing tokenization\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/testing/tokenization\"\nraw_files:\n  - \"adyen/docs/development-resources/testing/tokenization/2026-09-15.md\"\ntags: [adyen, tokenization, testing, stored-payment-methods, recurring-payments]\n---\n\n## Overview\n\nThis 2026-09-15 collected [[adyen|Adyen]] webpage is a pre-live test walkthrough for [[adyen-tokenization|Adyen tokenization]]. Using Adyen test card numbers, it routes an integration through storing and reusing payment details for one-off CardOnFile payments, optionally doing the same for Subscription payments, updating and removing stored details, and optionally exercising Real Time Account Updater scenarios.\n\nThe page is test guidance, not proof of current production availability, merchant or shopper eligibility, PCI compliance, webhook delivery, token creation, payment authorization, account updating, deletion, settlement, or funding.\n\n## Key takeaways\n\n- For the documented one-off test path, the guide creates a token with a zero-value authorization using `shopperInteraction: Ecommerce` and `recurringProcessingModel: CardOnFile`, then receives `recurring.token.created` and retains both the token and shopper reference. The reuse step changes `shopperInteraction` to `ContAuth`, keeps `CardOnFile`, and routes payment status through the server-side `AUTHORISATION` webhook.\n- The optional subscription path similarly uses a zero-value authorization with `Ecommerce` and `Subscription`, followed by `recurring.token.created`; its later test-payment parameters are `ContAuth` and `Subscription`. However, the Step 4 heading and introduction call this a subscription payment while the numbered instruction says to make a \"test one-off payment.\" This snapshot does not resolve that wording conflict, so do not silently generalize it into a production recurring-payment rule.\n- The guide then routes token update and deletion tests to the stored-payment-details management documentation. Those navigation targets, rather than this short page, carry the detailed request contracts and lifecycle qualifications.\n- Optional Real Time Account Updater fixtures return the simulated outcome in `additionalData.realtimeAccountUpdaterStatus`. The listed cards and statuses are test inputs, not evidence that a real account was updated.\n- The page says integrations unable to process raw card data because they are not fully PCI compliant should prefix the documented test credentials with `test_` and use the encrypted-card-details testing route. This testing convention does not establish PCI compliance or authorize production raw-card handling.\n\n## Detail locators\n\n- **Purpose and scenario sequence** \u2014 tokenization test scope, test-card route, store/use/update/remove sequence, and optional Real Time Account Updater testing: raw lines 15-30.\n- **Store one-off details** \u2014 zero-value authorization, `Ecommerce`, `CardOnFile`, token-created webhook, and token/shopper-reference retention: raw lines 32-45.\n- **Reuse one-off details** \u2014 `ContAuth`, `CardOnFile`, and server-side `AUTHORISATION` webhook: raw lines 47-58.\n- **Store subscription details** \u2014 optional scope, zero-value authorization, `Ecommerce`, `Subscription`, token-created webhook, and retained identifiers: raw lines 60-73.\n- **Test a subscription payment** \u2014 `ContAuth` and `Subscription`, authorization webhook, and the internal \"one-off payment\" wording conflict: raw lines 75-86.\n- **Update and remove details** \u2014 links to the separate stored-details update, lookup, and deletion procedures: raw lines 88-97.\n- **Real Time Account Updater and PCI boundary** \u2014 fixture statuses, response field, test card values, and encrypted-test-credential prefix guidance: raw lines 99-110.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-tokenization]]\n- Testing concept: [[adyen-payment-testing]]\n- Cross-cutting concept: [[recurring-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/testing/tokenization/2026-09-15|Adyen Docs \u2014 Testing tokenization (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Test your integration with Adyen's tokenization features, using our [test card numbers](/development-resources/test-cards-and-credentials/test-card-numbers/). The following steps take you through the different steps for storing, using, updating, and removing payment details.",
+      "location": "raw line 21 beneath `# Testing tokenization`"
+    },
+    {
+      "text": "Create a token with an amount of **0** (zero-auth transaction). In your API request, set the following parameters:",
+      "location": "raw line 36 under `## Step 1: Store payment details for one-off payments`"
+    },
+    {
+      "text": "Get the [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) webhook.\n\n3. Store the token from the webhook and the shopper reference for test one-off payments.",
+      "location": "raw lines 43-45 under `## Step 1: Store payment details for one-off payments`"
+    },
+    {
+      "text": "Make a test one-off payment with the token you [created for testing](#store-payment-details-for-subscription-payments). In your API request, set the following parameters:",
+      "location": "raw line 79 under `## Step 4 (optional). Make a test subscription payment`"
+    },
+    {
+      "text": "If you are not fully PCI compliant and thus unable to process raw card data, add a prefix of `test_` to the credentials. For example, use `\"encryptedCardNumber\": \"test_5454547699084950\"`. This allows you to [test using encrypted card details](/development-resources/test-cards-and-credentials/test-card-numbers#test-encrypted-card-details).",
+      "location": "raw line 110 under `## Real Time Account Updater scenarios`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-tokenization-testing-source-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-testing-tokenization]] \u2014 2026-09-15 pre-live test guide for one-off CardOnFile and optional Subscription token storage/reuse, stored-detail update and removal routes, and Real Time Account Updater fixtures; preserves the Step 4 one-off/subscription wording conflict and PCI/encrypted-test credential boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a minimal reciprocal source route; the existing concept already defines Adyen tokenization and its principal scope boundaries.",
+          "The Step 4 heading and introduction describe a subscription payment, but its numbered instruction says to make a test one-off payment; retain this unresolved wording conflict.",
+          "The documentation snapshot and test fixtures do not establish production eligibility, PCI compliance, webhook delivery, token creation, payment success, account updating, or deletion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/testing/tokenization/2026-09-15.md",
+  "raw_sha256": "ac30fd68c2bcacd693c5ca1d5b54032a9e13b48ef04fcd2a11eb9b4abbb648d7",
+  "status": "candidate_ready"
+}

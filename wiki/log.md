@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-11] ingest | Adyen website C01
+
+- Fifty approved General Docs retrieval sources; initial review40/50, ten targeted retries, no repeated full review or rejection. Three bounded query-audit corrections and six mechanical concept-category corrections retained with evidence. Catalog64=50website+14GitHub; raw unchanged. Details [[adyen-log]] and `tracking/ingest/adyen/adyen-campaign-01/`. Execution interruptions make wall time unsuitable as a throughput comparison. No commit/push.
+
 ## [2026-10-11] ingest | braintree_php@6.37.0 to 6.38.0
 
 - Approved focused-reading serial delta: path-ID checks across 14 gateways, settlement shipping inherited by partial settlement, ACH search and explicit surcharge-refund options. Both snapshots verified (452 hashes/sizes); `6.37.0` history preserved. Updated existing concept, source/changelog, company and provider catalog; source count unchanged. Details [[braintree-log]] and [[changelog-github-braintree-php]]. No live gateway execution, commit or push.

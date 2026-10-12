@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-webhooks-troubleshoot",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Troubleshoot webhooks\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/webhooks/troubleshoot\"\nraw_files:\n  - \"adyen/docs/development-resources/webhooks/troubleshoot/2026-09-15.md\"\ntags: [adyen, webhooks, troubleshooting, retry, customer-area]\n---\n\n## Overview\n\nThis [[adyen]] documentation page is a 2026-09-15 snapshot of the Customer Area workflow for diagnosing and resolving webhook delivery failures. It explains endpoint-specific retry queues, failed-event diagnostics, manual retry and permanent ignore actions, and failure-alert configuration.\n\n## Key takeaways\n\n- A webhook delivery is treated as failed when the receiver does not acknowledge the message with a successful HTTP status. Adyen makes three initial retry attempts at 9, 18, and 27 seconds before placing the message in a retry queue; queues are separate for each endpoint, so multiple endpoints must be investigated individually.\n- From the queue, Adyen automatically retries delivery for up to 30 days. The documented schedule after the first three failed retries is routed to the raw locator below; a successful retry advances processing to the next queued webhook.\n- In Customer Area, a failing endpoint's **Troubleshoot** view lists failed webhook messages with an error and timestamp. The page maps common HTTP errors to potential causes and recommended checks, but says the exact meaning depends on the receiver's server setup.\n- Successfully receiving one webhook type does not establish successful delivery of every type; the page directs operators to use **Troubleshoot** for diagnostics.\n- After identifying the cause and deploying a server fix, **Retry** manually resends an event. **Ignore** is destructive: it permanently removes an event from the queue, after which it cannot be retried. A retry success message establishes endpoint acceptance, not downstream business processing or any payment outcome.\n- Failure alerts can be delivered by email or the Customer Area notification center. The snapshot documents initial-failure, ongoing-failure, and recovery alerts, with their timing and configuration steps routed below.\n\n> [!warning] Evidence boundary\n> This documentation snapshot describes Adyen's troubleshooting controls and retry behavior; it does not prove current endpoint reachability, successful delivery or processing, account eligibility, or a payment or resource outcome. Error causes are potential diagnoses conditioned on the merchant's server setup.\n\n## Detail locators\n\n- Failure definition, three initial retry timings, **Failing** status, and separate queues per endpoint: `## Retry queue`, line 23.\n- Automatic retry horizon, interval schedule, and progression after a successful retry: `## Retry queue`, lines 25-37.\n- Customer Area path and failed-event error/timestamp view: `## Troubleshoot failures`, lines 41-44.\n- Common HTTP error causes and recommended actions, including separate acknowledgement and business logic for `422`, load handling for `429`, and server-log investigation for `500`: `## Troubleshoot failures`, lines 49-57.\n- Webhook-type-specific delivery warning and diagnostic instruction: `## Troubleshoot failures`, line 59.\n- Manual **Retry** and permanent **Ignore** actions, including their preconditions and results: `## Resolve failures`, lines 63-72.\n- Initial-failure, ongoing-failure, and recovery alert meanings and timing: `## Set up failure alerts`, lines 76-80.\n- Alert configuration and user-linked email destination: `## Set up failure alerts`, lines 82-88.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-webhooks]]\n- Webhook configuration and acknowledgement requirements: [[source-adyen-docs-development-resources-webhooks-configure-and-manage]]\n- HMAC verification: [[source-adyen-docs-development-resources-webhooks-secure-webhooks-verify-hmac-signatures]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/webhooks/troubleshoot/2026-09-15|Adyen Docs \u2014 Troubleshoot webhooks (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "If you do not [accept a webhook message](/development-resources/webhooks/handle-webhook-events#accept-webhooks) by responding with a successful HTTP status code, we consider the webhook delivery a failure and set the webhook status to **Failing**. Adyen retries sending the webhook message three times before placing the webhook into a retry queue. The initial delivery attempts are sent at 9 seconds, 18 seconds, and again at 27 seconds. Retry queues are separate for each webhook endpoint. If you have multiple endpoints, you must troubleshoot them individually.",
+      "location": "line 23 under ## Retry queue"
+    },
+    {
+      "text": "From the queue, we automatically retry sending the webhook for up to 30 days. After the first three failed retries, we retry sending the webhook in the following intervals:",
+      "location": "line 25 under ## Retry queue"
+    },
+    {
+      "text": "Multiple Adyen products use webhooks. Successfully receiving one type of webhook (for example, for a payment authorisation) does not guarantee successful delivery of all types. Always use the **Troubleshoot** tool for reliable diagnostics.",
+      "location": "line 59 under ## Troubleshoot failures"
+    },
+    {
+      "text": "* **Retry**: After you deploy a fix, manually send the webhook message to your server again.\n* **Ignore**: If a webhook is no longer needed, permanently remove it from the queue.",
+      "location": "lines 65-66 under ## Resolve failures"
+    },
+    {
+      "text": "2. Select **Retry** to send the webhook to your endpoint again. A success message indicates your endpoint has accepted it. If it fails, you will get a new error message.\n3. If the webhook event is outdated or no longer relevant, select **Ignore**. The event is permanently removed from the queue and cannot be retried.",
+      "location": "lines 71-72 under ## Resolve failures"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-webhooks-source-troubleshoot",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-webhooks-troubleshoot]] \u2014 2026-09-15 webpage troubleshooting guide to endpoint-specific retry queues, Customer Area diagnostics, manual retry or permanent ignore, and failure alerts",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Reciprocal source link only; detailed retry intervals, HTTP error guidance, and alert timing remain in the source page and pinned raw."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/webhooks/troubleshoot/2026-09-15.md",
+  "raw_sha256": "fe935908a03ba435d8c38b4a534baa639980c2417a8e952d063abf13b271d0dd",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-web-best-practices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Best Practices for Web Integrations\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/web-best-practices\"\nraw_files:\n  - \"adyen/docs/online-payments/web-best-practices/2026-09-15.md\"\ntags: [adyen, online-payments, web, drop-in, components, security]\n---\n\n## Overview\n\nThis Adyen Docs page is an unversioned best-practices guide for Web Drop-in and Web Components integrations. It covers browser lifecycle, checkout presentation, custom pay-button safeguards, hosting, browser compatibility, cookies, client-resource loading, and testing. It is guidance for those web integration surfaces, not evidence of current merchant or payment-method eligibility or successful payment execution. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Keep Drop-in/Components current. In frameworks that re-render, initialize `AdyenCheckout` and mount Components only once; with server-side rendering, execute creation and mounting on the client because these surfaces depend on browser APIs.\n- A custom pay button must be disabled as soon as a payment attempt begins to prevent duplicate payments. The guide routes Sessions integrations to `beforeSubmit` and Advanced integrations to `onSubmit`. Custom pay buttons are not supported for PayPal, Klarna, or Click to Pay; those methods require the button supplied by the Component.\n- Live checkout pages must use HTTPS. HTTP is limited to local development and testing and must be replaced before go-live.\n- Adyen recommends avoiding an outer checkout iframe because cross-domain parent/iframe setups break redirect payment flows; if an iframe is unavoidable, the guide says to host it on the same domain as the parent. For native mobile apps it recommends native browser components instead of WebViews, especially for redirect methods.\n- Browser and cookie tooling can interfere with the embedded fields that Adyen itself renders in iframes. The guide documents a Cookiebot automatic-blocking conflict that prevents card entry and says misconfigured browser extensions can also block required elements. Drop-in/Components may set the `_RP_UID` risk-management cookie, whose module is enabled by default.\n- Adyen recommends loading client resources through the Adyen Web npm package. If scripts and stylesheets are embedded instead, their URL region must match the configured environment and live endpoint region; the guide also recommends Subresource Integrity and routes exact version hashes to release notes.\n- Browser-version matrices, v6 versus v5-or-earlier asset URLs, code examples, cookie-testing steps, SRI attributes, and final secure-context/real-device test routes remain in the captured raw at the locators below.\n\n## Detail locators\n\n- `## Requirements`, lines 21\u201327 \u2014 scope limited to Web Drop-in and Web Components.\n- `## Keep your integration up-to-date` through `## Manage Server-Side Rendering (SSR)`, lines 29\u201369 \u2014 update advice, single initialization/mounting, React considerations, example, and client-only SSR execution.\n- `## Securely implement a custom pay button`, lines 71\u2013116 \u2014 duplicate-submit control, Sessions/Advanced callbacks, sample state handling, and unsupported methods.\n- `## Use HTTPS for your checkout` through `## Avoid WebViews`, lines 118\u2013141 \u2014 live HTTPS requirement, local HTTP exception, outer-iframe redirect failure, and native mobile alternatives.\n- `## Ensure browser compatibility`, lines 143\u2013163 \u2014 captured desktop and mobile minimum-version tables.\n- `## Understand cookie usage` through `## Account for interactions with browser extensions`, lines 165\u2013178 \u2014 `_RP_UID`, cookie-isolation testing, Cookiebot card-field blocking/remediation, and extension interference.\n- `## Manage client-side resources`, lines 184\u2013229 \u2014 npm versus embedded loading, region/environment matching, version-qualified asset tables, and SRI guidance.\n- `## Test your integration`, lines 246\u2013256 \u2014 secure-context, real-device, end-to-end, and payment/modification test routes.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-online-payments]] \u2014 provider-level online-payments architecture and source routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/web-best-practices/2026-09-15|Adyen web integration best practices (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Follow these best practices to ensure your web Drop-in/Components integration is secure, performant, and compliant.",
+      "location": "Best practices for web integrations, line 19"
+    },
+    {
+      "text": "Modern [frameworks](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Frameworks_libraries) can re-render UI components, which can cause unexpected behavior in the checkout. To prevent this, initialize `AdyenCheckout` and mount your Components only once, when you are ready to display the payment methods.",
+      "location": "Handle web framework re-renders, line 35"
+    },
+    {
+      "text": "A shopper can trigger a payment in multiple ways, for example by selecting the **Pay** button, or by pressing the **Enter** key on their keyboard. To prevent multiple payments for the same order, you must disable your pay button as soon as a payment attempt has been made.",
+      "location": "Securely implement a custom pay button > Prevent multiple submissions, line 77"
+    },
+    {
+      "text": "The custom pay button is not supported for:\n\n* PayPal\n* Klarna\n* Click to Pay\n\nFor these payment methods, you must use the button provided by the Component.",
+      "location": "Securely implement a custom pay button > Unsupported payment methods, lines 110-116"
+    },
+    {
+      "text": "In your live environment, you need to use HTTPS. It encrypts the connection between the shopper browser and your server, which prevents data interception and tampering. If you do not use HTTPS in production, it leads to security warnings and can cause payments to fail.",
+      "location": "Use HTTPS for your checkout, line 122"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w24-online-payments-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-web-best-practices]] \u2014 unversioned Web Drop-in/Components best-practices guide covering browser lifecycle, custom-button safeguards, secure hosting, embedding and testing (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source is a dated, unversioned documentation snapshot scoped to Web Drop-in and Web Components; it does not establish current merchant eligibility, payment-method availability, or successful payment execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/web-best-practices/2026-09-15.md",
+  "raw_sha256": "2cee382f1ac29220f83ecba8fe8a5fa1debb5bd1580ebb6f4914f4ac67cd2476",
+  "status": "candidate_ready"
+}

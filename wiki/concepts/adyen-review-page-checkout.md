@@ -52,6 +52,8 @@ No browser, payment, upstream test, or delegated wallet runtime verification was
 
 ## Sources and related
 
+- [[source-adyen-docs-online-payments-two-step-checkout]] - separate unversioned manual Advanced-flow guide for adding a pre-payment review page, retaining payment data server-side with a one-hour expiry, and submitting `/payments` from the review step (webpage snapshot, 2026-09-15)
+
 - [[source-github-adyen-web]] - exact-SHA implementation links and grounding excerpts
 - [[changelog-github-adyen-web]] - 6.44.0 to 6.45.0 changes and preserved history
 - [[adyen]] - company and independent SDK boundaries

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-security-api-security",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen API Security\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/security/api-security\"\nraw_files:\n  - \"adyen/docs/development-resources/security/api-security/2026-09-15.md\"\ntags: [adyen, api-security, authentication, rate-limiting, throttling]\n---\n\n## Overview\n\nThis Adyen guidance page summarizes API-security practices for all Adyen integration types. It focuses on authentication and on rate limiting and throttling, while routing detailed Adyen authentication, credential, partner OAuth, client-side authentication, and TLS topics to dedicated documentation.\n\n## Key takeaways\n\n- The page is guidance only, not a complete security checklist or definitive advice. Its stated integration scope is all Adyen integrations.\n- For APIs an integration owns, the page presents API keys, OAuth 2.0, and multifactor authentication as approaches to consider. API keys must be protected, rotated, and kept out of client-side code; MFA is framed as something an application can encourage or require, especially for sensitive data.\n- For requests to Adyen APIs, the page routes merchants to API credentials created in the Customer Area and supplied through the relevant HTTP request header. It separately describes partner OAuth as delegated access to specific merchant-account resources after the merchant authorizes the request, using the resulting token for requests on that merchant's behalf.\n- Rate limiting and throttling are presented as protections against misuse including denial-of-service attacks, brute-force attacks, and scraping. The page recommends considering distributed counters across API gateways and traffic- and behavior-sensitive throttling, but gives no numeric limits or provider-runtime guarantees.\n- The page also says to transmit data over HTTPS with the correct TLS configuration and to conduct security audits and penetration tests, addressing discovered issues immediately.\n\n> [!warning] Evidence boundary\n> This unversioned snapshot is general security guidance, not a complete security standard or proof that an integration is secure. It does not establish Adyen's numeric rate limits or throttling behavior, current account or OAuth eligibility, successful authentication or authorization, correct credential or TLS deployment, API availability, or payment execution. Follow the dedicated linked documentation and current security requirements for implementation details.\n\n## Detail locators\n\n- Guidance-only disclaimer and focus areas: lines 19-24 under `# API security`.\n- Applicability to all Adyen integrations: `## Requirements`.\n- API-key, OAuth 2.0, and MFA considerations for an integration's own APIs: `## API authentication`, lines 40-46.\n- Adyen API credential and partner OAuth routes: `## API authentication`, lines 48-52.\n- Purpose of rate limiting and throttling: `## Rate limiting and throttling`, lines 54-56.\n- Distributed rate limiting and dynamic throttling considerations: `## Rate limiting and throttling`, lines 58-62.\n- HTTPS/TLS and audit/testing guidance: `## Rate limiting and throttling`, lines 64-66.\n- Authentication and client-side-authentication next steps: `## See also`.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-api-access]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/api-authentication/2026-09-15|API authentication types]]\n- [[raw/adyen/docs/development-resources/api-credentials/2026-09-15|API credentials]]\n- [[raw/adyen/docs/partners/oauth/2026-09-15|OAuth for partners]]\n- [[raw/adyen/docs/development-resources/client-side-authentication/2026-09-15|Client-side authentication]]\n- [[raw/adyen/docs/development-resources/security/sensitive-data/tls/2026-09-15|Transport Layer Security configuration]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/security/api-security/2026-09-15|Adyen API security]] \u2014 complete collected guidance for authentication, rate limiting and throttling, HTTPS/TLS, and security testing\n",
+  "quotes": [
+    {
+      "text": "The information in this page is for guidance only. It is not a complete list of all security measures you should take, and should not be taken as definitive advice.",
+      "location": "line 19 under # API security"
+    },
+    {
+      "text": "| **Integration type** | The information on this page is relevant for all Adyen integrations. |",
+      "location": "line 32 under ## Requirements"
+    },
+    {
+      "text": "* **API keys**: you let client applications authenticate their API requests by specifying an API key in the request header. You must make sure that API keys are protected, rotated, and not exposed in client-side code.",
+      "location": "line 42 under ## API authentication"
+    },
+    {
+      "text": "The same principles are used for the authentication of your requests to Adyen APIs.\n\n* [API credentials](/development-resources/api-credentials): you create an API key or a basic authentication username and password in your Customer Area, and then specify this in the relevant [HTTP request header](/development-resources/api-authentication#api-key-authentication).\n\n* [OAuth for partners](/partners/oauth/): a partner is an organization that builds integrations, such as plugins, that enable merchants to accept payments with Adyen. If you are a partner, you can implement OAuth to request access to specific account resources of your customer (the merchant). When your customer authorizes your access request, you get a token that you can use to authorize API requests on their behalf.",
+      "location": "lines 48-52 under ## API authentication"
+    },
+    {
+      "text": "Rate limiting and throttling are ways to control the flow of traffic, in this case API calls. These techniques are crucial for protecting APIs from malicious use, such as Denial of Service (DoS) attacks, brute-force attacks, and scraping.\n\nConsider implementing the following.\n\n* **Distributed rate limiting**: limit the number of API requests per time period, and synchronize keeping track of the number of request per user between the various parts of your entire system. Use shared counters across API gateways.\n\n* **Dynamic throttling**: control the rate of API requests based on real-time traffic and user behavior. For example, for a trusted user you slow down the rate of requests less than when you are dealing with a new or suspicious user.\n\n* **Encryption of communications**: transmit data over HTTPS to encrypt the data during transit to protect it from eavesdropping and tampering. Also ensure you use the correct [Transport Layer Security (TLS)](/development-resources/security/sensitive-data/tls) configuration.\n\n* **Regular audits and tests**: carry out systematic security audits and penetration tests to discover weaknesses that could lead to vulnerabilities, and actual vulnerabilities. If any issues are found, address them immediately.",
+      "location": "lines 56-66 under ## Rate limiting and throttling"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-api-access-api-security-source-link",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-security-api-security]] \u2014 unversioned guidance snapshot for API authentication, rate limiting and throttling, HTTPS/TLS, and security testing; guidance only, not a complete security standard or provider-runtime proof\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this as a reciprocal source route; the existing concept's credential facts remain governed by the API credentials source.",
+          "Do not infer numeric Adyen rate limits, enforced throttling behavior, successful authentication, or complete security coverage from this guidance page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/security/api-security/2026-09-15.md",
+  "raw_sha256": "ba1ecb1831f26fb18832f63473e0f923c202dd24358f0b9150504ff6f290c4f1",
+  "status": "candidate_ready"
+}

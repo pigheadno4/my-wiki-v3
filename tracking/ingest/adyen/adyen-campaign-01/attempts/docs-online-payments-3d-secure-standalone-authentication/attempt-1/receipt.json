@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-online-payments-3d-secure-standalone-authentication",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Standalone authentication\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/standalone-authentication\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/standalone-authentication/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, authentication, advanced-flow]\n---\n\n## Overview\n\nThis Adyen guide explains standalone 3D Secure 2 authentication: authenticate a shopper separately from payment authorization, receive authentication data, and later use that data to seek authorization from Adyen or another PSP. The documented route uses Adyen's Advanced flow and does not support triggering standalone authentication through `/sessions` or Hosted Checkout.\n\nThe snapshot documents authentication and later authorization as separate operations. It does not prove current merchant eligibility, account configuration, issuer outcome, authorization success, or settlement.\n\n## Key takeaways\n\n- The merchant sends `/payments` with `authenticationData.authenticationOnly` set to `true`, handles the returned 3DS2 action through the existing native or redirect integration, and submits the authentication result through `/payments/details` with `authenticationOnly: true`.\n- A completed authentication returns `AuthenticationFinished`; `threeDS2Result.transStatus` value `Y` indicates successful authentication. Redirect results are instead documented under `additionalData.threeDAuthenticatedResponse`. See **Perform the authentication** and **Get the 3D Secure 2 authentication data**.\n- The setup requires an Advanced-flow online-payments integration, an API credential with the Checkout webservice role, Standard webhooks with the non-default `AUTHENTICATION` event enabled, 3DS2 Native or Redirect setup, and response/configuration settings that cause authentication to be attempted. See **Requirements** for the exact conditions.\n- When authentication is performed with Adyen but authorization will use a different PSP or acquirer, the guide recommends providing the matching acquirer enrollment data because mismatches can cause refusals. See **Provide additional acquirer-related data**.\n- Authentication data cannot be reused across PSPs and cannot be used after expiry. The snapshot lists different cryptogram-validity periods by scheme; consult **Authentication data expiry** rather than assuming one universal lifetime.\n- `AuthenticationNotRequired` means the transaction does not require 3DS authentication and can proceed to a standard payment flow with Adyen or another PSP. The guide lists possible reasons under **Authentication not required reasons**.\n\n## Material qualifications\n\n- Standalone authentication is not available through `/sessions` or Hosted Checkout in this guide.\n- Authentication success is not payment authorization. A later authorization request is still required, and its outcome is separate.\n- Authentication data is time-limited and cannot be retried with a different PSP after it has been sent to one PSP and that authorization fails.\n- Field availability varies by scheme; Cartes Bancaires has additional conditional fields, and redirect authentication exposes its result through a different response field.\n- This is a documentation snapshot collected on 2026-09-15, not proof of current enablement, supported schemes, or a successful live transaction.\n\n## Detail locators\n\n- **Requirements** \u2014 Advanced-flow, credential role, webhook, unsupported `/sessions`/Hosted Checkout routes, 3DS2 setup, response-field enablement, and authentication-trigger configuration.\n- **Make a payment request for authentication** \u2014 request fields by channel, web and mobile qualifications, result-code branching, and language-specific examples.\n- **Provide additional acquirer-related data** \u2014 cross-PSP/acquirer enrollment data and mismatch warning.\n- **Perform the authentication** \u2014 action handling, `/payments/details` submission, completion/refusal results, and redirect result location.\n- **Get the 3D Secure 2 authentication data** \u2014 scheme-qualified `threeDS2Result` fields and `transStatusReason` values.\n- **Authorize the payment** \u2014 non-reuse warning, Adyen `mpiData` mapping, co-badged-card brand handling, and Cartes Bancaires conditions.\n- **Authentication data expiry** \u2014 scheme-specific cryptogram validity table.\n- **Authentication not required reasons** \u2014 `AuthenticationNotRequired` handling and reason values.\n- **Testing** \u2014 test-guide route and `AUTHENTICATION` webhook outcome notice.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[adyen-3ds2-android-sdk]]\n- [[adyen-3ds2-ios-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/standalone-authentication/2026-09-15|Adyen Docs \u2014 Standalone authentication (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Use standalone authentication when you want to separate [authentication](/get-started-with-adyen/adyen-glossary#authentication) from [authorization](/get-started-with-adyen/adyen-glossary#authorization). In the standalone authentication flow, you make a payment request that specifies only authentication. When authentication is successfully completed, you receive the 3D Secure 2 authentication data which you can use to authorize the payment with Adyen or another payment service provider (PSP).",
+      "location": "line 19, opening paragraph under `# Standalone authentication`"
+    },
+    {
+      "text": "You cannot trigger standalone authentication with the [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) endpoint or with [Hosted Checkout](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Hosted%20Checkout).",
+      "location": "line 30, `## Requirements` table, `Limitations` row"
+    },
+    {
+      "text": "1. In the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response, you receive `action.type`: **ThreeDS2**. Use the `action.subtype` object to determine your next steps. The way to handle the `action` object for the standalone authentication flow is the same as handling it for your [native](/online-payments/3d-secure/native-3ds2) or [redirect](/online-payments/3d-secure/redirect-3ds2) 3D Secure implementation.\n\n2. When authentication is completed, submit the authentication result in a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request, including [authenticationData.authenticationOnly](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-authenticationData-authenticationOnly): **true**.\\",
+      "location": "lines 726-728 under `## Perform the authentication`"
+    },
+    {
+      "text": "* `resultCode`: If the authentication process has finished, you receive **AuthenticationFinished**. If an error occurs during the authentication flow, and the authentication process is not completed, you receive **Refused**.\n\n   * `threeDS2Result`: The object that contains the authentication data that you need to [authorize the payment](#authorize-the-payment-with-adyen) following a successful authentication.\n\n   * `threeDS2Result.transStatus`: Indicates the result of the authentication. The value **Y** means that authentication is successful.",
+      "location": "lines 941-945 under `## Perform the authentication`, `/payments/details` response fields"
+    },
+    {
+      "text": "Use the 3D Secure 2 authentication produced by the MPI to [authorize the payment with Adyen](#authorize-the-payment-with-adyen), or with another PSP. For information on authorizing with other PSPs, refer to their documentation.\n\nFor payment authorizations, keep the following in mind:\n\n* You cannot reuse the authentication data across PSPs. For example, if you send a request to authorize the payment using the data to a PSP and it fails, you can not pass the same data to another PSP.\n* Make sure to use the authentication data before it [expires](#authentication-data-expiry).",
+      "location": "lines 1057-1062 under `## Authorize the payment`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-3d-secure-standalone-authentication-source-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-standalone-authentication]] \u2014 Advanced-flow guide for separating 3DS2 authentication from later authorization, including cross-PSP and expiry limits (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply this route to the general merchant-guide concept proposed by the `docs-online-payments-3d-secure` job; do not create a second general Adyen 3DS concept.",
+          "Keep detailed request fields and scheme-specific tables in the source and pinned raw; preserve the unsupported `/sessions` and Hosted Checkout boundary in retrieval.",
+          "Do not merge this unversioned website guide with the package-qualified Adyen Android and iOS 3DS2 SDK runtime concepts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/standalone-authentication/2026-09-15.md",
+  "raw_sha256": "57e94d6fdb0310d3b29710216e53f9d6089430e753b98b6d3251eb5a294f7ae4",
+  "status": "candidate_ready"
+}

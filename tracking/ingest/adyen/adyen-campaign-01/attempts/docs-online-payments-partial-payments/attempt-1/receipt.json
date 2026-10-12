@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-partial-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Partial payments\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/partial-payments\"\nraw_files:\n  - \"adyen/docs/online-payments/partial-payments/2026-09-15.md\"\ntags: [adyen, online-payments, partial-payments, orders, webhooks]\n---\n\n## Overview\n\nThis unversioned [[adyen]] website-guide snapshot documents an [[adyen-online-payments]] order flow for combining multiple payment methods in one purchase. The merchant creates an order, submits one or more payments against its remaining amount, and then either observes completion through final payment states and the order-closed webhook or cancels the order.\n\nThe page is integration guidance with version-specific examples, not proof of current endpoint behavior, payment-method availability, merchant eligibility, production configuration, or successful payment execution.\n\n## Key takeaways\n\n- `POST /orders` establishes the full order amount and returns `pspReference`, `orderData`, and `remainingAmount`; the page says omitted `expiresAt` defaults to 24 hours after creation. Adyen also documents an `ORDER_OPENED` webhook when the order is created.\n- Each `POST /payments` request supplies the order `pspReference` and current `orderData`. An amount below the prior `remainingAmount` is a partial payment. A payment response returns the new remaining amount and a new `orderData` value for the next payment. Redirect methods additionally require their redirect handling.\n- `remainingAmount.value` reaching `0` is not completion by itself. The page defines completion as all payments reaching a final payment status and an `ORDER_CLOSED` webhook carrying `success: true`.\n- An incomplete order with a positive remaining amount is automatically canceled at expiry. A merchant can also request `/orders/cancel`; the page says the order's previous payments are then canceled or refunded according to payment-method type, and the closing webhook carries `success: false`.\n- Once the remaining amount is zero, balance-specific changes operate on individual partial payments through cancellation or refund routes. A full-order reversal instead dynamically cancels or refunds the full order amount according to current payment state.\n\n> [!warning] Evidence and version boundary\n> The snapshot's code examples mix explicitly versioned API paths and library releases, including Checkout API `v69` order examples, a `v72` payment curl example, and dated SDK versions. Treat the narrative as a collected guide, use the linked API references for current request contracts, and do not infer account eligibility, webhook delivery timing or ordering, atomic cancellation across payments, or a successful authorization, cancellation, refund, reversal, or settlement from this page alone.\n\n## Detail locators\n\n- **Purpose and lifecycle outline:** raw lines 15-21.\n- **Create-order fields, default expiry, examples, response state, and `ORDER_OPENED`:** raw lines 23-315.\n- **Payment request fields and versioned examples:** raw lines 317-696.\n- **Updated `remainingAmount` and `orderData` for the next payment:** raw lines 698-717.\n- **Completion condition and `ORDER_CLOSED` success signal:** raw lines 719-741.\n- **Expiry and manual cancellation effects, request fields, examples, and closing failure signal:** raw lines 743-1012.\n- **Completed-order individual modifications versus full-order reversal:** raw lines 1014-1023.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-webhooks]] \u2014 broader webhook integration and delivery boundaries\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/partial-payments/2026-09-15|Adyen Docs \u2014 Partial payments (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The [/orders](https://docs.adyen.com/api-explorer/Checkout/latest/post/orders) endpoint lets you combine different payment methods when a shopper makes a payment. For example, a shopper can use a gift card with a balance lower than the amount of the purchase and pay the remaining amount with a credit card.",
+      "location": "raw line 19 under # Partial payments"
+    },
+    {
+      "text": "To accept partial payments with different payment methods, you must [create an order](#create-an-order), [make payments](#make-a-payment), and [complete the order](#complete-an-order) or [cancel the order](#cancel-order).",
+      "location": "raw line 21 under # Partial payments"
+    },
+    {
+      "text": "The response contains an `order` object that shows the remaining amount required on the order. You also get a new `orderData` value that you must include in your next payment request.",
+      "location": "raw line 698, step 2 under ## Make a payment"
+    },
+    {
+      "text": "A remaining amount of **0** does not indicate that the order has been completed. The order has been completed when all payments in the order have reached a final payment status, and we send an [ORDER\\_CLOSED](https://docs.adyen.com/api-explorer/Webhooks/latest/post/ORDER_CLOSED) webhook with the `success` value **true**.",
+      "location": "raw line 741 under ## Completing an order"
+    },
+    {
+      "text": "You can also manually cancel an incomplete order. When you manually cancel an order, all the previous payments for that order are either canceled or refunded, depending on the type of payment method.",
+      "location": "raw line 747 under ## Cancel an order"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w15-online-payments-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-partial-payments]] \u2014 unversioned website guide to multi-method orders, rolling `orderData`, completion by final payment states plus `ORDER_CLOSED`, and cancellation paths (webpage snapshot, 2026-09-15)\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/partial-payments/2026-09-15.md",
+  "raw_sha256": "48c2154a8ff8556fcc2251a16a0a86c836202bc3cff1178c94fcb5f05ee4a6f2",
+  "status": "candidate_ready"
+}

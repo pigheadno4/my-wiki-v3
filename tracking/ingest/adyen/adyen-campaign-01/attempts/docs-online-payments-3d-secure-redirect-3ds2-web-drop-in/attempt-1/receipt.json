@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-online-payments-3d-secure-redirect-3ds2-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Redirect 3DS Web Drop-in Integration\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/web-drop-in\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/redirect-3ds2/web-drop-in/2026-09-15.md\"\ntags: [adyen, web-drop-in, cards, 3d-secure, 3ds2, redirect, checkout-api]\n---\n\n## Overview\n\nThis Adyen documentation page explains how to add redirect 3D Secure authentication for cards to an existing Web Drop-in integration using the advanced `/payments` and `/payments/details` flow. It applies to Checkout API 49 or later; an integration using only `/sessions` does not need the page's additional 3D Secure configuration. See [[adyen]] and [[adyen-3d-secure]].\n\n## Key takeaways\n\n- The merchant configures Drop-in to collect relevant shopper data, sends `state.data` plus the required or conditionally required web 3DS parameters to its server, and calls `/payments`. The field-level requirements and recommendations are preserved under `## Collect additional parameters in your payment form` and `## Make a payment`.\n- When `/payments` returns a redirect `action`, the merchant passes it to the front end and Drop-in handles it with `dropin.handleAction(action)`. A response without an `action` is described as exempt or out of scope for 3DS and is handled through `resultCode`.\n- After issuer authentication and the shopper's return, the server completes or verifies the result through `/payments/details`. Checkout API v67 and later returns a GET `redirectResult`; v66 and earlier uses POSTed `MD` and `PaRes` and also requires the earlier `paymentData`.\n- The synchronous `resultCode` is used for shopper presentation, while the payment outcome also arrives asynchronously by webhook. Authorization does not imply capture when manual capture is configured.\n\n> [!warning] Live endpoint consistency\n> All API requests for the same live payment session must use the same live endpoint region. Mixing regions between `/payments` and `/payments/details` can cause 3DS authentication errors.\n\n## Detail locators\n\n- `## Requirements` \u2014 existing Web Drop-in and backend prerequisites, card enablement, and the PSD2 SCA guide route.\n- `## Collect additional parameters in your payment form` \u2014 holder name, billing address, email, and Drop-in configuration.\n- `## Make a payment` \u2014 request parameters, examples, and the version-specific redirect-action response handling.\n- `## Handle the redirect` \u2014 `handleAction`, return transport, and `/payments/details` completion for Checkout API v67+ versus v66 and earlier.\n- `## Present the payment result` \u2014 result codes, shopper presentation, webhook outcome, and manual-capture qualification.\n- `## Test and go live` \u2014 test scenarios, go-live route, and live-region consistency warning.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-drop-in/2026-09-15|Adyen Redirect 3DS Drop-in integration (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Our [Web Drop-in](/online-payments/drop-in-web) renders the available cards in your payment form, and securely collects any sensitive card information, so it doesn't touch your server. Drop-in also redirects the shopper to perform the 3D Secure 2 authentication.",
+      "location": "line 26"
+    },
+    {
+      "text": "If your integration uses only the [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) endpoint, you do not need additional configuration for 3D Secure.",
+      "location": "line 30"
+    },
+    {
+      "text": "Drop-in uses `dropin.handleAction(action)` to redirect the shopper to a page where we render the issuer's DOM element (the `action.url` from the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response) to perform 3D Secure authentication.",
+      "location": "line 764 under ## Handle the redirect"
+    },
+    {
+      "text": "When using our [live endpoints](/development-resources/live-endpoints/), make sure that all API requests you make for the same payment session use the same live endpoint region. Using different regions for [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) and [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) requests may result in errors when authenticating with 3D Secure.",
+      "location": "line 1336 under ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w10-new-adyen-3d-secure",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept",
+        "proposed_markdown": "---\ntitle: \"Adyen 3D Secure\"\ntype: concept\ncategory: technology\ntags: [adyen, cards, 3d-secure, 3ds2, web-drop-in, checkout-api, authentication]\n---\n\n## Definition and scope\n\nAdyen Web Drop-in can handle redirect 3D Secure authentication for card payments. In the advanced Checkout flow documented for API 49 or later, the merchant uses `/payments` and `/payments/details`; an integration using only `/sessions` does not need the additional configuration in this redirect guide. This web flow is distinct from the independently versioned native runtimes in [[adyen-3ds2-ios-sdk]] and [[adyen-3ds2-android-sdk]].\n\n## Redirect lifecycle\n\n1. Drop-in collects card and browser data and supplies `state.data`; the merchant sends the payment request from its server with the applicable web 3DS parameters.\n2. If `/payments` returns a redirect `action`, the merchant passes it to the front end and invokes `dropin.handleAction(action)`. If there is no action, the documented flow uses `resultCode` because the transaction is described as exempt or out of scope for 3DS.\n3. After authentication, the shopper returns to the merchant and the server calls `/payments/details`. Checkout API v67 and later uses `redirectResult`; v66 and earlier uses `MD`, `PaRes`, and the earlier `paymentData`.\n4. The merchant presents the synchronous `resultCode`; the payment outcome is also delivered asynchronously by webhook. Manual-capture payments still require capture after authorization.\n\n## Operational boundary\n\nFor a live payment session, `/payments` and `/payments/details` must use the same live endpoint region; mixing regions can cause 3DS authentication errors. A documentation snapshot does not establish current card-scheme requirements, account eligibility, successful authentication, authorization, capture, or settlement.\n\n## Sources and related\n\n- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-drop-in]] \u2014 Web Drop-in redirect 3DS guide for the advanced Checkout flow, including versioned return handling and live-region warning\n- [[adyen]] \u2014 provider and independently versioned integration surfaces\n- [[adyen-3ds2-ios-sdk]] \u2014 native iOS delegated 3DS2 runtime\n- [[adyen-3ds2-android-sdk]] \u2014 native Android delegated 3DS2 runtime\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The source snapshot was fetched 2026-09-15 and declares last_modified 2023-08-30; current requirements and eligibility were not live-verified.",
+          "The concept separates this Web Drop-in redirect flow from the existing native iOS and Android 3DS2 SDK concepts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web-drop-in/2026-09-15.md",
+  "raw_sha256": "0150ba04bd0d3fb4308b166446353bd426139b7e26592efdc7e0084800046b46",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,19 @@
+# Adyen C01 proposed provider authorization
+
+Status: COMPLETE following explicit user approval of this document and manifest.json. Applies only to adyen-campaign-01 and its exact 50 pinned website raw jobs; no general cross-PSP rollout authority. Commit and push remain separately gated.
+
+Adopt the parallel-review exception in rules/ingest.md with ten shared rolling child slots excluding coordinator (bounded by actual capacity), not ten workers plus ten reviewers. Proposed Sol medium workers and different Sol high first reviewers, following the previous campaign role settings. Review-ready jobs have priority with worker reserve; freed slots immediately accept the next eligible role, no batch barrier. No worktrees.
+
+Delegates read rules/ingest-roles.md, trusted job order and concise Adyen scope notes. Delegates are repository-read-only and return isolated candidates/receipts/shared-file suggestions via their assigned external artifacts. Coordinator alone persists repository artifacts and campaign state and writes canonical pages.
+
+Each source unit is one complete pinned raw. Full initial independent review, 3–5 located verbatim primary-raw quotes, no reviewer waiver. At most three attempts; bounded unchanged-hash corrections receive targeted diff/context review; factual or uncertain correction requires full review. Exhausted/rejected jobs remain failed with evidence, are not promoted and do not silently block independent eligible jobs. No automatic campaign-wide retry.
+
+Incremental promotion of independently approved concept updates then exact source is allowed; canonical writes remain serial. Aggregate company/index/log/count once at close. Pause stops new dispatch/promotion and preserves evidence. Shared-file suggestions require semantic approval, not automatic copying.
+
+Adyen routes: raw/adyen/docs/; wiki/sources/adyen/; wiki/adyen-index.md; wiki/companies/adyen.md; wiki/adyen-log.md; tracking/ingest/adyen/adyen-campaign-01/. Root index links to provider catalog. Audit existing generic and Adyen concepts through indexes first; create adyen-* only for a genuine gap, default reciprocal retrieval entry rather than duplicated detail. Do not change GitHub source owners. Raw-to-source lookup derives from source raw_files, never writes raw.
+
+Preserve Adyen document/flow/API/product/environment and object/action scope, materially consequential prerequisites and warnings. Source is a retrieval entry, not a replacement specification; routine examples/parameters/tables stay at verified raw locators. Check subject/conditions/action before handoff. Only fully read factual evidence belongs under Raw Sources and raw_files; unread links belong under Related raw API references. Use full raw-path wikilinks without .md; never ambiguous [[2026-09-15]]. No newly invented Adyen product invariant before evidence.
+
+First review checks candidate/quotes/unknowns/contradictions and semantic shared suggestions; coordinator does not repeat default full-page review. Coordinator fully rereads disputed/uncertain content and fixed audit sample. Perform 100 fixed queries with concise locator-backed responses using the existing rolling pool; no separate additional full audit layer. At close perform one complete structural check and one touched typed validation, checking raw hashes, provenance links, reciprocal durable-fact concept citations, catalog completeness/duplicates and counts across all promoted jobs. No provider-specific validator invention; use generic checks and explicit existing campaign checks. Retain existing timestamps and receipts for stage timing.
+
+This preparation permits no execution, raw collection/refresh, API Explorer/GitHub ingestion, collector/code/schema/rule modification, new registry/scheduler/monitor design, historical rewrite, commit or push. User approval activates only this exact campaign and controls above; commit/push remain separately gated.

@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-online-payments-3d-secure-data-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Data-only flow\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/data-only\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/data-only/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, data-only, visa, mastercard, dcap]\n---\n\n## Overview\n\nThis [[adyen]] webpage snapshot describes a [[adyen-3d-secure|3D Secure 2]] data-only flow for Visa and Mastercard. Instead of sending an ordinary merchant authentication request, Adyen sends shopper data to the card scheme; the scheme handles the authentication request with the issuer and includes its risk evaluation in the authorization message for the issuer's decision. The guide positions the flow outside PSD2 SCA-regulated markets.\n\nThe flow does not present the shopper with a 3DS2 challenge and does not provide liability shift. The snapshot is implementation guidance, not proof of current merchant, market, scheme, transaction or issuer eligibility, successful authentication or authorization, interchange qualification, or production enablement.\n\n## Key takeaways\n\n- The documented prerequisite is a 3D Secure 2 integration for Web, Android, or iOS; Adyen recommends native 3DS2. For Authentication Engine routing, the guide says to configure native or redirect 3DS2 and set the default dynamic 3D Secure rule to **Prefer not**.\n- For native or redirect integrations, the guide says the Authentication Engine decides whether to trigger data-only based on issuer readiness and performance uplift. This describes routing logic, not a guarantee that any transaction will use data-only or be authorized.\n- An API-only integration, or a merchant intentionally forcing the flow, sends `additionalData.threeDS2DataOnly: true` in `/payments`; the guide limits that effect to transactions where data-only is possible. It recommends `allow3DS2: true` through Checkout API v68 and `nativeThreeDS: preferred` from v69.\n- The general optimization list recommends shopper, address, holder-name and phone data. Visa DCAP has a stricter documented qualification list: `shopperIP`, `shopperEmail`, every billing-address field, and `deviceFingerprint`; empty, placeholder, missing or repeatedly incomplete data can lose the discount or lead to program removal.\n- The DCAP section limits incentives to customer-initiated card-not-present Visa transactions and excludes merchant-initiated and in-person transactions. Adyen warns against applying data-only to every transaction because it can lower authorization rates with some issuers.\n\n> [!warning] DCAP geography and snapshot timing\n> The requirements table says DCAP applies to US and Canadian merchants, but the dedicated eligibility section says it was US-only and planned to expand to Canada in October 2026. Treat Canadian availability as unresolved within this 2026-09-15 snapshot and verify current eligibility rather than inferring that the planned expansion occurred.\n\n## Detail locators\n\n- **Purpose and scheme/issuer roles:** raw lines 17-19.\n- **Integration, market and Authentication Engine setup requirements:** raw lines 21-28.\n- **Scheme routing, authorization-message risk data, no challenge, and no liability shift:** raw lines 30-34.\n- **Authentication Engine selection and recommended risk-assessment fields:** raw lines 36-55.\n- **Forced data-only request and Checkout API-version settings:** raw lines 57-64.\n- **Example request and response:** raw lines 66-120; examples do not establish a universal request contract or outcome.\n- **Visa DCAP eligibility, exclusions, purpose, routing warning, required data and consequences:** raw lines 122-140.\n- **Mastercard-only test availability and test card:** raw lines 142-148.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[source-adyen-docs-online-payments-3d-secure]] \u2014 high-level 3DS2 purpose, integration routes and flow shapes\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/data-only/2026-09-15|Adyen Docs \u2014 Data-only flow (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "In a regular 3D Secure 2 flow, the payment has to be authenticated by the issuer before it can be authorized. In a data-only flow, you use the same 3D Secure 2 infrastructure, but only to share shopper data with Visa or Mastercard directly. The card schemes then handle the risk evaluation and the authentication with the issuer. The data-only flow is particularly useful outside [PSD2 SCA](/online-payments/psd2-sca-compliance-and-implementation-guide) regulated markets.",
+      "location": "raw line 19, paragraph below # Data-only flow"
+    },
+    {
+      "text": "When you send a data-only request, Adyen sends it directly to Visa or Mastercard. The card schemes then handle the authentication request with the issuer, and include their risk evaluation in the authorization message. The issuer uses the risk evaluation data to improve their decision when authorizing a payment.\n\nBecause this flow only shares data, shoppers will **not** be presented with a 3D Secure 2 challenge. This also means that there is no liability shift for the data-only flow.",
+      "location": "raw lines 32-34, ## How it works"
+    },
+    {
+      "text": "| **Integration type** | A [3D Secure 2 integration](/online-payments/3d-secure/) for Web, Android or iOS. We recommend a [native 3D Secure 2 integration](/online-payments/3d-secure/native-3ds2).                                                                                                                                                                                                               |\n| **Limitations**      | The data-only flow is available for Visa and Mastercard outside [PSD2 SCA](/online-payments/psd2-sca-compliance-and-implementation-guide) regulated markets. [DCAP](#dcap) applies only to merchants in the United States and Canada.                                                                                                                                                    |\n| **Setup steps**      | To use the [Authentication Engine](#authentication-engine) for the data-only flow, make sure that you:- Have set up a 3D Secure 2 [native](/online-payments/3d-secure/native-3ds2/) (recommended) or [redirect](/online-payments/3d-secure/redirect-3ds2/) integration.\n- Set the default [dynamic 3D Secure rule](/risk-management/dynamic-3d-secure/#default-rules) to **Prefer not**. |",
+      "location": "raw lines 25-28, ## Requirements table"
+    },
+    {
+      "text": "If you want to force the data-only flow, or if you have built an [API-only integration](/online-payments/3d-secure/native-3ds2#api-only) that uses our 3D Secure 2 component, make a POST [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request containing the 3D Secure 2 fields and the following:\n\n* `additionalData.threeDS2DataOnly`: **true**. This forces the 3D Secure 2 data-only flow for all transactions where this flow is possible.\n\n* For a better shopper experience, we recommend using specific 3D Secure 2 values. Depending on your integration:\n\n  * Checkout API v68 or earlier: include `allow3DS2`: **true**.\n  * Checkout API v69 or later: include `nativeThreeDS`: **preferred**.",
+      "location": "raw lines 57-64, ## Make a data-only payment request"
+    },
+    {
+      "text": "DCAP currently only applies to merchants in the United States. The program expands to Canadian merchants in October 2026.\n\nDCAP applies to customer-initiated, Card Not Present transactions. Cost-saving incentives do not apply to [merchant-initiated transactions](/get-started-with-adyen/adyen-glossary#contauth-continuous-authorization) or [in-person payments](/get-started-with-adyen/adyen-glossary#point-of-sale) transactions.\n\nDCAP is a Visa program that aims to enhance the security and authorization rates of [Card Not Present](/get-started-with-adyen/adyen-glossary#card-not-present-cnp) transactions by using the 3D Secure data-only flow to share more data with issuers. Visa offers interchange fee discounts for this data.\n\nWe recommend that you use Adyen's [Authentication Engine](https://www.adyen.com/knowledge-hub/psd2-simplified-with-our-new-authentication-engine) to optimize your interchange discounts with DCAP. We do not recommend that you apply the data-only flow for all transactions, as this can lower your authorization rates with some issuers.",
+      "location": "raw lines 125-131, ## Visa's Digital Commerce Authentication Program (DCAP)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-data-only-reciprocal-source",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "end of file",
+        "proposed_markdown": "\n## Sources\n\n- [[source-adyen-docs-online-payments-3d-secure-data-only]] \u2014 unversioned Adyen webpage snapshot for the Visa and Mastercard 3DS2 data-only flow (collected 2026-09-15)\n",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "The source snapshot conflicts internally on Canadian DCAP eligibility; the source page preserves that qualification and the reciprocal link must not imply current availability."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/data-only/2026-09-15.md",
+  "raw_sha256": "09f189c5f39468b9e0cc00689cc98730fb32f82f7cb7f787a5979aef6d04920a",
+  "status": "candidate_ready"
+}

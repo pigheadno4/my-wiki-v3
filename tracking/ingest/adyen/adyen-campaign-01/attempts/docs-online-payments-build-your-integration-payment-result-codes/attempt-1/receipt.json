@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-online-payments-build-your-integration-payment-result-codes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payment Result Codes\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/build-your-integration/payment-result-codes\"\nraw_files:\n  - \"adyen/docs/online-payments/build-your-integration/payment-result-codes/2026-09-15.md\"\ntags: [adyen, online-payments, result-codes, webhooks]\n---\n\n## Overview\n\nThis unversioned [[adyen]] website-guide snapshot explains how an online-payment integration receives a `resultCode`, uses that current-state signal to inform the shopper, and distinguishes it from later payment-status updates. It explicitly warns that a result code can change and should not be used to update the order management system. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- The retrieval point depends on the server-side flow: Sessions returns the result through Drop-in or a Component when the flow finishes; Advanced returns it from `/payments` when no additional action is required or from `/payments/details` after an additional action.\n- Authentication-only and 3D Secure 2 result codes describe the next authentication or authorization action. They are not themselves proof of payment authorization, capture, or settlement.\n- Intermediate result codes mean the payment has not reached a final state. The guide says successful completion is reported through an `AUTHORISATION` webhook and notes that completion can take minutes, hours, or days. Keep this asynchronous webhook lifecycle distinct from the synchronous result shown to the shopper.\n- The guide separately documents partial authorization for merchants that accept it and final-state result codes. An `Authorised` result tells the merchant to inform the shopper of success, but manual-capture integrations still need to capture the payment; the updated webhook status is the route the guide identifies for order-management updates.\n- For a non-`Authorised` result, the response includes a `refusalReason`; Adyen recommends not disclosing that reason to the shopper.\n- This dated documentation snapshot is not evidence of current account or payment-method eligibility, successful execution, webhook delivery, authorization, capture, or settlement. Its API Explorer links use `latest`, so it does not establish a fixed Checkout API version.\n\n## Detail locators\n\n- Purpose and warning against order-management updates from the synchronous result: raw line 19.\n- Required online-payments integration and API credential roles: raw lines 21\u201329.\n- Sessions and Advanced result-code retrieval points: raw lines 31\u201338.\n- Standalone-authentication and 3D Secure 2 action groups: raw lines 40\u201357.\n- Intermediate states, successful `AUTHORISATION` webhook, and potentially long completion time: raw lines 59\u201371.\n- Partial authorization scope and documented follow-up choices: raw lines 73\u201382.\n- Final states, manual-capture qualification, and refusal-reason disclosure warning: raw lines 84\u201395.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-online-payments]] \u2014 provider-level online-payments architecture and lifecycle route.\n- [[source-adyen-docs-online-payments-build-your-integration]] \u2014 server-side flow selection guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/build-your-integration/payment-result-codes/2026-09-15|Adyen payment result codes \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you submit a payment request, you get a result code that indicates the current status of the payment. You can use the result code to inform the shopper about the payment status. The status of a payment can sometimes change after you get the result code, so we recommend that you do not use the result code to update your order management system.",
+      "location": "line 19, introductory paragraph under `Result codes`"
+    },
+    {
+      "text": "How you get the result code depends on the server-side flow that your integration uses.",
+      "location": "line 33, `Getting the result code`"
+    },
+    {
+      "text": "For some payment methods, you can receive an intermediate result code indicating the payment has not reached a final state yet. This happens when a payment is completed but the final status of the payment cannot be obtained, or for flows where it takes a while before the shopper can complete the payment.",
+      "location": "line 61, `Intermediate result codes`"
+    },
+    {
+      "text": "When the shopper has completed the payment successfully, you receive a successful **AUTHORISATION** [webhook](/development-resources/webhooks/).",
+      "location": "line 69, `Intermediate result codes`"
+    },
+    {
+      "text": "For payments that are not **Authorised**, you will receive a [`refusalReason` ](/development-resources/refusal-reasons), indicating the cause of the error. We do not recommend disclosing this refusal reason to the shopper.",
+      "location": "line 95, after the `Final state result codes` table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-result-codes-reciprocal-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-build-your-integration-payment-result-codes]] \u2014 unversioned Adyen website guide to synchronous payment result codes, intermediate versus final state, and later webhook status (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the synchronous result-code signal distinct from later webhook status, and do not collapse intermediate codes into final payment outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/build-your-integration/payment-result-codes/2026-09-15.md",
+  "raw_sha256": "9203729dfec2e57e44bbb3c21d2e00df33ace7ba7228570fc91bc756c26c4676",
+  "status": "candidate_ready"
+}

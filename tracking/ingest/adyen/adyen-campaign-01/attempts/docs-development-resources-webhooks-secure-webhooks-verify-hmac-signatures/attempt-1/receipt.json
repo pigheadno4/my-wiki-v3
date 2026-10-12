@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-webhooks-secure-webhooks-verify-hmac-signatures",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Verify HMAC Signatures\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/webhooks/secure-webhooks/verify-hmac-signatures\"\nraw_files:\n  - \"adyen/docs/development-resources/webhooks/secure-webhooks/verify-hmac-signatures/2026-09-15.md\"\ntags: [adyen, webhooks, hmac, security, integrity]\n---\n\n## Overview\n\nThis [[adyen]] documentation page explains how to enable and verify HMAC signatures for webhook types that support them. It distinguishes the payload-field signature used by Standard webhooks from the request-header signature used by some non-standard webhooks, and documents Adyen library and custom-verifier routes.\n\n## Key takeaways\n\n- Adyen strongly recommends HMAC verification for webhooks that support it. The page describes a successful comparison as evidence that the signed event came from Adyen and was not modified in transit; this security check does not establish the event's business outcome or that the receiver processed it successfully.\n- A secret HMAC key is linked to one webhook endpoint, so multiple receiving endpoints require separate keys. Moving from test to live also requires generating a new key. Enablement is conditional on the option being available for the webhook.\n- Standard webhooks place `hmacSignature` in `additionalData`. For a custom Standard-webhook verifier, the page specifies an ordered, colon-delimited payload from eight event values, empty strings for empty fields, UTF-8 payload bytes, binary decoding of the hexadecimal key, HMAC-SHA256, Base64 encoding, and comparison with the received signature.\n- Some non-standard webhooks instead put `hmacsignature` and `protocol` in request headers. Their verifier signs the request body exactly as received without deserializing it, using HMAC-SHA256 and the binary key, then Base64-encodes and compares the result. Do not apply the Standard webhook's selected-field construction to this header-signature path.\n- After generating a replacement key, propagation can take time. The receiver should temporarily continue accepting events signed with the previous key.\n\n> [!warning] Scope and evidence boundary\n> The page is an unversioned documentation snapshot and applies HMAC only where the webhook supports it. It does not prove current account or webhook-type eligibility, successful configuration or delivery, replay protection, endpoint processing, or any payment or resource outcome. Preserve the Standard `additionalData` versus non-standard header-signature distinction when implementing verification.\n\n## Detail locators\n\n- Security purpose, supported-webhook qualification, and library-versus-custom routes: `# Verify HMAC signatures`, lines 17-24.\n- Endpoint-specific keys, test-to-live key separation, enablement steps, and signature-location distinction: `## Enable HMAC signatures`, lines 26-45.\n- Replacement-key propagation and previous-key overlap: `### Changing your HMAC key`, lines 63-67.\n- Packaged validator library routes: `## Verify using our libraries`, lines 69-78; language examples continue through line 186.\n- Standard-webhook custom payload construction, encoding, HMAC-SHA256 calculation, and comparison: `## Verify using your own solution`, lines 188-235.\n- Worked Standard-webhook key and event example: `### Example`, lines 237-276.\n- Non-standard header fields, untouched request-body requirement, calculation, and comparison: `## Verify HMAC keys returned in the header`, lines 278-296; Java and Python examples continue through line 398.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/webhooks/secure-webhooks/verify-hmac-signatures/2026-09-15|Adyen Verify HMAC signatures]] - complete collected guide to endpoint and environment key scope, Standard payload-field verification, non-standard header verification, encoding, comparison, library routes, and key rotation\n",
+  "quotes": [
+    {
+      "text": "To protect your server from unauthorised webhook events, we strongly recommend that you use [Hash-based message authentication code](https://en.wikipedia.org/wiki/HMAC) (HMAC) signatures for our webhooks that support it. For the ones that support [enabling HMAC signatures](#enable-hmac-signatures), each webhook event will include a signature calculated using a secret HMAC key and a payload from the webhook. By verifying this signature, you confirm that the webhook was sent by Adyen, and was not modified during transmission.",
+      "location": "# Verify HMAC signatures, line 19"
+    },
+    {
+      "text": "Each secret HMAC key is linked to one webhook endpoint. If you have multiple endpoints for receiving webhooks, generate an HMAC key for each of them.\n\nYou also need to generate a new HMAC key when you [switch from test to live](/development-resources/webhooks/configure-and-manage#test-and-go-live).",
+      "location": "## Enable HMAC signatures, lines 28-30"
+    },
+    {
+      "text": "For our [Standard webhooks](/development-resources/webhooks/webhook-types), the signature is included in the `additionalData` field.\n\nFor [other types of webhooks](/development-resources/webhooks/webhook-types#other-webhooks), although rare, the signature can be included in the request header. When the HMAC signature is included in the header, the steps to follow to verify the signature is different. See [Verify HMAC keys returned in the header](#verify-hmac-in-header).",
+      "location": "## Enable HMAC signatures, lines 43-45"
+    },
+    {
+      "text": "If you generate a new HMAC key, it can take some time to propagate this in our infrastructure, so make sure that you can still accept webhook events signed with your previous HMAC key for some time.",
+      "location": "### Changing your HMAC key, line 67"
+    },
+    {
+      "text": "Make sure that the request body is as it is\u2014do not deserialize it.",
+      "location": "## Verify HMAC keys returned in the header, verification step 2, line 292"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w26-webhooks-source-link",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-webhooks-secure-webhooks-verify-hmac-signatures]] - unversioned webpage guide to HMAC verification, separating Standard `additionalData` signatures from non-standard header signatures and preserving endpoint, environment, rotation, encoding, and untouched-body qualifications",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/webhooks/secure-webhooks/verify-hmac-signatures/2026-09-15.md",
+  "raw_sha256": "ee709a78fc39891b8c61b4e8ca6fa4d2bfce8bf65b28f95a98219a5e7a32860b",
+  "status": "candidate_ready"
+}

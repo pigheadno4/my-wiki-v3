@@ -1,0 +1,24 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "adyen-c01-w10-new-adyen-3d-secure",
+      "target_path": "wiki/concepts/adyen-3d-secure.md",
+      "update_kind": "durable_fact",
+      "anchor": "new concept",
+      "proposed_markdown": "---\ntitle: \"Adyen 3D Secure\"\ntype: concept\ncategory: technology\ntags: [adyen, cards, 3d-secure, 3ds2, web-drop-in, checkout-api, authentication]\n---\n\n## Definition and scope\n\nAdyen Web Drop-in can handle redirect 3D Secure authentication for card payments. In the advanced Checkout flow documented for API 49 or later, the merchant uses `/payments` and `/payments/details`; an integration using only `/sessions` does not need the additional configuration in this redirect guide. This web flow is distinct from the independently versioned native runtimes in [[adyen-3ds2-ios-sdk]] and [[adyen-3ds2-android-sdk]].\n\n## Redirect lifecycle\n\n1. Drop-in collects card and browser data and supplies `state.data`; the merchant sends the payment request from its server with the applicable web 3DS parameters.\n2. If `/payments` returns a redirect `action`, the merchant passes it to the front end and invokes `dropin.handleAction(action)`. If there is no action, the documented flow uses `resultCode` because the transaction is described as exempt or out of scope for 3DS.\n3. After authentication, the shopper returns to the merchant and the server calls `/payments/details`. Checkout API v67 and later uses `redirectResult`; v66 and earlier uses `MD`, `PaRes`, and the earlier `paymentData`.\n4. The merchant presents the synchronous `resultCode`; the payment outcome is also delivered asynchronously by webhook. Manual-capture payments still require capture after authorization.\n\n## Operational boundary\n\nFor a live payment session, `/payments` and `/payments/details` must use the same live endpoint region; mixing regions can cause 3DS authentication errors. A documentation snapshot does not establish current card-scheme requirements, account eligibility, successful authentication, authorization, capture, or settlement.\n\n## Sources and related\n\n- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-drop-in]] \u2014 Web Drop-in redirect 3DS guide for the advanced Checkout flow, including versioned return handling and live-region warning\n- [[adyen]] \u2014 provider and independently versioned integration surfaces\n- [[adyen-3ds2-ios-sdk]] \u2014 native iOS delegated 3DS2 runtime\n- [[adyen-3ds2-android-sdk]] \u2014 native Android delegated 3DS2 runtime\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The source snapshot was fetched 2026-09-15 and declares last_modified 2023-08-30; current requirements and eligibility were not live-verified.",
+        "The concept separates this Web Drop-in redirect flow from the existing native iOS and Android 3DS2 SDK concepts."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

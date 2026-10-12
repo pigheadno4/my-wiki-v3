@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-live-endpoints",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Docs: Live endpoints\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/live-endpoints\"\nraw_files:\n  - \"adyen/docs/development-resources/live-endpoints/2026-09-15.md\"\ntags: [adyen, api-access, live-endpoints, environments, networking]\n---\n\n## Overview\n\nThis unversioned [[adyen]] documentation snapshot explains the test-versus-live endpoint structure for online payments, how to obtain and use a company-specific live URL prefix, and the extra configuration required for location-based live endpoints. It also records Adyen's MTU and connection-keepalive recommendations.\n\nThe page is endpoint and network configuration guidance, not proof of current account eligibility, endpoint availability, correct production configuration, request acceptance, or successful payment execution.\n\n## Key takeaways\n\n- API endpoints differ between test and live accounts and also depend on whether requests use SOAP, JSON, or FORM. Live endpoints are provisioned automatically and are shown with configured data centres and prefixes under **Developers** > **API URLs** in the live Customer Area.\n- The documented URL templates distinguish Checkout API from Classic Payments API. Their live forms use a company-specific prefix; the page says libraries and plugins must receive that live URL prefix for live transactions. Each company account receives a unique hostname, which Adyen describes as enabling merchant-specific routing and alternative routing during infrastructure problems.\n- Location-based live endpoints require contacting Adyen Support. For Drop-in or Components, web integrations that load client-side scripts and stylesheets must use a region-specific resource URL matching the endpoint region, and the component `environment` must also match that region when going live.\n- The stated prerequisites are an online-payments integration, the roles required by the APIs in use, a live account, a live-environment API key, and the go-live checklist. This snapshot does not establish that any particular account has those prerequisites.\n- Adyen strongly recommends an MTU of 1500 bytes for network interfaces connecting to its endpoints because larger values can cause connectivity and stability problems. For persistent HTTP connections, it says to enable both TCP and HTTP keepalive; inactive keepalive connections time out after 60 seconds, so it recommends a shorter client-side HTTP keepalive timeout, for example 30 to 50 seconds.\n\n> [!warning] Environment and region boundary\n> Do not substitute a test endpoint, generic hostname, or unmatched regional client configuration for the live endpoint and prefix shown for the company account. Location-specific setup, current API versions, credential permissions, production readiness, and observed request outcomes require their own verification.\n\n> [!warning] Snapshot version conflict\n> Raw line 62 labels its example as Checkout API v69, while the displayed URL path uses `/checkout/v72/payments`. The snapshot does not resolve which version was intended; verify the intended API version and production URL for the current integration and company account rather than normalizing either value.\n\n## Detail locators\n\n- **Endpoint purpose, environment and data-format distinction:** raw lines 15-25.\n- **Online-payments, role and live-setup prerequisites:** raw lines 27-37.\n- **Where live endpoints, data centres and prefixes appear:** raw lines 39-43.\n- **Location-based endpoint enablement and matching web-resource and component environments:** raw lines 45-52.\n- **Live URL prefix composition, Customer Area route, and unresolved v69 label versus v72 URL path in the example:** raw lines 54-62.\n- **Checkout and Classic Payments test/live endpoint templates:** raw lines 64-86.\n- **Company-specific hostname and routing rationale:** raw lines 88-90.\n- **MTU recommendation:** raw lines 92-94.\n- **TCP and HTTP keepalive plus timeout behavior:** raw lines 96-107.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-api-access]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/api-credentials/roles/2026-09-15|API credential roles]]\n- [[raw/adyen/docs/online-payments/web-best-practices/2026-09-15|Web best practices]]\n- [[raw/adyen/docs/online-payments/build-your-integration/sessions-flow/2026-09-15|Sessions flow]]\n- [[raw/adyen/docs/online-payments/build-your-integration/advanced-flow/2026-09-15|Advanced flow]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/live-endpoints/2026-09-15|Adyen Docs \u2014 Live endpoints (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "These endpoints differ for test and live accounts, and also depend on the data format (SOAP, JSON, or FORM) you use to submit data to the\u00a0Adyen payments platform.",
+      "location": "raw line 21 under # Live endpoints"
+    },
+    {
+      "text": "If you use a location-based live endpoint, and use our Drop-in/Components integrations:\n\n* For web integrations, if you embed the script and stylesheet to load the client-side resources, make sure to use the [region-specific URL](/online-payments/web-best-practices#embed-script-and-stylesheet) that matches the region of your live endpoint.\n* When you go live, set the `environment` for your Drop-in/Component to match your live endpoint region. Find the `environment` values for each platform in our [Sessions](/online-payments/build-your-integration/sessions-flow) and [Advanced](/online-payments/build-your-integration/advanced-flow) flow integration guides.",
+      "location": "raw lines 49-52 under ### Location-based live endpoints"
+    },
+    {
+      "text": "The live URL prefix is a string composed of a hex-encoded random part and your company name. When using our [libraries](/development-resources/libraries) or [plugins](/plugins) for live transactions, you need to pass the prefix for the live URL.",
+      "location": "raw line 56 under ## Pass the URL prefix"
+    },
+    {
+      "text": "We strongly recommend setting the [Maximum Transmission Unit (MTU)](https://en.wikipedia.org/wiki/Maximum_transmission_unit) to 1500 bytes on the network interfaces connecting to Adyen endpoints. The MTU defines the maximum permissible size of the packets passing through the interface. As most of the public internet assumes a maximum packet size of 1500 bytes, configuring the MTU to larger values can lead to connectivity and stability issues.",
+      "location": "raw line 94 under ## Maximum Transmission Unit"
+    },
+    {
+      "text": "Adyen endpoints have a 60-second time-out for inactive HTTP connections with keepalive enabled. If no new data is transmitted within 60 seconds of the TCP session, we initiate closing the TCP connection.",
+      "location": "raw line 105 under ### Timeouts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w38-api-access-source-link",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-live-endpoints]] \u2014 unversioned live-endpoints documentation snapshot for test/live endpoint structure, company-specific URL prefixes, regional configuration matching, and network connection guidance\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/live-endpoints/2026-09-15.md",
+  "raw_sha256": "3d4a19bc4adf7d1a80c61b797367a72e1c1408d57dd105f7e537388ee8191ecf",
+  "status": "candidate_ready"
+}

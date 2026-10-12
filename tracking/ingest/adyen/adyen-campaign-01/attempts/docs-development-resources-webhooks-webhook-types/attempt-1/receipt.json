@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-webhooks-webhook-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhook Structure and Types\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/webhooks/webhook-types\"\nraw_files:\n  - \"adyen/docs/development-resources/webhooks/webhook-types/2026-09-15.md\"\ntags: [adyen, webhooks, payments, platforms, event-types]\n---\n\n## Overview\n\nThis [[adyen]] documentation page is a catalog of webhook structures, selectable webhook types, and their event scopes. It separates Payments webhooks from Platforms webhooks and routes detailed event-code, security-method, and product-specific webhook questions to the tables in the complete raw snapshot.\n\n## Key takeaways\n\n- Every webhook message has an event type that merchant or platform server logic can use to identify the information received. Payments webhooks typically expose it in `eventCode`; Platforms webhooks typically expose it in `type`.\n- For most payment integrations, the page directs merchants to Standard webhooks. Standard webhooks combine default event types that cannot be disabled with non-default event types enabled through the Standard webhook, Webhooks settings, or Risk settings surfaces described on the page.\n- Adyen warns that it can add webhook and event types. Receivers should accept more webhook types and event values than the captured list, while adding explicit business logic before using newly introduced events.\n- Other Payments webhook types use separate endpoints, and each configured endpoint can receive only one such webhook type. Their purposes and listed authentication methods vary; use the raw table rather than assuming Standard-webhook structure or security applies to every type.\n- Platforms webhooks use an event-specific `data` object plus `environment`, `timestamp`, and `type`, then divide events by product purpose such as authentication, balances, Capital, card orders, configuration, disputes, managed risk, network tokens, reporting, transactions, and transfers.\n\n> [!warning] Event coverage is configuration-dependent\n> The webhook types and event values received depend on webhook configuration. The captured Standard catalog is not exhaustive over time, and the page explicitly says no webhook event is sent when a payment is settled. Do not infer settlement confirmation, current product eligibility, or successful processing from this catalog alone.\n\n## Detail locators\n\n- Page purpose and the Payments/Platforms split: `# Webhook structure and types`, lines 17-24.\n- Event identity and the `eventCode` versus `type` distinction: `## Event types`, lines 28-35.\n- Payments payload envelope and event-dependent fields: `### Payments webhook structure`, lines 41-128.\n- Standard default transaction, dispute, and payout event catalogs: `### Default event types`, lines 134-203; the settlement warning is at line 170.\n- Non-default enablement surfaces and their event tables: `### Non-default event codes`, lines 205-262.\n- Separate endpoint constraint and other Payments webhook-type catalog: `### Other webhooks`, lines 266-295.\n- Platforms payload envelope and event-field definitions: `### Platforms webhook structure`, lines 299-320.\n- Product-specific Platforms webhook purposes and event tables: `## Platforms webhooks`, lines 322-504.\n\nThe tables are snapshot evidence, not proof that every listed webhook is currently available to a particular account, region, integration, or environment. Linked pages and API Explorer entries are navigation unless separately retained and read.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/webhooks/webhook-types/2026-09-15|Adyen webhook structure and types]] - complete collected catalog of Payments and Platforms webhook structures, types, event scopes, and warnings\n",
+  "quotes": [
+    {
+      "text": "When you configure a webhook, Adyen offers different webhook types to choose from. Each webhook type has its own corresponding [events](#event-codes) that you can subscribe to. For example, the [Standard webhook type](#standard-webhooks) subscribes your endpoint to a set of [default event types](#default-event-codes). This page provides you with a list of webhook types, and which event types Adyen offers for each.",
+      "location": "# Webhook structure and types, line 19"
+    },
+    {
+      "text": "The event type is indicated by different fields, depending on the webhook type.\n\n* In [Payments webhooks](#webhook-structure), the event type is typically in the `eventCode` field.\n* In [Platforms webhooks](#platforms-webhook-structure), the event type is typically in the `type` field.",
+      "location": "## Event types, lines 32-35"
+    },
+    {
+      "text": "Because we sometimes create new webhooks and event types, you should set up your server to be able to [accept webhooks](/development-resources/webhooks/configure-and-manage#accept-webhooks) of more types and receive more event type values than are listed below. When we create a new event type, you have to create new business logic if you want to use it.",
+      "location": "### Default event types, line 136"
+    },
+    {
+      "text": "You won't receive a webhook event when a payment is settled.",
+      "location": "#### Transaction events, line 170"
+    },
+    {
+      "text": "In addition to Standard webhooks, you can get other types of webhooks:\n\n1. Set up a separate endpoint to receive the type of webhook. Each endpoint that you set up can receive only one type of webhook.\n2. [Configure the webhook](/development-resources/webhooks/configure-and-manage#set-up-webhooks-in-your-customer-area) you want to receive from the list of webhook types in the following table.",
+      "location": "### Other webhooks, lines 266-269"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-webhook-types-reciprocal-source",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-webhooks-webhook-types]] - webpage catalog separating Payments and Platforms webhook structures, configured event scope, Standard default and optional events, and forward-compatible event-handling warnings",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The broad adyen-webhooks concept may be created by another campaign source; this proposal is only a reciprocal source route and should be merged into that canonical concept rather than creating a competing page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/webhooks/webhook-types/2026-09-15.md",
+  "raw_sha256": "f0c4b5e6626572ca3efee6380d60b3c5cd0d869770b1958905e69d1e0571548e",
+  "status": "candidate_ready"
+}

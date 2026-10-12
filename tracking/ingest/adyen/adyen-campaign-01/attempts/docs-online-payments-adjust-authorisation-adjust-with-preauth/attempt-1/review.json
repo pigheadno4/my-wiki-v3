@@ -1,0 +1,21 @@
+{
+  "job_id": "docs-online-payments-adjust-authorisation-adjust-with-preauth",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The pinned raw SHA-256 matches the trusted order and the complete 2,050-line snapshot was independently read. The accepted receipt, candidate and suggestions agree, no format-repair artifacts are present, all five quotes are exact at their stated lines, and the metadata, canonical URL, raw provenance, request-object identity, webhook outcome boundary, eligibility qualifications, extension warnings and Klarna risk outcome are otherwise supported. Two related scope blockers remain: the source and proposed concept turn the normal finish-adjustments-before-capture sequence into a categorical prohibition even though the page documents an enabled multiple-partial-capture path that partially captures and then adjusts; and they present card-section limits and extension rules without sufficient card scoping inside a source and concept that also cover Klarna. The proposed Adyen-specific concept is relevant and fills a genuine topic gap, but its current lifecycle and constraints would misanswer partial-capture and Klarna-limit queries.",
+  "required_changes": [
+    "Repair capture sequencing in both source_page and adyen-c01-w07-concept-authorization-adjustment. Preserve the normal guidance to finish intended adjustments before a final capture and not infer adjustability from an unresolved asynchronous capture, but add the documented exception: when multiple partial captures are enabled by Adyen Support, the card flow may partially capture and then adjust the authorized amount; the number of partial captures depends on the issuer and issuers may flag them as fraud risk, causing capture failure (raw lines 54-56 and 1032-1040). Concrete query: 'Can I adjust an Adyen card authorization after a partial capture?' The current warning and concept answer no, while the raw explicitly gives partial capture then adjustment as the example sequence.",
+    "Scope the zero-value prohibition, 50-adjustment cap, card-scheme validity and Visa/Discover/Mastercard extension behavior to the card-flow section rather than presenting them as universal constraints for both cards and Klarna. Apply this correction to the source Key takeaways and the concept Constraints; retain the separate Klarna rules, including that Klarna is asynchronous and can be adjusted while not cancelled, expired or fully captured, with an adjusted amount not below an already captured amount left in the raw or summarized accurately. Concrete query: 'Do the card-flow 50-adjustment and extension rules also apply to Klarna?' The current broad source/concept wording can answer yes even though those rules occur before the separate Klarna section and the snapshot does not state that they govern Klarna. Preserve the existing evidence, quotes, locators and raw unchanged; these bounded wording changes support targeted retry."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "adyen-c01-w07-concept-authorization-adjustment",
+      "verdict": "rejected",
+      "reason": "The new Adyen-specific concept and reciprocal source placement are relevant, but the lifecycle categorically places all adjustments before capture despite the documented enabled multiple-partial-capture sequence, and its unscoped constraints can incorrectly apply card-only limits and extension behavior to Klarna. Narrow those statements and preserve the partial-capture exception before placement."
+    }
+  ],
+  "reviewer_identity": "adyen-c01-r07",
+  "reviewer_model": "gpt-5.6-sol"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-online-payments-card-encryption-with-jwe",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Card Encryption with JWE\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/card-encryption-with-jwe\"\nraw_files:\n  - \"adyen/docs/online-payments/card-encryption-with-jwe/2026-09-15.md\"\ntags: [adyen, cards, jwe, encryption, api-only]\n---\n\n## Overview\n\nThis Adyen guide documents a JSON Web Encryption (JWE) route for a custom Web card integration in which the merchant implements its own UI. It uses a third-party JWT library and an Adyen-provided, merchant-account-specific X.509 certificate-derived public key to encrypt card details on the shopper device before the encrypted payload is sent through the merchant server in a `/payments` request.\n\n## Key takeaways\n\n- The route is for a Web API-only integration whose frontend has access to unencrypted card details, including the page's examples of a multiple-payment-service-provider setup or a merchant risk engine.\n- The stated prerequisites include the Checkout webservice API-credential role, the Customer Area **Manage API credentials** role, a backend able to make a payment, and the downloaded client-side-encryption public key as an X.509 certificate.\n- The merchant derives a JSON Web Key (JWK) from the merchant-account-specific certificate, encrypts the card details on the client, sends the compact JWE to its server, and submits it as `paymentMethod.encryptedCard` in `/payments`.\n- Adyen says it does not share decryption keys, so only Adyen can decrypt the encrypted card details for payment processing. The guide advises using algorithms that meet Adyen's security standards; its JOSE example sets `alg` to `RSA-OAEP-256` and `enc` to `A256GCM`.\n\n> [!warning] PCI and evidence boundary\n> The page directs implementers to check their PCI DSS requirements and explicitly describes a frontend that can access unencrypted card details. JWE encryption is therefore not evidence that an integration is PCI-compliant or outside PCI scope. This unversioned documentation snapshot also does not prove current account or role eligibility, certificate validity, library security, successful decryption, payment authorization, capture, settlement, or fulfillment safety.\n\n## Detail locators\n\n- Purpose and shopper-device encryption model: opening paragraphs under `# Card encryption with JWE`.\n- Integration type, roles, PCI guidance, backend preparation, and certificate prerequisite: `## Requirements`.\n- Intended custom-integration cases, server handoff, decryption-key boundary, and algorithm guidance: `## JSON Web Encryption (JWE)`.\n- Certificate-to-JWK-to-client-encryption-to-server-to-`/payments` sequence: `## How it works`.\n- Customer Area certificate download path: `## Get your X.509 certificate`.\n- Third-party JOSE example for importing the X.509 certificate: `## Compute your JWK`.\n- Card-detail object fields, protected-header example, and `paymentMethod.encryptedCard` request shape: `## Encrypt card details`.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-card-encryption]]\n- Adjacent access controls: [[adyen-api-access]]\n- Online-payment architecture: [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/card-encryption-with-jwe/2026-09-15|Adyen card encryption with JWE]] \u2014 complete collected guide for the custom Web JWE purpose, prerequisites, certificate and key flow, client-side encryption, server handoff, `/payments` request shape, and PCI guidance\n",
+  "quotes": [
+    {
+      "text": "You can use JSON Web Encryption (JWE) to encrypt your shopper's card details when implementing your own UI. With JWE, you use a third-party JWT library and an Adyen-provided encryption key to encrypt card details from your shopper's device.",
+      "location": "line 19, opening paragraph under # Card encryption with JWE"
+    },
+    {
+      "text": "| **Limitations**                                                           | Make sure to check your PCI DSS requirements in the [PCI DSS compliance guide](/development-resources/pci-dss-compliance-guide).                                                                                            |",
+      "location": "line 30, ## Requirements table, Limitations row"
+    },
+    {
+      "text": "We offer multiple ways for you to accept [card payments](/payment-methods/cards) for different use cases and different PCI compliance levels. Card detail encryption with JWE is for when you want to have access to the unencrypted card details from your frontend, for example when:",
+      "location": "line 36, ## JSON Web Encryption (JWE)"
+    },
+    {
+      "text": "In a JWE setup, you use a [third-party JWT library](https://jwt.io/libraries?language=JavaScript) to encrypt card details as a JSON Web Token. The encrypted details can be safely passed to your server, where you can use them for a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request. We never share decryption keys, so once you encrypt card details only Adyen can decrypt them to process your payment.",
+      "location": "line 41, ## JSON Web Encryption (JWE)"
+    },
+    {
+      "text": "1. You download your merchant account-specific X.509 certificate from the [Customer Area](https://ca-test.adyen.com/).\n2. You compute your JSON Web Key (JWK) from your X.509 certificate.\n3. Your shopper enters their card details in your checkout.\n4. You encrypt the card details on the client side using your JWK key.\n5. You pass the encrypted card details to your server.\n6. You make a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request using the encrypted card details.",
+      "location": "lines 49-54, ## How it works ordered list"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-card-encryption-jwe-concept-gap",
+        "target_path": "wiki/concepts/adyen-card-encryption.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page",
+        "proposed_markdown": "---\ntitle: \"Adyen Card Encryption\"\ntype: concept\ncategory: technology\ntags: [adyen, cards, jwe, encryption, api-only]\n---\n\n## Definition\n\nAdyen's JWE card-encryption route supports a custom Web API-only integration in which the merchant's own frontend can access unencrypted card details. The frontend uses a third-party JWT library and a public key derived from a merchant-account-specific X.509 certificate to encrypt the card details on the shopper device. The merchant passes the compact JWE to its server, which supplies it as `paymentMethod.encryptedCard` in a `/payments` request; Adyen says it does not share the decryption keys, so only Adyen can decrypt the payload for payment processing. [[source-adyen-docs-online-payments-card-encryption-with-jwe]]\n\n## Access and compliance boundaries\n\nThe retained guide requires a Web API-only integration, the Checkout webservice API-credential role, the Customer Area **Manage API credentials** role, a backend able to make a payment, and the downloaded client-side-encryption certificate. These access prerequisites connect to [[adyen-api-access]], but the encryption lifecycle is a separate concept. Because the custom frontend can access unencrypted card details and the guide tells implementers to check PCI DSS requirements, encryption does not by itself establish PCI compliance or reduced scope. The snapshot also does not prove current eligibility, certificate validity, successful decryption, payment authorization, capture, settlement, or fulfillment safety.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-card-encryption-with-jwe]] \u2014 unversioned Adyen guide captured 2026-09-15 for custom Web JWE purpose, prerequisites, certificate-derived public-key flow, client/server handoff, `/payments` request shape, and PCI boundary\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is a genuine concept gap: adyen-api-access covers credential identity, scope, and lifecycle, while this page's central subject is shopper card-data encryption and the client-to-server-to-Adyen handoff.",
+          "Do not infer that encrypted card data makes the integration PCI-compliant or outside PCI scope; the raw says the custom frontend can access unencrypted card details and directs implementers to check PCI DSS requirements."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/card-encryption-with-jwe/2026-09-15.md",
+  "raw_sha256": "0fe7d8b472ed2cf23b069289c37487b0b2bf0b9f64735a8f9fce6eb02661f064",
+  "status": "candidate_ready"
+}

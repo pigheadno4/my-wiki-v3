@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/webhooks\"\nraw_files:\n  - \"adyen/docs/development-resources/webhooks/2026-09-15.md\"\ntags: [adyen, webhooks, asynchronous-events, state-management]\n---\n\n## Overview\n\nThis Adyen documentation overview introduces webhooks as event-driven HTTP POST messages from an Adyen service to a merchant-defined endpoint. It explains their role in asynchronous processing, internal resource-state updates, and automatic notification of external events, then routes configuration, security, handling, event-type, and troubleshooting details to dedicated documentation.\n\n## Key takeaways\n\n- A receiver needs to accept a webhook with a `2xx` HTTP status, store the message, and process its contents.\n- A configured webhook subscription avoids continuous API polling and supports processes whose resource status can change seconds, minutes, hours, or days later.\n- For asynchronous payment flows, the page uses iDEAL as an example where completion confirmation can take time; it says a webhook can carry the final outcome when available. Its separate authorized-payment-to-paid-order example illustrates a possible merchant backend action, not proof that any payment completed or that every authorization is final.\n- Webhook messages can contain a resource snapshot for updating merchant-held state. The page qualifies its connected-resource example to Adyen for Platforms account holders, balance accounts, capabilities, and balances.\n- For events not caused directly by a merchant API request, the page identifies webhooks as the automatic notification path. Its examples remain product- and flow-qualified: Adyen for Platforms onboarding verification, shopper-initiated chargebacks, report availability, and Adyen Issuing relayed authorisation.\n\n> [!warning] Evidence boundary\n> This unversioned documentation snapshot is an overview and navigation source. It does not establish event-specific payloads, delivery ordering or retries, security mechanics, account eligibility, successful endpoint operation, successful payment execution, or GitHub/SDK implementation behavior; use the dedicated linked documentation and applicable product authority for those claims.\n\n## Detail locators\n\n- Webhook identity and receiver actions: `# Webhooks`, paragraph beginning \"A webhook is a lightweight mechanism\".\n- Subscription, polling, and long-running-process purpose: `# Webhooks`, paragraphs beginning \"When you configure a subscription\" and \"Webhooks are great\".\n- Payment-flow qualification and illustrative backend action: `### Handling asynchronous flows`.\n- Resource-snapshot state management and Adyen for Platforms example: `### State management`.\n- External-event scope and product-qualified examples: `### Reacting to external events`.\n- Dedicated configuration, security, handling, event-type, and troubleshooting routes: `## Next steps`.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-webhooks]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/webhooks/configure-and-manage/2026-09-15|Configure and manage webhooks]]\n- [[raw/adyen/docs/development-resources/webhooks/secure-webhooks/2026-09-15|Secure your webhooks]]\n- [[raw/adyen/docs/development-resources/webhooks/handle-webhook-events/2026-09-15|Handle webhook events]]\n- [[raw/adyen/docs/development-resources/webhooks/webhook-types/2026-09-15|Webhook structure and types]]\n- [[raw/adyen/docs/development-resources/webhooks/troubleshoot/2026-09-15|Troubleshoot webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/webhooks/2026-09-15|Adyen webhooks overview]] \u2014 complete collected overview of purpose, receiver actions, asynchronous flows, resource-state updates, external-event examples, and next-step routes\n",
+  "quotes": [
+    {
+      "text": "A webhook is a lightweight mechanism that allows an Adyen service to push event-driven messages using HTTP POST calls to an endpoint that you define. You need to accept webhooks that you receive with a 2xx HTTP status code, store the message, and process the contents of the message.",
+      "location": "line 23 under # Webhooks"
+    },
+    {
+      "text": "When you configure a subscription to an Adyen webhook, you are requesting to be notified when an event has occurred. With webhooks, you can avoid having to continuously poll an API endpoint, waiting for a change in status for an asynchronous process, or for updates that your account holders make.",
+      "location": "line 25 under # Webhooks"
+    },
+    {
+      "text": "Many flows in Adyen integrations are asynchronous, meaning the final status of a resource is not known immediately after you make an API request. For example, with payment methods like [iDEAL](/payment-methods/ideal), it can take time to get a confirmation that the payment was completed.\n\nWebhooks solve this by sending you a message with the final outcome as soon as it is available. You can also tie payment events to other updates in your backend, such as for order management and inventory control. For example, if a payment is successfully authorized, you can update the order status to \"paid\" and start the shipping process.",
+      "location": "lines 39-41 under ### Handling asynchronous flows"
+    },
+    {
+      "text": "You can use webhook messages to confirm or update the state of a resource in your own system. Some Adyen integrations need to manage several connected resources. For example, an [Adyen for Platforms](/platforms) integration requires you to manage account holders and their associated balance accounts, capabilities, and balances. Webhook messages contain a snapshot of the resource so your system can update its state accordingly.",
+      "location": "line 45 under ### State management"
+    },
+    {
+      "text": "Some important events come from external systems and are not a direct result of an API request you made. Webhooks are the only way to be automatically notified of these events. For example:",
+      "location": "line 49 under ### Reacting to external events"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-webhooks-new-concept",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page",
+        "proposed_markdown": "---\ntitle: \"Adyen Webhooks\"\ntype: concept\ncategory: technology\ntags: [adyen, webhooks, notifications, asynchronous-events]\n---\n\n## Definition\n\nAdyen webhooks are event-driven HTTP POST messages sent by an Adyen service to a merchant-defined endpoint. The receiving system acknowledges them with a `2xx` response, stores the message, and processes its contents. They support asynchronous resource flows whose final status is not immediately known, can carry a resource snapshot for updating merchant-held state, and provide automatic notification of external events.\n\nThe overview's examples are flow- and object-qualified: delayed payment confirmation such as iDEAL, Adyen for Platforms account-holder and balance-account state, onboarding verification, shopper-initiated chargebacks, report availability, and Adyen Issuing relayed authorisation. Those examples do not by themselves establish payment finality, account eligibility, event-specific payloads, delivery guarantees, or GitHub/SDK implementation behavior.\n\n## Sources\n\n- [[source-adyen-docs-development-resources-webhooks]] \u2014 unversioned documentation overview of webhook purpose, receiver actions, asynchronous flows, resource snapshots, and external-event examples\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The new concept is intentionally limited to the overview; dedicated pages must govern configuration, security, payload, delivery, retry, and troubleshooting claims.",
+          "Do not treat the documentation overview as GitHub or SDK implementation proof, live-environment verification, or successful payment execution evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/webhooks/2026-09-15.md",
+  "raw_sha256": "881f491fee3c0fc1cf2ade3a68e0d4f4c6008c20f855c6a3a366a85337955df7",
+  "status": "candidate_ready"
+}

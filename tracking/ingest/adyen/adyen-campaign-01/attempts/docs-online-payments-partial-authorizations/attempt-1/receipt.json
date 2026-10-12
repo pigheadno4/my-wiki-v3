@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-partial-authorizations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Partial authorizations\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/partial-authorizations\"\nraw_files:\n  - \"adyen/docs/online-payments/partial-authorizations/2026-09-15.md\"\ntags: [adyen, online-payments, partial-authorizations, checkout-api, cards]\n---\n\n## Overview\n\nThis Adyen guide explains partial authorizations for [[adyen-online-payments]]: when the requested card amount exceeds the shopper's available balance, an issuer can authorize the available amount instead of declining the payment, after which the merchant can collect the remainder or cancel the transaction. It is a Checkout API Advanced-flow feature with material integration, scheme, issuer-support, and account-enablement conditions.\n\nThe page is a dated documentation snapshot, not proof of current account eligibility, issuer support, successful authorization, capture, or release of a particular hold.\n\n## Key takeaways\n\n- The integration uses the `/payments` endpoint with Checkout API v69 or later and is limited here to API-only integrations or Web Drop-in/Components using the Advanced flow. Sessions flow is not supported.\n- The page lists Visa and Mastercard, but explicitly says issuer support is not guaranteed; Adyen Support must enable the feature before use.\n- Set `additionalData.allowPartialAuth` to `true`. If another payment method is used for the outstanding balance, use the same order `reference` to connect the payments for reconciliation.\n- A response `resultCode` of `PartiallyAuthorised` indicates the full amount was not authorized; `additionalData.authorisedAmountValue` supplies the authorized amount for calculating the outstanding balance.\n- Follow-up choices include starting another `/payments` transaction for the outstanding amount, canceling, capturing the partial amount, or\u2014only for tokenized payments\u2014retrying the original method later. Cancellation removes the hold only when delayed or manual capture is in use; the options can also be combined.\n\n## Detail locators\n\n- **Requirements** \u2014 supported integration shapes and API floor; Visa/Mastercard and issuer-support limitation; Sessions incompatibility; Support enablement.\n- **How it works** \u2014 initial request, issuer decision, response, follow-up choices, and use of a shared `reference`.\n- **Make the initial payment** \u2014 request fields, versioned SDK examples, response fields, and example payload.\n- **Follow up a partial authorization** \u2014 outstanding-balance payment and the conditional cancellation, capture, tokenized-retry, and combined-option routes.\n- **Testing** \u2014 test-environment simulation, amount suffix, test cards, and expected response values.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/partial-authorizations/2026-09-15|Adyen Docs \u2014 Partial authorizations (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "To reduce the number of declined transactions due to insufficient funds, you can integrate partial authorizations (or \"partial approvals\"). This feature allows an issuing bank to return an authorization for the available amount when the requested amount is higher than the shopper's balance, instead of declining the transaction. You can decide how to follow up, such as prompting the shopper for a second payment method to collect the outstanding balance or canceling the transaction to remove the hold on funds.",
+      "location": "line 19 under Partial authorizations"
+    },
+    {
+      "text": "* Partial authorization is supported for **Visa** and **Mastercard** payments, but there is no guarantee that all issuers support partial authorizations.\n* You can not integrate with partial authorizations if you are using the [Sessions flow](/online-payments/build-your-integration#sessions-flow-a-single-api-request).",
+      "location": "lines 29-30 in Requirements, Limitations row"
+    },
+    {
+      "text": "* `additionalData.allowPartialAuth`: set to **true**. When the requested amount is higher than the amount available in the account, this parameter asks the issuing bank to return an authorization for the available amount, instead of declining the transaction.\n   * `reference`: your order reference. If you need to follow up a partial authorization with another payment method for the outstanding balance, the `reference` values must be the same to let you connect the payments for reconciliation.",
+      "location": "lines 47-48 under Make the initial payment, step 1"
+    },
+    {
+      "text": "* `resultCode`: the value **PartiallyAuthorised** indicates that there were insufficient funds to authorize the full amount.\n   * `additionalData.authorisedAmountValue`: the authorized amount. Use this to calculate the outstanding balance.",
+      "location": "lines 431-432 under Make the initial payment, step 2"
+    },
+    {
+      "text": "* **[Cancel the transaction](/online-payments/cancel)**.\\\n  This is possible if you use delayed capture or manual capture. Canceling the transaction removes the hold for the partially authorized amount.",
+      "location": "lines 839-840 under Follow up a partial authorization"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w16-reciprocal-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-partial-authorizations]] \u2014 Adyen guide to issuer-approved partial card amounts, Advanced-flow requirements, response interpretation, and qualified follow-up routes (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The provider index does not currently list the existing adyen-online-payments concept, so its root-to-provider concept route is incomplete; index changes remain coordinator-owned."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/partial-authorizations/2026-09-15.md",
+  "raw_sha256": "80013933eed4b4e26166ff38470e674564453870d9007bb91ee5a27f7e3d45e0",
+  "status": "candidate_ready"
+}

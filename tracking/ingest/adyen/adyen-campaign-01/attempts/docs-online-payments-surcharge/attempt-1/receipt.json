@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-online-payments-surcharge",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online Payments Surcharge\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/surcharge\"\nraw_files:\n  - \"adyen/docs/online-payments/surcharge/2026-09-15.md\"\ntags: [adyen, online-payments, surcharge, cards, compliance]\n---\n\n## Overview\n\nThis Adyen guide describes a pilot feature for adding a card-payment surcharge in an API-only online-payments integration. The documented flow has the merchant retrieve card characteristics through `/cardDetails`, decide whether a surcharge is permitted and calculate it, disclose it to the shopper, and submit it in the `/payments` request.\n\n## Key takeaways\n\n- The snapshot requires an API-only card integration using raw or encrypted card data, an API credential with the Checkout webservice role, and Standard webhooks. It labels the feature as a pilot with possible restrictions and directs merchants to contact Adyen to participate.\n- The merchant server calls `/cardDetails`; the response can include card brand, funding source, consumer-versus-commercial status, and issuing country. The merchant implements the eligibility and calculation logic rather than relying on Adyen for global compliance enforcement.\n- The surcharge must be shown to the shopper before payment. The `/payments` request carries the surcharge in `surcharge.value`, while `amount.value` is the original transaction amount plus the surcharge.\n- For a capture or refund of a surcharged transaction, the guide says to pass the full amount including the surcharge. Receiving the surcharge amount in `/payments` additional data or the `AUTHORISATION` webhook is an optional Customer Area configuration.\n\n## Material qualifications and warnings\n\n- Surcharging remains subject to legal, regulatory, local, and card-scheme requirements. The page gives jurisdiction-specific examples: no surcharge on an EEA-issued consumer card in the EEA, and no surcharge on US debit-card payments. These are examples in a 2026-09-15 documentation snapshot, not an exhaustive or current legal determination; the page recommends checking current scheme rules and consulting legal counsel.\n- Adyen does not provide automated global compliance enforcement for this feature. Merchant logic and configuration must account for the applicable payment method and jurisdiction.\n- The guide says surcharges cannot be applied to authorization adjustments or overcaptures, and the surcharge cannot exceed the amount disclosed at purchase.\n- Collecting raw card data requires full PCI compliance. The guide's request and SDK examples are version-qualified examples, not proof of current account eligibility, production enablement, API behavior, transaction success, or a compliant surcharge decision.\n\n## Detail locators\n\n- API-only integration, credential, webhook, pilot, adjustment/overcapture, disclosure-cap, and legal-review prerequisites: `## Requirements`, raw lines 21-32.\n- Scheme, EEA consumer-card, US debit-card, local-law, and non-automated-enforcement boundaries: `## Compliance`, raw lines 34-40.\n- Five-step server and checkout sequence: `## How it works`, raw lines 42-50.\n- Raw-versus-encrypted card-number inputs, full-PCI warning, request examples, and example SDK versions: `## Get card details`, raw lines 52-285.\n- Card attributes used by merchant eligibility and calculation logic: `/cardDetails` response table and following instruction, raw lines 287-319.\n- Payment request arithmetic and versioned example payload: `## Make a payment including the surcharge`, raw lines 321-360.\n- Payment response fields, capture/refund amount handling, and optional surcharge additional data: raw lines 362-377.\n- Test-card instruction and related compliance/in-person routes: `## Test and go live` and `## See also`, raw lines 381-389.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-surcharging]]\n- Online-payments architecture: [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/surcharge/2026-09-15|Adyen online-payments surcharge documentation snapshot]] - complete collected guide covering the pilot prerequisites, merchant decision flow, compliance boundaries, payment request, and capture/refund handling\n",
+  "quotes": [
+    {
+      "text": "| **Limitations**                                                           | Make sure that you take into account the following:- The surcharge feature is in pilot, and restrictions may apply. Reach out to your Adyen contact to be part of the pilot.\n- Surcharges cannot be applied to [authorization adjustments](/online-payments/adjust-authorisation/) or [overcaptures](/get-started-with-adyen/adyen-glossary#overcapture). The surcharge amount cannot be higher than the surcharge amount that was shown to the customer at the moment of purchase. |   |",
+      "location": "lines 29-30, ## Requirements table; unique Limitations row"
+    },
+    {
+      "text": "Surcharging is also subject to specific local/jurisdictional restrictions. For example, in the European Economic Area (EEA) surcharges are not allowed on payments made with a consumer card that was issued in the EEA. And in the US surcharges are not allowed on payments made with a debit card.\n\nThe Adyen surcharge feature does not include automated global compliance enforcement. You must validate your setup against the compliance considerations and local mandates. We strongly recommend you consult your own legal advisor on compliance with regulatory and legal implications and use the correct settings based on our [Surcharge compliance guide](/development-resources/surcharge-compliance).",
+      "location": "lines 38-40, ## Compliance; unique consecutive paragraphs"
+    },
+    {
+      "text": "1. Collect the shopper's card details on your checkout page.\n2. From your server, make a [/cardDetails](https://docs.adyen.com/api-explorer/Checkout/latest/post/cardDetails) request using the shopper's card details, to get the information that helps to make a decision about the surcharge.\n3. Implement logic to decide if a surcharge is allowed, and to calculate the surcharge amount, using the data from the [/cardDetails](https://docs.adyen.com/api-explorer/Checkout/latest/post/cardDetails) response.\n4. Display the surcharge amount on your checkout page.\n5. When the shopper proceeds to pay, from your server, make a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request that includes the surcharge amount.",
+      "location": "lines 46-50, ## How it works numbered list"
+    },
+    {
+      "text": "After you calculate the surcharge amount, disclose the surcharge amount to your shopper and include the surcharge in your payment request.\n\n1. Make a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request with your [API only with raw card data integration](/payment-methods/cards/raw-card-data/#make-a-payment), or with your [API only with encrypted card data integration](/payment-methods/cards/custom-card-integration/).\n\n2. In your request include a `surcharge` object, that specifies the `value` of the surcharge you apply to the transaction.\n\n3. Calculate the value you need to pass in the `amount.value` object in your [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request by adding the surcharge amount to the original transaction amount.",
+      "location": "lines 323-329, ## Make a payment including the surcharge"
+    },
+    {
+      "text": "For transactions where you apply a surcharge, when you make a [capture](/online-payments/capture/), or [refund](/online-payments/refund/) request, pass the full amount that includes the surcharge amount.",
+      "location": "line 369, immediately before ### Receive the surcharge in additional data; unique occurrence"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w23-new-adyen-surcharging-concept",
+        "target_path": "wiki/concepts/adyen-surcharging.md",
+        "update_kind": "durable_fact",
+        "anchor": "new_file",
+        "proposed_markdown": "---\ntitle: \"Adyen Surcharging\"\ntype: concept\ncategory: payments\ntags: [adyen, online-payments, surcharge, cards, compliance]\n---\n\n## Definition\n\nAdyen's documented online-payments surcharge feature is a pilot for API-only card integrations using raw or encrypted card data. The merchant server retrieves card characteristics through `/cardDetails`, owns the decision and calculation logic, discloses the surcharge to the shopper, and submits `surcharge.value` while setting `amount.value` to the original amount plus the surcharge.\n\n## Compliance and lifecycle boundaries\n\nThe feature does not automate global compliance enforcement. Surcharging remains subject to applicable legal, regulatory, local, and card-scheme rules; the retained snapshot gives EEA-issued consumer cards in the EEA and US debit cards as examples where surcharging is not allowed. Those examples are snapshot evidence, not exhaustive or current legal advice.\n\nThe guide says surcharges cannot be applied to authorization adjustments or overcaptures, and the surcharge cannot exceed the amount disclosed at purchase. Capture and refund requests for a surcharged transaction use the full amount including the surcharge. Pilot documentation and API examples do not prove current availability, merchant eligibility, production enablement, compliant configuration, or transaction success.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-surcharge]] - 2026-09-15 Adyen guide to the pilot API-only card surcharge flow, merchant-owned eligibility logic, legal and payment-method boundaries, request arithmetic, and capture/refund handling\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Jurisdiction and payment-method examples are snapshot evidence and must not be treated as exhaustive or current legal advice.",
+          "The feature is described as a pilot with possible restrictions; documentation does not prove account eligibility or enablement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/surcharge/2026-09-15.md",
+  "raw_sha256": "cfc5ec8877d46370e42e0ee0b7321276e7a501ab617a8973c87b56e3d0026fe7",
+  "status": "candidate_ready"
+}

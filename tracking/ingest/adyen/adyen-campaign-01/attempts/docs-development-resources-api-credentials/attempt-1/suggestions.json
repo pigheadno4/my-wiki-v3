@@ -1,0 +1,26 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "adyen-api-access-new-concept",
+      "target_path": "wiki/concepts/adyen-api-access.md",
+      "update_kind": "durable_fact",
+      "anchor": "new file",
+      "proposed_markdown": "---\ntitle: \"Adyen API Access\"\ntype: concept\ncategory: technology\ntags: [adyen, api-credentials, authentication, access-control]\n---\n\n## Definition\n\nAdyen web service API credentials identify an integration for API requests. A credential combines a username, authentication secret, enabled roles, and an account scope; together these determine which account context and permitted operations the credential can reach. This is a provider-wide access route, separate from endpoint-specific authorization, idempotency, and payment lifecycle behavior.\n\n## Access boundaries\n\nRoles define credential permissions. Account scope defaults to company-wide access, including linked merchant accounts, when the credential is created on a company account, while a credential created on a merchant account is limited to that merchant account; company-level configuration can instead select particular account groups and merchant accounts. More credentials can narrow permissions across channels or systems but increase key-management overhead.\n\n## Credential lifecycle\n\nA newly generated API key is active immediately while its predecessor remains active for 24 hours by default. Basic-authentication password replacement instead deactivates the previous password immediately, so overlapping migration requires a separate credential. Live credentials must come from the live environment. IP allowlisting can restrict request origins, and a credential can be deactivated immediately and later reactivated but cannot be deleted.\n\nThese snapshot statements do not prove current merchant or user eligibility, successful authentication, endpoint access, correct secret storage, API availability, idempotent processing, or payment execution. Future authentication, role-catalog, idempotency, and API-security sources should extend this route without transferring their claims before review.\n\n## Sources\n\n- [[source-adyen-docs-development-resources-api-credentials]] \u2014 unversioned documentation snapshot for web service credential identity, permission and account scope, environment separation, rotation, IP restriction, and deactivation\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "New provider concept is justified because the current Adyen index has no general API credential or access-control route.",
+        "Keep endpoint authentication syntax, exhaustive credential-role details, idempotency semantics, and broader API-security guidance out until their own pinned raws are fully read and reviewed.",
+        "Snapshot configuration statements do not establish current eligibility, successful authentication or authorization, availability, or payment execution."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

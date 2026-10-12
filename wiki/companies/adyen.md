@@ -2,12 +2,16 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 14
+source_count: 64
 ---
 
 ## Overview
 
 Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android 3DS2, Objective-C-oriented and Swift-native iOS 3DS2, React Native, Node.js, and PHP SDKs; an Adobe Commerce plugin; plus exact-commit Postman API examples, SDK-generation automation, and generic repository release automation. The retained sources cover browser, native, cross-platform, and Magento checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout APIs v71 and v72; Terminal API payment and shopper-interaction messages; and the OpenAPI-to-SDK generation and repository-release lifecycles.
+
+## Website documentation retrieval
+
+Fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, and testing. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; detailed fields and examples remain in each source's immutable raw evidence. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -126,6 +130,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
+- Ingested website documentation sources: 50 (Adyen C01).
+- Total source summaries: 64 (50 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 21
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -134,6 +140,61 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - Latest ingest: `adyen/adyen-postman` at `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
 
 ## Sources
+
+### Website documentation
+
+- [[source-adyen-docs-online-payments]] — Adyen Docs: Online payments (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-build-your-integration]] — Adyen Build Your Integration (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-tokenization]] — Adyen Tokenization (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure]] — Adyen 3D Secure 2 authentication (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks]] — Adyen Webhooks (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-psd2-sca-compliance-and-implementation-guide-sca-options]] — Adyen docs: Implement SCA compliance (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-adjust-authorisation-adjust-with-preauth]] — Adyen Docs: Adjust an authorization with pre-authorization (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-standalone-authentication]] — Adyen Docs: Standalone authentication (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-webhook-types]] — Adyen Webhook Structure and Types (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web-drop-in]] — Adyen Redirect 3DS Web Drop-in Integration (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-capture]] — Capture | Adyen Docs (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-tokenization-create-tokens]] — Adyen Docs: Create tokens (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-refund]] — Adyen Online Payments Refund (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-tokenization-make-token-payments]] — Adyen Make Token Payments (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-partial-payments]] — Adyen Docs: Partial payments (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-partial-authorizations]] — Adyen Docs: Partial authorizations (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-network-tokenization]] — Adyen Network Tokenization (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-for-regulation-compliance]] — Adyen 3D Secure for regulation compliance (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-adjust-authorisation]] — Adyen Docs: Authorization adjustment (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-cancel]] — Adyen Docs: Cancel an online payment (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-configure-and-manage]] — Adyen Docs: Configure and manage webhooks (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-webhook-types-additional-settings]] — Adyen Standard Webhook Additional Settings (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-surcharge]] — Adyen Online Payments Surcharge (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-web-best-practices]] — Adyen Best Practices for Web Integrations (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-tokenization-managing-tokens]] — Adyen Docs: Manage tokens (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-secure-webhooks-verify-hmac-signatures]] — Adyen Verify HMAC Signatures (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-api-credentials]] — Adyen API Credentials (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-api-idempotency]] — Adyen Docs: API idempotency (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-response-handling]] — Adyen HTTP Response Handling (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-capture-failure-reasons]] — CAPTURE_FAILED and REFUND_FAILED reasons | Adyen Docs (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-testing-payments-and-modifications]] — Testing payments and modifications | Adyen Docs (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-checkout-settings]] — Adyen Checkout Settings (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-build-your-integration-payment-result-codes]] — Adyen Payment Result Codes (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-two-step-checkout]] — Adyen Docs: Two-step checkout (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-data-only]] — Adyen Docs: Data-only flow (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-co-badged-cards-compliance]] — Adyen Co-badged Cards Compliance (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-api-credentials-roles]] — Adyen API Credential Roles (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-live-endpoints]] — Adyen Docs: Live endpoints (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-troubleshoot]] — Adyen Docs: Troubleshoot webhooks (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-3d-secure-authorize-mpidata]] — Adyen Docs: Third-party authentication (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-secure-webhooks]] — Adyen Docs: Secure webhooks (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-card-encryption-with-jwe]] — Adyen Card Encryption with JWE (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-webhooks-handle-webhook-events]] — Adyen Docs: Handle webhook events (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-accessibility]] — Adyen Web Drop-in and Components Accessibility (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-testing-tokenization]] — Adyen Docs: Testing tokenization (webpage, 2026-10-10)
+- [[source-adyen-docs-development-resources-security-api-security]] — Adyen API Security (webpage, 2026-10-10)
+- [[source-adyen-docs-online-payments-integration-checklist]] — Adyen Online Payments Integration Checklist (webpage, 2026-10-11)
+- [[source-adyen-docs-online-payments-psd2-sca-compliance-and-implementation-guide]] — Adyen docs: PSD2 SCA compliance guide (webpage, 2026-10-11)
+- [[source-adyen-docs-development-resources-testing]] — Testing your online payments integration (webpage, 2026-10-11)
+- [[source-adyen-docs-development-resources-api-authentication]] — Adyen API Authentication Types (webpage, 2026-10-10)
+
+### GitHub repository evidence
 
 - [[source-github-release-automation-action]] — cumulative semantic-version and GitHub release-orchestration baseline
 - [[changelog-github-release-automation-action]] — commit-qualified release-action history

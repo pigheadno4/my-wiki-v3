@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-online-payments-network-tokenization",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Network Tokenization\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/network-tokenization\"\nraw_files:\n  - \"adyen/docs/online-payments/network-tokenization/2026-09-15.md\"\ntags: [adyen, network-tokenization, cards, recurring-payments, co-badged-cards]\n---\n\n## Overview\n\nThis Adyen guide describes network tokenization for online card payments. It defines a card-network token as a 16-digit alternative to the PAN that is unique to a shopper-and-merchant combination, and distinguishes that network token from Adyen tokenization, in which Adyen returns a stored-payment token for later payments. The snapshot presents two implementation choices: Adyen manages the card-scheme network tokens and automatically substitutes them during payment processing, or the merchant supplies and manages existing network tokens.\n\n## Key takeaways\n\n- Network tokenization requires an online card-payment integration, the Checkout webservice and Merchant Recurring API credential roles, and Standard webhooks. The guide limits it to payments acquired by Adyen and says it cannot be used with external acquirer connections.\n- In the Adyen-managed option, the merchant keeps its regular card-payment flow while Adyen swaps card details or a `storedPaymentMethodId` for a network token before forwarding the payment for authorization. This option can be combined with Adyen tokenization.\n- In the merchant-managed option, the merchant sends a network token obtained from a card network. The guide says this option cannot be combined with Adyen tokenization. It requires an initial payment that returns a `networkTxReference`, which the merchant saves for subsequent payments.\n- If an Adyen-managed network-token attempt fails, the guide says Adyen automatically retries without substituting a network token. Optional retry-attempt data can be enabled for the `/payments` response, and the same additional information is included in the `AUTHORISATION` webhook.\n- Some US Visa, Mastercard, and Discover network tokens are co-badged with listed US Debit networks. Routing requires adding those US Debit payment methods to the merchant account; account routing priorities take precedence over Adyen's optimized routing, and an individual payment route can be selected with `paymentMethod.brand` after checking available brands through `/cardDetails`.\n\n## Material qualifications and warnings\n\n- Sharing network tokens across multiple merchant accounts requires contacting Adyen Support to enable the feature. Forwarding network tokens is separately routed to a PCI-compliant third party.\n- The page claims benefits including maintained token validity after card-detail changes, higher authorization rates, and single-use cryptograms. These are documentation claims, not proof of current merchant eligibility, enablement, a particular transaction outcome, or a measured authorization-rate improvement.\n- Under `## Let Adyen manage network tokens`, the opening sentence says, \"To manage network tokens yourself\" and directs the reader to Support for enablement. The heading and sentence disagree, so this snapshot does not unambiguously establish which option needs that enablement step.\n- The merchant-managed section says subsequent payments use the saved `networkTxReference`. Its subscription/automatic-top-up table maps that value to `paymentMethod.networkPaymentReference`, but the subsequent one-off table omits that field while requiring cryptogram fields again. Confirm the current request contract rather than inferring the missing one-off field from the surrounding prose.\n\n## Detail locators\n\n- Definition and claimed benefits: opening text, raw lines 19-28.\n- Integration, credential, webhook, and Adyen-acquirer requirements: `## Requirements`, raw lines 30-38.\n- Difference from Adyen tokenization; Adyen-managed and merchant-managed compatibility boundaries: `## How it works`, raw lines 40-51.\n- Cross-account sharing and forwarding navigation: `### Sharing network tokens` and `### Forward network tokens`, raw lines 53-59.\n- US co-badged network-token routing, account setup, priorities, and per-payment route selection: `## Co-badged network tokens in the US`, raw lines 61-79.\n- Adyen-managed flow, optional attempt/token data, automatic non-token retry, and `AUTHORISATION` webhook data: `## Let Adyen manage network tokens`, raw lines 81-192.\n- Merchant-managed initial and subsequent payment flows, request fields, API-version qualification, `networkTxReference`, recurring-model matching, and the subsequent one-off field ambiguity: `## Manage network tokens yourself`, raw lines 194-429.\n- Error-response shape and network-token error-code navigation: `## Troubleshooting`, raw lines 431-446.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-network-tokenization]]\n- Distinct Adyen Vault-token concept: [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/network-tokenization/2026-09-15|Adyen Network Tokenization documentation snapshot]] - complete collected guide covering network-token identity, implementation choices, requirements, routing, retry data, merchant-managed requests, and troubleshooting\n",
+  "quotes": [
+    {
+      "text": "Card networks, like Visa, Mastercard, and American Express, offer services that create a network token for a card. A network token is 16-digit alternative for the Primary Account Number (PAN), and is unique per combination of shopper and merchant. When making a payment, the card details can be swapped for the network token.",
+      "location": "line 19, opening text under # Network tokenization"
+    },
+    {
+      "text": "| **Limitations**                                                           | Network tokenization is only applicable for payments acquired by Adyen. It cannot be used with external acquirer connections.      |",
+      "location": "line 38, ## Requirements table"
+    },
+    {
+      "text": "With **network tokenization**, the shopper's card details are swapped for a network token. How this is done, depends on the implementation option you choose:\n\n* **[Let Adyen manage network tokens](#network-tokens-collected-by-Adyen) on your behalf.**\\\n  This option does not require any additional integration. We collect and store network tokens from the card schemes. When you send a payment request, we automatically swap the card details from your payment request for the network token and then forward the payment for authorization.\\\n  You can use our tokenization feature together with network tokenization. When your payment request contains a `storedPaymentMethodId` token, we automatically swap that for a network token. We recommend combining these features because that limits your PCI scope and further increases authorization rates.\n\n* **[Manage network tokens yourself](#existing-network-tokens).**\\\n  This requires additional steps, but you can keep your existing network tokens and use them in the payment requests that you send to Adyen. It is not possible to combine this with our tokenization feature.",
+      "location": "lines 44-51, ## How it works; unique occurrence"
+    },
+    {
+      "text": "If a payment attempt with a network token fails (`attempt1`), we automatically retry the payment. In the second attempt (`attempt2`), we do not swap the card details or the `storedPaymentMethodId` token for a network token.",
+      "location": "line 130, ### Collect attempts data"
+    },
+    {
+      "text": "To manage network tokens yourself:\n\n1. [Enable receiving relevant data](#enable-receiving-relevant-data) in your Customer Area to receive card details and network token information in the payment response.\n2. [Make the initial payment with a network token](#make-the-initial-payment-with-a-network-token), using the network token you collect from the card network.\n3. You receive the `networkTxReference` that you need to use for subsequent payments in the payment response. Save this value.\n4. [Make a subsequent payment using the same network token](#make-a-subsequent-payment-with-a-network-token).",
+      "location": "lines 198-203, ## Manage network tokens yourself"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w17-new-adyen-network-tokenization-concept",
+        "target_path": "wiki/concepts/adyen-network-tokenization.md",
+        "update_kind": "durable_fact",
+        "anchor": "new_file",
+        "proposed_markdown": "---\ntitle: \"Adyen Network Tokenization\"\ntype: concept\ncategory: technology\ntags: [adyen, network-tokenization, cards, recurring-payments]\n---\n\n## Definition\n\nAdyen network tokenization uses a card-network-issued token as an alternative to the PAN for online card payments. It is distinct from [[adyen-tokenization]], where Adyen stores payment details in its Vault and returns a token for later payments. The retained guide limits network tokenization to payments acquired by Adyen, not external acquirer connections.\n\n## Implementation boundary\n\nAdyen can manage network tokens and automatically substitute them for card details or a `storedPaymentMethodId`; that route can be combined with Adyen Vault tokenization. Alternatively, a merchant can supply existing card-network tokens, but the guide says that self-managed route cannot be combined with Adyen tokenization and requires a saved `networkTxReference` for subsequent payments.\n\nThe snapshot contains two ambiguities that require current-contract confirmation: an enablement sentence under the Adyen-managed heading says \"manage network tokens yourself\", and the subsequent one-off request table omits `paymentMethod.networkPaymentReference` even though the surrounding text says to use the saved reference. The snapshot does not prove current enablement, eligibility, transaction success, or authorization-rate improvement.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-network-tokenization]] - 2026-09-15 guide to network-token identity, Adyen-managed and merchant-managed routes, acquisition limits, retry behavior, routing, and request-contract ambiguities\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source heading and its first enablement sentence disagree about whether Adyen or the merchant manages the network tokens.",
+          "The subsequent one-off table omits paymentMethod.networkPaymentReference despite surrounding text requiring the saved networkTxReference for subsequent payments."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/network-tokenization/2026-09-15.md",
+  "raw_sha256": "fe26a5e86b49fcc025304bb8aac44bccf737ee350f17f0496fd9f64703e8b869",
+  "status": "candidate_ready"
+}

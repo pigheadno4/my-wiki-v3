@@ -1,0 +1,21 @@
+{
+  "job_id": "docs-online-payments-psd2-sca-compliance-and-implementation-guide-sca-options",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The pinned raw SHA-256 matches, the full 2,368-line snapshot was reviewed, and the candidate accurately preserves the three SCA-control options, 3D Secure prerequisite, Dynamic 3DS fallback, issuer control over exemption and challenge outcomes, authorization-only follow-through, API-version navigation, and raw provenance. All five quotes and their locators are exact, and the proposed provider concept is relevant and correctly separated from the native 3DS2 SDK runtimes. Two narrow compliance-sensitive wording defects remain: saying API preferences override PSD2 scope can imply that a request field changes legal applicability, whereas the raw says they override Adyen's default compliance-handling logic, including its scope check; and the concept's liability sentence says the merchant side applies an exemption, whereas the raw distinguishes a merchant/Adyen/acquirer request accepted by the issuer from an exemption applied by the issuer.",
+  "required_changes": [
+    "In candidate.md Key takeaways and in shared update adyen-psd2-sca-and-3ds-provider-concept, replace wording that per-transaction API preferences override Adyen's default PSD2 scope with wording that they override Adyen's default PSD2 compliance-handling logic, including Adyen's check of whether the transaction is out of scope and its exemption selection/routing. This matters for the concrete query 'Can an API preference override whether PSD2 legally applies?': the current wording can answer yes, while raw line 109 only assigns an override to Adyen's handling logic and explicitly recommends the fields only to integrations with extensive PSD2 SCA and 3D Secure knowledge.",
+    "In shared update adyen-psd2-sca-and-3ds-provider-concept, replace 'whether the merchant side or issuer applies the exemption' with the exact conditional distinction: liability stays with the merchant when the merchant, Adyen on its behalf, or its acquirer requests an exemption and the issuer accepts it; liability shifts when the issuer applies the exemption. Keep the source-page warning and the non-universal-legal-advice boundary unchanged. The current concept wording changes the actor/action condition for the concrete query 'Who retains chargeback liability for an accepted exemption?'."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "adyen-psd2-sca-and-3ds-provider-concept",
+      "verdict": "rejected",
+      "reason": "The concept is relevant and otherwise supported, but its scope-override wording can imply an API field changes legal PSD2 applicability, and its liability wording replaces the raw's request-plus-issuer-acceptance condition with merchant-side application. Approve after those two bounded wording corrections."
+    }
+  ],
+  "reviewer_identity": "adyen-c01-r06",
+  "reviewer_model": "gpt-5.6-sol"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-testing-payments-and-modifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Testing payments and modifications | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/testing/payments-and-modifications\"\nraw_files:\n  - \"adyen/docs/development-resources/testing/payments-and-modifications/2026-09-15.md\"\ntags: [adyen, testing, online-payments, payment-modifications, webhooks]\n---\n\n## Overview\n\nThis Adyen documentation page is a test guide for checking whether an integration handles payments and payment modifications before going live. It routes test scenarios for ordinary payments, encrypted card details, third-party authentication data, captures, cancellations, refunds, reversals, authorization adjustments, and Level 2/3 data.\n\n## Key takeaways\n\n- Adyen recommends its test card numbers or supported alternative-payment-method test credentials and recommends starting each scenario with a test payment amount of **100**. These are test instructions, not evidence of a live payment or a universal production amount requirement.\n- The ordinary payment check covers a conditional return to the merchant website or app after a redirect and receipt of the `AUTHORISATION` webhook on the server; the webhook carries payment status and should not be summarized as an automatic successful authorization.\n- A single partial manual capture automatically cancels the remaining payment amount. Multiple partial manual capture is a separate scenario that requires Adyen Support to enable it.\n- The failed-capture and failed-refund fixtures demonstrate that a later failure event can follow a successful `CAPTURE` or `REFUND` webhook. The guide says either failed-modification simulation can take up to 24 hours to finish.\n- Cancellation testing is limited to authorized payments configured for delayed automatic capture or manual capture. The pre-authorization and adjustment test described here is limited to cards and Klarna, while the Level 2/3 scenario requires Support enablement for the relevant Customer Area setting.\n\n> [!warning] Test evidence boundary\n> The documented credentials, values, holder-name triggers, and expected events are simulation fixtures for exercising integration handling. This snapshot does not prove current production availability, merchant or payment-method eligibility, live authorization, capture, refund, settlement, or funding outcomes.\n\n## Detail locators\n\n- `## Payment` \u2014 conditional client return after redirect and server-side `AUTHORISATION` webhook receipt.\n- `## Payment with encrypted card details` \u2014 server testing before the client integration is complete, using the `test_` prefix and a request example.\n- `## Payment with third-party authentication data` \u2014 authorization-only test route and test payment details.\n- `## Manual capture`, `## Partial manual capture`, and `## Multiple partial manual capture` \u2014 full and partial capture checks, `CAPTURE` webhooks, remaining-balance behavior, and enablement.\n- `## Failed capture` and `## Failed refund` \u2014 holder-name fixtures, later failure webhooks, and the up-to-24-hour simulation timing.\n- `## Cancel`, `## Full refund`, `## Partial refund`, `## Multiple partial refund`, and `## Reversal` \u2014 modification-specific action and webhook checks.\n- `## Pre-authorization and adjustment` \u2014 cards-and-Klarna scope, recommended test amounts, and `AUTHORISATION` / `ADJUST_AUTHORISATION` events.\n- `## Payment with level 2/3 data` \u2014 Support enablement, response-specific card fixtures, `additionalData`, and webhook check.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-payment-testing]]\n- Related lifecycle concepts: [[adyen-payment-capture]], [[adyen-refunds]], [[adyen-authorization-adjustment]], and [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/testing/payments-and-modifications/2026-09-15|2026-09-15 snapshot \u2014 Adyen payment and modification testing guide]]\n",
+  "quotes": [
+    {
+      "text": "It is important to test that your integration can handle payments and [payment modifications](/get-started-with-adyen/adyen-glossary/#payment-modifications-definition). This page describes how to test:\n\n* Payments in general and payments with encrypted card details, third-party authentication data, or Level 2/3 data.\n* Modifications like manual, partial, and failed captures; full, partial, and failed refunds; reversals; and authorization adjustments.",
+      "location": "raw lines 19-22 under # Testing payments and modifications"
+    },
+    {
+      "text": "The remaining amount of the payment is automatically cancelled.",
+      "location": "raw line 108 under ## Partial manual capture"
+    },
+    {
+      "text": "Test [manually capturing](/online-payments/capture/#manual-capture) multiple partial payment amounts. In multiple partial manual captures, you manually capture less than the full payment amount. Then, you manually capture another amount, until you have captured the full payment amount.\n\nYou must contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable this.",
+      "location": "raw lines 112-114 under ## Multiple partial manual capture"
+    },
+    {
+      "text": "Rarely, a [capture can fail](/online-payments/capture/#failed-capture) even after you receive a successful **CAPTURE** webhook. To test a failed capture scenario:\n\n1. Make a [card payment](/payment-methods/cards), specifying:\n   * `holderName`: **capture failed**.\n2. Get the [**AUTHORISATION** webhook](/development-resources/webhooks/webhook-types/#default-event-codes) on your server. It includes the status of the payment.\n3. [Capture](/online-payments/capture) this payment, using either automatic or manual capture.\n4. Get the **CAPTURE\\_FAILED** webhook on your server.\n\nIt can take up to 24 hours for the failed modification simulation to finish.",
+      "location": "raw lines 125-133 under ## Failed capture"
+    },
+    {
+      "text": "Rarely, a [refund can fail](/online-payments/refund#refund-failed) even after you receive a successful **REFUND** webhook. To test a failed refund scenario:\n\n1. Make a [card payment](/payment-methods/cards), specifying:\n   * `holderName`: **refund failed**.\n2. Get the [**AUTHORISATION** webhook](/development-resources/webhooks/webhook-types/#default-event-codes) on your server. It includes the status of the payment.\n3. [Refund](/online-payments/refund) this payment, either in your [Customer Area](/account/manage-payments#refund-a-payment), or with an [API request](/online-payments/refund#refund-a-payment).\n4. Get the **REFUND\\_FAILED** webhook on your server.\n\nIt can take up to 24 hours for the failed modification simulation to finish.",
+      "location": "raw lines 176-184 under ## Failed refund"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-payment-testing-new-concept",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "durable_fact",
+        "anchor": "new file",
+        "proposed_markdown": "---\ntitle: \"Adyen Payment Testing\"\ntype: concept\ncategory: payments\ntags: [adyen, testing, online-payments, payment-modifications, webhooks]\n---\n\n## Overview\n\nAdyen's payment-testing guide provides test credentials, values, and scenario-specific triggers for checking whether an integration handles ordinary payments and payment modifications before going live. Its coverage spans redirect return and authorization status, capture and cancellation, refunds and reversals, authorization adjustments, encrypted card details, third-party authentication data, and Level 2/3 data.\n\n## Simulation and outcome boundary\n\nThese fixtures exercise test integration behavior; they do not prove production availability, merchant or payment-method eligibility, or a live authorization, capture, refund, settlement, or funding outcome. In particular, the guide demonstrates later `CAPTURE_FAILED` and `REFUND_FAILED` events after successful modification webhooks and says either failed-modification simulation can take up to 24 hours. A single partial manual capture cancels the remaining amount, while multiple partial manual captures require Adyen Support enablement.\n\n## Sources\n\n- [[source-adyen-docs-development-resources-testing-payments-and-modifications]] \u2014 webpage snapshot (2026-09-15) routing test payment and modification scenarios, prerequisites, expected webhooks, and simulation warnings\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the concept framed as test-simulation evidence; do not infer production behavior, account enablement, or live payment outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/testing/payments-and-modifications/2026-09-15.md",
+  "raw_sha256": "9f7bdffd528c0572e36c7a8ed84c8bfe3aa790b67353250ca6614bee2e37bbbe",
+  "status": "candidate_ready"
+}

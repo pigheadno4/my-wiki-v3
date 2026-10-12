@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-3d-secure-authorize-mpidata",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Third-party authentication\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/authorize-mpidata\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/authorize-mpidata/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, authentication, authorization, mpi-data]\n---\n\n## Overview\n\nThis Adyen guide explains how a merchant can authenticate with a third-party 3D Secure 2 provider and then submit the resulting authentication data to Adyen in a separate payment-authorization request. It covers the Checkout API `/payments` route; merchants using the classic `/authorise` endpoint are directed to a separate classic-integration guide.\n\nThe snapshot documents request construction and testing guidance. It does not prove current merchant or scheme eligibility, successful third-party authentication, Adyen authorization, capture, settlement, or liability shift for a particular transaction.\n\n## Key takeaways\n\n- The merchant first obtains 3DS2 authentication data from the third-party provider, maps that data to Adyen parameters, and includes it in an `mpiData` object in a POST `/payments` request. Authentication evidence is an input to authorization, not proof that Adyen authorized the payment.\n- The documented Checkout route requires `/payments` v46 or later, an Adyen test account, and an API key stored securely. See **Before you begin**.\n- Required authentication and request fields vary by card scheme. The guide identifies a common set for all schemes and additional Cartes Bancaires fields; use **Step 1: Get third-party authentication data** and **Step 2: Make a payment with third-party authentication data** for the field-by-field tables.\n- For a co-badged card, `paymentMethod.type` must be `scheme` and `paymentMethod.brand` must identify the scheme that performed authentication; the guide warns that a mismatch can lead to refusal.\n- For Cartes Bancaires authentication on a co-badged card, the authorization request must carry the same `threeDSRequestorChallengeInd` value as the authentication request; the guide warns that a mismatch can lead to decline.\n- An `Authorised` `resultCode` means the payment authorization succeeded; other result codes require their documented follow-up actions. This authorization result remains distinct from the third-party authentication outcome.\n\n## Material qualifications\n\n- This page applies to Checkout API `/payments`; classic `/authorise` integrations are routed elsewhere.\n- Field requirements are scheme-dependent, with extra Cartes Bancaires data and conditions.\n- Co-badged-card authorization depends on preserving the authenticating scheme and, for Cartes Bancaires, the challenge-indicator value across authentication and authorization.\n- The sample request is illustrative and does not establish universal field values, merchant configuration, or a successful live payment.\n- End-to-end testing uses test cards created from the authentication provider's card ranges in Adyen's test environment; it is not live-provider or production proof.\n\n## Detail locators\n\n- **Before you begin** \u2014 test-account setup, secure API-key handling, and the `/payments` v46-or-later prerequisite.\n- **Step 1: Get third-party authentication data** \u2014 authentication-result fields and scheme applicability.\n- **Step 2: Make a payment with third-party authentication data** \u2014 third-party-to-Adyen mapping, `mpiData`, scheme-qualified request fields, and recurring/shopper-interaction fields.\n- **Co-badged cards** \u2014 authenticating-scheme selection and Cartes Bancaires challenge-indicator consistency warnings.\n- **Sample request** and **Sample response** \u2014 illustrative Checkout v72 payload and authorization-result interpretation.\n- **Testing** \u2014 test-card creation and the two-step third-party authentication plus Adyen payment sequence.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[co-badged-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/authorize-mpidata/2026-09-15|Adyen Docs \u2014 Third-party authentication (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "You can use a third-party 3D Secure provider to perform authentication, and use the obtained authentication data when making a payment request to Adyen. This allows you to use a third-party 3D Secure 2 provider to perform authentication while using Adyen to authorize payments.",
+      "location": "lines 19-19, opening paragraph under Third-party authentication"
+    },
+    {
+      "text": "This page describes passing authentication data in a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) API request. If you are using the [/authorise](https://docs.adyen.com/api-explorer/Payment/authorise) endpoint, refer to\u00a0[3D Secure Classic integration](/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/other-3ds-flows/authorize-mpidata).",
+      "location": "lines 21-21, opening scope note under Third-party authentication"
+    },
+    {
+      "text": "1. [Get your API Key](/development-resources/api-credentials#generate-api-key) and store it securely in your system. You will need it for API calls you make to the\u00a0Adyen payments platform.\n2. Check that you are using v46 or later of the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) endpoint.",
+      "location": "lines 32-33, Before you begin numbered list"
+    },
+    {
+      "text": "If you didn't authenticate with Adyen, refer to [Mapping Adyen parameters to EMVCo fields](/online-payments/3d-secure/api-reference#adyen-emvco-map-mpidata). You first need to map the third-party authentication data to Adyen parameters when making a payment request to Adyen.\n\nMake a POST [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request that includes an `mpiData` object containing the following:\n\nSome card schemes require different fields. The **Applies to** column shows which fields are required for which schemes.",
+      "location": "lines 57-61, Step 2: Make a payment with third-party authentication data"
+    },
+    {
+      "text": "If you are making a payment with a co-badged card, you need to set the [paymentMethod.type](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-paymentMethod-CardDetails-type) to `scheme` and [paymentMethod.brand](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-paymentMethod-CardDetails-brand) to the scheme that authenticated the payment. For example, if you are making a payment with a card co-badged with Visa and Cartes Bancaires, set `paymentMethod.brand` to either `visa` or `cartebancaire`, depending on which scheme performed the authentication. Otherwise, the payment can be refused.\n\nWhen you make a payment with a co-badged card that is authenticated by Cartes Bancaires, you must provide the same value in the [threeDSRequestorChallengeInd](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-threeDS2RequestData-threeDSRequestorChallengeInd) field of both your authentication and your authorization request. Otherwise, the payment can be declined.",
+      "location": "lines 83-85, Co-badged cards"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-3d-secure-third-party-auth-source-link",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-authorize-mpidata]] \u2014 Checkout `/payments` v46+ guide for using third-party 3DS2 authentication data in a separate Adyen authorization request, including scheme-specific mapping and co-badged-card consistency warnings (webpage snapshot, 2026-09-15)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this inverse route distinct from standalone authentication: here a third party authenticates and Adyen performs the later authorization."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/authorize-mpidata/2026-09-15.md",
+  "raw_sha256": "c35fa6617aa89330f6b7723dba39c9da7d8670e9ab633bd720156389aeb17dbd",
+  "status": "candidate_ready"
+}

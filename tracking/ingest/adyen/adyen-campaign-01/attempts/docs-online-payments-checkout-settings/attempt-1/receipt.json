@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-online-payments-checkout-settings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout Settings\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/checkout-settings\"\nraw_files:\n  - \"adyen/docs/online-payments/checkout-settings/2026-09-15.md\"\ntags: [adyen, online-payments, checkout-settings, payment-method-ordering, uplift]\n---\n\n## Overview\n\nThis Adyen guide describes Customer Area checkout settings for a merchant account: manually adding, removing, or ordering payment methods by shopper country or region; dynamically ordering methods toward a selected cost or conversion goal; linking a shopper across one checkout session; and reviewing checkout analytics. The settings require an online-payments integration using the Checkout API and either the Merchant admin or Change payment methods Customer Area role.\n\nThis is a documentation snapshot, not proof that Dynamic ordering is enabled for a merchant, that an integration meets Personalize requirements, or that a specific optimization outcome will occur.\n\n## Key takeaways\n\n- Manual Payment methods settings are configured per country or region and apply when the checkout session's shopper country code matches that configuration. Within one merchant account, manual and dynamic ordering are alternatives; enabling Dynamic ordering makes the manual order for that account stop applying.\n- Dynamic ordering selects payment-method order using the chosen cost or conversion strategy plus current and historical transaction insights. It is available only when the integration meets the Personalize module requirements, does not work alongside manual ordering, and has limited impact when transaction-level `allowedPaymentMethods` or `blockedPaymentMethods` filters are used.\n- Web Drop-in with the Sessions flow supports Dynamic ordering without additional configuration because `shopperConversionId` is included automatically. Other integration types must include that field. In the Advanced flow, generate one unique ID per checkout session, send the same ID in `/paymentMethods` and `/payments`, and do not regenerate it before checkout completion.\n- The Tokenization checkout setting is marked for removal. In this guide it applies only to payment links created through the Customer Area, for which Adyen directs merchants to Pay by Link settings instead.\n- Checkout analytics can be reviewed in **Analytics** > **Checkout analytics**, including overview, shopper insights, Dynamic ordering, completion-rate, and validation-error views.\n\n## Detail locators\n\n- `## Requirements` (raw lines 21\u201332) \u2014 Checkout API integration, recommended Web Drop-in v6+ Sessions route, required Customer Area roles, Personalize eligibility, and ordering/filter limitations.\n- `## Checkout settings` and `## Payment methods` (raw lines 34\u201360) \u2014 merchant-account scope, manual-versus-dynamic choice, country/region configuration, shopper-country matching, experiments, and the effect of enabling Dynamic ordering.\n- `## Dynamic ordering` (raw lines 62\u201383) \u2014 optimization inputs, dashboard/experiment routes, integration qualification, and Customer Area activation steps.\n- `## Link a shopper to a checkout session` (raw lines 85\u2013103) \u2014 session boundary, conversion tracking, automatic Sessions handling, and the Advanced-flow `shopperConversionId` lifecycle.\n- `## Tokenization` (raw lines 105\u2013109) \u2014 planned removal and Pay by Link replacement route.\n- `## Checkout dashboard` (raw lines 111\u2013127) \u2014 dashboard purpose, navigation, and available views.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/checkout-settings/2026-09-15|Adyen checkout settings (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Checkout settings in the Customer Area let you personalize the checkout experience for shoppers. For example, you can manage the payment methods that you want to present to shoppers in certain countries or regions, and in what order. Or you can use dynamic payment method ordering to optimize for conversion or cost.",
+      "location": "raw line 19, opening paragraph under Configure the checkout experience"
+    },
+    {
+      "text": "| **Limitations**                                | Dynamic payment method ordering:- Can only be applied if your integration meets the Personalize module [requirements](/uplift/uplift-requirements#module-requirements).\n- Does not work when you [manually order payment methods](#checkout-payment-method).\n- Has limited impact when you use [allowedPaymentMethods](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods#request-allowedPaymentMethods) or [blockedPaymentMethods](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods#request-blockedPaymentMethods) to [customize rendered payment methods for specific transactions](/online-payments/build-your-integration/sessions-flow/?platform=Web\\&integration=Drop-in#custom-order-of-payment-methods). |",
+      "location": "raw lines 30\u201332, Requirements table, Limitations row"
+    },
+    {
+      "text": "It is possible to use a different method for different merchant accounts. But within a merchant account you have to choose between manual and dynamic payment method ordering. We recommend dynamic ordering because that benefits from Adyen Uplift to automatically optimize the order of payment methods.",
+      "location": "raw line 43, Checkout settings"
+    },
+    {
+      "text": "After you have enabled dynamic payment method ordering, the feature is supported without additional configuration for Web Drop-in integrations using the Sessions flow. This integration includes the [shopperConversionId](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-shopperConversionId) field by default. Other integration types require that you include this field in your API requests to [link a shopper to a checkout session](#checkout-shopper-conversion-id).",
+      "location": "raw line 71, Dynamic ordering"
+    },
+    {
+      "text": "This setting will be removed from the checkout settings.\n\nThis setting only applies when you create payment links through the Customer Area. Use the [Pay by Link settings](/unified-commerce/pay-by-link/settings) instead.",
+      "location": "raw lines 107\u2013109, Tokenization"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-checkout-settings-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-checkout-settings]] \u2014 Adyen Customer Area guide to per-merchant-account manual or dynamic payment-method ordering, checkout-session linkage, and analytics (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/checkout-settings/2026-09-15.md",
+  "raw_sha256": "3ea77fe071d43bc5ad8194a46013267e191e139081a673d104e9a340cc40b473",
+  "status": "candidate_ready"
+}

@@ -7,7 +7,7 @@
 - [[stripe-index]] — Stripe sources, company page, and `stripe-*` concepts
 - [[paypal-index]] — PayPal sources, company page, and `paypal-*` concepts
 - [[metronome-index]] — Metronome sources, company page, and `metronome-*` concepts
-- [[adyen-index]] — Adyen sources, company page, and versioned GitHub implementation knowledge
+- [[adyen-index]] — Adyen website documentation, company page, and versioned GitHub implementation knowledge
 - [[braintree-index]] — Braintree website documentation, Auth OAuth and connected-merchant routes, Marketplace sub-merchant routes, transaction sale, webhooks, Control Panel, SDK integration boundaries, and separate versioned GitHub implementation history
 
 ## Overview

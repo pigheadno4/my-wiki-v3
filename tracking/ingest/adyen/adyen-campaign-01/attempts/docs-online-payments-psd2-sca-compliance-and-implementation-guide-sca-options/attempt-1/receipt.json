@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-online-payments-psd2-sca-compliance-and-implementation-guide-sca-options",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen docs: Implement SCA compliance\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/psd2-sca-compliance-and-implementation-guide/sca-options\"\nraw_files:\n  - \"adyen/docs/online-payments/psd2-sca-compliance-and-implementation-guide/sca-options/2026-09-16.md\"\ntags: [adyen, psd2, sca, 3d-secure, online-payments, compliance]\n---\n\n## Overview\n\nThis Adyen documentation page describes PSD2 strong customer authentication options for an online payments integration that already implements 3D Secure. It separates three control layers: Adyen's default compliance handling, merchant-configured Dynamic 3D Secure rules, and per-transaction API preferences. This is provider compliance and request-routing guidance, not documentation for the independently versioned native 3DS2 SDK runtimes.\n\n## Key takeaways\n\n- Under the default option, Adyen's Authentication Engine determines whether to trigger 3D Secure and requests an exemption when applicable; the page says it does not trigger 3D Secure for out-of-scope transactions or when the issuer does not enforce it.\n- Dynamic 3D Secure adds merchant-configured conditions, such as requesting authentication for transactions the merchant considers high risk. When no rule matches, the page routes handling back to the Authentication Engine.\n- Per-transaction API preferences override Adyen's default PSD2 scope and exemption-selection logic, and relevant authentication fields override Dynamic 3D Secure rules. Adyen recommends this route only for integrations with extensive PSD2 SCA and 3D Secure knowledge.\n- An exemption request can be granted or denied by the issuer. In the documented authorization-only flow, a granted exemption must also be applied using authentication response values; a challenge preference does not determine whether the issuer challenges the shopper.\n\n> [!warning] Scope and liability\n> Applicability depends on regulations and scheme rules; this snapshot is not universal legal advice. The page also distinguishes chargeback liability based on who applies an exemption: liability stays with the merchant when a merchant, Adyen on its behalf, or its acquirer requests an accepted exemption, while issuer-applied exemptions shift liability to the issuer.\n\n## Detail locators\n\n- Prerequisite and authentication-factor framing: `Requirements` and `Guidelines for compliance` (raw lines 23-46).\n- One-off, subscription, automatic-top-up and non-fixed-schedule request patterns: `SCA requirements for online payments` (raw lines 48-77).\n- Default, Dynamic 3DS and API preference choices: `Compliance options with Adyen` (raw lines 79-109).\n- Per-transaction authentication controls and the Checkout API v69 boundary: `Option 3: Specify your preference in the API request` > `Perform 3DS authentication` (raw lines 105-130); earlier-version fields and language-specific examples follow in the raw.\n- Exemption request preferences, issuer decision boundary and API-version fields: `Request or apply an exemption` > `Step 1: Request an exemption` (raw lines 1206-1234 and 1752-1772).\n- Authentication-only outcomes and applying an exemption during authorization: `Possible responses` and `Step 2: Apply the exemption in the authorization` (raw lines 2286-2326).\n\n## Related\n\n- Company: [[adyen]]\n- Provider concept: [[adyen-psd2-sca-and-3d-secure]]\n- Native runtime boundaries: [[adyen-3ds2-ios-sdk]], [[adyen-3ds2-android-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/psd2-sca-compliance-and-implementation-guide/sca-options/2026-09-16|Adyen \u2014 Implement SCA compliance (2026-09-16)]]\n",
+  "quotes": [
+    {
+      "text": "After you have implemented 3D Secure with Adyen, choose one of the [compliance options](#compliance-options) on this page to comply with PSD2 SCA.",
+      "location": "# Implement SCA compliance, opening guidance (line 21)"
+    },
+    {
+      "text": "* If you, Adyen on your behalf, or your acquirer requests an exemption and the request is accepted by the issuer, the liability stays with you.\n* If the exemption is applied by the issuer, the liability shifts to the issuer.",
+      "location": "## Guidelines for compliance, liability-shift bullets (lines 45-46)"
+    },
+    {
+      "text": "Adyen offers the following methods for complying with PSD2 SCA:\n\n* [Let Adyen handle PSD2 compliance by default.](#option-1-default-compliance)\n* [Configure rules using Dynamic 3D Secure.](#option-2-dynamic-3ds)\n* [Submit your preference for each transaction in your API request.](#option-3-specify-your-preference-in-the-api-request)",
+      "location": "## Compliance options with Adyen (lines 81-85)"
+    },
+    {
+      "text": "Our Authentication Engine will handle PSD2 SCA compliance for you. We will not trigger 3D Secure for out-of-scope transactions or if the issuing bank does not enforce 3D Secure. Our Authentication Engine will also handle requesting an exemption whenever applicable.",
+      "location": "### Option 1: Default compliance (line 91)"
+    },
+    {
+      "text": "This option overrides our default PSD2 compliance handling logic, including checking if the transaction is out of scope, determining the most suitable exemption type, and evaluating whether to send the exemption in the authentication or authorization request. We recommend you use the API fields only if you have an extensive knowledge of PSD2 SCA regulations and the 3D Secure protocol.",
+      "location": "### Option 3: Specify your preference in the API request (line 109)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-psd2-sca-and-3ds-provider-concept",
+        "target_path": "wiki/concepts/adyen-psd2-sca-and-3d-secure.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page",
+        "proposed_markdown": "---\ntitle: \"Adyen PSD2 SCA and 3D Secure\"\ntype: concept\ncategory: compliance\ntags: [adyen, psd2, sca, 3d-secure, authentication, exemptions]\n---\n\n## Adyen PSD2 SCA and 3D Secure\n\nAdyen's online PSD2 SCA guidance assumes an online payments integration with 3D Secure and presents three provider-control layers: default handling by Adyen's Authentication Engine, merchant-configured Dynamic 3D Secure rules, and per-transaction API preferences. The API-preference route overrides default scope and exemption-selection logic, so Adyen recommends it only for integrations with extensive PSD2 SCA and 3D Secure knowledge.\n\nApplicability remains transaction-, regulation-, scheme- and issuer-dependent. Exemption requests can be granted or denied by the issuer, challenge preferences do not control the issuer's challenge decision, and the documented liability outcome depends on whether the merchant side or issuer applies the exemption. This provider compliance scope is distinct from [[adyen-3ds2-ios-sdk]] and [[adyen-3ds2-android-sdk]], which document native client transaction and challenge runtimes.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-psd2-sca-compliance-and-implementation-guide-sca-options]] \u2014 online PSD2 SCA prerequisite, default/Dynamic/API control layers, exemption and issuer boundaries, and liability qualification\n\n## Related\n\n- [[adyen]] \u2014 company and knowledge-status page\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this provider compliance and request-routing scope separate from the independently versioned native 3DS2 SDK runtime concepts.",
+          "Do not generalize the snapshot into universal legal advice, current account eligibility, guaranteed exemption acceptance, guaranteed challenge behavior, authorization success, or payment execution proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/psd2-sca-compliance-and-implementation-guide/sca-options/2026-09-16.md",
+  "raw_sha256": "4765e7678f1de3a8ec67d70e485102c5643614d6a0c82bad121fc7f9888c6434",
+  "status": "candidate_ready"
+}

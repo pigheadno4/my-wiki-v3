@@ -1,0 +1,27 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "adyen-c01-w07-concept-authorization-adjustment",
+      "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+      "update_kind": "durable_fact",
+      "anchor": "new file",
+      "proposed_markdown": "---\ntitle: \"Adyen Authorization Adjustment\"\ntype: concept\ncategory: payments\ntags: [adyen, authorization-adjustment, pre-authorization, capture, webhooks]\n---\n\n## Overview\n\nAdyen authorization adjustment is an online-payments flow for changing the reserved amount on an eligible pre-authorized card or Klarna payment before final capture. It applies only to supported payment methods and Merchant Category Codes, depends on issuer acceptance, and is limited to payments acquired by Adyen.\n\n## Card lifecycle\n\nIn the standard card sequence, the merchant pre-authorizes the payment, submits amount updates against the original payment PSP reference, and manually captures after the final intended adjustment. Asynchronous adjustment and capture outcomes are established through webhook events; a request response with a received state is not final outcome evidence. Synchronous card adjustment requires account enablement and successive use of the latest `adjustAuthorisationData` blob.\n\nWhen Adyen Support has enabled multiple partial captures, a documented card exception permits a partial capture followed by an adjustment of the authorized amount. The issuer determines how many partial captures are possible and can flag multiple partial captures as fraud risk, causing capture failure. This exception does not make an unresolved asynchronous final capture evidence that another adjustment is safe.\n\n## Card constraints and extension\n\n- Each card update expresses the new total authorized amount rather than only the increment.\n- Card adjustments cannot use a zero value, and the card-flow section permits at most 50 adjustments per payment; later adjustment requests are declined while capture remains possible up to the last successfully authorized amount.\n- Card authorization validity depends on the card scheme. Extension uses an amount update equal to the current authorized balance and remains issuer-dependent. Visa and Discover support only asynchronous extension adjustments, while a Mastercard amount adjustment also extends validity.\n- For normal final capture, merchants must finish all intended adjustments before starting capture and use webhook outcomes as the authoritative result; the Support-enabled multiple-partial-capture exception remains separately qualified above.\n\nThese limits and scheme-specific extension statements are documented in the card-flow section; the snapshot does not state that they apply to Klarna.\n\n## Klarna path\n\nKlarna is pre-authorized by default and supports only asynchronous authorization adjustment. An authorization can be adjusted while it has not been cancelled, expired or fully captured. After a partial capture, the adjusted amount cannot be below the already captured amount. Increasing the amount triggers another risk assessment or credit lookup; if that rejects the transaction, the customer must place a new order while the original authorization remains valid.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-adjust-authorisation-adjust-with-preauth]] - unversioned Adyen website guide, captured 2026-09-15, for the card and Klarna pre-authorization adjustment and capture procedure\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The source is an unversioned 2026-09-15 website snapshot and does not establish current merchant, MCC, payment-method or issuer eligibility.",
+        "Zero-value, 50-adjustment, scheme-validity and Visa/Discover/Mastercard extension statements are scoped to the card-flow section; the snapshot does not apply them to Klarna.",
+        "The normal final-capture sequence has a Support-enabled multiple-partial-capture exception whose count and fraud-risk outcome remain issuer-dependent.",
+        "Webhook-authoritative outcomes are preserved; immediate request acceptance is not adjustment or capture success."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

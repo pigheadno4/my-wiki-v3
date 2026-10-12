@@ -1,0 +1,26 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "adyen-api-idempotency-new-concept",
+      "target_path": "wiki/concepts/adyen-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "new file",
+      "proposed_markdown": "---\ntitle: \"Adyen API Idempotency\"\ntype: concept\ncategory: technology\ntags: [adyen, api, idempotency, retries, error-handling]\n---\n\n## Adyen API idempotency\n\nAdyen documents an `idempotency-key` request header for POST calls. Reusing the same key after an uncertain response can return the first attempt's response without duplicating the operation when Adyen already processed it. The key identifies one message, has a maximum length of 64 characters, and is recommended to be a UUID; the response header can be used to verify idempotent processing. This is a request-replay boundary, not proof of payment authorization, capture, settlement, or current account eligibility. [[source-adyen-docs-development-resources-api-idempotency]]\n\n## Scope and lifetime\n\nKeys are stored and checked for uniqueness at company-account level and are valid for 7 to 14 days after first submission. Duplicate-key checking does not cross regional endpoints when they are targeted simultaneously, so a key alone is not a global cross-region duplicate guard. Adyen recommends a unique random UUID v4 per request to keep API credentials under one account from accessing one another's responses. Reducing a credential's access does not prevent retrieval of earlier responses while previously used keys remain available. [[source-adyen-docs-development-resources-api-idempotency]]\n\n## Retry and concurrency boundary\n\nWhen no response arrives, for example after a timeout, the request can be retried with the same idempotency key. When an API response is received, retry later with the same key only if its `transient-error` header is `true`; do not retry that response if the header is absent or `false`. A race between two same-key payment requests can process one while returning a transient error for the other. A duplicate submitted before the first completes can return HTTP 422 or HTTP 409 with error code 704, `request already processed or in progress`. Retries should use exponential backoff. [[source-adyen-docs-development-resources-api-idempotency]]\n\nIf the stateful idempotency store is unavailable, the API documents HTTP 503 with error code 703 and marks the request transient. The page lists pausing and retrying later, or omitting the header to fall back to non-idempotent processing. Omitting the header removes this idempotency mechanism and must not be presented as a duplicate-safe retry. [[source-adyen-docs-development-resources-api-idempotency]]\n\n## Related\n\n- [[adyen]]\n- [[source-adyen-docs-development-resources-api-idempotency]]\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The snapshot is retained documentation evidence, not current availability, credential authorization, account eligibility, or successful payment execution.",
+        "Do not generalize same-key retry safety beyond the documented conditions: cross-region duplication is not checked, keys expire after 7 to 14 days, and a received API response whose transient-error header is absent or false is an explicit do-not-retry case.",
+        "The documented option to omit the header is non-idempotent processing and must not be described as duplicate-safe."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

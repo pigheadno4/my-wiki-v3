@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-refund",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online Payments Refund\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/refund\"\nraw_files:\n  - \"adyen/docs/online-payments/refund/2026-09-15.md\"\ntags: [adyen, online-payments, refunds, webhooks, refund-failed, refunded-reversed]\n---\n\n## Overview\n\nThis Adyen guide explains how to return a captured online payment to a shopper through the Customer Area or the Checkout API, then determine the asynchronous result from Standard webhooks. It covers referenced, partial, and approved unreferenced refunds, validation failures, later payment-method rejection, reversed refunds, test handling, and refund authorization.\n\n## Key takeaways\n\n- A payment can be refunded only after capture. Before capture, cancel it; if capture status is unknown, use Adyen's reversal route. Depending on the payment method, returning funds to the shopper can take up to 40 business days.\n- For a referenced API refund, send `POST /payments/{paymentPspReference}/refunds` with the original payment PSP reference, merchant account, and amount. The refund currency must match the authorization currency; a partial-refund value must be below the captured amount, and multiple partial refunds cannot cumulatively exceed that amount. Partial refunds are supported only by some payment methods.\n- The request response supplies the original payment reference and a separate refund-request `pspReference`; wait for the `REFUND` webhook to learn the validation outcome. Do not treat request receipt as final refund success.\n- Unreferenced refunds require prior approval from Adyen Support or an Adyen contact. This snapshot documents unreferenced routes for cards, stored payment details, ACH Direct Debit, and IBAN bank transfer.\n\n## Asynchronous outcomes and warnings\n\nThe `REFUND` webhook reports Adyen's refund-validation result. `success: false` means validation failed and includes a reason to review before correcting and resubmitting where possible. `success: true` means validation passed and the request was sent to the card scheme; it usually succeeds, but it is not a final guarantee.\n\nA later `REFUND_FAILED` webhook is distinct from validation failure: the payment method or card scheme can reject a refund even days after `REFUND` reported `success: true`. Structured refusal details may appear in `additionalData`; do not expose refusal-reason details to shoppers.\n\nA `REFUNDED_REVERSED` webhook is a different outcome. For some payment methods, funds from a previously refunded payment can return to Adyen and the merchant account, for example when the shopper's bank account is no longer valid. Contact the shopper about the bank-account status before retrying.\n\nRefund authorization is automatic for the listed American Express, Discover, Mastercard, and Visa flows. Even when an issuer declines the refund authorization, the guide says Adyen still tries to process the refund.\n\n## Detail locators\n\n- `## Requirements` and `## Types of refunds` \u2014 integration prerequisites, required webhook event codes, Customer Area roles, capture/cancel/reversal boundary, partial-refund support, and unreferenced-refund definition (raw lines 27\u201348).\n- `## Make a refund` \u2014 referenced endpoint, required request fields, amount/currency conditions, optional reason/reference fields, language examples with pinned SDK versions, response identifiers, and instruction to await the webhook (raw lines 50\u2013301).\n- `## Make an unreferenced refund` \u2014 approval requirement, supported route list, required fields, and examples for unencrypted/encrypted cards, stored details, ACH, and IBAN (raw lines 303\u2013528).\n- `## Test failed refunds` \u2014 test-only card setup and expected `REFUND_FAILED` event (raw lines 530\u2013561).\n- `## Webhooks for refunds` \u2014 asynchronous validation outcomes, common validation reasons, `REFUNDED_REVERSED`, later `REFUND_FAILED`, refusal fields, and shopper-disclosure warning (raw lines 563\u2013729).\n- `## Refund authorization` \u2014 automatic authorization, named card schemes, example decline causes, and continued-processing behavior (raw lines 731\u2013751).\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-refunds]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/refund/2026-09-15|2026-09-15 snapshot \u2014 referenced and unreferenced refund requests, asynchronous outcomes, and refund authorization]]\n",
+  "quotes": [
+    {
+      "text": "To return funds to your shopper, you can refund the shopper's payment after it has been [captured](/get-started-with-adyen/adyen-glossary#capture-or-clearing-and-settlement). For example: if a shopper returns an item they purchased, you refund their payment.\n\nWhen you make a refund request, Adyen attempts to [authorize the refund](#refund-authorization) and transfers the funds to the shopper's account. It can take up to 40 business days before the funds are returned to the shopper's account, depending on the payment method.",
+      "location": "lines 23-25, under # Refund"
+    },
+    {
+      "text": "Make a [/payments/{paymentPspReference}/refunds](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/\\(paymentPspReference\\)/refunds) request, including the following:",
+      "location": "line 56, under ## Make a refund, step 2"
+    },
+    {
+      "text": "The refund process is asynchronous. To keep you informed, we send webhook event messages.",
+      "location": "line 565, under ## Webhooks for refunds"
+    },
+    {
+      "text": "For some payment methods, for example bank transfers, iDEAL, or Bancontact, the status of the payment can change from \\*\\*Refunded\\*\\* to \\*\\*RefundedReversed\\*\\*. This means that the funds have been returned to Adyen, and are back in your account. This can happen, for example, if the shopper's bank account is no longer valid. Before you retry the refund, contact the shopper about the status of their bank account.",
+      "location": "line 659, under ### REFUNDED_REVERSED webhook"
+    },
+    {
+      "text": "Although rare, a refund can fail after you received a [**REFUND** webhook](#refund-webhook) with `success`: **true**. A successful **REFUND** webhook means that our validations were successful and we sent the refund request to the card scheme. However, the card scheme can still reject the refund. This can happen even a few days after you submit the refund request. This also applies to installment-based transactions. If a refund fails for an installment payment, you receive the same **REFUND\\_FAILED** webhook.",
+      "location": "line 672, under ### REFUND_FAILED webhook"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w13-new-adyen-refunds-concept",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "durable_fact",
+        "anchor": "new_file",
+        "proposed_markdown": "---\ntitle: \"Adyen Online Payment Refunds\"\ntype: concept\ncategory: technology\ntags: [adyen, online-payments, refunds, webhooks]\n---\n\n## Definition\n\nAdyen online-payment refunds return funds to a shopper after the payment has been captured. A merchant can use the Customer Area or submit a referenced Checkout API refund; unreferenced refunds require Adyen approval. Before capture, use cancellation, or use reversal when capture status is unknown.\n\n## Lifecycle boundary\n\nRefund processing is asynchronous. A `REFUND` webhook reports validation success or failure; `success: true` means Adyen sent the request onward but does not guarantee final completion. A later `REFUND_FAILED` event can report payment-method rejection, while `REFUNDED_REVERSED` means funds from a previously refunded payment returned to Adyen and the merchant account.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-refund]] \u2014 captured-payment refund routes, request conditions, webhooks, failure/reversal distinctions, and authorization behavior\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/refund/2026-09-15.md",
+  "raw_sha256": "3ea4b7fba6e54d9c9fb421c90cc5a663e016ab38eeb7e9ec480d85602cbde6ad",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-adjust-authorisation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Authorization adjustment\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/adjust-authorisation\"\nraw_files:\n  - \"adyen/docs/online-payments/adjust-authorisation/2026-09-15.md\"\ntags: [adyen, authorization-adjustment, pre-authorization, webhooks, mcc]\n---\n\n## Overview\n\nThis Adyen online-payments overview explains [[adyen-authorization-adjustment]]: using a pre-authorization to change an authorized amount or extend an authorization before manual capture. It contrasts pre-authorization with final authorization, describes asynchronous and synchronous adjustment models, and catalogs payment-method, Merchant Category Code (MCC), issuer and validity boundaries.\n\nThe page is an unversioned website snapshot collected on 2026-09-15. It does not prove current payment-method or MCC support, issuer approval, merchant eligibility, account configuration, adjustment success, capture success, or the present status of a scheme feature.\n\n## Key takeaways\n\n- A pre-authorization can support a later increase or decrease to the initially authorized amount. A final authorization assumes the amount is agreed up front and does not support later adjustment; Adyen documents final authorization as the default for card payment requests on this page.\n- Asynchronous adjustment reuses the first PSP reference in adjustment and final-capture requests. Because its result is not immediately clear, the page requires webhook updates to establish whether the final amount was authorized before capture.\n- Synchronous adjustment carries the latest `adjustAuthorisationData` blob from one request to the next and returns an adjustment result synchronously. If the blob is omitted at any point, that payment falls back to asynchronous adjustment and cannot return to the synchronous path.\n- The documented support boundary is an online-payments integration for payments acquired by Adyen, with required webhook event handling. Availability is limited by payment method and MCC and ultimately depends on the issuer. Apple Pay and Google Pay support follows the associated card scheme; the page separately documents Klarna as asynchronous-only while a payment has not been cancelled, expired or fully captured.\n- Only an unexpired pre-authorization can be adjusted. For global card schemes, the page states an Adyen default expiry of 28 days while allowing merchant-account and scheme-specific custom validity; scheme rules can expire an authorization before or after the scheme's stated period. Manual capture of a remaining balance after scheme-side expiry can increase capture-failure, fee and chargeback risk.\n\n## Material boundaries\n\n> [!warning] Eligibility and outcomes\n> Documentation of the flow is not evidence that a particular merchant, payment method, MCC or issuer supports an adjustment, or that an adjustment or capture succeeded. The required webhook events and the linked procedural guide remain necessary for operational outcome handling.\n\n> [!warning] Dated scheme rules\n> The MCC and validity tables are snapshot evidence, not a current scheme-rule guarantee. They contain scheme-, environment-, authorization-type- and MCC-specific conditions; the page also labels Visa Extended-Auth as pilot-only. Verify current Adyen and scheme guidance before relying on a listed period or eligibility row.\n\n## Detail locators\n\n- Opening definition and manual-capture framing: raw lines 17-19.\n- Integration, webhook, payment-method/MCC, issuer, expiry and Adyen-acquisition requirements: `## Requirements`, raw lines 21-33.\n- Hospitality, pre-order and high-value/long-delivery examples: `## Use cases`, raw lines 35-52.\n- Pre-authorization versus final authorization and the card-request default: `## Authorization type`, raw lines 54-62.\n- Original-PSP-reference asynchronous model, webhook dependency, blob-chaining synchronous model and irreversible fallback: `## Asynchronous or synchronous adjustment`, raw lines 64-76.\n- Card, Apple Pay, Google Pay and Klarna availability plus the card-scheme MCC table: `## Availability`, raw lines 78-107.\n- Default and scheme-side expiry, issuer-dependent partial-capture count, post-expiry capture risks and scheme validity tables: `## Expiration of pre-authorizations`, raw lines 109-199.\n- Procedural implementation route: `## Next steps`, raw lines 201-207.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-authorization-adjustment]]\n- Procedure: [[source-adyen-docs-online-payments-adjust-authorisation-adjust-with-preauth]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/adjust-authorisation/2026-09-15|Adyen Docs: Authorization adjustment]] - complete collected overview for authorization types, adjustment models, availability and validity\n",
+  "quotes": [
+    {
+      "text": "In a basic payment flow, the payable amount from your payment request is [authorized](/get-started-with-adyen/adyen-glossary/#authorization?target=_blank) and then [captured](/get-started-with-adyen/adyen-glossary/#capture-or-clearing-and-settlement?target=_blank). But sometimes you want to change the amount or extend the length of the authorization. Using the [authorization type](#authorisation-types?target=_blank) **pre-authorization** for your payment request, you can increase or decrease the authorized amount at a later stage, and then capture the payment manually. Changes to a pre-authorized payment are called \"authorization adjustments\".",
+      "location": "## Authorization adjustment, raw line 19"
+    },
+    {
+      "text": "[Support for authorization adjustment](/online-payments/adjust-authorisation/#availability) is limited to specific payment methods and Merchant Category Codes (MCC). It is ultimately up to the issuing bank whether they allow it.\n- Pre-authorizations and authorizations [eventually expire](/online-payments/adjust-authorisation/#validity). The length of an authorization's validity depends on the card scheme.\n- You can only adjust authorizations for payments acquired by Adyen.",
+      "location": "## Requirements > Limitations, raw lines 31-33"
+    },
+    {
+      "text": "Asynchronous adjustment is easier to implement, but it is not immediately clear if the adjustment succeeded. You must [set up webhooks](/development-resources/webhooks) to receive updates and to know if the final amount was authorized before you capture the payment.",
+      "location": "## Asynchronous or synchronous adjustment > Asynchronous authorization adjustment, raw line 70"
+    },
+    {
+      "text": "Synchronous adjustment requires more effort to implement, because you need to keep track of the latest blob. The advantage is that you receive the adjustment result synchronously. In this way you immediately know if the final amount was authorized before you capture the payment.\n\n  If at any point you fail to pass the blob, the flow falls back to asynchronous adjustment, and it is no longer possible to return to synchronous adjustment for that payment.",
+      "location": "## Asynchronous or synchronous adjustment > Synchronous authorization adjustment, raw lines 74-76"
+    },
+    {
+      "text": "Card schemes have their own rules on authorization validity, and can expire a pre-authorization before or after the scheme's official authorization validity period. Using [manual capture](/online-payments/capture#manual-capture) it is possible to capture remaining balance on a payment after an authorization has already expired on the card scheme's side, but this practice increases the risk of:\n\n  * A [failed capture](/online-payments/capture#failed-capture).\n  * Increased interchange fees.\n  * Card scheme transaction fees.\n  * A cardholder-initiated [chargeback](/risk-management/understanding-disputes/dispute-reason-codes) for 'No Authorization' or 'Late Presentment' reasons.",
+      "location": "## Expiration of pre-authorizations, raw lines 117-122"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w19-authorization-adjustment-source-link",
+        "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-adjust-authorisation]] - unversioned Adyen website overview, captured 2026-09-15, for authorization types, asynchronous and synchronous adjustment models, payment-method and MCC availability, and scheme-validity warnings\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The target concept is an approved pending promotion from the sibling adjust-with-preauth job; append this reciprocal entry under its ## Sources section without replacing the existing procedural-source entry."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/adjust-authorisation/2026-09-15.md",
+  "raw_sha256": "6304df30e3823cd7556ed92c009f0484988e4cc2204add624acdc533f289c2ad",
+  "status": "candidate_ready"
+}

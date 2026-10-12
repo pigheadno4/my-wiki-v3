@@ -58,6 +58,8 @@ Tokens: `tok_visa_cartesBancaires`, `tok_mastercard_cartesBancaires`
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-co-badged-cards-compliance]] — Adyen Docs snapshot of region-specific EEA and Australia choice, routing, disclosure, and version-qualified integration requirements
+
 - [[source-stripe-co-badged-cards-compliance]] — primary source: regulation scope, integration guides (all Elements, mobile, Terminal), test cards
 - [[source-github-adyen-web]] — Adyen Web `6.41.0` dual-brand selector and split-funding-source implementation evidence, plus the `6.44.0` keyboard-handling delta
 - [[source-github-adyen-android]] — Adyen Android `5.20.0` dual-brand selection and submitted-brand evidence

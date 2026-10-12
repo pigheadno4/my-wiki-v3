@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-online-payments-3d-secure",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen 3D Secure 2 authentication\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, authentication, online-payments]\n---\n\n## Overview\n\nThis unversioned [[adyen]] website-guide snapshot introduces 3D Secure 2 for merchant online-payment integrations and routes readers among native and redirect implementations, Sessions and Advanced server-side flows, authentication-flow explanations, and additional 3DS routes. It is the high-level source for [[adyen-3d-secure]], not version-qualified implementation evidence for the separately retained native SDKs.\n\n## Key takeaways\n\n- Adyen describes 3D Secure 2 as an extra verification layer for card-not-present transactions and recommends it for strong-customer-authentication regulations and liability-shift rules. The recommendation is not proof that a particular transaction complies, authenticates successfully, or receives liability shift.\n- The guide presents **Native** authentication within a merchant website or mobile app and **Redirect** authentication on the issuer's site. It warns that redirect can reduce conversion because of technical errors or shopper abandonment.\n- The documented routing depends on the merchant's server-side payments flow: Sessions has built-in 3D Secure 2 support without additional configuration, while Advanced routes readers by platform and Drop-in, Components, or API-only integration type. Native integrations using Checkout API v46 or earlier are sent to a separate earlier-version guide.\n- A qualifying native 3D Secure transaction can be frictionless or require an issuer challenge. The page also links authorization-only, data-only, and standalone-authentication variants; its data-only description is limited to Visa and Mastercard.\n\n> [!warning] Evidence boundary\n> This collected page is high-level integration guidance. It does not establish current merchant, card, issuer, region, or account eligibility; prove production configuration, authentication, authorization, capture, settlement, or liability shift; or define the versioned native SDK runtime. Use [[adyen-3ds2-ios-sdk]] and [[adyen-3ds2-android-sdk]] only for their separately retained package-qualified native implementation evidence.\n\n## Detail locators\n\n- **Definition, regulatory rationale, and Authentication Engine:** raw lines 19-23.\n- **Native versus redirect implementations, Sessions versus Advanced routing, and the Checkout API v46-or-earlier route:** raw lines 25-46.\n- **Frictionless and challenge flow descriptions:** raw lines 48-62.\n- **Authorization-only, data-only, and standalone-authentication navigation:** raw lines 64-78.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[adyen-3ds2-ios-sdk]] \u2014 version-qualified native iOS SDK evidence, distinct from this merchant website guide\n- [[adyen-3ds2-android-sdk]] \u2014 version-qualified native Android SDK evidence, distinct from this merchant website guide\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/2026-09-15|Adyen 3D Secure 2 authentication \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "3D Secure 2 is an authentication protocol that provides an additional layer of verification for card-not-present (CNP) transactions. We recommend that you use it to comply with regulations that require strong customer authentication for online payments such as [PSD2 SCA](/online-payments/psd2-sca-compliance-and-implementation-guide) in the [European Economic Area](https://en.wikipedia.org/wiki/European_Economic_Area) and the Payment Services Regulations 2017 in the UK, and to use [liability shift rules](/online-payments/3d-secure-for-regulation-compliance#3dsecurechargebackliabilityshiftrules).",
+      "location": "line 23 under `Adyen Authentication Engine`"
+    },
+    {
+      "text": "We support two 3D Secure 2 authentication implementations:\n\n* **Native**: The card issuer performs the authentication within your website or mobile app using passive, biometric, and two-factor authentication approaches. For more information about the shopper experience, refer to [3D Secure 2 authentication flows](#authentication-flows).\n\n* **Redirect**: Shoppers are redirected to the card issuer's site to provide additional authentication data, for example a password or an SMS verification code. The redirection might lead to lower conversion rates due to technical errors during the redirection, or shoppers dropping out of the authentication process.",
+      "location": "lines 27-31 under `Implement 3D Secure 2`"
+    },
+    {
+      "text": "* [**Sessions flow** ](/online-payments/build-your-integration#sessions-flow-a-single-api-request): You do not need additional configuration to support 3D Secure 2. The [Sessions flow integration](/online-payments/build-your-integration/sessions-flow) has built-in support for 3D Secure 2.\n* [**Advanced flow** ](/online-payments/build-your-integration#advanced-flow-three-api-requests): Use the following guides to integrate with 3D Secure 2, selecting the platform (Web, iOS, or Android) and integration type (Drop-in or Components) that corresponds to your online payments integration. For an API-only integration, use the following guides to integrate with our pre-built 3D Secure 2 Component or Action Component.",
+      "location": "lines 35-36 under `Implement 3D Secure 2`"
+    },
+    {
+      "text": "When you have implemented native 3D Secure, a transaction that qualifies for 3D Secure 2 can go through either a [frictionless flow](#frictionless-flow) or a [challenge flow](#challenge-flow), depending on the issuer's requirements.",
+      "location": "line 50 under `3D Secure 2 authentication flows`"
+    },
+    {
+      "text": "[Submit a 3D Secure 2 request without requesting for an authentication. Only available for Visa and Mastercard.](/online-payments/3d-secure/data-only)",
+      "location": "line 74 under `Other 3D Secure flows` > `Data-only`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c01-w04-concept-adyen-3d-secure",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page",
+        "proposed_markdown": "---\ntitle: \"Adyen 3D Secure\"\ntype: concept\ncategory: payments\ntags: [adyen, 3d-secure, 3ds2, authentication, online-payments]\n---\n\n## Adyen 3D Secure\n\nAdyen's merchant-facing online-payments guide describes 3D Secure 2 as an additional verification layer for card-not-present transactions. It recommends 3DS2 in connection with strong-customer-authentication regulations and liability-shift rules, but the guide does not prove compliance, successful authentication, payment authorization, or liability shift for a particular transaction. [[source-adyen-docs-online-payments-3d-secure]]\n\n## Merchant integration routes\n\nThe guide presents two implementation shapes: **Native**, where the issuer performs authentication within the merchant website or mobile app, and **Redirect**, where the shopper moves to the issuer's site. Adyen warns that redirect can lower conversion because of technical errors or shopper abandonment.\n\nServer-side routing is separate from that shopper-facing distinction. Sessions has built-in 3D Secure 2 support without additional configuration. Advanced integrations are routed by Web, iOS, or Android and by Drop-in, Components, or API-only integration type. Native integrations using Checkout API v46 or earlier are routed to a separate earlier-version guide.\n\nFor a qualifying native transaction, issuer requirements determine whether the flow is frictionless or presents a challenge. The page also navigates to authorization-only, data-only, and standalone-authentication variants; the data-only description is limited to Visa and Mastercard.\n\n## SDK evidence boundary\n\nThis concept covers the high-level merchant website guide across web and mobile integration choices. It does not replace [[adyen-3ds2-ios-sdk]] or [[adyen-3ds2-android-sdk]], which retain package-qualified native transaction, challenge, lifecycle, security, privacy, and UI evidence. Do not attribute those SDK-specific behaviors or versions to the unversioned website guide, and do not use SDK availability as proof of merchant enablement or payment outcome.\n\n## Related\n\n- [[source-adyen-docs-online-payments-3d-secure]] \u2014 unversioned website guide for purpose, routing, flow shapes, and material qualifications\n- [[adyen-3ds2-ios-sdk]] \u2014 separately versioned native iOS runtime\n- [[adyen-3ds2-android-sdk]] \u2014 separately versioned native Android runtime\n- [[adyen]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this concept at the merchant website-guide level; do not merge package-qualified native SDK lifecycle or API details into it.",
+          "Recommendations and documented routing are not proof of current eligibility, successful authentication, payment authorization, compliance, or liability shift."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/2026-09-15.md",
+  "raw_sha256": "5dc22a6961a7a7812ca747db3976f06743e46fb58b834d88bc2d385712c895a4",
+  "status": "candidate_ready"
+}

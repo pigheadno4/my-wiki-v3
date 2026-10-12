@@ -1,0 +1,73 @@
+{
+  "job_id": "docs-online-payments-tokenization",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Tokenization\"\ntype: source\ndate_ingested: 2026-10-10\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/tokenization\"\nraw_files:\n  - \"adyen/docs/online-payments/tokenization/2026-09-15.md\"\ntags: [adyen, tokenization, recurring-payments, stored-payment-methods, pci-dss]\n---\n\n## Overview\n\nThis Adyen guide introduces tokenization for recurring payments. With shopper consent, Adyen stores payment details in the Adyen Vault and the merchant later pays with a token representing those details. The page presents tokenization as a way to reduce exposure to sensitive payment data and PCI DSS scope; it does not establish merchant eligibility, enablement, or successful payment execution.\n\n## Key takeaways\n\n- Adyen documents two server-side implementation routes. Sessions creates a secure session for client-side components and is described as qualifying for SAQ A; Advanced gives the merchant more checkout control but requires the merchant to manage data flow and state.\n- The documented recurring types are shopper-present one-click payments, regular merchant-initiated subscriptions, and automatic top-ups or other non-fixed schedule contracts. With Sessions, shopper-not-present token payments such as subscriptions still require a separate `/payments` call.\n- Every stored token must be associated with a shopper reference that is unique to that shopper. Shopper references and tokens are merchant-account-scoped by default; sharing them across merchant accounts requires the separately enabled Token Groups feature.\n- The guide says collecting raw card data requires full PCI DSS compliance. Using tokens can reduce PCI scope, but the snapshot is not a substitute for a merchant's current compliance assessment.\n- The page routes readers to payment-method-specific recurring support and to separate guides for network tokens, Account Updater, forwarding stored details, creating tokens, and making token payments. Those linked pages were not read for this entry and provide navigation rather than evidence for their detailed behavior.\n\n## Material qualifications\n\n- Shopper consent is a condition for saving payment details.\n- Creating a token and making a later payment are distinct actions; Sessions alone is not documented as executing shopper-not-present subscription or unscheduled payments.\n- Token Groups is not the default scope and requires Support to enable it.\n- This is a 2026-09-15 documentation snapshot. Product packaging, supported payment methods, account eligibility, compliance status, and runtime outcomes require current, merchant-specific verification.\n\n## Detail locators\n\n- Definition, shopper consent, Vault storage, token use, and PCI-scope purpose: opening paragraphs, raw lines 26-35.\n- Sessions and Advanced server-side flow boundaries: `## Implementation options`, raw lines 37-43.\n- One-click, subscription, and non-fixed schedule types plus the Sessions `/payments` qualification: `## Recurring payment types`, raw lines 45-60.\n- Payment-method support navigation: `## Supported payment methods`, raw lines 62-66.\n- Unique shopper reference, default merchant-account scope, and Token Groups enablement: `## Shopper reference management`, raw lines 68-72.\n- Encryption and raw-card PCI DSS boundary: `## Security and compliance`, raw lines 74-80.\n- Network tokenization, Account Updater, and Forward navigation: `## Enhance your tokenization implementation`, raw lines 82-106.\n- Create-token and make-token-payment navigation: `## Next steps`, raw lines 108-120.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-tokenization]]\n- Cross-cutting concept: [[recurring-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/tokenization/2026-09-15|Adyen Tokenization documentation snapshot]] - complete collected guide covering definition, implementation routes, recurring types, shopper-reference scope, security boundaries, enhancement navigation, and next steps\n",
+  "quotes": [
+    {
+      "text": "Tokenization is the process of replacing sensitive data with a non-sensitive equivalent, called a token. For payments, a token represents the shopper's payment details, such as the [Primary Account Number (PAN)](/get-started-with-adyen/adyen-glossary/#card-number-pan).\n\nIf the shopper consents to save their payment details, we store payment details in the Adyen Vault. When the shopper chooses to pay with their saved payment details, you make the payment with a token. Tokens reduce your security risks and lowers your [PCI DSS](/development-resources/pci-dss-compliance-guide/) scope.",
+      "location": "Opening definition and consent paragraphs, raw lines 26-28"
+    },
+    {
+      "text": "* The **Sessions flow** is the simplest way to store payment details. It minimizes your [security requirements](#security-and-compliance) by creating a secure session that contains all the information needed for our client-side components to securely create and pay with tokens. This implementation qualifies you for the simplest form of PCI validation [(SAQ A)](/development-resources/pci-dss-compliance-guide/saq-a-eligibility/).\n\n* The **Advanced flow** gives you more control over your checkout experience. You use our client-side components, or your own front-end, to collect payment details before sending them to your server to make an API call. It also requires you to manage the data flow and state yourself, offering greater flexibility for complex integrations.",
+      "location": "## Implementation options, raw lines 41-43"
+    },
+    {
+      "text": "The available recurring payment types depend on your server-side flow. If you use the Sessions flow, you must also use the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) endpoint to make token payments where the shopper is not present, such as subscription payments.",
+      "location": "## Recurring payment types, raw line 53"
+    },
+    {
+      "text": "When you store a shopper's payment details, you must store the token with a unique shopper reference. This shopper reference must be unique to each shopper, because we use it to associate the token with the shopper.\n\nBy default, shopper references and tokens can only be used with one [merchant account](/account/account-structure/#merchant-accounts). If your company account has multiple merchant accounts, you can enable the Token Groups feature which shares shopper references and their associated tokens between your merchant accounts. Contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable the feature.",
+      "location": "## Shopper reference management, raw lines 70-72"
+    },
+    {
+      "text": "To collect raw card data, you need to be fully PCI DSS compliant. If you are fully PCI DSS compliant, you can either create your own token vault or store raw card data to offer faster checkout options.",
+      "location": "## Security and compliance, raw line 80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-tokenization-create-concept",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "durable_fact",
+        "anchor": "Create new concept page",
+        "proposed_markdown": "---\ntitle: \"Adyen Tokenization\"\ntype: concept\ncategory: technology\ntags: [adyen, tokenization, recurring-payments, stored-payment-methods]\n---\n\n## Definition\n\nAdyen tokenization replaces sensitive payment details with a token. With shopper consent, Adyen stores the details in the Adyen Vault; the merchant uses the token for later one-click, subscription, or non-fixed-schedule payments. Sessions and Advanced are distinct server-side implementation routes, and a Sessions integration still uses `/payments` for shopper-not-present token payments. [[source-adyen-docs-online-payments-tokenization]]\n\n## Scope boundaries\n\nA token must be associated with a shopper-unique reference. References and tokens are limited to one merchant account by default; cross-merchant-account sharing requires Support-enabled Token Groups. Collecting raw card data requires full PCI DSS compliance. The documentation snapshot does not prove current eligibility, enablement, compliance status, payment-method availability, or successful execution.\n\n## Sources\n\n- [[source-adyen-docs-online-payments-tokenization]] - 2026-09-15 guide to tokenization purpose, implementation routes, recurring types, shopper-reference scope, and PCI DSS boundary\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this concept provider-specific and navigation-first; payment-method details and step-by-step API procedures remain in the source and pinned raw.",
+          "Preserve shopper consent, the Sessions `/payments` requirement for shopper-not-present token payments, default merchant-account scope, and Support-enabled Token Groups qualification.",
+          "Do not treat the snapshot as proof of current merchant eligibility, account enablement, PCI status, supported payment methods, or successful payment execution."
+        ]
+      },
+      {
+        "update_id": "adyen-tokenization-recurring-source-route",
+        "target_path": "wiki/concepts/recurring-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-tokenization]] - Adyen tokenization overview covering consent-based Vault storage, Sessions and Advanced implementation routes, one-click/subscription/non-fixed-schedule models, shopper-reference scope, and the separate `/payments` requirement for shopper-not-present Sessions token payments",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep this as a source route; the provider-specific definition and qualifications belong in [[adyen-tokenization]].",
+          "Do not imply that token creation, subscription scheduling, and later payment execution are the same action."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/tokenization/2026-09-15.md",
+  "raw_sha256": "6820822d032d66ca88343aa8f74b89d49796a23aa9124c8dfbea449977e8f7a7",
+  "status": "candidate_ready"
+}
