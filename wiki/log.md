@@ -4,6 +4,10 @@
 
 - Fifty independently approved sources; four targeted review corrections and one bounded Cartes Bancaires attribution reconciliation. Nine existing concepts updated; source_count 164 = 150 website + 14 GitHub. Raw unchanged. Query, exemplar and validation evidence: `tracking/ingest/adyen/adyen-campaign-03/`; details [[adyen-log]]. No commit/push.
 
+## [2026-10-13] ingest | Stripe iOS `26.13.0`
+
+- Approved focused serial delta from 26.12.1: wallet processing distinctions, FlowController plumbing, alpha pre-auth Apple Pay and additional-KYC caller. Verified 558 file hashes/sizes; older source history/counts and retrospective attribution preserved. Announcements and excluded internals remain qualified. Details [[stripe-log]] and [[changelog-github-stripe-ios]]. No SDK/device/payment testing, commit or push. Next: scoped commit/push approval.
+
 ## [2026-10-13] ingest | Adyen website C02
 
 - Fifty approved General Docs retrieval sources; 47 first-pass approvals and three targeted second attempts. Added 9 provider concepts, reconciled Giving and Account Updater scope, and closed catalog/count updates at 114 = 100 website + 14 GitHub. Raw unchanged. Fixed query and exemplar evidence plus validation: `tracking/ingest/adyen/adyen-campaign-02/`; details [[adyen-log]]. No commit/push.

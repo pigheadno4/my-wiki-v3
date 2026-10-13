@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/stripe-ios"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-02
+date_updated: 2026-10-13
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-09-30-9f0d5aa/manifest.json"
   - "github/stripe/stripe-ios/supplements/2026-10-02-9f0d5aa-8ad0f8dd/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/manifest.json"
@@ -26,6 +27,36 @@ tags: [stripe, ios, swift, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-ios`. Durable architecture and integration knowledge belongs in [[source-github-stripe-ios]] and the linked immutable evidence.
+
+## `stripe-ios@26.13.0` - Change Set `b65af30` (2026-10-05)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe-ios` | `stripe-ios@26.12.1` | `stripe-ios@26.13.0` | 2026-10-05 | `b65af30ecc73007aa9164627253ecafdf0a84872` | Delta, approved focused reading |
+
+**Wallet bindings:** MoMo, GoPay and ShopeePay add typed response/parameter APIs and serialization; PaymentSheet PaymentIntent support is announced. The retained handler accepts MoMo processing as client-flow completion, unlike GoPay/ShopeePay. Completion is not settlement, and models do not prove account/country/currency or SetupIntent/recurring eligibility. Availability/form factories remain excluded.
+
+**FlowController:** preserves the existing Checkout billing-address updater when rebuilding for wallet visibility or cancellation; calls an error-clearing method when cancellation cannot rebuild selection. Controller/restoration implementations are excluded, so this is caller evidence, not complete error recovery or backend synchronization proof.
+
+**Alpha Onramp:** resolves platform settings without a crypto customer ID to allow pre-auth Apple Pay collection, while card/bank collection retains verified-Link checks and token creation still requires a customer ID. Optional merchant-provided countryHint is forwarded into settings/token calls; successful authentication/registration/authorization and logout invalidate the cached platform client. Additional-KYC presentation returns submitted/pendingVerification/canceled/notRequired, not verified-KYC proof. KycInfo prefill fields and missingLinkSessionKey remain release-note-only evidence because their implementation is excluded.
+
+**Other scope:** Identity adds default-false STP hideDeclineButton configuration, not consent bypass. Financial Connections documents session IDs on events and completion callbacks for pre-initialization failures; delegated event/host emission is excluded. Card-brand crash, fractional-amount Apple Pay in COP/HUF/IDR/LAK/LBP/PKR/RSD and LBP display fixes are announcements, not independently verified mechanics.
+
+> [!warning] Contradiction in upstream historical attribution
+> This snapshot moves the CryptoOnramp error/decline/type-preservation note from 26.12.0 to 26.12.1 and adds financialConnectionsSessionId guidance under 26.12.1. Preserve the earlier source/changelog observations rather than silently relabel them; no exact first-implementation release is established. The raw diff has 24 inserted lines and one deleted moved-note line, with 2,183 lines unchanged. See [[source-github-stripe-ios]].
+
+**Impact and migration:** recheck exhaustive method switches and assumptions about processing versus paid. Alpha callers can collect Apple Pay earlier but must retain authentication, KYC and token/checkout steps. No mandatory general migration or deployment-floor change appears in the eight retained version-only podspec diffs. Do not infer runtime correctness or public Checkout readiness from internal caller changes.
+
+**Evidence boundary:** 282 current/276 prior files; six added, 18 modified, 258 unchanged, none removed. All 558 hashes/sizes and packet/comparison hashes verified. The 33 assigned paths were handled under the approved focused exception: changed retained source fully read, affected prior code compared, unchanged inventories/history checked mechanically. All 349 upstream changes have dispositions (24 retained, 325 policy-excluded); these are not semantic reviews of excluded files. No supplemental collection, SDK build, device or payment testing.
+
+**Updated sections:** existing iOS and Crypto Onramp concepts first; cumulative source/status/history/raw links, this changelog, company catalog, Stripe index and logs. Older knowledge and source count preserved; no cross-company comparison.
+
+**Evidence:**
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.13.0/2026-10-13/manifest.json` - package-qualified release identity
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.13.0/2026-10-13/release-notes.md` - announcements
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/manifest.json` - exact-SHA snapshot
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.12.1--26.13.0/comparison.json` - comparison; adjacent comparison.md and diff.patch
+- [[source-github-stripe-ios]] - durable version-qualified findings and exact implementation paths
 
 ## `stripe-ios@26.12.1` - Change Set `9f0d5aa` (2026-09-28)
 

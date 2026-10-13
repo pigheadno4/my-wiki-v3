@@ -151,6 +151,18 @@ Checkout SPI removes its new-method billing-email fallback from session.email; i
 
 See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]] for the approved full-additive focused-reading scope, three-file supplement and remaining delegated implementation gaps. All older versions remain intact; no SDK/device/payment testing was performed.
 
+### Version-qualified `26.13.0` delta
+
+MoMo (`momo`), GoPay (`gopay`) and ShopeePay (`shopeepay`) gain typed PaymentMethod response models, parameters, convenience initializers and serialization. Release notes announce PaymentSheet support for PaymentIntents, not every SetupIntent or recurring scenario. The handler treats MoMo `processing` as a completed client flow, but not GoPay/ShopeePay `processing`; server-side success evidence is still required before fulfillment. Availability and form factories remain excluded, so bindings do not prove merchant eligibility.
+
+FlowController now preserves its existing Checkout billing-address updater when rebuilding for wallet visibility or cancellation. When cancellation cannot rebuild a selection, it calls a new error-clearing method on the reused controller. The changed helper/controller implementations are excluded: this establishes caller plumbing, not verified server synchronization or complete restoration behavior.
+
+Alpha CryptoOnramp can collect Apple Pay before Link authentication by resolving platform settings without a crypto customer ID. Its optional merchant-provided `countryHint` is passed into settings and token creation; documented selection uses it before an established KYC region. Successful registration/token authentication/authorization and logout clear the cached platform client. Token creation still requires a crypto customer ID, and non-Apple-Pay collection still checks verified Link state. The new `fulfillKYCRequirement(from:)` delegates document collection and distinguishes submitted/pendingVerification from canceled/notRequired; completion analytics do not establish verified KYC. See [[stripe-crypto-onramp]] for the alpha boundary.
+
+Identity adds STP SPI `hideDeclineButton`, default false, without evidence of consent bypass. Financial Connections documents session IDs on events and completion-callback handling for failures before session initialization; event/host implementation is excluded. Card-brand crash, fractional-amount Apple Pay and LBP display fixes are release announcements only in this capsule. The newer changelog also moves an older CryptoOnramp error-preservation note from 26.12.0 to 26.12.1; neither annotation proves its first implementation release.
+
+See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]] for the approved focused-reading delta, exact evidence and preserved older versions. No SDK build, device or payment testing was performed.
+
 ## Apple Pay
 
 `STPApplePayContext` creates a Stripe PaymentMethod from a `PKPayment`, asks the delegate for confirmation details, and reports completion. It supports UIKit, SwiftUI-compatible presentation, async delegate methods, request customization, shipping and coupon changes, and explicit dismissal.
@@ -193,6 +205,7 @@ The alpha `CryptoOnrampCoordinator` supports Link account discovery and authenti
 
 | Version | Important boundary |
 | --- | --- |
+| `26.13.0` | MoMo/GoPay/ShopeePay bindings and announced PaymentIntent support; distinct processing semantics; FlowController rebuild plumbing; alpha pre-auth Apple Pay and additional KYC |
 | `26.12.0` | Alpha partner-terms flows and announced Image API removal; scoped confirmation-wrapper cleanup, Identity styling and retrospective card-program-name note |
 | `26.11.0` | Checkout SPI no-method/missing-Intent confirmation changes and timeout warning; Scalapay bindings/support announcement; revised Link visibility documentation |
 | `26.10.0` | Announced PaymentSheet Naver Pay/Korean cards/PAYCO/SeQura; PaymentIntent-only mandate inference change; scoped branding, Identity and rendering updates |

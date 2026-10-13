@@ -77,6 +77,8 @@ The `26.10.0` delta records announced PaymentSheet support for Naver Pay, Korean
 
 The `26.11.0` additive baseline adds Scalapay bindings/support announcements and Checkout SPI no-method/missing-Intent confirmation changes. A timeout can still yield SDK completion with an open session; this is not payment proof. Revised Link visibility documentation and the retrospective Kakao Pay note remain version-qualified in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
 
+The `26.13.0` iOS delta adds MoMo/GoPay/ShopeePay bindings and announced PaymentIntent support, with MoMo processing distinct from the other two in client completion. FlowController preserves Checkout updater plumbing; alpha CryptoOnramp adds pre-auth Apple Pay collection, merchant-of-record hint/cache handling and delegated additional KYC. Announced Apple Pay/card-brand/currency fixes and excluded internals remain explicitly qualified; older history is retained in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ### AI Developer and Token-Billing Tooling
 
 The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].
@@ -184,8 +186,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
 - [[source-github-stripe-android]] — cumulative Android SDK through v23.21.0: host-scoped callbacks, Embedded API configuration preview, Financial Connections consent and Onramp terms contracts; older history/gaps retained
 - [[changelog-github-stripe-android]] — package-qualified Android history through v23.21.0; versioned contracts, announcements and retrospective moves distinguished
-- [[source-github-stripe-ios]] — cumulative stripe-ios SDK through v26.12.1: Pix redirect/polling, consent evidence and Checkout email changes; older baselines, cancellation caveat and evidence limits preserved
-- [[changelog-github-stripe-ios]] — package-qualified iOS history through v26.12.1; SPI compatibility, release changes and retrospective annotations
+- [[source-github-stripe-ios]] — cumulative stripe-ios SDK through v26.13.0: MoMo/GoPay/ShopeePay processing distinctions, FlowController plumbing and alpha pre-auth Apple Pay/KYC; older baselines, Pix caveat and evidence limits preserved
+- [[changelog-github-stripe-ios]] — package-qualified iOS history through v26.13.0; processing contracts, migration/evidence limits and retrospective attribution changes
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@5.8.0` card-present iOS SDK baseline: readers, Tap to Pay, payments, SetupIntents, offline processing, refunds, and updates
 - [[changelog-github-stripe-terminal-ios]] — package-qualified Stripe Terminal iOS v5 history and exact `5.8.0` reader-setting, SetupIntent, logging, disconnect, and Tap to Pay changes
 - [[source-github-stripe-terminal-android]] — `stripeterminal@5.8.0` card-present Android SDK baseline: permissions, lifecycle, readers, Tap to Pay, payments, SetupIntents, offline processing, refunds, and updates

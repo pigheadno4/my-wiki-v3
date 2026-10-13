@@ -6,6 +6,11 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-13] ingest | Stripe iOS `26.13.0`
+
+- Approved focused-reading serial delta from 26.12.1, github-f79371e388bb9781cb20 at b65af30ecc73007aa9164627253ecafdf0a84872. Changed retained source read fully, affected prior code compared, unchanged inventories/history checked mechanically; verified all 558 current/prior file hashes/sizes and packet/comparison hashes. Snapshot counts 282/276; six added, 18 modified, 258 unchanged. All 349 upstream changes have dispositions, not full semantic repository review.
+- Existing iOS/Onramp concepts first; cumulative source/changelog/company/provider catalog/logs preserve older knowledge and counts. Wallet processing distinctions, FlowController updater/cancellation plumbing, alpha pre-auth Apple Pay/hint/cache/additional-KYC and scoped Identity/event documentation. Announced fixes and delegated implementation gaps remain explicit; historical note relabeling preserved. No SDK/device/payment testing, commit or push. Next: scoped commit/push approval.
+
 ## [2026-10-04] ingest | React Native `0.80.0`
 
 - Delta with focused reading, github-9be7291cb2f1d1ffc9b4 at ce9c1bf03fff8c022b244c2ac62a89c35ae6fab3. Verified 240 current/234 prior hashes and 219 unchanged files, packet/notes/comparison/history. Concept first; cumulative source/changelog/company/index/logs; older knowledge/count retained.

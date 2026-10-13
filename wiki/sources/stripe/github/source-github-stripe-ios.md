@@ -2,9 +2,10 @@
 title: "GitHub: stripe/stripe-ios"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-10-02
+date_updated: 2026-10-13
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-09-30-9f0d5aa/manifest.json"
   - "github/stripe/stripe-ios/supplements/2026-10-02-9f0d5aa-8ad0f8dd/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-09-30-bc51b33/manifest.json"
@@ -32,6 +33,8 @@ Repository: <https://github.com/stripe/stripe-ios>
 The approved `stripe-ios@26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f045d3` adds the version-qualified findings below without replacing the `26.4.1` baseline or legacy knowledge.
 
 ## Evidence Boundary
+
+- The approved `26.13.0` delta uses focused reading of all changed retained implementation, affected prior code, release/comparison content and both cumulative wiki pages. Manifests and unchanged changelog history were checked mechanically. Current/prior snapshots contain 282/276 files: six added, 18 modified, 258 unchanged, none removed; all 558 hashes/sizes matched. The 33-path packet classifies 349 upstream changes (24 retained, 325 policy-excluded), not a full semantic repository review. Availability/form factories, FlowController restoration/error-clearing controllers, current Checkout/Apple Pay internals, currency/card-brand fixes, event/host implementation, KycInfo and additional-KYC/API internals remain excluded. No SDK build, device, payment or eligibility testing.
 
 - The approved `26.12.1` full additive ingest overrides generated delta for the incompatible STP polling signature. Approved focused reading covers all changed retained files, affected prior code and three supplemental files; unchanged history/inventories are checked mechanically, not claimed as fresh full source reads. Current/prior capsules contain 276/275 files: one added, 22 modified, 253 unchanged, none removed. The effective full reading list has 290 paths. All 551 retained hashes matched during review; upstream dispositions cover 23 retained and 6,600 policy-excluded paths, not semantic review of all upstream code. Current availability/form factories, Checkout controller/API/Apple Pay context, Financial Connections enforcement/event internals, generic poller/action mapping and CryptoOnramp error/upload helpers remain gaps. No SDK build, device, eligibility or payment testing.
 
@@ -86,7 +89,7 @@ The approved `stripe-ios@26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f04
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `stripe-ios` | `26.12.1` | `9f0d5aa20e6a690ff4d78b35c307f0fb88d6f36c` | Approved full additive ingest with focused reading and three-file supplement; all earlier baselines and deltas retained |
+| `stripe-ios` | `26.13.0` | `b65af30ecc73007aa9164627253ecafdf0a84872` | Approved focused-reading delta from 26.12.1; all earlier baselines, supplements and deltas retained |
 
 This table reports wiki ingest progress, not the latest release published upstream.
 
@@ -547,6 +550,63 @@ All 2,171 prior cumulative changelog lines remain byte-identical, with 13 insert
 >
 > `raw/github/stripe/stripe-ios/snapshots/2026-09-30-9f0d5aa/files/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift:211`
 
+## `stripe-ios@26.13.0` Integration Delta
+
+### MoMo, GoPay and ShopeePay
+
+`STPPaymentMethodType` adds `momo`, `gopay` and `shopeepay` identifiers and display labels. Enum cases precede unknown, so do not persist numeric unknown values as a stable wire contract. Response properties/decoders and new models retain method-specific response fields. Parameter objects expose additionalAPIParameters but no typed method-specific fields; public convenience initializers set type, parameters, billing details and metadata. The SPI generic factory creates the corresponding parameter object, and serialization maps the same API identifiers. Optional billing arguments do not prove that backend billing requirements disappear.
+
+Release notes announce PaymentSheet support for PaymentIntents. Availability/form factories are excluded; do not infer every SetupIntent, recurring, geographic, currency or merchant-enabled scenario. `_isProcessingIntentSuccess` returns true for MoMo and false for GoPay/ShopeePay. The retained PaymentIntent status handler uses this distinction: MoMo processing can complete the SDK flow, whereas the others do not succeed solely from processing. Existing redirect retrieval can poll processing synchronous methods before classification; the distinction is not proof of immediate failure in every return path. Completion is not settlement; retain server-side payment verification.
+
+### FlowController cancellation and rebuilds
+
+Wallet-button visibility rebuilds and cancellation restoration now capture the existing controller's Checkout billing-address updater and pass it to the replacement. The internal makeViewController helper no longer defaults that argument to nil; ordinary initialization passes nil explicitly, while update retains its Checkout caller. This closes a caller-level loss of updater plumbing, not proof of successful backend synchronization.
+
+If cancellation has a snapshot but cannot rebuild its selection, the reused controller receives `clearErrorForReuseAfterCancellation()` before returning. When selection can rebuild, the replacement receives the preserved updater and restoring initial state. `internalPaymentOption` still returns nil when the controller has an error, and the dismissal path restores before publishing the option. Changed snapshot/controller implementations are excluded; do not claim every error or form-state case is resolved. This is internal plumbing, not a new general public Checkout integration surface.
+
+### Alpha pre-authentication Apple Pay and merchant-of-record resolution
+
+The coordinator's platform-client resolver no longer rejects a missing crypto customer ID. It calls platform settings with that optional ID and the newly default-nil `countryHint`, allowing the Apple Pay presentation path to run before Link authentication. Card/bank/card-and-bank collection still requires verified Link state. Token creation still requires a crypto customer ID; release notes explicitly retain the authenticated-user requirement. Apple Pay collection continues using COMPLETE_WITHOUT_CONFIRMING_INTENT, so it does not complete crypto checkout.
+
+The merchant-provided country hint is documented as ISO alpha-2, used before an established KYC region and ignored afterward. It is forwarded to both platform settings and payment-token creation. Registration, token authentication and successful authorization now store the customer ID through a helper that discards the cached platform API client, and logout clears that cache. The next resolution can use the authenticated customer rather than the pre-auth cached choice. Settings/request serializers and backend selection rules are excluded: this is forwarding/cache evidence, not proof of regional eligibility, validation or deterministic merchant-of-record selection.
+
+MainActor `fulfillKYCRequirement(from:)` obtains Link account information, creates AdditionalKYCFlowCoordinator and awaits presentation. Submitted and pendingVerification log completion; canceled/notRequired do not. The result is returned and errors use existing mapping. Its protocol documents an authenticated user and unsupported-requirement/presentation/API failures. The result type, document collection flow, upload/network internals and enforcement are excluded; analytics completion is not verified KYC or successful checkout.
+
+Release notes describe optional Apple Pay-derived email, phone and rawPhone on KycInfo, for prefill only. Phone normalization uses billing country when possible, otherwise nil; rawPhone preserves the wallet value. Names fall back to shipping values; email/phone alone cannot create KycInfo without a usable name or billing address. KycInfo and the announced missingLinkSessionKey API error implementation are excluded; do not present those announcements as independently read model behavior. The coordinator remains CryptoOnrampAlpha SPI.
+
+### Identity, Financial Connections and announced fixes
+
+Identity's STP SPI BiometricConsentConfiguration adds hideDeclineButton, default false, while retaining hideBrandingHeader. The native initializer forwards configuration to its flow controller. Rendering/consent internals are excluded; hiding a control is not proof of consent bypass or verification success.
+
+FinancialConnectionsSheet's onEvent documentation now says events include financialConnectionsSessionId, begin after session initialization, and earlier failures use the completion callback. Its retained delegate still forwards received events without constructing that ID. Event/host internals are excluded, so the actual emission/ID guarantee is documentation-level evidence. Existing preCollectedConsent storage/overload behavior is unchanged in this retained file, not a new 26.13.0 consent feature.
+
+The release announces a card-brand crash fix, Apple Pay opening for fractional COP/HUF/IDR/LAK/LBP/PKR/RSD amounts, and correct LBP display. Changed card-brand/currency/wallet implementations are not retained, so affected rounding, formatting and runtime behavior are not independently verified. Eight retained podspecs only bump versions, keeping iOS 15 and Swift 5 declarations; the podspec itself does not prove an Apple Pay fix.
+
+> [!warning] Contradiction in upstream historical attribution
+> The new cumulative changelog moves the error/decline/type-preservation note from 26.12.0 to 26.12.1 and inserts financialConnectionsSessionId guidance under 26.12.1. Earlier raw/wiki observations remain accurate for their collection dates. This later relabeling is not proof of the first implementation release. The changelog has 24 inserted lines and one deleted line (the moved note), retaining 2,183 lines unchanged by the comparison. See [[changelog-github-stripe-ios]].
+
+### Grounding excerpts
+
+> `case .momo,`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift:823` - processing-success group returns true
+
+> `case .goPay,`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift:832` - processing-success group including ShopeePay returns false
+
+> `viewController.clearErrorForReuseAfterCancellation()`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift:910`
+
+> `let flow = AdditionalKYCFlowCoordinator(apiClient: apiClient, linkAccountInfo: account, appearance: appearance)`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift:529`
+
+> "Events begin after session initialization. Earlier failures are reported through the completion callback."
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift:103`
+
 ## Completion and Delayed Methods
 
 `PaymentSheetResult` returns `completed`, `canceled`, or `failed`. `completed` is the end of the SDK interaction, not settlement proof. The source explicitly directs merchants to transition to a generic receipt and fulfill only after receiving a successful Stripe payment event.
@@ -602,6 +662,10 @@ The alpha `CryptoOnrampCoordinator` covers Link account discovery and authentica
 Version 26 raises the deployment target from iOS 13 to iOS 15. Version 25 broadly adopts async APIs and strict-concurrency annotations, makes Customer Sessions and Confirmation Tokens generally available, renames several payment APIs, and removes deprecated Source-era behaviors. Applications crossing either major version must follow `MIGRATING.md` and regression-test payment completion, redirects, 3DS, delayed methods, saved methods, Apple Pay, and Swift concurrency.
 
 ## Version History
+
+### `stripe-ios@26.13.0`
+
+Published 2026-10-05; approved focused-reading delta from stripe-ios@26.12.1 at b65af30ecc73007aa9164627253ecafdf0a84872. Adds wallet bindings/processing distinctions, FlowController plumbing, alpha Apple Pay/KYC and scoped Identity/event findings without replacing prior history. Release-announcement-only fixes and retrospective changelog relabeling remain explicit. See [[changelog-github-stripe-ios]]; this is ingest progress, not a latest-upstream claim.
 
 ### `stripe-ios@26.12.1`
 
@@ -672,12 +736,33 @@ The May 2026 manual capsule established the modular SDK, PaymentSheet, FlowContr
 
 - Company: [[stripe]]
 - Concept: [[stripe-ios-sdk]]
+- Alpha Onramp: [[stripe-crypto-onramp]]
 - Native counterpart: [[source-github-stripe-android]]
 - React Native bridge: [[source-github-stripe-react-native]]
 - Higher-level billing SDK: [[source-stripe-billing-ios-sdk]]
 - History: [[changelog-github-stripe-ios]]
 
 ## Raw Sources
+
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/manifest.json` - exact-SHA 26.13.0 capsule and retained hashes
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.13.0/2026-10-13/manifest.json` - package-qualified release identity/publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.13.0/2026-10-13/release-notes.md` - release announcements
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.12.1--26.13.0/comparison.json` - identities/dispositions; adjacent comparison.md and diff.patch
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift` - response decoding/properties
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift` - identifiers, case order and display labels
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift` - convenience initializers/factory/serialization
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGoPay.swift` - GoPay response model
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGoPayParams.swift` - GoPay parameter model
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMomo.swift` - MoMo response model
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMomoParams.swift` - MoMo parameter model
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodShopeePay.swift` - ShopeePay response model
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodShopeePayParams.swift` - ShopeePay parameter model
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift` - processing classification and existing confirmation boundaries
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift` - updater preservation and cancellation caller
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift` - pre-auth platform client, hint/cache lifecycle and delegated KYC
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift` - default-false decline-button SPI
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift` - onEvent documentation and retained forwarding
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/CHANGELOG.md` - new block and retrospective attribution changes
 
 - `raw/github/stripe/stripe-ios/snapshots/2026-09-30-9f0d5aa/manifest.json` - exact-SHA 26.12.1 capsule; all retained paths and hashes
 - `raw/github/stripe/stripe-ios/releases/stripe-ios/26.12.1/2026-09-30/manifest.json` - package-qualified release identity/publication

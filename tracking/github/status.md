@@ -4905,6 +4905,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/9.14.0/2026-08-21/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.13.0--9.14.0/comparison.json)
 
+## `github-f79371e388bb9781cb20`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `b65af30ecc73007aa9164627253ecafdf0a84872`
+- Collection date: `2026-10-13`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-f79371e388bb9781cb20/packet.md)
+- Review priority: `high`
+- Required reading: `33` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.13.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.13.0/2026-10-13/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.12.1--26.13.0/comparison.json)
+
 ## `github-f8c98215ba0bd54e6149`
 
 - Repository: `paypal/paypal-checkout-components`

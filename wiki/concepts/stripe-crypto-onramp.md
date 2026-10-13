@@ -171,6 +171,16 @@ Experimental OnrampCoordinator.Presenter adds presentTermsAndConditionsIfNeeded 
 > [!warning] Contradiction
 > The 23.21.0 raw changelog moves the KYC addition previously labeled 23.17.1 to 23.18.0 and adds the terms-method note under 23.19.0 retrospectively. The earlier retained API/source lacked these terms methods through 23.20.0; this comparison directly observes their 23.20.0 -> 23.21.0 addition. Preserve both immutable history records and the observed boundary without claiming an exact first implementation release. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
 
+## iOS `26.13.0` Alpha Delta
+
+This version-qualified native alpha flow is distinct from the older web/headless setup sequence above. `CryptoOnrampCoordinator.collectPaymentMethod(type:from:)` can present Apple Pay before Link authentication: its platform-client resolver now forwards an optional crypto customer ID instead of rejecting an absent one. Card/bank collection still checks verified Link state, and `createCryptoPaymentToken()` still requires a crypto customer ID. Collection creates a payment source; it does not perform checkout or prove payment success.
+
+`create(..., countryHint: nil)` gains an optional merchant-provided ISO alpha-2 country hint. The coordinator forwards it into platform settings and token creation; documentation says it assists merchant-of-record selection before the customer has an established KYC region and is ignored afterward. Successful registration, token authentication and authorization store the customer ID and clear the cached platform API client; logout also clears that cache. The settings/token API implementations are excluded, so exact backend selection, validation and enforcement are not established.
+
+MainActor `fulfillKYCRequirement(from:)` gets Link account information and delegates to an additional-KYC flow. The caller returns submitted, pendingVerification, canceled or notRequired and logs completion only for the first two. Submission/pending verification is not verified KYC or guaranteed transaction eligibility; result definitions, document/UI/network internals remain excluded.
+
+Release-note-only findings describe optional Apple Pay-derived `KycInfo.email`, normalized E.164 `phone` and original `rawPhone`, all for prefill. Normalization uses the billing country when possible; names fall back to shipping values, and a usable name or billing address is still needed (email/phone alone is insufficient). The changed KycInfo model and announced missingLinkSessionKey error implementation are excluded. No general-availability, country eligibility or runtime guarantee follows. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ## Relationship to Other Crypto Products
 
 ### Android `23.14.0` Evidence
@@ -181,6 +191,7 @@ The retained native API signature adds CryptoNetwork.Tempo. Release notes also a
 
 ## Sources
 
+- [[source-github-stripe-ios]] - native 26.13.0 alpha pre-auth Apple Pay, merchant-of-record hint/cache lifecycle and additional-KYC caller; explicit delegated implementation limits
 - [[source-github-stripe-android]] - native 23.14.0 Tempo declaration and explicit request-implementation limits
 
 - [[source-stripe-crypto-onramp]] — overview: merchant of record role, three integration modes, application process
