@@ -15,7 +15,15 @@ The 2026-09-15 documentation snapshot describes Protect as enabled by default, w
 
 The risk-management documentation also routes to dispute monitoring and handling through Customer Area or the Disputes API. This page is a documentation snapshot, not proof of a merchant account's premium enablement or a particular payment or dispute outcome.
 
+
+
+## Point-of-sale risk-rule boundary
+
+The Adyen POS guide fetched 2026-09-15, whose raw metadata says last modified 2022-12-26 and calls the engine RevenueProtect, describes a separate Customer Area switch for POS risk checks. It focuses on MOTO and Manual Key Entry (MKE), not routine in-person payments. At company scope the switch defaults across merchant accounts; a merchant account can override company settings. The guide says the company default profile applies once enabled and recommends a dedicated profile when that merchant account processes only POS, because ecommerce-oriented shared-IP and shopper-reference rules can wrongly decline terminal traffic. It also describes MOTO/MKE as having no liability shift and merchant fraud-chargeback liability. These dated POS claims do not establish current Protect account settings or the liability of other POS entry modes. [[source-adyen-docs-point-of-sale-risk-management-pos]]
 ## Sources
+
+- [[source-adyen-docs-point-of-sale-risk-management-pos]] — 2026-09-15 capture of Adyen's dated POS RevenueProtect guide for MOTO/MKE risk rules, account scope, profile tuning, liability warning, and Terminal API refusal test.
+
 
 - [[source-adyen-docs-risk-management-chargeback-guidelines-cartes-bancaires-chargebacks]] — Adyen Cartes Bancaires chargeback page for non-defendable reason code 45 and three limited automatic-defense grounds (webpage snapshot, 2026-09-15).
 

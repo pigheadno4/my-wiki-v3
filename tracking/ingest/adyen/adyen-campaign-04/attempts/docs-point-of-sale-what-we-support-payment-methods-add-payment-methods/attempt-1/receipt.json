@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-point-of-sale-what-we-support-payment-methods-add-payment-methods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Add POS Payment Methods\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/what-we-support/payment-methods/add-payment-methods\"\nraw_files:\n  - \"adyen/docs/point-of-sale/what-we-support/payment-methods/add-payment-methods/2026-09-15.md\"\ntags: [adyen, point-of-sale, payment-methods, merchant-account, stores, customer-area, management-webhooks]\n---\n\n## Overview\n\nThis Adyen guide describes how an in-person payments merchant requests additional payment methods in test or live Customer Area and observes their asynchronous addition to a store. It covers Customer Area role, request submission, a Management `paymentMethod.created` webhook, post-submission failure handling, and when terminal configuration picks up an added method. It is a 2026-09-15 webpage snapshot, not a merchant-specific approval, live availability catalog, or proof that a terminal has already updated.\n\n## Key takeaways\n\n- The guide says major global credit and debit cards are supported out of the box. Additional methods must be requested for the merchant account through **Payments > Payment methods > Request payment methods** in test or live Customer Area, filtering by location and type, providing any prompted information, reviewing and submitting. The requirement is a POS integration and the **Change payment methods** Customer Area role. The guide does not enumerate scheme, region, account-contract or terminal-model eligibility for each method; the filtered list and any prompted information are context-specific.\n- Adding a method to a store is asynchronous. The requirements table says to subscribe to the **Payment method webhook**, and the Webhooks section recommends Management webhooks so `paymentMethod.created` can report that the method was added. The Visa JSON is explicitly an example with `environment: test`, a store ID and `result: SUCCESS`; it is not a result for the reader's request. An immediate submission error calls for correcting the entered information before resubmitting. In the guide's rare case where a request fails after submission and the merchant has no webhook failure alert, it says to wait **24 hours** before trying again; this is a condition-specific retry instruction, not permission to submit duplicates while a request is pending.\n- External factors can delay availability. The guide says methods typically appear within a day and recommends requesting at least a day before opening; neither is a service guarantee. Payment-method currency defaults vary by method type, and the guide directs a merchant with different currency needs to Support.\n- Once added, a terminal uses the method after its next configuration maintenance call, or after a manual configuration update for immediate use. Store addition and terminal readiness are separate transitions. This page does not itself describe terminal assignment or boarding, and no success should be inferred for an unboarded or offline terminal.\n\n## Detail locators\n\n- `## Requirements` \u2014 POS integration, Customer Area role, payment-method webhook subscription, timing/currency qualifications.\n- `## Request payment methods` \u2014 test/live Customer Area route, merchant-account switch, location/type filters, prompted details, review and submit.\n- `## Webhooks` \u2014 asynchronous store addition and `paymentMethod.created` example including test environment, merchant ID, store ID and result.\n- `## Troubleshooting` \u2014 immediate validation error versus rare post-submission failure and its no-webhook 24-hour wait.\n- `## When changes take effect` \u2014 terminal maintenance call versus manual configuration update.\n\n## Related\n\n- Company: [[adyen]]\n- Store and terminal administration context: [[adyen-pos-store-management]]\n- Variant identifiers and method-specific adding table: [[adyen-payment-method-variants]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/what-we-support/payment-methods/add-payment-methods/2026-09-15|2026-09-15 Adyen Add payment methods snapshot]]\n",
+  "quotes": [
+    {
+      "text": "To accept additional payment methods, you need to request those payment methods in your Customer Area.",
+      "location": "raw line 19, opening purpose under # Add payment methods"
+    },
+    {
+      "text": "Payment methods typically appear within a day. To avoid delays, we recommend requesting payment methods at least one day before the business opens.",
+      "location": "raw line 30, under ## Requirements, Limitations row"
+    },
+    {
+      "text": "Because adding a payment method to your user's store is an asynchronous process, we recommend that you subscribe to the [Management webhooks](https://docs.adyen.com/api-explorer/ManagementNotification/latest/overview) in your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw line 50, under ## Webhooks; compare requirement row line 29"
+    },
+    {
+      "text": "If this happens, you must wait 24 hours before trying again.",
+      "location": "raw line 77, under ## Troubleshooting; conditional on rare post-submission failure without webhook alert"
+    },
+    {
+      "text": "After you add a payment method, the changes take effect when a payment terminal updates its configuration during the next [maintenance call](/point-of-sale/managing-terminals/maintain-performance#maintenance-calls).",
+      "location": "raw line 81, under ## When changes take effect"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-pos-method-add-async-store-terminal-flow",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Operational boundary",
+        "proposed_markdown": "The POS Customer Area guide has the merchant account request additional payment methods, while adding a method to a store is asynchronous and can be reported by a Management `paymentMethod.created` webhook. After addition, the terminal picks up the method on its next configuration maintenance call or a manual update. A submitted request, a store webhook, and terminal readiness are distinct stages; the source gives no universal scheme or region availability. [[source-adyen-docs-point-of-sale-what-we-support-payment-methods-add-payment-methods]]\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-pos-method-add-store-hub-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-what-we-support-payment-methods-add-payment-methods]] \u2014 Adyen 2026-09-15 POS Customer Area request guide, asynchronous store method addition, Management webhook, and terminal configuration timing.\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/what-we-support/payment-methods/add-payment-methods/2026-09-15.md",
+  "raw_sha256": "5e71d7d54673a67441ffbb37e037c1f1c611e72fbc03172c4b0f033c8a8c3b92",
+  "status": "candidate_ready"
+}

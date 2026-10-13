@@ -169,6 +169,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-risk-management-skip-risk-rules]] — Adyen skip risk rules (webpage, 2026-10-13)
 - [[source-adyen-docs-risk-management-chargeback-guidelines-cartes-bancaires-chargebacks]] — Adyen Docs: Cartes Bancaires chargebacks (webpage, 2026-10-13)
 
+### Website documentation — Campaign 04
+
+- [[source-adyen-docs-point-of-sale]] — Adyen Docs: In-person payments (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-get-started]] — Adyen point-of-sale integration overview (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration]] — Adyen Docs: Design your in-person integration (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-terminal-api]] — Adyen Terminal API structure and transport (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture]] — Choose an integration architecture | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-wi-fi-profiles]] — Adyen Wi-Fi Profiles for Payment Terminals (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-determine-account-structure-automate-store-management]] — Adyen Docs: Automate store management (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-pre-authorisation]] — Adyen POS pre-authorization and authorization adjustment (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture-local-protect]] — Protect with your own code | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-capturing-payments]] — Capture in-person payments | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture-local]] — Adyen Docs: Building a local Terminal API integration (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-card-acquisition]] — Adyen POS card acquisition (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-display-notifications]] — Adyen Docs: Display notifications for POS apps (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-offline-payment]] — Adyen point-of-sale offline payments (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture-cloud]] — Building a cloud integration | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-determine-account-structure-configure-features]] — Adyen Configure POS Terminal Features (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-error-scenarios]] — Handle responses | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-what-we-support-payment-methods]] — In-person payment methods | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-cellular-failover]] — Adyen Docs: Cellular failover for payment terminals (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture-local-protect-with-library]] — Adyen local Terminal API protection with libraries (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-recurring-payments]] — Adyen Docs: Tokenize a POS payment for later online charges (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-add-data]] — Adyen POS payment SaleToAcquirerData (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-network-configuration]] — Network configuration | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-cardholder-verification-methods]] — Adyen POS Cardholder Verification Methods (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-event-notifications]] — Adyen POS event notifications (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-partial-authorizations]] — Partial authorizations for POS | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-what-we-support-select-your-terminals]] — Select payment terminals | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-get-started-tapi-checklist]] — Adyen Docs: Terminal API integration checklist (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-determine-account-structure]] — Adyen in-person account structure and store creation (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-testing-pos-payments]] — Adyen Docs: Test a point-of-sale integration (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-set-up-beacons]] — Adyen Bluetooth terminal beacons for POS routing (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-get-started-go-live-tapi]] — Terminal API go-live checklist | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-bluetooth-pan]] — Adyen Bluetooth PAN and Tethering for POS Terminals (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-risk-management-pos]] — Adyen Docs: Point-of-sale risk management (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-bt-base-station]] — Adyen Docs: V400m Bluetooth base station troubleshooting (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-standard-notifications]] — Adyen POS platform-generated webhooks (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-display-notifications-tender-state-reference-sheet]] — Adyen Docs: POS tender states reference (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-end-of-3g]] — Adyen terminal 2G/3G coverage sunset (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-what-we-support-supported-languages]] — Locations and languages | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-what-we-support-payment-methods-add-payment-methods]] — Adyen Add POS Payment Methods (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-what-we-support-solutions]] — Adyen Docs: Point-of-sale solutions (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-what-we-support-payment-methods-manage-payment-methods]] — Adyen POS manage payment methods (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-networking-issues]] — Networking issues | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-terminal-api-get-the-terminal-id]] — Get the Terminal API terminal ID | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration]] — Adyen Docs: Implement the Terminal API payment flow (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-diagnostics]] — Adyen POS terminal diagnostics overview (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-notifications]] — Adyen Docs: POS notifications and webhooks overview (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-reconciling-totals]] — Adyen POS terminal totals reconciliation overview (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-what-we-support]] — What we support | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity]] — Adyen POS Network and Connectivity Topics (webpage, 2026-10-13)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -201,6 +254,8 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-pos-store-management]] — Adyen POS Store Management
 
 - [[adyen-security-incident-response]] — Adyen Security Incident Response
 

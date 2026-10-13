@@ -1,0 +1,13 @@
+# Fixed retrieval checks — cloud Terminal API
+
+## Purpose, scope, and limits
+
+**Query:** What does this cloud guide establish, and what should a reader avoid inferring?
+
+**Answer:** It documents the merchant POS → Adyen payments platform → terminal cloud path for Terminal API, including network, credential, result, recovery, endpoint, and migration guidance. It is a 2026-09-15 capture with a 2023-08-29 `last_modified` value. It does not prove current account eligibility, endpoint availability, successful payment execution, or a linked GitHub library's current version. The page lists several optional Terminal API cloud libraries while saying the new Cloud device API is currently Java-library-only; do not treat those claims as equivalent (raw lines 5–12, 19–48, 73–97, 319–329). Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` → `wiki/sources/adyen/source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture-cloud.md` → `raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/cloud/2026-09-15.md`.
+
+## Central capability, prerequisites, and warnings
+
+**Query:** How do cloud requests, results, and failure recovery work?
+
+**Answer:** The POS sends a Terminal API message through Adyen's Cloud device API endpoint to the terminal. Cloud setup includes DNS-based Adyen-domain allowlisting, required ports and account WebSocket enablement, plus an `x-API-key` whose credential has the Cloud Device API role (raw lines 26–69, 99–139). The sync test endpoint keeps the connection open and requires a timeout over 150 seconds; the async test endpoint's `200 OK` acknowledges terminal receipt, while the payment result comes through event notification or transaction status. Async event notifications need a successful HTTP acknowledgment; Adyen says it retries up to three times only on 5xx, with an optional support-enabled continuing-delivery feature. Delayed responses may arrive during another transaction. After 150 seconds without a payment or timeout response, query transaction status to reduce duplicate-action risk (raw lines 141–219). Live endpoints are regional, with `deviceId` matching the header `POIID`; the old `terminal-api` endpoints remain supported but receive no future development in this snapshot (raw lines 221–329). The Postman, GitHub, notification, and API links are navigation until separately reviewed. Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` → `wiki/sources/adyen/source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture-cloud.md` → `raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/cloud/2026-09-15.md`.

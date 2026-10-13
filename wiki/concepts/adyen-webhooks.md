@@ -7,11 +7,20 @@ tags: [adyen, webhooks, notifications, asynchronous-events]
 
 ## Definition
 
+For POS, Adyen distinguishes platform-generated Standard transaction webhooks from platform-generated terminal-management webhooks for assignment, boarding, orders, and settings. Standard webhook event codes and optional `additionalData` are configured separately; terminal-management payloads have another structure and need only the Customer Area server/security configuration described by the guide. These backend platform webhooks are distinct from terminal-generated EventNotification and DisplayRequest messages and from an immediate Terminal API payment response.
+
+
 Adyen webhooks are event-driven HTTP POST messages sent by an Adyen service to a merchant-defined endpoint. The receiving system acknowledges them with a `2xx` response, stores the message, and processes its contents. They support asynchronous resource flows whose final status is not immediately known, can carry a resource snapshot for updating merchant-held state, and provide automatic notification of external events.
 
 The overview's examples are flow- and object-qualified: delayed payment confirmation such as iDEAL, Adyen for Platforms account-holder and balance-account state, onboarding verification, shopper-initiated chargebacks, report availability, and Adyen Issuing relayed authorisation. Those examples do not by themselves establish payment finality, account eligibility, event-specific payloads, delivery guarantees, or GitHub/SDK implementation behavior.
 
 ## Sources
+
+- [[source-adyen-docs-point-of-sale-design-your-integration-notifications]] — Adyen Docs POS overview routing terminal display/event notifications and platform-generated webhooks, including asynchronous cloud response setup (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-standard-notifications]] — Adyen POS website guide to platform-generated Standard and terminal-management webhooks, configuration differences, and backend acknowledgment/HMAC pointers (2026-09-15 snapshot).
+
 
 - [[source-adyen-docs-development-resources-webhooks-handle-webhook-events]] — 2026-09-15 webpage handling guide separating verification, persistence, acknowledgement and business processing, with ordering, duplicate-delivery and retry-trigger qualifications
 

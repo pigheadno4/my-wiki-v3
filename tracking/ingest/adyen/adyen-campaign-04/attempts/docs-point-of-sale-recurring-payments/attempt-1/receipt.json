@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-point-of-sale-recurring-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Tokenize a POS payment for later online charges\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/recurring-payments\"\nraw_files:\n  - \"adyen/docs/point-of-sale/recurring-payments/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, tokenization, recurring-payments]\n---\n\n## Overview\n\nThis Adyen Docs webpage explains how a merchant using **Terminal API with payment terminals** can ask for shopper consent, tokenize an initial in-person payment, and use the resulting stored-payment token for a later **online** card-on-file or recurring charge. The later charge goes directly to Adyen's backend through Checkout `/payments`; it is not another Terminal API request to the terminal or its cloud endpoint. See [[adyen-tokenization]], [[adyen-terminal-api]], and [[adyen]].\n\n## Key takeaways\n\n- **Consent and authentication:** ask the shopper to opt in for specific future payments before the initial POS request. The page says PSD2 SCA applies to the initial transaction where relevant and describes PIN as usual for POS, with digital-wallet and low-value contactless cases where the terminal will not ask for PIN. Additional business-model SCA requirements and other regulations may apply; the page directs readers to separate guidance and Support for a configured PIN prompt. It does not establish the merchant's regional or regulatory eligibility. [Raw: Requirements; Cardholder consent and authentication]\n- **Versioned request boundary:** from terminal software **1.85**, use `recurringProcessingModel` (`CardOnFile`, `Subscription`, or `UnscheduledCardOnFile`) and a unique `shopperReference` in `SaleData.SaleToAcquirerData`. The shopper reference has a minimum of three characters and should exclude PII such as name or email. The older `recurringContract` system remains backward-supported, but old and new tokenization parameters cannot be mixed in one payment request. [Raw: Tokenization parameters; Migration from old tokenization parameters; Make the initial payment]\n- **Token capture and identity:** enable recurring details in Customer Area additional data to receive the relevant identifiers. In the initial `PaymentResponse.AdditionalResponse`, `tokenization.store.operationType` reports `created`, `alreadyExisting`, or `updated`; save `recurring.recurringDetailReference` / `tokenization.storedPaymentMethodId` as the token and the paired shopper reference in the backend. The separate `PaymentToken.TokenValue` is a card alias for recognition, **not** a usable later-payment token. Optional email, alias, and PAR details have separate purposes. [Raw: Enable receiving tokenization details; Make the initial payment]\n- **Later charge:** authenticate a backend Checkout `POST /payments` with an API key; submit the stored-payment token as `storedPaymentMethodId` and the same `shopperReference`. The guide directs one-off, subscription, and auto top-up details to separate online-payment instructions and says to check the response for `resultCode: Authorised`. A cloud Terminal API integration may reuse its existing API key. Token management is also an online API operation requiring an API credential with API key. [Raw: Make a recurring online payment; Token management]\n\n## Detail locators\n\n- Raw `Make the initial payment` includes consent collection options, two `SaleToAcquirerData` encodings, an illustrative request/response, and the exact token-versus-card-alias warning.\n- Raw `Cardholder consent and authentication` and `Requirements` carry the conditional SCA, integration-type, and software-version constraints.\n- Raw `Make a recurring online payment` gives the API and response boundary. Its linked online token-payment instructions are navigation targets, not evidence read for this entry.\n- This snapshot describes token use, not merchant collection of raw card data or a PCI DSS compliance determination; use dedicated PCI guidance for that question.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 provider concept hub for saved payment methods and account-scope boundaries\n- [[adyen-terminal-api]] \u2014 POS message architecture and Checkout API boundary\n- [[adyen]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/recurring-payments/2026-09-15|POS tokenization \u2014 Adyen Docs snapshot, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you tokenize the shopper's payment details when they make a payment at the point of sale, you can use that token in a later online payment.",
+      "location": "raw line 38, How it works"
+    },
+    {
+      "text": "Tokenization should always be an opt-in process. Without the shopper's consent, there is an increased chance of chargebacks for payments made using saved card details.",
+      "location": "raw line 47, Cardholder consent and authentication"
+    },
+    {
+      "text": "We do not support using both the old and the new tokenization parameters in the same payment request.",
+      "location": "raw line 75, Migration from old tokenization parameters"
+    },
+    {
+      "text": "Note that the `PaymentToken` object contains the card alias. You cannot use this for making payments. It is intended only for recognizing the card.",
+      "location": "raw line 248, Make the initial payment"
+    },
+    {
+      "text": "For an online payment using saved payment details you make a request to the Adyen back end directly. This is not a Terminal API request to either the terminal itself or the cloud endpoint for the terminal. You need to [generate an API key](/development-resources/api-credentials#generate-api-key) to authenticate your request to the back end.",
+      "location": "raw line 254, Make a recurring online payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-pos-recurring-adyen-tokenization-link",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-recurring-payments]] \u2014 Adyen Docs website guide to consented Terminal API POS token creation and later online Checkout token charges (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "Do not conflate the PaymentToken card alias with the recurring stored-payment token or the later online Checkout call with a terminal payment.",
+          "The page's PSD2 discussion is conditional on applicability and does not establish merchant or regional eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/recurring-payments/2026-09-15.md",
+  "raw_sha256": "b46150620db1fec3e67f3d13c90361e802e9a0b68840a5225b5ec48d70f2a1cb",
+  "status": "candidate_ready"
+}

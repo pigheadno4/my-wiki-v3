@@ -15,6 +15,9 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-recurring-payments]] — Adyen Docs website guide to consented Terminal API POS token creation and later online Checkout token charges (2026-09-15 snapshot).
+
+
 - [[source-adyen-docs-online-payments-account-updater-batch-account-updater]] — Adyen Batch Account Updater guide (webpage snapshot, 2026-09-15) for SFTP or scheduled single-card requests, encrypted batch result files, and follow-up stored-card actions.
 
 

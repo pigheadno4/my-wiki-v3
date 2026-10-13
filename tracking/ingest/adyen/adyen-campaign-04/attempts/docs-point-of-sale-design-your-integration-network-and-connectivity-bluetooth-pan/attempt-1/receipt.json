@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-network-and-connectivity-bluetooth-pan",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Bluetooth PAN and Tethering for POS Terminals\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/network-and-connectivity/bluetooth-pan\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/bluetooth-pan/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, bluetooth-pan, tethering, mobile-pos, connectivity]\n---\n\n## Overview\n\nThis Adyen webpage guide describes pairing an Android or iOS mobile POS device with a supported Adyen payment terminal over Bluetooth Personal Area Network (PAN). The PAN carries POS-to-terminal requests and terminal-to-POS responses; a separate internet path carries the terminal's online authorization traffic to Adyen. It distinguishes using the terminal's internet connection from tethering through the mobile device. The pinned snapshot was fetched 2026-09-15 and lists `last_modified` 2020-09-22, so its terminal-model, software, 2G/3G and mobile-OS connectivity claims need current confirmation before deployment.\n\n## Key takeaways\n\n- The requirements table says Terminal API with terminal software **1.60 or later** and hardware limited to **e280 and e285p**. The subsequent setup table and instructions instead say **e280 or e285**. Preserve that model-name discrepancy; this snapshot alone does not resolve whether `e285` and `e285p` are interchangeable or establish support for other terminals. It also cautions to check regional 3G availability, citing European 2G/3G shutdowns.\n- Pairing forms an ad hoc Bluetooth PAN between terminal and Android/iOS mobile POS. The mobile POS sends a payment request across PAN; the terminal sends it to Adyen for online authorization, displays the result and returns a response across PAN. This guide describes that direct device link and internet forwarding; it does not specify a cloud Terminal API transport, mobile permission API, or Bluetooth security protocol. Verify the matching pairing code on both devices before accepting.\n- With **terminal internet access**, the e280 procedure uses terminal Wi-Fi; the e285 procedure allows terminal Wi-Fi and optional 2G/3G SIM fallback. With **mobile-device tethering**, the guide says Android can share its Wi-Fi or cellular connection, while iOS shares cellular. These are configuration alternatives, not guarantees of carrier, OS or hardware support beyond the dated source.\n- For tethering, keep the mobile hotspot active despite battery saving or time-outs. After pairing, check that the terminal has an IP address, run the linked PSP connection test, and then initiate a test payment from the mobile POS. An IP address alone is insufficient to establish Adyen reachability or successful payment. The guide says paired devices reconnect automatically on later use; that is a documented behavior in this snapshot, not proof of a particular installation.\n\n## Detail locators\n\n- `## Requirements` \u2014 Terminal API, software version, e280/e285p hardware claim and region-dependent legacy cellular caution.\n- `## Concepts and setups` \u2014 PAN request/response path, terminal-versus-mobile internet alternatives and the table that uses e285 rather than e285p.\n- `## Bluetooth PAN using the terminal for internet access` \u2014 terminal Wi-Fi/SIM variants, Bluetooth enablement, matching-code pairing and test payment.\n- `## Bluetooth tethering using the mobile device for internet access` \u2014 Android Wi-Fi/cellular versus iOS cellular sharing, active-hotspot requirement, pairing, IP/PSP connectivity/test-payment checks.\n- `## Bluetooth menu on the terminal` and `## See also` \u2014 menu animation and navigation to beacons/user manuals; linked pages are navigation only.\n\n## Related\n\n- Company: [[adyen]]\n- POS message and architecture context: [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/bluetooth-pan/2026-09-15|2026-09-15 Adyen Bluetooth PAN and tethering snapshot]]\n",
+  "quotes": [
+    {
+      "text": "A [Terminal API integration](/point-of-sale/basic-tapi-integration/) with payment terminals using software version 1.60 or later.",
+      "location": "raw line 32, under ## Requirements, Integration type row"
+    },
+    {
+      "text": "Only supported with e280 and e285p payment terminals.",
+      "location": "raw line 33, under ## Requirements, Hardware row; compare e285 wording in lines 44-47"
+    },
+    {
+      "text": "The terminal then sends the payment request to the Adyen payments platform for online authorization.",
+      "location": "raw line 38, under ## Concepts and setups, PAN/Adyen traffic flow"
+    },
+    {
+      "text": "An **iOS device** allows the terminal to use the cellular connection of the iOS device.",
+      "location": "raw line 95, under ## Bluetooth tethering using the mobile device for internet access; compare Android at line 91"
+    },
+    {
+      "text": "Verify that an identical pairing code appears on both devices, and accept the code on both devices.",
+      "location": "raw line 122, tethering pairing step 3; also repeated in PAN setup at line 79"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-bluetooth-pan-terminal-api-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-bluetooth-pan]] \u2014 2026-09-15 Adyen webpage snapshot for mobile-POS-to-terminal Bluetooth PAN, terminal or mobile internet access, pairing and connectivity checks; requirement names e285p while setup names e285.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "The raw hardware requirement names e285p, while its setup table and steps name e285; do not silently normalize these models."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/bluetooth-pan/2026-09-15.md",
+  "raw_sha256": "7db098bf8456e911a1757537ad90d79172c799475e57189f4cbc43d008283750",
+  "status": "candidate_ready"
+}

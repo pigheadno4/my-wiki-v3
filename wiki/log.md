@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-13] ingest | Adyen website C04
+
+- Fifty independently approved in-person documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 7 concepts touched (1 new); source_count 214 = 200 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-04/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-13] ingest | Adyen website C03
 
 - Fifty independently approved sources; four targeted review corrections and one bounded Cartes Bancaires attribution reconciliation. Nine existing concepts updated; source_count 164 = 150 website + 14 GitHub. Raw unchanged. Query, exemplar and validation evidence: `tracking/ingest/adyen/adyen-campaign-03/`; details [[adyen-log]]. No commit/push.

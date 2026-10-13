@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-network-and-connectivity-set-up-beacons",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Bluetooth terminal beacons for POS routing\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, bluetooth, ibeacon, terminal-routing]\n---\n\n## Overview\n\nThis Adyen Docs page describes Bluetooth/iBeacon advertisements from supported payment terminals that a mobile POS app can use to find a nearby terminal and route Terminal API requests. It covers Customer Area beacon values, cloud routing by serial number and `POIID`, and local routing by advertised IP address plus `POIID`. See [[adyen]] and [[adyen-terminal-api]]. The word \u201cconnect\u201d in the page summary refers here to discovery and request routing; the body does not establish a Bluetooth payment transport, SDK pairing protocol, transaction success, or payment outcome.\n\n## Key takeaways\n\n- The stated scope is a Terminal API integration with payment terminals. The page explicitly excludes Android terminals and unattended non-Android terminals from beacon functionality. It does not give supported terminal model lists, mobile POS operating-system or SDK versions, regional availability, Bluetooth permission procedures, or security guarantees; those should not be inferred from its iBeacon examples.\n- Supported terminals advertise an iBeacon UUID, Major and Minor. In Customer Area, the operator can choose the merchant account, store, or terminal scope, enable beacons under **Devices > Device settings > Device connectivity**, set those three values, and save. UUID is 32 hexadecimal digits; Major and Minor are each decimal values from 0 through 65535.\n- Adyen's placeholders can encode the terminal serial number in Major/Minor for cloud communication or its IP address for local communication. The table gives serial placeholders `${SERIALH}`/`${SERIALL}` and interface-specific IP placeholders (for example `${IPH:ETH0}`/`${IPL:ETH0}`); the mobile POS app must decode the advertised values and select the relevant terminal details. These identifiers support routing, not authorization to use the terminal.\n- In cloud mode, the POS derives the serial number from Major/Minor, looks up the full terminal `POIID` in a `/connectedTerminals` response for the applicable company, merchant, or store, then sends its Terminal API request with that `POIID`. The serial number alone is not presented as the full `POIID`; the page's `POIID` example combines model and serial number.\n- In local mode, the POS derives the terminal IP address from Major/Minor and also needs the correct `POIID`. The page advises maintaining an IP-to-`POIID` mapping and describes a diagnosis-request method to populate it, then sending the Terminal API request to that IP using the matched `POIID`. Beacon discovery does not replace local network reachability or the Terminal API communication and security requirements documented elsewhere.\n\n## Detail locators\n\n- Purpose, iBeacon use and stated terminal exclusions: `# Bluetooth beacons` and `## Requirements`, raw lines 15\u201328.\n- UUID/Major/Minor and architecture split: `## Advertised values and integration types`, raw lines 31\u201344. Customer Area setup and configuration scope: lines 46\u201362.\n- Serial and interface-specific IP placeholders: `### Placeholders for the Major and Minor`, raw lines 64\u201384.\n- Cloud serial decoding, `/connectedTerminals` lookup and `POIID` routing: `## Use beacons with cloud communications`, raw lines 86\u2013122.\n- Local IP and `POIID` mapping, diagnosis suggestion and IP decoding: `## Use beacons with local communications`, raw lines 124\u2013177. Numeric values and terminal IDs are examples, not a support matrix.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 in-person Terminal API concept and separate versioned GitHub evidence.\n\n## Related raw API references\n\n- The raw page links to terminal integration, cloud/local architecture, `/connectedTerminals` diagnostics, diagnosis requests, and Apple's iBeacon documentation. Those linked targets are navigation until independently read; see raw lines 19, 27, 88\u2013100, 126\u2013138, and 179\u2013182.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons/2026-09-15|Adyen Docs: Bluetooth beacons (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Our Bluetooth terminals use the [iBeacon protocol](https://developer.apple.com/ibeacon/) to advertise their presence to other nearby Bluetooth devices, such as a mobile POS app. You can use the advertised data to make sure that the POS app discovers the closest terminal and uses its unique identifiers to correctly route Terminal API requests.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons/2026-09-15.md:19, under # Bluetooth beacons"
+    },
+    {
+      "text": "The beacon functionality is not supported for Android terminals and unattended non-Android terminals.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons/2026-09-15.md:28, under ## Requirements"
+    },
+    {
+      "text": "The [Major and Minor values](#placeholders-for-the-major-and-minor) are set up to encode the terminal data needed for routing: the **serial number** for cloud-based communication, or the **IP address** for local communication.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons/2026-09-15.md:39, under ## Advertised values and integration types"
+    },
+    {
+      "text": "The response lists the POIIDs.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons/2026-09-15.md:99, under ## Use beacons with cloud communications"
+    },
+    {
+      "text": "Get the `POIID`. For this, you should use your own mapping from the IP address to the `POIID`.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons/2026-09-15.md:135, under ## Use beacons with local communications"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-pos-beacons-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-set-up-beacons]] \u2014 Adyen Docs website guide to supported terminal iBeacon advertisements and cloud/local Terminal API request routing (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/set-up-beacons/2026-09-15.md",
+  "raw_sha256": "7f8893d785df3e7d2ce67c09772aa9e69620bae22ebb4ac634e9e9e7544d4434",
+  "status": "candidate_ready"
+}

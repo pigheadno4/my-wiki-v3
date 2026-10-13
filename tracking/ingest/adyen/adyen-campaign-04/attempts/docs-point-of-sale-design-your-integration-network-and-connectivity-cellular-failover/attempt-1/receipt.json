@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-network-and-connectivity-cellular-failover",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Cellular failover for payment terminals\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover/2026-09-15.md\"\ntags: [adyen, point-of-sale, cellular-failover, terminals, connectivity]\n---\n\n## Overview\n\nThis Adyen documentation page describes cellular failover for payment terminals in Terminal API or standalone point-of-sale setups. A terminal with usable cellular access can switch from a primary Wi-Fi or Ethernet path when it cannot reach the internet and return when the primary path recovers. The page distinguishes terminal connectivity from the POS app's connectivity, explains local and cloud failure scenarios, and gives SIM-management and terminal-model qualifications. This 2026-09-15 snapshot does not prove current cellular coverage, fees, account enablement, or successful payment processing.\n\n## Key takeaways\n\n- Failover carries Adyen-related terminal services such as payments and diagnostics; it does not carry network requests from other apps installed on the terminal. A terminal may use built-in cellular hardware and an Adyen-supplied SIM, or a cellular router where hardware is absent. 3G-only terminals face the linked 3G-coverage sunset. See **Requirements** and **Cellular connection and alternatives**.\n- In cloud communications, terminal failover can help if the POS app still has internet access to send its request through Adyen. If the POS app itself has no internet, terminal failover does not restore its send/receive path. In local communications, failover does not help when the terminal loses the LAN connection needed to receive the POS request; it can help when the LAN remains connected but the terminal's internet path fails, with the page describing a 36-second wait before cellular use. See **Understanding cellular failover scenarios**.\n- The page suggests standalone backup terminals or offline payments for some failed-path scenarios. Offline payments are available as an alternative only for local communications in this page, and the merchant is fully liable for failed captures, chargebacks, and disputes related to offline payments. A standalone backup must have a built-in printer plus cellular connectivity or offline payments enabled. See **Using a cellular router** and the scenario sections.\n- Adyen says SIMs are activated and cellular is enabled by default. Management API GET/PATCH terminal-settings calls can inspect or change one terminal's `simcardStatus` (`ACTIVATED` or `INVENTORY`); deactivation removes cellular access. After reactivation, the terminal needs cellular re-enabled or a reboot, with different non-Android and Android steps. The response returns all terminal settings at the requested level. See **Manage cellular connectivity on the terminal**.\n- Third-party SIM use is limited here to AMS1, S1U2, S1F2, S1F2L, and S1E2L on firmware 1.93 or later; it requires account-manager activation details and the second SIM slot, without removing the pre-installed SIM. Manual operator selection has a different model list, firmware 1.134 or later, and prior Support enablement. Brazil's local-operator steps have a separate Android-terminal firmware 1.96 or later condition. See **Requirements**, **Select a network operator manually**, **Activating a third-party SIM card**, and **Switch to a local network operator in Brazil**.\n- At the snapshot, the page says Adyen did not charge for cellular connection use, while forecasting Android app-traffic data bundles and continued no-fee payment/terminal-update traffic. This is dated future-looking pricing language, not current commercial terms. See **Using terminals with cellular connectivity**.\n\n## Detail locators\n\n- **Requirements** \u2014 Terminal API/standalone scope; third-party SIM and manual-selection model/firmware gates; Adyen-service-only traffic; Support enablement.\n- **Cellular connection and alternatives \u2192 Using terminals with cellular connectivity** \u2014 built-in hardware, pre-installed SIM, primary/cellular return behavior, dated fee language, and 3G sunset.\n- **Cellular connection and alternatives \u2192 Using a cellular router** \u2014 router option, standalone/offline alternatives, printer and connectivity requirements, and offline-payment liability.\n- **Understanding cellular failover scenarios** \u2014 four distinct cloud/local and no-network/no-internet cases, including the local 36-second example.\n- **Manage cellular connectivity on the terminal** \u2014 Management API GET/PATCH `simcardStatus`, one-terminal-at-a-time scope, return payload, and platform-specific re-enablement/reboot. Code examples name older SDK versions and do not establish current library behavior.\n- **Select a network operator manually** \u2014 Support enablement, menu steps, and automatic-selection fallback.\n- **Activating a third-party SIM card** \u2014 account-manager, APN/serial, firmware, second-slot, and SIM-priority steps.\n- **Switch to a local network operator in Brazil** \u2014 Brazil-specific regulatory and terminal/firmware/menu qualifications.\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover/2026-09-15|Adyen Docs \u2014 Cellular failover (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "To process a transaction, the terminal must have internet access. Cellular failover occurs when the payment terminal cannot access the internet over the primary network connection (usually Wi-Fi or Ethernet), and switches to a cellular connection (3G or 4G).",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover/2026-09-15.md:19 (Cellular failover)"
+    },
+    {
+      "text": "Cellular failover is limited to Adyen-related services, such as payment or diagnostics requests. Cellular failover does not support network requests from other apps that you may have deployed on the terminal.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover/2026-09-15.md:30 (Requirements \u2192 Limitations)"
+    },
+    {
+      "text": "Currently, we do not charge fees for using the cellular connection. In the near future this will change for Android terminals: we won't charge a fee for using the cellular connection to make payments or update the terminal, but you will need to buy data bundles to cover the expected data traffic of the apps that you have running on your Android terminals.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover/2026-09-15.md:50 (Using terminals with cellular connectivity)"
+    },
+    {
+      "text": "The terminal lost its primary network connection, and fails over to a cellular connection. The POS app is still connected to the network and sends the payment request to the terminal over the network. However, the terminal never receives the request because it is disconnected from the network.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover/2026-09-15.md:99 (Scenario: No network connection - local integration)"
+    },
+    {
+      "text": "By default, SIM cards are activated and cellular connectivity is enabled. Using our [Management API](/point-of-sale/automating-terminal-management/configure-terminals-api), you can deactivate and activate the SIM card in individual terminals one at a time. If you deactivate a SIM card, the terminal cannot use cellular connectivity.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover/2026-09-15.md:115 (Manage cellular connectivity on the terminal)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cellular-failover-terminal-api-boundary",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Integration boundary",
+        "proposed_markdown": "Cellular failover protects the terminal's Adyen-service internet path, subject to terminal/SIM configuration; it does not restore a cloud POS app's lost internet path or a local POS-to-terminal LAN link. Offline payment is a separate local-communications alternative with merchant liability for failed captures, chargebacks and disputes. The website's terminal models, firmware gates and dated cellular-fee language belong to the linked source and raw snapshot, not the versioned GitHub Terminal API examples.",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "Do not generalize failover to other terminal apps or treat dated fee language as current pricing."
+        ]
+      },
+      {
+        "update_id": "cellular-failover-terminal-api-source-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-cellular-failover]] \u2014 Adyen website guide to terminal cellular failover, local/cloud failure boundaries, SIM management, and model-specific options (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/cellular-failover/2026-09-15.md",
+  "raw_sha256": "a9357ce5bd97251b6e9203bb657d2e7d9c5367197e7a25df85498a1fb9ef3ecb",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,7 @@
+# Fixed retrieval checks — Adyen POS integration overview
+
+Catalog route is pending coordinator promotion: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` → proposed `wiki/sources/adyen/source-adyen-docs-point-of-sale-get-started.md` → `raw/adyen/docs/point-of-sale/get-started/2026-09-15.md`.
+
+1. **What is this page for, and what should it not be used to infer?** It is an Adyen Docs navigation overview for building an in-person POS integration with the Terminal API and Adyen-provided terminals. It points to a test-integration checklist and a separate go-live checklist; the page itself supplies neither the detailed steps nor evidence of merchant readiness or successful payment execution. Locators: raw lines 15–22 and 41–53.
+
+2. **What central path and setup topics does it expose, and how should a reader route onward?** Start with the test-integration checklist, then use the separate go-live checklist for readiness; the linked resources address account structure/configuration, terminal models, cloud versus local-network communication, connectivity, Terminal API, and notifications/webhooks. Standalone and Android/iOS Mobile solutions route to their own checklists. Read their linked pages before using them as behavioral evidence. Route: root index → Adyen index → Adyen Terminal API concept → this source → pinned raw; see raw lines 19–39, with the checklist links repeated at lines 43–53. The concept also contains exact-commit GitHub Postman examples, which have a separate provenance from this website overview.

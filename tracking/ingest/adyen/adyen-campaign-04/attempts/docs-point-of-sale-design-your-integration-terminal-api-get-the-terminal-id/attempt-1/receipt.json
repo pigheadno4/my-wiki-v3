@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-terminal-api-get-the-terminal-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Get the Terminal API terminal ID | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, poiid, terminal-id]\n---\n\n## Overview\n\nThis Adyen guide explains how a point-of-sale integration obtains the unique payment-terminal identifier to place in Terminal API `MessageHeader.POIID`. The identifier selects the intended physical terminal for a request. Its model-plus-serial format identifies a device; the model label is not a terminal software version, SDK version, merchant account, or payment result. The page is a 2026-09-15 website snapshot.\n\n## Key takeaways\n\n- A Terminal API request names its target terminal with `POIID`, formatted as device model, a dash, and serial number, with any dashes removed from the serial-number portion. The page's `P400\u2011123456789` is an example format, not an assigned device ID.\n- For a physical terminal, the serial number is on the back of the device or under **Settings > Device info**. Customer Area **Devices > Device list > Terminals** also shows a serial-number column. These routes provide the serial number; the model must still be combined with it to construct `POIID`.\n- A cloud-communications integration can POST to `/connectedTerminals` specifying a merchant account and optionally one of its stores, then read `uniqueTerminalIds`. The array covers terminals with a live cloud connection belonging to that requested merchant-account or store scope; it is not a full terminal inventory or proof that an unlisted device does not exist.\n- A local-communications integration can send a diagnosis request with placeholder `MessageHeader.POIID`. That request fails as described, but `DiagnosisResponse.MessageHeader.POIID` gives the actual ID of the terminal that received it. For an Android payment terminal with the merchant app installed on that terminal, the guide also gives a `Settings.Global.DEVICE_NAME` lookup.\n- The guide states no Customer Area role requirements, terminal firmware/version mapping, proof of merchant enablement, or current connectivity guarantee beyond the live-connection filter of its cloud lookup. Follow the linked diagnostics or response guidance only as navigation unless separately read.\n\n## Detail locators\n\n- `# Get the terminal ID` \u2014 purpose and `MessageHeader.POIID` model/serial format.\n- `Get the serial number from the terminal` \u2014 physical/screen serial lookup and dash normalization.\n- `Get the serial number from your Customer Area` \u2014 device-list path to the serial column.\n- `Make an API call` \u2014 cloud `/connectedTerminals` request, merchant account and optional belonging store, and live-connected `uniqueTerminalIds` results.\n- `Use a diagnosis request` \u2014 local placeholder failure and actual ID in the response header.\n- `Use an Android function` \u2014 on-terminal Android app condition and `Settings.Global.DEVICE_NAME`.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id/2026-09-15|2026-09-15 Adyen terminal-ID guide]]\n",
+  "quotes": [
+    {
+      "text": "When you make a Terminal API request, you need to indicate which payment terminal you want to use. To do so, you populate the `POIID` field in the `MessageHeader` with the unique identifier of the payment terminal in the format *\\[device model]-\\[serial number]*.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id/2026-09-15.md:19, # Get the terminal ID"
+    },
+    {
+      "text": "1. Make a POST [`/connectedTerminals` ](/point-of-sale/diagnostics/check-cloud-connection/#use-an-api-call)request, specifying your merchant account and optionally a store belonging to that merchant account.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id/2026-09-15.md:49, ## Make an API call"
+    },
+    {
+      "text": "This array contains a `POIID` for every terminal that has a live cloud connection and belongs to the specified merchant account or store.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id/2026-09-15.md:51, ## Make an API call"
+    },
+    {
+      "text": "1. Make a [diagnosis request](/point-of-sale/diagnostics/request-diagnosis) with a placeholder `MessageHeader.POIID`, for example **xxxx-123456789**.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id/2026-09-15.md:57, ## Use a diagnosis request"
+    },
+    {
+      "text": "For Android payment terminals with your app installed on the terminal:",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id/2026-09-15.md:65, ## Use an Android function"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "terminal-poiid-source-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-terminal-api-get-the-terminal-id]] \u2014 Adyen Terminal API terminal-ID guide captured 2026-09-15 for POIID model/serial construction and conditional physical, Customer Area, cloud, local-diagnosis and Android retrieval routes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/terminal-api/get-the-terminal-id/2026-09-15.md",
+  "raw_sha256": "5157b71a4d71aff982fdb8edf9eefad36846e51d66a0dbe34488da1731fe7eb0",
+  "status": "candidate_ready"
+}

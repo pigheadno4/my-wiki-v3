@@ -1,0 +1,61 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-determine-account-structure-configure-features",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Configure POS Terminal Features\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/determine-account-structure/configure-features\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/determine-account-structure/configure-features/2026-09-15.md\"\ntags: [adyen, point-of-sale, payment-terminals, customer-area, device-settings, terminal-management]\n---\n\n## Overview\n\nAdyen's POS feature-configuration guide explains which payment-terminal features need account or device settings and where to find those settings in the Customer Area. It applies to Adyen-terminal Terminal API and standalone solutions. It describes company, merchant account, store and terminal inheritance, when changes reach terminals, the Device settings categories, feature-specific enablement, and a Customer Area UI rename/move map. It also points to API-call configuration but is not an API schema or a proof that a feature is enabled for a given account. This source is a 2026-09-15 webpage snapshot with `last_modified` 2026-05-19.\n\n## Key takeaways\n\n- Settings are defined from company through merchant account and store to terminal; merchant/store/terminal values replace inherited higher-level values for their descendants. Adyen PSP is above company, but merchants cannot define settings there. Adyen recommends configuring at merchant-account level. Customer Area inheritance labels and grey toggles show where a value is controlled; inspect the applicable level before changing a setting.\n- For Customer Area access, `Merchant POS standard` or `Merchant POS Terminal View` can view terminal features; `Merchant POS Terminal Management Admin` can view and configure them. The guide links API-call configuration separately and does not state that these Customer Area roles are API credential roles.\n- Settings changes take effect when the terminal updates its configuration during the next reboot hour; the guide links a manual configuration update for immediate use. Payment-method acceptance is separate account setup: the snapshot says terminals accept global credit cards and Maestro out of the box, while local cards, wallets and gift cards need addition to the account. Check current method availability before relying on that dated catalog statement.\n- Device settings are grouped into **Device**, **Device connectivity**, **Payment features** and **Integrations**. Some connectivity fields (Wi-Fi, Ethernet, Cellular, V400m base station) are terminal-only; the table routes remote Wi-Fi profile details to their dedicated guide. For a Terminal API integration, a feature also depends on POS app compatibility. Several payment features require contacting Adyen Support and/or configuring limits, including MKE, offline processing/refunds, store-and-forward and MOTO/AVS; the table does not grant account eligibility merely by showing a toggle.\n- Under Integrations, **Enable Terminal API** is required for both local and cloud Terminal API architectures, and **Enable WebSockets** is required for cloud Terminal API. The standalone setting is for the standalone solution, with built-in-printer hardware qualification. The OPI row says Support must enable OPI. Keep these integration paths separate.\n- The Customer Area map says **Terminal settings** became **Device settings**, with specific moved/renamed fields; its deprecated table says certain entries were removed from *Device settings*, unless noted. That is a UI placement statement, not proof that each underlying capability has ceased to exist.\n\n## Detail locators\n\n- `## Requirements`, `## Inheritance of settings`, `## When new settings take effect` \u2014 solution type, Customer Area view/admin roles, company-to-terminal propagation, PSP boundary and configuration update timing.\n- `## Payment methods`, `## Find and edit settings` \u2014 separate method addition and Customer Area route, including individual-terminal Device list.\n- `## Device category`, `## Device connectivity category` \u2014 regional, display, sound, hardware, maintenance and network setting tables; model-specific and terminal-only qualifications.\n- `## Payment features category` \u2014 POS-app compatibility and rows for application selection, tipping, transaction limits, MKE, refunds, offline processing, store-and-forward, contactless, MOTO, receipts, pre-authorization, signatures and accessible audio. Follow each linked feature guide for its actual contract.\n- `## Integrations category` \u2014 OPI, Standalone, wallet passes/keys and Terminal API/WebSockets/AdditionalResponse setting scope.\n- `## Customer Area UI change mapping` \u2014 moved/renamed Device, Payment features and Integrations categories; entries removed from Device settings in the deprecated table.\n\n## Related\n\n- Company: [[adyen]]\n- Terminal API message and integration boundary: [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/determine-account-structure/configure-features/2026-09-15|2026-09-15 Adyen Configure features guide snapshot]]\n",
+  "quotes": [
+    {
+      "text": "To view and configure terminal features: **Merchant POS Terminal Management Admin role**.",
+      "location": "raw line 33, under ## Requirements, Customer Area roles row continuation"
+    },
+    {
+      "text": "Settings at the company level apply to all terminals under the company. Settings at the merchant account level override settings inherited from the company level and apply to all terminals under the merchant account, and so on.",
+      "location": "raw line 46, under ## Inheritance of settings"
+    },
+    {
+      "text": "After you changed the settings for a feature, the changes take effect when a payment terminal updates its configuration during the next reboot hour.",
+      "location": "raw line 76, under ## When new settings take effect"
+    },
+    {
+      "text": "In a Terminal API integration the availability of features depends on whether your POS app is compatible with the feature.",
+      "location": "raw line 152, under ## Payment features category"
+    },
+    {
+      "text": "**Enable WebSockets**: Required for Terminal API with a cloud architecture.",
+      "location": "raw line 187, under ## Integrations category, Terminal API row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-configure-features-terminal-api-enablement",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Integration boundary",
+        "proposed_markdown": "The Adyen POS Device settings guide requires **Enable Terminal API** for both local and cloud Terminal API integrations, and **Enable WebSockets** for a cloud architecture. A terminal feature's availability in a Terminal API integration also depends on the POS app supporting it. These are website-documentation settings, distinct from the retained Postman repository baseline. [[source-adyen-docs-point-of-sale-design-your-integration-determine-account-structure-configure-features]]\n",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-configure-features-terminal-api-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-determine-account-structure-configure-features]] \u2014 Adyen POS feature-setting and Customer Area inheritance guide (2026-09-15 webpage snapshot), including Terminal API local/cloud enablement.\n",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/determine-account-structure/configure-features/2026-09-15.md",
+  "raw_sha256": "c7d9dbd6b3216f1d3ffcf67349d5a7c2d78358a26549e5230ac44ab8016d10de",
+  "status": "candidate_ready"
+}

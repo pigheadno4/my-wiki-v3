@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-point-of-sale-cardholder-verification-methods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS Cardholder Verification Methods\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/cardholder-verification-methods\"\nraw_files:\n  - \"adyen/docs/point-of-sale/cardholder-verification-methods/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, cardholder-verification, pin, signature, contactless]\n---\n\n## Overview\n\nThis Adyen POS guide describes cardholder verification methods (CVMs) for credit and debit cards used on Adyen payment terminals in a Terminal API integration. It covers online/offline PIN, PIN bypass, signature handling, the card-encoded CVM list and response result, and contactless limits. The pinned webpage was captured 2026-09-15 and records `last_modified` 2025-11-21; it is not a current limit table or a general PSD2/SCA, wallet device-CVM, or CDCVM specification.\n\n## Key takeaways\n\n- The terminal can verify a shopper's PIN offline with the EMV chip or online with the issuer. Online PIN is enciphered; offline PIN may be enciphered or plaintext. The card's CVM list supplies methods, failure behavior and applicability conditions, and the terminal selects a supported applicable method. The live Mastercard and test-card CVM lists in this guide are examples, not universal card or region rules.\n- PIN bypass must be enabled with Adyen Support and applies only to cards that allow it; the guide warns of lost/stolen-card fraud and possible issuer-to-merchant chargeback liability shift. Support is also the route for regional card eligibility and optional on-terminal bypass instructions.\n- Major schemes named in the snapshot treat signature as optional for card-present transactions. Terminal prompting depends on configuration and card support; some cards will not prompt even when the setting is enabled. The merchant checks a signature against the card or other identification. In a Terminal API flow, authorization already exists when the signature prompt appears and the terminal approves even if the shopper cancels that screen. A merchant-owned manual check must inspect `CapturedSignature` in `PaymentResponse`; if staff declines, refund is needed unless the merchant has set a capture delay that permits cancellation of the authorization instead. The source recommends that delay, rather than requiring it.\n- The POS receives the resulting CVM in hexadecimal `cardHolderVerificationMethodResults`; the second character identifies the CVM using the source's lookup table. Contactless CVM, reader and floor limits are distinct settings. The current CVM limit must be read in Customer Area at **Devices > Device settings > Payment features > Contactless cards**; limits can change and a changed limit arrives at the terminal on a maintenance call. The contactless currency is the country/region currency of the store.\n- **Source conflict:** the early PIN section says an above-limit contactless payment always needs online PIN, but the detailed NFC section says the card indicates whether signature or PIN is required after the terminal requests CVM; if PIN is selected, it is Online PIN and that transaction cannot be processed offline. Preserve the detailed condition rather than assuming every above-limit NFC transaction uses PIN. The guide does not explain device-based CVM/CDCVM or translate these terminal CVMs into PSD2 SCA outcomes.\n\n## Detail locators\n\n- `## Requirements`, `## Personal Identification Number (PIN)`, `### PIN bypass` \u2014 Terminal API scope, offline/online PIN, changing CVM limit lookup, eftpos magnetic-stripe PIN condition, bypass eligibility and risk.\n- `## Signature`, `### Implementing a manual signature check` \u2014 optional scheme signature, card support, Customer Area toggle, already-authorized prompt, `CapturedSignature`, staff check, refund and advised capture-delay path.\n- `## CVM lists`, `### CVM list live example`, `### CVM list test example` \u2014 card-encoded code/type/condition, live Mastercard illustration, test-card amounts in minor units, currency/DCC-dependent selection.\n- `## CVM results` \u2014 `cardHolderVerificationMethodResults` second-character mapping.\n- `## Contactless (NFC) transactions and CVM` \u2014 current Customer Area limit, reader/currency/floor settings and the more conditional description of card-selected signature versus online PIN above the CVM limit.\n\n## Related\n\n- Company: [[adyen]]\n- POS interface and PaymentResponse context: [[adyen-terminal-api]]\n- Separate online-payments SCA/3DS domain: [[adyen-psd2-sca-and-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/cardholder-verification-methods/2026-09-15|2026-09-15 Adyen POS cardholder-verification guide snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This can speed up your checkout, but increases the risk of fraud with lost or stolen cards. The liability for related chargebacks may shift from the issuer to you.",
+      "location": "raw line 43, under ### PIN bypass"
+    },
+    {
+      "text": "In a Terminal API integration, the transaction is already authorized when the signature prompt appears.",
+      "location": "raw line 72, under ### Implementing a manual signature check"
+    },
+    {
+      "text": "The CVM list is encoded in the card. It contains amount thresholds and information about how to apply CVM.",
+      "location": "raw line 90, under ## CVM lists"
+    },
+    {
+      "text": "The resulting CVM is reported to the POS app in the key `cardHolderVerificationMethodResults`.",
+      "location": "raw line 183, under ## CVM results"
+    },
+    {
+      "text": "The card then indicates to the terminal whether a signature or PIN is required. In the case of PIN, this always means an **Online PIN** is the actual CVM.",
+      "location": "raw line 211, under ## Contactless (NFC) transactions and CVM; compare broader wording at line 31"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-cvm-manual-signature-terminal-api",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Payment and interaction patterns",
+        "proposed_markdown": "For a configured POS signature check, the Terminal API transaction is already authorized when the signature screen appears; the terminal approves that screen even if the shopper cancels it. The merchant POS can use `CapturedSignature` from `PaymentResponse` for staff review; a declined check then requires refund, or cancellation of the authorization if a suitable capture delay was arranged. This website guide also has conflicting summary/detail wording about whether every contactless transaction above the CVM limit requires online PIN: its detailed NFC passage makes online PIN conditional on the card selecting PIN. [[source-adyen-docs-point-of-sale-cardholder-verification-methods]]\n",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "Do not treat the source's broad above-limit online-PIN sentence as a universal rule; raw line 211 conditions online PIN on the card indicating PIN rather than signature."
+        ]
+      },
+      {
+        "update_id": "adyen-cvm-terminal-api-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-cardholder-verification-methods]] \u2014 Adyen POS Terminal API CVM guide (2026-09-15 webpage snapshot) for PIN, signature, card CVM lists, response results and qualified contactless limits.\n",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/cardholder-verification-methods/2026-09-15.md",
+  "raw_sha256": "16e61ebdc4eaeb7af58af192d33d2c404948830929a789e91d6b5ddfd2e74525",
+  "status": "candidate_ready"
+}

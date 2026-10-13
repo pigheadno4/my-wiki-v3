@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-notifications-event-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS event notifications\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/notifications/event-notifications\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/notifications/event-notifications/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, event-notifications, asynchronous-responses]\n---\n\n## Overview\n\nThis unversioned Adyen website guide, captured on 2026-09-15, explains how a merchant POS app receives **terminal-generated `EventNotification`** messages about terminal state and availability. It belongs to [[adyen-terminal-api]]. The same configured event endpoint also receives asynchronous Terminal API `SaleToPOIResponse` messages when the integration uses the asynchronous cloud endpoint. A terminal state event is distinct from a payment response, a transaction-progress `DisplayRequest`, and a platform-generated payment webhook; the event alone is not proof of payment outcome.\n\n## Key takeaways\n\n- The merchant configures a JSON-capable HTTP callback endpoint under Terminal API **Event URLs** in Customer Area, or `nexo.eventUrls` through Management API `/terminalSettings`. Customer Area distinguishes public from local URLs and offers optional basic authentication and message encryption. The Management API route requires the **Management API\u2014Terminal Advanced settings read and write** role and uses `eventPublicUrls` or `eventLocalUrls` at company, merchant, store, or terminal level. Inspect higher-level inheritance before removing a setting.\n- The snapshot specifies test receiver ports 80/8080/8888 for HTTP or 443/8443/8843 for HTTPS with TLSv1.2; live uses HTTPS ports 443/8443/8843 with TLSv1.2. The receiver must accept JSON. These documented ports and setup choices are snapshot evidence, not proof that a particular account or endpoint is configured.\n- Store the notification, return a successful HTTP status (202 is an example), **then** apply business logic. Adyen says acknowledgement prevents repeated sends and warns that business-logic failure before acknowledgement can block later important notifications. Do not treat receipt or acknowledgement as payment success.\n- `EventToNotify` identifies terminal events such as shutdown, maintenance, network connection/disconnection, out-of-order state, `Reject`, `SaleWakeUp`, and `UseAnotherCardForPreauth`; the page's table gives their meanings. Its examples wrap `EventNotification` in `SaleToPOIRequest` with a `MessageHeader` containing `MessageClass: Event`, `MessageCategory: Event`, `MessageType: Notification`, terminal `POIID`, and `DeviceID`.\n- For **asynchronous cloud communications**, event notifications must be set up: Adyen sends the Terminal API request's `SaleToPOIResponse` to this endpoint. The guide says that response is the same as for local or synchronous cloud communication; the payment-response example has `MessageCategory: Payment`, `MessageClass: Service`, and `MessageType: Response`. It must be interpreted as a payment response, not as an `EventToNotify` terminal-state event.\n\n## Detail locators\n\n- Purpose and asynchronous-cloud requirement: raw lines 15-23.\n- Customer Area endpoint, environment ports, URL/public-local/auth/encryption configuration: raw `## Set up event notifications in the Customer Area`, lines 25-56.\n- Management API role, setting scope, inheritance, `nexo.eventUrls` local/public arrays, and illustrative request/response: raw `## Set up event notifications using API calls`, lines 58-220. The opening sentence of this section calls them \u201cdisplay notifications,\u201d but the section's role, `eventUrls` fields and following examples address event URLs.\n- Persist \u2192 acknowledge \u2192 business logic and retry-avoidance warning: raw `## Accept event notifications`, lines 223-232.\n- Event table and JSON examples including `Reject`, `SaleWakeUp` and `UseAnotherCardForPreauth`: raw `## Event notification types`, lines 234-249, and `## Event notification examples`, lines 251-502.\n- Asynchronous `SaleToPOIResponse` endpoint delivery and payment response example: raw `## Asynchronous Terminal API responses`, lines 504-578.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-terminal-api]]\n- Transaction progress: [[source-adyen-docs-point-of-sale-design-your-integration-notifications-display-notifications]]\n- Platform-generated webhooks: `## Next steps` in the raw links to the separate standard-notifications guide; this source does not establish its payload or delivery rules.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/notifications/event-notifications/2026-09-15|Adyen POS event notifications]] \u2014 full captured event and asynchronous-response guide\n",
+  "quotes": [
+    {
+      "text": "From time to time, your payment terminal encounters an issue, or needs to perform maintenance. When this happens, the terminal generates an event notification. You can use event notifications in your POS app to inform your staff of the terminal's availability and state.",
+      "location": "raw line 19, opening purpose paragraph"
+    },
+    {
+      "text": "If your integration uses [asynchronous cloud communications](/point-of-sale/design-your-integration/choose-your-architecture/cloud#async), you must set up event notifications. We then send the Terminal API responses to your endpoint.",
+      "location": "raw line 21, opening asynchronous-cloud requirement"
+    },
+    {
+      "text": "* For the live environment: an open TCP port for HTTPS traffic (443, 8443, or 8843) with TLSv1.2.",
+      "location": "raw line 33, ## Set up event notifications in the Customer Area"
+    },
+    {
+      "text": "We require you to acknowledge that your POS system successfully received an event notification from the terminal with a [successful HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#successful_responses), for example **202**. This prevents the terminal or our backend from repeatedly re-sending the same notification.",
+      "location": "raw line 225, ## Accept event notifications"
+    },
+    {
+      "text": "If you use cloud communications and send your Terminal API requests to an [asynchronous endpoint](/point-of-sale/design-your-integration/choose-your-architecture/cloud#async), we send the Terminal API responses to your event notifications endpoint (provided you have set that up). These responses are exactly the same as the responses you'd receive in a Terminal API integration using local communications, or using cloud communications with a synchronous endpoint.",
+      "location": "raw line 506, ## Asynchronous Terminal API responses"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-event-notifications-terminal-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-event-notifications]] \u2014 unversioned Adyen POS guide captured 2026-09-15 for terminal-generated EventNotification callbacks and asynchronous cloud SaleToPOIResponse delivery",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/notifications/event-notifications/2026-09-15.md",
+  "raw_sha256": "b3eec6227e4551acb3b0504821261b0cb7935c86369691c7ac8916933442bf5d",
+  "status": "candidate_ready"
+}

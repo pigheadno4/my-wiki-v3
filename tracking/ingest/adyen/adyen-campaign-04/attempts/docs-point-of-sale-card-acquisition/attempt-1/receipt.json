@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-point-of-sale-card-acquisition",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS card acquisition\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/card-acquisition\"\nraw_files:\n  - \"adyen/docs/point-of-sale/card-acquisition/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, card-acquisition, shopper-identifiers]\n---\n\n## Overview\n\nAdyen's Terminal API card acquisition flow lets a POS obtain card and shopper identifiers from a payment terminal before a payment or outside a payment flow. The acquisition is a separate terminal interaction: the POS decides whether to follow it with a Terminal API payment referencing the acquired data or to cancel and discard that data. The page does not establish that acquiring identifiers alone authorizes or captures a payment.\n\n## Key takeaways\n\n- This flow requires a Terminal API integration with payment terminals. Set up receipt of identifiers in Terminal API responses before using them. QR-code wallet details and one-time numeric-code details cannot be obtained by card acquisition. The returned card alias can identify a shopper, but cannot itself be used to make payments. Availability of particular response fields depends on request options or enabling their receipt; see `## Requirements` and the response-parameter table in the raw.\n- A card acquisition request uses a Service-class `CardAcquisition` message. After the shopper presents an instrument, a successful response carries `CARD_ACQ_COMPLETED` in `AdditionalResponse`. For a subsequent payment, retain the acquisition response's `POIData.POITransactionID` timestamp and transaction ID and place them in `PaymentData.CardAcquisitionReference` of a separate Payment request. The final payment amount is supplied in that payment request. See the request/response tables and `## Finish with a payment` in the raw.\n- To finish a completed acquisition without payment, send `EnableServiceRequest` with `TransactionAction: AbortTransaction`; the terminal discards the acquired data. A later payment referring to that canceled acquisition fails with `No prior card acquisition data available`. To stop an acquisition while the terminal is still prompting for a card, send an `AbortRequest` referencing the in-progress acquisition and verify the terminal prompt disappears and the card acquisition response reports `Failure`/`Aborted`.\n- With contactless, the shopper needs to tap again when the acquisition omitted an amount or its amount differs from the payment amount. Adyen says to ask Support to enable single tap to avoid the second tap; do not assume it is enabled for a merchant.\n\n## Detail locators\n\n- Identity, use cases, prerequisites and limits: `# Card acquisition`, raw lines 15\u201339. The autonomous-store, refund-check, loyalty, and tax-free cases under `## Scenarios` are examples, not a general authorization/capture guarantee.\n- Acquisition request fields, identifiers, and response conditions: `## Make a card acquisition request`, raw lines 90\u2013269. `SaleData.TokenRequestedType: Customer` requests an alias in `TokenValue`; the alias is also stated to appear in `AdditionalResponse`.\n- Payment reference and amount fields: `## Finish with a payment`, raw lines 270\u2013438. The prose and field table require the acquisition response's `POIData.POITransactionID` values (lines 223 and 295\u2013297). The Java sample instead sets `CardAcquisitionReference` from a local `transactionID` variable (lines 373\u2013377); verify that sample before implementation.\n- Completed cancellation and its invalidated reference: `## Finish with a cancellation`, raw lines 440\u2013572. In-progress abort and response check: `## Stop an in-progress card acquisition`, raw lines 574\u2013678.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 Terminal API message and payment boundary. This website guide has separate provenance from versioned GitHub Postman examples or SDK implementations.\n- [Receive card and shopper identifiers](https://docs.adyen.com/point-of-sale/card-acquisition/identifiers) \u2014 linked setup and field detail; navigation only, not read as evidence for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/card-acquisition/2026-09-15|Adyen Docs: Card acquisition (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "With a Terminal API card acquisition request, you can obtain [card and shopper identifiers](/point-of-sale/card-acquisition/identifiers) before making a payment, or outside of a payment flow.",
+      "location": "raw/adyen/docs/point-of-sale/card-acquisition/2026-09-15.md:19, under # Card acquisition"
+    },
+    {
+      "text": "QR code wallet details and one-time numeric code details cannot be obtained through card acquisition.",
+      "location": "raw/adyen/docs/point-of-sale/card-acquisition/2026-09-15.md:37, under ## Requirements"
+    },
+    {
+      "text": "But with contactless payments, if the customer tapped their card for the card acquisition, they need to tap their card again for the payment in these cases:",
+      "location": "raw/adyen/docs/point-of-sale/card-acquisition/2026-09-15.md:61, under ### Customer experience"
+    },
+    {
+      "text": "Depending on your use case, you may want to complete the card acquisition flow with a payment. To do so, the payment request must include a reference to the card acquisition.",
+      "location": "raw/adyen/docs/point-of-sale/card-acquisition/2026-09-15.md:271, under ## Finish with a payment"
+    },
+    {
+      "text": "If you try to make a payment with a `CardAcquisitionReference` referring to the completed card acquisition that you cancelled, the payment will fail with a message *Validation failed: No prior card acquisition data available*.",
+      "location": "raw/adyen/docs/point-of-sale/card-acquisition/2026-09-15.md:572, under ## Finish with a cancellation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-card-acquisition-flow-boundary",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Payment and interaction patterns",
+        "proposed_markdown": "- In Adyen's website card-acquisition guide, the POS can obtain card/shopper identifiers before or outside a payment. A completed acquisition is followed by a separate Terminal API payment carrying its `POIData.POITransactionID` as `PaymentData.CardAcquisitionReference`, or by cancellation that discards the acquired data. This acquisition is distinct from authorization and capture; the guide does not establish either from identifier collection alone.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not merge this website flow with the exact-commit Postman collection or infer merchant, terminal, region, or SDK eligibility."
+        ]
+      },
+      {
+        "update_id": "c4-card-acquisition-source-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-card-acquisition]] \u2014 Adyen Docs website guide to POS card acquisition, payment referencing, completed cancellation, and in-progress abort (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/card-acquisition/2026-09-15.md",
+  "raw_sha256": "1234de639d69b2e36692254d478076e81babba58ca233d0d1af349346931e088",
+  "status": "candidate_ready"
+}

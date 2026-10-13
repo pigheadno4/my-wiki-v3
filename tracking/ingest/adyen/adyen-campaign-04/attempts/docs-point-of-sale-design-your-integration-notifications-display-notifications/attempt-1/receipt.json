@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-notifications-display-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Display notifications for POS apps\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/notifications/display-notifications\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/notifications/display-notifications/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, display-notifications, webhooks]\n---\n\n## Overview\n\nThis Adyen Docs webpage describes terminal-generated **display notifications** during a transaction or tender. A configured endpoint receives a webhook containing a Terminal API `DisplayRequest`; its `ReferenceID` carries an `event` about terminal\u2013shopper interaction or a `Result` associated with transaction outcome. The intended use here is to show staff a progress message in a POS app. Treat this as the display-notification surface, distinct from the linked event-notification and platform-generated webhook pages; a display message by itself is not documented here as a complete payment state machine. See [[adyen-terminal-api]] and [[adyen]].\n\n## Key takeaways\n\n- Configure a JSON-capable HTTP callback endpoint and a display URL through either Customer Area device settings or Management API `/terminalSettings`. The API path requires the **Management API - Terminal settings Advanced read and write** role; its `nexo.displayUrls` settings distinguish local and public URLs. Configuration can be at company, merchant, store, or terminal level. Check higher-level inheritance before removing settings. [Raw: Set up display notifications in the Customer Area; Set up display notifications using API calls]\n- The snapshot lists test callback ports for HTTP (80, 8080, 8888) or HTTPS (443, 8443, 8843) with TLSv1.2, while live lists HTTPS (443, 8443, 8843) with TLSv1.2. Customer Area also offers optional basic-auth credentials and encryption; the Management API example is illustrative, not a general schema guarantee. [Raw: setup headings, endpoint requirements and examples]\n- On receipt, store the display notification, return a successful HTTP status (202 is an example), then apply business logic. Adyen says acknowledgement prevents repeated sends and warns that logic errors before acknowledgement can prevent important event notifications from reaching the system. [Raw: Accept display notifications]\n- `ReferenceID` uses `event` for terminal\u2013customer interaction or `Result` for the transaction outcome. The type table includes tender start/final, card/PIN/signature, DCC, gratuity, gift-card load and balance-query progress. `TENDER_FINAL` covers a completed **or abandoned** tender and includes `Result`, timestamp, and transaction ID; do not equate the event name alone with payment success. [Raw: Display notification types]\n\n## Detail locators\n\n- Raw `Set up display notifications in the Customer Area` and `Set up display notifications using API calls` give the two configuration paths, callback prerequisites, scope, URL choices, and illustrative request/response.\n- Raw `Accept display notifications` gives the acknowledgement sequence and the warning about applying business logic first.\n- Raw `Display notification types` gives the `ReferenceID` distinction and event table; raw `Examples` gives JSON and Java illustrations, including `MessageCategory: Display` and `CashierDisplay`. Example values are historical samples, not independently verified current SDK or terminal requirements.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 existing Terminal API concept hub\n- [[adyen]] \u2014 company and knowledge-status page\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/notifications/display-notifications/2026-09-15|Display notifications \u2014 Adyen Docs snapshot, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Here we describe how to set up display notifications. You can do this in your [Customer Area](#set-up-in-ca) or by using [API calls](#set-up-display-notifications-using-api-calls). You then receive webhooks that include a Terminal API `DisplayRequest` from the terminal. This has an `event` indicating the progress of the transaction, or the `result` of the transaction. You can use this information to show a message in your POS app.",
+      "location": "raw line 21, introductory section"
+    },
+    {
+      "text": "For the live environment: an open TCP port for HTTPS traffic (443, 8443, or 8843) with TLSv1.2.",
+      "location": "raw line 35, Customer Area setup; repeated at line 78 in API setup"
+    },
+    {
+      "text": "When removing settings, you need to know the settings that will be [inherited](/point-of-sale/automating-terminal-management/configure-terminals-api#inheritance) from the next higher level.",
+      "location": "raw line 82, Set up display notifications using API calls"
+    },
+    {
+      "text": "Make sure that you acknowledge the display notification before you apply any business logic, because an error in your business logic can prevent event notifications with important updates from reaching your system.",
+      "location": "raw line 238, Accept display notifications"
+    },
+    {
+      "text": "A display notification is a `DisplayRequest` sent from the terminal. It includes a `ReferenceID` field with either:",
+      "location": "raw line 242, Display notification types"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-display-notifications-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-display-notifications]] \u2014 Adyen Docs website guide to configuring terminal-generated DisplayRequest webhooks for POS staff messages (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": [
+          "Keep display notifications distinct from terminal event notifications, platform-generated webhooks, and versioned Postman or SDK examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/notifications/display-notifications/2026-09-15.md",
+  "raw_sha256": "1d7cff81074e859a17cb649128da606b1d46d00bf2965814b62918f6755a2ef7",
+  "status": "candidate_ready"
+}

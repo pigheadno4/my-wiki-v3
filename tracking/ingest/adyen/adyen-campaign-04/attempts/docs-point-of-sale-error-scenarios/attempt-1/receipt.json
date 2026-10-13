@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-error-scenarios",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Handle responses | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/error-scenarios\"\nraw_files:\n  - \"adyen/docs/point-of-sale/error-scenarios/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, error-handling, transaction-status]\n---\n\n## Overview\n\nAdyen's \"Handle responses\" guide describes Terminal API response fields and how a POS integration can investigate malformed requests, missing transaction results, unavailable terminals, declined payments, and time-outs. It is a 2026-09-15 snapshot whose metadata reports `last_modified` 2019-08-20; it does not prove current terminal behavior or the outcome of any particular payment. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- A Terminal API `Response` uses `Result` (`Success`, `Partial`, or `Failure`), `ErrorCondition` on failure, and `AdditionalResponse` for further detail. `AdditionalResponse` may be form-encoded key/value text or a Base64-encoded JSON object. `MessageFormat` and `UnavailableService` failures call for diagnosing the cause and manually correcting the request; invalid JSON instead yields a `Bad JSON` HTTP reply with a line number.\n- If a payment result is missing, the guide recommends checking transaction status. For local or cloud integrations with an intact internet connection, it specifies checking after a missing or timed-out response at 120 or 150 seconds respectively; mobile SDK solutions have no fixed wait. When neither synchronous nor asynchronous transaction result arrives, make a `TransactionStatusRequest`: `Success` means use `RepeatedResponseMessageBody` to process the transaction; `InProgress` calls for status checks every five seconds until processed; `NotFound` can reflect wrong original-transaction details or a request Adyen did not receive. For `NotFound`, the page lists verifying the **original** transaction in `MessageReference` and potentially retrying the original transaction. `NotFound` alone is not proof of its cause or permission for a blind duplicate payment.\n- For a cloud payment request to an unavailable terminal, a Terminal API `Reject` event notification includes a Base64 `RejectedMessage` and `EventDetails`. The guide distinguishes a request sent without terminal response (check transaction status), failure to send to the POI (check cloud/WebSocket connection), and unknown `POIID` (check terminal ID and merchant/store assignment). A reject or missing response should be followed through the documented status/recovery path, not treated as an automatically final payment outcome.\n- For declined `PaymentResponse` results, retry guidance depends on the **payment** `ErrorCondition` and, for `Cancel`, `InvalidCard`, and `Refusal`, the listed response details. `Busy` is not retryable in the table; a returned `serviceId` can be used in an `AbortRequest` to cancel the in-progress transaction. `Cancel` with `Approved` is marked do not retry. `NotAllowed` is also marked do not retry for `PaymentRequest`, while the comparison table gives different actions for `TransactionStatusRequest` and `ReversalRequest`. The guide says to code against `ErrorCondition`, not the `refusalReason` or `message` insight fields; raw acquirer responses can change without notice.\n- A processing or device time-out returns `Failure` and cancels the transaction; a **request** time-out produces a `Reject` event while the terminal may still complete the payment, so check transaction status. Retry recommendations differ by time-out type. The comparison table is operation-specific, and an unresolved payment must not be collapsed into the same state as a documented failure response.\n\n## Detail locators\n\n- `Response` fields and invalid-message, Bad JSON, and unavailable-service handling: pinned raw, `## Response object format` through `## Unavailable service` (lines 25\u2013103).\n- Missing result timing and `TransactionStatusResponse` actions, including `RepeatedResponseMessageBody`, `InProgress`, and `NotFound`: pinned raw, `## No result received` (lines 105\u2013123).\n- Cloud `Reject` event shape and three `EventDetails` cases: pinned raw, `## Terminal unavailable (cloud integration)` (lines 125\u2013200).\n- Decline retry matrix, `serviceId`/abort route, and coding warning: pinned raw, `## Declined payment` (lines 202\u2013306).\n- Three time-out categories and operation-specific `ErrorCondition` comparison: pinned raw, `## Time-out` and `## Error condition comparison` (lines 308\u2013339).\n- `posEntryMode` and `ForceEntryMode` example: pinned raw, `## Unexpected card entry modes` (lines 341\u2013445).\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 Terminal API message architecture and in-person operation boundaries.\n- [[adyen]] \u2014 provider hub.\n\n## Related raw API references\n\n- [[raw/adyen/docs/point-of-sale/error-scenarios/refusal-reasons-pos/2026-09-15|POS refusal reasons]] \u2014 linked reference navigation only; not read for this entry.\n- [[raw/adyen/docs/point-of-sale/error-scenarios/pos-timeouts/2026-09-15|POS time-outs]] \u2014 linked reference navigation only; not read for this entry.\n- [[raw/adyen/docs/point-of-sale/error-scenarios/raw-acquirer-responses/2026-09-15|Raw acquirer responses]] \u2014 linked reference navigation only; not read for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/error-scenarios/2026-09-15|Handle responses \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Terminal API responses inform you about the processing status of your request. The status of your request is communicated in the `Response` object of the API response.",
+      "location": "raw line 19, # Handle responses"
+    },
+    {
+      "text": "Payment requests time out after a while. If you do not receive a payment response (or you receive a response indicating a time-out) after 120 seconds (local integration) or 150 seconds (cloud integration), and the internet connection hasn't dropped, your integration should automatically check the transaction status.",
+      "location": "raw line 109, ## No result received"
+    },
+    {
+      "text": "Continue making a transaction status request for this transaction every five seconds until you receive a response indicating the transaction was processed.",
+      "location": "raw line 120, ## No result received, InProgress table row"
+    },
+    {
+      "text": "You can use the `ErrorCondition` to code your POS app. The `refusalReason` and `Message` fields are included for additional insight, and should not be coded against.",
+      "location": "raw line 241, ## Declined payment"
+    },
+    {
+      "text": "The `refusalReasonRaw` provides additional information. But if you base your code on it, that might break your integration because acquirers and issuers sometimes change their raw responses without notice.",
+      "location": "raw line 304, ## Declined payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-error-scenarios-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-error-scenarios]] \u2014 2026-09-15 Adyen Terminal API response and POS error-handling guide, including missing-result status checks, cloud Reject events, and condition-specific decline/time-out recovery.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/error-scenarios/2026-09-15.md",
+  "raw_sha256": "55d2cc16bb636c6a84575e357ef3d7bad849d40d8e9a85cd62684a6af70681f2",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-choose-your-architecture-local",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Building a local Terminal API integration\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/local\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/local/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, local-communications, terminal-security]\n---\n\n## Overview\n\nThis Adyen documentation page guides merchants building a local-communications point-of-sale integration between their POS system and Adyen-supplied payment terminals. It covers network setup, optional Terminal API libraries, required local-communication protection for live transactions, shared-key setup, synchronous payment handling, and transaction-status recovery. It is a local architecture and setup guide; cloud communications, current SDK behavior, merchant enablement, and successful live execution require separate evidence. See [[adyen-terminal-api]].\n\n## Key takeaways\n\n- In the local flow, the POS sends a Terminal API request across the LAN to the terminal IP address; the terminal routes the shopper-completed transaction to Adyen's payments platform and returns a synchronous API response to the POS. Display notifications are optional. This is distinct from cloud communication, which the page tells merchants to choose between before implementation. See **How it works** and the introduction.\n- Network configuration includes DNS-name allowlisting for outgoing HTTPS to `*.adyen.com` and `*.adyenpayments.com`, dynamic IP checks at least every 60 seconds, no hard-coded Adyen IP addresses, internet TCP 443 and LAN TCP 8443, suitable TLS/ciphers, and terminal IP assignment. See **1. Configure your network** for exact instructions.\n- A Terminal API library is optional; the page lists .NET, iOS, Java, and Node libraries for this local path and distinguishes them from deprecated classic libraries. Its Management API examples name older library versions, including Node v16.2.0, and do not establish behavior of a current package release. See **2. (Optional) Install an API library** and **Create a shared key with an API call**.\n- Local communication security is not enforced while building a test integration, but live transactions require securing POS-to-terminal requests. The guide calls for Adyen root-certificate validation of the terminal certificate and shared-key encryption/decryption; it separates test and live roots and provides fingerprint checks. Shared-key creation through API calls requires the Management API Terminal Advanced settings read/write credential role; Customer Area setup requires Merchant POS Terminal Management Admin. See **Requirements** and **3. Protect local communications**.\n- A shared key may be set at company, merchant, store, or terminal level via Customer Area or Management API terminal settings. The API response returns accessible settings, including the passphrase; treat it as sensitive and store key identifier, passphrase, and version securely. The guide's request/response examples and passphrase rules are at **Set up a shared key**.\n- Local terminals listen for Terminal API POST requests to `/nexo` on LAN port 8443. For a synchronous payment response, the POS HTTPS timeout must exceed 120 seconds. If no payment response, or a timeout response, is received after 150 seconds, the guide says to automatically request transaction status before staff try canceling, refunding, or making another transaction. See **4. Build your payment flow** and **5. Handle network issues**.\n\n## Detail locators\n\n- **Requirements** \u2014 architecture scope and roles required for the two shared-key setup paths.\n- **How it works** \u2014 POS, LAN terminal, Adyen platform, and synchronous response sequence.\n- **1. Configure your network** \u2014 DNS allowlist and refresh guidance, ports, TLS/ciphers, and terminal IP assignment.\n- **2. (Optional) Install an API library** \u2014 optional Terminal API libraries and classic-library deprecation boundary.\n- **3. Protect local communications \u2192 Install Adyen's root certificate** \u2014 test/live certificate download routes, fingerprints, trust-store steps, and Windows/iOS examples.\n- **3. Protect local communications \u2192 Set up a shared key** \u2014 scope inheritance, Customer Area and Management API methods, passphrase rules, request/response examples, and secure storage; examples are version-specific.\n- **3. Protect local communications \u2192 Add code to protect local communications** \u2014 terminal-certificate validation and encryption via a library or custom code.\n- **4. Build your payment flow** \u2014 common payment-flow features, local `/nexo` POST endpoint, synchronous timeout, and optional display notifications.\n- **5. Handle network issues** \u2014 transaction-status request timing and duplicate-transaction risk.\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/local/2026-09-15|Adyen Docs \u2014 Building a local integration (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "With local communications, your POS system sends an API request over the local network to the IP address of the payment terminal. When the shopper completes the transaction on the terminal, the terminal routes the request to the Adyen payments platform for processing.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/local/2026-09-15.md:35 (How it works)"
+    },
+    {
+      "text": "Do not hard-code Adyen's IP addresses, because these can change over time. We do not share a list of our IP addresses publicly.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/local/2026-09-15.md:59 (1. Configure your network)"
+    },
+    {
+      "text": "While you are building a **test** integration, we do not enforce this step. This allows you to develop the functional and security aspects in parallel. However, you will **not be able to process live transactions** until you have secured the requests between your POS app and your terminal.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/local/2026-09-15.md:87 (3. Protect local communications)"
+    },
+    {
+      "text": "The response returns all settings that your API credential has access to, including the shared key that you defined in the request:",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/local/2026-09-15.md:551 (Create a shared key with an API call)"
+    },
+    {
+      "text": "Payment requests time out after 120 seconds. If you do not receive a payment response (or you receive a response indicating a time-out) after 150 seconds, your integration should automatically make a transaction status request.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/local/2026-09-15.md:693 (5. Handle network issues)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "local-terminal-api-principal-flow",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Integration boundary",
+        "proposed_markdown": "For local communications, the merchant POS sends Terminal API requests over the LAN to an Adyen terminal, which routes shopper-completed transactions to Adyen and returns a synchronous response. Live local processing requires terminal-certificate validation against Adyen's root and shared-key protection between POS and terminal; the guide describes test as unenforced while building. Missing or timed-out payment responses call for a transaction-status check before operators risk a duplicate transaction. This website architecture guide is separate from the exact-commit Postman examples and independently versioned SDK implementations.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "The website guide's older library-version examples do not update or supersede the separately versioned GitHub SDK baseline."
+        ]
+      },
+      {
+        "update_id": "local-terminal-api-source-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture-local]] \u2014 Adyen website guide to local POS-to-terminal communications, live security prerequisites, and synchronous status recovery (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/local/2026-09-15.md",
+  "raw_sha256": "90d05fe91dd5cf70882e262de44d904b1b56cfb2302df4b073fa33176c5886be",
+  "status": "candidate_ready"
+}

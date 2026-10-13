@@ -1,0 +1,13 @@
+# Fixed retrieval checks — Terminal API network configuration
+
+## Purpose, scope, and limits
+
+**Query:** What is the network guide for, and what should it not be used to prove?
+
+**Answer:** It gives merchant network and terminal-IP configuration guidance for Terminal API point-of-sale integrations using local or cloud communication, including firewall, TLS, Wi-Fi, and loss-of-connectivity considerations. The file is a 2026-09-15 website capture whose metadata gives `last_modified` 2020-10-07; it is not a live network test, current endpoint or device certification, or evidence of successful transaction processing. Raw `Network configuration` and `Requirements`, lines 5–30. Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` → `wiki/sources/adyen/source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-network-configuration.md` → `raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/network-configuration/2026-09-15.md`.
+
+## Central requirements and warnings
+
+**Query:** Which network directions, IP choices, and failure/security limits does the guide give?
+
+**Answer:** It calls for outbound HTTPS from POS apps and terminals to Adyen's two wildcard domains, DNS-based allowlisting refreshed for IP changes at least every 60 seconds, tcp/443 to the internet, and tcp/8443 on the LAN; local POS and terminal share a LAN and protect their communication. This does not imply an inbound internet port (raw `Configuring your network`, lines 77–104). The terminal needs a valid IP for online authorization. The guide recommends dynamic IP without reservation for cloud, reservation or static IP for local, and says terminal/DNS/router IP modes cannot mix dynamic and static (raw lines 106–126). Local TLS 1.0/1.1 prevents transactions on terminal software v1.81 onward, while cloud endpoints reject TLS below 1.2 (raw lines 47–55). Wi-Fi Enterprise needs a remote profile, local POS links require isolation disabled, and Adyen-supplied terminals cannot use a proxy (raw lines 196–215, 231–233). `UnreachableHost` marks a network-related decline; offline payment is local-only in this guide and carries full merchant liability for related failed captures, chargebacks, and disputes (raw lines 217–229). Linked local/cloud, Wi-Fi, offline, and troubleshooting pages are navigation until read. Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` → `wiki/sources/adyen/source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-network-configuration.md` → `raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/network-configuration/2026-09-15.md`.

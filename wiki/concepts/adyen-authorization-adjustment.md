@@ -7,7 +7,8 @@ tags: [adyen, authorization-adjustment, pre-authorization, capture, webhooks]
 
 ## Overview
 
-Adyen authorization adjustment is an online-payments flow for changing the reserved amount on an eligible pre-authorized card or Klarna payment before final capture. It applies only to supported payment methods and Merchant Category Codes, depends on issuer acceptance, and is limited to payments acquired by Adyen.
+Adyen authorization adjustment changes the reserved amount on an eligible pre-authorized payment before final capture. For the online card or Klarna paths, it applies only to supported payment methods and Merchant Category Codes, depends on issuer acceptance, and is limited to payments acquired by Adyen. Separately, an in-person Terminal API merchant starts pre-authorization at the terminal, then submits amount updates and capture directly to Adyen's backend. POS eligibility also depends on payment method, scheme, Merchant Category Code and issuer; neither documented path establishes a particular merchant's eligibility or transaction outcome.
+
 
 ## Card lifecycle
 
@@ -29,6 +30,9 @@ These limits and scheme-specific extension statements are documented in the card
 Klarna is pre-authorized by default and supports only asynchronous authorization adjustment. An authorization can be adjusted while it has not been cancelled, expired or fully captured. After a partial capture, the adjusted amount cannot be below the already captured amount. Increasing the amount triggers another risk assessment or credit lookup; if that rejects the transaction, the customer must place a new order while the original authorization remains valid.
 
 ## Sources
+
+- [[source-adyen-docs-point-of-sale-pre-authorisation]] - unversioned Adyen POS guide, captured 2026-09-15, for terminal-initiated pre-authorization, backend adjustments and capture, and scheme-validity qualifications
+
 
 - [[source-adyen-docs-online-payments-adjust-authorisation]] - unversioned Adyen website overview, captured 2026-09-15, for authorization types, asynchronous and synchronous adjustment models, payment-method and MCC availability, and scheme-validity warnings
 

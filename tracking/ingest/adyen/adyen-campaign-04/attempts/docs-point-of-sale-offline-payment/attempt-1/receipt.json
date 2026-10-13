@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-offline-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen point-of-sale offline payments\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/offline-payment\"\nraw_files:\n  - \"adyen/docs/point-of-sale/offline-payment/2026-09-15.md\"\ntags: [adyen, point-of-sale, offline-payments, offline-emv, store-and-forward, terminal-api, mobile-sdk]\n---\n\n## Overview\n\nThis Adyen Docs page explains how configured point-of-sale integrations can continue taking payments during a temporary internet loss, using offline EMV or store and forward. It covers eligibility, merchant risk, setup, offline response recognition, later processing and reconciliation, retries, refunds, and testing. See [[adyen]] and [[adyen-terminal-api]] for the provider and in-person interface route. This dated website snapshot does not establish current account enablement, card/scheme or regional eligibility, successful issuer authorization, capture, or settlement for a particular transaction.\n\n## Key takeaways\n\n- A transaction normally needs internet access from the payment terminal or Mobile SDK. Offline payments require prior enablement and configured limits; Adyen says to ask Support to enable the chosen type and configure its limits, then check the settings in Customer Area. A cellular terminal connection is a separate online alternative during an internet outage.\n- The stated supported paths are a Terminal API integration with locally communicating payment terminals, standalone terminals with a built-in printer, and specified iOS Mobile SDK solutions. Cloud terminal communication has a narrow offline window: the payment request must have reached the terminal before internet access is lost. Mobile SDK solutions do not support offline EMV or refunds while offline; magnetic-stripe transactions cannot use offline payments. The types also vary by card, scheme, and region.\n- Offline approval occurs before the merchant receives funds and, for store and forward, before issuer authorization. Adyen assigns the merchant full liability for failed captures, chargebacks, and disputes, and requires a per-transaction floor limit. Offline EMV asks an eligible chip card to approve after checking offline PIN, while store and forward has the terminal or Mobile SDK approve without verification and submit later, with higher issuer-decline risk. Do not read an offline `Success` response as final funding.\n- On connection loss, the terminal or Mobile SDK checks enabled modes, card/issuer and scheme support, amount and stored-payment limits; when both modes are enabled it tries offline EMV first. If the offline payment is approved, it stores card/transaction details and sends them to Adyen for further processing when connectivity returns. Some scheme rules override account settings: the page gives Germany girocard offline EMV and Australia American Express as examples.\n- For Mobile SDK store and forward, the platform must attest the device while it is online. The page describes a 24-consecutive-hour window after a secure evaluation and says this mode does not work during an Adyen platform outage. While offline, deleting the POS app or removing the device passcode loses stored card and transaction data; restarting prevents further transactions until internet reconnects.\n- An offline Terminal API response lacks Adyen-generated PSP and issuer-authorization data and initially carries only the terminal's tender reference. The page recommends webhooks if reconciliation uses PSP references; those arrive for stored payments once online. It also describes tender-reference reconciliation and handling later issuer declines. Auto Rescue retries eligible failed store-and-forward authorizations for one calendar month if separately enabled; fraud-flagged payments are ineligible.\n- While still offline, only unreferenced refunds are supported, as offline EMV, subject to card support and a Support-configured maximum; Mobile solutions cannot refund offline. After reconnection, the page describes unreferenced or referenced refund routes using the original tender reference/terminal identifier or a recovered PSP reference. See the raw refund section for exact request forms and conditions.\n\n## Detail locators\n\n- Internet requirement, cellular alternative, and scope: `# Offline payments`, raw lines 19\u201327; integration and mode limits: `## Requirements`, lines 29\u201342.\n- Merchant exposure and required floor limit: `## Risk with offline payments`, raw lines 44\u201350. Mode mechanics, eligible cards/schemes and exclusions: `## Types of offline payment`, lines 52\u201367.\n- Offline checks, EMV-first order, storage and later platform submission: `## Offline payment flow`, raw lines 69\u201392. Mobile attestation, 24-hour window, platform-outage and data-loss warnings: `## Offline payments in a Mobile solution`, lines 94\u2013108.\n- Support setup, per-mode limits, and regional scheme exceptions: `## Set up offline payments`, raw lines 110\u2013157.\n- Missing PSP/authorization fields and offline indicators: `## Recognize the offline payment response`, raw lines 159\u2013200; examples continue through line 269. Reconciliation and issuer-decline handling: lines 271\u2013278.\n- Auto Rescue eligibility, enablement and retry identifiers: `## Retry failed store-and-forward authorizations`, raw lines 280\u2013294. Offline and later-online refund routes: lines 296\u2013326. Test procedure and post-reconnection checks: lines 328\u2013354.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 in-person Terminal API route; this page also covers standalone terminals and Mobile SDK conditions.\n\n## Related raw API references\n\n- The raw page links to local communications, Terminal API fundamentals, webhooks, Mobile SDK troubleshooting, refund requests, reporting, and Auto Rescue. Those linked targets are navigation until independently read; see raw lines 35\u201341, 98, 280\u2013326, and 356\u2013363.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/offline-payment/2026-09-15|Adyen Docs: Offline payments (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "To process a transaction, the payment terminal or Mobile SDK needs to have internet access. When there is a temporary loss of internet connectivity, you can continue making point-of-sale payments if offline payments have been enabled.",
+      "location": "raw/adyen/docs/point-of-sale/offline-payment/2026-09-15.md:23, under # Offline payments"
+    },
+    {
+      "text": "You are fully liable for the risk of failed captures, chargebacks, and disputes related to payments that you process offline.",
+      "location": "raw/adyen/docs/point-of-sale/offline-payment/2026-09-15.md:48, under ## Risk with offline payments"
+    },
+    {
+      "text": "* **Store and forward**: the payment terminal or Mobile SDK approves payments without any verification. Because of this, the risk of payments being declined by the issuer is higher than for offline EMV transactions.",
+      "location": "raw/adyen/docs/point-of-sale/offline-payment/2026-09-15.md:61, under ## Types of offline payment"
+    },
+    {
+      "text": "When the Adyen payments platform evaluates the mobile device as secure, the SDK can perform store-and-forward transactions for 24 consecutive hours. Store and forward does not work in the event of an outage of the Adyen payment platform.",
+      "location": "raw/adyen/docs/point-of-sale/offline-payment/2026-09-15.md:102, under ## Offline payments in a Mobile solution"
+    },
+    {
+      "text": "Data that is generated by the Adyen payments platform, such as the PSP reference, is missing because your integration is unable to connect to Adyen. Authorisation data is missing as well, because the issuer has not authorized the payment yet.",
+      "location": "raw/adyen/docs/point-of-sale/offline-payment/2026-09-15.md:161, under ## Recognize the offline payment response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-pos-offline-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-offline-payment]] \u2014 Adyen Docs website guide to configured POS offline EMV/store-and-forward payments, later processing, and merchant risk across eligible terminal and Mobile SDK paths (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/offline-payment/2026-09-15.md",
+  "raw_sha256": "1281b108c4d0fa89f3a5d2247b1582ee5acf1df78995af7cbaa0b8222564490b",
+  "status": "candidate_ready"
+}

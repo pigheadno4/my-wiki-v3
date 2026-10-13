@@ -1,0 +1,13 @@
+# Fixed retrieval checks — architecture choice
+
+## Purpose, scope, and limits
+
+**Query:** What is this source for, and what should a reader avoid inferring from it?
+
+**Answer:** It is Adyen's Terminal API architecture-selection guide for a merchant POS and Adyen payment terminal: choose direct local-network communication or cloud communication through Adyen's platform before building. It is a 2026-09-15 capture of a webpage whose frontmatter says `last_modified` 2023-12-06. It does not prove a particular merchant's eligibility, current endpoint availability, live payment outcome, or the version/behavior of a GitHub SDK or client. Source: `Choose an integration architecture`, raw lines 15–26; `Requirements`, lines 28–34; snapshot metadata, lines 1–12. Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` → `wiki/sources/adyen/source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture.md` → `raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/2026-09-15.md`.
+
+## Central choice, prerequisites, and warnings
+
+**Query:** How do local and cloud paths differ, and what conditions matter when choosing?
+
+**Answer:** Local POS requests go directly to a terminal IP on the local network and yield synchronous results; direct POST requests use `/nexo` on port 8443. The guide advises stable terminal IP addresses and says the POS app must add Adyen's certificate and encrypt local messages (raw `Local communications`, lines 36–49). Cloud requests go to Adyen's platform for forwarding to the terminal and may yield synchronous or asynchronous results. The two listed `device-api-test` URLs are for tests, with merchant account and device ID path parameters; device ID must equal the Terminal API message `POIID`. The page recommends migrating old cloud `terminal-api` endpoints to `device-api` (raw `Cloud communications` and `Test endpoints`, lines 51–70). The decision tree says local supports offline EMV and Store-and-forward while cloud does not; a cloud integration cannot transact when internet drops. Network expertise, POS architecture, terminal use, and power matter. Adyen cannot support network issues at the physical location (raw `Choosing between cloud and local` and `Technical know-how`, lines 72–158). The local/cloud detail pages and offline-payment link are navigation only until read. Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` → `wiki/sources/adyen/source-adyen-docs-point-of-sale-design-your-integration-choose-your-architecture.md` → `raw/adyen/docs/point-of-sale/design-your-integration/choose-your-architecture/2026-09-15.md`.

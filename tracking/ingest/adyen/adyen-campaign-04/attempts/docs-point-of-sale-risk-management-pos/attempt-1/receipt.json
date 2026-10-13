@@ -1,0 +1,80 @@
+{
+  "job_id": "docs-point-of-sale-risk-management-pos",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Point-of-sale risk management\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/risk-management-pos\"\nraw_files:\n  - \"adyen/docs/point-of-sale/risk-management-pos/2026-09-15.md\"\ntags: [adyen, point-of-sale, risk-management, moto, manual-key-entry]\n---\n\n## Overview\n\nThis Adyen POS risk-management guide, fetched 2026-09-15 and marked last modified 2022-12-26 in its raw metadata, describes Customer Area risk rules for riskier in-person-channel MOTO and Manual Key Entry (MKE) transactions. It calls the system \u201cRevenueProtect\u201d; the broader [[adyen-risk-management]] hub uses the newer Protect name. The guide says most ordinary POS transactions have lower fraud risk than ecommerce and most risk rules do not apply. It does not establish current feature availability, account configuration, a fraud outcome, or a rule for every terminal payment. [[adyen]] \u00b7 [[adyen-risk-management]] \u00b7 [[adyen-terminal-api]]\n\n## Key takeaways\n\n- For MOTO and MKE, the guide says POS risk rules can be enabled in Customer Area. Under the described settings, transactions receive a 0\u2013100 risk score; at 100, the transaction is declined and the terminal shows **Card blocked**. This is the guide's configured POS risk path, not a claim that every POS payment is scored or declined.\n- The guide describes MOTO and MKE payments as insecure, with no liability shift, and places fraud-chargeback liability on the accepting merchant. Its MKE signature description is specific to this entry mode; it does not define cardholder verification or liability for other POS methods.\n- POS risk checks may be enabled at company-account scope for all merchant accounts by default or for one merchant account, where the guide requires **Override company setting** first. General Protect enablement and POS checking are distinct toggles in this dated Customer Area walkthrough.\n- When enabled, the company default risk profile applies. For a merchant account processing only POS, Adyen recommends a dedicated profile, assigned to the relevant merchant accounts, because ecommerce-oriented defaults can wrongly decline POS traffic. The guide directs disabling three shared-IP/shopper-reference rules; further rule tuning and optional custom rules are in the raw.\n- The sample risk refusal has Terminal API `PaymentResponse` `Result=Failure`, `ErrorCondition=Refusal`, and `AdditionalResponse` with `refusalReason=199 Card blocked` and `message=BLOCK_CARD`. Its test-amount example ends in 125, and the guide explicitly says the integration must not retry that refused transaction.\n\n## Detail locators\n\n- **Purpose, risk score and liability:** raw lines 24\u201328, with MOTO/MKE scope and the guide's dated RevenueProtect name.\n- **Enable POS checks:** \u201cStep 1\u201d (lines 30\u201347), including company versus merchant account scope, POS toggle, and merchant override. These are snapshot UI paths, not proof of present-day account eligibility.\n- **Risk profile:** \u201cStep 2\u201d and \u201cStep 3\u201d (lines 49\u201387). The dedicated POS profile is a recommendation conditioned on POS-only processing; the three listed IP/shopper-reference rules are the guide's required disablements in that profile. Other rules are optional to disable, while Velocity and Consistency remain candidates for POS tuning.\n- **Optional rules and data conditions:** \u201cStep 4\u201d (lines 89\u2013103). AVS-based rules are conditional on sending shopper street address and ZIP/postal code; CVC mismatch and velocity rules, plus optional custom rules using additional data such as `shopperEmail`, are described here. Do not treat example data as mandatory for every POS request.\n- **Test refusal:** \u201cTesting\u201d (lines 105\u2013143) gives the response shape, the amount-ending-in-125 simulation, and no-retry instruction. The linked simulation page was not read here; the sample does not prove live behavior.\n\n## Related\n\n- [[adyen-risk-management]] \u2014 provider risk settings, profiles, and Protect boundary\n- [[adyen-terminal-api]] \u2014 Terminal API payment response context\n- [[source-adyen-docs-point-of-sale-cardholder-verification-methods]] \u2014 separate POS cardholder-verification guide\n\n## Related raw API references\n\nLinked MOTO, MKE, POS payment-method/chargeback, risk-rule, AVS, Terminal API response, and test-card pages are navigation only; their contents were not used to expand this source.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/risk-management-pos/2026-09-15|Adyen POS risk-management guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For most point-of-sale transactions, you do not need RevenueProtect because the risk for in-person payments is significantly lower than for ecommerce and most risk rules do not apply.",
+      "location": "raw line 24, introduction under # Risk management"
+    },
+    {
+      "text": "When the risk score reaches 100, the transaction is declined and the terminal shows **Card blocked**.",
+      "location": "raw line 26, introduction under # Risk management"
+    },
+    {
+      "text": "There is no liability shift and you are fully liable for [fraud chargebacks](/point-of-sale/what-we-support/payment-methods#pos-chargebacks) when accepting MOTO and MKE payments.",
+      "location": "raw line 28, introduction under # Risk management"
+    },
+    {
+      "text": "When you turn on the risk management system, the default risk profile of the company applies.",
+      "location": "raw line 51, under ## Step 2: Create a risk profile for point of sale"
+    },
+    {
+      "text": "Make sure that your integration doesn't retry the transaction.",
+      "location": "raw line 143, under ## Testing"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-pos-risk-risk-hub-c4",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "## Point-of-sale risk-rule boundary\n\nThe Adyen POS guide fetched 2026-09-15, whose raw metadata says last modified 2022-12-26 and calls the engine RevenueProtect, describes a separate Customer Area switch for POS risk checks. It focuses on MOTO and Manual Key Entry (MKE), not routine in-person payments. At company scope the switch defaults across merchant accounts; a merchant account can override company settings. The guide says the company default profile applies once enabled and recommends a dedicated profile when that merchant account processes only POS, because ecommerce-oriented shared-IP and shopper-reference rules can wrongly decline terminal traffic. It also describes MOTO/MKE as having no liability shift and merchant fraud-chargeback liability. These dated POS claims do not establish current Protect account settings or the liability of other POS entry modes. [[source-adyen-docs-point-of-sale-risk-management-pos]]\n\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve this as dated POS-specific RevenueProtect guidance; the existing hub describes broader Protect default enablement and does not imply POS checks are already on."
+        ]
+      },
+      {
+        "update_id": "adyen-pos-risk-risk-hub-source-c4",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "under ## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-risk-management-pos]] \u2014 2026-09-15 capture of Adyen's dated POS RevenueProtect guide for MOTO/MKE risk rules, account scope, profile tuning, liability warning, and Terminal API refusal test.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-pos-risk-terminal-link-c4",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "under ## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-risk-management-pos]] \u2014 dated Adyen POS risk guide for MOTO/MKE risk-rule refusals in Terminal API PaymentResponse and a no-retry test instruction (fetched 2026-09-15).\n",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/risk-management-pos/2026-09-15.md",
+  "raw_sha256": "f7ca26654b792e48d98694cc1bc807b63c04cf39f5ff10b0afeba673d2f580b3",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-network-and-connectivity-networking-issues",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Networking issues | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/network-and-connectivity/networking-issues\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/networking-issues/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-networking, mtu, mss]\n---\n\n## Overview\n\nAdyen's POS \"Networking issues\" page describes one failure mode: payment packets may be dropped because path overhead exceeds the effective Maximum Transmission Unit (MTU), even while internet connectivity appears available. The pinned 2026-09-15 snapshot reports `last_modified` 2020-10-07. It offers a diagnostic hypothesis and a network-team escalation, not proof of a specific terminal's network condition or payment outcome. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The cited symptoms are many `AuthorisedPending` or unauthorized payments, terminals failing to come online or switching to Store and Forward, and intermittent terminal-app loading. These symptoms can point to packet loss; the page says MTU exceedance **can** be the cause. Availability of an internet connection does not rule it out.\n- The terminal's MTU is shown in the linked Endpoints connection test. Adyen says the terminal default MTU is 1500 bytes and TCP/IP headers leave a 1460-byte Maximum Segment Size (MSS). Additional PPPoE, VPN, or MPLS overhead along the path can exceed that budget. The page says payment packets are marked \"Do not fragment,\" so a store or data-center router can drop oversized packets rather than fragment them.\n- Lowering MSS through TCP MSS clamping/ceiling/adjustment is presented as a technique to avoid fragmentation or drops. Because changing MSS affects **all** network traffic, the page instructs contacting the network support team or network-vendor support before lowering it. The page names Path MTU Discovery as the standard technique and notes practical ICMP restrictions; it specifies no universal new MSS value.\n- This source does not diagnose DNS, Wi-Fi, IP addressing, terminal assignment, encryption, or certificate faults. Its terminal/network symptoms do not establish that an authorization succeeded, failed, duplicated, or was safely retried. Use the separate Terminal API response and transaction-status authority for payment outcome investigation.\n\n## Detail locators\n\n- Symptoms and possible MTU cause: pinned raw, `## Dropped network packets when the internet connection is available`, `#### Symptom` and `#### Cause` (lines 18\u201336).\n- Endpoints test, default MTU/MSS and path-overhead mechanism: pinned raw, `#### Cause` (lines 30\u201336).\n- MSS adjustment, network-team warning, and PMTUD/ICMP qualification: pinned raw, `#### Solution` (lines 38\u201348).\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 provider concept for POS message and response boundaries.\n- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-network-configuration]] \u2014 broader terminal network configuration; separate source.\n- [[source-adyen-docs-point-of-sale-error-scenarios]] \u2014 Terminal API response and transaction-status handling; separate source.\n- [[adyen]] \u2014 provider hub.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/networking-issues/2026-09-15|Networking issues \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "On this page we discuss issues that are not covered in the other pages related to your [network infrastructure](/point-of-sale/design-your-integration/network-and-connectivity).",
+      "location": "raw line 16, # Networking issues"
+    },
+    {
+      "text": "The cause can be payment packets being dropped because the **Maximum Transmission Unit (MTU)** is exceeded.",
+      "location": "raw line 30, #### Cause"
+    },
+    {
+      "text": "The default MTU for payment terminals is 1500 bytes. Part of the MTU is reserved for the Transmission Control Protocol (TCP) and Internet Protocol (IP) headers of the connection. This leaves 1460 bytes for the **Maximum Segment Size (MSS)**.",
+      "location": "raw line 34, #### Cause"
+    },
+    {
+      "text": "The network router at your store or data center cannot fragment the packet because the terminal marks payment packets as \"Do not fragment\". As a result, your router drops the packet even though the internet connection is available.",
+      "location": "raw line 36, #### Cause"
+    },
+    {
+      "text": "Changing the MSS value affects all your network traffic. So before you start lowering the MSS, contact your network support team or the support center of your network vendor.",
+      "location": "raw line 46, #### Solution"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-networking-issues-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-networking-issues]] \u2014 2026-09-15 Adyen POS networking page on possible MTU-related payment-packet loss despite apparent connectivity, Endpoints test and network-team MSS guidance.",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/networking-issues/2026-09-15.md",
+  "raw_sha256": "d36c6a75773bfe50a316bddd63525d53bda5f3ce3d9f6c613577c8e2c83008b8",
+  "status": "candidate_ready"
+}

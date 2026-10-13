@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-point-of-sale-add-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS payment SaleToAcquirerData\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/add-data\"\nraw_files:\n  - \"adyen/docs/point-of-sale/add-data/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, sale-to-acquirer-data, additional-response, payment-data]\n---\n\n## Overview\n\nThis Adyen Docs page explains how a Terminal API in-person payment request can carry extra data in `PaymentRequest.SaleData.SaleToAcquirerData`, and how selected processing and request data can return in `PaymentResponse.Response.AdditionalResponse`. Its stated integration scope is Terminal API with payment terminals or a Mobile solution. See [[adyen]] and [[adyen-terminal-api]]. The page is a dated website guide with examples, not a fixed Checkout API schema/version or proof that a particular account, tender option, tokenization flow, split, or statement is enabled and accepted.\n\n## Key takeaways\n\n- `SaleToAcquirerData` can carry application information, merchant-defined metadata, shopper-recognition/tokenization inputs, dynamic shopper statement, platform split details, tender options, and other additional data. These categories serve different purposes; the page routes their exact fields and behavior to more specific guides and a sample collection.\n- Before relying on additional response fields, select the desired data types under **Developers > Additional data** in Customer Area. The response can include some submitted fields and data produced by payment processing. The page says merchant metadata can include up to 20 fields, with names at most 20 characters and values at most 80; receiving metadata in settlement reports requires contacting Support.\n- The request field supports two encodings: a JSON object converted to a Base64 string, or form-encoded key-value pairs separated by `&`. Under the described default behavior, `AdditionalResponse` matches that request encoding; with no `SaleToAcquirerData`, it uses key-value pairs. Contact Support to always receive one response format regardless of the request encoding. Preserve the format when decoding; the illustrated JSON and Java payloads are examples, not a comprehensive field contract.\n- Shopper identifiers used for recognition or later token payments are created by including such fields as `shopperEmail`, `shopperReference`, and `recurringProcessingModel` in the initial request, then retrieving and storing returned identifiers. A transaction-specific `shopperStatement` reaches a bank statement only if the account is configured for dynamic transaction descriptions; the page recommends a short restricted-character value because banks can truncate or lack Unicode support.\n- The Base64 and key-value examples each show a payment request with metadata, shopper statement, shopper identifiers, and `ReceiptHandler,AskGratuity` tender options, followed by a corresponding `AdditionalResponse`. Their `MessageHeader.ProtocolVersion` is `3.0`; that is the Terminal API/nexo protocol value in the examples, not a pinned Checkout API version. The separate API Explorer link for additional data uses `latest` and is navigation only here.\n\n## Detail locators\n\n- Purpose, stated terminal/Mobile scope, and response setup prerequisite: `# Add information to a payment` and `## Requirements`, raw lines 15\u201328.\n- Data categories and their downstream routes: `## Data elements`, raw lines 30\u201342; metadata limits/reporting: lines 50\u201354; shopper recognition inputs: lines 56\u201360; statement advice and configuration gate: lines 62\u201368; split/tender/additional-data pointers: lines 70\u201382.\n- Two supported encodings and response-format rule: `## Adding data elements to your request`, raw lines 84\u201393; Customer Area selection and no-request-data default: `## Receiving the additional response`, lines 95\u2013105.\n- Base64 JSON construction, Terminal API request and matching response illustration: `## Option 1`, raw lines 107\u2013327, especially lines 111\u2013145, 149\u2013178, 222\u2013265.\n- Key-value construction, request and matching response illustration: `## Option 2`, raw lines 329\u2013468, especially lines 333\u2013360 and 428\u2013462. The example strings do not establish an exhaustive encoding or validation specification.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 in-person Terminal API message architecture and provenance boundary from versioned GitHub examples.\n\n## Related raw API references\n\n- The raw page links to the SaleToAcquirerData sample collection, application information, shopper recognition, tender options, in-person platform payments, and API Explorer additional data. Those linked pages have not been read for this entry; use them for navigation, not additional behavioral claims. See raw lines 42\u201382 and 470\u2013475.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/add-data/2026-09-15|Adyen Docs: Add information to a payment (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "A basic Terminal API payment request includes the amount, currency, ID, and timestamp of the transaction. But maybe you want to add information that you want us to apply to your request, or save on the Adyen payments platform. The `SaleToAcquirerData` field allows you to do that.",
+      "location": "raw/adyen/docs/point-of-sale/add-data/2026-09-15.md:19, under # Add information to a payment"
+    },
+    {
+      "text": "You are free to create up to 20 metadata fields, where the maximum field name is 20 characters, and the maximum value 80 characters.",
+      "location": "raw/adyen/docs/point-of-sale/add-data/2026-09-15.md:52, under ### Metadata"
+    },
+    {
+      "text": "The `shopperStatement` from your Terminal API payment request only appears on your shopper's bank statement if your [account is configured](/account/transaction-description/) to include a dynamic shopper statement in the transaction description.",
+      "location": "raw/adyen/docs/point-of-sale/add-data/2026-09-15.md:68, under ### Shopper statement"
+    },
+    {
+      "text": "There are two ways to pass data elements in the `SaleToAcquirerData` field of your payment request:",
+      "location": "raw/adyen/docs/point-of-sale/add-data/2026-09-15.md:86, under ## Adding data elements to your request"
+    },
+    {
+      "text": "The format of the `AdditionalResponse` corresponds with the format of the `SaleToAcquirerData` in the payment request: a Base64-encoded JSON object, or form-encoded key-value pairs.",
+      "location": "raw/adyen/docs/point-of-sale/add-data/2026-09-15.md:104, under ## Receiving the additional response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-pos-add-data-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-add-data]] \u2014 Adyen Docs website guide to adding in-person payment `SaleToAcquirerData` and choosing the encoding of `AdditionalResponse` (2026-09-15 snapshot; separate from versioned GitHub examples).\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/add-data/2026-09-15.md",
+  "raw_sha256": "1bb02ebd5cc0fec84e776be94a9168e3ef599cc58823993cc5bb26bb59fcc484",
+  "status": "candidate_ready"
+}

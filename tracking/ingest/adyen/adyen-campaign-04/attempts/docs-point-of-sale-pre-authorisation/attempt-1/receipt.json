@@ -1,0 +1,77 @@
+{
+  "job_id": "docs-point-of-sale-pre-authorisation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS pre-authorization and authorization adjustment\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/pre-authorisation\"\nraw_files:\n  - \"adyen/docs/point-of-sale/pre-authorisation/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, pre-authorization, authorization-adjustment, capture]\n---\n\n## Overview\n\nThis unversioned Adyen website guide, captured on 2026-09-15, describes the **merchant's in-person Terminal API pre-authorization**, later backend authorization adjustment, and manual capture. It belongs to [[adyen-authorization-adjustment]] and [[adyen-terminal-api]]. It does not establish current scheme rules, merchant eligibility, issuer acceptance, or a completed adjustment or capture.\n\n## Key takeaways\n\n- The merchant starts with a Terminal API payment request using `authorisationType=PreAuth`; final authorization is the documented default and cannot be adjusted later. The terminal handles the shopper's card presentation and initial payment. Subsequent amount adjustments go **directly to Adyen's backend**, not to the terminal or its Cloud endpoint; capture is another backend modification.\n- Each amount update specifies the **new total authorized amount in minor units**, not just the increment. The request uses the original pre-authorization PSP reference; its own modification PSP reference is distinct. The merchant calculates the new amount and decides when to adjust.\n- The asynchronous path returns `received` and requires the `AUTHORISATION_ADJUSTMENT` webhook to determine whether the new amount was authorized before capture. The optional synchronous path requires account enablement and passing the latest `adjustAuthorisationData` blob through every adjustment; omitting it irreversibly switches that payment to asynchronous adjustment.\n- Manual capture must be enabled for the account or individual pre-authorization. After **all intended adjustments**, the merchant requests capture against the original payment PSP reference and awaits the `CAPTURE` webhook. Capture is asynchronous: an apparent remaining authorization after the capture request does not make another adjustment safe. If the shopper instead pays another way, the guide directs cancellation of the pre-authorization.\n- This flow requires a terminal integration, API key and payment roles, payment-method configuration with Adyen Support, and Standard webhooks for `AUTHORISATION_ADJUSTMENT`, `CAPTURE`, and `CAPTURE_FAILED`. When building or testing, the page directs at least a five-second gap between pre-authorization and adjustment.\n\n## Material boundaries\n\n> [!warning] Eligibility and expiry\n> Adjustment depends on payment method, card scheme, merchant category code and issuer acceptance. Wallet availability follows the associated card scheme. Only an unexpired pre-authorization can be adjusted. Adyen's stated 28-day default expiry for global schemes and the scheme-side validity tables are distinct; scheme, region, environment, authorization type and MCC affect the listed periods. Scheme-side expiry can precede Adyen expiry, and capture afterward raises failure, fee and chargeback risk. China UnionPay's section says an adjustment does not extend its validity period.\n\n> [!warning] Source table conflict and outcome boundary\n> The snapshot's MCC table says Visa adjustment excludes MCC 5542, while its Visa validity table includes a Pre-Auth 5542 row (two hours). Do not infer eligibility from that validity row. This dated page and its test examples do not prove present eligibility or successful processing; confirm current scheme guidance and actual webhook outcomes.\n\n## Detail locators\n\n- Requirements, setup, webhook events, method/MCC and issuer limits: raw `## Requirements`, lines 21-37.\n- Pre-authorization versus final authorization and default type: raw `## Authorization type`, lines 69-80; optional account configuration: lines 96-106.\n- Optional smart pre-authorization checks card brand/funding source; QR, MOTO and MKE are excluded: raw lines 33-35 and `## Enable smart pre-authorization (Optional)`, lines 108-126.\n- Initial terminal request fields, shopper presentation, response identifiers and optional initial blob: raw `## 1. Pre-authorize a payment`, lines 128-251.\n- Backend amount updates, new-total amount, asynchronous webhook and synchronous blob result: raw `## 2. Adjust the pre-authorized amount`, lines 253-831. The synchronous tab's language-library examples include older Payments API shapes; use the guide's Checkout `/amountUpdates` procedure and verify current API contracts before implementation.\n- Same-amount extension and capture/cancel lifecycle: raw `### Extending the authorization`, lines 832-841, and `## 3. Capture the payment`, lines 842-905.\n- Test delay, payment-method/MCC availability, expiry risks and scheme-specific validity tables: raw `## Testing`, lines 907-911; `## Availability`, lines 913-941; `## Expiration of pre-authorizations`, lines 943-1033.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-authorization-adjustment]]\n- Terminal API boundary: [[adyen-terminal-api]]\n- Online-payment adjustment: [[source-adyen-docs-online-payments-adjust-authorisation-adjust-with-preauth]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/pre-authorisation/2026-09-15|Adyen POS pre-authorization and authorization adjustment]] \u2014 full captured guide and dated scheme tables\n",
+  "quotes": [
+    {
+      "text": "Using the [authorization type](#authorisation-types?target=_blank) **pre-authorization** for your payment request, you can increase or decrease the authorized amount at a later stage, and then capture the payment manually.",
+      "location": "raw line 19, opening paragraph"
+    },
+    {
+      "text": "If at any point you fail to pass the blob, the flow falls back to asynchronous adjustment, and it is no longer possible to return to synchronous adjustment for that payment.",
+      "location": "raw line 94, ## Asynchronous or synchronous adjustment"
+    },
+    {
+      "text": "This step involves making a request to the Adyen backend directly. This is not a Terminal API request to the terminal itself or the Cloud endpoint for the terminal.",
+      "location": "raw line 257, ## 2. Adjust the pre-authorized amount"
+    },
+    {
+      "text": "Always double-check that you have completed all authorization adjustments for the payment before you capture it. Captures are done asynchronously, so it may seem that the payment hasn't been completely captured yet and that it is still possible to adjust the authorization.",
+      "location": "raw line 846, ## 3. Capture the payment"
+    },
+    {
+      "text": "You can only adjust a pre-authorization that has not expired yet. There are two authorization validity periods to take into account:",
+      "location": "raw line 945, ## Expiration of pre-authorizations"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-pos-preauth-definition",
+        "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Overview",
+        "proposed_markdown": "Adyen authorization adjustment changes the reserved amount on an eligible pre-authorized payment before final capture. The existing online-payment card and Klarna paths remain distinct from the in-person Terminal API path: a POS merchant starts the pre-authorization at the terminal, then submits amount updates and capture directly to Adyen's backend. Eligibility is limited by payment method, scheme, Merchant Category Code and issuer; documented flows do not establish a particular merchant's eligibility or transaction outcome.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Replace the online-only opening definition, not the online card/Klarna details below it."
+        ]
+      },
+      {
+        "update_id": "c4-pos-preauth-source-link",
+        "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-pre-authorisation]] - unversioned Adyen POS guide, captured 2026-09-15, for terminal-initiated pre-authorization, backend adjustments and capture, and scheme-validity qualifications",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c4-pos-preauth-terminal-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-pre-authorisation]] - unversioned Adyen POS guide, captured 2026-09-15, for a Terminal API pre-authorization followed by backend amount updates and capture",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/pre-authorisation/2026-09-15.md",
+  "raw_sha256": "820ec3600e8453736a4aadbbc68fbd63463dd9aaa3a849cec265e76faed90414",
+  "status": "candidate_ready"
+}

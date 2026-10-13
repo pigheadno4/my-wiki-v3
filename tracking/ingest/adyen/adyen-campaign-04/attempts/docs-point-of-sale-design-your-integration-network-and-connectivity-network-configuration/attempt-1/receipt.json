@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-network-and-connectivity-network-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Network configuration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/network-and-connectivity/network-configuration\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/network-configuration/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, network, local-communications, cloud-communications]\n---\n\n## Overview\n\nThis Adyen Docs network-configuration guide applies to a Terminal API point-of-sale integration with payment terminals. It describes network access and terminal addressing needed for the merchant POS app, terminal, and Adyen platform to communicate, with separate local/cloud considerations. It is a captured website recommendation and configuration guide, not proof that a specific store network or payment path works. See [[adyen]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The guide directs the merchant to allow **outgoing HTTPS** from POS-app and terminal IP addresses to `*.adyen.com` and `*.adyenpayments.com`, using DNS-name allowlisting that checks changing IP addresses at least every 60 seconds; Adyen says not to hard-code its IPs. It lists **tcp/443 to the internet** and **tcp/8443 on the LAN**. These are directions and scopes in the page; it does not instruct a public inbound 8443 opening. Local POS app and terminal must share a local network and protect that communication.\n- Adyen says it uses TLS 1.2 for secure internet transmission. For **local** communications, terminals on software v1.81 or later cannot process transactions if the integration still uses TLS 1.0 or 1.1. The page says cloud endpoints already reject TLS below 1.2. It lists TLS 1.2 cipher choices and a local TLS-test route for qualifying non-Android terminal/software combinations; check the raw before applying a cipher or test procedure.\n- A terminal needs a valid IP address for online authorization. Dynamic DHCP, DHCP reservation, and manually configured static IP are described, but the terminal IP and its DNS-server/router IP settings cannot mix dynamic and static modes; Customer Area cannot configure the terminal IP. The page **recommends** dynamic IP without reservation for cloud and DHCP reservation or static IP for local communications, with a DHCP lease of at least 24 hours if configurable.\n- For local communication, a changing terminal IP risks losing the POS connection. An optional Support-enabled notification can send the new IP and `uniqueTerminalId` to a merchant endpoint so the POS can reestablish communication. The merchant supplies that endpoint URL and credentials; this is not an automatic property of every terminal installation.\n- The page recommends a segmented POS network, local DNS resolving Adyen domains while honoring Adyen TTL (including 60 seconds for disaster recovery), current IDS/IPS signatures, UPS, cellular backup, and correct MTU. Its Wi-Fi guidance calls for supported WPA/WPA2 and 2.4/5 GHz access points; Enterprise encryption requires a remote Wi-Fi profile, and local communication requires disabling wireless/client isolation. A Wi-Fi association alone does not establish internet access; supported channels are region/terminal dependent.\n- When connectivity causes a decline, the page names `UnreachableHost`. Cellular failover and configured offline transactions are listed as possible continuations, but **offline payments are only available for local-communication integrations** in this page and the merchant is fully liable for related failed-capture, chargeback, and dispute risk. Adyen-supplied terminals do not support proxy connections and must bypass a network proxy to reach Adyen directly.\n\n## Detail locators\n\n- `Network configuration` / `Requirements`, lines 15\u201330: Terminal API scope, local TLS version and offline limitations, optional IP-change notification setup.\n- `Network communications flow`, lines 32\u201345: local/cloud flow headings and diagrams; diagrams give navigation/context, not a separate protocol contract.\n- `Communications security`, lines 47\u201375: TLS 1.2 statement, v1.81 local deprecation, cloud minimum, OS/test links, and cipher list.\n- `Configuring your network`, lines 77\u2013104: outbound domain allowlist, DNS polling, ports, same-LAN and protected-local requirements, legacy serial flow control.\n- `Configuring the terminal IP address` / `Recommendations`, lines 106\u2013126: valid IP for online authorization, assignment methods, all-dynamic/all-static constraint, Customer Area limitation, local/cloud IP advice.\n- `Get notified about IP address changes` / `Defining a static IP address`, lines 128\u2013170: optional Support-mediated webhook and terminal-admin static-IP steps.\n- `General networking recommendations` / `Wi-Fi recommendations`, lines 172\u2013215: network, DNS/TTL, IDS/IPS, UPS, failover, MTU, Wi-Fi encryption/profile/isolation, and regional-channel navigation.\n- `Handling loss of internet connectivity` / `Using a proxy`, lines 217\u2013233: `UnreachableHost`, failover/offline paths, merchant offline liability, Adyen-terminal proxy limit.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-terminal-api]] \u2014 provider concept for the Terminal API POS/terminal route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/network-configuration/2026-09-15|Network configuration (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "When you make a point-of-sale transaction, your POS app, terminal, and Adyen need to be able to communicate with one another. The [flow of this communication](#network-communications-flow) depends on whether your integration uses local or cloud communications. To enable this communication, you need to [configure your network](#configuring-your-network) to allow access to specific ports and addresses.",
+      "location": "Network configuration, line 19"
+    },
+    {
+      "text": "In September 2022, with terminal software version 1.81, we deprecated TLS 1.0 and 1.1. This means that if you are still using TLS 1.0 or 1.1 for [local communications](#local-communications), terminals on software versions v1.81 and later will not be able to process transactions.",
+      "location": "TLS 1.0 and 1.1 deprecation, line 53"
+    },
+    {
+      "text": "Allowlisting should be based on the DNS name of these URLs. Your firewall should dynamically check for IP address updates, at least every 60 seconds.",
+      "location": "Configuring your network, line 89"
+    },
+    {
+      "text": "You cannot use a mix of dynamic and static IPs. The IP address of the terminal and the IP addresses of the DNS server and router must be either all dynamic, or all static.",
+      "location": "Configuring the terminal IP address, line 116"
+    },
+    {
+      "text": "You are fully liable for the risk of failed captures, chargebacks, and disputes related to offline payments.",
+      "location": "Handling loss of internet connectivity, line 229"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-terminal-api-network-config-c04",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity-network-configuration]] \u2014 2026-09-15 Adyen Docs website network guide for Terminal API POS/terminal local and cloud communication, addressing, TLS, Wi-Fi, and connectivity limits.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/network-and-connectivity/network-configuration/2026-09-15.md",
+  "raw_sha256": "1afde72daf677a4e2a7278c0d9d3f254b58180b729bcb246cd7af436f0095b4a",
+  "status": "candidate_ready"
+}

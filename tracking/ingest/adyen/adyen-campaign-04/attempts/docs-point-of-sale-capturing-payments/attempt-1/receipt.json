@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-capturing-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Capture in-person payments | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/capturing-payments\"\nraw_files:\n  - \"adyen/docs/point-of-sale/capturing-payments/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, capture, authorization, webhooks]\n---\n\n## Overview\n\nAdyen's point-of-sale capture guide explains automatic immediate, delayed automatic, and manual capture of in-person payments made through a Terminal API integration. It describes capture and cancellation after authorization, using Checkout API payment-modification requests from a POS app. The page is a 2026-09-15 website snapshot, not a merchant eligibility check, a current Checkout API schema, a library-version authority, or proof of a particular payment outcome.\n\n## Key takeaways\n\n- Immediate automatic capture after authorization is the default. For payment methods that support separate capture, delayed automatic capture gives the merchant time to cancel an uncaptured authorization; manual capture requires a later capture request. Adyen recommends a delay for POS payments so a mistake can be cancelled before capture rather than refunded afterward.\n- Capture mode or delay can be configured per merchant account in Customer Area or per Terminal API payment request through `SaleData.SaleToAcquirerData` (`captureDelayHours` or `manualCapture`). A per-payment API setting overrides the merchant-account setting. The Customer Area configuration calls for Merchant admin, View Payments, and Merchant manage payments roles; capture and cancellation requests require an API key, and asynchronous outcomes require webhooks.\n- Separate capture depends on the in-person payment method. Most wallets do not support it; Alipay and WeChat Pay are captured immediately and cannot use delayed capture. Single partial capture cancels the unclaimed amount. Multiple partial captures retain the balance but are disabled by default and require Adyen Support enablement. Card-scheme authorization type and capture-period limits can matter; inspect the relevant raw sections and failed-request reasons.\n- For manual capture, obtain the authorization `pspReference` from the Terminal API payment response `transactionID`, then call Checkout API `POST /payments/{paymentPspReference}/captures` with the authorization reference, merchant account, and amount in matching currency. Its separate capture `pspReference` and `status: received` identify an asynchronously accepted request, not final capture or settlement. Await the `CAPTURE` webhook. A successful `CAPTURE` event means a valid request was submitted onward; a rare later `CAPTURE_FAILED` can report scheme or issuer rejection, even days later.\n- With delay or manual capture, an uncaptured authorization can be cancelled through Checkout API `POST /payments/{paymentPspReference}/cancels`; the `CANCELLATION` webhook gives the asynchronous result. When capture status is uncertain, this page points to the reversal route instead of an ordinary cancel request. A received cancel response is not the cancellation result.\n\n## Detail locators\n\n- `Requirements` and `Types of capture` \u2014 Terminal API prerequisite, Customer Area roles, wallet restrictions, partial-capture behavior and Support enablement.\n- `Delayed automatic capture` \u2014 account-level POS capture delay, per-payment `captureDelayHours`, override precedence, and special delayed-capture webhook settings; automatic capture does not normally emit a separate `CAPTURE` webhook.\n- `Manual capture` > `Enable manual capture` \u2014 Customer Area setting, API key, Standard webhooks, and per-payment `manualCapture` flag with Base64 JSON and key-value examples.\n- `Manual capture` > `Capture a payment` \u2014 Terminal API response reference, Checkout capture path, amount/currency fields, example test request, distinct response references and `received` status. Example library versions and test endpoint are illustrative within this snapshot.\n- `Webhooks for captures` \u2014 CAPTURE validity and refusal reasons, later CAPTURE_FAILED, and the remaining authorized balance.\n- `Cancel an authorization` and `CANCELLATION webhook` \u2014 uncaptured-payment condition, cancel versus reversal, API key, response identifiers and asynchronous outcome.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-terminal-api]]\n- Related capture concept: [[adyen-payment-capture]] (currently covers the online-payments guide; use this page for POS specifics)\n- Related webhook concept: [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/capturing-payments/2026-09-15|2026-09-15 Adyen POS capture guide]]\n",
+  "quotes": [
+    {
+      "text": "Capture in-person payments automatically, with a delay, or manually.",
+      "location": "raw/adyen/docs/point-of-sale/capturing-payments/2026-09-15.md:17, under # Capture"
+    },
+    {
+      "text": "Most wallet payment methods do not support separate capture of in-person payments. Alipay and WeChat Pay are always captured immediately; these wallets do not support delayed capture.",
+      "location": "raw/adyen/docs/point-of-sale/capturing-payments/2026-09-15.md:37, ## Requirements table / Limitations"
+    },
+    {
+      "text": "Multiple partial capture is disabled by default, so you need to contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable this feature.",
+      "location": "raw/adyen/docs/point-of-sale/capturing-payments/2026-09-15.md:55, ### Partial manual capture / Multiple partial captures"
+    },
+    {
+      "text": "* `status`: **received**. Your capture request will be processed asynchronously. You will receive the result in a webhook.",
+      "location": "raw/adyen/docs/point-of-sale/capturing-payments/2026-09-15.md:546, ### Capture a payment / response fields"
+    },
+    {
+      "text": "In rare cases, a capture fails even after you received a [**CAPTURE** webhook](#capture-webhook) with `success`:\u00a0**true**.",
+      "location": "raw/adyen/docs/point-of-sale/capturing-payments/2026-09-15.md:666, ### CAPTURE\\_FAILED webhook"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pos-capture-terminal-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-capturing-payments]] \u2014 unversioned Adyen POS capture guide captured 2026-09-15 for Terminal API authorization and per-payment capture flags, Checkout API capture/cancel modifications, payment-method limits, and asynchronous outcomes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/capturing-payments/2026-09-15.md",
+  "raw_sha256": "24b5c9f762715b75669ae20d6d25566166f21f9afbee110c10854e8585949251",
+  "status": "candidate_ready"
+}

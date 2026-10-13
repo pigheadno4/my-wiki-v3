@@ -15,6 +15,9 @@ These fixtures exercise test integration behavior; they do not prove production 
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-testing-pos-payments]] — Adyen Docs website guide to POS test cards, gift-card and QR simulators, and live-only wallet test limits (2026-09-15 snapshot).
+
+
 - [[source-adyen-docs-online-payments-donations-testing]] — Giving-specific test-card and environment verification guide (webpage snapshot, 2026-09-15), with separate live campaign and donation checks.
 
 

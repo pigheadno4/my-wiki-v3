@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-point-of-sale-design-your-integration-notifications-standard-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS platform-generated webhooks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/design-your-integration/notifications/standard-notifications\"\nraw_files:\n  - \"adyen/docs/point-of-sale/design-your-integration/notifications/standard-notifications/2026-09-15.md\"\ntags: [adyen, point-of-sale, webhooks, standard-webhooks, terminal-management]\n---\n\n## Overview\n\nThis Adyen Docs page describes **platform-generated** webhooks relevant to in-person payments: Standard webhooks about payment activity and terminal-management webhooks about terminal orders, assignment, boarding, and settings. They arrive at a merchant backend from Adyen's payments platform. They are distinct from terminal-generated EventNotification or DisplayRequest messages and from a Terminal API payment response.\n\n## Key takeaways\n\n- Standard webhooks support asynchronous POS-related outcomes, including refunds, authorization adjustment, manual capture, and cancellation of uncaptured authorization; the page also lists offline-payment PSP-reference reconciliation, cross-channel insights, and recurring online payments after POS token creation. Terminal approval/decline feedback is immediate, and a missing Terminal API transaction response can be checked with a transaction-status request; a Standard webhook is a separate platform event, not the immediate terminal response.\n- For Standard webhooks, configure event codes and optional additional-data settings for identifiers needed by the use case. The page's table maps fields such as alias, funding source, issuer country, BIN, POIID, store, and tender reference to settings. Some identifiers, including Payment Account Reference and recurring detail reference, require **Developers > Additional data** rather than or in addition to webhook settings; enabling them there also adds them to API responses. The JSON example is illustrative (`live: false`, `AUTHORISATION`, `success: true`), not a guarantee of delivered fields or finality for another event/environment.\n- Terminal-management webhooks have a **different structure** from Standard webhooks. They cover completed terminal assignment, successful boarding, terminal-order updates, and terminal-settings updates. The guide says they need no further setup beyond Customer Area server and security configuration; do not apply the Standard event-code or `additionalData` table to these payloads.\n- The setup section directs receivers to verify webhook HMAC signatures and acknowledge with a successful HTTP status such as `202`. Its linked general webhook docs carry the detailed verification and delivery rules; this POS page alone does not define a complete security or retry contract.\n\n## Detail locators\n\n- Platform origin, two webhook categories, HMAC and acknowledgment pointers: `# Platform-generated webhooks` and `## Set up webhooks`, raw lines 15\u201334.\n- Standard POS use cases, terminal-result distinction, event-code/additional-data settings, and illustrative `AUTHORISATION` payload: `## Standard webhook`, raw lines 36\u2013129. The exact identifier/settings mapping is at lines 55\u201378.\n- Terminal-management payload distinction, setup boundary, event types, and examples: `## Terminal management webhooks`, raw lines 131\u2013235. Example environment values belong to their individual samples.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-webhooks]] \u2014 platform-generated webhook concept, verification, and backend handling.\n- [[adyen-terminal-api]] \u2014 separate POS-to-terminal messages and transaction-status recovery.\n- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-event-notifications]] \u2014 terminal-generated event messages and cloud response delivery.\n- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-display-notifications]] \u2014 terminal-generated display messages.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/design-your-integration/notifications/standard-notifications/2026-09-15|Adyen Docs: Platform-generated webhooks (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Webhooks generated on the Adyen payments platform share a similar format and are delivered in the same way across sales channels. Platform-generated webhooks inform you asynchronously of transaction details and settings updates.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/notifications/standard-notifications/2026-09-15.md:19, under # Platform-generated webhooks"
+    },
+    {
+      "text": "* Verify the HMAC signature included in webhooks.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/notifications/standard-notifications/2026-09-15.md:31, under ## Set up webhooks"
+    },
+    {
+      "text": "* Acknowledge webhooks with a [successful HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#successful_responses), for example **202**.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/notifications/standard-notifications/2026-09-15.md:32, under ## Set up webhooks"
+    },
+    {
+      "text": "Standard webhooks include a few details by default, as well as configurable additional data.",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/notifications/standard-notifications/2026-09-15.md:55, under ## Standard webhook"
+    },
+    {
+      "text": "Terminal management webhooks have a different structure from standard webhooks and do not require additional setup apart from the [server and security configuration](/development-resources/webhooks/#set-up-webhooks-in-your-customer-area) in your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw/adyen/docs/point-of-sale/design-your-integration/notifications/standard-notifications/2026-09-15.md:133, under ## Terminal management webhooks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c4-pos-platform-webhook-distinction",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Definition",
+        "proposed_markdown": "For POS, Adyen distinguishes platform-generated Standard transaction webhooks from platform-generated terminal-management webhooks for assignment, boarding, orders, and settings. Standard webhook event codes and optional `additionalData` are configured separately; terminal-management payloads have another structure and need only the Customer Area server/security configuration described by the guide. These backend platform webhooks are distinct from terminal-generated EventNotification and DisplayRequest messages and from an immediate Terminal API payment response.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not apply Standard webhook `additionalData` fields or event-code configuration to terminal-management payloads, or conflate platform webhooks with terminal-generated messages."
+        ]
+      },
+      {
+        "update_id": "c4-pos-platform-webhook-source-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-design-your-integration-notifications-standard-notifications]] \u2014 Adyen POS website guide to platform-generated Standard and terminal-management webhooks, configuration differences, and backend acknowledgment/HMAC pointers (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/design-your-integration/notifications/standard-notifications/2026-09-15.md",
+  "raw_sha256": "182ef3dd4998a3d53e1d9fbb41f3001bb8a15a640e9b2946f79be4b3069a548d",
+  "status": "candidate_ready"
+}
