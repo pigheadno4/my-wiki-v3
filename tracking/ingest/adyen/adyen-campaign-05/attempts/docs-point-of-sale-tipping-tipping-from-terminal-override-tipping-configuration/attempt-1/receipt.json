@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-point-of-sale-tipping-tipping-from-terminal-override-tipping-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Override terminal tipping options per payment\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration\"\nraw_files:\n  - \"adyen/docs/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, tipping, gratuity]\n---\n\n## Overview\n\nThis Adyen guide explains how a merchant POS using Terminal API can override Customer Area default tipping options in an individual payment request so the shopper sees different choices on the terminal. It covers trigger logic, terminal-software-specific `Operation` formats, request placement, and original/tip/authorized response amounts. The guide does not establish merchant enablement, current software compatibility beyond its stated versions, or a successful payment in a reader's environment.\n\n## Key takeaways\n\n- The merchant defines default tipping options in Customer Area, but must implement its own POS logic for when a payment should present different options; an override is supplied with that payment request rather than changing the stored default configuration. The low-value coffee example explains a possible business rule, not a required threshold. See **Override configured tipping options** and **Requirements**.\n- The terminal can offer either up to three fixed tip amounts or up to three percentages of the original purchase amount, optionally a custom tip; **No tip** remains available. Percentage suggestions must not exceed 100. This is shopper selection on the terminal, not a staff-selected gratuity or an automatic charge. See **Tipping options** and **Specify tipping options in the payment request**.\n- Terminal software 1.97 or later is stated for this Terminal API feature. Versions 1.97\u20131.100 use the older `Operation` format with `Variant: TipSuggestions`, `Data`, and `Percent1`\u2013`Percent3`; 1.101+ uses `TipOptions.TipSuggestions` and `Percentage1`\u2013`Percentage3`. Choose the format for the terminal's software version; the versioned examples do not establish behavior for another release. See **Requirements** and **Specify tipping options in the payment request**.\n- To request the override, include the `AskGratuity` tender option in `SaleData.SaleToAcquirerData` and Base64-encode the version-appropriate `Operation` JSON into `SaleData.SaleToPOIData`. `PaymentTransaction.AmountsReq.RequestedAmount` is the original purchase amount, not a precomputed purchase-plus-tip total. See **Specify tipping options in the payment request**.\n- After shopper selection, `PaymentResult.AmountsResp.TipAmount` is the selected tip and `AuthorizedAmount` is original purchase amount plus tip. Receipt data includes original/tip/total; when no tip is added, the tip field/receipt gratuity is omitted. Additional-response amount fields are in minor units and its encoding depends on account settings. The EUR 10 plus 20% tip example shows EUR 12 authorized, but its request and response examples have different `ServiceID` values, so do not treat those payloads as a coherent matched transaction or proof of capture/settlement. See **Specify tipping options in the payment request \u2192 PaymentResponse**.\n\n## Detail locators\n\n- **Override configured tipping options** \u2014 Customer Area defaults, request-specific override and merchant trigger-logic example.\n- **Requirements** \u2014 Terminal API and software 1.97+ condition.\n- **Tipping options** \u2014 fixed versus percentage choices, custom and no-tip options.\n- **Specify tipping options in the payment request \u2192 Software version 1.101 and later** \u2014 new `TipOptions.TipSuggestions` structure and example.\n- **Specify tipping options in the payment request \u2192 Software version 1.97 to 1.100** \u2014 older `Variant`/`Data` structure and example.\n- **Specify tipping options in the payment request** \u2014 Base64 `Operation`, `AskGratuity`, request header, original purchase amount and illustrative EUR 10 request.\n- **Specify tipping options in the payment request \u2192 PaymentResponse** \u2014 selected tip and authorized-total fields, receipt/AdditionalResponse details, and illustrative response; request/response sample `ServiceID` mismatch is at lines 148 and 202 of the raw.\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration/2026-09-15|Adyen Docs \u2014 Override configured tipping options (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "You can override the settings defined in your Customer Area by specifying the tipping options in the payment request. This shows the new tipping options on the terminal screen during the payment flow. However, you need to implement logic in your system when to trigger the override, such as logic to offer fixed amount options instead of percentages if the total amount is low.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration/2026-09-15.md:21 (Override configured tipping options)"
+    },
+    {
+      "text": "A [Terminal API](/point-of-sale/design-your-integration/terminal-api) integration with payment terminals on software version 1.97 or later.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration/2026-09-15.md:29 (Requirements \u2192 Integration type)"
+    },
+    {
+      "text": "You can present your customer with either three percentage options or three tipping amount options. Additionally, you can enable the flag to present a **Custom** tip option. The **No tip** option is always included.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration/2026-09-15.md:34 (Tipping options)"
+    },
+    {
+      "text": "To override the configured tipping options, in the payment request you need to include the **AskGratuity** [tender option](/point-of-sale/add-data/tender-options) and a Base64-encoded `Operation` object with the new tipping options.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration/2026-09-15.md:38 (Specify tipping options in the payment request)"
+    },
+    {
+      "text": "`AuthorizedAmount`: the total authorized amount of the transaction, consisting of the original purchase amount plus the tip amount.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration/2026-09-15.md:179 (Specify tipping options in the payment request \u2192 PaymentResponse.AmountsResp)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "terminal-tipping-override-per-payment",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Payment and interaction patterns",
+        "proposed_markdown": "A merchant POS can override Customer Area terminal tipping suggestions for one Terminal API payment by sending `AskGratuity` with a version-appropriate Base64 `Operation` object. The shopper chooses among the presented tip/no-tip options; `RequestedAmount` is the purchase base, while the payment response's `AuthorizedAmount` includes any selected tip. The website guide requires terminal software 1.97+ and changes the `Operation` shape at 1.101; exact formats stay in its source/raw snapshot.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw request/response examples have different ServiceID values, so do not treat them as a verified matched transaction."
+        ]
+      },
+      {
+        "update_id": "terminal-tipping-override-source-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal-override-tipping-configuration]] \u2014 Adyen website guide to per-payment terminal tipping overrides, versioned request formats, and purchase/tip/authorized amounts (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration/2026-09-15.md",
+  "raw_sha256": "d3b281840696358432857d777b62faacd82103dafae9ec3ffa4740f3e7c42a2a",
+  "status": "candidate_ready"
+}

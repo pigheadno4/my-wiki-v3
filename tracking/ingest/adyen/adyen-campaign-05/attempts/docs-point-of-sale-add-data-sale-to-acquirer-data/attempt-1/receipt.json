@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-add-data-sale-to-acquirer-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS SaleToAcquirerData sample collection\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/add-data/sale-to-acquirer-data\"\nraw_files:\n  - \"adyen/docs/point-of-sale/add-data/sale-to-acquirer-data/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, sale-to-acquirer-data, request-encoding, additional-data]\n---\n\n## Overview\n\nThis Adyen Docs page is a **sample collection** of data elements a merchant POS can place in `PaymentRequest.SaleData.SaleToAcquirerData` of a Terminal API payment request. Its stated scope is an integration with payment terminals or a Mobile solution. It illustrates Base64-encoded JSON and key-value representations, with categories such as application information, merchant metadata, recurring/shopper fields, store, tender options, and `additionalData`. It does not establish that every sample field is required, supported for every merchant, or sufficient to produce an authorization, capture, split payout, or other result.\n\n## Key takeaways\n\n- The JSON example has top-level `applicationInfo`, `metadata`, recurring and shopper fields, `store`, `tenderOption`, and an `additionalData` object. The nested examples include `authorisationType`, lodging, split, surcharge, tax-free, travel/entertainment, and `manualCapture` names. The key-value tab flattens names such as `applicationInfo.externalPlatform.name` and `additionalData.authorisationType`. These are examples to locate names and shape, not a full list of `additionalData` elements; the page explicitly says the list is long and growing.\n- The tabs route to the parent add-data guide for Base64 JSON versus key-value encoding. That guide describes Base64 of a JSON object or form-encoded `key=value` pairs separated by `&`, and explains `AdditionalResponse` format selection. This sample page itself provides representation examples; it does not pin an API Explorer or SDK version. Example `applicationInfo` version strings describe a platform/app/device in the payload, not the Terminal API protocol version.\n- Preserve a sample-level path discrepancy when implementing: JSON places `split.*` and `taxfree.indicator` inside `additionalData` (raw lines 76\u201389), while the key-value example lists `split.*` and `taxfree.indicator` without an `additionalData.` prefix (lines 118\u2013131). `surchargeFee` appears in the JSON sample but is absent from the key-value sample. Follow the field-specific guides and current schema for an actual request rather than inferring equivalence or requiredness from this mixed collection.\n- Before relying on additional response data, the Requirements section points to selecting what to receive. The example values `PreAuth`, `ReceiptHandler,AskGratuity`, `split.api=1`, `manualCapture=false`, and numeric split amounts do not by themselves prove those features are enabled, a split is accepted, funds are allocated, or a payment has reached a final state.\n\n## Detail locators\n\n- Purpose, terminal/Mobile scope, response-data setup, and non-exhaustive warning: `# SaleToAcquirerData`, `## Requirements`, and `## SaleToAcquirerData sample collection`, raw lines 15\u201329.\n- Base64 JSON route, top-level application/shopper/tender fields, nested `additionalData`, and placeholder values: `### Tab: JSON object`, raw lines 31\u201395. Exact split, surcharge, tax-free, and manual-capture sample names: lines 64\u201393.\n- Key-value route and flattened names: `### Tab: Key-value pairs`, raw lines 97\u2013146. Compare lines 118\u2013132 with JSON lines 76\u201389 for the split/tax-free path difference. More complete encoding and response rules belong to [[source-adyen-docs-point-of-sale-add-data]].\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 Terminal API payment request boundary.\n- [[source-adyen-docs-point-of-sale-add-data]] \u2014 parent guide for encoding and `AdditionalResponse` selection.\n- [[source-adyen-docs-point-of-sale-add-data-tender-options]] \u2014 field-specific tender-option behavior.\n\n## Related raw API references\n\n- The page links an API Explorer Payment `additionalData` reference and detailed add-data/tender-option routes. Treat linked references as navigation; this source's raw sample does not independently verify their current field requirements or response behavior. See raw lines 29, 33, 99, and 148\u2013152.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/add-data/sale-to-acquirer-data/2026-09-15|Adyen Docs: SaleToAcquirerData sample collection (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The examples on this page illustrate the structure of many of the data elements that you can pass in the `SaleToAcquirerData` field of your Terminal API payment request.",
+      "location": "raw/adyen/docs/point-of-sale/add-data/sale-to-acquirer-data/2026-09-15.md:16; # SaleToAcquirerData"
+    },
+    {
+      "text": "A [Terminal API](/point-of-sale/basic-tapi-integration/) integration with payment terminals or with a [Mobile solution](/point-of-sale/ipp-mobile).",
+      "location": "raw/adyen/docs/point-of-sale/add-data/sale-to-acquirer-data/2026-09-15.md:24; ## Requirements"
+    },
+    {
+      "text": "Be aware that the list of `additionalData` elements is long and growing, so we cannot mention all of them here.",
+      "location": "raw/adyen/docs/point-of-sale/add-data/sale-to-acquirer-data/2026-09-15.md:29; ## SaleToAcquirerData sample collection"
+    },
+    {
+      "text": "For instructions, see [Option 1: Pass data elements as Base-64 encoded JSON](/point-of-sale/add-data#base64-json).",
+      "location": "raw/adyen/docs/point-of-sale/add-data/sale-to-acquirer-data/2026-09-15.md:33; ### Tab: JSON object"
+    },
+    {
+      "text": "For instructions, see [Option 2: Pass data elements as key-value pairs](/point-of-sale/add-data#key-value-pairs).",
+      "location": "raw/adyen/docs/point-of-sale/add-data/sale-to-acquirer-data/2026-09-15.md:99; ### Tab: Key-value pairs"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-saletoacquirerdata-samples-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-add-data-sale-to-acquirer-data]] \u2014 Adyen POS Terminal API website sample collection of `SaleToAcquirerData` JSON and key-value names/paths for terminal or Mobile payments, with non-exhaustive and example-only scope (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "JSON and key-value samples differ in prefixes for split and tax-free fields; do not infer schema requiredness, feature enablement, or successful payment outcomes from examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/add-data/sale-to-acquirer-data/2026-09-15.md",
+  "raw_sha256": "8170a304d172d1a1f686ea47e81953291a508ad299d362cea0e438164c1959a3",
+  "status": "candidate_ready"
+}

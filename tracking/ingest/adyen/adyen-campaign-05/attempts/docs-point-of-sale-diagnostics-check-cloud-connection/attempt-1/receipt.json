@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-diagnostics-check-cloud-connection",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS cloud WebSocket connection checks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/diagnostics/check-cloud-connection\"\nraw_files:\n  - \"adyen/docs/point-of-sale/diagnostics/check-cloud-connection/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, cloud-device-api, websocket, terminal-diagnostics]\n---\n\n## Overview\n\nThis Adyen Docs page explains how to inspect whether a payment terminal has a live WebSocket connection for Terminal API cloud communications: in Customer Area, through Cloud device API, through an older Terminal API endpoint, or on the physical terminal. See [[adyen]] and [[adyen-terminal-api]]. A terminal's Wi-Fi/network connection alone does not establish WebSocket connectivity; a connection check at a particular time is also not a payment request/result, local POS-to-terminal connectivity test, or proof of authorization, capture, or settlement.\n\n## Key takeaways\n\n- For cloud Terminal API, enable WebSockets under **Devices > Device settings > Integrations** in Customer Area. In **Devices > Device list > Terminals**, the WebSocket column shows status but can lag actual state. An individual terminal's **Cloud connection > Check connection** performs a check; its icon does not refresh automatically, so run it again for current state. A missing Cloud connection field indicates WebSockets are not enabled for that terminal.\n- Adyen recommends Cloud device API for API checks. Its individual `GET /merchants/{merchantAccount}/devices/{deviceId}/status` uses an API key with the **Cloud device API role** and returns `deviceId` plus `status` (`ONLINE` or `OFFLINE`) for cloud connection. Here `deviceId` is a device-model/serial identifier for a payment device, or an app installation ID in an IPP Mobile solution; do not substitute a merchant/store ID for it. The shown host is a test-environment example and linked API Explorer uses `latest`, not a fixed API version guarantee.\n- `GET /merchants/{merchantAccount}/connectedDevices` returns IDs with active cloud connections under that merchant account, optionally filtered by store; offline devices are excluded. A device's absence from this list should be read in the context of merchant/store selection and the moment checked, rather than as a permanent hardware failure or payment result.\n- The older `POST /connectedTerminals` path is still described but explicitly discouraged in favor of Cloud device API. It has separate test and live Terminal API hosts, uses the Terminal API request API key, and accepts `merchantAccount` with optional `store` or terminal `uniqueTerminalId` (`POIID`). Its `uniqueTerminalIds` list includes connected terminals; an empty list can mean no live cloud connection **or** WebSockets not enabled. Keep this legacy endpoint distinct from the newer Cloud device API's `deviceId`, `status`, and `uniqueDeviceIds` fields.\n- On a physical terminal, the linked Terminal API connection test asks for a cloud icon and green checks for **API enabled**, **WebSocket enabled**, and **WebSocket connection**. If a check shows no cloud connection, the page directs checking WebSockets, whether the terminal was off when checked, and restarting a powered-on terminal. These are diagnostics/recovery steps for connectivity, not evidence that a payment reached the terminal or was completed.\n\n## Detail locators\n\n- Cloud WebSocket requirement versus ordinary network attachment: `# Check the cloud connection`, raw lines 15\u201328.\n- Customer Area list lag, missing setting, individual check and manual refresh: `## Check in the Customer Area`, raw lines 30\u201354.\n- Recommended Cloud device API, individual status route and credential/ID requirements: `## Check using an API request` through `### Check the cloud connection status of an individual device`, raw lines 56\u201396. Connected-device list and optional store filter: lines 98\u2013137.\n- Older Terminal API `/connectedTerminals` route, environment hosts, key, request properties and ambiguous empty response: `### Old API request to check cloud connection`, raw lines 141\u2013214.\n- Terminal-side test and restore checks: `## Check on the terminal` and `## Restore the cloud connection`, raw lines 216\u2013234.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 cloud Terminal API architecture, separately from local communications and versioned GitHub examples.\n\n## Related raw API references\n\n- The raw page links to Cloud device API Explorer (`latest`), Terminal API connection tests, and a separate diagnosis request. Those targets are navigation until independently read; see raw lines 58\u201371 and 216\u2013240.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/diagnostics/check-cloud-connection/2026-09-15|Adyen Docs: Check the cloud connection (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "If the terminal is connected to your network, for example to the Wi-Fi network, this doesn't mean the terminal can establish a WebSocket connection.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/check-cloud-connection/2026-09-15.md:19, under # Check the cloud connection"
+    },
+    {
+      "text": "There is a delay between the actual status and the status shown in the list. You may want to check an individual terminal as described below.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/check-cloud-connection/2026-09-15.md:40, under ## Check in the Customer Area"
+    },
+    {
+      "text": "The connection icon is not updated automatically. You need to select **Check connection** each time you want to know the current state.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/check-cloud-connection/2026-09-15.md:54, under ## Check in the Customer Area"
+    },
+    {
+      "text": "You can check if a specific payment device or app installation ID (in an IPP Mobile solution) has an active cloud connection using the `/merchants/{merchantAccount}/devices/{deviceId}/status` endpoint.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/check-cloud-connection/2026-09-15.md:68, under ### Check the cloud connection status of an individual device"
+    },
+    {
+      "text": "Offline devices are not included.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/check-cloud-connection/2026-09-15.md:126, under ### Get a list of devices that have a cloud connection"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-pos-cloud-connection-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-diagnostics-check-cloud-connection]] \u2014 Adyen Docs 2026-09-15 guide to checking live terminal cloud WebSocket status via Customer Area, Cloud device API, legacy Terminal API endpoint, or terminal diagnostics; a connectivity check is not a payment result.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/diagnostics/check-cloud-connection/2026-09-15.md",
+  "raw_sha256": "a8724b9ac92ee98883f222eab9b30bb818f47ae555f20f9f96a6cbf6b013d732",
+  "status": "candidate_ready"
+}

@@ -11,6 +11,9 @@ Adyen Terminal API is a Nexo-based message interface between a point-of-sale sys
 
 ## Integration boundary
 
+Adyen's POS timeout guide separates a confirmed issuer-processing timeout (platform cancellation and `PaymentResponse` `Failure`/`Communication timeout`) from a request timeout that can leave the terminal payment active. A device interaction timeout usually cancels but can instead advance the screen, as with tipping. Missing payment results and request-timeout `Reject` notifications call for `TransactionStatusRequest` before retry, because the original payment may still progress or complete. The guide's 120-second local and 150-second cloud windows describe specific timeout types, not a general safe-retry timer. [[source-adyen-docs-point-of-sale-error-scenarios-pos-timeouts]]
+
+
 The Adyen website Terminal API checklist frames merchant implementation as test-account and terminal setup, architecture/payment-feature choice, test transactions and reconciliation, then a separate live-account application and signed contract. It says to consult Adyen before building a cloud integration and to inform Adyen if P2PE is required because different terminal software is supplied. These website setup gates are distinct from the exact-commit Postman request examples; the checklist does not establish account-specific enablement or current SDK-version behavior.
 
 
@@ -32,7 +35,39 @@ Cloud transport requires an API key and a terminal ID. Merchant implementations 
 ## POS solution route
 
 Adyen's dated in-person “Solutions” overview distinguishes POS-to-Adyen-terminal Terminal API integration from direct standalone-terminal transactions, mobile POS app paths, and partner-platform plugins. Its mobile path uses Mobile SDK for payment routing while retaining the Terminal API specification; its standalone and partner-plugin paths do not imply that a merchant POS app directly sends Terminal API messages. The overview is navigation and does not prove present-day device, SDK, market, or payment-method compatibility. [[source-adyen-docs-point-of-sale-what-we-support-solutions]]
+
+
+## Terminal tipping amount boundary
+
+An optional Terminal API tip-base override keeps `PaymentTransaction.AmountsReq.RequestedAmount` as the full purchase amount while `AmountToTipOn` controls the amount on which the terminal offers tip suggestions; the chosen tip increases the response's `AuthorizedAmount`. This per-payment override also replaces configured Customer Area tipping options and requires `AskGratuity` plus an encoded `Operation` with `TipSuggestions`. The 2026-09-15 guide limits it to terminal software 1.103+ and excludes pay-at-table split checks.
+
+
+Adyen's 2026-09-15 website guide describes `AskGratuity` in a Terminal API payment request whose `RequestedAmount` is the original purchase amount. After the shopper enters a tip or a higher total at the terminal, the terminal sends the original amount plus tip for authorization; the response separates `TipAmount` from the total `AuthorizedAmount`. This is terminal tipping during payment, not a separate capture operation. After-card tipping and total-entry mode require Support enablement; details and configuration scope remain in the source. [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal]]
+
+
+## Quick Chip acquisition boundary
+
+Adyen's US-only Quick Chip guide describes a card-acquisition interaction that lets a shopper remove an EMV chip card before the final sale amount is known, followed by a separate Terminal API Payment request. The acquisition can use a placeholder `TotalAmount`; the later payment supplies the final `RequestedAmount` and references the acquisition response's `POIData.POITransactionID` timestamp and transaction ID. Card acquisition is not payment authorization. The guide requires terminal software 1.95+ and Support enablement, and its sample request/response IDs and amounts conflict; see the source for the exact evidence boundary. [[source-adyen-docs-point-of-sale-quick-chip]]
+
+
+## Payment-network application penalty box
+
+Adyen's dated POS guide describes a temporary penalty box for a card application when its payment-network route is unavailable. The platform informs a terminal on an authorization attempt; the terminal then checks configured offline EMV followed by Store and Forward, or selects another application when available. A single-branded card still gets an authorization attempt in case the outage has cleared, then conditional offline processing. If no alternative or offline path is available, the payment declines. This is application/payment-network routing, not local POS-terminal connectivity or a license to retry an unresolved transaction; the four-hour duration belongs to the test fixture. [[source-adyen-docs-point-of-sale-error-scenarios-penalty-box]]
+
+
+## POS cashback amount boundary
+
+Adyen's dated Terminal API cashback guide distinguishes cash with a purchase from no-purchase cashout. The `PaymentRequest` uses `AmountsReq.RequestedAmount` for purchase plus cash and `CashBackAmount` for the cash portion. On `PaymentResponse.Response.Result=Success`, the issuer authorized both and the merchant pays the response `CashBackAmount` in cash; `Partial` authorizes the purchase but not the cashback. Support enablement and card/region restrictions apply, with several listed card routes purchase-only. This POS cash handoff is separate from online capture or payout mechanics. [[source-adyen-docs-point-of-sale-cashback-and-cash-out]]
 ## Payment and interaction patterns
+
+A merchant POS can override Customer Area terminal tipping suggestions for one Terminal API payment by sending `AskGratuity` with a version-appropriate Base64 `Operation` object. The shopper chooses among the presented tip/no-tip options; `RequestedAmount` is the purchase base, while the payment response's `AuthorizedAmount` includes any selected tip. The website guide requires terminal software 1.97+ and changes the `Operation` shape at 1.101; exact formats stay in its source/raw snapshot.
+
+
+A merchant POS `AbortRequest` is for an unfinished terminal payment: it carries a new request ID while `MessageReference` identifies the original Payment request. The abort HTTP acknowledgement is separate from the original payment's `Failure`/`Aborted` response and optional transaction-status confirmation. A completed or already-authorized payment requires its condition-specific authorization-cancel or refund path; pressing Cancel on an already-authorized signature screen does not undo the payment. [[source-adyen-docs-point-of-sale-basic-tapi-integration-cancel-a-transaction]]
+
+
+For a basic in-person Terminal API payment, the merchant POS supplies a per-terminal request `ServiceID` (1–10 alphanumeric characters, unique for the preceding 48 hours for that `POIID`) and its own sale-transaction reference; the `PaymentResponse` supplies a distinct terminal transaction ID to retain for lookup, reconciliation, or later operations. Asynchronous cloud-terminal communication delivers the response through an event notification. A missing response calls for transaction-status verification before staff retry or refund, since the payment may still be in progress. This website request/response guide does not establish capture or settlement, and its examples do not update versioned SDK baselines.
+
 
 Adyen's website basic-flow hub frames a viable integrated POS flow around payment, refund, in-progress cancellation, receipts, application details, and transaction-status recovery when a response is missing. It links PaymentRequest, ReversalRequest, AbortRequest, and TransactionStatusRequest as routes, but the hub does not specify all refund variants or the API ownership of optional industry features. Detailed behavior belongs to each linked operation/source and independently versioned implementation evidence.
 
@@ -53,6 +88,126 @@ These are exact-commit examples. Supported hardware, merchant enablement, region
 Terminal API defines terminal messages. Adyen's Cloud Device API, represented separately by the Node.js library baseline, is a newer cloud transport and device-management surface using generated `tapi` models. Local Terminal API communication and legacy cloud Terminal clients remain distinct architectures; do not merge their version histories.
 
 ## Related
+
+- [[source-adyen-docs-point-of-sale-installments]] — Adyen Docs 2026-09-15 POS credit-card installments overview routing to Brazil, Japan and Mexico country guides; detailed terms and eligibility require those separate sources.
+
+
+- [[source-adyen-docs-point-of-sale-tipping]] — Adyen Docs website overview routing POS-proposed, terminal-selected, receipt-after-preauthorization, and standalone tipping choices (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-add-data-sale-to-acquirer-data]] — Adyen POS Terminal API website sample collection of `SaleToAcquirerData` JSON and key-value names/paths for terminal or Mobile payments, with non-exhaustive and example-only scope (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-installments-japan-installments]] — Adyen website guide to Japan terminal-selected regular/revolving credit installments, Support enablement, and bank/merchant money flow (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-reconciling-totals-reconcile-a-balance-mismatch]] — 2026-09-15 Adyen Terminal API balance-mismatch guide distinguishing current-period `SaleReconciliation` (starts a new period) from prior-period `PreviousReconciliation` (read without new period).
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-cancel-unreferenced]] — Adyen POS website guide captured 2026-09-15 for Support-delayed unreferenced-refund cancellation through backend Payment API /voidPendingRefund, tender/PSP reference identities and asynchronous VOID_PENDING_REFUND result
+
+
+- [[source-adyen-docs-point-of-sale-cashback-and-cash-out]] — dated Adyen Terminal API cashback/cashout guide for request amount split, Success/Partial cash handoff, Support enablement, and card/region restrictions (fetched 2026-09-15).
+
+
+- [[source-adyen-docs-point-of-sale-card-acquisition-insights]] — Adyen 2026-09-15 webpage overview of POS shopper-insight inputs and standard-webhook versus Terminal API payment-response collection routes, with conditional PAR availability.
+
+
+- [[source-adyen-docs-point-of-sale-enter-payment-manually]] — Adyen Docs website guide to Support-enabled Terminal API Manual Key Entry fallback, shopper card entry/signature, max amount and liability boundary (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal-change-amount-to-tip-on]] — Adyen POS Terminal API website guide to per-payment tip-base override, configured-option replacement, version and pay-at-table limits, and purchase/tip/authorized amount fields (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-make-a-payment-greece-tax]] — dated Adyen website guide to Greece Terminal API e-invoicing signature and conditional autonomous-mode payment/refund routes (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-reconciling-totals-retrieve-totals-from-the-terminal]] — 2026-09-15 Adyen Terminal API `GetTotals` guide for reading terminal transaction totals with operator/group filters without starting a new reconciliation period.
+
+
+- [[source-adyen-docs-point-of-sale-error-scenarios-penalty-box]] — dated Adyen POS guide to payment-network application penalty routing, conditional offline/alternate paths, and suffix-158 test refusal (fetched 2026-09-15).
+
+
+- [[source-adyen-docs-point-of-sale-add-data-tender-options]] — Adyen POS website guide captured 2026-09-15 for Terminal API tenderOption names, SaleToAcquirerData encoding, ReceiptHandler printer-failure default and Support-configured defaults
+
+
+- [[source-adyen-docs-point-of-sale-error-scenarios-pos-timeouts]] — Adyen POS guide (2026-09-15 webpage snapshot) to processing, device and request timeout distinctions, local/cloud durations and status-gated recovery.
+
+
+- [[source-adyen-docs-point-of-sale-reconciling-totals-log-in-and-log-out]] — Adyen Docs 2026-09-15 Terminal API Login/Logout guide for operator, group and shift attribution before totals retrieval; Login does not authenticate the operator.
+
+
+- [[source-adyen-docs-point-of-sale-tipping-tipping-from-cash-register]] — Adyen Docs website guide to POS-proposed TipAmount, shopper terminal choice, and actual tip/total response fields (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal-override-tipping-configuration]] — Adyen website guide to per-payment terminal tipping overrides, versioned request formats, and purchase/tip/authorized amounts (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-tipping-tipping-on-receipt]] — 2026-09-15 Adyen Docs receipt-tip guide for initial Terminal API authorization followed by eligible backend adjustment or overcapture and manual capture.
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-pass-application-information]] — Adyen Terminal API application-information guide captured 2026-09-15 for POS platform/app/device-OS metadata, conditional versions, SaleToAcquirerData formats and AdditionalResponse format
+
+
+- [[source-adyen-docs-point-of-sale-installments-mexico-installments]] — 2026-09-15 Adyen Mexico POS Terminal API guide for debit/credit choice, 3–18 credit installments, issuer-program limits, and merchant installment-fee responsibility.
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-refund-webhooks]] — Adyen POS website guide captured 2026-09-15 for referenced CANCEL_OR_REFUND versus unreferenced REFUND_WITH_DATA validation outcomes, distinct PSP reference meanings and later exception risk
+
+
+- [[source-adyen-docs-point-of-sale-quick-chip]] — 2026-09-15 Adyen US Quick Chip guide for pre-amount EMV card acquisition, final-amount payment linkage, 1.95+ software and Support conditions, and inconsistent examples.
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-cancel-a-transaction]] — Adyen 2026-09-15 website guide to POS/terminal cancellation of in-progress requests, original-reference lookup, result verification and completed-payment boundary.
+
+
+- [[source-adyen-docs-point-of-sale-diagnostics-check-cloud-connection]] — Adyen Docs 2026-09-15 guide to checking live terminal cloud WebSocket status via Customer Area, Cloud device API, legacy Terminal API endpoint, or terminal diagnostics; a connectivity check is not a payment result.
+
+
+- [[source-adyen-docs-point-of-sale-mail-and-telephone-order-moto]] — Adyen Docs website guide to card-not-present MOTO tender-option payments keyed on a terminal, standalone/Terminal API scope, AVS, PCI and liability limits (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-unreferenced]] — unversioned Adyen POS guide captured 2026-09-15 for unreferenced Terminal API PaymentType Refund, enablement limits, merchant fraud liability and qualified refund outcomes
+
+
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v1]] — Adyen white v1 physical POS card test guide for Terminal API decline fixtures and response-field limits (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-card-acquisition-identifiers]] — Adyen Terminal API card/shopper identifier guide (2026-09-15 webpage snapshot) for response/webhook fields, alias/PAR versus payment-token meaning, enablement and privacy scope.
+
+
+- [[source-adyen-docs-point-of-sale-error-scenarios-refusal-reasons-pos]] — 2026-09-15 Adyen Docs Terminal API declined-response reference for codeable `ErrorCondition`, explanatory refusal fields, and condition-specific retry flags.
+
+
+- [[source-adyen-docs-point-of-sale-installments-brazil-installments]] — Adyen website guide to Brazil POS credit/debit/voucher choice, terminal or merchant UI installments, and installment settlement (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-referenced]] — unversioned Adyen POS Terminal API guide captured 2026-09-15 for referenced full/partial ReversalRequest refunds, offline tender-reference and ecommerce PSP-reference forms, and asynchronous webhook outcomes
+
+
+- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal]] — 2026-09-15 Adyen terminal-tipping guide for tip/total prompts, configuration, `AskGratuity` payment request, authorized amount, response, and optional warnings.
+
+
+- [[source-adyen-docs-point-of-sale-diagnostics-request-diagnosis]] — Adyen Terminal API diagnosis guide captured 2026-09-15 for terminal health/host checks, Mobile SDK security/offline checks, conditional response fields, and Busy failure boundary
+
+
+- [[source-adyen-docs-point-of-sale-pay-at-x]] — 2026-09-15 Adyen Pay-at-table Terminal API guide for terminal-initiated staff wake-up, POS bill selection and successive equal/unequal split requests.
+
+
+- [[source-adyen-docs-point-of-sale-error-scenarios-raw-acquirer-responses]] — 2026-09-15 Adyen Docs POS lookup for optional raw acquirer responses, mapped Terminal API refusal fields, and row-specific status/action examples; raw strings are unstable.
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-generate-receipts]] — Adyen Docs 2026-09-15 Terminal API receipt-data, scheme-compliance, language, and terminal-printer guide for shopper and merchant receipts.
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-verify-transaction-status]] — Adyen Docs website guide to TransactionStatusRequest recovery of missing terminal/mobile transaction responses and original-result interpretation (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment]] — Adyen POS Terminal API refund overview comparing referenced `ReversalRequest` and unreferenced refund `PaymentRequest`, method/routing limits, and asynchronous outcomes (2026-09-15 webpage snapshot).
+
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-make-a-payment]] — Adyen website guide to basic in-person Terminal API payment request, response identities/results, and missing-response recovery (2026-09-15 snapshot).
+
 
 - [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity]] — Adyen POS network/connectivity topic directory (2026-09-15 snapshot) routing to detailed network, Wi-Fi, cellular, Bluetooth and troubleshooting guides; directory descriptions are navigation only.
 

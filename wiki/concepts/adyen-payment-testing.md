@@ -13,7 +13,24 @@ Adyen's payment-testing guide provides test credentials, values, and scenario-sp
 
 These fixtures exercise test integration behavior; they do not prove production availability, merchant or payment-method eligibility, or a live authorization, capture, refund, settlement, or funding outcome. In particular, the guide demonstrates later `CAPTURE_FAILED` and `REFUND_FAILED` events after successful modification webhooks and says either failed-modification simulation can take up to 24 hours. A single partial manual capture cancels the remaining amount, while multiple partial manual captures require Adyen Support enablement.
 
+
+
+## White POS test card v1 boundary
+
+Adyen's white physical POS test card v1 has currency-selected Mastercard/Maestro applications and amount/currency-selected CVM or decline simulations. It cannot test contactless payments or mobile Tap to Pay; the guide points to green-blue v2.4+ for those. Repeated incorrect PIN attempts can make the test card unusable. Simulation tables and raw refusal details are test fixtures, not live issuer or card-network behavior. The pinned v1 page does not state that the card is retired. [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v1]]
 ## Sources
+
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-b2-test-cards]] — Adyen Docs 2026-09-15 guide to B2 physical Europe/North America POS test-card sets, card-edition caveat, offline/CVM limits, and MKE expiration rule.
+
+
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v1]] — 2026-09-15 Adyen white POS test-card v1 guide for applications, CVM/decline simulations, contactless exclusion, card-blocking, and refusal-field warnings.
+
+
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v3]] — Adyen Docs 2026-09-15 guide to physical white-green v3 POS test-card applications, CVM and decline simulations, and its offline-test limit.
+
+
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v2]] — 2026-09-15 Adyen webpage guide to the physical blue-green POS test card v2, application/currency and CVM triggers, offline counters, and simulated decline conditions; version 2.4+ for contactless/Tap to Pay.
+
 
 - [[source-adyen-docs-point-of-sale-testing-pos-payments]] — Adyen Docs website guide to POS test cards, gift-card and QR simulators, and live-only wallet test limits (2026-09-15 snapshot).
 

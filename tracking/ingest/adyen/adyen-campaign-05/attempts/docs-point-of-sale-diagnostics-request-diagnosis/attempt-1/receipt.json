@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-diagnostics-request-diagnosis",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Make a POS diagnosis request | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/diagnostics/request-diagnosis\"\nraw_files:\n  - \"adyen/docs/point-of-sale/diagnostics/request-diagnosis/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, diagnosis, mobile-sdk, offline-payments]\n---\n\n## Overview\n\nAdyen's Terminal API diagnosis guide covers health and connectivity checks for a payment terminal, and a separate diagnosis path for Android or iOS Mobile SDK Tap to Pay/card-reader solutions. It can surface offline transactions not yet forwarded to Adyen. The guide explicitly excludes the Mobile Payments app solution. A diagnostic `Response.Result: Success`, normal device status, or reachable host describes the diagnostic request and its reported conditions; it is not proof that a payment was authorized, captured, settled, or delivered.\n\n## Key takeaways\n\n- For a physical terminal, send `SaleToPOIRequest` with `MessageCategory: Diagnosis`, a target terminal `POIID`, unique `ServiceID`, and `DiagnosisRequest`. Start with `HostDiagnosisFlag: false` to check terminal condition. If `unconfirmedBatchCount > 0`, Adyen says there may be a network problem; send a further diagnosis with `HostDiagnosisFlag: true` to test reachability of the Adyen host and inspect `HostStatus.IsReachableFlag`. A zero count is a reported queue state, not proof of settlement for any transaction.\n- Terminal `POIStatus` reports `GlobalStatus`, communication condition, and printer condition when applicable. `Response.AdditionalResponse` includes battery percentage only for battery-powered terminals; it can also report `unconfirmedBatchCount`, `firmwareVersion`, encoded network profile, assigned `merchantAccount`/`storeId`, and `terminalId`. The terminal ID is a model/serial `POIID`; firmware and optional P2PE component versions are software/version evidence, not terminal identity or payment outcome.\n- A P2PE terminal's response additionally supplies manufacturer-provided protocol, SRED, vault and app-manager version data for annual PCI assessment. On UX300 and UX410 only, `tamperStatus: ARS_TRIGGERED` means anti-removal switches fired; the guide says to stop using the terminal immediately.\n- For Mobile SDK solutions, `POIID` is the SDK installation ID, not a physical model/serial ID. With `HostDiagnosisFlag: true`, the SDK attempts an Adyen connection for a security scan, forwarding supported stored offline payments and, on iOS only, retrying prior failed captures; false does not connect. These are active diagnostic effects, not guaranteed successful forwarding or capture. `AdditionalResponse` can include `sdkExpiry`, pending count, decoded `storeAndForwardStatus` and `attestationStatus`, plus iOS-only `asyncCaptureStatus`. Mandatory SDK updates can block transactions; iOS capture retry inclusion has a three-minute wait after completion.\n- A diagnosis request can fail with `Response.Result: Failure` and `Response.ErrorCondition: Busy` when the terminal or Mobile SDK is already processing another request. The example response's `TX_IN_PROGRESS` message is diagnostic failure information, not a payment-state result. The JSON and Java request examples, including `ProtocolVersion: 3.0`, are examples within the 2026-09-15 website snapshot, not authority for a particular SDK release.\n\n## Detail locators\n\n- `Requirements` \u2014 Terminal API terminal and Android/iOS Mobile SDK applicability; Mobile Payments app exclusion.\n- `Diagnose a payment terminal` > `1. Verify the condition of a terminal` \u2014 request header and `DiagnosisRequest.HostDiagnosisFlag`, conditional `POIStatus`/`AdditionalResponse` fields, terminal and P2PE version labels, tamper warning and sample responses.\n- `Diagnose a payment terminal` > `2. Verify that the Adyen host system is reachable` \u2014 `unconfirmedBatchCount` trigger, true host-diagnosis flag, and `HostStatus.IsReachableFlag`.\n- `Diagnose a Mobile SDK solution` \u2014 installation-ID `POIID`, online side effects, offline-support condition, security and expiry fields, decoded status objects, iOS-only capture retry and timing.\n- `Failed diagnosis request` \u2014 Busy failure while another request is being processed.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/diagnostics/request-diagnosis/2026-09-15|2026-09-15 Adyen diagnosis guide]]\n",
+  "quotes": [
+    {
+      "text": "A Terminal API diagnosis request lets you verify the condition of a payment terminal and its components such as the communication module, the battery, or the built-in printer.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/request-diagnosis/2026-09-15.md:19, # Make a diagnosis request"
+    },
+    {
+      "text": "An `unconfirmedBatchCount` greater than **0** (zero) indicates there is possibly a problem with your network.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/request-diagnosis/2026-09-15.md:45, ## Diagnose a payment terminal"
+    },
+    {
+      "text": "The value **ARS\\_TRIGGERED** indicates that anti-removal switches (ARS) have been triggered. This means you must stop using the terminal immediately.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/request-diagnosis/2026-09-15.md:142, ### 1. Verify the condition of a terminal / tamperStatus"
+    },
+    {
+      "text": "If you set this field to **false**, in a mobile solution, the SDK will not connect to Adyen.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/request-diagnosis/2026-09-15.md:343, ## Diagnose a Mobile SDK solution / HostDiagnosisFlag"
+    },
+    {
+      "text": "When the payment terminal or mobile SDK is already processing another request, the diagnosis request fails.",
+      "location": "raw/adyen/docs/point-of-sale/diagnostics/request-diagnosis/2026-09-15.md:462, ## Failed diagnosis request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pos-diagnosis-terminal-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-diagnostics-request-diagnosis]] \u2014 Adyen Terminal API diagnosis guide captured 2026-09-15 for terminal health/host checks, Mobile SDK security/offline checks, conditional response fields, and Busy failure boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/diagnostics/request-diagnosis/2026-09-15.md",
+  "raw_sha256": "e4ffe1a57e867748e0749ac3cda320b234518befc8a2077e61f8622c8dd92afd",
+  "status": "candidate_ready"
+}

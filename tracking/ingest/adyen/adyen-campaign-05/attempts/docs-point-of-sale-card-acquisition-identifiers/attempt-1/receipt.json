@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-point-of-sale-card-acquisition-identifiers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS Card and Shopper Identifiers\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/card-acquisition/identifiers\"\nraw_files:\n  - \"adyen/docs/point-of-sale/card-acquisition/identifiers/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, card-acquisition, shopper-identifiers, card-alias, payment-account-reference, privacy]\n---\n\n## Overview\n\nThis Adyen Terminal API guide identifies card and shopper values that a merchant POS may receive in card-acquisition or payment responses and asynchronously in standard webhooks for recognition, insights, loyalty and recurring-use cases. Some fields are automatic, others require Customer Area additional-data settings, and shopper identifiers may first need to be collected or created by the merchant. It is a 2026-09-15 webpage snapshot with a 2020-03-27 `last_modified` value; its scheme availability and field paths do not establish current eligibility or a successful card acquisition, authorization or future payment.\n\n## Key takeaways\n\n- **Card alias** is a card-PAN representation for recognition and cannot be used to make payments. **Payment Account Reference (PAR)** represents the payment account behind a card or NFC wallet and may help link wallet and card activity when available; this dated guide says PAR is returned for Visa and Mastercard transactions when available. **Token variant** identifies an NFC wallet type and is not a payment token. By contrast, the **recurring detail reference** is the token the guide describes for recurring contract payments. Do not conflate alias, PAR, wallet variant, shopper reference and a chargeable token, or infer that a raw PAN is provided.\n- The merchant defines a **shopper reference** of at least three characters; the guide advises excluding PII such as name or email. Shopper email must have been collected and submitted in a payment request to be returned. BIN and funding source are described as automatically returned in Terminal API responses; alias, issuer country/region, PAR, shopper reference and recurring detail reference need enabled additional-data options. PAR remains conditional on availability even when selected.\n- For Terminal API responses, configure **Developers > Additional data** for the desired identifiers. The guide places values mainly in `AdditionalResponse`, either ampersand-separated key/value text or Base64-encoded JSON, and some also in structured fields. Standard webhook `additionalData` requires its own additional settings; PAR and token variant additionally need relevant **Developers > Additional data** switches. The example payment response and `AUTHORISATION` webhook are illustrative payloads, not proof that every request returns every identifier.\n- Merchant use requires privacy review, explicit customer permission to store data, a merchant backend such as CRM/database, and merchant-owned business logic. The guide points to Adyen's Data Protection API for removing customer-related data stored with Adyen on a customer's request; this does not remove merchant-stored records by itself. The use-case matrix is illustrative and does not establish that card recognition, loyalty, tax-free treatment or recurring charge is authorized merely by receiving an identifier.\n\n## Detail locators\n\n- `## Requirements`, `## General considerations`, `## Customer data and privacy` \u2014 Terminal API and standard-webhook prerequisites, merchant storage/business logic, consent and erasure navigation.\n- `## Overview of card and shopper identifiers` \u2014 BIN, alias, funding source, issuer country, PAR, recurring detail reference, shopper reference/email and token variant definitions; scheme/availability qualifications and use-case matrix.\n- `## Receive identifiers in Terminal API responses` \u2014 automatic versus enabled values and exact Customer Area switches, response fields and `AdditionalResponse` encodings.\n- `## Receive identifiers in webhooks` \u2014 standard-webhook additional settings, extra PAR/token-variant switches and sample `additionalData` payload.\n\n## Related\n\n- Company: [[adyen]]\n- Terminal API/card-acquisition context: [[adyen-terminal-api]], [[source-adyen-docs-point-of-sale-card-acquisition]]\n- Separate online-payment tokenization domain: [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/card-acquisition/identifiers/2026-09-15|2026-09-15 Adyen card and shopper identifiers snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The identifiers are returned in Terminal API card acquisition and payment responses, and also asynchronously in [webhooks](/development-resources/webhooks). However, you do not receive all of them automatically.",
+      "location": "raw line 23, opening identifier delivery scope"
+    },
+    {
+      "text": "You cannot use the card alias for making payments.",
+      "location": "raw line 59, under ## Overview of card and shopper identifiers, Card alias bullet"
+    },
+    {
+      "text": "It represents the payment account that the card and/or NFC wallet is linked to.",
+      "location": "raw line 65, under ## Overview of card and shopper identifiers, PAR bullet"
+    },
+    {
+      "text": "Each shopper reference must have a minimum length of three characters, and should not include personally identifiable information (PII), such as name or email address.",
+      "location": "raw line 71, under ## Overview of card and shopper identifiers, Shopper reference bullet"
+    },
+    {
+      "text": "But to get the card alias, issuer country/region, PAR, shopper reference, and recurring detail reference, you need to enable receiving this data:",
+      "location": "raw line 101, under ## Receive identifiers in Terminal API responses"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-pos-identifiers-terminal-api-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-card-acquisition-identifiers]] \u2014 Adyen Terminal API card/shopper identifier guide (2026-09-15 webpage snapshot) for response/webhook fields, alias/PAR versus payment-token meaning, enablement and privacy scope.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/card-acquisition/identifiers/2026-09-15.md",
+  "raw_sha256": "5d809117880a75b90d13cc0d25a0c3aaaf5d57752cb564798aec2e3bc8861eff",
+  "status": "candidate_ready"
+}

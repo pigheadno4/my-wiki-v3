@@ -13,4 +13,10 @@ Where Adyen converts a transaction amount between currencies, it describes an FX
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-currency-conversion-download-and-use-the-dcc-overview-file]] — 2026-09-15 Adyen Docs snapshot of live Customer Area DCC dashboard/filtered CSV reporting and transaction not-offered reasons; separate from transaction-time rate or offer proof.
+
+
+- [[source-adyen-docs-point-of-sale-currency-conversion]] — 2026-09-15 Adyen POS DCC guide for the shopper's local-versus-card-billing-currency choice, terminal disclosure, merchant markup/reporting, and dated eligibility; separate from generic FX management fees.
+
+
 - [[source-adyen-docs-development-resources-currency-codes]] — Adyen currency-code and decimal table, Terminal API exception, four ISO differences, and contract-qualified FX fee structure (webpage snapshot, 2026-09-15).

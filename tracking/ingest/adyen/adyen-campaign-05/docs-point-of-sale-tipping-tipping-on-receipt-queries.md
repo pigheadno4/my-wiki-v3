@@ -1,0 +1,13 @@
+# Fixed retrieval checks — POS tipping on receipt
+
+## Purpose, scope, and limits
+
+**Query:** Who writes the tip, what was authorized first, and what does the page not prove?
+
+**Answer:** After the customer presents a card and supplies PIN/signature, the customer writes and signs a tip on the receipt. Only the original purchase amount was initially authorized; the merchant later seeks the original-plus-tip total through adjustment or overcapture and manual capture. This is a merchant Terminal API payment with later backend modification/capture, not an automatic staff payout or a second terminal payment. The page labels the flow harder to implement and limited, and the 2026-09-15 snapshot does not prove merchant enablement or a completed authorization/capture/settlement (raw lines 15–38, 40–55, 138–149). Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` (also `wiki/concepts/adyen-authorization-adjustment.md`) → `wiki/sources/adyen/source-adyen-docs-point-of-sale-tipping-tipping-on-receipt.md` → `raw/adyen/docs/point-of-sale/tipping/tipping-on-receipt/2026-09-15.md`.
+
+## Paths, prerequisites, and material limits
+
+**Query:** How do adjustment and overcapture differ, and which conditions constrain them?
+
+**Answer:** Manual capture and standard webhooks are setup requirements. For adjustment, use a Terminal API PreAuth request when that path is intended, retain its `pspReference`, request a new total via Checkout `/payments/{paymentPspReference}/amountUpdates` asynchronously (check authorization webhook) or Payment API `/adjustAuthorisation` synchronously (use and retain URL-decoded `adjustAuthorisationData`), then capture through Checkout `/payments/{paymentPspReference}/captures` and check the capture webhook (raw lines 27–38, 82–149). Overcapture skips the new authorization and captures original plus tip above the original authorized amount, with scheme rejection/chargeback risk and a Support-contact instruction. Adjustment support depends on credit scheme and MCC; wallets and debit cards are excluded. Schemes differ on the tip percentage requiring adjustment, ranging 0–20%; the page's `>20%` advice is only a rule of thumb. US/Singapore/Hong Kong are described as common receipt-tip markets, not an exhaustive availability list. Capture ideally precedes preauth expiry. A refund procedure is not specified here (raw lines 40–80, 102–107). Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-terminal-api.md` (also `wiki/concepts/adyen-authorization-adjustment.md`) → `wiki/sources/adyen/source-adyen-docs-point-of-sale-tipping-tipping-on-receipt.md` → `raw/adyen/docs/point-of-sale/tipping/tipping-on-receipt/2026-09-15.md`.

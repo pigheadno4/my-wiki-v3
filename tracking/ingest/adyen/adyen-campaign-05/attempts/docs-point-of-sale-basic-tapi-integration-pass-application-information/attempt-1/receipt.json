@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-basic-tapi-integration-pass-application-information",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Pass POS application information | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/basic-tapi-integration/pass-application-information\"\nraw_files:\n  - \"adyen/docs/point-of-sale/basic-tapi-integration/pass-application-information/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, application-info, metadata]\n---\n\n## Overview\n\nThis Adyen guide describes adding platform, POS application, and merchant-device OS details to Terminal API payment requests so Adyen can analyze and troubleshoot them. The 2026-09-15 snapshot documents request metadata, not a credential, a Checkout API request, a terminal hardware inventory, an SDK release contract, or proof that a payment was processed successfully.\n\n## Key takeaways\n\n- In the `applicationInfo` object, the guide marks `externalPlatform.name`, `externalPlatform.integrator`, `merchantApplication.name`, `merchantDevice.os`, and `merchantDevice.osVersion` required. `externalPlatform.version` and `merchantApplication.version` are required only if the relevant platform or app has versions. The integrator identifies the company that built the POS application or service partner that built the integration. These are merchant-supplied names/version labels, not authoritative runtime attestation.\n- Field values may be up to 40 characters, start with a letter or number, and contain letters, digits, dashes, underscores or spaces. The page requires consistent formatting across requests. Its example platform, app, OS, and version strings are illustrative, not a prescribed merchant configuration.\n- Put the metadata in `PaymentRequest.SaleData.SaleToAcquirerData` as either Base64-encoded JSON containing `applicationInfo` or form-encoded `applicationInfo.*` key-value pairs separated with `&`. The same `SaleToAcquirerData` field can carry other data elements. The payment-request examples also have `SaleID`, `ServiceID`, `POIID` and `SaleTransactionID`; those identify POS component, attempt, terminal and transaction, and are not `applicationInfo` fields.\n- The chosen `SaleToAcquirerData` format determines whether the example payment response's `AdditionalResponse` is Base64 JSON or key-value pairs. The guide says to contact Adyen Support to always receive `AdditionalResponse` in one of those formats. The illustrated successful `PaymentResponse` is an example, not runtime, authorization, capture or settlement proof for a merchant.\n- The page says a built Terminal API integration has no additional requirements, limitations or preparations for this metadata. It does not define a new API key, Management API configuration, Checkout API `/payments` field, terminal hardware model field, or account-specific permission.\n\n## Detail locators\n\n- `Requirements` \u2014 Terminal API integration scope and absence of additional preparations.\n- `Application information fields` and `Field value requirements` \u2014 exact required versus conditional fields, meanings, length/character rules, and consistency.\n- `Add application info to your request` > `Option 1: Base64-encoded JSON` \u2014 object shape, encoding, `SaleToAcquirerData` placement, and sample `AdditionalResponse`.\n- `Add application info to your request` > `Option 2: Key-value pairs` \u2014 flattened field names, ampersand separation, request placement and response format.\n- `Combining application info and other data elements` \u2014 coexistence with other `SaleToAcquirerData` payload elements.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/basic-tapi-integration/pass-application-information/2026-09-15|2026-09-15 Adyen application-information guide]]\n",
+  "quotes": [
+    {
+      "text": "Application information identifies the software that you use for making payment requests to the Adyen payments platform.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/pass-application-information/2026-09-15.md:19, # Pass application information"
+    },
+    {
+      "text": "If you have built a [Terminal API integration](/point-of-sale/get-started), there are no additional requirements, limitations, or preparations.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/pass-application-information/2026-09-15.md:23, ## Requirements"
+    },
+    {
+      "text": "| `externalPlatform.version`    | The software version of the platform.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/pass-application-information/2026-09-15.md:32, ## Application information fields"
+    },
+    {
+      "text": "To add application info to your payment request, you pass data elements in the `SaleToAcquirerData` field.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/pass-application-information/2026-09-15.md:52, ## Add application info to your request"
+    },
+    {
+      "text": "The format of the `SaleToAcquirerData`, Base64-encoded or key-value pairs, determines the format of the `AdditionalResponse` that you receive.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/pass-application-information/2026-09-15.md:343, ### Tab: Option 2: Key-value pairs"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "terminal-application-info-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-basic-tapi-integration-pass-application-information]] \u2014 Adyen Terminal API application-information guide captured 2026-09-15 for POS platform/app/device-OS metadata, conditional versions, SaleToAcquirerData formats and AdditionalResponse format",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/basic-tapi-integration/pass-application-information/2026-09-15.md",
+  "raw_sha256": "adbf022d8e5866bc5e0098522ba896417ea6fd1505e70ac8db1b3c9834b251d6",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-add-data-tender-options",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS tender options\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/add-data/tender-options\"\nraw_files:\n  - \"adyen/docs/point-of-sale/add-data/tender-options/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, tender-options, sale-to-acquirer-data, receipts]\n---\n\n## Overview\n\nThis unversioned Adyen website guide, captured on 2026-09-15, explains **per-payment Terminal API tender options** in `PaymentRequest.SaleData.SaleToAcquirerData`. These parameters change how a tender is processed; for example, `AskGratuity` prompts the shopper for a tip. The stated integration is Terminal API with payment terminals. For a standalone solution, the page instead directs the merchant to Support for account configuration. See [[adyen-terminal-api]] and the broader [[source-adyen-docs-point-of-sale-add-data]] field/encoding guide.\n\n## Key takeaways\n\n- The named options in this snapshot are `AllowPartialAuthorisation`, `AskGiving`, `AskGratuity`, `ForcedDecline`, `MOTO`, `ReceiptHandler`, and `SkipAIDPriority`. Their table describes possible actions: permit a lower approved amount, prompt donation or tip, force a decline, initiate terminal MOTO as a card-not-present transaction, transfer receipt handling to the POS app, or skip configured application priority to let the shopper choose an application. A listed option does not establish account, device, card-method or regional eligibility.\n- `ReceiptHandler` has a consequential omission default: without it, the terminal **must print** the receipt. If the terminal lacks a built-in printer, the transaction fails. When included, the POS app handles printing or email delivery. This is receipt ownership, not evidence that a particular terminal/printer or email delivery is configured.\n- Supply one or more comma-separated option values **without spaces** in a payment request's `SaleToAcquirerData`. The guide shows either a Base64-encoded JSON object `{\"tenderOption\":\"AskGratuity,ReceiptHandler\"}` or a `tenderOption=AskGratuity,ReceiptHandler` key/value pair. It says `AdditionalResponse` follows the selected request format. The response example shows a tip added to the authorized amount and `TipAmount` separately; its `OnlinePIN` value is one example, not a general CVM rule.\n- Tender options can share `SaleToAcquirerData` with other data such as application information or shopper-recognition data; use the separate add-data guide for combination rules. A **transaction condition** is another mechanism that can force a card-entry method or payment method for one transaction, with MKE and Brazil examples. Adyen Support can configure default tender options/conditions for every payment. These are distinct from merely listing `MOTO` or `SkipAIDPriority` in this page's option table.\n- This page does not define tender options for offline processing or token creation and does not establish those flows from the response example. It also gives no terminal-software version or generic card-method/CVM permission rule; follow each linked feature guide and current account configuration before using an option.\n\n## Detail locators\n\n- Standalone Support boundary, tender purpose, request field and terminal integration: raw lines 15-33.\n- Seven names and their action descriptions, especially `ReceiptHandler` failure condition: raw `## Tender options`, lines 35-47.\n- Comma-separated JSON/Base64 versus key/value serialization and response-format rule: raw `## Specify tender options`, lines 49-64; Terminal API request and illustrative tip/PIN response: lines 66-180.\n- Coexistence with other data and route to the broader add-data guide: raw `## Combining tender options and other data elements`, lines 182-186.\n- Per-payment transaction conditions versus Support-configured defaults: raw `## Other ways to change transaction processing`, lines 188-193.\n- MKE, add-data and response-handling links: raw `## See also`, lines 195-199; use these as navigation.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-terminal-api]]\n- Broader request-data source: [[source-adyen-docs-point-of-sale-add-data]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/add-data/tender-options/2026-09-15|Adyen POS tender options]] \u2014 full captured option and serialization guide\n",
+  "quotes": [
+    {
+      "text": "Tender options are parameters that change how the [tender](/get-started-with-adyen/adyen-glossary/#tender) is processed. For example, the tender option `AskGratuity` triggers the payment terminal to ask the shopper for a tip.",
+      "location": "raw line 23, opening definition"
+    },
+    {
+      "text": "When you omit this tender option, the payment terminal must print the receipt. But if the terminal doesn't have a built-in printer, the transaction will fail.",
+      "location": "raw line 46, ## Tender options, ReceiptHandler row"
+    },
+    {
+      "text": "* [Make a payment request](/point-of-sale/basic-tapi-integration/make-a-payment) with a `SaleData` object that contains a `SaleToAcquirerData` field with one or more comma-separated values (without spaces) specified in one of the following formats:",
+      "location": "raw line 53, ## Specify tender options"
+    },
+    {
+      "text": "The format that you use here, will also be the format of the `AdditionalResponse` that you receive.",
+      "location": "raw line 62, ## Specify tender options"
+    },
+    {
+      "text": "* Configure default tender options and transaction conditions. The terminal will then use these for every payment. Ask our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) for help.",
+      "location": "raw line 193, ## Other ways to change transaction processing"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-pos-tender-options-terminal-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-add-data-tender-options]] \u2014 Adyen POS website guide captured 2026-09-15 for Terminal API tenderOption names, SaleToAcquirerData encoding, ReceiptHandler printer-failure default and Support-configured defaults",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/add-data/tender-options/2026-09-15.md",
+  "raw_sha256": "2f237df2d8788983c2922fa2027ed8fa472da5c8906bfd853a8aaf2c9a4a7747",
+  "status": "candidate_ready"
+}

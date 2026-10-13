@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-point-of-sale-testing-pos-payments-test-card-v2",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen blue-green POS physical test card v2\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/testing-pos-payments/test-card-v2\"\nraw_files:\n  - \"adyen/docs/point-of-sale/testing-pos-payments/test-card-v2/2026-09-15.md\"\ntags: [adyen, point-of-sale, test-card, cardholder-verification, offline-payments, declines]\n---\n\n## Overview\n\nThis Adyen Docs page describes the blue-green **physical POS test card v2** and its programmed applications for simulated payment method, locale, issuer country/region, currency, and cardholder verification (CVM) scenarios. It also gives offline and decline triggers for testing a POS app and terminal in the test environment. These are simulation fixtures; the page does not prove real issuer approval, live card acceptance, capture, or settlement.\n\n## Key takeaways\n\n- Choose a test-card application by the payment request's currency, or select it on the terminal after inserting the card at **Present card**. The chip applications shown are Mastercard or Maestro, and the table also contains an MSR Visa row; do not infer that every listed application supports every interface. The Brazil `mc pt bra brl` application is linked to installment testing. Test transactions can be inspected in test Customer Area. Contactless and mobile Tap to Pay testing with this card require physical card version **2.4 or later**, printed on its back.\n- CVM selection depends on application, amount, and currency. The page's table uses strict thresholds above 100.00 and 200.00 in the application's currency for CVM 2 and CVM 1, respectively; after DCC, the converted amount must exceed the threshold. Online PIN accepts any entered code in the inserted-card test flow, while an invalid offline PIN declines. Contactless PIN depends on the terminal location's country/region reader limit, whose latest value is in test Customer Area; do not treat the table as a universal live limit.\n- For offline EMV tests, ask Support to configure chip floor and offline refund limits, then force internet loss. Each application has a counter. The narrative says the first three in-limit offline transactions are accepted and the fourth declines, with reset by an online inserted-chip transaction; contactless cannot reset the shared UK Mastercard counter. **Qualification:** the application table separately marks `ms nl nld eur` as **Always decline** offline, so do not apply the general three-acceptance sentence to that application without resolving the discrepancy.\n- Decline simulations use the **last three digits** of requested amount. The table maps triggers to `Result`, `ErrorCondition`, and additional-response context; the 139 trigger becomes a partial payment rather than failure when `AllowPartialAuthorisation` is used. Some triggers require terminal action (such as canceling PIN entry or contactless fallback); 156, 160, and 161 are marked for Adyen internal testing only. `refusalReason`, `message`, and raw issuer/acquirer responses are extra diagnostic context and must not be coded against. Classic-library integrations can show a generic `DECLINED_ONLINE` result for the same simulations.\n\n## Detail locators\n\n- Physical card purpose, version gate, test Customer Area route: `# Blue-green Adyen point-of-sale test card`, raw lines 15\u201334. Per-application method, country/region, currency, PAN, AID, and interface differences: `## Card applications`, lines 36\u201352, and CVM table, lines 76\u201386.\n- CVM thresholds, DCC, online/offline PIN, and country/region contactless limit: `## Testing CVMs`, raw lines 54\u201393. Offline setup, per-application counter, and the Maestro table exception: `## Testing offline transactions`, lines 95\u2013103, together with table line 82.\n- Amount-ending decline map and conditional exceptions: `## Simulating declined payments`, raw lines 105\u2013168. For 139 plus `AllowPartialAuthorisation`, see line 143; internal-only 156/160/161 at lines 157, 161\u2013162. Raw response instability and optional routes: `## Raw responses`, lines 170\u2013179.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-payment-testing]] \u2014 test-fixture and simulated-outcome boundary.\n- [[adyen-terminal-api]] \u2014 request/response vocabulary; this card does not establish live Terminal API behavior.\n- [[source-adyen-docs-point-of-sale-testing-pos-payments]] \u2014 broader POS testing overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v2/2026-09-15|Adyen Docs: Blue-green Adyen point-of-sale test card (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "This Adyen test card has several \"applications\" programmed onto it that each simulate a specific card brand (payment method), language, country/region, and currency",
+      "location": "raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v2/2026-09-15.md:21; # Blue-green Adyen point-of-sale test card"
+    },
+    {
+      "text": "To test contactless payments as well as [Tap to Pay](/point-of-sale/mobile-ios/build/tap-to-pay) on mobile with this card, you must use the card version 2.4 or later.",
+      "location": "raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v2/2026-09-15.md:34; # Blue-green Adyen point-of-sale test card"
+    },
+    {
+      "text": "The first three offline transactions for the test card application are accepted and the fourth is declined.",
+      "location": "raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v2/2026-09-15.md:103; ## Testing offline transactions"
+    },
+    {
+      "text": "In general, test payments are approved. To simulate declined payments, you need to change the **last three digits** of the `RequestedAmount` that you specify in the payment request.",
+      "location": "raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v2/2026-09-15.md:107; ## Simulating declined payments"
+    },
+    {
+      "text": "The `refusalReason` and `message` are included for additional insight, and should not be coded against.",
+      "location": "raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v2/2026-09-15.md:121; ## Simulating declined payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-v2-physical-test-card-route",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v2]] \u2014 2026-09-15 Adyen webpage guide to the physical blue-green POS test card v2, application/currency and CVM triggers, offline counters, and simulated decline conditions; version 2.4+ for contactless/Tap to Pay.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The raw CVM/offline table marks Maestro `ms nl nld eur` Always decline offline, while the narrative gives a general first-three-accepted counter rule; preserve the application-specific exception."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v2/2026-09-15.md",
+  "raw_sha256": "e2ff2e739c9f0de420507f13835cf2eb2015d6c57f79e87f66f84b04457ad1b0",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-point-of-sale-tipping-tipping-from-terminal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Tipping from the terminal\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/tipping/tipping-from-terminal\"\nraw_files:\n  - \"adyen/docs/point-of-sale/tipping/tipping-from-terminal/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, tipping, gratuity]\n---\n\n## Overview\n\nAdyen's 2026-09-15 terminal-tipping guide describes shopper entry of a tip on an Adyen-provided terminal in an integrated Terminal API payment. The terminal can ask for a tip amount, including predefined and custom choices, or ask the shopper for a total amount above the original purchase amount; the same Terminal API `AskGratuity` tender option triggers either flow. This is an authorization-time POS payment flow, not a separate post-authorization capture or payout instruction. [[adyen]] \u00b7 [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The guide requires a Terminal API integration with Adyen-provided payment terminals and standard webhooks; display notifications for staff are optional. It states support across terminal models except unattended terminals, subject to this dated page rather than present-day device or merchant eligibility.\n- **Tip-amount mode:** The default prompt occurs before card entry and needs no Adyen-side enablement. A prompt after card entry needs Adyen Support enablement; optional single tap prevents an additional contactless tap after tip selection. A prompt with no configured presets lets the shopper enter a tip or decline to tip. Configured options can mix percentages, fixed amounts, and a custom amount.\n- **Total-amount mode:** The terminal presents the original purchase amount and asks the shopper for a total at least equal to it; the difference is the tip. The guide calls this customary in Nordic countries/regions, not exclusive to them. Adyen Support must enable this mode.\n- Customer Area or Management API can configure gratuities at company, merchant, store, or terminal level. The Management API PATCH uses a currency-qualified `gratuities` object; up to four predefined options, or three plus custom entry, are described. This page does not define configuration inheritance or override precedence. A separate linked guide covers per-payment POS overrides and was not read here.\n- To initiate either mode, `PaymentRequest.PaymentTransaction.AmountsReq.RequestedAmount` is the **original purchase amount**, while `SaleData.SaleToAcquirerData` carries `AskGratuity` as Base64 JSON or form-style key/value. After the shopper responds, the terminal sends original purchase plus tip to Adyen. The `PaymentResponse` reports `TipAmount` when a tip was added and `AuthorizedAmount` as the total authorized amount; `AdditionalResponse` reports corresponding amounts in minor units. The example is an illustration, not a settlement or capture guarantee.\n- An optional, Support-enabled high-tip warning can ask the shopper to confirm when the tip reaches a configured percentage of the **original purchase amount**. It applies to both tip-amount and total-amount modes and is described for standalone and integrated terminals. Staff can receive optional display-notification webhooks; a settlement report can be configured to include a gratuity column, without the page establishing payout timing or allocation.\n\n## Detail locators\n\n- **Scope, modes, and requirements:** raw lines 17\u201336. The regional custom is about total-entry presentation; terminal-model and webhook statements are snapshot requirements.\n- **Before/after card and direct tip entry:** \u201cAsk for a tip amount\u201d and its timing sections, lines 38\u201371. Support enables after-card mode; single tap is optional.\n- **Presets and configuration:** Customer Area lines 79\u2013109; Management API lines 111\u2013132. The API example begins at line 134 and uses a test `/v3/terminals/{terminalId}/terminalSettings` endpoint; the page also links API Explorer \u201clatest\u201d and shows SDK examples with their own versions. Confirm current API schema and account-level setting behavior before implementing. Percentages use the transaction amount; API fixed tip examples use minor units.\n- **Total entry:** \u201cAsk for a total amount,\u201d lines 401\u2013410. Total must be at least the original purchase; Support enablement is a condition.\n- **Payment amount and response:** \u201cMake a payment,\u201d lines 416\u2013509. Raw has the required message-header fields and `SaleToAcquirerData` formats at lines 420\u2013452, then the original-plus-tip platform request and response fields at lines 489\u2013509. `AdditionalResponse` format follows the request encoding. The EUR 142.50/10% example at lines 454\u2013546 is illustrative.\n- **Staff, reporting, and warning:** lines 548\u2013571. Display notifications are webhooks; settlement-report gratuity column is a reporting option; Support enables the threshold warning.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 Terminal API request and response context\n- [[adyen-payment-capture]] \u2014 separate online capture concept; this guide describes tip inclusion in the POS authorization amount\n\n## Related raw API references\n\nLinked tender-option, payment, per-payment override, standard/display-webhook, settlement-report, currency-code, and Management API Explorer pages are navigation only; they were not read for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/2026-09-15|Adyen Tipping from the terminal, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The [payment request](#payment-tipping-terminal) to trigger tipping, is the same in both cases.",
+      "location": "raw line 24, under # Tipping from the terminal"
+    },
+    {
+      "text": "All terminal models are supported, except unattended terminals.",
+      "location": "raw line 34, ## Requirements table, Hardware row"
+    },
+    {
+      "text": "The default is tipping before card entry.",
+      "location": "raw line 40, under ## Ask for a tip amount"
+    },
+    {
+      "text": "To trigger the payment terminal to ask the customer for a tip amount or a total amount, you need to make a payment request with the **AskGratuity** [tender option](/point-of-sale/add-data/tender-options).",
+      "location": "raw line 418, under ## Make a payment"
+    },
+    {
+      "text": "`AuthorizedAmount`: the total authorized amount of the transaction, consisting of the original purchase amount plus the tip amount.",
+      "location": "raw line 501, under ## Make a payment, PaymentResponse"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-terminal-tipping-amount-c5",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Payment and interaction patterns",
+        "proposed_markdown": "## Terminal tipping amount boundary\n\nAdyen's 2026-09-15 website guide describes `AskGratuity` in a Terminal API payment request whose `RequestedAmount` is the original purchase amount. After the shopper enters a tip or a higher total at the terminal, the terminal sends the original amount plus tip for authorization; the response separates `TipAmount` from the total `AuthorizedAmount`. This is terminal tipping during payment, not a separate capture operation. After-card tipping and total-entry mode require Support enablement; details and configuration scope remain in the source. [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal]]\n\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "The concept change records the authorization amount boundary, not a claim about capture or settlement."
+        ]
+      },
+      {
+        "update_id": "adyen-terminal-tipping-link-c5",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "under ## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal]] \u2014 2026-09-15 Adyen terminal-tipping guide for tip/total prompts, configuration, `AskGratuity` payment request, authorized amount, response, and optional warnings.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/2026-09-15.md",
+  "raw_sha256": "42360f57e0f0ef44da46cf001e88b05be2d1f86159c3f3403e1fffab20fa7e2a",
+  "status": "candidate_ready"
+}

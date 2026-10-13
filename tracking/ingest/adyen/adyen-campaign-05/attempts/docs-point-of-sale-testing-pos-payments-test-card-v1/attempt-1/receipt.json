@@ -1,0 +1,81 @@
+{
+  "job_id": "docs-point-of-sale-testing-pos-payments-test-card-v1",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: White POS test card v1\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/testing-pos-payments/test-card-v1\"\nraw_files:\n  - \"adyen/docs/point-of-sale/testing-pos-payments/test-card-v1/2026-09-15.md\"\ntags: [adyen, point-of-sale, test-card, payment-testing, terminal-api]\n---\n\n## Overview\n\nAdyen's 2026-09-15 page documents the white version 1 physical POS test card. Its programmed applications simulate Mastercard and Maestro brands, locale, issuing country/region, currency, and cardholder-verification methods (CVMs) for test-terminal payment and reconciliation checks. This is version-specific test behavior, not a live authorization, card-network guarantee, or evidence that a terminal/software setup currently accepts the card. The pinned page does **not** say that v1 is retired; it directs contactless and mobile Tap to Pay tests to the green-blue Adyen test card version 2.4 or later. [[adyen]] \u00b7 [[adyen-payment-testing]] \u00b7 [[adyen-terminal-api]]\n\n## Key takeaways\n\n- To exercise a particular white-card application, use its corresponding currency in the payment request or choose the application after inserting the card at the terminal. The table lists application-specific Mastercard/Maestro, currency, locale, country/region, PIN and PAN fixtures; those values are test fixtures, not live card capabilities.\n- Transaction amount **and currency** select the CVM scenario in the card's table. Repeated wrong PIN attempts block the physical test card permanently. In the card-inserted test scenarios, the test system accepts any entered online PIN; invalid offline PIN declines. \u201cOffline PIN\u201d here is a CVM condition, not proof of offline-payment eligibility or store-and-forward behavior.\n- To simulate a decline, use a `RequestedAmount` whose last three digits match a row in the raw table. The Terminal API table maps test outcomes to `Result`, `ErrorCondition`, `refusalReason`, and `message`. Adyen explicitly says not to code against the latter two insight fields or unstable raw acquirer/issuer responses. A classic-library integration may instead show a generic `DECLINED_ONLINE` `posResultCode` for most simulations.\n- The white v1 card cannot test contactless payments or mobile Tap to Pay; the page points to green-blue v2.4+ for those. Rows 142/143, 154, and 155 describe tap/contactless/mobile interactions in the shared decline table, but their presence does not make those scenarios executable with white v1. Rows 156, 160, and 161 are marked for Adyen internal testing and should not be used for merchant test cases.\n- Exceptions in the table matter: ending 139 with `AllowPartialAuthorisation` returns a partial payment rather than the listed failure; rows 134 and 166 need terminal cancellation steps to yield the shown failure. These are simulation conditions only. Test details can be inspected in test Customer Area; the page does not demonstrate live issuer, fraud, capture, or settlement outcomes.\n\n## Detail locators\n\n- **Card identity and unsupported paths:** raw lines 15\u201333. The separate v2.4+ link is navigation; this entry does not import that page's full behavior.\n- **Applications:** \u201cCard applications,\u201d lines 35\u201347. Inspect the table for exact application, brand, country/region, currency, expiry, locale, PIN and PAN; no single row describes every currency or CVM.\n- **CVM and card-blocking:** \u201cTesting CVMs,\u201d lines 49\u201369. The amount bands differ by application; online versus offline PIN statements are conditional on card insertion in the test reader.\n- **Decline simulation:** \u201cSimulating declined payments,\u201d lines 71\u2013133. The table is the authoritative locator for suffix-to-test-result mapping and row-specific remarks, including partial authorization, contactless-only rows, cancellation, and internal-only cases. Do not promote it into a general live refusal-code contract.\n- **Raw responses:** lines 135\u2013144. Adyen says raw acquirer/issuer responses can change without notice, so they are not a stable failure-handling key; the page lists optional webhook/Terminal API navigation for accessing them.\n\n## Related\n\n- [[adyen-payment-testing]] \u2014 provider test-fixture and outcome boundary\n- [[adyen-terminal-api]] \u2014 POS message result context\n- [[source-adyen-docs-point-of-sale-testing-pos-payments]] \u2014 POS testing overview\n\n## Related raw API references\n\nLinked green-blue v2 card, contactless/Mobile Tap to Pay, CVM, classic-library deprecation, tender-option, refusal-handling, and raw-response pages are navigation only; their details were not used to claim white-v1 support.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v1/2026-09-15|Adyen white POS test card v1, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You cannot test contactless payments or [Tap to Pay](/point-of-sale/mobile-ios/build/tap-to-pay) on mobile with this card.",
+      "location": "raw line 33, introduction under # White Adyen point-of-sale test card"
+    },
+    {
+      "text": "If you enter a wrong PIN multiple times, the card is blocked and cannot be used anymore.",
+      "location": "raw line 53, under ## Testing CVMs"
+    },
+    {
+      "text": "To simulate declined payments, you can change the **last three digits** of the `RequestedAmount` that you specify in the payment request.",
+      "location": "raw line 73, under ## Simulating declined payments"
+    },
+    {
+      "text": "The `refusalReason` and `message` are included for additional insight, and should not be coded against.",
+      "location": "raw line 87, under ## Simulating declined payments"
+    },
+    {
+      "text": "If you base your failure-handling logic on raw responses, that might break your integration because acquirers and issuers sometimes change their raw responses without notice.",
+      "location": "raw line 139, under ## Raw responses"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-white-pos-v1-boundary-c5",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "## White POS test card v1 boundary\n\nAdyen's white physical POS test card v1 has currency-selected Mastercard/Maestro applications and amount/currency-selected CVM or decline simulations. It cannot test contactless payments or mobile Tap to Pay; the guide points to green-blue v2.4+ for those. Repeated incorrect PIN attempts can make the test card unusable. Simulation tables and raw refusal details are test fixtures, not live issuer or card-network behavior. The pinned v1 page does not state that the card is retired. [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v1]]\n\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source page does not assert that the white v1 card is retired; do not derive a retirement status from the v2.4+ contactless recommendation or expired example application."
+        ]
+      },
+      {
+        "update_id": "adyen-white-pos-v1-testing-link-c5",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "under ## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v1]] \u2014 2026-09-15 Adyen white POS test-card v1 guide for applications, CVM/decline simulations, contactless exclusion, card-blocking, and refusal-field warnings.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-white-pos-v1-terminal-link-c5",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "under ## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v1]] \u2014 Adyen white v1 physical POS card test guide for Terminal API decline fixtures and response-field limits (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/testing-pos-payments/test-card-v1/2026-09-15.md",
+  "raw_sha256": "45956f6431ce5a67b28def79a140e6d7325f94e2849d0273788246737590c6b8",
+  "status": "candidate_ready"
+}

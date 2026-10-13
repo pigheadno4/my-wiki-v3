@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-point-of-sale-error-scenarios-penalty-box",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: POS penalty box\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/error-scenarios/penalty-box\"\nraw_files:\n  - \"adyen/docs/point-of-sale/error-scenarios/penalty-box/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, payment-network, aid-routing, error-handling]\n---\n\n## Overview\n\nAdyen's POS \u201cPenalty box\u201d page, fetched 2026-09-15 with raw metadata last modified 2022-12-26, describes temporary handling of a **card application/payment-network route** when the connection to that payment network is unavailable. Adyen's platform marks the affected application; a terminal learns this when it tries to authorize through it and then temporarily avoids it where another route or eligible offline processing exists. This is not a generic local POS-to-terminal network circuit breaker, a payment time-out rule, or proof of an individual transaction's authorization. [[adyen]] \u00b7 [[adyen-terminal-api]]\n\n## Key takeaways\n\n- Co-badged, combo, and US debit cards may have multiple applications, including a local payment method. A failed connection to one payment network can make that routed application unusable. The guide says Adyen's platform puts that application in a penalty box and routes through other connections until the network problem is resolved.\n- The terminal is informed when it attempts authorization with the affected application and then puts that application in its own penalty box for the next couple of hours. While there, it checks for offline processing, trying offline EMV and then Store and Forward; these are conditional possibilities, not guaranteed approvals. If offline processing is unavailable, it skips the penalized application and uses another application on a multi-application card.\n- With a **single-branded** card, the terminal still attempts authorization in case the outage has resolved, then tries offline processing if that fails. If no other application is available and offline processing is not possible, the transaction is declined. The raw's Cartes Bancaires/Visa example illustrates alternative routing, not a universal scheme or merchant entitlement.\n- The page describes future live terminal updates about penalty-box additions/removals as a planned feature. Do not treat this future-tense statement as deployed current behavior or infer an exact production TTL from the test fixture.\n- For a **test terminal and Adyen test card**, an amount ending in **158** simulates no offline route and no alternative application: the first transaction declines and the selected application is skipped by the test terminal for **four hours**. The sample `PaymentResponse` shows `Result=Failure`, `ErrorCondition=Refusal`, `refusalReason=235 AID banned`, and `message=ERROR`. Adyen says POS code may use `ErrorCondition` but should not key logic to the explanatory `refusalReason` or `message`. Optional test checks include Customer Area acquirer response and an `AUTHORISATION` webhook with `success=false` and reason `Application banned`.\n- The guide applies to a Terminal API integration with payment terminals or a Mobile solution, and lists standard-webhook subscription for checking the test. It does not give a local-link repair procedure, a generic request retry policy, or permission to repeat an unresolved payment. Use transaction-status/error-handling guidance separately for missing responses.\n\n## Detail locators\n\n- **Network/application cause and scope:** raw lines 19\u201330. The unavailable link is to a **payment network** for a card application, not necessarily merchant internet, LAN, Wi-Fi, terminal cloud WebSocket, or account credentials.\n- **Platform and terminal states:** \u201cPreventing declined payments,\u201d lines 32\u201348. Offline EMV precedes Store and Forward; alternative card application and single-brand fallback paths have distinct conditions. The live-update sentence is future-tense.\n- **Test scenario:** \u201cTesting,\u201d lines 50\u201357 and 91\u2013143. Suffix 158, test terminal/card, first decline, four-hour test penalty, response fields, Customer Area and webhook checks are all fixture-specific. The example `ProtocolVersion=3.0`, `ServiceID`, `POIID`, EUR amount, and timestamp are sample values, not account or software eligibility proof.\n- **Codeable versus explanatory fields:** lines 94\u2013101. `ErrorCondition` may drive the POS response handling; `refusalReason` and `message` are additional insight rather than stable logic keys.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 POS response and transaction-status boundary\n- [[source-adyen-docs-point-of-sale-error-scenarios]] \u2014 separate missing-result and error-handling guide\n\n## Related raw API references\n\nLinked card-application selection, offline-payment, standard-webhook, test-card v2, and payment pages are navigation only; they were not read to extend this entry's behavior.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/error-scenarios/penalty-box/2026-09-15|Adyen POS Penalty box, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To prevent unnecessary declined payments when a payment network connection is unavailable, we put an application in our platform's **penalty box**.",
+      "location": "raw line 34, under ## Preventing declined payments"
+    },
+    {
+      "text": "The terminal then puts the application in its own penalty box for the next couple of hours.",
+      "location": "raw line 36, under ## Preventing declined payments"
+    },
+    {
+      "text": "It first tries offline EMV, then Store and Forward.",
+      "location": "raw line 38, under ## Preventing declined payments"
+    },
+    {
+      "text": "If there are no other applications available and offline processing is not possible, the transaction is declined.",
+      "location": "raw line 46, under ## Preventing declined payments"
+    },
+    {
+      "text": "You can use the `ErrorCondition` to code your POS app. The `refusalReason` and `Message` fields are included for additional insight, and should not be coded against.",
+      "location": "raw line 101, under ## Testing"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-pos-penalty-box-boundary-c5",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Payment and interaction patterns",
+        "proposed_markdown": "## Payment-network application penalty box\n\nAdyen's dated POS guide describes a temporary penalty box for a card application when its payment-network route is unavailable. The platform informs a terminal on an authorization attempt; the terminal then checks configured offline EMV followed by Store and Forward, or selects another application when available. A single-branded card still gets an authorization attempt in case the outage has cleared, then conditional offline processing. If no alternative or offline path is available, the payment declines. This is application/payment-network routing, not local POS-terminal connectivity or a license to retry an unresolved transaction; the four-hour duration belongs to the test fixture. [[source-adyen-docs-point-of-sale-error-scenarios-penalty-box]]\n\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Source describes payment-network/card-application unavailability, not repeated local POS-terminal connectivity failures. Four hours is stated for the test-terminal simulation only."
+        ]
+      },
+      {
+        "update_id": "adyen-pos-penalty-box-link-c5",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "under ## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-error-scenarios-penalty-box]] \u2014 dated Adyen POS guide to payment-network application penalty routing, conditional offline/alternate paths, and suffix-158 test refusal (fetched 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/error-scenarios/penalty-box/2026-09-15.md",
+  "raw_sha256": "98dc84d9de492ff759f746423cc2e8fb8cdd09d427d27f9669fe88734c2eae62",
+  "status": "candidate_ready"
+}

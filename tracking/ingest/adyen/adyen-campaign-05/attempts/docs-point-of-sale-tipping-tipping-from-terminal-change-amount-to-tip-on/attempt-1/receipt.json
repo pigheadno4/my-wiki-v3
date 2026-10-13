@@ -1,0 +1,69 @@
+{
+  "job_id": "docs-point-of-sale-tipping-tipping-from-terminal-change-amount-to-tip-on",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS override of amount to tip on\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on\"\nraw_files:\n  - \"adyen/docs/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, tipping, gratuity, payment-amounts]\n---\n\n## Overview\n\nThis Adyen Docs guide shows how an integrated POS can change the **base amount used for a shopper's tip suggestion** while keeping the full purchase amount in the Terminal API payment request. By default, Customer Area tipping options apply to the total purchase amount. This override is for a Terminal API integration with payment terminals on software **1.103 or later**; the page says it is not supported for pay-at-table, including split checks. The merchant POS must decide when to apply it.\n\n## Key takeaways\n\n- Overriding the tip base also overrides Customer Area tipping options for that payment. The POS must pass the `AskGratuity` tender option in `SaleData.SaleToAcquirerData` and a Base64-encoded `Operation` object in `SaleData.SaleToPOIData`. Its `TipOptions` contains `AmountToTipOn` and `TipSuggestions`: up to three preset fixed amounts or percentages, with percentage numeric values no greater than 100, plus optional `TipCustom`. The terminal presents the adjusted base before the shopper adds a tip.\n- `PaymentTransaction.AmountsReq.RequestedAmount` remains the **total purchase amount with decimals**. `AmountToTipOn` is the amount on which the tip choices are based; it does not replace the purchase amount or itself become the authorized total. The response's `PaymentResult.AmountsResp.TipAmount` is the selected tip and `AuthorizedAmount` is purchase plus tip. When no tip is added, `TipAmount` and the gratuity receipt entry are omitted.\n- The worked example has EUR 20.00 purchase, EUR 15.00 tip base, 20% tip choice, EUR 3.00 tip, and EUR 23.00 authorized total. In `AdditionalResponse`, `posadditionalamounts.originalAmountValue`, `posAmountGratuityValue`, and `authorisedAmountValue` are described in **minor units**; receipt and `AmountsResp` values are shown as decimal amounts. This is a terminal payment authorization flow, not a separate capture or a transfer of the tip to a particular recipient.\n\n## Detail locators\n\n- Default Customer Area tip base, example motivations, merchant trigger logic, terminal display: `# Override the amount to tip on`, raw lines 15\u201325. Software and pay-at-table limits: `## Requirements`, lines 27\u201335.\n- Override precedence, `AskGratuity`, encoded `Operation`, percentage/fixed-option limits: `## Specify amount to tip on in the payment request`, raw lines 37\u201370. Header/field table and request example: lines 72\u2013137.\n- Response receipt, `TipAmount`, `AuthorizedAmount`, minor-unit additional fields, and EUR 20/15/3/23 worked example: same section, raw lines 139\u2013202. Linked broader tipping and tender-option routes: `## See also`, lines 204\u2013211.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 payment/tipping amount boundary.\n- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal]] \u2014 broader terminal tipping flow and account setup.\n- [Override tipping options](https://docs.adyen.com/point-of-sale/tipping/tipping-from-terminal/override-tipping-configuration) and [tender options](https://docs.adyen.com/point-of-sale/add-data/tender-options) \u2014 linked detailed navigation, not read as evidence here.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on/2026-09-15|Adyen Docs: Override the amount to tip on (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "A [Terminal API](/point-of-sale/design-your-integration/terminal-api) integration with payment terminals on software version 1.103 or later.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on/2026-09-15.md:33; ## Requirements"
+    },
+    {
+      "text": "Tip amount overrides are currently not supported for [pay at table](/point-of-sale/pay-at-x) including split checks.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on/2026-09-15.md:34; ## Requirements"
+    },
+    {
+      "text": "When you override the amount to tip on, you are automatically overriding the tipping options defined in your Customer Area as well.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on/2026-09-15.md:39; ## Specify amount to tip on in the payment request"
+    },
+    {
+      "text": "`RequestedAmount`: The total purchase amount, with decimals.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on/2026-09-15.md:100; ## Specify amount to tip on in the payment request"
+    },
+    {
+      "text": "`AuthorizedAmount`: the total authorized amount of the transaction, consisting of the original purchase amount plus the tip amount.",
+      "location": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on/2026-09-15.md:146; ## Specify amount to tip on in the payment request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-tip-base-override-boundary",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Terminal tipping amount boundary",
+        "proposed_markdown": "An optional Terminal API tip-base override keeps `PaymentTransaction.AmountsReq.RequestedAmount` as the full purchase amount while `AmountToTipOn` controls the amount on which the terminal offers tip suggestions; the chosen tip increases the response's `AuthorizedAmount`. This per-payment override also replaces configured Customer Area tipping options and requires `AskGratuity` plus an encoded `Operation` with `TipSuggestions`. The 2026-09-15 guide limits it to terminal software 1.103+ and excludes pay-at-table split checks.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not present the tip base as the charged purchase amount or infer capture or tip-recipient settlement from this payment-response example."
+        ]
+      },
+      {
+        "update_id": "c5-tip-base-override-source-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal-change-amount-to-tip-on]] \u2014 Adyen POS Terminal API website guide to per-payment tip-base override, configured-option replacement, version and pay-at-table limits, and purchase/tip/authorized amount fields (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/tipping/tipping-from-terminal/change-amount-to-tip-on/2026-09-15.md",
+  "raw_sha256": "9db9f0cebfd54791537a6132d894a0c938df571743de43ed3831387abeae54d7",
+  "status": "candidate_ready"
+}

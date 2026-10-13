@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-basic-tapi-integration-make-a-payment-greece-tax",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Greece in-person tax signature flow\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax\"\nraw_files:\n  - \"adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax/2026-09-15.md\"\ntags: [adyen, point-of-sale, greece, terminal-api, aade, e-invoicing]\n---\n\n## Overview\n\nThis Adyen webpage, last modified 2024-11-28 and captured 2026-09-15, describes its Greek in-person Terminal API payment flow with an e-invoicing-provider signature and an autonomous fallback when the POS cannot reach that provider. It assigns signature retrieval and result handoff to the merchant POS, signature validation/payment processing to the terminal/Adyen, and tax-office forwarding to the selected e-invoicing system. Its dated statements about Greek obligations, standalone terminals, provider support, and compliant fallback are source claims, not a current legal determination or evidence of a merchant's live approval.\n\n## Key takeaways\n\n- The page states a December 31, 2024 Greek POS/terminal/e-invoicing integration obligation and says standalone terminals can no longer be used in Greece. Its documented path is a Terminal API integration on terminal software 1.109.10 or later; autonomous mode needs 1.124 or later. Support must configure the merchant account to Greece and Europe/Athens. These are dated Adyen setup and regulatory statements that require current official confirmation before legal or go-live reliance. See **Greece tax regulations** and **Requirements**.\n- In the normal path, the merchant POS obtains a signature from its chosen e-invoicing provider for the target terminal and purchase amount, sends Base64-encoded `aadeData` in `SaleData.SaleToPOIData`, and sets `RequestedAmount` no higher than the signed payable amount. The terminal checks the signature using the provider public key; after processing, it returns a transaction identifier. The POS sends the transaction result to the provider, which forwards it to AADE. Adyen's support for the page's AADE-listed provider route does not mean Adyen owns the merchant POS-to-provider integration. See **How it works**, **Integrate with an e-invoicing provider**, and **Make a payment**.\n- `aadeData` includes provider ID, a transaction-unique provider signature used only in the payment request, and verification data. The verification-data timestamp must not be older than 24 hours, its `TID` must equal the header `POIID`, and the requested amount must fit the signed amount. On a successful payment, save `aadeTransactionID` and `aadeProviderSignature` from `AdditionalResponse` for the POS-to-provider result handoff. See **Make a payment** and **Errors** for exact fields and failure messages.\n- If the POS cannot obtain a provider signature, the page's autonomous flow sends Base64-encoded `aadeData` with `unbound_pos: \"1\"`. It describes Adyen contacting AADE for this unsigned path; if Adyen cannot reach AADE, `Result` is `Failure` with an autonomous-mode connection message. The normal signed flow resumes when provider connectivity returns. This is a conditional fallback, not proof that an unsigned transaction always succeeds or is currently compliant. See **Make a payment without e-invoicing signature**.\n- A referenced refund follows the linked standard `ReversalRequest` route. An unreferenced refund needs another unique provider signature in `aadeData`, or the page's autonomous `unbound_pos` route during provider-connection loss. Detailed refund operation behavior belongs to the linked refund pages. See **Refunds**.\n- Both illustrated successful response bodies request EUR 10 but show `AuthorizedAmount` EUR 8 and `Result: Success`; the page does not explain that mismatch. Do not use the examples to infer full authorization, tax reporting completion, capture, or settlement. The listed AADE validation failures return `Failure` and a Base64-encoded `AdditionalResponse` error. See **Make a payment**, **Make a payment without e-invoicing signature**, and **Errors**.\n\n## Detail locators\n\n- **Greece tax regulations** \u2014 dated obligation and Adyen's described signature-to-transaction-ID role.\n- **Requirements** \u2014 Terminal API/firmware gates, standalone limitation, Support merchant-account settings, and provider-integration prerequisite.\n- **How it works** \u2014 POS, provider, terminal/Adyen, and tax-office handoff sequence.\n- **Integrate with an e-invoicing provider** \u2014 merchant-owned provider connection and AADE-list route.\n- **Make a payment** \u2014 `aadeData` fields, signature freshness/uniqueness, TID/POIID and amount checks, Base64 placement, successful-response fields, and illustrative payload.\n- **Make a payment without e-invoicing signature** \u2014 autonomous `unbound_pos` request, example response, and AADE-unreachable failure.\n- **Refunds** \u2014 referenced versus unreferenced refund signature/fallback routes.\n- **Errors** \u2014 terminal validations and Base64 `AdditionalResponse` messages.\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax/2026-09-15|Adyen Docs \u2014 Greece tax regulations (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Starting from December 31st 2024, all point-of-sale systems in Greece must be integrated with a payment terminal and an e-invoicing system.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax/2026-09-15.md:19 (Greece tax regulations)"
+    },
+    {
+      "text": "A [Terminal API integration](/point-of-sale/get-started) with payment terminals on software version **1.109.10** or later.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax/2026-09-15.md:31 (Requirements \u2192 Integration type)"
+    },
+    {
+      "text": "The `aadeProviderSignature` must be unique for every transaction.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax/2026-09-15.md:82 (Make a payment)"
+    },
+    {
+      "text": "Autonomous mode allows payment terminals to be able to process transactions in case of a loss of connection to the e-invoicing system. You can still make a payment without the unique e-invoicing signature. Adyen reaches AADE with the JSON data you create to process payment without the signature.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax/2026-09-15.md:229 (Make a payment without e-invoicing signature)"
+    },
+    {
+      "text": "If Adyen cannot reach AADE to process the payment without signature, note the following in the response:",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax/2026-09-15.md:369 (Make a payment without e-invoicing signature)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "greece-tax-terminal-api-source-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-basic-tapi-integration-make-a-payment-greece-tax]] \u2014 dated Adyen website guide to Greece Terminal API e-invoicing signature and conditional autonomous-mode payment/refund routes (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat the dated Greek regulation/standalone/compliance wording as current legal guidance. Both sample Success responses show EUR 8 authorized against EUR 10 requested without explaining the difference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/greece-tax/2026-09-15.md",
+  "raw_sha256": "29f2a35f48a6f63157093184aedd2ea2b31108267a0ef0e9a6966f949187c96a",
+  "status": "candidate_ready"
+}

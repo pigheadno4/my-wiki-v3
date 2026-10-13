@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-installments-brazil-installments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: In-person installments in Brazil\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/installments/brazil-installments\"\nraw_files:\n  - \"adyen/docs/point-of-sale/installments/brazil-installments/2026-09-15.md\"\ntags: [adyen, point-of-sale, brazil, installments, terminal-api]\n---\n\n## Overview\n\nThis Adyen guide covers in-store Brazilian card choice between credit, debit, and voucher, then one-off credit or credit-card installments. It describes an Adyen terminal UI flow for integrated or standalone terminals and a merchant-owned UI flow that passes shopper choices in a Terminal API payment request. Its terms and examples are dated website evidence; it does not establish current card-scheme/acquirer coverage, account eligibility, shopper interest or financing terms, or live payment success.\n\n## Key takeaways\n\n- The Adyen UI flow requires Support enablement at a chosen company, merchant-account, store, or terminal level, and the page requires terminal software v1.119 or later. The terminal asks the shopper for credit/debit/voucher, then one-off versus installments and a count if credit installments are chosen. The flow applies to integrated and standalone terminals. See **Requirements** and **Adyen UI**.\n- In the merchant-owned UI flow, store staff, a secondary screen, or terminal input can collect the shopper's choice; the POS passes that choice in a Terminal API request. For credit installments, the request must identify credit and include `PaymentData` with `PaymentType: Instalment`, equal installments, monthly period, and `TotalNbOfPayments` from 2 through 36. A debit or one-off credit request needs no installment object in this guide. See **Your own UI \u2192 Make a payment with Terminal API**.\n- The page recommends Base64-encoded `selectedAccountType` in `SaleData.SaleToPOIData` to identify `CREDIT`, `CHEQUE` (debit), or `MEAL_VOUCHER`; alternatively, `TransactionConditions.DebitPreferredFlag` supports only credit/debit (`false`/`true`). If both appear, `selectedAccountType` takes precedence. These field choices are specific to this Brazil POS flow; the request examples are illustrative, not evidence of current SDK-version behavior or all voucher products. See **Make a payment with Terminal API**.\n- An integrated terminal response can show installment type/count in `PaymentResult` and `installments=` in `AdditionalResponse`. For a successful payment, generated merchant and shopper receipt data includes `productType` and Brazilian `cnpj`, with installment count when applicable. The sample 12-installment `BRL 120.00` request/response is an example, not a guarantee of approval or interest/pricing. See **Adyen UI**, **Your own UI**, and **Make a payment with Terminal API \u2192 PaymentResponse**.\n- The reconciliation section says the first installment is charged to the shopper's credit card immediately, later installments automatically, and the merchant receives funds as each installment settles after a stated 30-day settlement delay. Adyen describes optional earlier advancement for an additional fee through its Account Manager. Standalone-terminal users must manually reconcile POS transactions against sales and returns. The page does not specify interest bearer, installment principal/interest allocation, scheme or acquirer applicability, or current commercial terms. See **Reconciling installments**.\n\n## Detail locators\n\n- **Requirements** \u2014 Brazil combo-card statement, integrated/standalone scope, Adyen UI v1.119 gate and Support configuration level.\n- **Adyen UI** \u2014 terminal-owned shopper prompts, integrated/standalone applicability, receipt and integrated-response installment fields.\n- **Your own UI** \u2014 shopper/staff input options and POS handoff.\n- **Make a payment with Terminal API** \u2014 payment-mode encoding/precedence, request header/reference/amount, 2\u201336 equal monthly installments, and illustrative JSON/Java payloads.\n- **Make a payment with Terminal API \u2192 PaymentResponse** \u2014 receipt keys, successful response installment fields and example payload.\n- **Reconciling installments** \u2014 shopper charging schedule, merchant settlement timing, advancement fee, and standalone reconciliation responsibility.\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/installments/brazil-installments/2026-09-15|Adyen Docs \u2014 Installments in Brazil (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "To use the Adyen UI flow, you must contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) and let them know whether you want this to be enabled for a company or merchant account, a store, or a terminal. The Adyen UI flow works for integrated and standalone payment terminals.",
+      "location": "raw/adyen/docs/point-of-sale/installments/brazil-installments/2026-09-15.md:43 (Adyen UI)"
+    },
+    {
+      "text": "In the event that both `DebitPreferredFlag` and `selectedAccountType` occur in the same request, `selectedAccountType` takes precedence and its value is used.",
+      "location": "raw/adyen/docs/point-of-sale/installments/brazil-installments/2026-09-15.md:109 (Make a payment with Terminal API)"
+    },
+    {
+      "text": "`Instalment.TotalNbOfPayments`: the number of installments. The minimum is **2**, the maximum **36**.",
+      "location": "raw/adyen/docs/point-of-sale/installments/brazil-installments/2026-09-15.md:173 (Make a payment with Terminal API \u2192 PaymentData)"
+    },
+    {
+      "text": "If a shopper pays in installments, the first installment is immediately charged to the shopper's credit card, and all future installments will be charged automatically.",
+      "location": "raw/adyen/docs/point-of-sale/installments/brazil-installments/2026-09-15.md:655 (Reconciling installments)"
+    },
+    {
+      "text": "You receive the funds for each installment as it is settled. There is a settlement delay of 30 days. If you need the funds sooner, we also offer [advancements](/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/). There is an additional fee for this service. Contact your Adyen Account Manager for details.",
+      "location": "raw/adyen/docs/point-of-sale/installments/brazil-installments/2026-09-15.md:657 (Reconciling installments)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "brazil-installments-terminal-api-source-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-installments-brazil-installments]] \u2014 Adyen website guide to Brazil POS credit/debit/voucher choice, terminal or merchant UI installments, and installment settlement (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide does not specify current scheme/acquirer eligibility or shopper interest terms; keep its 30-day settlement and advancement-fee wording snapshot-qualified."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/installments/brazil-installments/2026-09-15.md",
+  "raw_sha256": "77bc9b365e02bfee582c8425d4e36d1d62381a8d2c41ec6cfc23454ce154e61c",
+  "status": "candidate_ready"
+}

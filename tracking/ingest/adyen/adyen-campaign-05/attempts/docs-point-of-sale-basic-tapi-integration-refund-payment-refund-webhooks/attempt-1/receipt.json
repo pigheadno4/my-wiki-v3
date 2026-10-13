@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-point-of-sale-basic-tapi-integration-refund-payment-refund-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS refund webhook outcomes\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/refund-webhooks\"\nraw_files:\n  - \"adyen/docs/point-of-sale/basic-tapi-integration/refund-payment/refund-webhooks/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, refunds, standard-webhooks, refund-outcomes]\n---\n\n## Overview\n\nThis Adyen website guide, captured on 2026-09-15, explains **platform Standard webhook validation outcomes** for POS Terminal API referenced and unreferenced refunds. A Terminal API response usually confirms only request receipt; the relevant Standard webhook reports Adyen's validation result. It applies to Terminal API with payment terminals or a Mobile solution and requires Standard webhooks to be configured. This source routes through [[adyen-terminal-api]] and [[adyen-webhooks]]; it is distinct from a terminal-generated event notification and from the separate online Checkout API refund flow.\n\n## Key takeaways\n\n- Referenced POS refund requests produce **`CANCEL_OR_REFUND`**. Its `originalReference` is the **original payment PSP reference**, while its `pspReference` identifies the reversal/refund modification. The webhook table links a Checkout reversal response for that modification reference; the POS referenced-refund guide obtains the request reference in a Terminal API `ReversalResponse`. That cross-link does not make Checkout API a required second refund call.\n- Unreferenced POS refund requests produce **`REFUND_WITH_DATA`**. Here `originalReference` is the **unreferenced refund request's PSP reference**, not the unknown original payment PSP reference; `pspReference` is generated when the refund is captured. The available `additionalData` depends on enabled Standard-webhook settings. Do not join an unreferenced refund to an original purchase by treating this `originalReference` as an original-payment ID.\n- For both event types, `success: true` means **Adyen's refund validations passed and the request was sent to the card scheme**. The guide says this usually leads to a successful refund, but rare later card-scheme rejection or reversal remains possible and points to `REFUND_FAILED` and `REFUNDED_REVERSED` exception routes. `success: false` reports validation failure with a `reason` to investigate. Neither generic Terminal API `Success` nor a validation-success webhook alone is irrevocable final settlement evidence.\n- Unreferenced refunds can sometimes be processed **synchronously**, depending on card scheme and country/region; then `acquirerResponseCode` in the Terminal API response indicates the outcome. The page still frames the Standard webhook as the asynchronous outcome route for usual processing. It says a processed refund is deducted from the merchant's in-process funds and appears in the shopper's account within a few days; this is guidance, not proof of a particular bank's posting time.\n- The failed-validation table includes requested refund exceeding remaining original-payment balance after refunds/chargebacks, insufficient merchant in-process funds, refund before capture, method expiry, too-small amount, and currency mismatch. The table's **balance on the payment** is the remaining original-payment amount; do not mechanically apply that referenced-payment balance identity to an unreferenced refund, whose original payment is not identified here.\n\n## Detail locators\n\n- Terminal API request-receipt versus webhook outcome, event-code split, conditional synchronous unreferenced exception and funds timing: raw lines 15-28.\n- Terminal/Mobile integration and Standard webhook setup: raw `## Requirements`, lines 30-37.\n- Referenced `CANCEL_OR_REFUND` validation, original versus modification PSP references, `success` meanings and example: raw `## CANCEL\\_OR\\_REFUND webhook`, lines 39-80.\n- Unreferenced `REFUND_WITH_DATA` references, optional `additionalData`, `success` meanings and example: raw `## REFUND\\_WITH\\_DATA webhook`, lines 82-128.\n- Failure reasons and defined remaining-payment balance: raw `## Reasons for failed refund validation`, lines 130-148. Follow cited linked exception pages for their full contracts; they are navigation from this page.\n\n## Related\n\n- Company: [[adyen]]\n- Main POS concept: [[adyen-terminal-api]]\n- Webhook concept: [[adyen-webhooks]]\n- Referenced Terminal API procedure: [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-referenced]]\n- Unreferenced Terminal API procedure: [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-unreferenced]]\n- Separate online Checkout refund concept: [[adyen-refunds]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/basic-tapi-integration/refund-payment/refund-webhooks/2026-09-15|Adyen POS refund webhook outcomes]] \u2014 full captured webhook guide\n",
+  "quotes": [
+    {
+      "text": "Refunds are usually *not* processed synchronously. When you send a request for a referenced or unreferenced refund, the Terminal API response only confirms we received the request.",
+      "location": "raw line 19, opening outcome distinction"
+    },
+    {
+      "text": "Before we send your [referenced refund](/point-of-sale/basic-tapi-integration/refund-payment/referenced) request to be processed, we perform various validations. If these validations succeed, usually the refund itself also succeeds.",
+      "location": "raw line 41, ## CANCEL\\_OR\\_REFUND webhook"
+    },
+    {
+      "text": "**true**: Adyen's validations were successful and we sent the refund request to the card scheme. This usually means that the refund will be processed successfully. However, in rare cases the refund can be rejected by the card scheme, or reversed.",
+      "location": "raw line 48, ## CANCEL\\_OR\\_REFUND webhook success table"
+    },
+    {
+      "text": "* `originalReference`: the PSP reference of the unreferenced refund request. This is not the PSP reference of the payment that is being refunded, because with an unreferenced refund that PSP reference is unknown. In your Customer Area you can find the refund using the `originalReference` value.",
+      "location": "raw line 90, ## REFUND\\_WITH\\_DATA webhook"
+    },
+    {
+      "text": "| `Transaction hasn't been captured, refund not possible`",
+      "location": "raw line 145, ## Reasons for failed refund validation table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-pos-refund-webhooks-terminal-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-refund-webhooks]] \u2014 Adyen POS website guide captured 2026-09-15 for referenced CANCEL_OR_REFUND versus unreferenced REFUND_WITH_DATA validation outcomes, distinct PSP reference meanings and later exception risk",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c5-pos-refund-webhooks-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-refund-webhooks]] \u2014 Adyen POS Standard-webhook guide captured 2026-09-15 for refund validation events, originalReference identity and success-versus-finality limits",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/basic-tapi-integration/refund-payment/refund-webhooks/2026-09-15.md",
+  "raw_sha256": "0c482e16358f270db2153c536f4156a087524ea6ddd6e15cc6bae32705b3d9db",
+  "status": "candidate_ready"
+}

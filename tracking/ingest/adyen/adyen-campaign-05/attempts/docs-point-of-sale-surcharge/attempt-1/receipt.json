@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-point-of-sale-surcharge",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen point-of-sale surcharge overview\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/surcharge\"\nraw_files:\n  - \"adyen/docs/point-of-sale/surcharge/2026-09-15.md\"\ntags: [adyen, point-of-sale, surcharging, terminal-api, disclosure, dcc]\n---\n\n## Overview\n\nThis Adyen Docs overview describes passing payment acceptance fees to shoppers as a **point-of-sale surcharge**. It compares configuration-based rules with a dynamic merchant/third-party calculated amount sent in an integrated payment request. The selected in-person solution and hardware determine which method is supported. This POS guide is separate from Adyen's online-payments API-only surcharge pilot; neither page alone proves current merchant enablement or legal compliance.\n\n## Key takeaways\n\n- Configuration-based surcharges are calculated automatically from rules that can consider card brand, funding source, issuing country, and currency at company/merchant, store, or terminal scope. Dynamic surcharge uses merchant or third-party calculation, possibly after card acquisition, and puts the calculated fee in the payment request. Standalone terminals support **configuration-based only**. If both methods are configured for an integrated transaction, a surcharge amount in the request **overrides** the configured surcharge rather than adding a second one. The detailed method pages carry setup and request mechanics.\n- The snapshot lists availability in Australia, Canada, Europe, Great Britain, New Zealand, and the United States, with local and scheme restrictions still applying. It gives EEA-issued consumer cards used in the EEA and US debit cards as examples where surcharge is disallowed. Adyen says the feature does not enforce global compliance automatically: merchants must review current law/scheme rules and disclose applicable methods and costs. The Terminal API receipt data include the surcharge on shopper and merchant receipts; a customized receipt puts disclosure responsibility on the merchant. Standalone built-in printing is described separately.\n- A terminal may present a surcharge confirmation screen showing total, surcharge, and payment method. A Mobile solution does **not** support that screen in this snapshot, but disclosure remains required. The merchant may choose another disclosure form; `surcharge.askConfirmation` is a Management API terminal setting, with Support as the route if the merchant cannot configure the feature. The guide does not establish Customer Area roles or account-specific permission from these instructions.\n- A surcharge and DCC cannot apply to the **same transaction**. For terminal software earlier than v1.112 Adyen recommends not configuring both features on the same terminals; at v1.112 or later Adyen says DCC is automatically skipped when surcharge is greater than zero. Surcharges also cannot be added to authorization adjustments or overcaptures because they cannot exceed what was shown at purchase. These version and disclosure constraints are POS-specific and do not imply identical online pilot behavior.\n- For reporting visibility, Adyen recommends enabling surcharge data in Standard `AUTHORISATION` webhooks via **Include Extra Costs Surcharge** or **Developers > Additional data > Surcharge amount**. The fields are `extraCostsCurrency` and `extraCostsValueSurcharge` in minor units; adding a Surcharge Amount column to Payment Accounting and Settlement Detail reports is also recommended. The sample webhook is illustrative and does not establish capture, refund, settlement, or downstream fee outcomes.\n\n## Detail locators\n\n- Method-dependent hardware, snapshot regions, Mobile/DCC/adjustment limits, and compliance preparation: `## Requirements`, raw lines 21\u201334. Local restriction examples, signage, receipt responsibilities: `## Compliance`, lines 36\u201350.\n- Configuration versus dynamic calculation, scope, standalone boundary, and override precedence: `## Surcharge methods`, raw lines 52\u201373. Terminal disclosure, Mobile exception, Management API setting: `## Surcharge confirmation screen`, lines 75\u201397.\n- DCC mutual exclusion and firmware-qualified behavior: `## Surcharge or DCC`, raw lines 99\u2013105. Optional webhook/report visibility and minor-unit fields: `## Surcharge in AUTHORISATION webhooks` and `## Surcharge in reports`, lines 107\u2013167. Linked detailed method routes: `## Next steps`, lines 169\u2013180.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-surcharging]] \u2014 Adyen surcharge concept; keep POS methods separate from online pilot implementation.\n- [[adyen-terminal-api]] \u2014 integrated terminal payment and receipt context.\n- [[adyen-webhooks]] \u2014 separate Standard webhook configuration and outcome handling.\n- [[source-adyen-docs-point-of-sale-surcharge-configuration]] \u2014 linked configuration-based detail; do not infer its full setup from this overview.\n- [[source-adyen-docs-point-of-sale-surcharge-dynamic]] \u2014 linked POS dynamic detail; separate from online surcharge pilot.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/surcharge/2026-09-15|Adyen Docs: Surcharge (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "It is not allowed to apply surcharges to authorization adjustments or overcaptures, because the surcharge amount cannot be higher than the surcharge amount that was shown to the customer at the point of sale.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/2026-09-15.md:32; ## Requirements"
+    },
+    {
+      "text": "The Adyen surcharge feature does not include automated global compliance enforcement.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/2026-09-15.md:42; ## Compliance"
+    },
+    {
+      "text": "You can use either method, or both. When you use both methods, passing a surcharge amount in the payment request overrules the configuration-based surcharge.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/2026-09-15.md:63; ## Surcharge methods"
+    },
+    {
+      "text": "In a Mobile solution, a confirmation screen is currently not supported.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/2026-09-15.md:86; ## Surcharge confirmation screen"
+    },
+    {
+      "text": "* If your payment terminals are on software version **v1.112 or later**, we automatically skip DCC if the surcharge amount is greater than 0 (zero).",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/2026-09-15.md:104; ## Surcharge or DCC"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-pos-surcharge-definition-scope",
+        "target_path": "wiki/concepts/adyen-surcharging.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Definition",
+        "proposed_markdown": "## POS methods and boundary\n\nAdyen's point-of-sale surcharge guide describes configuration-based rules at account, store, or terminal scope and dynamic surcharges calculated by the merchant or a third party for an integrated payment request. Standalone terminals support configuration-based surcharges only. When both methods are present, a dynamic request amount overrides the configured surcharge; they are not added together. The POS guide excludes surcharge plus DCC on one transaction, and its terminal confirmation screen is unavailable in the Mobile solution, where another disclosure form remains necessary. These POS methods and their hardware/settings boundaries are separate from the online API-only card surcharge pilot described above.\n",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep snapshot regional and legal examples qualified and verify current law and card-scheme rules; the guide says global compliance is not automatically enforced."
+        ]
+      },
+      {
+        "update_id": "c5-pos-surcharge-overview-route",
+        "target_path": "wiki/concepts/adyen-surcharging.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-surcharge]] \u2014 Adyen POS website overview of configuration-based and dynamic surcharge methods, device/region limits, disclosure, DCC exclusion, and optional reporting (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/surcharge/2026-09-15.md",
+  "raw_sha256": "bb4eedc54d6a3824501b82fa4246f17ab5b5baf7b416d7fee752036746c5e363",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-enter-payment-manually",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Manual Key Entry on a POS terminal\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/enter-payment-manually\"\nraw_files:\n  - \"adyen/docs/point-of-sale/enter-payment-manually/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, manual-key-entry, signature]\n---\n\n## Overview\n\nThis Adyen Docs guide describes **Manual Key Entry (MKE)** as a fallback when a payment terminal cannot obtain details from a shopper's card chip or magnetic stripe. For its **Terminal API integration with payment terminals**, the merchant POS requests `ForceEntryMode=Keyed`; the terminal asks the **shopper** to enter card number and expiry date and then sign on its display. This differs from the separate MOTO card-not-present flow, where remote order/card details are keyed by staff. See [[adyen-terminal-api]], [[adyen-pci-dss-compliance]], and [[adyen]].\n\n## Key takeaways\n\n- **Risk and prerequisites:** MKE has **no liability shift**; the merchant is fully liable for fraud chargebacks. Contact Adyen Support to enable MKE and configure an **MKE max amount** in Customer Area because of increased chargeback risk. The page gives no universal numeric maximum or merchant-specific enabled state. The integrated instructions apply to Terminal API with terminals; standalone terminal instructions are only linked navigation. [Raw: introduction; Requirements; Set maximum MKE transaction amount]\n- **Method boundary:** the page expressly excludes **virtual JCB credit cards** from MKE and directs those to MOTO. It does not provide a broader card-scheme, country, or software-version compatibility table. It does not state a general PCI questionnaire or API-role requirement for MKE; do not import the MOTO page's requirements into this flow. [Raw: Requirements]\n- **Request and shopper interaction:** a Terminal API `PaymentRequest` uses `PaymentTransaction.TransactionConditions.ForceEntryMode` with value `Keyed`; the example includes currency and `RequestedAmount`. Once enabled and started from the POS, the terminal prompts the shopper for card number/expiry and then a signature. The example amount and terminal model are illustrative, not a guaranteed limit or eligibility. [Raw: How it works; Make an MKE payment]\n- **Response:** the guide identifies `PaymentResult.AuthenticationMethod=SignatureCapture`, `CapturedSignature` coordinates, `CardData.EntryMode=Keyed`, and `AdditionalResponse.posEntryMode=MKE`. These fields describe the documented keyed/signature flow; a signature prompt or example `Result=Success` is not evidence of universal CVM behavior or a live payment outcome. [Raw: Make an MKE payment, response]\n- **Risk rules:** the page also points to Adyen risk management and says its classic risk setting can decline at a score of 100. That is configuration-dependent, not a blanket MKE acceptance rule. [Raw: Risk management]\n\n## Detail locators\n\n- Raw `Requirements` locates the Terminal API scope, virtual-JCB exclusion, Support enablement, and max-amount setup.\n- Raw `How it works` describes the failed-read fallback and shopper-operated entry/signature sequence.\n- Raw `Set maximum MKE transaction amount` locates Customer Area configuration scope.\n- Raw `Make an MKE payment` locates `ForceEntryMode`, amount example, and response signatures/entry-mode fields.\n- Raw standalone, MOTO, chargeback and risk links are navigation only.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 existing in-person API concept hub\n- [[adyen-pci-dss-compliance]] \u2014 separate provider PCI scope guidance\n- [[adyen]] \u2014 company and knowledge-status page\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/enter-payment-manually/2026-09-15|Manual Key Entry \u2014 Adyen Docs snapshot, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Manual key entry (MKE) involves manually typing the details from a shopper's card on the payment terminal. You can use this when the payment terminal fails to obtain the card details from the card's chip or magnetic stripe.",
+      "location": "raw line 23, introduction"
+    },
+    {
+      "text": "It is important to note that there is no liability shift with MKE. This means you are fully liable for [fraud chargebacks](/point-of-sale/what-we-support/payment-methods#pos-chargebacks).",
+      "location": "raw line 25, introduction"
+    },
+    {
+      "text": "Manual Key Entry (MKE) is not supported for virtual credit cards on the Japan Card Network (JCB). Use the [MOTO flow](/point-of-sale/mail-and-telephone-order-moto) instead.",
+      "location": "raw line 34, Requirements, Limitations row"
+    },
+    {
+      "text": "Because of the increased risk of chargebacks, you need to set a maximum transaction amount for MKE transactions.",
+      "location": "raw line 49, Set maximum MKE transaction amount"
+    },
+    {
+      "text": "With a Terminal API integration, proceed as follows to force MKE as the [card entry mode](/get-started-with-adyen/adyen-glossary/#point-of-sale-entry-mode) in your Terminal API payment request:",
+      "location": "raw line 59, Make an MKE payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-mke-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-enter-payment-manually]] \u2014 Adyen Docs website guide to Support-enabled Terminal API Manual Key Entry fallback, shopper card entry/signature, max amount and liability boundary (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "MKE here is a failed chip/stripe read fallback with shopper entry and signature; keep separate from card-not-present MOTO staff entry.",
+          "The page does not state MKE PCI questionnaire, API role, software-version gate, or universal maximum value."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/enter-payment-manually/2026-09-15.md",
+  "raw_sha256": "0267a220aa24013c1832bb79b84a6eb5c17c502a0f73b35f1c7875320508a662",
+  "status": "candidate_ready"
+}

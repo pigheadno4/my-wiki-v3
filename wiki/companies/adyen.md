@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 214
+source_count: 264
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Two hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Two hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -130,8 +130,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 200 (Adyen C01 + C02 + C03 + C04).
-- Total source summaries: 214 (200 website + 14 GitHub).
+- Ingested website documentation sources: 250 (Adyen C01 + C02 + C03 + C04 + C05).
+- Total source summaries: 264 (250 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 21
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -352,6 +352,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-point-of-sale-reconciling-totals]] — Adyen POS terminal totals reconciliation overview (webpage, 2026-10-13)
 - [[source-adyen-docs-point-of-sale-what-we-support]] — What we support | Adyen Docs (webpage, 2026-10-13)
 - [[source-adyen-docs-point-of-sale-design-your-integration-network-and-connectivity]] — Adyen POS Network and Connectivity Topics (webpage, 2026-10-13)
+
+### Website documentation — Campaign 05
+
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-make-a-payment]] — Adyen Docs: Make an in-person Terminal API payment (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment]] — Adyen Terminal API point-of-sale refund overview (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-verify-transaction-status]] — Adyen Docs: Verify a missing Terminal API transaction response (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-generate-receipts]] — Adyen Terminal API receipt generation (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-error-scenarios-raw-acquirer-responses]] — Raw responses | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-donate]] — Adyen POS Donations Using Giving (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal]] — Adyen Docs: Tipping from the terminal (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-referenced]] — Adyen POS referenced refund (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-pay-at-x]] — Make Pay-at-table payments | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-diagnostics-request-diagnosis]] — Make a POS diagnosis request | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-installments-brazil-installments]] — Adyen Docs: In-person installments in Brazil (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v2]] — Adyen blue-green POS physical test card v2 (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-surcharge-dynamic]] — Adyen Docs: Dynamic POS surcharge (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v3]] — Adyen white-green v3 POS test card (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-error-scenarios-refusal-reasons-pos]] — Terminal API refusal reasons | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-card-acquisition-identifiers]] — Adyen POS Card and Shopper Identifiers (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v1]] — Adyen Docs: White POS test card v1 (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-unreferenced]] — Adyen POS unreferenced refund (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-currency-conversion]] — Dynamic Currency Conversion for POS | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-surcharge-configuration]] — Configuration-based POS surcharge | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-make-a-payment-greece-tax]] — Adyen Docs: Greece in-person tax signature flow (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-surcharge]] — Adyen point-of-sale surcharge overview (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-mail-and-telephone-order-moto]] — Adyen Docs: MOTO payments on POS terminals (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-diagnostics-check-cloud-connection]] — Adyen POS cloud WebSocket connection checks (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-tipping-tipping-on-receipt]] — Tipping on the receipt | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-cancel-a-transaction]] — Adyen Cancel an In-Progress POS Transaction (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-quick-chip]] — Adyen Docs: Quick chip (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-refund-webhooks]] — Adyen POS refund webhook outcomes (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-installments-mexico-installments]] — Installments in Mexico | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-pass-application-information]] — Pass POS application information | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal-override-tipping-configuration]] — Adyen Docs: Override terminal tipping options per payment (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal-change-amount-to-tip-on]] — Adyen POS override of amount to tip on (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-tipping-tipping-from-cash-register]] — Adyen Docs: Tipping from a POS app (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-reconciling-totals-log-in-and-log-out]] — Adyen Terminal API login and logout for totals (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-error-scenarios-pos-timeouts]] — Adyen POS Transaction Time-outs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-error-scenarios-penalty-box]] — Adyen Docs: POS penalty box (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-add-data-tender-options]] — Adyen POS tender options (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-reconciling-totals-retrieve-totals-from-the-terminal]] — Retrieve totals from the terminal | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-enter-payment-manually]] — Adyen Docs: Manual Key Entry on a POS terminal (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-testing-pos-payments-b2-test-cards]] — Adyen B2 physical POS test-card sets (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-currency-conversion-download-and-use-the-dcc-overview-file]] — View the DCC dashboard | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-card-acquisition-insights]] — Adyen POS Shopper Insights (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-cashback-and-cash-out]] — Adyen Docs: POS cashback and cashout (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-cancel-unreferenced]] — Adyen POS cancel an unreferenced refund (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-reconciling-totals-reconcile-a-balance-mismatch]] — Reconcile a balance mismatch | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-mail-and-telephone-order-moto-avs-responses-pos]] — POS MOTO AVS responses | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-installments-japan-installments]] — Adyen Docs: In-person installments in Japan (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-add-data-sale-to-acquirer-data]] — Adyen POS SaleToAcquirerData sample collection (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-tipping]] — Adyen Docs: In-person tipping options (webpage, 2026-10-13)
+- [[source-adyen-docs-point-of-sale-installments]] — Adyen POS installments regional overview (webpage, 2026-10-13)
 
 ### GitHub repository evidence
 

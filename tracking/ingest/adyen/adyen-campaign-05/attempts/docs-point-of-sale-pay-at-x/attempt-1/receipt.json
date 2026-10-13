@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-point-of-sale-pay-at-x",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Make Pay-at-table payments | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/pay-at-x\"\nraw_files:\n  - \"adyen/docs/point-of-sale/pay-at-x/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, pay-at-table, split-payments]\n---\n\n## Overview\n\nAdyen's Pay-at-table guide describes a **terminal-initiated** in-person flow for a table, hotel room, or curbside while keeping the terminal integrated with a merchant POS. Staff initiate it on the terminal, but the POS identifies the bill and sends Terminal API payment requests for successive equal or unequal splits. The pinned webpage was fetched 2026-09-15 and reports `last_modified` 2020-11-02; this snapshot is not proof of current device, account, payment-method, or hosted outcome. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- This flow requires a Terminal API integration and a portable terminal with integrated printer plus Wi-Fi and cellular support. The guide says payment methods added to the merchant account, as well as cash, can be used; terminal tipping can be combined with splits. Employee-card swipe authentication is unavailable on Android terminals. Configure terminal Pay@Table settings in Customer Area, event notifications, staff authentication method through Adyen Support, and POS handling of `SaleWakeUp`; Support can configure skipping the cash/card choice if cash is not accepted.\n- Staff press the terminal button and authenticate with a reference number or employee card. The terminal sends a `SaleWakeUp` `EventNotification` to the POS; `EventDetails` carries that reference/card number if configured. If the instruction field is left empty, notification follows the button press immediately without that identifier. The POS uses the identifier or terminal to find open bills and can use `InputRequest` for table/bill selection. A terminal `PrintRequest` for the bill is optional; a session spanning multiple input requests is also optional and is **not** the payment session or proof of payment.\n- After choosing the bill, the **POS** sends `PaymentRequest` with `PaymentData.PaymentType: Normal`, `SplitPaymentFlag: true`, and `AmountsReq` `RequestedAmount` and `PaidAmount`. The first request uses the full bill and zero paid; later requests use the remaining amount and the sum already paid. Use a unique sale `SaleTransactionID.TransactionID` at the first request and repeat that **same sale ID** across splits for that bill. The terminal presents equal/unequal split and card/cash choices; a whole-bill single payer is an unequal split for the whole amount. Staff confirm cash on the terminal, while card shoppers interact with the terminal.\n- The POS must process each result to track the cumulative paid amount. In this **split-payment** flow, `Response.Result: Success` means the current `RequestedAmount` was paid in full, while `Partial` means an amount remains due and another split request is needed. Read `AmountsResp.AuthorizedAmount` for the amount paid by that split. A later `Pay later` choice yields `Failure` with `PaymentRestriction` for the interrupted flow; the guide explicitly says it does **not** mean a preceding split failed. Restart Pay at table when another shopper is ready. Do not conflate this with the issuer-funded partial-authorization flow.\n- Errors outside active payment processing reach the POS; staff near the table may need a POS-to-terminal display message. The guide gives no guarantee about concurrent terminal taps or bill selection, duplicate request recovery, final settlement, or automatic retry. Bill identity, split totals, and each payment result remain POS responsibilities.\n\n## Detail locators\n\n- Use cases, configured payment methods/cash, tipping, hardware and Android swipe limit: pinned raw, introduction and `## Requirements` (lines 15\u201338).\n- Staff-terminal \u2192 `SaleWakeUp` \u2192 POS bill lookup \u2192 input/print \u2192 payment/split loop: pinned raw, `## How it works` (lines 40\u201377).\n- Customer Area Pay@Table, event notification, Support settings, empty instruction field, and notification structure: pinned raw, `## Configure Pay at table` and `### SaleWakeUp event notification` (lines 79\u2013141).\n- Bill selection and optional multi-input session: pinned raw, `## 1. Retrieve the sale transaction` (lines 143\u2013158).\n- Same sale transaction ID, split flag, amount fields, and request examples: pinned raw, `## 2. Make a payment` (lines 160\u2013260).\n- `Success`/`Partial` for a split, authorized amount, cash/card indicators, `Pay later`/`PaymentRestriction`, decline handling: pinned raw, `## 3. Process the payment result` (lines 262\u2013369).\n- Staff authentication, navigation/cancel, and optional display feedback: pinned raw, `## Information for your staff` (lines 371\u2013391).\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 Terminal API message and in-person flow boundaries.\n- [[source-adyen-docs-point-of-sale-partial-authorizations]] \u2014 separate issuer partial authorization of a card balance.\n- [[adyen]] \u2014 provider hub.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/pay-at-x/2026-09-15|Make Pay-at-table payments \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Support for all [payment methods](/point-of-sale/what-we-support/payment-methods) that you added to your account, as well as cash.",
+      "location": "raw line 24, # Make Pay-at-table payments"
+    },
+    {
+      "text": "Authentication by swiping the employee card is not supported on Android payment terminals.",
+      "location": "raw line 38, ## Requirements table, Limitations row"
+    },
+    {
+      "text": "The terminal sends a [SaleWakeUp event notification](#salewakeup-event-notification) to the POS system. The notification informs the POS system that the terminal is waiting to receive a payment request.",
+      "location": "raw line 46, ## How it works, step 2"
+    },
+    {
+      "text": "Specify a unique sale transaction ID in the first payment request, and repeat that same ID in all subsequent split payments for the same sale.",
+      "location": "raw line 167, ## 2. Make a payment"
+    },
+    {
+      "text": "`PaymentResponse.Response.ErrorCondition`: **PaymentRestriction**. This indicates that the Pay-at-table flow was interrupted. It is not the preceding split payment that failed.",
+      "location": "raw line 363, ## 3. Process the payment result"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-pay-at-x-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-pay-at-x]] \u2014 2026-09-15 Adyen Pay-at-table Terminal API guide for terminal-initiated staff wake-up, POS bill selection and successive equal/unequal split requests.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/pay-at-x/2026-09-15.md",
+  "raw_sha256": "ff9dc4a87193abca52dd943e1e131c0a0c925d2ef9702257dc28cc36d27b8dde",
+  "status": "candidate_ready"
+}

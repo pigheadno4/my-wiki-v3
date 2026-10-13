@@ -1,0 +1,13 @@
+# Fixed retrieval checks — DCC dashboard and CSV
+
+## Purpose, scope, and limits
+
+**Query:** Is this URL a predictive BIN overview file or a transaction-time DCC rate source?
+
+**Answer:** No. The pinned page title is **View the DCC dashboard**; it describes a historical, high-level DCC dashboard in live Customer Area and a filtered CSV export for Terminal API or standalone POS solutions. It can show how many shoppers chose home-currency payment, merchant markup share, performance dimensions, and transaction-specific reasons DCC was not offered (raw lines 15–39, 41–66). It does not specify a forecast file, rate/markup formula or timestamp, shopper disclosure UI, live DCC offer, consent proof, API secret, or eligibility guarantee. The capture date is 2026-09-15; `last_modified` is 2019-04-23 (raw lines 1–12). Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-currencies-and-fx.md` → `wiki/sources/adyen/source-adyen-docs-point-of-sale-currency-conversion-download-and-use-the-dcc-overview-file.md` → `raw/adyen/docs/point-of-sale/currency-conversion/download-and-use-the-dcc-overview-file/2026-09-15.md`.
+
+## Access, report behavior, and non-offer reasons
+
+**Query:** What access and setup does the guide state, and how should its BIN/non-offer rows be used?
+
+**Answer:** The page lists **Merchant view POS Payment Report** and **Merchant POS Report role** for Customer Area access; Adyen Support enables DCC reporting for the merchant account. In live Customer Area, go to Reports → Point of sale → Dynamic Currency Conversion, select period/settings, then Export. The CSV contains only the selected filters, and Adyen recommends dashboard analysis (raw lines 30–50). The historical not-offered table includes card-only/no-refund support, zero/invalid or same currency, unsupported issuer currency/BIN, unknown issuer country, unconfigured merchant/acquirer account, and missing cost-contract markup, with actionable flags. Its Visa/Mastercard statement is specifically about **acquirer accounts**. These rows explain a transaction's reported non-offer; they do not predict that a new card BIN will receive a particular DCC offer or rate. DCC/financial-reporting links are navigation until read (raw lines 52–71). Route after catalog update: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-currencies-and-fx.md` → `wiki/sources/adyen/source-adyen-docs-point-of-sale-currency-conversion-download-and-use-the-dcc-overview-file.md` → `raw/adyen/docs/point-of-sale/currency-conversion/download-and-use-the-dcc-overview-file/2026-09-15.md`.

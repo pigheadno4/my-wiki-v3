@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-point-of-sale-basic-tapi-integration-cancel-a-transaction",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cancel an In-Progress POS Transaction\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/basic-tapi-integration/cancel-a-transaction\"\nraw_files:\n  - \"adyen/docs/point-of-sale/basic-tapi-integration/cancel-a-transaction/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, abort, transaction-status, cancellation, refund]\n---\n\n## Overview\n\nThis Adyen guide covers stopping an **in-progress** terminal payment from a merchant POS app with Terminal API `AbortRequest`, or from the terminal's Cancel control. An abort received before terminal approval can cancel that attempt; a completed payment cannot be aborted. The guide distinguishes a later authorized-payment cancellation under delayed/manual capture from this in-progress action, and sends an approved payment after failed cancellation to the refund path. It applies to Terminal API or standalone terminal solutions, though the POS-app AbortRequest procedure specifically requires Terminal API. The 2026-09-15 webpage snapshot lists `last_modified` 2023-09-13.\n\n## Key takeaways\n\n- The POS sends a **new** Service-class `Abort` request with its own unique header `ServiceID` (1\u201310 alphanumeric characters, unique for that terminal over the preceding 48 hours), `SaleID`, and terminal `POIID`. `AbortRequest.MessageReference` points to the **original Payment** request's `SaleID` and `ServiceID`, with `AbortReason: MerchantAbort`; the example's current abort `ServiceID` differs from its referenced payment `ServiceID`. An HTTP `200 OK` with no body is the abort-request response, while the original payment should report `Result: Failure` and `ErrorCondition: Aborted`; use `TransactionStatusRequest` referencing the original payment to double-check the actual state. Do not treat the HTTP acknowledgement alone as payment finality.\n- The POS may abort before card presentation or after presentation while payment is unfinished (for example before PIN). After payment completion, the abort operation is unavailable. If an authorized payment was on delayed/manual capture, the source points to cancellation of that authorization; if cancellation fails and the payment was approved, it points to refund. It does not describe a ReversalRequest contract or prove that a refund has completed.\n- If a communication/technical issue leaves a payment or card acquisition in progress and the original `ServiceID` is unavailable to the POS, the guide uses a new `TransactionStatusRequest` with an **empty** request object to recover the original `MessageReference`. This empty-object form is limited to still-in-progress payment/card-acquisition requests. The source says a stuck terminal normally times out after about 150 seconds; this is an approximate observation, not a safe retry schedule or a guarantee that a payment failed. Use the recovered original IDs and category for the relevant cancellation route.\n- Cancel on the terminal yields `ErrorCondition: Cancel` in the original payment response if successful, distinct from POS Abort's `Aborted`. A signature-screen Cancel is exceptional: where shoppers sign on screen, authorization already occurred, and the terminal approves the signature even if Cancel is selected. The merchant must use the linked signature-check guidance rather than treating that button as payment cancellation.\n- This guide does not distinguish local versus cloud delivery, mobile SDK behavior or account-specific support for the linked authorized-cancel/refund routes. Follow the architecture and operation-specific sources for those details.\n\n## Detail locators\n\n- `# Cancel an in-progress transaction` and `##### Want to cancel an authorized payment?` \u2014 action boundary before terminal approval and separate delayed/manual-capture authorization cancellation.\n- `## Cancel from your POS app`, steps 1\u20133 \u2014 Abort header/current IDs, original Payment `MessageReference`, HTTP acknowledgement, original payment result and status verification. JSON request/status examples are illustrative.\n- `### Cancel when you do not know the ServiceID` \u2014 empty-object status lookup only while Payment/CardAcquisition remains in progress and follow-up with recovered original reference.\n- `## Cancel from the terminal`, `### Canceling a signature on the display`, `## Handling failed cancel requests` \u2014 terminal Cancel result, already-authorized signature exception and refund route after failed cancel of an approved payment.\n\n## Related\n\n- Company: [[adyen]]\n- Terminal API operation and recovery context: [[adyen-terminal-api]]\n- Separate card acquisition cancellation: [[source-adyen-docs-point-of-sale-card-acquisition]]\n- Separate signature behavior: [[source-adyen-docs-point-of-sale-cardholder-verification-methods]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/basic-tapi-integration/cancel-a-transaction/2026-09-15|2026-09-15 Adyen in-progress cancellation guide snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When this request is received before the transaction is approved on the terminal, the payment is cancelled.",
+      "location": "raw line 25, opening scope under # Cancel an in-progress transaction"
+    },
+    {
+      "text": "After the payment is completed, you cannot use an abort request to cancel the payment.",
+      "location": "raw line 47, under ## Cancel from your POS app"
+    },
+    {
+      "text": "A successful abort request returns a response with a `200 OK` HTTP status code and no body.",
+      "location": "raw line 102, POS abort response step 2; payment response and status checks follow at lines 104-151"
+    },
+    {
+      "text": "Sending a transaction status request with an empty `TransactionStatusRequest` object is only supported for payment and card acquisition requests that are still in progress.",
+      "location": "raw line 159, under ### Cancel when you do not know the ServiceID"
+    },
+    {
+      "text": "If your cancel request failed (and the payment was approved), you will need to refund the payment.",
+      "location": "raw line 262, under ## Handling failed cancel requests"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-terminal-abort-in-progress-boundary",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Payment and interaction patterns",
+        "proposed_markdown": "A merchant POS `AbortRequest` is for an unfinished terminal payment: it carries a new request ID while `MessageReference` identifies the original Payment request. The abort HTTP acknowledgement is separate from the original payment's `Failure`/`Aborted` response and optional transaction-status confirmation. A completed or already-authorized payment requires its condition-specific authorization-cancel or refund path; pressing Cancel on an already-authorized signature screen does not undo the payment. [[source-adyen-docs-point-of-sale-basic-tapi-integration-cancel-a-transaction]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-terminal-abort-source-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-basic-tapi-integration-cancel-a-transaction]] \u2014 Adyen 2026-09-15 website guide to POS/terminal cancellation of in-progress requests, original-reference lookup, result verification and completed-payment boundary.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/basic-tapi-integration/cancel-a-transaction/2026-09-15.md",
+  "raw_sha256": "6c9b3ba261e2cc02b174b175d5b0a7363210b349a7ef211e06d9d1bffa5b68fd",
+  "status": "candidate_ready"
+}

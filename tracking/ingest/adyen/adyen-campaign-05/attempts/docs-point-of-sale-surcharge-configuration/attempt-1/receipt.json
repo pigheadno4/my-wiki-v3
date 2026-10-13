@@ -1,0 +1,69 @@
+{
+  "job_id": "docs-point-of-sale-surcharge-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Configuration-based POS surcharge | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/surcharge/configuration\"\nraw_files:\n  - \"adyen/docs/point-of-sale/surcharge/configuration/2026-09-15.md\"\ntags: [adyen, point-of-sale, surcharge, terminal-settings, management-api]\n---\n\n## Overview\n\nThis Adyen guide documents configuration-based surcharging for in-person payments: a merchant configures rules at company, merchant-account, store, or terminal level through Management API terminal settings, and an eligible payment terminal or Tap to Pay Mobile SDK calculates a surcharge from the presented card. It is distinct from the online API-only surcharge pilot and from per-payment dynamic surcharge. This 2026-09-15 webpage snapshot describes setup and behavior, not current legal permission, merchant enablement, or successful payment execution.\n\n## Key takeaways\n\n- Supported solution types in the page are Terminal API integrations with payment terminals or Tap to Pay Mobile solutions, plus standalone terminals. The page excludes SFO1 terminals and NYC1 mobile card readers. For payment terminals, the guide names software gates: v1.108 for maximum surcharge, v1.112 to distinguish commercial/consumer cards, v1.115 to exclude tips, and v1.117 for MOTO/MKE surcharging. These are feature gates in the snapshot, not proof of current firmware or account activation.\n- Management API configuration requires an API credential/key with **Management API\u2014Terminal settings read** and **Management API\u2014Terminal settings read and write** roles. GET and PATCH `/terminalSettings` operate at company, merchant, store, or individual terminal scope. Live terminal-settings Management API calls have rate limits. Adyen recommends Standard webhooks carrying the surcharge amount in AUTHORISATION events; this guide's `TotalFeesAmount` payment-response field reports a surcharge amount, not a final settlement outcome.\n- Rules select brand, currency, optional funding source, issuer country and commercial-card condition; `configurations` are ordered, and the first matching condition executes without checking later rules. A currency entry requires `currencyCode` and percentage and/or fixed amount; `amount` and `maxAmount` use minor units. The commercial-card check does not work on Mobile solutions or on payment terminals while internet is down, so rules relying on that distinction need particular care.\n- Configuration can combine fixed amount and percentage, set a cap, and choose whether to exclude gratuities. The surcharge confirmation screen appears depending on configuration and solution; Mobile/Tap to Pay does not show it, and skipping it requires another form of disclosure under the guide. Tap to Pay surcharging needs Adyen Support to enable single tap; on mobile, only that single-tap flow is available. The page directs merchants to account for applicable compliance requirements; it does not establish current law or scheme permission for a proposed rule.\n- Starting with terminal software v1.117, configured surcharge also applies to MOTO and MKE. If a merchant already surcharges those flows separately, this can charge twice; the guide offers an Adyen feature opt-out at company, merchant, store or terminal level through an Adyen account manager or technical contact. Confirm the existing setup before applying a configuration.\n\n## Detail locators\n\n- `Requirements` \u2014 integration and hardware scope, terminal software gates, credential roles, webhooks, live API rate limits, Tap to Pay display/single-tap conditions.\n- `How it works` \u2014 ordinary payment request, card-based calculation, conditional customer confirmation or alternative disclosure, and response `TotalFeesAmount`.\n- `Configure surcharges` \u2014 fee dimensions, fixed/percentage/cap and gratuity options, GET/PATCH scope, ordered first-match `configurations`, required brand/currency fields, minor-unit amounts, issuer country, and commercial-card offline/mobile limitation.\n- `Opting out for MOTO and MKE` \u2014 v1.117 inclusion, double-surcharge risk and scope of opt-out.\n- `If you need help` \u2014 Adyen Support route when the merchant cannot configure Management API directly.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-surcharging]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/surcharge/configuration/2026-09-15|2026-09-15 Adyen POS surcharge configuration guide]]\n",
+  "quotes": [
+    {
+      "text": "**v1.117** to apply surcharges to Mail Order/Telephone Order (MOTO) and Manual Key Entry (MKE) payments.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/configuration/2026-09-15.md:35, ## Requirements / Integration type"
+    },
+    {
+      "text": "In a Mobile solution or if you choose to skip the confirmation screen, you must provide another form of disclosure.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/configuration/2026-09-15.md:56, ## How it works"
+    },
+    {
+      "text": "The condition that is met first is executed without checking the rest of the configuration.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/configuration/2026-09-15.md:97, ## Configure surcharges / configurations"
+    },
+    {
+      "text": "This check is not supported on mobile devices used in a Mobile solution. On payment terminals this check is not supported when the internet connection is down.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/configuration/2026-09-15.md:110, ## Configure surcharges / commercial"
+    },
+    {
+      "text": "If you have previously developed your own solution for surcharging MOTO and MKE payments, there is a risk of double surcharging: once through the surcharge configuration, and once through your own solution.",
+      "location": "raw/adyen/docs/point-of-sale/surcharge/configuration/2026-09-15.md:222, ## Opting out for MOTO and MKE"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pos-surcharge-distinct-flow",
+        "target_path": "wiki/concepts/adyen-surcharging.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Compliance and lifecycle boundaries",
+        "proposed_markdown": "## In-person configuration-based surcharge\n\nAdyen's separate point-of-sale guide configures automatic surcharge rules through Management API terminal settings at company, merchant-account, store or terminal scope for eligible Terminal API, Tap to Pay Mobile, or standalone solutions. The ordered rules use the first matching brand, funding-source, issuer-country, currency and optional commercial-card condition; fixed amounts and caps use minor units. The commercial-card check is unavailable on Mobile solutions and when a terminal is offline. Tap to Pay has no surcharge confirmation screen and requires Support-enabled single tap plus another form of disclosure. From terminal software v1.117, configured rules also cover MOTO/MKE, creating a double-surcharge risk when the merchant already charges those flows separately. Firmware gates, hardware exclusions, credential roles and applicable legal/scheme constraints remain qualified in the linked 2026-09-15 source; configuration is not proof of current eligibility or payment outcome. [[source-adyen-docs-point-of-sale-surcharge-configuration]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this POS Management API flow distinct from the concept's existing online pilot /cardDetails flow."
+        ]
+      },
+      {
+        "update_id": "pos-surcharge-source-route",
+        "target_path": "wiki/concepts/adyen-surcharging.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-surcharge-configuration]] \u2014 Adyen in-person Management API surcharge-configuration guide captured 2026-09-15 for scope, rule precedence, feature gates, disclosure and MOTO/MKE opt-out",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/surcharge/configuration/2026-09-15.md",
+  "raw_sha256": "d03a670bf48abb972457114a13c35e8d313b3e1c960d46e9ff89e2271fb50617",
+  "status": "candidate_ready"
+}

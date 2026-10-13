@@ -31,6 +31,9 @@ Klarna is pre-authorized by default and supports only asynchronous authorization
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-tipping-tipping-on-receipt]] — 2026-09-15 Adyen Docs receipt-tip use case for conditional POS pre-authorization adjustment before manual capture, with overcapture alternative and card/scheme limits.
+
+
 - [[source-adyen-docs-point-of-sale-pre-authorisation]] - unversioned Adyen POS guide, captured 2026-09-15, for terminal-initiated pre-authorization, backend adjustments and capture, and scheme-validity qualifications
 
 

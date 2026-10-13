@@ -9,6 +9,11 @@ tags: [adyen, giving, donations, checkout]
 
 Adyen Giving lets a shopper make a separate donation transaction using the payment method used for an original purchase. The captured Advanced-flow guide covers fixed-amount and round-up donations through either Web Components or a merchant-built API-only form.
 
+
+
+## In-person terminal route
+
+For Adyen POS Giving, a merchant runs a Customer Area campaign for an onboarded nonprofit and selected merchant accounts/stores. After an eligible in-store purchase, the terminal initiates a separate donation using the original payment method; Adyen says the full donation settles directly to the nonprofit's bank account with Adyen covering fees. One-step uses one shopper card presentation but remains two transactions; two-step uses two presentations and can expose a donation receipt through Terminal API transaction status. Donation outcome belongs to the merchant `DONATION` webhook, not the purchase `PaymentResponse`; donations cannot complete offline even when the purchase uses offline processing. Terminal software/model, region/currency, method and nonprofit gates remain in the POS source. This route is separate from Web Components, Sessions and Advanced online Giving flows. [[source-adyen-docs-point-of-sale-donate]]
 ## Advanced-flow routes
 
 The Web Components route presents the Giving Component after the original payment. The API-only route lets the merchant present a donation option before or after checkout, then sends the donation request after the original payment is authorized; a post-checkout request follows shopper confirmation. Both routes depend on supported payment methods, an active campaign, the documented Customer Area role and webhooks, and their stated minimum integration versions. The Adyen Giving merchant `DONATION` webhook provides the donation outcome; iDEAL delivery may take a day or more. The 2026-09-15 guide's Web Components sequence also points to Sessions-flow setup despite its Advanced-flow heading, so exact implementation steps require route-specific verification.
@@ -22,6 +27,9 @@ The 2026-09-15 Sessions guide covers Web Drop-in and Components on Web v6.36.0 o
 The captured Advanced-flow guide lists Web Components v5.0.0 or later and describes a Giving Component. The separate Web v6 upgrade guide says that from v6 onward an Adyen Giving integration must use the Giving Campaign Manager Component. These statements overlap for v6, and the snapshots do not explain how the two Components relate. Treat the Advanced-flow Component steps as guide-scoped and verify the version-specific route before implementation. [[source-adyen-docs-online-payments-donations-integration-options-advanced-flow]] [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-web-v6]]
 
 ## Sources
+
+- [[source-adyen-docs-point-of-sale-donate]] — Adyen POS Giving guide (2026-09-15 webpage snapshot) for terminal campaigns, distinct purchase/donation transactions, nonprofit settlement, eligible methods/models and outcome webhook.
+
 
 - [[source-adyen-docs-online-payments-donations-terms-and-conditions]] — Giving page requiring display of the partner nonprofit's Privacy Policy and Terms and Conditions, with flexible presentation and an illustrative fill-in template (webpage snapshot, 2026-09-15).
 

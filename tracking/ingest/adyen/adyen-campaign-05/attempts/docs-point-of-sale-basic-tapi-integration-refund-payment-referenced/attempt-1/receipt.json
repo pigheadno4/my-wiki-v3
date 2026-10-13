@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-basic-tapi-integration-refund-payment-referenced",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS referenced refund\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced\"\nraw_files:\n  - \"adyen/docs/point-of-sale/basic-tapi-integration/refund-payment/referenced/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, referenced-refund, reversal, offline-payments]\n---\n\n## Overview\n\nThis unversioned Adyen website guide, captured on 2026-09-15, explains a **referenced POS refund** connected to an original approved payment. Its basic full and partial paths send a Terminal API `ReversalRequest` through a POS terminal or Mobile solution, using the original payment's Terminal API `TransactionID` and timestamp. This is a [[adyen-terminal-api]] refund procedure; the cited online Checkout API refund concept is a separate integration path. The page does not prescribe a different referenced-refund procedure for local versus cloud Terminal API communications.\n\n## Key takeaways\n\n- A POS payment response identifies the original transaction as `tenderReference.pspReference`. For a basic referenced refund, the merchant places that full identifier and original UTC timestamp in `OriginalPOITransaction.POITransactionID`. The request has `MessageCategory: Reversal`, `ReversalReason: MerchantCancel`, and a terminal `POIID` in the message header. This reference lets Adyen validate against the original payment, including whether it was already refunded.\n- Full refund returns the purchase total. Partial refund adds `ReversedAmount` as a number no larger than the initial payment amount, a `currency=ABC` value matching the original payment in `SaleData.SaleToAcquirerData`, and a merchant refund reference/time. The guide allows multiple partial refunds; it does not establish an account-specific or per-method allowance from that example.\n- A successful `ReversalResponse.Response.Result` means Adyen **received** the request, while the refund is processed asynchronously. The refund request has its **own** PSP reference, distinct from the original payment identifier. A receipt can say **REFUND REQUESTED**. The merchant waits for the `CANCEL_OR_REFUND` webhook to learn the outcome; neither a response nor receipt proves completed refund.\n- An offline payment response lacks a PSP reference until Adyen processes it. When back online, the merchant can use the PSP reference from a standard webhook or Customer Area for the regular referenced path, or use the original **tender reference and payment date**; the guide says an original device identifier is needed in most cases and marks `OriginalPOITransaction.POIID` required in the illustrated tender-reference forms. The device identifier may be a terminal ID, NYC1 card-reader ID, or Tap to Pay installation ID as documented. A tender-reference refund made before offline processing is queued and retried; the page describes `Authorised` \u2192 `Cancelled` before funds transfer and `Sent for Settle` \u2192 `Refunded` after that status. The offline-refund-when-back-online Mobile path is limited here to **iOS Mobile**; the page separately limits Tap to Pay on iPhone Store and Forward offline payments to the **US**.\n- For a Terminal API refund of an **ecommerce** payment, there is no tender reference. The guide requires original PSP reference, date and currency, with `TransactionID` formatted as **`.pspReference` including the leading dot**; it warns that omission produces `unreachable host`. Its full-refund response reports zero original/refund amounts because those amounts are not yet known at that point. This is a special Terminal API reversal form, not the ordinary Checkout API refund call.\n\n## Detail locators\n\n- Purpose, `tenderReference.pspReference` identity, full/partial possibilities and requirements: raw lines 15-36.\n- Full Terminal API `ReversalRequest`, header `POIID`, original transaction fields, `MerchantCancel`, response acknowledgement, own PSP reference and webhook outcome: raw `### Tab: Full refund`, lines 42-186.\n- Partial amount, currency and merchant reference fields plus asynchronous result: raw `### Tab: Partial refund`, lines 188-356.\n- Offline missing-PSP condition, webhook or tender-reference routes, queueing/status behavior, and original device ID variants: raw `## Refund an offline payment when back online`, lines 358-454.\n- Ecommerce original-reference leading-dot syntax and zero amount fields: raw `## Refund an ecommerce payment`, lines 456-555.\n- Further outcome/offline links: raw `## See also`, lines 557-561; use these as navigation only.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-terminal-api]]\n- Separate online Checkout refund concept: [[adyen-refunds]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/basic-tapi-integration/refund-payment/referenced/2026-09-15|Adyen POS referenced refund]] \u2014 full captured Terminal API refund guide\n",
+  "quotes": [
+    {
+      "text": "When you make a POS payment, the Terminal API response returns the [transaction identifier](/point-of-sale/design-your-integration/terminal-api#response-body) of the payment in the format `tenderReference.pspReference`. To make a referenced refund, you specify this transaction identifier in your refund request.",
+      "location": "raw line 21, opening transaction-identifier paragraph"
+    },
+    {
+      "text": "* **Partial refund** to return part of the purchase to the shopper. For example, when a shopper returns one of the items they purchased. You can also make multiple partial refunds.",
+      "location": "raw line 26, opening refund variants"
+    },
+    {
+      "text": "| `Response.Result`                        | **Success** means we received your request. The refund itself will be processed asynchronously.",
+      "location": "raw line 137, ### Tab: Full refund response table"
+    },
+    {
+      "text": "If you make a referenced refund using the tender reference before the offline payment has been processed, the request is queued and retried by the Adyen platform. The payment status then changes from `Authorised` to `Cancelled`, because no funds have been transferred yet. If the payment status is `Sent for Settle` before the referenced refund is made, the payment status changes to `Refunded`.",
+      "location": "raw line 372, ## Refund an offline payment when back online"
+    },
+    {
+      "text": "An object with `TransactionID`: the PSP reference of the original payment, in the format `.pspReference`. For example: **.VK9DRSLLRCQ2WN82**Do not forget the leading dot (.). Without it, you will receive the error message `unreachable host`.",
+      "location": "raw line 466, ### Tab: Full refund of an ecommerce transaction"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-pos-referenced-refund-terminal-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-referenced]] \u2014 unversioned Adyen POS Terminal API guide captured 2026-09-15 for referenced full/partial ReversalRequest refunds, offline tender-reference and ecommerce PSP-reference forms, and asynchronous webhook outcomes",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/basic-tapi-integration/refund-payment/referenced/2026-09-15.md",
+  "raw_sha256": "174b0338c0f85a3888a06f33ac8378d8a51c09ef55038cd2e6bf13a925e978f4",
+  "status": "candidate_ready"
+}

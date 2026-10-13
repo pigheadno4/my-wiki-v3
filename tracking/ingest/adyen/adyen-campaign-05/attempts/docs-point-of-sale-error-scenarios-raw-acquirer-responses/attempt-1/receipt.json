@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-error-scenarios-raw-acquirer-responses",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Raw responses | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/error-scenarios/raw-acquirer-responses\"\nraw_files:\n  - \"adyen/docs/point-of-sale/error-scenarios/raw-acquirer-responses/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, raw-acquirer-response, refusals]\n---\n\n## Overview\n\nThis Adyen Docs page explains the optional **raw acquirer response** returned with a declined point-of-sale payment and provides a table of common raw-response examples, Customer Area statuses, and shopper-facing instructions. Card schemes or issuers send raw decline explanations to Adyen; because their strings vary and can change, Adyen maps them to a combination of Terminal API `ErrorCondition`, `refusalReason`, and `message`. See [[adyen]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- A merchant can opt in from the **merchant account** in Customer Area under Developers \u2192 Additional data \u2192 **Raw acquirer result**. After a declined payment, the optional raw value appears as `refusalReasonRaw` in `Response.AdditionalResponse` of `PaymentResponse`. The page explicitly warns **not to base integration code on the raw value** because acquirers and issuers may change it without notice; use the mapped Terminal API response and the linked response-handling guide for behavior.\n- The long table is a **most-common-examples lookup**, with Customer Area `Status`, raw response, and a described shopper action. Its raw code is not a universal outcome rule: for example, `00: Approved or completed successfully` appears under **Cancelled** after an initial issuer approval, and `85` appears under **Authorised** for zero-value verification. `91` has distinct **Refused** and **Error** rows. Interpret the full row and transaction context, not a bare code.\n- Shopper actions vary by row. Some issuer/account or limit cases say to contact a bank or use another payment method; chip/communication or timeout examples say to retry or use another method. The `94: Duplicate transmission detected` row says to **check that duplicate-decline condition before processing again if needed**. `Offline - Y1 / Y3 / Z1 / Z3` says to inspect transaction logs rather than treating the text as a generic retry order.\n- Scheme and context qualifiers are embedded in rows: Bancontact/BCMC PIN or EMV examples, eftpos entry-mode restrictions, suspected fraud, restricted-country card examples, a missing-store-ID merchant setup case, and terminal/card communication failures. These do not establish cross-scheme equivalence, a region-wide merchant eligibility rule, or a universal retry policy. The page contains no merchant-liability rule for raw response codes.\n- This 2026-09-15 website capture does not prove that an issuer will return a listed string today, that a merchant has enabled the optional field, or that a payment was authorized, captured, reversed, or settled. The linked refusal-reasons and handling pages are navigation until separately read.\n\n## Detail locators\n\n- `Raw responses`, lines 15\u201321: issuer/scheme origin, mapped Terminal API `ErrorCondition`/`refusalReason`/`message`, optional raw receipt.\n- `Receive raw responses`, lines 23\u201335: merchant-account Customer Area opt-in, `refusalReasonRaw` placement, warning against code dependence.\n- `Most common raw responses`, lines 37\u201343: table structure and `00` Cancelled example; lines 44\u201355: issuer referral, `05` variants, `10` partial approval cancelled example.\n- Table lines 56\u2013100: transaction/card/limit/refusal rows, **Authorised** `85` zero-value examples at 88\u201389, **Refused/Error** `91` distinction at 94\u201395, test-card-on-live `92` example at 96, duplicate `94` check at 98.\n- Table lines 101\u2013136: generic/invalid-card/amount rows and Bancontact-specific `182\u2013186` rows at 115\u2013118; card removal and offline-card response examples.\n- Table lines 137\u2013175: communication and chip failures, eftpos-specific rows at 143 and 163, missing-store-ID case at 152, terminal/acquirer errors, cancelled and offline-processing examples.\n- Table lines 176\u2013198: unsupported method, recurring shopper-reference, cancellations, timeouts and validation rows. Check the exact status, scheme, and row-specific instruction before acting.\n- `See also`, lines 200\u2013203: refusal-reason and response-handling links are navigation, not additional evidence in this entry.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-terminal-api]] \u2014 Terminal API response and in-person error concept.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/error-scenarios/raw-acquirer-responses/2026-09-15|Raw responses (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "When a card scheme or issuer declines a payment request, they send us a raw response to explain why. The many raw responses are slightly different between schemes and are subject to change. For that reason, we map the raw response to a to a [combination of `ErrorCondition`, `refusalReason` and `message`](/point-of-sale/error-scenarios/refusal-reasons-pos) and send you that in the Terminal API response.",
+      "location": "Raw responses, line 19"
+    },
+    {
+      "text": "If you want to receive the raw response for declined payments, it is important that you do not base your code on the raw response.",
+      "location": "Receive raw responses, line 25"
+    },
+    {
+      "text": "When a payment request is declined, you will now receive the `refusalReasonRaw` field in the `Response.AdditionalResponse` of the `PaymentResponse`.",
+      "location": "Receive raw responses, line 32"
+    },
+    {
+      "text": "| Cancelled  | 00: Approved or completed successfully",
+      "location": "Most common raw responses table, line 43 (row prefix)"
+    },
+    {
+      "text": "| Authorised | 85: No reason to decline a request for account number verification, address verification, CVV2 verification, or a credit voucher or merchandise return",
+      "location": "Most common raw responses table, line 88 (row prefix)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-terminal-api-raw-acquirer-responses-c05",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-error-scenarios-raw-acquirer-responses]] \u2014 2026-09-15 Adyen Docs POS lookup for optional raw acquirer responses, mapped Terminal API refusal fields, and row-specific status/action examples; raw strings are unstable.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/error-scenarios/raw-acquirer-responses/2026-09-15.md",
+  "raw_sha256": "67e66b840d7ec746493b6d765bfd40a4a98a368302c715b8f79c8d794d6e426a",
+  "status": "candidate_ready"
+}

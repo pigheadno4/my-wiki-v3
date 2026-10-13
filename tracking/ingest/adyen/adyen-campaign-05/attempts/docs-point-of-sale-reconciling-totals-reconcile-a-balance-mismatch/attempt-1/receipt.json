@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-point-of-sale-reconciling-totals-reconcile-a-balance-mismatch",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Reconcile a balance mismatch | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/reconciling-totals/reconcile-a-balance-mismatch\"\nraw_files:\n  - \"adyen/docs/point-of-sale/reconciling-totals/reconcile-a-balance-mismatch/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, reconciliation, balance-mismatch]\n---\n\n## Overview\n\nAdyen's Terminal API reconciliation guide shows how a merchant POS gets a terminal reconciliation-period total when its balance differs from the terminal's, for example after a dropped connection leaves the POS without a final payment response. The pinned webpage was fetched 2026-09-15 and reports `last_modified` 2019-08-20. It documents a terminal-totals request and example response, not a bank settlement, funds adjustment, or automated mismatch resolution. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- A Terminal API integration with payment terminals is required, and the procedure directs login to the terminal first. The POS sends a `SaleToPOIRequest` with `MessageCategory: Reconciliation` and a `ReconciliationRequest`. The request table requires `ServiceID` unique within 48 hours for the terminal `POIID`. The linked login guide owns any operator/group/shift login behavior; this page does not define that procedure.\n- **Choose the reconciliation type deliberately:** `SaleReconciliation` gets the current period's terminal totals **and starts a new reconciliation period**. `PreviousReconciliation` gets a report for a previous period **without starting a new period** and calls for `POIReconciliationID`. The raw instructions show the literal value `NNN` for that field; this page does not define it as a usable real period identifier or a full ID-format contract.\n- The POS checks `ReconciliationResponse.TransactionTotals`. The `SaleReconciliation` sample shows `POIReconciliationID`, `Response.Result: Success`, instrument type/currency, transaction type/count/amount, and sale/operator/totals-group/shift descriptors. Use actual terminal totals to investigate a POS-versus-terminal mismatch; the sample values are not a live balance.\n- This guide does not provide a detailed comparison algorithm, identify which individual transaction was missed, describe a Balances report, or authorize automatically replaying a missing payment. It also does not describe settlement, payout, bank funds correction, or accounting sign-off. The separate `GetTotals` source is a terminal-total read that does not start a new period; these `ReconciliationType` operations have different period effects.\n\n## Detail locators\n\n- Purpose, missing-response example, and `SaleReconciliation` versus `PreviousReconciliation` effects: pinned raw, introduction (lines 15\u201325).\n- Terminal API requirement, login direction, header IDs and required `ReconciliationType`: pinned raw, `## Requirements` and `## Make a reconciliation request` (lines 27\u201359).\n- `SaleReconciliation` JSON/Java request examples: pinned raw, `## Make a reconciliation request` (lines 61\u2013104).\n- `ReconciliationResponse.TransactionTotals` sample, `POIReconciliationID`, operator/group/shift and count/amount: pinned raw, response example (lines 106\u2013147).\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 Terminal API operational message concept.\n- [[source-adyen-docs-point-of-sale-reconciling-totals-retrieve-totals-from-the-terminal]] \u2014 read terminal totals without starting a new period.\n- [[source-adyen-docs-point-of-sale-reconciling-totals]] \u2014 reconciliation topic hub.\n- [[adyen]] \u2014 provider hub.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/reconciling-totals/reconcile-a-balance-mismatch/2026-09-15|Reconcile a balance mismatch \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You may need to reconcile the balance between your payment terminal and POS app when a mismatch occurs. For example, if the connection dropped at some point and your POS app does not receive the final response.",
+      "location": "raw line 19, # Reconcile a balance mismatch"
+    },
+    {
+      "text": "Get the terminal's totals of the current reconciliation period and start a new period, by setting the reconciliation type to **SaleReconciliation**.",
+      "location": "raw line 23, # Reconcile a balance mismatch"
+    },
+    {
+      "text": "Get the terminal's report of a previous reconciliation period without starting a new period, by setting the reconciliation type to **PreviousReconciliation** and using `POIReconciliationID` **NNN**.",
+      "location": "raw line 25, # Reconcile a balance mismatch"
+    },
+    {
+      "text": "Include this field and set the value to **NNN** when using the reconciliation type **PreviousReconciliation**.",
+      "location": "raw line 59, ## Make a reconciliation request, POIReconciliationID row"
+    },
+    {
+      "text": "In the [ReconciliationResponse](https://docs.adyen.com/api-explorer/terminal-api/latest/post/reconciliation#responses-200-Response), check the `TransactionTotals` object.",
+      "location": "raw line 106, ## Make a reconciliation request, step 3"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-balance-mismatch-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-reconciling-totals-reconcile-a-balance-mismatch]] \u2014 2026-09-15 Adyen Terminal API balance-mismatch guide distinguishing current-period `SaleReconciliation` (starts a new period) from prior-period `PreviousReconciliation` (read without new period).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/reconciling-totals/reconcile-a-balance-mismatch/2026-09-15.md",
+  "raw_sha256": "94d425f6abc87560a03b19c5ff66aedcc90c6634f19c294b4ab65949da2127a1",
+  "status": "candidate_ready"
+}

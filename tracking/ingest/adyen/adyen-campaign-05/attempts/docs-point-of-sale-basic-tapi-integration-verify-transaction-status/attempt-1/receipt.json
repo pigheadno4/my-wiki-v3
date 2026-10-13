@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-basic-tapi-integration-verify-transaction-status",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Verify a missing Terminal API transaction response\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/basic-tapi-integration/verify-transaction-status\"\nraw_files:\n  - \"adyen/docs/point-of-sale/basic-tapi-integration/verify-transaction-status/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, transaction-status, timeout-recovery]\n---\n\n## Overview\n\nThis Adyen Docs guide explains how a POS integration checks an **original transaction's status** when a communication or technical issue leaves its response missing. Staff should not infer a failed or successful payment and immediately repeat, cancel, or refund it: a Terminal API `TransactionStatusRequest` can distinguish **processed**, **in progress**, and **not found**. When processed, the original transaction response is returned and must be read for the original result. See [[adyen-terminal-api]] and [[adyen]].\n\n## Key takeaways\n\n- **Applicable solutions and timing:** the guide covers Terminal API with payment terminals, Android/iOS Mobile SDK Tap to Pay or card-reader solutions, and Android Payments app. For a missing payment response or timeout, with internet connectivity intact, it recommends an automatic status check after **120 seconds local** or **150 seconds cloud**. Mobile SDK has no fixed wait and can check as soon as the response is noticed missing; its request must come from the POS app **on the mobile device**, not the backend. The mobile SDK and Android Payments app paths are marked beta in this snapshot. If normally using asynchronous cloud communication, use a `/sync` endpoint for this check; otherwise await the event notification with the response. [Raw: Requirements; Check the transaction status]\n- **Request identity:** send a new `TransactionStatus` Service request with its **own** unique `ServiceID` and terminal `POIID`. `TransactionStatusRequest.MessageReference` names the **original** `SaleID`, `ServiceID`, and category (`Payment`, `Reversal`, or `StoredValue`). A status request without `MessageReference` returns `Failure/NotFound` with the most recent terminal transaction's `SaleID` and `ServiceID` in `AdditionalResponse`; that is a lookup aid, not proof the intended original transaction was absent. [Raw: Check the transaction status, request parameters]\n- **Processed is not payment approval:** `TransactionStatusResponse.Response.Result=Success` means the original reached an end state such as approved, cancelled, or declined. Inspect `RepeatedMessageResponse.RepeatedResponseMessageBody` for the original `PaymentResponse.Response` or other original message and its result; the status-response `Success` alone does not mean a payment succeeded. [Raw: Check the transaction status; Transaction processed]\n- **In progress:** `Failure` with `ErrorCondition=InProgress` means processing continues, often while shopper input is pending. The guide permits repeated status requests without an added polling delay because the terminal handles it. For terminal integrations, `AdditionalResponse` can include `tenderReference` and `detailedStatus`; those two fields are absent for Android/iOS Mobile SDK or Android Payments app in-progress responses. [Raw: Transaction in progress; Requirements]\n- **Not found and retry boundary:** `Failure/NotFound` may mean the original `POIID`, `SaleID`, or `ServiceID` was wrong **or** Adyen did not receive the original request due to connectivity or power loss. Check the original identifiers before considering a retry of the original transaction; a `NotFound` result by itself does not disambiguate those causes. Frequent status checks may signal a network problem. [Raw: Transaction not found; introduction]\n\n## Detail locators\n\n- Raw `Check the transaction status` specifies the MessageHeader, `MessageReference`, optional receipts and reprint, timeout timing, and solution-specific endpoint/device requirements. `ReceiptReprintFlag` is unsupported for Android Mobile SDK or Payments app.\n- Raw `Transaction processed` has examples where the **status** response is Success but the embedded original payment response is either Success or Failure after cancellation.\n- Raw `Transaction in progress` and `Transaction not found` give the two Failure/ErrorCondition branches, qualifiers, and examples.\n- Linked donation, response-handling, and timeout guides under `See also` are navigation only.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 existing Terminal API hub and response-recovery context\n- [[adyen]] \u2014 company and knowledge-status page\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/basic-tapi-integration/verify-transaction-status/2026-09-15|Verify transaction status \u2014 Adyen Docs snapshot, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Payment requests time out after a while. If you do not receive a payment response (or you receive a response indicating a time-out) after 120 seconds (local integration) or 150 seconds (cloud integration), and the internet connection hasn't dropped, your integration should automatically check the transaction status. For an Android or iOS Mobile SDK solution, there is no fixed wait before checking the transaction status - you can check as soon as you notice a payment response is missing.",
+      "location": "raw line 46, Check the transaction status"
+    },
+    {
+      "text": "If you do not include the `MessageReference` object, you receive a failure response with `ErrorCondition` **NotFound**. Use the `AdditionalResponse` to find the `SaleID` and `ServiceID` of the most recent transaction made by the terminal.",
+      "location": "raw line 85, Check the transaction status, MessageReference row"
+    },
+    {
+      "text": "A [TransactionStatusResponse.Response](https://docs.adyen.com/api-explorer/terminal-api/latest/post/transactionstatus#responses-200-Response) with a `Result` of **Success** indicates that the transaction reached an end state: approved, cancelled, or declined.",
+      "location": "raw line 132, Transaction processed"
+    },
+    {
+      "text": "When you receive an **InProgress** response, you can submit repeated transaction status requests in a loop until you receive a response that indicates the [transaction reached an end state](#success). There is no need to apply a polling delay, because the terminal will handle that for you.",
+      "location": "raw line 280, Transaction in progress"
+    },
+    {
+      "text": "We did not receive the original transaction request. The cause can be a dropped internet connection or an unexpected power loss. You can retry the *original* transaction.",
+      "location": "raw line 328, Transaction not found, second possible cause"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-verify-transaction-status-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-basic-tapi-integration-verify-transaction-status]] \u2014 Adyen Docs website guide to TransactionStatusRequest recovery of missing terminal/mobile transaction responses and original-result interpretation (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Status-response Success means the original transaction reached an end state, not necessarily an approved payment; read the repeated original response.",
+          "NotFound can also reflect wrong original identifiers; do not retry solely from that status."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/basic-tapi-integration/verify-transaction-status/2026-09-15.md",
+  "raw_sha256": "f088dff2041102609691d4d28ded07ae486ad0abe6a0205d8340ca4653b35178",
+  "status": "candidate_ready"
+}

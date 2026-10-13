@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-reconciling-totals-log-in-and-log-out",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API login and logout for totals\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/reconciling-totals/log-in-and-log-out\"\nraw_files:\n  - \"adyen/docs/point-of-sale/reconciling-totals/log-in-and-log-out/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, login, logout, operator, shift, terminal-totals]\n---\n\n## Overview\n\nThis Adyen Docs page describes Terminal API `LoginRequest` and `LogoutRequest` messages for a payment terminal, particularly before retrieving terminal transaction totals or reconciling a balance mismatch. Login can label a change of operator or the start of a shift so totals can be viewed by operator or shift. See [[adyen]] and [[adyen-terminal-api]]. This is a terminal/POS operational state, not operator authentication, terminal clearing, financial settlement, or proof of funds received.\n\n## Key takeaways\n\n- A Terminal API Login request is required before using Terminal API requests to retrieve a terminal's transaction totals or reconcile terminal/POS balance mismatches. The page advises Logout when the operator changes or the shift ends. Its stated integration type is Terminal API with payment terminals; it does not specify a Mobile SDK login procedure.\n- The standard request header uses `MessageClass: Service`, `MessageCategory: Login` or `Logout`, and the correct POS `SaleID`, terminal `POIID` and per-terminal unique `ServiceID`. The table states `ServiceID` is 1\u201310 alphanumeric characters and unique for that `POIID` in the previous 48 hours. The `3.0` header value is the Terminal API protocol version in this guide, not an independently pinned SDK or Checkout API release.\n- The Login body requires UTC `DateTime`, `SaleSoftware` identifying the sale system, and two-character `OperatorLanguage`. `OperatorID`, `SaleTerminalData.TotalsGroupID` and `ShiftNumber` are optional identifiers supplied by the POS for operator/group/shift attribution. Login does **not** authenticate the operator; the merchant POS must not treat an `OperatorID` or successful Login as an identity or permission check.\n- In `LoginResponse`, `Response.Result: Success` indicates login completed, while `POIStatus` separately indicates whether the terminal is ready for use. After Login, the terminal retains provided values until a new Login is processed for that same terminal or it receives a Logout. The example's software strings, operator name, group and terminal ID are illustrative.\n- Logout uses a `MessageCategory: Logout` header and an empty `LogoutRequest`; `LogoutResponse.Response.Result: Success` indicates terminal logout. The page does not say Logout clears transaction counters, settles a batch, changes past totals, or cancels an in-progress payment. Retrieve-totals and mismatch-handling details are on separately linked pages and need their own evidence.\n\n## Detail locators\n\n- Operational purpose, login prerequisite, operator/shift labels and explicit non-authentication warning: `# Log in and log out`, raw lines 15\u201323. Terminal integration requirement: `## Requirements`, lines 25\u201331.\n- Login header, identity constraints and required/optional body fields: `## Log in to the terminal`, raw lines 33\u201358. JSON/Java examples: lines 60\u2013126.\n- Login result versus `POIStatus` readiness, and retained-value lifetime: raw lines 128\u2013167.\n- Logout header, empty body, examples and response result: `## Log out from the terminal`, raw lines 169\u2013254.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 in-person Terminal API message and terminal-state route; versioned GitHub examples are separate.\n\n## Related raw API references\n\n- The raw page links to Terminal API schema, terminal-totals retrieval and balance-mismatch guides. Those destinations are navigation until independently read; see raw lines 35\u201349, 128, 171\u2013185, 231 and 256\u2013259.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/reconciling-totals/log-in-and-log-out/2026-09-15|Adyen Docs: Log in and log out (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "If you want to use Terminal API requests to retrieve transaction totals of a terminal or reconcile balance mismatches, you must first make a Terminal API request to log in to the terminal.",
+      "location": "raw/adyen/docs/point-of-sale/reconciling-totals/log-in-and-log-out/2026-09-15.md:19, under # Log in and log out"
+    },
+    {
+      "text": "This login request can additionally mark events like a change of operator or the start of a new shift, so that you can get the totals by operator or shift.",
+      "location": "raw/adyen/docs/point-of-sale/reconciling-totals/log-in-and-log-out/2026-09-15.md:21, under # Log in and log out"
+    },
+    {
+      "text": "The login request does not authenticate the operator.",
+      "location": "raw/adyen/docs/point-of-sale/reconciling-totals/log-in-and-log-out/2026-09-15.md:23, under # Log in and log out"
+    },
+    {
+      "text": "After logging in, the terminal saves the provided values. The values remain in effect until a new login request is processed for the same terminal, or until you log out from this terminal.",
+      "location": "raw/adyen/docs/point-of-sale/reconciling-totals/log-in-and-log-out/2026-09-15.md:167, under ## Log in to the terminal"
+    },
+    {
+      "text": "`Response.Result`: **Success** indicates that you logged out from the terminal.",
+      "location": "raw/adyen/docs/point-of-sale/reconciling-totals/log-in-and-log-out/2026-09-15.md:233, under ## Log out from the terminal"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-pos-login-logout-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-reconciling-totals-log-in-and-log-out]] \u2014 Adyen Docs 2026-09-15 Terminal API Login/Logout guide for operator, group and shift attribution before totals retrieval; Login does not authenticate the operator.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/reconciling-totals/log-in-and-log-out/2026-09-15.md",
+  "raw_sha256": "cc272191864606f24a0077d552b83b67930c42c8da17c120a914fc5966d1b8da",
+  "status": "candidate_ready"
+}

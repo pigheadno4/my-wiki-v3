@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-mail-and-telephone-order-moto",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: MOTO payments on POS terminals\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mail-and-telephone-order-moto\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mail-and-telephone-order-moto/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, moto, card-not-present, avs]\n---\n\n## Overview\n\nThis Adyen Docs guide describes **Mail Order/Telephone Order (MOTO)** as a **card-not-present** transaction where a shopper gives order and card details by regular mail (not email), fax, or telephone. In its Terminal API path, a POS payment request carries the `MOTO` tender option and the payment terminal prompts **staff** to key in the card number and CVC. The page also covers a standalone-terminal path and mentions virtual JCB cards. A terminal used for manual entry does not make the shopper/card present, and this is not an ordinary online Checkout API flow. See [[adyen-terminal-api]], [[adyen-pci-dss-compliance]], and [[adyen]].\n\n## Key takeaways\n\n- **Enablement and compliance:** the stated integration types are Terminal API with payment terminals or standalone. The page requires completing PCI DSS **Self-Assessment Questionnaire B-IP** as part of the commercial contract. Selected merchants can enable `Allow MOTO payments` themselves in Customer Area; otherwise contact Support. A `MOTO max amount` can be configured. Adyen for Platforms must assign terminals to a store configured with the legal entity's business line. AVS and optional capture delay need separate configuration. These instructions do not prove a specific merchant has MOTO enabled or meets PCI scope. [Raw: Requirements; Configure MOTO, AVS, and capture delay]\n- **Fraud and verification:** the guide calls MOTO insecure, says there is **no liability shift**, and assigns the merchant full liability for fraud chargebacks. Optional AVS prompts staff for the shopper's postal code and house number; the issuer may authorize despite incomplete address match. AVS support is listed for American Express, Discover, Mastercard, and Visa, and other issuers in the US, UK, and Canada; AVS checks are unavailable on Android and legacy payment terminals. A configured capture delay can allow cancellation after reviewing the AVS result. [Raw: Risk management; Address verification service; Requirements]\n- **Terminal API request and response:** for an integrated POS, put `tenderOption=MOTO` in `SaleData.SaleToAcquirerData`, either as a key-value pair or Base64-encoded JSON. Staff then enter PAN and CVC on the terminal; if AVS is enabled, they enter address data there too. The `PaymentResponse` identifies keyed entry and `posEntryMode=MKE`; configured AVS data appears as `avsResult` and `avsResultRaw`. The sample request/response values and Java code illustrate the flow, not card-scheme, merchant, or environment eligibility. [Raw: Make a MOTO payment]\n- **After authorization:** an inconclusive AVS check can coexist with issuer authorization. The merchant must decide whether to trust the transaction; the guide says to cancel the authorization if not, and that an uncancelled payment will be captured. It specifically warns that cancelling a MOTO authorization changes status to `SentForRefund`. For standalone MOTO with AVS, the terminal presents an Approve/Decline choice after an issuer non-decline; selecting Decline leads Adyen to cancel authorization or refund if already captured. [Raw: Address verification service; Make a MOTO payment]\n- **Boundary:** this page does not specify a universal API role, cardholder verification method outcome, or global AVS availability beyond its stated issuer/terminal regions. Its online/point-of-sale AVS test-card link and related pages are navigation, not evidence of production behavior. [Raw: Requirements; Testing MOTO payments; See also]\n\n## Detail locators\n\n- Raw `Requirements`, `Risk management`, and `Address verification service` carry the PCI, liability, issuer/region, terminal-model, and Platforms setup qualifications.\n- Raw `Configure MOTO, AVS, and capture delay` locates the Customer Area toggle, optional max amount, additional-data options, and capture-delay route.\n- Raw `Make a MOTO payment` locates the two tender-option encodings, manual terminal entry, keyed response, AVS result, and cancellation behavior.\n- Raw `Testing MOTO payments` and `See also` contain separate test-card/detail links, treated here as navigation only.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 existing in-person Terminal API concept hub\n- [[adyen-pci-dss-compliance]] \u2014 provider PCI scope concept\n- [[adyen]] \u2014 company and knowledge-status page\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mail-and-telephone-order-moto/2026-09-15|MOTO \u2014 Adyen Docs snapshot, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A Mail Order/Telephone Order (MOTO) transaction is a [card-not-present transaction](/get-started-with-adyen/adyen-glossary/#card-not-present-cnp) where the shopper provides you with their order and payment details by regular mail (not email), fax, or telephone.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "You must complete the PCI DSS [Self-Assessment Questionnaire B-IP](/development-resources/pci-dss-compliance-guide#in-person-payments) as part of your commercial contract.",
+      "location": "raw line 30, Requirements, Setup steps row"
+    },
+    {
+      "text": "MOTO payments are considered [insecure](/point-of-sale/what-we-support/payment-methods#pos-chargebacks). There is no liability shift and you are fully liable for fraud chargebacks related to MOTO payments.",
+      "location": "raw line 36, Risk management"
+    },
+    {
+      "text": "It is possible that issuers authorize a payment even though the entered data do not fully match.",
+      "location": "raw line 44, Address verification service"
+    },
+    {
+      "text": "Be aware that when you cancel the authorization for a MOTO transaction, the transaction status changes to **SentForRefund**.",
+      "location": "raw line 229, Make a MOTO payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-moto-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mail-and-telephone-order-moto]] \u2014 Adyen Docs website guide to card-not-present MOTO tender-option payments keyed on a terminal, standalone/Terminal API scope, AVS, PCI and liability limits (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "MOTO is card-not-present despite use of a terminal; do not present it as a card-present or ordinary online Checkout flow.",
+          "AVS mismatch can coexist with issuer authorization; cancellation of a MOTO authorization is documented as SentForRefund."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mail-and-telephone-order-moto/2026-09-15.md",
+  "raw_sha256": "50395c7f7edf9b2e3bfced147ba27c5dd80b37760daf168150f67213fa9a8f30",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-point-of-sale-basic-tapi-integration-make-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Make an in-person Terminal API payment\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/basic-tapi-integration/make-a-payment\"\nraw_files:\n  - \"adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, in-person-payments, payment-response]\n---\n\n## Overview\n\nThis Adyen guide describes a basic in-person card payment request from a merchant POS app through Terminal API to a boarded payment terminal or, for a Mobile solution, a test mobile device. It covers the request header and payment data, shopper interaction, response fields, and missing/failure response handling. The page documents request and authorization-result handling; its examples do not prove merchant eligibility, a particular card or wallet's availability, capture or settlement, current SDK behavior, or successful execution in a reader's environment. See [[adyen-terminal-api]].\n\n## Key takeaways\n\n- Before testing, the merchant must have scoped and designed the applicable terminal or Android/iOS Mobile solution, followed its checklist to the test-payment step, and have a POS test card plus a boarded test terminal or test mobile device. A POS app sends the payment request; the shopper presents a card or NFC wallet and may enter PIN or signature; Adyen attempts authorization and the terminal/device displays approval or decline. These presentation examples are not a payment-method eligibility promise. See **Requirements** and **How it works**.\n- A payment uses `SaleToPOIRequest.MessageHeader` with protocol 3.0, service/payment/request classifications, a POS-component `SaleID`, terminal `POIID` in model\u2013serial form, and a `ServiceID` of 1\u201310 alphanumeric characters unique over the last 48 hours for that `POIID`. `PaymentRequest` includes a merchant-side `SaleTransactionID` reference and UTC timestamp, plus currency and final requested decimal amount. Adyen recommends a unique merchant reference per payment. Exact fields and the USD 10.99 example are at **Make a payment request**; the example is not a current SDK or schema guarantee.\n- The POS checks `PaymentResponse`, or receives it through an event notification for asynchronous cloud communications with terminals. `POIData.POITransactionID.TransactionID` is the returned terminal transaction identifier to save for lookup, reconciliation, or later requests; it differs from the POS-provided merchant reference. `Response.Result` can be `Success` for approved, `Failure` for declined, or `Partial` for partial authorization. On failure, `ErrorCondition` and possibly `AdditionalResponse` help identify the cause. The response may also contain receipt data. See **How it works** and **Make a payment request \u2192 PaymentResponse**.\n- `AdditionalResponse` may be form-encoded key/value pairs or Base64-encoded JSON; the page says Support can be asked to ensure one format. Its approved and shopper-cancelled response bodies are illustrative, not proof that every payment returns the same fields or that approval establishes capture/settlement. See **Make a payment request \u2192 PaymentResponse**.\n- If no direct or asynchronous response arrives, the page strongly recommends automatic transaction-status verification before staff risk an unnecessary refund or duplicate charge. A failure response calls for inspecting `Result`, `ErrorCondition`, and `AdditionalResponse` and following the separate response/refusal guidance before retry decisions. The test-only example says requested amounts ending in 123 cents can simulate a decline; it is not a live-acquirer rule. See **Troubleshooting** and **Testing**.\n\n## Detail locators\n\n- **Requirements** \u2014 terminal versus Android/iOS Mobile test paths, POS test card, boarded terminal/device, and applicable setup checklists.\n- **How it works** \u2014 POS request, shopper interaction, authorization attempt, response ownership, and asynchronous cloud event route.\n- **Make a payment request** \u2014 header identity and classification fields; merchant reference, UTC timestamp, currency/amount; JSON and Java examples.\n- **Make a payment request \u2192 PaymentResponse** \u2014 terminal transaction ID, `Success`/`Failure`/`Partial`, error and additional-response formats, receipts, and illustrative approved/declined payloads.\n- **Troubleshooting \u2192 No response** \u2014 status verification for missing or long-running responses and duplicate-action risk.\n- **Troubleshooting \u2192 Failure** \u2014 failure/error fields and navigation to response/refusal-reason guidance.\n- **Testing** \u2014 test card and boarded terminal/mobile-device requirements and decline simulation example.\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/2026-09-15|Adyen Docs \u2014 Make a payment (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Also note that you need to have a boarded test payment terminal or a mobile device for testing.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/2026-09-15.md:21 (Make a payment)"
+    },
+    {
+      "text": "Note that if you use asynchronous cloud communications with payment terminals, you receive the API response in an [event notification](/point-of-sale/design-your-integration/notifications/event-notifications#async-response).",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/2026-09-15.md:55 (How it works)"
+    },
+    {
+      "text": "Your unique ID for this request, consisting of 1-10 alphanumeric characters. Must be unique within the last 48 hours for the terminal (`POIID`) being used.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/2026-09-15.md:72 (Make a payment request \u2192 MessageHeader.ServiceID)"
+    },
+    {
+      "text": "The unique [transaction identifier](/point-of-sale/design-your-integration/terminal-api#transaction-identifier) for the payment. Save this ID in your system. You may need this ID later, for example, to look up the payment in your Customer Area, for reconciliation purposes, or to make other requests such as a refund or manual capture.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/2026-09-15.md:161 (Make a payment request \u2192 PaymentResponse.POITransactionID)"
+    },
+    {
+      "text": "To cope with these scenarios, we strongly recommend that your integration is able to automatically [verify the transaction status](/point-of-sale/basic-tapi-integration/verify-transaction-status). This can help reduce the risk that your store staff unnecessarily refunds the payment, or makes a duplicate payment.",
+      "location": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/2026-09-15.md:284 (Troubleshooting \u2192 No response)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "make-payment-terminal-api-identity-response",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Payment and interaction patterns",
+        "proposed_markdown": "For a basic in-person Terminal API payment, the merchant POS supplies a per-terminal request `ServiceID` (1\u201310 alphanumeric characters, unique for the preceding 48 hours for that `POIID`) and its own sale-transaction reference; the `PaymentResponse` supplies a distinct terminal transaction ID to retain for lookup, reconciliation, or later operations. Asynchronous cloud-terminal communication delivers the response through an event notification. A missing response calls for transaction-status verification before staff retry or refund, since the payment may still be in progress. This website request/response guide does not establish capture or settlement, and its examples do not update versioned SDK baselines.",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "make-payment-terminal-api-source-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-basic-tapi-integration-make-a-payment]] \u2014 Adyen website guide to basic in-person Terminal API payment request, response identities/results, and missing-response recovery (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/basic-tapi-integration/make-a-payment/2026-09-15.md",
+  "raw_sha256": "35f305ec7b56d571922ff126649729d899dc94411f5ae8a7fefb92b43f581d90",
+  "status": "candidate_ready"
+}

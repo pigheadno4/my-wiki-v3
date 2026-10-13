@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-installments-mexico-installments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Installments in Mexico | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/installments/mexico-installments\"\nraw_files:\n  - \"adyen/docs/point-of-sale/installments/mexico-installments/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, installments, mexico]\n---\n\n## Overview\n\nAdyen's Mexico in-store installments guide explains how a merchant POS flags debit versus credit and requests **credit-card** installment payments through Terminal API. The shopper chooses with store staff, who enter that choice and installment count into the POS before the card is presented to the terminal. The pinned webpage was fetched 2026-09-15 and itself reports `last_modified` 2026-09-15; its program/issuer list and terms are dated documentation, not proof of current card eligibility, interest terms, legal compliance, or a successful payment. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- This is for Terminal API integrations with payment terminals **in Mexico** and only specified participating issuing banks/programs. The page says most credit cards and debit/credit combo cards can be used for installment purchases, but the supported-card section narrows Adyen's documented programs to Prosa, Mastercard, Nubank, Citibanamex, and Bancoppel with named issuers. For cards issued by other banks, it says the merchant must have a direct legal agreement with that bank. Do not infer approval for every card, scheme, issuer, account, or region from the general description.\n- Staff ask whether the shopper wants debit or credit; for credit, whether to pay once or in installments; and, if installments, how many. The **POS app**, not an automatic terminal menu described here, puts these choices in the Terminal API `PaymentRequest`. Set `TransactionConditions.DebitPreferredFlag` to `true` for debit or `false` for credit. For a credit installment request add `PaymentData.PaymentType: Instalment` and `Instalment.TotalNbOfPayments` from **3 to 18**; debit or one-off credit needs no further installment parameters. The guide's request table requires unique `ServiceID` per terminal within 48 hours and recommends a unique sale transaction reference per payment.\n- When the transaction is approved, the response contains receipt data with `productType` for debit, credit, or installment choice. An installment response also has `PaymentResult.PaymentType: Instalment` and the installment details. The example's `Response.Result: Success` is a sample approved result, not a guarantee that the request or issuer will approve.\n- The page says the **full purchase amount** is deducted from the shopper's credit limit; the issuing bank then debits each monthly installment from the shopper's debit account. The merchant receives the full purchase amount from the issuing bank and is responsible for issuer-charged installment fees. This describes who pays and receives the full amount, not an interest-free promise, a specific fee rate, or a guaranteed settlement time.\n- The page does not define merchant-setting enablement, terminal software versions, pre-authorization/capture adjustments, interest rates, shopper installment disclosures, or broader legal duties. Those must be established from their own current authority before use; Brazil or online installment instructions are separate flows.\n\n## Detail locators\n\n- Mexico scope, shopper/POS choice and merchant fee: pinned raw, introduction and `## How it works` (lines 15\u201346).\n- Terminal API requirement and supported-issuer condition: pinned raw, `## Requirements` (lines 25\u201330).\n- Debit/credit flag, installment request fields, 3\u201318 range, request identities, and sample payloads: pinned raw, `## Make a payment` (lines 48\u2013214).\n- Approved response, receipt `productType`, and installment fields: pinned raw, `## Make a payment`, result section (lines 216\u2013252).\n- Credit-limit, issuing-bank monthly debit, merchant full amount and fee responsibility: pinned raw, `## Reconciling installments` (lines 254\u2013258).\n- Five program/issuer lists and direct-bank legal-agreement condition: pinned raw, `## Supported cards` (lines 260\u2013274).\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 in-person Terminal API payment architecture.\n- [[source-adyen-docs-point-of-sale-installments-brazil-installments]] \u2014 separate Brazil POS installments guide.\n- [[adyen]] \u2014 provider hub.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/installments/mexico-installments/2026-09-15|Installments in Mexico \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "If a shopper chooses to pay in installments, you receive the full amount. However, you are responsible for the installment fees charged by the issuer.",
+      "location": "raw line 21, # Installments in Mexico"
+    },
+    {
+      "text": "Supported in Mexico with specific issuing banks. See the list of [supported cards](#supported-cards).",
+      "location": "raw line 30, ## Requirements table, Limitations row"
+    },
+    {
+      "text": "`Instalment.TotalNbOfPayments`: the number of installments. The minimum is **3**, the maximum **18**.",
+      "location": "raw line 95, ## Make a payment, installment fields"
+    },
+    {
+      "text": "If a shopper chooses to pay in installments, the full purchase amount is deducted from their credit card limit. The issuing bank then deducts the amount for each monthly installment from their debit account.",
+      "location": "raw line 256, ## Reconciling installments"
+    },
+    {
+      "text": "To accept installment payments made with cards issued by other banks, you must have a legal agreement directly with the bank that issued the card.",
+      "location": "raw line 274, ## Supported cards"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-mexico-installments-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-installments-mexico-installments]] \u2014 2026-09-15 Adyen Mexico POS Terminal API guide for debit/credit choice, 3\u201318 credit installments, issuer-program limits, and merchant installment-fee responsibility.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/installments/mexico-installments/2026-09-15.md",
+  "raw_sha256": "eeeb038b254d63ca11a79bd4d4ed0e2b787994ea6e50ffbb8d8d490254e73daa",
+  "status": "candidate_ready"
+}

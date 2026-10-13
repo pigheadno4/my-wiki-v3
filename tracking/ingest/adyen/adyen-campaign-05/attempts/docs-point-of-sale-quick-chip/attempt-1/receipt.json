@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-point-of-sale-quick-chip",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Quick chip\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/quick-chip\"\nraw_files:\n  - \"adyen/docs/point-of-sale/quick-chip/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, quick-chip, card-acquisition]\n---\n\n## Overview\n\nAdyen's 2026-09-15 Quick Chip guide describes a United States Terminal API flow in which a shopper inserts and removes an EMV chip card before checkout knows the final purchase amount or receives an authorization response. The merchant POS first acquires card details with a placeholder amount, then sends a separate payment request with the final amount and a reference to that acquisition. Early card removal is not payment authorization or capture; the later payment response determines the payment result. [[adyen]] \u00b7 [[adyen-terminal-api]]\n\n## Key takeaways\n\n- This guide limits Quick Chip to the **United States**, a Terminal API integration on payment-terminal software **1.95 or later**, and Support enablement. Merchants may separately ask Support to enable it for specific local payment methods. These are snapshot eligibility conditions, not proof that a particular terminal, scheme, account, or present software build has the feature enabled.\n- The POS sends a Service/`CardAcquisition` request while the final amount is unknown. `CardAcquisitionTransaction` is required and may be empty or contain a placeholder `TotalAmount`. The shopper presents and removes the chip card; the POS processes the card-acquisition response in its system, then sends a Service/`Payment` request with the **final** `PaymentTransaction.AmountsReq.RequestedAmount`. The placeholder amount does not authorize or settle a payment.\n- A successful acquisition response is checked for `CARD_ACQ_COMPLETED` in `AdditionalResponse`. The POS must retain **both** `POIData.POITransactionID.TimeStamp` and `TransactionID` from that acquisition response and put them in `PaymentData.CardAcquisitionReference` of the later payment request. The card alias is also available, but this guide's payment linkage is the acquisition reference, not an alias-based charge.\n- Each Terminal API request has its own `ServiceID`, specified as unique within 48 hours for that terminal `POIID`; `SaleID` identifies the POS component. `SaleData.SaleTransactionID` is the merchant's payment reference, for which Adyen recommends a unique value per payment. The guide's repeated example ServiceID must not override the stated uniqueness rule.\n- The raw examples are internally inconsistent: the acquisition response's transaction ID differs from the ID named in the payment prose/request, the sample payment request has `RequestedAmount` 24.98 while its response shows `AuthorizedAmount` 16.98, and the response also labels `EntryMode` Contactless despite the introduction describing EMV chip insertion. Use the prose/field instructions for the intended flow and verify actual test responses rather than reconciling these sample values as one successful transaction.\n\n## Detail locators\n\n- **Purpose and eligibility:** raw lines 17\u201329. The page states US-only, terminal software 1.95+, and Support setup; it does not list a compatible-terminal matrix or scheme guarantees.\n- **Sequence:** \u201cHow it works,\u201d lines 31\u201337. The shopper removes the card before the separate final-amount payment request; no authorization occurs merely from this sequence.\n- **Acquisition request:** \u201cGet the card details,\u201d lines 39\u201362. See message-header fields (`MessageClass=Service`, `MessageCategory=CardAcquisition`, example `ProtocolVersion=3.0`), request IDs, `SaleTransactionID`, optional alias request, and required `CardAcquisitionTransaction` object.\n- **Acquisition response:** lines 94\u2013141. Check `CARD_ACQ_COMPLETED`, then retain the `POIData.POITransactionID` timestamp and ID for payment. Its JSON example contains fields and warnings that are not a replacement for the stated check or an authorization result.\n- **Payment request and result:** \u201cMake a payment request,\u201d lines 143\u2013171 and 214\u2013264. `PaymentTransaction.AmountsReq.RequestedAmount` carries the final amount; `PaymentData.CardAcquisitionReference` carries the acquired response identifiers. The payment response, not card acquisition, reports the payment `Response.Result`; the sample fields and amounts conflict as noted above.\n- The guide links Terminal API Explorer \u201clatest\u201d and shows `ProtocolVersion=3.0` in example message headers. It does not pin a client SDK version, live transaction outcome, capture mode, or settlement behavior.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 POS request/response architecture\n- [[source-adyen-docs-point-of-sale-card-acquisition]] \u2014 general card-acquisition and payment-reference route\n\n## Related raw API references\n\nLinked Card Acquisition, Terminal API header, Payment, tender-option, currency, and tax-free-shopping pages were not read for this entry; they are navigation only.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/quick-chip/2026-09-15|Adyen Quick chip, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The payment terminal does not need to wait for the final transaction amount or the authorization response to allow shoppers to remove their card.",
+      "location": "raw line 19, introduction under # Quick chip"
+    },
+    {
+      "text": "A [Terminal API](/point-of-sale/design-your-integration/terminal-api) integration with payment terminals on software version 1.95 or later.",
+      "location": "raw line 27, ## Requirements table, Integration type"
+    },
+    {
+      "text": "To enable quick chip, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other).",
+      "location": "raw line 29, ## Requirements table, Setup steps"
+    },
+    {
+      "text": "You make a payment request with the final `TotalAmount` to complete the transaction.",
+      "location": "raw line 37, under ## How it works"
+    },
+    {
+      "text": "From the `POIData.POITransactionID` object, save the `TimeStamp` and the `TransactionID`. You need these card acquisition details in your payment request.",
+      "location": "raw line 97, under ## Get the card details"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-quick-chip-boundary-c5",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Payment and interaction patterns",
+        "proposed_markdown": "## Quick Chip acquisition boundary\n\nAdyen's US-only Quick Chip guide describes a card-acquisition interaction that lets a shopper remove an EMV chip card before the final sale amount is known, followed by a separate Terminal API Payment request. The acquisition can use a placeholder `TotalAmount`; the later payment supplies the final `RequestedAmount` and references the acquisition response's `POIData.POITransactionID` timestamp and transaction ID. Card acquisition is not payment authorization. The guide requires terminal software 1.95+ and Support enablement, and its sample request/response IDs and amounts conflict; see the source for the exact evidence boundary. [[source-adyen-docs-point-of-sale-quick-chip]]\n\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not copy the page's inconsistent JSON IDs, amounts, or Contactless entry mode as an executable Quick Chip sequence."
+        ]
+      },
+      {
+        "update_id": "adyen-quick-chip-terminal-link-c5",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "under ## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-quick-chip]] \u2014 2026-09-15 Adyen US Quick Chip guide for pre-amount EMV card acquisition, final-amount payment linkage, 1.95+ software and Support conditions, and inconsistent examples.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/quick-chip/2026-09-15.md",
+  "raw_sha256": "cbcc4c6beb1986bba68381359778790ae1af4ab210d0d1bdaf26d6e79defbd74",
+  "status": "candidate_ready"
+}

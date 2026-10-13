@@ -1,0 +1,67 @@
+{
+  "job_id": "docs-point-of-sale-tipping-tipping-on-receipt",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Tipping on the receipt | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/tipping/tipping-on-receipt\"\nraw_files:\n  - \"adyen/docs/point-of-sale/tipping/tipping-on-receipt/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, tipping, authorization-adjustment, capture]\n---\n\n## Overview\n\nThis Adyen Docs guide describes **tipping on a printed receipt** after a cardholder completes the initial payment interaction at an Adyen terminal. The shopper writes and signs a tip after the original purchase amount has been authorized; the tip itself is **not in that initial authorization**. The merchant can pursue either a later authorization adjustment or an overcapture, then manually capture the final original-plus-tip amount. This is a Terminal API-initiated card flow with later Adyen backend modification/capture calls, not a second Terminal API payment for the tip. See [[adyen]], [[adyen-terminal-api]], and [[adyen-authorization-adjustment]].\n\n## Key takeaways\n\n- Adyen labels receipt tipping harder to implement and subject to limitations, recommending the broader tipping page for alternatives. The merchant must set up **manual capture** and **standard webhooks**; authorization adjustment presumes the pre-authorization flow, while overcapture calls for contacting Adyen Support. The page's examples are conditional instructions, not evidence that either path is enabled for a particular merchant or card.\n- With **authorization adjustment**, the merchant first requests a new **total** authorization that includes the written tip, then manually captures. The guide says an adjustment may fail or still lead to chargeback, with slightly higher scheme fees than overcapture. For **overcapture**, the merchant captures above the authorized original amount without a prior amount increase; the guide describes lower scheme fees but greater rejection/chargeback risk under scheme rules. The receipt tip is additional merchant payment amount, not an Adyen-paid gratuity or an automatic transfer to staff.\n- The terminal `PaymentRequest` uses `SaleData.SaleToAcquirerData` with `authorisationType=PreAuth` **when adjustment is intended**. Retain the initial `pspReference` for backend adjustment and capture; synchronous adjustment also requires the URL-decoded `adjustAuthorisationData` blob. The tip-percentage calculation uses original and gratuity values from `AdditionalResponse` in minor units. The guide's **over 20%** threshold is a rule of thumb, not the scheme contract.\n- The **asynchronous** adjustment route is Checkout API `POST /payments/{paymentPspReference}/amountUpdates` with the new total, `reason=DelayedCharge`, and `merchantAccount`; its webhook tells whether that amount was authorized. The **synchronous** route is Payment API `POST /adjustAuthorisation` with original reference, new total, URL-decoded adjustment blob and merchant account; retain the returned updated blob for any later adjustment. The final **manual capture** is Checkout API `POST /payments/{paymentPspReference}/captures` for the original-plus-tip total, with a webhook confirming capture outcome. Request submission alone does not establish authorization, capture, or settlement.\n- **Authorization-adjustment support** is limited to specific **credit-card schemes** and depends on **Merchant Category Code**; the receipt-tipping flow as a whole is **not supported for wallets or debit cards**. The page says receipt tipping is common in the US, Singapore, and Hong Kong, but does not restrict it to those markets or prove a merchant's regional eligibility. Schemes differ on the tip percentage requiring adjustment (stated range 0\u201320%); a tip beyond the applicable limit can be rejected or charged back. Capture should occur before pre-authorization expiry when possible. The page does not specify a refund procedure for failed or disputed tips.\n\n## Detail locators\n\n- `Tipping on the receipt`, lines 15\u201325: only-when-necessary warning, written-tip sequence, original authorization versus unauthorized tip, two choices.\n- `Requirements`, lines 27\u201338: Terminal API/terminal scope, standard webhooks, manual capture, pre-authorization and Support prerequisites.\n- `Authorization adjustment or overcapture`, lines 40\u201355: two-stage money flow, relative fees and risks, comparison table.\n- `How it works` / `Limitations for tipping on the receipt`, lines 57\u201380: conditional adjustment versus capture decision, US/SG/HK context, scheme/MCC limitations, 0\u201320% scheme range, overcapture Support, authorization expiry, wallet/debit exclusion.\n- `Pre-authorize the payment`, lines 82\u2013107: Terminal API PreAuth field, `pspReference`, sync adjustment blob, tip calculation in minor units, nonbinding 20% rule of thumb.\n- `(Optional) Adjust the pre-authorization`, lines 109\u2013136: Checkout asynchronous amount update and webhook versus Payment API synchronous adjustment and updated blob; each amount is the **new total**.\n- `Capture the payment`, lines 138\u2013149: Checkout capture for the final original-plus-tip amount and asynchronous capture webhook.\n- `See also`, lines 151\u2013155: linked pre-authorization, adjustment, and capture guides are navigation until read for this entry.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-terminal-api]] \u2014 terminal-initiated payment route.\n- [[adyen-authorization-adjustment]] \u2014 backend amount-update concept for eligible pre-authorized payments.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/tipping/tipping-on-receipt/2026-09-15|Tipping on the receipt (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Tipping on the receipt is a payment flow where the customer first presents their card and provides a PIN or signature, and then writes a tip amount on the receipt and signs for it. Because the tip is added after the initial authorization, the original amount is authorized, but the tip is not. To get the full amount including the tip, you can either adjust the authorization or overcapture the payment.",
+      "location": "Tipping on the receipt, line 25"
+    },
+    {
+      "text": "After the initial transaction, you make a request to increase the authorized amount with the tip amount written on the receipt. Then you manually capture the payment. Note that an authorization adjustment can still fail or lead to a chargeback.",
+      "location": "Authorization adjustment or overcapture, line 44 (within Adjust an authorization bullet)"
+    },
+    {
+      "text": "After the initial transaction, you manually capture the full amount, including the tip. The scheme fees are a bit lower than for authorization adjustment, but there is a risk that the overcapture is not accepted due to scheme rules.",
+      "location": "Authorization adjustment or overcapture, line 46 (within Overcapture bullet)"
+    },
+    {
+      "text": "If the tip is more than a certain percentage of the original authorized amount, the card schemes require an [authorization adjustment](#adjust-authorisation). If the issuer declines this additional capture, you can get a chargeback for the portion of the final amount that is above the original amount plus this percentage. The percentage differs per scheme and ranges from 0-20%.",
+      "location": "Limitations for tipping on the receipt, line 77"
+    },
+    {
+      "text": "The flow is not supported for wallets and debit cards.",
+      "location": "Limitations for tipping on the receipt, line 80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-terminal-api-receipt-tipping-c05",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-tipping-tipping-on-receipt]] \u2014 2026-09-15 Adyen Docs receipt-tip guide for initial Terminal API authorization followed by eligible backend adjustment or overcapture and manual capture.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-authorization-adjustment-receipt-tipping-c05",
+        "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-tipping-tipping-on-receipt]] \u2014 2026-09-15 Adyen Docs receipt-tip use case for conditional POS pre-authorization adjustment before manual capture, with overcapture alternative and card/scheme limits.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/tipping/tipping-on-receipt/2026-09-15.md",
+  "raw_sha256": "b63693335cc968dfca4668508c8aabdca3fe90051c8a32f6d92cf3041dd6a667",
+  "status": "candidate_ready"
+}

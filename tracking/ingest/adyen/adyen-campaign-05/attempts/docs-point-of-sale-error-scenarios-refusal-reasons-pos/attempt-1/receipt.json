@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-error-scenarios-refusal-reasons-pos",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Terminal API refusal reasons | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/error-scenarios/refusal-reasons-pos\"\nraw_files:\n  - \"adyen/docs/point-of-sale/error-scenarios/refusal-reasons-pos/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, error-condition, refusal-reasons]\n---\n\n## Overview\n\nThis Adyen Docs page is a point-of-sale **declined PaymentRequest** reference for Terminal API `PaymentResponse` fields. It explains the stable routing identity Adyen recommends for POS code: `ErrorCondition` gives the error category in the response, while `refusalReason` and `message` provide extra explanation in `Response.AdditionalResponse`. The tables group common refusal examples and a **Retry?** indicator by `ErrorCondition`. See [[adyen]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- Adyen says refusal reasons are based on acquirer/issuer raw responses, but the merchant POS **can code on `ErrorCondition`** and **should not code on `refusalReason` or `message`**. The linked raw-response page is separate; a raw string is not a universal code or behavioral rule.\n- The tables list **Aborted, Busy, Cancel, DeviceOut, InvalidCard, NotAllowed, Refusal, UnreachableHost, and WrongPIN**. Their rows carry different actions. An `ErrorCondition` category alone does not turn every decline into an immediate same-card retry, and a checkmark is the row's retry indication, not a guarantee that the next attempt will succeed.\n- **Busy** rows are marked no retry. In the payment-in-progress row, the listed `serviceId` belongs to the other ongoing transaction and can be used for an `AbortRequest` to cancel that in-progress request; do not treat Busy as proof the new request was processed. **Cancel / Approved** is marked no retry even though the issuer had initially approved it, while many other Cancel rows are marked retry.\n- The **Refusal** table is mixed: acquirer error, mobile PIN requirement, insufficient balance, and some generic declines carry checkmarks, while AID banned, blocked card, issuer-suspected fraud, PIN-validation-not-possible, and restricted card carry X marks. Some entries instruct changing payment method, contacting a bank or Support, or satisfying a condition; do not collapse these into a blanket retry rule.\n- **UnreachableHost** rows describe going offline or inability to contact the issuer and are marked retry; **WrongPIN / Invalid Pin** is also marked retry. These are **decline-response** rows. A missing payment response or uncertain payment outcome requires the separate response-handling/status flow and is not resolved by this table alone.\n- The API Explorer link in this snapshot uses `latest`; the source does not lock a Terminal API version or prove a present-day merchant/device environment or actual decline outcome. For exact refusal text, message, row-specific instructions, and qualified examples, follow the raw locators.\n\n## Detail locators\n\n- `Terminal API refusal reasons`, lines 15\u201323: declined-response scope, `ErrorCondition` versus `refusalReason`/`message`, raw origin and code-against distinction.\n- `Refusal reasons by error condition`, lines 25\u201341: common-table framing, nine literal category names, `PaymentResponse.Response` location, AdditionalResponse placement and Support route.\n- `ErrorCondition: Aborted`, lines 43\u201347: contactless-fallback abandonment and retry checkmark.\n- `ErrorCondition: Busy`, lines 49\u201355: payment-in-progress `serviceId`, optional AbortRequest path, and no-retry flags.\n- `ErrorCondition: Cancel`, lines 57\u201386: no-retry Approved cancellation versus retry-marked Cancelled/card-removal/merchant/shopper cancellation rows.\n- `ErrorCondition: DeviceOut` / `InvalidCard` / `NotAllowed`, lines 88\u2013109: terminal crash/low-battery, mixed InvalidCard retry flags, and NotAllowed no-retry rows.\n- `ErrorCondition: Refusal`, lines 111\u2013140: row-by-row refusal reason, message, context and retry flags; fraud and blocked-card non-retry examples, conditional issuer/card/wallet examples, region-related restricted-card raw-code examples.\n- `ErrorCondition: UnreachableHost` / `WrongPIN`, lines 142\u2013153: network/issuer unreachability and invalid-PIN rows with their retry flags.\n- `See also`, lines 155\u2013158: raw-response and response-handling links are navigation; this page does not specify missing-result recovery.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-terminal-api]] \u2014 Terminal API response and POS error concept.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/error-scenarios/refusal-reasons-pos/2026-09-15|Terminal API refusal reasons (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "When your [payment request is declined](/point-of-sale/error-scenarios#declined-payment), we include an error category in the `ErrorCondition` field of the payment response, and a further explanation in the `refusalReason` inside the `Response.AdditionalResponse`.",
+      "location": "Terminal API refusal reasons, line 19"
+    },
+    {
+      "text": "You can use the `ErrorCondition` to code your POS app. The `refusalReason` and `message` fields are included for additional insight, and should not be coded against.",
+      "location": "Terminal API refusal reasons, line 23"
+    },
+    {
+      "text": "The following tables show the most common refusal reasons for point-of-sale payment transactions, grouped by the [ErrorCondition](https://docs.adyen.com/api-explorer/terminal-api/latest/post/payment#responses-200-Response-ErrorCondition) in the `PaymentResponse.Response`:",
+      "location": "Refusal reasons by error condition, line 27"
+    },
+    {
+      "text": "Another transaction, with the provided `serviceId`, is still in progress. Using the `serviceId` you can make an `AbortRequest` to [cancel](/point-of-sale/basic-tapi-integration/cancel-a-transaction#cancel-from-register) the in-progress transaction.",
+      "location": "ErrorCondition: Busy table, line 53"
+    },
+    {
+      "text": "Issuer reported the transaction as suspected fraud.",
+      "location": "ErrorCondition: Refusal table, line 125"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-terminal-api-refusal-reasons-c05",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-error-scenarios-refusal-reasons-pos]] \u2014 2026-09-15 Adyen Docs Terminal API declined-response reference for codeable `ErrorCondition`, explanatory refusal fields, and condition-specific retry flags.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/error-scenarios/refusal-reasons-pos/2026-09-15.md",
+  "raw_sha256": "3a25e6d9ef1246ab553aa05d1a461d7dedcca56c4805c1362f59bd2618e24244",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-point-of-sale-reconciling-totals-retrieve-totals-from-the-terminal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Retrieve totals from the terminal | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/reconciling-totals/retrieve-totals-from-the-terminal\"\nraw_files:\n  - \"adyen/docs/point-of-sale/reconciling-totals/retrieve-totals-from-the-terminal/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, terminal-totals, reconciliation]\n---\n\n## Overview\n\nAdyen's Terminal API `GetTotals` guide shows how a merchant POS retrieves payment totals from a terminal, optionally filtered or grouped by terminal, sale system, operator, shift, or totals group. It says this read does **not start a new reconciliation period**. The pinned webpage was fetched 2026-09-15 and reports `last_modified` 2019-08-20; the worked result is illustrative, not evidence of current terminal state or settled funds. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- A Terminal API integration with payment terminals is the stated requirement. The procedure first directs the operator to log in to the terminal, then has the POS send a `SaleToPOIRequest` with `MessageCategory: GetTotals`, `MessageClass: Service`, and `GetTotalsRequest`. The page's request table requires a `ServiceID` unique for the terminal `POIID` over 48 hours. The linked login procedure is separate evidence; this page does not define its credentials or period effects.\n- `GetTotalsRequest.TotalFilter` limits which totals are returned, whereas `TotalDetails` groups the results. The page lists terminal `POIID`, sale system, operator, shift number, and totals group for both purposes. Its examples filter one terminal, filter that terminal plus `TotalsGroupID`, and group one terminal's results by `OperatorID`.\n- Read `GetTotalsResponse.TransactionTotals` for totals. The sample `Success` response also shows `POIReconciliationID`, payment instrument type and currency, optional operator/group/shift descriptors, and `PaymentTotals` entries with transaction type, count, and amount. The introduction describes totals by payment instrument and transaction type; the sample numbers are examples, not live counts or financial-settlement records.\n- The page does not specify a time-window selector, reset/close action, receipt payload, payout, capture, bank deposit, or accounting finality. It establishes a terminal-total read; use the separate login/logout and reconciliation-period authorities for period transitions and financial reports for settlement.\n\n## Detail locators\n\n- Purpose, no new period, value/count dimensions, and integration requirement: pinned raw, introduction and `## Requirements` (lines 15\u201327).\n- Login direction, `GetTotals` header and `ServiceID` requirement: pinned raw, `## Get the totals of a terminal` (lines 29\u201347).\n- Filter versus group fields and terminal/group/operator request examples: pinned raw, `GetTotalsRequest` table and three example tabs (lines 47\u2013219).\n- `TransactionTotals`, `POIReconciliationID`, instrument/currency and transaction count/amount sample: pinned raw, response example (lines 221\u2013278).\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 provider Terminal API message concept.\n- [[source-adyen-docs-point-of-sale-reconciling-totals]] \u2014 terminal-total reconciliation navigation hub.\n- [[adyen]] \u2014 provider hub.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/reconciling-totals/retrieve-totals-from-the-terminal/2026-09-15|Retrieve totals from the terminal \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Using a Terminal API request, your POS app can retrieve totals from a payment terminal without starting a new reconciliation period.",
+      "location": "raw line 19, # Retrieve totals from the terminal"
+    },
+    {
+      "text": "[Log in to the terminal](/point-of-sale/reconciling-totals/log-in-and-log-out).",
+      "location": "raw line 31, ## Get the totals of a terminal, step 1"
+    },
+    {
+      "text": "Group the results by terminal (POIID), sale system, operator, shift number, or totals group.",
+      "location": "raw line 51, ## Get the totals of a terminal, TotalDetails row"
+    },
+    {
+      "text": "Limit the results to the specified terminal (POIID), sale system, operator, shift number, or totals group.",
+      "location": "raw line 52, ## Get the totals of a terminal, TotalFilter row"
+    },
+    {
+      "text": "In the [GetTotalsResponse](https://docs.adyen.com/api-explorer/terminal-api/latest/post/gettotals#responses-200-Response), check the `TransactionTotals` object.",
+      "location": "raw line 221, ## Get the totals of a terminal, step 3"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c5-terminal-get-totals-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-reconciling-totals-retrieve-totals-from-the-terminal]] \u2014 2026-09-15 Adyen Terminal API `GetTotals` guide for reading terminal transaction totals with operator/group filters without starting a new reconciliation period.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/reconciling-totals/retrieve-totals-from-the-terminal/2026-09-15.md",
+  "raw_sha256": "0f51b1acebc434fd7123ccc9b5b59331f12299fe0a245502795404debda98367",
+  "status": "candidate_ready"
+}

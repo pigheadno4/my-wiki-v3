@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-point-of-sale-error-scenarios-pos-timeouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS Transaction Time-outs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/error-scenarios/pos-timeouts\"\nraw_files:\n  - \"adyen/docs/point-of-sale/error-scenarios/pos-timeouts/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, timeouts, transaction-status, recovery]\n---\n\n## Overview\n\nThis Adyen POS guide distinguishes **processing**, **device-interaction**, and **request** time-outs. They do not have the same effect on the payment: issuer processing can be automatically canceled, many device waits end the transaction but some screens advance, and a timed-out request can leave the shopper able to complete payment on the terminal. The source is a 2026-09-15 webpage snapshot with `last_modified` 2025-12-15. Its local/cloud durations and terminal interaction table are guide-scoped; the page does not describe Mobile SDK behavior or an account-specific configurable value.\n\n## Key takeaways\n\n- **Processing time-out:** After terminal verification, if the issuer has not processed the payment within **120 seconds for local** or **150 seconds for cloud** Terminal API integration, Adyen says the platform cancels the transaction. The terminal shows Declined, and `PaymentResponse` reports `Result: Failure` and `ErrorCondition: Communication timeout`. After this confirmed result, the guide permits retry with another card/payment method. If no payment result or time-out is received by that interval, send `TransactionStatusRequest` to learn whether payment processed before taking another action.\n- **Device time-out:** This is a wait for shopper interaction. The raw table gives different durations and configurability by screen (for example card presentation 120 seconds, PIN entry 60, signature check 900, authorization-in-progress 200, Giving 30, tipping 60, final-state display 4); configurable items are routed through Support. The guide says most such time-outs cancel with `Result: Failure`, `ErrorCondition: Cancel` and an `AdditionalResponse` indicating type. It also explicitly says some time-outs only change the screen and the transaction continues, such as tipping advancing to payment. Do not treat every screen timeout as final cancellation or apply the table's seconds to unrelated steps. Retry advice applies when a transaction **was canceled** by a device time-out.\n- **Request time-out:** A request can time out at various tender steps after **120 seconds local** or **150 seconds cloud**, while the terminal may still await input and the shopper may still complete payment. The page shows an `EventNotification` with `EventToNotify: Reject` and `EventDetails: message=Timed+out+waiting+for+response+from+POI.`; this notification is not a final payment response. Send a transaction-status request to determine whether the payment remains in progress or has completed. The cloud tipping example (60 seconds on tipping, then 90 on payment screen) illustrates why the request and device timers are distinct; it is not a universal sequence.\n- This page distinguishes local/cloud timing but does not specify mobile-app session limits, retry counts, or transport-specific delivery guarantees beyond its shown event. Do not infer approval, decline, reversal, or safe repeat from a missing response or timeout event alone.\n\n## Detail locators\n\n- `# Time-outs`, raw lines 19-25 \u2014 the three categories and why request timeout may still leave the transaction running.\n- `## Processing time-out` \u2014 issuer processing trigger, local/cloud 120/150 seconds, failure result, conditional alternative-method retry and missing-result status check.\n- `## Device time-out` \u2014 interaction-duration/configurability table, typical canceled response and tipping-screen continuation exception.\n- `## Request time-out` \u2014 timed request versus active terminal payment, Reject notification example and transaction-status follow-up.\n\n## Related\n\n- Company: [[adyen]]\n- Terminal API operation and status recovery: [[adyen-terminal-api]]\n- Missing-result status procedure: [[source-adyen-docs-point-of-sale-basic-tapi-integration-verify-transaction-status]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/error-scenarios/pos-timeouts/2026-09-15|2026-09-15 Adyen POS time-outs snapshot]]\n",
+  "quotes": [
+    {
+      "text": "If the issuer has not processed this transaction within 120 seconds (local integration) or 150 seconds (cloud integration), the Adyen payments platform automatically cancels the transaction.",
+      "location": "raw line 29, under ## Processing time-out"
+    },
+    {
+      "text": "If you do not receive either a payment result or a time-out after 120 seconds (local integration) or 150 seconds (cloud integration), your integration should automatically send a [transaction status request](/point-of-sale/basic-tapi-integration/verify-transaction-status) to verify if the payment has been processed.",
+      "location": "raw line 69, under ## Processing time-out, missing-result branch"
+    },
+    {
+      "text": "In some cases, the terminal shows a different screen and the transaction continues.",
+      "location": "raw line 73, under ## Device time-out; tipping example follows"
+    },
+    {
+      "text": "The payment terminal is still waiting for input, and the shopper can still complete the payment.",
+      "location": "raw line 145, under ## Request time-out"
+    },
+    {
+      "text": "When you receive a time-out event notification, you should send a [transaction status request](/point-of-sale/basic-tapi-integration/verify-transaction-status) to verify if the payment is still in progress or has been completed.",
+      "location": "raw line 175, under ## Request time-out"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-pos-timeout-state-boundary",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Integration boundary",
+        "proposed_markdown": "Adyen's POS timeout guide separates a confirmed issuer-processing timeout (platform cancellation and `PaymentResponse` `Failure`/`Communication timeout`) from a request timeout that can leave the terminal payment active. A device interaction timeout usually cancels but can instead advance the screen, as with tipping. Missing payment results and request-timeout `Reject` notifications call for `TransactionStatusRequest` before retry, because the original payment may still progress or complete. The guide's 120-second local and 150-second cloud windows describe specific timeout types, not a general safe-retry timer. [[source-adyen-docs-point-of-sale-error-scenarios-pos-timeouts]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-pos-timeouts-terminal-api-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-error-scenarios-pos-timeouts]] \u2014 Adyen POS guide (2026-09-15 webpage snapshot) to processing, device and request timeout distinctions, local/cloud durations and status-gated recovery.\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/error-scenarios/pos-timeouts/2026-09-15.md",
+  "raw_sha256": "2c43c53b8a7e9cb394170a40030be88a2e8514d47a07d7c61789f38d680b4ee4",
+  "status": "candidate_ready"
+}

@@ -16,6 +16,9 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-refund-webhooks]] — Adyen POS Standard-webhook guide captured 2026-09-15 for refund validation events, originalReference identity and success-versus-finality limits
+
+
 - [[source-adyen-docs-point-of-sale-design-your-integration-notifications]] — Adyen Docs POS overview routing terminal display/event notifications and platform-generated webhooks, including asynchronous cloud response setup (2026-09-15 snapshot).
 
 

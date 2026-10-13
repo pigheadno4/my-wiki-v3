@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-point-of-sale-donate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS Donations Using Giving\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/donate\"\nraw_files:\n  - \"adyen/docs/point-of-sale/donate/2026-09-15.md\"\ntags: [adyen, point-of-sale, giving, donations, terminal-api, nonprofit, webhooks]\n---\n\n## Overview\n\nThis Adyen guide covers Giving at a payment terminal after an in-store purchase. The shopper can make a **separate donation transaction** using the same payment method as the original purchase; the nonprofit is the donation beneficiary, and Adyen says it settles the full donation amount directly to the nonprofit's bank account while covering fees. The merchant selects an onboarded nonprofit and participating merchant accounts/stores in a Customer Area campaign, then the terminal offers eligible shoppers a donation. The 2026-09-15 snapshot lists `last_modified` 2025-04-07. This is the POS Terminal API or standalone route; online Giving's Web Components, Sessions and Advanced-flow implementations have separate evidence.\n\n## Key takeaways\n\n- A campaign starts **inactive** after creation; it must be started, and an ended campaign cannot be restarted. The nonprofit must already be onboarded or selected from Adyen's pre-approved library; availability is constrained by the participating legal entities and regions. Viewer and manager Customer Area donation roles have distinct campaign permissions and do **not** grant access to payment information. Campaign edits/state changes reach terminals on the next maintenance call, usually overnight.\n- The base terminal-software requirement is **1.109 or later**, with model and option gates at 1.110 or later; the terminal table adds a **1.124** gate for combined round-up plus fixed amount in one-step and a **1.125** one-step gate for SFO1. Use the exact terminal/model row. Region, currency, nonprofit and original payment method also constrain prompting; the source says gift-card payments do not prompt. Its POS method table does not imply ecommerce Giving support.\n- The campaign can prompt automatically after a payment, including standalone, or a Terminal API merchant can ask through `AskGiving` in `SaleData.SaleToAcquirerData` after contacting Support for that option. The **one-step** shopper interaction needs one card presentation and displays purchase and donation together, but still comprises two transactions. The **two-step** interaction needs a second card presentation, supports more listed methods and lets a Terminal API POS retrieve the donation response for a receipt. Fixed amount, round-up and combined donation types have campaign/model qualifications.\n- The purchase `PaymentResponse` does not itself report the donation outcome because the terminal initiates the separate donation transaction. In the two-step flow, its `AdditionalResponse` supplies `adyen_giving_sale_id` and `adyen_giving_service_id` for a later `TransactionStatusRequest`; using `AdyenGiving` without the donation service ID selects the latest donation on that terminal, while the service ID targets a particular donation. This response retrieval is available only for two-step. The Adyen Giving merchant webhook with `eventCode: DONATION` reports donation outcome and `originalReference` links it to the original purchase; the shown success payload is a TEST example.\n- Donations cannot complete while internet is down, even if offline purchase payments are enabled: the terminal may still prompt, but shows the donation as declined while the offline purchase follows its own processing path. This guide does not state a POS donation refund mechanism or that a purchase refund automatically reverses its separate donation.\n\n## Detail locators\n\n- `## Requirements`, `## How it works`, `## Nonprofit organizations` \u2014 POS integration, roles/webhooks, onboarded nonprofit and campaign/store choices, supported-scope gates.\n- `## Donation campaigns` \u2014 company-account Customer Area setup, inactive-to-started lifecycle, irreversible end, terminal maintenance timing.\n- `## Donation options` \u2014 automatic versus request-triggered moment, one/two-step interaction, gift-card/offline behavior and fixed/round-up choices.\n- `## (Optional) Ask for a donation through a payment request` \u2014 Terminal API `AskGiving` formats and `AdditionalResponse` identifiers; JSON/Java are examples, not SDK-version proof.\n- `## (Optional) Get the two-step donation response` \u2014 `TransactionStatusRequest` and `RepeatedMessageResponse.PaymentReceipt`; omitted service ID selects latest terminal donation.\n- `## Giving webhook` \u2014 merchant `DONATION` event, `success`, `originalReference` and example payload.\n- `## Supported terminals and donation options`, `## Supported regions and currencies`, `## Supported payment methods and flows` \u2014 model/software, nonprofit-region/currency, method and one/two-step tables; Apple Pay/Google Pay one-step requires a supporting card in the wallet, Cartes Bancaires in-person requires a French nonprofit, and Singapore fundraising requires a local nonprofit.\n\n## Related\n\n- Company: [[adyen]]\n- Giving concept, including separately evidenced online flows: [[adyen-giving]]\n- POS message and status-request context: [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/donate/2026-09-15|2026-09-15 Adyen POS Giving guide snapshot]]\n",
+  "quotes": [
+    {
+      "text": "If a shopper chooses to donate, the donation amount is charged to the same payment method that was used for the original transaction.",
+      "location": "raw line 23, introductory Giving money flow"
+    },
+    {
+      "text": "Donations are settled directly to the nonprofit's bank account. Adyen covers all fees and the donation amount is transferred to the nonprofit in full.",
+      "location": "raw line 25, introductory beneficiary and settlement statement"
+    },
+    {
+      "text": "Technically, there are two transactions: one for the payment and one for the donation. But in the one-step flow, the payment and the donation are shown as a single transaction, and shoppers need to present their card only once.",
+      "location": "raw line 143, under ### Interaction flow"
+    },
+    {
+      "text": "Donations are currently not possible while the internet connection is down, even if you enabled [offline payments](/point-of-sale/offline-payment).",
+      "location": "raw line 170, under ### Interaction flow, both-flow qualifications"
+    },
+    {
+      "text": "To receive these webhook messages, enable the [Adyen Giving merchant webhook](/development-resources/webhooks/webhook-types#other-webhooks), which includes `eventCode`: **DONATION**.",
+      "location": "raw line 532, under ## Giving webhook"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-giving-pos-terminal-route",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Advanced-flow routes",
+        "proposed_markdown": "## In-person terminal route\n\nFor Adyen POS Giving, a merchant runs a Customer Area campaign for an onboarded nonprofit and selected merchant accounts/stores. After an eligible in-store purchase, the terminal initiates a separate donation using the original payment method; Adyen says the full donation settles directly to the nonprofit's bank account with Adyen covering fees. One-step uses one shopper card presentation but remains two transactions; two-step uses two presentations and can expose a donation receipt through Terminal API transaction status. Donation outcome belongs to the merchant `DONATION` webhook, not the purchase `PaymentResponse`; donations cannot complete offline even when the purchase uses offline processing. Terminal software/model, region/currency, method and nonprofit gates remain in the POS source. This route is separate from Web Components, Sessions and Advanced online Giving flows. [[source-adyen-docs-point-of-sale-donate]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "adyen-giving-pos-source-reciprocal",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-donate]] \u2014 Adyen POS Giving guide (2026-09-15 webpage snapshot) for terminal campaigns, distinct purchase/donation transactions, nonprofit settlement, eligible methods/models and outcome webhook.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/donate/2026-09-15.md",
+  "raw_sha256": "04c527c02b9b03610592ec1a18d825a695b244f770de3f851f0b38d084d4cc27",
+  "status": "candidate_ready"
+}
