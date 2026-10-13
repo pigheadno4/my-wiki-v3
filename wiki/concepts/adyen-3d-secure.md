@@ -63,6 +63,9 @@ Adyen's regulation-compliance overview is region-, actor-, scheme-, period-, tra
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-auspaynet-compliance-guide]] — Adyen's dated Australian CNP framework guide to merchant fraud thresholds, conditional SCA exemptions, and 3D Secure control choices (webpage snapshot, 2026-09-15).
+
+
 - [[source-adyen-docs-risk-management-dynamic-3d-secure]] — Adyen default and conditional 3DS2 authentication/challenge preferences, payment-request precedence, and Protect premium risk-based paths (webpage snapshot, 2026-09-15).
 
 

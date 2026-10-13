@@ -15,4 +15,7 @@ Refund processing is asynchronous. A `REFUND` webhook reports validation success
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-reversal]] — 2026-09-15 Adyen webpage guide to cancel-or-refund choice when capture state is uncertain, exclusions for multiple partial captures and split data, and request receipt versus asynchronous webhook and later refund exceptions.
+
+
 - [[source-adyen-docs-online-payments-refund]] — captured-payment refund routes, request conditions, webhooks, failure/reversal distinctions, and authorization behavior

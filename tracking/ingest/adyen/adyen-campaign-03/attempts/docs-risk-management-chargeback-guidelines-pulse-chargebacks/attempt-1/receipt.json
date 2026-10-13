@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-pulse-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: PULSE chargebacks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/pulse-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/pulse-chargebacks/2026-09-15.md\"\ntags: [adyen, pulse, disputes, chargebacks, pre-arbitration]\n---\n\n## Overview\n\nThis Adyen guide describes two PULSE dispute routes: the default route for reasons other than fraud reason code 4868, and a separate 4868 fraud route. Their pre-arbitration, reversal, and finality steps differ. This scheme-specific snapshot routes through [[adyen-risk-management]]; it does not establish current scheme rules or outcomes for a particular case.\n\n## Key takeaways\n\n- In both routes, an issuing bank initiates a Notification of Chargeback (NoC), which can follow a payment marked Settled or Refunded. Adyen says funds are charged back and the merchant has **30 days after NoC** to accept or defend. The NoC warns that money will be withdrawn, usually a few days later; the first-chargeback description records the chargeback debit, journals, and CHARGEBACK webhook. These descriptions should not be read as two separate chargeback debits.\n- The merchant can accept through Customer Area or Disputes API, closing the case for defense, or upload relevant defense documents through either channel. The documents must address the dispute reason; an order overview alone is insufficient. Once Adyen forwards the documents and records Information Supplied, they cannot be changed, and there is no later opportunity to add evidence.\n- In the **default route**, after documents are forwarded, the disputed amount is returned at Chargeback Reversed **for reasons other than card-not-present fraud**. That reversal is not necessarily final: for disputes other than card-not-present fraud, the issuing bank can initiate pre-arbitration within 30 days of the reversal date. If the issuer declines the defense or Adyen accepts that pre-arbitration case, a **second chargeback is final**, no further documents can be uploaded, and the previously returned amount is debited again.\n- In the **4868 fraud route**, Adyen automatically creates and forwards a pre-arbitration case with the documents; the issuing bank has 30 days to review it. If the bank accepts, Adyen records PreArbitrationWon and ChargebackReversed, returns the amount, and **Chargeback Reversed is final**. If the bank declines, Adyen records PreArbitrationLost and the dispute status **remains Chargeback**. This route does not describe an earlier provisional reversal.\n\n## Detail locators\n\n- **Two routes and sequence, raw lines 19\u201342** \u2014 default versus fraud reason code 4868; both have a 30-day defense-or-accept window.\n- **Default NoC, first chargeback, and defense, raw lines 55\u201374** \u2014 issuing-bank actor, Settled/Refunded timing, merchant debit, Customer Area or Disputes API response, and evidence deadline.\n- **Default Information Supplied through second chargeback, raw lines 76\u201394** \u2014 immutable evidence, qualified reversal and pre-arbitration, final second chargeback and re-debit.\n- **4868 NoC through Information Supplied, raw lines 110\u2013135** \u2014 NoC start, debit, response channels, and fixed evidence deadline.\n- **4868 pre-arbitration and reversal, raw lines 137\u2013147** \u2014 Adyen-created case, bank review window, accepted versus declined outcome, returned funds, and finality.\n\n## Related\n\n- [[adyen]]\n- [[adyen-risk-management]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/pulse-chargebacks/2026-09-15|Adyen Docs \u2014 PULSE chargebacks (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "PULSE disputes are routed into two flows, a default flow and a flow for fraud disputes with reason code 4868.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/pulse-chargebacks/2026-09-15.md:19"
+    },
+    {
+      "text": "You must provide your defense documents within **30 days after receiving the NoC**. There is no opportunity later in the process to provide information or to update information you provided.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/pulse-chargebacks/2026-09-15.md:74"
+    },
+    {
+      "text": "For all dispute reasons other than card-not-present fraud, the disputed amount is transferred back to your account after we have forwarded your defense documents to PULSE.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/pulse-chargebacks/2026-09-15.md:82"
+    },
+    {
+      "text": "If the issuer declines your defense, or Adyen accepts their pre-arbitration case, a second chargeback occurs. You cannot upload defense documents. This is the final status.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/pulse-chargebacks/2026-09-15.md:92"
+    },
+    {
+      "text": "If the Pre-Arbitration is accepted by the bank, we book the **PreArbitrationWon** and **ChargebackReversed** journals. Chargeback Reversed will be the final status.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/pulse-chargebacks/2026-09-15.md:141"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-pulse-chargebacks-source",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-pulse-chargebacks]] \u2014 Adyen PULSE chargeback guide (webpage snapshot, 2026-09-15) covering the default and fraud reason code 4868 flows, defense timing, qualified reversals, and route-specific finality.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Default-route Chargeback Reversed is qualified to reasons other than card-not-present fraud and can be followed by pre-arbitration and final second chargeback.",
+          "For reason code 4868, Chargeback Reversed follows a bank-accepted pre-arbitration and is final; a declined case remains Chargeback. Do not infer any fee schedule or current scheme eligibility from this snapshot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/pulse-chargebacks/2026-09-15.md",
+  "raw_sha256": "e5736586d8ca6f216834ffd3c1c6c0e1b1bdba8ecaba41b973cb877253c752cb",
+  "status": "candidate_ready"
+}

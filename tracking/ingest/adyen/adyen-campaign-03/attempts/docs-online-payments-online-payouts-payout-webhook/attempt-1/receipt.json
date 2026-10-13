@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-online-payouts-payout-webhook",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Payout webhook | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/online-payouts/payout-webhook\"\nraw_files:\n  - \"adyen/docs/online-payments/online-payouts/payout-webhook/2026-09-15.md\"\ntags: [adyen, payouts, payout-api, webhooks, legacy-api]\n---\n\n## Overview\n\nThis Adyen page explains webhook outcomes for the legacy Payout API's staged payouts to bank accounts or wallets and instant payouts to cards. The page says Adyen no longer accepts new Payout API integrations: new builds should use the Transfers API, and existing Payout API users should contact Adyen about migration. This 2026-09-15 snapshot reports `last_modified` 2020-10-23 and does not prove a merchant's current legacy access, payout execution, settlement, or receipt of funds.\n\n## Key takeaways\n\n- For bank-account or wallet payouts, `/submitThirdParty` acknowledges receipt of the request only. A payout webhook is needed to follow the request. After reviewer confirmation, `PAYOUT_THIRDPARTY` with `success=true` means Adyen received the payout request and will send it to the financial institution; the page says funds are paid out within two business days **when approved**. It is not itself proof that the financial institution approved or paid it. `success=false` means the request failed and gives a `reason` for possible correction and resubmission.\n- In that staged bank/wallet flow, `PAYOUT_DECLINE` means the reviewer declined, and `PAYOUT_EXPIRE` means the reviewer neither confirmed nor declined within seven days. Both event types have `success=true` for the event, which must not be read as payout success. `PAIDOUT_REVERSED` means the financial institution rejected the payout and Adyen will return funds to the merchant account.\n- For instant card payouts, the guide separately says `/payout` returns `resultCode=Received`; it describes a later `PAYOUT_THIRDPARTY`/`success=true` event for a successful payout and `success=false` if the issuer refuses it. Do not transfer the staged bank/wallet interpretation or its reviewer steps to the instant-card path.\n- The JSON, SOAP and form examples are sample `PAYOUT_THIRDPARTY` notifications, not a validated production event. In the JSON and SOAP sample, `pspReference` is labeled as the payment PSP reference and `originalReference` as the payout PSP reference; use that as example-level reference navigation, not a universal correlation rule without the relevant current webhook contract.\n\n## Detail locators\n\n- Introductory migration notice \u2014 Payout API new-integration stop, Transfers API direction and existing-user contact route.\n- `## Payouts to bank accounts or wallets` \u2014 `/submitThirdParty` acknowledgement, reviewer confirmation/decline/expiry, financial-institution decision, event codes and conditional payment timing.\n- `## Instant payouts` \u2014 `/payout` `Received` response and issuer-dependent later event interpretation.\n- `## Code examples` / `#### JSON`, `#### Soap`, `#### Form` \u2014 example event payloads and reference labels.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-payouts]]\n- Related event concept: [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/online-payouts/payout-webhook/2026-09-15|2026-09-15 snapshot \u2014 legacy Payout API webhook outcomes]]\n",
+  "quotes": [
+    {
+      "text": "We are no longer accepting new integrations with the [Payout API](https://docs.adyen.com/api-explorer/Payout/latest/overview); use the [Transfers API](https://docs.adyen.com/api-explorer/transfers/latest/overview) instead.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/payout-webhook/2026-09-15.md:19, # Payout webhook"
+    },
+    {
+      "text": "The response to a `/submitThirdParty` request only indicates that the request has been received, not whether the payout was successful.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/payout-webhook/2026-09-15.md:32, ## Payouts to bank accounts or wallets"
+    },
+    {
+      "text": "We received your payout request, and will send it to the financial institution. When approved, the funds are paid out within 2 business days.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/payout-webhook/2026-09-15.md:38, ## Payouts to bank accounts or wallets / PAYOUT_THIRDPARTY success true"
+    },
+    {
+      "text": "The financial institution rejected the payout. We will return the funds to your account.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/payout-webhook/2026-09-15.md:45, ## Payouts to bank accounts or wallets / PAIDOUT_REVERSED"
+    },
+    {
+      "text": "When making [instant payouts to a card](/online-payments/online-payouts/instant-payouts), you will get a response to your `/payout` request with `resultCode`: **Received**.",
+      "location": "raw/adyen/docs/online-payments/online-payouts/payout-webhook/2026-09-15.md:49, ## Instant payouts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-c3-payout-webhook-source-link",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-online-payouts-payout-webhook]] \u2014 legacy Payout API webhook guide separating staged bank/wallet request acknowledgement and review events from instant-card payout events and financial-institution reversal (webpage snapshot, 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/online-payouts/payout-webhook/2026-09-15.md",
+  "raw_sha256": "4f368522558c9da36c3b62e91b3c3f56e0dbb28d24b9b9f1cadc5a64a3f0b007",
+  "status": "candidate_ready"
+}

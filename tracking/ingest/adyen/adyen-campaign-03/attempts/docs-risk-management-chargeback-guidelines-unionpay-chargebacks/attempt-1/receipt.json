@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-unionpay-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: UnionPay chargebacks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/unionpay-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/unionpay-chargebacks/2026-09-15.md\"\ntags: [adyen, unionpay, chargebacks, disputes, risk-management]\n---\n\n## Overview\n\nThis [[adyen]] guide describes UnionPay (CUP) chargeback handling through an optional Request for Information (RFI), Notification of Chargeback (NoC), defense, automatic pre-arbitration, and a possible final reversal. Its described flow applies to UnionPay chargebacks **received on or after 13 April 2020**; the guide says earlier chargebacks are not defendable through Adyen. This is the 2026-09-15 snapshot of a UnionPay-specific route, not a general chargeback rule or a determination of a current case outcome. See [[adyen-risk-management]].\n\n## Key takeaways\n\n- An RFI can precede the chargeback. Funds are not deducted at RFI, and the merchant can upload information through Customer Area or the Disputes API. **If the merchant does not respond to the RFI and later receives a chargeback for that transaction, that chargeback is undefendable.** After Adyen forwards RFI documents, they cannot be changed; Information Supplied ends the RFI, although a chargeback can still follow.\n- A NoC may follow an RFI or arise directly after a payment becomes Settled or Refunded. The merchant has **30 days from receiving the NoC** to submit defense documents. NoC has not yet deducted the funds, but signals that the account will be debited; the first chargeback books that debit, usually a few days after NoC. Accepting in Customer Area loses and closes defense; defending requires reason-specific documents via Customer Area or the Disputes API. An order overview alone is insufficient, and there is no later opportunity to add information.\n- After Adyen forwards chargeback defense documents to UnionPay at Information Supplied, the documents cannot change and funds are **not immediately returned**. Adyen automatically sends a pre-arbitration case to the scheme; the issuer has **20 days** to accept or decline it. Acceptance books `PreArbitrationWon`, returns the funds, and leads to final `ChargebackReversed`. Decline books `PreArbitrationLost`; the cardholder retains the funds, and the guide calls this final with no further journals.\n- Despite that stated lost-case finality, the guide instructs a merchant who wants to challenge the issuer's rejection to contact the Adyen Disputes Team **within five days of receiving the PreArbitrationLost journal**. It does not promise a changed outcome.\n\n## Detail locators\n\n- **Scope and stages, raw lines 15\u201329** \u2014 13 April 2020 receipt cutoff and sequence with optional RFI.\n- **RFI and RFI Information Supplied, raw lines 35\u201349** \u2014 no initial debit, response route, undefendable later chargeback if unanswered, and immutable forwarded documents.\n- **NoC and first chargeback, raw lines 51\u201376** \u2014 30-day defense clock, no debit yet at NoC, accept/defend routes, evidence cutoff, and later debit.\n- **Defense Information Supplied and pre-arbitration, raw lines 78\u201394** \u2014 no immediate return, automatic case, issuer's 20-day review, win/loss effects and five-day contact instruction.\n- **Chargeback Reversed, raw lines 96\u201398** \u2014 returned funds and final reversal after accepted pre-arbitration.\n\n## Related\n\n- [[adyen-risk-management]]\n- [[source-adyen-docs-risk-management-chargeback-guidelines]]\n- [[source-adyen-docs-risk-management-understanding-disputes-dispute-process-and-flow]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/unionpay-chargebacks/2026-09-15|Adyen UnionPay chargebacks guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The chargeback flow described here is applicable to UnionPay chargebacks received on or after 13 April 2020. Chargebacks received before this date are not defendable through Adyen.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/unionpay-chargebacks/2026-09-15.md:19"
+    },
+    {
+      "text": "If you do not respond to an RFI and subsequently receive a chargeback for the disputed transaction, the chargeback is undefendable.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/unionpay-chargebacks/2026-09-15.md:43"
+    },
+    {
+      "text": "At this point, funds are not yet deducted from your account, but a NoC always indicates that your account will be debited for the chargeback amount.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/unionpay-chargebacks/2026-09-15.md:59"
+    },
+    {
+      "text": "In the UnionPay chargeback flow, the funds are not immediately transferred back to your account after submitting defense documents.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/unionpay-chargebacks/2026-09-15.md:82"
+    },
+    {
+      "text": "If the issuer declines your defense but you want to challenge their decision, contact the Adyen Disputes Team **within 5 days** of receiving the PreArbitrationLost dispute journal.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/unionpay-chargebacks/2026-09-15.md:92"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "unionpay-chargebacks-source-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-unionpay-chargebacks]] \u2014 UnionPay-specific chargeback guide with dated eligibility, optional RFI, NoC defense, pre-arbitration, and finality conditions (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not apply this UnionPay flow to chargebacks received before 13 April 2020 or generalize its RFI and deadline conditions to other schemes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/unionpay-chargebacks/2026-09-15.md",
+  "raw_sha256": "081c1ecac57e47466ecf6910f65d1e5e9dfc1512ac3d3f6d5a9e69c96bd09921",
+  "status": "candidate_ready"
+}

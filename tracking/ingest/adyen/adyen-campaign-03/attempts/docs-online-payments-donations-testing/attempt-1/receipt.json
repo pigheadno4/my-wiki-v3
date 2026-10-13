@@ -1,0 +1,69 @@
+{
+  "job_id": "docs-online-payments-donations-testing",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Test your Giving integration\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/donations/testing\"\nraw_files:\n  - \"adyen/docs/online-payments/donations/testing/2026-09-15.md\"\ntags: [adyen, giving, donations, testing, webhooks]\n---\n\n## Overview\n\nThis Adyen guide describes checks for a Giving integration **before going live**, separately in test and live environments: create and activate a donation campaign, make a donation, then observe the donation outcome. It routes through [[adyen-giving]] and [[adyen-payment-testing]]. Test cards and test webhooks exercise the test integration; they do not establish that a live nonprofit received funds. The live-environment step instructs a real donation to the merchant's nonprofit, so it is distinct from a test-card fixture.\n\n## Key takeaways\n\n- In the **test environment**, the merchant creates a campaign with a demo nonprofit in test Customer Area and starts it. Activation starts returning a `donationToken` in eligible `/payments` or `/payments/details` responses. The guide then asks the merchant to verify that token, check the `/donationCampaigns` response details, make test donations with the listed test cards, and verify a **DONATION webhook for each test donation**. A token or campaign response is an intermediate check, not the donation outcome.\n- Testing donations with **iDEAL** needs additional configuration from Adyen Support. The test-card table includes a Visa fixture for which the text says CVC is not required, plus 3D Secure 2 enrolled fixtures and a TRA-exemption test request using `threeDSRequestorChallengeInd: \"05\"`; consult the raw table and conditions rather than treating examples as live card or exemption behavior.\n- In the **live environment**, the merchant creates and starts a campaign for its nonprofit in live Customer Area and separately enables the **Adyen Giving merchant webhook** there. If Giving is absent from live Customer Area, the guide directs the merchant to its Adyen contact or Support. After verifying `donationToken` and campaign details, the merchant makes a donation to its nonprofit through the integration. It can verify the outcome through the **DONATION webhook or Giving report/dashboard**.\n- For issues with **test donation requests**, the guide points to API logs. The page prescribes checks; it does not report that any merchant completed them or that a nonprofit received a live donation.\n\n## Detail locators\n\n- **Purpose and checklist, raw lines 15\u201323** \u2014 test and live recommendation, campaign activation, donation, and merchant webhook outcome.\n- **Test campaign and donation, raw lines 25\u201350** \u2014 test Customer Area, demo nonprofit, `donationToken`, iDEAL Support setup, test cards, and DONATION webhook.\n- **Live campaign and outcome, raw lines 52\u201384** \u2014 live Customer Area, Support fallback, live merchant webhook enablement, actual donation, and webhook/report verification.\n- **Troubleshooting and fixtures, raw lines 86\u2013129** \u2014 API logs, ordinary donation test cards, Visa CVC note, 3D Secure 2 cards, and TRA-exemption request value.\n\n## Related\n\n- [[adyen]]\n- [[adyen-giving]]\n- [[adyen-payment-testing]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/donations/testing/2026-09-15|Adyen Docs \u2014 Test your Giving integration (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "We recommend to test your integration in the [test environment](#test-environment), and [live environment](#live-environment).",
+      "location": "raw/adyen/docs/online-payments/donations/testing/2026-09-15.md:19"
+    },
+    {
+      "text": "To test donations using iDEAL, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) for additional configuration.",
+      "location": "raw/adyen/docs/online-payments/donations/testing/2026-09-15.md:40"
+    },
+    {
+      "text": "For each test donation that you make, verify that you get a [**DONATION** webhook](/development-resources/webhooks/webhook-types/#other-webhooks).",
+      "location": "raw/adyen/docs/online-payments/donations/testing/2026-09-15.md:50"
+    },
+    {
+      "text": "In your live [Customer Area](https://ca-live.adyen.com/), enable the [Adyen Giving merchant webhook](/development-resources/webhooks/webhook-types/#other-webhooks).",
+      "location": "raw/adyen/docs/online-payments/donations/testing/2026-09-15.md:69"
+    },
+    {
+      "text": "Using your integration, make a donation to your nonprofit.",
+      "location": "raw/adyen/docs/online-payments/donations/testing/2026-09-15.md:77"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-giving-donations-testing-source",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-donations-testing]] \u2014 Adyen Giving test-and-live verification guide (webpage snapshot, 2026-09-15) for campaign activation, donation fixtures or live donation, and outcome checks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Test-environment card/webhook checks do not prove a live nonprofit funding outcome; the live-environment route calls for a real donation and a separately enabled Giving merchant webhook."
+        ]
+      },
+      {
+        "update_id": "adyen-payment-testing-donations-testing-source",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-donations-testing]] \u2014 Giving-specific test-card and environment verification guide (webpage snapshot, 2026-09-15), with separate live campaign and donation checks.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Donation test fixtures and their DONATION webhooks are test-environment observations, distinct from the guide's live donation and outcome-verification steps."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/donations/testing/2026-09-15.md",
+  "raw_sha256": "5f681ab0c8e92db731fbc17c7ddd1f632c44317d854d0ebf72b0f33d3240a8d7",
+  "status": "candidate_ready"
+}

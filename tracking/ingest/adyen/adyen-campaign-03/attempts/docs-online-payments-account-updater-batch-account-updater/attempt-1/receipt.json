@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-online-payments-account-updater-batch-account-updater",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Batch Account Updater\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/account-updater/batch-account-updater\"\nraw_files:\n  - \"adyen/docs/online-payments/account-updater/batch-account-updater/2026-09-15.md\"\ntags: [adyen, account-updater, batch, tokenization, recurring-cards]\n---\n\n## Overview\n\nThis Adyen Batch Account Updater guide describes an asynchronous merchant-initiated route for obtaining Visa and Mastercard card-detail updates, then acting on the result. Merchants submit an SFTP batch file or schedule one card through `/scheduleAccountUpdater`; Adyen sends the request to the schemes and returns an update in a **batch result file**. This is distinct from Real Time Account Updater during payment processing and routes through [[adyen-tokenization]].\n\n## Key takeaways\n\n- Adyen says Batch Account Updater needs additional Support configuration before integration. Batch files need an SFTP directory arranged with Support, including the merchant's IP address and SSH/PGP keys. Adyen validates the request file and emits an ACK; after successful validation, scheme update processing takes a **minimum of two days from receipt of the ACK** before the result file. The ACK is a validation checkpoint, not an updated-card or payment result.\n- The one-card API route accepts card data or Adyen token references in a POST `/scheduleAccountUpdater` request. Its immediate `Success` response indicates **receipt of the request**, after which Adyen forwards it to Visa and Mastercard. The merchant still retrieves an **encrypted batch result file** for the actual update outcome; this is not a synchronous per-card update response.\n- Result statuses include unchanged, changed PAN, changed expiry, permanently closed account, Visa-only `ContactCardAccountHolder` when the shopper withheld updated details, and error states. The raw status table gives detailed alternative values. A result file can require different merchant actions; it does not itself rewrite the merchant's stored card.\n- If the merchant tokenizes with Adyen, the guide says the token remains the same, but changed card details must be updated through a **payment request**. That update flow also requires Support enablement; otherwise Adyen says the update attempt returns an API error. A merchant not tokenizing with Adyen updates its own stored details. The sample payment requests are examples of an update route, not evidence of a successful charge or guaranteed credential update.\n- For a disabled card, Adyen says it **does not delete** the `storedPaymentMethodId` or `recurringDetailReference`; the merchant receives the update and must delete the card details. The Account Updater results report summarizes both Batch and Real Time outcomes and fees, but a shared report does not make their processing flows identical.\n\n## Detail locators\n\n- **Introduction / Set up an SFTP server, raw lines 17\u201333** \u2014 Visa/Mastercard purpose, Support prerequisite, actor sequence, and SFTP inputs.\n- **Use batch request files, raw lines 35\u201399** \u2014 example file structure, validation ACK, minimum two-day scheme step, result file, and tokenized versus merchant-owned update action.\n- **Use API calls, raw lines 100\u2013161** \u2014 one-card request shapes, receipt-only response, encrypted batch result file, and subsequent card-detail action.\n- **Account Updater statuses, raw lines 162\u2013190** \u2014 status and alternative-value table, including Visa-only withheld-details state and error.\n- **Update old card details, raw lines 192\u2013271** \u2014 Support enablement, no-change handling, changed PAN/expiry payment examples, and merchant deletion after disabled-card notification.\n- **Get a report on card updates, raw lines 273\u2013275** \u2014 combined Batch and Real Time results/fee report.\n\n## Related\n\n- [[adyen]]\n- [[adyen-tokenization]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/account-updater/batch-account-updater/2026-09-15|Adyen Docs \u2014 Batch Account Updater (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "With Batch Account Updater, you can send batch files to get updates for your shoppers' cards. We obtain the updates from Visa and Mastercard and send you batch response files with the new card details.",
+      "location": "raw/adyen/docs/online-payments/account-updater/batch-account-updater/2026-09-15.md:19"
+    },
+    {
+      "text": "This process takes minimum two days from when you receive the ACK file.",
+      "location": "raw/adyen/docs/online-payments/account-updater/batch-account-updater/2026-09-15.md:68"
+    },
+    {
+      "text": "If you are tokenizing with Adyen, the token will always stay the same, but you need to [update the old card details through a payment request](#update-card-details).",
+      "location": "raw/adyen/docs/online-payments/account-updater/batch-account-updater/2026-09-15.md:97"
+    },
+    {
+      "text": "The response indicates we received your request.",
+      "location": "raw/adyen/docs/online-payments/account-updater/batch-account-updater/2026-09-15.md:139"
+    },
+    {
+      "text": "We do not delete the `storedPaymentMethodId` or `recurringDetailReference`. Instead we provide the update to you, and you need to delete the card details.",
+      "location": "raw/adyen/docs/online-payments/account-updater/batch-account-updater/2026-09-15.md:269"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-tokenization-batch-account-updater-source",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-account-updater-batch-account-updater]] \u2014 Adyen Batch Account Updater guide (webpage snapshot, 2026-09-15) for SFTP or scheduled single-card requests, encrypted batch result files, and follow-up stored-card actions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The single-card API Success response confirms request receipt; the outcome remains in a batch result file and the route is distinct from Real Time Account Updater.",
+          "Disabled-card notification does not remove Adyen token references; merchant deletion is required. Stored-detail update through a payment request needs Support enablement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/account-updater/batch-account-updater/2026-09-15.md",
+  "raw_sha256": "22f36afc373949ff113c73d96d02258dc79ca67578d8db2544351fc86fffc0c6",
+  "status": "candidate_ready"
+}

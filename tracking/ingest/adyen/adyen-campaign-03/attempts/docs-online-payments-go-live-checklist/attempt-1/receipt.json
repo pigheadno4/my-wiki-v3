@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-online-payments-go-live-checklist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online Payments Go-Live Checklist\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/go-live-checklist\"\nraw_files:\n  - \"adyen/docs/online-payments/go-live-checklist/2026-09-15.md\"\ntags: [adyen, online-payments, go-live, live-environment, testing, webhooks]\n---\n\n## Overview\n\nThis Adyen checklist guides an online-payments merchant through live Customer Area setup and end-to-end checks before accepting live shopper payments. Test Customer Area configuration is not copied to live; account, finance, risk/compliance, API communication, and webhooks each need live configuration. The related [[source-adyen-docs-online-payments-integration-checklist|integration checklist]] places approval of the live-account application before this go-live stage.\n\n## Key takeaways\n\n- Configure live account structure, user access, offered payment methods, and shopper statement details. For finance, provide bank-account details for payouts **from Adyen to the merchant**, review payout settings, and set up reconciliation reporting. A Reserve is presented as optional.\n- Review the live risk profile and risk-related notifications, protect against card testing, confirm PCI DSS work, and support 3D Secure where SCA or local rules require it. The page cautions that Mastercard 3D Secure enrollment may take up to 12 hours after live Customer Area activation, so immediate 3DS availability should not be assumed.\n- Before live API calls, generate a live API key, check the live credential's permissions, use live endpoints, and reconfigure optional response `additionalData`. Set up live webhooks and any webhook `additionalData`; acknowledge events with a successful HTTP status and check that required event types arrive.\n- The final testing section calls for real payment details across the supported lifecycle, including success, refusal, fraud-triggered refusal, refund and partial refund, and conditionally capture/cancel/partial-capture, redirects, 3D Secure, and tokenization. Real-detail payments incur fees. Test on physical iOS and Android devices for touch behavior and in a secure browser context; for custom domains the guide calls for HTTPS. A strict CSP can block native 3DS2 challenges unless needed URLs are allowed; the guide says Adyen does not maintain a complete URL list and suggests redirect 3DS if CSP is not adjusted.\n- This page is a readiness checklist, not evidence that a merchant has live-account approval, configured settings, completed real-payment tests, or achieved an authorization, payout, or settlement result.\n\n## Detail locators\n\n- Opening and `## Account` (raw lines 15\u201349): separate live settings, account structure/users, payment methods, and statement text.\n- `## Finance` (raw lines 51\u201367): merchant payout bank details, payout settings, reconciliation reports, and optional Reserve.\n- `## Risk and compliance` (raw lines 69\u201394): risk profile, PCI DSS, card testing, SCA/3DS support, and Mastercard enrollment timing.\n- `## API communication` and `## Webhooks` (raw lines 96\u2013118): live key, permissions, endpoint and additional-data settings, webhook setup/acknowledgment, and event coverage.\n- `## End-to-end testing` (raw lines 120\u2013171): physical-device and secure-context conditions, fee warning, real payment cases, and conditional capture, redirect, 3DS/CSP, and tokenization scenarios.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-online-payments]]\n- Prior approval route: [[source-adyen-docs-online-payments-integration-checklist]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/go-live-checklist/2026-09-15|2026-09-15 Adyen online-payments go-live checklist]]\n",
+  "quotes": [
+    {
+      "text": "The setup from your [test Customer Area](https://ca-test.adyen.com/) is not copied over to your [live Customer Area](https://ca-live.adyen.com/), so you need to configure live settings for:",
+      "location": "raw/adyen/docs/online-payments/go-live-checklist/2026-09-15.md:19"
+    },
+    {
+      "text": "Note that for Mastercard, the enrollment for [3D Secure](/online-payments/3d-secure) can take up to 12 hours.",
+      "location": "raw/adyen/docs/online-payments/go-live-checklist/2026-09-15.md:91"
+    },
+    {
+      "text": "Make sure that you [acknowledge webhook events](/development-resources/webhooks/configure-and-manage#accept-webhooks) with a [successful HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#successful_responses), for example **202**, to [prevent events being queued](/development-resources/webhooks/troubleshoot#retry-queue).",
+      "location": "raw/adyen/docs/online-payments/go-live-checklist/2026-09-15.md:116"
+    },
+    {
+      "text": "Always test on physical iOS and Android devices to verify the user experience.",
+      "location": "raw/adyen/docs/online-payments/go-live-checklist/2026-09-15.md:126"
+    },
+    {
+      "text": "Payments with real details incur fees.",
+      "location": "raw/adyen/docs/online-payments/go-live-checklist/2026-09-15.md:133"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-online-payments-go-live-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-go-live-checklist]] \u2014 Adyen live-environment setup and real-payment testing checklist covering account, finance, risk, API, and webhook readiness (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The prior integration checklist conditions this go-live stage on live-account application approval; the go-live snapshot alone does not establish approval or production readiness."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/go-live-checklist/2026-09-15.md",
+  "raw_sha256": "f24d750828cb62a23a20e74297338d21a66b70db1f92e45a30c686c97a049d0a",
+  "status": "candidate_ready"
+}

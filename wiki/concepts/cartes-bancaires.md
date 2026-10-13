@@ -31,10 +31,12 @@ Stripe auto-retries on Visa/MC if a CB charge is declined for technical reasons,
 ## Disputes
 
 - Fewer dispute reasons than Visa/MC → lower dispute rate on average
-- **Cannot contest** Cartes Bancaires disputes
+- **Stripe processing:** Stripe says businesses cannot contest Cartes Bancaires disputes. For Adyen's distinct, limited automatic-defense grounds and its non-defendable reason code 45, see [[source-adyen-docs-risk-management-chargeback-guidelines-cartes-bancaires-chargebacks]] and [[adyen-risk-management]].
 - **Dispute fee: 0 EUR**
 - CB may withdraw a dispute → status becomes `won`
 
 ## Sources
+
+- [[source-adyen-docs-risk-management-chargeback-guidelines-cartes-bancaires-chargebacks]] — Adyen-specific automatic-defense grounds and non-defendable reason code 45 (2026-09-15 webpage snapshot).
 
 - [[source-stripe-cartes-bancaires]] — primary source: properties, business countries, dispute rules, integration notes

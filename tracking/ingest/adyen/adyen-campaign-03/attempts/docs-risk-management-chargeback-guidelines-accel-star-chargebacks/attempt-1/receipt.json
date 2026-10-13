@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-accel-star-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Accel and STAR chargebacks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/accel-star-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/accel-star-chargebacks/2026-09-15.md\"\ntags: [adyen, risk-management, disputes, chargebacks, accel, star]\n---\n\n## Overview\n\nThis [[adyen]] guide describes the Accel and STAR chargeback process and defense requirements for fraud and non-fraud reason codes. Its 2026-09-15 snapshot gives reason-dependent initiation windows, a 30-day defense period measured from Notification of Chargeback (NoC), and different reversal and finality paths for the two flows. These are Accel/STAR rules in this captured guide, not a shared rule for other networks or proof of a particular dispute's current deadline. See [[adyen-risk-management]].\n\n## Key takeaways\n\n- The guide says an issuing bank's initiation window runs from the transaction date: **75 days** for Authorization reason codes, **90 days** for Processing error reason codes, and **120 days** for other reason codes. Once Accel or STAR opens a dispute, disputed funds are debited. NoC can arrive after a payment becomes Settled or Refunded; the chargeback debit usually occurs a few days after NoC.\n- In either flow, the **30-day defense period starts at NoC**, and defense documents must be provided within 30 days after receiving it. The merchant may accept in Customer Area or through the Disputes API, closing defense, or upload reason-specific documents to defend. An order overview alone is insufficient. Once Adyen forwards the documents to the scheme at Information Supplied, they cannot be changed; the guide says there is no later opportunity to provide or update information.\n- **Fraud reason codes:** after Information Supplied, Adyen automatically forwards a pre-arbitration case to the issuing bank, which has **30 days** to respond. If the bank accepts, `ChargebackReversed` is final and the disputed amount returns. If it declines, the status remains `Chargeback` and Adyen books `PreArbitrationLost`.\n- **Non-fraud reason codes:** `ChargebackReversed` initially returns the amount **temporarily** while the bank reviews the defense. Bank acceptance makes that reversal final. If the cardholder challenges the evidence, the issuing bank can send pre-arbitration within **30 days of the ChargebackReversed date**. If Adyen accepts that pre-arbitration case, a `SecondChargeback` debits the returned amount again and is final.\n\n## Detail locators\n\n- **Opening, raw lines 19\u201330** \u2014 reason-code initiation windows, initial debit, 30-day defense period, and fraud/non-fraud split.\n- **Fraud flow, raw lines 32\u201381** \u2014 NoC and first chargeback, accept/defend routes, document deadline and finality, automatic pre-arbitration, bank review, and final reversal or continuing chargeback.\n- **Non-fraud flow, raw lines 83\u2013137** \u2014 NoC and defense, temporary reversal, conditional pre-arbitration, and final second chargeback.\n- **See also, raw lines 139\u2013144** \u2014 reason-code, webhook, dispute-management, and Disputes API navigation.\n\n## Related\n\n- [[adyen-risk-management]]\n- [[source-adyen-docs-risk-management-chargeback-guidelines]]\n- [[source-adyen-docs-risk-management-understanding-disputes-dispute-process-and-flow]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/accel-star-chargebacks/2026-09-15|Adyen Accel and STAR chargebacks guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "* **75 days** from the transaction date for [Authorization](/risk-management/understanding-disputes/dispute-reason-codes?tab=chargeback_0_1#star-authorization-chargebacks) reason codes.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/accel-star-chargebacks/2026-09-15.md:21"
+    },
+    {
+      "text": "You must provide your defense documents within **30 days after receiving the NoC**. There is no opportunity later in the process to provide information or to update information you provided.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/accel-star-chargebacks/2026-09-15.md:65 (fraud flow; repeated at line 117 for non-fraud flow)"
+    },
+    {
+      "text": "If the bank accepts the pre-arbitration, we book the **PreArbitrationWon** and **ChargebackReversed** journals. **ChargebackReversed** is the final status.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/accel-star-chargebacks/2026-09-15.md:75"
+    },
+    {
+      "text": "The disputed amount is temporarily transferred back to your account while the issuing bank reviews your defense.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/accel-star-chargebacks/2026-09-15.md:125"
+    },
+    {
+      "text": "The chargeback amount that was previously returned to your account is debited from your account again.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/accel-star-chargebacks/2026-09-15.md:137"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "accel-star-chargebacks-source-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-accel-star-chargebacks]] \u2014 Adyen Accel/STAR fraud and non-fraud chargeback guide with reason-dependent windows, NoC-based defense timing, and distinct reversal/finality paths (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this scheme-specific timing and finality separate from Visa and other chargeback guides."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/accel-star-chargebacks/2026-09-15.md",
+  "raw_sha256": "d1f1fef27052f68089fa99735e456256eeee868a06fa8dbff48df22e462851a1",
+  "status": "candidate_ready"
+}

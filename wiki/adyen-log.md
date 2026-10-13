@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-13] ingest | Adyen website C03
+
+- All 50 exact-manifest sources independently approved and promoted after full initial raw reads and reviews. First full-review approvals: 46/50 (92%); four bounded targeted corrections independently approved. One BillDesk worker-format failure was repaired before its first full review; one reviewer decision-schema correction preserved its semantic verdict. No rejected jobs or repeated full reviews.
+- Updated eight provider concepts and the generic Cartes Bancaires concept; no new concepts. The independently approved Cartes reconciliation attributes the contestation limit to Stripe and preserves Adyen's limited automatic-defense grounds and non-defendable reason code 45.
+- Adyen source_count: 164 = 150 website + 14 GitHub summaries. All 50 pinned raws unchanged; 100 fixed retrieval answers and three coordinator full-read exemplars retained. Structural and typed validation are recorded in `tracking/ingest/adyen/adyen-campaign-03/close-validation.md`.
+- Local historical-snapshot ingestion only; no live-provider verification, collection, rule/schema/runtime changes, commit or push. Unrelated shared-checkout edits preserved.
+
 ## [2026-10-13] ingest | Adyen website C02
 
 - Exact approved 50-page General Docs manifest, with Sol medium workers and independent Sol high first reviewers in a shared pool of at most ten child slots. Full pinned raw reads and 3–5 located quotes per source; coordinator-only writes, concept-before-source promotion, and one aggregate catalog/count close.

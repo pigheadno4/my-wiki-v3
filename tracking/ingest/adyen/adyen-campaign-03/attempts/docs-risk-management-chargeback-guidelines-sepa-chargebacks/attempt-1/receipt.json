@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-sepa-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: SEPA chargebacks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/sepa-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/sepa-chargebacks/2026-09-15.md\"\ntags: [adyen, sepa, direct-debit, disputes, chargebacks]\n---\n\n## Overview\n\nThis Adyen guide describes chargebacks on **SEPA Direct Debit**, a bank-account-based payment method used for ecommerce and recurring payments, and gives notification and prevention guidance. It routes through [[adyen-risk-management]]. The page says **no dispute management process is available for SEPA**; it does not offer a card-style defense workflow. The separate [[source-adyen-docs-online-payments-auto-rescue-sepa]] covers qualified Auto Rescue behavior; this chargeback guide itself does not establish a general right or ability to retry every SEPA chargeback.\n\n## Key takeaways\n\n- Unlike cards, the guide says SEPA has no extra CVC or 3D Secure authentication layer. It says a **shopper** can initiate a chargeback online **up to eight weeks after the SEPA purchase** with no questions asked, or dispute an **unauthorized or incorrect** SEPA payment within **thirteen months** when the shopper provides evidence to the bank. These are distinct triggers and windows; neither is a merchant defense period.\n- A SEPA payment can be **charged back even after a refund** if the issuing bank does not take that refund into account. Adyen warns that refunding amid an ongoing customer dispute is risky and **recommends** contacting the shopper directly when a SEPA chargeback arrives. This warning does not assert that a refund itself prevents or resolves a chargeback.\n- Adyen sends a **CHARGEBACK webhook** when a SEPA chargeback occurs. The page lists `pspReference`, `eventCode: CHARGEBACK`, `paymentMethod: sepadirectdebit`, reason, and `success: true`; its example is explicitly a **test** payload for reason AC01 and includes `defendable: false` and `disputeStatus: Lost`. Do not generalize every example field or example value into a required live schema or infer a merchant defense option from a `defensePeriodEndsAt` field in that example.\n- With no SEPA dispute-management route in this guide, Adyen lists **precautions**: for retailers it recommends holding shipment for seven days to avoid loss if payment is unsuccessful; depending on business model, consider a maximum SEPA transaction value; and state refund timing clearly. These are advice, not mandatory controls or guaranteed prevention. The reason-code table, including AM04 and MS03, is at the raw locator; any Auto Rescue eligibility and attempt limits belong to its separate qualified source.\n\n## Detail locators\n\n- **Introduction, raw lines 14\u201322** \u2014 SEPA scope, absent card authentication and defense process, eight-week and thirteen-month shopper windows, and refund overlap.\n- **Common reasons, raw lines 24\u201340** \u2014 reason-code descriptions, including insufficient funds, no mandate, customer refund request, and data-protection substitution.\n- **Webhook fields and example, raw lines 42\u201387** \u2014 listed notification fields and a `live: false` AC01 example with reason, status, and `defendable` value.\n- **Precautions, raw lines 89\u201395** \u2014 recommendation to hold retail shipment, consider value cap, and explain refund timing.\n\n## Related\n\n- [[adyen]]\n- [[adyen-risk-management]]\n- [[source-adyen-docs-online-payments-auto-rescue-sepa]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/sepa-chargebacks/2026-09-15|Adyen Docs \u2014 SEPA chargebacks (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "There is no dispute management process available for SEPA.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/sepa-chargebacks/2026-09-15.md:18"
+    },
+    {
+      "text": "A shopper can initiate a chargeback online up to eight weeks after the SEPA purchase with no questions asked. Shoppers have thirteen months to dispute an unauthorized or incorrect SEPA payment when they provide evidence to their bank.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/sepa-chargebacks/2026-09-15.md:20"
+    },
+    {
+      "text": "SEPA payments can be charged back by the shopper even if a refund has already been carried out.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/sepa-chargebacks/2026-09-15.md:22"
+    },
+    {
+      "text": "When a SEPA chargeback occurs, we notify you by sending a webhook.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/sepa-chargebacks/2026-09-15.md:44"
+    },
+    {
+      "text": "Although dispute management is not available for SEPA, precautionary measures can help to prevent SEPA chargebacks:",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/sepa-chargebacks/2026-09-15.md:91"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-sepa-chargebacks-source",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-sepa-chargebacks]] \u2014 Adyen SEPA Direct Debit chargeback guide (webpage snapshot, 2026-09-15) for shopper initiation windows, non-defensibility, refund overlap, CHARGEBACK notification, and precautions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The eight-week and thirteen-month periods describe different shopper dispute triggers, not a merchant defense window; the guide says SEPA has no dispute-management process.",
+          "The separate SEPA Auto Rescue source has qualified eligibility and attempt limits; this guide does not authorize universal chargeback retries. Its webhook JSON is a test example, not proof of every live payload field."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/sepa-chargebacks/2026-09-15.md",
+  "raw_sha256": "295bef3f7851016e82ff04c23c48dfc2aa6678da96c22027fa835bcd847dac71",
+  "status": "candidate_ready"
+}

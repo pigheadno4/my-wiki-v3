@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-automate-submitting-referrals",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Referrals API: automate submitting referrals\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/automate-submitting-referrals\"\nraw_files:\n  - \"adyen/docs/risk-management/automate-submitting-referrals/2026-09-15.md\"\ntags: [adyen, risk-management, referrals, risk-lists, api]\n---\n\n## Overview\n\nThis [[adyen]] guide describes using the Referrals API to upload referral details to block and trust lists for [[adyen-risk-management]]. It covers list scope, actions, prerequisites, rejected or skipped values, and examples for email, IP, shopper address, and payment-reference-derived details. The snapshot does not establish a merchant's live configuration or the outcome of a particular payment.\n\n## Key takeaways\n\n- Block and trust lists are maintained per company account by default. A request may use a merchant or company `accountCode`, but the referral is applied at company-account scope. This scope matters before using `block`, `trust`, or `delete`; the actions respectively block or allow payments associated with the detail, or remove the detail from the account. The page does not say a trust entry overrides every other risk rule or guarantees authorization.\n- Supported referral-detail examples are email addresses, IP addresses, billing or shopper addresses, and details connected to a payment's PSP reference. The Referrals API cannot upload custom lists, and API uploads do not allow wildcards; the page says wildcards can be submitted in Customer Area.\n- The API credential needs the `API referral lists management` role. For referral matches to trigger, the relevant block and trust lists must be enabled in the risk profile and a score configured for `block` and, where applicable, `trust`. Uploading a list entry alone is therefore not the complete risk configuration.\n- Invalid referral values are skipped. The email, IP, and address examples also say entries already present can be skipped, with `skippedReferrals` identifying them in the response. For payment-reference-derived details, an already-present referral can be skipped, while the API request fails if a requested payment detail is absent from the payment identified by `pspReference`. Do not treat a sample `success: true` response as proof every submitted entry was accepted.\n- The request examples use different structures: `referrals` with `shopperemail` or `shopperip`, `addressReferrals` with `shopperaddress`, and `paymentReferenceReferrals` with `paymentreference`. They target a `ca-test.adyen.com` endpoint; the guide links the Referrals API reference for details. These examples are test-environment illustrations, not a verified live endpoint or availability claim.\n\n## Detail locators\n\n- `# Automate submitting referrals`, raw lines 14\u201335 \u2014 API purpose, company-account list scope, supported details, custom-list and wildcard limits, and three actions.\n- `## Requirements`, raw lines 37\u201359 \u2014 credential role and risk-profile list/score configuration.\n- `## Add email address referrals`, raw lines 61\u2013105 \u2014 `shopperemail` request, invalid and already-present skip behavior, and response.\n- `## Add IP address referrals`, raw lines 107\u2013151 \u2014 `shopperip` example, skipped value, and response.\n- `## Add shopper address referrals`, raw lines 153\u2013207 \u2014 `shopperaddress` payload and invalid country-code example.\n- `## Add referrals based on the payment reference`, raw lines 209\u2013258 \u2014 `paymentreference` payload, `pspReference` and requested detail types, skip behavior, and absent-detail request failure.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-risk-management]] \u2014 provider risk-management concept and source routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/automate-submitting-referrals/2026-09-15|Automate submitting referrals (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "You can use our [Referrals API](/risk-management/automate-submitting-referrals/referrals-api-reference) to automate uploading lists of referrals and referral details to [block and trust lists](/risk-management/configure-standard-risk-rules/referral-rules).",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/2026-09-15.md:16"
+    },
+    {
+      "text": "You can upload referrals using a merchant or a company `accountCode`, but the referral will be applied on the company account.",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/2026-09-15.md:18"
+    },
+    {
+      "text": "You cannot upload [custom lists](/risk-management/configure-manual-risk/configure-custom-risk-rules#create-custom-list-comparison) using the Referrals API.",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/2026-09-15.md:27"
+    },
+    {
+      "text": "If the request contains referral values that are not valid, the referral will be skipped. Wildcards are not allowed when uploading using the Referrals API, but can be submitted through your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/2026-09-15.md:35"
+    },
+    {
+      "text": "The API request fails if the payment detail is not present in the payment with the provided `pspReference`.",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/2026-09-15.md:215"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-referrals-api-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-automate-submitting-referrals]] \u2014 2026-09-15 Adyen Referrals API guide for company-account block/trust list scope, actions and setup, input limits, skip/failure behavior, and test-endpoint payload examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/automate-submitting-referrals/2026-09-15.md",
+  "raw_sha256": "c40824965180e3cb78e03a54267d681eddd372dd22f8d9d86223b3cca6cbd803",
+  "status": "candidate_ready"
+}

@@ -23,6 +23,12 @@ The captured Advanced-flow guide lists Web Components v5.0.0 or later and descri
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-donations-terms-and-conditions]] — Giving page requiring display of the partner nonprofit's Privacy Policy and Terms and Conditions, with flexible presentation and an illustrative fill-in template (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-donations-testing]] — Adyen Giving test-and-live verification guide (webpage snapshot, 2026-09-15) for campaign activation, donation fixtures or live donation, and outcome checks.
+
+
 - [[source-adyen-docs-online-payments-donations]] — Giving overview for nonprofit and campaign setup, eligibility, donation options, campaign lifecycle, and terms (webpage snapshot, 2026-09-15).
 
 - [[source-adyen-docs-online-payments-donations-integration-options-sessions-flow]] — 2026-09-15 Adyen webpage guide to Web Drop-in and Components donations using Sessions, optional UI callbacks and the merchant `DONATION` webhook.

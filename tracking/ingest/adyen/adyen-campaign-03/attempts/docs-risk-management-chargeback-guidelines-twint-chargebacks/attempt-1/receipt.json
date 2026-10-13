@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-twint-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen TWINT chargebacks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/twint-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/twint-chargebacks/2026-09-15.md\"\ntags: [adyen, risk-management, disputes, chargebacks, twint]\n---\n\n## Overview\n\nThis [[adyen]] guide describes the TWINT chargeback flow within [[adyen-risk-management]], including the shopper initiation window, merchant defense window, document submission, journal and webhook events, and resulting debit. The periods and fee statement are from a 2026-09-15 snapshot; an individual dispute's current deadline and fees require case-specific verification.\n\n## Key takeaways\n\n- A shopper can initiate a TWINT chargeback directly with TWINT up to 100 days after the payment, refund, or expected receipt of goods or services. When TWINT opens the dispute, the merchant has 10 calendar days to defend and the disputed funds have not yet been charged back.\n- If the merchant does not respond within that 10-day window, the dispute is lost and the funds are charged back. If the merchant defends in time and wins, the guide says there is no account debit. The page states that there are \u201ccurrently no chargeback fees for TWINT\u201d in this captured version; it is not a guarantee of later fee policy.\n- At Notification of Chargeback (NoC), the dispute is assigned in Customer Area and a `NOTIFICATION_OF_CHARGEBACK` webhook is sent, while the `Chargeback` journal and account debit have not yet occurred. Accepting loses the dispute, ends defense, and debits the payment amount. To defend, upload the complete package through Customer Area or the Disputes API; the guide says there is no later opportunity to add information.\n- After Adyen receives the defense, `InformationSupplied` is booked and the documents can no longer be changed. Adyen then forwards them to TWINT and books `AcquirerPreArbitrationUploaded`, usually soon after. If TWINT has not notified Adyen of a loss 45 calendar days after that journal's booking, the dispute can be considered won and a `PREARBITRATION_WON` webhook is sent. A loss produces both `PREARBITRATION_LOST` and `CHARGEBACK` webhooks.\n- A chargeback is the final status when the merchant accepts it or TWINT refuses the defense: the amount is debited, the `Chargeback` journal is booked, and a `CHARGEBACK` webhook is sent. This TWINT sequence and its clocks should not be generalized to other schemes.\n\n## Detail locators\n\n- `# TWINT chargebacks`, raw lines 15\u201330 \u2014 initiation window and its three possible starting events, 10-day defense, no-debit win, dated fee statement, 45-day conditional won path, and flow list.\n- `## Notification of Chargeback`, raw lines 34\u201345 \u2014 NoC and webhook, no initial debit, acceptance/defense choices, and complete defense package.\n- `## Information Supplied`, raw lines 47\u201349 \u2014 document lock, journal, and webhook.\n- `## Acquirer Pre-arbitration uploaded`, raw lines 51\u201353 \u2014 forwarding to TWINT and `AcquirerPreArbitrationUploaded` journal.\n- `## Chargeback`, raw lines 55\u201357 \u2014 accepted or refused-defense finality, debit, journal, and webhook.\n- `## Reason codes and guidelines`, raw lines 59\u201361 \u2014 route to TWINT reason-code requirements.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-risk-management]] \u2014 provider risk and dispute source routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/twint-chargebacks/2026-09-15|TWINT chargebacks (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Shoppers can initiate chargebacks directly with TWINT up to 100 days after the payment, refund, or expected receipt of goods or services. When TWINT opens a dispute, the funds are not yet charged back from your account, and you have 10 calendar days to defend the dispute.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/twint-chargebacks/2026-09-15.md:19"
+    },
+    {
+      "text": "If you do not respond within 10 calendar days, the dispute is lost in favor of the shopper, and the funds are charged back. If you defend the dispute within the timeframe and win, no debit will be made to your account. There are currently no chargeback fees for TWINT.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/twint-chargebacks/2026-09-15.md:21"
+    },
+    {
+      "text": "TWINT disputes can be considered won if, after 45 calendar days from booking the **AcquirerPreArbitrationUploaded** journal, TWINT did not notify Adyen that the dispute was lost.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/twint-chargebacks/2026-09-15.md:23"
+    },
+    {
+      "text": "There is no opportunity later in the process to provide information.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/twint-chargebacks/2026-09-15.md:45"
+    },
+    {
+      "text": "You accepted the chargeback or TWINT reviewed and refused your defense. This is the final status. The disputed amount is debited from your account, the **Chargeback** journal is booked, and we send you a [CHARGEBACK](https://docs.adyen.com/api-explorer/Webhooks/latest/post/CHARGEBACK) webhook.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/twint-chargebacks/2026-09-15.md:57"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-twint-chargebacks-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-twint-chargebacks]] \u2014 2026-09-15 TWINT dispute guide for 100-day initiation anchors, 10-calendar-day defense, conditional 45-day won path, journals/webhooks, debit outcomes, and its dated no-fee statement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/twint-chargebacks/2026-09-15.md",
+  "raw_sha256": "f15ecd13f55a1195db6bc545173a39ef903c439d2282b1c58a6692db7afda8a3",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-risk-management-chargeback-uploader",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Chargeback Uploader\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-uploader\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-uploader/2026-09-15.md\"\ntags: [adyen, risk-management, protect, chargebacks, csv]\n---\n\n## Overview\n\nThis [[adyen]] guide describes uploading chargeback data from an external acquirer into the Adyen payments platform so Protect can use it. **The Chargeback Uploader does not manage disputes**; merchants must dispute those chargebacks with the external acquirer. The 2026-09-15 snapshot covers Customer Area CSV upload, company-level placement, and an irreversible transaction-status update, not defense submission, deletion, or reporting actions. See [[adyen-risk-management]].\n\n## Key takeaways\n\n- The guide requires an online payments integration and the **Upload Chargebacks** Customer Area role, which the merchant asks Adyen Support to enable. After selecting a merchant account, the merchant uses **Risk & disputes \u2192 Disputes \u2192 Upload**. Chargebacks within one company can be uploaded under one merchant account; separate uploads for each merchant are not necessary. A CSV can contain **at most 1,000 payments**.\n- Adyen processes the uploaded CSV request and updates transaction status. **Once updated, that status cannot be reversed or amended.** The guide does not present the upload as submitting a chargeback defense or changing the external acquirer's dispute outcome.\n- The CSV table marks `pspreference`, `amount`, and `reason` as required headers. `pspreference` identifies the transaction. The `amount` description says the full transaction value is used by default; a partial chargeback requires an amount in minor units without a decimal point. The `reason` description asks for a scheme-specific code; if left empty, the chargeback is considered non-fraudulent, while the value `fraud` is offered when the code is unknown but fraud should be flagged. These row descriptions do not establish that a required header may be omitted.\n\n## Detail locators\n\n- **Purpose and boundary, raw lines 15\u201321** \u2014 external-acquirer data for Protect and dispute-management exclusion.\n- **Requirements, raw lines 23\u201331** \u2014 online integration, enabled uploader role, and 1,000-chargeback CSV limit.\n- **Upload sequence, raw lines 33\u201350** \u2014 Support enablement, merchant-account and company scope, Customer Area route, processing, and irreversible status update.\n- **Required fields, raw lines 52\u201360** \u2014 marked CSV headers, full versus partial amount in minor units, and reason-code/fraud classification behavior.\n\n## Related\n\n- [[adyen-risk-management]]\n- [[source-adyen-docs-risk-management-manage-disputes]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-uploader/2026-09-15|Adyen Chargeback Uploader guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The Chargeback Uploader does not allow you to manage disputes. You must dispute chargebacks directly with your external acquirer.",
+      "location": "raw/adyen/docs/risk-management/chargeback-uploader/2026-09-15.md:21"
+    },
+    {
+      "text": "It is not necessary to upload chargebacks for each merchant separately.\u00a0You can upload any chargebacks within a company under one merchant.",
+      "location": "raw/adyen/docs/risk-management/chargeback-uploader/2026-09-15.md:39"
+    },
+    {
+      "text": "When the transaction status has been updated it cannot be reversed or amended.",
+      "location": "raw/adyen/docs/risk-management/chargeback-uploader/2026-09-15.md:48"
+    },
+    {
+      "text": "The uploader accepts CSVs of 1,000 payments or fewer at a time. The following headers are required in the CSV:",
+      "location": "raw/adyen/docs/risk-management/chargeback-uploader/2026-09-15.md:54"
+    },
+    {
+      "text": "If left empty, the chargeback will be considered non-fraudulent. If the reason code is not known and you still want to flag the chargeback as fraudulent, send the value **fraud** and Adyen will map it to the correct reason code.",
+      "location": "raw/adyen/docs/risk-management/chargeback-uploader/2026-09-15.md:60 (reason row)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "chargeback-uploader-source-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-uploader]] \u2014 Adyen guide to CSV import of external-acquirer chargebacks for Protect, with company placement, 1,000-payment CSV limit, irreversible status update, and external dispute ownership (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Uploader status updates cannot be reversed or amended after processing; dispute defense remains with the external acquirer."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-uploader/2026-09-15.md",
+  "raw_sha256": "863d6bd0c9b93d6be10dac016ae7a275b2eea3ff1a045c5347b027deac23fcd0",
+  "status": "candidate_ready"
+}

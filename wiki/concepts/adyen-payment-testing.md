@@ -15,6 +15,9 @@ These fixtures exercise test integration behavior; they do not prove production 
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-donations-testing]] — Giving-specific test-card and environment verification guide (webpage snapshot, 2026-09-15), with separate live campaign and donation checks.
+
+
 - [[source-adyen-docs-development-resources-testing-3d-secure-2-authentication]] — Adyen 3DS2 test-scenario and card fixture guide (webpage snapshot, 2026-09-15) for browser/native challenges, Advanced-flow actions, standalone-authentication webhooks, and no-liability-shift simulation.
 
 

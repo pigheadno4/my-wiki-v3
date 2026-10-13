@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-reversal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen online payment reversal\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/reversal\"\nraw_files:\n  - \"adyen/docs/online-payments/reversal/2026-09-15.md\"\ntags: [adyen, online-payments, reversal, cancel, refund, webhooks]\n---\n\n## Overview\n\nThis [[adyen]] guide uses a reversal when the merchant is unsure whether an online payment has been captured. For an uncaptured payment, reversal cancels it; for a captured payment, reversal refunds it. This boundary connects the [[adyen-refunds]] and [[adyen-online-payments]] routes. The page documents request and webhook behavior in a 2026-09-15 snapshot, not an observed payment outcome.\n\n## Key takeaways\n\n- Reversal chooses between cancellation and refund based on capture state. It is unavailable after multiple partial captures or when the payment request or Adyen for Platforms capture request includes split data. In those cases, determine capture state and use the separate cancel or refund route.\n- The documented Checkout API call is `POST /payments/{paymentPspReference}/reversals`, using the original payment PSP reference in the path and the processing `merchantAccount` in the body. A merchant `reference` is optional. The examples show a test endpoint and API version, so they do not establish a live endpoint for an account.\n- The response contains a separate `pspReference` for the reversal request; its sample `status: received` records request receipt, not a confirmed cancellation or completed refund. Match the original payment through the webhook's `originalReference` and the reversal through its `pspReference`.\n- The `CANCEL_OR_REFUND` webhook delivers the reversal-request outcome asynchronously. The page describes `success` specifically as the outcome of refund validations: `false` includes a reason to review; `true` means Adyen's validation succeeded and a refund request was sent to the card scheme. That usually succeeds, but a later scheme rejection or reversal remains possible and is documented through `REFUND_FAILED` or `REFUNDED_REVERSED`. Do not read `received` or `success: true` as final shopper fund receipt.\n- The requirements table calls for listening to `CANCEL_OR_REFUND` events. Its Customer Area roles are described for editing capture settings; the page does not say those roles are all API reversal prerequisites.\n\n## Detail locators\n\n- `# Reversal`, raw lines 15\u201324 \u2014 uncertainty about capture and cancel-versus-refund choice.\n- `## Requirements`, raw lines 26\u201336 \u2014 integration type, capture-setting roles, webhook, multiple-partial-capture and split-data exclusions.\n- `## Reverse a payment`, raw lines 38\u201348 \u2014 endpoint, path and body fields, optional reference, and original PSP-reference routes.\n- `## Reverse a payment`, raw lines 50\u201385 \u2014 test-environment examples and the response's reversal `pspReference` and sample `received` status.\n- `## CANCEL_OR_REFUND webhook`, raw lines 88\u2013129 \u2014 asynchronous outcome, reference correlation, refund-validation meanings and later exceptions; the JSON is an example with `modification.action: refund`.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-refunds]] \u2014 captured-payment refund behavior and later refund-failure routes.\n- [[adyen-online-payments]] \u2014 online-payments integration and lifecycle routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/reversal/2026-09-15|Adyen reversal (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "A reversal does one of the following:\n\n* If the payment has not been captured, it [cancels](/online-payments/cancel) the payment.\n* If the payment has been captured, it [refunds](/online-payments/refund) the payment.",
+      "location": "raw/adyen/docs/online-payments/reversal/2026-09-15.md:21-24"
+    },
+    {
+      "text": "You cannot use a reversal for the following cases:- If you have made [multiple partial captures](/online-payments/capture) for the payment.",
+      "location": "raw/adyen/docs/online-payments/reversal/2026-09-15.md:35"
+    },
+    {
+      "text": "When the payment includes [split data](/classic-platforms/processing-payments#providing-split-instructions) in the payment request or in the capture request for Adyen for Platforms.",
+      "location": "raw/adyen/docs/online-payments/reversal/2026-09-15.md:36"
+    },
+    {
+      "text": "The [/payments/{paymentPspReference}/reversals](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/\\(paymentPspReference\\)/reversals) \u00a0response includes a `pspReference`, Adyen's unique reference\u00a0associated with this reversal\u00a0request.",
+      "location": "raw/adyen/docs/online-payments/reversal/2026-09-15.md:76"
+    },
+    {
+      "text": "You receive the outcome of the reversal request asynchronously, in a [webhook](/development-resources/webhooks) message that includes the following:",
+      "location": "raw/adyen/docs/online-payments/reversal/2026-09-15.md:90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-refunds-reversal-route",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-reversal]] \u2014 2026-09-15 Adyen webpage guide to cancel-or-refund choice when capture state is uncertain, exclusions for multiple partial captures and split data, and request receipt versus asynchronous webhook and later refund exceptions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/reversal/2026-09-15.md",
+  "raw_sha256": "dca4d07a83de3638e227db29b3d398d3113be468a2f43b1499aeac745b966c46",
+  "status": "candidate_ready"
+}

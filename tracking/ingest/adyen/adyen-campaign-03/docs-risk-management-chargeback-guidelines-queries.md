@@ -1,0 +1,7 @@
+# Independent retrieval checks — Adyen chargeback guidelines
+
+1. **Purpose, scope, and inference boundary.** This 2026-09-15 Adyen snapshot defines a chargeback as an issuing-bank or payment-method action on behalf of a cardholder to collect funds back, then lists scheme- and payment-method-specific guides (candidate lines 14–22; raw lines 15–42). It is a directory. It supplies no common defense deadline, evidence procedure, appeal path, or outcome rule; those must come from the applicable linked guide and remain scheme- or method-qualified.
+
+2. **Index → concept → source → raw route.** `wiki/index.md` links `[[adyen-index]]` (line 10), the Adyen index links `[[adyen-risk-management]]` (line 154), and the approved suggestion adds `[[source-adyen-docs-risk-management-chargeback-guidelines]]` under that concept's **Sources**. The candidate source links back to the concept, to retained ACH/PayPal/Visa guides, and to its pinned raw under **Raw Sources** (candidate lines 19–29). The central capability is choosing the appropriate guide from the directory: ACH at raw line 22, Mastercard at line 33, PayPal at line 36, and Visa at line 42. The essential warning is that the directory gives no shared defense rules; inspect the selected guide for deadlines, qualifications, required action, and outcome semantics.
+
+**Gaps:** Coordinator promotion must publish the directory source and reciprocal concept link. This landing page alone does not verify current scheme procedures or an individual dispute outcome.

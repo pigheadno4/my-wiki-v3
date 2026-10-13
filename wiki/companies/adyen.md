@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 114
+source_count: 164
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-One hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+One hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -130,8 +130,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 100 (Adyen C01 + C02).
-- Total source summaries: 114 (100 website + 14 GitHub).
+- Ingested website documentation sources: 150 (Adyen C01 + C02 + C03).
+- Total source summaries: 164 (150 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 21
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -246,6 +246,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-development-resources-currency-codes]] — Adyen Currency Codes, Minor Units, and FX Fees (webpage, 2026-10-12)
 - [[source-adyen-docs-development-resources-testing-3d-secure-2-authentication]] — Adyen Docs: Testing 3D Secure 2 authentication (webpage, 2026-10-12)
 - [[source-adyen-docs-development-resources-security-incidents]] — Adyen Handling Security Incidents (webpage, 2026-10-12)
+
+### Website documentation — Campaign 03
+
+- [[source-adyen-docs-risk-management-configure-risk-settings]] — Adyen Docs: Configure risk settings (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-create-a-risk-profile]] — Adyen Create and Assign Risk Profiles (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-configure-your-risk-profile]] — Configure your risk profile | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-understanding-disputes]] — Adyen Understanding and Defending Disputes (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines]] — Adyen Docs: Chargeback guidelines (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-fraud-data-collection]] — Adyen Docs: Data collection to detect fraud (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-go-live-checklist]] — Adyen Online Payments Go-Live Checklist (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-klarna-chargebacks]] — Klarna chargebacks | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-configure-your-risk-profile-custom-rules]] — Adyen Protect Custom Risk Rules (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-configure-your-risk-profile-risk-lists]] — Adyen Docs: Risk lists (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-account-updater-batch-account-updater]] — Adyen Docs: Batch Account Updater (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-analytics-and-data-tracking]] — Adyen Drop-in and Components analytics and data tracking (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-manage-disputes]] — Adyen Docs: Manage disputes (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-configure-your-risk-profile-machine-learning-rules]] — Adyen Machine Learning Risk Rules (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-riverty-chargebacks]] — Riverty chargebacks | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-automate-submitting-referrals-referrals-api-reference]] — Adyen Referrals API Reference (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-pulse-chargebacks]] — Adyen Docs: PULSE chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-accel-star-chargebacks]] — Adyen Docs: Accel and STAR chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-understanding-disputes-dispute-timeframes]] — Adyen dispute timeframes (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-elo-chargebacks]] — Adyen Docs: Elo chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-auspaynet-compliance-guide]] — Adyen AusPayNet Card-Not-Present Compliance Guide (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-payments-india-compliance-guide-go-live-india]] — India go-live checklist | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-afterpay-chargebacks]] — Adyen Afterpay and Clearpay Chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-automate-submitting-referrals]] — Adyen Referrals API: automate submitting referrals (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-mastercard-chargebacks]] — Adyen Docs: Mastercard chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-diners-discover-chargebacks]] — Adyen Docs: Diners/Discover chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-run-ab-test-experiments]] — Adyen Risk Profile A/B Experiments (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-donations-testing]] — Adyen Docs: Test your Giving integration (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-shopper-dna]] — Shopper DNA | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-configure-your-risk-profile-post-auth-rules]] — Adyen Post-authorization Risk Rules (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-unionpay-chargebacks]] — Adyen Docs: UnionPay chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-american-express-chargebacks]] — Adyen American Express chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-payments-india-compliance-guide]] — Adyen Docs: Payments India compliance guide (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-jcb-chargebacks]] — Adyen JCB Chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-mexicodomestic-chargebacks]] — Adyen Docs: Mexico domestic chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-configure-your-risk-profile-risk-field-reference]] — Adyen Data Quality and Risk Field Reference (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-billdesk-chargebacks]] — India domestic chargebacks with BillDesk | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-control-traffic]] — Adyen Docs: Control traffic (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-reversal]] — Adyen online payment reversal (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-eftpos-chargebacks]] — Adyen Docs: eftpos chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-sepa-chargebacks]] — Adyen Docs: SEPA chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-nyce-chargebacks]] — Adyen NYCE chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-online-payouts-payout-webhook]] — Payout webhook | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-twint-chargebacks]] — Adyen TWINT chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-uploader]] — Adyen Docs: Chargeback Uploader (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-cash-app-pay-chargebacks]] — Adyen Docs: Cash App Pay chargebacks (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-online-payouts-payouts-to-a-bank-account]] — Adyen Docs: Payout to a bank account (webpage, 2026-10-13)
+- [[source-adyen-docs-online-payments-donations-terms-and-conditions]] — Terms and Conditions for Giving | Adyen Docs (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-skip-risk-rules]] — Adyen skip risk rules (webpage, 2026-10-13)
+- [[source-adyen-docs-risk-management-chargeback-guidelines-cartes-bancaires-chargebacks]] — Adyen Docs: Cartes Bancaires chargebacks (webpage, 2026-10-13)
 
 ### GitHub repository evidence
 

@@ -11,6 +11,12 @@ Adyen's payout documentation covers outbound disbursements to suppliers, partner
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-online-payouts-payouts-to-a-bank-account]] — Adyen legacy Payout API bank-account request examples for SEPA and US recipients, with Transfers API migration direction (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-online-payouts-payout-webhook]] — legacy Payout API webhook guide separating staged bank/wallet request acknowledgement and review events from instant-card payout events and financial-institution reversal (webpage snapshot, 2026-09-15).
+
+
 - [[source-adyen-docs-online-payments-online-payouts-payouts-to-bank-accounts-and-wallets]] — unversioned legacy Payout API guide to staged bank/PayPal-wallet payouts, separate submitter/reviewer roles, seven-day review expiry, and recipient-region limits (webpage snapshot, 2026-09-15).
 
 

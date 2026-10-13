@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-nyce-chargebacks",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen NYCE chargebacks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/nyce-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15.md\"\ntags: [adyen, risk-management, disputes, chargebacks, nyce]\n---\n\n## Overview\n\nThis Adyen documentation snapshot describes the NYCE chargeback sequence, the merchant's defense window, and what each subsequent state means. Its deadlines and defense rules apply to this NYCE flow.\n\n## Key takeaways\n\n- A NYCE Notification of Chargeback (NoC) may arrive immediately after a payment becomes Settled or Refunded. Adyen sends a `NOTIFICATION_OF_CHARGEBACK` webhook; the debit usually follows a few days later. The merchant's 30-day defense period starts at the NoC, not at the debit or first-chargeback notice.\n- At the first chargeback, Adyen assigns the dispute in Customer Area, books `NotificationOfChargeback` and `Chargeback` journals, sends a `CHARGEBACK` webhook, and debits the chargeback amount. The merchant may accept via Customer Area or Disputes API, closing the case for defense, or upload relevant defense documents through either channel.\n- The defense must address the dispute reason; an order overview alone is insufficient. Documents are due within 30 days after the NoC, with no later opportunity to provide or update them. After Adyen forwards submitted documents to the scheme, they cannot be changed; Adyen books `InformationSupplied` and sends its webhook.\n- A Chargeback Reversed returns the disputed amount and triggers a journal and webhook, but the issuing bank is still reviewing the defense. The reversal becomes final only if the bank accepts the defense.\n- If the merchant defended the first chargeback, the issuing bank may initiate a second chargeback within 30 days of Chargeback Reversed. The returned amount is debited again, with a `SecondChargeback` journal and webhook. NYCE does not permit second-chargeback defense documents. The page advises contacting the issuing bank directly if the merchant has enough information to challenge it; it does not promise a successful challenge.\n\n## Detail locators\n\n- NYCE flow and overall 30-day period: [[raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15|raw snapshot]], lines 19\u201327.\n- NoC timing, webhook, debit timing, and defense-clock start: [[raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15|raw snapshot]], lines 31\u201337.\n- First chargeback, merchant actions, evidence standard, and submission deadline: [[raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15|raw snapshot]], lines 39\u201352.\n- Information Supplied and provisional Chargeback Reversed: [[raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15|raw snapshot]], lines 54\u201362.\n- Second-chargeback timing, renewed debit, and defense limitation: [[raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15|raw snapshot]], lines 64\u201370.\n\n## Related\n\n- [[adyen]]\n- [[adyen-risk-management]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15|Adyen Docs \u2014 NYCE chargebacks (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "When NYCE opens a dispute, the funds are charged back, and you have **30 days** to defend the dispute or accept it.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15.md:19"
+    },
+    {
+      "text": "The NoC can occur immediately after the payment status changes to Settled or Refunded.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15.md:33"
+    },
+    {
+      "text": "You must provide your defense documents within **30 days after receiving the NoC**. There is no opportunity later in the process to provide information or to update information you provided.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15.md:52"
+    },
+    {
+      "text": "The issuing bank is still reviewing your defense. If they accept your defense, this is the final status.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15.md:62"
+    },
+    {
+      "text": "NYCE does not allow supplying defense documents for a second chargeback.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15.md:70"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-nyce-chargebacks-source",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-nyce-chargebacks]] \u2014 NYCE NoC-based 30-day defense deadline, provisional reversal, and conditional second-chargeback rules.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/nyce-chargebacks/2026-09-15.md",
+  "raw_sha256": "b52d763830c933ee51abfd3f8af4d583c2912993cdf639617305b30296799941",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-risk-management-fraud-data-collection",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Data collection to detect fraud\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/fraud-data-collection\"\nraw_files:\n  - \"adyen/docs/risk-management/fraud-data-collection/2026-09-15.md\"\ntags: [adyen, protect, fraud-data, web, privacy, sdk]\n---\n\n## Overview\n\nThis Adyen Web integration guide explains fraud-signal collection for [[adyen-risk-management|Protect]]: which checkout routes collect and send data automatically, how a merchant-built API-only page uses the standalone collection SDK, and how collection can extend beyond checkout. It covers device and behavior information, cookies, privacy considerations, and the server handoff to `riskData.clientData`. The described data collection is a separate configuration setting from Protect itself.\n\n## Key takeaways\n\n- For Web Drop-in and Components in Advanced or Sessions flow, Hosted Checkout, and Web API-only using the Custom Card Component, the guide says checkout-page data is collected and sent automatically. A merchant-built Web API-only checkout requires added SDK configuration. An API-only integration that processes raw card data has additional PCI compliance requirements; this page does not establish that those requirements are met.\n- The checkout risk collection setting defaults to **on** for the automatic routes and is **independent of Protect configuration**. The `AdyenCheckout` `risk.enabled` setting can turn collection off; Adyen warns this raises fraud exposure. Protect use separately requires setting up risk and at least one profile. Thus, turning Protect off should not be read as proof that client data collection stopped.\n- For a merchant-built API-only Web checkout, the merchant loads the standalone SDK in the iframe where card details are entered, obtains data with `adyenGetData()`, and has its server send that data in `riskData.clientData` on `/payments`. Test and live script URLs differ. The example curl body places a JavaScript call directly where JSON would need a value; it illustrates the handoff rather than a copy-ready request.\n- For Web integrations, adding the collection script to non-checkout pages is optional. The guide says Drop-in or Components send data accumulated from those pages when the shopper checks out. Adyen's SDK data table lists cookies with 30-day/session browser lifetimes and device/behavior information with an indefinite lifetime in this snapshot; the precise categories and examples are at raw lines 67\u201376.\n- Adyen tells the merchant to assess applicable privacy rules **before** processing shopper data, consult legal expertise for its operating regions, provide appropriate transparency/consent where required, and track shoppers who consent. The page gives European consent as an example; it is not independent or current legal advice. Its claims about anonymized cross-customer use and no marketing use are Adyen's statements in the captured page, not verification of a particular merchant's data handling.\n\n## Detail locators\n\n- **Requirements, raw lines 21\u201333** \u2014 automatic versus configured Web routes and the API-only raw-card PCI caveat.\n- **Data privacy, raw lines 35\u201342** \u2014 merchant obligations, regional-law variation, transparency, consent, and consent tracking examples.\n- **How it works / How Protect uses the data, raw lines 44\u201365** \u2014 collection actors, checkout and other-page scope, device/behavior examples, Adyen usage statements, and Protect setup.\n- **Data collected by the SDK, raw lines 67\u201376** \u2014 cookie, device, and behavior categories, purposes, domains, and snapshot lifetimes.\n- **Configure Drop-in and Components, raw lines 78\u2013115** \u2014 independent default `risk.enabled`, opt-out warning, and optional script on other pages.\n- **Configure API only, raw lines 117\u2013195** \u2014 environment-specific SDK URLs, checkout iframe placement, `adyenGetData()`, server `riskData.clientData` field, and illustrative test `/payments` request.\n\n## Related\n\n- [[adyen]]\n- [[adyen-risk-management]]\n- [[adyen-online-payments]]\n- [[adyen-pci-dss-compliance]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/fraud-data-collection/2026-09-15|Adyen Docs \u2014 Data collection to detect fraud (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "It is your responsibility to keep track of the shoppers who have given consent.",
+      "location": "raw/adyen/docs/risk-management/fraud-data-collection/2026-09-15.md:42"
+    },
+    {
+      "text": "data is automatically collected from the checkout page and sent to Adyen.",
+      "location": "raw/adyen/docs/risk-management/fraud-data-collection/2026-09-15.md:48"
+    },
+    {
+      "text": "When you have built an API-only integration for Web, and have created your own checkout page, you can add a script that calls our standalone data collection SDK",
+      "location": "raw/adyen/docs/risk-management/fraud-data-collection/2026-09-15.md:50"
+    },
+    {
+      "text": "It is a separate setting that is independent of your Protect configuration.",
+      "location": "raw/adyen/docs/risk-management/fraud-data-collection/2026-09-15.md:80"
+    },
+    {
+      "text": "include the data in [`riskData.clientData`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-riskData).",
+      "location": "raw/adyen/docs/risk-management/fraud-data-collection/2026-09-15.md:165"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-fraud-data-collection-source",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-fraud-data-collection]] \u2014 Adyen Web fraud-data collection guide (webpage snapshot, 2026-09-15) distinguishing automatic checkout collection from API-only SDK handoff, Protect-independent defaults, privacy duties, and collected-data categories.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Risk data collection is on by default for stated Web checkout routes independently of Protect configuration; disabling Protect does not itself establish collection is off.",
+          "Adyen's privacy discussion is region-conditional merchant guidance, not independent current legal authority; API-only raw-card processing has separate PCI requirements."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/fraud-data-collection/2026-09-15.md",
+  "raw_sha256": "4bc1d0b35a1f9452171491f6e4cf4711b2c61174ba6e467e2d29ff95fd47585e",
+  "status": "candidate_ready"
+}

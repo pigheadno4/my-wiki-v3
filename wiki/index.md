@@ -54,6 +54,6 @@
 - [[acp]] — Agentic Commerce Protocol: open standard (Stripe+OpenAI+Meta), 5 capabilities, delegate payment/authentication, OpenAPI spec 2026-04-17
 - [[ucp]] — Universal Commerce Protocol: open standard for agentic commerce interop, checkout/identity/order/payment token exchange, Stripe + OpenAI ACP context
 - [[cit-mit]] — CIT/MIT: customer vs merchant-initiated transactions, MIT compliance requirements, card brand change rule
-- [[cartes-bancaires]] — Cartes Bancaires: France local network, >95% co-badged, EEA choice requirement, 0 EUR dispute fee, cannot contest
+- [[cartes-bancaires]] — Cartes Bancaires: France local network, >95% co-badged, EEA choice requirement, 0 EUR dispute fee, Stripe dispute contestation limit; Adyen automatic-defense route
 - [[eftpos-australia]] — eftpos Australia: local debit network, LCR, no manual capture, hold→Visa/MC, disclosure requirement
 - [[co-badged-cards]] — Co-badged cards compliance: EU 2015/751, EEA Cartes Bancaires + DE Girocard, 3 requirements, network selector integration

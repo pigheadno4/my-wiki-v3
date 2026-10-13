@@ -15,6 +15,9 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-account-updater-batch-account-updater]] — Adyen Batch Account Updater guide (webpage snapshot, 2026-09-15) for SFTP or scheduled single-card requests, encrypted batch result files, and follow-up stored-card actions.
+
+
 - [[source-adyen-docs-online-payments-account-updater-real-time-account-updater]] — Adyen Real Time Account Updater guide for eligible in-processing card updates and retry, optional response data, statuses, and test scenarios (webpage snapshot, 2026-09-15).
 
 

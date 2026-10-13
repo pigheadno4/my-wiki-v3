@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-american-express-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen American Express chargebacks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/american-express-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/american-express-chargebacks/2026-09-15.md\"\ntags: [adyen, risk-management, disputes, chargebacks, american-express]\n---\n\n## Overview\n\nThis [[adyen]] guide describes American Express dispute stages and merchant defense actions within [[adyen-risk-management]]. An RFI may precede a chargeback, but American Express can start directly with a Notification of Chargeback (NoC). The page is a 2026-09-15 documentation snapshot; it does not establish the current state or deadline of an individual case.\n\n## Key takeaways\n\n- If an RFI is sent, the merchant can upload supporting documents within 14 days. No funds have been deducted at that stage. If the merchant does not respond and then receives a chargeback for the transaction, this guide says the chargeback cannot be defended. American Express can omit the RFI and begin at NoC under certain circumstances.\n- NoC is sent when the issuer initiates the chargeback. The merchant has 14 days from receiving NoC to submit defense documents through Customer Area or the Disputes API. NoC occurs before the funds are deducted, yet the guide says it always indicates an upcoming chargeback debit. Accepting the chargeback in Customer Area loses the dispute and ends the ability to defend.\n- Adyen forwards submitted documents to the scheme at an `InformationSupplied` stage, after which they cannot be changed. The guide says there is no later opportunity to add documents or other information; it advises addressing the dispute reason rather than submitting only an order overview.\n- At the first chargeback, the account is debited and the `Chargeback` journal is booked, usually a few days after NoC. The case remains open for defense until the defense window expires. If the issuer rejects the defense after submission, the dispute is lost. If accepted, `ChargebackReversed` is booked and the disputed amount is transferred back; that is normally final, but American Express can exceptionally reopen a case closed in the merchant's favor, book `SecondChargeback`, and debit the account again.\n- This page names the relevant journals and financial movements but states no chargeback fee amount or fee rule. Do not infer that fees are zero or apply another scheme's fees.\n\n## Detail locators\n\n- `# American Express chargebacks`, raw lines 15\u201327 \u2014 stage list, with RFI marked optional.\n- `## Request for Information (RFI)`, raw lines 33\u201343 \u2014 14-day RFI response, no debit yet, inability to defend after an unanswered RFI followed by chargeback, and direct-NoC exception.\n- First `## Information Supplied`, raw lines 45\u201347 \u2014 forwarding of RFI documents, no later change, journal, and webhook.\n- `## Notification of Chargeback`, raw lines 49\u201368 \u2014 NoC start event, 14-day defense window, pre-debit notice, acceptance versus defense, document channel and completeness.\n- `## 1st Chargeback` and second `## Information Supplied`, raw lines 70\u201380 \u2014 debit timing, defense while the window remains open, submitted-document lock, and rejected-defense finality.\n- `## Chargeback Reversed` and `## 2nd Chargeback`, raw lines 82\u201390 \u2014 accepted-defense fund return, normal finality, exceptional reopening and final second debit.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-risk-management]] \u2014 provider risk and dispute source routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/american-express-chargebacks/2026-09-15|American Express chargebacks (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The American Express chargeback process starts with a Request for Information (RFI). You can fulfill this request by uploading the necessary documents within\u00a0**14 days**.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/american-express-chargebacks/2026-09-15.md:35"
+    },
+    {
+      "text": "If you do not respond to an RFI, and subsequently receive a chargeback for the disputed transaction, you cannot defend the chargeback.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/american-express-chargebacks/2026-09-15.md:41"
+    },
+    {
+      "text": "Under certain circumstances, American Express does not send an RFI and initiates a chargeback directly.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/american-express-chargebacks/2026-09-15.md:43"
+    },
+    {
+      "text": "From the time you receive the NoC, you have **14 days** to submit your defense documents.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/american-express-chargebacks/2026-09-15.md:53"
+    },
+    {
+      "text": "In exceptional cases, American Express can reopen a dispute that was previously closed in your favor. If that happens, the **SecondChargeback** journal is booked, and your account is debited. This is the final status of the dispute.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/american-express-chargebacks/2026-09-15.md:90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-amex-chargebacks-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-american-express-chargebacks]] \u2014 2026-09-15 American Express dispute-stage guide for optional RFI, RFI and NoC defense windows, document finality, debit and reversal events, and exceptional second chargeback; no fee amount stated.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/american-express-chargebacks/2026-09-15.md",
+  "raw_sha256": "f067fb83bf763751b1a1b439ac2d6f4c4a8cd9c6a9f95dedfd668f4b23f2c7fe",
+  "status": "candidate_ready"
+}

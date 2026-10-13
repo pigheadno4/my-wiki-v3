@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-chargeback-guidelines-afterpay-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Afterpay and Clearpay Chargebacks\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/chargeback-guidelines/afterpay-chargebacks\"\nraw_files:\n  - \"adyen/docs/risk-management/chargeback-guidelines/afterpay-chargebacks/2026-09-15.md\"\ntags: [adyen, risk-management, disputes, chargebacks, afterpay, clearpay]\n---\n\n## Overview\n\nThis Adyen Docs snapshot describes the chargeback process for **Afterpay** in Australia, Canada, and New Zealand, **Cash App Afterpay** in the United States, and **Clearpay** in the United Kingdom. It calls them Afterpay/Clearpay collectively. See [[adyen]] and [[adyen-risk-management]]. Its regional and product scope must not be generalized to other payment methods or schemes.\n\nFor disputes opened on or after **August 25, 2025**, the described flow starts with a **Notification of Chargeback** (NoC), replacing a Request for Information. Disputes already open within their 13-day defense period on that date continue under the old flow until finalization.\n\n## Key takeaways\n\n- Shoppers can initiate these chargebacks with Afterpay/Clearpay up to 120 days after payment, cancellation, or expected receipt of goods or services. The merchant's 13-day window to accept or defend starts when Afterpay/Clearpay opens the dispute and sends the NoC. No response within that window, or accepting the dispute, loses it and leads to a chargeback debit. After a defense is submitted, Afterpay/Clearpay has 30 days to decide.\n- At NoC, Adyen books `NotificationOfChargeback` and sends a matching webhook. Accepting through Customer Area or the Disputes API ends the right to defend. A defense must include relevant documents that address the dispute reason; an order overview alone is insufficient. The page says there is no later chance to add or update evidence. Once Adyen has forwarded the documents, `InformationSupplied` is booked and they cannot be changed.\n- A refund of the disputed payment closes the dispute without a chargeback because the payment was already returned. If the defense wins, `DisputeDefensePeriodEnded` is a final status in that path. If it loses or no defense is made, `Chargeback` is booked, a webhook is sent, and the account is debited; that is final in this flow. `DisputeDefensePeriodEnded` also appears for acceptance and refund, so that journal name alone is not a win determination.\n- Afterpay/Clearpay assumes fraud liability when its pre-approval shopper risk checks succeed; the page says unauthorized-payment disputes incur no dispute fee. There is no standard reason code identifying fraud at the outset, and a fraud determination can lead from an initial NoC to `DisputeWonWithoutChargeback`. All other disputes carry a dispute fee regardless of outcome, booked as `PaymentCost`; the page gives no universal numeric fee.\n- The listed reason codes are `product_not_received`, `product_unacceptable`, and `credit_not_processed`, each shown as defendable with a 13-day NoC timeframe. Their evidence requirements remain at the raw table and linked reason-code guidance. This snapshot cannot establish a particular dispute's final outcome or the terms applicable to another scheme.\n\n## Detail locators\n\n- Opening scope and dated transition, raw lines 15\u201337 \u2014 product/region mapping, new versus grandfathered flow, shopper initiation window, merchant deadline, and provider decision period.\n- `## Liability for fraud disputes`, raw lines 39\u201343 \u2014 conditional risk assumption and fraud-identification journal sequence.\n- `## Notification of Chargeback (NoC)`, raw lines 45\u201361 \u2014 webhook, defense clock, accept/defend routes, evidence finality, and refund closure.\n- `## Information Supplied` and `## Chargeback`, raw lines 63\u201374 \u2014 immutable forwarded evidence, provider review, final win/loss routes, and debit.\n- `## Dispute reasons`, raw lines 76\u201384 \u2014 three reason codes, defendability, and linked defense requirements.\n- `## Dispute fees`, raw lines 86\u201390 \u2014 unauthorized-payment exception, other-dispute fee, and `PaymentCost` reporting route.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-risk-management]] \u2014 provider dispute and risk concept.\n- [[source-adyen-docs-risk-management-chargeback-guidelines]] \u2014 chargeback-guidelines directory for other schemes and methods.\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/chargeback-guidelines/afterpay-chargebacks/2026-09-15|Adyen Docs \u2014 Afterpay and Clearpay chargebacks (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Starting August 25, 2025 the dispute flow starts with a **Notification of Chargeback** instead of a **Request for Information**.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/afterpay-chargebacks/2026-09-15.md:20"
+    },
+    {
+      "text": "This chargeback information applies to **Afterpay** in Australia, Canada, and New Zealand, **Cash App Afterpay** in the United States, and **Clearpay** in the United Kingdom.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/afterpay-chargebacks/2026-09-15.md:27"
+    },
+    {
+      "text": "When Afterpay/Clearpay opens a dispute, you have **13 days** to defend or accept the dispute. If you do not respond within 13 days, or if you accept the dispute, the dispute is lost and your account is debited for the chargeback amount. If you defend the dispute, Afterpay/Clearpay has 30 days to make their decision.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/afterpay-chargebacks/2026-09-15.md:29"
+    },
+    {
+      "text": "If successful, Afterpay/Clearpay takes on the full fraud risk for the payment. This means that if a fraud dispute occurs, the liability lies with Afterpay/Clearpay and you will not be charged.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/afterpay-chargebacks/2026-09-15.md:41"
+    },
+    {
+      "text": "For all other Afterpay/Clearpay disputes you will be charged a dispute fee, regardless of the outcome of the dispute. This fee is booked using the **PaymentCost** journal type.",
+      "location": "raw/adyen/docs/risk-management/chargeback-guidelines/afterpay-chargebacks/2026-09-15.md:90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-afterpay-chargebacks-source",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-chargeback-guidelines-afterpay-chargebacks]] \u2014 region-qualified Afterpay/Cash App Afterpay/Clearpay dispute guide for the dated NoC transition, 13-day defense and 30-day decision windows, final routes, conditional fraud liability, and fees (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/chargeback-guidelines/afterpay-chargebacks/2026-09-15.md",
+  "raw_sha256": "5acd05ea01cd22b54248c98114fc301ce64f3a1384a8b09b4c1d0c51173131b2",
+  "status": "candidate_ready"
+}

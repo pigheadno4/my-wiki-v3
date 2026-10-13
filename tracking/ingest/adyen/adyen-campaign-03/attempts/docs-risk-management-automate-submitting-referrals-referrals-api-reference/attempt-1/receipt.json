@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-automate-submitting-referrals-referrals-api-reference",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Referrals API Reference\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/automate-submitting-referrals/referrals-api-reference\"\nraw_files:\n  - \"adyen/docs/risk-management/automate-submitting-referrals/referrals-api-reference/2026-09-15.md\"\ntags: [adyen, risk-management, referrals, block-list, trust-list, api-reference]\n---\n\n## Overview\n\nThis Adyen Docs reference describes requests to upload referral values to block or trust lists or delete values from a list. It is scoped to a company account through `accountCode` and documents test-platform SOAP, JSON, and FORM endpoints; it directs live integrations to separate generic or custom live endpoints. See [[adyen]] and [[adyen-risk-management]]. The reference describes list-changing operations, not a general read/list CRUD API or proof that any resulting payment risk decision was made.\n\n## Key takeaways\n\n- The stated limit is 10 referrals per request and 10 requests per minute. Each request has one top-level `referralType` and one `action`: `block`, `trust`, or `delete`. Submitted values must match the chosen type. These actions modify list content, so `delete` must not be treated as a harmless lookup or dry run.\n- Ordinary referral values use `referrals`/`referralContainer`. Address entries use `addressReferrals` with top-level `referralType: shopperaddress`; payment-derived entries use `paymentReferenceReferrals` with `referralType: paymentreference`. Both special arrays replace the ordinary container. Although the `referrals` table row bears a required marker, its own description says it does not apply to either special array; interpret requiredness by the selected branch.\n- For `paymentReferenceReferrals`, provide the payment PSP reference and selected `referralTypes` to extract. The payment must contain each requested property or the request fails. The top-level `reason` is described as automatically generated to include that PSP reference for `paymentreference`, so it cannot be an arbitrary free-text reason in that branch.\n- The address object has country and postal-code formats, with `stateOrProvince` required for US and Canadian addresses. The reference's field catalog and sample-value routes are at the raw locators below. Test endpoint presence does not establish live enablement, successful list mutation, or a later fraud decision.\n\n## Detail locators\n\n- Opening and `## Endpoints`, raw lines 14\u201344 \u2014 test/live distinction, request-rate limits, SOAP/WSDL route, JSON/FORM test upload URL, and live-endpoint navigation.\n- `## Create upload referrals request`, raw lines 46\u201384 \u2014 action/type constraint, company-account scope, required and conditional payload fields, reason qualification, and referral-type catalog.\n- `## referralContainer object`, raw lines 85\u2013101 \u2014 ordinary item values and type matching.\n- `## paymentReferenceReferrals object`, raw lines 102\u2013122 \u2014 PSP-reference extraction, selected property list, and missing-property failure.\n- `## shopperAddress object`, raw lines 123\u2013140 \u2014 address list shape, country/postal formats, and US/Canada state requirement.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-risk-management]] \u2014 provider risk and list-control concept.\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/automate-submitting-referrals/referrals-api-reference/2026-09-15|Adyen Docs \u2014 Referrals API reference (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Requests to the Referrals API are rate limited to 10 referrals per request, and 10 requests per minute.",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/referrals-api-reference/2026-09-15.md:22"
+    },
+    {
+      "text": "* You can upload one type of referral per request, and one type of action (**block**, **trust** or **delete**).",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/referrals-api-reference/2026-09-15.md:53"
+    },
+    {
+      "text": "The name of the company account for which you want to upload referrals.",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/referrals-api-reference/2026-09-15.md:60"
+    },
+    {
+      "text": "Not applicable for `addressReferrals` or `paymentReferenceReferrals`.",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/referrals-api-reference/2026-09-15.md:83"
+    },
+    {
+      "text": "The payment property must be included in the payment. If the payment does not include the property, the request will fail.",
+      "location": "raw/adyen/docs/risk-management/automate-submitting-referrals/referrals-api-reference/2026-09-15.md:116"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-referrals-api-reference-source",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-automate-submitting-referrals-referrals-api-reference]] \u2014 test-platform Referrals API schema for company-scoped block/trust/delete uploads, conditional address and PSP-reference payloads, and rate limits (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/automate-submitting-referrals/referrals-api-reference/2026-09-15.md",
+  "raw_sha256": "2f51b0601335d60080d4d4dbba85f632f50f30f6a2a5840c3a2bac1ea172f4f2",
+  "status": "candidate_ready"
+}

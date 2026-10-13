@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-risk-management-configure-your-risk-profile-post-auth-rules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Post-authorization Risk Rules\"\ntype: source\ndate_ingested: 2026-10-13\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/risk-management/configure-your-risk-profile/post-auth-rules\"\nraw_files:\n  - \"adyen/docs/risk-management/configure-your-risk-profile/post-auth-rules/2026-09-15.md\"\ntags: [adyen, risk-management, post-authorization, avs, cvc, liability-shift]\n---\n\n## Overview\n\nThis Adyen Docs snapshot describes built-in post-authorization risk rules that evaluate information returned after card-scheme and issuer authorization, including AVS address checks, CVC checks, and liability-shift status. The rules influence the later risk evaluation; an issuer authorization has already occurred before they run. See [[adyen]] and [[adyen-risk-management]]. The documented prerequisites are an online payments integration, enabled risk management, and a Customer Area user with **Merchant change risk settings** or **Risk admin** role.\n\n## Key takeaways\n\n- All post-authorization rules are disabled by default. The page warns that enabling AVS or CVC mismatch rules can increase declines because shoppers may enter address or CVC details incorrectly. Its Adyen Uplift Optimize and Smart Payment Messaging settings are recommendations, not mandatory prerequisites.\n- The built-in **AVS**, **CVC**, and **Liability shift status blocked** rules are configured in the risk profile's **Block** section. The separate **Liability shift status allowed** rule is enabled in **Allow**. These are risk-rule actions after authorization, not a way to change the issuer's earlier authorization decision or guarantee payment completion.\n- The AVS rule checks shopper-entered billing address against the issuer's address; the CVC rule checks the verification code after issuer authorization. The CVC rule does not trigger on recurring transactions, because this page says it runs only on the initial transaction. Liability-shift rules test whether shift occurred; the liability-shift rule does not trigger for recurring merchant-initiated transactions with **ContAuth** shopper interaction.\n- These post-authorization AVS, CVC, and liability-shift rules cannot be linked to Dynamic 3D Secure because they run after authorization. A matched enabled rule *can* be part of control traffic for false-positive analysis; this is a possibility, not a guarantee for every match. Protect premium offers more specific custom post-authorization rules, but the page does not make premium a prerequisite for these built-in rules.\n- The raw lists exact block conditions for AVS, CVC, and liability-shift checks, including a CVC option that also covers missing code or an issuer unable to check it. Those settings can materially change which transactions are blocked and should be assessed against the chosen risk profile.\n\n## Detail locators\n\n- Opening and `## Requirements`, raw lines 15\u201330 \u2014 post-authorization signals, integration/risk/role prerequisites, Dynamic 3DS and ContAuth limits.\n- `## How it works`, raw lines 32\u201349 \u2014 disabled default, decline warning, control-traffic possibility, premium custom route, and AVS/CVC/liability-shift rule meanings.\n- `## Configure a post-authorization rule`, raw lines 51\u201377 \u2014 Customer Area Block path and exact AVS/CVC/liability-shift options.\n- `## Enable a post-authorization rule`, raw lines 79\u2013106 \u2014 separate Block and liability-shift Allow enablement paths.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-risk-management]] \u2014 Protect risk-profile concept.\n- [[source-adyen-docs-risk-management-avs-checks]] \u2014 separate AVS guidance.\n- [[source-adyen-docs-risk-management-configure-your-risk-profile-custom-rules]] \u2014 premium custom-rule route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/risk-management/configure-your-risk-profile/post-auth-rules/2026-09-15|Adyen Docs \u2014 Post-authorization rules (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "After a transaction has been authorized, you get new information from the card scheme and the issuing bank.",
+      "location": "raw/adyen/docs/risk-management/configure-your-risk-profile/post-auth-rules/2026-09-15.md:19"
+    },
+    {
+      "text": "Because the post-authorization rules for AVS, CVC, and liability shift run after authorization, it is not possible to link the rules to [Dynamic 3D Secure](/risk-management/dynamic-3d-secure/). The liability shift rule does not trigger for recurring [merchant-initiated transactions](/get-started-with-adyen/adyen-glossary/#contauth-continuous-authorization) where the shopper interaction is **ContAuth**.",
+      "location": "raw/adyen/docs/risk-management/configure-your-risk-profile/post-auth-rules/2026-09-15.md:30"
+    },
+    {
+      "text": "All post-authorization rules are disabled by default. Because there is a risk of shopper input errors for both the CVC field and address details, enabling these risk rules may result in a higher number of declined transactions because of mismatches.",
+      "location": "raw/adyen/docs/risk-management/configure-your-risk-profile/post-auth-rules/2026-09-15.md:36"
+    },
+    {
+      "text": "The rule does not trigger for recurring transactions because it runs only on the initial transaction.",
+      "location": "raw/adyen/docs/risk-management/configure-your-risk-profile/post-auth-rules/2026-09-15.md:46"
+    },
+    {
+      "text": "5. Select **Liability shift status allowed** > **Enabled**.",
+      "location": "raw/adyen/docs/risk-management/configure-your-risk-profile/post-auth-rules/2026-09-15.md:105"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-risk-management-post-auth-rules-source",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-risk-management-configure-your-risk-profile-post-auth-rules]] \u2014 built-in post-authorization AVS, CVC, and liability-shift risk-rule guide, with default-disabled state, Block/Allow paths, recurring limits, and decline warning (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/risk-management/configure-your-risk-profile/post-auth-rules/2026-09-15.md",
+  "raw_sha256": "775fa2abe39d4163354220b573ca7fdcfc5c937d9a5512e4da7e8b65a37498e4",
+  "status": "candidate_ready"
+}
