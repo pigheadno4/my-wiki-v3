@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-pos-troubleshooting-connection-tests",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen payment-terminal connection tests\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/pos-troubleshooting/connection-tests\"\nraw_files:\n  - \"adyen/docs/point-of-sale/pos-troubleshooting/connection-tests/2026-09-15.md\"\ntags: [adyen, point-of-sale, payment-terminals, diagnostics, terminal-api, connectivity]\n---\n\n## Overview\n\nAdyen's terminal-run connection-test guide, captured 2026-09-15, explains **PSP connection**, **Terminal API**, local-communications TLS information and four-URL **Endpoints** diagnostics for non-legacy physical payment terminals. Its stated scope includes standalone terminals and Terminal API integrations with a POS system; some checks apply only to local or cloud communications. This routes through [[adyen-payment-terminals]] with [[adyen-terminal-api]] for the integrated transport boundary. A successful test shows the checked connection at that time, not payment authorization, settlement or continued availability.\n\n## Key takeaways\n\n- On the terminal, check the Wi-Fi icon when Wi-Fi is used and the cloud icon for cloud Terminal API integrations, then open **Settings > Diagnostics** for PSP connection, Terminal API and Endpoints. Non-Android terminals on the **old menu structure** instead use **Admin > Network > Diagnostics**. Android terminals show **Successful** or **Failed**; old-menu non-Android terminals use green checks/red crosses. A failed step also marks all subsequent steps failed, so diagnose the first failing step rather than interpreting every later cross as a separate cause.\n- **PSP connection** tests the terminal's path to Adyen's payments platform: DNS lookup, network connection, TLS negotiation, outbound writing and inbound receiving. Lookup failure points to DNS; connection or data failures point to network/router/firewall issues for the merchant network team. A TLS negotiation failure may involve inspection by a security gateway or another issue; the guide says to wait for inspection, recommends bypassing inspection of Adyen domains, and says to contact Adyen immediately for the other problem. The special first-connection case allows a red **Receiving data** cross to be ignored only when the **overall PSP result is No Error**.\n- **Terminal API** checks whether the API is enabled and, for cloud, whether WebSockets are enabled and connected. The guide gives Customer Area device-setting routes for enabling Terminal API and WebSockets. For integrated terminals using **local** communications, ignore WebSocket test results. The TLS version, cipher and POS-to-terminal URL fields in this diagnostic are **local-communications TLS information**; they do not apply to cloud-integrated or standalone terminals.\n- **Endpoints** tests the terminal's Sync URL (refunds/cancellations), Config URL (configuration), PAL URL (requests) and Firmware URL (software), and shows the terminal's MTU. Failures in lookup, connection, writing or receiving are network checks. For an Endpoints **Negotiating** failure, the guide names changed certificates or possible compromise and directs immediate Adyen contact; do not treat it as a routine safe retry. These tests describe terminal connectivity, not a payment result.\n\n## Detail locators\n\n- Raw `# Run connection tests from the terminal` and `## Requirements` (lines 15\u201339): tested links, standalone versus Terminal API scope, non-legacy hardware and local/cloud limits. This snapshot does not identify a specific model or current installed software version.\n- Raw `## Run diagnostic connection tests from a terminal` (lines 41\u201364): menu paths, status presentation and failed-step cascade. The menu variation is qualified by Android versus non-Android **old menu structure**, not all non-Android terminals.\n- Raw `## PSP connection test` (lines 66\u201380): five network/TLS stages, escalation, and first-connection **No Error** exception for Receiving data.\n- Raw `## Terminal API test` and `## Local communications TLS test` (lines 82\u2013104): cloud WebSocket versus local distinction, configuration route and local-only TLS fields.\n- Raw `## Endpoints test` (lines 106\u2013129): four URL purposes, MTU, per-URL checks and urgent Negotiating warning. `## See also` (lines 131\u2013135) provides navigation to separate diagnosis, network and certificate pages; these links alone do not establish their details.\n\n## Related\n\n- [[adyen-payment-terminals]] \u2014 physical-terminal operations and model manuals.\n- [[adyen-terminal-api]] \u2014 local/cloud POS messaging and outcome boundary.\n- [[adyen-terminal-management]] \u2014 Customer Area device settings and fleet administration.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/pos-troubleshooting/connection-tests/2026-09-15|Terminal connection tests, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Some tests apply only to cloud communications or only to local communications.",
+      "location": "raw/adyen/docs/point-of-sale/pos-troubleshooting/connection-tests/2026-09-15.md:39, ## Requirements"
+    },
+    {
+      "text": "The **PSP connection** test verifies the connection to the Adyen payments platform. The test checks the DNS resolution, firewalls, routing, and TLS negotiations.",
+      "location": "raw/adyen/docs/point-of-sale/pos-troubleshooting/connection-tests/2026-09-15.md:68, ## PSP connection test"
+    },
+    {
+      "text": "The **Terminal API** test verifies the API connection and the cloud WebSocket connection. For integrated terminals using local communications, you can ignore the WebSocket test results.",
+      "location": "raw/adyen/docs/point-of-sale/pos-troubleshooting/connection-tests/2026-09-15.md:84, ## Terminal API test"
+    },
+    {
+      "text": "For integrated terminals using [cloud communications](/point-of-sale/design-your-integration/choose-your-architecture/) and for standalone terminals, these tests are not applicable.",
+      "location": "raw/adyen/docs/point-of-sale/pos-troubleshooting/connection-tests/2026-09-15.md:98, ## Local communications TLS test"
+    },
+    {
+      "text": "This step checks the security of the connection. If it fails, this can indicate that we have updated our certificates, or that you have fallen victim to hacking. **Contact Adyen immediately.**",
+      "location": "raw/adyen/docs/point-of-sale/pos-troubleshooting/connection-tests/2026-09-15.md:127, ## Endpoints test, Negotiating"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c07-pos-connection-tests-reciprocal",
+        "target_path": "wiki/concepts/adyen-payment-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-pos-troubleshooting-connection-tests]] \u2014 2026-09-15 terminal-run PSP, Terminal API and Endpoints connection-test guide for non-legacy physical terminals, including local/cloud applicability, diagnostic stages and escalation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Diagnostic success is point-in-time connectivity evidence, not payment success or continued availability; local TLS and cloud WebSocket checks have distinct scopes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/pos-troubleshooting/connection-tests/2026-09-15.md",
+  "raw_sha256": "98b1f46258ba29429f6fb67ae2802156b9b9b51680669d36d72efcdb8c4057a7",
+  "status": "candidate_ready"
+}

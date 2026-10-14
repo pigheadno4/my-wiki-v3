@@ -1,0 +1,7 @@
+# Fixed retrieval checks: iOS card-reader solution
+
+1. **Question:** For an iOS POS app using an NYC1 reader, which SDK/payment interface, transport and session setup does this guide describe?
+   **Expected answer:** It is the in-person iOS POS Mobile SDK with `.cardReader`, not an online Checkout SDK or Tap to Pay path. The reader connects by Bluetooth or a USB dock; a Terminal API-integrated POS app sends requests through the SDK. The backend exchanges the SDK setup token at `/auth/certificate` using an API-key/client-key credential and returns `sdkData`; SDK download uses a separate basic-auth credential. Source: pinned raw `## Requirements`, `## 2. Establish a session`, `## 8. Handle a payment` (2026-09-15 snapshot). The `## How it works` Tap to Pay text conflicts with the reader-specific sections and should not be used to broaden this flow.
+
+2. **Question:** Can the iOS reader simulator prove payments and can a referenced refund response be treated as the final refund outcome?
+   **Expected answer:** No. The simulator is limited to device-management UI in test builds and does not support transactions. Test payments require the test SDK and test cards. Refund requests are usually acknowledged by the Terminal API and resolved through asynchronous `CANCEL_OR_REFUND` or `REFUND_WITH_DATA` webhooks; the guide notes a scheme/region exception for synchronous unreferenced refunds. Source: pinned raw `## 9. Handle a refund`, `## Test your solution` (2026-09-15 snapshot).

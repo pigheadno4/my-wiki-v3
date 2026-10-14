@@ -15,6 +15,24 @@ The 2026-09-15 overview's terminal-model and Android-version table is a snapshot
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-user-manuals-s1u2-user-manual]] — S1U2 Android-terminal manual (2026-09-15 snapshot) for on-device software/menu, app-action and unattended kiosk context; physical setup and safety detail belongs in the source and [[adyen-payment-terminals]].
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-sfo1-user-manual]] — SFO1 on-terminal operating manual (2026-09-15 capture): physical/network setup, store boarding, passcoded settings and assisted support; Android 13/model availability comes from the separate dated Android-terminal catalog, not this manual.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-p630-user-manual]] — P630 model manual (2026-09-15 capture) for its disabled menu icons and default kiosk mode; model-specific physical setup remains in the source.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-m450-user-manual]] — M450 on-device Apps/Settings/Transactions menu and passcode guidance (2026-09-15 snapshot); model hardware, diagnostics and safety detail resides in the source and payment-terminal hub.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-ams1-user-manual]] — AMS1 on-device menu, kiosk and airplane-mode operating guidance (2026-09-15 snapshot); physical hardware and safety detail resides in the source and payment-terminal hub.
+
+
+- [[source-adyen-docs-point-of-sale-menu-access]] — 2026-09-15 Adyen menu/passcode guide for Android screen-lock warning, model/software-qualified Apps menu, and app control effects.
+
+
 - [[source-adyen-docs-point-of-sale-android-terminals-accessibility-mode]] — 2026-09-15 Adyen Android-terminal accessibility overview for audio guidance and POS-app versus terminal activation routes, with enablement and detailed-guide limits.
 
 

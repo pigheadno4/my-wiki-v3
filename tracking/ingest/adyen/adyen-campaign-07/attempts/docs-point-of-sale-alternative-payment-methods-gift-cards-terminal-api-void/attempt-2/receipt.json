@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-void",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Undo a gift-card load transaction | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void\"\nraw_files:\n  - \"adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void/2026-09-15.md\"\ntags: [adyen, point-of-sale, gift-cards, terminal-api, stored-value, void]\n---\n\n## Overview\n\nThis Adyen Terminal API guide describes **undoing a gift-card load**, which takes the loaded amount off the card balance. It is limited to the **most recent** load transaction on that card and that load must be from the **past 24 hours**. The guide explicitly says this undo request cannot cancel a gift-card payment or make a refund to a gift card; deactivation is a separately linked operation. The page was fetched 2026-09-15 and records a 2020-01-07 last-modified timestamp. [[adyen]] [[adyen-pos-gift-cards]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The operation requires a Terminal API integration with a payment terminal, the gift-card payment method added to the Adyen account, and completed onboarding with the gift-card provider. The described undo uses the original load's `POITransactionID.TimeStamp` and `POITransactionID.TransactionID`; the amount removed is the amount of that qualifying load, not a freely specified partial refund. See **Requirements** and **Undo a transaction**, pinned raw lines 19\u201340.\n- Send a Terminal API **StoredValue** service request with `StoredValueTransactionType: Reverse` and `OriginalPOITransaction` identifying the original load. The documented header uses protocol version 3.0, `MessageClass: Service`, `MessageCategory: StoredValue`, and a terminal-scoped `ServiceID` of 1\u201310 alphanumeric characters unique within the last 48 hours for the `POIID`. `SaleTransactionID.TransactionID` is the merchant's undo-request reference; Adyen recommends a unique value. These identities do not establish safe retry or a general idempotency guarantee. See pinned raw lines 43\u201370.\n- The original `POITransactionID.TransactionID` can use the recommended `tenderReference.pspReference` form, a `pspReference` with its **leading dot**, or `tenderReference` alone **only when using the same terminal** as the original transaction. The original timestamp is also required. See pinned raw lines 40\u201341 and 64\u201376.\n- Check the `StoredValueResponse`: `StoredValueTransactionType: Reverse` together with `Response.Result: Success` indicates the loaded funds were reversed. `StoredValueAccountStatus.CurrentBalance` reports the remaining card balance after undo; `POIData.POITransactionID.TransactionID` identifies the undo transaction. `Response.AdditionalResponse` may be form-encoded pairs or Base64-encoded JSON. The illustrative payload includes an `AdditionalResponse` field `transactionType=REFUND`, but the guide's requested and checked operation remains a load reversal, not the separate refund-to-card flow. See pinned raw lines 154\u2013199.\n- The examples need care: the Java snippet assigns the new request's `transactionID` and a current timestamp to `OriginalPOITransaction`, contrary to the prose requirement for the qualifying original load's ID and timestamp. Populate those original fields from the actual load, not by copying those setters. The request JSON uses `ServiceID: 9265` while the response JSON shows `ServiceID: 9264`, so they are not a verified matched exchange. The guide does not show a live operation, merchant/provider eligibility, settlement impact, or a verified current account balance. See pinned raw lines 40\u201341, 69\u201370, 78\u2013110, 115\u2013152 and 164\u2013199.\n\n## Detail locators\n\n- **Undo a load transaction to a gift card** (pinned raw lines 15\u201324) \u2014 qualifying latest-load/24-hour limit and exclusions of payment cancellation and refund.\n- **Requirements** (pinned raw lines 26\u201334) \u2014 Terminal API/payment-terminal integration, Adyen method addition and provider onboarding.\n- **Undo a transaction** (pinned raw lines 36\u201376) \u2014 original transaction identity, header and StoredValue request fields, reference format limitations.\n- **JSON; Java** (pinned raw lines 78\u2013152) \u2014 illustrative construction; the Java original-load setters at lines 143\u2013146 reuse the new request ID/current time, and request JSON `ServiceID: 9265` at line 90 differs from response JSON `ServiceID: 9264` at line 193.\n- **StoredValueResponse** (pinned raw lines 154\u2013199) \u2014 success check, balance and identifier fields, AdditionalResponse encoding, illustrative response.\n- **See also** (pinned raw lines 201\u2013206) \u2014 separate load, refund, cancel and deactivation routes.\n\n## Related\n\n- [[adyen-pos-gift-cards]] \u2014 primary gift-card operation hub.\n- [[adyen-terminal-api]] \u2014 Terminal API message architecture.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void/2026-09-15|Adyen gift-card load undo guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "With an undo request, you can reverse a gift card transaction that [loaded funds](/point-of-sale/gift-cards-terminal-api/load-a-balance) to a gift card. The amount loaded is taken off the gift card balance. However, you can only undo the most recent load transaction and this transaction must be from the past 24 hours.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void/2026-09-15.md:19"
+    },
+    {
+      "text": "You cannot use an undo request to cancel a gift card payment or to make a refund to a gift card.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void/2026-09-15.md:23"
+    },
+    {
+      "text": "Your unique ID for this request, consisting of 1-10 alphanumeric characters. Must be unique within the last 48 hours for the terminal (`POIID`) being used.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void/2026-09-15.md:53"
+    },
+    {
+      "text": "**A7sM001574852436000**Only when using the same terminal as for the original transaction.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void/2026-09-15.md:76"
+    },
+    {
+      "text": "`StoredValueTransactionType`: **Reverse** and `Response.Result`: **Success** indicate the loaded funds were reversed.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void/2026-09-15.md:156"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-gift-card-void-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-gift-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-void]] \u2014 Terminal API gift-card load undo guide (2020 last-modified; 2026-09-15 capture) for latest-load/24-hour limit, original POI transaction reference formats, and Reverse/Success response check.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep undo of a recent load separate from gift-card payment cancellation, refund to card and deactivation.",
+          "A terminal-scoped 48-hour ServiceID uniqueness rule is not a documented idempotency or safe-retry guarantee."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/void/2026-09-15.md",
+  "raw_sha256": "1f250b1e796decc7379616c3f43069dce5b780f206b147a894e5b918f259ce61",
+  "status": "candidate_ready"
+}

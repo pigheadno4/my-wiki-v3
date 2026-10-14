@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-mobile-android-build-card-reader",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Card reader solution for Android\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mobile-android/build/card-reader\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mobile-android/build/card-reader/2026-09-15.md\"\ntags: [adyen, point-of-sale, mobile-pos, android, card-readers, terminal-api]\n---\n\n## Overview\n\nAdyen's Card reader on Android build guide, captured 2026-09-15, describes a merchant Android POS app using the Adyen Mobile SDK and Terminal API to initiate in-person payments on an NYC1 card reader. The Android device starts and displays the flow; the shopper presents a card or wallet at the reader, connected by Bluetooth or USB. This is the [[adyen-mobile-pos]] reader path, with [[adyen-mobile-card-readers]] covering the hardware; it is separate from apps installed on [[adyen-android-terminals]] and from the [[adyen-android-sdk]] for online checkout. [[adyen]]\n\n## Key takeaways\n\n- The app must already integrate with Terminal API. The documented hardware is an Android commercial off-the-shelf device that is not a payment terminal plus an Adyen NYC1 reader; PIN transactions require the NYC1 model identified by the guide. Test setup calls for Support to enable Mobile solutions on the test account, and a test reader assigned to a store. Country, payment-method and feature availability is routed to a separate support page; this dated guide alone does not establish current entitlement.\n- The app requires `minSdkVersion` 26 or higher, but the SDK initializes only on Android 12 or later. A credential with only **Allow SDK download for POS developers** downloads the SDK; a different credential with an API key, client key and **Checkout webservice** role establishes a session. Debug artifacts access test and release artifacts access live. The backend calls SoftPOS Configuration `/auth/certificate` with the SDK setup token, then supplies `sdkData` to the app; `store` and `subMerchantData` have different merchant versus registered payment-facilitator conditions. For a facilitator, the guide says not to put sub-merchant data in Terminal API requests.\n- The app or backend creates a Terminal API payment request with the SDK installation ID as `MessageHeader.POIID`; the app selects `CardReader` as the payment interface and passes the request to the SDK. The SDK returns a Terminal API response to the app. If the shopper does not present a payment method within 30 seconds, the request times out and another request is needed. A missing payment response calls for transaction-status checking, not an assumed success.\n- Reader and dock firmware updates do not happen automatically. The app must check regularly, provide update flows, and prompt users; a returned required date can mark when transactions will be refused without an update. Some reader updates require Bluetooth, so USB connection alone cannot complete them. Bluetooth sleep can delay reconnection; frequent reconnect timers can reduce reader battery life.\n- Referenced refunds use a reversal request; unreferenced refunds use a payment request with refund payment type. Refund responses usually acknowledge receipt, while Standard webhooks report the outcome (`CANCEL_OR_REFUND` or `REFUND_WITH_DATA`); some unreferenced refunds can return synchronous outcome information depending on scheme and country. Clear the SDK session when switching merchant account or store so a reassigned device does not keep attributing transactions to the previous store. Diagnosis can surface blocking security threats and SDK expiry; mandatory SDK updates can block transactions.\n\n## Detail locators\n\n- Raw `## Requirements` and `## How it works` (lines 23\u201367): POS app, credentials, NYC1/COTS hardware, test setup and reader payment sequence.\n- Raw `## 1. Add the SDK to your project` and `## 2. Establish a session` (lines 68\u2013291): Android/SDK gates, distinct credential roles, build variants, backend certificate request, facilitator/store conditions, response and regional endpoints. The old `/checkout/possdk/v68/sessions` endpoints are described as being deprecated.\n- Raw `## 3. Enable transactions` through `## 6. Manage the Device Manager UI` (lines 292\u2013752): authentication callback, SDK initialization by version, warm-up, reader preparation, pairing/USB connection and firmware update flows. Initialization advice changes at SDK 2.6.0; hiding built-in update indicators requires 2.18.0 or later.\n- Raw `## 8. Handle a payment` through `## 12. (Optional) Clear the session token` (lines 815\u20131044): CardReader payment interface, response timeout, refund webhooks, transaction status, diagnosis and session clearing.\n- Raw `## Other supported features` through `## Go live` (lines 1057\u20131140): dated feature table, test-card steps, live account, separate live SDK/session keys, regional live endpoint and app registration. The table marks store-and-forward offline payments, surcharge and tax-free shopping unsupported for this path.\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 merchant-device Mobile POS integration route.\n- [[adyen-mobile-card-readers]] \u2014 NYC1 reader and dock hardware context.\n- [[adyen-terminal-api]] \u2014 request and response model used by this SDK flow.\n- [[adyen-android-terminals]] \u2014 apps installed on Adyen payment terminals.\n- [[adyen-android-sdk]] \u2014 separate native online-checkout SDK.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mobile-android/build/card-reader/2026-09-15|Card reader solution for Android, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "With our Card reader on Android solution you can accept mobile in-person payments using a card reader as the payment interface, and process these payments on the Adyen payments platform.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/card-reader/2026-09-15.md:19"
+    },
+    {
+      "text": "Your app's `minSdkVersion` must be **26** or higher. Do not use `tools:overrideLibrary` in your manifest to bypass this requirement, as this can cause the Adyen SDK to fail or behave unexpectedly. Also note that our SDK only runs on devices with Android 12 or later; on earlier Android OS versions, it will not initialize.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/card-reader/2026-09-15.md:72"
+    },
+    {
+      "text": "Firmware updates for the card reader are critical for secure transactions, and do not happen automatically.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/card-reader/2026-09-15.md:623"
+    },
+    {
+      "text": "Refunds are usually *not* processed synchronously. When you send a request for a referenced or unreferenced refund, the Terminal API response only confirms we received the request.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/card-reader/2026-09-15.md:897"
+    },
+    {
+      "text": "* **Re-establish a session after switching between merchant accounts or stores in your POS app and your Customer Area**. If the device is reassigned from store A to store B and a transaction is started there, on the Adyen side the transaction will continue to appear to belong to store A instead of store B. Clearing the session prevents this issue.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/card-reader/2026-09-15.md:1036"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-mobile-android-card-reader-mobile-pos-source",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-android-build-card-reader]] \u2014 Android Mobile SDK Card reader build guide (2026-09-15 snapshot) for NYC1 reader integration, session, device management, Terminal API transactions and refunds.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Android overview worker owns the proposed new Mobile POS concept; apply this reciprocal source route after the concept exists.",
+          "This historic build-guide snapshot does not prove present device/region/account eligibility, live activation, or successful payment processing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mobile-android/build/card-reader/2026-09-15.md",
+  "raw_sha256": "c3849a49cfdac251e8607c8090caed1c6f28a74e08c3b70cd395bb2ebda07500",
+  "status": "candidate_ready"
+}

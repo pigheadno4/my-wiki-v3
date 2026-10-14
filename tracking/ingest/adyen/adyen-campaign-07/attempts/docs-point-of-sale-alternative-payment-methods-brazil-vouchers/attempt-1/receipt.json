@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-alternative-payment-methods-brazil-vouchers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Meal voucher payments in Brazil | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/alternative-payment-methods/brazil-vouchers\"\nraw_files:\n  - \"adyen/docs/point-of-sale/alternative-payment-methods/brazil-vouchers/2026-09-15.md\"\ntags: [adyen, point-of-sale, brazil, meal-vouchers, pat, terminal-api]\n---\n\n## Overview\n\nThis Adyen Docs guide describes in-person meal and food voucher acceptance in Brazil under the Worker Food Program (PAT). PAT vouchers are employer-funded prepaid benefit cards, sometimes co-branded with credit or debit. The page presents an Adyen terminal UI flow and, for POS-integrated terminals, a merchant UI flow using a Terminal API payment request. It states that Adyen terminals can accept major PAT voucher brands without a separate issuer contract or terminal per brand; that statement remains subject to the guide's merchant, software, and activation conditions. See [[adyen]], [[adyen-pos-alternative-payment-methods]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The guide requires a Terminal API integration with payment terminals or a standalone solution on specified terminal software: PCI PTS 5 LTS 1.120.11; PCI PTS 6 LTS 1.126.5 or 1.129 or later. Adyen Support must enable Brazilian meal-voucher functionality for the merchant account. The Adyen UI flow requires separate Support enablement at a chosen company, merchant, store, or terminal scope. These are stated prerequisites, not evidence that a particular account or terminal is enabled.\n- With the Adyen UI enabled, the terminal asks the shopper to choose credit, debit, or voucher before card presentation. This path is available to integrated and standalone terminals. A merchant's own UI is only for a POS-integrated terminal; it collects the shopper's choice and sends `selectedAccountType` set to `MEAL_VOUCHER` in Base64-encoded JSON in `SaleData.SaleToPOIData` of a Terminal API `PaymentRequest`. A voucher balance below the amount due causes refusal in either flow.\n- On successful integrated-terminal voucher payment, the guide says `AdditionalResponse` contains `fundingSource=PREPAID` and the voucher brand, for example `paymentMethodVariant=elo_voucher_br`. Its sample amount, IDs, encoded payload, and brand are examples, not guaranteed values. If both encoded `selectedAccountType` and `TransactionConditions.DebitPreferredFlag` are present, `selectedAccountType` takes precedence; the latter flag is described for debit/credit installment interactions.\n- The MKE test-card route tests integration and reconciliation handling but does not simulate the terminal voucher flow. The raw test table supplies example brands, numbers, expiry dates, CVCs, and variants; the guide separately says a physical Visa voucher test card is obtainable by contacting Visa. Neither route proves a live transaction or current credential validity.\n- PAT acceptance is conditional on a compatible CNAE main activity, applicable sanitary and nutritional rules, and an MCC in the guide's list. The MCC table includes Food, Culture, and Meal categories, while the text says an incompatible main economic activity makes the issuer decline a voucher transaction. Read the full table and confirm the merchant's eligibility; an MCC label alone does not prove approval.\n\n## Detail locators\n\n- `Meal voucher payments in Brazil`, pinned raw lines 15\u201323: PAT benefit-card identity, Adyen acceptance claim, and two UI approaches.\n- `Requirements`, lines 25\u201335: integration and terminal-software versions, standalone limit, Support enablement and scope.\n- `Ways to accept meal vouchers` / `Adyen UI`, lines 37\u201372: supported UI paths, insufficient-balance refusal, terminal selection, CVM/PIN condition, and successful integrated-terminal response fields.\n- `Your own UI` / `Make a meal voucher payment`, lines 74\u2013176: POS choice collection, Base64 `selectedAccountType` object, `SaleToPOIData` location, request fields and example, and response fields.\n- `Interaction with installment parameters`, lines 178\u2013187: `CHEQUE`, `CREDIT`, debit preference, and precedence when both fields are present.\n- `Testing`, lines 189\u2013206: MKE limitation, test-card table, and Visa physical-card route.\n- `Merchant Category Codes`, lines 208\u2013253: CNAE, sanitation/nutrition and MCC conditions, full category table, and issuer-decline warning.\n\n## Related\n\n- [[adyen-pos-alternative-payment-methods]] \u2014 provider hub for the in-person alternative-method family.\n- [[adyen-terminal-api]] \u2014 POS-integrated payment-request context.\n- [[adyen-payment-terminals]] \u2014 terminal hardware context; model/software eligibility here is snapshot-qualified.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/alternative-payment-methods/brazil-vouchers/2026-09-15|Adyen Brazil meal-voucher guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Under the Worker Food Program (Programa de Alimenta\u00e7\u00e3o do Trabalhador) known as PAT, many workers in Brazil receive meal and food vouchers as an employee benefit. PAT vouchers are digital or physical prepaid benefit cards that are loaded with new funds each month by the employer. These cards can be co-branded with a credit or debit card.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/brazil-vouchers/2026-09-15.md:19"
+    },
+    {
+      "text": "This page describes how you can accept Brazilian meal and food vouchers, either using a UI provided by Adyen or by creating your own UI and implementing an additional field in your Terminal API requests.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/brazil-vouchers/2026-09-15.md:23"
+    },
+    {
+      "text": "- PCI PTS 6 terminals: long-term support version **1.126.5** or version **1.129** or later.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/brazil-vouchers/2026-09-15.md:32"
+    },
+    {
+      "text": "Standalone payment terminals only support the Adyen UI flow. If your Adyen terminals are integrated with your POS system, you can use either flow.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/brazil-vouchers/2026-09-15.md:47"
+    },
+    {
+      "text": "If your main economic activity is not compatible with meal or food services, the voucher transaction will be declined by the issuer.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/brazil-vouchers/2026-09-15.md:251"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-brazil-vouchers-pos-alt-source",
+        "target_path": "wiki/concepts/adyen-pos-alternative-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-brazil-vouchers]] \u2014 2026-09-15 Adyen Docs guide to Brazilian PAT meal/food voucher payment flows, Terminal API field, software/activation gates, testing limit, and merchant eligibility.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Source conditions and MCC table require merchant-specific current eligibility checks; MKE testing does not simulate the terminal voucher flow."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/alternative-payment-methods/brazil-vouchers/2026-09-15.md",
+  "raw_sha256": "0327c8e660c2f543a4c7dccd58c0272107341c58f6009cf6fdc65cf3221edcf5",
+  "status": "candidate_ready"
+}

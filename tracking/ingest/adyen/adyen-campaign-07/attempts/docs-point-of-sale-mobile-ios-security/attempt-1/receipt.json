@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-mobile-ios-security",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen iOS Mobile POS security guidance\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mobile-ios/security\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mobile-ios/security/2026-09-15.md\"\ntags: [adyen, point-of-sale, mobile-pos, ios, security, pci-mpoc]\n---\n\n## Overview\n\nThis dated Adyen guide covers security claims and integration practices for iOS Mobile POS, with a Tap to Pay on iPhone MPoC section and shared iOS Mobile SDK guidance that also discusses the card-reader interface. It identifies an irreversible consequence of removing a device passcode from a device holding store-and-forward offline payments. See [[adyen]], [[adyen-mobile-pos]] and [[adyen-api-access]]. The product approval described here is not certification or safety proof for a merchant's particular POS app, network or deployment.\n\n## Key takeaways\n\n- Adyen says Tap to Pay on iPhone is PCI SSC validated as an MPoC solution for **iOS 18.4 and later**. The page says Apple continues support on some earlier versions as approved by Adyen, with the same yearly deprecation. In this Tap to Pay section, it says a communication session only works within one year of the release of the specific major, minor or patch iOS version; the cited 18.4 and 18.4.1 dates are examples, not current support dates. It recommends targeting the latest major iOS release for a new Mobile solution.\n- Adyen says the Mobile SDK does not keep card or wallet payment details locally, sends and receives encrypted payment messages, and uses code obfuscation and OS/device/app/SDK monitoring and attestation. For **Tap to Pay on iPhone**, it attributes transaction encryption and handling to Apple's Secure Element. For the separate **card-reader** interface, it calls the reader a PCI PTS-approved Secure Card Reader that encrypts payment details immediately. These are Adyen's product claims in the snapshot, not a verified property of a specific integration.\n- The page's **must** practices are to keep Adyen API keys secret on the server, never call Adyen APIs directly from the mobile POS app, and set a device passcode. It additionally **recommends** secure POS-app/server communication with mutual authentication such as mTLS to prevent tampering with Terminal API requests; app user login; current SDK, OS and security patches; trusted SDK downloads and integrity checks when possible; and the TEST SDK only for internal development/testing. It warns that older SDK versions stop having transaction requests accepted after a short grace period, without giving a fixed duration.\n- The iOS SDK uses Keychain in core operation. From **iOS Mobile SDK 3.18.0**, a passcode is required to call any `PaymentService` function. Changing the passcode is allowed; **removing** it blocks transactions on that device and makes store-and-forward offline payments created while the passcode was set unrecoverable. The page suggests `Never` display lock or a simple staff-rememberable passcode if normal passcode use is inconvenient; it does not remove the passcode requirement.\n\n## Detail locators\n\n- `## PCI approval of Tap to Pay on iPhone`: MPoC solution and version-specific iOS release window, including the earlier-version qualification.\n- `## Security of the solution`: SDK encryption/no-local-retention and attestation claims; distinct Secure Element and card-reader paths.\n- `## Security best practices`: server-held API keys, no direct app-to-Adyen API calls, must versus recommended controls, SDK age and TEST distribution boundaries.\n- `### Setting a device passcode`: Keychain dependence, SDK 3.18.0 enforcement, changing versus removing a passcode, and unrecoverable stored offline payments.\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 iOS Mobile solution routes and build/management evidence.\n- [[adyen-mobile-card-readers]] \u2014 physical reader path.\n- [[adyen-api-access]] \u2014 API credential handling context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mobile-ios/security/2026-09-15|Adyen Security of the iOS Mobile solutions, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Tap to Pay on iPhone has been [approved](https://listings.pcisecuritystandards.org/popups/mpoc_solution.php?reference=2025-01597.001) by the Payment Card Industry (PCI) Security Standards Council as a validated Mobile Payments on COTS (MPoC) solution for iOS 18.4 and later.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/security/2026-09-15.md:27"
+    },
+    {
+      "text": "Establishing a communication session only works within one year of the release date of the iOS version.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/security/2026-09-15.md:36"
+    },
+    {
+      "text": "Never make requests to Adyen APIs directly from the POS app that is installed on the mobile device.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/security/2026-09-15.md:54"
+    },
+    {
+      "text": "From iOS Mobile SDK version 3.18.0, the SDK enforces this requirement: a device passcode must be set in order to call any function on the SDK's",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/security/2026-09-15.md:72"
+    },
+    {
+      "text": "Store and forward offline payments that were made while a passcode was still set can no longer be recovered.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/security/2026-09-15.md:77"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-ios-mobile-security-reciprocal",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-ios-security]] \u2014 iOS Mobile security guide (2026-09-15 snapshot) for Tap to Pay MPoC/iOS-version scope, shared SDK encryption/attestation and server-key practices, and SDK 3.18.0 passcode enforcement with offline-payment loss on removal.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Tap to Pay product approval is not evidence that a merchant integration is certified or secure. This source has no Wi-Fi cancellation or Android-style integrator assessment rule; do not import those claims."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mobile-ios/security/2026-09-15.md",
+  "raw_sha256": "0f4f73c796e975dba0a8cc4a802e05b64f1ba253330600ba6201b9b76c2a3c55",
+  "status": "candidate_ready"
+}

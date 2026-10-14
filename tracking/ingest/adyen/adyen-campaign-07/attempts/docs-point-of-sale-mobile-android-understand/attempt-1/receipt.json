@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-point-of-sale-mobile-android-understand",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Android Mobile solution choices and flows\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mobile-android/understand\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mobile-android/understand/2026-09-15.md\"\ntags: [adyen, point-of-sale, mobile-pos, android, tap-to-pay, card-reader, payments-app, terminal-api]\n---\n\n## Overview\n\nThis dated Adyen comparison helps choose among Android Mobile in-person payment solutions. A merchant POS app can embed the **POS Mobile SDK** for Tap to Pay on the Android device, an NYC1 card reader, or both. Alternatively, the POS app can hand off Tap to Pay through App Links to the separate **Adyen Payments app**, which contains the Mobile SDK. Both integration shapes require Terminal API and merchant frontend and backend work. See [[adyen-mobile-pos]] for the solution map; this is separate from apps installed on Adyen Android payment terminals and from the native online [[adyen-android-sdk]].\n\n## Key takeaways\n\n- The Mobile SDK route gives the merchant in-app experience control and supports both Tap to Pay and card readers. The source's comparison says to update the SDK every six months and lists PCI MPoC compliance requirements. The Payments app route uses Links and API with app switching and per-device boarding; the source describes lower integration effort, Adyen-managed updates, no PCI MPoC compliance requirements for that route, and **Tap to Pay only**. These are the source's dated comparative claims, not a current eligibility determination. See raw \u00a7 SDK or Payments app (lines 24\u201344).\n- In the embedded SDK route, the POS app calls its backend to initiate a server-to-server `POST /auth/certificate` and obtain session data for secure SDK communication with Adyen; the SDK checks session validity and refreshes when needed. The POS app creates or receives a Terminal API request, passes it to the SDK, and receives the Terminal API response from it. Optional warm-up is recommended, not required. See raw \u00a7\u00a7 Communication session and SDK transaction flow (lines 46\u201370).\n- In the Payments app route, the POS app sends an **encrypted, Base64URL-encoded** Terminal API payment request with a return URL through an Android App Link. The separate app presents the NFC Tap to Pay screen, routes through the POS Mobile SDK to Adyen, then returns an encrypted, encoded response via the return URL. The diagrammed flow is a message and UI route, not proof of authorization, capture or settlement. See raw \u00a7 Payments app transaction flow (lines 72\u201382).\n- PIN can be part of Tap to Pay or card-reader solutions, with randomized on-screen PIN-pad placement under the cited PCI MPoC requirement. For US NYC1 card readers, PIN requires a PIN-capable model and Mobile SDK 2.4.0 or later; `connectedDevice.model` distinguishes **SCRP** (PIN) from **SCR** (no PIN). The source routes full reader requirements elsewhere. See raw \u00a7 PIN transactions (lines 84\u2013111).\n- For an NYC1 reader, the SDK offers built-in UI or permits merchant-built UI for Bluetooth or supported USB connections, reader details and firmware. Reader firmware must be checked and updated; a custom UI must implement the update flow. A dock adds USB connection and dock-firmware operations, with built-in or custom UI. See raw \u00a7\u00a7 UI for card reader operations and UI for dock operations (lines 113\u2013181); see also [[adyen-mobile-card-readers]].\n- Kiosk mode is a Tap to Pay UI option for larger screens. The source says **do not use it in an unattended environment** under PCI MPoC requirements. It activates automatically from 9-inch screen width, with a documented option for smaller devices. See raw \u00a7 Kiosk mode (lines 183\u2013194).\n\n## Detail locators\n\n- Raw \u00a7 SDK or Payments app: comparative table and shared Terminal API requirement (lines 24\u201344).\n- Raw \u00a7\u00a7 Communication session, SDK transaction flow and Payments app transaction flow: separate session and payment-message paths (lines 46\u201382).\n- Raw \u00a7\u00a7 PIN transactions, card reader and dock UI, Kiosk mode: model, firmware, custom UI and attended-use qualifications (lines 84\u2013194).\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 Android Mobile POS hub and sibling build guides.\n- [[adyen-terminal-api]] \u2014 in-person request and response message family.\n- [[adyen-mobile-card-readers]] \u2014 NYC1 reader hardware and pairing evidence.\n- [[adyen-android-terminals]] \u2014 distinct payment-terminal app route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mobile-android/understand/2026-09-15|Understand the Android Mobile solutions, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "* Integrate our Mobile SDK into your POS app, to accept Tap to Pay and/or card reader payments.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/understand/2026-09-15.md:21"
+    },
+    {
+      "text": "Both when integrating the Mobile SDK and when using the Payments app, your POS app must be integrated with [Terminal API](/point-of-sale/design-your-integration/terminal-api#api-structure). And in both cases you have to work on the backend as well as on the frontend.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/understand/2026-09-15.md:26"
+    },
+    {
+      "text": "The Payments app on the other hand only supports Tap to Pay.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/understand/2026-09-15.md:30"
+    },
+    {
+      "text": "NYC1 card readers with PIN support require Mobile SDK version 2.4.0 or later.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/understand/2026-09-15.md:96"
+    },
+    {
+      "text": "According to the PCI MPoC compliance requirements, your Tap to Pay on Android solution must not use Kiosk mode in an unattended environment.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/understand/2026-09-15.md:192"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c07-understand-mobile-pos-route",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-android-understand]] \u2014 Android Mobile solution comparison (2026-09-15 webpage snapshot): embedded SDK for Tap to Pay/card reader versus separate Tap-to-Pay-only Payments app, with distinct session, App Link, PIN, reader-UI and kiosk conditions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c07-understand-reader-route",
+        "target_path": "wiki/concepts/adyen-mobile-card-readers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-android-understand]] \u2014 Android Mobile solution comparison (2026-09-15 webpage snapshot) for NYC1 reader PIN model/SDK qualification, built-in versus custom reader/dock UI, and firmware operations; the broader solution map belongs to [[adyen-mobile-pos]].",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mobile-android/understand/2026-09-15.md",
+  "raw_sha256": "324ce6f217b48bc46e0543b1e55f6f31f47be18fb6408f0f3f8a27e424218c28",
+  "status": "candidate_ready"
+}

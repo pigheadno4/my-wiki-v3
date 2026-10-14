@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Gift cards and other stored value cards at point of sale\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/alternative-payment-methods/gift-cards-terminal-api\"\nraw_files:\n  - \"adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/2026-09-15.md\"\ntags: [adyen, point-of-sale, gift-cards, stored-value, terminal-api]\n---\n\n## Overview\n\nThis Adyen POS overview covers Terminal API transactions with stored-value cards such as gift cards and mall cards. It introduces setup, card-entry and PIN options, the boundary between Terminal API and Stored Value API, mall-card issuer onboarding, and a provider-by-operation matrix that routes to individual lifecycle guides. The page was last modified in 2025 and captured on 2026-09-15; its support matrix and operational steps are historical documentation, not current provider/account enablement or payment proof. [[adyen]] [[adyen-pos-gift-cards]]\n\n## Key takeaways\n\n- The guide requires a Terminal API integration with payment terminals, adding the method to the Adyen account, completing gift-card-provider onboarding, and contacting Adyen Support to enable specific PIN options. It says Adyen may request more details before configuring gift-card functionality. These are POS requirements; the page does not establish online checkout payment behavior. See **Requirements**, pinned raw lines 21\u201331.\n- Stored Value API can substitute for Terminal API requests whose `MessageCategory` is `StoredValue`, such as activation through `/changeStatus`; it cannot make payments. The page describes using Terminal API for gift-card payments, including cash-outs, and refunds while optionally using Stored Value API for management operations across POS and ecommerce channels. A shared management route does not make POS and ecommerce payment flows interchangeable. See **Terminal API or Stored Value API**, pinned raw lines 33\u201340.\n- The POS card details may be obtained by scanning with a POS-linked barcode scanner, swiping on the terminal, or manually keying on the terminal. The request must identify the entry method; scanned details are supplied by the POS, whereas swipe/keyed details are collected after the terminal request. See **Card entry methods**, pinned raw lines 42\u201348.\n- If a card has a PIN or other security code, the terminal prompts the shopper. Support-enabled **PIN entry override** can vary prompts by interaction, entry mode, and brand. **Store PIN** caches a PIN after first entry for a configured 25-second to 30-minute interval and clears it when another payment or gift card is presented. These are specific options, not universal PIN treatment or a recommendation to enable caching. See **PIN options**, pinned raw lines 50\u201355.\n- Co-badged mall/one4all cards use their Mastercard or Visa scheme. The guide says to provide the issuer the scheme MID for each intended store so it can allow the store; the issuer may need more store details. Viewing MIDs in the live Customer Area requires the **View Acquiring Details** role, and MIDs are store- and scheme-specific. This onboarding statement does not prove that a particular card will be accepted. See **Mall cards / Send MIDs to the card issuer**, pinned raw lines 57\u201386.\n- The snapshot matrix lists Givex, SVS, Fiserv (formerly ValueLink), Intersolve, and local gift cards. In its table, the four named global providers support activation, payment, balance, load, load reversal, refund and cash-out; **deactivation is shown only for Givex**. Local-provider cards are listed for payments only, in Denmark, France, the Netherlands, Norway, Sweden and the UK. These are dated table entries, not current support promises or method-specific transaction instructions. See **Supported gift cards and transactions**, pinned raw lines 88\u2013103.\n\n## Detail locators\n\n- **Gift cards and other stored value cards / Requirements** (pinned raw lines 15\u201331) \u2014 stored-value scope, Terminal API integration, account/provider setup and PIN-support route.\n- **Terminal API or Stored Value API** (pinned raw lines 33\u201340) \u2014 operation-category substitution and payment prohibition for Stored Value API.\n- **Card entry methods / PIN options** (pinned raw lines 42\u201355) \u2014 scan/swipe/MKE ownership and PIN prompt/cache controls.\n- **Mall cards / Send MIDs to the card issuer** (pinned raw lines 57\u201386) \u2014 scheme co-badging, per-store/scheme MID, live Customer Area role and issuer onboarding.\n- **Supported gift cards and transactions** (pinned raw lines 88\u2013103) \u2014 provider-operation matrix, Givex-only deactivation, and local-provider payment-only row.\n- **Next steps** (pinned raw lines 105\u2013123) \u2014 activation, payment, load and refund child-guide navigation.\n\n## Related\n\n- [[adyen-pos-gift-cards]] \u2014 POS gift-card lifecycle and provider boundary.\n- [[adyen-terminal-api]] \u2014 terminal message categories and request context.\n- [[adyen-pos-alternative-payment-methods]] \u2014 broader POS method-family route.\n\n## Related raw API references\n\nThe following are child routes named by the overview; their behavior is not independently established by this entry:\n\n- Gift-card activation \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/activate\n- Gift-card payment \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/payment\n- Load funds \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/load-a-balance\n- Refund to a gift card \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/refund-gift-cards\n- Stored Value API \u2014 https://docs.adyen.com/payment-methods/gift-cards/stored-value-api\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/2026-09-15|Adyen POS stored-value card overview, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Many gift card management operations can also be done using our [Stored Value API](/payment-methods/gift-cards/stored-value-api) instead of using Terminal API. You cannot make payments using the Stored Value API, but you can use this API as an alternative for any Terminal API request with a `MessageCategory` of `StoredValue`.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/2026-09-15.md:35"
+    },
+    {
+      "text": "* **Store PIN**: after the first gift card PIN entry, the terminal stores the PIN in the cache. For a limited amount of time, the terminal no longer prompts the shopper to enter the PIN when the card is used again, for example, to load funds. The terminal clears the PIN from the cache after a configurable time of 25 seconds to 30 minutes or as soon as any other payment or gift card is presented.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/2026-09-15.md:55"
+    },
+    {
+      "text": "Payment providers like Adyen process mall card or one4all card payments through the card scheme that the card is co-badged with, like Mastercard or Visa. To ensure that these payments are not refused, you must provide the card issuer with the scheme merchant\u00a0ID (MID) that we use for your store. The card issuer then adds your MID to the list of allowed MIDs in their system.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/2026-09-15.md:59"
+    },
+    {
+      "text": "With a Terminal API integration you can accept gift cards issued by Givex, [Intersolve](https://intersolve.nl/en/), [Stored Value Solutions (SVS)](http://www.storedvalue.com), and [Fiserv](https://merchants.fiserv.com/en-us/products/merchants/gift-and-payroll-card-solutions/gift-card-solutions/) (formerly ValueLink), and make the following gift card transactions:",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/2026-09-15.md:90"
+    },
+    {
+      "text": "[]()1 We support gift cards from local gift card providers in Denmark, France, The Netherlands, Norway, Sweden, and the United Kingdom. You can process payments with these gift cards, but you cannot do other gift card transactions.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/2026-09-15.md:103"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-pos-gift-overview-hub-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-gift-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api]] \u2014 2026-09-15 captured POS gift-card overview for Terminal API versus Stored Value API, card/PIN entry, mall-card MIDs, and dated provider-by-operation limits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The provider matrix is historical: Givex-only deactivation and local-provider payment-only rows are in the source; do not generalize to current availability.",
+          "Store PIN caching is an optional Support-enabled choice with a 25-second to 30-minute timer; do not turn it into a default or universal card-PIN rule.",
+          "Stored Value API management substitution does not support payments or prove ecommerce payment-flow equivalence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/2026-09-15.md",
+  "raw_sha256": "0a22da62f5fffba89278458db6d108e0b692a914791613bef9c18a53cb4ed061",
+  "status": "candidate_ready"
+}

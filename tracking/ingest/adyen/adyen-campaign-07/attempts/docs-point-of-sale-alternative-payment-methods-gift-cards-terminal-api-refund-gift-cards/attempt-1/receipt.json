@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-refund-gift-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS gift-card refunds\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards\"\nraw_files:\n  - \"adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards/2026-09-15.md\"\ntags: [adyen, point-of-sale, gift-cards, terminal-api, refunds, stored-value]\n---\n\n## Overview\n\nThis Adyen point-of-sale guide distinguishes refunding value **to a shopper's gift card** with or without the original payment reference. A referenced refund uses a Terminal API `ReversalRequest` tied to the original payment transaction; an unreferenced refund uses a `PaymentRequest` with `PaymentType=Refund` and supplies gift-card details. The guide explains the latter request in detail and links away for referenced-refund steps. Its last-modified field is 2019-11-14 and raw capture is 2026-09-15, so its instructions and examples are historical snapshot evidence. [[adyen]] [[adyen-pos-gift-cards]] [[adyen-pos-alternative-payment-methods]]\n\n## Key takeaways\n\n- Use the referenced path when refunding a payment made with the gift card and the original transaction identifier is available. The original identifier carries the card association, so this guide says gift-card details need not be repeated; it also says multiple partial referenced refunds are possible. Detailed referenced-refund behavior is delegated to a separate guide. The source does not establish a generic cancel, void, or automatic load operation.\n- Use the unreferenced path when the refund cannot be connected to the gift-card payment, such as a merchandise return. It is a Terminal API `PaymentRequest` with `MessageCategory=Payment`, `PaymentType=Refund`, a `StoredValue` instrument and `GiftCard` account identity, plus the amount and currency to be returned **to the card**. This action differs from cashing out the card balance to the shopper; the page directs that to a separate cashback request. The stated setup assumes a Terminal API integration with payment terminals, the method added to the Adyen account, and provider onboarding.\n- For an unreferenced refund, choose card entry before sending: scan and include obtained number/expiry in the request, or send first for terminal swipe/manual-key prompts. The request includes a terminal-scoped `ServiceID` unique for the preceding 48 hours, POS `SaleID`, terminal `POIID`, refund transaction reference/timestamp and `SaleReferenceID` order reference. The optional `SaleToAcquirerData` can carry long-number manual-entry display fields or an SVS-specific secondary security code (`ssc`), not a universal PIN rule.\n- Check the `PaymentResponse` transaction ID, receipt data and `Response.Result=Success`; the example also displays `AmountsResp.AuthorizedAmount`, currency and `PaymentType=Refund`. Do not infer a refund outcome from request submission or assume the illustrative GBP 30, IDs, provider and card details apply to other transactions. The sample response uses a different provider, entry mode, card number and `SaleReferenceID` than the sample request, so they are not a matching end-to-end transaction record.\n- This page does not specify provider-specific current eligibility, live account state, a universal partial-refund rule for unreferenced refunds, an idempotent retry contract, or a cancellation/void lifecycle. Its referenced path supports multiple partial refunds only in the stated original-payment context.\n\n## Detail locators\n\n- Raw `# Make a refund to a gift card` (lines 15\u201325): referenced versus unreferenced action, original-payment link, partial referenced refunds and cashback boundary.\n- Raw `## Requirements` (lines 27\u201335): terminal integration, account method and provider onboarding.\n- Raw `## Make an unreferenced refund` (lines 37\u2013111): card entry, request header, identifiers, optional MKE/SVS tender options, currency/amount, refund payment type and stored-value card details.\n- Raw request examples (lines 112\u2013208): illustrative GBP 30 scanned-card JSON/Java; values are examples and do not create retry or provider guarantees.\n- Raw response checks and example (lines 209\u2013283): `Success`, transaction ID, receipt and response fields; request/response illustrations have mismatched provider and card/order details.\n\n## Related\n\n- [[adyen-pos-gift-cards]] \u2014 POS gift-card lifecycle and provider-specific actions.\n- [[adyen-pos-alternative-payment-methods]] \u2014 in-person alternative-method umbrella.\n- [[adyen-terminal-api]] \u2014 request/response context.\n\n## Related raw API references\n\nNavigation named by the guide, not further behavior reviewed for this entry:\n\n- Referenced refund \u2014 https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced\n- Gift-card cashback \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/deactivate#cashing-back-gift-card\n- Terminal API PaymentRequest \u2014 https://docs.adyen.com/api-explorer/terminal-api/latest/post/payment\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards/2026-09-15|Make a refund to a gift card, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "* **Referenced refund**: a `ReversalRequest` with a reference to the original payment's transaction identifier. Use this if you want to refund a payment made with this gift card. The transaction identifier references the gift card details, so you do not need to specify them in the refund request. You can also make (multiple) partial refunds in this way. For the detailed steps, refer to [Referenced refund](/point-of-sale/basic-tapi-integration/refund-payment/referenced).",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards/2026-09-15.md:21"
+    },
+    {
+      "text": "* **Unreferenced refund**: a `PaymentRequest` with `PaymentType` **Refund**. Use this if you cannot connect the refund to a payment made with the gift card but still want to return the funds to this gift card. For example, in a 'merchandise return' where the shopper returns an unwanted birthday gift. Because an unreferenced refund to a gift card requires specifying the gift card details, we explain this transaction on this page.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards/2026-09-15.md:23"
+    },
+    {
+      "text": "If you want to give the balance of a gift card to a shopper in cash, you should [make a cashback request](/point-of-sale/gift-cards-terminal-api/deactivate#cashing-back-gift-card) instead.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards/2026-09-15.md:25"
+    },
+    {
+      "text": "     | `AmountsReq` | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | The `Currency` and `RequestedAmount` being refunded to the gift card. |",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards/2026-09-15.md:86"
+    },
+    {
+      "text": "   * `Response.Result`: **Success**",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards/2026-09-15.md:217"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-gift-refund-pos-gift-cards-source",
+        "target_path": "wiki/concepts/adyen-pos-gift-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-refund-gift-cards]] \u2014 POS gift-card refund guide (2019 last-modified; 2026-09-15 capture) distinguishing referenced reversal and unreferenced refund-to-card request.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The detailed referenced-refund steps are linked but not read for this source; the page directly supports the type and partial-refund distinction only.",
+          "The historical examples do not prove current provider/merchant eligibility, live refund result or idempotent retry."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/refund-gift-cards/2026-09-15.md",
+  "raw_sha256": "3ce6abb58563d7b6c0be71259405112f18bba022f71f5f56ff6d08f64a3c2390",
+  "status": "candidate_ready"
+}

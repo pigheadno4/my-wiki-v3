@@ -1,0 +1,43 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "c7-pos-gift-payment-new-hub",
+      "target_path": "wiki/concepts/adyen-pos-gift-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "new file",
+      "proposed_markdown": "---\ntitle: \"Adyen POS gift cards\"\ntype: concept\ncategory: technology\ntags: [adyen, point-of-sale, gift-cards, terminal-api, stored-value]\n---\n\n## Definition\n\nAdyen's dated POS gift-card payment guide uses Terminal API `Payment` messages for an activated gift card with a loaded balance. The merchant must have the method added to its Adyen account and complete provider onboarding. The guide describes two payment flows: request a partial authorization for the whole purchase when balance is unknown, or inquire about the balance first and request no more than the available amount. In either flow, another card payment or cash can cover a remainder. [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-payment]]\n\n## Payment boundary\n\nThe request identifies a `StoredValue` instrument of `GiftCard` type, a gift-card provider, transaction currency and requested amount. For the partial flow, `AllowPartialAuthorisation` is passed in `SaleToAcquirerData`. A response's `Success` means full authorization in this guide; `Partial` means the gift card covered only `PaymentResult.AmountsResp.AuthorizedAmount`. Calculate any remainder from requested minus authorized amount before a subsequent tender, and check the follow-up response. `SaleReferenceID` links partial payments belonging to a merchant order; `ServiceID` is a terminal-scoped unique request identity for 48 hours, not a stated idempotency guarantee.\n\n## Scope and evidence\n\nProvider examples, SVS-only optional `ssc`, scan/swipe/manual-entry parameters, and manual-entry mask behavior are in the source and pinned raw. The page does not state universal brand or PIN rules. Its 2022-modified, 2026-09-15-captured wording and illustrative examples do not prove current provider, method, currency, account or terminal availability, an approved payment, or safe replay of a pending request. Follow method-specific activation, balance, load, refund, void and deactivation evidence separately as those sources are reviewed.\n\n## Sources\n\n- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-payment]] \u2014 Terminal API gift-card payment and two-balance-flow guide, captured 2026-09-15.\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Dedicated POS gift-card concept fills a topic gap; other C07 gift-card workers can add their independently reviewed lifecycle routes here.",
+        "The guide was last modified in 2022 and fetched in 2026; no current provider, account, currency, terminal or scheme availability or payment success follows.",
+        "Do not treat ServiceID uniqueness, SaleTransactionID or SaleReferenceID as an idempotent retry guarantee; illustrative request examples reuse identities and contain malformed JSON punctuation."
+      ]
+    },
+    {
+      "update_id": "c7-pos-gift-payment-apm-reciprocal",
+      "target_path": "wiki/concepts/adyen-pos-alternative-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-payment]] \u2014 2026-09-15 captured Terminal API POS gift-card payment guide for balance-first versus partial-authorization flows; detailed lifecycle belongs to [[adyen-pos-gift-cards]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep this umbrella route short; the proposed gift-card concept owns method-specific details."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -328,6 +328,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-point-of-sale-managing-terminals-customize-terminals]] — Adyen Docs: Customize terminal settings (webpage, 2026-10-14)
 - [[source-adyen-docs-point-of-sale-standalone-standalone-build]] — Adyen Docs: Build a standalone solution (webpage, 2026-10-14)
 
+### Website documentation — Campaign 07
+
+- [[source-adyen-docs-point-of-sale-mobile-android]] — Adyen Android Mobile solutions (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios]] — Adyen iOS Mobile solutions overview (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods]] — Adyen Docs: Alternative payment methods at point of sale (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-classic-library-deprecation]] — Deprecation of classic libraries | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-build-card-reader]] — Adyen iOS Mobile SDK card-reader solution (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-build-card-reader]] — Adyen Card reader solution for Android (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-build-tap-to-pay]] — Adyen Tap to Pay on Android Mobile SDK build (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-build-tap-to-pay]] — Adyen Tap to Pay on iPhone with iOS Mobile SDK (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-build-payments-app]] — Adyen Android Payments app build guide (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-menu-access]] — Menus and passcodes | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-manage]] — Manage your Android Mobile solution | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-manage]] — Manage an Adyen iOS Mobile solution (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-payment]] — Adyen Docs: Make a gift card payment at point of sale (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-brazil-vouchers]] — Meal voucher payments in Brazil | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-deactivate]] — Adyen POS gift card cashback and deactivation (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-ams1-user-manual]] — Adyen AMS1 payment terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-troubleshooting]] — Adyen Android Mobile solution error handling (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-understand]] — Adyen Android Mobile solution choices and flows (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-v400c-user-manual]] — V400c Plus user manual | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-p630-user-manual]] — P630 user manual | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-e280-user-manual]] — Adyen e280 payment terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-ux300-user-manual]] — Adyen UX300 unattended terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-qr-code-wallets]] — Adyen Docs: QR code wallet payments at point of sale (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-ux410-user-manual]] — UX410 user manual | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-m450-user-manual]] — Adyen M450 payment terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-sfo1-user-manual]] — Adyen SFO1 payment terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-troubleshooting]] — Adyen iOS Mobile POS error handling (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-s1u2-user-manual]] — Adyen S1U2 unattended terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-p400-plus-user-manual]] — Adyen P400 Plus payment terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-m400-user-manual]] — Adyen Docs: M400 user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-ipp-mobile]] — What we support in our Mobile solutions | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-understand]] — Adyen iOS Mobile solutions concepts and reader operations (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api]] — Adyen Docs: Gift cards and other stored value cards at point of sale (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-refund-gift-cards]] — Adyen POS gift-card refunds (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-pos-troubleshooting-connection-tests]] — Adyen payment-terminal connection tests (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-checklists]] — Get-started and go-live checklists for Android | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-checklists]] — iOS Mobile get-started and go-live checklists | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-requirements]] — Adyen iOS Mobile system requirements (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-security]] — Adyen Android Mobile POS security guidance (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-otc-digit-based-payments]] — One-time numeric code payments | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-activate]] — Adyen Docs: Activate a gift card at point of sale (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-load-a-balance]] — Adyen POS load funds to a gift card (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-security]] — Adyen iOS Mobile POS security guidance (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-void]] — Undo a gift-card load transaction | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-query-the-balance]] — Adyen Terminal API gift-card balance inquiry (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-requirements]] — Adyen Docs: Android Mobile system requirements (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-pos-troubleshooting-hardware-tests]] — Run hardware tests | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-android-build]] — Adyen Android Mobile build overview (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-mobile-ios-build]] — Build your iOS Mobile solution — Adyen overview (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-pos-troubleshooting]] — Adyen payment-terminal troubleshooting overview (webpage, 2026-10-14)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -360,6 +413,12 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-pos-gift-cards]] — Adyen POS gift cards
+
+- [[adyen-pos-alternative-payment-methods]] — Adyen POS alternative payment methods
+
+- [[adyen-mobile-pos]] — Adyen Mobile POS
 
 - [[adyen-terminal-management]] — Adyen Terminal Management
 

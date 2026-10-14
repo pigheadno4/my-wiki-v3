@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-mobile-android-build-tap-to-pay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Tap to Pay on Android Mobile SDK build\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mobile-android/build/tap-to-pay\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mobile-android/build/tap-to-pay/2026-09-15.md\"\ntags: [adyen, point-of-sale, mobile-pos, android, tap-to-pay, mobile-sdk]\n---\n\n## Overview\n\nAdyen's Tap to Pay on Android build guide describes a Terminal API-integrated merchant POS app using the Mobile SDK and an Android commercial phone or other COTS device's integrated NFC reader to accept contactless in-person payments. It is the direct device tap path, distinct from an attached mobile card reader, an app installed on an Adyen Android payment terminal, and the separate Android online-checkout SDK. This 2026-09-15 documentation snapshot gives integration steps; it does not prove current country, model, merchant eligibility, app approval, or successful test/live payments. [[adyen]] [[adyen-mobile-pos]]\n\n## Key takeaways\n\n- The stated prerequisites are a POS app integrated with Terminal API, a COTS Android device with integrated NFC that is **not** a payment terminal, Adyen test-account Mobile enablement through Support, and supported-country/payment-method/functionality checks. The app needs `minSdkVersion` 26+, while the SDK runs only on Android 12+ devices; bypassing the minimum with `tools:overrideLibrary` can cause failure or unexpected behavior. The linked system-requirements and support pages are separate eligibility evidence. See `## Requirements` and `## 1. Add the SDK to your project`.\n- SDK download uses a dedicated API key with only **Allow SDK download for POS developers**. Communication-session creation uses a different credential with API key, client key, and **Checkout webservice** role. Debug artifacts access test only; release artifacts access live only. The snapshot's repository, dependency and version examples are in `## 1. Add the SDK to your project` and `### Get the live SDK`; check release notes for the SDK version rather than treating `LATEST_SDK_VERSION` as a release.\n- The merchant backend sends `/auth/certificate` with `merchantAccount` and the SDK's `setupToken`, returns `sdkData` to the POS app, and may retain `installationId` for backend-created Terminal API requests' `POIID`. For a non-facilitator, `store` is required unless merchant accounts act as stores; a registered payment facilitator instead supplies `subMerchantData` in session creation and must not put it in Terminal API requests. The guide calls the old `/checkout/possdk/v68/sessions` endpoints deprecated. See `## 2. Establish a session`, especially `#### Implement the request` and `#### Endpoints to use`.\n- The app implements `AuthenticationProvider` and `MerchantAuthenticationService` so fresh `sdkData` can be supplied when a session is missing or expired. The SDK initializes automatically; manual initialization and state checks have a 2.6.0 version split, including a foreground/resumed Activity condition for 2.6.0+. Warm-up checks session, configuration changes and security as needed. See `## 3. Enable transactions` and `## 4. Use the warm-up function`.\n- For payment, the POS app or backend forms a Terminal API request using the SDK installation ID as `MessageHeader.POIID`; the app selects `InPersonPayments.getPaymentInterface(TapToPay)`, registers for `PaymentResult`, and invokes `performTransaction()`. The shopper presents a contactless card or wallet to the mobile device's NFC reader. If no method is presented in 30 seconds, the request times out and another payment request is needed. Optional transaction and kiosk UI parameters, including the 2.16.0+ fractional NFC-position option, are in `## 5. Decide on transaction UI options` and `## 6. Handle a payment`.\n- Referenced refunds use a Terminal API reversal; unreferenced refunds use a payment request with `paymentType=Refund`. Refund responses usually acknowledge receipt, with final outcomes sent through Standard webhooks; some unreferenced refunds can complete synchronously depending on scheme and country/region. If a payment response is missing, the guide recommends `getTransactionStatus()`; its quick `success=false` can mean either a failed original transaction or no match. See `## 7. Handle a refund` and `## 8. Check the transaction status`.\n- The guide recommends diagnosis to detect transaction-blocking security threats and SDK expiry, with `HostDiagnosisFlag=true`; it says mandatory missed SDK updates block transactions. Clearing a session removes device session information and fetches new configuration on the next transaction or warm-up. After a merchant-account or store switch, failing to clear it can leave transactions attributed to the former store. See `## 9. Diagnose the device` and `## 10. (Optional) Clear the session token`.\n- The dated feature table marks store-and-forward offline payments unsupported and surcharge AU/NZ only. Test instructions specify the test SDK and Adyen POS test cards. Going live requires live account access, separate live download and session keys, release SDK artifacts, a regional live session endpoint, and Adyen app registration; the page does not attest that these steps were completed. See `## Other supported features`, `## Test your solution`, and `## Go live`.\n\n## Detail locators\n\n- `## 1. Add the SDK to your project`: private repository and Gradle artifact examples, `minSdkVersion`, Android OS floor, key-role setup, debug/release distinction.\n- `## 2. Establish a session`: backend request/response, non-facilitator versus payment-facilitator fields, `subMerchantData` field table, test and regional live v3 URLs, deprecated prior endpoint.\n- `## 3. Enable transactions`\u2013`## 6. Handle a payment`: authentication service, initialization/version split, warm-up, UI customization, Terminal API message and TapToPay interface flow.\n- `## 7. Handle a refund`\u2013`## 10. (Optional) Clear the session token`: refund outcome boundary, status recovery, security/expiry diagnosis, and session reassignment.\n- `## Other supported features`\u2013`## Go live`: dated feature matrix, test cards, release artifacts, regional live endpoints and app registration.\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 Mobile POS solution routes and boundary.\n- [[adyen-terminal-api]] \u2014 in-person request and response message model.\n- [[adyen-mobile-card-readers]] \u2014 separate attached-reader path.\n- [[adyen-android-terminals]] \u2014 apps running on Adyen payment terminals.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mobile-android/build/tap-to-pay/2026-09-15|Adyen Tap to Pay on Android build guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "With our Tap to Pay on Android solution you can accept contactless in-person payments using an Android mobile device as the payment interface, and process these payments on the Adyen payments platform.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/tap-to-pay/2026-09-15.md:19"
+    },
+    {
+      "text": "Your app's `minSdkVersion` must be **26** or higher. Do not use `tools:overrideLibrary` in your manifest to bypass this requirement, as this can cause the Adyen SDK to fail or behave unexpectedly. Also note that our SDK only runs on devices with Android 12 or later; on earlier Android OS versions, it will not initialize.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/tap-to-pay/2026-09-15.md:68"
+    },
+    {
+      "text": "To ensure the Mobile SDK and the Adyen payments platform can collaborate in a secure way, you need to implement a server-to-server API request for establishing a communication session.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/tap-to-pay/2026-09-15.md:133"
+    },
+    {
+      "text": "You must **not** submit sub-merchant data in your Terminal API requests.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/tap-to-pay/2026-09-15.md:217"
+    },
+    {
+      "text": "If the device is reassigned from store A to store B and a transaction is started there, on the Adyen side the transaction will continue to appear to belong to store A instead of store B. Clearing the session prevents this issue.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/tap-to-pay/2026-09-15.md:854"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mobile-android-tap-to-pay-source-route",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-android-build-tap-to-pay]] \u2014 Tap to Pay on Android Mobile SDK build guide (2026-09-15 snapshot): COTS Android NFC, Terminal API/session credentials, payment/refund/diagnosis/session flows, and test/live boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Target concept is proposed by the C07 Android Mobile overview owner; coordinator should apply this route after that concept is created."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mobile-android/build/tap-to-pay/2026-09-15.md",
+  "raw_sha256": "e7e655f15149664938345230fe302f56d2de8672ed2cf08df792432b65cd991b",
+  "status": "candidate_ready"
+}

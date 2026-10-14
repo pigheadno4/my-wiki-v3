@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-load-a-balance",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS load funds to a gift card\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance\"\nraw_files:\n  - \"adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance/2026-09-15.md\"\ntags: [adyen, point-of-sale, gift-cards, terminal-api, stored-value, load]\n---\n\n## Overview\n\nThis Adyen point-of-sale guide explains adding funds to an **activated** gift card, either as its initial loaded amount or to increase an existing balance. Its Terminal API operation is a `StoredValueRequest` with `StoredValueTransactionType=Load`, separate from the `PaymentRequest` used to redeem a gift card for a purchase. The page was last modified 2019-10-01 and captured 2026-09-15; it is historical documentation, not evidence of current provider eligibility or a completed live load. [[adyen]] [[adyen-pos-gift-cards]] [[adyen-pos-alternative-payment-methods]]\n\n## Key takeaways\n\n- The guide assumes a Terminal API integration with a payment terminal, the gift-card payment method added to the Adyen account, provider onboarding and an already activated card. A load request can establish the card's initial funded amount or add to an existing balance; it is not the activation action and does not itself document how the shopper pays for that value.\n- Choose the card-entry method first: scan and include card number and expiry in the request, or send the request before swipe/manual-key entry so the terminal prompts. The stored-value account identifies `GiftCard`, provider and PAN, with entry-specific fields. The optional `ssc` in `SaleToAcquirerData` is described only for SVS cards as a secondary security code of up to eight digits, not a general PIN requirement.\n- Send `SaleToPOIRequest` with `MessageClass=Service`, `MessageCategory=StoredValue`, and `StoredValueRequest.StoredValueData` containing `Load`, `ItemAmount`, `Currency` and the gift-card account identity. The `ServiceID` must be unique for the terminal for the preceding 48 hours; `SaleTransactionID.TransactionID` is a request reference recommended unique. This is an identity constraint, not an idempotent retry or duplicate-load guarantee.\n- Inspect `StoredValueResponse`: `StoredValueResult.StoredValueTransactionType=Load` and `Response.Result=Success` are the guide's successful-load indicators, with response `ItemAmount`, `Currency` and a POI transaction ID. The guide calls response amount and currency the value associated with the card; do not interpret a load amount as a post-load balance without a balance inquiry. Request submission or sample code alone does not prove funds were added.\n- The GBP 15 JSON request/response are examples. The Java example sets `ItemAmount` to 10 while the adjacent prose and JSON show 15, so the examples are inconsistent and should not be combined as one exact payload. Provider identifiers and sample card/terminal IDs are illustrative and do not establish current supported operations, currency, region or merchant entitlement.\n\n## Detail locators\n\n- Raw `# Load funds to a gift card` and `## Requirements` (lines 15\u201330): activated-card prerequisite, initial versus incremental balance, Terminal API and account/provider setup.\n- Raw `## Make a load request` (lines 31\u201379): entry modes, header and reference fields, SVS-specific `ssc`, `Load`, amount/currency and stored-value account fields.\n- Raw request examples (lines 80\u2013172): illustrative scanned-card JSON and Java; note their GBP 15 versus 10 amount conflict.\n- Raw response check and example (lines 174\u2013215): `Load` plus `Success`, amount/currency and POI transaction ID; this is not a separate balance-query result.\n\n## Related\n\n- [[adyen-pos-gift-cards]] \u2014 POS gift-card lifecycle and provider-specific action route.\n- [[adyen-pos-alternative-payment-methods]] \u2014 in-person alternative-method umbrella.\n- [[adyen-terminal-api]] \u2014 terminal request/response architecture.\n\n## Related raw API references\n\nNavigation named by the guide, not further behavior reviewed for this entry:\n\n- Activate a gift card \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/activate\n- Check gift-card balance \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/query-the-balance\n- Terminal API StoredValueRequest \u2014 https://docs.adyen.com/api-explorer/terminal-api/latest/post/storedvalue\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance/2026-09-15|Load funds to a gift card, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add funds to an [activated gift card](/point-of-sale/gift-cards-terminal-api/activate) by making a load request. This allows you to increase a card's existing balance or load an initial amount of funds.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance/2026-09-15.md:19"
+    },
+    {
+      "text": "2. Make a [Terminal API](/point-of-sale/design-your-integration/terminal-api) stored value request, specifying:",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance/2026-09-15.md:40"
+    },
+    {
+      "text": "     | `SaleToAcquirerData`              |                                                                                             | Optional, for Stored Value Solutions (SVS) gift cards: **ssc**. This is the secondary security code of the gift card, and allows up to 8 digits. For example, `ssc=1111`. |",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance/2026-09-15.md:60"
+    },
+    {
+      "text": "     | `StoredValueData.ItemAmount` | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | The value of the funds you are loading to the gift card.                                                                                                                                                                                                                                                                                                                                                                                              |",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance/2026-09-15.md:67"
+    },
+    {
+      "text": "   * `StoredValueResult.StoredValueTransactionType`: **Load** and `Response.Result`: **Success** indicate that funds were loaded.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance/2026-09-15.md:176"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-gift-load-pos-gift-cards-source",
+        "target_path": "wiki/concepts/adyen-pos-gift-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-load-a-balance]] \u2014 Terminal API gift-card load guide (2019 last-modified; 2026-09-15 capture) for adding value to an activated card and checking the stored-value response.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source's adjacent JSON and Java examples conflict on GBP 15 versus 10; preserve the operation and response conditions without copying them as one tested transaction.",
+          "The historical provider list, identifiers and response example do not prove current entitlement, live load, available balance, or safe idempotent retry."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/load-a-balance/2026-09-15.md",
+  "raw_sha256": "09a6cd0d928648058eb7bb4a6a3b4393665cca8e94ac2c5c29403c5f7060e581",
+  "status": "candidate_ready"
+}

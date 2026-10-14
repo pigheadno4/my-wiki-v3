@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-point-of-sale-mobile-android-troubleshooting",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Android Mobile solution error handling\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mobile-android/troubleshooting\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mobile-android/troubleshooting/2026-09-15.md\"\ntags: [adyen, point-of-sale, mobile-pos, android, troubleshooting, security]\n---\n\n## Overview\n\nAdyen's Android Mobile error-handling page, captured 2026-09-15, maps two distinct error surfaces: security-attestation/device errors for a merchant integration with the **Android Mobile SDK**, and UI/App Link errors for the separate **Android Payments app** route. It belongs to [[adyen-mobile-pos]], not apps installed on Adyen payment terminals or the [[adyen-android-sdk]] for online checkout. The page gives possible causes and corrective actions for listed codes, not a payment-outcome ledger or proof that a retry is safe.\n\n## Key takeaways\n\n- In the Android Mobile SDK route, Adyen performs regular mobile-device security checks. An attestation issue appears on the device and must be resolved before the device is used again. The device-error table distinguishes whether internet is marked as needed and identifies codes for developer/debug settings, local time change, security token and network checks, SDK update, offline store-and-forward limits, and `INVALID_NYC1_FIRMWARE_VERSION` for the **NYC1 card reader**. `NON_SELF_RESOLVABLE` directs the operator to Adyen Support. Preserve the table's exact code-to-action mapping; an Android device error is not automatically a card-reader error.\n- The Android Payments app section is a separate UI/App Link table. Prefixes and descriptions identify onboarding check (`01_...`), boarding (`02_...`), before-payment (`03_...`) and after-payment (`05_...`) contexts for many codes. It covers return URL and encoding, boarding/request tokens, device-bound installation ID (`02_010`), Payments app role or encryption passphrase (`02_003`), Terminal API request encoding/shape/encryption, NFC availability (`03_018`), and response decoding/encryption or transaction-ID extraction after payment. `02_010` specifically requires a new boarding request token for the current device, rather than reuse of one issued to a different device.\n- The page recommends restarting onboarding for particular boarding/token/security-credential errors, checking network or request configuration for others, and contacting Support where specified. Those actions are **code-specific**. An after-payment `05_...` response, App Link failure or generic error does not establish whether the financial transaction succeeded; inspect the actual payment state before initiating another payment. The raw's `Try again` wording for `05_004` and `05_009` does not by itself establish an idempotent payment retry.\n- The snapshot has internal table inconsistencies that should not be silently corrected: the row labeled `01_105` describes `01_005`; the `SYSTEM_CHANGE` row marks internet as not needed but its action instructs a network connection; the row labeled `03_021` at raw line 85 names `03_020` in its description, while the `03_020` row at line 84 also describes boarding despite its `03_` prefix; and `05_007`/`05_008` descriptions refer to both before and after payment. Use exact code and observed stage when diagnosing.\n\n## Detail locators\n\n- Raw opening and `## Device error messages` (lines 19\u201347): Android Mobile SDK attestation identity, device/NYC1 codes, internet-needed column and actions. `ANDROID_NOT_UPDATED` and `SECURITY_PATCH_LEVEL_OUTDATED` say to update the **SDK** in this table; do not silently rewrite that as an OS-update instruction.\n- Raw `## Error messages for the Android Payments app` (lines 49\u201389): Payments app UI/App Link identity and exact error-code table. Rows 55\u201359 cover return URLs and installation ID; 60\u201371 cover role/passphrase, boarding tokens, network and device mismatch; 72\u201385 cover Terminal API request and security-credential failures; 86\u201389 cover after-payment response/URL failures. The table's possible causes are not guaranteed diagnoses.\n- Raw `## See also` (lines 91\u201393): navigation to Android Mobile solution maintenance; this link alone does not establish maintenance behavior.\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 merchant-device Mobile POS routes and sibling Android build guides.\n- [[adyen-terminal-api]] \u2014 request and response model referenced by the Payments app error table.\n- [[adyen-mobile-card-readers]] \u2014 NYC1 reader context, distinct from handset security errors.\n- [[adyen-android-terminals]] \u2014 separate Adyen payment-terminal app path.\n- [[adyen-android-sdk]] \u2014 separate native online-checkout SDK.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mobile-android/troubleshooting/2026-09-15|Android Mobile error handling, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If an issue is found during the security attestation process in an integration with the Android SDK, an error is shown on the mobile device. In many cases end users can resolve the issue themselves. The user needs to resolve the issue before trying to use the device again.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/troubleshooting/2026-09-15.md:21, # Error handling"
+    },
+    {
+      "text": "If an issue is found when using the Android Payments app, the error is shown on the mobile device or in the App link. The error usually needs to be fixed in the code.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/troubleshooting/2026-09-15.md:23, # Error handling"
+    },
+    {
+      "text": "You need to resolve the issue before trying to use the device again. Refer to the column **Internet needed to resolve** to learn if your integration needs internet connectivity to resolve the error.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/troubleshooting/2026-09-15.md:31, ## Device error messages"
+    },
+    {
+      "text": "The boarding request token being used was issued for a different device than the device that is currently trying to use the token. Request a new boarding request token specifically for the current device.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/troubleshooting/2026-09-15.md:67, ## Error messages for the Android Payments app, 02_010"
+    },
+    {
+      "text": "This error can occur **after the payment** when our system cannot extract the transaction ID. Possibly a required parameter is missing from the Terminal API response. Try again. If this does not help, contact the Adyen Support team.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/troubleshooting/2026-09-15.md:88, ## Error messages for the Android Payments app, 05_009"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c07-mobile-android-troubleshooting-reciprocal",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-android-troubleshooting]] \u2014 2026-09-15 Android Mobile troubleshooting table for Android Mobile SDK device attestation and separate Android Payments app UI/App Link errors, including boarding, request and after-payment stages.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "After-payment errors do not prove charge failure or authorize a blind replay; the raw also contains code/stage and internet-column inconsistencies listed in the source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mobile-android/troubleshooting/2026-09-15.md",
+  "raw_sha256": "6c08a017144190d23447552ede97ae7e73e86dc37ae5d440be44e263cd155ccc",
+  "status": "candidate_ready"
+}

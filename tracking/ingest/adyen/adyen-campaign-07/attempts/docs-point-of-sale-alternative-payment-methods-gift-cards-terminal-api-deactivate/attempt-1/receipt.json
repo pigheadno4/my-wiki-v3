@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-deactivate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS gift card cashback and deactivation\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate\"\nraw_files:\n  - \"adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate/2026-09-15.md\"\ntags: [adyen, point-of-sale, gift-cards, terminal-api, cashback, deactivation]\n---\n\n## Overview\n\nThis Adyen Terminal API guide distinguishes two point-of-sale gift-card actions: a cashback request removes value and returns it to the shopper, while a deactivation request disables a Givex card without cashing it out. Cashing out the full remaining balance also leaves the card inactive. The page's last-modified field is 2019-10-01 and the raw was captured 2026-09-15; it is historical integration evidence, not proof of current provider support or completed funds movement. [[adyen]] [[adyen-pos-gift-cards]] [[adyen-pos-alternative-payment-methods]]\n\n## Key takeaways\n\n- The guide assumes a Terminal API integration with payment terminals, that the gift-card method has been added to the Adyen account, and provider onboarding. Cashback availability and amount depend on provider, scheme rules, and applicable law. When permitted, full-balance cashout is usual; the guide allows some Givex partial-cashback cases. Removed value can be handed to the shopper as cash, or transferred to a credit/debit card through a separate **unreferenced refund** route. A cashback request itself is not a general refund or payment void.\n- First determine card entry method and check the balance. For cashback, send a Terminal API `PaymentRequest` with `MessageCategory=Payment`, `SaleData.SaleToAcquirerData` carrying `redemptionType=cashback`, `AmountsReq.Currency` and `RequestedAmount`, `PaymentType=Normal`, and a `StoredValue` instrument with `GiftCard` account identity. The tender option can be Base64 JSON or a key-value pair; that choice also controls `AdditionalResponse` format. Check `PaymentResponse.Response.Result=Success`, the transaction ID and receipt data rather than inferring success from the request.\n- Givex-only deactivation uses a different Terminal API `StoredValueRequest` with `MessageCategory=StoredValue`, `StoredValueTransactionType=Unload`, `ItemAmount=0` and the card currency. Check `StoredValueResponse` for `Unload`, `Response.Result=Success`, and `StoredValueAccountStatus.CurrentBalance=0`. Zero amount here is a deactivation action, not a cashback amount or shopper payout.\n- Scanned cards supply the number and expiry in the request. For swipe or manual key entry, the terminal prompts after the request; the two action sections give entry-specific fields in their own tables. The page states no general PIN rule. Use a `ServiceID` unique for that terminal for the prior 48 hours and a sale transaction reference recommended unique; `SaleReferenceID` is optional for linking cashback transactions to an order. Sample IDs, card numbers, amounts and currencies are illustrations, not reusable values.\n- The deactivation section's account-detail table lists `givex`, `svs` and `valuelink`, yet both its explicit limitation and deactivation introduction say **Givex only**. Its response bullet says `Unload` plus `Success` indicate funds were \u201cloaded,\u201d contradicting the deactivation explanation and zero-balance example. Keep the narrower Givex scope and inspect the actual action/result; do not generalize deactivation to the other listed providers or interpret that typo as loading value.\n\n## Detail locators\n\n- Raw `# Deactivate or cash out a gift card` and `## Requirements` (lines 15\u201334): action distinction, full-balance consequence, Givex-only limitation and setup.\n- Raw `## Cash back a gift card` (lines 35\u2013111): provider/law conditions, shopper payout options, card entry, balance check, Terminal API request fields, cashback tender option and stored-value identity.\n- Raw cashback examples and response (lines 112\u2013291): illustrative JSON/Java, response ID, receipt and `Success`; the scanned JSON example has malformed `EntryMode` quoting and should not be copied as a valid payload.\n- Raw `## Deactivate a gift card` (lines 292\u2013365): Givex condition, card entry and `StoredValueRequest` fields, `Unload`, zero amount and currency.\n- Raw deactivation examples and response (lines 366\u2013488): illustrative Givex request, response checks, zero balance and contradictory \u201cloaded\u201d wording. The sample request and response show different terminal IDs and card-entry/card-number values; do not treat them as one matching transaction.\n\n## Related\n\n- [[adyen-pos-gift-cards]] \u2014 POS gift-card lifecycle and provider-specific actions.\n- [[adyen-pos-alternative-payment-methods]] \u2014 umbrella for in-person alternative methods.\n- [[adyen-terminal-api]] \u2014 terminal request/response architecture.\n\n## Related raw API references\n\nNavigation named in this guide, not additional reviewed evidence:\n\n- Balance inquiry \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/query-the-balance\n- Unreferenced gift-card refund \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/refund-gift-cards#make-an-unreferenced-refund\n- Terminal API PaymentRequest \u2014 https://docs.adyen.com/api-explorer/terminal-api/latest/post/payment\n- Terminal API StoredValueRequest \u2014 https://docs.adyen.com/api-explorer/terminal-api/latest/post/storedvalue\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate/2026-09-15|Deactivate or cash out a gift card, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "* Make a [cashback request](#cashing-back-gift-card) to take funds off the gift card and give this back to the shopper as cash. If you cash out the full remaining balance, the card is no longer active and cannot be used again.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate/2026-09-15.md:21"
+    },
+    {
+      "text": "* Make a [deactivation request](#deactivate-gift-card) to disable the card without cashing it out.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate/2026-09-15.md:22"
+    },
+    {
+      "text": "| **Limitations**      | Deactivation is only supported for gift cards provided by Givex.                                                                                                                                                      |",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate/2026-09-15.md:31"
+    },
+    {
+      "text": "Your options with a cashback request depend on the gift card provider, the scheme rules, and the applicable law. If cashbacks are allowed, you can normally only cash out the full amount remaining on the card. But if the gift card was provided by Givex, it is possible in some cases to give a cashback for a partial amount.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate/2026-09-15.md:37"
+    },
+    {
+      "text": "   The example below indicates that the deactivation request was successful, and card **6006491260550218157** was deactivated. This card now has a balance of GBP\u00a00.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate/2026-09-15.md:440"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-gift-deactivate-pos-gift-cards-source",
+        "target_path": "wiki/concepts/adyen-pos-gift-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-deactivate]] \u2014 Terminal API gift-card cashback and Givex-only deactivation guide (2019 last-modified; 2026-09-15 capture), including response and zero-balance checks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The gift-card payment worker owns the proposed adyen-pos-gift-cards concept; add this reciprocal route after that concept is created.",
+          "The deactivation table also lists SVS and valuelink, but the explicit limitation is Givex only; the response text says 'loaded' despite deactivation and zero balance.",
+          "The document is historical and does not establish current provider eligibility, applicable cashout law, live transaction results or refund execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/deactivate/2026-09-15.md",
+  "raw_sha256": "b7eb424fae15a4dac19b29b9f6c8a20280fbc13217c78f4637bc44fec59923ff",
+  "status": "candidate_ready"
+}

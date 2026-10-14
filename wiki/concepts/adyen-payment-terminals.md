@@ -15,6 +15,54 @@ The 2026-09-15 V400m manual requires shipment and device tamper checks with imme
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-pos-troubleshooting]] — Adyen terminal troubleshooting directory (2025-04-24 modified; 2026-09-15 capture) routing power-on branches, lost/stolen reporting, manuals, connection/hardware tests and Android remote sessions to separate guides; it contains no diagnostic procedure or payment result.
+
+
+- [[source-adyen-docs-point-of-sale-pos-troubleshooting-hardware-tests]] — Adyen Docs hardware-diagnostic guide captured 2026-09-15 for non-legacy terminal chip, swipe, NFC and conditional keypad checks, result handling and log submission.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-p400-plus-user-manual]] — P400 Plus physical-terminal manual (2026-09-15 snapshot) for dated order/repair notice, tamper inspection, safe dongle cabling, network/store boarding, diagnostics and version-qualified passcode menus.
+
+
+- [[source-adyen-docs-point-of-sale-pos-troubleshooting-connection-tests]] — 2026-09-15 terminal-run PSP, Terminal API and Endpoints connection-test guide for non-legacy physical terminals, including local/cloud applicability, diagnostic stages and escalation.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-m400-user-manual]] — M400 physical-terminal manual captured 2026-09-15 for discontinued/repair notice, tamper inspection, dongle and network setup, store boarding, point-in-time diagnostics, and protected menus.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-s1u2-user-manual]] — S1U2 unattended Android physical-terminal manual (2020 last-modified; 2026-09-15 capture) for tamper inspection, store-first boarding, power/network, menus and support.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-sfo1-user-manual]] — SFO1 physical payment-terminal manual (2025-04-10 modified; 2026-09-15 capture) for combined customer display/payment device, tamper inspection, network/store boarding, diagnostics, protected menus and power/NFC care.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-ux300-user-manual]] — UX300 three-device unattended terminal manual (2026-09-15 snapshot) for dated discontinuation/repair notice, store-before-boarding setup, cable and ARS safety, UX100 Admin controls and software update.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-e280-user-manual]] — e280 physical-terminal manual captured 2026-09-15 for discontinued ordering, tamper inspection, charging, Wi-Fi/store boarding, diagnostics, battery precautions and version-qualified menus.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-p630-user-manual]] — P630 physical-terminal manual (2026-09-15 capture) for tamper inspection, interference clearance, store boarding, network/power, keypad menus, passcodes and local totals.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-m450-user-manual]] — M450 physical-terminal manual (2026-09-15 snapshot) for tamper checks, store confirmation, Ethernet/Wi-Fi and diagnostics, menu passcodes, power and 30.5 cm deactivator separation.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-ux410-user-manual]] — UX410 unattended two-unit contactless terminal manual (2026-09-15 snapshot) for installation, mandatory store assignment, LED boarding/error cues, tamper escalation and dated availability/repair notice.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-v400c-user-manual]] — V400c Plus physical-terminal manual (2026-09-15 snapshot) for discontinued-model and repair notice, inspection, dongle cabling, store boarding, diagnostics, menu passcodes and totals.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-ams1-user-manual]] — AMS1 physical-terminal manual (2026-09-15 snapshot) for tamper inspection, first charge/store confirmation, network/eSIM caveat, battery/USB safety, protected menus, totals and remote support.
+
+
+- [[source-adyen-docs-point-of-sale-menu-access]] — Adyen Menus and passcodes guide (2026-09-15 snapshot) for protected terminal controls, passcode management, software-qualified Android and non-Android menus, and action effects.
+
+
+- [[source-adyen-docs-point-of-sale-classic-library-deprecation]] — Adyen Docs deprecation notice captured 2026-09-15 for dated eVo PCI/repair/transaction deadlines and example VOS replacement models.
+
+
 - [[source-adyen-docs-point-of-sale-managing-terminals-security-inspection]] — 2026-09-15 Adyen physical-terminal security-inspection guide for delivery and regular tamper checks, stop-use escalation, suspicious activity, and lost/stolen reporting.
 
 

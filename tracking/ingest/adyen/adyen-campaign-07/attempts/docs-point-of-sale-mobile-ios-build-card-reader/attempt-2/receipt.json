@@ -1,0 +1,67 @@
+{
+  "job_id": "docs-point-of-sale-mobile-ios-build-card-reader",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen iOS Mobile SDK card-reader solution\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mobile-ios/build/card-reader\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mobile-ios/build/card-reader/2026-09-15.md\"\ntags: [adyen, point-of-sale, mobile-pos, ios, card-reader, terminal-api]\n---\n\n## Overview\n\nThis dated Adyen guide describes building an iOS POS app with the POS Mobile SDK and an NYC1 card reader as the payment interface. The POS app initiates Terminal API requests; the reader accepts tap, insert, swipe or wallet presentation and connects by Bluetooth or by USB through an optional dock. This in-person SDK and reader route is distinct from online Adyen iOS Checkout SDKs, an app installed on an Adyen Android payment terminal, and the separate Tap to Pay on iPhone mobile path. See [[adyen]], [[adyen-mobile-pos]] and [[adyen-mobile-card-readers]].\n\n## Key takeaways\n\n- Prerequisites include a Terminal API-integrated POS app, supported iOS device and region/payment functionality, a test NYC1 reader assigned to the store, a basic-auth credential with **Allow SDK download for POS developers**, and a separate API-key/client-key credential with **Checkout webservice** for the backend session. PIN transactions require an NYC1 model. The guide says US NYC1 PIN support can be disabled through Support from iOS Mobile SDK 3.12.0. Check current support and eligibility separately.\n- The backend exchanges the SDK's setup token at `/auth/certificate` and returns `sdkData` to the app; use the installation ID as Terminal API `MessageHeader.POIID`. A non-payment facilitator supplies `store` unless merchant accounts are used as stores. A registered payment facilitator instead supplies `subMerchantData` in the session request and must not place it in Terminal API requests. The guide recommends migration from deprecated `/checkout/possdk/v68/sessions` endpoints.\n- SDK test and live packages need separate Xcode app targets. Keep the download password out of publicly accessible code; the `.netrc` setup calls for mode `0600`. Going live requires a live SDK/basic-auth credential, a distinct live API key for sessions, and the applicable regional live `/auth/certificate` endpoint. This snapshot does not establish current endpoint availability.\n- The app must configure Bluetooth and camera permissions for pairing; a dock additionally needs the external-accessory protocol and, for App Store submission, Adyen's MFi PPID in Review Notes. To prevent the POS device's own Apple Pay passes from responding to a nearby reader, the guide requires an Apple entitlement and foreground pass-presentation suppression.\n- Operators need reader/dock management and firmware updates through the SDK's built-in screens or a custom UI. Check for updates regularly and prompt users; after a `requiredDate`, transactions are refused until required firmware is installed. Reader Bluetooth-layer updates require Bluetooth and cannot complete over USB. Optional periodic reconnects can significantly reduce reader battery life.\n- For a payment, create a Terminal API payment request, instantiate the SDK `Payment.Request` with `Payment.Request(data:)` using that request, select `.cardReader`, invoke `performTransaction` with the SwiftUI or UIKit presentation mode, and inspect the Terminal API response. A referenced refund uses `Reversal.Request`/`performReversal`; an unreferenced refund uses a payment request with `PaymentData.PaymentType=Refund`. Refund requests are usually asynchronous acknowledgments: use `CANCEL_OR_REFUND` or `REFUND_WITH_DATA` webhook outcomes, with the documented scheme/region exception for synchronous unreferenced refunds. The guide gives no general cancellation flow.\n- Diagnosis can surface stored offline payments, security issues and SDK expiry; mandatory SDK updates can block transactions. Clear the session with `PaymentService.resetSession()` after a store or merchant reassignment so subsequent transactions do not remain associated with the prior store, and re-establish a session. The support table lists store-and-forward, partial/pre-authorization and refunds, but marks surcharge and tax-free shopping unsupported for this reader solution.\n- The simulated reader tests device-management UI only in test builds. It cannot run transactions and should be disabled before test payments; actual test transactions use the test SDK and Adyen POS test cards. None of the guide's examples proves a completed payment.\n\n## Detail locators\n\n- `## Requirements`, `## 1. Add the SDK to your project`, `### Compatibility with Objective-C`: hardware, account permissions, Swift Package products and separate environments.\n- `## 2. Establish a session`, `#### Implement the request`, `#### Endpoints to use`: backend setup token exchange, facilitator/store fields, installation ID and regional endpoint examples.\n- `## 3. Enable transactions` through `## 7. Manage the Device Manager UI`: SDK delegate, warm-up, iOS permissions and Apple Pay suppression, reader/dock pairing and required firmware behavior.\n- `## 8. Handle a payment`, `## 9. Handle a refund`, `## 10. Diagnose the device`, `## 11. (Optional) Clear the session token`: Terminal API calls, asynchronous refund outcomes, offline/security/expiry diagnosis and reassignment.\n- `## Other supported features`, `## Test your solution`, `## Go live`: feature table, simulator boundary, test cards, live credentials and regional endpoints.\n\n## Source caveat\n\nThe `## How it works` summary unexpectedly describes a Tap to Pay on iPhone component and tapping on the iPhone, while the page's title, opening, requirements and detailed payment step explicitly select a `.cardReader` payment interface. Treat that summary as an apparent editorial conflict; do not infer a Tap to Pay flow for this reader integration from it.\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 planned primary route for the SDK mobile POS paths, pending coordinator approval.\n- [[adyen-mobile-card-readers]] \u2014 NYC1 hardware and dock context.\n- [[adyen-terminal-api]] \u2014 in-person request and response structure.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mobile-ios/build/card-reader/2026-09-15|Adyen card reader solution for iOS, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "With our card reader solution you can accept mobile in-person payments using a card reader as the payment interface, and process these payments on the Adyen payments platform.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/build/card-reader/2026-09-15.md:19"
+    },
+    {
+      "text": "It is not possible to use TEST and LIVE environments from a single app target. You need to setup your Xcode project to have separate app targets for Test and for Live.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/build/card-reader/2026-09-15.md:118"
+    },
+    {
+      "text": "Your UI must prompt end users to update the card reader firmware, and inform them about the progress and result of the update process.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/build/card-reader/2026-09-15.md:565"
+    },
+    {
+      "text": "Refunds are usually *not* processed synchronously. When you send a request for a referenced or unreferenced refund, the Terminal API response only confirms we received the request.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/build/card-reader/2026-09-15.md:843"
+    },
+    {
+      "text": "Currently, the simulator only supports testing your device management UI in a test build. It does not yet support transactions",
+      "location": "raw/adyen/docs/point-of-sale/mobile-ios/build/card-reader/2026-09-15.md:1020"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-ios-reader-mobile-pos-reciprocal",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-ios-build-card-reader]] \u2014 iOS POS Mobile SDK card-reader build guide (2026-09-15 snapshot): Terminal API session/payment/refund integration, NYC1 Bluetooth or USB dock management, test/live separation and simulator limits.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply only after the coordinator approves and creates the adyen-mobile-pos hub proposed by the Android overview owner. This is a reciprocal source link, not a duplicate concept creation."
+        ]
+      },
+      {
+        "update_id": "c7-ios-reader-hardware-reciprocal",
+        "target_path": "wiki/concepts/adyen-mobile-card-readers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-ios-build-card-reader]] \u2014 iOS POS Mobile SDK card-reader integration guide (2026-09-15 snapshot): NYC1 pairing/dock, device firmware, Terminal API transaction and session setup; the broader mobile POS flow belongs under [[adyen-mobile-pos]].",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": [
+          "Hardware-secondary route only. The Android overview owner has proposed adyen-mobile-pos; coordinator approval and its primary reciprocal are pending. Do not duplicate hub creation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mobile-ios/build/card-reader/2026-09-15.md",
+  "raw_sha256": "e8a01442d92aee3c6fe1861eb60c983fcdf27720862c639487bc3f089871c7ad",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,7 @@
+# Fixed retrieval checks: Android Mobile security
+
+1. **Question:** Where should Adyen API keys live in an Android Mobile SDK POS integration, and what does the page say happens on insecure Wi-Fi?
+   **Expected answer:** API keys must be kept secret on the server; the mobile POS app must not call Adyen APIs directly. The page recommends mutual authentication such as mTLS between app and server. For the Mobile SDK on listed insecure/deprecated Wi-Fi modes (including WEP, TKIP and open networks), it says the SDK warns and cancels the transaction. This is a 2026-09-15 webpage snapshot, not a tested result for a particular app. Source: pinned raw `## Security best practices`, `### Insecure Wi-Fi settings`.
+
+2. **Question:** Does the page's PCI MPoC certification statement mean an integrator's own Android SDK Tap to Pay or card-reader app is already certified?
+   **Expected answer:** No. The page says Adyen's Tap to Pay on Android SDK and separate Payments app have MPoC certification, and says the Payments app carries no additional PCI compliance obligations for the user. A company integrating the Android SDK for Tap to Pay or Card reader must complete a vendor verification assessment; Adyen submits that assessment to PCI SSC for the combined solution. The integrator retains its assessment responsibility even if merchants hold the devices. Source: pinned raw `## PCI MPoC compliance requirements`, `### Assessment guidelines` (2026-09-15 snapshot).

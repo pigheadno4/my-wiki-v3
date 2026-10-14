@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-activate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Activate a gift card at point of sale\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate\"\nraw_files:\n  - \"adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate/2026-09-15.md\"\ntags: [adyen, point-of-sale, gift-cards, activation, stored-value, terminal-api]\n---\n\n## Overview\n\nThis Adyen POS guide describes activating a newly issued gift card before it can be redeemed. The activation can add an initial balance or use zero for an active card without loaded value. It is a Terminal API `StoredValue` operation and must be distinguished from a `Payment` request. The page was last modified in 2019 and captured on 2026-09-15; its provider examples, protocol fields, and sample successful response do not prove current enablement or an executed activation. [[adyen]] [[adyen-pos-gift-cards]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- A newly issued card cannot be redeemed until activated in the described flow; activation is presented as fraud protection. The prerequisites are a Terminal API integration with payment terminals, adding the method to the Adyen account, and completing gift-card-provider onboarding. This guide does not claim that activation alone loads spendable funds. See pinned raw lines 19\u201331.\n- For scan entry, the POS obtains card details before sending the request; for swipe or manual key entry, send the request first and the terminal prompts for card details. The request uses `MessageClass: Service`, `MessageCategory: StoredValue`, and `StoredValueData.StoredValueTransactionType: Activate`. `Payment` is a different message category used for spending the gift card. See **Make an activation request**, pinned raw lines 37\u201350 and 64\u201384.\n- `StoredValueData.ItemAmount` is the initial amount to load and must be `0` when activating without balance; `Currency` is the currency of that amount. The request identifies a `GiftCard` stored-value account, provider, PAN identification and entry-specific fields. The page names `givex`, `svs`, `valuelink`, and Intersolve-supported types as provider examples, not a current acceptance guarantee. The sample GBP 10.00 request is illustrative. See pinned raw lines 64\u201386 and 90\u2013130.\n- `SaleToAcquirerData` may contain an `ssc` of up to eight digits for Stored Value Solutions (SVS) gift cards specifically. This is a provider-specific optional secondary security code, not a universal gift-card PIN requirement. The overview's PIN options and terminal-prompt behavior belong to their separate source. See pinned raw line 62.\n- The guide says `ServiceID` must be unique within 48 hours for the terminal `POIID`, while `SaleTransactionID.TransactionID` is recommended unique and the timestamp is UTC. These identities do not establish idempotent replay or a safe retry for an activation whose outcome is unknown. See pinned raw lines 52\u201362.\n- The `StoredValueResponse` supplies a terminal transaction identifier, `StoredValueResult` with type `Activate` and current value/currency, and `Response.Result`. The guide says `Success` indicates that activation succeeded; that status is about activation, not a payment authorization or proof that the example occurred in a live account. See pinned raw lines 176\u2013223.\n\n## Detail locators\n\n- **Activate a gift card / Requirements** (pinned raw lines 15\u201331) \u2014 pre-redemption activation, fraud role, integration and onboarding.\n- **Make an activation request \u2192 card entry and MessageHeader** (pinned raw lines 33\u201354) \u2014 scan versus terminal capture, `StoredValue` category and request identifiers.\n- **Make an activation request \u2192 SaleData and StoredValueData** (pinned raw lines 56\u201384) \u2014 transaction reference, optional SVS `ssc`, `Activate`, amount/currency, provider and entry-mode fields.\n- **JSON / Java examples** (pinned raw lines 86\u2013174) \u2014 illustrative GBP 10.00 scanned-card request and sample implementation, not a current SDK contract.\n- **StoredValueResponse** (pinned raw lines 176\u2013223) \u2014 transaction ID, result amount/currency, and `Success` interpretation.\n\n## Related\n\n- [[adyen-pos-gift-cards]] \u2014 primary POS gift-card lifecycle.\n- [[adyen-terminal-api]] \u2014 underlying terminal message structure.\n- [[adyen-pos-alternative-payment-methods]] \u2014 POS method-family overview.\n\n## Related raw API references\n\nThe following are linked navigation, not evidence independently reviewed for this entry:\n\n- POS gift-card overview \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api\n- Gift-card payment \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/payment\n- Gift-card deactivation \u2014 https://docs.adyen.com/point-of-sale/gift-cards-terminal-api/deactivate\n- Terminal API Stored Value request \u2014 https://docs.adyen.com/api-explorer/terminal-api/latest/post/storedvalue\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate/2026-09-15|Adyen POS gift-card activation guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When a new gift card is issued to a shopper, the shopper cannot immediately use the card. You need to activate the gift card before the shopper can use the card for payments. While activating the gift card, you can also load an initial balance.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate/2026-09-15.md:19"
+    },
+    {
+      "text": "The standard [`SaleToPOIRequest.MessageHeader` ](/point-of-sale/design-your-integration/terminal-api#request-message-header)object, with `MessageClass` set to **Service** and `MessageCategory` set to **StoredValue**.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate/2026-09-15.md:44"
+    },
+    {
+      "text": "Optional, for Stored Value Solutions (SVS) gift cards: **ssc**. This is the secondary security code of the gift card, and allows up to 8 digits. For example, `ssc=1111`.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate/2026-09-15.md:62"
+    },
+    {
+      "text": "Initial balance being loaded to the gift card. Set this as 0 if you want to activate a card with no balance.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate/2026-09-15.md:69"
+    },
+    {
+      "text": "* `Response.Result`: **Success**. This indicates that the activation (`StoredValueTransactionType`: **Activate**) succeeded.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate/2026-09-15.md:186"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-pos-gift-activate-hub-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-gift-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-activate]] \u2014 2026-09-15 captured Terminal API `StoredValue` gift-card activation guide, including zero initial balance, entry/security-code scope, and activation response.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Activation is a StoredValue operation, not gift-card Payment authorization; a zero initial balance is allowed in this guide.",
+          "The page was last modified in 2019, and request examples or ServiceID uniqueness do not prove current provider eligibility, actual success, or idempotent retries."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/alternative-payment-methods/gift-cards-terminal-api/activate/2026-09-15.md",
+  "raw_sha256": "c1cc5b6fc698e23581e84add0a6fd9f1717bd0b7454351664eb91474743d6cd2",
+  "status": "candidate_ready"
+}

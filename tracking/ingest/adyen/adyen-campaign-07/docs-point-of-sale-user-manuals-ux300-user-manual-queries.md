@@ -1,0 +1,7 @@
+# Fixed retrieval checks: UX300 unattended terminal manual
+
+1. **Question:** What physical units make up UX300, and what must happen before boarding it to a store?
+   **Expected answer:** The UX300 unattended terminal is a UX300 card reader, UX100 PIN pad/display and UX400 NFC reader for a self-service machine. The UX300 card reader serial number is used to assign the terminal to the intended store **before** boarding; boarding retrieves store configuration. This is a dated physical-terminal manual, not the mobile NYC1 reader flow. Source: pinned raw opening, `## Assign the terminal`, `## Board the terminal` (2026-09-15 snapshot).
+
+2. **Question:** What can go wrong with UX300 cabling or anti-removal switches, and does the manual prove a successful payment after setup?
+   **Expected answer:** Only a regular Ethernet cable belongs in ETH (LAN); another cable or port such as RS232 may severely damage the reader. Mounting triggers ARS. If ARS triggers after boarding, a transaction may start while PIN entry is prevented, so it cannot complete; follow the password-controlled reset procedure and escalate failed tamper-inspection checks to Adyen Support. The final ready-to-accept-payments instruction does not prove authorization or settlement. Source: pinned raw `## Inspect the terminal`, `## Connect the cables`, `## Reset the anti-removal switches`, `## Update the terminal software` (2026-09-15 snapshot).

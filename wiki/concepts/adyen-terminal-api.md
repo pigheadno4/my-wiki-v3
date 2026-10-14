@@ -89,6 +89,12 @@ Terminal API defines terminal messages. Adyen's Cloud Device API, represented se
 
 ## Related
 
+- [[source-adyen-docs-point-of-sale-classic-library-deprecation]] — Adyen Docs deprecation notice captured 2026-09-15 for migration from embedded classic POS libraries to Terminal API, with an Xstore JNI/OPI exception and dated timeline.
+
+
+- [[source-adyen-docs-point-of-sale-alternative-payment-methods]] — 2026-09-15 POS alternative-methods overview for gift cards, one-time numeric codes, QR wallet payments, and Brazil voucher navigation; method behavior remains in separate guides.
+
+
 - [[source-adyen-docs-point-of-sale-release-updating]] — Adyen Docs 2026-09-15 terminal software update strategy for Terminal API and standalone terminals: automatic rollout, approved manual LTS updates, beta testing and restart-hour conditions; separate from Terminal API message or SDK versions.
 
 

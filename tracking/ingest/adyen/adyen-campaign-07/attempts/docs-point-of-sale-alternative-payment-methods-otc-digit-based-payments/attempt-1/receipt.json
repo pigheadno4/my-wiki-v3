@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-alternative-payment-methods-otc-digit-based-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"One-time numeric code payments | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/alternative-payment-methods/otc-digit-based-payments\"\nraw_files:\n  - \"adyen/docs/point-of-sale/alternative-payment-methods/otc-digit-based-payments/2026-09-15.md\"\ntags: [adyen, point-of-sale, alternative-payment-methods, blik, poland, numeric-codes]\n---\n\n## Overview\n\nThis Adyen Docs guide describes in-person BLIK payments with a one-time six-digit numeric code generated in a shopper's BLIK banking app and entered on a payment terminal in Poland. A POS-integrated merchant can start a brand-specific flow or let the shopper choose BLIK on the terminal; a standalone terminal supports only the shopper-initiated flow. The banking app asks the shopper to confirm after code entry. This is a BLIK code and app-confirmation flow, not card tap/insert/swipe or a card PIN flow. See [[adyen]], [[adyen-pos-alternative-payment-methods]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The guide limits BLIK one-time numeric code payments to Poland and requires adding BLIK to the Adyen account before use. Terminal API with payment terminals or a standalone solution is in scope; standalone supports only shopper initiation. These documentation conditions do not prove current regional availability, merchant enablement or a completed payment.\n- For merchant initiation, store staff choose BLIK in their POS app. The Terminal API `PaymentRequest` sets `PaymentTransaction.TransactionConditions.AllowedPaymentBrand` to an array containing `blik_pos`, alongside a standard payment message header, merchant sale-transaction reference, `AmountsReq.Currency` and final `RequestedAmount`. The sample uses PLN 10.99 and example IDs; those are sample values, not a universal amount or currency rule. The shopper then enters the six-digit code on the terminal and confirms the prompt in their BLIK banking app.\n- For shopper initiation, the POS sends a normal payment request without the brand-specific field; the shopper chooses **Scan** then BLIK on the terminal and enters the code. The overview names the terminal option **BLIK** and notes **Inne** as Polish for Scan, while the detailed steps say **BLIK Code**. Treat those labels as page-specific UI wording, not a guaranteed terminal menu across versions. This path needs BLIK added in Customer Area, but the guide says no POS integration change.\n- Both paths say the payment result is received as for a card payment and the shopper receipt includes BLIK's payment reference in `Transaction ref`. That comparison concerns result delivery; it does not make the transaction a card-present card payment or prove success. The shopper's separate banking-app confirmation remains part of the documented flow.\n- One-time numeric code payments support full and partial **referenced** refunds through a Terminal API `ReversalRequest`. The page does not establish an unreferenced refund or generic void path. Its test section gives `999000` as a BLIK test code; test data does not demonstrate live acceptance.\n\n## Detail locators\n\n- `One-time numeric code payments` / `Requirements`, pinned raw lines 15\u201329: BLIK app-code identity, Poland-only and account activation conditions, integrated/standalone scope.\n- `One-time numeric code payment flows`, lines 31\u201337: merchant versus shopper initiation, brand field, UI choices and standalone limitation.\n- `Merchant-initiated flow`, lines 39\u2013120: Terminal API request fields and `AllowedPaymentBrand` example, code/app-confirmation steps, result and receipt reference. The table's `paymentBrand` row at lines 66\u201372 has an incongruent amount/currency description; use the explicit `AllowedPaymentBrand` row and JSON example at lines 100\u2013104 for the brand field.\n- `Shopper-initiated flow`, lines 122\u2013164: ordinary request example, terminal menu/code entry, app confirmation and result.\n- `Refunds` and `Test`, lines 166\u2013176: referenced `ReversalRequest`, full/partial support, and test code.\n\n## Related\n\n- [[adyen-pos-alternative-payment-methods]] \u2014 main in-person alternative-method route.\n- [[adyen-terminal-api]] \u2014 payment and reversal message context.\n- [[adyen-payment-testing]] \u2014 testing evidence is distinct from live processing.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/alternative-payment-methods/otc-digit-based-payments/2026-09-15|Adyen BLIK one-time-code guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Shoppers in Poland can make secure payments with a one-time numeric code generated from their BLIK banking app. A BLIK payment can be initiated by your store staff from the POS app or by the shopper on the terminal.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/otc-digit-based-payments/2026-09-15.md:19"
+    },
+    {
+      "text": "Standalone terminals only support the [shopper-initiated flow](#shopper-initiated-flow).",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/otc-digit-based-payments/2026-09-15.md:27, within Integration type row"
+    },
+    {
+      "text": "The shopper then enters their 6-digit BLIK code on the terminal.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/otc-digit-based-payments/2026-09-15.md:35, within Merchant-initiated bullet"
+    },
+    {
+      "text": "This flow requires no changes to the integration. You just need to add the BLIK payment method in your Customer Area.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/otc-digit-based-payments/2026-09-15.md:37, within Shopper-initiated bullet"
+    },
+    {
+      "text": "Payments with a one-time numeric code support [referenced refunds](/point-of-sale/basic-tapi-integration/refund-payment/referenced), so you have to make a `ReversalRequest` to refund this type of payment.",
+      "location": "raw/adyen/docs/point-of-sale/alternative-payment-methods/otc-digit-based-payments/2026-09-15.md:168"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-blik-pos-alt-source",
+        "target_path": "wiki/concepts/adyen-pos-alternative-payment-methods.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-alternative-payment-methods-otc-digit-based-payments]] \u2014 2026-09-15 Adyen Docs guide to Poland-only BLIK terminal code payments, merchant/shopper initiation, account activation and referenced `ReversalRequest` refunds.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve Poland, standalone and account-activation conditions.",
+          "The page's paymentBrand table row describes amount/currency incongruously; its explicit AllowedPaymentBrand row and JSON sample show the brand field."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/alternative-payment-methods/otc-digit-based-payments/2026-09-15.md",
+  "raw_sha256": "fe4ee0c988e757fb9b5e910f414e60b971f08768fe7d68e306fe75231cdb7e0c",
+  "status": "candidate_ready"
+}

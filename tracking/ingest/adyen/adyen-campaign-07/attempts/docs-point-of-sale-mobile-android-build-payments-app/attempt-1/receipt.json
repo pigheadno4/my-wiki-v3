@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-mobile-android-build-payments-app",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Android Payments app build guide\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mobile-android/build/payments-app\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mobile-android/build/payments-app/2026-09-15.md\"\ntags: [adyen, point-of-sale, mobile-pos, android, payments-app, tap-to-pay, terminal-api]\n---\n\n## Overview\n\nThis dated Adyen guide builds the **Android Payments app** route for Tap to Pay on an Android mobile device without integrating the POS Mobile SDK. A merchant POS app, installed on the device or browser-based, uses Terminal API messages and Android App Links to a separate Adyen Payments app. This is distinct from the POS Mobile SDK Tap to Pay route, a paired card-reader route, apps deployed to Adyen Android payment terminals, and online Android Checkout SDK flows. See [[adyen-mobile-pos]] for the mobile solution map and [[adyen-terminal-api]] for the message family.\n\n## Key takeaways\n\n- The POS app must integrate Terminal API. The guide requires an Adyen Payments app API key with client key and app role, Support enablement, and an Android COTS device with NFC that is **not** a payment terminal. It sends country/region, method and feature limits to the separate support catalog and hardware/software details to Android system requirements; this snapshot does not establish present eligibility. For a web POS app, the guide also calls for Support-enabled short browser responses and an HTTPS server with TLS 1.2 or higher. See raw \u00a7 Requirements (lines 23\u201336).\n- Each installed device's Payments app must be boarded. The POS app checks boarding through an App Link; its back end exchanges a `boardingRequestToken` for a one-time `boardingToken` (one-hour validity), bound to the app instance and device; the POS app finishes via an App Link and retains the resulting `installationId`. The merchant-account or store boarding-token endpoint determines where its transactions route; `storeId` differs from a store reference. See raw \u00a7 1, especially lines 50\u201361, 127\u2013173 and 184\u2013239.\n- For a transaction, set Terminal API `MessageHeader.POIID` to that `installationId`, encrypt the request with a shared key as for local Terminal API communication, Base64URL-encode it, and send it through the Payments app `/nexo` App Link. The guide says **never call a transaction endpoint directly** for this app route. A device POS app receives an encrypted full Terminal API response and decrypts it; a browser POS app receives an encrypted short result and optional full-result URL. The 30-second shopper-presentation timeout requires a new request. See raw \u00a7 2 (lines 247\u2013264, 376\u2013437, 459\u2013518).\n- Starting reboarding immediately breaks the prior merchant/store association; that app-device combination cannot take payments until reboarding completes, and a reboarding error requires restarting the flow. Revoke the `installationId` by API when a device is defective, stolen or retired; the guide also describes **Settings \u2192 Unregister**. A failed app-instance verification automatically revokes it and requires boarding again. See raw \u00a7\u00a7 Reboard, Revoke app instance, Verify app instance (lines 520\u2013535, 605\u2013633, 669\u2013681).\n- Test and live are separate Payments app packages, API credentials, Management API hosts and App Link bases. The guide's go-live steps require a live account/Customer Area access, a live key with the app role, the live app, enablement and URL changes. Its test-card instructions are test-environment guidance, not evidence of successful execution. See raw \u00a7\u00a7 Test your solution and Go live (lines 635\u2013667).\n\n## Detail locators\n\n- Raw \u00a7 1.1\u20131.3: status, authentication and finish-boarding App Links, token/ID fields, test URLs and Kotlin examples (lines 63\u2013245).\n- Raw \u00a7 2: request types, local-protection reference, encryption sample, App Link shape, full and short response decryption examples (lines 247\u2013518).\n- Raw \u00a7\u00a7 Reboard, Revoke app instance and Verify app instance: destructive association change, API/UI revocation and failed-verification consequence (lines 520\u2013633, 669\u2013681).\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 Android mobile solution map and sibling SDK or reader routes.\n- [[adyen-terminal-api]] \u2014 in-person message structure and encryption context.\n- [[adyen-mobile-card-readers]] \u2014 separate paired-reader route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mobile-android/build/payments-app/2026-09-15|Android Payments app guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you want to accept Tap to Pay payments on your Android mobile device but do not want to integrate our POS Mobile SDK, you can download the Adyen Payments app from the Google Play store.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/payments-app/2026-09-15.md:19"
+    },
+    {
+      "text": "Your POS app must be integrated with [Terminal API](/point-of-sale/design-your-integration/terminal-api/). The POS app can be installed on your mobile device or browser-based.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/payments-app/2026-09-15.md:29"
+    },
+    {
+      "text": "For the Payments app, you never call an endpoint directly. You always send your request through the App Link described in the following steps, regardless of the transaction type.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/payments-app/2026-09-15.md:258"
+    },
+    {
+      "text": "As soon as you start the reboarding flow, the app loses the association with the merchant account or store that the app was previously boarded to. This means you cannot use the app/mobile device combination for payments until the reboarding process is completed.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/payments-app/2026-09-15.md:524"
+    },
+    {
+      "text": "If the verification fails, Adyen automatically revokes the app instance. In this case, you need to [board the app again](#board-the-app) on that Android mobile device.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/build/payments-app/2026-09-15.md:681"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c07-payments-app-mobile-pos-route",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-android-build-payments-app]] \u2014 Android Payments app build guide (2026-09-15 webpage snapshot): separate app and Terminal API App Link boarding/payment route, browser short response, reboarding and revocation; distinct from POS Mobile SDK and card-reader paths.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Target concept is coordinator-proposed and may not yet exist; add the reciprocal only after that overview is created."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mobile-android/build/payments-app/2026-09-15.md",
+  "raw_sha256": "8b767fc36b6b401f9ff3d2fcdc1f228efe8dac70ea01a94a4e6a6becad466775",
+  "status": "candidate_ready"
+}

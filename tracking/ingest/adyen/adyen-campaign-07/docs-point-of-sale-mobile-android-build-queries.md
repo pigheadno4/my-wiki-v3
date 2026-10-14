@@ -1,0 +1,7 @@
+# C07 Android Mobile build overview — fixed retrieval checks
+
+1. **Q: Which Android Mobile build routes embed the Adyen Mobile SDK, and what work does this overview assign to them?**
+   **A:** Tap to Pay on Android and Card reader on Android integrate the Mobile SDK into the merchant POS app. The overview says they need a backend server-to-server call for a secure SDK communication session and Terminal API integration in the POS app. `PaymentRequest` support is stated as mandatory, while `ReversalRequest` support is preferred. Evidence: `raw/adyen/docs/point-of-sale/mobile-android/build/2026-09-15.md:29-39,51-61`; canonical URL: https://docs.adyen.com/point-of-sale/mobile-android/build. The linked child guides, not this overview, carry detailed SDK and device conditions.
+
+2. **Q: Does using the Android Payments app remove Terminal API work or require embedding the Mobile SDK?**
+   **A:** The Payments app route enables Tap to Pay without integrating the Mobile SDK into the POS app, but the overview still requires the POS app to support Terminal API `PaymentRequest`, prefers `ReversalRequest`, and says to board the Payments app on every device where installed. It does not describe the detailed boarding protocol, app eligibility, or a completed payment. Evidence: `raw/adyen/docs/point-of-sale/mobile-android/build/2026-09-15.md:17,41-49,63-65`; canonical URL: https://docs.adyen.com/point-of-sale/mobile-android/build. The statement about no cross-platform wrappers is a 2026-09-15 snapshot, not a current guarantee.

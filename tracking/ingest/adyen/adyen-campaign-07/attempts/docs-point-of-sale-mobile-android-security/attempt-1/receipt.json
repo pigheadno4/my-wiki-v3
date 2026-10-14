@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-mobile-android-security",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Android Mobile POS security guidance\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/mobile-android/security\"\nraw_files:\n  - \"adyen/docs/point-of-sale/mobile-android/security/2026-09-15.md\"\ntags: [adyen, point-of-sale, mobile-pos, android, security, pci-mpoc]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen webpage snapshot describes built-in protections, merchant integration practices, Wi-Fi restrictions and PCI MPoC responsibilities for Android Mobile payment solutions. It distinguishes the Android Mobile SDK's Tap to Pay and card-reader integrations from the separate Adyen Payments app. See [[adyen]], [[adyen-mobile-pos]] and [[adyen-api-access]]. The page states Adyen product protections and certification claims; it does not certify a particular merchant app, device fleet, network or implementation.\n\n## Key takeaways\n\n- Adyen says the Mobile SDK does not retain card or wallet payment details locally, exchanges encrypted payment messages, and uses code obfuscation plus OS/device/app/SDK monitoring and attestation. For the separate card-reader payment interface, it calls the reader a PCI PTS-approved Secure Card Reader that encrypts payment details immediately. These are product claims in the captured page, not proof that a specific integration is secure.\n- The page's **must** practices are to keep Adyen API keys secret on the server, never call Adyen APIs directly from the mobile POS app, and set a device passcode. It additionally **recommends** mutual authentication such as mTLS for POS-app/server communication so Terminal API requests cannot be modified in transit; POS-app user authentication; current SDK and OS/security patches; trusted SDK distribution and integrity checks where possible; and using the TEST SDK for internal development/testing only. It warns that transaction requests from older SDK versions stop being accepted after a short grace period, without specifying a fixed duration.\n- For Wi-Fi, the page recommends WPA3, WPA2/WPA3 or WPA2 with a strong password. It says the Mobile SDK displays a security warning and **cancels the transaction** on deprecated/insecure network settings, including WPA/WPA2 mixed mode, WPA Personal, WEP, TKIP, and open or unsecured networks. This is a transaction behavior stated for the Mobile SDK, not a general claim about all Android payment paths.\n- Adyen claims PCI MPoC certification for its Tap to Pay on Android SDK and Android Payments app, and certified vendor status. The page says the fully certified **Payments app** carries no additional PCI compliance obligations for the user. By contrast, a company integrating the **Android SDK** for Tap to Pay or Card reader must complete a PCI vendor verification assessment; Adyen submits it to PCI SSC to validate the combined integration with Adyen's MPoC-certified SDK. Contact Adyen for the assessment process. This source does not establish that any merchant's combined solution has passed that assessment.\n- The integrating company remains responsible for the assessment even if it sells the solution to merchants and does not physically possess devices. The page recommends a shared-responsibility approach and merchant device inventory. It advises wildcard app-version notation because a single version in the assessment limits the published certification to that version.\n\n## Detail locators\n\n- `## Security of the solution`: encrypted messages, no local retention claim, monitoring/attestation and PCI PTS reader claim.\n- `## Security best practices`, `## Device passcode`: server-held keys, no direct app-to-Adyen API calls, device passcode, recommended mTLS/app login and SDK/OS maintenance. The passcode appears under **must** in the first section and as **strongly recommend** in the later section; preserve that wording distinction.\n- `## Wi-Fi security best practices`, `### Insecure Wi-Fi settings`: permitted settings and SDK warning/cancellation examples.\n- `## PCI MPoC compliance requirements`, `### Assessment guidelines`: distinct Payments-app certification claim and Android-SDK integrator assessment duties, merchant responsibility and version guidance.\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 Android Mobile solution routes and implementation guides.\n- [[adyen-mobile-card-readers]] \u2014 physical reader context for the card-reader route.\n- [[adyen-api-access]] \u2014 API credentials and security context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/mobile-android/security/2026-09-15|Adyen Security of the Android Mobile solutions, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The Mobile SDK sends and receives only encrypted payment messages.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/security/2026-09-15.md:30"
+    },
+    {
+      "text": "Never make requests to Adyen APIs directly from the POS app that is installed on the mobile device.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/security/2026-09-15.md:39"
+    },
+    {
+      "text": "The SDK shows a security warning and cancels the transaction when using insecure settings such as:",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/security/2026-09-15.md:64"
+    },
+    {
+      "text": "The Adyen Payments app is fully certified, it carries no additional PCI compliance obligations for you.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/security/2026-09-15.md:82"
+    },
+    {
+      "text": "To use the Adyen Android SDK for a Tap to Pay or Card reader Mobile solution, PCI requires that you complete a vendor verification assessment.",
+      "location": "raw/adyen/docs/point-of-sale/mobile-android/security/2026-09-15.md:84"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c7-android-mobile-security-reciprocal",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-mobile-android-security]] \u2014 Android Mobile security guide (2026-09-15 snapshot) for SDK attestation/encryption claims, server-held credentials, insecure-Wi-Fi cancellation and distinct PCI MPoC assessment scope for SDK integrations versus the Payments app.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat Adyen's SDK or Payments-app certification statements as certification or security proof for a merchant's combined solution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/mobile-android/security/2026-09-15.md",
+  "raw_sha256": "552c941ecae02e986f9e96a76a3a18957715d69c3262050857c5c0b4c8574470",
+  "status": "candidate_ready"
+}

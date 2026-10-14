@@ -15,6 +15,9 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-menu-access]] — Adyen 2026-09-15 terminal menu/passcode guide for Customer Area and Management API roles, setting inheritance, unattended Android screen-lock caution, and maintenance/restart timing.
+
+
 - [[source-adyen-docs-point-of-sale-managing-terminals-customize-terminals]] — Adyen Customer Area terminal-customization overview captured 2026-09-15, routing display, receipt, feature, and setting-level topics to detailed guides.
 
 
