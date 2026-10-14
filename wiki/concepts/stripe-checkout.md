@@ -158,6 +158,12 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 
 `stripe@22.6.0` adds `payment_method_options.card.restrictions.funding_types_blocked` to Checkout Session create parameters and response typing, with documented values `credit`, `debit` and `prepaid`. Its generated `permissions.update_shipping_details` comments now limit that setting to `ui_mode=elements`, reinforcing the version boundary on the historical Embedded Checkout guidance above. SDK declaration availability does not establish merchant eligibility or hosted runtime rollout. Source: [[source-github-stripe-node]].
 
+## React Native 0.81.0 Private Preview
+
+The native Checkout Session path is separate from web Checkout and ordinary Intent-based PaymentSheet. `@stripe/stripe-react-native@0.81.0` replaces the modal presentation/confirmation stubs present through 0.80.0 with native calls on both platforms. `paymentElement.present()` resolves after requesting presentation, not after dismissal/selection; `confirm()` returns completed/canceled/failed and retains paid/unpaid/noPaymentRequired status, while bridge errors can reject. A completed SDK flow is not proof of paid funds. Keep server creation/pricing/fulfillment authoritative.
+
+The APIs remain private preview. Host visibility/resume and per-controller confirmation guards apply; destruction cancels bridge work, without proving a payment was canceled server-side. iOS email updates and Android null shipping-address clearing remain unsupported. Do not infer web feature parity, subscription/merchant eligibility, device-tested checkout or automatic retries. Versioned implementation and evidence limits: [[stripe-react-native-sdk]], [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
 ## Fulfillment Pattern
 
 - **Dual trigger**: webhook (required) + landing page (optional, for immediate UX)
@@ -207,6 +213,7 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 
 ## Sources
 
+- [[source-github-stripe-react-native]] - native 0.81.0 private-preview presentation/confirmation bridge and fulfillment/status boundary
 - [[source-stripe-checkout-sessions]] — Checkout Sessions API: 3 UI modes, 5 built-in features, Adaptive Pricing, vs Payment Intents
 - [[source-stripe-how-checkout-works]] — How Checkout works: 24-feature table (built-in vs customizable), mixed cart, session expiry, save payment details, guest customers, Checkout for agents
 - [[source-stripe-checkout-quickstart]] — Hosted + embedded quickstart: 3 modes, key session params, React client, EmbeddedCheckoutProvider, return_url pattern

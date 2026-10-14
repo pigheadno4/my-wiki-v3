@@ -6,6 +6,11 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-14] ingest | React Native `0.81.0`
+
+- Approved additive full override with focused reading, github-79a6db1277f60762c57f at 1b792fbddad9fe758cdc1c5504133bd7e4ddb656, from 0.80.0. Current/prior 244/240 retained files, four added/33 modified/207 unchanged; 484 hashes/sizes and packet/comparison/notes verified; 72 upstream dispositions. Effective full inventory: 253 paths, changed implementation/affected prior code read, unchanged history/inventories mechanically checked. All 1,264 prior changelog lines preserved with 17 insertions.
+- React Native/Checkout concepts first; cumulative source/changelog/company/index/logs preserve older knowledge/count. Private-preview presentation/confirmation, returned versus rejected outcomes, request-ID credential correlation, Android host/PromiseViewModel limits and event/FutureUsage mappings documented. Native pins Android 23.22.0/iOS 26.13.0; remaining platform gaps retained. No new collection, SDK build/device/payment tests, commit or push. Next: scoped commit/push approval after validation.
+
 ## [2026-10-14] ingest | Stripe Android `23.23.0`
 
 - Approved additive full mode with focused reading, github-9d505b454cf636ac1ed1 at e6f4a675f899d7a61a54b09e1ad74c669479f50c, from 23.22.0. Sixteen modified/36 unchanged files, 104 verified hashes/sizes, 3,521 upstream dispositions. Changed implementation/API blocks/affected prior context reviewed; unchanged effective full inventory/history checked mechanically. All 4,865 prior changelog lines retained with 22 insertions.

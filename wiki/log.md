@@ -4,6 +4,10 @@
 
 - Fifty independently approved Mobile POS, alternative-payment, physical-manual and support documentation sources; first full-review approvals 39/50 and 11 targeted correction reviews. 8 concepts touched (3 new); source_count 364 = 350 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-07/`; details [[adyen-log]]. No commit/push.
 
+## [2026-10-14] ingest | React Native `0.81.0`
+
+- Approved focused-reading additive full ingest from 0.80.0: private-preview Checkout presentation/confirmation, CustomerSession request correlation, host lifecycle and event/FutureUsage mappings. Verified 484 hashes/sizes; historical knowledge/count and implementation limits retained. Details [[stripe-log]] and [[changelog-github-stripe-react-native]]. No SDK build/device/payment tests, commit or push. Next: scoped commit/push approval after validation.
+
 ## [2026-10-14] ingest | Adyen website C06
 
 - Fifty independently approved terminal administration, Android app, standalone and manual documentation sources; first full-review approvals 42/50 and 8 targeted correction reviews. 6 concepts touched (5 new); source_count 314 = 300 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-06/`; details [[adyen-log]]. No commit/push.

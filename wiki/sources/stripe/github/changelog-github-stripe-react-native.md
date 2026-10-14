@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/stripe-react-native"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-10-04
+date_updated: 2026-10-14
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-react-native/snapshots/2026-10-14-1b792fb/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-04-ce9c1bf/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-04-6bbf9d5/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/manifest.json"
@@ -21,6 +22,29 @@ tags: [stripe, react-native, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-react-native`. Cumulative implementation knowledge belongs in [[source-github-stripe-react-native]] and the linked immutable evidence.
+
+## `@stripe/stripe-react-native@0.81.0` - Change Set `1b792fb` (2026-10-06)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@stripe/stripe-react-native` | `@stripe/stripe-react-native@0.80.0` | `@stripe/stripe-react-native@0.81.0` | 2026-10-06 | `1b792fbddad9fe758cdc1c5504133bd7e4ddb656` | Additive full override, approved focused reading |
+
+**Announced:** Financial Connections session IDs; Android PaymentSheet Activity-change fix; CustomerSession crash/loading fix; ConfirmationToken.setupFutureUsage casing/null correction. Native pins advance Android 23.21.0 -> 23.22.0 and iOS 26.12.1 -> 26.13.0. Android 23.23.0 is not included.
+
+**Additional implementation:** Checkout presentation/confirmation stubs are replaced by TypeScript/native bridge calls on both platforms, with host visibility/resume gates and per-controller confirmation guards. Presentation resolves immediately after request, not dismissal/selection. Confirmation returns completed/canceled/failed and paid/unpaid/noPaymentRequired; invocation/lifecycle errors can reject. Android requires a complete native session for completed serialization. Destruction cancels bridge work; no wrapper confirmation timeout or server-payment cancellation guarantee is established. Inline Android view adds layout/event/prop wiring.
+
+CustomerSession requests use internal UUID correlation and error responses; per-sheet registries remove completed entries and cancel retired requests. Public provider return shape remains customerId/clientSecret; SetupIntent-secret callbacks retain old single-slot handling. PaymentSheet cached objects reset on host change during configuration; callbacks use a host-owned single-Promise ViewModel, not proven per-instance isolation/exactly-once delivery. Required Financial Connections string IDs affect typed consumers; Android FutureUsage uses PascalCase and Blank/absent null. Generic Pix next-action mapping remains null/not a direct JS integration recipe.
+
+**Migration/boundary:** confirm private-preview access, observe session selection separately from present(), handle returned and rejected confirmation errors, and fulfill from server state/events rather than completed alone. Reconfigure/test host changes, provider rejection/replacement and overlapping calls. iOS email mutation and Android null shipping clearing remain unsupported. Old stub history remains version-qualified. Native internals, changed unretained examples and tests are not full-file evidence; no SDK build/device/payment tests.
+
+**Scope/updated:** current/prior 244/240 files; four added, 33 modified, 207 unchanged; all 484 hashes/sizes verified, 72 upstream dispositions, no packet gaps/unclassified changes. Effective full reading expands to 253 paths; focused exception covers changed implementation/affected prior code and mechanically verifies unchanged inventories/history. All 1,264 prior upstream changelog lines retained with 17 insertions. React Native/Checkout concepts first; cumulative source/changelog/company/index/logs preserve older knowledge/count. No new collection, commit or push.
+
+**Evidence:**
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.81.0/2026-10-14/manifest.json`
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.81.0/2026-10-14/release-notes.md`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-14-1b792fb/manifest.json`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.80.0--0.81.0/comparison.json` - adjacent comparison.md/diff.patch
+- [[source-github-stripe-react-native]] - exact source paths, five grounding excerpts and remaining implementation limits
 
 ## `@stripe/stripe-react-native@0.80.0` - Change Set `ce9c1bf` (2026-09-30)
 

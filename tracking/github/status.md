@@ -2240,6 +2240,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.7.0/2026-09-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.6.0--26.7.0/comparison.json)
 
+## `github-79a6db1277f60762c57f`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `1b792fbddad9fe758cdc1c5504133bd7e4ddb656`
+- Collection date: `2026-10-14`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-14-1b792fb/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-79a6db1277f60762c57f/packet.md)
+- Review priority: `high`
+- Required reading: `46` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.81.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.81.0/2026-10-14/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.80.0--0.81.0/comparison.json)
+
 ## `github-7afbbbad6ed794ece5d5`
 
 - Repository: `paypal/paypal-sdk-release`

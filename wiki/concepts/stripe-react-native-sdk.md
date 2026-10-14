@@ -9,7 +9,7 @@ tags: [stripe, react-native, mobile, sdk, payments, apple-pay, google-pay, payme
 
 `@stripe/stripe-react-native` is Stripe's official React Native SDK for building native payment UIs on iOS and Android. It wraps Stripe's native iOS/Android SDKs, provides PCI-compliant card collection (data goes directly to Stripe, not your server), automatic 3DS/SCA handling, and prebuilt UI components including PaymentSheet.
 
-Latest ingested version: **0.80.0**. The cumulative history preserves the legacy `0.65.1` manual capsule and the approved `0.72.0` full baseline.
+Latest ingested version: **0.81.0**. The cumulative history preserves the legacy `0.65.1` manual capsule and the approved `0.72.0` full baseline.
 
 ## Platform requirements
 
@@ -118,6 +118,23 @@ The `0.74.0` snapshot contains an experimental `ConnectNotificationBanner` imple
 
 ## Migration notes
 
+### 0.81.0 Checkout and Lifecycle Bridges
+
+Private-preview Checkout now bridges `paymentElement.present()` and `confirm()` on both platforms instead of throwing the earlier not-implemented error. Presentation resolves after requesting the sheet, not after dismissal or selection. Observe the controller/hook session for the selection; confirm only the selected payment option while ready. Confirmation preserves completed/canceled/failed outcomes and paid/unpaid/noPaymentRequired status. Bridge invocation errors reject separately. Completion is not proof of paid funds; fulfill from authoritative server state/events.
+
+Android requires a resumed, non-finishing ComponentActivity; iOS requires a visible, non-dismissing presenter. Per-controller overlapping confirmations are rejected. Destruction cancels pending bridge work; no wrapper timeout, backend idempotency or process-restoration guarantee is established. Android's completed-result serializer requires a complete native session or rejects. Android inline layout adds child remeasurement and height-event/prop wiring. iOS email updates and Android null shipping-address clearing remain unsupported.
+
+> [!warning] Contradiction
+> The version-qualified 0.80.0 record below correctly says modal presentation/confirmation still throw. At 0.81.0 those stubs are replaced by native bridge calls. Preserve the old record but do not apply its unsupported-call conclusion to this release. This is source-level private-preview support, not general availability or device-tested payment.
+
+CustomerSession credentials gain request-ID correlation, provider-error responses and cancellation/invalidation on sheet replacement or module teardown. The public provider still returns customerId/clientSecret; the SDK adds the request ID internally. SetupIntent-secret callbacks retain their older single-slot handling, and a provider that never settles has no demonstrated request timeout. IDs are correlation, not customer authorization or comprehensive tenant isolation.
+
+Android PaymentSheet configuration invalidates cached sheet/controller objects when the host Activity changes; presentation/results use a host-owned PromiseViewModel. It stores one mutable Promise and does not clear it on resolve, so do not infer per-instance/concurrent-call isolation or exactly-once delivery. Reconfigure for the current host and test recreation/navigation; this is not an automatic recovery guarantee for every presentation path.
+
+ConfirmationToken.setupFutureUsage on Android maps to OnSession/OffSession/None instead of API snake-case values; Blank/absent maps to null. FinancialConnectionsEvent requires financialConnectionsSessionId in TypeScript, forwarded by both native mappers; update typed fixtures. Notes announce emission once the ID exists, but the wrapper does not independently enforce native event timing. Android DisplayPixDetails is explicitly unhandled by the generic next-action mapper (returns null); the enum does not create a direct JS Pix integration recipe.
+
+Native pins advance to Android 23.22.0/iOS 26.13.0, not Android 23.23.0. New-architecture/SPM requirements remain. Additive full ingest with focused reading preserves older knowledge; native SDK internals, changed unretained examples and tests remain outside full-file evidence. See [[source-github-stripe-react-native]], [[changelog-github-stripe-react-native]] and [[stripe-checkout]]. No native build/device/payment tests.
+
 ### 0.80.0 Pre-Collected Consent and Inline Checkout
 
 Financial Connections adds private-preview `preCollectedConsent: { consent, collectedAt }` to session/account collection, bank-account token collection and Intent bank collection. `consent` is the server-created Consent object's ID; `collectedAt` is Unix seconds captured when the buyer affirmatively accepts the complete Stripe-issued consent text, not when the sheet is launched. Reuse that acceptance timestamp on retries. Stripe may still display its own consent pane. Both native bridges map the object and reject missing/empty ID or nonnumeric timestamp fields, but these basic checks do not establish freshness, authenticity, finite/integer correctness or authorization. Native conversion truncates to an integer.
@@ -181,5 +198,5 @@ The package root now exports `useCheckout`, `createCheckout` and `CheckoutPaymen
 
 ## Sources
 
-- [[source-github-stripe-react-native]] — cumulative GitHub source through v0.80.0; historical baselines and version-qualified implementation boundaries preserved
+- [[source-github-stripe-react-native]] — cumulative GitHub source through v0.81.0; private-preview confirmation/presentation, lifecycle and credential correlation; older knowledge preserved
 - [[changelog-github-stripe-react-native]] — package-qualified release history and migration impact
