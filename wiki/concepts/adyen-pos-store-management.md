@@ -18,6 +18,9 @@ The 2026-09-15 Adyen guide uses a platform-unique store ID for store updates; a 
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-payment-facilitators]] — POS payment-facilitator guide (2026-09-15 snapshot) for sub-merchant store `subMerchantData`, Management API role and standalone store-only route; full commercial/data model belongs to [[adyen-pos-payment-facilitators]].
+
+
 - [[source-adyen-docs-point-of-sale-what-we-support-payment-methods-add-payment-methods]] — Adyen 2026-09-15 POS Customer Area request guide, asynchronous store method addition, Management webhook, and terminal configuration timing.
 
 

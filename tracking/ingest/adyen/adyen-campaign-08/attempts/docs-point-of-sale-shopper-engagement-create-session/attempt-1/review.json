@@ -1,0 +1,17 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-create-session",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Independently read the full 218-line pinned raw, matched its SHA-256, and verified all five quotes. The candidate correctly explains Admin Begin/End, same Session.Id, per-operation WaitingScreen timeout, the visible-screen End exception, and the separation from payment authorization. Two example-boundary issues need correction. First, its identity warning says the begin/end requests both place POSSystemID12345 in ServiceID, but only the begin request does; the end request and shown begin response use ServiceID S00101 and SaleID POSSystemID12345. Second, the displayed Begin JSON and encoded examples conflict in a way that changes which operation gets a waiting screen: the raw's displayed JSON has both InputRequest and DisplayRequest (and a trailing comma after Type Begin), the standalone Base64 block decodes to those two operations, but the Base64 ServiceIdentification in the actual Begin Admin request decodes to InputRequest only. The source entry should make that conflict discoverable so a reader does not copy the embedded payload expecting the DisplayRequest screen. Fixed query one describes the intended fields correctly; fixed query two repeats the plural request-identity error. The proposed reciprocal itself is accurate and belongs under shopper engagement.",
+  "required_changes": [
+    "Correct the source-page identity warning to say the Begin request alone swaps the sample ServiceID/SaleID values relative to the table and its displayed response; the End request uses ServiceID S00101 and SaleID POSSystemID12345. Correct fixed-query answer two's 'sample requests' wording to 'sample Begin request'.",
+    "Add a narrow example warning at the Begin locator: the displayed Begin JSON has a trailing comma after Type Begin; its standalone Base64 decodes to InputRequest plus DisplayRequest, while the Base64 ServiceIdentification embedded in the Admin request decodes to InputRequest only. Do not treat the embedded request payload as an exact encoding of the two-operation example; generate and validate the intended JSON/Base64 against the current contract. Keep the general Begin/End and timeout explanation unchanged."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "create-session-shopper-engagement-route"
+  ],
+  "reviewer_identity": "c8-rdocs-point-of-sale-shopper-engagement-create-session",
+  "reviewer_model": "gpt-6-sol"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-rating-rating-single-press",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen one-key POS rating input\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, rating, input]\n---\n\n## Overview\n\nAdyen's single-key rating guide, captured 2026-09-15, describes `GetOneKeyRating` as an alternative to the default `GetRating` Terminal API input request. A shopper's single key press answers and sends the response immediately, with no separate confirmation step described. This [[adyen-pos-shopper-engagement]] interaction gathers a rating, not a payment result, consent record, validated survey response, or proof of a particular customer identity.\n\n## Key takeaways\n\n- **Device and request scope.** The dated guide requires a Terminal API integration and lists M400, P400 Plus, V400m, M450, P630, AMS1, S1F2, S1F2L, S1E2L and SFO1 as supported terminals. The `SaleToPOIRequest.MessageHeader` is protocol 3.0, `MessageClass: Device`, `MessageCategory: Input`, `MessageType: Request`, with SaleID, POIID and a ServiceID unique for the terminal within the prior 48 hours. The list does not establish current model, merchant or regional availability; uniqueness is not an idempotent-retry guarantee.\n- **Display and input fields have distinct roles.** `InputRequest.DisplayOutput` targets `CustomerDisplay`, uses Text output and `PredefinedContent.ReferenceID: GetOneKeyRating`, with up to four merchant text fields: question, scale label, skip label and optional footer. The first text is bold; `\\n` starts a new line. `InputRequest.InputData` targets `CustomerInput`, uses `InputCommand: DigitString` and an integer `MaxInputTime` in seconds. The page gives no separate maximum DigitInput length or fixed rating-scale validation rule.\n- **Read the response by outcome.** The guide says input is not validated against a format and directs the merchant system to validate and use `InputResult.Input.DigitInput`. Its example is a shopper-entered `9` with `InputResult.Response.Result: Success`. A timeout returns `Failure`/`Cancel` with `message=Screen%20timeout`; shopper Cancel or Skip yields an empty `DigitInput` and `Failure`/`Cancel`. If a payment request arrives while input is pending, it overrides the input request, which fails with `Busy` and a higher-priority-request message. The payment request's own financial result is separate.\n- **The prompt can end in other ways.** The guide says input, expiry of `MaxInputTime`, terminal Cancel, a dedicated cancel-input request, or any other POS app request ends the displayed input request. Do not treat a missing rating as a zero score or silently retry a pending interaction.\n\n## Detail locators\n\n- Raw opening and `## Requirements` (lines 15\u201330): one-key alternative and dated model list.\n- Raw `## How it works` (lines 32\u201347): display duration and terminal/POS cancellation or override triggers.\n- Raw `## Make a Rating input request` field tables (lines 49\u201387): Device/Input header, display text positions, `GetOneKeyRating`, `DigitString`, `MaxInputTime` and 48-hour ServiceID uniqueness.\n- Raw JSON and Java examples (lines 89\u2013181): sample question, scale, Skip, 30-second timeout and request construction; sample values are illustrative.\n- Raw response handling (lines 183\u2013228): no format validation, `DigitInput`, success example, timeout, payment override, Cancel/Skip and merchant-side validation.\n- Raw `## See also` (lines 230\u2013235): separate default rating, cancel-input, input-type and session guides; navigation only.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 POS customer-interaction hub.\n- [[adyen-terminal-api]] \u2014 Terminal API and financial-message boundary.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press/2026-09-15|Ask for a rating\u2014single key press, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The main difference is that with **GetOneKeyRating**, a single key press answers the question and sends the response when the shopper presses a key.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press/2026-09-15.md:21, # Ask for a rating\u2014single key press"
+    },
+    {
+      "text": "This feature is available on the following [terminals](/point-of-sale/what-we-support/select-your-terminals): M400, P400 Plus, V400m, M450, P630, AMS1, S1F2, S1F2L, S1E2L, and SFO1.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press/2026-09-15.md:30, ## Requirements"
+    },
+    {
+      "text": "The input is not validated against a format.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press/2026-09-15.md:185, ## Make a Rating input request"
+    },
+    {
+      "text": "If you make a payment request while the input request is waiting for input on the terminal, the payment request overrides the input request.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press/2026-09-15.md:224, ## Make a Rating input request"
+    },
+    {
+      "text": "If the user declined to respond (selected the **Cancel** key **![](/images/7/4/2/f/a/742fa2d25c8f88e87b88591e5371d52f62a291bf-cancel2x.png)** or **Skip** on the screen), the `InputResult.Input.DigitInput` field is empty.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press/2026-09-15.md:226, ## Make a Rating input request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c08-one-key-rating-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-rating-rating-single-press]] \u2014 2026-09-15 Terminal API `GetOneKeyRating` guide for immediate one-press rating, merchant-side validation, terminal limits, and timeout/Cancel/Busy outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/rating-single-press/2026-09-15.md",
+  "raw_sha256": "49341ae8e95839fc040c795d9e48d3cc19d4ef5e78f56866de3ba8d190049974",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,90 @@
+{
+  "job_id": "docs-unified-commerce-loyalty-program-create-profiles",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Creating customer profiles | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/loyalty-program/create-profiles\"\nraw_files:\n  - \"adyen/docs/unified-commerce/loyalty-program/create-profiles/2026-09-15.md\"\ntags: [adyen, unified-commerce, customer-profiles, shopper-identifiers, tokenization, consent]\n---\n\n## Overview\n\nAdyen's cross-channel profile guide asks the merchant to create a customer record in **its own CRM or database** before recognizing that customer online or at the point of sale. The record joins contact and payment-derived identifiers so the merchant can use it across sales channels. The guide explicitly says to ask for customer consent before storing personal information or tokenizing a card. This 2026-09-15 snapshot describes conditional integration steps and examples, not automatic identity matching, current account enablement, privacy compliance, or a completed payment. [[adyen]] [[adyen-unified-commerce]] [[adyen-pos-loyalty]]\n\n## Key takeaways\n\n- Receiving the needed response identifiers is an **enablement step**: ask an Adyen contact for card `alias` in both ecommerce and POS payment responses, and select **Recurring details** in Customer Area **Developers \u2192 Additional data** to receive shopper and recurring references. These instructions do not prove a particular merchant is enabled or that every response contains every identifier. See **Enable receiving identifiers**, pinned raw lines 23\u201335.\n- **Online:** after obtaining the shopper's consent, the merchant collects contact details and chooses a unique `shopperReference` with at least three characters and no PII such as name or email. It sends `shopperEmail` and `shopperReference` in Checkout `/payments`; set `storePaymentMethod: true` only when the shopper chooses to save card details for future payments or a subscription. A successful, tokenizing example returns card `alias`, echoed shopper identifiers and a `storedPaymentMethodId`; the guide says `alias` is unavailable for NFC wallet transactions. Do not infer that an authorized payment always creates a token. See **Create profile from online payment**, pinned raw lines 36\u2013109.\n- **At the POS:** contact details may be entered by the shopper through terminal **GetText** input or given to staff for POS-app entry. The terminal input response carries the email in `Input.TextInput`; a later, separate Terminal API **PaymentRequest** passes `shopperReference` and `shopperEmail` in `SaleToAcquirerData`. Only if the shopper agrees to store payment details does the guide add `recurringContract=UnscheduledCardOnFile`; it says this stores the identifiers on Adyen's platform and creates a token for future online payments/subscriptions. The guide instructs asking for consent before storing personal information or saving payment details. See **Create profile from point-of-sale payment**, pinned raw lines 113\u2013258.\n- The merchant then saves `shopperEmail`, card `alias` or PAR, `shopperReference`, and the returned saved-method token (`tokenization.storedPaymentMethodId` or `recurring.recurringDetailReference`) in its CRM/database, readable and writable across its sales channels. A card alias is for **recognition**; a saved-method ID is the **token** used for later tokenized payments. The guide instructs one token per card under the same shopper reference when a customer has multiple cards, linked through email. It does not define raw PAN storage, a universal match between identifiers, token reuse permission, retention duration, or access-control roles. See **Store customer data**, pinned raw lines 282\u2013300.\n- **Example caveats:** the online prose says `additionalData` includes `shopperEmail` and `tokenization.*`, while its example puts `recurring.shopperEmail` in `additionalData` and `tokenization` at top level. The POS response example echoes `recurring.shopperReference=ShopperID-A16729` but shows `tokenization.shopperReference=12345`, unlike the request. Its GetText `InputRequest` has `MessageCategory: Payment`. Treat the snippets as illustrations and verify the actual response shape and shopper linkage before persisting a record or using a token. See pinned raw lines 80\u2013105, 129\u2013171 and 250\u2013280.\n\n## Detail locators\n\n- **Creating customer profiles; Enable receiving identifiers** (pinned raw lines 15\u201335) \u2014 merchant CRM ownership, consent principle, Adyen alias enablement and Customer Area additional-data setting.\n- **Create profile from online payment** (pinned raw lines 36\u2013109) \u2014 consent checkbox, PII-free `shopperReference`, conditional `storePaymentMethod`, example response and NFC-wallet alias exception.\n- **Create profile from point-of-sale payment** (pinned raw lines 113\u2013280) \u2014 contact collection, GetText input, Terminal API PaymentRequest fields, conditional `recurringContract`, response and example inconsistencies.\n- **Store customer data** (pinned raw lines 282\u2013300) \u2014 CRM fields, per-card token handling and cross-channel read/write requirement.\n- **Next steps** (pinned raw lines 302\u2013312) \u2014 separate returning-customer recognition and payment-linked loyalty guides.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 primary cross-channel customer-profile route.\n- [[adyen-pos-loyalty]] \u2014 POS recognition and loyalty use cases drawing on merchant profile data.\n- [[adyen-pos-shopper-engagement]] \u2014 terminal input surface; this guide's GetText example is not payment itself.\n- [[adyen-tokenization]] \u2014 separate saved-payment-method lifecycle and permissions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/loyalty-program/create-profiles/2026-09-15|Creating customer profiles, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you are able to recognize a customer, you need to create a profile for them in your Customer Relationship Management System (CRM) or other database. Each [customer profile](#store-customer-data) should include [identifiers](/unified-commerce/collect-data#overview-of-identifiers) that you will also receive in API responses.",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/create-profiles/2026-09-15.md:19"
+    },
+    {
+      "text": "You should always ask for your customer's consent before storing their personal information or tokenizing their card. See [Data privacy](/unified-commerce/shopper-insights#data-privacy).",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/create-profiles/2026-09-15.md:21"
+    },
+    {
+      "text": "1. Ask your Adyen contact to enable receiving the **card alias** in the payment response, for both ecommerce and point-of-sale payments.",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/create-profiles/2026-09-15.md:27"
+    },
+    {
+      "text": "* `shopperReference`: your unique reference for this customer. Do not include personally identifiable information (PII), for example name or email address (minimum length 3 characters).",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/create-profiles/2026-09-15.md:51"
+    },
+    {
+      "text": "* `recurringContract`: if the customer agrees to store their payment details, provide this parameter with a value of **UnscheduledCardOnFile**. This saves the `shopperReference` and `shopperEmail` on our platform, and ensures the values are returned in future card acquisition and payment requests. It also creates a token that you can use for subscriptions and future payments in your online store.",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/create-profiles/2026-09-15.md:211"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-create-profiles-unified-reciprocal",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-loyalty-program-create-profiles]] \u2014 2026-09-15 cross-channel merchant-CRM guide for consented online/POS profile creation, distinct card alias, shopper reference and saved-method token roles, and conditional identifier enablement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The unified-commerce concept is coordinator-owned and may still await promotion; add the reciprocal route after its creation.",
+          "Snapshot examples contain response-shape and shopperReference conflicts; source entry preserves these boundaries."
+        ]
+      },
+      {
+        "update_id": "c8-create-profiles-pos-boundary-repair",
+        "target_path": "wiki/concepts/adyen-pos-loyalty.md",
+        "update_kind": "durable_fact",
+        "anchor": "Keep POS recognition distinct from online checkout identity or a unified customer profile until those claims have direct evidence.",
+        "proposed_markdown": "The separately reviewed cross-channel profile guide now documents a merchant-maintained CRM record combining contact details, card alias or PAR, shopper reference and consented saved-method tokens, readable and writable across the merchant's sales channels. It does not establish automatic cross-channel identity matching, raw PAN sharing, token-use permission, retention policy, or a completed payment. [[source-adyen-docs-unified-commerce-loyalty-program-create-profiles]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Replace the anchored sentence; do not leave its now-qualified 'until direct evidence' wording beside this fact.",
+          "Keep the POS loyalty overview's narrower source scope and the guide's consent and conditional tokenization boundaries."
+        ]
+      },
+      {
+        "update_id": "c8-create-profiles-pos-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-loyalty.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-loyalty-program-create-profiles]] \u2014 Cross-channel merchant-CRM profile guide (2026-09-15 capture) for consent, POS GetText and payment fields, identifier enablement, and alias versus saved-method-token boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Secondary POS-specific route; coordinate with the boundary-repair suggestion on the same concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/loyalty-program/create-profiles/2026-09-15.md",
+  "raw_sha256": "9f91a4e887319cc6004961802f063a06b754399e1d52e5b31ba53a5d568489b7",
+  "status": "candidate_ready"
+}

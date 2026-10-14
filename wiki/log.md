@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-14] ingest | Adyen website C08
+
+- Fifty independently approved shopper-interaction, recognition, loyalty, autonomous-store and unified-commerce documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 10 concepts touched (6 new); source_count 414 = 400 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-08/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-14] ingest | Adyen website C07
 
 - Fifty independently approved Mobile POS, alternative-payment, physical-manual and support documentation sources; first full-review approvals 39/50 and 11 targeted correction reviews. 8 concepts touched (3 new); source_count 364 = 350 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-07/`; details [[adyen-log]]. No commit/push.

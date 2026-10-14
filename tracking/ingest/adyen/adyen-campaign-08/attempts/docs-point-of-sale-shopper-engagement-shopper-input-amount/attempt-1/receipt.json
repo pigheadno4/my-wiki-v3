@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-amount",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Ask for amount input | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/amount\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/amount/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, input, amount]\n---\n\n## Overview\n\nAdyen's GetAmount guide describes a **Terminal API Device/Input interaction** that asks a shopper or staff member to enter an amount on a payment terminal, such as a proposed share of a split bill. The terminal returns the entered `DigitInput` for the merchant system to validate and use. The input request itself does not authorize, capture, split, refund or settle a payment, and the page gives no consent or successful-payment proof. [[adyen]] [[adyen-pos-shopper-engagement]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- A Terminal API integration with a payment terminal is required. The `GetAmount` request uses `MessageClass: Device`, `MessageCategory: Input`, and an `InputRequest` with `DisplayOutput` for terminal text and `InputData` for `CustomerInput`. Its input command is `DecimalString`, with a configurable `MaxInputTime` in seconds and a format placeholder such as `0.00`. The header table gives a terminal-scoped `ServiceID` uniqueness rule of 1\u201310 alphanumeric characters within 48 hours; this is not an idempotency or safe-retry guarantee. See **Requirements** and **Make an Amount input request**, pinned raw lines 21\u201327 and 68\u2013104.\n- The terminal shows a currency and two-decimal placeholder; entered digits populate from right to left in the EUR 36.59 example. The default currency is the first currency configured for the store, or for the merchant account when it represents the physical store. The guide does not say the request itself charges that currency or that the displayed number has passed merchant validation. Custom prompt text is limited to about 20 characters on a portrait display. See pinned raw lines 19, 50\u201366 and 86\u2013104.\n- The input screen remains until the shopper/staff submits input, `MaxInputTime` expires, terminal **Cancel** is selected, or the terminal receives a POS cancel-input request or another POS request. On input, `InputResult.Input.DigitInput` carries the amount string; pass it to the merchant system for validation and further use. `InputResult.Response.Result: Success` in the example is an **input** result, not financial authorization. See pinned raw lines 29\u201336 and 184\u2013234.\n- A timeout returns `InputResult.Response` with `Result: Failure`, `ErrorCondition: Cancel` and `AdditionalResponse: message=Screen%20timeout`. User Cancel gives an empty `DigitInput` with Failure/Cancel. A payment request arriving while input waits **overrides** it, yielding input Failure/`ErrorCondition: Busy` and the higher-priority-request message. Do not treat these three outcomes as the same merchant amount choice. See pinned raw lines 228\u2013232.\n- The JSON request and response use protocol version 3.0 and illustrate one V400m `POIID`; the Java snippet uses the generated enum `DIGIT_DECIMAL` for the input command. These are examples, not evidence of current model eligibility or a specific account's enabled features. See pinned raw lines 108\u2013226.\n\n## Detail locators\n\n- **Ask for amount input; Requirements; How it works** (pinned raw lines 15\u201348) \u2014 purpose, Terminal API prerequisite, screen termination conditions and device illustrations.\n- **Entering an amount; Currency** (pinned raw lines 50\u201366) \u2014 right-to-left two-decimal example and store/merchant-account default currency lookup.\n- **Make an Amount input request** (pinned raw lines 68\u2013104) \u2014 Device/Input header, `GetAmount` display output, `DecimalString`, `MaxInputTime`, placeholder and prompt length.\n- **JSON; Java** (pinned raw lines 108\u2013182) \u2014 illustrative request and generated-library field mapping.\n- **Input response and outcomes** (pinned raw lines 184\u2013234) \u2014 `DigitInput`, success, timeout Cancel, user Cancel, payment-override Busy and merchant validation.\n- **See also** (pinned raw lines 236\u2013240) \u2014 cancel-input, other input type and multi-request session navigation.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 primary terminal-interaction route.\n- [[adyen-terminal-api]] \u2014 Terminal API message architecture; this input's amount is not a PaymentRequest amount.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/amount/2026-09-15|Adyen GetAmount input guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you use a **GetAmount** `InputRequest`, the terminal prompts the shopper or your staff to enter an amount. The terminal continues to show your input request until one of these events occurs:",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/amount/2026-09-15.md:31"
+    },
+    {
+      "text": "* The standard [`SaleToPOIRequest.MessageHeader` ](/point-of-sale/design-your-integration/terminal-api#request-message-header)object, with `MessageClass` set to **Device** and `MessageCategory` set to **Input**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/amount/2026-09-15.md:74"
+    },
+    {
+      "text": "* `Input.DigitInput`: The amount that the user entered.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/amount/2026-09-15.md:188"
+    },
+    {
+      "text": "* If you make a payment request while the input request is waiting for input on the terminal, the payment request overrides the input request. The `InputResult.Response` has `AdditionalResponse`: **message=A%20higher%20priority%20request%20has%20been%20received**, `Result`: **Failure**, and `ErrorCondition`: **Busy**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/amount/2026-09-15.md:230"
+    },
+    {
+      "text": "3. Pass the `DigitInput` value to your system for validation and further use.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/amount/2026-09-15.md:234"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-getamount-engagement-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-amount]] \u2014 2026-09-15 Terminal API Device/Input GetAmount guide for terminal decimal entry, currency display, timeout/Cancel/Busy outcomes and merchant validation before further use.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the returned amount as shopper/staff input; it is not a payment authorization, split settlement, refund or consent result.",
+          "The concept's overview-only evidence boundary remains valid for its overview source; this detail guide supplies operation-specific rules through the reciprocal route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/amount/2026-09-15.md",
+  "raw_sha256": "e3b734fdbbb959d93eefa3809d9162036e5d6aaabcf5a32f26e00aa397f33181",
+  "status": "candidate_ready"
+}

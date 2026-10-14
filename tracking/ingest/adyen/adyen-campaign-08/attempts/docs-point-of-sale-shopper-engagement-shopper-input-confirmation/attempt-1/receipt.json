@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-confirmation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Ask for confirmation | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/confirmation\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/confirmation/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, input, confirmation]\n---\n\n## Overview\n\nAdyen's GetConfirmation guide describes a **Terminal API Device/Input** request that displays a merchant-supplied prompt and asks a shopper to confirm or decline it on a payment terminal. Its Terms-and-Conditions example returns a `ConfirmedFlag` representing the selected button or key. The terminal interaction itself does not authorize a payment, establish legal consent validity, or prove that the full terms were shown or retained. [[adyen]] [[adyen-pos-shopper-engagement]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- A Terminal API payment-terminal integration is required. The request header uses `MessageClass: Device`, `MessageCategory: Input`, and protocol version 3.0. `InputRequest.DisplayOutput` targets `CustomerDisplay` with `GetConfirmation`; `InputRequest.InputData` targets `CustomerInput` with `InputCommand: GetConfirmation` and a configurable `MaxInputTime` in seconds. The header's `ServiceID` is terminal-scoped, 1\u201310 alphanumeric characters and unique within 48 hours; this is not a general safe-retry guarantee. See **Requirements** and **Make a Confirmation input request**, pinned raw lines 21\u201327 and 48\u201386.\n- `OutputContent.OutputText` is an ordered array of **four** text fields: title, additional text, left Cancel-button label, and right Confirm-button label. On a portrait display, the title is limited to about 20 characters; the additional text can be long and can use `\\n` for a line break. In the example the labels are **Decline** and **Agree**. Do not swap button meaning based on label order. See pinned raw lines 66\u201377 and 90\u2013138.\n- On input, `Input.ConfirmedFlag: true` means the shopper selected the **right** button (Agree in the example) or keypad Confirm; `false` means the **left** button (Decline) or keypad Cancel. The guide says this input is not validated against a format and instructs the merchant to pass relevant `InputResult.Input` data to its own system for validation/further use. A response `Result: Success` is an input-operation result, not proof of payment approval or a sufficient legal record of consent. See pinned raw lines 182\u2013225.\n- The screen remains until input, configured timeout, terminal Cancel, or a cancel-input/other POS request. **Timeout** yields input `Result: Failure`, `ErrorCondition: Cancel`, and `message=Screen%20timeout`. A **payment request** while input is pending overrides it and yields input Failure/`ErrorCondition: Busy` plus a higher-priority-request message. A shopper's left-button/keypad Cancel maps to `ConfirmedFlag: false` in the guide, and should not be conflated with the timeout Failure/Cancel result. See pinned raw lines 29\u201336 and 188\u2013225.\n- The JSON and Java blocks are examples, including one V400m `POIID`, a 30-second `MaxInputTime`, and a sample Terms-and-Conditions prompt. They do not establish current device or account eligibility or prove that a particular shopper viewed a complete legal text. See pinned raw lines 90\u2013180.\n\n## Detail locators\n\n- **Ask for confirmation; Requirements; How it works** (pinned raw lines 15\u201346) \u2014 purpose, Terminal API prerequisite, display persistence/termination and form-factor illustrations.\n- **Make a Confirmation input request** (pinned raw lines 48\u201386) \u2014 Device/Input header, four ordered display texts, button mapping, GetConfirmation input command and timeout.\n- **JSON; Java** (pinned raw lines 90\u2013180) \u2014 illustrative request fields and one terminal model.\n- **Input result and terminal outcomes** (pinned raw lines 182\u2013225) \u2014 no format validation, `ConfirmedFlag` true/false meanings, example success, timeout Cancel, payment override Busy, merchant validation.\n- **See also** (pinned raw lines 227\u2013231) \u2014 cancel-input, other input and session navigation.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 primary shopper-terminal interaction route.\n- [[adyen-terminal-api]] \u2014 Terminal API message context; confirmation input is separate from PaymentRequest.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/confirmation/2026-09-15|Adyen GetConfirmation input guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you use a **GetConfirmation** `InputRequest`, the terminal shows some information on the display of the terminal and asks the shopper to confirm they agree. The terminal continues to show your input request until one of these events occurs:",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/confirmation/2026-09-15.md:31"
+    },
+    {
+      "text": "* The standard [`SaleToPOIRequest.MessageHeader` ](/point-of-sale/design-your-integration/terminal-api#request-message-header)object, with `MessageClass` set to **Device** and `MessageCategory` set to **Input**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/confirmation/2026-09-15.md:54"
+    },
+    {
+      "text": "An array of four `Text` fields containing your own text to show on the terminal:1) The title. On a portrait display, this is limited to about 20 characters.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/confirmation/2026-09-15.md:74"
+    },
+    {
+      "text": "* `Input.ConfirmedFlag`: **true** indicates the shopper confirmed their agreement by selecting the right button on the display (\"Agree\") or the **Confirm** key",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/confirmation/2026-09-15.md:188"
+    },
+    {
+      "text": "* If you make a payment request while the input request is waiting for input on the terminal, the payment request overrides the input request. The `InputResult.Response` has `AdditionalResponse`: **message=A%20higher%20priority%20request%20has%20been%20received**, `Result`: **Failure**, and `ErrorCondition`: **Busy**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/confirmation/2026-09-15.md:223"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-getconfirmation-engagement-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-confirmation]] \u2014 2026-09-15 Terminal API Device/Input GetConfirmation guide for ordered prompt/button labels, ConfirmedFlag mapping, timeout and payment-override outcomes; input success is separate from payment or legal-consent proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Retain the distinction between shopper Cancel/Decline as ConfirmedFlag false and timeout as input Failure/ErrorCondition Cancel.",
+          "The guide does not establish legal consent validity or a financial authorization."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/confirmation/2026-09-15.md",
+  "raw_sha256": "fab2b8d23944ccd3b0075701e01e9fec058c0cfe4d5e2c39fc01246b3c980920",
+  "status": "candidate_ready"
+}

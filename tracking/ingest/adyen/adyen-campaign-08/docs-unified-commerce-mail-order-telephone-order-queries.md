@@ -1,0 +1,7 @@
+# C08 MOTO overview — fixed retrieval checks
+
+1. **Q: How does Adyen's pinned overview define MOTO, and which processing routes does it name?**
+   **A:** MOTO is a card-not-present transaction in which the shopper gives card details to the merchant by mail or phone and the merchant processes a payment. The overview names Customer Area/Virtual Terminal, an API request, and entry on a payment terminal. The physical terminal route is still described here as MOTO/card-not-present. Evidence: `raw/adyen/docs/unified-commerce/mail-order-telephone-order/2026-09-15.md:15-26,42-56`; canonical URL: https://docs.adyen.com/unified-commerce/mail-order-telephone-order. Route-specific roles, API payloads, PCI steps and account availability are in linked guides, not this overview.
+
+2. **Q: What outcome and risk statements does the MOTO overview make, and do they establish a specific successful payment or dispute result?**
+   **A:** Its outline says the shopper supplies card details, the merchant makes the payment, then informs the shopper of the outcome. It describes higher fraud risk than shopper-present entry, says the merchant is liable for all chargebacks, and says disputes are difficult to defend. These are 2024-modified source statements captured 2026-09-15; they do not show an authorization, settlement, actual chargeback, contract allocation or jurisdiction-specific result. Evidence: `raw/adyen/docs/unified-commerce/mail-order-telephone-order/2026-09-15.md:28-40`; canonical URL: https://docs.adyen.com/unified-commerce/mail-order-telephone-order.

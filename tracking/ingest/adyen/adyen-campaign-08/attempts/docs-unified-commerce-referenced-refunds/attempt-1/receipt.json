@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-unified-commerce-referenced-refunds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Unified Commerce referenced refunds\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/referenced-refunds\"\nraw_files:\n  - \"adyen/docs/unified-commerce/referenced-refunds/2026-09-15.md\"\ntags: [adyen, unified-commerce, omnichannel, refunds, terminal-api, checkout-api]\n---\n\n## Overview\n\nAdyen's Unified Commerce referenced-refund guide, last modified 2022-02-01 and captured 2026-09-15, describes returning an online purchase in store or an in-store purchase through another channel while linking the refund to the original payment's PSP reference. A referenced refund returns value to the original payment method; it is not a cash handoff or refund to a newly presented card. The original payment's merchant account supplies the in-process funds even when another merchant account accepts the return. Both the Terminal API reversal and server-to-server Checkout refund paths are asynchronous. [[adyen]] [[adyen-unified-commerce]]\n\n## Key takeaways\n\n- The merchant needs online and in-person integrations, Standard webhooks, and access across sales-channel backends to original transaction information including the PSP reference. Returns across merchant accounts require Adyen Support to enable refunds at the company level. A shared shopper or order record by itself is not the original payment reference or proof that accounts are enabled.\n- A POS app can send a Terminal API `ReversalRequest` through a terminal for a full or partial referenced refund without the shopper presenting the card. For an original POS payment, its `OriginalPOITransaction.POITransactionID.TransactionID` is `tenderReference.pspReference` plus the original timestamp. For an original ecommerce payment, the tender reference is absent: use `.pspReference` with the leading dot, original date and matching currency. The request sets `ReversalReason=MerchantCancel`; in this guide that field belongs to the referenced-refund request and does not turn receipt into a completed authorization cancellation.\n- Partial Terminal API reversals add numeric `ReversedAmount` no greater than the initial payment amount, a currency matching the original payment, and a refund sale-transaction reference/timestamp. Full and multiple partial refunds are described, subject to original-payment value and remaining balance. The terminal's `ReversalResponse.Response.Result=Success`, refund PSP reference and receipt marked **REFUND REQUESTED** confirm receipt only; wait for the `CANCEL_OR_REFUND` webhook. A terminal `ServiceID` must be unique for that terminal during the preceding 48 hours, but this guide does not state an idempotent retry rule.\n- The server path posts to Checkout `/payments/{paymentPspReference}/refunds` using the original payment PSP reference, `merchantAccount`, and `amount`. The amount value is the captured amount or less for a partial refund, and currency matches authorization. `reference` is generally presented as optional but required for GrabPay refunds. The API response's `status=received` and distinct refund `pspReference` are request receipt, not money movement; wait for the `REFUND` webhook. Language-specific code examples show particular library versions and idempotency-key calls, not a general guarantee for every client or pending retry.\n- The two webhook event types report Adyen's refund **validation** outcome. `success=true` means validation passed and the request was sent to the card scheme; rare later rejection or reversal can still occur through `REFUND_FAILED` or `REFUNDED_REVERSED`. `success=false` includes a reason. Failure examples include exhausted remaining payment balance, insufficient in-process funds, currency mismatch, an uncaptured payment and method expiry. For an uncaptured transaction, the guide says to cancel instead or wait until settlement; do not equate refund submission with a captured payment, issuer approval or settled refund. Refund authorization is described for American Express, Discover, Mastercard and Visa; even if issuer refund authorization declines, Adyen says it still attempts processing.\n\n## Detail locators\n\n- Raw `# Referenced refunds` through `## Benefits` (lines 15\u201356): cross-channel merchant/account funds, asynchronous receipt, shared PSP reference, prerequisites and original-payment-method return.\n- Raw `## Refund authorization` / `## Refund options` (lines 57\u201388): four named network scope, issuer decline and terminal, server, Customer Area options.\n- Raw `## Send a Terminal API reversal request` (lines 89\u2013413): POS versus ecommerce original identifiers, full/partial fields, `MerchantCancel`, receipt-only response, failure messages and `CANCEL_OR_REFUND` wait.\n- Raw `### Refunding an ecommerce payment` (lines 414\u2013514): leading-dot ecommerce PSP reference, original date/currency, zero amount fields in the immediate ecommerce full response and partial variant.\n- Raw `## Send a server-to-server refund request` (lines 515\u2013767): original PSP reference, merchant account, captured amount/currency, GrabPay reference exception, dated SDK samples and receipt response.\n- Raw `## Webhooks` / `### Reasons for failed refund validation` (lines 768\u2013911): distinct events, validation versus final outcome, later exceptions and remaining-balance/capture/funds failures.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 cross-channel merchant journey and data route.\n- [[adyen-refunds]] \u2014 online captured-payment refund lifecycle.\n- [[adyen-terminal-api]] \u2014 in-person reversal message and terminal response.\n- [[adyen-online-payments]] \u2014 Checkout API payment/capture context.\n\n## Related raw API references\n\nNavigation named in this guide, not additional reviewed behavior for this entry:\n\n- Checkout payment refund endpoint \u2014 https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/refunds\n- Terminal API reversal endpoint \u2014 https://docs.adyen.com/api-explorer/terminal-api/latest/post/reversal\n- Standard webhooks \u2014 https://docs.adyen.com/development-resources/webhooks\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/referenced-refunds/2026-09-15|Referenced refunds, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Referenced refunds are *not* processed synchronously. When you send an API request for a referenced refund, the API response only confirms we received the request. We process the refund asynchronously, and inform you of the result through a [webhook](#refund-webhook).",
+      "location": "raw/adyen/docs/unified-commerce/referenced-refunds/2026-09-15.md:21"
+    },
+    {
+      "text": "Refunded amounts are deducted from the [in-process funds](https://help.adyen.com/knowledge/payments/refunds/what-funds-do-i-have-available-for-refunds) of the merchant account that processed the original payment. For example, if a sale took place on MerchantAccount\\_ECOM and the product is returned to MerchantAccount\\_POS, the funds are taken from the ECOM account.",
+      "location": "raw/adyen/docs/unified-commerce/referenced-refunds/2026-09-15.md:23"
+    },
+    {
+      "text": "To process returns between multiple merchant accounts, in this case omnichannel returns between ecommerce and point-of-sale merchants accounts, you need to contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable refunds on the company level. You can then use the [/payments/{paymentPspReference}/refunds](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/\\(paymentPspReference\\)/refunds) endpoint to submit returns for any merchant account under your company account.",
+      "location": "raw/adyen/docs/unified-commerce/referenced-refunds/2026-09-15.md:42"
+    },
+    {
+      "text": "However, the `tenderReference` is generated by the payment terminal, and is missing for an ecommerce payment. In that case you include only the PSP reference, in the format `.pspReference`.",
+      "location": "raw/adyen/docs/unified-commerce/referenced-refunds/2026-09-15.md:93"
+    },
+    {
+      "text": "* For a Terminal API reversal request, we return a [CANCEL\\_OR\\_REFUND webhook](#cancel-or-refund-webhook).",
+      "location": "raw/adyen/docs/unified-commerce/referenced-refunds/2026-09-15.md:774"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-referenced-refunds-unified-commerce-source",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-referenced-refunds]] \u2014 Cross-channel referenced-refund guide (2022 last-modified; 2026-09-15 capture) for original-payment PSP references, company-level enablement, Terminal API or Checkout refund paths and asynchronous webhook outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Unified Commerce overview worker owns the proposed concept; add this reciprocal source after the concept exists.",
+          "This historic guide does not prove company enablement, current scheme/method eligibility, safe retries or a completed refund; webhook validation success can precede later failure or reversal."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/referenced-refunds/2026-09-15.md",
+  "raw_sha256": "f367b2c4c6fdfbf4cd85e87a1731649c2f1cb887aa2778ebd2bd99fe13b1cf87",
+  "status": "candidate_ready"
+}

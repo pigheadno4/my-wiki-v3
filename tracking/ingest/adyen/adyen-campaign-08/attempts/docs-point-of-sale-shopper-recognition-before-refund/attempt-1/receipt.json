@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-shopper-recognition-before-refund",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Card identification before refunding | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-recognition/before-refund\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15.md\"\ntags: [adyen, point-of-sale, card-recognition, unreferenced-refunds, terminal-api]\n---\n\n## Overview\n\nAdyen's card-identification-before-refund guide (last modified 2021-05-06; captured 2026-09-15) describes an optional same-card check before a **Terminal API unreferenced refund**. The POS first makes a Refund-type card acquisition for the presented card, compares its returned card alias and refund amount with locally stored purchases, then either sends a distinct Refund payment request referencing that acquisition or cancels the acquisition. This card check is not proof of a person's identity, consent, merchant refund eligibility, or a completed refund. See [[adyen]], [[adyen-card-recognition]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The setup assumes a Terminal API integration with payment terminals, unreferenced refunds enabled under their separate requirements, and card-alias return configured in Terminal API responses. Adyen Support must enable **single tap** if a contactless card should not need a second tap at refund time. This snapshot does not establish current scheme, account, card-entry, terminal-software, permission, or regional support.\n- The `alias` represents the card's PAN for recognition and is returned in `AdditionalResponse`; it **cannot be used to make payments**. `TokenRequestedType=Customer` optionally adds the same alias to `PaymentToken.TokenValue`, without turning it into a refund/payment credential. Save purchase aliases in the merchant back end and compare the acquisition alias **and refund amount** against stored purchases. The guide does not define a hashing algorithm, cross-store/account stability, wallet fallback, legal identity test, or a guarantee that an alias match proves the original purchase is refundable.\n- Send a Terminal API `CardAcquisitionRequest` with `CardAcquisitionTransaction.TotalAmount` set to the proposed refund amount and `PaymentType=Refund`. The terminal shows the amount as negative and prompts for the card. Keep `CardAcquisitionResponse.POIData.POITransactionID.TimeStamp` and `TransactionID` for the follow-up request. The acquisition response's `Success` and alias identify that card-interaction stage; they are not a refund payment.\n- If the merchant chooses to proceed, send a separate Terminal API `PaymentRequest` with `PaymentData.PaymentType=Refund`, `PaymentTransaction.AmountsReq` containing currency and refund amount, and `PaymentData.CardAcquisitionReference` containing **the acquisition response's** POI transaction timestamp and ID. This does **not** reference the original purchase transaction. The guide's sample acquisition and refund requests use different literal `POIID` serials; treat them as illustrative, not a validated same-device request pair.\n- A refund-request response with `Result=Success` and terminal approval confirms the request was received in this guide. Adyen says refunds are processed asynchronously and directs the merchant to wait for the `REFUND_WITH_DATA` webhook for the result. Do not treat the immediate response as funds delivered, or repeat a pending refund solely because its final webhook has not arrived. If not proceeding with the presented card, cancel the completed card acquisition before asking for another card.\n\n## Detail locators\n\n- Scope, prerequisites and single-tap setup: [[raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15#Requirements|Requirements]] (raw lines 19\u201333). The linked unreferenced-refund guide owns its exact enablement/eligibility conditions.\n- Alias semantics and no-charge boundary: [[raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15#Card alias|Card alias]] (raw lines 35\u201343).\n- Refund-type card acquisition fields, response identifiers, alias/amount lookup: [[raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15#Make a Refund card acquisition request|Make a Refund card acquisition request]] (raw lines 45\u2013156). The sample JSON's `{hint:...}` markers are documentation annotations, not literal API property names; consult the current Terminal API schema.\n- Refund payment request, acquisition-reference fields, immediate acknowledgment and webhook result: [[raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15#Continue with a refund|Continue with a refund]] (raw lines 158\u2013287).\n- Decline this card and cancel acquisition: [[raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15#Continue in a different way|Continue in a different way]] (raw lines 289\u2013293).\n\n## Related\n\n- [[adyen-card-recognition]] \u2014 primary same-card use-case hub.\n- [[adyen-terminal-api]] \u2014 card acquisition and Payment request/response mechanics.\n- [[adyen-tokenization]] \u2014 separate stored payment credentials; alias recognition does not create one.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15|Adyen card identification before refunding, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before issuing an [unreferenced refund](/point-of-sale/basic-tapi-integration/refund-payment/unreferenced) to the shopper's card, you may want to check if this is the same card that was used for the original payment.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15.md:19"
+    },
+    {
+      "text": "You cannot use the card alias for making payments.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15.md:39"
+    },
+    {
+      "text": "3. Search the payments stored in your back-end system for a match with the card alias returned in the card acquisition response and the refund amount.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15.md:156"
+    },
+    {
+      "text": "An object referring to the card acquisition:- `TimeStamp`: The time stamp returned in the `POIData.POITransactionID` of the card acquisition response.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15.md:183"
+    },
+    {
+      "text": "Refunds are always processed asynchronously. If successful, the refund is issued to the shopper's account.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15.md:287"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "before-refund-card-recognition-route",
+        "target_path": "wiki/concepts/adyen-card-recognition.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-recognition-before-refund]] \u2014 Adyen same-card precheck before a Terminal API unreferenced refund (2021-modified, 2026-09-15 capture): alias/amount lookup, Refund card acquisition, separate referenced-to-acquisition payment request, and asynchronous refund outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-recognition/before-refund/2026-09-15.md",
+  "raw_sha256": "feacec070bd8a9846afc7e31896f85aa81c8526f52f2b09256b6411189f4131b",
+  "status": "candidate_ready"
+}

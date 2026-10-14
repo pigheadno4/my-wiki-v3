@@ -1,0 +1,70 @@
+{
+  "job_id": "docs-unified-commerce-loyalty-program-recognize-customers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Recognizing customers | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/loyalty-program/recognize-customers\"\nraw_files:\n  - \"adyen/docs/unified-commerce/loyalty-program/recognize-customers/2026-09-15.md\"\ntags: [adyen, unified-commerce, loyalty, customer-recognition, card-alias, shopper-reference]\n---\n\n## Overview\n\nThis Adyen Docs guide describes **merchant-managed returning-customer recognition across online and physical stores** after a customer profile has been created. Online, the merchant compares shopper-supplied email with its stored `shopperEmail`; in store, it can compare a card-acquisition response's card `alias` with its own customer database and, conditionally, use a previously stored Adyen `shopperReference`. It then shows separate examples for a saved-card online checkout and a later POS payment. Recognition is merchant lookup logic, not proof of a shopper's identity, permission to save a card, or a completed payment. See [[adyen]], [[adyen-unified-commerce]], and [[adyen-pos-loyalty]].\n\n## Key takeaways\n\n- **Online recognition:** the shopper supplies an email before checkout; the merchant checks it against `shopperEmail` in its customer database. A match is treated by this guide as a returning-customer record, while a missing address can lead to profile creation. Email matching alone does not verify the human presenting it. The separate profile-creation guide is linked for storage and creation details; this page does not establish its consent, retention, uniqueness or security policy.\n- **Saved card online:** only when the merchant already has an online store account and a card saved/tokenized from an earlier POS payment does the guide suggest retrieving `shopperReference` and `storedPaymentMethodId` from its database. A Checkout `/paymentMethods` request including `shopperReference` can return `storedPaymentMethods`; its `id` should match the stored token ID. Drop-in/Components show saved details and collect/encrypt card security code; API-only requires a merchant-built UI, with raw card-data submission described only for a fully PCI-compliant merchant. The later Checkout `/payments` example sends the token, shopper reference, security code, `shopperInteraction=ContAuth` and `recurringProcessingModel=CardOnFile`; sample `Authorised`/PSP reference is illustrative, not a guarantee or a current API-version contract. A stored token is not the POS card alias, Payment Account Reference, raw PAN or a loyalty account.\n- **In-store recognition:** before the payment, a Terminal API `CardAcquisition` request yields `AdditionalResponse` as either Base64-encoded JSON to decode or form-encoded key/value data; the examples use form encoding. The merchant looks up the returned `alias` in its own profiles. `shopperReference` may also be returned **if previously stored with Adyen**. An unmatched alias does not prove the shopper is new: the guide explicitly notes a returning customer may use a new card. It suggests asking for email to match `shopperEmail`, then asking whether the shopper wants that new card saved before tokenizing it with the existing `shopperReference` in a payment. This is a specific card-saving choice, not blanket marketing consent.\n- Card acquisition is a pre-payment identification step, not authorization. The POS later sends a distinct Terminal API `PaymentRequest` with the actual amount and a `PaymentData.CardAcquisitionReference` from the preceding acquisition. In the example, `PaymentResponse.Response.Result=Success` and its terminal payment transaction ID belong to the payment response, while the acquisition IDs and merchant sale reference have separate roles. The EUR amount, customer IDs, email, alias, token and transaction IDs are examples.\n- This 2026-09-15 capture has a 2020 last-modified date. It provides no evidence that a card alias is stable across every card, wallet or channel; it does not describe PAR, wallet passes, card-network tokens, live identity-matching accuracy, current Checkout/API eligibility, privacy compliance, merchant-of-record/payee allocation or financial settlement. Payment-linked loyalty and cross-channel refunds are separate linked next steps.\n\n## Detail locators\n\n- `Recognizing customers`, pinned raw lines 15\u201321: profile prerequisite and online/store recognition scope.\n- `Recognize returning customers online`, lines 23\u201330: shopper-supplied email and merchant `shopperEmail` lookup.\n- `Showing a saved card in your online checkout`, lines 32\u2013139: prior POS tokenization prerequisite, merchant database identifiers, `/paymentMethods`/`storedPaymentMethods`, CVC/PCI paths, `/payments` fields and illustrative result.\n- `Recognize returning customers in store`, lines 140\u2013230: CardAcquisition, `AdditionalResponse` encoding, alias/conditional shopper reference, new-card ambiguity and ask-before-save step.\n- In-store payment continuation, lines 231\u2013301: separate Terminal API PaymentRequest, card-acquisition reference, example amount and payment response.\n- `Next steps`, lines 303\u2013313: payment-linked loyalty and referenced-refund links are navigation only.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 primary cross-channel merchant concept.\n- [[adyen-pos-loyalty]] \u2014 POS recognition and card-alias context.\n- [[adyen-terminal-api]] \u2014 CardAcquisition and Payment are distinct message categories.\n- [[adyen-tokenization]] \u2014 saved payment method context; the identifier here is not the recognition alias.\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/loyalty-program/recognize-customers/2026-09-15|Adyen recognition guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "After you have [created a profile for a customer](/unified-commerce/loyalty-program/create-profiles), you will be able to use the data in their profile to recognize them the next time they purchase in any of your sales channels.",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/recognize-customers/2026-09-15.md:19"
+    },
+    {
+      "text": "Using the customer's email address, fetch their `shopperReference` and `storedPaymentMethodId` from your customer database.",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/recognize-customers/2026-09-15.md:38"
+    },
+    {
+      "text": "if you are [fully PCI compliant](/development-resources/pci-dss-compliance-guide?tab=api_only_4).",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/recognize-customers/2026-09-15.md:89, raw-card-data condition"
+    },
+    {
+      "text": "Check if the card `alias` returned in the response matches a card alias that you have [stored in your customer database](/unified-commerce/loyalty-program/create-profiles#store-customer-data).",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/recognize-customers/2026-09-15.md:144"
+    },
+    {
+      "text": "However, they could also be a returning customer using a new card.",
+      "location": "raw/adyen/docs/unified-commerce/loyalty-program/recognize-customers/2026-09-15.md:223, after unmatched-alias condition"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-recognize-customers-unified-source",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-loyalty-program-recognize-customers]] \u2014 2026-09-15 Adyen Docs cross-channel returning-customer guide for merchant email/profile lookup, POS card alias and conditional shopper reference, saved-card token and separate payment flows.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Recognition keys have different owners/roles and are not identity proof or interchangeable with PAR, wallet references, raw PAN or payment tokens.",
+          "The 2020-modified examples do not prove current API behavior, consent, privacy compliance or payment outcomes."
+        ]
+      },
+      {
+        "update_id": "c8-recognize-customers-pos-loyalty-source",
+        "target_path": "wiki/concepts/adyen-pos-loyalty.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-loyalty-program-recognize-customers]] \u2014 2026-09-15 cross-channel guide's in-store CardAcquisition alias lookup, optional stored shopper reference, new-card ambiguity and follow-on payment.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "POS alias recognition does not by itself identify a person, authorize a payment or establish consent to save a new card."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/loyalty-program/recognize-customers/2026-09-15.md",
+  "raw_sha256": "4cb55ae473c7d70d6e9055e3c452b1447da80ce195da1e22517763ab081c9b76",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-shopper-recognition-identification",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen card-based identification with Terminal API acquisition\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-recognition/identification\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-recognition/identification/2026-09-15.md\"\ntags: [adyen, point-of-sale, card-recognition, card-acquisition, card-alias, terminal-api]\n---\n\n## Overview\n\nAdyen's card-based identification guide, captured 2026-09-15, illustrates a **Terminal API payment-terminal** parking journey: acquire a card at arrival, save an alias and arrival data in the merchant backend, cancel that acquisition flow, acquire the card again at departure, match its alias to the merchant record, calculate the fee, then make a **separate payment**. The page belongs to [[adyen-card-recognition]]. Its use of \u201cidentify the customer\u201d means matching a presented card in this example; it does not prove a person's civil identity or a completed payment.\n\n## Key takeaways\n\n- The relevant identifier is the **card alias** (`alias`) in `AdditionalResponse`, described as a value representing the card number (PAN) so the merchant can recognize the presented card later. It **cannot be used for making payments**. If the optional `TokenRequestedType=Customer` is included, the same alias can also appear as `PaymentInstrumentData.CardData.PaymentToken.TokenValue`; that field's name does not make the alias a chargeable payment token. The page does not define PAR, a PSP payment reference, cross-card-person linkage, mobile-wallet alias stability or a general privacy/PCI policy.\n- In the parking example, the merchant sends an **amount-free CardAcquisition** at arrival, saves `alias` and optionally presentation time/terminal `POIID` in its own backend, then cancels the **card-acquisition flow** using an `EnableService` request with `AbortTransaction` to the **same terminal**. A custom `DisplayOutput` can avoid a confusing default \u201cCanceled\u201d screen. This cancellation is of the pre-payment acquisition flow, not a reversal or refund of a financial payment.\n- At departure, a second amount-free CardAcquisition returns the alias and `POIData.POITransactionID.TimeStamp`/`TransactionID`. The merchant uses the alias to find the earlier record and calculates the amount from its recorded times or other use-case details. The later `PaymentRequest` supplies the calculated `AmountsReq` and a `PaymentData.CardAcquisitionReference` built from the **second** acquisition's `POIData.POITransactionID`, not from the arrival acquisition or the merchant `SaleTransactionID`. The page does not show a payment response or prove authorization/settlement.\n- Setup calls for card-alias delivery in Terminal API responses and Adyen Support enablement of **single tap**. For contactless acquisition followed by payment, single tap prevents the terminal from asking the shopper to tap again for that payment; it does not turn acquisition into payment. The parking and toll examples are possible merchant applications, not guaranteed recognition of the same person when a card is shared or changed. The guide specifies no consent, data-retention or account/store-sharing rule; any handling of stored aliases and location/time records needs its own policy and evidence.\n\n## Detail locators\n\n- Raw `# Card-based identification`, `## Requirements` and `## Card alias` (lines 15\u201347): example journey, Terminal API scope, alias-response setup, Support-enabled single tap, alias/PAN meaning and no-payment limit.\n- Raw `## Identify the customer` (lines 49\u2013195): first amount-free acquisition, alias in `AdditionalResponse` or optional Customer `TokenValue`, merchant backend record, same-terminal `EnableService` cancellation and optional display wording. Sample `Result: Success` is acquisition success, not payment success.\n- Raw `## Recognize the customer` (lines 197\u2013294): second amount-free acquisition, alias lookup and second `POIData.POITransactionID` values. The example card alias, PAN fragment and terminal IDs are illustrative, not a universal match promise.\n- Raw `## Make a payment` (lines 296\u2013347): merchant fee calculation, amount/currency and CardAcquisitionReference from second acquisition. `## See also` (lines 349\u2013352) links the separate acquisition and card/shopper-identifier guides; unread linked identifier types are navigation, not claims of this page.\n\n## Related\n\n- [[adyen-card-recognition]] \u2014 primary card-recognition concept.\n- [[adyen-terminal-api]] \u2014 acquisition, enable-service and payment message boundary.\n- [[adyen-tokenization]] \u2014 separate stored-credential payment topic; alias here is not chargeable.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-recognition/identification/2026-09-15|Card-based identification, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Upon arrival, you [identify](#identify) the driver and record their time of arrival based on a card acquisition. Then you cancel the card acquisition.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/identification/2026-09-15.md:23, # Card-based identification"
+    },
+    {
+      "text": "Contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable single tap. For contactless transactions, this ensures the terminal does not ask the customer to tap their card again for the payment.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/identification/2026-09-15.md:37, ## Requirements"
+    },
+    {
+      "text": "**Card alias** (`alias`): A value that uniquely represents the shopper's card number (PAN), for example `A37317672402294`. With this, you can recognize the card that a shopper is using. You cannot use the card alias for making payments. You receive the card alias in the `AdditionalResponse`.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/identification/2026-09-15.md:43, ## Card alias"
+    },
+    {
+      "text": "Note that if you specified a `TokenRequestedType` of **Customer** in the request, the card alias is also provided in `PaymentInstrumentData.CardData.PaymentToken.TokenValue`.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/identification/2026-09-15.md:148, ## Identify the customer"
+    },
+    {
+      "text": "In your back-end system, use the card alias from this second card acquisition to find the record you created for the customer after the first card acquisition.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-recognition/identification/2026-09-15.md:292, ## Recognize the customer"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c08-card-identification-reciprocal",
+        "target_path": "wiki/concepts/adyen-card-recognition.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-recognition-identification]] \u2014 2026-09-15 Terminal API card-alias parking example for arrival/departure CardAcquisition, merchant-record matching, canceled first acquisition and separate referenced payment.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Alias represents the presented card and cannot make payments; the example does not establish civil identity, PAR/PSP semantics, payment result or general consent/privacy rules."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-recognition/identification/2026-09-15.md",
+  "raw_sha256": "650ea3f33be68804ea176540d1a3eb404bd413c763ec48159dfcf4c1431c5036",
+  "status": "candidate_ready"
+}

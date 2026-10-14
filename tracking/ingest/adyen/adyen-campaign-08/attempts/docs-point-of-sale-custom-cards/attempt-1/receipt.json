@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-custom-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS custom-card acquisition\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/custom-cards\"\nraw_files:\n  - \"adyen/docs/point-of-sale/custom-cards/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, custom-cards, card-acquisition, magstripe]\n---\n\n## Overview\n\nThis dated guide explains how a merchant uses an Adyen payment terminal to **read its own custom magnetic-stripe card** (for example, an employee benefit card) through Terminal API card acquisition and pass the returned data to the merchant POS. The merchant then processes any card transaction through **the issuer of that custom card**; the page does not describe Adyen authorizing, capturing or settling that issuer-side transaction. This is separate from Adyen-managed POS gift-card `StoredValue` payment flows and QR or code alternative payment methods. See [[adyen]], [[adyen-terminal-api]], [[adyen-pos-gift-cards]] and [[adyen-pos-alternative-payment-methods]].\n\n## Key takeaways\n\n- The page requires a Terminal API integration, a custom card with a **magnetic stripe**, and Adyen Support enablement for reading custom cards on the merchant's terminals. **Swipe** is the only entry method stated for this custom-card path. The source does not establish current account or issuer eligibility.\n- Send a Terminal API `CardAcquisition` service request to the intended terminal. Its `CardAcquisitionTransaction` object is required but can be empty; `TotalAmount` is optional and may be an initial placeholder. The guide's amount in a sample is not evidence of an Adyen payment. `ServiceID` is documented as 1\u201310 alphanumeric characters, unique for the terminal (`POIID`) over the previous 48 hours; the sample `ServiceID` appears longer, so use the stated field rule rather than copying that fixture.\n- A successful acquisition has `message=CARD_ACQ_COMPLETED` in `Response.AdditionalResponse` and supplies the custom card's **PAN** and raw magnetic-track number/value under `PaymentInstrumentData.CardData.SensitiveCardData`. `TokenRequestedType=Customer` can request an alias; the page does not make that alias a payment token for the external issuer. PAN and track data are sensitive payloads to route to the issuer under the merchant's own controls. This page does not specify a storage policy, BIN/whitelist rule, PIN flow, or PCI exemption for the merchant.\n- After reading, send a separate Terminal API `EnableService` request with `TransactionAction=AbortTransaction` to end the **card-acquisition flow**. Otherwise its loading screen continues until timeout. The request frees the terminal for other transactions and makes it discard card data; it is not a refund or cancellation of an issuer-side payment. Optional `DisplayOutput` can replace the basic example's canceled message/icon.\n\n## Detail locators\n\n- `## Requirements`, `## How it works`: magstripe, Support enablement, swipe-only entry and external issuer processing boundary.\n- `## Make a card acquisition request`: Terminal API header fields, terminal-scoped `ServiceID`, optional `TotalAmount`, response message and sensitive PAN/track locations. The sample's 11-character `ServiceID` conflicts with the stated 1\u201310-character rule.\n- `## Complete the card acquisition`: `EnableService`/`AbortTransaction`, terminal loading-screen effect, card-data discard and optional display customization.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 primary Terminal API card-acquisition route.\n- [[adyen-pos-gift-cards]] \u2014 separate Adyen POS stored-value payment path.\n- [[adyen-pos-alternative-payment-methods]] \u2014 separate terminal code and QR payment paths.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/custom-cards/2026-09-15|Adyen Custom cards, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can use Adyen payment terminals to read your own custom cards, such as employee benefit cards, and send the data to your POS system. You can then process transactions with that card through the issuer of your custom cards.",
+      "location": "raw/adyen/docs/point-of-sale/custom-cards/2026-09-15.md:19"
+    },
+    {
+      "text": "Only custom cards with a magnetic stripe are supported.",
+      "location": "raw/adyen/docs/point-of-sale/custom-cards/2026-09-15.md:28"
+    },
+    {
+      "text": "The only entry method for custom cards is **Swipe**.",
+      "location": "raw/adyen/docs/point-of-sale/custom-cards/2026-09-15.md:37"
+    },
+    {
+      "text": "From the `PaymentInstrumentData.CardData.SensitiveCardData` object, save:",
+      "location": "raw/adyen/docs/point-of-sale/custom-cards/2026-09-15.md:101"
+    },
+    {
+      "text": "This stops the loading screen and the terminal discards the card data.",
+      "location": "raw/adyen/docs/point-of-sale/custom-cards/2026-09-15.md:155"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-custom-cards-terminal-api-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-custom-cards]] \u2014 2026-09-15 custom-magstripe-card Terminal API acquisition guide for merchant POS handoff to the card issuer and `EnableService` closure; acquisition is distinct from an Adyen gift-card payment.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "Issuer-side transaction processing is outside the Adyen acquisition flow; do not infer authorization, capture, issuer eligibility, PCI exemption or safe handling of PAN/track data from this source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/custom-cards/2026-09-15.md",
+  "raw_sha256": "59126f0ad1351495062cbb71ffbef96c7fb71049705d62a3648bc578919e594e",
+  "status": "candidate_ready"
+}

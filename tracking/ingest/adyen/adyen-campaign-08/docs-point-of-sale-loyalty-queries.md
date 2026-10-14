@@ -1,0 +1,7 @@
+# Fixed-query answers: Adyen POS shopper loyalty overview
+
+Evidence: `raw/adyen/docs/point-of-sale/loyalty/2026-09-15.md`, SHA-256 `c6741af693e412c9892be20ddd5a1c2779e755ab1d832a980b7fa2d0b2105048`. Captured 2026-09-15.
+
+1. **How does this POS loyalty overview propose recognizing or enrolling a shopper?** It says a merchant can recognize a shopper from identifiers in card-acquisition and payment responses, then choose to offer benefits such as a discount or purchase-history recommendation. If the shopper is not recognized, the page says enrollment can occur at the payment terminal. The merchant needs its own backend customer profile containing the response data used for recognition and any other use-case data. This is a described capability, not evidence of an automatic match, a successful enrollment, or a payment. Locators: raw lines 19–23.
+
+2. **Are card alias, shopper reference/email, and an NFC wallet pass the same identity or a payment token?** The overview presents two separate child-guide routes: card/shopper identifiers (request-supplied shopper reference and email plus card alias) and loyalty account data linked to a merchant-created NFC wallet pass. It does not define equivalence among those identifiers, raw PAN, a payment token, online-checkout identity, or a unified cross-channel profile. It also gives no consent, PII retention/security, SCA, account-permission or response-field availability rules. The child guides need their own review before such claims are made. Locators: raw lines 25–35.

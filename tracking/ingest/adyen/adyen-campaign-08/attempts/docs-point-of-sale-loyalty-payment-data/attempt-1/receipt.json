@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-loyalty-payment-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Card and shopper identifiers for loyalty use cases | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/loyalty/payment-data\"\nraw_files:\n  - \"adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15.md\"\ntags: [adyen, point-of-sale, loyalty, terminal-api, shopper-identifiers]\n---\n\n## Overview\n\nAdyen's POS loyalty guide, captured 2026-09-15, explains how a Terminal API integration can use card acquisition and payment responses to recognize a shopper, attach merchant-created identifiers to a consented back-end profile, and apply benefits before payment or update loyalty state after an AUTHORISATION webhook. Its scope is payment terminals with Terminal API; Adyen Support must check account configuration and the merchant must enable identifier return in Terminal API responses. The examples and returned IDs are not proof of current eligibility, customer consent, payment authorization, tokenized charging ability, or PCI/privacy compliance. See [[adyen]], [[adyen-pos-loyalty]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- A **card alias** (`alias`) represents a card's PAN for recognition and is returned in `AdditionalResponse` for the card route; Adyen explicitly says it **cannot be used to make payments**. With `TokenRequestedType=Customer`, the guide also shows the alias in `PaymentToken.TokenValue`; that response placement does not make it a reusable payment credential. For an NFC wallet, the guide says a PAN/card alias is unavailable and points to `PaymentAccountReference` instead. That reference represents a linked payment account, not a guaranteed person identity or payment authorization.\n- `shopperReference` is a merchant-defined, case-sensitive shopper ID of at least three characters, with no name/email or other PII in its value. `shopperEmail` is optional if collected. The merchant needs shopper consent to save a back-end profile and submit these identifiers with a payment. The initial `SaleToAcquirerData` payment carries `recurringProcessingModel=CardOnFile` so the reference/email can return in later card-acquisition and payment responses. This flag triggers terminal PIN authentication; Support can disable that prompt for cards without PIN, but the page warns against setting the flag on every transaction. This identifier-return condition does not itself authorize recurring charges.\n- **Synchronous route:** first send `CardAcquisitionRequest`; its required `CardAcquisitionTransaction` object can be empty, with optional `TotalAmount` that can be omitted if unknown or changed in the later payment. Inspect `AdditionalResponse` (Base64-decode if needed) for stored shopper reference/email, alias, or the wallet's payment-account reference. Retain `POIData.POITransactionID.TimeStamp` and `TransactionID`; the subsequent Terminal API payment uses them in `PaymentData.CardAcquisitionReference`. A new shopper can consent and provide profile data by POS staff or terminal input; a recognized shopper can choose a benefit and the final `PaymentTransaction.AmountsReq.RequestedAmount` reflects any discount. Card acquisition/recognition is not a payment.\n- **Estonian ID-card branch:** only in Estonia, `SaleToPOIData` carries the guide's Base64 smart-card operation, and the response example uses `LoyaltyAccount.LoyaltyAccountID.LoyaltyID` with `LoyaltyBrand` such as `estonian-id` or `estonian-id-cosmox`. This is a separate loyalty-identification example, not a card PAN, card alias, or general payment credential.\n- **Asynchronous route:** create the profile, make the payment, wait for the standard `AUTHORISATION` webhook, then update the profile with returned identifiers, for example loyalty points. Adyen says this route cannot apply a discount or other benefit on the spot before that payment. An example `PaymentResponse` or webhook instruction is not evidence of a real transaction's result, settlement, consent record or loyalty update.\n\n## Detail locators\n\n- Purpose, Terminal API/Support prerequisites, alias/reference/email roles, consent and PIN flag: [[raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15#Requirements|Requirements]], [[raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15#Identifiers to save|Identifiers to save]], and [[raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15#Shopper consent and PIN entry|Shopper consent and PIN entry]] (raw lines 24\u201354). The page does not enumerate credential roles, session transport, PCI scope or a complete privacy policy.\n- Pre-payment card acquisition and alias/wallet recognition: raw lines 56\u2013195 under **Synchronous flow**, **Payment card check**; exact example IDs, amounts and 2020 timestamps are illustrative.\n- Estonia-only national ID path and `LoyaltyID`: raw lines 197\u2013323 under **Estonian ID card check**.\n- Consented new profile/payment and subsequent response identifiers: [[raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15#Create a new customer profile and make a payment|Create a new customer profile and make a payment]] (raw lines 325\u2013504). `SaleToAcquirerData` may be Base64 JSON or form-encoded pairs, and its format controls the returned `AdditionalResponse` format.\n- Recognized-shopper benefit and final amount: [[raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15#Make a payment for a recognized shopper|Make a payment for a recognized shopper]] (raw lines 506\u2013663). The example's requested amount is illustrative, not a discount guarantee.\n- Webhook-driven after-payment loyalty update: [[raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15#Asynchronous flow|Asynchronous flow]] (raw lines 665\u2013676).\n\n## Related\n\n- [[adyen-pos-loyalty]] \u2014 proposed primary loyalty concept route, pending coordinator creation.\n- [[adyen-terminal-api]] \u2014 payment versus card-acquisition message boundary.\n- [[adyen-tokenization]] \u2014 separate payment credential lifecycle; a loyalty alias is not a charge token.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15|Adyen card and shopper identifiers for loyalty, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You cannot use the card alias for making payments.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15.md:42"
+    },
+    {
+      "text": "To save a shopper profile in your back-end system and to submit the shopper reference and email with your payment requests to our platform, you need to ask the shopper for their consent.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15.md:52"
+    },
+    {
+      "text": "We can only return the shopper reference and email if your initial request also contains the **recurringProcessingModel** flag.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15.md:54"
+    },
+    {
+      "text": "If the shopper used an NFC wallet, there is no card alias. In that case, use the `PaymentAccountReference` instead.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15.md:190"
+    },
+    {
+      "text": "The asynchronous flow is a simpler implementation of shopper loyalty, where you rely on webhooks to make loyalty adjustments in your system after the payment. In this flow, you cannot apply discounts or other loyalty benefits on the spot before the payment.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15.md:667"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "loyalty-payment-data-pos-loyalty-route",
+        "target_path": "wiki/concepts/adyen-pos-loyalty.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-loyalty-payment-data]] \u2014 Adyen 2026-09-15 Terminal API loyalty guide for consented shopper IDs, card alias versus NFC-wallet account reference, pre-payment card acquisition, Estonia ID cards and after-payment webhook updates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Target concept is coordinator-proposed and does not yet exist; promote this route only when the coordinator creates the approved POS loyalty hub."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/loyalty/payment-data/2026-09-15.md",
+  "raw_sha256": "72e2c262622ffe6bae38118438db1dabb69cc8fd8fd34198ecb962f43975c640",
+  "status": "candidate_ready"
+}

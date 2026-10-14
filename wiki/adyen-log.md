@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-14] ingest | Adyen website C08
+
+- All 50 exact-manifest shopper-interaction, recognition, loyalty, autonomous-store and unified-commerce General Docs sources independently approved and promoted. First full-review approvals 43/50; 7 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 10 concepts, including 6 new concept(s). Terminal interactions versus financial outcomes, aliases versus chargeable tokens, merchant CRM/consent responsibility, cross-channel original payment references, and facilitated sub-merchant Merchant-of-Record scope remain distinct. Original reviews, attempts, approved profile-boundary replacement and bounded mechanical placement repairs retained.
+- Source_count 414 = 400 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-08/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-14] ingest | Adyen website C07
 
 - All 50 exact-manifest Mobile POS, alternative-payment, physical-manual and support General Docs sources independently approved and promoted. First full-review approvals 39/50; 11 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

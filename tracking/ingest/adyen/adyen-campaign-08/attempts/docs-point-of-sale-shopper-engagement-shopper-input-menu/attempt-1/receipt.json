@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-menu",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS single-answer menu input\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/menu\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/menu/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, input, menu]\n---\n\n## Overview\n\nThis Adyen Terminal API guide, last modified 2025-03-14 and captured 2026-09-15, describes asking a shopper or staff member to choose **one** item from a terminal menu, for example a survey answer. It is a `Device` / `Input` message with a `MenuButtons` display and `GetMenuEntry` command. It collects a nonfinancial selection; its response is not a payment authorization, identity proof or evidence that consent was obtained. [[adyen]] [[adyen-pos-shopper-engagement]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The page assumes a Terminal API integration with a payment terminal. The menu can show a header, an optional second header, and up to 15 scrollable option buttons; each option may have one or two text lines. This guide is specifically single-answer. A separate linked guide covers multiple answers. It does not establish a default choice, separate confirmation step, terminal-model eligibility or text-length limit.\n- Send a `SaleToPOIRequest` header with `MessageClass=Device`, `MessageCategory=Input`, `MessageType=Request`, and the terminal-scoped `ServiceID`, `SaleID`, `POIID` and protocol version. `InputRequest.DisplayOutput` uses `CustomerDisplay`, `InfoQualify=Display`, text output and `PredefinedContent.ReferenceID=MenuButtons`; its `MenuEntry` array supplies option labels. `InputRequest.InputData` uses `CustomerInput`, `InfoQualify=Input`, `InputCommand=GetMenuEntry` and integer `MaxInputTime` in seconds.\n- The menu remains until input arrives, its maximum input time expires, the terminal Cancel key is selected, or the POS app sends a cancel-input or other request. The guide says input is not format-validated. For received input, `InputResult.Input.MenuEntryNumber` is an indicator array: the selected option's position is `1`, others `0`. Pass relevant input to the merchant system for its own validation and use. The illustrated response has five indicator elements despite four submitted options; use the documented selected-position meaning rather than infer a general exact array length from this sample.\n- Timeout returns `InputResult.Response.Result=Failure`, `ErrorCondition=Cancel`, and `AdditionalResponse=message=Screen%20timeout`. Pressing Cancel also returns `Failure` / `Cancel`, with an empty `MenuEntryNumber`. A payment request arriving during input overrides it and returns `Failure` / `Busy` plus the higher-priority-request message; it does not mean the menu selection or payment succeeded.\n- The sample survey labels, V400m `POIID` and `MaxInputTime=120` are illustrations, not proof of universal terminal support, a universally required 120-second timeout, production configuration, data retention or privacy treatment. The request table specifies `ProtocolVersion=3.0` for this documented flow.\n\n## Detail locators\n\n- Raw `# Ask to select a single answer from a list` through `## How it works` (lines 15\u201340): shopper/staff purpose, single-answer and 15-option display, integration and end conditions.\n- Raw `## Make a single-answer MenuButtons input request` (lines 68\u2013118): header, display/menu and input-command fields, option text and timeout unit.\n- Raw JSON and Java examples (lines 119\u2013258): illustrative four-answer survey and `GetMenuEntry` request construction.\n- Raw response handling (lines 259\u2013319): no format validation, `MenuEntryNumber` selected-position semantics, timeout, Cancel, higher-priority payment override and merchant-side use.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 terminal interaction route.\n- [[adyen-terminal-api]] \u2014 Device/Input message context.\n- [[adyen-payment-terminals]] \u2014 physical display hardware; this guide does not qualify models.\n\n## Related raw API references\n\nNavigation named by the guide, not further behavior reviewed for this entry:\n\n- Multiple-answer menu \u2014 https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/multi-menu\n- Cancel input \u2014 https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/cancel-input\n- Create session \u2014 https://docs.adyen.com/point-of-sale/shopper-engagement/create-session\n- Terminal API Input \u2014 https://docs.adyen.com/api-explorer/terminal-api/latest/post/input\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/menu/2026-09-15|Single-answer MenuButtons input guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Here we describe how you can use an input request to ask the shopper or your staff to select a menu option, such as an answer to a multiple choice question. You can use this, for example, to create a customer survey. You can show a header (your question), an optional second header (for example, an instruction), and up to 15 scrollable option buttons. Each option button can contain one or two text lines.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/menu/2026-09-15.md:23"
+    },
+    {
+      "text": "When you use a **MenuButtons** `InputRequest`, the terminal prompts the shopper to answer a multiple-choice question that allows them to select only one option. The terminal continues to show your input request until one of these events occurs:",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/menu/2026-09-15.md:35"
+    },
+    {
+      "text": "   The input is not validated against a format.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/menu/2026-09-15.md:263"
+    },
+    {
+      "text": "   * `Input.MenuEntryNumber`: An array that indicates the option that the user selected. For example, if the third option is selected, the third item in the array is `1` and all other array items are `0`.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/menu/2026-09-15.md:267"
+    },
+    {
+      "text": "   * If you make a payment request while the input request is waiting for input on the terminal, the payment request overrides the input request. The `InputResult.Response` has `AdditionalResponse`: **message=A%20higher%20priority%20request%20has%20been%20received**, `Result`: **Failure**, and `ErrorCondition`: **Busy**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/menu/2026-09-15.md:315"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-shopper-menu-engagement-source",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-menu]] \u2014 Terminal API single-answer MenuButtons input guide (2025 last-modified; 2026-09-15 capture) for option display, selection indicators and timeout/cancel/override outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Device/Input selection is nonfinancial and the guide does not establish consent, privacy treatment, payment authorization or current model support.",
+          "Illustrative response has five MenuEntryNumber elements for four request options; do not generalize array length from the sample."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/menu/2026-09-15.md",
+  "raw_sha256": "6ca3f6b3bdbef36a6e92f6cd86b08713f2c1f0a805832c0febb63c8e15a97ac7",
+  "status": "candidate_ready"
+}

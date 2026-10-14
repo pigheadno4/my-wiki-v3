@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-cancel-input",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Cancel Adyen Terminal API shopper input\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/cancel-input\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/cancel-input/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, input, cancellation]\n---\n\n## Overview\n\nAdyen's guide, captured 2026-09-15, describes canceling an **in-progress Terminal API InputRequest** either from the merchant POS app with a separate `AbortRequest` or at the payment terminal with Cancel. This is a [[adyen-pos-shopper-engagement]] input-control procedure. The analogy to canceling an in-progress payment does not make it a payment cancellation or prove that any financial transaction has stopped.\n\n## Key takeaways\n\n- **POS-side abort targets the input request.** Send a Terminal API request whose header uses protocol 3.0, `MessageClass: Service`, `MessageCategory: Abort`, `MessageType: Request`, a new terminal-scoped ServiceID, SaleID and POIID. Set `AbortReason: MerchantAbort`. `AbortRequest.MessageReference` must identify `MessageCategory: Input`, the SaleID of the POS component that sent that input, and the **original input request's ServiceID**. The abort request's own ServiceID is distinct from its target reference; the page's 48-hour ServiceID uniqueness rule does not establish idempotent replay.\n- **Check the input outcome after an accepted abort.** The guide says a successful `AbortRequest` returns HTTP `200 OK` with no body. Confirm that the input screen disappears and the original `InputRequest` returns `Result: Failure`, `ErrorCondition: Aborted`; HTTP 200 alone is not the stated completion check. The sample abort targets input ServiceID `21796`, but its illustrative `InputResponse.MessageHeader.ServiceID` is `010`, so the displayed sample does not itself verify matching request/response IDs.\n- **Terminal Cancel has type-specific outcomes.** On a keyed terminal press Cancel; on a terminal without a keypad select the displayed Cancel icon. If successful, the prompt disappears. For Confirmation and Signature input, the table reports `Result: Success` with `ConfirmedFlag: false`; for Menu, Digit and Text input, it reports `Result: Failure` with `ErrorCondition: Cancel`. Do not equate the Confirmation/Signature `Success` with affirmative shopper consent.\n- The page addresses an active input prompt. It does not define a general payment-abort result, a pending-payment recovery rule, or a guarantee that every cancellation races successfully with new POS work. Follow the original input and any separate payment response.\n\n## Detail locators\n\n- Raw `# Cancel collecting input` and `## Requirements` (lines 15\u201330): in-progress input scope, POS/terminal routes and Terminal API prerequisite.\n- Raw `## Cancel from POS app` request table and sample (lines 32\u201385): Service/Abort header, MerchantAbort, target MessageReference fields, and different sample abort versus input ServiceIDs.\n- Raw `## Cancel from POS app` response checks (lines 87\u2013136): HTTP 200 with no body, disappeared screen and original input `Failure`/`Aborted`; the sample input response ServiceID does not match the target shown earlier.\n- Raw `## Cancel from terminal` (lines 138\u2013160): keypad or display Cancel, screen disappearance, Confirmation/Signature false flag versus Menu/Digit/Text failure.\n- Raw `## See also` (lines 162\u2013166): separate input, session and in-progress transaction cancellation guides; navigation only.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 POS input interaction hub.\n- [[adyen-terminal-api]] \u2014 Terminal API request and financial-operation boundary.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/cancel-input/2026-09-15|Cancel collecting input, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "While an input request is in progress, you can cancel it in the same way that you can cancel an in-progress payment.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/cancel-input/2026-09-15.md:19, # Cancel collecting input"
+    },
+    {
+      "text": "`ServiceID`: the `ServiceID` of the input request being cancelled.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/cancel-input/2026-09-15.md:57, ## Cancel from POS app"
+    },
+    {
+      "text": "A successful `AbortRequest` returns a response with a `200 OK` HTTP status code and no body.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/cancel-input/2026-09-15.md:87, ## Cancel from POS app"
+    },
+    {
+      "text": "| [Confirmation](/point-of-sale/shopper-engagement/shopper-input/confirmation) | Success  | false           |",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/cancel-input/2026-09-15.md:153, ## Cancel from terminal"
+    },
+    {
+      "text": "| [Menu](/point-of-sale/shopper-engagement/shopper-input/menu)   | Failure  | Cancel           |",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/cancel-input/2026-09-15.md:158, ## Cancel from terminal"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c08-cancel-input-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-cancel-input]] \u2014 2026-09-15 guide to POS Service/Abort targeting an active Device/Input request versus terminal Cancel, with distinct response checks and type-specific flags.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw abort example references input ServiceID 21796 but its sample InputResponse header shows 010; source page flags the mismatch and relies on the stated response checks."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/cancel-input/2026-09-15.md",
+  "raw_sha256": "a23515606cc693d1d27580c034d30bb8fcaa38e315ab23a38c84b1b28aba0a99",
+  "status": "candidate_ready"
+}

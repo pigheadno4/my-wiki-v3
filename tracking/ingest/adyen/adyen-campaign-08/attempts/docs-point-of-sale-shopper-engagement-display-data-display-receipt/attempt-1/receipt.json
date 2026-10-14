@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-display-data-display-receipt",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Show a virtual receipt on the terminal | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/display-data/display-receipt\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/display-data/display-receipt/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, display-request, virtual-receipt]\n---\n\n## Overview\n\nThis Adyen Docs guide shows how a merchant POS app can place a **virtual purchase overview** on a supported payment terminal display **before** the payment starts, optionally with a QR code. It uses a Terminal API `DisplayRequest` carrying Base64-encoded receipt XML and is separate from `PaymentRequest`, `PrintRequest`, any actual payment outcome, and legal/tax receipt obligations. See [[adyen]], [[adyen-pos-shopper-engagement]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The virtual receipt has scrollable lines. A landscape terminal shows a QR code beside lines; a portrait terminal uses a QR screen with a proceed button before the line screen. The page says the display request does **not time out**: the receipt stays until another request, such as payment or standby display, replaces it. This is display persistence, not a payment hold, Terminal API session guarantee, or shopper acceptance signal.\n- Build XML with a compatible `<screen name>` XSLT and receipt content, Base64-encode the XML, then put it in `DisplayRequest.DisplayOutput[0].OutputContent.OutputXHTML` with `OutputFormat=XHTML`, `Device=CustomerDisplay` and `InfoQualify=Display`. The message header uses ProtocolVersion `3.0`, `MessageClass=Device`, `MessageCategory=Display`, `MessageType=Request`, and per-terminal unique `ServiceID` within the prior 48 hours plus `SaleID` and `POIID`. The JSON and Java examples illustrate this display operation, not a version-pinned SDK contract.\n- Screen names are model- and layout-dependent. The table distinguishes a QR-capable XSLT from non-QR, M400-specific and auto-scroll variants; images and per-line icons/subtitles are SFO1-only. A `<qrcodeblock>` is ignored when the chosen screen name cannot show QR. Consult the raw model table and steps before choosing a template: their model sets differ for the auto-scroll variant (the steps name SFO1 while the table does not), so the page alone does not resolve all model/template compatibility.\n- `DisplayResponse.OutputResult.Response.Result=Success` reports success of the display request. Failure may include `AdditionalResponse` and `ErrorCondition`; the sample incompatible-model failure is `NotAllowed`. Adyen always checks whether the XML parses; XSD validation occurs **only when Support has enabled it for the account**. XML parse or optional XSD failures return `MessageFormat`, with XSD details in the terminal log. Passing these checks does not validate monetary totals, tax/legal content, QR destinations, shopper identity or payment execution.\n- The example's membership QR payload, item lines, discounts, taxes and amount values are illustrative POS-supplied content, not a verified loyalty integration, shopper authorization, privacy consent, encryption, or financial record. Base64 is the transport encoding described here; the page gives no personal-data or QR security policy.\n\n## Detail locators\n\n- `Show a virtual receipt on the terminal` and visual examples, pinned raw lines 15\u201341: pre-payment purpose, no-timeout/override behavior, scrollable and QR layouts.\n- `Receipt XML file`, lines 43\u201367: XML-to-Base64 requirement, supported content elements, model/XSLT table and SFO1-only fields.\n- `Example XML file`, lines 69\u2013205: illustrative QR and POS item/tax/total payload; currency symbol display note. Its sample figures and QR URL are not operational requirements.\n- `Make a display request for a virtual receipt`, lines 207\u2013359: template/model directions, header and `DisplayOutput` fields, JSON/Java examples, Success and failure response fields.\n- `XML validation`, lines 361\u2013403: unconditional parsing, account-enabled XSD check, Support activation and error/log details.\n- `See also`, lines 405\u2013409: standby, QR and image guides are navigation only.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 main shopper-facing terminal interaction hub.\n- [[adyen-terminal-api]] \u2014 Terminal API message family; Display and Payment have separate results.\n- [[source-adyen-docs-point-of-sale-basic-tapi-integration-generate-receipts]] \u2014 separate payment-receipt generation route, not established by this pre-payment display guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-receipt/2026-09-15|Adyen virtual-receipt display guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before the payment transaction starts, you can use the payment terminal to show the shopper an overview of their purchase. You can also add a QR code to this virtual receipt.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-receipt/2026-09-15.md:19"
+    },
+    {
+      "text": "A request to show a virtual receipt doesn't time out. The terminal continues to show the receipt until you send another request.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-receipt/2026-09-15.md:21"
+    },
+    {
+      "text": "To show a virtual receipt on the terminal display, you need to gather all content in an XML file, convert this file to a Base64 string, and pass that string in a display request.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-receipt/2026-09-15.md:45"
+    },
+    {
+      "text": "with `MessageClass` set to **Device** and `MessageCategory` set to **Display**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-receipt/2026-09-15.md:224, after MessageHeader link"
+    },
+    {
+      "text": "When we receive your display request for a virtual receipt, we check whether we can parse the XML content. We can also check whether the XML content matches the XML Schema Definition (XSD). We only do this XSD check if it is enabled for your account.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-receipt/2026-09-15.md:363"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-display-receipt-engagement-source",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-receipt]] \u2014 2026-09-15 Adyen Docs pre-payment virtual-receipt `DisplayRequest` guide for Base64 XML, template/model scope, persistence, response and conditional XSD validation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Display Success, parsed XML or XSD validity does not prove payment, legal receipt content, shopper consent or data/QR safety.",
+          "The table and steps differ on SFO1 availability for the auto-scroll template; retain model qualification and avoid resolving by inference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-receipt/2026-09-15.md",
+  "raw_sha256": "89b5ea82f0307ec1d7ed8e1e6adb7b8aae1498792f59e32a4d0908b4e05645bf",
+  "status": "candidate_ready"
+}

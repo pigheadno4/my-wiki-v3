@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-unified-commerce-digital-receipts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Unified Commerce digital receipts for in-person payments\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/digital-receipts\"\nraw_files:\n  - \"adyen/docs/unified-commerce/digital-receipts/2026-09-15.md\"\ntags: [adyen, unified-commerce, point-of-sale, digital-receipts, shopper-recognition, email]\n---\n\n## Overview\n\nAdyen's digital-receipts guide, captured 2026-09-15, describes an **in-person** merchant journey using Adyen-supplied payment terminals to recognize a returning customer, ask whether they want an emailed receipt, and then use a merchant CRM or email tool to send a receipt. It belongs to [[adyen-unified-commerce]] and uses terminal shopper input described by [[adyen-pos-shopper-engagement]]. The merchant must have software to generate a receipt from a Terminal API payment response and deliver it to the email address; the terminal prompt and Adyen response do not themselves send the email.\n\n## Key takeaways\n\n- The prerequisites are cross-channel customer-profile creation and returning-customer recognition, plus merchant software that builds a receipt from the Terminal API `PaymentReceipt` data and sends it. The flow starts with a **CardAcquisition** request; this pre-payment response can include a `shopperReference` and, only if previously stored with Adyen, a `shopperEmail` in `AdditionalResponse` (Base64 JSON or form-encoded key-value pairs). An absent `shopperReference` means the card is unrecognized; the shopper may be new **or a returning customer using a new card**. The merchant can compare a collected email against its customer database. Saving a newly presented card is a separately asked choice, not a consequence of receipt preference.\n- When an email is already known, the POS app can send a Terminal API **GetConfirmation** input request displaying that address on the Adyen terminal and asking whether the shopper wants the receipt emailed. `Input.ConfirmedFlag=true` records the shopper's **receipt preference** in this flow. It is not payment authorization or general marketing consent. The page also allows staff to ask and enter the address in the POS app. Displaying an existing email and collecting a new one are personal-data touchpoints; the guide does not specify a comprehensive privacy, retention or legal-consent policy.\n- When no email is linked, the guide first asks whether the shopper wants an emailed receipt. If yes, collect the email on the terminal's on-screen keyboard through the linked profile flow and create a customer profile; if no, continue to payment with the paper-receipt preference. The page points to the separate create-profile documentation for its exact collection and payment parameters. Do not infer that the confirmation request itself stores or validates the address.\n- The POS app continues with a Terminal API payment request. The illustrated known-customer request includes a `CardAcquisitionReference`; a new customer's email/profile parameters are delegated to the linked create-profile guide. The payment response can contain `shopperEmail` in `AdditionalResponse` and receipt material in `PaymentReceipt`; the **merchant's CRM or email tool** uses that email and data to generate and send the receipt. The example's `Result: Success` and EUR 10.99 amount are sample data, not evidence of an executed payment or delivered email. The linked compliant-receipt guide must be read for actual receipt-content duties.\n\n## Detail locators\n\n- Raw `# Digital receipts` and `## Requirements` (lines 15\u201328): in-person terminal scope and merchant profile/receipt-generation/delivery prerequisites. No terminal model, software version or credential role is established by this page.\n- Raw `## Step 1: Recognize customer` (lines 30\u2013108): CardAcquisition request/response, `AdditionalResponse` formats, `shopperReference`/`shopperEmail` interpretation and new-card ambiguity. Example alias, email, IDs and amount are illustrative.\n- Raw `## Step 2: Request customer input`, `### Email address is known` and `### Email address is unknown` (lines 110\u2013263): known-email display, GetConfirmation, `Input.ConfirmedFlag`, staff/POS alternative and linked new-email/profile collection route. The prompt is a receipt-channel choice; it does not establish broader consent.\n- Raw `## Step 3: Continue with payment` (lines 265\u2013340): merchant POS payment request, example acquisition reference, payment-response email and `PaymentReceipt`, then CRM/email-tool delivery. The compliance link is navigation, not evidence of a compliant merchant receipt.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 primary merchant cross-channel journey.\n- [[adyen-pos-shopper-engagement]] \u2014 terminal GetConfirmation shopper input.\n- [[adyen-card-recognition]] \u2014 pre-payment card-recognition context.\n- [[adyen-terminal-api]] \u2014 acquisition, input and payment message boundary.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/digital-receipts/2026-09-15|Digital receipts, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Here we'll show you how to use Adyen-supplied payment terminals to recognize a returning customer and know if you already have their email, ask them if they want to receive their receipt digitally, and send their receipt to the email address saved in their profile.",
+      "location": "raw/adyen/docs/unified-commerce/digital-receipts/2026-09-15.md:21, # Digital receipts"
+    },
+    {
+      "text": "You have software that can generate the receipt from the Terminal API payment response, and send the receipt to the customer's email.",
+      "location": "raw/adyen/docs/unified-commerce/digital-receipts/2026-09-15.md:28, ## Requirements"
+    },
+    {
+      "text": "If it *does not* contain a `shopperReference`, the customer's card is not recognized.\\\n     This usually means that the customer is new, and has not purchased with you before. However, they could also be a returning customer using a new card.",
+      "location": "raw/adyen/docs/unified-commerce/digital-receipts/2026-09-15.md:102-103, ## Step 1: Recognize customer"
+    },
+    {
+      "text": "When they are done selecting their option, you receive the input response that contains `Input.ConfirmedFlag` object. If this is **true**, the customer would like to receive their receipt by email. Continue to [make the payment](#step-3-continue-with-payment).",
+      "location": "raw/adyen/docs/unified-commerce/digital-receipts/2026-09-15.md:165, ### Email address is known"
+    },
+    {
+      "text": "Use your CRM or email tool to send the receipt to the `shopperEmail`. The receipt should include the data provided in the `PaymentReceipt` object. For more information on what you need to provide in generated receipt, see [Generating compliant receipts](/point-of-sale/basic-tapi-integration/generate-receipts#generating-compliant-receipts).",
+      "location": "raw/adyen/docs/unified-commerce/digital-receipts/2026-09-15.md:340, ## Step 3: Continue with payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c08-digital-receipts-unified-reciprocal",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-digital-receipts]] \u2014 2026-09-15 in-person digital-receipt guide for terminal card recognition and receipt-channel input, Terminal API receipt data, and merchant CRM/email delivery.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The terminal prompt and payment response do not prove receipt delivery or legal/privacy compliance; receipt preference is not general marketing consent."
+        ]
+      },
+      {
+        "update_id": "c08-digital-receipts-engagement-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-digital-receipts]] \u2014 2026-09-15 example of terminal GetConfirmation input for an emailed-receipt choice before a separate POS payment and merchant delivery step.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Secondary terminal-input route only; do not infer email collection/storage from confirmation alone."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/digital-receipts/2026-09-15.md",
+  "raw_sha256": "84ef344519b43f69d37676e272b21c6d888276d89989f32c263e4c3fe9e6e9ef",
+  "status": "candidate_ready"
+}

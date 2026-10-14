@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 364
+source_count: 414
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Three hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Four hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -130,8 +130,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 350 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07).
-- Total source summaries: 364 (350 website + 14 GitHub).
+- Ingested website documentation sources: 400 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08).
+- Total source summaries: 414 (400 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 21
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -511,6 +511,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-point-of-sale-mobile-android-build]] — Adyen Android Mobile build overview (webpage, 2026-10-14)
 - [[source-adyen-docs-point-of-sale-mobile-ios-build]] — Build your iOS Mobile solution — Adyen overview (webpage, 2026-10-14)
 - [[source-adyen-docs-point-of-sale-pos-troubleshooting]] — Adyen payment-terminal troubleshooting overview (webpage, 2026-10-14)
+
+### Website documentation — Campaign 08
+
+- [[source-adyen-docs-point-of-sale-shopper-engagement]] — Shopper engagement | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-recognition]] — Adyen POS card recognition overview (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-loyalty]] — Adyen Docs: Shopper loyalty at point of sale (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce]] — Omnichannel | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-autonomous-stores]] — Adyen autonomous store Terminal API flow (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-referenced-refunds]] — Adyen Unified Commerce referenced refunds (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-loyalty-wallet-passes]] — Adyen POS Apple Wallet loyalty passes (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-recognition-tax-free-shopping]] — Adyen tax-free shopping with secure card capture (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-third-party-interactions]] — Adyen POS third-party terminal interactions (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-loyalty-payment-data]] — Card and shopper identifiers for loyalty use cases | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-loyalty-program-payment-linked-loyalty]] — Payment-linked loyalty program | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-print-data]] — Adyen Terminal API print data outside payments (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-mail-order-telephone-order-api-request]] — Adyen Docs: MOTO payments through Checkout API and Web Drop-in (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-receipt]] — Show a virtual receipt on the terminal | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-loyalty-program-create-profiles]] — Creating customer profiles | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-payment-facilitators]] — Adyen POS payment-facilitator sub-merchant data (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-digital-receipts]] — Adyen Unified Commerce digital receipts for in-person payments (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-recognition-before-refund]] — Card identification before refunding | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-loyalty-program-recognize-customers]] — Recognizing customers | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-menu]] — Adyen POS single-answer menu input (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-multi-menu]] — Adyen Terminal API multiple-answer menu input (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-recognition-identification]] — Adyen card-based identification with Terminal API acquisition (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-amount]] — Ask for amount input | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-rating-rating-single-press]] — Adyen one-key POS rating input (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-custom-cards]] — Adyen POS custom-card acquisition (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-create-session]] — Create a flow | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-rating]] — Ask for a rating | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-confirmation]] — Ask for confirmation | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-aid-selection-rules]] — Adyen Docs: POS card application selection rules (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-qr-code]] — Show a QR code on the terminal | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-collect-data]] — Adyen Unified Commerce customer identifier collection (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-phone-number]] — Adyen POS phone-number input (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-digit]] — Adyen Terminal API numeric shopper input (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-signature]] — Adyen Terminal API shopper signature input (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-terminal-interaction]] — Adyen Unified Commerce bespoke terminal interaction (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-text]] — Adyen POS GetText terminal input (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-idle-display]] — Show the standby screen | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-cancel-input]] — Cancel Adyen Terminal API shopper input (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-image]] — Show an image on the terminal | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-endless-aisle]] — Adyen Unified Commerce endless aisle (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input]] — Adyen POS shopper input overview (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-shopper-experiences]] — Shopper experiences | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-shopper-engagement]] — Adyen Unified Commerce shopper engagement (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-mail-order-telephone-order-customer-area]] — Adyen Customer Area Virtual Terminal MOTO payments (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-loyalty-program]] — Adyen Unified Commerce shopper loyalty overview (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-mail-order-telephone-order]] — Mail Order/Telephone Order (MOTO) payments | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-shopper-insights]] — Adyen Unified Commerce shopper insights overview (webpage, 2026-10-14)
+- [[source-adyen-docs-unified-commerce-retail-use-cases]] — Retail use cases | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data]] — Adyen terminal display-data overview (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-sneak-preview]] — Adyen POS Sneak peek release preview (webpage, 2026-10-14)
 
 ### GitHub repository evidence
 

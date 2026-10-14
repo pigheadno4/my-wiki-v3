@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-rating",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Ask for a rating | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/rating\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, input-request, rating]\n---\n\n## Overview\n\nThis Adyen Docs guide describes a Terminal API **GetRating** `InputRequest` that asks a shopper or staff member for a numerical rating advertised as 0\u201310, such as an NPS-style question, on an Adyen payment terminal. The response is nonfinancial shopper/staff input; it is not a payment result, consent record, or validated survey score. See [[adyen]], [[adyen-pos-shopper-engagement]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The scope is a Terminal API integration with payment terminals. The request header uses ProtocolVersion `3.0`, `MessageClass=Device`, `MessageCategory=Input`, `MessageType=Request`, a per-terminal `ServiceID` unique over the prior 48 hours, and `SaleID`/`POIID`. `InputRequest.DisplayOutput` targets `CustomerDisplay`, uses `InfoQualify=Display`, `OutputFormat=Text`, `PredefinedContent.ReferenceID=GetRating`, and one or two custom `OutputText.Text` entries; the first is bold and `\\n` makes a line break. The terminal adds its own confirmation instruction. This page describes GetRating, not an interchangeable OneKey prompt.\n- `InputRequest.InputData` targets `CustomerInput` with `InfoQualify=Input`, `InputCommand=DigitString` and an integer `MaxInputTime` in seconds. Small non-Android portrait terminals show two screens and require **Enter rating** before keypad entry; terminals without a physical keypad show an on-screen keyboard. The page does not give a comprehensive supported-model list.\n- A provided rating is returned as `InputResponse.InputResult.Input.DigitInput`, shown as string `\"9\"` in the example. The page explicitly says terminal input is **not validated against a format** and instructs the merchant to validate and use the value in its own system. Although the guide advertises 0\u201310, the example's scoring text labels only Poor 0\u20133, OK 4\u20136 and Great 7\u20139; neither that wording nor `DigitString` proves 0\u201310 enforcement, decimal acceptance, a nonempty response or an NPS calculation. `InputResult.Response.Result=Success` is an input-request result; the example's separate `OutputResult.Response.Result=Success` concerns the displayed prompt.\n- The prompt remains until input, configured time limit, terminal **Cancel**, a cancellation request, or another POS request. Timeout returns `InputResult.Response.Result=Failure`, `ErrorCondition=Cancel`, and `AdditionalResponse` `message=Screen%20timeout`. A payment request while input is pending overrides it and returns `Failure`/`Busy` with a higher-priority-request message; that payment's own result is separate. Terminal Cancel gives an empty `DigitInput` and `Failure`/`Cancel`; an empty value is not rating zero or a consent/skip confirmation. Handle these branches separately from valid input.\n\n## Detail locators\n\n- `Ask for a rating` and `Requirements`, pinned raw lines 15\u201327: shopper/staff 0\u201310 purpose, NPS example and Terminal API terminal scope.\n- `How it works`, lines 29\u201355: prompt termination events and model/input UI illustrations.\n- `Make a Rating input request`, lines 57\u201394: header, `DisplayOutput` and `InputData` field tables, text formatting and timeout configuration.\n- JSON and Java examples, lines 96\u2013174: illustrative GetRating request, including a 0\u20139 sample label despite the 0\u201310 page description.\n- Response and failure branches, lines 176\u2013221: lack of format validation, `DigitInput`, distinct input/display success, timeout, payment override, terminal Cancel and merchant-side validation.\n- `See also`, lines 223\u2013227: cancel-input, other input types and session guides are navigation only.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 main terminal interaction concept.\n- [[adyen-terminal-api]] \u2014 message/result context; rating Input is separate from Payment.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/2026-09-15|Adyen GetRating input guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Here we describe how you can use an input request to ask the shopper or your staff to enter a numerical value from 0 to 10. You can use this, for example, to conduct a Net Promoter Score (NPS) survey.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/2026-09-15.md:19"
+    },
+    {
+      "text": "When you use a **GetRating** `InputRequest`, the terminal prompts the shopper or your staff for a rating.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/2026-09-15.md:31"
+    },
+    {
+      "text": "with `MessageClass` set to **Device** and `MessageCategory` set to **Input**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/2026-09-15.md:63, after MessageHeader link"
+    },
+    {
+      "text": "The input is not validated against a format.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/2026-09-15.md:178"
+    },
+    {
+      "text": "If the user declined to respond (selected the **Cancel** key **![](/images/7/4/2/f/a/742fa2d25c8f88e87b88591e5371d52f62a291bf-cancel2x.png)**), the `InputResult.Input.DigitInput` field is empty.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/2026-09-15.md:219"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-rating-input-engagement-source",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-rating]] \u2014 2026-09-15 Adyen Docs GetRating terminal InputRequest for Device/Input fields, prompt UI, unvalidated `DigitInput`, timeout, override and Cancel response branches.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "0\u201310 is the guide's intended range, but format/range validation is delegated to the merchant; the example labels only 0\u20139.",
+          "An input response is not a payment, consent or identity result; timeout and terminal Cancel share Cancel error condition but have different context."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/rating/2026-09-15.md",
+  "raw_sha256": "8c21743a9a9a167cec6632c9f16363f7d145e85dde60540b851b4896727e51ed",
+  "status": "candidate_ready"
+}

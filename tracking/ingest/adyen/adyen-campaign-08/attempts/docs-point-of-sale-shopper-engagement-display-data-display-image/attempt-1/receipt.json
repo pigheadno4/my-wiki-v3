@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-display-data-display-image",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Show an image on the terminal | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/display-data/display-image\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/display-data/display-image/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, display-request, images]\n---\n\n## Overview\n\nThis Adyen Docs guide describes showing a POS-supplied advertisement, offer or other image on a payment terminal's customer display through a Terminal API **Device/Display** request. The image file is Base64-encoded and supplied as `MessageRef`/`Image` display content. This is a nonfinancial display operation; showing an image does not establish a payment, legal receipt, shopper response or marketing consent. See [[adyen]], [[adyen-pos-shopper-engagement]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The page names PNG, JPEG, GIF and BMP image files for Base64 conversion. It says the terminal decodes received images only and does not run or store them. This is a description of the terminal's handling in the captured guide, not a statement that the POS-supplied content is privacy-safe or that any remote destination is trustworthy. The guide shows a truncated illustrative Base64 string and does not specify a Data URI prefix, image dimensions, resolution or payload-size limit.\n- Build a Terminal API message header with ProtocolVersion `3.0`, `MessageClass=Device`, `MessageCategory=Display`, `MessageType=Request`, `SaleID`, `POIID` and a `ServiceID` unique per terminal for the prior 48 hours. The one-item `DisplayRequest.DisplayOutput` array targets `CustomerDisplay` with `InfoQualify=Display`; its `OutputContent` uses `OutputFormat=MessageRef`, `PredefinedContent.ReferenceID=Image` and `OutputText[0].Text` containing the Base64 image. The sample `POIID` names V400m, but the page gives no supported-model matrix or current device-eligibility guarantee.\n- `MinimumDisplayTime` is described as the number of seconds the image is shown. If omitted, the page says the image remains until another request replaces it, such as payment, another image or standby display. This behavior does not imply a Terminal API session or a completed shopper action.\n- A decode error means the image will not be shown. In the single-item response example, `DisplayResponse.OutputResult[0].Response.Result=Success` indicates the display request succeeded for that item. `OutputResult` is an array, not a single response object; the guide does not establish any payment result, authorization, print receipt or legal/tax content from display success.\n\n## Detail locators\n\n- `Show an image on the terminal`, pinned raw lines 15\u201335: intended display use, file formats, replacement/timing behavior, visual layouts and terminal decode-only claim.\n- `Make a display request for an image`, lines 37\u201364: Base64 conversion, Device/Display header and one-item `DisplayOutput` fields.\n- Request example, lines 66\u2013102: `MessageRef`/`Image` and truncated example Base64 in `OutputText.Text`; sample terminal ID is not a support list.\n- Result handling, lines 104\u2013128: decode-error no-display condition and single-item `OutputResult` response array.\n- `See also`, lines 130\u2013134: virtual receipt, standby and QR guides are navigation only.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 primary terminal interaction concept.\n- [[adyen-terminal-api]] \u2014 message context; display and payment have separate outcomes.\n- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-receipt]] \u2014 Base64 XML virtual-receipt route with different fields.\n- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-qr-code]] \u2014 barcode/QR display route with different output format.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-image/2026-09-15|Adyen image-display guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The image can be a PNG, JPEG, GIF, or BMP file that you convert to Base64.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-image/2026-09-15.md:21"
+    },
+    {
+      "text": "If you do not set a time-out, the image continues to be shown until you send another request.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-image/2026-09-15.md:23"
+    },
+    {
+      "text": "The terminal never runs or stores an image that it receives. The terminal only decodes the image, to be able to show it on the display.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-image/2026-09-15.md:35"
+    },
+    {
+      "text": "An array with a `Text` parameter containing the image as a Base64-encoded string.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-image/2026-09-15.md:64, OutputContent.OutputText row"
+    },
+    {
+      "text": "If an error occurs while decoding the image, the image will not be shown.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-image/2026-09-15.md:106"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-image-display-engagement-source",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-image]] \u2014 2026-09-15 Adyen Docs Device/Display image guide for Base64 file payloads, `MessageRef`/`Image` fields, replacement time and single-item `OutputResult` array.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Display Success does not prove payment, legal receipt, shopper response or consent; no model, image dimensions, resolution or payload limit is established by this page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-image/2026-09-15.md",
+  "raw_sha256": "5f9e30dd8f188ce6138dc62d685f55a453f2b65a71da49eaf273f81a09960b71",
+  "status": "candidate_ready"
+}

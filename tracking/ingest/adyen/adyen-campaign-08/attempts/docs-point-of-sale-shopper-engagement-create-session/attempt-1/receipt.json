@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-create-session",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create a flow | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/create-session\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, sessions]\n---\n\n## Overview\n\nAdyen's **Create a flow** guide (last modified 2022-12-27; captured 2026-09-15) describes a Terminal API shopper-interaction session spanning input, display and payment requests. A POS sends one **Admin** request with `Session.Type=Begin`, then the selected operations, then a separate Admin request with the same `Session.Id` and `Type=End`. The session makes the terminal show a waiting screen between requests so the shopper sees that the POS is still working. Beginning or ending this UI flow is a nonfinancial Admin operation; its success does not authorize a payment inside the flow. See [[adyen]], [[adyen-pos-shopper-engagement]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The begin request puts Base64-encoded JSON in `AdminRequest.ServiceIdentification`. Its `Session.Id` is a unique session reference, distinct from the Terminal API message-header `ServiceID`, `SaleID` and terminal `POIID`. `Operation` selects `InputRequest`, `DisplayRequest`, and/or `Payment` types and currently uses the `WaitingScreen` variant with `UserInterfaceData.WaitingScreenTimeoutMs` per operation. The shown timeout governs **how long the waiting animation appears**, not a documented session expiry or payment timeout.\n- After a configured input request completes or display/payment data is shown, the waiting screen appears for its configured milliseconds; another request interrupts that screen. End with a second Admin request carrying the **same `Session.Id`** and `Type=End`. An end request sent while the waiting screen is visible does **not** interrupt that screen; after the session ends, later input/display/payment requests do not trigger this session's waiting screen.\n- The guide asks the POS to check `AdminResponse.Response.Result=Success` for both begin and end. It does not define Login/Logout messages, an exclusive resource claim/release, concurrent-session behavior, cancellation/notification flows, local-versus-cloud differences, supported terminal-model list, or a payment result. Check the operation-specific guides and current Terminal API contract before implementing those behaviors.\n- The request table says `ServiceID` is 1\u201310 alphanumeric characters and unique within 48 hours per `POIID`, but the sample begin/end request places the longer `POSSystemID12345` string in `ServiceID` and `S00101` in `SaleID`; the sample response reverses those two values. Treat this as an internal example inconsistency. The table also labels the session field `ID` once while the JSON and end step use `Id`; verify exact current schema casing rather than copying annotations or sample identities blindly.\n\n## Detail locators\n\n- Purpose and three-step request order: [[raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15#How it works|How it works]] (raw lines 19\u201336).\n- Begin JSON, `Operation` types/variant/timeout, Base64 encoding, Admin message header and response: [[raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15#Step 1: Start the session|Step 1: Start the session]] (raw lines 38\u2013149). The encoded examples are illustrative.\n- Waiting-screen behavior between requests: [[raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15#Step 2: Send requests|Step 2: Send requests]] (raw lines 151\u2013155).\n- Matched ID, End request/response, and visible waiting-screen exception: [[raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15#Step 3: End the session|Step 3: End the session]] (raw lines 157\u2013214).\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 primary Input, Display, Print and flow hub.\n- [[adyen-terminal-api]] \u2014 message-header and operation result context; financial payment outcome is separate.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15|Adyen Create a flow guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You need to send two separate admin requests to mark the start and the end of a session. All requests in between belong to a single session.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15.md:25"
+    },
+    {
+      "text": "- `UserInterfaceData.WaitingScreenTimeoutMs`: how long the waiting screen is shown on the terminal display, in milliseconds.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15.md:48"
+    },
+    {
+      "text": "* `ServiceIdentification`: The Base64-encoded JSON object to begin the session.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15.md:102"
+    },
+    {
+      "text": "`Id`: the unique reference of the session. This must be the same `Id` as in the start session `AdminRequest`",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15.md:163"
+    },
+    {
+      "text": "You can send an admin request to end the session while the waiting screen is still on the display. This does not interrupt the waiting screen like other requests.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15.md:213"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-session-shopper-engagement-route",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-create-session]] \u2014 Adyen 2026-09-15 snapshot of Terminal API Admin Begin/End shopper-flow session and per-operation waiting screen for Input, Display and Payment requests; Admin success is separate from payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/create-session/2026-09-15.md",
+  "raw_sha256": "ec528e586db427aaacf7063b557f857f358a202c57912c0b681501b5399ea4c3",
+  "status": "candidate_ready"
+}

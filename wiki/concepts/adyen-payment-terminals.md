@@ -15,6 +15,9 @@ The 2026-09-15 V400m manual requires shipment and device tamper checks with imme
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-sneak-preview]] — 2026-09-15 captured Adyen POS software-preview pointer naming v1.135 as then-next release without feature details; links release notes and manual/LTS update guidance, with no current availability or deployment proof.
+
+
 - [[source-adyen-docs-point-of-sale-pos-troubleshooting]] — Adyen terminal troubleshooting directory (2025-04-24 modified; 2026-09-15 capture) routing power-on branches, lost/stolen reporting, manuals, connection/hardware tests and Android remote sessions to separate guides; it contains no diagnostic procedure or payment result.
 
 

@@ -15,6 +15,9 @@ Regulation (EU) 2015/751 requires EEA businesses to let cardholders choose which
 
 **In-person**: France (Cartes Bancaires) and Germany (Girocard).
 
+Adyen's POS application-selection guide captured 2026-09-15 says a cardholder using an EEA-issued co-badged card must be able to choose the brand when the merchant supports both brands, and it names terminal software 1.109 or later for that path. This provider-specific wording is broader than the France/Germany in-person summary above; keep both source-qualified and reconcile the legal scope with authoritative regulation before treating either as a current universal jurisdiction map. [[source-adyen-docs-point-of-sale-aid-selection-rules]]
+
+
 **Countries**: AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IS, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK.
 
 ## Three Requirements
@@ -57,6 +60,9 @@ This proves a version-qualified Android selection and submission path, not curre
 Tokens: `tok_visa_cartesBancaires`, `tok_mastercard_cartesBancaires`
 
 ## Sources
+
+- [[source-adyen-docs-point-of-sale-aid-selection-rules]] — Adyen POS terminal/standalone application-selection guide captured 2026-09-15; it states an EEA-issued co-badged shopper-choice condition when both brands are supported and a terminal software 1.109 qualification.
+
 
 - [[source-adyen-docs-online-payments-co-badged-cards-compliance]] — Adyen Docs snapshot of region-specific EEA and Australia choice, routing, disclosure, and version-qualified integration requirements
 

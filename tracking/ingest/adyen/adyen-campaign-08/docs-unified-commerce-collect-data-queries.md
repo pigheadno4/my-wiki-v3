@@ -1,0 +1,7 @@
+# Fixed retrieval checks: Unified Commerce data collection
+
+1. **Question:** Can a merchant charge a shopper with the card alias or PAR collected from Adyen's cross-channel data guide?
+   **Expected answer:** No. The card alias recognizes a card and cannot make payments. PAR identifies the payment account behind a card or NFC wallet for recognition where available. The guide says a merchant-defined shopper reference and a stored payment method token are necessary for recurring contract payments; alias/PAR is not that token. It does not establish permission to charge or automatic profile matching. Source: pinned raw `## Overview of identifiers` (2026-09-15 snapshot).
+
+2. **Question:** How does the guide obtain identifiers across online and POS channels, and are example fields automatically present?
+   **Expected answer:** It recommends configured Standard webhooks across channels and per-identifier additional settings. PAR and token variant also require **Developers > Additional data** enablement, which can add them to API responses. Terminal API POS payment responses can carry the same identifier categories in a different format. The example `live=false` POS webhook and dated PAR availability statement do not prove that every merchant or transaction receives those fields. Source: pinned raw `## Using data from webhooks`, `### Example standard webhook`, `## Using data from Terminal API responses` (2026-09-15 snapshot).

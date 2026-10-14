@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-multi-menu",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API multiple-answer menu input\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/multi-menu\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/multi-menu/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, input, multiple-choice]\n---\n\n## Overview\n\nAdyen's multi-menu guide describes a Terminal API **Device/Input** request that shows a shopper a `MenuButtons` question on a payment terminal and lets them select more than one answer. It is a terminal input interaction, separate from the linked single-answer menu, confirmation, signature and payment operations. The page's survey/subscription example does not establish financial authorization, valid marketing consent or a completed shopper decision. The 2026-09-15 snapshot is not proof of current terminal-model availability or live behavior. [[adyen]] [[adyen-pos-shopper-engagement]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The guide requires a Terminal API payment-terminal integration. It describes a header question and up to **15 scrollable option buttons**, each with one text line. For a one-answer question it routes to the separate single-answer guide. It does not give a supported-model list or a legal consent rule. See the introduction and `## Requirements`.\n- For multi-select, the POS system sends `SaleToPOIRequest.MessageHeader` with `MessageClass=Device`, `MessageCategory=Input` and `MessageType=Request`. The `ServiceID` is 1\u201310 alphanumeric characters and unique within the prior 48 hours for that terminal `POIID`. `InputRequest.DisplayOutput` targets `CustomerDisplay` with `InfoQualify=Display`, text output, `PredefinedContent.ReferenceID=MenuButtons`, one header text field and up to 15 `MenuEntry` texts. See `## Make a multiple-answers MenuButtons input request`.\n- `InputRequest.InputData` targets `CustomerInput` with `InfoQualify=Input` and `InputCommand=GetMenuEntry`. **`MinLength` or `MaxLength` must be included to enable multiple answers**; they bound the selected-answer count. `MaxInputTime` sets a timeout in seconds. The example sets 60 seconds, minimum 0 and maximum 3 for its three displayed options; those are example values, not documented defaults. See `## Make a multiple-answers MenuButtons input request`.\n- On input, `InputResult.Input.MenuEntryNumber` is a positional array: selected options have `1` and unselected options have `0` (first and third selected is `[1,0,1]`). The POS system passes relevant `InputResult.Input` data to its own system for validation and further use. The response example also includes an `outputTextWarning` in `AdditionalResponse`; it should be read as that example's response, not as a default warning. See step 2 and step 3 of `## Make a multiple-answers MenuButtons input request`.\n- Below-minimum or above-maximum selections produce `InputResult.Response.Result=Failure`, `ErrorCondition=NotAllowed`, and an explanatory `AdditionalResponse`. A timeout produces an `EventNotification` with `EventDetails=message=Did+not+receive+a+response+from+the+POI.`. A payment request received while input is pending overrides it and yields input `Failure/Busy` with a higher-priority-request message; shopper Cancel yields input `Failure/Cancel`. The initial request can also end on a separate cancel-input request or another POS-app request; the guide states the specific Busy response for the payment-request case. See `## How it works` and the response notes under `## Make a multiple-answers MenuButtons input request`.\n\n## Detail locators\n\n- Introduction and `## Requirements`: multi-select purpose, 15-button/one-line display limit and Terminal API scope.\n- `## How it works`: events ending a pending input request.\n- `## Make a multiple-answers MenuButtons input request`: exact MessageHeader, DisplayOutput/MenuEntry and InputData fields, `MinLength`/`MaxLength` activation and request examples.\n- Response notes under `## Make a multiple-answers MenuButtons input request`: `MenuEntryNumber` positional flags, `NotAllowed`, timeout notification, payment override `Busy`, shopper `Cancel`, and validation handoff.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 terminal shopper interaction routes.\n- [[adyen-terminal-api]] \u2014 request and response envelope.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/multi-menu/2026-09-15|Adyen multiple-answer menu guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "We describe here how you can use an input request to ask the shopper a question and allow them to select more than one answer. You can use this, for example, to create a customer survey. You can show a header (your question) and up to 15 scrollable option buttons. Each option button can contain one text line.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/multi-menu/2026-09-15.md:23"
+    },
+    {
+      "text": "To enable the selection of multiple answers, your request needs to include the `MinLength` or `MaxLength` parameters.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/multi-menu/2026-09-15.md:59"
+    },
+    {
+      "text": "Your unique ID for this request, consisting of 1-10 alphanumeric characters. Must be unique within the last 48 hours for the terminal (`POIID`) being used.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/multi-menu/2026-09-15.md:73"
+    },
+    {
+      "text": "`Input.MenuEntryNumber`: An array that indicates the options that the user selected. For example, if the shopper selects the first and third options, the first and third items in the array are `1` and all other array items are `0`.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/multi-menu/2026-09-15.md:238"
+    },
+    {
+      "text": "If you make a payment request while the input request is waiting for input on the terminal, the payment request overrides the input request. The `InputResult` has `Response.Result`: **Failure**, `Response.ErrorCondition`: **Busy**, and an `AdditionalResponse` containing the message *A higher priority request has been received*.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/multi-menu/2026-09-15.md:293"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "multi-menu-shopper-engagement-route",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-multi-menu]] \u2014 Terminal API multiple-answer MenuButtons input guide (2026-09-15 snapshot) for request fields, selection flags, bounds, timeout and cancellation/override outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Target hub is proposed by the C08 shopper-engagement overview owner; coordinator should apply this route after that concept is approved and promoted."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/multi-menu/2026-09-15.md",
+  "raw_sha256": "1cc7bde6cc930504d7fdf1cf232e4285193e54953754aadadf09bf30c4570cd9",
+  "status": "candidate_ready"
+}

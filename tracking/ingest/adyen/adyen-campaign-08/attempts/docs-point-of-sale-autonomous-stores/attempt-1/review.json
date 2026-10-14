@@ -1,0 +1,22 @@
+{
+  "job_id": "docs-point-of-sale-autonomous-stores",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The full pinned raw hash, five quote locations, merchant-owned lifecycle, backend adjustment/capture routes, conditional recovery, new-topic need, and both fixed retrieval questions pass. Two retained wordings overresolve material distinctions in the raw: card-acquisition authorization language and synchronous-versus-asynchronous adjustment handling.",
+  "required_changes": [
+    "In the source card-acquisition takeaway, replace the categorical 'Card acquisition itself is not authorization' with wording that preserves the separate follow-up pre-authorization payment request and the raw's internal tension. Raw line 98 says `authorisationType=PreAuth` in the card-acquisition request 'Pre-authorizes' `TotalAmount`, while lines 237-239 direct a separate payment request to pre-authorize that amount. State that the alias cannot make a payment and the acquisition response alone does not prove entry approval or a final charge; note the conflicting pre-authorization wording without deciding whether acquisition alone reserves funds.",
+    "In the synchronous-adjustment takeaway, clarify the blob sequence: decode the initial payment response's `adjustAuthorisationData` according to its encoding for the first adjustment, then use the latest blob returned by `/adjustAuthorisation` as-is for later adjustments. Raw lines 725-741 and 1032-1052 say the later blob is not URL-encoded. Avoid implying each latest blob must be decoded again.",
+    "Revise the proposed new concept's Evidence boundary. Its unqualified 'Adjustment and capture require ... asynchronous outcome handling' implies synchronous adjustments need webhook outcome confirmation. Raw line 62 and the adjustment tabs distinguish webhook-confirmed asynchronous amount updates from a synchronous `/adjustAuthorisation` response with `Authorised`; manual capture still needs webhook outcome handling. Keep the new autonomous-store topic and its source reciprocal."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "c8-autonomous-stores-new-topic",
+      "verdict": "rejected",
+      "reason": "The new concept is relevant and needed, but its Evidence boundary incorrectly generalizes asynchronous outcome handling to synchronous authorization adjustments; revise that sentence before promotion."
+    }
+  ],
+  "reviewer_identity": "c8-rdocs-point-of-sale-autonomous-stores",
+  "reviewer_model": "gpt-6-sol"
+}

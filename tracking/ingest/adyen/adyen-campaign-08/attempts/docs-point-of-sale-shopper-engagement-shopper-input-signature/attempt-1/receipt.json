@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-signature",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API shopper signature input\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/signature\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/signature/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, signature, input]\n---\n\n## Overview\n\nAdyen's signature-input guide, captured 2026-09-15, shows a merchant Terminal API Device/Input request that asks a shopper to draw a signature on a payment-terminal display and confirm or cancel. It belongs to [[adyen-pos-shopper-engagement]]: collecting this input does not itself authorize a payment, prove a person's identity, establish enforceable legal consent, or validate the signature.\n\n## Key takeaways\n\n- **Request fields have distinct names.** `SaleToPOIRequest.MessageHeader` uses protocol 3.0, `MessageClass: Device`, `MessageCategory: Input`, `MessageType: Request`, SaleID, POIID and a terminal-scoped ServiceID unique within the last 48 hours. `InputRequest.DisplayOutput` targets `CustomerDisplay` with Text output and `PredefinedContent.ReferenceID: GetSignature`. `InputRequest.InputData` targets `CustomerInput` with `InputCommand: GetConfirmation` and an integer `MaxInputTime` in seconds. ServiceID uniqueness does not establish a safe retry or idempotency guarantee.\n- **The display takes two merchant text items.** The first is a header, limited to about 20 characters on a portrait display; the second may be additional text or empty. M400, e280 and e285 ignore additional text, but the page still requires the second item with an empty value for those models. The Java sample later adds `declineAnswer` and `agreeAnswer` despite the two-item prose/table and without defining those variables in the shown sample; use the field instructions and verify generated code before adopting that example. The page does not give a general supported-terminal list.\n- **Interpret confirmation and signature separately.** The guide says `InputResult.Response.AdditionalResponse` contains the shopper-provided signature; the example carries URL-encoded `responseData` with a `signature_format` marked `raw`. `InputResult.Input.ConfirmedFlag: true` indicates the shopper selected Confirm; `false` means the shopper selected Cancel. The input is not format-validated, and the merchant system must validate relevant `InputResult.Input` data for its own use. The flags and raw data do not prove legal consent or payment authorization.\n- **Timeout and override are failures of this input request.** The prompt remains until input, `MaxInputTime` expiry, terminal Cancel, a cancel-input request, or another POS request. Timeout produces `Failure`/`Cancel` with `message=Screen%20timeout`. A payment request received while signature input is pending overrides it, producing `Failure`/`Busy` and a higher-priority-request message; that does not state the payment's result. Do not treat a missing signature or cancellation as confirmation.\n\n## Detail locators\n\n- Raw `# Ask for a signature`, `## Requirements` and `## How it works` (lines 15\u201340): purpose, Terminal API prerequisite, confirm/clear UI and prompt-ending events.\n- Raw `## Make a Signature input request` tables (lines 48\u201384): Device/Input header, two text items, model-specific ignored second text, `GetSignature` versus `GetConfirmation`, and timeout field.\n- Raw JSON and Java examples (lines 86\u2013168): illustrative 30-second request; Java text-item additions at lines 149\u2013157 conflict with the two-item instruction and show undefined variables.\n- Raw response handling (lines 170\u2013215): raw signature in AdditionalResponse, `ConfirmedFlag`, no format validation, timeout, payment override and merchant validation.\n- Raw `## See also` (lines 217\u2013221): separate cancellation, input selection and session guides; navigation only.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 customer-interaction hub.\n- [[adyen-terminal-api]] \u2014 Terminal API message and payment boundary.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/signature/2026-09-15|Ask for a signature, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you use a **GetSignature** `InputRequest`, the terminal prompts the shopper to confirm something by drawing their signature on the display.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/signature/2026-09-15.md:31, ## How it works"
+    },
+    {
+      "text": "On M400, e280, and e285 terminals terminals, additional text is ignored, but you still need to include the second `Text` field with an empty value.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/signature/2026-09-15.md:75, ## Make a Signature input request"
+    },
+    {
+      "text": "`Response.AdditionalResponse`: The signature provided by the shopper.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/signature/2026-09-15.md:176, ## Make a Signature input request"
+    },
+    {
+      "text": "`Input.ConfirmedFlag`: **true** indicates the shopper confirmed their agreement by selecting **Confirm**",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/signature/2026-09-15.md:177, ## Make a Signature input request"
+    },
+    {
+      "text": "If you make a payment request while the input request is waiting for input on the terminal, the payment request overrides the input request.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/signature/2026-09-15.md:213, ## Make a Signature input request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c08-signature-input-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-signature]] \u2014 2026-09-15 Device/Input signature guide for `GetSignature`/`GetConfirmation`, two-text/model conditions, raw signature and confirmation flag, and timeout/Busy branches.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw Java sample adds undefined declineAnswer and agreeAnswer items despite the two-text field instructions; source page flags this example conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/signature/2026-09-15.md",
+  "raw_sha256": "b53c3512a79217fe7dd6333ca6219ecdbf6d709fab1823f40a6df027736851f4",
+  "status": "candidate_ready"
+}

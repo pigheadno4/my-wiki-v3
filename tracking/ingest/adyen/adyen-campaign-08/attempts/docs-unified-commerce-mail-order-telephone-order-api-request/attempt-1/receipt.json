@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-unified-commerce-mail-order-telephone-order-api-request",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: MOTO payments through Checkout API and Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/mail-order-telephone-order/api-request\"\nraw_files:\n  - \"adyen/docs/unified-commerce/mail-order-telephone-order/api-request/2026-09-15.md\"\ntags: [adyen, unified-commerce, moto, checkout-api, web-drop-in, webhooks]\n---\n\n## Overview\n\nThis Adyen Mail Order/Telephone Order (MOTO) guide describes a shopper contacting a merchant, a merchant user such as a call-center agent entering that shopper's card details into Web Drop-in in the merchant's UI, and the merchant server creating a Checkout API session. The payment result is delivered asynchronously through an `AUTHORISATION` webhook. This is a staff-operated MOTO card flow, not an ordinary shopper-operated ecommerce checkout, terminal MOTO flow, recurring mandate, or seller/payee and funds-flow specification. The captured page does not prove account eligibility, PCI compliance, or a successful live payment. [[adyen]] [[adyen-unified-commerce]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Before building, the guide says to get an API key, grant **Merchant PAL webservice role**, **Checkout webservice role**, and **Checkout encrypted cardholder data**, and subscribe to the Standard webhook. These are listed credentials/roles for this guide, not proof that a particular credential or merchant account has them. The server-side `/sessions` example uses the API key in a request header; the front-end example uses a separate public client key. See **Requirements** and **Create your instance of AdyenCheckout**, pinned raw lines 23\u201331 and 219\u2013245.\n- The agent enters amount and required order details in the merchant UI, which sends them to the server. The server calls Checkout `/sessions`; the UI creates Web Drop-in from returned `session.id` and `sessionData`; the agent enters the shopper's payment details into the Drop-in card form. The webhook server receives the outcome. This is a staff/card-data handling path, not proof that a raw PAN is stored by the merchant server. See **How it works**, pinned raw lines 33\u201345, and **Prepare your front end / Create Drop-in**, lines 112\u2013290.\n- The `/sessions` guide requires amount in currency minor units, a MOTO shopper interaction, `allowedPaymentMethods: scheme`, merchant account, unique payment reference (at least three characters), and a protocol-bearing `returnUrl` for possible redirection. Its parameter table says `shopperInteraction` should be **Moto**, but its example JSON sends **MOTO**. Treat this as an unresolved case discrepancy in the snapshot; neither form here establishes current API-schema behavior. The example targets test Checkout v71 and includes an `idempotency-key` header, which does not by itself prove retry safety. See **Create a session**, pinned raw lines 49\u2013110.\n- The front-end guide loads Adyen Web by npm or script/CSS; the script route instructs using Subresource Integrity hashes per version. It recommends avoiding an iframe and avoiding re-rendering the Drop-in container. The Card component is configured with `hideCVC: false`; this specific configuration does not prove the full merchant PCI scope or SCA treatment. See **Prepare your front end / Create Drop-in**, pinned raw lines 112\u2013290.\n- `onPaymentCompleted`, `onPaymentFailed` and `onError` handle UI events, but the guide explicitly says to wait for the asynchronous `AUTHORISATION` webhook after submission. Match `merchantReference` to the order; `success: true` denotes a successful payment outcome in this guide, while `success: false` carries a failure reason. An HTTP 201 session response or visible Drop-in event is not the final outcome. See **Get the outcome**, pinned raw lines 292\u2013365, and event-handler table, lines 196\u2013215.\n- Before live operation, the guide points to test cards, then live-account setup, obtaining and submitting a **SAQ C-VT** form, switching to live endpoints, and matching Drop-in's live `environment` to the endpoint region. Those are described steps, not proof that a merchant is PCI compliant, approved for MOTO, exempt from SCA, or enabled in a specific region. The guide does not describe recurring charges, capture/settlement, merchant-of-record assignment, or funds distribution. See **Test and go live**, pinned raw lines 367\u2013393.\n\n## Detail locators\n\n- **MOTO payments through API / Requirements** (pinned raw lines 15\u201331) \u2014 staff-entered Drop-in scope, API key, roles and Standard webhook.\n- **How it works** (pinned raw lines 33\u201345) \u2014 shopper call, agent UI, server session, Drop-in and webhook flow.\n- **Create a session** (pinned raw lines 49\u2013110) \u2014 request fields, table/example case conflict, test v71 sample, session response and error route.\n- **Prepare your front end** (pinned raw lines 112\u2013172) \u2014 npm/script loading, SRI and DOM/iframe guidance.\n- **Create Drop-in** (pinned raw lines 173\u2013290) \u2014 session configuration, card/CVC setup and UI callback examples.\n- **Get the outcome** (pinned raw lines 292\u2013365) \u2014 asynchronous AUTHORISATION webhook, merchant-reference correlation, success/failure examples.\n- **Test and go live** (pinned raw lines 367\u2013393) \u2014 test paths, SAQ C-VT, live endpoints and region-matched front-end environment.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 main MOTO and cross-channel source route.\n- [[adyen-online-payments]] \u2014 Checkout Sessions and Web Drop-in implementation context.\n- [[adyen-pci-dss-compliance]] \u2014 separate PCI scope and validation guidance; this page lists SAQ C-VT steps only.\n- [[adyen-terminal-api]] \u2014 separate terminal messaging; this MOTO route uses Checkout API and Web Drop-in.\n\n## Related raw API references\n\nThese linked guides are navigation, not independently reviewed behavior for this entry:\n\n- Checkout Sessions API \u2014 https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions\n- Sessions flow Web Drop-in \u2014 https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/\n- Webhooks \u2014 https://docs.adyen.com/development-resources/webhooks\n- PCI DSS guide \u2014 https://docs.adyen.com/development-resources/pci-dss-compliance-guide\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/mail-order-telephone-order/api-request/2026-09-15|Adyen MOTO API-request guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can make an API request to initiate a MOTO payment and use Web Drop-in to enter the shopper's payment details in your UI.",
+      "location": "raw/adyen/docs/unified-commerce/mail-order-telephone-order/api-request/2026-09-15.md:19"
+    },
+    {
+      "text": "Use the Checkout API to initiate a payment session and enter the shopper's payment details in the Drop-in payment form.",
+      "location": "raw/adyen/docs/unified-commerce/mail-order-telephone-order/api-request/2026-09-15.md:35"
+    },
+    {
+      "text": "Set to **Moto**. This indicates that this is a MOTO payment.",
+      "location": "raw/adyen/docs/unified-commerce/mail-order-telephone-order/api-request/2026-09-15.md:58"
+    },
+    {
+      "text": "\"shopperInteraction\": \"MOTO\",",
+      "location": "raw/adyen/docs/unified-commerce/mail-order-telephone-order/api-request/2026-09-15.md:78"
+    },
+    {
+      "text": "You get the outcome of each payment asynchronously, in an **AUTHORISATION** [webhook](/development-resources/webhooks). Use the `merchantReference` from the webhook to match it to your order reference.",
+      "location": "raw/adyen/docs/unified-commerce/mail-order-telephone-order/api-request/2026-09-15.md:296"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-moto-api-unified-reciprocal",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-mail-order-telephone-order-api-request]] \u2014 2026-09-15 Checkout Sessions/Web Drop-in MOTO guide for agent-entered card data, required roles, asynchronous AUTHORISATION outcome and SAQ C-VT go-live steps; table/example `Moto` versus `MOTO` remains unresolved.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The shopperInteraction table says Moto while the JSON example says MOTO; do not silently normalize case or claim current API acceptance from either sample.",
+          "The guide's agent-facing Drop-in and SAQ C-VT steps do not prove PCI compliance, MOTO account eligibility, SCA exemption, merchant-of-record/funds allocation, recurring behavior or live payment success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/mail-order-telephone-order/api-request/2026-09-15.md",
+  "raw_sha256": "5ae74a0a52faf3e9d466d0f3671b0bb8e08eabbbd493530eb1da4154d195e158",
+  "status": "candidate_ready"
+}

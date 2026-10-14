@@ -89,6 +89,15 @@ Terminal API defines terminal messages. Adyen's Cloud Device API, represented se
 
 ## Related
 
+- [[source-adyen-docs-point-of-sale-aid-selection-rules]] — 2026-09-15 POS terminal/standalone card-application guide for automatic selection, configurable cost, PIN and menu priorities (compliance and supported-feature rules fixed), and shopper Card options choice with an EEA software 1.109 qualification.
+
+
+- [[source-adyen-docs-point-of-sale-custom-cards]] — 2026-09-15 custom-magstripe-card Terminal API acquisition guide for merchant POS handoff to the card issuer and `EnableService` closure; acquisition is distinct from an Adyen gift-card payment.
+
+
+- [[source-adyen-docs-point-of-sale-payment-facilitators]] — POS payment-facilitator Terminal API data route (2026-09-15 snapshot): request-supplied sub-merchant data for payments and referenced/unreferenced refunds overrides store fields; full role/data boundary belongs to [[adyen-pos-payment-facilitators]].
+
+
 - [[source-adyen-docs-point-of-sale-classic-library-deprecation]] — Adyen Docs deprecation notice captured 2026-09-15 for migration from embedded classic POS libraries to Terminal API, with an Xstore JNI/OPI exception and dated timeline.
 
 

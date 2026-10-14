@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-display-data-idle-display",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Show the standby screen | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/display-data/idle-display\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/display-data/idle-display/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, standby-display]\n---\n\n## Overview\n\nThis Adyen guide shows how a POS can ask a payment terminal to display its **standby screen**, where the merchant's already configured branded logo normally appears when no other process is running. It recommends a predefined `Idle` display message and documents a narrower XHTML alternative. The operation is a Device/Display terminal interaction, not a payment, refund, terminal-logo upload or evidence that the screen stayed visible for a particular duration. [[adyen]] [[adyen-pos-shopper-engagement]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The recommended, generic route sends a Terminal API `DisplayRequest` with `MessageClass: Device`, `MessageCategory: Display`, one `DisplayOutput` item for `CustomerDisplay`, `OutputFormat: MessageRef`, and `PredefinedContent.ReferenceID: Idle`. The page says this route works regardless of terminal model. The header table requires a terminal-scoped `ServiceID` of 1\u201310 alphanumeric characters unique within the last 48 hours; it does not promise safe retry or general idempotency. See **Switch to the standby screen \u2192 Generic - PredefinedContent**, pinned raw lines 21\u201353.\n- The alternative uses `OutputFormat: XHTML` and a Base64-encoded XML string in `OutputXHTML`, with the same Device/Display header and one `CustomerDisplay` output item. The guide limits this route to XHTML-accepting **M400, P400 Plus and V400m** terminals. The sample is not an arbitrary logo-image upload or proof of current firmware/model support. See **Limited - OutputXHTML**, pinned raw lines 144\u2013201.\n- For the generic route, the guide tells the merchant to inspect `DisplayResponse.OutputResult.Response.Result: Success`; the limited route also names `OutputResult.Response.Result: Success`. These are display-request results. The page does not define a new payment state, screen lifetime, timeout, priority/preemption sequence, logo asset requirements, or account-specific configuration outcome. See pinned raw lines 119\u2013142 and 234\u2013236.\n- The JSON and Java blocks illustrate request construction and a V400m `POIID`. Treat their values as examples, not evidence that a specific terminal or merchant account is configured to show a particular branded logo. See pinned raw lines 54\u2013117 and 173\u2013232.\n\n## Detail locators\n\n- **Show the standby screen; Switch to the standby screen** (pinned raw lines 15\u201327) \u2014 standby/logo purpose, recommended model-independent route and limited XHTML model set.\n- **Generic - PredefinedContent** (pinned raw lines 29\u2013142) \u2014 Device/Display header, single `DisplayOutput`, `MessageRef`/`Idle` values, JSON/Java examples and success result.\n- **Limited - OutputXHTML** (pinned raw lines 144\u2013236) \u2014 model limitation, XHTML/Base64 XML field, examples and success result.\n- **See also** (pinned raw lines 238\u2013242) \u2014 separate virtual-receipt, QR and image display guides.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 primary shopper-terminal display route.\n- [[adyen-terminal-api]] \u2014 separate message architecture and financial operation context.\n- [[adyen-terminal-management]] \u2014 terminal configuration context; this page does not set the logo asset.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/display-data/idle-display/2026-09-15|Adyen standby-screen display guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "In certain situations you may want to force the terminal to show the standby screen. This screen shows your own branded [logo](/point-of-sale/design-your-integration/determine-account-structure/configure-features#terminal-customization-hardware-features-and-receipts) as it is usually shown when no other process is going on.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/idle-display/2026-09-15.md:19"
+    },
+    {
+      "text": "To force the payment terminal to show the standby screen, we recommend using a display request with `PredefinedContent`. This works regardless of the terminal model.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/idle-display/2026-09-15.md:23"
+    },
+    {
+      "text": "There is also another method that we support. This uses `OutputXHTML` in the display request. However, it only works on terminals that accept XHTML: M400, P400 Plus, and V400m.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/idle-display/2026-09-15.md:25"
+    },
+    {
+      "text": "| `OutputContent.PredefinedContent.ReferenceID` | **Idle**            |",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/idle-display/2026-09-15.md:52"
+    },
+    {
+      "text": "| `OutputContent.OutputXHTML`  | The following string, which contains XML code converted to Base64: |",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/idle-display/2026-09-15.md:167"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-idle-display-engagement-reciprocal",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-idle-display]] \u2014 2026-09-15 Terminal API standby-display guide for recommended MessageRef/Idle request, model-limited XHTML alternative and display-result check.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The generic method's model-independent wording is from the dated guide; do not infer present firmware/account eligibility or logo configuration.",
+          "OutputResult Success is a display-request result; no screen lifetime, timeout or payment result is specified."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/idle-display/2026-09-15.md",
+  "raw_sha256": "6e0ffd5837431203b044e35deb23c7f80312cf3c0eb0424553f03a354b4d5cf0",
+  "status": "candidate_ready"
+}

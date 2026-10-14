@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-shopper-input-phone-number",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS phone-number input\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/phone-number\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/shopper-input/phone-number/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, phone-number, input]\n---\n\n## Overview\n\nThis Adyen Terminal API guide, last modified 2025-03-14 and captured 2026-09-15, describes collecting a shopper's phone number on a payment terminal with a nonfinancial `Device` / `Input` request. The terminal pre-fills a country code based on terminal location but allows a change; its response returns entered `DigitInput` for the merchant system to validate and use. Collection and a `Success` input result do not establish phone ownership, identity, contact consent or payment authorization. [[adyen]] [[adyen-pos-shopper-engagement]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The stated requirement is a Terminal API integration with payment terminals. Send a `SaleToPOIRequest` with `MessageClass=Device`, `MessageCategory=Input`, `MessageType=Request`, protocol version 3.0 and terminal-scoped request identifiers. `DisplayOutput` uses `CustomerDisplay`, text output and `PredefinedContent.ReferenceID=GetPhoneNumber`; its one `OutputText.Text` is the merchant's prompt. The terminal adds its own instruction for confirming input, but this guide does not define an independent verified-confirmation flag.\n- `InputData` uses `CustomerInput`, `InputCommand=DigitString`, and integer `MaxInputTime` measured in seconds. `DefaultInputString` is described as placeholder text showing the expected format; it is not the location-based country-code rule. `MaskCharactersFlag` is shown in the JSON example to mask entered digits. The parameter table misspells it `MaskChararctersFlag`; do not use that spelling as a proven API field. The page states no text-length or universal phone-format constraint.\n- The guide explicitly says input is **not validated against a format**. A received `InputResult.Input.DigitInput` contains the entered numerals/phone number; pass it to the merchant system for validation and further use. Do not treat the placeholder, terminal country code, masking, or example `Result=Success` as verification that the number is reachable or belongs to the shopper.\n- The input screen remains until input arrives, `MaxInputTime` expires, the terminal Cancel key is selected, or the POS app sends a cancel-input or other request. Timeout returns `Failure` / `Cancel` with `message=Screen%20timeout`; terminal Cancel returns `Failure` / `Cancel` with empty `DigitInput`. A payment request while input waits overrides it and returns `Failure` / `Busy` with a higher-priority-request message. These are input-request outcomes, not evidence of payment completion.\n- The V400m ID, example `MaxInputTime=40`, placeholder digits and `MaskCharactersFlag=true` are illustrative request values. The dated guide gives no current terminal-model matrix, data-retention rule, consent mechanism or production privacy policy.\n\n## Detail locators\n\n- Raw `# Ask for phone number input` through `## How it works` (lines 15\u201336): purpose, location-derived changeable country code, integration and screen-end conditions.\n- Raw `## Make a PhoneNumber input request` (lines 48\u201399): Device/Input header, display prompt, `GetPhoneNumber`, `DigitString`, timeout, placeholder and masking table typo.\n- Raw JSON and Java examples (lines 100\u2013164): illustrative terminal, prompt, 40-second timeout, placeholder and masking setting; Java omits the JSON masking flag.\n- Raw response and result handling (lines 165\u2013211): lack of format validation, returned `DigitInput`, timeout, Cancel, Busy override and merchant-side validation route.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 terminal shopper interaction route.\n- [[adyen-terminal-api]] \u2014 Device/Input message context.\n- [[adyen-payment-terminals]] \u2014 physical terminal context; no model eligibility follows from the example.\n\n## Related raw API references\n\nNavigation named by the guide, not further behavior reviewed for this entry:\n\n- Cancel input \u2014 https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/cancel-input\n- Select another input type \u2014 https://docs.adyen.com/point-of-sale/shopper-engagement/shopper-input/select-input-request\n- Terminal API Input \u2014 https://docs.adyen.com/api-explorer/terminal-api/latest/post/input\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/phone-number/2026-09-15|Phone-number input guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Here we describe how you can use an input request to ask the shopper to enter their phone number. The country code is prefilled based on the location of the terminal, but can be changed on the terminal.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/phone-number/2026-09-15.md:19"
+    },
+    {
+      "text": "When you use a **GetPhoneNumber** `InputRequest`, the terminal prompts the shopper or your staff to enter a phone number. The terminal continues to show your input request until one of these events occurs:",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/phone-number/2026-09-15.md:31"
+    },
+    {
+      "text": "   The input is not validated against a format.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/phone-number/2026-09-15.md:168"
+    },
+    {
+      "text": "   * If you make a payment request while the input request is waiting for input on the terminal, the payment request overrides the input request. The `InputResult.Response` has `AdditionalResponse`: **message=A%20higher%20priority%20request%20has%20been%20received**, `Result`: **Failure**, and `ErrorCondition`: **Busy**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/phone-number/2026-09-15.md:207"
+    },
+    {
+      "text": "   * If the user declined to respond (selected the **Cancel** key **![](/images/7/4/2/f/a/742fa2d25c8f88e87b88591e5371d52f62a291bf-cancel2x.png)**), the `InputResult.Input.DigitInput` field is empty. The `InputResult.Response` has `Result`: **Failure** and `ErrorCondition`: **Cancel**.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/phone-number/2026-09-15.md:209"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-phone-input-engagement-source",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-shopper-input-phone-number]] \u2014 Terminal API GetPhoneNumber input guide (2025 last-modified; 2026-09-15 capture) for prompt/default/mask fields, returned DigitInput and timeout/cancel/override outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Collected DigitInput is unvalidated by the terminal and does not prove phone ownership, consent, identity or payment.",
+          "The parameter table spells MaskCharactersFlag as MaskChararctersFlag while the JSON example uses MaskCharactersFlag; do not promote the misspelling to a schema guarantee."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/shopper-input/phone-number/2026-09-15.md",
+  "raw_sha256": "da7e196962736e979908a77ab44af3f2aefa36c96c5d541da184f4b414558b11",
+  "status": "candidate_ready"
+}

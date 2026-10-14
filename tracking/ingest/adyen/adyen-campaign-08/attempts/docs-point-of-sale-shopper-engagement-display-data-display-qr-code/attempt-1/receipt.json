@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-display-data-display-qr-code",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Show a QR code on the terminal | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/display-data/display-qr-code\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/display-data/display-qr-code/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, terminal-api, display-request, qr-code]\n---\n\n## Overview\n\nThis Adyen Docs guide explains how a merchant POS app shows a scannable QR code, with optional header and footer, on a payment terminal's customer display. The QR may link to loyalty signup, an app, an offer or a webshop in the examples. This is a Terminal API **Device/Display** operation for merchant-supplied content, not a QR wallet payment, proof of a scan, or evidence of enrollment or payment. See [[adyen]], [[adyen-pos-shopper-engagement]], and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- For `OutputContent.OutputBarcode.BarcodeValue`, the page says a URL alone can be supplied as a plain text string; content beyond a URL is URL-encoded first. This QR-display route does **not** instruct the merchant to Base64-encode receipt XML. Its sample text, URL and loyalty call-to-action are examples, not a validation of the destination, identity, consent, currency, expiry or any resulting action.\n- The Terminal API header uses ProtocolVersion `3.0`, `MessageClass=Device`, `MessageCategory=Display`, `MessageType=Request`, `SaleID`, `POIID` and a `ServiceID` unique for that terminal over the prior 48 hours. `DisplayRequest.DisplayOutput` is an **array**. Its QR item targets `CustomerDisplay` with `InfoQualify=Display`, `OutputFormat=BarCode`, `OutputBarcode.BarcodeType=QRCode`, and the barcode value. Optional text items use `OutputFormat=Text`: the first text item is interpreted as header and the second as footer. A separate `OutputResult` entry corresponds to each display item in array order.\n- The page says `MinimumDisplayTime` sets how long the QR screen is shown. If omitted, the QR remains until another request such as payment or standby display replaces it. `ResponseRequiredFlag` defaults to `true` when absent for QR and text elements; the response then reports whether each element was shown. That is display status, not a shopper scan, wallet outcome, financial authorization, consent record or completed loyalty action.\n- The three-item example returns `DisplayResponse.OutputResult[0]`, `[1]` and `[2]` for QR, header and footer respectively, each with `Response.Result=Success`. A client must inspect the matching array item rather than treating `OutputResult` as a single object or assuming every element succeeded. The page does not give a terminal-model support matrix or a current deployment/device guarantee; images illustrate portrait, small portrait and landscape appearances.\n\n## Detail locators\n\n- `Show a QR code on the terminal`, pinned raw lines 15\u201329: content examples, optional header/footer, duration/replacement and visual layouts.\n- `Make a display request for a QR code`, lines 31\u201349: URL-encoding for richer content versus plain URL value, with illustrative string.\n- Header and QR output tables, lines 51\u201389: Device/Display message header, per-terminal ServiceID, `DisplayOutput` array, QR format/type/value, duration and response flags, optional text-item ordering.\n- Request and response examples, lines 91\u2013184: three `DisplayOutput` items and index-matched `OutputResult` array with example Success values.\n- `See also`, lines 186\u2013190: virtual receipt, image and standby guides are navigation only.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 main terminal interaction concept.\n- [[adyen-terminal-api]] \u2014 Device/Display message context, distinct from payment messages.\n- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-receipt]] \u2014 separate Base64 XML virtual-receipt route; a QR block there has different formatting.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-qr-code/2026-09-15|Adyen QR-display guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can use the display of your payment terminal to show a QR code which the shopper can scan with their mobile device. The QR code can contain anything you like.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-qr-code/2026-09-15.md:19"
+    },
+    {
+      "text": "If you do not set a time-out, the QR code continues to be shown until you send another request.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-qr-code/2026-09-15.md:21"
+    },
+    {
+      "text": "If the QR code needs to contain more than just a URL, convert the content to a URL-encoded string.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-qr-code/2026-09-15.md:33"
+    },
+    {
+      "text": "If not specified, defaults to **true**. The response then informs you whether this element was successfully shown.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-qr-code/2026-09-15.md:74, ResponseRequiredFlag row; repeated at line 87 for text items"
+    },
+    {
+      "text": "This array indicates whether the elements were successfully shown. The first item in the array refers to the first item in the `DisplayOutput` array , and so on.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-qr-code/2026-09-15.md:149, OutputResult explanation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c8-qr-display-engagement-source",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-display-data-display-qr-code]] \u2014 2026-09-15 Adyen Docs Device/Display QR guide for URL-encoded or plain-URL values, optional header/footer, duration, response flag and index-matched `OutputResult` array.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Display Success means an element was shown, not scanned, accepted, paid, or enrolled; the QR destination and any personal data require separate evaluation.",
+          "This route uses BarCode/QRCode output, not the virtual receipt's Base64 XML or a QR wallet payment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/display-data/display-qr-code/2026-09-15.md",
+  "raw_sha256": "36dbb5d63c86de2888e3b5213de0ee94b25b48d4776d2737cced285b6130a698",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-point-of-sale-loyalty-wallet-passes",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen POS Apple Wallet loyalty passes\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/loyalty/wallet-passes\"\nraw_files:\n  - \"adyen/docs/point-of-sale/loyalty/wallet-passes/2026-09-15.md\"\ntags: [adyen, point-of-sale, loyalty, apple-wallet, nfc, terminal-api]\n---\n\n## Overview\n\nAdyen's wallet-passes guide describes using a merchant's NFC loyalty pass in Apple Wallet during a Terminal API payment-terminal transaction. The pass identifies the shopper's loyalty account for a merchant-run program; it is separate from the shopper's credit/debit card, payment token, PAN, and payment authorization. The guide gives post-payment recognition and pre-payment redeem flows, plus pass-server and Customer Area setup. This 2026-09-15 snapshot does not prove current wallet, terminal, merchant or regional eligibility, pass issuance, or a successful payment. [[adyen]] [[adyen-pos-loyalty]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The page requires a Terminal API integration with a payment terminal. Its dated support table lists Verifone Engage software **1.64+** and Castles Android software **1.105+**, says **only Apple Wallet passes** are supported, and says an Apple agreement is needed to present Apple Wallet passes. It does not state Google Wallet pass support. See `## Requirements`.\n- In the **payment flow**, the merchant makes a payment request and checks the payment response's `LoyaltyResult` for its pass's `LoyaltyAccountID.LoyaltyID`, then looks up and updates the shopper in its pass server/loyalty program, for example to accrue points. The loyalty ID is a pass identifier; the payment-flow response example separately shows card payment data but does not display an alias. The guide's following prose says to use the returned card alias as well as the loyalty ID, and a separate double-tap example shows an alias in `AdditionalResponse`. Absence of `LoyaltyResult` is described as no merchant pass in that wallet, not as a failed payment. See `### Tab: Payment flow` and `## Use the payment flow`.\n- **Redeem flows** start with Terminal API card acquisition, check the merchant pass before payment, and can apply points or a discount to the final payment amount. In **single tap**, acquisition includes an amount and polls both pass and wallet payment-method details; the final amount must be no more than that acquisition amount, and Adyen Support must enable single tap to avoid another presentation when the amount changes. For an existing pass in **single tap**, the payment response does not repeat the loyalty details; in **double tap**, it includes `LoyaltyResult` with the same loyalty details. Double-tap acquisition can omit an unknown amount and polls pass details only; the shopper presents a payment method again and can use a different one. See `## Transaction flow options` and `## Use the redeem flow`.\n- In redeem, retain `POIData.POITransactionID.TimeStamp` and `TransactionID` from the card-acquisition response and pass them as `PaymentData.CardAcquisitionReference` in the payment request. `LoyaltyAccount` in the acquisition response contains the pass ID and protocol brand, while the payment request carries the final amount. These are distinct from card account details and `PaymentInstrumentData`. See `### Get the shopper's pass details` and `### Case 1: The shopper has your pass`.\n- The merchant or a third-party service runs a pass server with an enrollment/add-pass URL of at most **60 characters including scheme** and ties the pass to its POS and loyalty program. Pass creation yields a pass type ID and private key. Customer Area configuration selects the account level and flow, pass name/type ID, protocol, optional add-pass URL, and private-key slot. Adyen says its backend protects/encrypts the key; the terminal uses it to decrypt the NFC message and return the unique pass ID. These credentials and pass identifiers should not be treated as payment credentials. See `## Create NFC wallet passes` and `## Configure passes in your Customer Area`.\n- The guide's on-the-spot enrollment and pass issue path is stated for **Verifone Engage** terminals. If the shopper lacks a pass, the merchant checks existing enrollment or asks whether to enroll; if the shopper declines, the flow ends with payment and no `LoyaltyResult`. For consented enrollment, the merchant creates a loyalty/pass-server profile and sends `LoyaltyData.LoyaltyAccountID` in the payment request. `LoyaltyID` is either only the pass number when the URL is configured in Customer Area or the URL plus pass number when it is not. Optional `SaleToAcquirerData.shopperReference` is case-sensitive, at least three characters, and must omit PII such as name/email. See `## Shopper enrollment` and `### Case 2: The shopper does not have your pass`.\n- For an individual transaction, a Base64-encoded `VASModeOverride` JSON object in `SaleData.SaleToPOIData` can select pass-and-payment, pass-or-payment, pass-only or payment-only collection in a card-acquisition or payment request. The raw lists exact mode values; it does not make this override an account-wide configuration change. See `## Overriding the configured flow`.\n\n## Detail locators\n\n- `## Requirements` and `## Transaction flow options`: dated platform/model/software limits, Apple agreement, payment versus single-/double-tap behavior and amount/Support conditions.\n- `## Create NFC wallet passes` and `## Configure passes in your Customer Area`: pass server, 60-character enrollment URL, Apple pass type ID, protocol and private-key setup.\n- `## Use the payment flow`: Terminal API payment-response `LoyaltyResult` fields and merchant-side loyalty-account update.\n- `## Use the redeem flow`: card-acquisition `LoyaltyAccount`, `POITransactionID` handoff, final `CardAcquisitionReference`, existing-pass and newly-issued-pass cases, `LoyaltyData` and shopper-reference privacy rule.\n- `## Overriding the configured flow`: per-request `VASModeOverride` values and Base64 placement.\n\n## Related\n\n- [[adyen-pos-loyalty]] \u2014 in-person loyalty routes.\n- [[adyen-terminal-api]] \u2014 Terminal API payment and card-acquisition messages.\n- [[adyen-payment-terminals]] \u2014 physical terminal hardware context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/loyalty/wallet-passes/2026-09-15|Adyen wallet passes guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Only Apple Wallet passes are supported.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/wallet-passes/2026-09-15.md:38"
+    },
+    {
+      "text": "There are two variations of the redeem flow: **single-tap redeem flow** and **double-tap redeem flow**. The implementation is very similar. The main difference is that in the double-tap flow the terminal asks the shopper a second time to present their card.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/wallet-passes/2026-09-15.md:49"
+    },
+    {
+      "text": "Then you make a payment request for the final amount. This must be equal to or lower than the card acquisition amount. To ensure the shopper does not need to tap again if the payment amount differs from the card acquisition amount, you need to ask our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable single tap.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/wallet-passes/2026-09-15.md:72"
+    },
+    {
+      "text": "This key was generated when you created the pass. We will protect and encrypt it in our back end. The terminal uses this key to decrypt the NFC message and return the unique ID of the shopper's pass in the response.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/wallet-passes/2026-09-15.md:160"
+    },
+    {
+      "text": "`shopperReference`: Your unique reference for this shopper. Minimum length: three characters. Note that the value is case-sensitive. Do not include personally identifiable information (PII), such as name or email address.",
+      "location": "raw/adyen/docs/point-of-sale/loyalty/wallet-passes/2026-09-15.md:592"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "wallet-passes-pos-loyalty-route",
+        "target_path": "wiki/concepts/adyen-pos-loyalty.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-loyalty-wallet-passes]] \u2014 Apple Wallet NFC loyalty-pass guide (2026-09-15 snapshot) for Terminal API payment/redeem flows, card-acquisition handoff, pass-server/key setup and shopper-reference boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Target hub is proposed by the C08 POS loyalty overview owner; coordinator should apply this route only after the hub is approved and promoted."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/loyalty/wallet-passes/2026-09-15.md",
+  "raw_sha256": "afb2462172e9b12f7033c5440c775b9c01291984a2e2c38a40c5362c33271891",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-shopper-engagement-third-party-interactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS third-party terminal interactions\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/shopper-engagement/third-party-interactions\"\nraw_files:\n  - \"adyen/docs/point-of-sale/shopper-engagement/third-party-interactions/2026-09-15.md\"\ntags: [adyen, point-of-sale, shopper-engagement, third-party, terminal-api, input, display, webhooks]\n---\n\n## Overview\n\nThis historical Adyen guide lets a **merchant-authorized third party** conduct non-payment interactions on the merchant's payment terminals without integrating with the merchant POS app. A merchant POS app still starts the payment; the third party can receive terminal display notifications and Adyen platform standard webhooks, then send Terminal API Input or Display requests for surveys, loyalty or digital-receipt prompts. The guide's example starts the third-party input **after** the payment process finishes and says the interaction does not interrupt payment. It does not delegate payment or card acquisition to the third party. See [[adyen-pos-shopper-engagement]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The third party may send **non-payment** Input/Display requests, receive terminal-generated display notifications and, when configured, receive platform-generated standard webhooks. Payment and card-acquisition requests from that credential are prohibited; the source describes refusal with the label `010 Not Allowed`. The guide says this route does **not** work with OPI, and lists a Terminal API integration with WebSockets enabled plus M400, P400 Plus, V210 and V400m as its dated model conditions. These are not current eligibility proof. See raw introduction and \u00a7 Security and requirements (lines 19\u201344).\n- The merchant configures notification/webhook destinations and creates a special third-party API credential. The credential has an API key, account scope and **Thirdparty interaction with in-store terminals** role only; creation requires a Merchant admin or Manage API credentials user role. The merchant shares the key securely. The third party uses notification `POIID` to target its request and sends the key in `x-API-key`. These are separate merchant, third-party, terminal and Adyen platform responsibilities. See raw \u00a7\u00a7 How it works, Set up third-party webhook endpoints, Set up the third-party API credential and Let the third party send requests (lines 45\u201356, 78\u2013124, 255\u2013306).\n- The third-party endpoint receives terminal display notifications and optionally standard webhooks. The dated setup uses public display URLs; for **local** communications, the guide says Support must ensure terminal-generated display notifications are unencrypted so the third party can use them. It lists test HTTP/HTTPS versus live HTTPS/TLS 1.2 endpoint conditions. For standard webhooks it recommends HMAC verification and requires an HTTP success acknowledgement. Crucially, the guide says transaction-detail restrictions were not then enforced for third-party standard webhooks, so the merchant should enable only the minimum additional detail needed. See raw \u00a7 Set up third-party webhook endpoints (lines 78\u2013132).\n- In the example, terminal `TENDER_CREATED` through `TENDER_FINAL` display notifications let the third party follow tender progress; a final notification adds the PSP reference to the tender reference for cross-reference with a later standard webhook. After payment, the third party sends Input, receives the customer's response, can show a timed thank-you Display, and separately receives the platform webhook. A displayed `READY_3RD_PARTY` sample and field-level examples are in raw lines 184\u2013253. This described sequence does not establish a successful payment or customer-consent handling for a specific deployment. See raw \u00a7\u00a7 How it works and Third-party interaction flow (lines 45\u201376).\n- Third-party Input/Display requests should set `MinimumDisplayTime`; otherwise the source says they time out after three seconds. The merchant POS app can override an in-progress third-party interaction with a higher-priority DisplayRequest for the standby screen because it lacks the third party's `ServiceID`; the terminal user can cancel with a keypad key or available on-screen icon. **Source conflict:** the POS-cancel prose says the third party receives `ErrorCondition: Cancel`, while its example response uses `Busy` with \u201cA higher priority request has been received.\u201d Treat the exact error condition as unresolved by this snapshot. See raw \u00a7\u00a7 Let the third party send requests and Canceling an in-progress interaction (lines 286\u2013306, 308\u2013502).\n- The final testing section proposes test transactions, answer, timeout and both cancellation paths, then repeats across payment instruments and entry methods. These are suggested scenarios, not evidence they were run. See raw \u00a7 Testing (lines 504\u2013521).\n\n## Detail locators\n\n- Raw \u00a7\u00a7 Security and requirements, How it works and Third-party interaction flow: permitted requests, dated WebSocket/model scope, tender notifications and payment/interaction boundary (lines 35\u201376).\n- Raw \u00a7 Set up third-party webhook endpoints: merchant/third-party endpoint setup, local-notification security, standard-webhook information exposure and account scope (lines 78\u2013253).\n- Raw \u00a7\u00a7 Set up the third-party API credential and Let the third party send requests: credential roles/accounts, `POIID`, API key and timeout (lines 255\u2013306).\n- Raw \u00a7 Canceling an in-progress interaction: POS versus terminal controls and conflicting POS-cancel error example (lines 308\u2013502).\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 in-person Input/Display use cases and consent context.\n- [[adyen-terminal-api]] \u2014 Terminal API request and notification architecture.\n- [[adyen-webhooks]] \u2014 platform standard-webhook security and scope.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/shopper-engagement/third-party-interactions/2026-09-15|Third-party interactions guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "That is because we support **third-party interactions**, where another company can interact with your terminals directly without having to integrate with your POS system.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/third-party-interactions/2026-09-15.md:21"
+    },
+    {
+      "text": "Third parties cannot send payment or card acquisition requests to your terminals. If they try to send such a request, the request is refused with an HTTP status code of `010 Not Allowed`.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/third-party-interactions/2026-09-15.md:37"
+    },
+    {
+      "text": "* With specific terminal models: M400, P400 Plus, V210, V400m.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/third-party-interactions/2026-09-15.md:43"
+    },
+    {
+      "text": "Currently there are no restrictions enforced on the details that third parties can receive in standard webhooks. We advise you to limit the details to the minimum required for your use case, by enabling as few additional settings as possible.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/third-party-interactions/2026-09-15.md:128"
+    },
+    {
+      "text": "The third-party API credential has limited access and cannot be used to make payments.",
+      "location": "raw/adyen/docs/point-of-sale/shopper-engagement/third-party-interactions/2026-09-15.md:259"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c08-third-party-shopper-engagement-route",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-shopper-engagement-third-party-interactions]] \u2014 historical third-party POS Input/Display guide (2022-12-27 modified; 2026-09-15 capture) for merchant-authorized non-payment terminal interactions, credentials, notifications/webhooks, privacy limits and cancellation conflict; dated model/WebSocket/OPI scope needs current verification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The shopper-engagement overview is coordinator-proposed; insert this reciprocal after that hub exists.",
+          "The POS-cancel narrative says ErrorCondition Cancel, but its JSON example says Busy; retain the conflict in the source rather than resolve it by inference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/shopper-engagement/third-party-interactions/2026-09-15.md",
+  "raw_sha256": "03925f9dc799e1d6aeca6877e31530efe0f4e394766cef9afef978f9f04a8107",
+  "status": "candidate_ready"
+}
