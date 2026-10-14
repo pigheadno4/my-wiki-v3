@@ -1961,6 +1961,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.574/2026-10-04/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.573--5.0.574/comparison.json)
 
+## `github-6c62ec29ee9438687187`
+
+- Repository: `stripe/stripe-android`
+- SHA: `ec79c2195abda2a38cd253ca1ed699f4bca96b84`
+- Collection date: `2026-10-13`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-android/ingest-packets/github-6c62ec29ee9438687187/packet.md)
+- Review priority: `high`
+- Required reading: `19` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-android@23.22.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.21.0--23.22.0/comparison.json)
+
 ## `github-6f28a665749d03e55161`
 
 - Repository: `stripe/stripe-cli`
@@ -3068,6 +3093,31 @@
 - `@paypal/react-paypal-js@10.3.0` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.1--10.3.0/comparison.json)
+
+## `github-9d505b454cf636ac1ed1`
+
+- Repository: `stripe/stripe-android`
+- SHA: `e6f4a675f899d7a61a54b09e1ad74c669479f50c`
+- Collection date: `2026-10-13`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-android/ingest-packets/github-9d505b454cf636ac1ed1/packet.md)
+- Review priority: `high`
+- Required reading: `25` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-android@23.23.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.23.0/2026-10-13/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.22.0--23.23.0/comparison.json)
 
 ## `github-9d9e63d1c622ac7d59ac`
 

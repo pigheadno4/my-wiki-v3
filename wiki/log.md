@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-14] ingest | Stripe Android `23.23.0`
+
+- Approved focused-reading additive full ingest from 23.22.0: security/error announcements, legacy next-action caller changes, Onramp restoration and new method declarations. All 104 hashes/sizes verified; older history/count retained, excluded implementations explicit. Details [[stripe-log]] and [[changelog-github-stripe-android]]. No build/device/security/payment tests, commit or push. Next: scoped commit approval; two-release serial ingest complete after validation.
+
+## [2026-10-14] ingest | Stripe Android `23.22.0`
+
+- Approved focused-reading additive full ingest from 23.21.0; FlowController callback ownership, Onramp wallet/contact and method declarations. All 104 hashes/sizes verified; older history/count retained, announcements/gaps qualified. Details [[stripe-log]] and [[changelog-github-stripe-android]]. No build/device/payment tests, commit or push. Next: approved 23.23.0 serial ingest.
+
 ## [2026-10-13] ingest | Adyen website C05
 
 - Fifty independently approved in-person documentation sources; first full-review approvals 47/50 and 3 targeted correction reviews. 8 concepts touched (0 new); source_count 264 = 250 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-05/`; details [[adyen-log]]. No commit/push.

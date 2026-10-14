@@ -184,8 +184,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping, invoice voiding, and retry boundary for a Metronome-gated commit
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — contract invoice-routing transitions between Stripe, NetSuite, and marketplaces
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
-- [[source-github-stripe-android]] — cumulative Android SDK through v23.21.0: host-scoped callbacks, Embedded API configuration preview, Financial Connections consent and Onramp terms contracts; older history/gaps retained
-- [[changelog-github-stripe-android]] — package-qualified Android history through v23.21.0; versioned contracts, announcements and retrospective moves distinguished
+- [[source-github-stripe-android]] — cumulative Android SDK through v23.23.0: security/error announcements, next-action callers, Onramp callback restoration and additional payment-method declarations; older knowledge/gaps retained
+- [[changelog-github-stripe-android]] — package-qualified Android history through v23.23.0; contracts, announcements and retrospective attribution distinguished
 - [[source-github-stripe-ios]] — cumulative stripe-ios SDK through v26.13.0: MoMo/GoPay/ShopeePay processing distinctions, FlowController plumbing and alpha pre-auth Apple Pay/KYC; older baselines, Pix caveat and evidence limits preserved
 - [[changelog-github-stripe-ios]] — package-qualified iOS history through v26.13.0; processing contracts, migration/evidence limits and retrospective attribution changes
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@5.8.0` card-present iOS SDK baseline: readers, Tap to Pay, payments, SetupIntents, offline processing, refunds, and updates

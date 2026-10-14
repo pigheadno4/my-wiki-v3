@@ -71,6 +71,12 @@ Customer can revoke in their banking app at any time → Stripe fires `mandate.u
 
 Failed/non-success polling deadlines report canceled. The redirect-return path can also cancel a still-pending Pix Intent; this is a code-path risk, not device-tested behavior or proof that no bank payment occurred. See [[stripe-ios-sdk]], [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]] for version-qualified behavior and server-verification boundaries.
 
+## Native Android `23.22.0` Evidence
+
+Release notes announce Pix PaymentIntent and SetupIntent support in PaymentSheet. Compiled API adds PaymentMethod.Type.Pix, createPix overloads and StripeIntent.NextActionType.DisplayPixDetails. These declarations do not establish required customer fields, QR presentation, polling, mandate persistence or a complete native subscription flow: the model/request and PaymentSheet implementations are excluded. Do not transfer the web subscription recipe above solely from these bindings. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## Sources
+
+- [[source-github-stripe-android]] - native 23.22.0 bindings and PaymentSheet release announcements with explicit implementation limits
 
 - [[source-stripe-subscriptions-pix]] — Stripe docs: Pix subscription guide (Checkout + SetupIntents + Subscriptions API, Pix Automático, 6 test email patterns)

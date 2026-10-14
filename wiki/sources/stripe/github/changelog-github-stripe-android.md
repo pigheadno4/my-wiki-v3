@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/stripe-android"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-02
+date_updated: 2026-10-14
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/manifest.json"
+  - "github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-09-29-a074a95/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-09-29-d47cf89/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-09-29-a95cc0e/manifest.json"
@@ -22,6 +24,48 @@ tags: [stripe, android, kotlin, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-android`. Durable architecture and integration knowledge belongs in [[source-github-stripe-android]] and the linked immutable evidence.
+
+## `stripe-android@23.23.0` - Change Set `e6f4a67` (2026-10-12)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe-android` | `stripe-android@23.22.0` | `stripe-android@23.23.0` | 2026-10-12 | `e6f4a675f899d7a61a54b09e1ad74c669479f50c` | Additive full, approved focused reading |
+
+**Changes:** security/error announcements cover browsable intent URL resolution, invalid-secret redaction and legacy next-action errors. Retained Stripe.kt forwards raw client-secret strings instead of constructing wrappers in four Activity/Fragment call sites; delegated validation/redaction/resolver implementations are excluded. Adds NgCard/GCash/Qris/ShopeePay API declarations with announced Naira one-time, GCash and QRIS/ShopeePay PaymentIntent PaymentSheet support. Header removal, address prefill and optional-phone validation are announced. Onramp now restores its callback store before presenter creation and updates it in Builder. Financial Connections wraps unchanged public key/account inputs in internal ApiConfiguration.State. Identity gains restricted styles; generated declarations and test/debug tooling change.
+
+**Impact/migration:** regression-test authentication/invalid-secret results, applicable new methods, Onramp host reuse and address flows. Do not assume missing test banners mean live mode; keep secrets out of app logs. Caller changes are not independent proof of redacted errors, resolver enforcement, restored delivery or isolation. New types do not establish merchant eligibility/required request fields; restricted Identity styles are not general merchant APIs. No production minimum change is observed in retained builds.
+
+**Historical attribution:** current CHANGELOG inserts the missing-Onramp-callback fix under 23.22.0, whose retained coordinator lacks the new restore/store calls. Preserve the retrospective label separately from the observed 23.22.0 -> 23.23.0 code boundary. All 4,865 prior changelog lines remain with 22 insertions.
+
+**Scope/updated:** 52 files per capsule, sixteen modified/36 unchanged, 104 verified hashes/sizes, 3,521 classified upstream dispositions. Approved full mode for unbounded security impact with focused reading: changed implementation/API blocks/affected prior context reviewed; unchanged expanded inventories/history checked mechanically. Android/Onramp concepts first, cumulative source/changelog/company/index/logs; older knowledge/source count preserved. No extra collection, build/device/security/payment tests, commit or push.
+
+**Evidence:**
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.23.0/2026-10-13/manifest.json`
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.23.0/2026-10-13/release-notes.md`
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/manifest.json`
+- `tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.22.0--23.23.0/comparison.json` - adjacent comparison.md/diff.patch
+- [[source-github-stripe-android]] - retained caller/declaration paths, grounding excerpts and implementation limits
+
+## `stripe-android@23.22.0` - Change Set `ec79c21` (2026-10-05)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe-android` | `stripe-android@23.21.0` | `stripe-android@23.22.0` | 2026-10-05 | `ec79c2195abda2a38cd253ca1ed699f4bca96b84` | Additive full override, approved focused reading |
+
+**Changes:** FlowController Activity/Fragment builder/deprecated creation paths now use host-owned saved callback identifiers. Onramp exposes contact getters, country hint, contact opt-in, recoverable account-change error and Celo declaration; pre-auth wallet collection/contact-only prefill is announced, while token creation still requires a crypto customer. GoPay/MoMo PaymentIntent and Pix PaymentIntent/SetupIntent PaymentSheet support is announced with retained creation/type/next-action declarations. Financial Connections adds session-ID declarations. Restricted Identity consent source requires a second Boolean; two generated primary-button bindings are removed. HTTP cache removal and Embedded processing guards are announcements.
+
+**Impact/migration:** regression-test callback lifecycle and applicable payment/wallet flows; review exhaustive enums and direct generated binding references. Host-scoped ID is not per-instance isolation or restored callback proof. Contact prefill is not KYC submission, authentication or checkout. Request/eligibility/routing/cache/processing-guard and concrete factory/registry internals are excluded; no complete native Pix subscription recipe is inferred.
+
+**Historical attribution:** new cumulative notes put Financial Connections session-ID and Pix bindings under 23.21.0 retrospectively; the earlier retained API lacked them. Keep that label separate from the observed 23.21.0 -> 23.22.0 API boundary. All 4,843 prior changelog lines remain with 22 insertions.
+
+**Scope/updated:** 52 files per capsule, ten modified/42 unchanged, 104 matching hashes/sizes, 491 upstream dispositions. Expanded full inventory checked under approved focused reading; changed implementation/API blocks and affected prior context read, unchanged inventories/history checked mechanically. Android/Onramp/Pix concepts first, cumulative source/changelog/company/index/logs; older knowledge/source count retained. No extra collection or build/device/payment tests; no commit/push.
+
+**Evidence:**
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/manifest.json`
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/release-notes.md`
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/manifest.json`
+- `tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.21.0--23.22.0/comparison.json` - adjacent comparison.md/diff.patch
+- [[source-github-stripe-android]] - exact implementation/declaration paths, quotes and limitations
 
 ## `stripe-android@23.21.0` - Change Set `a074a95` (2026-09-28)
 

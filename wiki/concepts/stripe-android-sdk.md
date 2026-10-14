@@ -177,6 +177,22 @@ FinancialConnectionsSheet adds nullable preCollectedConsent forwarding while pre
 
 Full mode with focused reading was approved; unchanged inventory/history mechanically checked. Earlier architecture, platform floors and versioned contracts remain intact. No build/device/payment tests.
 
+## `23.22.0` Additive Full Ingest
+
+FlowController Activity/Fragment builders and deprecated creators now retrieve StoreViewModel under FLOW_CONTROLLER_STORE_KEY and pass its SavedStateHandle-backed callback ID to the factory and callback registry. This extends 23.21.0's PaymentSheet change to these FlowController paths. The same owner/key can share a store; this is not per-instance isolation or proof of restored callback delivery. Compose delegates to its unchanged helper. Regression-test deferred/external callbacks across navigation and host recreation.
+
+Compiled API adds GoPay, MoMo and Pix creation/type declarations and DisplayPixDetails. Notes announce GoPay/MoMo PaymentIntent and Pix PaymentIntent/SetupIntent PaymentSheet support. Routing, request fields, mandates and eligibility are excluded; see [[stripe-pix]]. Embedded View more/Edit processing guards and removal of the process-wide HTTP cache are announcements with excluded implementation.
+
+Financial Connections adds financialConnectionsSessionId/component3 declarations. Identity's library-group-restricted biometric-consent source adds a required hideDeclineButton Boolean; the general merchant Configuration constructor remains unchanged. Two generated public primary-button binding classes disappear: review direct references without inferring removal of PaymentSheet functionality. Onramp wallet/contact changes are recorded in [[stripe-crypto-onramp]]. Older knowledge remains in [[source-github-stripe-android]] and [[changelog-github-stripe-android]]. No Android build/device/payment testing.
+
+## `23.23.0` Additive Full Ingest
+
+Notes announce browsable-only intent URL resolution in authentication, invalid-secret errors without echoing the supplied value, and legacy next-action errors instead of uncaught exceptions. Retained Stripe.kt removes local PaymentIntent/SetupIntent.ClientSecret wrappers in four Activity/Fragment next-action methods and forwards the string to paymentController.startAuth. The controller, client-secret models and URL resolver are excluded: error text/redaction, result delivery and security enforcement are not independently verified. Keep client secrets out of app logs regardless of SDK error wording.
+
+Compiled API adds GCash, NgCard, Qris and ShopeePay types/creation overloads; NgCard exposes brand/last4 with Amex, Mastercard, Verve, Visa and Unknown brand declarations. Notes announce one-time Naira card, GCash, and QRIS/ShopeePay PaymentIntent PaymentSheet support. Declarations do not prove eligibility, request fields or runtime routing. Test-header removal, case-insensitive address prefill and incomplete optional-phone rejection are announcements with excluded implementation; absence of a test banner is not evidence of live mode.
+
+Financial Connections forwards the same public key/account/consent fields through internal ApiConfiguration.State without changing merchant configuration signatures. Identity adds library-group-restricted primary/secondary button styles, not general merchant APIs; generated debug/Compose declarations change/remove. Experimental Onramp restores callback registration before constructing presenters; its excluded store implementation and retrospective attribution are detailed in [[stripe-crypto-onramp]]. Production floors are not raised by retained build changes (test/debug tooling and root classpath changes). Older history remains in [[source-github-stripe-android]] and [[changelog-github-stripe-android]]. No build/device/payment testing.
+
 ## Related
 
 - Source: [[source-github-stripe-android]]

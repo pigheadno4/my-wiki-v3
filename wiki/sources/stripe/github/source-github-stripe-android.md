@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-android"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-10-02
+date_updated: 2026-10-14
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/manifest.json"
+  - "github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-09-29-a074a95/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-09-29-d47cf89/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-09-29-a95cc0e/manifest.json"
@@ -27,6 +29,8 @@ Repository: <https://github.com/stripe/stripe-android>
 
 ## Evidence Boundary
 
+- `23.23.0` uses approved additive full mode with focused reading because security impact is not bounded by this capsule. All 104 hashes/sizes match across two 52-file snapshots: sixteen modified/36 unchanged, 3,521 classified upstream dispositions. Changed caller implementations, affected prior code/API blocks, builds and content reviewed; unchanged expanded inventory/history checked mechanically. Payment controller/client-secret models/intent resolver, new-method routing, address/header UI and Onramp callback store remain excluded. Security/error announcements are not independent implementation proof. No build/device/payment tests; older knowledge retained.
+- `23.22.0` uses approved additive full override with focused reading for FlowController callback wiring and generated compatibility removals. Both 52-file capsules match all 104 hashes/sizes: ten modified/42 unchanged, 491 classified upstream dispositions. Changed implementation/API blocks, affected prior code, short content and release/comparison reviewed; unchanged expanded inventory/history checked mechanically. Wallet/KYC/cache, method routing, Embedded processing guards and concrete FlowController factory/registry remain excluded. No build/device/payment tests; older knowledge preserved.
 - `23.21.0` uses explicitly approved additive full mode with focused reading for callback/lifecycle architecture and compiled compatibility changes. All 104 prior/current retained hashes match: 52 files per capsule, twelve modified/40 unchanged, 757 classified upstream dispositions. Changed source/context, short files, API blocks and affected prior code reviewed; expanded unchanged full inventory/history mechanically checked. Concrete callback registry/launcher, Embedded credentials processing, consent/terms persistence, card/Bizum/MB WAY routing and Financial Connections error mapping remain excluded. No build/device/payment tests; all older wiki knowledge preserved.
 - `23.20.0` is a contained approved delta with focused reading: complete current/prior GooglePayLauncher, changed short files, added API declarations in enclosing context and release/patch content reviewed. Both 52-file capsules match all 104 hashes; eight modified/44 unchanged and 712 classified upstream dispositions. Unchanged inventories/history checked mechanically; Bizum/Alipay routing and GooglePayConfig/repository internals are excluded. No build/device/payment tests.
 - `23.19.0` uses explicitly approved additive full mode with focused reading for the revised returning-user Link entry contract. All 104 prior/current retained hashes match; 52 files per capsule, five modified/47 unchanged, 942 classified upstream dispositions. Changed short files, release/patch content and complete prior/current LinkConfiguration blocks read; unchanged expanded full inventory/history checked mechanically. Link detection/rendering, locale resources and race-fix implementation remain excluded; no build/device/payment proof.
@@ -68,9 +72,101 @@ Repository: <https://github.com/stripe/stripe-android>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `stripe-android` | `23.21.0` | `a074a9500e14932f00ce9cef250a3c63940f9837` | Approved additive full mode with focused reading; all older baselines/deltas retained |
+| `stripe-android` | `23.23.0` | `e6f4a675f899d7a61a54b09e1ad74c669479f50c` | Approved additive full mode with focused reading; all older baselines/deltas retained |
 
 This table reports wiki ingest progress, not the latest release published upstream.
+
+## `stripe-android@23.23.0` Additive Full Ingest
+
+### Authentication and Client-Secret Error Boundary
+
+Release notes announce browsable activity resolution for intent URLs during payment authentication; helpful invalid PaymentIntent/SetupIntent client-secret errors without including the supplied value; and errors from legacy next-action APIs instead of uncaught exceptions. Retained Stripe.kt shows four Activity/Fragment handleNextActionForPayment/handleNextActionForSetupIntent methods replacing local ClientSecret(...).value construction with direct clientSecret forwarding to paymentController.startAuth inside lifecycleScope.launch. Request options and Intent-type forwarding remain unchanged; merchant method signatures do not change.
+
+This proves removal of local wrapper validation, not disabled validation everywhere or independently verified error handling/redaction. PaymentController, client-secret model validation and authentication intent resolver are excluded. No supported result API migration, exact error text, comprehensive secret-safety guarantee or arbitrary deep-link safety follows from the retained caller alone. Keep secrets out of application logs and regression-test invalid credentials/authentication results; no device/security/payment tests were performed.
+
+### Method Bindings and UI Announcements
+
+Compiled payments-core adds Type.GCash, NgCard, Qris and ShopeePay plus static/Companion createGCash/createNgCard/createQris/createShopeePay overloads. PaymentMethod adds ngCard and Builder.setNgCard; NgCard declares brand/last4 and its Brand enum contains Amex, Mastercard, Unknown, Verve and Visa. Notes announce Naira card one-time PaymentSheet support, GCash support and QRIS/ShopeePay PaymentIntent support. These are declarations plus announcements, not proof of method eligibility, currency/account constraints, required fields, serialization, 3DS, redirects or SetupIntent support for those new methods. Review exhaustive type/brand switches and enabled payment flows.
+
+Case-insensitive country/state prefill, rejecting incomplete optional Address Element phone numbers, and removing test-mode headers from PaymentSheet/CustomerSheet/Embedded Payment Element and Financial Connections are announcements with excluded implementation. Missing banners do not establish live credentials or payment success; explicitly verify backend/SDK environment.
+
+### Retained Lifecycle and Internal Configuration Changes
+
+- OnrampCoordinator now receives OnrampCallbackStore. Builder updates it with the built callbacks; createPresenter calls restore before creating presenter launchers. The caller comment explains that finished hosts remove global registrations and launchers may synchronously redeliver results. The prior builder wrote directly to global references and the prior presenter path lacked restoration. Store/component cleanup is excluded, so restored delivery, per-coordinator isolation and process-death safety remain unverified. Generated AdditionalKycScreen Compose declarations are not a supported new merchant KYC API; see [[stripe-crypto-onramp]].
+- FinancialConnectionsSheet.Configuration.toInternal now wraps publishableKey/stripeAccountId in ApiConfiguration.State, still forwarding session client secret and optional preCollectedConsent. Public Configuration/present signatures remain unchanged. ApiConfiguration/internal configuration/network implementations are excluded; this does not prove key/account validation, credential rotation or tenant isolation.
+- Identity source adds nullable primaryButtonStyle/secondaryButtonStyle properties and restricted parcelable color/shape/style types. Fields cover light/dark colors, radius/height, elevation, uppercase and secondary border. They are LIBRARY_GROUP-restricted, not general merchant APIs; rendering/validation is excluded. The public compiled Configuration signatures remain unchanged; generated DebugScreen class/BottomSheet accessor removal and PaymentSheet generated lambda replacements are compatibility observations, not removal of supported payment/Identity products.
+- Build changes upgrade Paparazzi alpha tooling, exclude sdk-common from its root classpath, remove a root Emerge plugin declaration, and add Onramp debug/test/resources and payments-core test dependencies. No production module minimum change is observed; declarations do not prove build success or execution of upstream tests. README/VERSION/gradle.properties only advance the version.
+
+> [!warning] Contradiction
+> The new cumulative changelog places the reused-OnrampCoordinator/missing-callback fix under 23.22.0 retrospectively. That retained coordinator lacks the restoration/store changes. Preserve the upstream label and observed 23.22.0 -> 23.23.0 code boundary separately; neither establishes an earlier first implementation release.
+
+All 4,865 prior changelog lines remain with 22 insertions (21 new-release lines and one retrospective note). Full ingest adds these facts without replacing the 23.22.0 or older histories.
+
+### `23.23.0` Grounding Excerpts
+
+> "Restricted intent URLs in payment authentication to browsable activity resolution."
+>
+> `raw/github/stripe/stripe-android/releases/stripe-android/23.23.0/2026-10-13/release-notes.md:2`
+
+> "Return helpful errors for invalid PaymentIntent and SetupIntent client secrets without including the supplied value."
+>
+> `raw/github/stripe/stripe-android/releases/stripe-android/23.23.0/2026-10-13/release-notes.md:3`
+
+> "Added Naira card API bindings and PaymentSheet support for one-time payments."
+>
+> `raw/github/stripe/stripe-android/releases/stripe-android/23.23.0/2026-10-13/release-notes.md:8`
+
+> `callbackStore.restore()`
+>
+> `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt:213`
+
+> `apiConfiguration = ApiConfiguration.State(`
+>
+> `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt:75`
+
+## `stripe-android@23.22.0` Additive Full Ingest
+
+### FlowController Callback Ownership
+
+Activity/Fragment Builder.build and all eight deprecated create overloads now obtain StoreViewModel from the host's ViewModelProvider under FLOW_CONTROLLER_STORE_KEY. They pass paymentElementCallbackIdentifier to FlowControllerFactory; paths configuring optional callbacks store them under that same identifier rather than FLOW_CONTROLLER_DEFAULT_CALLBACK_IDENTIFIER. StoreViewModel reuses PAYMENTSHEET_ID from SavedStateHandle or generates/stores a UUID. This extends the earlier 23.21.0 PaymentSheet change, not a new required merchant parameter.
+
+The fixed owner/key can share a ViewModel across controllers. Do not infer per-instance isolation, persisted callback objects, process-restoration correctness or concrete factory cleanup. The Compose builder still delegates to internalRememberPaymentSheetFlowController; its implementation is excluded. Test deferred/external callbacks, host recreation and multiple-controller lifecycles before relying on the internal change.
+
+### Payment and Specialized Module Changes
+
+- Compiled payments-core adds GoPay, MoMo and Pix Type values, static/Companion createGoPay/createMoMo/createPix overloads, and DisplayPixDetails. Notes announce GoPay/MoMo PaymentIntent support and Pix PaymentIntent/SetupIntent support in PaymentSheet. Signatures do not establish request fields/defaults, serialization, mandates, method eligibility or a native subscription recipe; see [[stripe-pix]].
+- Experimental Onramp adds KycInfo email/phone/rawPhone getters and constructor overloads while retaining earlier constructors, countryHint, SamsungPayConfig.collectContactInformation and PlatformPayAccountChangedException implementing StripeCryptoOnrampError. Release notes announce contact-only wallet prefill (validated E.164 phone and original rawPhone), not KYC submission; pre-authentication Google Pay/Samsung Pay collection; crypto-customer requirement for token creation; and repeated collection after account change. These changed internals are excluded, while the retained coordinator is unchanged. Celo is newly present in CryptoNetwork without proving serialized value or geographic/merchant availability; see [[stripe-crypto-onramp]].
+- FinancialConnectionsEvent adds getFinancialConnectionsSessionId and component3. Event timing is only announced in the new cumulative historical note, not verified in the excluded event sender.
+- Library-group-restricted Identity BiometricConsentConfiguration adds hideDeclineButton as a required second Boolean without a default; this changes that restricted source contract, not the general merchant Configuration constructor. The retained compiled identity inventory is unchanged.
+- Compiled PaymentSheet removes generated StripeAndroidPrimaryButtonBinding and StripeFragmentPrimaryButtonContainerBinding declarations. Direct references carry compatibility risk; removal is not evidence that primary buttons or PaymentSheet were removed.
+- Stopping the process-wide HTTP response cache and disabling Embedded saved-method View more/Edit during processing are release announcements. Cache/network and actual button-guard implementations are excluded. No runtime or device behavior was tested.
+
+> [!warning] Contradiction
+> The new cumulative changelog places Financial Connections session-ID and Pix bindings under 23.21.0 retrospectively, absent from that earlier retained API/notes. This comparison observes their 23.21.0 -> 23.22.0 declaration addition. Preserve both the later label and older immutable evidence; neither establishes the exact first implementation release.
+
+README, VERSION and gradle.properties advance the release version without changing retained platform requirements. All 4,843 prior changelog lines remain with 22 insertions (18 new-release lines, four retrospective lines). Full mode is additive; no older sections are replaced.
+
+### `23.22.0` Grounding Excerpts
+
+> "These fields are not submitted with KYC."
+>
+> `raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/release-notes.md:4`
+
+> "Creating a crypto payment token still requires a crypto customer."
+>
+> `raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/release-notes.md:6`
+
+> "Added Pix support for PaymentIntents and SetupIntents in PaymentSheet."
+>
+> `raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/release-notes.md:14`
+
+> `initializeCallbacks(storeViewModel.paymentElementCallbackIdentifier)`
+>
+> `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt:4231`
+
+> "Whether to hide the decline button below the primary action."
+>
+> `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/identity/src/main/java/com/stripe/android/identity/IdentityVerificationSheet.kt:56`
 
 ## Architecture
 
@@ -490,6 +586,14 @@ The v23 migration raises the Android and SDK floors. The v22 migration removes l
 
 ## Version History
 
+### `stripe-android@23.23.0`
+
+Published 2026-10-12; approved additive full mode with focused reading for unbounded security impact. Adds legacy next-action caller changes, Onramp callback restoration and method/internal-style declarations; security/UI announcements and implementation gaps remain explicit. Older history and retrospective labels retained; see [[changelog-github-stripe-android]].
+
+### `stripe-android@23.22.0`
+
+Published 2026-10-05; approved additive full override with focused reading. Adds FlowController host-owned callback wiring, wallet/contact and method declarations; announcements and excluded implementation remain qualified. Older history and retrospective attribution are retained; see [[changelog-github-stripe-android]].
+
 ### `stripe-android@23.21.0`
 
 Published 2026-09-28; additive full override with focused reading approved for callback/lifecycle and generated compatibility changes. Adds Embedded preview example, consent/terms contracts and qualified payment/error announcements. Preserves moved/retrospective changelog attribution and all earlier knowledge; see [[changelog-github-stripe-android]].
@@ -563,6 +667,34 @@ The May 2026 manual capsule established PaymentSheet, FlowController, CustomerSh
 
 ## Raw Sources
 
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/manifest.json` - exact-SHA 23.23.0 capsule; all inventory hashes/sizes verified
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.23.0/2026-10-13/manifest.json` - package-qualified release identity
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.23.0/2026-10-13/release-notes.md` - full security/payment/UI announcements
+- `tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.22.0--23.23.0/comparison.json` - adjacent comparison.md/diff.patch
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/payments-core/src/main/java/com/stripe/android/Stripe.kt` - complete affected next-action methods and prior context at ec79c21
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt` - complete coordinator source and affected prior callback paths
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt` - complete source and prior internal-configuration block
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/identity/src/main/java/com/stripe/android/identity/IdentityVerificationSheet.kt` - complete source/restricted styles and prior configuration
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/payments-core/api/payments-core.api` - affected new-method declarations and prior inventory
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/identity/api/identity.api` - generated declaration removals
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/paymentsheet/api/paymentsheet.api` - affected generated lambda blocks
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/crypto-onramp/api/crypto-onramp.api` - generated AdditionalKycScreen declarations
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/CHANGELOG.md` - release/retrospective additions; unchanged history mechanically checked
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/build.gradle` - root tooling/classpath changes
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/dependencies.gradle` - test tooling dependency declaration
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/crypto-onramp/build.gradle` - debug/test additions; API 24 floor retained
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/files/payments-core/build.gradle` - test-only dependency addition
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/manifest.json` - exact-SHA 23.22.0 capsule; all inventory hashes/sizes verified
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/manifest.json` - package-qualified release identity
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/release-notes.md` - complete release announcements
+- `tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.21.0--23.22.0/comparison.json` - adjacent comparison.md/diff.patch
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt` - affected complete FlowController/store blocks and prior context at a074a95
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/identity/src/main/java/com/stripe/android/identity/IdentityVerificationSheet.kt` - restricted consent source contract
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/crypto-onramp/api/crypto-onramp.api` - affected wallet/KYC/configuration/network declarations
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/payments-core/api/payments-core.api` - affected method/next-action declarations
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/financial-connections/api/financial-connections.api` - event declarations
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/paymentsheet/api/paymentsheet.api` - removed generated bindings; prior declarations retained at a074a95
+- `raw/github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/files/CHANGELOG.md` - added release/retrospective notes; unchanged history mechanically checked
 - `raw/github/stripe/stripe-android/snapshots/2026-09-29-a074a95/manifest.json` - exact-SHA 23.21.0 capsule; unchanged expanded inventory hash-checked
 - `raw/github/stripe/stripe-android/releases/stripe-android/23.21.0/2026-09-29/manifest.json` - package release/publication identity
 - `raw/github/stripe/stripe-android/releases/stripe-android/23.21.0/2026-09-29/release-notes.md` - payment/preview/error announcements

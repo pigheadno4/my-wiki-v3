@@ -171,6 +171,18 @@ Experimental OnrampCoordinator.Presenter adds presentTermsAndConditionsIfNeeded 
 > [!warning] Contradiction
 > The 23.21.0 raw changelog moves the KYC addition previously labeled 23.17.1 to 23.18.0 and adds the terms-method note under 23.19.0 retrospectively. The earlier retained API/source lacked these terms methods through 23.20.0; this comparison directly observes their 23.20.0 -> 23.21.0 addition. Preserve both immutable history records and the observed boundary without claiming an exact first implementation release. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
 
+### Android `23.22.0` Wallet Contacts and Pre-Authentication Collection
+
+Release notes announce Google Pay/Samsung Pay collection before Link authentication, while crypto payment-token creation still requires a crypto customer. Wallet collection can return contact-only KycInfo for prefill: email, validated E.164 phone and original rawPhone; these fields are not submitted with KYC. This version-qualified native announcement differs from the older headless setup sequence; collection is not checkout, KYC completion or payment success. The retained coordinator is unchanged, and the changed wallet/interactor/model/request implementations are excluded.
+
+Compiled API directly adds KycInfo contact getters/new constructor overloads (old overloads remain), OnrampConfiguration.countryHint, SamsungPayConfig.collectContactInformation and PlatformPayAccountChangedException with StripeCryptoOnrampError getters. Notes call the error recoverable by repeating wallet collection after an account change; exact detection, defaults, hint validation and error/request mapping are unverified. CryptoNetwork.Celo is newly declared without proving serialized value or eligibility. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]]; do not transfer these findings to a React Native version without bridge evidence.
+
+### Android `23.23.0` Presenter Callback Restoration
+
+OnrampCoordinator now receives OnrampCallbackStore. Builder.build updates it with built callbacks, and createPresenter(activity) calls restore() before building launchers that may synchronously deliver pending results. The prior builder wrote directly to global callback references and the prior createPresenter lacked restoration. The store, lifecycle cleanup and component implementations are excluded, so this is observed caller ordering, not proof of delivery after process death or isolation across coordinators.
+
+The new cumulative changelog labels the reused-coordinator/missing-callback fix under 23.22.0, but the retained 23.22.0 coordinator lacked this code. Preserve the later attribution separately from the observed 23.22.0 -> 23.23.0 boundary. Generated AdditionalKycScreen Compose declarations are added without establishing a new supported merchant KYC API. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## iOS `26.13.0` Alpha Delta
 
 This version-qualified native alpha flow is distinct from the older web/headless setup sequence above. `CryptoOnrampCoordinator.collectPaymentMethod(type:from:)` can present Apple Pay before Link authentication: its platform-client resolver now forwards an optional crypto customer ID instead of rejecting an absent one. Card/bank collection still checks verified Link state, and `createCryptoPaymentToken()` still requires a crypto customer ID. Collection creates a payment source; it does not perform checkout or prove payment success.

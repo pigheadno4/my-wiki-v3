@@ -6,6 +6,16 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-14] ingest | Stripe Android `23.23.0`
+
+- Approved additive full mode with focused reading, github-9d505b454cf636ac1ed1 at e6f4a675f899d7a61a54b09e1ad74c669479f50c, from 23.22.0. Sixteen modified/36 unchanged files, 104 verified hashes/sizes, 3,521 upstream dispositions. Changed implementation/API blocks/affected prior context reviewed; unchanged effective full inventory/history checked mechanically. All 4,865 prior changelog lines retained with 22 insertions.
+- Android/Onramp concepts first, cumulative source/changelog/company/index/logs preserve older knowledge/count. Security/error announcements distinguished from next-action caller evidence and excluded resolver/model/controller; new methods, Onramp restore ordering and internal styles/configuration recorded with limitations. Retrospective 23.22.0 callback label preserved separately from observed code boundary. No extra collection, build/device/security/payment tests, commit or push. Next: scoped commit approval after validation; both approved releases processed serially.
+
+## [2026-10-14] ingest | Stripe Android `23.22.0`
+
+- Approved additive full override with focused reading, github-6c62ec29ee9438687187 at ec79c2195abda2a38cd253ca1ed699f4bca96b84, from 23.21.0. Ten modified/42 unchanged files, 104 verified hashes/sizes, 491 upstream dispositions; effective full inventory checked mechanically for unchanged evidence. Changed implementation/API blocks and affected prior context read. All 4,843 old changelog lines retained with 22 insertions.
+- Android/Onramp/Pix concepts first; source/changelog/company/index/logs preserve historical knowledge and source count. FlowController callback ownership, wallet contacts and method declarations separated from announcements/excluded internals. No extra collection, build/device/payment testing, commit or push. Next: approved 23.23.0 serial ingest after validation/closure.
+
 ## [2026-10-13] ingest | Stripe iOS `26.13.0`
 
 - Approved focused-reading serial delta from 26.12.1, github-f79371e388bb9781cb20 at b65af30ecc73007aa9164627253ecafdf0a84872. Changed retained source read fully, affected prior code compared, unchanged inventories/history checked mechanically; verified all 558 current/prior file hashes/sizes and packet/comparison hashes. Snapshot counts 282/276; six added, 18 modified, 258 unchanged. All 349 upstream changes have dispositions, not full semantic repository review.
