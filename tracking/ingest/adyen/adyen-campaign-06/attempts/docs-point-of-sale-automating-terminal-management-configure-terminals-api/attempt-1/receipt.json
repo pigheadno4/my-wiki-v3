@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-point-of-sale-automating-terminal-management-configure-terminals-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Configure terminal features with Management API\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/automating-terminal-management/configure-terminals-api\"\nraw_files:\n  - \"adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-management, management-api, terminal-settings]\n---\n\n## Overview\n\nAdyen's 2026-09-15 POS guide describes configuring terminal features through the Management API instead of Customer Area. It covers terminal settings and logos at company, merchant, store, and terminal levels. This is fleet configuration, not a Terminal API payment request or evidence that settings are currently available for a merchant. [[adyen]] \u00b7 [[adyen-pos-store-management]] \u00b7 [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The guide requires a POS integration and an API credential with an API key and Management API Terminal settings read/read-and-write roles. Sensitive settings that can affect Terminal API communications require the additional Terminal Advanced settings read-and-write role. A cloud-communications Terminal API integration may reuse its API key. Live terminal-settings Management API endpoints are rate limited; consult the linked rate-limit page for current limits.\n- Settings inherit downward from company to merchant to store to terminal. A setting at a lower level replaces an inherited higher-level value; Adyen's PSP level sits above company and cannot be configured by this API. Choose the level by the desired affected terminals and inspect its current configuration and inherited values before removing anything.\n- GET and PATCH use `/terminalSettings` for settings and the separate `/terminalLogos` route for standby logos. Both route families have company, merchant, store, and terminal variants. Company, merchant, and store logo requests specify the terminal model; terminal-level logo requests infer it from terminal ID. Only one logo is retrieved or updated per request.\n- For `/terminalSettings` PATCH, provide the full object for each setting group being changed. Omitted objects remain unchanged, but an omitted parameter inside a supplied object is removed at that level; an empty value is also documented for restoring an inherited value. Read the existing object and higher-level fallback first. The guide does not establish a general `null` removal rule.\n- For `/terminalLogos` PATCH, `data` is a Base64-encoded model-appropriate image; an empty string removes that level's logo and returns an inherited higher-level logo. The raw model table gives dimensions and size limits and says mismatched BMP/JPG/JPEG/PNG images are resized while GIFs become a single frame.\n- Existing terminals download changes on an automatic maintenance call every 180 minutes; the changes take effect after a restart, normally at the configured restart hour (usually 6:00 AM). The guide gives a manual configuration update for an immediate passcode switch. Newly shipped terminals can be configured at terminal level and take those settings when boarded.\n\n## Detail locators\n\n- **Prerequisites and scope:** raw `Requirements` (lines 21\u201332) and `Configurable features` (lines 34\u201377). The table identifies available setting groups and exceptions: SIM status is terminal-only; Tap to Pay settings are unavailable at terminal level. Sensitive groups include `nexo`, passcodes, and Wi-Fi profiles. More settings require Customer Area. The raw's API Explorer links use `Management/latest` and examples use `management-test.adyen.com/v3`; neither proves a current live version or account entitlement.\n- **Inheritance and reads:** `Inheritance of settings` (lines 79\u201392), then `Get current settings` (lines 94\u2013694). Discover company, merchant, store, or terminal IDs through the respective list routes. Logo GET needs a model query above terminal level and returns Base64 `data`; settings GET returns current configuration.\n- **Update semantics:** `Update settings` (lines 695\u2013708) and `Update other settings` (lines 1181\u20131479). PATCH routes exist at each of the four levels. The raw's store example is illustrative and mixes `signatureSettings` with the table/GET example's `signature`; consult the current API schema before building a payload. Its empty gratuity fields are an example of removal, not proof that every field accepts an empty string or `null`.\n- **Logo conditions:** `Update terminal logo` (lines 710\u20131179) has the per-model dimensions, file formats, size table, Base64 upload and empty-`data` removal examples. Consult that table before uploading.\n- **Propagation:** `When new settings take effect` (lines 1481\u20131503) distinguishes API update, terminal download, restart, and boarding.\n\n## Related\n\n- [[adyen-pos-store-management]] \u2014 company, merchant, and store administration context\n- [[adyen-terminal-api]] \u2014 payment messaging and communications boundary\n- [[adyen-api-access]] \u2014 API credential and role context\n\n## Related raw API references\n\nThe linked Management API Explorer schemas, rate-limit page, Customer Area, network/Wi-Fi guidance, and boarding guidance were not read for this entry. Use them as navigation only.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15|Adyen Configure terminal features with Management API, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The Management API lets you configure features at various levels using API requests instead of the [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15.md:19, under `Use API calls to configure features`"
+    },
+    {
+      "text": "Settings at the company level apply to all terminals under the company. Settings at the merchant account level override settings inherited from the company level and apply to all terminals under the merchant account, and so on.",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15.md:90, `Inheritance of settings`"
+    },
+    {
+      "text": "* Objects that are not included in the request are not updated.",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15.md:701, `Update settings`"
+    },
+    {
+      "text": "If you omit a parameter from an object, that setting is removed.",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15.md:703, `Update settings`"
+    },
+    {
+      "text": "The terminal downloads the configuration changes when it makes a maintenance call to our systems. This happens automatically every 180 minutes. The configuration changes then take effect when the terminal restarts. This happens automatically at the restart hour, which is usually set to 6:00 AM.",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15.md:1483, `When new settings take effect`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "configure-terminals-api-pos-store-management-route",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-automating-terminal-management-configure-terminals-api]] \u2014 2026-09-15 Adyen Management API guide to terminal feature settings and logos across company, merchant, store, and terminal levels; consult it for inheritance, PATCH removal, roles, and propagation timing.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is terminal configuration rather than store creation or Terminal API payment messaging. A separate campaign worker owns the new terminal-management hub; coordinator may place the reciprocal route there instead of duplicating concept coverage."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15.md",
+  "raw_sha256": "d1f97795b04d66ed098f774b54e3989cb25d52019a07cc272e5ede36900c08ca",
+  "status": "candidate_ready"
+}

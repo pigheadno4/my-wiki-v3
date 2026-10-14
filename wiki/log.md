@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-14] ingest | Adyen website C06
+
+- Fifty independently approved terminal administration, Android app, standalone and manual documentation sources; first full-review approvals 42/50 and 8 targeted correction reviews. 6 concepts touched (5 new); source_count 314 = 300 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-06/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-14] ingest | Stripe Android `23.23.0`
 
 - Approved focused-reading additive full ingest from 23.22.0: security/error announcements, legacy next-action caller changes, Onramp restoration and new method declarations. All 104 hashes/sizes verified; older history/count retained, excluded implementations explicit. Details [[stripe-log]] and [[changelog-github-stripe-android]]. No build/device/security/payment tests, commit or push. Next: scoped commit approval; two-release serial ingest complete after validation.

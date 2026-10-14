@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-managing-terminals-order-terminals",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Order, return, or replace terminals\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/managing-terminals/order-terminals\"\nraw_files:\n  - \"adyen/docs/point-of-sale/managing-terminals/order-terminals/2026-09-15.md\"\ntags: [adyen, point-of-sale, customer-area, terminal-management, orders]\n---\n\n## Overview\n\nAdyen's POS guide, captured 2026-09-15, explains Customer Area sales orders for terminals, card readers, and accessories, plus return and replacement requests, hardware kits, order cancellation, tracking, and Terminal order update webhooks. API ordering is a separate linked route. The guide covers physical device logistics and TRS billing conditions, not Terminal API payment execution. [[adyen]] \u00b7 [[adyen-terminal-management]]\n\n## Key takeaways\n\n- Test terminals and Adyen test cards come from the test Customer Area and are limited to test integrations with dummy payments; live terminals are ordered from the live Customer Area. The Customer Area order requires a suitable role, the intended merchant account, use country/region, selected cart items, shipping address, summary review, and placement. The purchase order number is optional for a sales order. Once delivered, the terminal still needs boarding to connect and associate with a store.\n- A terminal can only be used in the country or region it was ordered for; a different power cord does not overcome its regional modem constraint. Accessories such as frames and charging bases cannot be returned. The guide says to use a separate sales order for replacement accessories.\n- A return order sends back a faulty terminal; replacing it through a separate sales order is different from a TRS replacement request. TRS requires signup and contractual terms and permits return plus a new terminal in one request when the old device's defect is covered. TRS charges continue for devices in terminal inventory; non-return within two weeks of receiving replacement devices triggers their cost. Examination or repair costs can also apply depending on the defect finding. Consult current TRS terms before relying on the snapshot's fee language.\n- The ordered cart can be changed until placement. After placement, the order cannot be changed; a Customer Area order with `Placed` status can be cancelled only before Adyen processes it. Shipment tracking and logistical status appear in Customer Area and email, with optional Terminal order update webhooks. For direct-to-store automation, Adyen recommends assigning on `Shipped` instead of waiting for potentially delayed carrier `Delivered` updates; that recommendation is not evidence that a specific terminal is boarded or ready to transact.\n- Custom hardware kits require prior Adyen enablement and packaging setup; the snapshot lists annual-volume, region, sleeve-model, and mixed-cart limits. The linked API kit-order route is distinct from this Customer Area procedure.\n\n## Detail locators\n\n- **Environment, roles, and limitations:** opening lines 19\u201325; raw heading \u201cRequirements\u201d (27\u201357) has different Customer Area role alternatives for sales, returns, and replacements, the Terminal order update subscription, nonreturnable accessories, and TRS/hardware-kit setup. For sales, `Merchant terminal order` and `Merchant POS standard` are both required when using that role alternative; the other listed roles are alternatives. See \u201cRegional compatibility\u201d (59\u201363).\n- **Sales checkout:** \u201cSubmit a sales order\u201d (65\u2013101) covers merchant-account switch, country selection, cart editing, shipping address, optional PO number, pre-placement review, order updates, and post-delivery boarding. Its two-business-day dispatch sentence is snapshot guidance, not a delivery guarantee.\n- **Returns, replacements, and TRS:** \u201cReturning or replacing terminals\u201d (103\u2013114), \u201cTerminal Replacement Service (TRS)\u201d and its \u201cHow it works\u201d/\u201cWhat is covered by TRS\u201d subsections (116\u2013150), \u201cSubmit a return or replacement order\u201d (152\u2013196), CSV input (197\u2013229), and \u201cSend terminals back to us\u201d (231\u2013255). The return/replacement flow uses device serial number and problem; `New request` replacement is available when signed up for TRS and the terminal is live. Return packaging instructions include checking a replacement for tampering and returning terminals without accessories.\n- **Hardware kits and cancellation:** \u201cHardware kits\u201d and \u201cOrder hardware kits\u201d (257\u2013282) list enablement, packaging, volume, region/model, and cart restrictions. \u201cCancel an order\u201d (284\u2013294) gives the pre-processing `Placed` condition. \u201cTrack delivery\u201d (296\u2013306) routes to the carrier.\n- **Logistics notifications:** \u201cTerminal order updates\u201d (308\u2013316), \u201cReceive webhooks\u201d (318\u2013327), and \u201cWebhook content\u201d (329\u2013476) define the optional Terminal order update type and sales/return/replacement status fields. Example JSON is illustrative; private-labeling Adyen emails can still leave carrier emails to the recipient.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 device fleet administration and order routes\n- [[adyen-pos-store-management]] \u2014 separate store account and payment-method administration\n- [[adyen-terminal-api]] \u2014 separate in-person payment messaging\n\n## Related raw API references\n\nThe linked Management API ordering guide, boarding guide, troubleshooting guidance, webhook setup, and current TRS legal terms were not read for this entry; use them as navigation only:\n\n- [[raw/adyen/docs/point-of-sale/automating-terminal-management/order-terminals-api/2026-09-15|Order terminals with the Management API]]\n- [[raw/adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15|Board a terminal]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/managing-terminals/order-terminals/2026-09-15|Adyen order, return, or replace terminals, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Terminals ordered from the test Customer Area can only be used in a test integration.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/order-terminals/2026-09-15.md:21"
+    },
+    {
+      "text": "You can only use the terminals in the country or region where you ordered them for. This is because the wireless communications modem inside the terminals is specific to the region. The terminals will not work in a different country or region, even with a region-specific power cord.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/order-terminals/2026-09-15.md:61"
+    },
+    {
+      "text": "* **Replacement order**: Return a faulty terminal and order a new one in the same request. This is possible if you are using our [Terminal Replacement Service (TRS)](#trs). For a monthly fee, you get a replacement terminal free of charge if the defect of the old terminal is covered by TRS.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/order-terminals/2026-09-15.md:108"
+    },
+    {
+      "text": "If you do not return the defective terminals within two weeks after you have received the replacement terminals, you will be charged the cost of the replacement terminals.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/order-terminals/2026-09-15.md:141"
+    },
+    {
+      "text": "After you have placed an order, it is no longer possible to change the order. But if we haven't processed the order yet, you can cancel the order.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/order-terminals/2026-09-15.md:286"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "link-ca-order-guide-terminal-management",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-managing-terminals-order-terminals]] \u2014 2026-09-15 Adyen Customer Area guide for terminal sales, returns, TRS replacements, hardware kits, cancellation, and logistical updates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/managing-terminals/order-terminals/2026-09-15.md",
+  "raw_sha256": "afaa62cc7aec405ec803b20419a516b11ab125eb688a96f677b6a900b9b8be85",
+  "status": "candidate_ready"
+}

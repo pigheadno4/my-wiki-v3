@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-point-of-sale-android-terminals-app-requirements",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Android payment-terminal app requirements\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/android-terminals/app-requirements\"\nraw_files:\n  - \"adyen/docs/point-of-sale/android-terminals/app-requirements/2026-09-15.md\"\ntags: [adyen, point-of-sale, android-terminals, app-requirements, apk, security]\n---\n\n## Overview\n\nAdyen's Android-terminal app requirements page describes upload checks, device compatibility, allowed permissions, runtime restrictions, WebView versions, and a test path for apps installed on Adyen Android **payment terminals** in Terminal API or standalone solutions. It concerns apps on those devices, not a merchant-phone Mobile SDK or the separately versioned Android online-checkout SDK. The 2026-09-15 snapshot does not establish current regional model availability, app approval or successful deployment. [[adyen]] [[adyen-android-terminals]]\n\n## Key takeaways\n\n- The APK maximum is 200 MB in live and 700 MB in test. Its manifest must include `minSdkVersion`; the app must run on the terminal's Android version. The raw model/region/OS/API-level/`Build.MODEL`/CPU table is a dated compatibility snapshot, and Adyen calls the regional rollout work in progress. Check live Customer Area for regional terminal availability. Unique `versionCode` values are required for each Customer Area release, and native-code libraries must match the terminal's ARMv7 or ARM64 ABI. See `## App specifications`.\n- The page advises against merchant apps on P630 due to limited storage. In this snapshot P630 and M450 support app installation, but certificate installation is unsupported. See `## Requirements`.\n- Only the listed Android app permissions are allowed; an APK with an unlisted permission is marked invalid at upload. Terminal apps cannot use a `CATEGORY_HOME` launcher, manifest `testOnly`, a custom accessibility service, or `android.permission.BIND_DEVICE_ADMIN`. The terminals lack debug mode, an installed browser, and Google Play services. An installed app cannot be downgraded; the page allows upgrade or uninstall. See `## Allowed permissions` and `## Restrictions`.\n- A WebView app must be compatible with the version for its terminal software and Android OS; the table differentiates Android 13, 10 and 9, including no Android 13 WebView entry at software 1.108 or earlier. Read the current device value at **Settings > Device info**; Support is the route for requesting a specific WebView version. See `## WebView versions`.\n- USB ADB debugging cannot be enabled on Adyen payment terminals for security reasons. Adyen routes debugging to a regular Android device, then upload/install and Terminal API integration tests on a test terminal, then final integration testing with a live Customer Area and live terminal. Those steps are testing guidance, not evidence that an app or payment passed them. See `## Debug and test`.\n\n## Detail locators\n\n- `## App specifications`: exact per-model regional rows and Android/API-level/CPU/`Build.MODEL` values; the AMS1 `minSdkVersion` example and ABI names `armeabi-v7a`, `armeabi`, `arm64-v8a`. The table labels both S1E4Pro and S1F4Pro with similar `Build.MODEL` strings; keep those row identities as printed and verify device identity separately.\n- `## Allowed permissions`: full allowlist, including location, camera, network, storage and biometric entries; listed permission availability is not proof of a particular terminal's hardware capability or granted runtime permission.\n- `## WebView versions`: terminal-software-to-Android-WebView version matrix. This is distinct from a general browser, which the Restrictions section says is absent.\n- `## Debug and test`: regular-device adb debug, test-terminal local/cloud Terminal API integration checks, support log route, and later live-terminal testing.\n\n## Related\n\n- [[adyen-android-terminals]] \u2014 Android payment terminal app and deployment routes.\n- [[adyen-terminal-api]] \u2014 integration-message boundary for the described terminal tests.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/android-terminals/app-requirements/2026-09-15|Adyen Android app requirements, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "**P630** and **M450** currently only support installing apps. Installing certificates on these terminals is not supported yet.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/app-requirements/2026-09-15.md:35"
+    },
+    {
+      "text": "The required Android version and minimum SDK version depend on the terminal model and region, as indicated in the following table.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/app-requirements/2026-09-15.md:50"
+    },
+    {
+      "text": "If your app includes a permission that is not on the preceding list, the app will be marked as invalid when you upload it.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/app-requirements/2026-09-15.md:113"
+    },
+    {
+      "text": "Downgrading the version of an app you installed is not allowed. You can either upgrade the version of your app or uninstall it.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/app-requirements/2026-09-15.md:125"
+    },
+    {
+      "text": "For security reasons, we cannot enable USB debugging via Android Debug Bridge (adb) on our payment terminals.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/app-requirements/2026-09-15.md:145"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "android-app-requirements-source-route",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-android-terminals-app-requirements]] \u2014 2026-09-15 Adyen Android-terminal app requirements for APK/OS/ABI compatibility, permissions, restrictions, WebView and test guidance, subject to regional/model scope.",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/android-terminals/app-requirements/2026-09-15.md",
+  "raw_sha256": "ea727ef3065378e88ad430e840d4ea44f7a9b31c28793cd3a56ee50429c1c46e",
+  "status": "candidate_ready"
+}

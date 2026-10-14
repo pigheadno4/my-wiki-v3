@@ -275,6 +275,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-point-of-sale-tipping]] — Adyen Docs: In-person tipping options (webpage, 2026-10-13)
 - [[source-adyen-docs-point-of-sale-installments]] — Adyen POS installments regional overview (webpage, 2026-10-13)
 
+### Website documentation — Campaign 06
+
+- [[source-adyen-docs-point-of-sale-automating-terminal-management]] — Adyen Docs: Automate the management of your terminals (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-managing-terminals]] — Manage your terminal fleet | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals]] — Adyen Android payment terminals (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-standalone]] — Adyen standalone terminal solution (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-release-updating]] — Update to a new release | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-automating-terminal-management-order-terminals-api]] — Adyen Docs: Order terminals with Management API (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps-terminal-actions-api]] — Schedule terminal actions to deploy Android apps and certificates (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-automating-terminal-management-configure-terminals-api]] — Adyen Docs: Configure terminal features with Management API (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-standalone-standalone-build-set-up-standalone]] — Adyen Docs: Standalone terminal setup (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-automating-terminal-management-assign-terminals-api]] — Adyen Docs: Assign terminals with Management API (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-managing-terminals-order-terminals]] — Adyen Docs: Order, return, or replace terminals (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-nyc1-with-dock]] — Adyen NYC1 card reader with dock user guide (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-nyc1]] — Adyen NYC1 mobile card reader user guide (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-v400m-with-bt-base]] — V400m with Bluetooth base station | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-s1f2-user-manual]] — Adyen Docs: S1F2 user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-v400m-user-manual]] — V400m user manual | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-v210-user-manual]] — Adyen Docs: V210 user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-s1e-user-manual]] — S1E and S1E Barcode payment terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-s1f4pro-user-manual]] — Adyen Docs: S1F4Pro user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-v240m-user-manual]] — Adyen Docs: V240m Plus user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-e285-user-manual]] — e285p and e285 user manual | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps-upload]] — Adyen Android terminal app and certificate upload (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-s1e2l-user-manual]] — Adyen S1E2L payment terminal user manual (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals-s1e4pro-user-manual]] — S1E4Pro user manual | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-standalone-standalone-use]] — Adyen Docs: Use a standalone terminal (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-managing-terminals-maintain-performance]] — Maintain performance | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-managing-terminals-board-terminal]] — Adyen board a payment terminal (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-user-manuals]] — Adyen get-started terminal manuals catalog (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-scan-barcode-batch-session]] — Adyen Docs: Batch barcode scanning with Terminal API (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-app-requirements]] — Adyen Android payment-terminal app requirements (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-release-updating-manual-deployment]] — Adyen Docs: Manually schedule terminal software updates (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-scan-barcode-single-session]] — Adyen Docs: Activate one barcode scan with Terminal API (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-managing-terminals-battery-management]] — Adyen Docs: Manage battery power (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-themes]] — Customize your Android payment terminals with themes | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps-profiles]] — Adyen Android terminal app deployment using profiles (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-standalone-standalone-build-standalone-checklist]] — Adyen standalone terminal integration checklist (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-standalone-standalone-build-go-live-standalone]] — Standalone go-live checklist | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-managing-terminals-assign-terminals]] — Adyen Docs: Assign terminals in Customer Area (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-accessibility-mode-accessibility-from-terminal]] — Turn on accessibility mode from an Adyen Android terminal (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-managing-terminals-security-inspection]] — Adyen Docs: Payment terminal security inspection (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-accessibility-mode-accessibility-from-pos]] — Adyen Docs: Accessibility mode from the POS app (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps-schedule]] — Adyen Docs: Schedule Android app deployment in Customer Area (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-scan-barcode]] — Barcode scanning | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-scan-barcode-button-scan]] — Adyen Android terminal barcode scan-button activation (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-start-remote-session]] — Adyen Android terminal remote troubleshooting session (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps]] — Deploy apps to your terminals | Adyen Docs (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-kiosk-mode]] — Adyen Docs: Android terminal kiosk mode (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-android-terminals-accessibility-mode]] — Adyen Android terminal accessibility mode overview (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-managing-terminals-customize-terminals]] — Adyen Docs: Customize terminal settings (webpage, 2026-10-14)
+- [[source-adyen-docs-point-of-sale-standalone-standalone-build]] — Adyen Docs: Build a standalone solution (webpage, 2026-10-14)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -307,6 +360,16 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-terminal-management]] — Adyen Terminal Management
+
+- [[adyen-standalone-terminals]] — Adyen standalone terminals
+
+- [[adyen-payment-terminals]] — Adyen Payment Terminals
+
+- [[adyen-mobile-card-readers]] — Adyen Mobile Card Readers
+
+- [[adyen-android-terminals]] — Adyen Android Terminals
 
 - [[adyen-pos-store-management]] — Adyen POS Store Management
 

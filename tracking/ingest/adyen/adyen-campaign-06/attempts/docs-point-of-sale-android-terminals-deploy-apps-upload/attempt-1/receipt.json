@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-android-terminals-deploy-apps-upload",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Android terminal app and certificate upload\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/android-terminals/deploy-apps/upload\"\nraw_files:\n  - \"adyen/docs/point-of-sale/android-terminals/deploy-apps/upload/2026-09-15.md\"\ntags: [adyen, point-of-sale, android-terminals, app-upload, certificates, management-api]\n---\n\n## Overview\n\nThis Adyen guide describes uploading a signed Android app APK, and an optional certificate when the app requires one, for Adyen-provided Android payment terminals. Upload lets Adyen sign and convert the app to a terminal-handled format; subsequent installation or removal is a separate action using terminal-action API requests, profiles or Customer Area scheduling. It applies to Terminal API or standalone in-person integrations with Android payment terminals. [[adyen]] [[adyen-android-terminals]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- The merchant can upload via Customer Area or the Management API. API use requires an API credential, API key and Management API\u2014Android files read and write role; a cloud Terminal API integration may reuse its existing API key subject to that role. Customer Area upload requires Merchant POS Terminal Management Admin. If its Upload app button is absent, the guide directs the merchant to Adyen Support for enablement.\n- Before app upload, create a signed APK. The guide instructs V1 (Jar Signature) selection when minSdkVersion is 23 or earlier, with V2 also recommended; when later than 23 it recommends V2. For API upload, POST the APK as multipart file to /companies/{companyId}/androidApps; file is required and description optional. This snapshot lists 700 MB test and 200 MB live APK limits. Keep the returned app id for later API scheduling. The displayed curl and SDK samples are examples with their own library versions, not a current contract guarantee.\n- In Customer Area, Processing means Adyen is signing/converting the app and may take up to an hour; Error and Invalid have distinct troubleshooting routes in the raw. Ready means that conversion is finished and the app is ready for installation. It does not mean installed, merchant-approved, reviewed, deployed to a particular terminal or payment-tested.\n- If an app needs a certificate, upload it separately and replace it before expiry. Customer Area accepts .pem or .cert; the API body accepts .CRT or .PEM multipart file plus required name and optional description at /companies/{companyId}/androidCertificates. The API certificate file limit is 100 KB. Save the returned certificate id for later API scheduling. This dated guide says installing certificates on P630 and M450 is not yet supported.\n- Live Management API requests for Android apps/certificates are subject to rate limits. Customer Area stores at most 50 versions of one app: uploading a new version at that limit automatically deletes the oldest upload. Apps older than two years and not installed on any terminal are also automatically deleted. The guide assigns the merchant full responsibility and liability for consequences of uploading, installing or running third-party apps.\n\n## Detail locators\n\n- Upload-versus-install purpose, deployment routes and third-party liability: pinned raw lines 15\u201325.\n- Integration, roles, live rate limits, version limit and P630/M450 certificate restriction: pinned raw lines 27\u201339.\n- Signed APK preparation and conditional signing advice: pinned raw lines 41\u201358.\n- Customer Area upload and status meanings: pinned raw lines 60\u201390.\n- Management API app upload body, test/live limits, versioned sample code and returned id: pinned raw lines 92\u2013256.\n- Optional certificate, formats, role-dependent upload, API fields/size, sample code and returned id: pinned raw lines 258\u2013444.\n- Automatic oldest-version and unused-app deletion: pinned raw lines 446\u2013451.\n\n## Related\n\n- [[adyen-android-terminals]] \u2014 Android terminal app and model hub.\n- [[adyen-terminal-management]] \u2014 Management API fleet administration and role boundary.\n- [[adyen-terminal-api]] \u2014 in-person payment messaging, distinct from Management API file upload.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/android-terminals/deploy-apps/upload/2026-09-15|Adyen upload apps and certificates guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To be able to install your app on your Android payment terminals, you first need to upload the app so we can convert it into a format that the terminals can handle.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/deploy-apps/upload/2026-09-15.md:19"
+    },
+    {
+      "text": "By choosing to upload, install, or run any third-party applications on an Adyen payment terminal, you accept full responsibility and liability for any consequences of uploading, installing, or running any such applications.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/deploy-apps/upload/2026-09-15.md:25"
+    },
+    {
+      "text": "Management API\u2014Android files read and write",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/deploy-apps/upload/2026-09-15.md:34"
+    },
+    {
+      "text": "Installing certificates on **P630** and **M450** terminals is not supported yet.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/deploy-apps/upload/2026-09-15.md:39"
+    },
+    {
+      "text": "When you upload a new version of an app that already has 50 versions, the oldest uploaded version is deleted automatically.",
+      "location": "raw/adyen/docs/point-of-sale/android-terminals/deploy-apps/upload/2026-09-15.md:450"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c6-android-app-upload-source-route",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps-upload]] \u2014 Adyen Android-terminal APK and optional certificate upload guide captured 2026-09-15, covering Customer Area and Management API roles, signed files, processing states, device/size limits and automatic app deletion; upload precedes separate installation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Dated raw snapshot; Ready means signed/converted for installation, not deployed, reviewed, approved, certified or payment-executed.",
+          "P630/M450 certificate-installation restriction and API file/role/rate-limit statements need current confirmation before live action."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/android-terminals/deploy-apps/upload/2026-09-15.md",
+  "raw_sha256": "36ac6d953cdd8cf9db01f349c74d46bfbb5d600cde4f8cc36fa9c99f4c621e2a",
+  "status": "candidate_ready"
+}

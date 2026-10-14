@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-automating-terminal-management",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Automate the management of your terminals\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/automating-terminal-management\"\nraw_files:\n  - \"adyen/docs/point-of-sale/automating-terminal-management/2026-09-15.md\"\ntags: [adyen, point-of-sale, management-api, terminal-management]\n---\n\n## Overview\n\nAdyen's unversioned POS documentation, captured 2026-09-15, introduces Management API automation for ordering, assigning, and configuring payment terminals and scheduling terminal actions. Customer Area is the manual alternative. This is terminal fleet administration, separate from Terminal API payment messages and from store creation or payment-method administration. [[adyen]] \u00b7 [[adyen-terminal-management]] \u00b7 [[adyen-pos-store-management]]\n\n## Key takeaways\n\n- The page frames the sequence as API-managed order, assignment, and configuration, followed by store-staff boarding when the configured device reaches its assigned store. It also routes to API scheduling of terminal actions. The linked task guides hold the procedures; this overview alone does not establish that a particular terminal is boarded, ready, or payment-capable.\n- Management API requests require an API credential with an API key and task-specific roles. A cloud-communications Terminal API integration may reuse its existing API key, but the required Management API roles still depend on ordering, assignment, feature configuration, or action scheduling.\n- Live Management API terminal and store endpoints are rate-limited by endpoint group. Requests beyond a group's window are blocked until the window ends; the snapshot's example response carries `\"detail\": \"too many requests\"` with status 500. The listed limits are explicitly indicative and may change; they do not establish a current quota or retry guarantee.\n\n## Detail locators\n\n- **Credential and role matrix:** raw heading \u201cAPI key and roles\u201d (lines 23\u201336). The matrix separates Terminal ordering, Stores, Terminal settings (including Advanced), and Terminal actions roles; inspect it for the specific operation.\n- **Live endpoint groups:** raw heading \u201cRate limits in the live environment\u201d (lines 38\u201358), then \u201cCompany endpoints and rate limits\u201d (62\u201392), \u201cMerchant endpoints and rate limits\u201d (96\u2013124), \u201cStore endpoints and rate limits\u201d (126\u2013142), and \u201cTerminal endpoints and rate limits\u201d (146\u2013161). The tables distinguish company, merchant, store, and terminal paths, with separate 160 and 2000 requests/minute groups. The listed live base URL contains `v{version_number}`; the overview does not select a concrete API version.\n- **Task routes:** raw heading \u201cWhat do you want to do?\u201d (lines 163\u2013187) links the order, assign, configure, and schedule-action guides. These are navigation to detailed procedures, not evidence of a completed order, assignment, configuration, or action.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 Management API terminal-fleet administration\n- [[adyen-pos-store-management]] \u2014 separate store and payment-method administration\n- [[adyen-terminal-api]] \u2014 in-person payment messaging boundary\n- [[adyen-api-access]] \u2014 general credential and role scope\n\n## Related raw API references\n\nThe linked order, assignment, configuration, and terminal-action guides and API Explorer endpoints were not read for this entry; use these links as navigation only:\n\n- [[raw/adyen/docs/point-of-sale/automating-terminal-management/order-terminals-api/2026-09-15|Order terminals with API]]\n- [[raw/adyen/docs/point-of-sale/automating-terminal-management/assign-terminals-api/2026-09-15|Assign terminals with API]]\n- [[raw/adyen/docs/point-of-sale/automating-terminal-management/configure-terminals-api/2026-09-15|Configure terminals with API]]\n- [[raw/adyen/docs/point-of-sale/android-terminals/deploy-apps/terminal-actions-api/2026-09-15|Schedule terminal actions with API]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/automating-terminal-management/2026-09-15|Adyen terminal-management overview, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To automate the management of terminals you can make API requests to order, assign, and configure terminals. Then, when the configured terminal is delivered to the store that it is assigned to, store staff only need to [board the terminal](/point-of-sale/managing-terminals/board-terminal). You can also schedule terminal actions through API.",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/2026-09-15.md:21"
+    },
+    {
+      "text": "Using [Management API](https://docs.adyen.com/api-explorer/Management/latest/overview), you can order, assign, and configure terminals, and schedule terminal actions. To authenticate your requests, you need an [API credential](/development-resources/api-credentials). This API credential must have an [API key](/development-resources/api-credentials#generate-api-key).",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/2026-09-15.md:25"
+    },
+    {
+      "text": "Your API credential must also have specific [roles](/development-resources/api-credentials#manage-api-permissions), depending on what you want to do.",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/2026-09-15.md:29"
+    },
+    {
+      "text": "When a Management API request fails due to exceeding a rate limit, the response includes `\"detail\": \"too many requests\"`.",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/2026-09-15.md:44"
+    },
+    {
+      "text": "Expand the following sections to see the rate limits per endpoint level. Note that these limits are indicative and can change as needed to maintain the stability of the live environment.",
+      "location": "raw/adyen/docs/point-of-sale/automating-terminal-management/2026-09-15.md:56"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "new-adyen-terminal-management",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "durable_fact",
+        "anchor": "new file",
+        "proposed_markdown": "---\ntitle: \"Adyen Terminal Management\"\ntype: concept\ncategory: technology\ntags: [adyen, point-of-sale, management-api, terminal-management]\n---\n\n## Definition\n\nAdyen terminal management uses Management API or the Customer Area to administer the physical terminal fleet. The 2026-09-15 overview routes API automation for ordering, assigning devices to stores, configuring features, and scheduling terminal actions; store staff board a configured terminal after delivery to its assigned store. This administration is distinct from [[adyen-terminal-api]] payment messaging and from [[adyen-pos-store-management]] store creation and payment-method settings.\n\n## Operational boundary\n\nManagement API requests need an API credential, API key, and operation-specific roles. A cloud Terminal API integration may reuse its API key, subject to those roles. Live terminal-management and store endpoints have group-based rate limits; the snapshot's figures are indicative and can change. This overview does not establish current account eligibility, a device's boarding or configuration state, successful actions, or payment execution. Consult the linked task guides and current API contract before acting.\n\n## Sources\n\n- [[source-adyen-docs-point-of-sale-automating-terminal-management]] \u2014 unversioned Adyen POS Management API overview captured 2026-09-15 for fleet tasks, credential roles, live rate-limit groups, and detailed task routes.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/automating-terminal-management/2026-09-15.md",
+  "raw_sha256": "cd7c0ec8261cb7d4e03604b1eeef1b2f9020e01b9293ab262afc84dd2ed0ca93",
+  "status": "candidate_ready"
+}

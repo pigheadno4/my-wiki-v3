@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-android-terminals-scan-barcode-single-session",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Activate one barcode scan with Terminal API\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/android-terminals/scan-barcode/single-session\"\nraw_files:\n  - \"adyen/docs/point-of-sale/android-terminals/scan-barcode/single-session/2026-09-15.md\"\ntags: [adyen, point-of-sale, android-terminals, terminal-api, barcode-scanning]\n---\n\n## Overview\n\nThis Adyen guide, last modified 2025-04-24 and captured 2026-09-15, describes a Terminal API Admin session that activates an Android payment terminal's scanner for one barcode, returns the scan content to the merchant POS app, and can be canceled before timeout. It names S1E Barcode, S1E2L, S1F2L, and S1U2 terminals with barcode scanners. This is a POS-controlled scanner interaction, not a payment authorization or an Android app-deployment route. [[adyen]] \u00b7 [[adyen-android-terminals]] \u00b7 [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The prerequisite is a Terminal API integration on one of the named scanner-equipped Android terminals. The POS app must implement both a scan-trigger button and logic to process the returned barcode. This Terminal API method does not require setting up the terminal's scanning button in Customer Area. A separate batch-scan guide covers multiple barcodes.\n- To activate one scan, Base64-encode a JSON `ServiceIdentification` object with a unique `Session.Id`, `Session.Type: Once`, and an `Operation` of `Type: ScanBarcode` with `TimeoutMs` from 0 to 30000. Send it in a Terminal API `AdminRequest` with a Service/Admin/Request message header using protocol version 3.0 and the terminal `POIID`. The header table specifies a per-terminal `ServiceID` of 1\u201310 alphanumeric characters, unique for the previous 48 hours.\n- A successful single scan deactivates the scan button. The guide's success path returns barcode content through `AdminResponse.AdditionalResponse`; after decoding, `Barcode.Data` is the content and `Barcode.Symbology` its format, with `UNKNOWN` for an unrecognized symbology. Failure can report `Cancel`, `Aborted`, `UnavailableService`, or `NotFound`, with a failure reason in `AdditionalResponse`. The guide warns that `AdditionalResponse` may use Base64 or URL encoding and directs merchants to Support to consistently receive one format.\n- To stop an active scan before timeout, send a separate Admin request whose encoded `ServiceIdentification` contains the session ID and `Session.Type: End`. A successful cancel response reports `Response.Result: Success` with a cancellation message; it is a scanner-session outcome, not a payment result.\n- **Example conflict:** The activation parameter table and standalone JSON show `Session.Type: Once`, but the Base64 embedded in the illustrated full activation request decodes to `Begin`. The same request example uses `ServiceID: POSSystemID12345` despite the table's 1\u201310-character rule; response examples swap sale/service identifiers, and the cancel response uses a V400m `POIID` outside the page's named scanner models. Treat these examples as illustrative and check the documented fields and current Terminal API contract before implementing.\n\n## Detail locators\n\n- **Scope and prerequisites:** raw introduction (lines 19\u201329), \u201cRequirements\u201d (31\u201340), and \u201cHow it works\u201d (42\u201347) for named models, POS implementation, Customer Area button exception, and single-scan lifecycle.\n- **Activate request:** raw \u201cActivate the barcode scanner for a single scan\u201d (49\u2013126) for `Once`, `ScanBarcode`, timeout range, Base64 `ServiceIdentification`, and the Service/Admin header. The standalone JSON is at 62\u201376; the full request sample is at 105\u2013125. The full request's encoded payload decodes to `Begin`, in conflict with `Once` in the table and standalone JSON.\n- **Response and decoding:** same section (128\u2013209) for success/failure fields, encoding caveat, decoded `Barcode.Data`/`Symbology`, and POS-side processing. The example response headers are inconsistent with the request header; use field definitions rather than their sample values.\n- **Cancel:** raw \u201cCancel scanning session\u201d (213\u2013309) for `End` and the cancel response. The illustrated cancel success response at 289\u2013309 uses a V400m `POIID` despite the four scanner models in this guide.\n\n## Related\n\n- [[adyen-android-terminals]] \u2014 on-terminal Android capabilities\n- [[adyen-terminal-api]] \u2014 POS message architecture and Admin request context\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/android-terminals/scan-barcode/single-session/2026-09-15|Adyen single barcode scan guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "On Android payment terminals [S1E Barcode](/point-of-sale/user-manuals/s1e-user-manual), [S1E2L](/point-of-sale/user-manuals/s1e2l-user-manual), [S1F2L](/point-of-sale/user-manuals/s1f2-user-manual), and [S1U2](/point-of-sale/user-manuals/s1u2-user-manual) you can use Terminal API requests to:",
+      "location": "raw line 23, introduction"
+    },
+    {
+      "text": "You do not need to [set up the scanning button](/point-of-sale/android-terminals/scan-barcode/button-scan) in the Customer Area to use this method.",
+      "location": "raw line 29, introduction"
+    },
+    {
+      "text": "3. A successful scan deactivates the barcode scanning button, and you receive the barcode content in the response to the admin request.",
+      "location": "raw line 46, How it works"
+    },
+    {
+      "text": "The format of the `AdditionalResponse` can be a Base64-encoded or URL-encoded.",
+      "location": "raw line 141, Activate the barcode scanner for a single scan"
+    },
+    {
+      "text": "If you want to cancel the activation of the terminal's barcode scanner before the specified timeout, you need to send an `AdminRequest` with the `Session.Type` **End**.",
+      "location": "raw line 215, Cancel scanning session"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "android-single-barcode-source-link-c6",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-android-terminals-scan-barcode-single-session]] \u2014 Adyen 2025-04-24 guide captured 2026-09-15 for one-scan Terminal API Admin sessions on named Android scanner terminals, response/cancel handling, and conflicting request examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/android-terminals/scan-barcode/single-session/2026-09-15.md",
+  "raw_sha256": "4fed1ed82c9e29ffea0f7dc44ef7485edd976359d6f9b83e099b00781de23bde",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,37 @@
+---
+title: "Turn on accessibility mode from an Adyen Android terminal"
+type: source
+date_ingested: 2026-10-14
+original_format: webpage
+canonical_url: "https://docs.adyen.com/point-of-sale/android-terminals/accessibility-mode/accessibility-from-terminal"
+raw_files:
+  - "adyen/docs/point-of-sale/android-terminals/accessibility-mode/accessibility-from-terminal/2026-09-15.md"
+tags: [adyen, point-of-sale, android-terminals, accessibility, audio-guidance]
+---
+
+## Overview
+
+Adyen's dated guide describes turning on audio-guided accessibility mode **from the payment terminal** during a transaction for a shopper with visual impairment. Supported methods are connecting headphones, selecting an on-screen button, or holding the physical keypad's 5 key, depending on terminal model. It applies to Android payment terminals in a Terminal API integration or standalone solution; the guide is not a merchant-phone accessibility or SDK implementation claim. [[adyen]] [[adyen-android-terminals]]
+
+## Key takeaways
+
+- Adyen Support must configure the mode. In this snapshot, AMS1, S1F2, S1F2L, S1E2L and S1U2 need terminal software 1.117 or later; M450, P630 and SFO1 need 1.124 or later. The documented headphone connectors are 3.5 mm for S1F2/S1F2L/S1E2L and USB-C for AMS1/S1U2. P630 can activate the mode only with its keypad. These are model/version/method limits from `## Requirements`, not current enablement proof.
+- The mode is incompatible with tipping, Giving, signature as cardholder verification, and Estonian, Latvian, Icelandic and Lithuanian. Support can be told to extend the stated default two-minute payment-screen and five-minute PIN-screen timeouts. See `## Requirements`.
+- Start the transaction normally, then activate a method supported by that terminal. The terminal reads on-screen text aloud and gives card-presentation instructions; the mode turns off automatically when the accessible payment is completed or canceled. The guide describes an extended timeout during the flow, without saying that activation establishes payment success. See `## How it works`.
+- Headphones can be connected during a transaction except while the PIN screen is shown. If unplugged mid-transaction, audio guidance continues through the terminal speaker. The on-screen accessibility button is absent on the PIN screen, and holding keypad 5 cannot activate the mode there. Staff or the shopper may use the button or physical keypad on supported models. See `## Use headphones`, `## Use the accessibility button` and `## Use the keypad`.
+
+## Detail locators
+
+- `## Requirements`: integration and hardware rows, model/software thresholds, connector-specific headphone support, payment/language exclusions, P630 keypad-only condition and Support configuration.
+- `## Use headphones`: headphone activation timing, speaker continuation on unplug, automatic end on completed/canceled accessible payment.
+- `## Use the accessibility button`: on-screen activation by staff or shopper and the two-step return to normal mode; no button on the PIN screen.
+- `## Use the keypad`: hold 5 to activate or deactivate on physical-keypad models, excluding the PIN screen.
+
+## Related
+
+- [[adyen-android-terminals]] — Android terminal feature and device routes.
+- [[adyen-terminal-api]] — related integrated payment-message path; this guide also covers standalone use.
+
+## Raw Sources
+
+- [[raw/adyen/docs/point-of-sale/android-terminals/accessibility-mode/accessibility-from-terminal/2026-09-15|Adyen turn on accessibility mode from the terminal, fetched 2026-09-15]]

@@ -89,6 +89,12 @@ Terminal API defines terminal messages. Adyen's Cloud Device API, represented se
 
 ## Related
 
+- [[source-adyen-docs-point-of-sale-release-updating]] — Adyen Docs 2026-09-15 terminal software update strategy for Terminal API and standalone terminals: automatic rollout, approved manual LTS updates, beta testing and restart-hour conditions; separate from Terminal API message or SDK versions.
+
+
+- [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps-terminal-actions-api]] — Adyen Management API guide (2026-09-15 raw snapshot) for scheduling Android terminal app/certificate actions and checking their status; distinct from Terminal API payment messages.
+
+
 - [[source-adyen-docs-point-of-sale-installments]] — Adyen Docs 2026-09-15 POS credit-card installments overview routing to Brazil, Japan and Mexico country guides; detailed terms and eligibility require those separate sources.
 
 

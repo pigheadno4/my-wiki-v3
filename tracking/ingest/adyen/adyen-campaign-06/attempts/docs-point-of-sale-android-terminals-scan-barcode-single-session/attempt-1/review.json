@@ -1,0 +1,17 @@
+{
+  "job_id": "docs-point-of-sale-android-terminals-scan-barcode-single-session",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The full 315-line pinned raw matches the trusted SHA-256; all five selected quotes and locators match. The candidate preserves the four-model scanner scope, POS-side prerequisites, Once-versus-Begin conflict, invalid sample ServiceID, mismatched response identifiers, V400m cancel sample, timeout bound, encoding caveat and scanner-versus-payment boundary. Two implementation-facing paths are imprecise enough to mislead a reader building the request or parsing the response: the JSON is not itself a ServiceIdentification object, and AdditionalResponse is nested in AdminResponse.Response.",
+  "required_changes": [
+    "In the activation takeaway, say to Base64-encode the JSON containing Session and Operation and place that encoded string in AdminRequest.ServiceIdentification. Avoid calling the JSON a `ServiceIdentification` object or implying that key belongs inside the encoded JSON. Raw lines 53-85 and 101-120 show the shape.",
+    "In the scan-result takeaway, use the actual `AdminResponse.Response.AdditionalResponse` path (or the full `SaleToPOIResponse.AdminResponse.Response.AdditionalResponse` path) for the barcode content and failure message. Raw lines 128-176 show the nesting. Keep the existing Base64/URL format qualification."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "android-single-barcode-source-link-c6"
+  ],
+  "reviewer_identity": "c6-rdocs-point-of-sale-android-terminals-scan-barcode-single-session",
+  "reviewer_model": "gpt-6-sol"
+}

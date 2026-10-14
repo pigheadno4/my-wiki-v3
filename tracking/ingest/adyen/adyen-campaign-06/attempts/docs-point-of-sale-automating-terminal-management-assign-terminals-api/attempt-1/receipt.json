@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-point-of-sale-automating-terminal-management-assign-terminals-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Assign terminals with Management API\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/automating-terminal-management/assign-terminals-api\"\nraw_files:\n  - \"adyen/docs/point-of-sale/automating-terminal-management/assign-terminals-api/2026-09-15.md\"\ntags: [adyen, point-of-sale, management-api, terminal-management, terminal-assignment]\n---\n\n## Overview\n\nAdyen's unversioned POS guide, captured 2026-09-15, explains how to reassign physical payment terminals with Management API. Reassignment changes the terminal's account level and inventory state so that it can be boarded; boarding is a separate step before the terminal can process transactions. This is fleet administration, not Terminal API payment messaging. [[adyen]] \u00b7 [[adyen-terminal-management]] \u00b7 [[adyen-pos-store-management]]\n\n## Key takeaways\n\n- The guide replaces the unsupported classic POS Terminal Management API for automated assignment with Management API. A new terminal starts in company or merchant inventory. A store-bound terminal must be reassigned to the store and then boarded. Where merchant accounts represent stores, reassignment to the merchant account must explicitly set `inventory: false` to take it out of inventory before boarding; `inventory: true` keeps it unable to transact.\n- Use a POS integration and an API credential with an API key and task-specific roles: **Management API\u2014Stores read** or **Stores read and write** for store details, **Terminal actions read** for terminal details, and **Assign Terminal** for assignment. A cloud Terminal API integration can use its existing API key if the Management API roles are present. Subscribe to **Terminal assignment complete** webhooks. Live assignment endpoints have rate limits; the linked rate-limit guide holds the details.\n- Discover the target store's `storeId` with `GET /merchants/{merchantId}/stores` and the device's `id` and current assignment with `GET /terminals`, subject to credential access. The `terminalId` path parameter uses device-model plus serial-number format. Reassign with `POST /terminals/{terminalId}/reassign` and the relevant `storeId`, `merchantId` plus required `inventory`, or `companyId` body field.\n- HTTP 200/OK for reassignment is an asynchronous request response, not proof that reassignment or boarding has finished. The guide says the online terminal downloads and applies the new configuration. A delayed reassignment can trigger `terminalAssignment.completed`; its payload names the assigned account or store, event time, and terminal ID. This is assignment completion, not evidence of a completed boarding or payment.\n\n## Detail locators\n\n- **Account level and states:** raw \u201cAccount level and status of terminals\u201d (lines 38\u201351) defines company/merchant/store assignment and `inventory`, `reassignmentInProgress`, `deployed`, and `boarded` states. An account setup may have no store level.\n- **Identifiers and list response:** raw \u201cGet a list of stores\u201d (lines 53\u2013228) gives merchant-scoped store lookup and `storeId`; \u201cGet terminal details\u201d (lines 294\u2013472) gives credential-scoped terminal listing, `id`, assignment, and device attributes. Example curl and library calls use the test Management API v3 endpoint; examples are illustrative, not proof of a live account's inventory or assignment.\n- **Request and outcome:** raw \u201cReassign terminals\u201d (lines 580\u2013600, 990\u2013992) gives path/body parameter semantics, merchant `inventory` condition, HTTP 200/OK, asynchronous processing, and online configuration application. Store and merchant request examples start at lines 603 and 792.\n- **Webhook:** raw \u201cTerminal assignment complete webhooks\u201d (lines 994\u20131014) specifies **Terminal assignment complete**, not **Standard**, and the `terminalAssignment.completed` payload. See \u201cRequirements\u201d (lines 25\u201336) for role and live-rate-limit pointers.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 Management API fleet administration\n- [[adyen-pos-store-management]] \u2014 store identity and administration\n- [[adyen-terminal-api]] \u2014 separate POS-to-terminal payment messages\n- [[adyen-api-access]] \u2014 general API credential and role background\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/automating-terminal-management/assign-terminals-api/2026-09-15|Adyen Assign terminals guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Support for the \"classic\" POS Terminal Management API has stopped. To automate assigning terminals, you must use Management API.",
+      "location": "raw line 23, introduction"
+    },
+    {
+      "text": "A new terminal is pre-assigned to the company or merchant account that the terminal was ordered for, and has the **inventory** status.",
+      "location": "raw line 51, Account level and status of terminals"
+    },
+    {
+      "text": "From the response, save the `storeId` of the store that you want to assign terminals to.",
+      "location": "raw line 224, Get a list of stores"
+    },
+    {
+      "text": "3. Check that the response returns HTTP status code 200/OK. The request is processed asynchronously.",
+      "location": "raw line 990, Reassign terminals"
+    },
+    {
+      "text": "In some cases, it is not possible to reassign a terminal immediately, and we schedule the assignment for later.",
+      "location": "raw line 996, Terminal assignment complete webhooks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "assign-terminals-api-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-automating-terminal-management-assign-terminals-api]] \u2014 2026-09-15 Adyen Management API guide for terminal reassignment, account/inventory states, boarding boundary, required roles, asynchronous response, and assignment-complete webhook.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply after the separate terminal-management hub suggestion is promoted; avoid creating a duplicate concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/automating-terminal-management/assign-terminals-api/2026-09-15.md",
+  "raw_sha256": "d4ec8f7a061d5c9dd2056e6647df97aeeacb53ef5dc390da70137781b2537aab",
+  "status": "candidate_ready"
+}

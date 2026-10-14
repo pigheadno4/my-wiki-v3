@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-point-of-sale-standalone-standalone-build-set-up-standalone",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Docs: Standalone terminal setup\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone\"\nraw_files:\n  - \"adyen/docs/point-of-sale/standalone/standalone-build/set-up-standalone/2026-09-15.md\"\ntags: [adyen, point-of-sale, standalone, terminal-settings]\n---\n\n## Overview\n\nAdyen's [[adyen-standalone-terminals|standalone terminal]] setup guide, captured 2026-09-15, explains how to make **test** payment terminals ready to accept transactions directly on the terminal, with optional tipping and refund-passcode settings. It offers Customer Area and Management API configuration paths. This standalone device path is distinct from a merchant POS app sending [[adyen-terminal-api|Terminal API]] payment requests. Live terminals need their own setup when going live; this snapshot does not establish account eligibility, current device support, or a successful payment.\n\n## Key takeaways\n\n- The guide requires a standalone-capable terminal. For Customer Area setup it names Merchant POS Terminal Management and Merchant POS Terminal View roles. API setup needs an API key with Management API Terminal settings read/write and Terminal Advanced settings read/write roles; a cloud Terminal API integration's existing API key can be reused if it has those roles. See **Requirements** in raw.\n- In Customer Area, **Devices > Device settings > Integrations > Standalone** includes enablement, Start button, currency, and optional transaction reference. At company, merchant, store, or individual-terminal scope, the Management API path PATCHes the corresponding `/terminalSettings` endpoint with `standalone.enableStandalone` and `standalone.currencyCode`. The latter is a default three-digit ISO 4217 code. See **Set up standalone > Tab: Customer Area** and **Tab: API** in raw.\n- After Customer Area Save, the terminal downloads configuration at its maintenance call (described as every 180 minutes); settings take effect after restart, normally at the configured restart hour. Manual terminal configuration update downloads and restarts immediately. See **Set up standalone > Tab: Customer Area**, step 4.\n- Tipping can be a shopper-entered amount or predefined choices, configured in Customer Area or through Management API `standalone.enableGratuities` plus `gratuities`. The page limits predefined choices to four, or three plus a custom amount. Its Quebec section recommends manual entry or fixed CAD amounts with custom entry to facilitate pre-tax-tip compliance, and explicitly says not to use percentage options for the fixed-amount path. See **Configure tipping** and **Configure compliant tipping in Quebec, Canada** in raw. The Customer Area standalone setup section also offers optional Support contact to enable tipping and referenced refunds; this is conditional guidance, not a universal prerequisite for all tipping configurations or refund-passcode changes. A POS app's per-payment tipping override belongs to a separate integrated flow.\n- A standalone Refunds passcode is an optional six-digit safeguard **in addition to** the Transactions passcode: both are entered to initiate a refund. Configure it in Customer Area or PATCH `passcodes.refundPin` through Management API at company, merchant, store, or terminal scope. See **Configure refund passcode** in raw.\n- If operating as a payment facilitator, the guide says to configure remaining required sub-merchant data on the sub-merchant's store. It routes test payment/refund execution to a separate testing guide; neither configuration nor that route proves a payment outcome. See **Payment facilitators** and **Testing** in raw.\n\n## Detail locators\n\n- **Requirements** \u2014 integration type, terminal hardware, role gates, Quebec limitation, and live-terminal setup reminder.\n- **Set up standalone > Tab: Customer Area / Tab: API** \u2014 exact menu, endpoint scopes, request keys, test examples, and response visibility by API credential.\n- **Configure tipping > Tab: Customer Area / Tab: API** \u2014 modes, maximum choices, Management API fields, and version-labeled SDK examples.\n- **Configure compliant tipping in Quebec, Canada** \u2014 dated recommendation and CAD fixed-amount/manual-entry paths.\n- **Configure refund passcode > Tab: Customer Area / Tab: API** \u2014 safety rationale, terminal update timing, exact endpoint and `refundPin` examples.\n- **Payment facilitators / Testing** \u2014 conditional sub-merchant store data and separate test instructions.\n\n## Related\n\n- [[adyen]] \u2014 provider overview.\n- [[adyen-standalone-terminals]] \u2014 direct-terminal solution and its operating boundary.\n- [[adyen-terminal-api]] \u2014 contrasting integrated merchant POS-to-terminal messaging path.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/standalone/standalone-build/set-up-standalone/2026-09-15|Standalone setup (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "This involves making your test terminals ready for standalone use, optionally configuring a refund passcode and tipping feature.",
+      "location": "raw line 19, opening paragraph"
+    },
+    {
+      "text": "You can use Management API to set up the standalone feature for all terminals under your company account, merchant account, or a store.",
+      "location": "raw line 79, Set up standalone > Tab: API"
+    },
+    {
+      "text": "The changes then take effect when the terminal restarts.",
+      "location": "raw line 61, Set up standalone > Tab: Customer Area step 4"
+    },
+    {
+      "text": "Do not use **Percentage**.",
+      "location": "raw line 802, Configure compliant tipping in Quebec, Canada > Show predefined fixed amounts"
+    },
+    {
+      "text": "You set up the **Refunds** passcode in addition to the **Transactions** passcode, which means that you need to enter both to initiate a refund.",
+      "location": "raw line 812, Configure refund passcode"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c6-standalone-setup-primary-route",
+        "target_path": "wiki/concepts/adyen-standalone-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-standalone-standalone-build-set-up-standalone]] \u2014 2026-09-15 standalone setup guide for Customer Area or Management API enablement, optional tipping, refund passcode and separate live-terminal setup.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/standalone/standalone-build/set-up-standalone/2026-09-15.md",
+  "raw_sha256": "b89a4676ca1b1ddfae0150e563d7284d5260e09fc4fc01fe0d4447e252cf1441",
+  "status": "candidate_ready"
+}

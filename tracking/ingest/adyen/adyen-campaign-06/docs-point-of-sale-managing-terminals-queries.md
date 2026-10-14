@@ -1,0 +1,9 @@
+# C06 fixed-query answers: docs-point-of-sale-managing-terminals
+
+## 1. Purpose, scope, and what not to infer
+
+**Answer:** The pinned 2026-09-15 Adyen webpage is a navigation overview for managing an in-person payment-terminal fleet: order or return, assign, inspect, board, customize, maintain and use terminal menus. It also points to a scheduled fleet report and API-based ordering, assignment and configuration. Its `Requirements` section limits the linked next-step material to in-person payments integrations. The page is not evidence of currently available models, merchant eligibility, a configured account or device, a successful boarding or payment, or an inspection result. Retrieve [[source-adyen-docs-point-of-sale-managing-terminals]] and its [[raw/adyen/docs/point-of-sale/managing-terminals/2026-09-15|pinned raw]]; the provider catalog route is pending coordinator promotion.
+
+## 2. Central capability, prerequisites, warnings, and retrieval route
+
+**Answer:** The central sequence on this overview is assignment to a store **before** boarding; boarding is described as making the terminal ready to accept payments in that store. The page says to inspect on receipt and weekly while in use, and to watch for suspicious activity near terminals. It links separate guides for ordering/replacement/returns, security inspection, boarding, customization, battery management for battery-powered devices, performance maintenance, menus and API automation. Follow those guides for model or firmware conditions, Customer Area or Management API roles, precise action effects, and tamper/battery procedures; this overview supplies no such details. Start with [[adyen-terminal-management]], then [[source-adyen-docs-point-of-sale-managing-terminals]] and its raw snapshot. [[adyen-pos-store-management]] is a narrower related route for store creation, account structure and payment-method settings. The provider catalog entry remains pending coordinator promotion.

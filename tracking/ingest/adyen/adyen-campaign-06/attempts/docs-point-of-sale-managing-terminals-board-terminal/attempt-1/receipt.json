@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-managing-terminals-board-terminal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen board a payment terminal\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/managing-terminals/board-terminal\"\nraw_files:\n  - \"adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-management, boarding, store-assignment]\n---\n\n## Overview\n\nThis Adyen guide describes registering a physical payment terminal for an assigned store. Assignment and boarding are distinct: a terminal must be assigned to a store and then boarded before this guide treats it as ready for payments. The page covers manual boarding for integrated Terminal API and standalone terminals, plus an enabled one-time-password (OTP) flow for eligible integrated terminals. It is a device/store configuration procedure, not a Terminal API payment request. [[adyen]] [[adyen-terminal-management]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- Boarding requires at least one payment method configured for the merchant account or store. The page says the process can take up to 30 minutes. For manual boarding, staff power on and connect the terminal when prompted, then confirm the assigned store or select the correct store where the display allows it. Non-Android and Android terminal screens differ; the terminal reboots one or more times. If the displayed store is wrong and cannot be changed on-device, reassign it in Customer Area before trying again.\n- OTP boarding is available only for integrated terminals on software version 1.94 or later, and needs Account Manager or Support enablement. Standalone terminals can only be boarded manually. The OTP API path needs an API credential/key with Management API \u2014 Terminal actions read and Management API - Reassign terminal to an entity roles.\n- For eligible terminals still in company or merchant inventory, store staff connect the device to the network and scan its displayed barcode or enter its OTP. Merchant system logic queries GET /terminals with otpQuery to find the terminal id; when otpQuery is used, other query parameters are ignored. It then POSTs /terminals/{terminalId}/reassign with that id and the unique store identifier. The guide says the terminal then boards automatically and downloads configuration. API request examples are versioned examples, not current execution proof.\n- An already boarded OTP terminal must be reassigned to use a different store; otherwise it continues processing payments over the old store. Staff initiate Reassign device on the terminal, then the system resolves the new OTP and reassigns it. The terminal reboots. If WebSockets are disabled, reassignment can take up to three hours. This delay is separate from the page's general up-to-30-minute boarding statement.\n- The page's manual non-Android branch says an absent Board the terminal button can indicate already boarded state; after recent reassignment it advises waiting for the next platform synchronization, averaging three hours. Do not infer that an assignment API response alone proves the correct store is active on the physical device or that a test payment succeeded.\n\n## Detail locators\n\n- Assignment-before-boarding definition and general duration: pinned raw lines 15\u201323.\n- Integration, credential roles, payment-method, software and standalone limits, and OTP enablement: pinned raw lines 25\u201337.\n- Manual non-Android and Android display/confirm/reassignment branches: pinned raw lines 39\u201377.\n- OTP physical staff action and Management API sequence: pinned raw lines 79\u2013103 and 270\u2013300.\n- Already boarded terminal reassignment and WebSockets-disabled delay: pinned raw lines 302\u2013313.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 physical device assignment and boarding hub.\n- [[adyen-terminal-api]] \u2014 in-person message/payment architecture; this source concerns device boarding.\n- [[adyen-pos-store-management]] \u2014 store setup and payment-method settings, distinct from terminal boarding.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15|Adyen board the terminal guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To make a terminal ready to accept payments, it needs to be assigned to your store, and then boarded.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15.md:19"
+    },
+    {
+      "text": "A terminal will not be able to board unless the merchant account or store has at least one payment method configured.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15.md:34"
+    },
+    {
+      "text": "Boarding with a one-time password is only possible with integrated terminals on software version 1.94 or later.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15.md:35"
+    },
+    {
+      "text": "The terminal automatically boards to the store that you specified in the assignment request.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15.md:296"
+    },
+    {
+      "text": "Otherwise, the terminal continues processing payments over the old store.",
+      "location": "raw/adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15.md:304"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c6-board-terminal-source-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-managing-terminals-board-terminal]] \u2014 Adyen physical terminal boarding guide captured 2026-09-15 for assignment-before-boarding, manual versus eligible OTP flow, payment-method/software/role gates and old-store reassignment risk.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "OTP boarding applies only to enabled integrated terminals on software 1.94 or later; standalone boarding is manual.",
+          "The source's general up-to-30-minute boarding duration and up-to-three-hour WebSockets-disabled reassignment duration cover different conditions; no assignment response proves physical readiness or payment execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/managing-terminals/board-terminal/2026-09-15.md",
+  "raw_sha256": "a052a034269f4667f46a2eb91ee5a9220d641ccd9437c2c7a516924c9246538d",
+  "status": "candidate_ready"
+}

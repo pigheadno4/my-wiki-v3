@@ -1,0 +1,9 @@
+# Fixed retrieval answers — POS-requested Android terminal accessibility
+
+## How does a POS app turn on accessibility mode for an Adyen terminal payment?
+
+In the 2026-09-15 guide, Adyen Support first enables accessibility mode for eligible Android payment terminals. For a specific Terminal API payment, the merchant POS app creates an `Operation` object with `Type: Payment` and `Variant: EnableAccessibilityMode`, Base64-encodes it, and passes the string as `PaymentRequest.SaleData.SaleToPOIData` alongside the normal Terminal API Payment request header, transaction identity, currency and amount. The **terminal** reads displayed text and card-presentation instructions aloud; the shopper presents the card. The guide says the mode exits after success or cancellation and the response has the normal payment-response shape. This does not by itself prove payment authorization. Source: [[source-adyen-docs-point-of-sale-android-terminals-accessibility-mode-accessibility-from-pos]], pinned raw **How it works** and **Make an accessible payment from the POS app**.
+
+## Which devices, versions and payment features limit that POS-requested mode?
+
+The dated guide lists AMS1, S1F2, S1F2L, S1E2L and S1U2 on terminal software 1.117+, and M450, P630 and SFO1 on 1.124+. It requires a Terminal API integration and Adyen Support enablement. It says accessibility mode is incompatible with tipping, Giving, signature CVM, and Estonian, Latvian, Icelandic and Lithuanian. Default payment-screen and PIN-entry timeouts are two and five minutes respectively; the merchant can ask Support to extend them. These are terminal model/software and feature conditions in a 2026-09-15 snapshot, not phone SDK requirements or proof of current availability. Source: [[source-adyen-docs-point-of-sale-android-terminals-accessibility-mode-accessibility-from-pos]], pinned raw **Requirements**.

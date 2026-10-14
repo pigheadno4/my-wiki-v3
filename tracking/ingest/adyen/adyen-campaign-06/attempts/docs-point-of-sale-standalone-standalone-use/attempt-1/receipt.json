@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-point-of-sale-standalone-standalone-use",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Use a standalone terminal\"\ntype: source\ndate_ingested: 2026-10-14\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/standalone/standalone-use\"\nraw_files:\n  - \"adyen/docs/point-of-sale/standalone/standalone-use/2026-09-15.md\"\ntags: [adyen, point-of-sale, standalone-terminals, payments, refunds]\n---\n\n## Overview\n\nAdyen's 2026-09-15 standalone-use guide explains transactions initiated directly on a terminal after standalone setup: card/NFC and QR payments, Manual Key Entry (MKE), MOTO, purchase cashback, tipping, in-progress cancellation, referenced or unreferenced refunds, stored-value actions, Totals, and receipt reprints. This is a terminal-operated flow, separate from POS-app Terminal API requests. The instructions and pictured outcomes are historical guidance, not proof of current feature enablement or a completed payment or refund. [[adyen]] \u00b7 [[adyen-standalone-terminals]]\n\n## Key takeaways\n\n- For an ordinary card or NFC payment, the operator selects `Payment`, enters the amount, then hands the terminal to the shopper. Old-menu non-Android terminals have a different Start/Confirm entry. QR wallet payments display a code for the shopper's app. MKE manually enters card data when chip/stripe reading fails; MOTO is a separate card-not-present flow that must be enabled. MKE, MOTO, and purchase cashback use the Transactions passcode and New transaction menu, with old-menu variations in raw.\n- Support enablement is stated for tipping, referenced refunds, gift/stored-value cards, and MOTO; gift/stored-value cards are limited to non-Android standalone terminals in this snapshot. Tipping, when enabled, prompts on each initiated payment. The guide supports cashback with a purchase, but says cashout without a purchase is unsupported on standalone payment terminals. A separate gift-card action can cash out the full stored value only; this does not generalize to card-account cashout.\n- Before a payment finishes processing, the operator may **try** to cancel it. A `Cancelled` display marks a successful attempt; if cancellation fails and the payment was approved, the guide routes to a refund. A cancel press alone is not a proven reversal.\n- Referenced refunds select an original transaction from History and use a Transactions passcode; Adyen describes lower error/fraud risk and QR-method support versus unreferenced refunds. Unreferenced refunds start a new Refund or MOTO refund, use the Transactions passcode and, if requested, a six-digit Refunds passcode. The card-present Refund requires shopper card presentation; MOTO refund manually enters card number, expiry and CVC. The guide's statements about refund receipt, processing, and shopper-account timing are conditional on success, not evidence for a particular refund.\n- Totals show terminal-processed sales, refunds, tips, and cancellations since the last reset. Reset starts a new reporting period; the prior period stops showing in the current report, though the last known report can still be viewed and printed. History also supports reprinting a shopper or merchant receipt.\n\n## Detail locators\n\n- **Scope and gates:** raw heading \u201cRequirements\u201d (29\u201341) identifies standalone hardware, non-Android stored-value limit, and Support-enabled features; \u201cMake a payment\u201d (43\u201357) has setup, amount entry, shopper handoff and older non-Android menu route.\n- **Payment variants:** \u201cQR code payments\u201d (59\u201373), \u201cManual Key Entry payment\u201d (75\u201396), \u201cMOTO payment\u201d (98\u2013119), \u201cCashback\u201d (121\u2013146), and \u201cTipping\u201d (148\u2013155). These are terminal actions with different card-present/card-not-present inputs and passcodes; the raw holds the exact screens and legacy keypad sequence.\n- **Cancel and refunds:** \u201cCancel an in-progress payment\u201d (157\u2013166) versus \u201cRefund a payment\u201d (168\u2013181), \u201cMake a referenced refund\u201d (183\u2013197), and \u201cMake an unreferenced refund\u201d (199\u2013226). The latter includes the conditional Refunds passcode and three-wrong-attempt wait.\n- **Stored value:** \u201cUse gift cards and other stored value cards\u201d (228\u2013258) lists redeem, activate, load, balance inquiry, and full-only gift-card cashout. Balance inquiry cannot be cancelled under this guide.\n- **Local reporting:** \u201cView, print, and reset totals\u201d (260\u2013283) and \u201cReprint transaction receipt\u201d (285\u2013299). These local terminal records do not establish settlement or merchant reconciliation.\n\n## Related\n\n- [[adyen-standalone-terminals]] \u2014 standalone solution and terminal-operated flow\n- [[adyen-terminal-api]] \u2014 separate integrated POS message flow\n- [[adyen-payment-terminals]] \u2014 hardware/model scope\n\n## Related raw API references\n\nThe linked standalone setup, MOTO enablement, menu-access, terminal-selection, and troubleshooting guides were not read for this entry; use them as navigation only.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/standalone/standalone-use/2026-09-15|Adyen standalone terminal use, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "| **Limitations**      | Note the following:- Gift cards and other stored value cards can currently only be used on non-Android standalone terminals.",
+      "location": "raw/adyen/docs/point-of-sale/standalone/standalone-use/2026-09-15.md:37"
+    },
+    {
+      "text": "After the terminal has been [set up](/point-of-sale/standalone/standalone-build/set-up-standalone) for standalone use, you can start a payment by entering the value of the transaction on the terminal, then handing it to the shopper to complete the transaction.",
+      "location": "raw/adyen/docs/point-of-sale/standalone/standalone-use/2026-09-15.md:45"
+    },
+    {
+      "text": "Issuing a cashback without a purchase, often called cashout, is currently not supported on standalone payment terminals.",
+      "location": "raw/adyen/docs/point-of-sale/standalone/standalone-use/2026-09-15.md:125"
+    },
+    {
+      "text": "If the cancel attempt failed (and the payment was approved), you will need to [issue a refund](#refund).",
+      "location": "raw/adyen/docs/point-of-sale/standalone/standalone-use/2026-09-15.md:166"
+    },
+    {
+      "text": "* [Referenced refunds](#referenced) are connected to the original purchase.",
+      "location": "raw/adyen/docs/point-of-sale/standalone/standalone-use/2026-09-15.md:172"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "link-standalone-use",
+        "target_path": "wiki/concepts/adyen-standalone-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-standalone-standalone-use]] \u2014 2026-09-15 Adyen terminal-operated standalone guide for payment variants, feature/passcode gates, in-progress cancellation, referenced and unreferenced refunds, stored value, Totals, and receipt reprints.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/standalone/standalone-use/2026-09-15.md",
+  "raw_sha256": "594c971c03aea63cc2b49e855c723459f8ae65181af826675e531a26b325e6aa",
+  "status": "candidate_ready"
+}

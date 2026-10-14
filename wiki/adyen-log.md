@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-14] ingest | Adyen website C06
+
+- All 50 exact-manifest terminal-administration, app, standalone and manual General Docs sources independently approved and promoted. First full-review approvals 42/50; 8 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 6 concepts, including 5 new concept(s). Management API fleet administration, Terminal API payment messaging, on-terminal Android apps, standalone operations, physical models and separately versioned GitHub SDK evidence remain distinct. Original reviews, attempts and mechanical handoff repairs retained.
+- Source_count 314 = 300 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-06/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-13] ingest | Adyen website C05
 
 - All 50 exact-manifest in-person General Docs sources independently approved and promoted. First full-review approvals 47/50; 3 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

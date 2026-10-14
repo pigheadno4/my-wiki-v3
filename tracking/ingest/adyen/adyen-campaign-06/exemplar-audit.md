@@ -1,0 +1,7 @@
+# Adyen C06 coordinator full-read exemplars
+
+- PASS — automating-terminal-management: all 187 raw lines fully read, including the table section reread after truncated initial output; promoted source and new terminal-management hub read. Management API fleet administration, operation-specific roles, cloud-key reuse, manual Customer Area alternative, assignment/boarding boundary, indicative live endpoint-group quotas and illustrative error retained.
+- PASS — order-terminals-api: all 2494 raw lines read in sequential untruncated chunks and promoted source fully read. Company/merchant procurement, live-only physical ordering versus illustrative TEST examples, regional hardware, enabled KIT products, billing/Brazil exception, shipping creation delay, cross-border taxId, Placed-only mutation/cancel and entire items-array replacement retained. Example prices/library versions remain illustrative, not current stock or execution proof.
+- PASS — android-terminals-app-requirements: all 159 raw lines and promoted source fully read. On-terminal apps distinct from phone/checkout SDKs; live/test APK caps, model/region/OS/ABI, P630 advice and certificate limits, allowlist/restrictions, versioned WebView matrix, absent browser/Play services, no terminal ADB and regular-device/test/live testing sequence retained.
+
+All three exact-manifest exemplars pass with no material partial/fail; no quality-audit expansion. Exhaustive structural checks remain required before closure.
