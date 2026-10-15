@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-15] ingest | Checkout Components `5.0.437`
+
+- Approved focused-reading delta from `5.0.436`: origin-qualified payment permission in Buttons/Checkout iframes; existing popup/callback behavior preserved. Verified 428 current/prior hashes and sizes; older history/count retained. Details [[paypal-log]] and [[changelog-github-paypal-checkout-components]]. No build/browser/payment testing, commit or push. Next: scoped commit/push approval after validation.
+
 ## [2026-10-15] ingest | Adyen website C10
 
 - Fifty independently approved developer authentication, security/privacy/PCI, operations/testing, versioning, migration and batch-processing documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 17 concepts touched (5 new); source_count 514 = 500 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-10/`; details [[adyen-log]]. No commit/push.

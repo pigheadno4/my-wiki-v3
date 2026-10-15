@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-10-04
+date_updated: 2026-10-15
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json"
@@ -26,6 +27,8 @@ tags: [paypal, checkout, javascript-sdk, github-repository, venmo, pay-later]
 `paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends ingested history through `@paypal/checkout-components@5.0.436` at exact SHA `5b2afe08b007bd026083492b8242d65047b7d3b8`. The latest patch changes a conditional Canadian French Pay Later label. The `5.0.435` iframe-title regression coverage, `5.0.434` checkout-child window-name monitoring, iframe aria-label addition in `5.0.432`, and revert in `5.0.433` remain documented.
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
+
+Newest ingested release: `@paypal/checkout-components@5.0.437` at `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9`, dated October 9 and collected/ingested October 15, 2026. This additive delta delegates the payment Permissions Policy feature to an explicit PayPal domain in Buttons and Checkout iframe configuration. The prior overview and version sections remain historical evidence, not an assertion that `5.0.436` is still the latest ingested version.
 
 ## Evidence boundary
 
@@ -313,6 +316,31 @@ Both legacy and rebranded `Logo` branches use `getLabelText(fundingEligibility, 
 
 **Grounding:** current raw `src/funding/paylater/config.jsx:59` reads `paylater?.products?.paylater?.variant === "CA" &&`; line 60 reads `lang === "fr"`; line 62 reads `labelText = "Payer plus tard";`; lines 65-66 read `if (paylater?.products?.payIn4?.eligible) {` followed by `labelText = "Pay in 4";`. `CHANGELOG.md:3` records "feat: update ca button label text".
 
+## Version 5.0.437 origin-qualified iframe payment permission
+
+The two complete authored runtime files add the same iframe attribute:
+
+```js
+allow: `payment ${getPayPalDomain()}`,
+```
+
+The Buttons iframe retains `allowpaymentrequest: "allowpaymentrequest"`, its funding-qualified title, `scrolling: "no"`, and `role: "presentation"`. The Checkout iframe retains `scrolling: "yes"`; its existing `defaultContext` still chooses a popup when `supportsPopups()` is true and otherwise `CONTEXT.IFRAME`. This change does not force checkout into an iframe or expose a new merchant callback or prop. Remaining hunks in these two runtime files are trailing-comma/indentation changes, including the existing window-name logger, not a new monitoring behavior. Test changes remain outside the retained capsule.
+
+**Upstream rationale:** both comments explain that Zoid navigates the frames via `window.location` or form POST rather than setting `src`, and that bare `allow="payment"` would not match the eventual checkout origin. The new attribute explicitly uses the same `getPayPalDomain()` helper used to construct each component URL. The Checkout comment identifies PaymentRequest in iframe fallback as the intended use. The helper comes from external `@paypal/sdk-client`, and navigation comes from external Zoid; this capsule does not independently establish their entire implementation, resolved dependency versions or browser-policy enforcement.
+
+This is version-qualified internal permission delegation, not a new payment method, merchant enablement, Apple Pay compatibility guarantee, v6 saved-payment integration, or a React wrapper API. It does not prove that ancestor/browser restrictions can be overridden. Existing lower-level Checkout export restrictions, funding eligibility, accessibility-revert history and payment finalization responsibilities remain. No merchant API migration is documented, and the package manifest changes only `version`; all dependency ranges and other fields are identical to `5.0.436`. Separately collected `paypal-js` and SDK assembly histories are not automatically upgraded by this repository release.
+
+**Grounding excerpts** under `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/`:
+
+- `CHANGELOG.md:3`: "Delegate payment Permissions Policy to buttons and checkout iframes".
+- `src/zoid/buttons/component.jsx:242`: "Named origin, not bare" (the comment explains the explicit-domain choice).
+- `src/zoid/checkout/component.jsx:100`: "Delegates the Permissions Policy 'payment' feature so PaymentRequest".
+- `src/zoid/checkout/component.jsx:112`: `defaultContext: supportsPopups() ? CONTEXT.POPUP : CONTEXT.IFRAME,`.
+
+**Evidence and reading boundary:** approved delta with an item-specific focused-reading exception. Fully read both changed authored components (1,920 lines total), the current package, new upstream changelog entry, authored comparison sections, affected prior attributes/context and complete cumulative wiki source/changelog. Verified all 428 prior/current file sizes and SHA-256 values; five retained files changed, 209 unchanged, no retained additions/removals. All eight upstream paths have dispositions: five retained and three test exclusions. The old raw changelog is an identical suffix. Manifest/comparison inventories, unchanged history and generated code were checked mechanically, not claimed as full semantic reads. Separate release notes are unavailable; the empty notes file and manifest explicitly record that absence.
+
+The retained `dist/button.js` is 408,914 bytes in both snapshots but differs beyond scoped-style identifier normalization. Neither contains the literal `allowpaymentrequest`. This mechanical check does not independently substantiate the new frame configuration or establish full generated-code semantic equivalence. Claims above rest on authored implementation, not a hosted CDN build, SDK assembly rollout, browser, accessibility or payment test. No upstream code/tests were executed. Review receipt: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-54919ba6.md`.
+
 ## Public and security boundary
 
 The browser-facing `Buttons` component is public on merchant pages. Lower-level checkout controls remain PayPal-domain-only. The iframe helper is therefore not a merchant escape hatch for forcing an unsupported presentation mode.
@@ -330,6 +358,10 @@ The exact snapshot also shows that layout, platform, remembered funding, and ser
 - [[source-paypal-pay-with-venmo]] — current product documentation for mobile app switch and desktop QR
 
 ## Raw sources
+
+- [Snapshot 5.0.437](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json) and [release record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.437/2026-10-15/manifest.json)
+- Complete authored [Buttons](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/src/zoid/buttons/component.jsx) and [Checkout](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/src/zoid/checkout/component.jsx) components; [package](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/package.json)
+- [Comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.436--5.0.437/comparison.json) and [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.436--5.0.437/diff.patch); generated sections checked mechanically
 
 - [Snapshot 5.0.436](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json) and [release record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.436/2026-10-04/manifest.json)
 - [Pay Later configuration](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/files/src/funding/paylater/config.jsx), [package](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/files/package.json), and [changelog](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/files/CHANGELOG.md) (new entry read; prior raw history checked mechanically)

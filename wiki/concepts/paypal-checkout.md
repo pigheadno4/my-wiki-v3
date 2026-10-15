@@ -184,6 +184,14 @@ At `@paypal/checkout-components@5.0.435`, new regression tests cover the existin
 
 At `@paypal/checkout-components@5.0.436`, the eligible Canadian Pay Later product's French label changes from `Payer en 4` to `Payer plus tard`. Later independent Pay in 4/France branches can overwrite it, so this is not a universal French label. The sole authored edit is presentation-only; dependency ranges, merchant callbacks and payment APIs are unchanged in this comparison. Neither the label nor the retained generated bundle proves hosted deployment or merchant eligibility. See [[paypal-pay-later]], [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
 
+### checkout-components `5.0.437` iframe payment permission
+
+The October 9, 2026 release adds an `allow` attribute whose value is `payment` followed by the domain returned by `getPayPalDomain()` to both Buttons and Checkout iframes. Buttons retains its existing `allowpaymentrequest`, funding-qualified title and presentation role. Checkout still prefers a popup when `supportsPopups()` is true and otherwise selects an iframe; the release does not add a merchant-facing way to force an otherwise unsupported mode.
+
+The retained comments explain that Zoid navigates these frames without setting their `src` attribute, so the permission names the PayPal domain explicitly instead of relying on bare `allow="payment"`. The Checkout comment identifies PaymentRequest in iframe fallback as the intended use. The domain helper and Zoid navigation are separately versioned dependencies; their complete implementation and actual browser enforcement were not verified here.
+
+This is internal frame-permission configuration, not a new payment method, React prop, v6 saved-payment feature, eligibility grant or proof that a parent/browser restriction can be bypassed. No merchant API migration or dependency-range change is detected. Authored source establishes the change; the retained generated bundle and assembly history do not prove hosted rollout. Existing accessibility reverts and window-name monitoring remain preserved in [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
+
 ### SDK release assembly baseline: `@paypal/sdk-release@5.0.569`
 
 The independent `paypal/paypal-sdk-release` repository records the component bill of materials used to assemble and release the combined PayPal and Braintree browser SDK. Baseline `5.0.569` pins Checkout Components `5.0.428`, Messaging Components `1.94.0`, Apple Pay Components `1.8.2`, Google Pay Components `1.3.5`, SDK Client `4.0.204`, and seven other direct PayPal component packages.

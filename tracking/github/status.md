@@ -1349,6 +1349,31 @@
   To SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
   Comparison: Not applicable
 
+## `github-54919ba63e5200390b6d`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9`
+- Collection date: `2026-10-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-54919ba63e5200390b6d/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.437` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.437/2026-10-15/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.436--5.0.437/comparison.json)
+
 ## `github-5628d6852ea277446ed1`
 
 - Repository: `adyen/adyen-ios`

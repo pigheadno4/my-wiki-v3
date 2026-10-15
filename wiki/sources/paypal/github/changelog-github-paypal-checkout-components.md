@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-10-04
+date_updated: 2026-10-15
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-20-79fa938/manifest.json"
@@ -24,6 +25,22 @@ tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-checkout-components`. Cumulative implementation knowledge belongs in [[source-github-paypal-checkout-components]] and the linked immutable snapshots.
+
+## `@paypal/checkout-components@5.0.437` (2026-10-09)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/checkout-components` | `5.0.436` | `5.0.437` | `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9` | Delta, approved focused reading |
+
+**Finding:** Buttons and Checkout iframe attributes add an explicit payment permission using `getPayPalDomain()`. Comments identify PaymentRequest in iframe fallback as the intent and explain why bare `allow="payment"` would not match frames navigated without `src`. Buttons retains its legacy `allowpaymentrequest`; existing title/role, popup preference, funding and callback behavior remain. Other changes in these two retained runtime files are formatting, not a new window-name monitoring change; test changes remain excluded.
+
+**Impact and limits:** Internal origin-qualified permission configuration, not a new payment method, merchant-facing React/JS API, eligibility grant, saved-payment feature, or proof of browser-policy bypass. Package changes only its version; dependency ranges and all other fields are unchanged. Zoid navigation and the domain helper remain external dependency boundaries. No merchant API migration is documented, and no build/browser/accessibility/payment test or hosted rollout verification was performed.
+
+**Evidence boundary:** Collected/ingested 2026-10-15. Complete changed authored components, current package, affected prior code and cumulative wiki source/changelog read under the item-specific focused-reading approval. Inventories, generated bundle and unchanged raw changelog history checked mechanically. All 428 current/prior file hashes/sizes verified; five retained changes, 209 unchanged, all eight upstream paths classified (three test exclusions). The old raw changelog is an identical suffix. The 408,914-byte generated bundle differs beyond scoped-style normalization and does not independently prove this frame change; no full generated-code equivalence claim. Separate upstream release notes unavailable.
+
+**Updated areas:** Checkout concept first; additive cumulative source, company, provider index and logs. All prior release findings retained, source count unchanged. Work item `github-54919ba63e5200390b6d`.
+
+**Evidence:** [snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json), [release](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.437/2026-10-15/manifest.json), complete [Buttons](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/src/zoid/buttons/component.jsx) and [Checkout](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/src/zoid/checkout/component.jsx), [comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.436--5.0.437/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.436--5.0.437/diff.patch), [review receipt](../../../../tracking/github/repos/paypal/paypal-checkout-components/ingest-review-54919ba6.md).
 
 ## `@paypal/checkout-components@5.0.436` (2026-09-29)
 

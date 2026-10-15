@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-15] ingest | Checkout Components `5.0.437`
+
+- Approved focused-reading serial delta `github-54919ba63e5200390b6d`, SHA `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9`, from `5.0.436`. Fully read both changed authored components (1,920 lines), current package, new raw changelog entry, affected prior code, authored comparison and complete cumulative wiki history. Mechanically checked inventories, generated bundle and unchanged changelog suffix; all 428 hashes/sizes verified, 209 files unchanged and eight upstream paths classified.
+- Buttons and Checkout add origin-qualified payment permission; comment-based PaymentRequest/navigation rationale remains distinct from browser proof. Existing popup selection, legacy button attribute, callbacks and dependency ranges remain. Generated bundle differs beyond scoped-style normalization, so no semantic-equivalence/hosted-rollout claim. Separate release notes unavailable; tests excluded/not run.
+- Checkout concept first, then additive source/changelog, company, provider index and logs. All prior release knowledge and source_count 177 preserved; no cross-company comparison needed. No upstream build/browser/accessibility/payment execution, raw/rule/code changes, commit or push. Review receipt: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-54919ba6.md`. Next: scoped commit/push approval after close validation.
+- Close validation: five typed pages and `git diff --check` pass; prior source/changelog body lines preserved in order, relative evidence links resolve and catalog entries are unique. Zero pending items. Global GitHub validation reports ten errors: the previous eight plus an Adyen SDK Automation packet-budget/invalid-packet pair; no error names this work item. The unrelated Adyen packet/policy was not modified; no globally clean result is claimed.
+
 ## [2026-10-12] maintenance | Same-date monorepo index ordering
 
 - Fixed generated-index ordering to compare shared package versions when one SHA contains several package releases and a later same-date SHA updates only one. Date precedence and deterministic fallback for unrelated/conflicting changes remain. The regression reproduced the stale result in both input orders before the fix.
