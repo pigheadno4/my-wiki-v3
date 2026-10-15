@@ -39,6 +39,8 @@ The retained `adyen-ios@5.25.1` baseline provides modular Drop-in, Session, Card
 
 Native payment details are submitted through merchant or Session delegates; card and ACH details are encrypted with an Adyen-provided public key. Apple Pay, Cash App Pay, Twint, WeChat Pay, and delegated 3DS/authentication paths each have additional platform or dependency boundaries.
 
+The additive `adyen-ios@5.26.0` update (ingested 2026-10-15) forwards partial-payment orders into Apple Pay, bounds sanitized CVC values as well as displayed values, and adds currency-table conversion plus adaptive layout/color changes. Release notes announce the final CocoaPods release, while same-tag installation text still includes CocoaPods; retain that discrepancy rather than claiming this version is unavailable. SwiftUI demo return handling is retained; the new UIKit SceneDelegate is excluded. No build/device/payment test was performed. See [[source-github-adyen-ios]], [[changelog-github-adyen-ios]] and [[adyen-ios-sdk]]; the older baseline remains preserved.
+
 ## WeChat Pay iOS wrapper
 
 The retained `AdyenWeChatPayInternal@2.2.0` baseline packages Tencent WeChat SDK `2.0.4` as an XCFramework for iOS 12 and newer. It exposes app and Universal Link registration, URL return handling, request submission, native callbacks, and the `PayReq`/`PayResp` surface.
@@ -133,11 +135,12 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - Ingested website documentation sources: 400 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08).
 - Total source summaries: 414 (400 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
-- Ingested package releases: 21
+- Ingested package releases: 22
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
 - Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`, `@adyen/adyen-web@6.46.0`.
 - Additional retained and ingested Node releases: `@adyen/api-library@32.1.0`, `@adyen/api-library@32.2.0`.
-- Latest ingest: `adyen/adyen-postman` at `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
+- Additional retained and ingested iOS release: `adyen-ios@5.26.0`, exact SHA `da347498d07b843e5af3f9eb871376514ffdf38c` (2026-10-15 ingest), preserving `5.25.1`.
+- Latest GitHub ingest: `adyen-ios@5.26.0` (2026-10-15). The preceding Postman boundary remains `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
 
 ## Sources
 

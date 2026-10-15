@@ -6,6 +6,14 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-15] ingest | Adyen iOS `5.26.0`
+
+- Approved additive full ingest from `5.25.1`, exact SHA `da347498d07b843e5af3f9eb871376514ffdf38c`, item `github-5628d6852ea277446ed1`; user approved focused reading. All 23 changed retained files read completely with affected prior code/dependencies; 666 unchanged files and large manifest/comparison inventories verified mechanically. All 1,375 prior/current file hashes and sizes verified; no packet gaps/unclassified changes. Collection date remains 2026-10-14, not rewritten to ingest date.
+- Concept audit/update first: [[adyen-ios-sdk]], then cumulative [[source-github-adyen-ios]] and [[changelog-github-adyen-ios]], preserving all older sections. Apple Pay partial-order forwarding, sanitized CVC limits versus display, source-derived currency table, safe-area/keyboard/layout changes, colors and SwiftUI demo return handling recorded with exact evidence.
+- CocoaPods release-note/README discrepancy retained; announced device support is not device proof. Missing UIKit SceneDelegate/plists remain outside-scope evidence limits. Security heuristic is not a vulnerability finding; delegated runtimes remain separate.
+- Updated company and provider index; 22 distinct ingested package versions, repository/source count unchanged. No SDK build/device/accessibility/wallet/payment testing, raw modification, policy/code changes, commit or push. Next: scoped review and commit/push approval after validation.
+- Close checks: five typed pages pass `validate_wiki`; `git diff --check` passes; prior source/changelog body lines preserved in order, raw/tracking links resolve, and catalog entries are unique. GitHub validator reports zero pending items and only the same eight pre-existing packet errors in four unrelated repositories, not a globally clean validation result.
+
 ## [2026-10-14] ingest | Adyen website C08
 
 - All 50 exact-manifest shopper-interaction, recognition, loyalty, autonomous-store and unified-commerce General Docs sources independently approved and promoted. First full-review approvals 43/50; 7 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

@@ -9,11 +9,16 @@ tags: [adyen, ios, swift, mobile, sdk, drop-in, components, apple-pay, 3d-secure
 
 Adyen iOS is a modular native checkout SDK. Its two primary integration choices are Drop-in, which presents the available payment methods as an all-in-one checkout surface, and individual Components, which let the merchant own the surrounding payment flow and UI.
 
-## Current baseline
+## Retained baseline and updates
 
 The first retained baseline is `adyen-ios@5.25.1` at exact SHA `5f6779b31299e3067de3a5279a816f3b8d2fbdf3`. The retained README marks 5.x active and lists iOS 12, Xcode 15, and Swift 5.7 as minimum requirements. It supports Swift Package Manager, CocoaPods, and Carthage.
 
 This is version-qualified repository evidence, not current merchant eligibility guidance. The payment methods returned by the merchant backend, account configuration, shopper context, region, and transaction determine what can actually be offered.
+
+The newest ingested update is `adyen-ios@5.26.0` at `da347498d07b843e5af3f9eb871376514ffdf38c` (2026-10-15 ingest). The `5.25.1` baseline and its integration knowledge remain preserved below and in [[source-github-adyen-ios]].
+
+> [!warning] Contradiction
+> The `5.26.0` release notes identify this as the last CocoaPods release and announce SPM/Carthage-only distribution afterward, while the same-tag README still advertises CocoaPods installation and the podspec remains present. This is a distribution-policy announcement, not evidence that `5.26.0` cannot be installed with CocoaPods. The discrepancy is also recorded in [[source-github-adyen-ios]].
 
 ## Integration and server boundary
 
@@ -58,6 +63,16 @@ Cash App Pay can request one-time and on-file grants and requires a redirect URL
 Analytics configuration can disable event analytics, but the initial analytics request remains part of the configured level. The privacy manifest declares product interaction for analytics plus user ID, contact, payment, name, email, phone, and address data for app functionality; it marks these categories as not linked and not used for tracking.
 
 The SDK can identify native iOS, React Native, or Flutter wrappers for analytics. Release `5.25.1` fixes a component-form layout problem affecting cross-platform SDK integrations, but the release note does not identify a specific changed source file in this first baseline.
+
+## Version-qualified changes in `5.26.0`
+
+- **Apple Pay after a partial payment:** Drop-in's `PreApplePayComponent.order` now forwards reads and writes to its wrapped `ApplePayComponent`. The existing manager assigns the partial-payment order, and Apple Pay submission includes that order in `PaymentComponentData`. This fixes order propagation for the remaining-amount payment, not a new Apple Pay payment method or proof of successful authorization.
+- **CVC value versus display:** Previously the formatter truncated only the formatted display while numeric sanitization could retain extra digits. It now caps the sanitized value as well: four digits for Amex, three for other or unknown brands. Single-character edits exceeding that limit are rejected; multi-character replacements pass to the formatter. The default standalone validator still accepts three to four digits; brand-bound validators enforce the selected brand's length.
+- **Currency conversion:** `AmountFormatter` uses an uppercase currency-code lookup table maintained in the SDK, with system ICU/CLDR fallback for absent codes. Conversion APIs retain `localeIdentifier` for compatibility but no longer use it to choose decimal places; display localization remains. This is source-derived behavior, not a release-note claim or new currency-eligibility list.
+- **Presentation:** Safe-area toolbar constraints, form content/frame layout guides, explicit margins and keyboard-frame settling address adaptive layouts. Taller keyboard frames publish immediately; shorter/hidden frames settle for 0.15 seconds. Default inactive text titles and separators use `#757575` in light mode and `#8E8E93` in dark mode, without changing custom overrides or the generic secondary-label/separator colors.
+- **Demo app returns:** The SwiftUI demo handles a URL at scene connection and subsequent URL callbacks, forwarding it to `RedirectComponent` and conditionally Cash App Pay. The UIKit AppDelegate adds scene configuration; its new UIKit SceneDelegate is outside the retained capsule, so the full UIKit scene-return path is not established here.
+
+Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-github-adyen-ios]]. No SDK build, device, accessibility, wallet or payment execution was performed.
 
 ## Related
 

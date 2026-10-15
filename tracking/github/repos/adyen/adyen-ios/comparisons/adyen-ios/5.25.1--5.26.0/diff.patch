@@ -1,0 +1,1006 @@
+diff --git a/Adyen.podspec b/Adyen.podspec
+index 3222597..138b8cb 100644
+--- a/Adyen.podspec
++++ b/Adyen.podspec
+@@ -1,6 +1,6 @@
+ Pod::Spec.new do |s|
+   s.name = 'Adyen'
+-  s.version = '5.25.1'
++  s.version = '5.26.0'
+   s.summary = "Adyen Components for iOS"
+   s.description = <<-DESC
+     Adyen Components for iOS allows you to accept in-app payments by providing you with the building blocks you need to create a checkout experience.
+diff --git a/Adyen/Core/Providers/CurrencyMinorDigitsProvider/CurrencyMinorDigitsProvider+Data.swift b/Adyen/Core/Providers/CurrencyMinorDigitsProvider/CurrencyMinorDigitsProvider+Data.swift
+new file mode 100644
+index 0000000..b519df7
+--- /dev/null
++++ b/Adyen/Core/Providers/CurrencyMinorDigitsProvider/CurrencyMinorDigitsProvider+Data.swift
+@@ -0,0 +1,153 @@
++//
++// Copyright (c) 2026 Adyen N.V.
++//
++// This file is open source and available under the MIT license. See the LICENSE file for more info.
++//
++
++import Foundation
++
++extension CurrencyMinorDigitsProvider {
++
++    /// Currency minor digits according to Adyen.
++    /// Source: https://docs.adyen.com/development-resources/currency-codes
++    internal static let minorDigitsByCurrencyCode: [String: Int] = [
++        "AED": 2,
++        "ALL": 2,
++        "AMD": 2,
++        "AOA": 2,
++        "ARS": 2,
++        "AUD": 2,
++        "AWG": 2,
++        "AZN": 2,
++        "BAM": 2,
++        "BBD": 2,
++        "BDT": 2,
++        "BHD": 3,
++        "BMD": 2,
++        "BND": 2,
++        "BOB": 2,
++        "BRL": 2,
++        "BSD": 2,
++        "BWP": 2,
++        "BYN": 2,
++        "BZD": 2,
++        "CAD": 2,
++        "CHF": 2,
++        "CLP": 2,
++        "CNH": 2,
++        "CNY": 2,
++        "COP": 2,
++        "CRC": 2,
++        "CUP": 2,
++        "CVE": 0,
++        "CZK": 2,
++        "DJF": 0,
++        "DKK": 2,
++        "DOP": 2,
++        "DZD": 2,
++        "EGP": 2,
++        "ETB": 2,
++        "EUR": 2,
++        "FJD": 2,
++        "FKP": 2,
++        "GBP": 2,
++        "GEL": 2,
++        "GHS": 2,
++        "GIP": 2,
++        "GMD": 2,
++        "GNF": 0,
++        "GTQ": 2,
++        "GYD": 2,
++        "HKD": 2,
++        "HNL": 2,
++        "HTG": 2,
++        "HUF": 2,
++        "IDR": 0,
++        "ILS": 2,
++        "INR": 2,
++        "IQD": 3,
++        "ISK": 2,
++        "JMD": 2,
++        "JOD": 3,
++        "JPY": 0,
++        "KES": 2,
++        "KGS": 2,
++        "KHR": 2,
++        "KMF": 0,
++        "KRW": 0,
++        "KWD": 3,
++        "KYD": 2,
++        "KZT": 2,
++        "LAK": 2,
++        "LKR": 2,
++        "LYD": 3,
++        "MAD": 2,
++        "MDL": 2,
++        "MKD": 2,
++        "MMK": 2,
++        "MNT": 2,
++        "MOP": 2,
++        "MRU": 2,
++        "MUR": 2,
++        "MVR": 2,
++        "MWK": 2,
++        "MXN": 2,
++        "MYR": 2,
++        "MZN": 2,
++        "NAD": 2,
++        "NGN": 2,
++        "NIO": 2,
++        "NOK": 2,
++        "NPR": 2,
++        "NZD": 2,
++        "OMR": 3,
++        "PAB": 2,
++        "PEN": 2,
++        "PGK": 2,
++        "PHP": 2,
++        "PKR": 2,
++        "PLN": 2,
++        "PYG": 0,
++        "QAR": 2,
++        "RON": 2,
++        "RSD": 2,
++        "RUB": 2,
++        "RWF": 0,
++        "SAR": 2,
++        "SBD": 2,
++        "SCR": 2,
++        "SEK": 2,
++        "SGD": 2,
++        "SHP": 2,
++        "SLE": 2,
++        "SOS": 2,
++        "SRD": 2,
++        "STN": 2,
++        "SVC": 2,
++        "SZL": 2,
++        "THB": 2,
++        "TND": 3,
++        "TOP": 2,
++        "TRY": 2,
++        "TTD": 2,
++        "TWD": 2,
++        "TZS": 2,
++        "UAH": 2,
++        "UGX": 0,
++        "USD": 2,
++        "UYU": 2,
++        "UZS": 2,
++        "VEF": 2,
++        "VND": 0,
++        "VUV": 0,
++        "WST": 2,
++        "XAF": 0,
++        "XCD": 2,
++        "XCG": 2,
++        "XOF": 0,
++        "XPF": 0,
++        "YER": 2,
++        "ZAR": 2,
++        "ZMW": 2
++    ]
++}
+diff --git a/Adyen/Core/Providers/CurrencyMinorDigitsProvider/CurrencyMinorDigitsProvider.swift b/Adyen/Core/Providers/CurrencyMinorDigitsProvider/CurrencyMinorDigitsProvider.swift
+new file mode 100644
+index 0000000..ff129d9
+--- /dev/null
++++ b/Adyen/Core/Providers/CurrencyMinorDigitsProvider/CurrencyMinorDigitsProvider.swift
+@@ -0,0 +1,42 @@
++//
++// Copyright (c) 2026 Adyen N.V.
++//
++// This file is open source and available under the MIT license. See the LICENSE file for more info.
++//
++
++import Foundation
++
++/// Provides the number of minor digits (decimal places) for a given ISO 4217 currency code.
++@_spi(AdyenInternal)
++public protocol AnyCurrencyMinorDigitsProvider {
++
++    /// Returns the number of minor digits for the given currency code.
++    ///
++    /// - Parameter currencyCode: The ISO 4217 currency code, e.g. `"EUR"`.
++    /// - Returns: The number of minor digits for the currency. Falls back to the system's ICU currency data.
++    func minorDigits(for currencyCode: String) -> Int
++}
++
++/// Provides the number of minor digits (decimal places) for ISO 4217 currency codes,
++/// based on the list maintained by Adyen.
++///
++/// Source: https://docs.adyen.com/development-resources/currency-codes
++@_spi(AdyenInternal)
++public struct CurrencyMinorDigitsProvider: AnyCurrencyMinorDigitsProvider {
++
++    public init() {}
++
++    public func minorDigits(for currencyCode: String) -> Int {
++        let normalizedCurrencyCode = currencyCode.uppercased()
++        return Self.minorDigitsByCurrencyCode[normalizedCurrencyCode] ?? Self.systemMinorDigits(for: normalizedCurrencyCode)
++    }
++
++    /// Falls back to the system's ICU/CLDR currency data for ISO 4217 codes that are valid
++    /// but not on Adyen's official currency list (e.g. `CLF`, `UYW`).
++    private static func systemMinorDigits(for currencyCode: String) -> Int {
++        let formatter = NumberFormatter()
++        formatter.numberStyle = .currency
++        formatter.currencyCode = currencyCode
++        return formatter.maximumFractionDigits
++    }
++}
+diff --git a/Adyen/Core/ToolBar/ModalToolbar.swift b/Adyen/Core/ToolBar/ModalToolbar.swift
+index ab53579..5343b7e 100644
+--- a/Adyen/Core/ToolBar/ModalToolbar.swift
++++ b/Adyen/Core/ToolBar/ModalToolbar.swift
+@@ -83,7 +83,7 @@ public class ModalToolbar: UIView, AnyNavigationBar {
+             setupLayoutForCenteredMode()
+         default:
+             addSubview(stackView)
+-            stackView.adyen.anchor(inside: self)
++            stackView.adyen.anchor(inside: safeAreaLayoutGuide)
+         }
+         
+         self.accessibilityIdentifier = "adyen.ModalToolbar"
+@@ -111,13 +111,13 @@ public class ModalToolbar: UIView, AnyNavigationBar {
+         let titleTrailingAnchor = style.toolbarMode == .natural ? titleLabel.trailingAnchor : titleLabel.rightAnchor
+ 
+         NSLayoutConstraint.activate([
+-            self.topAnchor.constraint(equalTo: titleLabel.topAnchor),
+-            self.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor),
++            safeAreaLayoutGuide.topAnchor.constraint(equalTo: titleLabel.topAnchor),
++            safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+             safeAreaLeadingAnchor.constraint(equalTo: titleLeadingAnchor, constant: -paddingWithMarginCorrection),
+             safeAreaTrailingAnchor.constraint(equalTo: titleTrailingAnchor, constant: paddingWithMarginCorrection),
+             
+-            self.centerYAnchor.constraint(equalTo: cancelButton.centerYAnchor),
+-            self.heightAnchor.constraint(greaterThanOrEqualTo: cancelButton.heightAnchor),
++            safeAreaLayoutGuide.centerYAnchor.constraint(equalTo: cancelButton.centerYAnchor),
++            safeAreaLayoutGuide.heightAnchor.constraint(greaterThanOrEqualTo: cancelButton.heightAnchor),
+             cancelPositionConstraint
+         ])
+     }
+@@ -135,17 +135,17 @@ public class ModalToolbar: UIView, AnyNavigationBar {
+ 
+         switch style.toolbarMode {
+         case .rightCancel:
+-            cancelPositionConstraint = rightAnchor.constraint(
++            cancelPositionConstraint = safeAreaLayoutGuide.rightAnchor.constraint(
+                 equalTo: cancelButton.rightAnchor,
+                 constant: paddingWithMarginCorrection
+             )
+         case .leftCancel:
+-            cancelPositionConstraint = leftAnchor.constraint(
++            cancelPositionConstraint = safeAreaLayoutGuide.leftAnchor.constraint(
+                 equalTo: cancelButton.leftAnchor,
+                 constant: -paddingWithMarginCorrection
+             )
+         case .natural:
+-            cancelPositionConstraint = trailingAnchor.constraint(
++            cancelPositionConstraint = safeAreaLayoutGuide.trailingAnchor.constraint(
+                 equalTo: cancelButton.trailingAnchor,
+                 constant: paddingWithMarginCorrection
+             )
+diff --git a/Adyen/Formatters/AmountFormatter.swift b/Adyen/Formatters/AmountFormatter.swift
+index 932e465..707cccd 100644
+--- a/Adyen/Formatters/AmountFormatter.swift
++++ b/Adyen/Formatters/AmountFormatter.swift
+@@ -29,9 +29,9 @@ public final class AmountFormatter {
+     /// - Parameters:
+     ///   - majorUnitAmount: The amount in major currency units.
+     ///   - currencyCode: The code of the currency.
+-    ///   - localeIdentifier: The identifier of the locale. If nil, device's current locale is used.
++    ///   - localeIdentifier: Unused. Minor unit digits depend only on the currency code. Kept for API compatibility.
+     public static func minorUnitAmount(from majorUnitAmount: Double, currencyCode: String, localeIdentifier: String? = nil) -> Int {
+-        let maximumFractionDigits = defaultFormatter(currencyCode: currencyCode, localeIdentifier: localeIdentifier).maximumFractionDigits
++        let maximumFractionDigits = minorDigits(for: currencyCode)
+         
+         return Int(majorUnitAmount * pow(Double(10), Double(maximumFractionDigits)))
+     }
+@@ -41,9 +41,9 @@ public final class AmountFormatter {
+     /// - Parameters:
+     ///   - majorUnitAmount: The amount in major currency units.
+     ///   - currencyCode: The code of the currency.
+-    ///   - localeIdentifier: The identifier of the locale. If nil, device's current locale is used.
++    ///   - localeIdentifier: Unused. Minor unit digits depend only on the currency code. Kept for API compatibility.
+     public static func minorUnitAmount(from majorUnitAmount: Decimal, currencyCode: String, localeIdentifier: String? = nil) -> Int {
+-        let maximumFractionDigits = defaultFormatter(currencyCode: currencyCode, localeIdentifier: localeIdentifier).maximumFractionDigits
++        let maximumFractionDigits = minorDigits(for: currencyCode)
+         
+         let roundTowardsZero = NSDecimalNumberHandler(
+             roundingMode: majorUnitAmount.isSignMinus ? .up : .down,
+@@ -64,9 +64,9 @@ public final class AmountFormatter {
+     /// - Parameters:
+     ///   - amount: The amount in minor currency units.
+     ///   - currencyCode: The code of the currency.
+-    ///   - localeIdentifier: The identifier of the locale. If nil, device's current locale is used.
++    ///   - localeIdentifier: Unused. Minor unit digits depend only on the currency code. Kept for API compatibility.
+     public static func decimalAmount(_ amount: Int, currencyCode: String, localeIdentifier: String? = nil) -> NSDecimalNumber {
+-        let maximumFractionDigits = defaultFormatter(currencyCode: currencyCode, localeIdentifier: localeIdentifier).maximumFractionDigits
++        let maximumFractionDigits = minorDigits(for: currencyCode)
+         let decimalMinorAmount = NSDecimalNumber(value: amount)
+         return decimalMinorAmount.multiplying(byPowerOf10: Int16(-maximumFractionDigits))
+     }
+@@ -78,27 +78,12 @@ public final class AmountFormatter {
+         if let localeIdentifier {
+             formatter.locale = Locale(identifier: localeIdentifier)
+         }
+-        if let maxDigits = maximumFractionDigits(for: currencyCode, localeIdentifier: localeIdentifier) {
+-            formatter.maximumFractionDigits = maxDigits
+-        }
++        formatter.maximumFractionDigits = minorDigits(for: currencyCode)
+         return formatter
+     }
+     
+-    private static func maximumFractionDigits(for currencyCode: String, localeIdentifier: String?) -> Int? {
+-        // For some currency codes iOS returns the wrong number of minor units.
+-        // The below overrides are obtained from https://en.wikipedia.org/wiki/ISO_4217
+-        
+-        switch currencyCode {
+-        case "ISK", "CLP", "COP", "MRU", "RSD", "GHS", "HUF":
+-            // iOS returns 0, which is in accordance with ISO-4217, but conflicts with the Adyen backend.
+-            // iOS 26.4 Beta: Returns 0 for HUF (not accordant with ISO-4217)
+-            return 2
+-        case "CVE", "IDR":
+-            // iOS returns 2 instead.
+-            return 0
+-        default:
+-            return nil
+-        }
++    private static func minorDigits(for currencyCode: String) -> Int {
++        CurrencyMinorDigitsProvider().minorDigits(for: currencyCode)
+     }
+ 
+ }
+diff --git a/Adyen/Helpers/AdyenSdkVersion.swift b/Adyen/Helpers/AdyenSdkVersion.swift
+index 20e9f93..0750472 100644
+--- a/Adyen/Helpers/AdyenSdkVersion.swift
++++ b/Adyen/Helpers/AdyenSdkVersion.swift
+@@ -7,4 +7,4 @@
+ import Foundation
+ 
+ /// The Adyen SDK version.
+-public let adyenSdkVersion: String = "5.25.1"
++public let adyenSdkVersion: String = "5.26.0"
+diff --git a/Adyen/UI/Form/FormViewController.swift b/Adyen/UI/Form/FormViewController.swift
+index 879e4ee..936545e 100644
+--- a/Adyen/UI/Form/FormViewController.swift
++++ b/Adyen/UI/Form/FormViewController.swift
+@@ -16,6 +16,11 @@ open class FormViewController: UIViewController, AdyenObserver, PreferredContent
+         static let firstResponder = "firstResponder"
+     }
+ 
++    private enum Constants {
++        static let scrollViewPadding: CGFloat = 8
++        static let scrollViewBottomPadding: CGFloat = 16
++    }
++
+     // MARK: - UI elements
+ 
+     private let scrollView: UIScrollView = {
+@@ -266,12 +271,29 @@ open class FormViewController: UIViewController, AdyenObserver, PreferredContent
+         if scrollEnabled {
+             scrollView.adyen.anchor(inside: view.safeAreaLayoutGuide)
+ 
+-            NSLayoutConstraint.activate([
+-                formView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+-                formView.leadingAnchor.constraint(equalTo: scrollView.layoutMarginsGuide.leadingAnchor),
+-                formView.trailingAnchor.constraint(equalTo: scrollView.layoutMarginsGuide.trailingAnchor),
+-                formView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+-            ])
++            NSLayoutConstraint.activate(
++                [
++                    formView.topAnchor.constraint(
++                        equalTo: scrollView.contentLayoutGuide.topAnchor
++                    ),
++                    formView.leadingAnchor.constraint(
++                        equalTo: scrollView.contentLayoutGuide.leadingAnchor,
++                        constant: Constants.scrollViewPadding
++                    ),
++                    formView.trailingAnchor.constraint(
++                        equalTo: scrollView.contentLayoutGuide.trailingAnchor,
++                        constant: -Constants.scrollViewPadding
++                    ),
++                    formView.bottomAnchor.constraint(
++                        equalTo: scrollView.contentLayoutGuide.bottomAnchor,
++                        constant: -Constants.scrollViewBottomPadding
++                    ),
++                    formView.widthAnchor.constraint(
++                        equalTo: scrollView.frameLayoutGuide.widthAnchor,
++                        constant: -2 * Constants.scrollViewPadding
++                    )
++                ]
++            )
+         } else {
+             formView.adyen.anchor(inside: view.safeAreaLayoutGuide)
+         }
+diff --git a/Adyen/UI/Form/Items/Basic Items/FormContainerItem.swift b/Adyen/UI/Form/Items/Basic Items/FormContainerItem.swift
+index 4364a65..4fbe563 100644
+--- a/Adyen/UI/Form/Items/Basic Items/FormContainerItem.swift	
++++ b/Adyen/UI/Form/Items/Basic Items/FormContainerItem.swift	
+@@ -7,6 +7,10 @@
+ import Foundation
+ import UIKit
+ 
++private enum Constants {
++    static let horizontalPadding: CGFloat = 8
++}
++
+ /// Simple form item to wrap another item and provide padding around it.
+ @_spi(AdyenInternal)
+ public class FormContainerItem<ContentItem: FormItem>: FormItem {
+@@ -70,6 +74,8 @@ private class FormContainerItemView: UIView, AnyFormItemView {
+                 with: padding
+             )
+         } else {
++            directionalLayoutMargins.leading = Constants.horizontalPadding
++            directionalLayoutMargins.trailing = Constants.horizontalPadding
+             contentView.adyen.anchor(
+                 inside: self.layoutMarginsGuide
+             )
+@@ -86,7 +92,7 @@ public extension FormItem {
+     
+     /// Adds padding around the form item
+     ///
+-    /// If no padding is provided it uses the superview layout margins to specify the amount of padding around the item
++    /// If padding is nil it uses the superview layout margins to specify the amount of padding around the item
+     ///
+     /// - Parameters:
+     ///   - padding: The optional fixed padding to apply
+diff --git a/Adyen/UI/Form/Items/FormItemView.swift b/Adyen/UI/Form/Items/FormItemView.swift
+index a22ba30..e33d1e9 100644
+--- a/Adyen/UI/Form/Items/FormItemView.swift
++++ b/Adyen/UI/Form/Items/FormItemView.swift
+@@ -6,6 +6,10 @@
+ 
+ import UIKit
+ 
++private enum Constants {
++    static let margin: CGFloat = 8
++}
++
+ /// A view representing a form item.
+ @_spi(AdyenInternal)
+ open class FormItemView<ItemType: FormItem>: UIView, AnyFormItemView, AdyenObserver {
+@@ -27,6 +31,12 @@ open class FormItemView<ItemType: FormItem>: UIView, AnyFormItemView, AdyenObser
+         
+         super.init(frame: .zero)
+         accessibilityIdentifier = item.identifier
++        directionalLayoutMargins = NSDirectionalEdgeInsets(
++            top: Constants.margin,
++            leading: Constants.margin,
++            bottom: Constants.margin,
++            trailing: Constants.margin
++        )
+         preservesSuperviewLayoutMargins = true
+     }
+     
+diff --git a/Adyen/UI/Form/Items/Text/FormTextItemStyle.swift b/Adyen/UI/Form/Items/Text/FormTextItemStyle.swift
+index 36dde50..bccc527 100644
+--- a/Adyen/UI/Form/Items/Text/FormTextItemStyle.swift
++++ b/Adyen/UI/Form/Items/Text/FormTextItemStyle.swift
+@@ -13,7 +13,7 @@ public struct FormTextItemStyle: FormValueItemStyle {
+     /// The title style.
+     public var title = TextStyle(
+         font: .preferredFont(forTextStyle: .footnote),
+-        color: UIColor.Adyen.componentSecondaryLabel,
++        color: UIColor.Adyen.formTextItemInactive,
+         textAlignment: .natural
+     )
+     
+@@ -50,7 +50,7 @@ public struct FormTextItemStyle: FormValueItemStyle {
+     
+     /// The color for separator element.
+     /// If value is nil, the default color would be used.
+-    public var separatorColor: UIColor? = UIColor.Adyen.componentSeparator
++    public var separatorColor: UIColor? = UIColor.Adyen.formTextItemInactive
+     
+     /// Initializes the form text item style.
+     ///
+diff --git a/Adyen/UI/List/ListItemView.swift b/Adyen/UI/List/ListItemView.swift
+index b0ffb9c..e66fff2 100644
+--- a/Adyen/UI/List/ListItemView.swift
++++ b/Adyen/UI/List/ListItemView.swift
+@@ -10,6 +10,11 @@ import UIKit
+ /// Displays a list item.
+ @_spi(AdyenInternal)
+ public final class ListItemView: UIView, AnyFormItemView {
++
++    private enum Constants {
++        static let horizontalMargin: CGFloat = 8
++    }
++
+     private let imageLoader: ImageLoading
+     private var imageLoadingTask: AdyenCancellable? {
+         willSet { imageLoadingTask?.cancel() }
+@@ -25,6 +30,8 @@ public final class ListItemView: UIView, AnyFormItemView {
+         
+         addSubview(contentStackView)
+         
++        directionalLayoutMargins.leading = Constants.horizontalMargin
++        directionalLayoutMargins.trailing = Constants.horizontalMargin
+         preservesSuperviewLayoutMargins = true
+         configureConstraints()
+     }
+diff --git a/Adyen/UI/Styles/CoreColors.swift b/Adyen/UI/Styles/CoreColors.swift
+index 00fdac1..4cd6266 100644
+--- a/Adyen/UI/Styles/CoreColors.swift
++++ b/Adyen/UI/Styles/CoreColors.swift
+@@ -79,6 +79,18 @@ extension UIColor {
+             }
+         }
+ 
++        public static var formTextItemInactive: UIColor {
++            if #available(iOS 13.0, *) {
++                return UIColor { traits in
++                    traits.userInterfaceStyle == .dark
++                        ? color(hex: 0x8E8E93)
++                        : color(hex: 0x757575)
++                }
++            } else {
++                return color(hex: 0x757575)
++            }
++        }
++
+         public static var componentLoadingMessageColor: UIColor {
+             UIColor(
+                 named: "awaitLoadingMessageColor",
+diff --git a/Adyen/Utilities/KeyboardObserver.swift b/Adyen/Utilities/KeyboardObserver.swift
+index 5b1bb53..451a4ec 100644
+--- a/Adyen/Utilities/KeyboardObserver.swift
++++ b/Adyen/Utilities/KeyboardObserver.swift
+@@ -10,9 +10,15 @@ import UIKit
+ @_spi(AdyenInternal)
+ public class KeyboardObserver {
+     
++    private enum Constants {
++        static let settleDelay: TimeInterval = 0.15
++    }
++    
+     /// The observable keyboard rect
+     @AdyenObservable(CGRect.zero)
+     public private(set) var keyboardRect: CGRect
++
++    private let throttler = Throttler(minimumDelay: Constants.settleDelay)
+     
+     public init() {
+         
+@@ -24,13 +30,32 @@ public class KeyboardObserver {
+         )
+     }
+     
++    /// Publishes a taller keyboard immediately, so the keyboard never covers content.
++    /// A shorter or hidden keyboard is published only once no new frame arrives within `Constants.settleDelay`,
++    /// because UIKit sends short-lived hide and partial frames while the device rotates or folds.
+     @objc
+     private func handleKeyboardWillChangeFrameNotification(_ notification: Notification) {
+-        
+-        guard let bounds = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
+-            return self.keyboardRect = .zero
++        let visibleRect = visibleKeyboardRect(from: notification)
++        guard visibleRect.height < keyboardRect.height else {
++            throttler.cancel()
++            keyboardRect = visibleRect
++            return
+         }
+-        
+-        self.keyboardRect = bounds.intersection(UIScreen.main.bounds)
++
++        throttler.throttle { [weak self] in
++            self?.keyboardRect = visibleRect
++        }
++    }
++
++    /// Clips the keyboard frame to the screen the keyboard appears on, which is not always `UIScreen.main`
++    /// (for example, the inner display of a foldable iPhone).
++    private func visibleKeyboardRect(from notification: Notification) -> CGRect {
++        guard let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
++            return .zero
++        }
++
++        let screen = notification.object as? UIScreen ?? UIScreen.main
++        let visibleRect = frame.intersection(screen.bounds)
++        return visibleRect.isEmpty ? .zero : visibleRect
+     }
+ }
+diff --git a/Adyen/Utilities/Throttler.swift b/Adyen/Utilities/Throttler.swift
+index 941adb7..5381d80 100644
+--- a/Adyen/Utilities/Throttler.swift
++++ b/Adyen/Utilities/Throttler.swift
+@@ -31,4 +31,9 @@ public final class Throttler {
+         // => delay the workItem execution by the minimum delay time
+         queue.asyncAfter(deadline: .now() + minimumDelay, execute: workItem)
+     }
++    
++    /// Cancels the throttled block if it has not been executed yet.
++    public func cancel() {
++        workItem.cancel()
++    }
+ }
+diff --git a/AdyenCard/Form/FormCardSecurityCodeItemView.swift b/AdyenCard/Form/FormCardSecurityCodeItemView.swift
+index 3d01927..fd1ea5d 100644
+--- a/AdyenCard/Form/FormCardSecurityCodeItemView.swift
++++ b/AdyenCard/Form/FormCardSecurityCodeItemView.swift
+@@ -16,7 +16,7 @@ internal final class FormCardSecurityCodeItemView: FormTextItemView<FormCardSecu
+         textField.allowsEditingActions = false
+         
+         observe(item.$selectedCard) { [weak self] cardsType in
+-            let number = cardsType == CardType.americanExpress ? "4" : "3"
++            let number = String(cardsType.expectedSecurityCodeLength)
+             let localizedPlaceholder = localizedString(.cardCvcItemPlaceholderDigits, item.localizationParameters, number)
+ 
+             if let textField = self?.textField {
+@@ -66,6 +66,32 @@ internal final class FormCardSecurityCodeItemView: FormTextItemView<FormCardSecu
+         super.textFieldDidEndEditing(text)
+         cardHintView.isHighlighted = false
+     }
++    
++    override internal func textField(
++        _ textField: UITextField,
++        shouldChangeCharactersIn range: NSRange,
++        replacementString string: String
++    ) -> Bool {
++        guard !string.isEmpty else { return true }
++
++        // Multi-character replacements (e.g. paste) are allowed through here and truncated
++        // to the expected length by the formatter; a single typed keystroke is rejected
++        // once it would exceed the max length.
++        let isSingleCharacterReplacement = string.count == 1
++        guard isSingleCharacterReplacement else { return true }
++        
++        let currentText = textField.text ?? ""
++        guard let textRange = Range(range, in: currentText) else { return true }
++        
++        let updatedText = currentText.replacingCharacters(in: textRange, with: string)
++        let digitCount = updatedText.filter(\.isNumber).count
++        
++        return digitCount <= expectedLength
++    }
++    
++    private var expectedLength: Int {
++        item.selectedCard.expectedSecurityCodeLength
++    }
+ }
+ 
+ extension FormCardSecurityCodeItemView {
+diff --git a/AdyenCard/Formatters/CardSecurityCodeFormatter.swift b/AdyenCard/Formatters/CardSecurityCodeFormatter.swift
+index 228821b..ca515f9 100644
+--- a/AdyenCard/Formatters/CardSecurityCodeFormatter.swift
++++ b/AdyenCard/Formatters/CardSecurityCodeFormatter.swift
+@@ -9,26 +9,25 @@ import Foundation
+ 
+ /// Formats a card's security code (CVC/CVV).
+ public final class CardSecurityCodeFormatter: NumericFormatter {
+-    
+-    /// Indicate is validating CVV belong to a Amex card
++
+     private var cardType: CardType?
+     private var expectedLength: Int {
+-        cardType == CardType.americanExpress ? 4 : 3
++        cardType.expectedSecurityCodeLength
+     }
+     
+-    /// Initiate new instance of CardSecurityCodeValidator
++    /// Initiate new instance of CardSecurityCodeFormatter
+     override public init() {
+         super.init()
+     }
+     
+-    /// Initiate new instance of CardSecurityCodeValidator
++    /// Initiate new instance of CardSecurityCodeFormatter
+     /// - Parameter publisher: observer of a card type.
+     public init(publisher: AdyenObservable<CardType?>) {
+         super.init()
+         bind(publisher, to: self, at: \.cardType)
+     }
+     
+-    /// Initiate new instance of CardSecurityCodeValidator with a fixed ``CardType``
++    /// Initiate new instance of CardSecurityCodeFormatter with a fixed ``CardType``
+     /// - Parameter cardType: The card type to format the security code for
+     public init(cardType: CardType) {
+         super.init()
+@@ -36,7 +35,11 @@ public final class CardSecurityCodeFormatter: NumericFormatter {
+     }
+     
+     override public func formattedValue(for value: String) -> String {
+-        let value = super.formattedValue(for: value)
++        sanitizedValue(for: value)
++    }
++    
++    override public func sanitizedValue(for value: String) -> String {
++        let value = super.sanitizedValue(for: value)
+         
+         if value.count > expectedLength {
+             return String(value.prefix(expectedLength))
+diff --git a/AdyenCard/Utilities/CardType/CardType+SecurityCode.swift b/AdyenCard/Utilities/CardType/CardType+SecurityCode.swift
+new file mode 100644
+index 0000000..6269e0b
+--- /dev/null
++++ b/AdyenCard/Utilities/CardType/CardType+SecurityCode.swift
+@@ -0,0 +1,26 @@
++//
++// Copyright (c) 2026 Adyen N.V.
++//
++// This file is open source and available under the MIT license. See the LICENSE file for more info.
++//
++
++import Adyen
++
++extension CardType {
++    /// Expected security code (CVC/CVV) length: 4 for Amex, 3 for any other brand.
++    internal var expectedSecurityCodeLength: Int {
++        self == .americanExpress ? Constants.amexLength : Constants.generalLength
++    }
++
++    fileprivate enum Constants {
++        static let amexLength = 4
++        static let generalLength = 3
++    }
++}
++
++extension CardType? {
++    /// Expected security code (CVC/CVV) length: 4 for Amex, 3 for any other or undetected brand.
++    internal var expectedSecurityCodeLength: Int {
++        self?.expectedSecurityCodeLength ?? CardType.Constants.generalLength
++    }
++}
+diff --git a/AdyenCard/Validators/CardSecurityCodeValidator.swift b/AdyenCard/Validators/CardSecurityCodeValidator.swift
+index 054f095..dc3f2d7 100644
+--- a/AdyenCard/Validators/CardSecurityCodeValidator.swift
++++ b/AdyenCard/Validators/CardSecurityCodeValidator.swift
+@@ -36,7 +36,7 @@ public final class CardSecurityCodeValidator: NumericStringValidator, AdyenObser
+     }
+     
+     private func updateExpectedLength(from cardType: CardType?) {
+-        let length = cardType == .americanExpress ? 4 : 3
++        let length = cardType.expectedSecurityCodeLength
+         maximumLength = length
+         minimumLength = length
+     }
+diff --git a/AdyenDropIn/Components/PreApplePayComponent.swift b/AdyenDropIn/Components/PreApplePayComponent.swift
+index d863de2..a892da3 100644
+--- a/AdyenDropIn/Components/PreApplePayComponent.swift
++++ b/AdyenDropIn/Components/PreApplePayComponent.swift
+@@ -35,7 +35,7 @@ internal final class PreApplePayComponent: PresentableComponent,
+ 
+     internal let amount: Amount
+ 
+-    private let applePayComponent: ApplePayComponent
++    internal var applePayComponent: ApplePayComponent
+ 
+     /// :nodoc:
+     /// The context object for this component.
+@@ -58,6 +58,11 @@ internal final class PreApplePayComponent: PresentableComponent,
+         return viewController
+     }()
+     
++    internal var order: PartialPaymentOrder? {
++        get { applePayComponent.order }
++        set { applePayComponent.order = newValue }
++    }
++    
+     internal let requiresModalPresentation: Bool = true
+     
+     internal init(
+@@ -88,7 +93,7 @@ internal final class PreApplePayComponent: PresentableComponent,
+     internal func didFinalize(with success: Bool, completion: (() -> Void)?) {
+         applePayComponent.didFinalize(with: success, completion: completion)
+     }
+-    
++
+     private func createModel(with amount: Amount) -> PreApplePayView.Model {
+         PreApplePayView.Model(hint: amount.formatted, style: configuration.style)
+     }
+diff --git a/AdyenDropIn/Presentation/ModalViewController.swift b/AdyenDropIn/Presentation/ModalViewController.swift
+index 2876c76..1aade22 100644
+--- a/AdyenDropIn/Presentation/ModalViewController.swift
++++ b/AdyenDropIn/Presentation/ModalViewController.swift
+@@ -148,14 +148,26 @@ internal final class ModalViewController: UIViewController {
+     
+     // MARK: - Private
+     
++    private var toolbarHeight: CGFloat {
++        navigationBarHeight - (1.0 / UIScreen.main.scale)
++    }
++
+     private func arrangeConstraints() {
+         let separatorHeight: CGFloat = 1.0 / UIScreen.main.scale
+-        let toolbarHeight = navigationBarHeight - separatorHeight
+ 
+         stackView.adyen.anchor(inside: view)
+         NSLayoutConstraint.activate([
+-            navBar.heightAnchor.constraint(equalToConstant: toolbarHeight),
++            navBarHeightConstraint,
+             separator.heightAnchor.constraint(equalToConstant: separatorHeight)
+         ])
+     }
++
++    private var navBarHeightConstraint: NSLayoutConstraint {
++        switch navBarType {
++        case .regular:
++            return navBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: toolbarHeight)
++        case .custom:
++            return navBar.heightAnchor.constraint(equalToConstant: toolbarHeight)
++        }
++    }
+ }
+diff --git a/Demo/SwiftUI/SceneDelegate.swift b/Demo/SwiftUI/SceneDelegate.swift
+index 7a99af6..fc6c6d2 100644
+--- a/Demo/SwiftUI/SceneDelegate.swift
++++ b/Demo/SwiftUI/SceneDelegate.swift
+@@ -7,6 +7,9 @@
+ import AdyenActions
+ import SwiftUI
+ import UIKit
++#if canImport(PayKit)
++    import PayKit
++#endif
+ 
+ internal class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+ 
+@@ -27,6 +30,10 @@ internal class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+             window.rootViewController = UIHostingController(rootView: contentView)
+             self.window = window
+             window.makeKeyAndVisible()
++
++            if let url = connectionOptions.urlContexts.first?.url {
++                handle(url)
++            }
+         }
+     }
+ 
+@@ -61,7 +68,19 @@ internal class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+ 
+     internal func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+         guard let url = URLContexts.first?.url else { return }
++        handle(url)
++    }
++
++    private func handle(_ url: URL) {
+         RedirectComponent.applicationDidOpen(from: url)
++
++        #if canImport(PayKit)
++            NotificationCenter.default.post(
++                name: CashAppPay.RedirectNotification,
++                object: nil,
++                userInfo: [UIApplication.LaunchOptionsKey.url: url]
++            )
++        #endif
+     }
+ 
+ }
+diff --git a/Demo/UIKit/AppDelegate.swift b/Demo/UIKit/AppDelegate.swift
+index 54a515c..e933668 100644
+--- a/Demo/UIKit/AppDelegate.swift
++++ b/Demo/UIKit/AppDelegate.swift
+@@ -17,26 +17,39 @@ internal final class AppDelegate: UIResponder, UIApplicationDelegate {
+     internal var window: UIWindow?
+     
+     internal func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+-        let componentsViewController = ComponentsViewController()
+-        
+-        let navigationController = UINavigationController(rootViewController: componentsViewController)
+-        navigationController.navigationBar.prefersLargeTitles = true
+-        
+         #if DEBUG
+             AdyenLogging.isEnabled = true
+         #endif
+-        
++
++        if #available(iOS 13.0, *) {
++            return true
++        }
++
++        let componentsViewController = ComponentsViewController()
++        let navigationController = UINavigationController(rootViewController: componentsViewController)
++        navigationController.navigationBar.prefersLargeTitles = true
++
+         let window = UIWindow(frame: UIScreen.main.bounds)
+         window.rootViewController = navigationController
+         window.makeKeyAndVisible()
+         self.window = window
+-        
++
+         return true
+     }
+-    
++
++    @available(iOS 13.0, *)
++    internal func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
++        UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
++    }
++
+     internal func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
++        Self.handleRedirect(from: url)
++        return true
++    }
++
++    internal static func handleRedirect(from url: URL) {
+         RedirectComponent.applicationDidOpen(from: url)
+-        
++
+         #if canImport(PayKit)
+             NotificationCenter.default.post(
+                 name: CashAppPay.RedirectNotification,
+@@ -44,7 +57,5 @@ internal final class AppDelegate: UIResponder, UIApplicationDelegate {
+                 userInfo: [UIApplication.LaunchOptionsKey.url: url]
+             )
+         #endif
+-        
+-        return true
+     }
+ }
+diff --git a/README.md b/README.md
+index 4ef8780..6df5215 100644
+--- a/README.md
++++ b/README.md
+@@ -118,7 +118,7 @@ You can add all modules or select individual modules to add to your integration.
+ 
+ ## Drop-in
+ 
+-The [Drop-in](https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/dropincomponent) handles the presentation of available payment methods and the subsequent entry of a customer's payment details. It is initialized with the response of [`/sessions`][apiExplorer.sessions], and handles the entire checkout flow under the hood.
++The [Drop-in](https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/dropincomponent) handles the presentation of available payment methods and the subsequent entry of a customer's payment details. It is initialized with the response of [`/sessions`][apiExplorer.sessions], and handles the entire checkout flow under the hood.
+ 
+ ### Usage
+ 
+@@ -126,7 +126,7 @@ The [Drop-in](https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/dropi
+ 
+ All Components need an `AdyenContext`. An instance of `AdyenContext` wraps your client key, environment, analytics configuration and so on.
+ Please read more [here](https://docs.adyen.com/development-resources/client-side-authentication) about the client key and how to get one.
+-Use **Environment.test** for environment. When you're ready to accept live payments, change the value to one of our [live environments](https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/environment)
++Use **Environment.test** for environment. When you're ready to accept live payments, change the value to one of our [live environments](https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/environment)
+ 
+ ```swift
+ let apiContext = try! APIContext(environment: componentsEnvironment, clientKey: clientKey)
+@@ -365,34 +365,34 @@ Read our [**contribution guidelines**](CONTRIBUTING.md) to find out how.
+ 
+ This repository is open source and available under the MIT license. For more information, see the LICENSE file.
+ 
+-[reference]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/
+-[reference.dropInComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/dropin
+-[reference.installation]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/installation
+-[reference.styles]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/customization
+-[reference.advancedFlow]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/threeapis
+-[reference.cardComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/cardcomponent
+-[reference.threeDS2Component]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/threeds2component
+-[reference.applePayComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/applepaycomponent
+-[reference.bcmcComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/bcmccomponent
+-[reference.issuerListComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/issuerlistcomponent
+-[reference.weChatPaySDKActionComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/wechatpaysdkactioncomponent
+-[reference.qiwiWalletComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/qiwiwalletcomponent
+-[reference.sepaDirectDebitComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/sepadirectdebitcomponent
+-[reference.redirectComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/redirectcomponent
+-[reference.mbWayComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/mbwaycomponent
+-[reference.BLIKComponent]: https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/blikcomponent
+-[reference.DokuComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/dokucomponent
+-[reference.BoletoComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/boletocomponent
+-[reference.ACHDirectDebitComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/achdirectdebitcomponent
+-[reference.AffirmComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/affirmcomponent
+-[reference.BACSDirectDebitComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/bacsdirectdebitcomponent
+-[reference.OnlineBankingComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/onlinebankingcomponent
+-[reference.AtomeComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/atomecomponent
+-[reference.UPIComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/upicomponent
+-[reference.QRCodeActionComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/qrcodeactioncomponent
+-[reference.CashAppPayComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/cashapppaycomponent
+-[reference.TwintComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/twintcomponent
+-[reference.PayToComponent]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/paytocomponent
+-[reference.localization]:  https://adyen.github.io/adyen-ios/5.25.1/documentation/adyen/localization
++[reference]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/
++[reference.dropInComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/dropin
++[reference.installation]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/installation
++[reference.styles]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/customization
++[reference.advancedFlow]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/threeapis
++[reference.cardComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/cardcomponent
++[reference.threeDS2Component]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/threeds2component
++[reference.applePayComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/applepaycomponent
++[reference.bcmcComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/bcmccomponent
++[reference.issuerListComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/issuerlistcomponent
++[reference.weChatPaySDKActionComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/wechatpaysdkactioncomponent
++[reference.qiwiWalletComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/qiwiwalletcomponent
++[reference.sepaDirectDebitComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/sepadirectdebitcomponent
++[reference.redirectComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/redirectcomponent
++[reference.mbWayComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/mbwaycomponent
++[reference.BLIKComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/blikcomponent
++[reference.DokuComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/dokucomponent
++[reference.BoletoComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/boletocomponent
++[reference.ACHDirectDebitComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/achdirectdebitcomponent
++[reference.AffirmComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/affirmcomponent
++[reference.BACSDirectDebitComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/bacsdirectdebitcomponent
++[reference.OnlineBankingComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/onlinebankingcomponent
++[reference.AtomeComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/atomecomponent
++[reference.UPIComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/upicomponent
++[reference.QRCodeActionComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/qrcodeactioncomponent
++[reference.CashAppPayComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/cashapppaycomponent
++[reference.TwintComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/twintcomponent
++[reference.PayToComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/paytocomponent
++[reference.localization]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/localization
+ 
+ [apiExplorer.sessions]: https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/sessions

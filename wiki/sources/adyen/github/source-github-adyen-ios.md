@@ -1,9 +1,10 @@
 ---
 title: "GitHub: Adyen/adyen-ios"
 type: source
-date_ingested: 2026-08-01
+date_ingested: 2026-10-15
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-ios/snapshots/2026-10-14-da34749/manifest.json"
   - "github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/manifest.json"
 tags: [adyen, ios, swift, mobile-sdk, drop-in, components, github-repository]
 ---
@@ -13,6 +14,8 @@ tags: [adyen, ios, swift, mobile-sdk, drop-in, components, github-repository]
 `Adyen/adyen-ios` contains Adyen's modular native iOS checkout SDK. It provides an all-in-one Drop-in, individual payment Components, Session orchestration, follow-up action handling, card and bank-detail encryption, and optional integrations for Apple Pay, Cash App Pay, Twint, WeChat Pay, card scanning, and delegated authentication. This cumulative page begins with package-qualified release `adyen-ios@5.25.1` at exact SHA `5f6779b31299e3067de3a5279a816f3b8d2fbdf3`.
 
 Repository: <https://github.com/Adyen/adyen-ios>
+
+Newest ingested release: `adyen-ios@5.26.0`, published 2026-10-07, exact SHA `da347498d07b843e5af3f9eb871376514ffdf38c`. Its additive full ingest preserves the original baseline and all earlier knowledge; changed behavior is qualified below rather than retroactively attributed to `5.25.1`.
 
 ## Evidence boundary
 
@@ -103,6 +106,71 @@ The exact release has one documented fix: Component form layout could render inc
 
 Broader Drop-in, Session, Component, card, action, wallet, analytics, and privacy findings above describe accumulated behavior present at the exact SHA, not changes introduced solely by `5.25.1`.
 
+## `5.26.0` update from `5.25.1`
+
+### Reading and evidence boundary
+
+Approved additive full ingest with the user-approved focused-reading exception: read all 23 added/modified retained files completely, the full cumulative source and changelog, release records/notes, retained-code diff and affected prior code/dependencies. Verified the 686 prior and 689 current files mechanically by hash and size, including 666 unchanged files; large manifest and comparison inventories were checked mechanically rather than claimed as full textual reads. All 7,943 upstream changes have dispositions: 23 retained and 7,920 intentional policy exclusions, largely generated documentation and tests. The packet reports no unclassified change or evidence gap within its configured scope.
+
+This is source inspection, not an SDK build, physical-device, accessibility, Cash App Pay or payment test. An automatic security-review signal is a triage heuristic, not proof of an advisory or exploitable vulnerability. External SDK implementation remains separate.
+
+### Grounding excerpts
+
+> "This is the **last release available through CocoaPods**."
+>
+> `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/release-notes.md:6`
+
+> "which could submit an over-length code while only showing the truncated value."
+>
+> `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/release-notes.md:16`
+
+> `set { applePayComponent.order = newValue }`
+>
+> `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/AdyenDropIn/Components/PreApplePayComponent.swift:63`
+
+> "Unused. Minor unit digits depend only on the currency code. Kept for API compatibility."
+>
+> `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/Formatters/AmountFormatter.swift:32`
+
+### Apple Pay remaining-amount order propagation
+
+The existing `ComponentManager` assigns `paymentComponent.order = order` after building a payment Component. In `5.25.1`, the pre-Apple-Pay wrapper had no explicit forwarding property. In `5.26.0`, its `order` getter/setter delegates to the inner Apple Pay Component. The unchanged Apple Pay submission path includes that order in `PaymentComponentData` alongside token details and amount. This connects the remaining-amount Apple Pay payment to the partial-payment order after, for example, gift-card use. It does not introduce split-payment orchestration, remove merchant-server requirements, or prove authorization/capture success.
+
+Evidence: `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/AdyenDropIn/Components/PreApplePayComponent.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/AdyenDropIn/Utilities/ComponentManager.swift` and `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/AdyenComponents/Apple Pay/ApplePayComponentExtensions.swift`.
+
+### Card security-code value and input handling
+
+The prior `CardSecurityCodeFormatter` truncated only `formattedValue`. `FormTextItem.textDidChange` separately stores `sanitizedValue`, so displayed truncation was not the same as truncating the stored field value. The new formatter overrides sanitization, first normalizing numeric input and then limiting it to four digits for Amex or three for other/unknown brands; formatted output uses the same sanitizer. The view rejects over-limit single-character edits but lets multi-character replacements reach the formatter. Deletion remains permitted.
+
+The shared brand-length helper also feeds placeholders and brand-bound validators. Do not generalize this to every standalone validator: `CardSecurityCodeValidator()` still initializes a three-to-four-digit range; publisher/fixed-brand initializers set the exact brand length. This change bounds the retained field's sanitized value, not overall payment acceptance or a claim that all historical over-length submissions succeeded.
+
+Evidence: `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/AdyenCard/Formatters/CardSecurityCodeFormatter.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/AdyenCard/Form/FormCardSecurityCodeItemView.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/AdyenCard/Validators/CardSecurityCodeValidator.swift` and `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/UI/Form/Items/Text/FormTextItem.swift`.
+
+### Source-derived currency conversion change
+
+`AmountFormatter` replaces its limited currency override switch and locale-based fraction lookup with `CurrencyMinorDigitsProvider`. The provider uppercases currency codes, uses the retained Adyen table when present, and falls back to system ICU/CLDR currency data otherwise. The table retains Adyen-specific values such as ISK/CLP at two decimals and IDR/CVE at zero. It is not an enabled-currency or merchant-eligibility list.
+
+Major/minor conversions keep `localeIdentifier` in their signatures but no longer use it for decimal-place selection. Formatted display still sets the requested locale. Existing conversion arithmetic remains: the Double overload converts the scaled value to `Int`; the Decimal overload rounds toward zero. This is not a new arbitrary-precision or rounding-guarantee feature. Currency conversion is a code finding not explicitly listed in the release notes.
+
+Evidence: `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/Formatters/AmountFormatter.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/Core/Providers/CurrencyMinorDigitsProvider/CurrencyMinorDigitsProvider.swift` and `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/Core/Providers/CurrencyMinorDigitsProvider/CurrencyMinorDigitsProvider+Data.swift`.
+
+### Adaptive presentation and app-return examples
+
+The release notes announce iPhone Duo support; retained code establishes safe-area and adaptive-layout changes, not independently verified device compatibility. Regular modal toolbars use safe-area constraints while custom navigation bars retain fixed-height constraints. Scroll-enabled forms anchor to content/frame layout guides with explicit horizontal and bottom padding; form/list items set directional margins. Keyboard observation clips against the notification's screen (falling back to the main screen), publishes taller frames immediately, and delays shorter/hidden frames until a 0.15-second quiet interval.
+
+`FormTextItemStyle` changes default inactive title/separator colors to `formTextItemInactive`: light `#757575`, dark `#8E8E93`, with the light fallback before iOS 13. Custom title/separator colors are not replaced; generic `componentSecondaryLabel` and `componentSeparator` remain unchanged. This is not a measured accessibility-compliance result.
+
+The SwiftUI demo handles initial scene URL contexts and subsequent open-URL events through a common helper that forwards to `RedirectComponent` and conditionally posts the Cash App Pay notification. The UIKit AppDelegate adds scene configuration for iOS 13+ and retains its legacy window setup for earlier versions. The new `Demo/UIKit/SceneDelegate.swift` and scene plist changes are outside the configured capsule: full UIKit scene-return wiring is not established by the retained AppDelegate alone. No automatic claim is made about a merchant app adopting the demo changes.
+
+Evidence: `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/Core/ToolBar/ModalToolbar.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/UI/Form/FormViewController.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/Utilities/KeyboardObserver.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/UI/Form/Items/Text/FormTextItemStyle.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/UI/Styles/CoreColors.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Demo/SwiftUI/SceneDelegate.swift` and `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Demo/UIKit/AppDelegate.swift`.
+
+### Distribution announcement and retained discrepancy
+
+> [!warning] Contradiction
+> The `5.26.0` release notes call this the final CocoaPods release and announce SPM/Carthage distribution afterward, but the same-tag README still advertises CocoaPods and the podspec remains present. Preserve both: the announcement does not mean `5.26.0` is unavailable through CocoaPods, and repository evidence alone does not verify package-registry availability or CocoaPods' broader shutdown schedule. The discrepancy is also recorded in [[adyen-ios-sdk]].
+
+The retained requirements remain iOS 12, Xcode 15 and Swift 5.7; no dependency change is reported by this comparison. Future upgrade planning should account for the announced distribution change without rewriting the historical `5.25.1` installation guidance.
+
 ## Related
 
 - [[changelog-github-adyen-ios]] - package-qualified release ledger
@@ -116,6 +184,11 @@ Broader Drop-in, Session, Component, card, action, wallet, analytics, and privac
 
 ## Raw sources
 
+- New snapshot: `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/manifest.json`
+- New release record: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/manifest.json`
+- New release notes: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/release-notes.md`
+- New README/podspec: `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/README.md` and `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen.podspec`
+- Exact comparison: `tracking/github/repos/adyen/adyen-ios/comparisons/adyen-ios/5.25.1--5.26.0/comparison.json` and `tracking/github/repos/adyen/adyen-ios/comparisons/adyen-ios/5.25.1--5.26.0/diff.patch`
 - Snapshot manifest: `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/manifest.json`
 - Release manifest: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.25.1/2026-08-01/manifest.json`
 - Release notes: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.25.1/2026-08-01/release-notes.md`

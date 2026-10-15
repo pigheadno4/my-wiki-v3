@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-15] ingest | Adyen iOS `5.26.0`
+
+- Approved focused-reading additive full ingest from `5.25.1`: Apple Pay partial-order propagation, sanitized CVC limits, currency-table conversion, adaptive presentation and distribution discrepancy. All 1,375 prior/current hashes and sizes verified; older knowledge and source count preserved. Details [[adyen-log]] and [[changelog-github-adyen-ios]]. No SDK build/device/payment testing, commit or push. Next: scoped review and commit/push approval after validation.
+
 ## [2026-10-14] ingest | Adyen website C08
 
 - Fifty independently approved shopper-interaction, recognition, loyalty, autonomous-store and unified-commerce documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 10 concepts touched (6 new); source_count 414 = 400 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-08/`; details [[adyen-log]]. No commit/push.

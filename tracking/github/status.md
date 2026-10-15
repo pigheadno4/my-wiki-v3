@@ -1349,6 +1349,31 @@
   To SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
   Comparison: Not applicable
 
+## `github-5628d6852ea277446ed1`
+
+- Repository: `adyen/adyen-ios`
+- SHA: `da347498d07b843e5af3f9eb871376514ffdf38c`
+- Collection date: `2026-10-14`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-ios/ingest-packets/github-5628d6852ea277446ed1/packet.md)
+- Review priority: `high`
+- Required reading: `32` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-ios@5.26.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-ios/comparisons/adyen-ios/5.25.1--5.26.0/comparison.json)
+
 ## `github-5816fc8745a2a9c210ad`
 
 - Repository: `stripe/react-stripe-js`
