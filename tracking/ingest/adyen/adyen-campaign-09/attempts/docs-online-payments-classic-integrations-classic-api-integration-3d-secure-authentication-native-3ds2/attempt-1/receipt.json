@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API native 3D Secure 2 authentication\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/2026-09-15.md\"\ntags: [adyen, online-payments, classic-api, 3ds2, authentication]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot is an Adyen guide to adding native 3D Secure 2 authentication to an **existing Classic Payment API `/authorise` integration** on a website or mobile app. Its metadata says last modified in 2020. Adyen says it no longer accepts new Classic API integrations and recommends migrating both the integration and native 3DS2 route to Checkout API. This page maps integration choices and result-code flows; it is not a current SDK-version or merchant-enablement guarantee.\n\n## Key takeaways\n\n- In native 3DS2, the issuer authenticates within the app or payment form. Issuer requirements decide between a passive frictionless path and a challenge requiring shopper interaction. A web challenge can follow the first payment request or device fingerprint; the app flow fingerprints before a challenge is deemed required. A 3DS1 fallback can redirect the shopper to the issuer, so a Classic implementation should support that route too. See `Authentication flows` and `Payments routed to 3D Secure 1`.\n- The implementation-options table distinguishes Checkout API Components, older Quick Integration SDKs/plugins/HPP, and Classic API/CSE. For the Classic API/CSE path it routes web to helper functions and mobile to the Classic 3DS2 SDKs. The table includes historical version-specific guidance and redirect behavior for other integration types; consult the exact row rather than treating every route as native.\n- The merchant server starts the 3DS flow with a payment request containing the required 3DS2 objects. `IdentifyShopper` calls for a device fingerprint; `ChallengeShopper` calls for shopper interaction; `RedirectShopper` routes to 3DS1; refusal/error requires handling the reason. An `Authorised` response means **payment authorization** succeeded, potentially because 3DS2 was exempt or out of scope when returned directly to the payment request, or following frictionless processing. It does not prove a shopper challenge occurred. See `3D Secure 2 payment flows`.\n- The guide separates a **full integration** (Adyen 3DS2 authentication and payment authorization on web, iOS or Android), **authentication-only** (3DS2 with Adyen and payment authorization submitted later), and **authorization with third-party 3DS2 data**. Do not treat completion of authentication-only as payment authorization. See `Implementation options`.\n- The page gives only a general challenge-flow liability-shift statement and points to separate rules; it does not establish a shift for a particular transaction. See the paragraph before `Native 3DS2 implementation options`.\n\n## Detail locators\n\n- `Native 3DS2 implementation options`: table of specific integration families, historical SDK/plugin minimums, native versus redirect support, and Classic web/mobile routes.\n- `Authentication flows` and `3D Secure 2 payment flows`: frictionless/challenge device and shopper steps, result-code branches, and links to detailed result-code handling.\n- `Implementation options` and `Next steps`: distinct browser, Android and iOS full guides; authentication-only and third-party data routes.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[adyen-3ds2-ios-sdk]]\n- [[adyen-3ds2-android-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/2026-09-15|Adyen Classic native 3DS2 guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "line 21, beneath # Native 3D Secure 2 authentication"
+    },
+    {
+      "text": "Unlike 3D Secure 1 where the shopper is redirected to another site to verify the payment, in 3D Secure 2 the card issuer performs the authentication within your app or payment form. The shopper's identity may be verified using passive, biometric, and two-factor authentication approach. A transaction may go through a passive [frictionless](#frictionless-flow) authentication flow or a [challenge](#challenge-flow) authentication flow where the issuer requires further interaction with a shopper.",
+      "location": "line 31, opening explanation"
+    },
+    {
+      "text": "Use our [helper functions](/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/) for web and the [Classic integration 3D Secure 2 SDKs](/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/) for mobile.",
+      "location": "line 50, ## Native 3DS2 implementation options, Classic API or CSE row"
+    },
+    {
+      "text": "* **Authorised**: The payment has been successfully authorised. If you receive this as a response to your payment request, this could mean that the transaction was either exempted or out-of-scope for 3D Secure 2.",
+      "location": "line 80, ## 3D Secure 2 payment flows"
+    },
+    {
+      "text": "* [Authentication-only](/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/authentication-only-integration): Perform only the 3D Secure 2 authentication with us and submit the payment authorisation later.",
+      "location": "line 103, ## Implementation options"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-native-3ds2-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2]] \u2014 2026-09-15 snapshot of the legacy Classic `/authorise` native 3DS2 overview, web/mobile implementation routes, frictionless/challenge and redirect fallback, and full-payment versus authentication-only boundaries (metadata last modified 2020).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/2026-09-15.md",
+  "raw_sha256": "3282e2b55401d9b900f2fa3cf5a0ff86530a955fdc30450a3c237db13aa906f8",
+  "status": "candidate_ready"
+}

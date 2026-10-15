@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-15] ingest | Adyen website C09
+
+- All 50 exact-manifest unified-commerce, Pay by Link, Classic API, authentication, tokenization, modification and PCI-DSS General Docs sources independently approved and promoted. First full-review approvals 46/50; 4 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 10 concepts, including 0 new concept(s). Classic versus modern Checkout, authentication versus authorization, modification acceptance versus final outcomes, and merchant order/fulfillment versus payment transitions remain distinct. Original reviews, attempts and bounded correction evidence retained. The unresolved Pay by Link BNPL contradiction is warned on both sources after an additional independent targeted amendment review.
+- Source_count 464 = 450 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-09/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-15] ingest | Adyen iOS `5.26.0`
 
 - Approved additive full ingest from `5.25.1`, exact SHA `da347498d07b843e5af3f9eb871376514ffdf38c`, item `github-5628d6852ea277446ed1`; user approved focused reading. All 23 changed retained files read completely with affected prior code/dependencies; 666 unchanged files and large manifest/comparison inventories verified mechanically. All 1,375 prior/current file hashes and sizes verified; no packet gaps/unclassified changes. Collection date remains 2026-10-14, not rewritten to ingest date.

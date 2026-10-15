@@ -15,6 +15,33 @@ At overview level, the integration is divided among a payments server that calls
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption-cse-library-public-key-location-and-token]] — Classic CSE Customer Area procedure for distinct public key, library URL and token values, test-to-live change and phased-out Web scope (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-google-pay]] — 2026-09-15 snapshot of inactive Classic Google Pay client tokenization, server-side `/authorise` token field, and separate live Customer Area/merchant-ID setup (page metadata last modified 2019; no response outcome documented).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-gift-cards]] — 2026-09-15 snapshot of inactive Classic API gift-card `/authorise` payments, zero-value balance-field behavior, response boundaries, and separate Stored Value API operations (page metadata last modified 2021).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-cancel]] — inactive Classic Payment API guide for cancelling uncaptured authorizations, including original-versus-modification references and asynchronous cancel outcomes (2026-09-15 webpage snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption]] — 2026-09-15 Classic CSE guide for browser card encryption and server-side `/authorise`, Web phaseout, mobile exception, SRI/PCI conditions and unresolved encrypted-container naming discrepancy.
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-pix]] — existing Classic API `/authorise` Pix QR and asynchronous webhook guide for Brazil/BRL, with local-entity, expiry and amount-reconciliation conditions (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments]] — Classic integrations modification landing page for capture, cancel, refund, cancel-or-refund and authorization-adjustment routes; endpoint marked inactive for new integrations (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]] — 2026-09-15 webpage snapshot of the inactive Classic Payment API raw-card `/authorise` integration, its PCI Level 1 or 2 condition, conditional authorization response, co-badged-card handling, and migration direction for existing integrations.
+
+
+- [[source-adyen-docs-online-payments-classic-integrations]] — 2026-09-15 Adyen Docs navigation page for inactive Classic Ecommerce integrations, with new-build Checkout API and existing-integration migration routes.
+
+
 - [[source-adyen-docs-online-payments-payments-india-compliance-guide]] — Adyen India local-acquiring guide for account setup, card-data limits, saved-card models, and recurring mandate and pre-debit steps (webpage snapshot, 2026-09-15; excludes cross-border payments).
 
 

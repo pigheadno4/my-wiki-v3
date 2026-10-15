@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-tokenization-retrieve-stored-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Retrieve stored details | Adyen Classic API\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/tokenization/retrieve-stored-details\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/retrieve-stored-details/2026-09-15.md\"\ntags: [adyen, classic-api, tokenization, recurring-payments, stored-payment-methods]\n---\n\n## Overview\n\nThis Adyen Classic API guide describes using Recurring API `/listRecurringDetails` to retrieve stored payment-detail records and their `recurringDetailReference` after details were stored with an `/authorise` call. The reference identifies a stored detail for later requests. The page marks the endpoint inactive and unsupported for new integrations; it directs new builds to Checkout API and existing integrations to contact Adyen about migration.\n\n## Key takeaways\n\n- The request supplies the merchant account and the `shopperReference` for a shopper whose details were previously stored. The page's test cURL example authenticates with an API key; the shopper reference selects the shopper record, while `recurringDetailReference` is the stored-detail identifier returned for later use.\n- When stored details exist for that shopper reference, the response contains one or more `RecurringDetail` objects, with fields that may be missing or nil depending on payment method. A nonexistent shopper reference returns an empty object; for an existing shopper reference with a specified contract type but no matching recurring detail, the response omits the `details` array.\n- The JSON and SOAP responses are examples, including card-display and shopper-related fields; they do not establish that every response has those fields or that the example's identifier, contract types, and payment method apply to other shoppers.\n- This retrieval guide does not itself describe the consent or initial storage flow. The separate Classic storage guide and modern Checkout tokenization guidance have their own conditions; this page should not be used to infer that consent is unnecessary or that Classic references have the same scope as Checkout tokens.\n\n## Detail locators\n\n- Raw lines 16\u201323 \u2014 inactive Classic lifecycle, migration guidance, and reason for retrieving a `recurringDetailReference`.\n- `Request` \u2014 `/listRecurringDetails` inputs; JSON, SOAP, cURL and version-labeled library examples. The cURL example uses test Recurring API v25 and an API-key header.\n- `Response` \u2014 presence and absence cases, optional fields, Recurring API response-schema link, and illustrative JSON/SOAP payloads.\n- `Next steps` \u2014 Classic recurring authorization, update, and disable routes.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-tokenization]]\n- Related source: [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-store-payment-details]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/retrieve-stored-details/2026-09-15|2026-09-15 snapshot \u2014 Classic retrieve stored details]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 16, under # Retrieve stored details"
+    },
+    {
+      "text": "After you\u00a0[store payment details](/online-payments/classic-integrations/classic-api-integration/tokenization/store-payment-details)\u00a0along with an\u00a0`/authorisation`\u00a0call, you need the `recurringDetailReference` to refer to the stored details in other requests.",
+      "location": "raw line 23, under # Retrieve stored details"
+    },
+    {
+      "text": "To retrieve the payment details and their reference number, use the\u00a0`/listRecurringDetails`\u00a0call. In this call, pass your merchant account and a reference of a shopper, whose payment details were previously stored.",
+      "location": "raw line 27, ## Request"
+    },
+    {
+      "text": "If there are payment details stored for the specified\u00a0`shopperReference`, the response contains one or more\u00a0`RecurringDetail`\u00a0objects. In this object some fields may be missing or nil, depending on the payment method being used.",
+      "location": "raw line 241, ## Response"
+    },
+    {
+      "text": "If the\u00a0`shopperReference`\u00a0exists but the request contains a specific\u00a0`contract`\u00a0type and a recurring detail for that contract does not exist, the\u00a0`details`\u00a0array is not included in the response.",
+      "location": "raw line 246, ## Response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "classic-retrieve-stored-details-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-retrieve-stored-details]] \u2014 inactive Classic Recurring API `/listRecurringDetails` guide for shopper-scoped stored-detail lookup and `recurringDetailReference` response cases (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/retrieve-stored-details/2026-09-15.md",
+  "raw_sha256": "06f455e7e0ce6a8c43ff081e4fe577fb5ddbe93c4fbc76f210de1350be06a01f",
+  "status": "candidate_ready"
+}

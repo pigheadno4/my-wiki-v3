@@ -1,0 +1,11 @@
+# Order in store, pick up in store retrieval checks
+
+Canonical route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-unified-commerce.md` → `wiki/sources/adyen/source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle-e-a-store-pickup.md` → `raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md`.
+
+## Q1 — purpose, scope, and what not to infer
+
+This is one Adyen Endless Aisle scenario: staff help a shopper order online inventory in a physical store, the terminal authorizes the ordered items, and the shopper later collects them from a selected store. The **payment** is captured at pickup, possibly in partial captures when fulfillment is staggered (`raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md:15–21`). Order placement, stock arrival, notification and handing over goods are merchant/fulfillment events, not proof of capture or payment success. The guide does not establish a retailer's seller, merchant of record, settlement, consent implementation, current eligibility or completed transaction. It also describes optional in-store items with their own capture timing (`:21`, `:122–137`).
+
+## Q2 — central capability, prerequisites, and warnings
+
+Both ecommerce and POS integrations plus consolidated order/inventory management or webhook-consuming orchestration are required (`:23–31`). Manual capture and Support-enabled multiple partial captures are called for (`:82–92`). One-transaction mixed baskets require a shared merchant account and partial captures; two-transaction baskets pay for in-store items separately, often via immediate or delayed automatic capture (`:122–137`). At pickup, card acquisition uses card alias/PAR to find the merchant's order, with identifying data enabled in API responses and the identifier stored in the profile (`:139–149`, `:708–817`); it is not itself payment. Merchant Account Sharing needs compliance approval and terminals a local legal entity (`:66–76`). Authorization can expire before pickup; pre-authorization/adjustment, scheme-limited Extend on capture and tokenization with a fresh Checkout API payment after a failed capture are distinct options (`:94–120`, `:936–963`). Store and warehouse returns use different referenced refund APIs and original transaction identifiers (`:155–166`, `:966–1051`).

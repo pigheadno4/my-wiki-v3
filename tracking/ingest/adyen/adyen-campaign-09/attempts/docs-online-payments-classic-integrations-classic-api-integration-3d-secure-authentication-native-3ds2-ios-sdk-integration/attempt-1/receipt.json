@@ -1,0 +1,69 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-ios-sdk-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API native 3DS2 iOS SDK integration\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/ios-sdk-integration\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/ios-sdk-integration/2026-09-15.md\"\ntags: [adyen, classic-api, ios, 3d-secure, 3ds2, authentication, sdk]\n---\n\n## Overview\n\nThis [[adyen]] guide describes a legacy Classic API `/authorise` integration that uses the Adyen 3DS2 iOS SDK to collect an encrypted device fingerprint and show a native shopper challenge. The merchant server sends the payment request, fingerprint, and challenge result to Adyen; the SDK does not itself authorize the payment. Adyen says it no longer accepts new Classic API integrations and recommends the newer native iOS 3DS2 integration with a Checkout API migration. Use [[adyen-3d-secure]] for the merchant flow and [[adyen-3ds2-ios-sdk]] for separately versioned SDK package evidence.\n\n## Key takeaways\n\n- In this guide's full payment flow, the server submits `/authorise` with card data, `threeDS2RequestData.deviceChannel=app`, `sdkVersion`, and `browserInfo` for possible 3DS1 redirect fallback. The guide recommends deriving `sdkVersion` with `ADY3DS2SDKVersion()` rather than hard-coding it. Its displayed v68 and library requests are examples, not evidence of a tested merchant result.\n- An `IdentifyShopper` response supplies directory-server information, a 3DS message version, and a `threeDS2Token`. The app creates `ADYServiceParameters` and an `ADYTransaction`, keeps the transaction until completion, and sends SDK authentication request parameters through the merchant server to `/authorise3ds2` with the token. For SDK 2.2.0 or later, this guide says to create the transaction with the message version returned by `/authorise`.\n- After fingerprint submission, `Authorised` represents the guide's frictionless authentication and successful payment authorization path. `ChallengeShopper` requires the app to present an SDK challenge using returned 3DS Server and ACS data; the app then sends the SDK's `transStatus` and token through the server to `/authorise3ds2`. The final example shows `Authorised` only when that payment succeeds. Initial `Authorised` may also occur when 3DS is exempted; `RedirectShopper` indicates possible 3DS1 fallback. These branches are response-dependent, not promised outcomes.\n- The challenge section states that `threeDSRequestorAppURL` is supported in 3D Secure version 2.2.0 or later and calls for a universal-link app URL for out-of-band return; it says the field is ignored when an earlier 3DS version was selected. Keep that version condition attached to the guide's requirement.\n- The setup text says SDK 2.3.0 or later is needed to trigger native 3DS2, but the Swift Package Manager tab says to select 2.2.1 or later. The page does not reconcile those minima. This older Classic guide does not establish support for every version admitted by that package-manager instruction or supersede the independently versioned SDK record.\n- Authentication-only is a separate linked Classic route for authentication followed by later payment authorization. Do not treat a device fingerprint, challenge status, or authentication-only result as financial authorization; evaluate the actual payment `resultCode` in the chosen flow.\n\n## Detail locators\n\n- **Classic scope, deprecation, flow branches, and fallback:** raw lines 15\u201347.\n- **Account/API prerequisites, SDK installation, and conflicting minima:** raw lines 49\u201398.\n- **Initial `/authorise` parameters, SDK version, and illustrative requests:** raw lines 100\u2013525.\n- **`IdentifyShopper` response, transaction construction, and fingerprint `/authorise3ds2` handoff:** raw lines 527\u2013848.\n- **Post-fingerprint `Authorised` or `ChallengeShopper` response, universal-link condition, challenge result, and final `/authorise3ds2`:** raw lines 850\u20131193.\n- **SDK UI customization, version helper, and test scenarios:** raw lines 1195\u20131354.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[adyen-3ds2-ios-sdk]]\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]]\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-api-reference-3d-secure-2]]\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-authentication-only-integration]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/ios-sdk-integration/2026-09-15|Adyen Classic API native 3DS2 iOS SDK integration \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "raw line 21, under # iOS 3D Secure 2 SDK"
+    },
+    {
+      "text": "You must use version 2.3.0 or later to trigger the 3D Secure 2 native flow.",
+      "location": "raw line 66, under ## Before you begin"
+    },
+    {
+      "text": "Specify version **2.2.1.** or later.",
+      "location": "raw line 98, under ### Tab: Swift Package Manager"
+    },
+    {
+      "text": "you must set `transactionWithMessageVersion` to the value of `additionalData.threeds2.threeDS2ResponseData.messageVersion` from the `/authorise` response.",
+      "location": "raw line 578, under ## Step 2: Get the 3D Secure 2 device fingerprint"
+    },
+    {
+      "text": "If you specified a previous version of 3D Secure in [step 2](#get-the-3d-secure-2-device-fingerprint), this parameter is ignored.",
+      "location": "raw line 898, under ## Step 3: Present a challenge"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-ios-3ds2-main-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-ios-sdk-integration]] \u2014 legacy Classic API native iOS 3DS2 guide for merchant-server fingerprint/challenge handoff, conditional payment outcomes, and its conflicting SDK setup minima (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The page says SDK 2.3.0+ triggers native 3DS2 but its Swift Package Manager tab allows selecting 2.2.1+; retain the discrepancy rather than resolving it from this page."
+        ]
+      },
+      {
+        "update_id": "c9-classic-ios-3ds2-sdk-route",
+        "target_path": "wiki/concepts/adyen-3ds2-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-ios-sdk-integration]] \u2014 legacy Classic API iOS 3DS2 merchant guide with SDK transaction and challenge handoff; its version minima are guide-specific (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep this dated Classic website guide separate from the package-qualified 2.4.4 and Swift-native 3.0.1 SDK evidence already in this concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/ios-sdk-integration/2026-09-15.md",
+  "raw_sha256": "4090fada9a1d26de8f30df16a0a2f5af98d8b453744be7eca580736663f32999",
+  "status": "candidate_ready"
+}

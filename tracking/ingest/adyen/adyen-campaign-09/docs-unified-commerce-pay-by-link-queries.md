@@ -1,0 +1,11 @@
+# Pay by Link retrieval checks
+
+Canonical route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-unified-commerce.md` → `wiki/sources/adyen/source-adyen-docs-unified-commerce-pay-by-link.md` → `raw/adyen/docs/unified-commerce/pay-by-link/2026-09-15.md`.
+
+## Q1 — purpose, scope, and what not to infer
+
+Pay by Link accepts payments through payment links that take shoppers to an Adyen-hosted page. The snapshot gives invoices, showroom follow-up, and chat/email/social interactions as examples (`raw/adyen/docs/unified-commerce/pay-by-link/2026-09-15.md:23–33`). For an online shop, Adyen says it is supplemental to a primary online-payments integration (same raw `:31`). The page does not define API payloads, order ownership, seller/payee, payment-state verification, authorization, capture, refund, or settlement. Nor does it establish current merchant/payment-method eligibility or a completed payment. The source's three-month statement concerns automatic **removal of payment links**, not payment expiry or refund rights (same raw `:35`).
+
+## Q2 — central capability, prerequisites, and warnings
+
+The shopper follows a link to a secure, cross-device Adyen payment page that can show the merchant's brand name and logo (`raw/adyen/docs/unified-commerce/pay-by-link/2026-09-15.md:33`). Before a merchant creates the first **live** payment link, it must add its terms-and-conditions URL to that hosted page (same raw `:42–46`); the live Customer Area action requires Merchant admin or Pay by Link Settings role (`:48–58`). The general terms cover product/service, payment arrangements, third parties, processing legal entity and governing law (`:64–72`). The privacy policy describes stored data, data shared with third parties and cookies (`:74–80`). Delivery information must state how long receipt of the product or service takes; delivery countries/regions apply if relevant (`:82–87`). The refund/cancellation policy covers eligibility and return/cancellation process (`:89–95`). Separately, contact information shown on the merchant's **website or app** must include legal entity name, email address and phone number (`:97–103`). Payment links are removed automatically after three months (`:35`). Platform UI component, iOS app, creation/settings and release-note links are navigation only (`:37–40`, `:105–117`).

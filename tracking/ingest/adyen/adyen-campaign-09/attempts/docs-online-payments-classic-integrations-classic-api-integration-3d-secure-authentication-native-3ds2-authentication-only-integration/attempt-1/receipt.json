@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-authentication-only-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API authentication-only 3D Secure 2 integration\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/authentication-only-integration\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/authentication-only-integration/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, classic-api, authentication-only]\n---\n\n## Overview\n\nAdyen's dated Classic Payment API guide describes standalone 3D Secure 2 authentication through `/authorise` and `/authorise3ds2` for web, Android, and iOS. With `threeDSAuthenticationOnly: true`, the merchant authenticates the shopper separately, then uses the returned authentication data to seek a later payment authorization from another PSP or acquirer. Authentication completion alone is neither payment authorization nor proof of a successful charge.\n\nThis is the Classic API (`/authorise`) route. Adyen says it no longer accepts new Classic integrations and recommends migrating to the Checkout API standalone-authentication route. The raw page reports `last_modified: 2023-03-07`; it was captured 2026-09-15. Treat API/library examples, scheme cryptogram periods, and support status as dated snapshot guidance.\n\n## Key takeaways\n\n- The merchant needs a test account, API key, library connection, and the relevant web, iOS, or Android 3DS2 integration guide before using this Classic route. The authentication request sends the relevant 3DS2 objects plus `threeDSAuthenticationOnly: true`. See **Before you begin** and the channel-specific **Submit a payment authentication request** sections.\n- Issuer-directed results include fingerprinting (`IdentifyShopper`), a challenge (`ChallengeShopper`), a possible 3DS1 redirect (`RedirectShopper`), or `AuthenticationNotRequired`. A frictionless or completed challenge can return `AuthenticationFinished`; merchants must handle the actual result rather than assume success. See the web, Android, and iOS sections and **3D Secure 1 authentication-only fallback**.\n- For a successful authentication, the guide identifies `authenticationValue`, `dsTransID`, and `eci` as data needed for a later 3DS2 authorization. It points to the last `AuthenticationFinished` response, `/getAuthenticationResult` (which requires additional Adyen configuration), or `/retrieve3ds2Result` for Cartes Bancaires. See **Get the 3D Secure 2 authenticated data**; verify the exact response field mapping before implementation.\n- For later authorization through another acquirer, Adyen strongly recommends matching acquirer enrollment data in authentication and authorization; a mismatch can cause issuer refusal. The extra data is conditional on that cross-acquirer path, and some fields have API-version or scheme-specific requirements. See **Optional: Provide additional acquirer-related data**.\n- The merchant may instead choose to continue authorization with Adyen through a separate server-side `/authorise3ds2` request with `threeDSAuthenticationOnly: false` and the appropriate token/status. The guide's `Authorised` response is conditional on payment success, not an authentication-only outcome. See **Optional: Authorise the payment with Adyen**.\n- Authentication data and cryptograms expire by card scheme; the page's dated scheme table must not be treated as a universal or current lifetime. See **Authentication data expiry**.\n\n## Detail locators\n\n- **Web-based authentication only** \u2014 browser request, result-code branching, device fingerprint, challenge, and Classic `/authorise3ds2` handoff.\n- **Android 3D Secure 2 SDK authentication only** and **iOS 3D Secure 2 SDK authentication only** \u2014 channel-specific request and fingerprint/challenge paths; language examples are dated illustrations, not validated executable payloads.\n- **Get the 3D Secure 2 authenticated data** \u2014 field descriptions, response options, Cartes Bancaires route, and extra configuration for `/getAuthenticationResult`.\n- **Optional: Provide additional acquirer-related data** \u2014 `acquirerBIN`, `acquirerMerchantID`, merchant name, MCC, and Visa/Mastercard requestor identifiers.\n- **Optional: Authorise the payment with Adyen** \u2014 separate authorization request, token/status selection, and conditional `Authorised` response.\n- **Authentication data expiry** and **Testing 3D Secure 2** \u2014 dated scheme periods and test-only credentials/scenarios.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[source-adyen-docs-online-payments-3d-secure-standalone-authentication]] \u2014 newer Checkout API standalone-authentication route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/authentication-only-integration/2026-09-15|Classic API authentication-only integration (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "raw line 21"
+    },
+    {
+      "text": "In an authentication-only flow, you perform the 3D Secure 2 authentication independent of the payment authorisation flow.",
+      "location": "raw line 25"
+    },
+    {
+      "text": "Submit a payment request with a POST\u00a0[/authorise](https://docs.adyen.com/api-explorer/Payment/authorise)\u00a0call. In addition to the required 3D Secure 2 objects, include the\u00a0`threeDSAuthenticationOnly`\u00a0parameter.",
+      "location": "raw line 54"
+    },
+    {
+      "text": "Perform this step only if you are planning to authorize your transaction with another acquirer after a successful authentication.",
+      "location": "raw line 1610"
+    },
+    {
+      "text": "Authentication data and cryptograms expire depending on card schemes. This means that you can no longer use the authentication data after it expires.",
+      "location": "raw line 1769"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-auth-only-classic-3ds-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-authentication-only-integration]] \u2014 dated Classic Payment API authentication-only 3DS2 guide for web and native SDK channels, separate later authorization, and legacy-route prerequisites (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/authentication-only-integration/2026-09-15.md",
+  "raw_sha256": "e23c80876f3df901b0224b0cac51b45710f030be2317673c718c7e2705a302db",
+  "status": "candidate_ready"
+}

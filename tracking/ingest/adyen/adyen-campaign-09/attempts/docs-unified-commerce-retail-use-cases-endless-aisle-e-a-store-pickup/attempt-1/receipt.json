@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-unified-commerce-retail-use-cases-endless-aisle-e-a-store-pickup",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen endless aisle: order in store, pick up in store\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup\"\nraw_files:\n  - \"adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md\"\ntags: [adyen, unified-commerce, endless-aisle, retail, point-of-sale, capture]\n---\n\n## Overview\n\nAdyen's 2026-09-15 snapshot is an implementation guide for one **endless-aisle retail scenario**: a shopper orders online inventory while in a store, chooses a pickup store, and authorizes the ordered items on a payment terminal. The merchant captures payment for those ordered items when they are picked up, possibly through multiple partial captures as items become available. This is a merchant order and fulfillment journey with separate payment authorization, capture and refund operations; an order-ready notification or handoff of goods is not a payment outcome. See [[adyen]], [[adyen-unified-commerce]], [[adyen-payment-capture]] and [[adyen-card-recognition]].\n\n## Key takeaways\n\n- The scenario requires both Adyen ecommerce and POS integrations and consolidated order/inventory or ERP systems, or an orchestration layer across subsystems that consumes webhooks. Store and warehouse returns must update inventory. The guide also requires **manual capture** and says to contact Adyen Support to enable **multiple partial captures**. Ordered items are authorized first and captured upon pickup; a reduced or staggered pickup calls for partial captures.\n- At order placement, Terminal API card acquisition obtains card alias and/or PAR to look up or create the merchant's shopper/order record and collect contact details and pickup location. The later pickup uses card acquisition again to find the order, then stops that acquisition with EnableService; card acquisition is an identifier step, not a new payment. This use requires enabling shopper identifying data in API responses and storing alias and/or PAR in the shopper profile. The guide gives no independent consent or identity-proof rule.\n- Mixed baskets may put in-store and ordered items in **one transaction with multiple partial captures**, but this requires the same merchant account; in-store items are captured when acquired, and ordered items later. Alternatively, **two separate transactions** authorize online items for later capture and pay for in-store items separately with immediate or delayed automatic capture. Adding in-store items at pickup to a single transaction requires initial pre-authorization and an upward authorization adjustment. These are choices, not a claim that order creation itself captures funds.\n- The merchant must decide sale attribution and account/capture structure. Merchant Account Sharing for separate accounts on the same terminal is subject to compliance approval, and terminals require a local legal entity; the guide offers separate terminals, multiple stores under one account, or Pay by Link as alternatives. It does not decide seller, merchant of record, inventory ownership or settlement for a specific retailer.\n- Authorization can expire while the shopper waits to collect goods. The guide offers pre-authorization and amount updates (synchronous data blob or asynchronous webhook), Extend on capture for American Express/Mastercard/Visa, or optional tokenization followed by a new Checkout API payment if capture fails because the transaction expired. Adjustments incur costs. A capture request needs its webhook outcome checked; the guide's failed-capture token route does not prove recovery succeeded.\n- Store returns use a Terminal API referenced reversal with the original terminal transaction reference and timestamp; warehouse returns use a Checkout API referenced refund with the original PSP reference. Order systems must retain the proper references. Phone/chat discounts may also need partial referenced refunds. These are later payment modifications, separate from product return and inventory updates.\n\n## Detail locators\n\n- `## Requirements`, `## Shopper journey`: integrations, orchestration/inventory and shopper steps.\n- `## Considerations` \u2192 `### Capture settings`, `### Authorization expiry and late capture`, `### Mixed baskets`: capture configuration, expiry options and account/capture models.\n- `## Considerations` \u2192 `### Legal entity and location`, `### Card recognition`, `### Sale attribution`, `### Refunds and discounts`: compliance qualification, identifier setup and later returns.\n- `## API flow` and `## Instructions` \u2192 `#### Contact details`, `#### (Pre-)authorization`, `#### Authorization extension (optional)`, `#### In-store pickup`, `#### Later returns, after pickup`: sequence diagrams, API fields/examples and webhook outcome guidance. In the dated raw, synchronous `/amountUpdates` cURL examples contain an extra `}` after the PSP reference; verify against the linked API reference before copying.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 primary concept route for this scenario.\n- [[adyen-payment-capture]] \u2014 manual and multiple partial capture semantics and outcome boundary.\n- [[adyen-card-recognition]] \u2014 card acquisition and identifier boundary.\n- [[adyen-authorization-adjustment]] \u2014 pre-authorization and adjustment route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15|Adyen Order in store, pick up in store, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The payment is captured upon pickup.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md:19"
+    },
+    {
+      "text": "You must have both an ecommerce integration and a point-of-sale integration with Adyen.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md:29"
+    },
+    {
+      "text": "You must enable and use manual capture, and contact our",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md:84"
+    },
+    {
+      "text": "One transaction with multiple partial captures: this option requires that online and in-store items are processed under the same merchant account.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md:128"
+    },
+    {
+      "text": "To use card acquisition in this way, you must enable receiving shopper identifying data in API responses",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md:143"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-ea-store-pickup-unified-commerce-route",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle-e-a-store-pickup]] \u2014 2026-09-15 Adyen Docs implementation guide for in-store terminal authorization of online items, pickup-time manual capture, qualified mixed baskets, card-based order lookup and returns.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/retail-use-cases/endless-aisle/e-a-store-pickup/2026-09-15.md",
+  "raw_sha256": "03ff200641158e4b28810e67ba6e291b7598231cce2c6c2ce615593a859b8c35",
+  "status": "candidate_ready"
+}

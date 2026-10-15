@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-tokenization-capture-a-recurring-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Capture a recurring payment with Classic API | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment/2026-09-15.md\"\ntags: [adyen, classic-api, recurring-payments, capture, webhooks]\n---\n\n## Overview\n\nDespite its placement under Classic tokenization, this 2026-09-15 guide describes capturing an **already authorized recurring payment** to collect reserved funds for methods that require a separate capture. It uses a Classic Payment API `/capture` modification, not a new `/authorise` call or a stored-detail update. Adyen marks this endpoint inactive and unsupported for new integrations, routing new builds and existing-integration migration to Checkout API. See [[adyen]], [[adyen-payment-capture]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- For payment methods requiring separate capture, the guide offers automatic capture, manual capture in Customer Area, or a server-side `/capture` call. The server request identifies the merchant account, a full or partial `modificationAmount`, and the earlier authorization's payment `pspReference` as `originalReference`. The examples also include a merchant modification reference.\n- The illustrated `/capture` response has its own `pspReference` and `[capture-received]`. A syntactically valid request can receive this acknowledgment; it **does not mean the payment was captured**. Adyen sends the final capture result in a separate webhook event. This page does not specify that event's fields or prove any particular capture or settlement outcome.\n- This is a dated Classic API snapshot. Its curl example uses a Payment API v46 test endpoint and the language-library examples use various historical versions. The page is not a modern Checkout API request schema or evidence that a particular method/account supports manual or partial capture.\n\n## Detail locators\n\n- Inactive endpoint and migration: lines 16\u201321.\n- Capture need, methods, and authorization prerequisite: line 23.\n- `/capture` request identity, amount, and original authorization reference: `Request`, lines 27\u201333; JSON example lines 35\u201347; dated curl/API-library examples lines 69\u2013319.\n- Syntax acknowledgment, `[capture-received]`, and separate final webhook: `Response`, lines 321\u2013338.\n\n## Related\n\n- [[adyen-payment-capture]] \u2014 provider capture lifecycle and outcome route.\n- [[adyen-tokenization]] \u2014 recurring stored-payment context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment/2026-09-15|Classic recurring payment capture (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment/2026-09-15.md:16"
+    },
+    {
+      "text": "Some payment methods (for example, cards) require capturing a [previously authorised payment](/online-payments/classic-integrations/classic-api-integration/tokenization/authorise-a-recurring-payment) to collect the reserved funds. For these methods you can enable automatic capture, manually capture them in Customer Area, or perform a `/capture` server call to the Adyen payment platform.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment/2026-09-15.md:23"
+    },
+    {
+      "text": "In a `/capture` request, specify your merchant account, set the amount to capture (either partial or full), and pass the `pspReference` from the `/authorisation` [response](/online-payments/classic-integrations/classic-api-integration/tokenization/store-payment-details) as the `originalReference` parameter.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment/2026-09-15.md:29"
+    },
+    {
+      "text": "The `capture-received` response doesn't mean that the payment is captured, just that we've received the request to capture.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment/2026-09-15.md:325"
+    },
+    {
+      "text": "We send a final capture result in a separate webhook event to your system. For more information, see [Webhooks](/development-resources/webhooks).",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment/2026-09-15.md:327"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-recurring-capture-route",
+        "target_path": "wiki/concepts/adyen-payment-capture.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-capture-a-recurring-payment]] \u2014 2026-09-15 inactive Classic API guide to capturing an already authorized recurring payment through `/capture`, with authorization-reference and asynchronous-result boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/capture-a-recurring-payment/2026-09-15.md",
+  "raw_sha256": "ff765048aba8be5d954e0954becfe416cef51968e6992d220cce882b0cb9e151",
+  "status": "candidate_ready"
+}

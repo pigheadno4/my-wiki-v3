@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-unified-commerce-retail-use-cases-mixed-baskets-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen account structures for mixed baskets\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/retail-use-cases/mixed-baskets-accounts\"\nraw_files:\n  - \"adyen/docs/unified-commerce/retail-use-cases/mixed-baskets-accounts/2026-09-15.md\"\ntags: [adyen, unified-commerce, mixed-baskets, merchant-accounts, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide compares account structures for a **mixed basket** containing online items offered on an ecommerce site and in-store items available in a physical store. It applies to merchants with both online and in-person payment channels. The choice changes how the basket is split into payment requests, which configured methods each channel uses, and how sales are attributed and reconciled. Adyen recommends discussing the structure with an implementation engineer or account manager before choosing one.\n\n## Account-structure options\n\n- **One merchant account without stores:** The same merchant account handles ecommerce and POS transactions. The guide says to authorize the full amount for all items, and to use separate partial capture requests if items are delivered or picked up at different times. Setup is simple, but configurations, terminals and credentials are more complex, and ecommerce/POS transactions are not separated in reconciliation. See `One merchant account without stores`.\n- **Separate merchant accounts:** One ecommerce account and one POS account require **two payment requests**. Each portion uses methods configured for its account (or a store under the POS account). Reconciliation is separate by merchant account. See `Separate merchant accounts`.\n- **One merchant account with POS stores:** The combined account has POS stores and still requires **two payment requests**, both processed through that account. Online items use account-level methods; in-store items use methods configured for the POS store. Methods need priorities, and the two channels can be distinguished within the same reconciliation file. See `One merchant account with POS stores`.\n- **One merchant account with ecommerce and POS stores:** The combined account has separate ecommerce and POS stores, again with **two payment requests** through the same merchant account. Each portion uses methods configured for its relevant store; reconciliation remains within the merchant account. See `One merchant account with ecommerce and POS stores`.\n\n## Evidence boundary\n\nThis page concerns Adyen merchant-account/store configuration, payment-request count, method setup and reconciliation. It does not name the legal entity that sells each item, assign merchant-of-record responsibility, state settlement accounts or payout recipients, or describe a full funds flow. One combined order or merchant account must not be read as proof of one payment, one legal entity, one settlement destination, or a completed capture. The separate linked retail use-case pages are navigation until read on their own.\n\n## Detail locators\n\n- `Requirements`: the dual online/in-person channel scope and linked account-structure setup guides.\n- Four account-structure headings: diagrams, capture timing, payment-request counts, method configuration and reconciliation consequences.\n- `See also`: click-and-collect and endless-aisle scenario routes; no additional behavior is inferred from their titles.\n\n## Related\n\n- [[adyen]]\n- [[adyen-unified-commerce]]\n- [[adyen-payment-capture]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/retail-use-cases/mixed-baskets-accounts/2026-09-15|Adyen mixed-basket account structures, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "A **mixed basket** is a transaction where a shopper buys both **online items** that are offered on an ecommerce site, and **in-store items** that are available at a brick-and-mortar store. The sale attribution and reconciliation of mixed baskets depends heavily on the structure of your Adyen account.",
+      "location": "line 19, beneath # Account structures for mixed baskets"
+    },
+    {
+      "text": "For a mixed basket, you authorize the full amount for all items, regardless of whether the items are online or in-store. If items are delivered or picked up at different moments in time, you make separate partial capture requests.",
+      "location": "line 37, ## One merchant account without stores"
+    },
+    {
+      "text": "A mixed basket requires two payment requests.",
+      "location": "line 51, ## Separate merchant accounts; same sentence also appears at lines 67 and 84 under other headings"
+    },
+    {
+      "text": "* Both payments are processed through the combined ecommerce/POS merchant account.",
+      "location": "line 69, ## One merchant account with POS stores"
+    },
+    {
+      "text": "* The online items are paid using payment methods that are set up for the ecommerce store.",
+      "location": "line 87, ## One merchant account with ecommerce and POS stores"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-mixed-baskets-account-route",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-retail-use-cases-mixed-baskets-accounts]] \u2014 2026-09-15 mixed-basket account-structure guide comparing one full-basket authorization with partial captures against three two-request account/store options and their payment-method and reconciliation consequences; legal entity, MOR and settlement are not specified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/retail-use-cases/mixed-baskets-accounts/2026-09-15.md",
+  "raw_sha256": "5970d89bca3a07f04b1706075ec1fa663800aa8c1e99d32316ce50e632d5e0f9",
+  "status": "candidate_ready"
+}

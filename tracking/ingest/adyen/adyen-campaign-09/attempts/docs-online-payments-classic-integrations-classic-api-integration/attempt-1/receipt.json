@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API integration\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/2026-09-15.md\"\ntags: [adyen, online-payments, classic-api, card-payments, authorization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen webpage explains the legacy Classic API integration for accepting card payments on a merchant website or mobile application by collecting shoppers' raw card data and sending it in a server-side Payment API `/authorise` request. It says the endpoint is inactive and no longer supported for new integrations. Adyen directs new integrations to Checkout API and existing integrations to contact Adyen about migration. The raw-card route presumes PCI compliance at Level 1 or 2; the page recommends Client-Side Encryption if the merchant wants to reduce PCI requirements. This is documentation for an existing Classic flow, not evidence that an account can start a new integration.\n\n## Key takeaways\n\n- After test-account setup, the page tells the merchant to obtain an API key or basic-authentication credentials for calls to Adyen. From the merchant server, the example sends merchant account, reference, minor-unit amount, and card information to `/authorise`. See `Requirements` and `Authorise request` in the raw snapshot.\n- For a request that passes validation, Adyen describes risk analysis followed, depending on the outcome, by an authorization attempt and payment response. The response includes a unique PSP reference usable later for cancel/refund. The shown `Authorised` result is an example, not a promised outcome. See `Authorise response`. Authorization and its response are separate from the capture and webhook steps linked under `Next steps`.\n- For co-badged cards in regions covered by the cited regulatory guidance, the shopper must be able to select a preferred brand, and a selected brand must be used to complete the payment. The page instructs the merchant to present supported brands and pass a shopper-selected brand as `selectedBrand` in `/authorise`. See `Requirements for co-badged cards`.\n\n## Detail locators\n\n- `Authorise request`: test-card route, exact request example, minor-unit example, and link to the PaymentRequest API reference for further required fields.\n- `Authorise response`: conditional processing sequence, sample PSP reference/result, and link to possible PaymentResult codes and fields.\n- `Next steps`: capture approved authorization when necessary to complete payment, and set up webhooks for confirmation of authorization or failure.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-pci-dss-compliance]]\n- [[adyen-payment-capture]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/2026-09-15|Adyen Classic API integration, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "line 16, beneath # Classic API integration"
+    },
+    {
+      "text": "The Classic API integration lets you accept payments on your website and mobile application, if you support [PCI compliance at Level 1 or 2](/development-resources/pci-dss-compliance-guide). This tutorial explains how you can collect raw card data from your shoppers and pass this data in payment requests to the Adyen API.",
+      "location": "line 27, opening section"
+    },
+    {
+      "text": "From your server, make an HTTP POST request to the [/authorise](https://docs.adyen.com/api-explorer/Payment/latest/post/authorise) endpoint.",
+      "location": "line 54, ## Authorise request"
+    },
+    {
+      "text": "If the message passes validation, the system performs a risk analysis. Depending on the outcome, the system attempts an authorisation and you receive a payment response. The response includes a PSP reference, which uniquely identifies each payment and can be used later for cancel/refund if needed.",
+      "location": "line 82, ## Authorise response"
+    },
+    {
+      "text": "If the shopper selected a preferred brand, the payment must be completed with this brand.",
+      "location": "line 99, ## Requirements for co-badged cards"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-api-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]] \u2014 2026-09-15 webpage snapshot of the inactive Classic Payment API raw-card `/authorise` integration, its PCI Level 1 or 2 condition, conditional authorization response, co-badged-card handling, and migration direction for existing integrations.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/2026-09-15.md",
+  "raw_sha256": "d84f11ae5ac2c2cd98b234391c6dd02f8ac6183912fb2afb11aa96531c2e7150",
+  "status": "candidate_ready"
+}

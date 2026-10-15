@@ -1,0 +1,11 @@
+# Pay by Link creation retrieval checks
+
+Canonical route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-unified-commerce.md` → `wiki/sources/adyen/source-adyen-docs-unified-commerce-pay-by-link-create-payment-links.md` → `raw/adyen/docs/unified-commerce/pay-by-link/create-payment-links/2026-09-15.md`.
+
+## Q1 — purpose, scope, and what not to infer
+
+This 2024-modified, 2026-09-15-captured overview compares creating Pay by Link links through Customer Area, the iOS app and the API, then gives the link's shopper journey and lifetime (`raw/adyen/docs/unified-commerce/pay-by-link/create-payment-links/2026-09-15.md:11, 19–45`). Customer Area and app creation need no development work; API creation supports additional use cases (`:19–29`). A created or opened link is not a completed payment, and a result sent by webhook/email does not itself prove capture or settlement (`:31–37, 47–49`). Tabled subscription tokenization is not proof of consent or a stored credential. The API-only BNPL mark in this page conflicts with the separate supported-method matrix's Customer Area marks for some BNPL methods and the Customer Area creation guide's blanket BNPL exclusion; do not infer current method availability without the method/account/channel conditions.
+
+## Q2 — central capability, prerequisites, and warnings
+
+The merchant creates a link with context such as amount, currency and country/region, sends it by email or chat, and the shopper reaches an Adyen-hosted payment page with available local methods (`:31–37`). Links default to expiry after 24 hours and one successful payment; validity can extend to at most 70 days after creation, but five unsuccessful attempts expire the link earlier. Expiry and non-reusability can be overridden when creating the link (`:39–45`). These are link-state controls, separate from the Pay by Link overview's automatic three-month link removal. Merchant risk and capture settings carry into Pay by Link; manual-capture accounts must still capture link payments (`:47–49`). The page's 3DS1/2 and liability-shift line is dated and cannot establish current availability or transaction-specific authentication and liability (`:51`). Creation settings and exact API/Customer Area behavior belong to child guides (`:53–69`); the Customer Area guide adds role, consent and status qualifications.

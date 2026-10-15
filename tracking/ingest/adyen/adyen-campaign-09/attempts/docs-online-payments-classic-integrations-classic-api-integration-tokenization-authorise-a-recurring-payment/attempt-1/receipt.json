@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-tokenization-authorise-a-recurring-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API: authorise a payment with stored details\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/tokenization/authorise-a-recurring-payment\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/authorise-a-recurring-payment/2026-09-15.md\"\ntags: [adyen, classic-api, tokenization, one-click, recurring-payments, stored-details]\n---\n\n## Overview\n\nThis dated Classic Payment API guide describes subsequent `/authorise` requests after payment details were successfully stored during an initial `/authorise` call. It distinguishes the one-click `ONECLICK`/`CardOnFile` request from the recurring `RECURRING`/`Subscription` request. The page marks this endpoint inactive and unsupported for new integrations, directs new builds to Checkout API, and tells existing users to contact Adyen about migration. It is a request guide, not evidence that storage, shopper consent, or a later authorization succeeded. [[adyen-tokenization]] [[adyen]]\n\n## Key takeaways\n\n- Both illustrated subsequent-payment routes identify the previously stored details using the original `shopperReference` and either a `recurringDetailReference` selected from stored details or `LATEST` for the most recent detail. Both list `shopperInteraction: ContAuth`; their `recurring.contract` and `recurringProcessingModel` values differ.\n- The **one-click** section lists `recurring.contract: ONECLICK` and `recurringProcessingModel: CardOnFile`, plus `card.cvc` collected from the shopper. If hosting the Classic CSE library, the page places the encrypted card CVC in `additionalData.card.encrypted.json`. Keep that CVC handling scoped to this one-click route; the recurring section does not list a CVC field.\n- The **recurring** section lists `recurring.contract: RECURRING` and `recurringProcessingModel: Subscription`. Its JSON, SOAP, curl and library examples show request shape, not a payment result or capture outcome. The linked next-step page covers capture separately.\n- This page starts after successful storage; it does not define the shopper-consent or first-token creation flow. Use [[adyen-tokenization]] and its source routes for that boundary. Do not read these Classic examples as current eligibility for a new integration.\n\n## Detail locators\n\n- Opening notice and paragraph before `One-click payments` \u2014 inactive endpoint, migration direction, and prior successful storage prerequisite.\n- `One-click payments` \u2014 CVC, `ONECLICK`/`CardOnFile`, common stored-detail selectors, JSON/SOAP/form examples, and CSE-hosted encrypted CVC variant.\n- `Recurring payments` \u2014 `RECURRING`/`Subscription`, common stored-detail selectors and request examples.\n- `Next steps` \u2014 linked capture, retrieve, and update stored-details pages; navigation only.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 provider tokenization concept, consent and stored-detail scope.\n- [[adyen]] \u2014 provider overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/authorise-a-recurring-payment/2026-09-15|Adyen authorise a recurring payment, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "line 16, opening notice"
+    },
+    {
+      "text": "After you successfully [stored payment details](/online-payments/classic-integrations/classic-api-integration/tokenization/store-payment-details) during the first\u00a0`/authorise`\u00a0call, you can refer to these details in subsequent calls every time a recurring payment should take place.",
+      "location": "line 23, opening prerequisite"
+    },
+    {
+      "text": "* `card.cvc`: the card CVC that you collected from the shopper.",
+      "location": "line 29, One-click payments field list"
+    },
+    {
+      "text": "* `recurringProcessingModel`: **CardOnFile**",
+      "location": "line 31, One-click payments field list"
+    },
+    {
+      "text": "* `recurringProcessingModel`: **Subscription**",
+      "location": "line 131, Recurring payments field list"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-stored-authorise-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-authorise-a-recurring-payment]] \u2014 inactive Classic `/authorise` guide for subsequent stored-detail one-click `CardOnFile` versus recurring `Subscription` requests (2026-09-15 webpage snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/authorise-a-recurring-payment/2026-09-15.md",
+  "raw_sha256": "2147a88ff5eb75572b0f5725539f078cd7f71ef85f28316d731890a656b027f1",
+  "status": "candidate_ready"
+}

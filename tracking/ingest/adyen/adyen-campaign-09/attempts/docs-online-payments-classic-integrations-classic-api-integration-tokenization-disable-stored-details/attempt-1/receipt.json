@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-tokenization-disable-stored-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API: disable stored recurring details\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/tokenization/disable-stored-details\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/disable-stored-details/2026-09-15.md\"\ntags: [adyen, classic-api, recurring-payments, tokenization, stored-details, disable]\n---\n\n## Overview\n\nThis dated Classic Recurring API `/disable` guide addresses stopping reuse of previously stored payment details, including when a shopper's subscription ends. Its stated request scope is a merchant account, shopper reference, and `ONECLICK` or `RECURRING` contract, with an optional `recurringDetailReference` to select one detail. The endpoint is marked inactive and unsupported for new integrations; Adyen directs new builds to Checkout API and existing users to migration guidance. [[adyen-tokenization]] [[adyen]]\n\n## Key takeaways\n\n- The request prose says to include `merchantAccount`, `shopperReference`, and a contract type; provide `recurringDetailReference` to disable a particular stored detail, or omit that detail reference to disable all recurring details for the specified shopper. This is shopper-scoped, not a claim about every merchant token or another shopper's details.\n- The page's example labeled as disabling **all** details conflicts with that prose: it still includes `recurringDetailReference` and omits `contract`. Treat the example as inconsistent with the stated selector rule; check the linked `/disable` API reference before applying it to a real stored-detail set.\n- The `/disable` response has a string `response`: `[detail-successfully-disabled]` for one detail or `[all-details-successfully-disabled]` for all details. The documented effect is preventing new charges with those previously stored details. It does not establish a refund or reversal of prior payments, removal from the merchant's own systems, or legal erasure of all personal data.\n\n## Detail locators\n\n- Opening notice \u2014 inactive Classic endpoint and migration direction.\n- `Request` \u2014 subscription-termination purpose, per-detail versus all-details prose, one-click example, and contradictory all-details example.\n- `Response` \u2014 single-detail and all-details success strings.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 provider tokenization concept and current integration routes.\n- [[adyen]] \u2014 provider overview.\n\n## Related raw API references\n\nThe linked `/disable` API reference and Checkout migration pages are navigation from this source, not evidence read for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/disable-stored-details/2026-09-15|Adyen disable stored details, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "line 16, opening lifecycle notice"
+    },
+    {
+      "text": "When you terminate your shopper's subscription, you need to disable the recurring contract to prevent charging this shopper with the previously\u00a0[stored payment details](/online-payments/classic-integrations/classic-api-integration/tokenization/store-payment-details).",
+      "location": "line 23, opening purpose"
+    },
+    {
+      "text": "You can also specify the reference of a particular recurring detail to disable, or skip this parameter to disable all recurring details for the specified shopper.",
+      "location": "line 27, Request prose"
+    },
+    {
+      "text": "The following example shows how to disable all the details of a recurring contract.",
+      "location": "line 76, all-details example label"
+    },
+    {
+      "text": "* `[all-details-successfully-disabled]`\u00a0-\u00a0when all the details are disabled.",
+      "location": "line 125, Response values"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-disable-details-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-disable-stored-details]] \u2014 inactive Classic `/disable` guide for one stored detail versus all shopper details, with an all-details example that conflicts with its selector prose (2026-09-15 webpage snapshot).",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "The example labeled all details retains recurringDetailReference and omits contract, contrary to the Request prose; do not turn it into an unqualified request recipe."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/disable-stored-details/2026-09-15.md",
+  "raw_sha256": "17c17a9e7f0dd59cdeb8c55c4076abcf767c91ae8b5292d644a69c20e9e06b00",
+  "status": "candidate_ready"
+}

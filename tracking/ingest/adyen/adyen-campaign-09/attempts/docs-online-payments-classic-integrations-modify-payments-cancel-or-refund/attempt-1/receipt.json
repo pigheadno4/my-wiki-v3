@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-modify-payments-cancel-or-refund",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Cancel or refund | Adyen Classic integrations\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/modify-payments/cancel-or-refund\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/modify-payments/cancel-or-refund/2026-09-15.md\"\ntags: [adyen, classic-integrations, online-payments, cancel, refund, webhooks]\n---\n\n## Overview\n\nThis Adyen Classic integrations guide describes `/cancelOrRefund` when a merchant wants to return funds but does not know whether the payment has been captured. The operation cancels an uncaptured payment or refunds an already captured one. The page marks this endpoint inactive and unsupported for new integrations, directs new builds to Checkout API, and points existing users to migration guidance.\n\n## Key takeaways\n\n- The Classic request identifies the processing `merchantAccount` and uses `originalReference` for the original payment's `pspReference`, available from the payment response or `AUTHORISATION` webhook. Optional `reference` identifies the modification for reconciliation. The documented request does not show an amount parameter; its mention of tagging a partial modification is not an amount-control specification.\n- The immediate `/cancelOrRefund` response provides the modification's own `pspReference` and a `[cancelOrRefund-received]` example. Receipt does not establish a completed cancellation or refund.\n- The guide calls for enabled `CANCEL_OR_REFUND` webhooks to determine whether the request succeeded. In the refund path, `success: true` means Adyen's validations passed and the refund was sent to the card scheme; later scheme rejection or reversal remains possible through `REFUND_FAILED` or `REFUNDED_REVERSED`. `success: false` indicates failed validations and includes a reason.\n- For Adyen for Platforms, Classic `/cancelOrRefund` does not accept split instructions. When split-refund instructions are needed, check capture state and use the separate Checkout cancel endpoint before capture or Checkout refund endpoint after capture. Do not use Classic `/cancelOrRefund` for payments involving multiple partial captures.\n\n## Detail locators\n\n- Raw lines 19\u201338 \u2014 inactive lifecycle, unknown-capture selection, platform split limitation, separate Checkout routes, and multiple-partial-capture exclusion.\n- `Cancel or refund a payment` \u2014 request identity fields, optional modification reference, example request, and immediate received response.\n- `CANCEL OR REFUND webhook` \u2014 enabled-event condition, original versus modification references, validation result, later refund exceptions, and illustrative webhook payload.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-refunds]]\n- Related concepts: [[adyen-payment-capture]], [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/modify-payments/cancel-or-refund/2026-09-15|2026-09-15 snapshot \u2014 Classic cancel or refund]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 19, under # Cancel or refund"
+    },
+    {
+      "text": "If you want to return the funds to your shopper, but are not certain whether the payment has been [captured](/online-payments/classic-integrations/modify-payments/capture) or not, use the Cancel or Refund functionality.",
+      "location": "raw line 26, under # Cancel or refund"
+    },
+    {
+      "text": "Do not use the [/cancelOrRefund](https://docs.adyen.com/api-explorer/Payment/cancelOrRefund) endpoint for payments that involve [multiple partial captures](/online-payments/capture).",
+      "location": "raw line 38, under # Cancel or refund"
+    },
+    {
+      "text": "The original\u00a0`pspReference`\u00a0of the payment that you want to cancel or refund. This reference is returned in the response to your payment request, and in the\u00a0AUTHORISATION webhook event.",
+      "location": "raw line 45, ## Cancel or refund a payment, originalReference bullet"
+    },
+    {
+      "text": "Adyen's validations were successful and we sent the refund request to the card scheme. This usually means that the refund will be processed successfully. However, in rare cases the refund can be rejected by the card scheme, or reversed.",
+      "location": "raw line 82, ## CANCEL OR REFUND webhook, success field"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "classic-cancel-or-refund-refunds-route",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-cancel-or-refund]] \u2014 inactive Classic `/cancelOrRefund` guide for uncertain capture state, split and multiple-partial-capture exclusions, original payment reference, and webhook outcome boundary (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/cancel-or-refund/2026-09-15.md",
+  "raw_sha256": "dbb6e27351784b1db5add47c4faf9a22986785c014bbef5f85c40aef3d16b67b",
+  "status": "candidate_ready"
+}

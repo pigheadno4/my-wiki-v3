@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-assistant-pickup",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen click and collect: assistant pickup\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup\"\nraw_files:\n  - \"adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup/2026-09-15.md\"\ntags: [adyen, unified-commerce, click-and-collect, assistant-pickup, card-recognition, manual-capture]\n---\n\n## Overview\n\nAdyen's assistant-pickup click-and-collect guide describes a shopper who orders online and authorizes the payment, while another person collects the goods in store. The merchant uses a zero-amount Pay by Link transaction to record the assistant's card alias and/or Payment Account Reference (PAR), then checks the same card through terminal card acquisition at pickup. Only after this recognition step does the guide call for manual capture of the **shopper's online authorization**. See [[adyen]], [[adyen-unified-commerce]] and [[adyen-card-recognition]].\n\n## Key takeaways\n\n- This described flow needs both Adyen ecommerce and POS integrations and a consolidated order/inventory or ERP system, or an orchestration layer connecting systems and consuming webhooks. The merchant must decide whether the online order captured in store counts as an ecommerce or in-store sale; the guide does not make that attribution decision.\n- The shopper's online Checkout API payment is authorized with **manual capture**. Its `AUTHORISATION` webhook provides the payment `pspReference` and amount to retain for later capture. An authorized result leads the merchant to collect the assistant's contact details and send a zero-amount payment link. The assistant's link takes no payment; it collects card alias and/or PAR, which the merchant saves under the assistant on the shopper's order/profile after the link's own `AUTHORISATION` webhook. The link webhook and online-purchase webhook refer to different transactions.\n- The zero-amount link needs Pay by Link settings, including terms and conditions, and is created with Checkout `POST /paymentLinks`. This use-case guide says to restrict `allowedPaymentMethods` to `scheme` because subsequent terminal card acquisition works with cards and NFC wallets. It asks the merchant to explain that the assistant's card will not be charged and must be available at pickup; this is guidance, while the example text is illustrative.\n- At pickup, a Terminal API `CardAcquisitionRequest` obtains PAR (if present) and/or alias. The merchant matches those identifiers against its saved assistant/order record, then ends acquisition with `EnableServiceRequest`. Card acquisition is a non-financial recognition step, not a second charge or proof of the assistant's civil identity. The guide requires enabling shopper-identifying data in API responses and webhooks. It suggests explaining how the assistant's information will be used; it does not specify a consent implementation.\n- The capture request is Checkout API `POST /payments/{paymentPspReference}/captures` for the amount due, using the **online purchase** PSP reference from its `AUTHORISATION` webhook. The guide explicitly says not to use the link's `AUTHORISATION` webhook. Capture belongs to the shopper's authorization; receiving the goods is a separate merchant fulfillment event. The examples do not prove a successful live capture or settlement.\n\n## Detail locators\n\n- Lines 19\u201335: two participants, secure card-identifier intent, pickup-time capture, integration and merchant-system prerequisites.\n- `## Shopper journey` and `## Considerations` (lines 38\u2013101): contact/link/card sequence, sale attribution, required manual capture, identifier comparison and enabled response/webhook data.\n- `#### Online purchase` (lines 143\u2013218): Sessions/Advanced example requests, authorized-result branch, assistant details, and online payment webhook reference/amount; example API version and values are illustrative.\n- `#### Payment link to assistant` (lines 220\u2013275): Pay by Link setup, zero-amount request, card-method restriction, communication guidance, and the link webhook's separate assistant identifier record.\n- `#### In-store pickup` (lines 277\u2013420): terminal card acquisition, PAR/alias response (including optional Base64 encoding), end-acquisition request, and Checkout manual capture using the online purchase reference.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 provider cross-channel concept and reciprocal source route.\n- [[adyen-card-recognition]] \u2014 card acquisition and recognition boundary.\n- [[source-adyen-docs-unified-commerce-pay-by-link]] \u2014 hosted link overview and first-live-link terms prerequisite.\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup/2026-09-15|Assistant pickup guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To make sure the right person is picking up the order, some identifying non-financial card details of the assistant are collected beforehand in a secure way. Then, at pickup, the assistant only needs to tap their card on the payment terminal. In this way, you do not need to deal with sensitive data such as photo IDs and you do not waste time checking screenshots or paper copies of the order.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup/2026-09-15.md:24"
+    },
+    {
+      "text": "| **Your systems**     | It is essential to have (or create) a consolidated order/inventory management or ERP system. Or alternatively, you must have an orchestration layer that communicates with your various sub-systems and can consume webhook messages. This is because your POS system needs to be able to update the online inventory in case of a pickup, sale, or return. |",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup/2026-09-15.md:35"
+    },
+    {
+      "text": "This use case requires manual capture. The payment is not captured at the time of ordering \u2014 capture only happens when the assistant picks up the order in-store.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup/2026-09-15.md:75"
+    },
+    {
+      "text": "First a payment link for a zero amount is sent to the assistant. No payment is taken; only the assistant's card identifiers (card alias and/or Payment Account Reference (PAR)) are obtained and saved in the shopper's profile. This requires setting up Pay by Link in the Customer Area, and implementing payment links using API calls",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup/2026-09-15.md:85"
+    },
+    {
+      "text": "Do not use the AUTHORISATION webhook message that you received for the payment link.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup/2026-09-15.md:420"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-assistant-pickup-unified-commerce-route",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-assistant-pickup]] \u2014 2026-09-15 assistant-pickup click-and-collect guide for zero-amount link/card-identifier matching and later capture of the shopper's separate online authorization; requires linked ecommerce/POS merchant systems.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-assistant-pickup/2026-09-15.md",
+  "raw_sha256": "c86babe80e7e6e54f70ee1f3e92a29bdfb60e7a74b1bd95bae9ff76be54f21e1",
+  "status": "candidate_ready"
+}

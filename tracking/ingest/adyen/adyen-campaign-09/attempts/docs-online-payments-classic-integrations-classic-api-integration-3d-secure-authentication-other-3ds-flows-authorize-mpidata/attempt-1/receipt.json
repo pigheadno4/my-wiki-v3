@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows-authorize-mpidata",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API authorization with third-party 3D Secure data\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/other-3ds-flows/authorize-mpidata\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/other-3ds-flows/authorize-mpidata/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, classic-api, mpi-data, authorization]\n---\n\n## Overview\n\nThis Adyen Classic Payment API guide describes submitting a payment authorization to Adyen using 3D Secure authentication data obtained from a third-party provider. The merchant obtains the authentication result first, maps it to the documented fields, then sends a separate Classic `/authorise` request carrying `mpiData`. The page covers 3D Secure 2 and also includes 3D Secure 1 field and request tabs. A third-party authentication result is input to authorization; it does not establish that Adyen authorized or captured the payment.\n\nAdyen says it no longer develops or accepts new Classic API (`/authorise`) integrations and recommends a Checkout API authorization-only route. The raw page reports `last_modified: 2024-06-19` and was captured 2026-09-15. Its API and library examples are dated snapshot evidence, not current schema or successful live-payment proof.\n\n## Key takeaways\n\n- Before using this route, the page directs the merchant to create an Adyen test account, obtain an API key, and install a library for connecting to Adyen APIs. See **Before you begin**.\n- The merchant must have authentication data from the external 3DS provider. The guide points to Adyen-to-EMVCo mapping for non-Adyen authentication and separates the 3DS1 and 3DS2 fields; its **Applies to** tables distinguish common 3DS2 fields from Cartes Bancaires additions. See **Get authentication data**.\n- The merchant sends POST `/authorise` with the relevant 3DS authentication values in the documented request fields, including `mpiData`. The 3DS2 table includes common issuer fields and additional Cartes Bancaires request data; use the exact table and intended Classic API version when implementing. See **Send a payment authorisation request with 3D Secure authentication data**.\n- For a co-badged card, `selectedBrand` must name the scheme that performed authentication; a mismatch can cause refusal. See **Co-badged cards**.\n- `Authorised` is the response only if Adyen's later payment authorization succeeds. Other result codes require their own follow-up; the illustrated response, including `liabilityShift`, is not a guarantee for another transaction. See **Sample response**.\n\n## Detail locators\n\n- **Get authentication data** \u2014 3DS1 and 3DS2 result-field tables, all-issuer versus Cartes Bancaires applicability, and external-provider parameter mapping route.\n- **Send a payment authorisation request with 3D Secure authentication data** \u2014 Classic `/authorise` field tables. The 3DS2 table labels `dsTransID` without the `mpiData.` prefix while linking to an `mpiData` parameter; the examples place it inside `mpiData`. Verify the intended Classic API schema rather than treating the table label alone as a top-level field.\n- **Co-badged cards** \u2014 `selectedBrand` must match the authenticating scheme, or authorization may be refused.\n- **Sample request** \u2014 3DS1 and 3DS2 curl and language examples, including scheme-specific Cartes Bancaires illustration; the example values do not define universal request obligations.\n- **Sample response** \u2014 conditional `Authorised` result and route to other result codes.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[source-adyen-docs-online-payments-3d-secure-authorize-mpidata]] \u2014 Checkout API third-party authentication and authorization guide.\n- [[co-badged-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/other-3ds-flows/authorize-mpidata/2026-09-15|Classic API authorization with third-party 3DS data (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Submit a payment authorisation with Adyen, using authentication data from a third-party 3D Secure 2 provider.",
+      "location": "raw line 17"
+    },
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "raw line 21"
+    },
+    {
+      "text": "Some issuers do not provide all fields; the **Applies to** column shows which fields you need from which issuers.",
+      "location": "raw line 52"
+    },
+    {
+      "text": "If you are authorising for a co-badged card, you need to set the [selectedBrand](https://docs.adyen.com/api-explorer/Payment/latest/post/authorise#request-selectedBrand) value to the scheme that authenticated the payment.",
+      "location": "raw line 107"
+    },
+    {
+      "text": "You will receive an **Authorised** `resultCode` if the payment authorisation was successful.",
+      "location": "raw line 1029"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-third-party-mpi-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows-authorize-mpidata]] \u2014 dated Classic `/authorise` guide for payment authorization with third-party 3DS data, scheme-qualified fields and co-badged-card selection (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/other-3ds-flows/authorize-mpidata/2026-09-15.md",
+  "raw_sha256": "57164d635b7a6cfa2e276128d8d747e664d36f73f415cf9d4615b2d59a31b1bb",
+  "status": "candidate_ready"
+}

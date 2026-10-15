@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-add-return",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen click and collect: change items at pickup\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/retail-use-cases/click-and-collect/c-and-c-add-return\"\nraw_files:\n  - \"adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-add-return/2026-09-15.md\"\ntags: [adyen, unified-commerce, click-and-collect, retail, refunds, point-of-sale]\n---\n\n## Overview\n\nAdyen's click-and-collect use case starts with a shopper paying online, then identifying themselves when collecting the order in a physical store. At pickup, unwanted purchased items can be refunded and additional store items can be bought with a separate Terminal API payment. It is a merchant-orchestrated online/POS journey, requiring both ecommerce and point-of-sale integrations plus a consolidated order/inventory or ERP system, or an orchestration layer that connects the systems and consumes webhooks. [[adyen-unified-commerce]] [[adyen]]\n\n## Key takeaways\n\n- The online purchase uses Checkout API authorization. The guide recommends immediate capture: a delayed capture can leave the authorization expired before pickup, with validity varying by card scheme. After an authorized result, the shopper chooses pickup identification by payment card or profile details. Ask explicit permission before saving identifying details for the first time.\n- The guide calls for both identification methods. Card recognition depends on a card or NFC wallet used for the online purchase; it does not cover QR-code wallets, BNPL, or other alternative payment methods. A card alias identifies the PAN but cannot be used to make payments and is unavailable for NFC wallet transactions; PAR can identify the payment account linked to a card or NFC wallet. The merchant must enable identifying data in responses/webhooks for card recognition and use its own system to look up the shopper and purchased items. The online `AUTHORISATION` webhook supplies the payment PSP reference and amount for later order lookup and referenced refunds.\n- If the shopper drops an item, issue a partial referenced refund against the ecommerce payment PSP reference, choosing either Terminal API `ReversalRequest` or Checkout API `/payments/{paymentPspReference}/refunds`. The Terminal route prints a receipt and can refund from another terminal or merchant account; the Checkout route does not print a terminal receipt.\n- For the Terminal reversal of an ecommerce payment, put a **leading dot** before the PSP reference in `OriginalPOITransaction.POITransactionID.TransactionID`; the guide says omission yields `unreachable host`. A partial Terminal `ReversedAmount` is **not in minor units**; without it the whole purchase is refunded. The original ecommerce payment timestamp and refund currency are also specified in the Terminal route. By contrast, the Checkout refund sends an `amount` object: its `value` cannot exceed the captured amount and its `currency` must match the authorization; the guide's USD 12.50 example uses `value: 1250`. Keep the two amount conventions separate.\n\n## Detail locators\n\n- `Requirements`, `Shopper journey`, and `Considerations` \u2014 integration/system prerequisites, identity options, explicit permission, capture-expiry warning, and sale attribution decision.\n- `Instructions > Online purchase` \u2014 Sessions and Advanced Checkout examples, authorized-result branch, `AUTHORISATION` webhook identifiers, PSP reference, and amount. Examples show test values, not production outcomes.\n- `Instructions > In-store pickup`, steps 1\u20133 \u2014 Terminal API `CardAcquisitionRequest`, PAR/alias `AdditionalResponse`, `EnableServiceRequest` to stop card acquisition, and staff lookup through merchant systems.\n- `Instructions > In-store pickup`, step 4 \u2014 Terminal reversal versus Checkout refund, route-specific required fields and USD 12.50 examples.\n- `Instructions > In-store pickup`, step 5 \u2014 additional item purchase via Terminal API `PaymentRequest`.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 provider cross-channel concept.\n- [[adyen]] \u2014 provider overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-add-return/2026-09-15|Adyen buy online, pick up in store with item changes, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "In this click-and-collect retail use case, items are paid online. When the items are picked up at a brick-and-mortar store, last minute changes can be made: purchased but unwanted items can be refunded, and additional items can be bought at pickup.",
+      "location": "line 19, opening description"
+    },
+    {
+      "text": "It is essential to have (or create) a consolidated order/inventory management or ERP system. Or alternatively, you must have an orchestration layer that communicates with your various sub-systems and can consume webhook messages.",
+      "location": "line 28, Requirements > Your systems row"
+    },
+    {
+      "text": "Always ask for explicit permission when you save the shopper's details for the first time.",
+      "location": "line 82, Considerations > Shopper identification"
+    },
+    {
+      "text": "The PSP reference of the ecommerce payment, in the format `.pspReference`. Do not forget the leading dot (.). Without it, you will receive the error message `unreachable host`.",
+      "location": "line 398, Instructions > In-store pickup > Terminal API refund parameter table"
+    },
+    {
+      "text": "Required for partial refunds. Specify an amount, making sure to **not** use minor units. Without this parameter, the whole purchase is refunded.",
+      "location": "line 401, Instructions > In-store pickup > Terminal API refund parameter table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-click-collect-item-changes-route",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-add-return]] \u2014 2026-09-15 click-and-collect guide for online-paid orders with pickup identification, referenced returns, and separate in-store add-on payment; requires linked merchant order/inventory systems.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-add-return/2026-09-15.md",
+  "raw_sha256": "a5dbddc86cb63feadea03d90250ac7dd30fc791fe8514f0d6e68775302730ed0",
+  "status": "candidate_ready"
+}

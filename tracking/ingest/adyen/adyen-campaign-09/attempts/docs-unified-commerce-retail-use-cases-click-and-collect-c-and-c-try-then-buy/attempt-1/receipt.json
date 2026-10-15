@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-try-then-buy",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen click and collect: reserve online, try in store\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy\"\nraw_files:\n  - \"adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy/2026-09-15.md\"\ntags: [adyen, unified-commerce, click-and-collect, retail, authorization, capture]\n---\n\n## Overview\n\nAdyen's 2026-09-15 click-and-collect guide describes a **reserve online, try in store, then buy** scenario. The shopper reserves items and selects a pickup store; the ecommerce integration requests Checkout API authorization with **manual capture**, leaving funds uncaptured at reservation. At the store, staff find the reservation, the shopper tries the items, and the merchant captures the amount for the purchase decision. This separates inventory reservation and in-store fulfillment from payment authorization and capture. See [[adyen]], [[adyen-unified-commerce]], [[adyen-payment-capture]] and [[adyen-card-recognition]].\n\n## Key takeaways\n\n- The scenario requires both Adyen ecommerce and POS integrations and a consolidated order/inventory or ERP system, or webhook-consuming orchestration across subsystems. The POS must update online inventory after pickup, sale or return. The guide does not define a universal reservation object or prove that reserving stock completes a payment.\n- **Manual capture is required.** The online Checkout API payment request authorizes the reserved amount at reservation; it does not capture it. Pre-authorization with manual capture is recommended when an upward amount adjustment may be needed; regular authorization with manual capture suffices when the amount will stay the same or decrease. The guide warns that not all card schemes support pre-authorization and points to scheme/payment-method availability.\n- For all reserved items purchased, the ecommerce side makes a Checkout API full capture. For fewer items, it makes a partial capture and the guide says the unused amount is released. For additional items, one transaction adjusts the original online authorization upward **only if it was pre-authorized**, then captures the total; the alternative captures the original reservation and makes a separate Terminal API in-person payment for extra items. Account structure affects reconciliation and sale attribution. These examples are API requests, not evidence that a particular capture or adjustment succeeded.\n- At reservation, the shopper can choose card recognition or profile details for pickup. Card recognition works only where a card or NFC wallet was used for the online reservation; the guide explicitly excludes QR-code wallets, BNPL and other alternative methods, so it directs merchants to implement both identification methods. For card recognition, the merchant enables identifying data in API responses and webhooks; after the `AUTHORISATION` webhook it saves card alias when available, PAR, PSP reference and amount. An alias cannot make payments, and an NFC-wallet transaction may lack one. At pickup a Terminal API card-acquisition response supplies alias/PAR for the merchant record lookup; the merchant then stops the acquisition flow. This lookup is separate from a payment.\n- The guide says to ask **explicit permission before saving shopper details** and to store identifiers/profile information securely. It does not say alias/PAR proves a person's civil identity or bypasses permission. The merchant must decide cross-channel sale attribution. The snapshot does not establish seller, merchant of record, settlement, authorization lifetime, current scheme eligibility or a completed purchase.\n\n## Detail locators\n\n- `## Requirements`, `## Shopper journey`: two integrations, order/inventory synchronization, reservation, pickup and purchase decisions.\n- `## Considerations` \u2192 `### Capture settings`: manual capture, pre-authorization versus regular authorization, card-scheme caveat.\n- `## Considerations` \u2192 `### Shopper identification`, `### Card acquisition`, `### Mixed basket and account structure`: permission, supported identifier paths, extra-item transaction choices.\n- `## API flow`, `## Instructions` \u2192 `### Online reservation`: Checkout authorization samples, `AUTHORISATION` webhook identifiers and reference retention.\n- `## Instructions` \u2192 `### In-store pickup and try-on`, `### Capture based on purchase decision`: card-acquisition and profile lookup, full/partial capture, adjustment and separate Terminal API payment examples.\n\n## Related\n\n- [[adyen-unified-commerce]] \u2014 main cross-channel retail concept.\n- [[adyen-payment-capture]] \u2014 manual/partial capture and asynchronous outcome boundary.\n- [[adyen-card-recognition]] \u2014 card acquisition and identifier limits.\n- [[adyen-authorization-adjustment]] \u2014 pre-authorization adjustment route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy/2026-09-15|Adyen Reserve online, try in store, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "shoppers reserve items online without paying upfront.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy/2026-09-15.md:19"
+    },
+    {
+      "text": "The payment is not captured at the time of reservation",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy/2026-09-15.md:75"
+    },
+    {
+      "text": "Always ask for explicit permission when you save the shopper's details.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy/2026-09-15.md:94"
+    },
+    {
+      "text": "Card recognition is not possible with QR code wallets",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy/2026-09-15.md:100"
+    },
+    {
+      "text": "This works only if you used pre-authorization for the online reservation.",
+      "location": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy/2026-09-15.md:128"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-try-then-buy-unified-commerce-route",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-try-then-buy]] \u2014 2026-09-15 Adyen Docs reserve-online/try-in-store guide for uncaptured Checkout authorization, purchase-time capture, conditional adjustment or extra POS payment, and permission-bound card/profile lookup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/retail-use-cases/click-and-collect/c-and-c-try-then-buy/2026-09-15.md",
+  "raw_sha256": "17c673075921aa0e91caa91eff005ae9481855c76c831945146800d50bbad71a",
+  "status": "candidate_ready"
+}

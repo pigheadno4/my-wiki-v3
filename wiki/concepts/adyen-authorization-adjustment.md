@@ -31,6 +31,9 @@ Klarna is pre-authorized by default and supports only asynchronous authorization
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-adjust-authorisation]] — 2026-09-15 snapshot of inactive Classic Payment API pre-authorisation, asynchronous/synchronous adjustment, original versus modification PSP references, total-amount updates, final capture, and validity qualifications (page metadata last modified 2020-11-11).
+
+
 - [[source-adyen-docs-point-of-sale-tipping-tipping-on-receipt]] — 2026-09-15 Adyen Docs receipt-tip use case for conditional POS pre-authorization adjustment before manual capture, with overcapture alternative and card/scheme limits.
 
 

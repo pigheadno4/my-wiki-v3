@@ -15,6 +15,48 @@ The 2026-09-15 snapshot is an overview with a 2021 last-modified date. It does n
 
 ## Sources
 
+- [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle]] — 2026-09-15 endless-aisle landing page defining in-store ecommerce orders and routing to ship-home and later store-pickup guides; scenario mechanics remain in child sources.
+
+
+- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect]] — 2026-09-15 retail landing page defining click and collect and routing reserve/try, buy/pickup with changes, and assistant-pickup variants; scenario labels alone do not establish payment or settlement behavior.
+
+
+- [[source-adyen-docs-unified-commerce-pay-by-link-ios-app]] — iOS merchant app guide for role-gated link creation and app-created link management, with an iOS-specific BNPL exclusion and test/live account selection (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links]] — 2024-modified, 2026-09-15-captured creation-channel overview for Pay by Link, 24-hour/70-day/five-attempt expiry, reuse and account capture settings; BNPL channel conflict remains qualified.
+
+
+- [[source-adyen-docs-unified-commerce-retail-use-cases-mixed-baskets-accounts]] — 2026-09-15 mixed-basket account-structure guide comparing one full-basket authorization with partial captures against three two-request account/store options and their payment-method and reconciliation consequences; legal entity, MOR and settlement are not specified.
+
+
+- [[source-adyen-docs-unified-commerce-pay-by-link-settings]] — 2026-09-15 Customer Area Pay by Link settings guide for authorized roles, configured currency/reuse/validity choices, optional shopper data, and immediately applied settings.
+
+
+- [[source-adyen-docs-unified-commerce-pay-by-link-supported-payment-methods]] — 2026-09-15 Pay by Link Customer Area/API method matrix requiring merchant-account addition, with wallet prerequisites, ACH Direct Debit warning, and unresolved BNPL conflict against the Customer Area creation guide (page metadata last modified 2024-06-11).
+
+
+- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links-customer-area]] — 2026-09-15 Customer Area Pay by Link guide for user roles, configured link creation, Adyen-hosted shopper form, payment-status and manual-capture distinctions, expiry, and shopper-data limits.
+
+
+- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-assistant-pickup]] — 2026-09-15 assistant-pickup click-and-collect guide for zero-amount link/card-identifier matching and later capture of the shopper's separate online authorization; requires linked ecommerce/POS merchant systems.
+
+
+- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-try-then-buy]] — 2026-09-15 Adyen Docs reserve-online/try-in-store guide for uncaptured Checkout authorization, purchase-time capture, conditional adjustment or extra POS payment, and permission-bound card/profile lookup.
+
+
+- [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle-e-a-ship-home]] — 2026-09-15 Endless Aisle ship-home guide for terminal authorization, shipment-linked manual and partial captures, mixed baskets, delivery lookup, and store/warehouse return routes.
+
+
+- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-add-return]] — 2026-09-15 click-and-collect guide for online-paid orders with pickup identification, referenced returns, and separate in-store add-on payment; requires linked merchant order/inventory systems.
+
+
+- [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle-e-a-store-pickup]] — 2026-09-15 Adyen Docs implementation guide for in-store terminal authorization of online items, pickup-time manual capture, qualified mixed baskets, card-based order lookup and returns.
+
+
+- [[source-adyen-docs-unified-commerce-pay-by-link]] — 2026-09-15 Pay by Link webpage overview: Adyen-hosted payment page, supplemental online-shop role, three-month link removal and live terms URL prerequisite.
+
+
 - [[source-adyen-docs-unified-commerce-retail-use-cases]] — 2026-09-15 Adyen Docs retail hub defining click and collect/endless aisle and routing to scenario and mixed-basket account-structure guides; overview only.
 
 

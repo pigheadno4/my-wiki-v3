@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-browser-based-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API browser-based native 3D Secure 2 integration\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/2026-09-15.md\"\ntags: [adyen, classic-api, online-payments, 3d-secure, 3ds2, browser]\n---\n\n## Overview\n\nAdyen's browser-based **full payment** guide describes native 3D Secure 2 authentication for an existing Classic Payment API `/authorise` integration on a merchant website. An eligible payment can take a frictionless or issuer challenge path before authorization. The merchant builds both browser and server portions; this page's authentication-only route is separate because it postpones payment authorization. Adyen says it no longer accepts new Classic API integrations and recommends migrating to Native 3DS2 on Checkout API, which also requires migration to Checkout API. [[adyen-3d-secure]] [[adyen]]\n\n## Key takeaways\n\n- Begin with server-side `/authorise`, including `threeDS2RequestData` with `deviceChannel: browser` and a challenge notification URL plus shopper `browserInfo`. Use the returned `resultCode` to select the next step. An `IdentifyShopper` response starts browser device fingerprinting; `ChallengeShopper` can arrive directly or after fingerprint submission. An `Authorised` result means the payment authorization completed in the stated flow, not merely that authentication occurred.\n- For `IdentifyShopper`, the browser sends base64url `threeDSMethodData` to the issuer in a hidden iframe. The issuer posts the result to the merchant's method notification URL. After a response or the stated 10-second wait, the merchant server calls `/authorise3ds2` with the token and `threeDSCompInd` set to `Y` for a timely callback or `N` otherwise.\n- For `ChallengeShopper`, the browser posts a base64url `CReq` to the issuer ACS in an iframe. The issuer sends `CRes` to the challenge notification URL. The merchant submits the decoded `transStatus` and token through server-side `/authorise3ds2`; if no callback arrives within 10 minutes, this guide instructs submission of `transStatus: U`, indicating authentication or account verification could not be performed. Do not treat the iframe challenge or callback alone as payment authorization.\n- The guide says Adyen's Authentication Engine can route to 3D Secure 1 based on issuer performance; contact Adyen Support if automatic fallback is unwanted. Optional prefetch of fingerprint keys requires Support enablement and regularly updated per-BIN cache to avoid refusals.\n\n## Detail locators\n\n- `Before you begin` \u2014 test account, API key, API library, and two absolute issuer callback URLs.\n- `Step 1: Submit a payment request` \u2014 initial request objects, additional-parameter qualification, result codes, and language examples.\n- `Step 2: Get the 3D Secure 2 device fingerprint` \u2014 method-data encoding, hidden iframe, 10-second callback condition, and `/authorise3ds2` completion indicator.\n- `Step 3: Present a challenge` \u2014 challenge data and iframe, 10-minute callback condition, `transStatus: U`, and payment result.\n- `Optional: Prefetch device fingerprinting keys` \u2014 Support gate, BIN-key retrieval, transaction ID, cache freshness, and altered initial `/authorise` sequence.\n- `Testing 3D Secure 2` \u2014 test-only cards, credentials, direct-challenge and frictionless scenarios.\n\n## Related\n\n- [[adyen-3d-secure]] \u2014 provider 3D Secure concept and integration routing.\n- [[adyen]] \u2014 provider overview.\n\n## Related raw API references\n\nThe linked `/authorise`, `/authorise3ds2`, `get3dsAvailability`, helper-function, and authentication-only documents are navigation from this page; their contents are not evidence read for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/2026-09-15|Adyen browser-based integration, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "line 21, immediately below Classic API notice"
+    },
+    {
+      "text": "In a full implementation, a payment eligible for 3D Secure 2 can go through either a frictionless or a challenge authentication flow before the payment is authorised.",
+      "location": "line 27, How it works (first sentence)"
+    },
+    {
+      "text": "Submit a payment request with a POST\u00a0[/authorise](https://docs.adyen.com/api-explorer/Payment/authorise)\u00a0call. Include the\u00a0`threeDS2RequestData`\u00a0and\u00a0`browserInfo`\u00a0objects to indicate that you are ready to accept 3D Secure 2 authenticated\u00a0payments.",
+      "location": "line 72, Step 1: Submit a payment request"
+    },
+    {
+      "text": "To optimize authorization rates, Adyen's [Authentication Engine](https://www.adyen.com/knowledge-hub/psd2-simplified-with-our-new-authentication-engine) routes each payment to either the 3D Secure 2 or the 3D Secure 1 flow, based on issuer performance.",
+      "location": "line 41, How it works (first sentence)"
+    },
+    {
+      "text": "If you do not receive a response in\u00a0`YOUR_3DS_NOTIFICATION_URL`\u00a0within 10 minutes, send\u00a0`transStatus: U`\u00a0to Adyen to indicate that authentication or account verification could not be performed.",
+      "location": "line 980, Step 3: Present a challenge, step 8"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-browser-classic-3ds2-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-browser-based-integration]] \u2014 Classic `/authorise` browser-based native 3DS2 full-payment guide, including fingerprint and challenge paths; Adyen no longer accepts new Classic API integrations (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/2026-09-15.md",
+  "raw_sha256": "677f117442b255e0c013f46ea76ee0e692c782920495eb43884acd92153f7bfb",
+  "status": "candidate_ready"
+}

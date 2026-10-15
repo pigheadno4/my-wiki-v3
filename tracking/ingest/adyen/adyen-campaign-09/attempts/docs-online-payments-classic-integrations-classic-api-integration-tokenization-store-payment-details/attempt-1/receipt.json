@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-tokenization-store-payment-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API store payment details\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/tokenization/store-payment-details\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/store-payment-details/2026-09-15.md\"\ntags: [adyen, classic-api, tokenization, recurring-payments, stored-payment-methods]\n---\n\n## Overview\n\nThis dated [[adyen]] Classic API page describes creating a stored recurring detail as part of an `/authorise` payment request or HPP payment-session form. It says successful payment causes the details to be stored and a `recurringDetailReference` to be created for later use. The page labels this endpoint inactive and unsupported for new integrations, directing new builds to Checkout API and existing users to contact Adyen about migration. Use [[adyen-tokenization]] for the broader current tokenization concept.\n\n## Key takeaways\n\n- The page maps `recurringProcessingModel` to three named cases: `Subscription` for a fixed schedule, `CardOnFile` for payments without a fixed schedule, and `UnscheduledCardOnFile` for non-fixed-schedule use of stored card details such as automatic top-ups. It does not further resolve the overlap between the latter two descriptions.\n- Each shopper needs a unique `shopperReference`; the page states a maximum of 100 stored card details per reference. The page ties retrieval of a stored recurring detail to the `shopperReference` used for that recurring contract.\n- Illustrative `/authorise` JSON, SOAP, cURL, and library requests include card data, shopper reference, `recurring.contract` with `RECURRING` and `ONECLICK`, and `recurringProcessingModel=Subscription`. This combined example is not a rule that `ONECLICK` and `Subscription` are interchangeable or that every subsequent payment has the same initiation pattern.\n- For a later payment, the page says `selectedRecurringDetailReference` can name a `recurringDetailReference` obtained from stored details for the original `shopperReference`, or use `LATEST` for a recent detail. It also states an `AUTHORISATION` webhook with `success=true`; neither the example requests nor that sentence proves an actual merchant payment or token creation in this snapshot.\n- This Classic page does not describe a shopper-consent step. Consult [[source-adyen-docs-online-payments-tokenization-create-tokens]] for the separate token-creation guidance on consent; do not use this omission to infer that consent is unnecessary.\n\n## Detail locators\n\n- **Inactive Classic scope and migration:** raw lines 14\u201321.\n- **Storage condition, processing models, and shopper-reference limit:** raw lines 23\u201331.\n- **Illustrative `/authorise` request formats and contract/model fields:** raw lines 33\u2013487; these are examples rather than confirmed execution results.\n- **Later `selectedRecurringDetailReference` and webhook note:** raw lines 489\u2013495.\n\n## Related\n\n- [[adyen]]\n- [[adyen-tokenization]]\n- [[recurring-payments]]\n- [[source-adyen-docs-online-payments-tokenization-create-tokens]]\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/store-payment-details/2026-09-15|Adyen Classic API store payment details \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 16, under # Store payment details"
+    },
+    {
+      "text": "If the payment is successful, the details are stored, and the `recurringDetailReference` is created.",
+      "location": "raw line 23, under # Store payment details"
+    },
+    {
+      "text": "Always provide a unique `shopperReference` parameter for every shopper. Note that you can store maximum 100 card details associated with the same `shopperReference` value.",
+      "location": "raw line 31, under # Store payment details"
+    },
+    {
+      "text": "When you are ready to process a subsequent payment, set the value of the `selectedRecurringDetailReference` to either:",
+      "location": "raw line 489, after ## Request examples"
+    },
+    {
+      "text": "On **AUTHORISATION** you receive a webhook event with `success` set to **true**.",
+      "location": "raw line 495, after ## Request examples"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-store-details-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-store-payment-details]] \u2014 inactive Classic `/authorise` guide for storing a shopper-linked recurring detail after successful payment and selecting it for later use (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "This legacy page omits a consent step; retain the separately sourced consent requirement already in this concept and do not treat the omission as a waiver."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/store-payment-details/2026-09-15.md",
+  "raw_sha256": "0297cd77eaaa0d3813a561338e83bfd6ce12fa0dea8cf3fc914a40d75231dc93",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Client-Side Encryption (CSE)\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/client-side-encryption\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/2026-09-15.md\"\ntags: [adyen, classic-api, client-side-encryption, cse, card-payments, pci-dss]\n---\n\n## Overview\n\nThis Adyen Classic API guide describes a merchant-served card form that uses the CSE JavaScript library to encrypt card data in the shopper's browser before the merchant server sends a legacy Payment API `/authorise` request. Adyen says **CSE Web integrations are being phased out**: it is no longer developing or accepting new CSE integrations and directs website builds to newer Web integrations. The page expressly says mobile integrations are unaffected by that Web phaseout; it does not describe mobile implementation details here. See [[adyen]], [[adyen-online-payments]] and [[adyen-pci-dss-compliance]].\n\n## Key takeaways\n\n- The merchant first needs a test account, API key or basic-authentication credentials for server API calls, and the unique CSE library location from Customer Area. Adyen can host the JavaScript library and key, or the merchant can host the library/use the JavaScript in its page. The merchant creates the card form and uses the Adyen library to encrypt fields marked `data-encrypted-name`; the guide says **not** to put the ordinary `name` attribute on those card input fields so unencrypted card data is not posted to the server.\n- For this legacy CSE Web integration, the page says Subresource Integrity must be implemented for PCI DSS v4.0.1, with a stated deadline of 2025-03-31. It directs the merchant to copy an integrity hash from the web-service user's Customer Area credentials and include it when loading the library. This dated requirement is not proof that any deployed payment page is secure or PCI compliant. The merchant-served form and optional merchant-hosted library remain within PCI control scope; [[adyen-pci-dss-compliance]] routes the separate SAQ A eligibility and merchant-responsibility guidance.\n- The encrypted form includes a **server-generated** `generationtime` timestamp; the page says Adyen refuses transactions sent more than 24 hours after that timestamp, and warns that an unsynchronized client clock can cause failures. Its `onsubmit`/AJAX example is an optional no-reload form pattern, not required for all integrations.\n- On the merchant server, the guide sends `merchantAccount`, `reference`, minor-unit `amount`, and encrypted card payload in `additionalData.card.encrypted.json` to the **Classic Payment API** `/authorise` endpoint. The example's `Authorised` result is illustrative: the page says validation precedes risk analysis, and authorization is attempted depending on the outcome. The returned PSP reference can support later capture, cancel or refund; capture and authorization/failure webhooks are separate next-step routes.\n- The page says the default encrypted data container is `adyen-encrypted-data` (line 110), but later instructs setting `card.encrypted.json` to an `adyen.encrypted.data` value (line 138). It does not reconcile the two names. Verify the actual field mapping in a retained implementation or authoritative API reference before using the example. The final SAQ A/CSE-role go-live link is a navigation claim, subject to the separate PCI guide's SAQ A eligibility and risk qualifications.\n\n## Detail locators\n\n- Lines 16\u201332: Web phaseout, mobile exception, purpose, and library/key hosting choices.\n- `## Requirements` (lines 34\u201344): test account, server credentials, unique Customer Area library URL.\n- `## Client side` (lines 54\u2013124): SRI requirement and hash location, form attributes, server timestamp and 24-hour refusal condition, optional `onsubmit` behavior.\n- `## Server side` (lines 126\u2013205): Classic `/authorise` request/response, encrypted payload field, minor units, conditional risk/authorization outcome and PSP reference; JSON/SOAP values are examples.\n- `## Next steps` (lines 207\u2013225): capture, webhooks, PCI/SAQ A and CSE-role navigation.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider concept and reciprocal source route.\n- [[adyen-pci-dss-compliance]] \u2014 eligibility, merchant security controls and SAQ boundaries.\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]] \u2014 sibling raw-card Classic `/authorise` guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/2026-09-15|Classic CSE guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "* Not accepting new CSE integrations.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/2026-09-15.md:20"
+    },
+    {
+      "text": "Mobile integrations aren't affected.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/2026-09-15.md:24"
+    },
+    {
+      "text": "The Client-Side Encryption (CSE) integration lets you accept payments on your website and mobile application while encrypting card data in your shopper's browser using the Adyen encryption library.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/2026-09-15.md:30"
+    },
+    {
+      "text": "You must implement [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) in your CSE integration before March 31, 2025, to comply with [PCI DSS v4.0.1](/development-resources/pci-dss-compliance-guide/).",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/2026-09-15.md:58"
+    },
+    {
+      "text": "The\u00a0`generationtime`\u00a0field is used to include a server-side\u00a0timestamp in the data you submit the form. It determines whether a payment request is valid or not. Adyen refuses the transactions sent later than 24 hours from the timestamp. This value must be obtained on the\u00a0server-side\u00a0as the client's system clock may not be correctly synchronized which can cause\u00a0the payment transaction to fail.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/2026-09-15.md:94"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-cse-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption]] \u2014 2026-09-15 Classic CSE guide for browser card encryption and server-side `/authorise`, Web phaseout, mobile exception, SRI/PCI conditions and unresolved encrypted-container naming discrepancy.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/2026-09-15.md",
+  "raw_sha256": "efd3628abc3b0f852f846fd8c1153d95ccf5a35046fd0272621051d2f27a5e95",
+  "status": "candidate_ready"
+}

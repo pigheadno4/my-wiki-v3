@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-modify-payments-capture-failure-reasons",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic failed captures and refunds\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/modify-payments/capture/failure-reasons\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md\"\ntags: [adyen, classic-api, capture, refund, failure-recovery, webhooks]\n---\n\n## Overview\n\nThis Classic payment-modification page lists five card-scheme rejection scenarios for failed captures and says the scenarios also apply to failed refunds. In this **Classic** guide, a `CAPTURE_FAILED` webhook reports the capture failure but not its reason; the merchant looks up the error and indicated action on the Payment details page in Customer Area. This differs from the separately ingested newer capture-failure guide, which describes structured refusal fields. See [[adyen]], [[adyen-payment-capture]] and [[source-adyen-docs-online-payments-classic-integrations-modify-payments-capture]].\n\n## Key takeaways\n\n- **Technical issue:** Adyen says it will try to fix the issue and re-capture; the merchant need not initiate a retry. If re-capture succeeds, payment status becomes `SentForSettle` and a `CAPTURE` webhook carries `success: true` and `reason: Transaction Recaptured`. Contact Support if it has not re-captured within 10 days. For pass-through payout, settlement and payout are delayed until successful capture.\n- **Shopper-cancelled recurring payment:** If a shopper cancels through the bank before capture, the page says neither Adyen nor the merchant can re-capture that transaction; it suggests contacting the shopper. This is not a technical retry case.\n- **Incorrect request:** The merchant gives Support the capture-request PSP reference and scheme error; the page says Adyen will fix the issue and re-capture. **Account configuration error:** the merchant gives the same evidence to Support, but re-captures affected payments only **after** Adyen confirms the account configuration is corrected. These are different retry owners and conditions.\n- **Capture expired:** A late capture cannot reuse the authorization; funds would require a new authorization. The page directs the merchant to Support if it wants to re-authorize, and to scheme validity/authorization-extension routes for future prevention. It does not claim that extending an already expired authorization recovers it.\n- The page says card schemes treat capture and refund failures alike for these scenarios, but its recovery instructions are often explicitly about **re-capture**. Do not infer identical refund retry mechanics, a successful refund, or chargeback reversal. It does not define partial-capture amount/balance limits; use the sibling Classic capture guide for those conditions. Neither a failed-capture webhook nor a recapture attempt establishes final settlement.\n\n## Detail locators\n\n- Lines 19\u201331: five scenario list, refund applicability, reasonless Classic `CAPTURE_FAILED` webhook and Customer Area diagnosis.\n- `## Technical issue` (lines 33\u201349): Adyen-owned retry, success event, 10-day Support threshold and pass-through payout delay.\n- `## Shopper cancelled the payment` (lines 51\u201359): recurring cancellation and no-recapture boundary.\n- `## Incorrect request` and `## Account configuration error` (lines 61\u201393): scheme error, capture PSP reference, Support actions and distinct re-capture ownership.\n- `## Capture expired` (lines 95\u2013109): new authorization requirement and future validity/extension references.\n\n## Related\n\n- [[adyen-payment-capture]] \u2014 provider capture concept and reciprocal source route.\n- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-capture]] \u2014 Classic capture requests, webhooks and partial-capture limits.\n- [[source-adyen-docs-online-payments-capture-failure-reasons]] \u2014 newer online-payments failure/refusal-field guide; use its own scope.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15|Classic failed captures and refunds, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When a capture fails, we inform you of this with a [**CAPTURE\\_FAILED** webhook](/online-payments/classic-integrations/modify-payments/capture#failed-capture). The webhook event does not contain the reason the capture failed.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md:29"
+    },
+    {
+      "text": "You do not need to take any action. Adyen will try to fix the issue and re-capture the transaction. If the transaction is re-captured, the status of the payment becomes **SentForSettle**, and you receive a [webhook event](/development-resources/webhooks) with:\u00a0",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md:41"
+    },
+    {
+      "text": "There is nothing that either you or Adyen can do to re-capture the transaction. Consider reaching out directly to the shopper.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md:59"
+    },
+    {
+      "text": "After you receive confirmation that we have corrected your account configuration, you can re-capture all payments that failed because of this issue.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md:93"
+    },
+    {
+      "text": "Sometimes, a capture fails because you submitted the capture request too late. In this case it is no longer possible to re-capture this authorisation. If you still want to get the funds for this payment, a new authorisation is required.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md:97"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-capture-failure-route",
+        "target_path": "wiki/concepts/adyen-payment-capture.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-capture-failure-reasons]] \u2014 Classic capture/refund failure scenarios, Customer Area diagnosis and failure-specific Adyen/merchant retry or new-authorization paths (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md",
+  "raw_sha256": "b5011ebdd3a64c119eeea1354a815f145015f1c51a4406644cb11c706d6c4bcc",
+  "status": "candidate_ready"
+}

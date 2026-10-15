@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-classic-gift-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API gift-card payments\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/classic-gift-cards\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/classic-gift-cards/2026-09-15.md\"\ntags: [adyen, online-payments, classic-api, gift-cards, stored-value]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot explains gift-card payment requests for an **existing API-only Classic Payment API integration**. The `/authorise` endpoint is marked inactive and unsupported for new integrations; Adyen directs new builds to Checkout API and existing users to contact Adyen about migration. The page metadata says last modified in 2021. Its named Givex, SVS, Fiserv/ValueLink and local-provider support is dated documentation, not proof of current provider, merchant-account, card, currency or transaction eligibility.\n\n## Key takeaways\n\n- This Classic route processes **gift-card payments** using `/authorise`. The guide names Givex, SVS, Fiserv (formerly ValueLink), and some local gift-card providers, while saying the latter support payment processing but no other transactions. It sends issuing, balance checks and deactivation as separate stored-value operations to the JSON-only Stored Value API. See the opening section and `Next steps`.\n- The payment request supplies amount currency/value in minor units, gift-card expiry and number, a merchant payment reference, and `selectedBrand`; cardholder name and PIN/security code (`card.cvc`) are optional in this page's field list. The JSON/SOAP examples show additional context such as `merchantAccount` but do not establish every field's requiredness. See `Make a payment`, request fields and examples.\n- A Classic `/authorise` request with `amount.value` **0** returns `additionalData.currentBalanceValue`, a remaining-balance field. Treat this as the page's specific zero-value response behavior, distinct from redeeming a nonzero amount or from the separate Stored Value API balance-check route. Do not infer a successful payment from a balance field. See `Make a payment`, amount bullet, and `Next steps`.\n- For a payment response, `resultCode` communicates the payment result, `pspReference` identifies the payment, and `authCode` holds an authorization code only when the payment is successfully authorized; otherwise `authCode` is empty. The shown `Authorised` JSON is an example, not a guaranteed outcome. See `Response` and its link to other possible `/authorise` response codes.\n\n## Detail locators\n\n- `Make a payment`, field list and JSON/SOAP examples: request shape, minor units, optional fields, gift-card brand and merchant-account example.\n- `Response`: conditional `resultCode`, `pspReference`, `authCode`, sample successful response, and Payment API response-reference link.\n- `Next steps`: Stored Value API route for other gift-card operations, including separate balance-check guidance.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-pos-gift-cards]] \u2014 distinct in-person Terminal API scope\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/classic-gift-cards/2026-09-15|Adyen Classic gift-card guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "line 19, beneath # Gift cards (classic)"
+    },
+    {
+      "text": "We also support gift cards from key local gift card providers in several countries/regions. You can process payments with these gift cards, but no other transactions.",
+      "location": "line 27, opening provider scope"
+    },
+    {
+      "text": "For [other gift card transactions](/payment-methods/gift-cards/stored-value-api) you can use our JSON-only Stored Value API. For example, you can issue a new card, check the balance stored on a card, or deactivate a card.",
+      "location": "line 33, opening operation split"
+    },
+    {
+      "text": "A `value` of **0** will return `additionalData.currentBalanceValue` with the remaining balance stored on the gift card.",
+      "location": "line 43, ## Make a payment, `amount` bullet"
+    },
+    {
+      "text": "* `authCode`: When the payment is authorised successfully, this field holds the authorisation code for the payment. When the payment is not authorised, this field is empty.",
+      "location": "line 120, #### Response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-gift-cards-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-gift-cards]] \u2014 2026-09-15 snapshot of inactive Classic API gift-card `/authorise` payments, zero-value balance-field behavior, response boundaries, and separate Stored Value API operations (page metadata last modified 2021).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/classic-gift-cards/2026-09-15.md",
+  "raw_sha256": "d22c2a5b5e7bd749bc1615d42d131729898439d35111e98bdbd126114a6dc8f6",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-tokenization-update-stored-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Update stored details with Classic API | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details/2026-09-15.md\"\ntags: [adyen, classic-api, tokenization, recurring-payments, stored-card]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs snapshot explains how an existing Classic API integration can update previously stored **credit-card** details during a new recurring payment. Adyen marks the endpoint inactive and unsupported for new integrations, directing new integrations to Checkout API and existing integrations to migration. See [[adyen]], [[adyen-online-payments]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- The merchant sends new card details in a Classic `/authorise` request with `selectedRecurringDetailReference` identifying the stored detail to update. The documented update is conditional on a successful recurring authorization; this is a payment authorization request with a linked stored-detail change, not a standalone credential-update endpoint.\n- On successful recurring authorization, the old `recurringDetailReference` becomes invalid and Adyen creates a new one. The new reference is **not** returned in the authorization response; the page links to the Classic retrieve-stored-details guide for obtaining it. An unsuccessful authorization does not update the stored details according to this page.\n- The JSON, SOAP, curl, and library examples illustrate expiry-month/year replacement, `RECURRING` contract, `Subscription` processing model, `ContAuth` shopper interaction, shopper reference, and a test API-key request. The examples do not establish that every shown field or value is a universal requirement. The sample expiry year is 2018 and the curl URL uses Payment API v46, so these examples are historical and do not define modern Checkout API behavior.\n- This page does not document how shopper consent was obtained. The broader [[adyen-tokenization]] concept retains the consent and shopper-reference scope for stored credentials. Successful authorization and the stored-detail update described here do not establish capture or settlement.\n\n## Detail locators\n\n- Inactive Classic endpoint and migration routes: lines 16\u201321.\n- Credit-card scope and examples of changed details: line 23.\n- Update during new recurring `/authorise`, selected detail reference, and success condition: `Request`, lines 25\u201333.\n- Example request shapes and dated API/library versions: JSON lines 35\u201359, SOAP lines 61\u201392, curl lines 94\u2013121, library examples lines 123\u2013474.\n- Old-reference invalidation, new-reference retrieval route, and conditional `Authorised` response: `Response`, lines 476\u2013494.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored-credential consent and shopper-reference context.\n- [[adyen-online-payments]] \u2014 Classic and Checkout integration routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details/2026-09-15|Update stored details (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details/2026-09-15.md:16"
+    },
+    {
+      "text": "You can update stored payment details when you initiate a new recurring payment. For this, pass new payment details along with an\u00a0`/authorise`\u00a0call and specify the\u00a0`selectedRecurringDetailReference`\u00a0value of the details that you want to update.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details/2026-09-15.md:27"
+    },
+    {
+      "text": "The details will only update if the `/authorise` request is successful.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details/2026-09-15.md:29"
+    },
+    {
+      "text": "If a recurring payment is successfully authorised, payment details are also updated during this call. In this case, the old\u00a0`recurringDetailReference`\u00a0becomes invalid, and a new reference is created.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details/2026-09-15.md:478"
+    },
+    {
+      "text": "A new\u00a0`recurringDetailReference`\u00a0value isn't returned in the\u00a0`/authorisation`\u00a0response. To learn how to obtain a new `recurringDetailReference`\u00a0value, refer to [this document](/online-payments/classic-integrations/classic-api-integration/tokenization/retrieve-stored-details).",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details/2026-09-15.md:480"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-update-stored-details-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-update-stored-details]] \u2014 2026-09-15 inactive Classic API guide for updating stored credit-card details on a successful recurring `/authorise`, with old-reference invalidation and separate retrieval of the new reference.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/tokenization/update-stored-details/2026-09-15.md",
+  "raw_sha256": "dd9f18dd22583804facc5b9257c9248236d8450ada09f2f9ec07bf8ad8d640fb",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-browser-based-integration-3d-secure-2-helper-functions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Classic API browser 3D Secure 2 helper functions | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/2026-09-15.md\"\ntags: [adyen, classic-api, 3ds2, browser, authentication]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot documents JavaScript helper functions for browser-based 3D Secure 2 in the Classic Payment API `/authorise` integration. Adyen says it no longer develops or accepts new Classic API integrations and directs migration to the Checkout API helper-function route. This is historical Classic behavior, not the modern Checkout API contract. See [[adyen]], [[adyen-online-payments]], and [[adyen-3d-secure]].\n\n## Key takeaways\n\n- The helpers collect browser information, encode/decode base64url data, create fingerprint and challenge iframes and forms, and configure challenge-window size. The page says they replace the Web 3D Secure 2 SDK implementation for this Classic route.\n- The page's setup requires a test account, API key, API library, separate issuer callback URLs for the 3DS method and challenge result, and the helper functions. Browser information is passed to the merchant server; the server sends Classic `/authorise` with `threeDS2RequestData` and `browserInfo`. Its payment examples use Payment API v68 test URLs and various dated library versions.\n- `IdentifyShopper` leads to device fingerprinting. The issuer posts to the method notification URL; the server sends `/authorise3ds2` with the token and `threeDSCompInd=Y` if the response arrived within 10 seconds, otherwise `N`.\n- `ChallengeShopper` leads to an issuer challenge in an iframe. After the challenge response, the server sends `/authorise3ds2` with the token and `transStatus`; if no response reaches the challenge notification URL within 10 minutes, the guide says to send `transStatus: U` to finalize the payment attempt. Authentication, the intermediate result code, and final payment authorization are distinct states.\n- The optional front-end notification sample uses `postMessage` and checks the message origin. Its test cards and examples are scenario illustrations, not proof of a current API version, merchant eligibility, or successful authorization.\n\n## Detail locators\n\n- Classic lifecycle warning, Checkout API migration, helper functions, and SDK replacement: lines 19\u201333.\n- Account, key, library, callback URL, and helper setup: `Before you begin`, lines 35\u201369.\n- Browser information and initial Classic payment request: `Collect the shopper's browser information` and `Submit a payment request`, lines 71\u2013101; language-specific examples run through line 559.\n- Initial result-code distinction: lines 560\u2013599.\n- Fingerprint sequence, 10-second callback condition, and `threeDSCompInd`: `Get the 3D Secure 2 device fingerprint`, lines 601\u2013659; examples through line 925.\n- Challenge data and window sizes: `Present a challenge`, lines 927\u2013950; 10-minute callback and `transStatus: U`: lines 996\u20131020; final conditional `Authorised` response: line 1258.\n- Optional notification-to-front-end `postMessage` example and origin check: lines 1285\u20131345.\n- Test cards and scenario routing: `Testing 3D Secure 2`, lines 1347\u20131409.\n\n## Related\n\n- [[adyen-3d-secure]] \u2014 provider 3DS2 concept.\n- [[adyen-online-payments]] \u2014 online-payment integration and lifecycle routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/2026-09-15|Classic 3DS2 helper functions (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/2026-09-15.md:21"
+    },
+    {
+      "text": "We strongly recommend migrating to the newer [3D Secure 2 helper functions on Checkout API](/checkout-build-your-own-3ds2/checkout-api-helper-functions) integration. To use this newer integration, you must also [migrate to the Checkout API](/online-payments/upgrade-your-integration/migrate-to-checkout-api).",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/2026-09-15.md:23"
+    },
+    {
+      "text": "* Create an iframe with an onload event listener for the 3D Secure 2 device fingerprinting and challenge results.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/2026-09-15.md:29"
+    },
+    {
+      "text": "* `threeDSCompInd`: If you received a response in `YOUR_3DS_METHOD_NOTIFICATION_URL` within 10 seconds, set this to **Y**. Otherwise, set this to **N**.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/2026-09-15.md:657"
+    },
+    {
+      "text": "If you do not receive a response in `YOUR_3DS_NOTIFICATION_URL` within 10 minutes, assume that something went wrong or the shopper aborted the transaction. In this case, send `transStatus: U`\u00a0to Adyen in order to order to finalize the payment.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/2026-09-15.md:1020"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-browser-3ds2-helpers-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-browser-based-integration-3d-secure-2-helper-functions]] \u2014 2026-09-15 snapshot of inactive Classic `/authorise` browser 3DS2 helper functions, fingerprint and challenge handoffs, and required Checkout API migration for the newer route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/browser-based-integration/3d-secure-2-helper-functions/2026-09-15.md",
+  "raw_sha256": "ecf3c497ebbcc3006476d03950adccf9c745f890da4ea6b966916247d23648ce",
+  "status": "candidate_ready"
+}

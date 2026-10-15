@@ -15,6 +15,27 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-authorise-using-details-stored-with-a-third-party]] — inactive Classic authorisation guide for initial and subsequent card payments using details stored by a third party, with Ecommerce/ContAuth and fixed-schedule distinctions (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-disable-stored-details]] — inactive Classic `/disable` guide for one stored detail versus all shopper details, with an all-details example that conflicts with its selector prose (2026-09-15 webpage snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization]] — 2019-modified Classic recurring-contract overview for shopper/merchant identity, 16-character detail references, one-click versus subscription descriptions, cross-account qualification, and inactive endpoint scope (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-retrieve-stored-details]] — inactive Classic Recurring API `/listRecurringDetails` guide for shopper-scoped stored-detail lookup and `recurringDetailReference` response cases (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-update-stored-details]] — 2026-09-15 inactive Classic API guide for updating stored credit-card details on a successful recurring `/authorise`, with old-reference invalidation and separate retrieval of the new reference.
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-authorise-a-recurring-payment]] — inactive Classic `/authorise` guide for subsequent stored-detail one-click `CardOnFile` versus recurring `Subscription` requests (2026-09-15 webpage snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-store-payment-details]] — inactive Classic `/authorise` guide for storing a shopper-linked recurring detail after successful payment and selecting it for later use (webpage snapshot, 2026-09-15).
+
+
 - [[source-adyen-docs-point-of-sale-recurring-payments]] — Adyen Docs website guide to consented Terminal API POS token creation and later online Checkout token charges (2026-09-15 snapshot).
 
 

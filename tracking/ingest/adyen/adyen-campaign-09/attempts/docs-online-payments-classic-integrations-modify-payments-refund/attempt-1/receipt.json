@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-modify-payments-refund",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Classic API refund | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/modify-payments/refund\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/modify-payments/refund/2026-09-15.md\"\ntags: [adyen, classic-api, online-payments, refunds, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs snapshot describes Classic Payment API refunds after capture, through Customer Area, referenced `/refund`, or approval-limited unreferenced `/refundWithData`. Adyen marks this endpoint inactive and unsupported for new integrations, directing new builds and existing-integration migration toward Checkout API. See [[adyen]], [[adyen-online-payments]], and [[adyen-refunds]].\n\n## Key takeaways\n\n- A referenced `/refund` uses the original payment `pspReference` as `originalReference`, plus merchant account and a `modificationAmount` no greater than the captured amount. Its response has a distinct refund-request `pspReference` and `[refund-received]`; that response is receipt of the request, not final return of funds. The guide permits multiple partial refunds for supported methods while their sum remains within the captured amount.\n- Adyen later sends a `REFUND` webhook with the refund-request PSP reference and a success flag. A false result has a reason; a true result usually leads to successful refund but may still be followed by scheme rejection and `REFUND_FAILED`. Some methods can instead reverse a refund, reported as `REFUNDED_REVERSED`, with funds back in the merchant account.\n- A refund is for an already captured payment; the guide directs uncaptured payments to cancellation. Failure reasons include insufficient remaining payment balance after refunds or chargebacks, insufficient merchant funds, uncaptured transactions, and payment-method expiration.\n- Where the original payment PSP reference is unavailable, the Classic `/refundWithData` route is limited by default and requires contacting Adyen Support for enablement. The page gives bank-account, raw-card, and recurring-contract variants; raw card data requires PCI Level 1 or 2 compliance. It explicitly routes customer payouts to Adyen's payout solution instead.\n- `/refundWithData` returns a request reference and a `Received` result in examples, then reports validation outcome asynchronously through `REFUND_WITH_DATA`. In that webhook, `originalReference` identifies the unreferenced refund request because the original payment reference is unknown, while `pspReference` is generated when the refund was captured. A successful validation still allows later scheme rejection or reversal. This is historical Classic behavior, not a Checkout API schema or proof of current eligibility.\n\n## Detail locators\n\n- Inactive lifecycle, Checkout migration, and Customer Area route: lines 19\u201330.\n- Captured-payment condition and referenced request fields: lines 32\u201343; distinct refund response reference: lines 59\u201367.\n- `REFUND` webhook and success/false meanings: lines 70\u201381.\n- Method-qualified partial and multiple refunds: `Partial refund`, lines 133\u2013141.\n- Failure reasons and later scheme rejection/`REFUND_FAILED`: lines 143\u2013182; reversal/`REFUNDED_REVERSED`: lines 184\u2013191.\n- Unreferenced refund purpose, payout distinction, restricted enablement, and target variants: lines 227\u2013239; raw-card PCI condition: lines 277\u2013279; recurring contract identifiers: lines 311\u2013317.\n- `REFUND_WITH_DATA` request/reference distinction and asynchronous outcome: lines 349\u2013365.\n\n## Related\n\n- [[adyen-refunds]] \u2014 provider refund lifecycle.\n- [[adyen-online-payments]] \u2014 Classic and Checkout integration routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/modify-payments/refund/2026-09-15|Classic refund (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/refund/2026-09-15.md:19"
+    },
+    {
+      "text": "You can only refund a payment after it has already been captured. Payments that have not yet been captured have to be [cancelled](/online-payments/classic-integrations/modify-payments/cancel) instead.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/refund/2026-09-15.md:34"
+    },
+    {
+      "text": "* `originalReference`: The original\u00a0`pspReference`\u00a0of the payment that you want to refund. This reference is returned in the response to your payment request, and in the\u00a0AUTHORISATION webhook event.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/refund/2026-09-15.md:42"
+    },
+    {
+      "text": "The successful webhook means that the request has been sent to the card scheme, but it can still be rejected by the card scheme at this point. This may happen even a few days after you submitted the refund request.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/refund/2026-09-15.md:175"
+    },
+    {
+      "text": "Refunding with data is limited by default due to anti-money laundering and payment industry regulations. To enable this functionality, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other).",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/refund/2026-09-15.md:239"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-refund-route",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-refund]] \u2014 2026-09-15 Classic Payment API refund guide for referenced and restricted unreferenced requests, asynchronous refund and failure events, and inactive endpoint scope.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/modify-payments/refund/2026-09-15.md",
+  "raw_sha256": "1a663c4031bc3f6a2f44f614c8b6a877d081553935a11b74f18226e9baf53500",
+  "status": "candidate_ready"
+}

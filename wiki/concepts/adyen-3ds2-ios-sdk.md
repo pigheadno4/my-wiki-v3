@@ -46,6 +46,9 @@ Release `3.0.1` documents Swift 6 warning fixes and an iOS 26 clipped-logo fix. 
 
 ## Related
 
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-ios-sdk-integration]] — legacy Classic API iOS 3DS2 merchant guide with SDK transaction and challenge handoff; its version minima are guide-specific (webpage snapshot, 2026-09-15).
+
+
 - [[source-github-adyen-3ds2-ios]] - cumulative exact-SHA SDK evidence
 - [[changelog-github-adyen-3ds2-ios]] - package-qualified release ledger
 - [[source-github-adyen-3ds2-ios-swift]] - cumulative Swift-native exact-SHA evidence

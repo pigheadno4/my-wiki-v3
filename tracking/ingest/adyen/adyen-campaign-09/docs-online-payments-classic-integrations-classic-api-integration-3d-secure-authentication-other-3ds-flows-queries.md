@@ -1,0 +1,7 @@
+# C09 retrieval probes — Classic other 3D Secure flows
+
+Q1. What is this page's role and integration scope, and where does it direct new work?
+Expected: This 2019-modified page, captured 2026-09-15, is a short navigation page for existing Classic API `/authorise` 3DS integrations. Adyen says it no longer accepts new Classic integrations and recommends the newer other-3DS route on Checkout API, which also requires migrating the payment integration. The page identifies alternatives but does not specify implementation fields or establish current eligibility or transaction success. Raw lines 11, 19–28; canonical route https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/other-3ds-flows.
+
+Q2. Which alternatives does the page distinguish from full Adyen 3DS, and what is the dated data-only limit?
+Expected: As a contrast, the page says full Adyen 3DS performs authentication and proceeds to payment authorization. The third-party MPI route uses an external 3DS provider's authentication data, then makes a payment authorization request with Adyen; that authentication is not itself Adyen payment authorization. The other route submits a 3DS2 data-only request without requesting authentication and the page says that Classic route is available only in Brazil for Mastercard. The 2019-modified statement is not current availability proof; implementation parameters, outcomes, authentication-only behavior, capture and liability shift require separate sources. Raw lines 25–28; same canonical route.

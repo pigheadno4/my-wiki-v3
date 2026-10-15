@@ -1,0 +1,9 @@
+# Retrieval checks: Classic disable stored details
+
+## Q1 — What is this page for, and what must not be inferred?
+
+This is an inactive Classic Recurring API `/disable` guide for preventing future charges using previously stored payment details, including at subscription termination. It describes one stored detail or all recurring details for a specified shopper. It does not show a refund or reversal of prior charges, deletion of records from merchant systems, legal erasure of personal data, or disablement of every token held by the merchant. New integrations are directed to Checkout API. Raw locators: opening lines 14–23; `Request` lines 25–31; `Response` lines 118–125. Canonical route: https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/tokenization/disable-stored-details
+
+## Q2 — How do one-detail and all-details requests differ, and what is unresolved?
+
+The Request prose says to send the merchant account, shopper reference, and `ONECLICK` or `RECURRING` contract. Add a `recurringDetailReference` for one particular detail; omit it to disable all recurring details for that shopper. The response strings distinguish `[detail-successfully-disabled]` and `[all-details-successfully-disabled]`. The page's sample labeled “all details” contradicts the prose because it includes `recurringDetailReference` while omitting `contract`; it is not an unambiguous all-details request recipe. The linked `/disable` API reference is the route to reconcile that discrepancy before implementation. Raw locators: `Request` lines 25–31, one-detail example lines 33–45, all-details label and example lines 76–89; `Response` lines 118–136. Canonical route: https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/tokenization/disable-stored-details

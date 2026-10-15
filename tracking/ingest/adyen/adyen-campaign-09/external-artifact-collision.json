@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-api-reference-3d-secure-2",
+  "accepted_receipt_authoritative": "tracking/ingest/adyen/adyen-campaign-09/attempts/docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-api-reference-3d-secure-2/attempt-1/receipt.json",
+  "note": "Worker c9w10 mistakenly worked API reference instead of assigned iOS after order dispatch. c9w07 accepted receipt remains authoritative; reviewer instructed to use persisted receipt. Wrong worker reassigned exact iOS job. External artifact retained for traceability.",
+  "external_submission": {
+    "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-api-reference-3d-secure-2",
+    "attempt": 1,
+    "source_page": "---\ntitle: \"Adyen Classic API 3D Secure 2 parameter reference\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/api-reference-3d-secure-2\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/api-reference-3d-secure-2/2026-09-15.md\"\ntags: [adyen, classic-api, 3d-secure, 3ds2, authentication, api-reference]\n---\n\n## Overview\n\nThis [[adyen]] reference describes additional 3D Secure 2 request parameters and returned authentication data for the legacy Classic API `/authorise` integration. Its listed Classic endpoints are `/authorise`, `/authorise3ds2`, and `get3dsAvailability` at v40 or later. Adyen says it no longer accepts new Classic API integrations and directs merchants toward 3D Secure on Checkout API, which also requires migration to Checkout API. Use [[adyen-3d-secure]] for the wider authentication context; this reference does not establish a payment authorization outcome.\n\n## Key takeaways\n\n- The reference recommends providing available 3DS2 information to improve the chance of a frictionless flow and authorization, while warning that issuer or scheme rules can make some objects mandatory and omissions can cause authentication failure. Read the object table with its channel and use-case conditions; an optional marker at one level does not erase conditional field requirements.\n- For browser-channel integrations, the full `browserInfo` object is required. For app-channel integrations, `userAgent` and `acceptHeader` are required when supporting 3DS1 redirect fallback. The page says card schemes require `billingAddress` and `shopperEmail` for browser or app implementations, despite the top-level table's optional markers.\n- `authenticationData.authenticationOnly=true` performs 3DS2 authentication without payment authorization. For that mode, the reference locates authentication results in `additionalData` of `/authorise3ds2`, including authentication value, directory-server transaction ID, ECI, status, and status reason. Treat those as authentication data, not a financial authorization.\n- `mpiData` is the route for authorizing a payment with Adyen using 3DS2 authentication data from another provider. The raw lists expected `directoryResponse`, `authenticationResponse`, and ECI combinations by flow and scheme; those combinations are not a guarantee that an authorization succeeds.\n- Some fields in this legacy page carry Checkout API version notes, including v68 deprecations and a v50 `transactionType` note. Keep those notes tied to the named API and field; this source does not establish a current Classic or native SDK version.\n\n## Detail locators\n\n- **Classic scope and endpoint versions:** raw lines 15\u201329.\n- **Additional objects and channel conditions:** raw lines 31\u201351; `billingAddress` at 117\u2013130, `browserInfo` at 132\u2013148, and `shopperEmail` at 366\u2013374.\n- **Account, delivery, installments, risk, and recurring fields:** raw lines 53\u2013229 and 348\u2013354; `scaExemption` override at 355\u2013365.\n- **Third-party MPI data, statuses, scheme-specific reason codes, and expected combinations:** raw lines 230\u2013347.\n- **Conditional 3DS2 request fields:** raw lines 382\u2013430, including external-acquirer authentication-only, browser notification URL, app SDK fields, and challenge preferences.\n- **Challenge and authentication-only result objects:** raw lines 431\u2013510.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]]\n- [[source-adyen-docs-online-payments-3d-secure-api-reference]]\n- [[source-adyen-docs-online-payments-3d-secure-standalone-authentication]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/api-reference-3d-secure-2/2026-09-15|Adyen Classic API 3D Secure 2 API reference \u2014 collected 2026-09-15]]\n",
+    "quotes": [
+      {
+        "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+        "location": "raw line 21, under # API reference"
+      },
+      {
+        "text": "To support 3D Secure 2 authentication on your Classic integration, use v40 or later of the following endpoints:",
+        "location": "raw line 25, under # API reference"
+      },
+      {
+        "text": "Some of these objects might be mandatory for the issuer and the card scheme, and not providing them in your payment request might result in a failed authentication.",
+        "location": "raw line 35, under ## 3D Secure 2 additional parameters"
+      },
+      {
+        "text": "The full object is required for `deviceChannel` **browser**.",
+        "location": "raw line 134, under ## browserInfo"
+      },
+      {
+        "text": "If set to **true**, you will only do the [3D Secure 2 authentication](/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/3d-secure-1-authentication-only), and not the payment authorisation.",
+        "location": "raw line 510, under ## authenticationData.authenticationOnly"
+      }
+    ],
+    "suggestions": {
+      "company": [],
+      "concepts": [
+        {
+          "update_id": "c9-api-reference-classic-3ds2-route",
+          "target_path": "wiki/concepts/adyen-3d-secure.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "## Related",
+          "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-api-reference-3d-secure-2]] \u2014 Classic API v40+ 3DS2 parameter reference for legacy `/authorise`, channel conditions, MPI data, and authentication-only results (webpage snapshot, 2026-09-15).",
+          "quote_indexes": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "warnings": []
+        }
+      ],
+      "index": [],
+      "log": []
+    },
+    "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/native-3ds2/api-reference-3d-secure-2/2026-09-15.md",
+    "raw_sha256": "1cccc665beb7c2042c7819d129870aa7d4afba8af840d7b13011a1b5f5d188c6",
+    "status": "candidate_ready"
+  }
+}

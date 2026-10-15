@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption-hosting-the-cse-library",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic CSE library self-hosting\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/client-side-encryption/hosting-the-cse-library\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/hosting-the-cse-library/2026-09-15.md\"\ntags: [adyen, classic-api, client-side-encryption, cse, web, card-data]\n---\n\n## Overview\n\nThis dated Classic Web CSE guide explains how a merchant can host Adyen's legacy Client-Side Encryption JavaScript library, or embed it in a payment form, so card details are encrypted in the browser before submission to the merchant server. Adyen says it strongly recommends its own hosting from a unique URL. The page says CSE Web integrations are being phased out, are no longer developed, and are not accepted for new integrations; it separately states mobile integrations are unaffected. The raw page reports `last_modified: 2019-04-22` and was captured 2026-09-15. This route is distinct from Adyen's newer Web JWE card-encryption guide.\n\n## Key takeaways\n\n- The page requires the CSE public key from Customer Area to encrypt payment details client-side. Self-hosting uses `adyen.encrypt.min.js` for HTML form binding or JavaScript-only use; `adyen.encrypt.nodom.min.js` supports JavaScript-only use. The raw page does not specify library release numbers or establish current availability. See **Requirements**, **Merchant hosted**, and **JavaScript only**.\n- In the HTML form variant, the merchant supplies the form markup and JavaScript binding. Card inputs use `data-encrypted-name` without a `name` attribute so the raw card values are not posted as ordinary form fields; the library adds a hidden encrypted-card input on submission. The page links this design to PCI concerns, but it does not prove PCI DSS compliance or a particular scope reduction. See **Merchant hosted** and **Form template**.\n- The form includes a hidden `generationtime` value created server-side. The page says transactions submitted more than 24 hours after that timestamp are refused and warns that the browser clock might be unsynchronized. See **Form template**.\n- The HTML form route shows either a plain global `adyen.encrypt` script or an AMD/Require.js module to call `createEncryptedForm`. The Require.js version in its sample URL is an example, not a declared CSE library version. See **Plain JavaScript** and **Require.js**.\n- The HTML-independent route calls `createEncryption` and encrypts a card-data object before sending `adyen-encrypted-data` to the merchant server. Its snippets are illustrations; the page does not establish payment authorization or runtime security of a particular merchant implementation. See **JavaScript only**.\n\n## Detail locators\n\n- **Requirements** \u2014 Customer Area CSE public-key location.\n- **Merchant hosted** \u2014 DOM-capable versus no-DOM library file and form-binding scope.\n- **Form template** \u2014 field annotations, server handler, encrypted hidden input, generation-time validity and clock qualification, and PCI-related rationale.\n- **Plain JavaScript** and **Require.js** \u2014 global versus AMD loading and form-binding examples.\n- **JavaScript only** \u2014 no-DOM library, `createEncryption`, and encrypted-data submission example.\n\n## Related\n\n- [[adyen]]\n- [[adyen-card-encryption]] \u2014 provider card-encryption concept; its JWE route is separate from this legacy CSE guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/hosting-the-cse-library/2026-09-15|Classic CSE library hosting (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "* Not accepting new CSE integrations.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "We strongly recommend that you let Adyen host the Client-Side Encryption (CSE) library for you, [while you are retrieving it from a unique URL](/online-payments/classic-integrations/classic-api-integration/client-side-encryption).",
+      "location": "raw line 29"
+    },
+    {
+      "text": "2. Download\u00a0`adyen.encrypt.nodom.min.js`\u00a0and\u00a0host it yourself. Only supports JavaScript-only integration.",
+      "location": "raw line 40"
+    },
+    {
+      "text": "* Card input fields should not have a\u00a0`name` attribute, but are annotated by the `data-encrypted-name`\u00a0attribute, to mark them for encryption.",
+      "location": "raw line 62"
+    },
+    {
+      "text": "The generation time value must be created server-side, because the client browser system clock may not be correctly synchronized, which would cause the payment transaction to fail.",
+      "location": "raw line 71"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-legacy-cse-hosting-route",
+        "target_path": "wiki/concepts/adyen-card-encryption.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption-hosting-the-cse-library]] \u2014 legacy Classic Web CSE self-hosting and form-encryption guide, phased out for new Web integrations; this is distinct from the JWE route above (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/client-side-encryption/hosting-the-cse-library/2026-09-15.md",
+  "raw_sha256": "7e2c5d85795396d179fe31aaf192898c0c97548322cf0c4ff7be69827662dc99",
+  "status": "candidate_ready"
+}

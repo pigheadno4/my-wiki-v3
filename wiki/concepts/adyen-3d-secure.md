@@ -23,6 +23,42 @@ This concept covers the high-level merchant website guide across web and mobile 
 
 ## Related
 
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows]] — 2019-modified, 2026-09-15-captured Classic `/authorise` navigation for third-party MPI data plus Adyen authorization and Brazil/Mastercard-only data-only requests; new Classic integrations are not accepted.
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows-data-only]] — dated Classic `/authorise` data-only guide, restricted to Mastercard in its 2019-modified snapshot, with no shopper challenge or liability shift; see the separate Checkout-era Visa/Mastercard guide for its own scope.
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-raw-3d-secure-responses]] — 2021-modified Classic Customer Area raw 3DS1/3DS2 status lookup, separated by requested versus challenged stage and `ChallengeShopper` condition (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2]] — 2026-09-15 snapshot of the legacy Classic `/authorise` native 3DS2 overview, web/mobile implementation routes, frictionless/challenge and redirect fallback, and full-payment versus authentication-only boundaries (metadata last modified 2020).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication]] — 2019-modified Classic API 3DS overview (captured 2026-09-15): inactive endpoint, Checkout API migration route and historical redirect/native 3DS2 plus 3DS1 navigation; no current 3DS1 support inference.
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-android-sdk-integration]] — legacy Classic Payment API `/authorise` Android native 3DS2 guide for server/SDK fingerprint and challenge handoff, version-qualified App Link return, and transaction cleanup (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-browser-based-integration]] — Classic `/authorise` browser-based native 3DS2 full-payment guide, including fingerprint and challenge paths; Adyen no longer accepts new Classic API integrations (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows-authorize-mpidata]] — dated Classic `/authorise` guide for payment authorization with third-party 3DS data, scheme-qualified fields and co-badged-card selection (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-browser-based-integration-3d-secure-2-helper-functions]] — 2026-09-15 snapshot of inactive Classic `/authorise` browser 3DS2 helper functions, fingerprint and challenge handoffs, and required Checkout API migration for the newer route.
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-ios-sdk-integration]] — legacy Classic API native iOS 3DS2 guide for merchant-server fingerprint/challenge handoff, conditional payment outcomes, and its conflicting SDK setup minima (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-api-reference-3d-secure-2]] — Classic API `/authorise` native 3DS2 parameter and result reference for existing integrations, with v40+ endpoint scope and migration warning (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-authentication-only-integration]] — dated Classic Payment API authentication-only 3DS2 guide for web and native SDK channels, separate later authorization, and legacy-route prerequisites (2026-09-15 snapshot).
+
+
 - [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android-component]] — Redirect Component v5.0.0 Advanced-flow Android guide for API-only card integrations, Card Component route distinction, redirect action, and live-region warning (webpage snapshot, 2026-09-15).
 
 

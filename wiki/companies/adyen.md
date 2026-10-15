@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 414
+source_count: 464
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Four hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Four hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -132,8 +132,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 400 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08).
-- Total source summaries: 414 (400 website + 14 GitHub).
+- Ingested website documentation sources: 450 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09).
+- Total source summaries: 464 (450 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 22
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -567,6 +567,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-unified-commerce-retail-use-cases]] — Retail use cases | Adyen Docs (webpage, 2026-10-14)
 - [[source-adyen-docs-point-of-sale-shopper-engagement-display-data]] — Adyen terminal display-data overview (webpage, 2026-10-14)
 - [[source-adyen-docs-point-of-sale-sneak-preview]] — Adyen POS Sneak peek release preview (webpage, 2026-10-14)
+
+### Website documentation — Campaign 09
+
+- [[source-adyen-docs-unified-commerce-pay-by-link]] — Adyen Pay by Link overview (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations]] — Classic integrations for Ecommerce | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]] — Adyen Classic API integration (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments]] — Modify payments | Adyen Classic integrations (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-authentication-only-integration]] — Adyen Classic API authentication-only 3D Secure 2 integration (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-browser-based-integration]] — Adyen Classic API browser-based native 3D Secure 2 integration (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-api-reference-3d-secure-2]] — Adyen Classic API native 3DS2 parameter reference (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle-e-a-store-pickup]] — Adyen endless aisle: order in store, pick up in store (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-android-sdk-integration]] — Adyen Classic API Android 3D Secure 2 SDK integration (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-ios-sdk-integration]] — Adyen Classic API native 3DS2 iOS SDK integration (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-browser-based-integration-3d-secure-2-helper-functions]] — Classic API browser 3D Secure 2 helper functions | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-adjust-authorisation]] — Adyen Classic pre-authorisation and authorisation adjustment (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle-e-a-ship-home]] — Order in store, ship to home | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows-authorize-mpidata]] — Adyen Classic API authorization with third-party 3D Secure data (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-add-return]] — Adyen click and collect: change items at pickup (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-try-then-buy]] — Adyen click and collect: reserve online, try in store (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect-c-and-c-assistant-pickup]] — Adyen click and collect: assistant pickup (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-refund]] — Classic API refund | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links-customer-area]] — Adyen payment links through Customer Area (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-capture]] — Adyen Classic API capture (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-pix]] — Adyen Pix for existing Classic API integrations (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-store-payment-details]] — Adyen Classic API store payment details (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-authorise-a-recurring-payment]] — Adyen Classic API: authorise a payment with stored details (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication]] — Adyen Classic API 3D Secure authentication overview (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-update-stored-details]] — Update stored details with Classic API | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2]] — Adyen Classic API native 3D Secure 2 authentication (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption]] — Adyen Classic Client-Side Encryption (CSE) (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-capture-a-recurring-payment]] — Capture a recurring payment with Classic API | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-pay-by-link-supported-payment-methods]] — Adyen Pay by Link supported payment methods (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-retrieve-stored-details]] — Retrieve stored details | Adyen Classic API (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption-hosting-the-cse-library]] — Adyen Classic CSE library self-hosting (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-cancel]] — Adyen Classic API: cancel an uncaptured payment (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-capture-failure-reasons]] — Adyen Classic failed captures and refunds (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-pay-by-link-settings]] — Pay by Link settings | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-retail-use-cases-mixed-baskets-accounts]] — Adyen account structures for mixed baskets (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-cancel-or-refund]] — Cancel or refund | Adyen Classic integrations (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links]] — Adyen Pay by Link creation overview (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows-data-only]] — Classic API 3DS2 data-only flow | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-gift-cards]] — Adyen Classic API gift-card payments (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization]] — Tokenization | Adyen Classic API (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-pay-by-link-ios-app]] — Adyen Pay by Link iOS app (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-disable-stored-details]] — Adyen Classic API: disable stored recurring details (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-raw-3d-secure-responses]] — Adyen Classic raw 3D Secure responses (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-google-pay]] — Adyen Classic API Google Pay (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-pci-dss-compliance]] — PCI DSS compliance | Adyen online payments (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-authorise-using-details-stored-with-a-third-party]] — Adyen Classic authorisation with details stored by a third party (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption-cse-library-public-key-location-and-token]] — Adyen Classic CSE library public key, location and token (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect]] — Adyen click-and-collect retail use cases (webpage, 2026-10-15)
+- [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle]] — Adyen endless aisle retail use cases (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows]] — Adyen Classic API other 3D Secure flows (webpage, 2026-10-15)
 
 ### GitHub repository evidence
 

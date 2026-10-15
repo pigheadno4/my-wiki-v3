@@ -11,6 +11,9 @@ Adyen's PCI DSS guidance maps merchant validation and cardholder-data responsibi
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-pci-dss-compliance]] — 2026-09-15 online-payments PCI DSS v4.0.1 signpost for merchant responsibility, conditional SAQ A quarterly scanning, conditional non-SAQ A script-security measures, and the full-guide routes.
+
+
 - [[source-adyen-docs-development-resources-pci-dss-compliance-guide-script-security]] — Adyen PCI DSS v4.0.1 Web payment-page script-security guidance (webpage snapshot, 2026-09-15) for SAQ D/AoC and partner contexts, CSP/SRI inventory and alerting recommendations, and SAQ A exclusion.
 
 

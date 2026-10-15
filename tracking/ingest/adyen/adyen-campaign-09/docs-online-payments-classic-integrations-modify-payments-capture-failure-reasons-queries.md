@@ -1,0 +1,11 @@
+# Classic capture and refund failure retrieval checks
+
+Canonical route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-payment-capture.md` → `wiki/sources/adyen/source-adyen-docs-online-payments-classic-integrations-modify-payments-capture-failure-reasons.md` → `raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md`.
+
+## Q1 — purpose, scope, and what not to infer
+
+This Classic modification page explains five card-scheme failure scenarios for capture, says the scenarios also apply to failed refunds, and routes diagnosis to Customer Area because its `CAPTURE_FAILED` webhook has no failure reason (`raw/adyen/docs/online-payments/classic-integrations/modify-payments/capture/failure-reasons/2026-09-15.md:19–31`). Do not transplant the newer Checkout failure guide's structured refusal-field behavior into this Classic page. The page's re-capture actions do not prove corresponding refund retry mechanics or any completed refund. It does not cover chargebacks or partial-capture balance/amount limits; the sibling Classic capture guide owns partial-capture conditions. A failed-capture event or retry attempt does not prove settlement.
+
+## Q2 — central capability, prerequisites, and warnings
+
+The failure class determines the actor and next step. For a technical issue, Adyen attempts re-capture; if successful, status becomes `SentForSettle` with a `CAPTURE` webhook `success: true` and reason `Transaction Recaptured`. Contact Support if re-capture has not happened within 10 days; pass-through payout is delayed until successful capture (`:33–49`). A shopper-cancelled recurring payment cannot be re-captured by the merchant or Adyen (`:51–59`). For an incorrect request, provide Support the capture PSP reference and scheme error; Adyen says it will fix and re-capture (`:61–76`). For account configuration, provide the same evidence and wait for Adyen's correction confirmation before re-capturing affected payments (`:78–93`). Once capture has expired, the old authorization cannot be re-captured: a new authorization is required. The page directs desired re-authorization to Support and links authorization validity/extension for avoiding later failures, not for resurrecting the expired one (`:95–109`).

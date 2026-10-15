@@ -1,0 +1,7 @@
+# Fixed retrieval queries — Classic modify payments
+
+Q1. What is this Adyen Classic integrations page for, what scope does it cover, and what should it not be used to infer?
+Answer: It is a landing page for online-payment modifications: capture, cancel, refund, cancel-or-refund when capture state is uncertain, and authorization adjustment. It labels the endpoint inactive and unsupported for new integrations; new builds are directed to Checkout API and existing integrations to contact Adyen about migration. The landing page does not specify request schemas, asynchronous outcome guarantees, or point-of-sale procedures. Evidence: pinned raw lines 19–34, especially lines 19–22, 26–34. Canonical route: https://docs.adyen.com/online-payments/classic-integrations/modify-payments
+
+Q2. What central capability and consequential conditions does the page identify?
+Answer: A modification changes payment state. Capture completes an approved authorization; cancellation applies before capture; refund returns funds after capture; cancel-or-refund is for uncertain capture state; authorization adjustment changes the authorized amount after initial authorization. The endpoint is inactive for new integrations, with Checkout API migration guidance. The page routes in-person cancel/refund to separate POS guides. Evidence: pinned raw lines 19–24 and 26–34. Canonical route: https://docs.adyen.com/online-payments/classic-integrations/modify-payments

@@ -1,0 +1,7 @@
+# C09 retrieval probes — Classic API 3D Secure overview
+
+Q1. What is this page's scope, and what should a new integration do?
+Expected: It is Adyen's Classic API 3D Secure authentication overview, last modified 2019-08-28 and snapshotted 2026-09-15. The page says the endpoint is inactive and unsupported for new integrations. New online-payment builds should use Checkout API; existing Classic users should contact Adyen about migration. Its old 3DS1 and 3DS2 routes and version table are historical navigation, not current support or merchant-eligibility proof. Raw lines 11, 15–24, 60–81; canonical route https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication.
+
+Q2. Which 3D Secure routes does this historical overview describe, and what outcome limits apply?
+Expected: It describes redirect authentication for either 3DS1 or 3DS2, with issuer-version-dependent redirect URLs, and native 3DS2 through web helper functions or iOS/Android SDKs with possible 3DS1 redirect fallback. An existing 3DS1 integration could receive an Adyen-hosted redirect for 3DS2. The 2020/2021 prediction that 3DS2 would replace 3DS1 and the table's “do nothing” rows are dated; they do not establish present 3DS1 availability or compatibility. 3D Secure concerns shopper authentication and this overview gives no transaction authorization, capture, PSD2-compliance or liability-shift proof for a particular payment. Raw lines 26–40, 42–64, 68–83; same canonical route.

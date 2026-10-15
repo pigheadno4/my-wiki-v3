@@ -15,6 +15,9 @@ The retained guide requires a Web API-only integration, the Checkout webservice 
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption-hosting-the-cse-library]] — legacy Classic Web CSE self-hosting and form-encryption guide, phased out for new Web integrations; this is distinct from the JWE route above (2026-09-15 snapshot).
+
+
 > [!warning] Snapshot example conflict
 > The retained guide's sample certificate has an EC P-256 key while its JOSE import/encryption example uses `RSA-OAEP-256`. Do not copy this inconsistent sample as a working integration; verify compatible certificate/key and algorithm. See [[source-adyen-docs-online-payments-card-encryption-with-jwe]].
 

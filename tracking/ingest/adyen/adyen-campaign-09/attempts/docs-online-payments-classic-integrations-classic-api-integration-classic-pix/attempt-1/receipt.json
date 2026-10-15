@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-classic-pix",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pix for existing Classic API integrations\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/classic-pix\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/classic-pix/2026-09-15.md\"\ntags: [adyen, pix, classic-api, brazil, asynchronous-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide explains how an existing older Classic API `/authorise` integration can offer Pix, Brazil's instant bank-transfer method. The shopper uses a bank or wallet app to scan or paste QR data; funds move from the shopper account to Adyen and are transferred daily to the merchant bank account. The page directs Checkout API integrations to a separate Pix guide. It says the merchant needs a local entity in Brazil, and its capability table specifies Brazil and BRL. Use [[adyen-online-payments]] for the provider integration context.\n\n## Key takeaways\n\n- Existing Classic merchants first add Pix in the test Customer Area, display it in the payment form, and collect shopper name and CPF/CNPJ. The server sends `/authorise` with `selectedBrand=pix` and the purchase amount; the guide says to send both `shopperName` and `socialSecurityNumber` so the shopper can identify the payment. The detailed request fields and example are at the raw locator below.\n- The `/authorise` response gives `resultCode=Received`, a PSP reference, and QR contents/link in `additionalData`. Presenting a QR code means the payment is pending, not paid. After the shopper confirms in a participating bank or wallet app, the payment result arrives asynchronously in a webhook; the sample shows an `AUTHORISATION` event with `success=true`. Treat that sample as an example, not proof for another transaction.\n- The payment's `additionalData.pix.expirationDate` defaults to 24 hours and has a five-day maximum in this snapshot. Pix checks funding, timing, fraud/regulatory, and account conditions before approval; Adyen or the acquirer can also reject for fraud concerns or Pix technical issues. The table says recurring, partial refunds, separate captures, and chargebacks are unavailable in this guide; full refunds are described within 90 days after payment.\n- The shopper can change the paid amount in the bank or wallet app. Match webhook `additionalData.pix.originalAmountValue` against `amount.value`; on mismatch, Adyen recommends canceling and refunding. This reconciliation check matters even when the QR amount was generated correctly.\n- Test Customer Area promotion of a pending offer to sale simulates payment and supports reconciliation testing. Live Pix acceptance requires a separate request in the live Customer Area; the test simulation does not establish live eligibility or a real paid outcome.\n\n## Detail locators\n\n- **Classic versus Checkout scope, Pix flow, money movement, country/currency and feature limits:** raw lines 15\u201344.\n- **Test setup, shopper fields, Classic `/authorise` request and expiry:** raw lines 46\u201386; request example at lines 88\u2013114.\n- **Pending QR response and display fields:** raw lines 116\u2013134 and `## Present the QR code or QR code data`, lines 151\u2013159.\n- **Approval checks, asynchronous webhook result, and amount reconciliation:** `### Transaction conditions` and `## Payment result`, lines 136\u2013236.\n- **Refund window, test promotion, and live request:** `## Refunds` and `## Test and go live`, lines 238\u2013255.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/classic-pix/2026-09-15|Adyen Classic Pix guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for our old Classic API `/authorise` integration. If you are integrating using our Checkout APIs, refer to the [Pix](/payment-methods/pix) documentation instead.",
+      "location": "raw line 19, # Pix (classic)"
+    },
+    {
+      "text": "Note that the merchant needs to have a local entity in Brazil to accept Pix payments.",
+      "location": "raw line 38, # Pix (classic)"
+    },
+    {
+      "text": "The default value is 24 hours. The maximum value is 5 days.",
+      "location": "raw line 81, ## Make a payment, additionalData.pix.expirationDate row"
+    },
+    {
+      "text": "After the shopper scans the QR code and completes the payment, you will receive the result of the payment asynchronously in a [webhook event](/development-resources/webhooks).",
+      "location": "raw line 163, ## Payment result"
+    },
+    {
+      "text": "With Pix, shoppers can manually modify the amount they pay in their banking or wallet app after scanning the QR code or pasting the QR code data.",
+      "location": "raw line 236, ## Match the original and the paid amount"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-pix-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-pix]] \u2014 existing Classic API `/authorise` Pix QR and asynchronous webhook guide for Brazil/BRL, with local-entity, expiry and amount-reconciliation conditions (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/classic-pix/2026-09-15.md",
+  "raw_sha256": "6ba445526aceca667f46ac1ce556d05ea82dc6ad189dd921318d4e2378bcf186",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-raw-3d-secure-responses",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic raw 3D Secure responses\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses/2026-09-15.md\"\ntags: [adyen, classic-api, 3d-secure, 3ds1, 3ds2, authentication-status]\n---\n\n## Overview\n\nThis Classic 3D Secure lookup page explains raw authentication responses shown in Adyen Customer Area. It separates **3DS requested** from **3DS challenged**, and maps 3DS1 `threeDOfferedResponse`/`threeDAuthenticatedResponse` separately from 3DS2 `threeDS2Result.transStatus`. The raw page was captured 2026-09-15 and says last modified 2021-01-27. See [[adyen]] and [[adyen-3d-secure]].\n\n## Key takeaways\n\n- For **3DS requested / 3DS1**, `threeDOfferedResponse` reports enrollment or whether 3DS was offered: `Y` means **Enrolled**, `U` authentication unavailable, `N` not enrolled, and `N/A` unable to verify. A requested-stage `Y` is **not** a completed-authentication result.\n- For **3DS requested / 3DS2**, the page maps `threeDS2Result.transStatus` when `ChallengeShopper` was **not** returned. The table labels `Y` frictionless, `U` could not be performed, `N` not authenticated, `A` attempted, `C` challenge, `D` decoupled challenge, `R` rejected, and `I` data only. Read the full table at the raw locator; these labels do not by themselves establish final payment status.\n- For **3DS challenged / 3DS1**, `threeDAuthenticatedResponse` reports authentication outcome: `Y` authenticated, `U` issuer unable to respond, `A` attempted, `N` failed, and `N/A` unable to verify. This is a different field and stage from the requested-stage enrollment result.\n- For **3DS challenged / 3DS2**, `threeDS2Result.transStatus` is shown for cases where `ChallengeShopper` **was** returned. Here the table labels `Y` successful, `U` could not be performed, `N` not authenticated, `A` attempted and `R` rejected.\n- These are dated raw **authentication** status descriptions in a Classic integration context. They do not establish payment authorization, capture, settlement, PSD2 compliance or transaction-specific liability shift. The page does not provide API request steps, lifecycle guarantees or evidence of current 3DS1 availability.\n\n## Detail locators\n\n- Lines 19\u201332: Customer Area route and requested-stage 3DS1 `threeDOfferedResponse` table.\n- Lines 34\u201347: requested-stage 3DS2 `threeDS2Result.transStatus` table without `ChallengeShopper`.\n- Lines 49\u201361: challenged-stage 3DS1 `threeDAuthenticatedResponse` table.\n- Lines 63\u201373: challenged-stage 3DS2 `threeDS2Result.transStatus` table with `ChallengeShopper`.\n\n## Related\n\n- [[adyen-3d-secure]] \u2014 provider 3DS concept and reciprocal Classic source route.\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication]] \u2014 inactive Classic 3DS navigation and migration context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses/2026-09-15|Raw 3D Secure responses, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Find information about 3D Secure authentication for your transactions in your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses/2026-09-15.md:19"
+    },
+    {
+      "text": "This is the `threeDOfferedResponse`. These statuses indicate whether\u00a0the card is enrolled in the 3D Secure program and if 3D Secure was offered.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses/2026-09-15.md:25"
+    },
+    {
+      "text": "This is the `transStatus` from `threeDS2Result`. These statuses can be returned if you do not receive the **ChallengeShopper** `resultCode`.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses/2026-09-15.md:36"
+    },
+    {
+      "text": "This is the `threeDAuthenticatedResponse`. These statuses explain the result of the authentication process.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses/2026-09-15.md:53"
+    },
+    {
+      "text": "This is the `transStatus` from `threeDS2Result`. These statuses can be returned if you receive the **ChallengeShopper** `resultCode`.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses/2026-09-15.md:65"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c9-classic-raw-3ds-responses-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-raw-3d-secure-responses]] \u2014 2021-modified Classic Customer Area raw 3DS1/3DS2 status lookup, separated by requested versus challenged stage and `ChallengeShopper` condition (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/raw-3d-secure-responses/2026-09-15.md",
+  "raw_sha256": "8418a47d0b7ebdf5ae34d538812e8d22e82c61cdf89af7e0f2a948282057b943",
+  "status": "candidate_ready"
+}

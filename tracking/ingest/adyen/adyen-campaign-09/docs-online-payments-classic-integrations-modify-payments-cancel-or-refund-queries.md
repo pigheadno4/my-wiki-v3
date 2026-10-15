@@ -1,0 +1,7 @@
+# Fixed retrieval queries — Classic cancel or refund
+
+Q1. What is this Adyen page for, what scope does it cover, and what should it not be used to infer?
+Answer: It is the inactive Classic Payment API `/cancelOrRefund` guide for returning funds when capture status is uncertain: cancel if uncaptured, refund if captured. It is not the new-integration Checkout route, a split-refund endpoint, or a safe route for payments with multiple partial captures. Its immediate `received` example does not prove the financial outcome, and the documented request does not specify an amount-control field. Evidence: pinned raw lines 19–38, 40–69. Canonical route: https://docs.adyen.com/online-payments/classic-integrations/modify-payments/cancel-or-refund
+
+Q2. What are the central inputs, exclusions, and outcome checks?
+Answer: Send merchantAccount and originalReference set to the original payment's pspReference; optional reference tags the modification. The response has a distinct modification pspReference and a received example. Use enabled CANCEL_OR_REFUND webhooks to assess processing; on the refund path success=true means validations passed and Adyen sent the request onward, with rare later REFUND_FAILED or REFUNDED_REVERSED possible. For platform split instructions, check capture state and use separate Checkout cancel/refund routes. Never use Classic `/cancelOrRefund` for multiple partial captures. Evidence: pinned raw lines 33–38, 40–83. Canonical route: https://docs.adyen.com/online-payments/classic-integrations/modify-payments/cancel-or-refund
