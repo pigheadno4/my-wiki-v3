@@ -4118,6 +4118,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.0/2026-07-30/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.2--10.2.0/comparison.json)
 
+## `github-c518557624128daf4867`
+
+- Repository: `paypal/paypal-sdk-release`
+- SHA: `9e81e2b176ff956e378917927459d35069b598a2`
+- Collection date: `2026-10-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-9e81e2b/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-sdk-release/ingest-packets/github-c518557624128daf4867/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/sdk-release@5.0.582` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.582/2026-10-15/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.581--5.0.582/comparison.json)
+
 ## `github-c58f0a0c5af4f1348981`
 
 - Repository: `paypal/paypal-checkout-components`
@@ -4826,6 +4851,31 @@
 - `@adyen/adyen-web@6.45.1` (recommended `delta`)
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.45.1/2026-09-22/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.45.0--6.45.1/comparison.json)
+
+## `github-e37cdeeb22c2ea0b434a`
+
+- Repository: `paypal/paypal-sdk-release`
+- SHA: `d37489b5266805670aeecee1cd846ce8242deba2`
+- Collection date: `2026-10-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-d37489b/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-sdk-release/ingest-packets/github-e37cdeeb22c2ea0b434a/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/sdk-release@5.0.581` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.581/2026-10-15/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.580--5.0.581/comparison.json)
 
 ## `github-e7df3a4d7b67eb7c108b`
 

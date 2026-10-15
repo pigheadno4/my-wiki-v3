@@ -6,6 +6,20 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-15] ingest | SDK release assembly `5.0.582`
+
+- Approved serial delta `github-c518557624128daf4867`, SHA `9e81e2b176ff956e378917927459d35069b598a2`, from completed `5.0.581`. Reread complete updated cumulative source/changelog, both packet files and every assigned release record, manifest, raw package, comparison and patch in full; no reading exception. Grounding: package lines 3, 70 and 76. Concept audited/updated first.
+- Checkout `5.0.436` -> `5.0.437`, Messaging `1.98.0` -> `1.99.0`; other ten direct pins and ten other retained files unchanged. All 111 upstream changes classified (one retained, 110 intentional exclusions). Notes unavailable. Checkout implementation remains independently sourced; Messaging `1.99.0` behavior is an explicit collection/ingest gap. No hosted-rollout, loader/React-update or artifact-equivalence claim.
+- Added source/changelog history and raw/comparison links, concept, company, provider index and logs. Earlier knowledge and source_count 177 preserved; no cross-company comparison needed or contradiction found. No upstream code execution, code/rule changes or commit/push. Next: close validation, then scoped commit/push approval; separately propose Messaging `1.99.0` collection.
+- Close validation for both releases: five typed pages pass; all 33 unique files across the three snapshots match manifest hashes/sizes; packet, comparison and release-note hashes match. Historical source/changelog body lines remain in order except the explicit latest-summary update; evidence targets resolve, catalog entries are unique and count remains 177. Both items are `ingested`; zero pending. Global GitHub validation still reports the same ten unrelated packet-budget/invalid-packet errors, none for this repository; no globally clean result claimed. Final diff review qualifies the prior company summary as historical. Next: scoped commit/push approval.
+
+## [2026-10-15] ingest | SDK release assembly `5.0.581`
+
+- Approved serial delta `github-e37cdeeb22c2ea0b434a`, SHA `d37489b5266805670aeecee1cd846ce8242deba2`, from `5.0.580`. Read both packet files, complete cumulative source/changelog and every assigned manifest, raw package, comparison and patch in full; no reading exception. Grounding: package lines 3, 70 and 76. Concept audited/updated before source.
+- Only retained package version changes; all twelve direct pins and ten other retained files unchanged. All 112 upstream changes classified (one retained, 111 intentional exclusions). Notes unavailable; excluded lockfile/CDN changes do not prove unchanged artifacts, component behavior or hosted deployment.
+- Added version history and evidence links to source/changelog, concept, company, provider index and logs; preserved prior knowledge and source_count 177. No cross-company comparison warranted; no contradiction found. No upstream code execution or commit/push. Next: validate/complete this item before `5.0.582`.
+- Serial gate passed before starting `5.0.582`: five typed pages and whitespace validation passed; 22 current/prior file hashes/sizes verified, package difference limited to version, evidence links and count checked; CLI marked `github-e37cdeeb22c2ea0b434a` ingested.
+
 ## [2026-10-15] ingest | Checkout Components `5.0.437`
 
 - Approved focused-reading serial delta `github-54919ba63e5200390b6d`, SHA `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9`, from `5.0.436`. Fully read both changed authored components (1,920 lines), current package, new raw changelog entry, affected prior code, authored comparison and complete cumulative wiki history. Mechanically checked inventories, generated bundle and unchanged changelog suffix; all 428 hashes/sizes verified, 209 files unchanged and eight upstream paths classified.

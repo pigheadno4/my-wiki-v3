@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-15] ingest | SDK release assembly `5.0.582`
+
+Serial delta after completed `5.0.581`: pins Checkout `5.0.437` and Messaging `1.99.0`; other ten direct pins and ten other retained files unchanged. Manifest inclusion is not hosted deployment; Messaging behavior remains a separate evidence gap. Additive history preserved; see [[paypal-log]], [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]]. No commit/push.
+
+## [2026-10-15] ingest | SDK release assembly `5.0.581`
+
+Serial delta from `5.0.580`: retained package version only; twelve component pins and ten other retained files unchanged. Full assigned reading, additive history, concept-first updates and preserved earlier knowledge; see [[paypal-log]], [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]]. Excluded artifacts and hosted rollout remain unproven. No commit/push.
+
 ## [2026-10-15] ingest | Checkout Components `5.0.437`
 
 - Approved focused-reading delta from `5.0.436`: origin-qualified payment permission in Buttons/Checkout iframes; existing popup/callback behavior preserved. Verified 428 current/prior hashes and sizes; older history/count retained. Details [[paypal-log]] and [[changelog-github-paypal-checkout-components]]. No build/browser/payment testing, commit or push. Next: scoped commit/push approval after validation.

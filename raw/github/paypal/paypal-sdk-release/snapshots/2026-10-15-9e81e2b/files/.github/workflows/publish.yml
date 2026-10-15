@@ -1,0 +1,43 @@
+name: publish to npm
+# manually run this action using the GitHub UI
+# https://github.blog/changelog/2020-07-06-github-actions-manual-triggers-with-workflow_dispatch/
+on: workflow_dispatch
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: 🤝 Set Node version from .nvmrc
+        run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
+
+      - name: ⎔ Setup node
+        # sets up the .npmrc file to publish to npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NVMRC }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: 📥 Download deps
+        run: npm run reinstall
+
+      - name: Configure git user
+        run: |
+          git config --global user.email ${{ github.actor }}@users.noreply.github.com
+          git config --global user.name ${{ github.actor }}
+
+      - name: Ensure SVGs have been published on CDN
+        run: npm run cdn-check
+
+      - name: Publish to npm
+        run: npm run release
+        env:
+          # actions/setup-node uses this NODE_AUTH_TOKEN environment variable for npm publishing
+          # https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages
+          NODE_AUTH_TOKEN: ${{ secrets.PAYPAL_SDK_NPM_AUTH_TOKEN }}
+          # grabthar-release uses NPM_TOKEN as the environment variable to pass through to the npm CLI
+          # https://github.com/krakenjs/grabthar-release/blob/main/scripts/validate-npm.mjs
+          NPM_TOKEN: ${{ secrets.PAYPAL_SDK_NPM_AUTH_TOKEN }}

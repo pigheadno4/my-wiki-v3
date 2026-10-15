@@ -1,0 +1,139 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-sdk-release`
+- Work item: `github-e37cdeeb22c2ea0b434a`
+- Snapshot: `raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-d37489b/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `@paypal/sdk-release`
+
+- Version: `5.0.580` -> `5.0.581`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `10`
+
+### Required reading
+
+- `raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.581/2026-10-15/manifest.json`
+- `raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.581/2026-10-15/release-notes.md`
+- `raw/github/paypal/paypal-sdk-release/snapshots/2026-10-04-27aa46b/manifest.json`
+- `raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-d37489b/files/package.json`
+- `raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-d37489b/manifest.json`
+- `tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.580--5.0.581/comparison.json`
+- `tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.580--5.0.581/comparison.md`
+- `tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.580--5.0.581/diff.patch`
+
+### Upstream changes
+
+- `deleted` `cdn/5.0.579/paypal/checkout-components/tarballs/5.0.435.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/bowser/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/bowser/tarballs/2.11.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/bowser/tarballs/2.14.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree-web/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree-web/tarballs/3.33.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/asset-loader/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/asset-loader/tarballs/2.0.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/browser-detection/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/browser-detection/tarballs/1.7.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/iframer/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/iframer/tarballs/1.0.3.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/sanitize-url/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/sanitize-url/tarballs/2.1.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/wrap-promise/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/braintree/wrap-promise/tarballs/1.1.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/card-validator/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/card-validator/tarballs/4.3.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/core-js-pure/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/core-js-pure/tarballs/3.22.8.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/credit-card-type/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/credit-card-type/tarballs/6.3.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/envify/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/envify/tarballs/4.1.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/esprima/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/esprima/tarballs/4.0.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/framebus/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/framebus/tarballs/3.0.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/hi-base32/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/hi-base32/tarballs/0.5.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/inject-stylesheet/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/inject-stylesheet/tarballs/1.0.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/beaver-logger/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/beaver-logger/tarballs/5.0.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/beaver-logger/tarballs/5.8.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/belter/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/belter/tarballs/2.1.2.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/belter/tarballs/2.10.2.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/cross-domain-safe-weakmap/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/cross-domain-safe-weakmap/tarballs/2.0.3.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/cross-domain-utils/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/cross-domain-utils/tarballs/3.0.2.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/cross-domain-utils/tarballs/3.1.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/jsx-pragmatic/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/jsx-pragmatic/tarballs/3.0.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/jsx-pragmatic/tarballs/3.1.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/post-robot/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/post-robot/tarballs/11.0.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/post-robot/tarballs/11.0.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/universal-serialize/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/universal-serialize/tarballs/2.0.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/zalgo-promise/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/zalgo-promise/tarballs/2.0.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/zoid/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/zoid/tarballs/10.1.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/krakenjs/zoid/tarballs/10.6.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/applepay-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/applepay-components/tarballs/1.8.2.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/card-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/card-components/tarballs/1.0.54.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/card-components/tarballs/1.0.59.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/checkout-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/checkout-components/tarballs/5.0.226.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `cdn/5.0.580/paypal/checkout-components/tarballs/5.0.436.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/common-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/common-components/tarballs/1.0.31.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/common-components/tarballs/1.0.62.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/example-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/example-components/tarballs/1.0.28.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/fastlane-sdk-loader/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/fastlane-sdk-loader/tarballs/1.2.1.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/funding-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/funding-components/tarballs/1.0.28.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/funding-components/tarballs/1.0.32.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/googlepay-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/googlepay-components/tarballs/1.3.5.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/identity-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/identity-components/tarballs/5.0.11.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/identity-components/tarballs/5.0.14.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/legal-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/legal-components/tarballs/1.2.2.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/messaging-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/messaging-components/tarballs/1.34.6.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/messaging-components/tarballs/1.98.0.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/muse-components/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/muse-components/tarballs/1.3.85.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/muse-components/tarballs/1.3.98.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-client/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-client/tarballs/4.0.167.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-client/tarballs/4.0.204.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-constants/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-constants/tarballs/1.0.122.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-constants/tarballs/1.0.158.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-logos/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-logos/tarballs/1.0.46.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-logos/tarballs/2.3.7.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-release/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-release/tarballs/5.0.317.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/paypal/sdk-release/tarballs/5.0.580.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/promise-polyfill/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/promise-polyfill/tarballs/7.0.2.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/restricted-input/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/restricted-input/tarballs/1.2.7.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/through/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/through/tarballs/2.3.8.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/typescript/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/typescript/tarballs/4.9.5.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/whatwg-fetch/info.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/whatwg-fetch/tarballs/3.6.2.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `cdn/5.0.580/whatwg-fetch/tarballs/3.6.20.tgz`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `package-lock.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
