@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-capture-request-capture-with-airline-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP capture request with airline data\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/capture-request/capture-with-airline-data\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/capture-request/capture-with-airline-data/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, capture, airline-data]\n---\n\n## Overview\n\nThis [[adyen]] SFTP batch request guide explains how to append airline data sub-lines to a payment capture request. The title and sample are capture-specific: the sample file header is `Modification`, its parent line is `Capture`, and it includes `Capture`, `Airline`, `AirlineLeg`, and `AirlinePassenger` sub-lines. The descriptions also say airline sub-lines can accompany authorisation requests. These are request-file structures under [[adyen-batch-processing]], not a new authorisation, a capture result, or proof of funds movement; see [[adyen-payment-capture]] for lifecycle context.\n\n## Key takeaways\n\n- Airline data is optional for a capture request. When included, the page requires at least one `AirlineLeg` and at least one `AirlinePassenger` sub-line. The `Airline` record has `SL`, a sequential sub-line number and fixed type at fields 1\u20133; its customer, airline, ticket and agency data fields 4\u201312 are marked optional in the table. Format and character limits are delegated to the linked airline-data overview, which this source does not reproduce.\n- `AirlineLeg` field 4 is a leg identifier counting from 1, followed by departure airport, flight number, carrier, fare basis, travel class, optional stopover, destination, travel date and optional departure tax. `AirlinePassenger` field 4 is a passenger identifier counting from 1, field 5 is fixed `Name`, fields 6\u20137 are given/family name, and birth date and traveller type are optional. Their `SL` counters also increment within the parent line; the separate leg/passenger counters have their own identity.\n- The example uses `FH,...,Modification` with `L,...,Capture` and `SL,1,Capture,9145754231690158,100,2,EUR`, followed by airline, leg and passenger records. It illustrates amount and currency exponent as separate fields, but this page does not define the `Capture` sub-line's numeric reference or all capture field requiredness. Do not treat the airline ticket number, file sequence, line number, or `SL` counter as an authorisation or capture PSP reference; use the dedicated capture-request field guide for that mapping.\n- The examples also include `ShopperInteraction` and `AuthorisationData` sub-lines without defining them here. Their presence in an example is not evidence that they are mandatory for every airline-data capture. The page has no ACK, result-file, webhook or payment outcome data.\n\n## Detail locators\n\n- **Capture purpose and authorisation/capture cross-route wording:** raw lines 14\u201328, under `# Capture with airline data`, `## Airline data sub-lines`, and `### Airline`.\n- **`Airline` field positions/optional details and capture-file example:** raw lines 30\u201365.\n- **At-least-one-leg condition, leg fields/counters and examples:** raw lines 67\u2013111, under `### AirlineLeg`.\n- **At-least-one-passenger condition, passenger fields/counters and examples:** raw lines 113\u2013153, under `### AirlinePassenger`.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[adyen-payment-capture]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/capture-request/2026-09-15|Capture request field guide \u2014 navigation only; raw not read for this entry]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/capture-request/capture-with-airline-data/2026-09-15|Adyen SFTP airline-data capture request guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you send a capture request with a batch file submission, you can include [airline data information](#airline-data-sub-lines).",
+      "location": "raw line 16, # Capture with airline data"
+    },
+    {
+      "text": "This sub-line holds information about airline data information\u00a0you want to send along with batch file [authorisation](/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file) and [capture](/online-payments/modify-payments) requests.",
+      "location": "raw line 26, ### Airline"
+    },
+    {
+      "text": "Airline data fields may have\u00a0specific\u00a0format and/or character limitations:",
+      "location": "raw line 28, ### Airline"
+    },
+    {
+      "text": "If you include airline data in your request, the batch file needs to contain *at least one airline leg* sub-line as well.",
+      "location": "raw line 71, ### AirlineLeg"
+    },
+    {
+      "text": "If you include airline data in your request, besides at least one airline leg sub-line the batch file needs to contain at least one airline passenger sub-line as well.",
+      "location": "raw line 117, ### AirlinePassenger"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-airline-capture-batch-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-capture-request-capture-with-airline-data]] \u2014 SFTP Modification/Capture airline-data sub-line guide with conditional leg and passenger records and example-only capture reference context (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/capture-request/capture-with-airline-data/2026-09-15.md",
+  "raw_sha256": "3bba9a60d1415fab4a4026e4333b81ac75ac7425195d8dfe9084ddcfdb1c7780",
+  "status": "candidate_ready"
+}

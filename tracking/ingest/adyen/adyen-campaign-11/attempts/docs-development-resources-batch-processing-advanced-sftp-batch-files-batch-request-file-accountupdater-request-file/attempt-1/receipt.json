@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-accountupdater-request-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"AccountUpdater request file | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, account-updater, card-data]\n---\n\n## Overview\n\nThis Adyen SFTP `AccountUpdater` **request-file format** guide (last-modified metadata 2019-10-21; collected 2026-09-15) defines a per-transaction `L` metadata record and two alternative `SL` request types: `AccountUpdaterRecurring` and `AccountUpdaterSingle`. It is field-level input guidance under [[adyen-batch-processing]], not an Account Updater result file or evidence of a changed card, stored credential, or payment outcome.\n\n## Key takeaways\n\n- The `L` table requires record identity and sequence, `MerchantAccount`, merchant account name, fixed `AccountUpdater` processing type, and a merchant reference for the transaction. `EchoData` is optional, returned unchanged when populated, and not used by Adyen for processing. The table says `ValidationError` in the processing-type column instead calls for a separately linked **batch result-file** structure; it is not described as another request type. See raw lines 18\u201330.\n- `AccountUpdaterRecurring` is presented for when shopper payment details are unavailable. Its mandatory `SL` table requires a shopper reference plus field 5: a card alias if card details are not stored, or a stored recurring detail reference or `LATEST` if they are stored. The shopper reference identifies the shopper; the `L` merchant reference identifies a transaction. The example's email-shaped shopper reference is an example, not an email-format requirement. See raw lines 32\u201370.\n- `AccountUpdaterSingle` is presented when card details are at least partly available. Its mandatory `SL` requires card number or alias, expiry month/year, and cardholder name. Field 7 is optional in the table but explicitly says to leave CVC blank; Maestro UK start month/year and one-digit issue number are optional. The page permits live card numbers in a batch file **only if the file is PGP-encrypted before submission**. See raw lines 72\u2013105.\n- `L` numbering is sequential within a block and `SL` numbering is sequential within its parent `L`. The request examples include common FH/BH/BT/FT wrappers, whose full schema and account/file-scope qualifications belong to the common request-file and SFTP guides. An ACK, result-file Account Updater status, and any later card or financial result are separate from this input format.\n\n## Detail locators\n\n- **`L` fields, requiredness, merchant reference and optional echo:** raw lines 18\u201330.\n- **Recurring identity and reference selection, with illustrative example:** raw lines 32\u201370.\n- **Single card-data condition, PGP requirement, field requiredness and example:** raw lines 72\u2013105.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[adyen-tokenization]] \u2014 related stored-card lifecycle, not this file format\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]] \u2014 common file/block format\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-accountupdater-result-file]] \u2014 result-file status schema\n- [[source-adyen-docs-online-payments-account-updater-batch-account-updater]] \u2014 broader Batch Account Updater workflow\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file/2026-09-15|Adyen AccountUpdater request file \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The line record\u00a0\\[L] holds the metadata information that applies to its corresponding sub-line \\[SL] records.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file/2026-09-15.md:20"
+    },
+    {
+      "text": "There are two kinds of Account Updater requests: `AccountUpdaterRecurring` request and `AccountUpdaterSingle` request.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file/2026-09-15.md:34"
+    },
+    {
+      "text": "You can make an\u00a0`AccountUpdaterRecurring` request when no payment details for the shopper are available.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file/2026-09-15.md:38"
+    },
+    {
+      "text": "You can make an\u00a0`AccountUpdaterSingle` request when the shopper's card details are at least partially available in your records.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file/2026-09-15.md:74"
+    },
+    {
+      "text": "You can send live/actual card numbers with your batch file only if you\u00a0[encrypt the file with PGP](/development-resources/batch-processing/advanced-sftp-batch-files#pgp-encryption)\u00a0before submitting it.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file/2026-09-15.md:76"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-batch-accountupdater-request-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-accountupdater-request-file]] \u2014 2019-modified, 2026-09-15-captured SFTP AccountUpdater input schema for merchant-referenced `L`, Recurring shopper/token references, Single card/expiry fields, and live-PAN PGP condition.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/accountupdater-request-file/2026-09-15.md",
+  "raw_sha256": "34d671326d9862df9af95577b97ad137dc3a2f547ddb528a6a1f7bf248ed5f26",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-refundwithdata-result-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen RefundWithData batch result file\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file/2026-09-15.md\"\ntags: [adyen, batch-processing, refund-with-data, result-file, psp-reference]\n---\n\n## Overview\n\nThis 2019-last-modified Adyen SFTP reference defines the `L` and `SL` records of a **RefundWithData result file**. It separates ordinary result rows from the separately linked parsing/validation-error result-file structure. The pinned page was captured 2026-09-15. It describes file fields, not final funds return to a shopper; see [[adyen]] and [[adyen-batch-processing]].\n\n## Key takeaways\n\n- The `L` line carries merchant-account metadata, fixed processing type `RefundWithData`, a merchant reference, and one of the literal status values `Success`, `Authorised`, `Refused`, `Cancelled`, `Received`, or `Error`. Optional `EchoData` returns as supplied and is not used by Adyen's payments platform. The page does not define a complete lifecycle transition or financial-finality meaning for those statuses.\n- The `SL` result type is `RefundWithDataResult`. Its field 4 is the **original payment PSP reference**, not a PSP reference created for a refund. Field 5 is an authorisation code only when the payment is successfully authorised, otherwise empty; field 6 is a result code **if available**. Field 7 holds Adyen's mapped refusal reason or error description when the payment is not authorised, is refused, or an error occurs. The page lists possible error messages in the raw field table.\n- The raw `TEST` example has one `L` row with `Received`, followed by an `SL` row whose result code is also `Received`, with a blank authorisation-code position. That example is not evidence of an `Authorised` status, an issued refund, or a final refund result.\n- These `L`/`SL` tables do **not** specify amount or currency fields. The separate RefundWithData **request** guide has amount/exponent/currency fields; do not read a requested amount into this result row or infer a transferred/refunded amount from it. File parsing/validation errors use another linked result-file format. The example and status table do not establish whether an individual refund is safe to retry.\n\n## Detail locators\n\n- Lines 14\u201316: result-file identity and separate parsing/validation-error format.\n- `## RefundWithData line`, lines 18\u201336: `L` merchant/account/reference/status/EchoData fields.\n- `## RefundWithData sub-line`, lines 38\u201348: `SL` type, original-payment PSP reference, conditional authorisation code, optional result code and reason list.\n- `## Example`, lines 50\u201359: `TEST` file with `Received` line and sub-line; illustrative only.\n\n## Related\n\n- [[adyen-batch-processing]] \u2014 batch-file route and reciprocal source link.\n- [[adyen-refunds]] \u2014 separate refund-lifecycle boundary.\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file-refundwithdata-request]] \u2014 separate request fields, including amount and exponent.\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] \u2014 common outer file/block records.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file/2026-09-15|RefundWithData result-file schema, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When parsing or validation errors occur, the result file has the structure described in [batch result files with validation errors](/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror).",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file/2026-09-15.md:16"
+    },
+    {
+      "text": "- `Error` | Transaction status.                                                                                                                                                                                                                                                                                                                                          |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file/2026-09-15.md:35"
+    },
+    {
+      "text": "| 4           | Alphanumeric                        | The original payment PSP reference.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file/2026-09-15.md:45"
+    },
+    {
+      "text": "| 5           | Alphanumeric                        | Authorisation code:\u00a0 - When the payment is authorised successfully, this field holds the authorisation code for the payment.\u00a0 - When the payment is not authorised, this field is empty.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file/2026-09-15.md:46"
+    },
+    {
+      "text": "L,1,MerchantAccount,TestMerchant,RefundWithData,MerchantReference,Received, ",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file/2026-09-15.md:55"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-refundwithdata-result-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-refundwithdata-result-file]] \u2014 2019-modified RefundWithData SFTP `L`/`SL` result schema, original-payment PSP reference, literal statuses and `Received` example; no amount or final-refund proof (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/refundwithdata-result-file/2026-09-15.md",
+  "raw_sha256": "74d4b470e1b63a122a77f0493765c4d7fd964c7e427f40b5046ef108e6a85f0d",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-a-card-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP batch authorisation for a card payment\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-a-card-payment\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-a-card-payment/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, card-authorisation, file-format]\n---\n\n## Overview\n\nThis dated Adyen Docs page (last-modified metadata 2019-04-29; captured 2026-09-15) specifies the sub-line layout for a card payment **Authorisation request** in an advanced SFTP batch request file. It is a record-format reference, not a result or proof that an authorization succeeded. Route general file structure and batch processing through [[adyen-batch-processing]] and [[adyen]].\n\n## Key takeaways\n\n- Adyen says these card-payment sub-lines may be submitted only when the batch file is PGP-encrypted. Both `PaymentDetails` and `Card` are mandatory; `Card` must be sub-line 2. Sub-line numbering starts at 1 and increments sequentially within the parent line. [Raw lines 18\u201320, 30\u201332, 42\u201351]\n- `PaymentDetails` positions 4\u20136 are numeric amount, numeric currency exponent, and three-character ISO currency code. The page gives `100,2,SEK` as a **sample**, not a general authorization result or a standalone currency-conversion rule. Position 7 shopper reference is otherwise optional in the table but required for recurring payments and recurring-contract creation. Blank optional positions still need commas to retain the fixed field count. [Raw lines 24\u201340, 62\u201370]\n- `Card` positions 4\u20138 hold card number, expiry month (`MM`), expiry year (`YYYY`), CVC, and cardholder name. The source specifies three-digit CVC/CVV for Visa, Mastercard, and Discover and four-digit for American Express; positions 9\u201311 are optional UK Maestro start date and issue number. This is a sensitive card-data file format, subject to the PGP submission condition above. [Raw lines 47\u201360]\n- `Address`, `MerchantOrderReference`, and `ShopperInteraction` are conditional sub-lines. Billing and delivery addresses use separate `Address` sub-lines; an invalid two-letter ISO country code rejects the transaction/request. `ShopperInteraction` allows `Moto` or `ContAuth` and is required for MOTO or recurring transactions. [Raw lines 72\u201396, 109\u2013137]\n\n## Detail locators\n\n- Mandatory positional schemas and first sample: raw lines 28\u201370. The examples include `FH`, `BH`, `L`, `SL`, `BT`, and `FT` records; use the parent batch-request-file reference for their common record structure.\n- Optional sub-line schemas and examples: raw lines 72\u2013150. The Address example joins `FH` and `BH` on line 99, while the ShopperInteraction example jumps from `SL,4` to `SL,6` at lines 146\u2013147 despite the sequential-counter rule. Treat these snippets as examples and follow the field tables; this page does not resolve those sample inconsistencies.\n- This page defines request content. File acknowledgment, acceptance, and per-payment authorization results require their separate batch ACK and result sources; do not infer an authorized payment from a prepared file or ACK.\n\n## Related\n\n- [[adyen-batch-processing]]\n- [[adyen]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-a-card-payment/2026-09-15|Adyen authorisation for a card payment, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can send this sub-line(s) with your batch file only if you encrypt the file with [PGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) before submitting it.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "The [`PaymentDetails` ](#paymentdetails)and [`Card` ](#card)sub-lines described below are mandatory when submitting a card payment authorization request.",
+      "location": "raw line 20"
+    },
+    {
+      "text": "Optional fields: if you do not populate one or more non-mandatory fields and leave them blank, you need in any case to insert delimiting commas because the Adyen payments platform expects a preset, fixed number of fields per line/sub-line.",
+      "location": "raw line 26"
+    },
+    {
+      "text": "In an authorization request for card payments, the\u00a0`Card` sub-line needs to be submitted as *sub-line 2*.",
+      "location": "raw line 45"
+    },
+    {
+      "text": "This subline is required only for MOTO or recurring transactions.",
+      "location": "raw line 137"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-card-authorisation-batch-source",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-a-card-payment]] \u2014 2026-09-15 SFTP batch card Authorisation request sub-line schema for mandatory PGP-protected PaymentDetails/Card records and conditional fields; examples have counter/record-line inconsistencies.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw Address example concatenates FH/BH at line 99, and the ShopperInteraction example skips SL,5 at lines 146\u2013147; do not treat examples as validated file templates."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-a-card-payment/2026-09-15.md",
+  "raw_sha256": "dbd185225da85727385985200afa39329f497a68c68f39c377588b9da968cf8a",
+  "status": "candidate_ready"
+}

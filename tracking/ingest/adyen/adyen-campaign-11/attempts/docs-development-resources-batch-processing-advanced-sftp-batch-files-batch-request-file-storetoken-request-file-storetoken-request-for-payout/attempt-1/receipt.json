@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-storetoken-request-file-storetoken-request-for-payout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen batch StoreToken request for payout\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout/2026-09-15.md\"\ntags: [adyen, batch-processing, storetoken, payout, sensitive-data]\n---\n\n## Overview\n\nThis [[adyen]] reference specifies the sub-lines and field tables for a payout-oriented `StoreToken` request inside Adyen's advanced SFTP batch-file format. The record concerns storing payment details for a payout use; it is not a payout instruction or proof that an alias is usable for later charges. Route the file format through [[adyen-batch-processing]]; [[adyen-payouts]] and [[adyen-tokenization]] cover separate payout and online-payment-token contexts.\n\n## Key takeaways\n\n- A `StoreToken` request needs both `ShopperDetails` and `Recurring` sub-lines and **one** of `Card`, `BankAccount`, or `IBAN`. The `Recurring` table fixes its type to `PAYOUT` and next value to `Latest`. The page says only payment requests submitted after sending the `StoreToken` request are tokenised; it does not state an immediate successful storage outcome. See **Mandatory sub-lines** and **Recurring**, raw lines 16\u201321 and 37\u201347.\n- `ShopperDetails` requires a shopper reference and email address, as shown in its field table. Empty optional fields still need delimiter commas because each sub-line has a fixed number of fields. The payment-instrument tables include sensitive card or bank identifiers and beneficiary/holder names; handle these as sensitive data, not a verified identity or a settled payout. See raw lines 23\u201335, 49\u201370, 83\u2013103, and 116\u2013133.\n- For this `StoreToken` use, the page says a user role with permission to **store payout details** is needed. The captured page does not name a specific role, prove a merchant has that permission, or define cross-merchant token reuse. Its test examples use `TEST` and a sample `MerchantAccount` line; they are sample records, not live enablement evidence. See raw lines 53, 72\u201381, 87, 105\u2013114, 120, and 135\u2013144.\n- The `Card` table marks CVC optional and explicitly says **leave it blank**. The `IBAN` owner-name field requires at least three characters and cannot be only numbers; invalid formatting produces error 203. The `BankAccount` and `IBAN` country-code descriptions say an invalid ISO alpha-2 country code rejects the request. These are field-level warnings, not guarantees that a valid-looking record will be accepted or any payout completed. See raw lines 63\u201370, 97\u2013103, and 130\u2013133.\n\n## Detail locators\n\n- Mandatory record composition and no retroactive tokenisation: **Mandatory sub-lines**, raw lines 16\u201321.\n- `ShopperDetails` fixed-field, shopper-reference and email contract: raw lines 23\u201335.\n- `Recurring` `PAYOUT,Latest` values: raw lines 37\u201347.\n- Card fields, blank CVC and test example: raw lines 49\u201381.\n- BankAccount fields, country validation and test example: raw lines 83\u2013114.\n- IBAN owner-name/country checks, fields and test example: raw lines 116\u2013144.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-batch-processing]]\n- Adjacent concepts: [[adyen-payouts]], [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout/2026-09-15|Adyen StoreToken request for payout]] \u2014 full pinned 2026-09-15 snapshot of payout-oriented batch sub-line tables and examples; page metadata says last modified 2019-04-30\n",
+  "quotes": [
+    {
+      "text": "The [`ShopperDetails` ](#shopperdetails)and [`Recurring` ](#recurring)sub-lines described below are mandatory when submitting a `StoreToken` request.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout/2026-09-15.md:18"
+    },
+    {
+      "text": "Only payment requests submitted after sending the\u00a0`StoreToken` request are tokenised.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout/2026-09-15.md:21"
+    },
+    {
+      "text": "For this StoreToken, you need a [user role](/online-payments/online-payouts) with permission to store payout details.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout/2026-09-15.md:53"
+    },
+    {
+      "text": "Leave this field blank.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout/2026-09-15.md:66"
+    },
+    {
+      "text": "If provided details do not match the required format, the response returns the error message: 203 'Invalid bank account holder name'.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout/2026-09-15.md:130"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-storetoken-payout-batch-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-storetoken-request-file-storetoken-request-for-payout]] \u2014 2019-modified payout-oriented StoreToken batch sub-line and field reference, including mandatory shopper/recurring/instrument records and permission warning (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "StoreToken request formatting and permission do not establish accepted storage, a reusable charge alias, or payout completion; keep those outcomes separate from this batch reference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/storetoken-request-file/storetoken-request-for-payout/2026-09-15.md",
+  "raw_sha256": "074e8e85cf53836c019694a79c773a40ff2dc5806579a7d375713693293b1fad",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Batch request file | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, batch-request, file-format]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Docs reference defines common records and fields in an SFTP batch request file across transaction types: File Header (`FH`), Block Header (`BH`), Block Trailer (`BT`), and File Trailer (`FT`). It specifies the file and block identifiers, type and environment fields, requiredness, counters, and upload handoff. Transaction-specific records remain in the linked request-file guides. [[adyen-batch-processing]]\n\n## Key takeaways\n\n- The `FH` table marks fields 1\u20139 required: `FH`, format version `1.0`, `TEST` or `LIVE`, `Company`, company account name, submission platform, file sequence number, company-linked API credential username, and one listed file type. Submission platform and file sequence number must match the filename. Field 10, `EchoData`, is optional, returned unchanged when populated, and not used by Adyen for payment processing. See raw lines 26-57 for exact positions, allowed types, and the 80-character `EchoData` limit.\n- `BH` starts a grouping of transactions and has a required block number increasing by one per block; its `EchoData` is optional. `BT` carries the number of line records in its block; `FT` carries the number of blocks in the file. These are different counter units. See raw lines 59-86.\n- Once prepared, the file can be uploaded to the SFTP `in` subfolder so Adyen can fetch and queue it. Upload or queueing is not a file acceptance, per-record result, or financial outcome; use the separate acknowledgment and result guides.\n\n> [!warning] Account-scope wording\n> The `FH` prose says it identifies the merchant account (raw line 30), but its field table instead requires a `Company` account type and company account name (raw lines 41-45). This page does not resolve that difference or the parent batch overview's one-merchant-account-per-file rule versus the SFTP guide's Support-enabled multi-merchant-account modifications. Preserve those qualifications and verify the applicable file composition before use.\n\n## Detail locators\n\n- **Example FH/BH/BT/FT layout:** raw lines 16-24; ellipsis stands for omitted records and is not an actual line-count illustration.\n- **File Header identity, environment, filename matching, credential and type fields:** raw lines 26-57; type-specific links are navigation.\n- **File Trailer block count:** raw lines 59-66.\n- **Block Header number and optional echo:** raw lines 68-77.\n- **Block Trailer line-record count and SFTP `in` handoff:** raw lines 79-88.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files]] \u2014 SFTP setup and multi-account qualification\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]] \u2014 file acknowledgment\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/2026-09-15|Adyen batch request file \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The following fields are common across all batch request files, regardless of the\u00a0[transaction type](/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure)\u00a0being submitted. They must be included in each batch request file.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/2026-09-15.md:16"
+    },
+    {
+      "text": "* It identifies the merchant account the transactions refers to;",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/2026-09-15.md:30"
+    },
+    {
+      "text": "| 5       | Alphanumeric",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/2026-09-15.md:42"
+    },
+    {
+      "text": "Specifies the number of lines in the block it refers to.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/2026-09-15.md:81"
+    },
+    {
+      "text": "After preparing the batch file as outlined above, you can upload it to the *in* sub-folder of your SFTP folder. The Adyen payments platform can then fetch the file and add it to the processing queue.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/2026-09-15.md:88"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-batch-request-file-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]] \u2014 2026-09-15 SFTP batch request-file reference for common FH/BH/BT/FT fields, identifiers, requiredness and counters; its merchant-versus-company header wording and the existing multi-account qualification remain unresolved.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "FH prose says merchant account, while the field table requires Company and a company account name; this source does not resolve the mapping.",
+          "Parent overview's one-merchant-per-file statement is not reconciled with SFTP guide's Support-enabled multi-merchant-account modification case."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/2026-09-15.md",
+  "raw_sha256": "b54f2a8e0bacc92811fa6739d99feaf669f5d821b5a793accb7ecf9ac4ff8f13",
+  "status": "candidate_ready"
+}

@@ -540,6 +540,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios]] — Adyen Redirect 3D Secure for iOS Routes (webpage, 2026-10-15)
 - [[source-adyen-docs-development-resources-logs-resources]] — Adyen logs resources (webpage, 2026-10-15)
 
+### Website documentation — Campaign 11
+
+- [[source-adyen-docs-account-account-structure]] — Adyen account structure (webpage, 2026-10-15)
+- [[source-adyen-docs-account-users]] — Manage Customer Area users | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]] — Batch request file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] — Adyen SFTP batch result file common records (webpage, 2026-10-15)
+- [[source-adyen-docs-account-user-roles]] — Adyen Customer Area User Roles (webpage, 2026-10-15)
+- [[source-adyen-docs-account-single-sign-on-migrate-users-to-sso]] — Adyen Customer Area User Migration to SSO (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file-refundwithdata-request]] — RefundWithData request | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file-payout-request]] — Adyen SFTP batch payout request sub-lines (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-storetoken-request-file-storetoken-request-for-payout]] — Adyen batch StoreToken request for payout (webpage, 2026-10-15)
+- [[source-adyen-docs-account-single-sign-on-set-up-sso]] — Adyen Docs: Set up Customer Area single sign-on (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-accountupdater-result-file]] — Adyen Account Updater batch result file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-a-card-payment]] — Adyen SFTP batch authorisation for a card payment (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-with-airline-data]] — Authorisation with airline data | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-a-recurring-payment]] — Adyen SFTP recurring authorisation request sub-lines (webpage, 2026-10-15)
+- [[source-adyen-docs-account-manage-account-structure]] — Adyen manage account structure (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-an-iban-payment]] — Adyen SFTP batch authorisation for an IBAN payment (webpage, 2026-10-15)
+- [[source-adyen-docs-account-email-log-in]] — Email login | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-capture-request-capture-with-airline-data]] — Adyen SFTP capture request with airline data (webpage, 2026-10-15)
+- [[source-adyen-docs-account-manage-account-structure-create-an-organization]] — Adyen Create an Organization (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-ach-direct-debit]] — Adyen ACH Direct Debit batch authorisation sub-lines (webpage, 2026-10-15)
+- [[source-adyen-docs-account-define-account-structure]] — Adyen: Defining your account structure (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-accountupdater-request-file]] — AccountUpdater request file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-account-multifactor-authentication]] — Adyen Customer Area Multifactor Authentication (webpage, 2026-10-15)
+- [[source-adyen-docs-account-invoice-settings]] — Configure your invoice settings | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-file-naming-and-structure]] — Adyen batch file naming and structure (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file]] — Adyen SFTP modification result file (webpage, 2026-10-15)
+- [[source-adyen-docs-account-define-account-structure-example]] — Adyen example account structures (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-authorisation-result-file]] — Authorisation result file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-refundwithdata-result-file]] — Adyen RefundWithData batch result file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payoutmodification-result-file]] — Adyen PayoutModification batch result file (webpage, 2026-10-15)
+- [[source-adyen-docs-account-users-partner-users]] — Manage partner users | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payout-result-file]] — Adyen SFTP payout result file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-authorisationreferral-request]] — Adyen SFTP AuthorisationReferral request (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file-validationerror]] — Batch result file with validation errors | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-account-single-sign-on-log-in-with-sso]] — Adyen Customer Area SSO login and email verification (webpage, 2026-10-15)
+- [[source-adyen-docs-account-notification-center]] — Adyen Notification center (webpage, 2026-10-15)
+- [[source-adyen-docs-account-define-account-structure-framework-onboarding]] — Adyen framework entity onboarding (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file]] — Modification request file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file]] — Adyen SFTP payout request parent-line fields (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-storetoken-request-file]] — Adyen StoreToken batch request file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file]] — Adyen RefundWithData batch request-file parent (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file]] — PayoutModification request file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file]] — Adyen SFTP authorisation request file (webpage, 2026-10-15)
+- [[source-adyen-docs-account-single-sign-on]] — Adyen Customer Area Single Sign-On Overview (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-capture-request]] — Adyen SFTP Capture request sub-line (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-refund-request]] — Adyen SFTP batch Refund modification request (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-cancel-request]] — Adyen SFTP Cancel request sub-line (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-cancelorrefund-request]] — Adyen SFTP batch CancelOrRefund request (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file-payoutconfirm-request]] — PayoutConfirm request | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file-payoutdecline-request]] — Adyen SFTP PayoutDecline request sub-line (webpage, 2026-10-15)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -572,6 +625,10 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-notification-center]] — Adyen Notification Center
+
+- [[adyen-account-structure]] — Adyen Account Structure
 
 - [[adyen-secure-coding]] — Adyen Secure Coding
 

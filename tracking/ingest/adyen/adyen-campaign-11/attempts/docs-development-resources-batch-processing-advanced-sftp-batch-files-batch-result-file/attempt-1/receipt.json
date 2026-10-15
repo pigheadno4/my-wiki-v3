@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP batch result file common records\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, result-file, file-format]\n---\n\n## Overview\n\nThis [[adyen]] reference describes fields common to SFTP batch result files after a batch acknowledgement (ACK) file reports successful validation. It says the result file can be obtained two days after that ACK. Its scope is the outer file and block records\u2014`FH`, `FT`, `BH`, and `BT`\u2014not a transaction-type-specific line result or a final payment, refund, or payout outcome. Use [[adyen-batch-processing]] for the batch route and the relevant request-type result guide for individual records.\n\n## Key takeaways\n\n- `FH` carries request-file header identity: format version `1.0`, `TEST` or `LIVE`, `MerchantAccount` or `Company`, account name, submission platform, file sequence number, the SFTP upload API credential name, file type, and optional file-header `EchoData`. The account and submission values are inherited from the corresponding request file; they do not identify an individual payment.\n- `FT` counts blocks in the result file. `BH` has a sequential block number and optional block-header `EchoData` from the request. `BT` counts line records in that block. These file/block counters and echo fields help correlate structure and requests; they are not transaction statuses.\n- The `FH` file-type list routes to Authorisation, Payout, RefundWithData, Modification, PayoutModification, and AccountUpdater result guides. This common-record page gives no per-line result schema or PSP reference field. Do not substitute its file sequence, upload credential, block number, or `EchoData` for a transaction PSP reference.\n- A successful ACK validation only precedes the possible result-file retrieval described here. It does not prove that each submitted operation succeeded, and this page does not settle whether a later webhook or lifecycle event is required for a particular operation. The displayed `TEST` file fragment is illustrative, not an execution record.\n\n## Detail locators\n\n- **Result-file timing after successfully validated ACK:** raw lines 14\u201318.\n- **`FH` request-file identity, environment, account, file sequence, credential, type and echo fields:** raw lines 20\u201342, under `### File Header [FH]`.\n- **`FT` block count:** raw lines 44\u201351, under `### File Trailer [FT]`.\n- **`BH` block identity/echo and `BT` line-record count:** raw lines 53\u201370, under `### Block Header [BH]` and `### Block Trailer [BT]`.\n- **Illustrative file fragment:** raw lines 72\u201378.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15|Authorisation result-file detail \u2014 navigation only; raw not read for this entry]]\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15|Modification result-file detail \u2014 navigation only; raw not read for this entry]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/2026-09-15|Adyen batch result common-record reference \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can get the batch result file two days after receiving the [batch acknowledgement (ACK) file](/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file) with a successful validation.",
+      "location": "raw line 16, # Batch result file"
+    },
+    {
+      "text": "The File Header\u00a0\\[FH] record\u00a0contains the data that was passed in the [batch request file header](/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file).",
+      "location": "raw line 22, ### File Header [FH]"
+    },
+    {
+      "text": "The File Trailer\u00a0\\[FT] record specifies the number of blocks in the file.",
+      "location": "raw line 46, ### File Trailer [FT]"
+    },
+    {
+      "text": "The Block Header\u00a0\\[BH] record specifies the information that was passed in the batch request block header.",
+      "location": "raw line 55, ### Block Header [BH]"
+    },
+    {
+      "text": "The Block Trailer\u00a0\\[BT] record specifies the number of lines in the block.",
+      "location": "raw line 65, ### Block Trailer [BT]"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-batch-result-common-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] \u2014 SFTP batch result common `FH`/`FT`/`BH`/`BT` file and block records after successful ACK validation, with type-specific results routed separately (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/2026-09-15.md",
+  "raw_sha256": "0dc1c1872981a1f3ff7d48c4bd73bb8488474a7e5ca6b327bb81d32819aa68d1",
+  "status": "candidate_ready"
+}

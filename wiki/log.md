@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-15] ingest | Adyen website C11
+
+- Fifty independently approved batch request/result formats and Customer Area structure/access/settings documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 5 concepts touched (2 new); source_count 564 = 550 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-11/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-15] ingest | SDK release assembly `5.0.582`
 
 Serial delta after completed `5.0.581`: pins Checkout `5.0.437` and Messaging `1.99.0`; other ten direct pins and ten other retained files unchanged. Manifest inclusion is not hosted deployment; Messaging behavior remains a separate evidence gap. Additive history preserved; see [[paypal-log]], [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]]. No commit/push.

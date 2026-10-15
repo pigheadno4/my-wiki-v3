@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file-payout-request",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP batch payout request sub-lines\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15.md\"\ntags: [adyen, batch-processing, payout, sftp]\n---\n\n## Overview\n\nThis Adyen Docs snapshot specifies the `SL` sub-line records for a Payout request inside a batch request file. It defines required payout details, a `Recurring` record, and one destination-data record. It is a request-file schema, not evidence that a file was accepted, a payout authorized, or funds delivered.\n\n## Key takeaways\n\n- The page requires `PayoutDetails` and `Recurring`, plus either `Card`, `BankAccount`, or `IBAN`. The destination sub-line is shown as sub-line 2 in the relevant destination sections. A user role with permission to store payout details is required for the described payout.\n- `PayoutDetails` marks amount and currency exponent as separate required numeric fields, followed by a three-character ISO currency code. Its table also marks shopper reference, email, birth date, entity type (`NaturalPerson` or `Company`), and nationality required; shopper statement, IP address and social-security number are optional. The example `1000,2,EUR` must be read as those three field values, without inferring payout execution or a universal unit rule beyond this schema.\n- `Recurring` requires type `PAYOUT` and a fixed `Latest` field in the table. The examples write `LATEST` in uppercase; the snapshot does not resolve that capitalization difference.\n- The `Card` table marks number, expiry month/year, CVC and cardholder name required. It contains sensitive payment-card data. The card example does not supply a separate CVC value in the listed required position, so use the table for field identity rather than treating the sample row as a validated template.\n- `BankAccount` requires account owner, ISO two-letter country, account number, bank location/name and bank code; an invalid country code is said to cause rejection. `IBAN` requires owner, ISO two-letter country and IBAN, with optional BIC. For its owner field, the IBAN table says at least three characters and not numbers alone, otherwise error 203. Consult the raw tables for exact positions and format markers.\n\n## Detail locators\n\n- Raw heading **Mandatory sub-lines**, lines 16\u201318: payout-sub-line composition.\n- Raw headings **PayoutDetails** and **Recurring**, lines 20\u201348: required markers, amount/exponent/currency, shopper/entity fields, and fixed values.\n- Raw heading **Card**, lines 50\u201383: permission note, sub-line number, required card fields, and the illustrative row with a field-position discrepancy.\n- Raw heading **BankAccount**, lines 85\u2013116: required account fields, ISO country rejection note, and illustrative row.\n- Raw heading **IBAN**, lines 118\u2013146: owner-name validation, required/optional bank fields, and illustrative row.\n- Related parent **Payout request file** raw, heading **Payout lines**: the parent `L` record carrying merchant-account and payout metadata for these `SL` records.\n\n## Related\n\n- [[adyen]] \u2014 provider context\n- [[adyen-batch-processing]] \u2014 SFTP batch flow, acknowledgement and result boundaries\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15|Payout request sub-lines (2026-09-15 snapshot)]]\n\n## Related raw evidence\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/2026-09-15|Payout request file parent (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "sub-lines described below are mandatory when submitting a payout authorisation request.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15.md:18"
+    },
+    {
+      "text": "The [currency exponent]",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15.md:28"
+    },
+    {
+      "text": "For this payout, you need a user role with permission to store payout details.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15.md:54"
+    },
+    {
+      "text": "In an authorization request for IBAN payments, the `IBAN` sub-line needs to be submitted as *sub-line 2*.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15.md:125"
+    },
+    {
+      "text": "Bank account owner name. If provided details do not match the required format, the response returns the error message: 203 'Invalid bank account holder name'.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15.md:132"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-sftp-payout-request-batch-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file-payout-request]] \u2014 2026-09-15 SFTP batch payout request sub-line schema for payout details, recurring type and card/bank/IBAN destination, with permission and example/table discrepancies.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw Recurring table says fixed Latest while examples use LATEST; raw Card table requires CVC but its sample row lacks a separate CVC-position value.",
+          "Payout request and batch-file validation do not prove payout authorization or funds delivery."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15.md",
+  "raw_sha256": "2792b26e345874dbbd7993483c59e41cff74f15dd50212b38bf014a596eb6aad",
+  "status": "candidate_ready"
+}

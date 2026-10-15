@@ -1,0 +1,9 @@
+# Fixed retrieval checks — batch ValidationError result
+
+## Q1 — What is this page for, what is its scope, and what should not be inferred?
+
+The 2019-modified Adyen page captured 2026-09-15 defines the `L` and `ValidationErrorResult` `SL` records for parsing/validation errors within a batch result file. A result file can also contain successful lines. The URL is under modification results, but an example covers Account Updater too; it is not a claim that every row or the entire batch failed, nor a file ACK or a transaction outcome. Route: `[[adyen-batch-processing]]` → `[[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file-validationerror]]` → `[[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15]]`; raw lines 14–16 and 45–66. Canonical page: https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror.
+
+## Q2 — Which identifiers and fields define an error, and what warnings matter?
+
+The `L` record identifies a merchant account and uses fixed `ParseOrValidationError` and `ValidationError` markers. Its merchant reference is populated when an optional reference was in the corresponding request; it is not a returned PSP reference (raw lines 18–31). The `SL` record uses `ValidationErrorResult`, has an explicitly empty field 4, and puts the error description in field 5 (lines 33–43). Examples include missing original `pspReference`, but that phrase is the error text, not a new identifier or automatic retry instruction (lines 47–66). Determine other entries and later financial state from their own result/outcome evidence, and keep the separate ACK stage distinct. Follow the same concept→source→raw route.

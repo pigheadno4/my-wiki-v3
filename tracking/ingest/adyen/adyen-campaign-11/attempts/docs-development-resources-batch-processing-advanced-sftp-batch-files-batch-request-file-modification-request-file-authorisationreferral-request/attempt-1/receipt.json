@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-authorisationreferral-request",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP AuthorisationReferral request\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/authorisationreferral-request\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/authorisationreferral-request/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, modification, referral, authorisation]\n---\n\n## Overview\n\nThis dated Adyen Docs page (2019-04-30 last-modified metadata; captured 2026-09-15) describes an advanced-SFTP batch `AuthoriseReferral` **Modification request** for a MOTO transaction declined with a `Referral` reason after the shopper contacts the issuing bank and the merchant obtains an authorisation code. The merchant submits the code with the original payment PSP reference. Adyen says that **when it receives and processes** the file, it books a new `Authorised` journal entry and continues the standard workflow. Submission alone is not automatic approval, a captured payment, or final financial outcome. See [[adyen-batch-processing]] and [[adyen]].\n\n## Key takeaways\n\n- The page calls `PaymentDetails` and `AuthoriseReferral` mandatory sub-lines. `PaymentDetails` positions 4\u20136 hold numeric amount, numeric currency exponent, and three-character ISO currency. Optional field gaps retain commas. Its shopper-reference field is conditional for recurring payments/contracts, not established as required merely because a referral is submitted. [Raw lines 24\u201346]\n- The `AuthoriseReferral` sub-line holds the **original payment PSP reference** at position 4 and the transaction's authorisation code (`authCode`) at position 5. The sample places `PaymentDetails` at `SL,1` and `AuthoriseReferral` at `SL,2`, within a `Modification` file and `AuthoriseReferral` line. [Raw lines 48\u201366]\n- The mandatory-sub-lines sentence calls this a \u201cbank transfer authorisation request\u201d although the title, MOTO referral narrative, `Modification` sample, and `AuthoriseReferral` fields identify a referral modification. Preserve this wording conflict and verify intended applicability with Adyen; do not relabel it as an ordinary bank-transfer authorisation flow. [Raw lines 14\u201326, 58\u201366]\n- The snapshot does not define ACK/result-file states, capture, settlement, or a retry policy. Check the relevant batch ACK and modification-result sources for validation and result evidence before acting on an individual case.\n\n## Detail locators\n\n- MOTO decline/referral precondition and conditional journal-entry effect: raw lines 16\u201320. Mandatory `PaymentDetails` positions and delimiters: raw lines 24\u201346. Original reference/authCode fields and TEST example: raw lines 48\u201366.\n- The example's `100,2,EUR` shows field placement; it does not validate the amount of any live transaction or prove the modification succeeded.\n\n## Related\n\n- [[adyen-batch-processing]]\n- [[adyen]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/authorisationreferral-request/2026-09-15|Adyen AuthorisationReferral request, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When you process [MOTO transactions](/online-payments/classic-integrations/hosted-payment-pages/skin/moto-feature), you may need to handle transactions with a resulting\u00a0`Declined` status and a corresponding\u00a0`Referral` reason.",
+      "location": "raw line 16"
+    },
+    {
+      "text": "If the shopper contacted their issuing bank and you have the [authorisation code](https://docs.adyen.com/api-explorer/Payment/latest/authorise__section_resParams) for the transaction, you can submit it in a batch file to update the transaction in the Adyen payments platform.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "When we receive and process the batch file, we book a new\u00a0`Authorised` journal entry for the transaction and then proceed with the standard workflow.",
+      "location": "raw line 20"
+    },
+    {
+      "text": "The [`PaymentDetails` ](#paymentdetails)and [`AuthoriseReferral` ](#authorisereferral)sub-lines described below are mandatory when submitting a\u00a0bank transfer authorisation request.",
+      "location": "raw line 26"
+    },
+    {
+      "text": "The authorisation code for the transaction (authCode).",
+      "location": "raw line 56"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-authorisereferral-request-source",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-authorisationreferral-request]] \u2014 2026-09-15 SFTP AuthoriseReferral Modification request format for MOTO referral, original payment PSP reference and authCode; its mandatory-sub-line sentence conflicts by saying bank-transfer authorisation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 26 calls the request bank-transfer authorisation despite the MOTO referral narrative and Modification example; preserve as unresolved source wording, not a separate bank-transfer capability."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file/authorisationreferral-request/2026-09-15.md",
+  "raw_sha256": "0fb44535efcae0135b8f22dccab3b5e6822f8b81f7244577d389f181115a63a3",
+  "status": "candidate_ready"
+}

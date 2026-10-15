@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-accountupdater-result-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account Updater batch result file\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file/2026-09-15.md\"\ntags: [adyen, account-updater, batch-processing, sftp, result-file, pgp]\n---\n\n## Overview\n\nThis dated Adyen reference defines the Account Updater **batch result file**: encryption/PAN conditions, the request-level `L` line, and the corresponding result `SL` sub-line. It covers scheduled batch, automatic, and real-time Account Updater result variants; those variants are not the same flow. The raw page was last modified 2020-07-14 and captured 2026-09-15. See [[adyen]] and [[adyen-batch-processing]].\n\n## Key takeaways\n\n- The result file is encrypted **only if all three stated conditions hold**: the request file was encrypted, a company-account PGP key with Purpose `AccountUpdater` is registered, and the result file contains a card number. The page says an unencrypted result file contains no PAN. Parsing or validation errors instead use the separately linked validation-error result structure. This page gives no basis to treat an unencrypted result as containing a card number.\n- An `L` record carries metadata for its corresponding `SL` record: merchant account, requested type (`ScheduleAccountUpdater`, `AccountUpdaterAutoUpdate`, or `AccountUpdaterRealtime`), merchant reference, and a `Scheduled`/`Error`/`Success` status and `EchoData` where applicable. The line status and `EchoData` fields do **not** apply to the real-time type. `L` `Success` is not a successful card-detail change or charge.\n- The `SL` type distinguishes scheduled batch (`AccountUpdaterResult`), automatic/API (`AccountUpdaterAutoUpdateResult`), and real-time authorization (`AccountUpdaterRealtimeResult`). For non-real-time results, `Submitted` means the record was submitted to and processed by the scheme; `Not Submitted` means it was not. This submission field is blank for the real-time type. Field 4 describes a PSP reference for the listed `L` request types but also describes a merchant reference for `AccountUpdaterResult`; the scheduled-batch overlap is unresolved in the page. Do not assume one identifier for every variant.\n- The `SL` action result groups are `NoChange`, `CloseAccount`, `PANChanged`, `CardExpiryChanged`, `ContactCardAccountHolder`, and `Error`; the detailed subvalues are in the raw field table. `NoChange` and `Error` are excluded for the real-time `L` type. `ContactCardAccountHolder` is Visa-only and says the customer requested that the issuer withhold updated details, even though card information changed. It is a disclosure/result state, not proof of a new consent grant.\n- The processed date is when Adyen processed the scheme file. A new alias is populated only for changed PAN or expiry. Field 11 is an internal/implementation refusal reason on `Not Submitted` batch/automatic results, but an acquirer response code for real-time results. These Account Updater and response-code fields are not proof of successful authorization, capture, or settlement. The sample `TEST` file at raw lines 135\u2013154 illustrates result rows, not production outcomes or a universal field fill pattern.\n\n## Detail locators\n\n- Lines 14\u201328: conditional encryption, no-PAN alternative, validation-error structure.\n- `## AccountUpdater line`, lines 30\u201355: `L` record metadata, request variants, status and EchoData real-time exclusions.\n- `## AccountUpdater sub-line`, lines 57\u201377: `SL` types, field-4 identifier ambiguity, submitted/not-submitted condition.\n- Sub-line field 6, lines 78\u2013123: detailed action subvalues, variant exclusions, Visa contact-cardholder withholding.\n- Sub-line fields 7\u201312, lines 124\u2013133: processed date, alias/expiry, refusal-reason variant, PAN conditions.\n- Lines 135\u2013154: illustrative `TEST` result file.\n\n## Related\n\n- [[adyen-batch-processing]] \u2014 batch-file route and reciprocal source link.\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] \u2014 common outer result-file records; distinct from this Account Updater `L`/`SL` schema.\n- [[source-adyen-docs-online-payments-account-updater-batch-account-updater]] \u2014 separate Batch Account Updater request and follow-up guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file/2026-09-15|Account Updater result-file reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The Account Updater result file is encrypted if all of the following conditions are true:",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file/2026-09-15.md:16"
+    },
+    {
+      "text": "If the result file is not encrypted, then there will be no card number (PAN) in the file.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file/2026-09-15.md:26"
+    },
+    {
+      "text": "The line record\u00a0\\[L] holds the metadata information that applies to its corresponding sub-line \\[SL] records.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file/2026-09-15.md:32"
+    },
+    {
+      "text": "This value corresponds to the `pspReference` when \\[L] Line record field #5 is set to either `ScheduleAccountUpdater`, `AccountUpdaterAutoUpdate` or `AccountUpdaterRealtime`. It corresponds to the `merchantReference` when \\[SL] sub-line record field #3 is `AccountUpdaterResult`.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file/2026-09-15.md:72"
+    },
+    {
+      "text": "* `ContactCardAccountHolder`: (Visa only) The card has a new account number, expiry date, or both, but the customer has requested that the issuer not share updated card details with the merchant.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file/2026-09-15.md:122"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-accountupdater-result-file-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-accountupdater-result-file]] \u2014 2020-modified Account Updater result-file `L`/`SL` schema for batch, automatic and real-time variants, conditional PAN/PGP, and result-versus-payment boundaries (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sub-line field 4 in the raw assigns PSP reference by L request type but merchant reference when SL type is AccountUpdaterResult; those rules overlap for scheduled batch results and are not reconciled.",
+          "Batch Account Updater parent guide broadly calls its result file encrypted, whereas this schema conditions encryption and states unencrypted files omit PAN; preserve the conditional rule for this file."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/accountupdater-result-file/2026-09-15.md",
+  "raw_sha256": "4605be81f40c6e1013b83eabb9ae1a5dc2b1a1272d83017dbebe6a7b19437375",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayoutModification request file | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, payout-modification, request-file]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] SFTP **PayoutModification request-file** reference defines the common per-request `L` row for `PayoutConfirm` or `PayoutDecline` and says operation-specific `SL` requirements vary by that choice. These are requested actions against a payout, not a result for the original payout, a confirmed transfer, or a bank-settlement record. [[adyen-batch-processing]]\n\n## Key takeaways\n\n- The table marks `L` fields 1\u20136 required: fixed `L`, a block-local sequential line number, fixed `MerchantAccount`, merchant account name, one processing type (`PayoutConfirm` or `PayoutDecline`), and a merchant reference that uniquely identifies a transaction. It does not define an original payout PSP-reference field in this `L` schema. See raw lines 16\u201328.\n- Field 7 `EchoData` is optional, at most 80 characters, and returned unchanged when supplied; Adyen says it does not use this data for processing. The number and type of sub-lines vary with the selected payout modification. This page does not provide those operation-specific field tables. See raw lines 29\u201333.\n- If a result processing-type column shows `ValidationError`, the field-5 description points to the separate ValidationError result-file structure. A prepared `PayoutConfirm` or `PayoutDecline` request does not establish acceptance, a modification result, the status of the original payout, or final receipt of funds; retrieve the relevant result file and later payout evidence separately.\n\n## Detail locators\n\n- **`L` record sequence, account, action choice and merchant reference:** raw lines 16\u201328.\n- **Optional echo, variable sub-lines and ValidationError result route:** raw lines 27\u201333.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]] \u2014 common file and block wrapper\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payoutmodification-result-file]] \u2014 result status and PSP-reference schema\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file-validationerror]] \u2014 validation-error result rows\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file/2026-09-15|Adyen PayoutModification request file \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The line record\u00a0\\[L] holds the metadata information that applies to its corresponding sub-line \\[SL] records.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file/2026-09-15.md:18"
+    },
+    {
+      "text": "| 5           | Allowed values:- `PayoutConfirm`",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file/2026-09-15.md:26"
+    },
+    {
+      "text": "- `PayoutDecline` |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file/2026-09-15.md:27"
+    },
+    {
+      "text": "A merchant reference, that is, a unique identifier associated to a specific transaction.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file/2026-09-15.md:28"
+    },
+    {
+      "text": "The number and the type of sub-lines that you need to include varies, depending on the payout modification specified in the request: either `PayoutConfirm` or `PayoutDecline`.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file/2026-09-15.md:33"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-batch-payoutmodification-request-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file]] \u2014 2026-09-15 SFTP PayoutModification request `L` schema for required `PayoutConfirm`/`PayoutDecline` action and merchant reference, with variable sub-lines and separate result routing.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payoutmodification-request-file/2026-09-15.md",
+  "raw_sha256": "013291542f4d197e65695ad42e17404f76a9e9170bb8e047a555b997ceb9c372",
+  "status": "candidate_ready"
+}

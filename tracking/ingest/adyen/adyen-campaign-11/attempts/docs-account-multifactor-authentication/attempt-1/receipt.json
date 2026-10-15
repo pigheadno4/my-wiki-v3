@@ -1,0 +1,69 @@
+{
+  "job_id": "docs-account-multifactor-authentication",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Customer Area Multifactor Authentication\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/account/multifactor-authentication\"\nraw_files:\n  - \"adyen/docs/account/multifactor-authentication/2026-09-15.md\"\ntags: [adyen, customer-area, mfa, authentication, user-security]\n---\n\n## Overview\n\nThis [[adyen]] account guide describes **Customer Area user** multifactor authentication (MFA): an authenticator-app or live-only SMS verification method, device registration and removal, and the limited device-management action available to a Merchant admin. It states that Customer Area users must set up MFA **or** SSO. This is a user-login route under [[adyen-customer-area-iam]], separate from web service API credential authentication and payment authorization.\n\n## Key takeaways\n\n- The page says all Customer Area users must set up MFA **or single sign-on**. It describes MFA as an extra verification form at login, not a requirement to use both MFA and SSO. Its statement is a documented login rule, not evidence of the authentication state or enforcement outcome for a particular user.\n- Each user can register **two devices**, with **one authentication method per device**. The methods described are time-based one-time passwords from an authenticator app and SMS-delivered one-time passwords. SMS is available only in the **live** environment; a verification-capable mobile device is required. Do not infer SMS availability in test from links to the test Customer Area within this page.\n- The authenticator-app setup shown for first login registers a named device using a scanned QR code or manual key, a six-digit code, and **Add**. After registration, that app's code is required at each Customer Area login. The SMS setup is a separate Profile route: add authentication, switch to SMS, enter a phone number and received six-digit code, then add the method; the SMS code is required at later logins. These steps do not prove that either method was registered for a real account.\n- A user can remove an existing authentication method from their own Profile. For a new device, the guide says to remove the registered device and add an authenticator-app method; the next login requires registering the new device. It gives no complete lost-device or locked-out-user recovery procedure. Do not treat deletion as assurance that a user without current Customer Area access can recover unaided.\n- A **Merchant admin** can view user details and remove registered devices for users in the organization. The page describes device removal, not the admin adding a factor for another user, disabling all MFA, bypassing verification, changing SSO policy, or gaining access to that user's account.\n- This page was collected 2026-09-15 and carries 2024-01-12 last-modified metadata. It does not establish a specific merchant's MFA/SSO configuration, user access state, current policy enforcement, or successful login.\n\n## Detail locators\n\n- Customer Area MFA-or-SSO statement, verification purpose, device count, admin scope and method choices: raw lines 15\u201331.\n- Integration, live-only SMS and mobile-device requirements: `## Requirements`, raw lines 33\u201341.\n- First-login authenticator-app enrollment and later code prompt: raw lines 43\u201352.\n- Live-only SMS enrollment and later code prompt: raw lines 54\u201368.\n- Own-profile authentication-method deletion: raw lines 70\u201377.\n- New-device removal, own-versus-other-user detail route and next-login registration: raw lines 79\u201389.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-customer-area-iam]] \u2014 Customer Area user identity and access route.\n- [[source-adyen-docs-account-single-sign-on-set-up-sso]] \u2014 alternate SSO setup route.\n- [[source-adyen-docs-account-users]] \u2014 separate user-management roles and permissions.\n- [[adyen-api-access]] \u2014 separate web service API credential route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/account/multifactor-authentication/2026-09-15|Adyen Customer Area MFA guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "All users with an Adyen Customer Area account must set up Multifactor Authentication (MFA) or [Single Sign-On](/account/single-sign-on/) in the [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw line 19, # Multifactor authentication introduction"
+    },
+    {
+      "text": "Each user can set up one authentication method per device and register two devices through MFA.",
+      "location": "raw line 23, introduction before ## Requirements"
+    },
+    {
+      "text": "SMS authentication is only available in the live environment.",
+      "location": "raw line 56, ## Set up MFA with SMS; same limitation also in ## Requirements table line 40"
+    },
+    {
+      "text": "If you have a new device, you can remove your registered device and add [MFA with an authenticator app](#authenticator-app) to that new device.",
+      "location": "raw line 81, ## Manage devices"
+    },
+    {
+      "text": "The next time you log in to Adyen, you must register your new device.",
+      "location": "raw line 89, ## Manage devices"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-customer-area-mfa-requirement",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Evidence boundary",
+        "proposed_markdown": "## Customer Area login requirement\n\nAdyen's dated Customer Area MFA account guide says users must set up MFA or SSO. It permits one authentication method per device and two registered MFA devices; SMS enrollment is live-environment only. Merchant admins can remove organization users' registered devices, while the user must register a new device at the next login. This is a stated account-guide requirement and procedure, not proof of a particular user's factor enrollment, working login or recovery from lockout. [[source-adyen-docs-account-multifactor-authentication]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this account guide's MFA-or-SSO requirement distinct from the existing IAM overview's general security recommendations; neither source proves per-user enablement or effective policy enforcement."
+        ]
+      },
+      {
+        "update_id": "c11-customer-area-mfa-source-route",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-account-multifactor-authentication]] \u2014 2026-09-15 Customer Area MFA account guide for MFA-or-SSO login requirement, app/live-only SMS enrollment, two-device limit, and scoped device removal and re-registration.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/account/multifactor-authentication/2026-09-15.md",
+  "raw_sha256": "b0533da78bb60d354f1aa07941a109c2c8ca926535ff495c62eee89d4a32e473",
+  "status": "candidate_ready"
+}

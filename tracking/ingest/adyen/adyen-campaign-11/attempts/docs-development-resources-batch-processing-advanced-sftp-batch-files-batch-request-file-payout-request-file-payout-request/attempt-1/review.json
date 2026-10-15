@@ -1,0 +1,20 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file-payout-request",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full 146-line pinned raw read and SHA-256 match. All five quotes occur at their cited lines. The source correctly separates required amount and exponent fields, flags the Recurring and Card example conflicts, and avoids treating a batch request as payout success. One further material example/table conflict in the BankAccount path needs to be retained before this payout schema can be used safely for retrieval.",
+  "required_changes": [
+    "Add a BankAccount sample-versus-table warning to the source and shared suggestion warnings. Raw lines 102-105 require two-letter alphabetic bank-location and bank-name fields and describe an optional two-letter check code, but the sample at line 112 supplies numeric `20010020`, multiword `Postbank Stockholm`, and `Hameln` in those positions. Do not present that sample as a validated payout row; direct readers to the table and confirmation of accepted format. Include this caveat in fixed Q2's expected answer, alongside the already retained Card and `Latest`/`LATEST` discrepancies."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "c11-sftp-payout-request-batch-route",
+      "verdict": "rejected",
+      "reason": "Retain the BankAccount sample/table mismatch in warnings with the existing Card and Recurring example cautions."
+    }
+  ],
+  "reviewer_identity": "c11-rdocs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file-payout-request",
+  "reviewer_model": "gpt-6-sol"
+}

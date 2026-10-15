@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-account-single-sign-on-migrate-users-to-sso",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Customer Area User Migration to SSO\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/account/single-sign-on/migrate-users-to-sso\"\nraw_files:\n  - \"adyen/docs/account/single-sign-on/migrate-users-to-sso/2026-09-15.md\"\ntags: [adyen, customer-area, sso, user-migration, identity-access]\n---\n\n## Overview\n\nThis [[adyen]] account guide describes moving existing **Customer Area users** to an already configured single sign-on (SSO) login. Migration is optional for the administrator, can cover some or all users, and requires each affected user to complete the prompted process before their SSO login becomes the recorded method. It concerns Customer Area user access under [[adyen-customer-area-iam]], not web service API credentials or any payment operation.\n\n## Key takeaways\n\n- **Prerequisites and environment:** SSO must already be set up for the Customer Area company account. The acting administrator needs either the **Merchant admin** or **Merchant user management** role. Test and live Customer Area users must be migrated separately; completion in test only grants test-area SSO access.\n- **Email/account constraints:** an SSO user's email becomes their username and must be assigned to only one user. With the same email across multiple company accounts, migration leaves access to only one company account; the guide offers separate email addresses per account or remaining on username/account/password login. `EMAIL_ADDRESS_ALREADY_IN_USE` and `SELECTED_MIGRATION_UNAVAILABLE` are separate review cases: the latter concerns an email-login user elsewhere in the same organization and requires changing that user's login method first. Use the status report and exact raw conditions before selecting users.\n- **Start versus completion:** `Ready to migrate` permits a start; `Pending migration` means the administrator started it and the user must complete the steps. Username-login users can be started individually or in bulk; email-login users use a separate user-details route that includes first/last name and selecting SSO. The email and next-login prompt direct the user to complete migration with previous credentials. A bulk-start success popup confirms a start, not user completion or SSO access.\n- **Access interruption and credential change:** the source says the user cannot access the Customer Area until they finish the migration; after completion they cannot use their previous credentials. The Users page can show the updated SSO login method. Plan for user readiness and an identity provider (IdP) that works before initiating the change; this snapshot is procedural guidance, not proof that a real user's account was changed or that an IdP authentication succeeds.\n- **Recovery boundaries:** an administrator can cancel a migration only before the user completes it, including when the IdP or migration is not working; a canceled migration may be restarted by starting it again. For an **email-login user**, the guide separately says the login method can be changed from SSO back to Email at any time. That post-migration login-method change is distinct from canceling an unfinished migration; the page does not promise an equivalent completed-migration rollback for every username-login case.\n\n## Detail locators\n\n- Optionality, separate test/live migration and multiple-company email limit: raw lines 15\u201328.\n- SSO setup and administrator role alternatives: `## Requirements`, raw lines 30\u201339.\n- Management panel, reports and migration statuses/review conditions: raw lines 41\u201368.\n- Duplicate-email correction and new-address verification: raw lines 70\u201380.\n- Username-login individual/bulk start, old-credential completion and lockout: raw lines 82\u2013124.\n- Email-login route, required name fields and change back to Email: raw lines 126\u2013146.\n- Incomplete-only cancellation, IdP failure example, restart and individual/bulk paths: raw lines 148\u2013173.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-customer-area-iam]] \u2014 Customer Area user identity and access route.\n- [[source-adyen-docs-development-resources-security-iam]] \u2014 broader RBAC, SSO and MFA guidance.\n- [[adyen-api-access]] \u2014 separate web service API credential identity and roles.\n\n## Raw Sources\n\n- [[raw/adyen/docs/account/single-sign-on/migrate-users-to-sso/2026-09-15|Adyen Customer Area SSO user migration \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you have [set up SSO for your Customer Area](/account/single-sign-on/set-up-sso), you can migrate these users to SSO. After migration, they must use SSO to log in to the Customer Area.",
+      "location": "raw line 19, # Migrating users to single sign-on introduction"
+    },
+    {
+      "text": "You must migrate [test Customer Area](https://ca-test.adyen.com/) and [live Customer Area](https://ca-live.adyen.com/) users separately.",
+      "location": "raw line 23, introduction before ## Requirements"
+    },
+    {
+      "text": "If a user uses the same email address for multiple company accounts, then they can access only one company account after migrating to SSO.",
+      "location": "raw line 25, introduction before ## Requirements"
+    },
+    {
+      "text": "The user cannot access the Customer Area until they complete the migration. When the user completes migration, we send them a confirmation email with their new SSO credentials. After this, the user cannot access the Customer Area with their previous credentials.",
+      "location": "raw line 105, ### Migrate an individual user under ### Tab: Username"
+    },
+    {
+      "text": "You can cancel a user's migration only if they have not completed the steps of the migration process.",
+      "location": "raw line 150, ## Cancel a migration"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-customer-area-sso-migration-route",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-account-single-sign-on-migrate-users-to-sso]] \u2014 2026-09-15 snapshot of optional Customer Area user migration to preconfigured SSO, with separate test/live scope, email uniqueness, admin-role prerequisites, pending-user access interruption and unfinished-only cancellation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/account/single-sign-on/migrate-users-to-sso/2026-09-15.md",
+  "raw_sha256": "9dc0cc93c0e1c2d0a51ce037c002779bdfc002318936880c48dd4c04921f7d25",
+  "status": "candidate_ready"
+}

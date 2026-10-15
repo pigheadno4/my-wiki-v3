@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payoutmodification-result-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayoutModification batch result file\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payoutmodification-result-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payoutmodification-result-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, payout-modification, result-file]\n---\n\n## Overview\n\nThis Adyen Docs snapshot (2019-10-25 last-modified metadata; captured 2026-09-15) specifies the `L` and `SL` records in an SFTP batch **PayoutModification result file**. It concerns a `PayoutConfirm` or `PayoutDecline` modification and its result fields, rather than the original payout request or proof that funds have finally arrived. See [[adyen-batch-processing]] and [[adyen]] for the broader file flow.\n\n## Key takeaways\n\n- In the `L` record, fields 3\u20136 carry `MerchantAccount`, merchant-account name, `PayoutConfirm` or `PayoutDecline` processing type, and merchant reference. Field 7 reports `Success`, `Error`, or `Pending`; `Pending` says the modification request is postponed for processing. Field 8 is echoed merchant data, not a platform-used payment value. [Raw lines 18\u201334]\n- The `ModificationResult` `SL` record separates field 4, **this modification's PSP reference**, from field 5, **the original payout PSP reference**. Field 6 supplies a mapped refusal reason or error description when applicable; the source lists possible messages, many worded generically around payments, captures, refunds, and fund transfers. Do not treat those generic message labels as extra payout actions. [Raw lines 36\u201345]\n- Parsing or validation errors use the separately linked validation-error result-file structure. If the `L` processing-type column shows `ValidationError`, this page likewise routes to that structure; the ordinary `PayoutConfirm`/`PayoutDecline` layout should not be applied to such a file. [Raw lines 16, 28\u201329]\n- The example shows a TEST `PayoutConfirm` with `Success` and distinct modification/original-payout references. It is an example row, not evidence of a live modification, final payout settlement, or a safe retry for a pending original payout. [Raw lines 47\u201356]\n\n## Detail locators\n\n- `L` positional schema, statuses and echo field: raw lines 20\u201334. `SL` positional schema, reference identities and error text: raw lines 38\u201345. Sample `FH`/`BH`/`L`/`SL`/`BT`/`FT` file: raw lines 47\u201356.\n- For shared header/footer and block fields, use the batch-result-file source; for validation-error layouts, follow the raw link at lines 16 and 29. This page does not define ACK validation or later bank-side payout finality.\n\n## Related\n\n- [[adyen-batch-processing]]\n- [[adyen]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payoutmodification-result-file/2026-09-15|Adyen PayoutModification result file, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When parsing or validation errors occur, the result file has the structure described in [batch result files with validation errors](/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror).",
+      "location": "raw line 16"
+    },
+    {
+      "text": "If the column shows `ValidationError`, then the file shall have the structure of the [batch result file (ValidationError)](/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror) instead.",
+      "location": "raw line 29"
+    },
+    {
+      "text": "A Pending status means that the modification request needs to be postponed for processing.",
+      "location": "raw line 33"
+    },
+    {
+      "text": "The unique PSP reference identifier for this modification.",
+      "location": "raw line 43"
+    },
+    {
+      "text": "The original payout PSP reference.",
+      "location": "raw line 44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-payoutmodification-result-source",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payoutmodification-result-file]] \u2014 2026-09-15 SFTP PayoutModification result `L`/`ModificationResult` schema for confirm/decline status, distinct modification and original-payout PSP references, and validation-error routing.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source's generic refusal/error list contains payment/capture/refund/fund-transfer wording; do not infer those actions occurred for the payout modification."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payoutmodification-result-file/2026-09-15.md",
+  "raw_sha256": "a1adf90fa34721b44476bb9e10dbccdc67e162fe19f5bdc3ba989effbe3b4313",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-with-airline-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Authorisation with airline data | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, authorisation, airline-data]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] batch-file reference shows how to append airline-data `SL` sub-lines to card, IBAN, or recurring-payment authorisation requests. It gives field-position tables for `Airline`, `AirlineLeg`, and `AirlinePassenger`, plus an optional `MerchantOrderReference` sub-line. It mentions airline data in authorisation and capture contexts, but the transaction-specific parent records and payment outcome are owned by separate guides. [[adyen-batch-processing]]\n\n## Key takeaways\n\n- The `Airline` sub-line uses required `SL`, a parent-line sub-line sequence number, and fixed `Airline` type in fields 1\u20133. Its customer reference, airline and ticket identifiers, address, and agency fields 4\u201312 are marked optional. The page refers to the linked airline-data overview for further format and character restrictions; this table alone is not the full validation specification.\n- If airline data is included, the file also needs **at least one** `AirlineLeg` and **at least one** `AirlinePassenger` sub-line. The `AirlineLeg` table marks leg number, departure airport, flight number, carrier, fare basis, travel class, destination and travel date required, with stopover and departure tax optional. The `AirlinePassenger` table marks passenger number, `Name`, given and family names required, with birth date (`yyyy-MM-dd`) and traveller type optional. See raw lines 70\u2013135 for exact positions.\n- `MerchantOrderReference` is an optional sub-line; its four fields are required when that sub-line is used. Sub-line record numbers are defined as sequential within the parent line; leg and passenger numbers have their own sequential counters. The examples show `PaymentDetails` values but this page does not define the amount value or exponent semantics, so do not infer units or scale from examples.\n\n> [!warning] Example boundaries\n> The repeated full-file examples are headed by `Modification` and contain `CaptureWithExternalAuth`, even though this page is titled authorisation with airline data. They also jump from sub-line number 5 to 8 after describing sequential numbering; the first full-file example uses `DEVL` where the common batch-request `FH` reference lists `TEST`/`LIVE`. These are unresolved example-versus-table differences, not alternative validated formats. The examples include card and passenger details for illustration; they do not prove appropriate production handling, accepted files, authorisation, capture, or final outcome.\n\n## Detail locators\n\n- **Scope and eligible parent-request links:** raw lines 14\u201320.\n- **`Airline` fields, requiredness, validation-reference link and isolated/full-file examples:** raw lines 26\u201368.\n- **`AirlineLeg` condition, fields, counters and examples:** raw lines 70\u2013115.\n- **`AirlinePassenger` condition, fields, optional birth date/type and examples:** raw lines 117\u2013162.\n- **Optional `MerchantOrderReference` sub-line and example:** raw lines 164\u2013186.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]] \u2014 common FH/BH/BT/FT format and environment fields\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files]] \u2014 SFTP channel and batch account-scope qualifications\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data/2026-09-15|Adyen authorisation with airline data \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To do so, you append the relevant airline data as sub-lines to the\u00a0[card payment](/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-a-card-payment), [IBAN payment](/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-an-iban-payment) or [recurring payment](/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-a-recurring-payment) authorisation requests.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data/2026-09-15.md:18"
+    },
+    {
+      "text": "Airline data fields may have\u00a0specific\u00a0format and/or character limitations: refer to the\u00a0[airline data overview](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-additionalData-AdditionalDataAirline)\u00a0for details.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data/2026-09-15.md:30"
+    },
+    {
+      "text": "If you include airline data in your request, the batch file needs to contain *at least one airline leg* sub-line as well.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data/2026-09-15.md:74"
+    },
+    {
+      "text": "If you include airline data in your request, besides at least one airline leg sub-line the batch file needs to contain at least one airline passenger sub-line as well.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data/2026-09-15.md:121"
+    },
+    {
+      "text": "The `MerchantOrderReference` sub-line described below can be optionally included in the payment request.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data/2026-09-15.md:166"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-batch-airline-authorisation-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-with-airline-data]] \u2014 2026-09-15 SFTP airline-data `SL` field reference for authorisation requests, including conditional leg/passenger records, optional merchant order reference, and example-versus-table discrepancies.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Full-file examples use Modification/CaptureWithExternalAuth under an authorisation page, show nonsequential SL numbering, and use DEVL despite the common FH table's TEST/LIVE values.",
+          "PaymentDetails example values do not establish amount/exponent units, and example card/passenger data are not production handling guidance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-with-airline-data/2026-09-15.md",
+  "raw_sha256": "dbd1f56aca9f7cefcd7d302376a8f85e466c69d949d70f1ac30475e8c8fe7e7a",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-file-naming-and-structure",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen batch file naming and structure\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, file-naming, validation]\n---\n\n## Overview\n\nThis [[adyen]] reference defines the request, result and acknowledgement filename patterns and common file structure for advanced SFTP batch processing. It is a file-level format and validation route through [[adyen-batch-processing]]; a correctly named file or validation ACK does not establish a transaction's financial outcome.\n\n## Key takeaways\n\n- Each request filename must be unique and use `[Submission Platform]_[File Sequence Number]_[FileType].csv`. The platform identifies the submitting server; the sequence is scoped to that platform and increments **exactly one** after each successful file submission. Reused or skipped sequence numbers cause rejection. The filename's file type must be one of the listed Authorisation, Payout, StoreToken, RefundWithData, Modification, PayoutModification or AccountUpdater types. See **Naming \u2192 Batch request file**, raw lines 18\u201345.\n- Result filenames append `_result` or, for an encrypted result file, `_result_enc` to the original `.csv` filename. ACK filenames append `_ack`. These suffixes identify file routes; this page does not itself set up PGP, prove that a particular transfer was encrypted, or define successful individual payment or payout results. See raw lines 47\u201370.\n- The CSV format follows RFC 4180 with no multiline fields and a variable number of fields per line. A header and trailer are needed for parsing. The `FH` sequence must match the filename, one file cannot mix transaction/file types, UTF-8 is specified, and genuinely optional fields may still require placeholder delimiters to preserve the fixed column count for that transaction type. See **Structure**, raw lines 72\u201399.\n> [!warning] Contradiction\n> Under **Structure**, this naming page calls File Header field 9 optional and gives it as an example for a blank-field delimiter (raw line 97). The common **batch request file** field table marks FH field 9, **FileType**, required (that raw page, lines 46\u201356). Do not leave FH FileType blank; the general delimiter rule applies to genuinely optional fields. [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]]\n\n- The naming page says an ACK is posted to the `ack` folder if validation has an error, while the separately captured **batch acknowledgement file** guide explicitly documents both successful and failed validation ACKs. Treat the naming-page wording as incomplete on ACK generation. A successful ACK concerns file validation, not individual financial outcomes; after validation errors the ACK's `NextFileSubmissionNumber` can be a guess, and when the header cannot be parsed it is always incorrect. See this raw at lines 60\u201370 and [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]]; its raw lines 18\u201325 and 66\u201394.\n\n## Detail locators\n\n- Request uniqueness, platform-scoped sequence, duplicate/gap rejection and allowed types: **Naming \u2192 Batch request file**, raw lines 18\u201345.\n- Result and ACK suffixes and folder descriptions: **Naming \u2192 Batch result file / Batch acknowledgment file**, raw lines 47\u201370.\n- CSV exceptions, header/trailer and structural constraints: **Structure**, raw lines 72\u201399.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-batch-processing]]\n- ACK validation meaning: [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]]\n- Common request records: [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]]\n- Common result records: [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure/2026-09-15|Adyen batch file naming and structure]] \u2014 full pinned 2026-09-15 snapshot; page metadata says last modified 2020-04-09\n",
+  "quotes": [
+    {
+      "text": "The file name for each batch request file must be unique.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure/2026-09-15.md:20"
+    },
+    {
+      "text": "It must always increment by exactly one unit after each successful file submission.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure/2026-09-15.md:29"
+    },
+    {
+      "text": "The file name for each batch result file will be original filename, with `_result` (if the file is not encrypted) or `_result_enc` (if the file is encrypted) appended to the end.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure/2026-09-15.md:49"
+    },
+    {
+      "text": "If any error occurs during the process,\u00a0the batch\u00a0acknowledgment\u00a0file is posted to the\u00a0*ack*\u00a0folder on the SFTP.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure/2026-09-15.md:70"
+    },
+    {
+      "text": "the file header (\\[FH]) contains a file sequence number that\u00a0*must match*\u00a0the file sequence number in the\u00a0[file name](/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure).",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure/2026-09-15.md:88"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-batch-file-naming-structure-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-file-naming-and-structure]] \u2014 2020-modified SFTP batch request/result/ACK filename patterns, platform-scoped sequence and CSV structure reference; FH field-9 requiredness conflicts with the common request-file table, and ACK-generation wording needs the dedicated ACK guide (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Naming page describes ACK posting after errors, but the dedicated ACK guide documents ACK generation on successful and failed validation; do not infer ACKs occur only on errors.",
+          "Duplicate or skipped submission-platform sequence numbers can reject a file; an ACK next-number value after errors can be guessed or incorrect, so do not advise blind resubmission.",
+          "Filename/result suffix and ACK validation do not prove encryption, file processing of every line, or payment/payout outcome.",
+          "Naming raw line 97 calls FH field 9 optional, but common batch-request-file raw lines 46\u201356 mark FH field 9/FileType required; keep FileType populated while applying placeholder delimiters only to genuinely optional fields."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-file-naming-and-structure/2026-09-15.md",
+  "raw_sha256": "2c0abe3bab6e011b68b6eb06c4f32ecdb499240ce6331630b569c7f0870d0cc6",
+  "status": "candidate_ready"
+}

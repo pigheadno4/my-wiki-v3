@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen RefundWithData batch request-file parent\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, refund-with-data, request-file]\n---\n\n## Overview\n\nThis Adyen Docs snapshot (last-modified metadata 2026-09-15; captured 2026-09-15) defines the parent `L` record for an advanced-SFTP **RefundWithData request file**. The line carries metadata for associated `SL` records. It is a request layout, not a refund result, payment reversal, or bank-credit confirmation. See [[adyen-batch-processing]] and [[adyen]] for the larger batch flow.\n\n## Key takeaways\n\n- Required `L` fields 1\u20136 are record type `L`, sequential line number within the block, fixed `MerchantAccount` account type, merchant account name, fixed `RefundWithData` processing type, and merchant reference. Field 7 is optional `EchoData`: up to 80 characters passed back unchanged and not used by Adyen for processing. [Raw lines 18\u201329]\n- The merchant-reference field may reuse the original payment-authorisation reference value or use a new reference for this modification request. That merchant reference is not described here as a PSP reference or as evidence of successful refund processing. [Raw lines 27\u201328]\n- The page says `RefundWithData` has one processing type and one sub-line, but does **not** specify that sub-line's fields. Follow the separate child RefundWithData request source for its actual `SL` schema; its detail is not imported into this parent summary. [Raw lines 31\u201333]\n- The `L` processing-type row also contains a `ValidationError` instruction pointing to a **result**-file structure, despite appearing on this **request**-file page. Preserve that context mismatch as source wording, not as evidence that a normal RefundWithData request is itself a validation result. [Raw line 26]\n\n## Detail locators\n\n- Complete parent `L` field table and requiredness: raw lines 20\u201329. Sub-line count statement: raw lines 31\u201333.\n- This page has no amount, card/bank detail, validation acceptance, per-refund result, or final funds movement. Retrieve the child schema and the distinct batch ACK/result sources for those questions.\n\n## Related\n\n- [[adyen-batch-processing]]\n- [[adyen]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file-refundwithdata-request]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15|RefundWithData child request sub-line schema, navigation only]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/2026-09-15|Adyen RefundWithData request-file parent, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The line record\u00a0\\[L] holds the metadata information that applies to its corresponding sub-line \\[SL] records.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "If the column shows `ValidationError`, then the file shall have the structure of the [batch result file (ValidationError)](/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror) instead.",
+      "location": "raw line 26"
+    },
+    {
+      "text": "the merchant reference value can either:",
+      "location": "raw line 27"
+    },
+    {
+      "text": "Take a new reference value for the modification request in question.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "`RefundWithData` has only one processing type and one sub-line.",
+      "location": "raw line 33"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-refundwithdata-request-parent-source",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file]] \u2014 2026-09-15 parent RefundWithData SFTP request-file `L` metadata schema, merchant-reference options, and one-child-sub-line navigation; its ValidationError result wording appears in a request table.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "ValidationError result-file language appears in the request-file field-5 row and should not be promoted as a request-result equivalence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/2026-09-15.md",
+  "raw_sha256": "3498a19831814b2d732321f7d31065e5e212593b64a427b6b078e0bc75277f06",
+  "status": "candidate_ready"
+}

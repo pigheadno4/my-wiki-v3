@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payout-result-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP payout result file\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file/2026-09-15.md\"\ntags: [adyen, batch-processing, payout, result-file, store-token]\n---\n\n## Overview\n\nThis 2019-last-modified Adyen SFTP reference defines `L` line records and `PayoutResult`/`StoreTokenResult` `SL` sub-lines in a **Payout result file**. It points parsing or validation errors to a separate result-file structure. The page was captured 2026-09-15. Its literal statuses and sample are file-level/result-code evidence, not proof that a destination bank or recipient received funds. See [[adyen]] and [[adyen-batch-processing]].\n\n## Key takeaways\n\n- The `L` table gives merchant account, merchant reference, processing type `Payout`, status `Received`, `Success` or `Error`, and optional `EchoData`. It does not define a full payout lifecycle or guarantee that `Success` is final bank credit. The sample also shows an `L` row with processing type `StoreToken`, although the table lists only `Payout`; preserve this table/example mismatch.\n- A `PayoutResult` `SL` holds a field-4 PSP reference described literally as **\u201cthis modification\u201d**, plus a result code if available. If the original payout request also executed `StoreToken`, fields 6 and 7 instead identify the **stored token's PSP reference** and its result code. The page does **not** define an original-payment-authorisation PSP reference in this `PayoutResult` schema; do not substitute the conditional token PSP reference for one.\n- A separate `StoreTokenResult` `SL` has a field-4 PSP reference also described as \u201cthis modification\u201d and a result code if available. This distinct sub-line records a StoreToken operation result, not a beneficiary payout result.\n- The `TEST` example shows a `Payout` `L` status of `Received`, a `PayoutResult` code `[payout-submit-received]`, and a conditional StoreToken result of `Success`; it also shows a separate `StoreToken` `L`/`SL` with `Success`. Token success and payout submission receipt do not show final bank or card payout. Amount, recipient and bank-posting fields are not specified in these `L`/`SL` tables; use separate request and outcome evidence for those questions.\n\n## Detail locators\n\n- Lines 14\u201316: payout result page and validation-error file route.\n- `## Payout line`, lines 18\u201333: `L` merchant/reference/type/status and EchoData.\n- `### PayoutResult`, lines 37\u201349: payout-result PSP reference, optional result code, conditional stored-token reference/result code.\n- `### StoreTokenResult`, lines 51\u201361: separate token-operation sub-line.\n- Lines 63\u201372: `TEST` example with payout `Received`, conditional StoreToken `Success`, and example `StoreToken` `L` mismatch.\n\n## Related\n\n- [[adyen-batch-processing]] \u2014 batch-file flow and reciprocal source route.\n- [[adyen-payouts]] \u2014 separate payout product/lifecycle context, not imported into this SFTP schema.\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file-payout-request]] \u2014 separately scoped payout request fields.\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] \u2014 common outer result-file records.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file/2026-09-15|Payout result-file reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "| 5           | Allowed values:- `Payout`                         | Processing type. Defines the type of action that is required for the specified transaction.If the column shows `ValidationError`, then the file shall have the structure of the [batch result file (ValidationError)](/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror) instead. |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file/2026-09-15.md:28"
+    },
+    {
+      "text": "- `Error` | Transaction status.                                                                                                                                                                                                                                                                                                                                          |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file/2026-09-15.md:32"
+    },
+    {
+      "text": "| 4           | Alphanumeric                | The unique PSP reference identifier for this modification.                                                                                     |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file/2026-09-15.md:46"
+    },
+    {
+      "text": "| 6           | Alphanumeric                | If the original payout request executed a\u00a0`StoreToken` operation as well, this is the\u00a0unique PSP reference identifier for the stored token.    |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file/2026-09-15.md:48"
+    },
+    {
+      "text": "SL,1,PayoutResult,9913958242217674,[payout-submit-received],9913958242210018,Success ",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file/2026-09-15.md:67"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-payout-result-file-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payout-result-file]] \u2014 2019-modified SFTP Payout `L`/`SL` result schema with conditional StoreToken references, `Received` example and no final-bank-outcome proof (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The L processing-type table lists Payout only, but the sample also contains a StoreToken L row; do not treat the example as a resolved allowed-values schema.",
+          "PayoutResult field 4 is described as a PSP reference for 'this modification'; field 6 is conditionally a stored-token PSP reference. No original-payment PSP reference is defined in this page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/payout-result-file/2026-09-15.md",
+  "raw_sha256": "f686273a6c6b849a778504457e1e637b2508c4c1b1f97cdd230fcd030834e364",
+  "status": "candidate_ready"
+}

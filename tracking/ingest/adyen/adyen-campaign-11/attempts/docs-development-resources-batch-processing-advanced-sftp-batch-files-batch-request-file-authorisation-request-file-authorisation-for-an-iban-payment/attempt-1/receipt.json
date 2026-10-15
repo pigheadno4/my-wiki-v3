@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-an-iban-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP batch authorisation for an IBAN payment\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-an-iban-payment\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-an-iban-payment/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, iban, authorisation, file-format]\n---\n\n## Overview\n\nThis Adyen Docs snapshot (2019-04-30 last-modified metadata; captured 2026-09-15) specifies the sub-lines of an advanced-SFTP batch **Authorisation request** for a bank transfer or SEPA Direct Debit payment using IBAN details. It is a request-record schema, not evidence of batch acceptance, authorization, debit settlement, or any payment outcome. For file framing and outcome routes see [[adyen-batch-processing]] and [[adyen]].\n\n## Key takeaways\n\n- `PaymentDetails` and `IBAN` sub-lines are mandatory; `IBAN` must be sub-line 2. The `SL` counter starts at 1 within its parent line and increments sequentially. Empty optional positions still require commas because the line has a fixed field count. [Raw lines 18\u201329, 40\u201349]\n- `PaymentDetails` positions 4\u20136 are the numeric amount, numeric currency exponent, and three-character ISO currency code. Position 7 shopper reference is optional in the base table but required for recurring payments and creation of recurring contracts; positions 8\u201311 cover optional email, statement descriptor, IP address, and fraud offset. The sample `100,2,SEK` illustrates field placement, not a general conversion or financial-result rule. [Raw lines 26\u201338, 55\u201363]\n- `IBAN` positions 4\u20136 require bank account owner name, two-letter ISO 3166-1 alpha-2 country, and IBAN code; position 7 is optional BIC. The owner name must be alphanumeric, contain at least three characters, and not consist only of numbers; the page identifies error 203 for an invalid owner-name format. An invalid country code rejects the transaction/request. [Raw lines 45\u201353]\n- Optional `Address` sub-lines carry billing and delivery addresses separately, with a two-letter country code. `MerchantOrderReference` may carry an order reference. [Raw lines 65\u2013110]\n\n## Detail locators\n\n- Mandatory `PaymentDetails` and `IBAN` positional schemas, including sample: raw lines 20\u201363. The sample contains `FH`, `BH`, `L`, `SL`, `BT`, and `FT`; their common framing belongs to the parent batch-request-file reference.\n- Optional `Address` schema and sample: raw lines 65\u2013101. Optional `MerchantOrderReference` schema and example: raw lines 103\u2013121. The latter **IBAN-page example uses a `Card` sub-line** at line 117, so do not treat that snippet as an IBAN-specific validated file template; use the mandatory `IBAN` table for the IBAN sub-line.\n- Format validation or request rejection is distinct from a final financial result. Consult the separately routed batch acknowledgement and result-file sources for validation and per-payment outcomes; this page does not report a live payment.\n\n## Related\n\n- [[adyen-batch-processing]]\n- [[adyen]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-an-iban-payment/2026-09-15|Adyen authorisation for an IBAN payment, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The [`PaymentDetails` ](#paymentdetails)and [`IBAN` ](#iban)sub-lines described below are mandatory when submitting a bank transfer or a\u00a0SEPA Direct Debit (DD) payment authorisation request.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "Optional fields: if you do not populate one or more non-mandatory fields and leave them blank, you need in any case to insert delimiting commas because the Adyen payments platform expects a preset, fixed number of fields per line/sub-line.",
+      "location": "raw line 24"
+    },
+    {
+      "text": "In an authorization request for IBAN payments, the `IBAN` sub-line needs to be submitted as *sub-line 2*.",
+      "location": "raw line 43"
+    },
+    {
+      "text": "If provided details do not match the required format, the response returns the error message: 203 'Invalid bank account holder name'.",
+      "location": "raw line 50"
+    },
+    {
+      "text": "An invalid country code results in a transaction/request rejection.",
+      "location": "raw line 51"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-iban-authorisation-batch-source",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-an-iban-payment]] \u2014 2026-09-15 SFTP batch IBAN Authorisation request sub-line schema for bank transfer/SEPA Direct Debit, including required IBAN country/account fields, optional records, and a card-example mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The MerchantOrderReference example on this IBAN page uses a Card sub-line (raw line 117); do not reuse it as an IBAN-specific validated file template."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/authorisation-request-file/authorisation-for-an-iban-payment/2026-09-15.md",
+  "raw_sha256": "2a4025b087e462f3e1633bc3f388202dcd8dc74006c9ed78f13865f69886e527",
+  "status": "candidate_ready"
+}

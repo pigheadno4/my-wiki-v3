@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-account-single-sign-on-set-up-sso",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Set up Customer Area single sign-on\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/account/single-sign-on/set-up-sso\"\nraw_files:\n  - \"adyen/docs/account/single-sign-on/set-up-sso/2026-09-15.md\"\ntags: [adyen, customer-area, iam, sso, saml, user-management]\n---\n\n## Overview\n\nThis Adyen guide describes configuring **SAML 2.0 single sign-on** for Customer Area users with an identity provider (IdP). It covers company-account prerequisites, exchanging service-provider and IdP metadata, testing before live setup, and creating SSO users. The documented settings and example API request do not show that any merchant has enabled SSO or that a user can successfully sign in.\n\n## Key takeaways\n\n- SSO setup requires a SAML 2.0 IdP and a **Customer Area company account**; the guide says SSO cannot be set up with a merchant account. The configuring user needs **Merchant admin** or **Merchant user management**, and an organization-authorized person must accept the SSO legal notice. Adyen recommends retaining at least one admin who does not use SSO for troubleshooting.\n- Start in the **test Customer Area**, then repeat the process in **live**. Copy Adyen's service-provider SSO/AssertionConsumerService URL into the IdP, enable SAML2 request and response signing, use an email address for `SubjectNameID`, and obtain the IdP metadata URL. Azure additionally requires the response-and-assertion signing option. The Customer Area fetches the IdP configuration for review before saving it.\n- The guide specifies Google IdP metadata hosting: its metadata file must be permanently publicly accessible and unencrypted. See the raw IdP field table and Google branch for provider-specific names and the Sign-on URL instruction. A metadata URL is configuration input, not proof of a working federation.\n- Saving the SSO configuration permits testing but does **not** automatically enable SSO for existing users. Create new SSO users or migrate existing users separately. A new user must already have an IdP account; Customer Area creation selects SSO as the login method, a unique email username, account access, and roles. The creator can assign only roles they already hold.\n- New users can instead be created through a Management API request: the guide distinguishes company-level `POST /companies/{companyId}/users` from merchant-access `POST /merchants/{merchantId}/users`. Merchant-account access for a user is distinct from the company-account prerequisite for setting up SSO. Its sample targets the **test** Management API, uses an API key, and says HTTP 200 means user creation; a verification email follows. That response is not proof of email verification, correct permissions, or successful SSO login.\n\n## Detail locators\n\n- Raw lines 15\u201334: SAML 2.0 scope, company-account and role/legal prerequisites, and non-SSO admin recommendation.\n- Raw lines 36\u201347: IdP field-name table and metadata hosting statement.\n- Raw lines 49\u201369: test-then-live order, service-provider URL, SAML signing, email NameID, Azure and Google qualifications, IdP metadata URL.\n- Raw lines 71\u201392: Customer Area metadata fetch/save, testing, existing-user migration requirement, and metadata URL change steps.\n- Raw lines 94\u2013132: IdP-account prerequisite and Customer Area SSO-user creation, including scoped account access and role assignment.\n- Raw lines 134\u2013179: company-versus-merchant Management API user-creation routes, request fields, test example, HTTP response and verification email.\n\n## Related\n\n- [[adyen]]\n- [[adyen-customer-area-iam]]\n- [[adyen-api-access]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/account/single-sign-on/set-up-sso/2026-09-15|Adyen Customer Area SSO setup guide snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The Customer Area supports SSO based on the [Security Assertion Markup Language (SAML) 2.0 protocol](https://en.wikipedia.org/wiki/SAML_2.0). SSO solutions that use the SAML 2.0 protocol include identity providers like Okta, Azure, and Microsoft AD FS.",
+      "location": "raw/adyen/docs/account/single-sign-on/set-up-sso/2026-09-15.md:21"
+    },
+    {
+      "text": "* A Customer Area [company account](/account/account-structure#company-account). You cannot set up SSO with a [merchant account](/account/account-structure#merchant-accounts).",
+      "location": "raw/adyen/docs/account/single-sign-on/set-up-sso/2026-09-15.md:28"
+    },
+    {
+      "text": "* Keep at least one admin user that doesn't log in using SSO so that you can troubleshoot issues.",
+      "location": "raw/adyen/docs/account/single-sign-on/set-up-sso/2026-09-15.md:34"
+    },
+    {
+      "text": "First, do the following in your [test Customer Area](https://ca-test.adyen.com/). Then, repeat it in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/account/single-sign-on/set-up-sso/2026-09-15.md:51"
+    },
+    {
+      "text": "After doing this, you can start testing SSO. Your existing users do not automatically have SSO enabled, so you must:",
+      "location": "raw/adyen/docs/account/single-sign-on/set-up-sso/2026-09-15.md:80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-sso-setup-source-route",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-account-single-sign-on-set-up-sso]] \u2014 2026-09-15 Adyen Customer Area SAML 2.0 SSO setup guide for company-account configuration, IdP metadata and SSO-user creation.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Configuration and user-creation instructions do not prove SSO is enabled or working in any account."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/account/single-sign-on/set-up-sso/2026-09-15.md",
+  "raw_sha256": "06158cb163cc5cf62e1a03b6640851bb7c8f0a474e7b849c45f9d7cfd1a3c927",
+  "status": "candidate_ready"
+}

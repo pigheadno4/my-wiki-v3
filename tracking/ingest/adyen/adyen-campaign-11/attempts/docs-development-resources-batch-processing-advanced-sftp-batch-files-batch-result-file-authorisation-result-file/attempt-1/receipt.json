@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-authorisation-result-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Authorisation result file | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, authorisation, result-file]\n---\n\n## Overview\n\nThis Adyen SFTP **Authorisation result-file** reference (last modified 2019-10-25; collected 2026-09-15) defines the transaction-level `L` metadata row and its `PaymentResult` `SL` row after processing an authorisation batch. Parsing or validation errors instead use a separately linked `ValidationError` result-file structure. The page identifies authorization-result fields; it does not report capture, settlement, or consent. [[adyen-batch-processing]]\n\n## Key takeaways\n\n- The `L` row distinguishes the merchant account, `Authorisation` processing type, merchant reference for the transaction, and a transaction-status field. The listed status values are `Success`, `Authorised`, `Refused`, `Cancelled`, `Received`, and `Error`; the page does not define `Received` as authorized or treat all values as final payment outcomes. `EchoData` is a returnable echo field that Adyen does not use for processing. See raw lines 18\u201336.\n- The `PaymentResult` `SL` row has a separate **original payment PSP reference** field. It can carry an authorization code when the payment is successfully authorized; that field is empty when it is not authorized. Result code is supplied if available, and refusal/error reason appears for a payment that is not authorized. Merchant reference (`L` field 6) and PSP reference (`SL` field 4) are distinct schema identities even though the example happens to show equal-looking numeric values. See raw lines 38\u201375 and 77\u201387.\n- The example shows one `Authorised` result with code and one `Refused` result without authorization code. It is illustrative and does not establish that a merchant's particular authorisation was captured or settled. The detailed reason list includes modification and recurring-related strings, but this source specifies only a `PaymentResult` sub-line; no `Recurring` sub-line or credential-consent semantics are defined here.\n\n## Detail locators\n\n- **Validation-error alternate result-file route:** raw line 16 and `L` field 5 at line 28.\n- **`L` row sequence, account, merchant reference, statuses and echo:** raw lines 18\u201336.\n- **`PaymentResult` PSP reference, authorization code, result/reason fields:** raw lines 38\u201375.\n- **Two-record illustrative result file:** raw lines 77\u201388.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] \u2014 common result-file wrapper and successful ACK prerequisite\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]] \u2014 file-validation acknowledgment, distinct from per-record authorization results\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15|Adyen Authorisation result file \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When parsing or validation errors occur, the result file has the structure described in [batch result files with validation errors](/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror).",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15.md:16"
+    },
+    {
+      "text": "| 6           | Alphanumeric",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15.md:29"
+    },
+    {
+      "text": "| 7           | Allowed values:- `Success`",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15.md:30"
+    },
+    {
+      "text": "The original payment PSP reference.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15.md:45"
+    },
+    {
+      "text": "When the payment is not authorised, this field is empty.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15.md:47"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-batch-authorisation-result-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-authorisation-result-file]] \u2014 2019-modified, 2026-09-15-captured SFTP Authorisation result `L` statuses and `PaymentResult` PSP/reference/code/reason schema, with separate ValidationError route.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/authorisation-result-file/2026-09-15.md",
+  "raw_sha256": "ff8a306d4eb9e3087e1c81a731bb163605b151e74f4372e217eead07d54313bb",
+  "status": "candidate_ready"
+}

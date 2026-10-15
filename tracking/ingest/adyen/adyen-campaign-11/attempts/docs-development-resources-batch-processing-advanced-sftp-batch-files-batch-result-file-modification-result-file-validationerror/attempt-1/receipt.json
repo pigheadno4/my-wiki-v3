@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file-validationerror",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Batch result file with validation errors | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, validation-error, result-file]\n---\n\n## Overview\n\nThis Adyen SFTP **batch result-file validation-error schema** (last modified 2019-10-25; captured 2026-09-15) defines an `L` error row and `ValidationErrorResult` `SL` detail when parsing or validation of a request entry fails. Although its URL sits under `modification-result-file`, the page states that successful lines and validation-error lines can occur within the same batch result file and includes an Account Updater example. It is not a blanket declaration that the entire file or every transaction failed. [[adyen-batch-processing]]\n\n## Key takeaways\n\n- The `L` row uses `MerchantAccount`, a merchant account name, fixed `ParseOrValidationError` processing type and fixed `ValidationError` status. Its merchant-reference field is returned when an optional merchant reference was included in the corresponding request; examples also show `N/A`. `EchoData` is an echo field, not data Adyen uses to process the payment. See raw lines 18\u201331.\n- The `SL` row uses fixed `ValidationErrorResult`, requires field 4 to be empty, and puts the error description in field 5. Examples include invalid amount, a missing original `pspReference` for a modification, and invalid merchant account in an Account Updater request. The phrase about a missing PSP reference is an error description, not a PSP reference returned by this schema. See raw lines 33\u201366.\n- This entry-level validation status is distinct from a batch acknowledgment's file-validation result and from the successful result schema for a given request type. It cannot by itself establish other entries' status, a payment's financial outcome, or whether retrying the request is safe. Use the affected request/result sources and existing operation state before deciding an action.\n\n## Detail locators\n\n- **Scope and mixed success/error qualification:** raw lines 14\u201316.\n- **`L` account, optional echoed merchant reference and fixed error markers:** raw lines 18\u201331.\n- **`SL` fixed type, empty field 4 and error text/examples:** raw lines 33\u201366.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]] \u2014 batch acknowledgment and file-validation stage\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] \u2014 common result-file structure\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file]] \u2014 modification-result schema distinct from this validation-error entry\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15|Adyen batch validation-error result file \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "There can be successful lines and validation errors within the same batch result file.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15.md:16"
+    },
+    {
+      "text": "| 5           | Fixed value: `ParseOrValidationError`",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15.md:28"
+    },
+    {
+      "text": "This field is populated and is returned if an optional merchant reference value is included in the\u00a0[corresponding request file](/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file).",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15.md:29"
+    },
+    {
+      "text": "| 4           | Empty",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15.md:40"
+    },
+    {
+      "text": "SL,1,ValidationErrorResult,,Original pspReference required for this operation",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15.md:58"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-batch-validationerror-result-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file-validationerror]] \u2014 2019-modified, 2026-09-15-captured per-entry `ParseOrValidationError`/`ValidationErrorResult` result schema; successful and invalid entries can coexist in one file.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror/2026-09-15.md",
+  "raw_sha256": "25e17b7a74c5ac6babd9940bb6def13d53bfd3fed142a8bf4089fd9d7274661e",
+  "status": "candidate_ready"
+}

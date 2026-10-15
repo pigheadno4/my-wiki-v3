@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP payout request parent-line fields\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, payout, request-file]\n---\n\n## Overview\n\nThis [[adyen]] SFTP batch reference defines the parent `L` line for a `Payout` request. The line holds metadata that applies to corresponding `SL` sub-lines; it is not itself a destination, amount, payout result, or proof that funds were sent. The pinned page ends after the `## Payout sub-lines` heading without listing those records, so use the linked child route for destination and payment-detail fields. See [[adyen-batch-processing]] for the batch file and validation lifecycle.\n\n## Key takeaways\n\n- The parent line's required positions are `L` record identifier (field 1), line number within the block (field 2, starting at 1 and increasing sequentially), fixed account type `MerchantAccount` (field 3), merchant account name (field 4), `Payout` processing type (field 5), and merchant reference (field 6). This is merchant-account context, not a user role or authorization to make payouts.\n- Field 6 is described as a merchant reference identifying a transaction. The text then says, using modification-request terminology, that it can retain the original payment authorisation reference or use a new reference for the modification request. Preserve that wording as a page-level qualification rather than assuming an original-payment PSP reference, a payout PSP reference, or a universally safe reuse rule.\n- Optional field 7 `EchoData` is returned unchanged in the result file when provided, is not used by Adyen's payment platform, and has an 80-character maximum. Echo data and the line counter are correlation metadata, not payment status.\n- The table says that if the processing-type column shows `ValidationError`, the file has the linked validation-error **result-file** structure instead. This is not a successful payout request result. The page supplies no `SL` destination sub-line schema, amount/currency fields, approval workflow, or outcome webhook; no such behavior should be inferred from its empty heading.\n\n## Detail locators\n\n- **Parent `L` record purpose:** raw lines 14\u201318, under `# Payout request file` and `## Payout lines`.\n- **Fields 1\u20135, block counter, merchant-account identity and processing-type/result-file caveat:** raw lines 20\u201326.\n- **Merchant reference and optional `EchoData` semantics:** raw lines 27\u201329.\n- **Undetailed payout sub-line heading:** raw lines 31\u201333, under `## Payout sub-lines`.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[adyen-payouts]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/payout-request/2026-09-15|Payout request sub-line detail \u2014 navigation only; raw not read for this entry]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/2026-09-15|Adyen SFTP payout request parent-line reference \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The line record\u00a0\\[L] holds the metadata information that applies to its corresponding sub-line \\[SL] records.",
+      "location": "raw line 18, ## Payout lines"
+    },
+    {
+      "text": "Account type. Defines the type of account the transactions are related to.",
+      "location": "raw line 24, ## Payout lines, field 3"
+    },
+    {
+      "text": "Specifies the merchant account name.",
+      "location": "raw line 25, ## Payout lines, field 4"
+    },
+    {
+      "text": "A merchant reference, that is, a unique identifier associated to a specific transaction.",
+      "location": "raw line 27, ## Payout lines, field 6"
+    },
+    {
+      "text": "When this field is populated, its content is returned exactly as is. The\u00a0Adyen payments platform does not use this data.",
+      "location": "raw line 29, ## Payout lines, field 7"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-payout-request-parent-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file]] \u2014 SFTP Payout request parent `L` record for merchant account, processing type, merchant reference and optional echo; sub-line details are absent from this page (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw page ends immediately after the Payout sub-lines heading; do not infer destination or amount fields from it."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/payout-request-file/2026-09-15.md",
+  "raw_sha256": "7af8781d9653fa25b8f10d660870753cd763b799098fa2aaf941a8f657fb09cc",
+  "status": "candidate_ready"
+}

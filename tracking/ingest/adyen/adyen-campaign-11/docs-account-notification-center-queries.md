@@ -1,0 +1,13 @@
+# Retrieval checks — Notification center
+
+## Q1. What is this page for, what is its scope, and what must a reader not infer?
+
+The 2026-09-15 Adyen page describes Customer Area notifications about accounts and Adyen systems and how a user configures delivery (`raw/adyen/docs/account/notification-center/2026-09-15.md:15-19`). The center is scoped to merchant accounts that user's account can access (`raw/adyen/docs/account/notification-center/2026-09-15.md:21-31`). It does not claim complete incident coverage, a notification latency or uptime SLA, that a payment reached a final state, that a dispute was decided, or that a read notice means the event was resolved. It links a user-roles page but states no specific role requirement itself (`raw/adyen/docs/account/notification-center/2026-09-15.md:54-57`).
+
+Canonical retrieval route: `wiki/index.md` → `wiki/adyen-index.md` → proposed `wiki/concepts/adyen-notification-center.md` → `wiki/sources/adyen/source-adyen-docs-account-notification-center.md` → `raw/adyen/docs/account/notification-center/2026-09-15.md`. The coordinator should add the new concept's provider-index route if approved. Canonical URL: https://docs.adyen.com/account/notification-center.
+
+## Q2. What central capability or process does it describe, with prerequisites and warnings?
+
+The center lists accessible-account notices, gives each a detail or Customer Area link, marks selected notices read, and offers **See all notifications** for the full sent-to-user list (`raw/adyen/docs/account/notification-center/2026-09-15.md:21-31`). A user can toggle each notification type separately for Email or Notification center; enabled Email goes to the address linked to that user (`raw/adyen/docs/account/notification-center/2026-09-15.md:33-40`). Fraud/dispute notices are merchant-account-issued, so subscribing to **Chargeback notices** also requires choosing merchant accounts (`raw/adyen/docs/account/notification-center/2026-09-15.md:42-44`). Service-status messages may describe maintenance or downtime, identify the relevant accessible merchant account, and can be subscribed to by email (`raw/adyen/docs/account/notification-center/2026-09-15.md:46-52`). The prerequisite stated for displayed messages is account access; the page gives no role-specific rule, delivery-time promise, or payment-finality meaning.
+
+Canonical retrieval route: `wiki/index.md` → `wiki/adyen-index.md` → proposed `wiki/concepts/adyen-notification-center.md` → `wiki/sources/adyen/source-adyen-docs-account-notification-center.md` → `raw/adyen/docs/account/notification-center/2026-09-15.md`.

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFTP modification result file\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15.md\"\ntags: [adyen, batch-processing, modification, result-file, psp-reference]\n---\n\n## Overview\n\nThis 2019-last-modified Adyen reference defines the transaction-type `L` and `SL` records in an SFTP **Modification result file**. It links a separate structure for parsing or validation errors. Although its opening says \u201cin case of a successful modification,\u201d the table and example also contain `Error` and `Pending` modification statuses; that opening should not be applied to every row. The page was captured 2026-09-15. See [[adyen]] and [[adyen-batch-processing]].\n\n## Key takeaways\n\n- An `L` record identifies the merchant account, a processing type (`Cancel`, `Refund`, `Capture`, `CaptureOrRefund`, or `AuthoriseReferral`), optional merchant reference echoed from the corresponding request, and `Success`, `Error`, or `Pending` status. `Pending` says the modification request must be postponed for processing. Optional `EchoData` returns exactly as provided but is not used by Adyen's payments platform. A `ValidationError` processing type uses the separately linked validation-error file shape.\n- The `ModificationResult` `SL` has **two different PSP references**: field 4 uniquely identifies **this modification**, while field 5 identifies the **original payment authorisation**. Neither is the `L` field-6 optional merchant reference. A row in the sample happens to repeat its `L` field-6 value in `SL` field 4; that example does not redefine the fields.\n- `SL` field 6 carries a mapped refusal reason or error description when the payment is not authorised, is refused, or an error occurs. The raw list includes expired transactions, insufficient balance, full-only capture/refund limits, currency mismatch, unavailable/disallowed/failed operation and other cases. These are possible messages, not proof that a retry is safe.\n- The sample `TEST` file shows a `Capture` `Success` row, a `Capture` `Error` row with `Transaction not found`, and a `Refund` `Error` row with `Insufficient balance on payment`. It demonstrates schema placement, not a live modification, ultimate capture/refund completion, or payment authorisation. This page does not define `Received` or `Authorised` as result-file statuses; do not import those from another lifecycle.\n\n## Detail locators\n\n- Lines 14\u201316: stated result-file scope and separate parsing/validation-error route.\n- `## Modification line`, lines 18\u201337: `L` record metadata, action types, optional merchant reference, statuses and EchoData.\n- `## Modification sub-line`, lines 39\u201374: `SL` result type, distinct modification/original-authorisation PSP references and error-message list.\n- `## Example`, lines 76\u201389: `TEST` capture/refund rows with one success and two errors.\n\n## Related\n\n- [[adyen-batch-processing]] \u2014 batch workflow and reciprocal source route.\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] \u2014 common outer result-file records, separate from `L`/`SL` modification fields.\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]] \u2014 validation ACK, not the modification result.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15|Modification result-file reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This topic describes the structure of a result file in case of a successful modification. When parsing or validation errors occur, the result file has the structure described in [batch result files with validation errors](/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file-validationerror).",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15.md:16"
+    },
+    {
+      "text": "| 6           | Alphanumeric                                                                               | A merchant reference, that is, a unique identifier associated to a specific transaction.This field is populated and is returned if an optional merchant reference value is included in the\u00a0[corresponding request file](/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/modification-request-file).                     |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15.md:33"
+    },
+    {
+      "text": "- `Pending`                                           | Transaction status.A Pending status means that the modification request needs to be postponed for processing.                                                                                                                                                                                                                                                |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15.md:36"
+    },
+    {
+      "text": "| 4           | Alphanumeric                      | The unique PSP reference identifier for this modification.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15.md:46"
+    },
+    {
+      "text": "| 5           | Alphanumeric                      | The unique PSP reference identifier for\u00a0the *original payment authorisation*.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15.md:47"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-modification-result-file-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file]] \u2014 2019-modified SFTP Modification `L`/`SL` result schema with action/status, separate modification and original-authorisation PSP references, and validation-error boundary (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Opening refers to a successful modification, while the same page defines Error/Pending statuses and shows Error rows; do not label every row successful.",
+          "Example L merchant-reference value matches the SL modification PSP reference, but the table defines them as different field identities; do not generalize the sample coincidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file/modification-result-file/2026-09-15.md",
+  "raw_sha256": "b879919bae28b0fca08bf92a5a0bbd6f27ebe1390c757a2dc3291e63d7aa7585",
+  "status": "candidate_ready"
+}

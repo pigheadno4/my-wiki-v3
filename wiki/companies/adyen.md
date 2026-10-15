@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 514
+source_count: 564
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Five hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Five hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -132,8 +132,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 500 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10).
-- Total source summaries: 514 (500 website + 14 GitHub).
+- Ingested website documentation sources: 550 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11).
+- Total source summaries: 564 (550 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 22
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -673,6 +673,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android]] — Adyen Android redirect 3DS integration routes (webpage, 2026-10-15)
 - [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios]] — Adyen Redirect 3D Secure for iOS Routes (webpage, 2026-10-15)
 - [[source-adyen-docs-development-resources-logs-resources]] — Adyen logs resources (webpage, 2026-10-15)
+
+### Website documentation — Campaign 11
+
+- [[source-adyen-docs-account-account-structure]] — Adyen account structure (webpage, 2026-10-15)
+- [[source-adyen-docs-account-users]] — Manage Customer Area users | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file]] — Batch request file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file]] — Adyen SFTP batch result file common records (webpage, 2026-10-15)
+- [[source-adyen-docs-account-user-roles]] — Adyen Customer Area User Roles (webpage, 2026-10-15)
+- [[source-adyen-docs-account-single-sign-on-migrate-users-to-sso]] — Adyen Customer Area User Migration to SSO (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file-refundwithdata-request]] — RefundWithData request | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file-payout-request]] — Adyen SFTP batch payout request sub-lines (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-storetoken-request-file-storetoken-request-for-payout]] — Adyen batch StoreToken request for payout (webpage, 2026-10-15)
+- [[source-adyen-docs-account-single-sign-on-set-up-sso]] — Adyen Docs: Set up Customer Area single sign-on (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-accountupdater-result-file]] — Adyen Account Updater batch result file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-a-card-payment]] — Adyen SFTP batch authorisation for a card payment (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-with-airline-data]] — Authorisation with airline data | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-a-recurring-payment]] — Adyen SFTP recurring authorisation request sub-lines (webpage, 2026-10-15)
+- [[source-adyen-docs-account-manage-account-structure]] — Adyen manage account structure (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-an-iban-payment]] — Adyen SFTP batch authorisation for an IBAN payment (webpage, 2026-10-15)
+- [[source-adyen-docs-account-email-log-in]] — Email login | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-capture-request-capture-with-airline-data]] — Adyen SFTP capture request with airline data (webpage, 2026-10-15)
+- [[source-adyen-docs-account-manage-account-structure-create-an-organization]] — Adyen Create an Organization (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file-authorisation-for-ach-direct-debit]] — Adyen ACH Direct Debit batch authorisation sub-lines (webpage, 2026-10-15)
+- [[source-adyen-docs-account-define-account-structure]] — Adyen: Defining your account structure (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-accountupdater-request-file]] — AccountUpdater request file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-account-multifactor-authentication]] — Adyen Customer Area Multifactor Authentication (webpage, 2026-10-15)
+- [[source-adyen-docs-account-invoice-settings]] — Configure your invoice settings | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-file-naming-and-structure]] — Adyen batch file naming and structure (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file]] — Adyen SFTP modification result file (webpage, 2026-10-15)
+- [[source-adyen-docs-account-define-account-structure-example]] — Adyen example account structures (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-authorisation-result-file]] — Authorisation result file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-refundwithdata-result-file]] — Adyen RefundWithData batch result file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payoutmodification-result-file]] — Adyen PayoutModification batch result file (webpage, 2026-10-15)
+- [[source-adyen-docs-account-users-partner-users]] — Manage partner users | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-payout-result-file]] — Adyen SFTP payout result file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-authorisationreferral-request]] — Adyen SFTP AuthorisationReferral request (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-result-file-modification-result-file-validationerror]] — Batch result file with validation errors | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-account-single-sign-on-log-in-with-sso]] — Adyen Customer Area SSO login and email verification (webpage, 2026-10-15)
+- [[source-adyen-docs-account-notification-center]] — Adyen Notification center (webpage, 2026-10-15)
+- [[source-adyen-docs-account-define-account-structure-framework-onboarding]] — Adyen framework entity onboarding (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file]] — Modification request file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payout-request-file]] — Adyen SFTP payout request parent-line fields (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-storetoken-request-file]] — Adyen StoreToken batch request file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file]] — Adyen RefundWithData batch request-file parent (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file]] — PayoutModification request file | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-authorisation-request-file]] — Adyen SFTP authorisation request file (webpage, 2026-10-15)
+- [[source-adyen-docs-account-single-sign-on]] — Adyen Customer Area Single Sign-On Overview (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-capture-request]] — Adyen SFTP Capture request sub-line (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-refund-request]] — Adyen SFTP batch Refund modification request (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-cancel-request]] — Adyen SFTP Cancel request sub-line (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-cancelorrefund-request]] — Adyen SFTP batch CancelOrRefund request (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file-payoutconfirm-request]] — PayoutConfirm request | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file-payoutdecline-request]] — Adyen SFTP PayoutDecline request sub-line (webpage, 2026-10-15)
 
 ### GitHub repository evidence
 

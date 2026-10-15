@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file-refundwithdata-request",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"RefundWithData request | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15.md\"\ntags: [adyen, batch-processing, refund-with-data, sftp, request-schema]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of a 2021-modified Adyen page is the sub-line field reference for a titled **RefundWithData** SFTP batch request. It describes a `PaymentDetails` sub-line plus either `Card` or `IBAN`, with optional `Address` sub-lines. It defines request layout only: no upload acknowledgment, per-record refund result, final financial outcome, account eligibility, or retry rule follows from this page. See [[adyen]], [[adyen-batch-processing]], and the broader [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files]] for SFTP/PGP and result-file routes.\n\n## Key takeaways\n\n- The title and Card/IBAN introductions identify a refund-with-data request, while the opening mandatory-sub-lines sentence calls it a **bank transfer authorisation request** and the Card/IBAN ordering sentences say **authorization request**. Treat that object/action wording as an unresolved source conflict; do not recast this schema as proof of an authorization or a completed refund.\n- `PaymentDetails` is mandatory with one of `Card` or `IBAN`. Its table separates **Field Required** from **Value Required**: fields such as currency exponent, birth date, entity type, and nationality must occupy a position but may have an empty value, while amount and ISO currency code require values. The table calls amount numeric and provides a separate exponent field; it does not explicitly define an amount-to-minor-unit conversion. Shopper reference/email are optional in this table but its descriptions say they are required for recurring payments and recurring-contract creation. See raw `### PaymentDetails` for all positions and conditions.\n- The Card table marks PAN, expiry month/year, CVC, and cardholder name required; the IBAN table marks account-owner name, two-letter country, and IBAN required while BIC is optional. The IBAN table says an invalid owner-name format yields error 203 and an invalid country code rejects the transaction/request. These are request-field/validation statements, not evidence of a refund outcome. The Card fields contain sensitive card data; use the linked SFTP guide's PGP requirements and do not treat a raw sample as a safe live input.\n- The raw examples conflict with the positional tables. The shortened `PaymentDetails` examples called valid place birth date/entity type/nationality immediately after currency despite the table assigning them fields 12/14/15. The Card sample lacks a separate CVC position although the Card table marks CVC required. The examples are therefore not reliable complete positional templates without resolving the discrepancy.\n- `Address` is optional; if both billing and delivery addresses are supplied, the page uses separate `Address` sub-lines. Its table lists the address type and individual address fields, including a two-letter ISO country code whose invalid value is said to reject the request. See raw `## Optional sub-lines` / `### Address`.\n\n## Detail locators\n\n- `## Mandatory sub-lines` and `### PaymentDetails`: mandatory sub-line combination, field-versus-value requiredness, amount/exponent/currency positions, and recurring-field qualifications.\n- `#### Example PaymentDetails sub-lines`: examples that do not preserve the table's full field positions.\n- `### Card`: marked required card fields, sample file, and the missing separate CVC position in that sample.\n- `### IBAN`: required bank-owner/country/IBAN fields, optional BIC, validation errors, and sample file.\n- `## Optional sub-lines` / `### Address`: optional billing and delivery rows and address-field rules.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files]] \u2014 SFTP transport, PGP protection, and result/acknowledgment routing.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15|RefundWithData request sub-line schema, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The [`PaymentDetails` ](#paymentdetails)sub-line along with either a `Card` or `IBAN` sub-line described below are mandatory when submitting a\u00a0bank transfer authorisation request.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15.md:18"
+    },
+    {
+      "text": "Besides the required [`PaymentDetails` ](#paymentdetails)sub-line described above, a refund with data request needs to include either a `Card` or `IBAN` sub-line.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15.md:62"
+    },
+    {
+      "text": "It contains an empty value for required fields that do not need a value (currency exponent, shopper's birth date, type of entity, shopper's nationality)",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15.md:53"
+    },
+    {
+      "text": "[CVC code](https://www.cvvnumber.com/cvv.html).* Three-digit CVC/CVV code (Visa, Mastercard, Discover)",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15.md:75, Card field 7"
+    },
+    {
+      "text": "If provided details do not match the required format, the response returns the error message: 203 'Invalid bank account holder name'.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15.md:104, IBAN field 4"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c11-refundwithdata-request-batch-link",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-refundwithdata-request-file-refundwithdata-request]] \u2014 2026-09-15 snapshot of the RefundWithData SFTP request sub-line schema, with field/value requiredness, Card/IBAN paths, and unresolved authorization wording and example/table conflicts; no financial outcome semantics.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Titled RefundWithData page also says bank-transfer/card/IBAN authorization request in its body; action identity wording is unresolved.",
+          "PaymentDetails and Card examples conflict with table positions/requiredness; do not use the examples as complete validated templates.",
+          "This page specifies request fields, not acceptance or final refund outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-request-file/refundwithdata-request-file/refundwithdata-request/2026-09-15.md",
+  "raw_sha256": "a3229677f4a6334d132eb4927c59691694d499adbb3fb861b8b7c320f8ac6cad",
+  "status": "candidate_ready"
+}
